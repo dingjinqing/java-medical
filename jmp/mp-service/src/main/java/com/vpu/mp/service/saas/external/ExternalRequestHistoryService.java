@@ -25,6 +25,9 @@ public class ExternalRequestHistoryService {
      */
     public Long getLastRequestTime(String appId,Integer shopId,String serviceName){
         Timestamp lastRequestTime = externalRequestHistoryDao.getLastRequestTime(appId, shopId, serviceName);
+        if (lastRequestTime == null) {
+            return null;
+        }
         long time = lastRequestTime.getTime();
         return time/1000;
     }

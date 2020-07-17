@@ -26,6 +26,7 @@ public class ExternalRequestHistoryDao extends MainBaseDao {
      */
     public Timestamp getLastRequestTime(String appId, Integer shopId, String serviceName) {
         Timestamp timestamp = db().select(DSL.maxDistinct(EXTERNAL_REQUEST_HISTORY.CREATE_TIME).as(EXTERNAL_REQUEST_HISTORY.CREATE_TIME))
+            .from(EXTERNAL_REQUEST_HISTORY)
             .where(EXTERNAL_REQUEST_HISTORY.APP_ID.eq(appId).and(EXTERNAL_REQUEST_HISTORY.SHOP_ID.eq(shopId))
                 .and(EXTERNAL_REQUEST_HISTORY.SERVICE_NAME.eq(serviceName).and(EXTERNAL_REQUEST_HISTORY.ERROR_CODE.eq(0))))
             .fetchAny(EXTERNAL_REQUEST_HISTORY.CREATE_TIME);
