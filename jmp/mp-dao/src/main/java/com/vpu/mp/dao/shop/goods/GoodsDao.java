@@ -229,8 +229,12 @@ public class GoodsDao extends ShopBaseDao {
      * @param goodsSn
      * @return true 是 false 否
      */
-    public boolean isGoodsSnExist(String goodsSn) {
-        int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.eq(goodsSn)));
+    public boolean isGoodsSnExist(String goodsSn,Integer goodsId) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.eq(goodsSn));
+        if (goodsId != null) {
+            condition = condition.and(GOODS.GOODS_ID.ne(goodsId));
+        }
+        int count = db().fetchCount(GOODS, condition);
         return count > 0;
     }
 
@@ -248,7 +252,7 @@ public class GoodsDao extends ShopBaseDao {
      * @param isMedical
      * @return
      */
-   public Map<String,Integer> listExistGoodsSn(List<String> goodsSn,Byte isMedical){
+   public Map<String,Integer> mapGoodsSnToGoodsId(List<String> goodsSn,Byte isMedical){
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsSn));
        List<GoodsDo> goodsDos = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN).from(GOODS).where(condition).fetchInto(GoodsDo.class);
 

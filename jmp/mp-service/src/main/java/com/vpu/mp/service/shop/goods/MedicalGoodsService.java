@@ -34,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.medical.label.bo.LabelRelationInfoBo;
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
+import com.vpu.mp.service.pojo.shop.medical.order.param.MedicalOrderExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductGoodsPageListVo;
@@ -85,7 +86,7 @@ public class MedicalGoodsService extends ShopBaseService {
         if (StrUtil.isBlank(goodsEntity.getGoodsSn())) {
             goodsEntity.setGoodsSn(generateGoodsSn());
         } else {
-            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn())) {
+            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn(),goodsEntity.getGoodsId())) {
                 throw new IllegalArgumentException("商品goodsSn重复");
             }
         }
@@ -124,7 +125,7 @@ public class MedicalGoodsService extends ShopBaseService {
         if (StrUtil.isBlank(goodsEntity.getGoodsSn())) {
             goodsEntity.setGoodsSn(generateGoodsSn());
         } else {
-            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn())) {
+            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn(),null)) {
                 throw new IllegalArgumentException("商品goodsSn重复");
             }
         }
@@ -335,15 +336,13 @@ public class MedicalGoodsService extends ShopBaseService {
         }
         String dataJson = apiExternalRequestResult.getData();
         GoodsMedicalExternalRequestBo goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
-
         if (goodsMedicalExternalRequestBo == null) {
             return JsonResult.success();
         }
-        for (Integer curPage = 0; curPage < goodsMedicalExternalRequestBo.getPageSize(); curPage++) {
-            List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalRequestBo.getDataList();
-            batchStoreGoodsMedicalExternalInfo(dataList);
 
-             apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+        for (Integer curPage = 1; curPage <= goodsMedicalExternalRequestBo.getPageSize(); curPage++) {
+
+            apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
             // 数据拉取错误
             if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
                 JsonResult result = new JsonResult();
@@ -352,8 +351,12 @@ public class MedicalGoodsService extends ShopBaseService {
                 result.setContent(apiExternalRequestResult.getData());
                 return result;
             }
-             dataJson = apiExternalRequestResult.getData();
-             goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
+            dataJson = apiExternalRequestResult.getData();
+            goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
+
+            List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalRequestBo.getDataList();
+            // 药品数据入库操作
+            batchStoreGoodsMedicalExternalInfo(dataList);
         }
         return JsonResult.success();
     }
@@ -364,18 +367,24 @@ public class MedicalGoodsService extends ShopBaseService {
      */
     @DbTransactional(type = DbType.SHOP_DB)
     private void batchStoreGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
-        List<String> goodsCodes = goodsMedicalExternalRequestItemBos.stream().filter(x->x.getGoodsCode()!=null)
-            .map(GoodsMedicalExternalRequestItemBo::getGoodsCode).collect(Collectors.toList());
-        Map<String,Integer> existGoodsCodes = goodsAggregate.listExistMedicalGoodsCode(goodsCodes);
+        List<String> goodsCodes = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
+        // 剔除没有药品编码的数据
+        goodsMedicalExternalRequestItemBos = goodsMedicalExternalRequestItemBos.stream().filter(x -> {
+            if (x.getGoodsCode() == null) {
+                return false;
+            } else {
+                goodsCodes.add(x.getGoodsCode());
+                return true;
+            }
+        }).collect(Collectors.toList());
+        // 获取已存在的goodsSn到goodsId映射
+        Map<String, Integer> existGoodsCodes = goodsAggregate.mapGoodsCodeToGoodsId(goodsCodes);
 
         List<GoodsMedicalExternalRequestItemBo> readyForUpdate = new ArrayList<>(existGoodsCodes.size());
-        List<GoodsMedicalExternalRequestItemBo> readyForInsert = new ArrayList<>(goodsCodes.size()-existGoodsCodes.size());
+        List<GoodsMedicalExternalRequestItemBo> readyForInsert = new ArrayList<>(goodsCodes.size() - existGoodsCodes.size());
 
         for (int i = 0; i < goodsMedicalExternalRequestItemBos.size(); i++) {
             GoodsMedicalExternalRequestItemBo bo = goodsMedicalExternalRequestItemBos.get(i);
-            if (bo.getGoodsCode() == null) {
-                continue;
-            }
 
             if (existGoodsCodes.containsKey(bo.getGoodsCode())) {
                 bo.setGoodsId(existGoodsCodes.get(bo.getGoodsCode()));
@@ -388,7 +397,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 readyForInsert.add(bo);
             }
         }
-        // 新增
+        // 新增，防止新增数据内存在goodsCode相同的数据
         Map<String, GoodsMedicalExternalRequestItemBo> trimRepeated = readyForInsert.stream().collect(Collectors.toMap(GoodsMedicalExternalRequestItemBo::getGoodsCode, Function.identity(), (x1, x2) -> x1));
         readyForInsert = new ArrayList<>(trimRepeated.values());
         batchInsertGoodsMedicalExternalInfo(readyForInsert);
@@ -403,10 +412,10 @@ public class MedicalGoodsService extends ShopBaseService {
      */
     private void batchInsertGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> readyForInserts) {
         goodsAggregate.batchInsert(readyForInserts);
-        List<GoodsSpecProductEntity> goodsSpecProductEntities =new ArrayList<>(readyForInserts.size());
+        List<GoodsSpecProductEntity> goodsSpecProductEntities = new ArrayList<>(readyForInserts.size());
 
         for (GoodsMedicalExternalRequestItemBo bo : readyForInserts) {
-            GoodsSpecProductEntity entity =new GoodsSpecProductEntity();
+            GoodsSpecProductEntity entity = new GoodsSpecProductEntity();
             entity.setGoodsId(bo.getGoodsId());
             entity.setPrdPrice(bo.getGoodsPrice());
             entity.setPrdCostPrice(bo.getGoodsPrice());
@@ -423,15 +432,15 @@ public class MedicalGoodsService extends ShopBaseService {
      */
     private void batchUpdateGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> readyForUpdates) {
         List<Integer> goodsIds = readyForUpdates.stream().map(GoodsMedicalExternalRequestItemBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, List<GoodsSpecProductGoodsPageListVo>> goodsIdMap = medicalGoodsSpecProductService.groupSkuSimpleByGoodsIds(goodsIds);
+        Map<Integer, List<GoodsSpecProductGoodsPageListVo>> goodsIdSkuMap = medicalGoodsSpecProductService.groupSkuSimpleByGoodsIds(goodsIds);
 
-        List<GoodsSpecProductEntity> goodsSpecProductEntities =new ArrayList<>(readyForUpdates.size());
+        List<GoodsSpecProductEntity> goodsSpecProductEntities = new ArrayList<>(readyForUpdates.size());
         for (GoodsMedicalExternalRequestItemBo bo : readyForUpdates) {
-            List<GoodsSpecProductGoodsPageListVo> skus = goodsIdMap.get(bo.getGoodsId());
+            List<GoodsSpecProductGoodsPageListVo> skus = goodsIdSkuMap.get(bo.getGoodsId());
             if (skus == null || skus.size() == 0) {
                 continue;
             }
-            GoodsSpecProductEntity entity =new GoodsSpecProductEntity();
+            GoodsSpecProductEntity entity = new GoodsSpecProductEntity();
             entity.setPrdId(skus.get(0).getPrdId());
             entity.setGoodsId(bo.getGoodsId());
             entity.setPrdPrice(bo.getGoodsPrice());
@@ -445,5 +454,26 @@ public class MedicalGoodsService extends ShopBaseService {
         }
         goodsAggregate.batchUpdate(readyForUpdates);
         medicalGoodsSpecProductService.batchSkuUpdate(goodsSpecProductEntities);
+    }
+
+    /**
+     * 拉同步药品出库状态
+     * @param
+     * @return
+     */
+    public JsonResult syncMedicalOrderStatus(MedicalOrderExternalRequestParam medicalOrderExternalRequestParam){
+        String appId = ApiExternalConstant.APP_ID_HIS;
+        Integer shopId =getShopId();
+        String serviceName = ApiExternalConstant.SERVICE_NAME_SYNC_MEDICAL_ORDER_STATUS;
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(medicalOrderExternalRequestParam));
+        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        return JsonResult.success();
+
     }
 }

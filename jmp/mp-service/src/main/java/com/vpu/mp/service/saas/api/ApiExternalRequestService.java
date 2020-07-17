@@ -58,6 +58,7 @@ public class ApiExternalRequestService extends MainBaseService {
         requestParam.setSign(sign);
 
         ApiExternalRequestResult vo = post(appAuth.getRequestLocation(), requestParam);
+
         apiExternalBaseService.addRequestHistory(appId,shopId,serviceName,requestContentJson,vo.getError());
         return vo;
     }
@@ -74,7 +75,7 @@ public class ApiExternalRequestService extends MainBaseService {
         param.put("sessionKey", requestParam.getSessionKey());
         param.put("serviceName", requestParam.getServiceName());
         param.put("content", requestParam.getContent());
-        param.put("curSecond", requestParam.getContent());
+        param.put("curSecond", requestParam.getCurSecond());
         param.put("sign", requestParam.getSign());
         ApiExternalRequestResult vo = null;
         String post=null;
@@ -96,6 +97,18 @@ public class ApiExternalRequestService extends MainBaseService {
             vo = new ApiExternalRequestResult();
             vo.setError(ApiExternalConstant.ERROR_CODE_PARSE_RETVAL);
             vo.setMsg(e.getMessage());
+        }
+        if (vo == null) {
+            log.warn("请求外部服务-解析返回值：" +"json解析错误");
+            vo = new ApiExternalRequestResult();
+            vo.setError(ApiExternalConstant.ERROR_CODE_PARSE_RETVAL);
+            vo.setMsg("json解析错误");
+        }
+        if (vo.getError() == null) {
+            log.warn("请求外部服务-解析返回值：" +"请求返回内容格式错误");
+            vo = new ApiExternalRequestResult();
+            vo.setError(ApiExternalConstant.ERROR_CODE);
+            vo.setMsg("请求返回内容格式错误");
         }
         return vo;
     }

@@ -15,6 +15,8 @@ import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
+import com.vpu.mp.service.shop.patient.PatientService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -25,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +69,10 @@ public class GoodsSearchMpService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     WxCardExchangeService wxCardExchangeSvc;
+    @Autowired
+    private PrescriptionService prescriptionService;
+    @Autowired
+    private PatientService patientService;
 
     /**
      * 小程序端-商品搜索界面-可使用搜索条件数据初始化
@@ -125,6 +130,10 @@ public class GoodsSearchMpService extends ShopBaseService {
                 goodsIds = getGoodsIdsLimitedForCardExchangeGoods(param);
             } else if (GoodsSearchMpParam.PAGE_FROM_PRE_SALE.equals(param.getPageFrom())) {
                 goodsIds = getGoodsIdsLimitedForPreSaleQrCode(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_MY_PRESCRIPTION_MEDICAL.equals(param.getPageFrom())) {
+                goodsIds = getMyPrescriptionMedical(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_PRESCRIPTION.equals(param.getPageFrom())) {
+                goodsIds = getPrescriptionMedical(param);
             } else {
                 // 空数组将搜索不出来商品
                 goodsIds = new ArrayList<>();
@@ -192,7 +201,7 @@ public class GoodsSearchMpService extends ShopBaseService {
 
 
     /**
-     *	 会员卡兑换商品进入
+     * 会员卡兑换商品进入
      * @return null 表示全部商品 | List 可兑换商品的Id
      */
     private List<Integer> getGoodsIdsLimitedForCardExchangeGoods(GoodsSearchMpParam param) {
@@ -208,6 +217,26 @@ public class GoodsSearchMpService extends ShopBaseService {
     private List<Integer> getGoodsIdsLimitedForPreSaleQrCode(GoodsSearchMpParam param) {
         int activityId = param.getOuterPageParam().getActId();
         return preSaleService.getPreSaleCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
+    }
+
+    /**
+     * 我的处方药品
+     * @param param
+     * @return
+     */
+    private List<Integer> getMyPrescriptionMedical(GoodsSearchMpParam param) {
+        Integer patientId = patientService.defaultPatientId(param.getUserId());
+        return prescriptionService.getPrescriptionGoodsIdsByPatientId(patientId);
+    }
+
+    /**
+     * 获取单个处方关联的药品
+     * @param param
+     * @return
+     */
+    private List<Integer> getPrescriptionMedical(GoodsSearchMpParam param){
+        String prescriptionCode = param.getOuterPageParam().getPrescriptionCode();
+        return prescriptionService.getPrescriptionGoodsIdsByPrescriptionCode(prescriptionCode);
     }
 
     /**

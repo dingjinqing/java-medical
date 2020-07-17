@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.goods.aggregate;
 
-import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -122,7 +121,7 @@ public class GoodsAggregate {
             FieldsUtil.assign(bo, goodsMedicalInfoDo);
             goodsMedicalInfoDo.setId(goodsIdMedicalIdMap.get(bo.getGoodsId()));
 
-            if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())){
+            if (DelFlag.DISABLE_VALUE.equals(goodsDo.getDelFlag())){
                 goodsDo.setGoodsSn(DelFlag.DEL_ITEM_PREFIX+goodsDo.getGoodsId()+DelFlag.DEL_ITEM_SPLITER+goodsDo.getGoodsSn());
                 goodsDo.setDelFlag(DelFlag.DISABLE_VALUE);
                 goodsMedicalInfoDo.setIsDelete(DelFlag.DISABLE_VALUE);
@@ -149,8 +148,8 @@ public class GoodsAggregate {
      * @param goodsCodes
      * @return
      */
-    public Map<String,Integer> listExistMedicalGoodsCode(List<String> goodsCodes) {
-        return goodsDao.listExistGoodsSn(goodsCodes, MedicalGoodsConstant.GOODS_IS_MEDICAL);
+    public Map<String,Integer> mapGoodsCodeToGoodsId(List<String> goodsCodes) {
+        return goodsDao.mapGoodsSnToGoodsId(goodsCodes, MedicalGoodsConstant.GOODS_IS_MEDICAL);
     }
 
     /**
@@ -180,8 +179,8 @@ public class GoodsAggregate {
      * @param goodsSn
      * @return true 是 false 否
      */
-    public boolean isGoodsSnExist(String goodsSn) {
-        return goodsDao.isGoodsSnExist(goodsSn);
+    public boolean isGoodsSnExist(String goodsSn,Integer goodsId) {
+        return goodsDao.isGoodsSnExist(goodsSn,goodsId);
     }
 
     /**
