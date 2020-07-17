@@ -1,29 +1,25 @@
 package com.vpu.mp.service.shop.prescription;
 
-import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestParam;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.foundation.transactional.DbTransactional;
 import com.vpu.mp.dao.foundation.transactional.DbType;
-import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
-
-import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
+import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.saas.api.ApiExternalBaseService;
-import com.vpu.mp.service.saas.api.ApiExternalRequestService;
+import com.vpu.mp.service.pojo.shop.prescription.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -147,6 +143,15 @@ public class PrescriptionService extends ShopBaseService {
         List<String> prescriptionNos = prescriptionDao.getValidPrescriptionByPatient(patientId);
         List<Integer> goodsIds = prescriptionItemDao.getPrescriptionGoodsIdsByPrescriptionNos(prescriptionNos);
         return goodsIds;
+    }
+
+    /**
+     * 根据处方id获取处方所关联的药品id
+     * @param prescriptionCode
+     * @return
+     */
+    public List<Integer> getPrescriptionGoodsIdsByPrescriptionCode(String prescriptionCode){
+        return prescriptionItemDao.getPrescriptionGoodsIdsByPrescriptionNos(Collections.singletonList(prescriptionCode));
     }
 
     /**

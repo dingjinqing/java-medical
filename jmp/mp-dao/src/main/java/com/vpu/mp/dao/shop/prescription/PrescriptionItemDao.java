@@ -1,18 +1,17 @@
 package com.vpu.mp.dao.shop.prescription;
 
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
+import static com.vpu.mp.db.shop.Tables.PRESCRIPTION_ITEM;
 
 /**
  * 处方明细
