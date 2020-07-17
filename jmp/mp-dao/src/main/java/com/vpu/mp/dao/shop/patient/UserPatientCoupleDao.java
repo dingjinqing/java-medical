@@ -1,6 +1,8 @@
 package com.vpu.mp.dao.shop.patient;
 
+import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.tables.records.UserPatientCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
@@ -55,5 +57,16 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
         int id = db().update(USER_PATIENT_COUPLE).set(USER_PATIENT_COUPLE.IS_DEFAULT,(byte) 0).where(USER_PATIENT_COUPLE.USER_ID.eq(userId))
             .execute();
         return id;
+    }
+    /**
+     * 新增userPatientCoupleDo
+     * @param
+     * @return
+     */
+    public int save(UserPatientCoupleDo userPatientCoupleDo){
+        UserPatientCoupleRecord record=db().newRecord(USER_PATIENT_COUPLE,userPatientCoupleDo);
+        record.insert();
+        userPatientCoupleDo.setId(record.getId());
+        return record.getId();
     }
 }

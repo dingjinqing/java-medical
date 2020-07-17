@@ -1,13 +1,22 @@
 package com.vpu.mp.service.shop.patient;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import java.util.List;
+
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.PatientDo;
+import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
+import com.vpu.mp.dao.foundation.transactional.DbTransactional;
+import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +34,17 @@ public class PatientService extends ShopBaseService{
         return patientList;
     }
 
-    public Integer insertDoctor(PatientOneParam param) {
+    public Integer insertPatient(PatientDo param) {
         transaction(() -> {
-            int doctorId = patientDao.insertPatient(param);
-            param.setId(doctorId);
+            int patientId = patientDao.insertPatient(param);
+            param.setId(patientId);
         });
         return param.getId();
     }
 
-    public Integer updateDoctor(PatientOneParam param) {
+    public Integer updatePatient(PatientDo param) {
         transaction(() -> {
-            int doctorId = patientDao.updatePatient(param);
-            param.setId(doctorId);
+            patientDao.updatePatient(param);
         });
         return param.getId();
     }
@@ -58,4 +66,42 @@ public class PatientService extends ShopBaseService{
         userPatientCoupleDao.initDefaultUserPatient(userPatient.getUserId());
         userPatientCoupleDao.setDefaultPatient(userPatient);
     }
+
+    /**
+     * 拉取患者信息
+     */
+    @DbTransactional(type = DbType.SHOP_DB)
+    public JsonResult getExternalPatientInfo(UserPatientOneParam userPatientOneParam){
+        Integer shopId =getShopId();
+        PatientExternalRequestParam requestParam=new PatientExternalRequestParam();
+        requestParam.setName(userPatientOneParam.getName());
+        requestParam.setIdentityCode(userPatientOneParam.getIdentityCode());
+        requestParam.setMobile(userPatientOneParam.getMobile());
+        String requestJson=Util.toJson(requestParam);
+        String s="{\"code\":\"1\",\"name\":\"小明\",\"phone\":\"135\",\"birthday\":\"2020-03-04\",\"state\":1,\"remarks\":\"介绍111\",\"sex\":1,\"age\":13,\"identityType\":1,\"identityNo\":\"411527\",\"visitNo\":\"111\",\"carteVitalNo\":\"112221\"}";
+//        ApiExternalRequestResult apiExternalRequestResult=saas().apiExternalRequestService.externalRequestGate(ApiExternalConstant.APP_ID_HIS,shopId,ApiExternalConstant.SERVICE_NAME_FETCH_PATIENT_INFO,requestJson);
+//        if(ApiExternalConstant.ERROR_CODEequals(apiExternalRequestResult.getError())) {
+//            JsonResult result = new JsonResult();
+//            result.setError(apiExternalRequestResult.getError());
+//            result.setMessage(apiExternalRequestResult.getMsg());
+//            result.setContent(apiExternalRequestResult.getData());
+//            return result;
+//        }
+        PatientExternalVo patientInfoVo = Util.parseJson(s, PatientExternalVo.class);
+        PatientDo patientDo=new PatientDo();
+        FieldsUtil.assign(patientInfoVo, patientDo);
+        PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);
+        if (patientOneParam == null) {
+            int patientId=patientDao.insertPatient(patientDo);
+            UserPatientCoupleDo userPatientCoupleDo=new UserPatientCoupleDo();
+            userPatientCoupleDo.setPatientId(patientId);
+            userPatientCoupleDo.setUserId(userPatientOneParam.getUserId());
+            userPatientCoupleDao.save(userPatientCoupleDo);
+        } else {
+            patientDo.setId(patientOneParam.getId());
+            patientDao.updatePatient(patientDo);
+        }
+        return JsonResult.success();
+    }
+
 }

@@ -1,0 +1,15 @@
+package com.vpu.mp.service.pojo.shop.patient;
+
+import lombok.Data;
+import lombok.NonNull;
+
+import javax.validation.constraints.NotNull;
+
+@Data
+public class PatientExternalRequestParam {
+    @NotNull
+    private String name;
+    @NotNull
+    private String mobile;
+    private String identityCode;
+}

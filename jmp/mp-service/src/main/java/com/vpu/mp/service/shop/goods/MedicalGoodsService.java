@@ -34,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.medical.label.bo.LabelRelationInfoBo;
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
+import com.vpu.mp.service.pojo.shop.medical.order.param.MedicalOrderExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductGoodsPageListVo;
@@ -445,5 +446,26 @@ public class MedicalGoodsService extends ShopBaseService {
         }
         goodsAggregate.batchUpdate(readyForUpdates);
         medicalGoodsSpecProductService.batchSkuUpdate(goodsSpecProductEntities);
+    }
+
+    /**
+     * 拉同步药品出库状态
+     * @param
+     * @return
+     */
+    public JsonResult syncMedicalOrderStatus(MedicalOrderExternalRequestParam medicalOrderExternalRequestParam){
+        String appId = ApiExternalConstant.APP_ID_HIS;
+        Integer shopId =getShopId();
+        String serviceName = ApiExternalConstant.SERVICE_NAME_SYNC_MEDICAL_ORDER_STATUS;
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(medicalOrderExternalRequestParam));
+        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        return JsonResult.success();
+
     }
 }

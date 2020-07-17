@@ -17,4 +17,5 @@ public class  PatientOneParam {
     private Byte      sex;
     private Date birthday;
     private String    remarks;
+    private String    patientCode;
 }
