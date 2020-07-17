@@ -248,7 +248,7 @@ public class GoodsDao extends ShopBaseDao {
      * @param isMedical
      * @return
      */
-   public Map<String,Integer> listExistGoodsSn(List<String> goodsSn,Byte isMedical){
+   public Map<String,Integer> mapGoodsSnToGoodsId(List<String> goodsSn,Byte isMedical){
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsSn));
        List<GoodsDo> goodsDos = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN).from(GOODS).where(condition).fetchInto(GoodsDo.class);
 

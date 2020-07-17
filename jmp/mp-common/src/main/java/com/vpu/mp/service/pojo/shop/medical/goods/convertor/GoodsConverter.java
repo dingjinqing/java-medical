@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.medical.goods.convertor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
@@ -44,6 +45,7 @@ public class GoodsConverter {
         GoodsDo goodsDo = new GoodsDo();
         goodsDo.setGoodsId(bo.getGoodsId());
         goodsDo.setGoodsSn(bo.getGoodsCode());
+        goodsDo.setGoodsName(bo.getGoodsCommonName());
         goodsDo.setShopPrice(bo.getGoodsPrice());
         goodsDo.setCostPrice(bo.getGoodsPrice());
         goodsDo.setMarketPrice(bo.getGoodsPrice());
@@ -52,8 +54,10 @@ public class GoodsConverter {
 
         if (BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.equals(bo.getState())) {
             goodsDo.setIsOnSale(MedicalGoodsConstant.ON_SALE);
-        } else {
+        } else if (BaseConstant.EXTERNAL_ITEM_STATE_DISABLE.equals(bo.getState())) {
             goodsDo.setIsOnSale(MedicalGoodsConstant.OFF_SALE);
+        } else {
+            goodsDo.setDelFlag(DelFlag.DISABLE_VALUE);
         }
         return goodsDo;
     }

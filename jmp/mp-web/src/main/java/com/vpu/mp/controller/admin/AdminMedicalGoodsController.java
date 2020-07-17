@@ -128,4 +128,9 @@ public class AdminMedicalGoodsController extends AdminBaseController{
 
         return success(goodsPageList);
     }
+
+    @PostMapping("/api/test")
+    public JsonResult test(){
+        return shop().medicalGoodsService.fetchExternalMedicalInfo();
+    }
 }
