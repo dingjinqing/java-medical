@@ -2,7 +2,6 @@ package com.vpu.mp.service.saas.api;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestParam;
@@ -88,7 +87,7 @@ public class ApiExternalRequestService extends MainBaseService {
             }else {
                 log.warn("请求外部服务-放回码{}：" , response.getStatus());
                 vo = new ApiExternalRequestResult();
-                vo.setError(ApiExternalConstant.ERROR_CODE_NET_ILLEGAL);
+                vo.setError(ApiExternalRequestConstant.ERROR_CODE_NET_ILLEGAL);
                 vo.setMsg("返回码"+response.getStatus());
                 return vo;
             }

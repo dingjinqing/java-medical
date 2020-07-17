@@ -25,7 +25,7 @@ public class ApiExternalGateConstant {
     /**
      * 响应码
      * */
-    public static final Integer ERROR_CODE_SUCCESS = 1000;
+    public static final Integer ERROR_CODE_SUCCESS = 0;
     public static final Integer ERROR_LACK_PARAM = 2000;
     public static final Integer ERROR_CODE_INVALID_SIGN = 3001;
     public static final Integer ERROR_CODE_OVERTIME = 3002;

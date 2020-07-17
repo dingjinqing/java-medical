@@ -1,6 +1,7 @@
 package com.vpu.mp.service.saas.api;
 
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateResult;
@@ -9,6 +10,7 @@ import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.pojo.shop.order.audit.AuditExternalParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,7 +186,7 @@ public class ApiExternalGateService extends MainBaseService {
         ApiExternalGateResult apiExternalGateResult = null;
         switch (serviceName) {
             case ApiExternalGateConstant.ORDER_AUDIT:
-                apiExternalGateResult = null;
+                apiExternalGateResult = orderAudit(param);
             break;
             default:
                 apiExternalGateResult = new ApiExternalGateResult();
@@ -208,7 +210,23 @@ public class ApiExternalGateService extends MainBaseService {
 
     private ApiExternalGateResult orderAudit(ApiExternalGateParam param){
         String content = param.getContent();
-        return null;
+        AuditExternalParam auditExternalParam;
+
+        try {
+            auditExternalParam = Util.parseJson(content,AuditExternalParam.class);
+        } catch (Exception e) {
+            return contentErrorResult();
+        }
+
+        try {
+            saas.getShopApp(param.getShopId()).auditService.execute(auditExternalParam);
+            return new ApiExternalGateResult();
+        } catch (Exception e) {
+            ApiExternalGateResult result =new ApiExternalGateResult();
+            result.setCode(ApiExternalGateConstant.ERROR_SYSTEM_FAIL);
+            result.setMsg(ApiExternalGateConstant.ERROR_SYSTEM_FAIL_MSG);
+            return result;
+        }
     }
 
 }
