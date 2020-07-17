@@ -86,7 +86,7 @@ public class MedicalGoodsService extends ShopBaseService {
         if (StrUtil.isBlank(goodsEntity.getGoodsSn())) {
             goodsEntity.setGoodsSn(generateGoodsSn());
         } else {
-            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn(),goodsEntity.getGoodsId())) {
+            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn(),null)) {
                 throw new IllegalArgumentException("商品goodsSn重复");
             }
         }
@@ -125,7 +125,7 @@ public class MedicalGoodsService extends ShopBaseService {
         if (StrUtil.isBlank(goodsEntity.getGoodsSn())) {
             goodsEntity.setGoodsSn(generateGoodsSn());
         } else {
-            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn(),null)) {
+            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn(),goodsEntity.getGoodsId())) {
                 throw new IllegalArgumentException("商品goodsSn重复");
             }
         }
