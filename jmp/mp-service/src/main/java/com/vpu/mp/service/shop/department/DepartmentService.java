@@ -48,14 +48,18 @@ public class DepartmentService extends ShopBaseService {
         int level = updateParentIsLeaf(param);
         param.setLevel(level);
         departmentDao.updateDepartment(param);
-        if (oldParentId != null && oldParentId != 0) {
-            int i = departmentDao.countDepartment(oldParentId);
-            if (i == 0) {
-                departmentDao.updateDepartmentIsLeaf(oldParentId,(byte) 1);
-            }
-        }
+        updateOldParentIsLeaf(oldParentId);
         updateDepartmentLevel(param);
         return param.getId();
+    }
+
+    public void updateOldParentIsLeaf(Integer id) {
+        if (id != null && id != 0) {
+            int i = departmentDao.countDepartment(id);
+            if (i == 0) {
+                departmentDao.updateDepartmentIsLeaf(id,(byte) 1);
+            }
+        }
     }
 
     public DepartmentOneParam getOneInfo(Integer departmentId){
@@ -65,6 +69,8 @@ public class DepartmentService extends ShopBaseService {
 
     public int delete(Integer departmentId){
         int id = departmentDao.deleteDepartment(departmentId);
+        DepartmentOneParam departmentInfo = departmentDao.getOneInfo(departmentId);
+        updateOldParentIsLeaf(departmentInfo.getParentId());
         return id;
     }
 

@@ -78,6 +78,7 @@ public class TitleService extends ShopBaseService{
     public void fetchTitles(String json) {
         List<TitleFetchOneParam> titleFetchList = Util.parseJson(json, new TypeReference<List<TitleFetchOneParam>>() {
         });
+
         for (TitleFetchOneParam list : titleFetchList) {
             TitleOneParam title = new TitleOneParam();
             title.setName(list.getName());

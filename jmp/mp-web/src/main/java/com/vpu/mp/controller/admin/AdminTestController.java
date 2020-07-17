@@ -257,4 +257,20 @@ public class AdminTestController extends AdminBaseController {
 		return success();
     	
     }
+
+    @RequestMapping(value = "/api/admin/test/fetch/title")
+    public JsonResult fetchTitle() {
+        String json = "[{\"positionCode\":\"1231\",\"name\":\"外部职称1\",\"state\":1},{\"positionCode\":\"1232\",\"name\":\"外部职称2\",\"state\":1}]";
+        saas.getShopApp(shopId()).titleService.fetchTitles(json);
+        return success();
+
+    }
+
+    @RequestMapping(value = "/api/admin/test/fetch/department")
+    public JsonResult fetchDepartment() {
+        String json = "";
+        saas.getShopApp(shopId()).titleService.fetchTitles(json);
+        return success();
+
+    }
 }
