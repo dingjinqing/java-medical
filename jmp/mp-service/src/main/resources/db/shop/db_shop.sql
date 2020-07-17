@@ -4890,7 +4890,7 @@ create table `b2c_prescription_item`(
     `drag_sum_unit` varchar(32) not null default '' comment '总取药的单位',
     `goods_use_memo` varchar(1024) not null default '' comment '药品使用方式说明',
     `goods_production_enterprise` varchar(512) comment '生产企业',
-    `medicine price` decimal(18,2) not null default '0.00' comment '药品总价',
+    `medicine_price` decimal(18,2) not null default '0.00' comment '药品总价',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
