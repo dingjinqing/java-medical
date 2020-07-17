@@ -222,6 +222,18 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
+     * 获取患者的历史疾病
+     * @param patientId 患者id
+     * @return
+     */
+    public List<PrescriptionDo> listDiagnosis(Integer patientId) {
+        return db().select(PRESCRIPTION.DIAGNOSIS_NAME,PRESCRIPTION.PATIENT_TREATMENT_CODE)
+                .from(PRESCRIPTION)
+                .where(PRESCRIPTION.PATIENT_ID.eq(patientId))
+                .fetchInto(PrescriptionDo.class);
+    }
+
+    /**
      * @description hits系统拉取处方信息入库
      * @author zhaoxiaodong
      * @create 2020-7-16 9:40

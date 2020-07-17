@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.prescription;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.common.foundation.data.JsonResult;
+import cn.hutool.json.JSONUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;

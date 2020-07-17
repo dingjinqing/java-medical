@@ -47,6 +47,14 @@ public class MedicalGoodsSpecProductService {
     }
 
     /**
+     * 批量新增sku
+     * @param goodsSpecProductEntities
+     */
+    public void batchSkuInsert(List<GoodsSpecProductEntity> goodsSpecProductEntities) {
+        goodsSpecProductAggregate.batchSkuInsert(goodsSpecProductEntities);
+    }
+
+    /**
      * 删除sku
      * @param goodsId
      */

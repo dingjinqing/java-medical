@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.medical.goods.vo;
+package com.vpu.mp.service.pojo.shop.medical.goods.bo;
 
 import com.vpu.mp.service.pojo.shop.medical.goods.base.GoodsMedicalBaseInfo;
 import lombok.Getter;
@@ -13,7 +13,8 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
-public class GoodsMedicalExternalRequestVo extends GoodsMedicalBaseInfo {
+public class GoodsMedicalExternalRequestItemBo extends GoodsMedicalBaseInfo {
+    private Integer goodsId;
     private BigDecimal goodsPrice;
     private Integer goodsNumber;
     private Integer state;
