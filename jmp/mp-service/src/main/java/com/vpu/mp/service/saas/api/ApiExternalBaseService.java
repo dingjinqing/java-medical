@@ -14,6 +14,7 @@ import java.util.*;
  * @date 2020年07月15日
  */
 @Service
+@Slf4j
 public class ApiExternalBaseService {
     @Autowired
     ApiExternalConfig apiExternalConfig;
@@ -44,9 +45,15 @@ public class ApiExternalBaseService {
                 sb.append("&");
             }
         }
-        String s = SecureUtil.md5(sb.toString());
+        long a=System.currentTimeMillis();
+        String s = Util.md5(sb.toString());
+        long b=System.currentTimeMillis();
+        log.info("SecureUtil.md5--{}",a-b);
         s = s + curSecond + apiExternalConfig.getSignKey();
+        long c=System.currentTimeMillis();
         s = Util.md5(s);
+        long d=System.currentTimeMillis();
+        log.info("Util.md5--{}",c-d);
         return s;
     }
 
