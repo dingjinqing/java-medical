@@ -23,4 +23,6 @@ public class GoodsSearchMpOuterParam {
     private Integer actId;
     /**会员卡卡号*/
     private String cardNo;
+    /**处方码*/
+    private String prescriptionCode;
 }

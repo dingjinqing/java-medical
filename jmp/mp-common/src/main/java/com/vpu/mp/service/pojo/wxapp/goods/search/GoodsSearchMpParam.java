@@ -20,8 +20,6 @@ public class GoodsSearchMpParam extends BasePageParam {
 
     /**用户id，controller 层获取*/
     private Integer userId;
-    /**处方id*/
-    private String prescriptionCode;
 
     /**搜索输入的关键字*/
     private String keyWords;
