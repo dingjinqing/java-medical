@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.prescription;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author 孔德成
  * @date 2020/7/8 8:50
@@ -57,6 +59,11 @@ public class PrescriptionItemInfoVo {
      * 总取药单位
      */
     private String    dragSumUnit;
+
+    /**
+     * 药品总价格
+     */
+    private BigDecimal medicinePrice;
 
 
 }

@@ -18,4 +18,5 @@ public class  PatientOneParam {
     private Date birthday;
     private String    remarks;
     private String    patientCode;
+    private Byte      isDefault;
 }
