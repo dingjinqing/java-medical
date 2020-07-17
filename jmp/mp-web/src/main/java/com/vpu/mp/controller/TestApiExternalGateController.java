@@ -31,7 +31,7 @@ public class TestApiExternalGateController extends AdminBaseController {
      * 模拟医院接口
      * @return
      */
-    @PostMapping("/test/api/hospital")
+    @PostMapping("/api/test/hospital")
     public ApiExternalRequestResult test(ApiExternalRequestParam param){
         String serviceName = param.getServiceName();
         String sign = apiExternalBaseService.generateSign(param.getAppId(),param.getAppSecret(),param.getSessionKey(),serviceName,param.getContent(),param.getCurSecond());
@@ -45,6 +45,9 @@ public class TestApiExternalGateController extends AdminBaseController {
                     apiExternalRequestResult.setError(0);
                     apiExternalRequestResult.setMsg("success");
                     apiExternalRequestResult.setData("{\"code\":\"1\",\"name\":\"小明\",\"phone\":\"135\",\"birthday\":\"2020-03-04\",\"state\":1,\"remarks\":\"介绍111\",\"sex\":1,\"age\":13,\"identityType\":1,\"identityNo\":\"411527\",\"visitNo\":\"111\",\"carteVitalNo\":\"112221\"}");
+                    return apiExternalRequestResult;
+                case ApiExternalConstant.SERVICE_NAME_UPLOAD_ORDER_PRESCRIPTION:
+                    log.info(":同步订单{}",param.getContent());
                     return apiExternalRequestResult;
                 default:
                     log.info("没有对应服务:[{}]",param.getServiceName());
