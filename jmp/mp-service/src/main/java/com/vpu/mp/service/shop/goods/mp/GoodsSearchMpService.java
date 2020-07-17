@@ -132,6 +132,8 @@ public class GoodsSearchMpService extends ShopBaseService {
                 goodsIds = getGoodsIdsLimitedForPreSaleQrCode(param);
             } else if (GoodsSearchMpParam.PAGE_FROM_MY_PRESCRIPTION_MEDICAL.equals(param.getPageFrom())) {
                 goodsIds = getMyPrescriptionMedical(param);
+            } else if (GoodsSearchMpParam.PAGE_FROM_PRESCRIPTION.equals(param.getPageFrom())) {
+                goodsIds = getPrescriptionMedical(param);
             } else {
                 // 空数组将搜索不出来商品
                 goodsIds = new ArrayList<>();
@@ -222,9 +224,19 @@ public class GoodsSearchMpService extends ShopBaseService {
      * @param param
      * @return
      */
-    private List<Integer> getMyPrescriptionMedical(GoodsSearchMpParam param){
+    private List<Integer> getMyPrescriptionMedical(GoodsSearchMpParam param) {
         Integer patientId = patientService.defaultPatientId(param.getUserId());
         return prescriptionService.getPrescriptionGoodsIdsByPatientId(patientId);
+    }
+
+    /**
+     * 获取单个处方关联的药品
+     * @param param
+     * @return
+     */
+    private List<Integer> getPrescriptionMedical(GoodsSearchMpParam param){
+        String prescriptionCode = param.getOuterPageParam().getPrescriptionCode();
+        return prescriptionService.getPrescriptionGoodsIdsByPrescriptionCode(prescriptionCode);
     }
 
     /**

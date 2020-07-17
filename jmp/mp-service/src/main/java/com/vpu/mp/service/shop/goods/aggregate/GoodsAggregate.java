@@ -179,8 +179,8 @@ public class GoodsAggregate {
      * @param goodsSn
      * @return true 是 false 否
      */
-    public boolean isGoodsSnExist(String goodsSn) {
-        return goodsDao.isGoodsSnExist(goodsSn);
+    public boolean isGoodsSnExist(String goodsSn,Integer goodsId) {
+        return goodsDao.isGoodsSnExist(goodsSn,goodsId);
     }
 
     /**

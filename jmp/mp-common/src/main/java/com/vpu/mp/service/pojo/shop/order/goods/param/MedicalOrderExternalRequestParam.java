@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.medical.order.param;
+package com.vpu.mp.service.pojo.shop.order.goods.param;
 
 import lombok.Data;
 
