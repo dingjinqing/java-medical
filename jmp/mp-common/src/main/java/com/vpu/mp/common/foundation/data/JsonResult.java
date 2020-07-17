@@ -1,11 +1,9 @@
 package com.vpu.mp.common.foundation.data;
 
+import com.vpu.mp.common.foundation.util.Util;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
-
-import com.vpu.mp.common.foundation.util.Util;
-
-import lombok.Data;
 
 /**
  *
@@ -42,6 +40,13 @@ public class JsonResult {
 //		 result(null, JsonResultCode.CODE_SUCCESS, null);
 	}
 
+	public static JsonResult success(){
+        JsonResult jsonResult = new JsonResult();
+        jsonResult.error=JsonResultCode.CODE_SUCCESS.getCode();
+        jsonResult.message = null;
+        jsonResult.content = null;
+        return jsonResult;
+    }
 
 	public JsonResult(String language, JsonResultCode resultCode, Object content,Object ...args) {
 		result(language, resultCode, content,args);

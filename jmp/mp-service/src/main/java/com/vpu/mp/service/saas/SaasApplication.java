@@ -9,6 +9,8 @@ import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.db.DataExportService;
 import com.vpu.mp.service.saas.db.RepairDatabaseService;
 import com.vpu.mp.service.saas.es.EsMappingUpdateService;
+import com.vpu.mp.service.saas.external.AppAuthService;
+import com.vpu.mp.service.saas.external.ExternalRequestHistoryService;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.saas.index.ShopViewOrderService;
 import com.vpu.mp.service.saas.index.ShopViewService;
@@ -114,6 +116,12 @@ public class SaasApplication {
 
     @Autowired
     public EsMappingUpdateService esMappingUpdateService;
+
+    @Autowired
+    public AppAuthService appAuthService;
+
+    @Autowired
+    public ExternalRequestHistoryService externalRequestHistoryService;
 
     @Autowired
     public ApiExternalRequestService apiExternalRequestService;

@@ -2,11 +2,13 @@ package com.vpu.mp.controller.admin;
 
 import java.util.ArrayList;
 
+import com.vpu.mp.service.pojo.shop.department.StringParam;
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -256,5 +258,31 @@ public class AdminTestController extends AdminBaseController {
     	saas.getShopApp(shopId()).shopTaskService.wechatTaskService.beginDailyTask();
 		return success();
     	
+    }
+
+    @RequestMapping(value = "/api/admin/test/fetch/title")
+    public JsonResult fetchTitle() {
+        String json = "[{\"positionCode\":\"1231\",\"name\":\"外部职称1\",\"state\":1},{\"positionCode\":\"1232\",\"name\":\"外部职称2\",\"state\":1}]";
+        saas.getShopApp(shopId()).titleService.fetchTitles(json);
+        return success();
+
+    }
+
+    @RequestMapping(value = "/api/admin/test/fetch/department")
+    public JsonResult fetchDepartment(@RequestBody StringParam param) {
+        String json = "[{\"departCode\":\"31243\",\"departName\":\"科室1231\",\"state\":1,\"pid\":\"d19876732\"},{\"departCode\":\"s231\",\"departName\":\"科室3333\",\"state\":1,\"pid\":\"d328932\"}]";
+        saas.getShopApp(shopId()).departmentService.fetchDepartments(param.getJson());
+        return success();
+
+
+    }
+
+    @RequestMapping(value = "/api/admin/test/fetch/doctor")
+    public JsonResult fetchDoctor(@RequestBody StringParam param) {
+        String json = "[{\"departCode\":\"31243\",\"departName\":\"科室1231\",\"state\":1,\"pid\":\"d19876732\"},{\"departCode\":\"s231\",\"departName\":\"科室3333\",\"state\":1,\"pid\":\"d328932\"}]";
+        saas.getShopApp(shopId()).doctorService.fetchDoctor(param.getJson());
+        return success();
+
+
     }
 }

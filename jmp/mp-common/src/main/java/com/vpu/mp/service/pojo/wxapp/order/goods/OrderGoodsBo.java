@@ -110,4 +110,9 @@ public class OrderGoodsBo {
     /**不可使用优惠券*/
     @JsonIgnore
     private Byte noUseCoupon;
+    //******药品信息******//
+	/**
+	 * 是否是处方药
+	 */
+	private Byte isRx;
 }

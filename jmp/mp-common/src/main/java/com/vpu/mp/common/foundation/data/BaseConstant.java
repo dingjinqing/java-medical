@@ -11,6 +11,13 @@ public final  class  BaseConstant {
     public static final String LANGUAGE_TYPE_PARAM="param";
     public static final String LANGUAGE_TYPE_EXCEL = "excel";
 
+    /**外部接口数据状态*/
+    /**启用*/
+    public static final Integer EXTERNAL_ITEM_STATE_ENABLE = 1;
+    /**禁用*/
+    public static final Integer EXTERNAL_ITEM_STATE_DISABLE = 2;
+    /**删除*/
+    public static final Integer EXTERNAL_ITEM_STATE_DELETE= 3;
 
     /**
      * 启用

@@ -2,11 +2,15 @@ package com.vpu.mp.dao.shop.patient;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PatientRecord;
+import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
@@ -68,10 +72,10 @@ public class PatientDao extends ShopBaseDao{
      * @param param
      * @return
      */
-    public int updatePatient(PatientOneParam param) {
+    public void updatePatient(PatientDo param) {
         PatientRecord record = new PatientRecord();
         FieldsUtil.assign(param, record);
-        return db().executeUpdate(record);
+        db().executeUpdate(record);
     }
 
     /**
@@ -80,10 +84,12 @@ public class PatientDao extends ShopBaseDao{
      * @param param
      * @return
      */
-    public int insertPatient(PatientOneParam param) {
-        PatientRecord record = new PatientRecord();
+    public int insertPatient(PatientDo param) {
+        PatientRecord record = db().newRecord(PATIENT);
         FieldsUtil.assign(param, record);
-        return db().executeInsert(record);
+        record.insert();
+        param.setId(record.getId());
+        return record.getId();
     }
 
     /**
@@ -117,5 +123,20 @@ public class PatientDao extends ShopBaseDao{
         List<PatientOneParam> patientList = db().select().from(PATIENT).where(PATIENT.ID.in(patientIds))
             .fetch().into(PatientOneParam.class);
         return patientList;
+    }
+
+    /**
+     * 查询患者
+     *
+     * @param patientInfoParam
+     * @return
+     */
+    public PatientOneParam getPatientByNameAndMobile(UserPatientOneParam patientInfoParam){
+        SelectConditionStep<? extends Record> select= db().select().from(PATIENT)
+            .where(PATIENT.NAME.eq(patientInfoParam.getName()))
+            .and(PATIENT.MOBILE.eq(patientInfoParam.getMobile()));
+        if(patientInfoParam.getIdentityCode()!=null)
+            select.and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode()));
+        return select.fetchOneInto(PatientOneParam.class);
     }
 }

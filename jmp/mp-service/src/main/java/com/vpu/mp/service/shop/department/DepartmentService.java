@@ -1,6 +1,9 @@
 package com.vpu.mp.service.shop.department;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.*;
@@ -44,14 +47,18 @@ public class DepartmentService extends ShopBaseService {
         int level = updateParentIsLeaf(param);
         param.setLevel(level);
         departmentDao.updateDepartment(param);
-        if (oldParentId != null && oldParentId != 0) {
-            int i = departmentDao.countDepartment(oldParentId);
-            if (i == 0) {
-                departmentDao.updateDepartmentIsLeaf(oldParentId,(byte) 1);
-            }
-        }
+        updateOldParentIsLeaf(oldParentId);
         updateDepartmentLevel(param);
         return param.getId();
+    }
+
+    public void updateOldParentIsLeaf(Integer id) {
+        if (id != null && id != 0) {
+            int i = departmentDao.countDepartment(id);
+            if (i == 0) {
+                departmentDao.updateDepartmentIsLeaf(id,(byte) 1);
+            }
+        }
     }
 
     public DepartmentOneParam getOneInfo(Integer departmentId){
@@ -61,6 +68,8 @@ public class DepartmentService extends ShopBaseService {
 
     public int delete(Integer departmentId){
         int id = departmentDao.deleteDepartment(departmentId);
+        DepartmentOneParam departmentInfo = departmentDao.getOneInfo(departmentId);
+        updateOldParentIsLeaf(departmentInfo.getParentId());
         return id;
     }
 
@@ -174,5 +183,34 @@ public class DepartmentService extends ShopBaseService {
         } else {
             return departmentInfo.getId();
         }
+    }
+
+    /**
+     * 拉取科室列表
+     * @return
+     */
+    public JsonResult fetchExternalDepartments(){
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_DEPARTMENT_INFOS;
+
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_DEPARTMENT_INFOS);
+        DepartmentExternalRequestParam param =new DepartmentExternalRequestParam();
+        param.setStartTime(lastRequestTime);
+
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+
+        // 数据拉取错误
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+
+        fetchDepartments(apiExternalRequestResult.getData());
+
+        return JsonResult.success();
     }
 }

@@ -1,26 +1,25 @@
 package com.vpu.mp.service.shop.doctor;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorFetchOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class DoctorService extends ShopBaseService {
@@ -134,6 +133,35 @@ public class DoctorService extends ShopBaseService {
             doctor.setDepartmentIdsStr(departmentStr);
             synchroDoctor(doctor);
         }
+    }
+
+    /**
+     * 拉取科室列表
+     * @return
+     */
+    public JsonResult fetchExternalDoctor(){
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_INFOS;
+
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_INFOS);
+        DoctorExternalRequestParam param =new DoctorExternalRequestParam();
+        param.setStartTime(lastRequestTime);
+
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+
+        // 数据拉取错误
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+
+        fetchDoctor(apiExternalRequestResult.getData());
+
+        return JsonResult.success();
     }
 
 }

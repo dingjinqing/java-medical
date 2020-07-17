@@ -1,22 +1,25 @@
 package com.vpu.mp.service.shop.prescription;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.dao.foundation.transactional.DbTransactional;
+import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
+import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.prescription.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -141,4 +144,130 @@ public class PrescriptionService extends ShopBaseService {
         List<Integer> goodsIds = prescriptionItemDao.getPrescriptionGoodsIdsByPrescriptionNos(prescriptionNos);
         return goodsIds;
     }
+
+    /**
+     * 根据处方id获取处方所关联的药品id
+     * @param prescriptionCode
+     * @return
+     */
+    public List<Integer> getPrescriptionGoodsIdsByPrescriptionCode(String prescriptionCode){
+        return prescriptionItemDao.getPrescriptionGoodsIdsByPrescriptionNos(Collections.singletonList(prescriptionCode));
+    }
+
+    /**
+     * @description hits系统拉取处方信息，处方详情
+     * @author zhaoxiaodong
+     * @create 2020-7-16 10:36
+     */
+
+    /**
+     * 拉取处方列表
+     * @param fetchPrescriptionParam 处方页面入参
+     * @return JsonResult
+     */
+    @DbTransactional(type = DbType.SHOP_DB)
+    public JsonResult pullExternalAllPrescriptionInfo(FetchPrescriptionParam fetchPrescriptionParam) {
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
+
+        //增量
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS,
+            shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS);
+        fetchPrescriptionParam.setStartTime(lastRequestTime);
+
+        //拉取数据
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
+            .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchPrescriptionParam));
+
+        // 数据拉取错误
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        //得到Data
+        String dataJson = apiExternalRequestResult.getData();
+        ArrayList<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
+        });
+
+        //数据库新增或更新
+        for (FetchPrescriptionVo prescriptionVo : fetchPrescriptionVos) {
+            //如果没有当前处方就新增
+            if (prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode()) == null) {
+                prescriptionDao.addHitsPrescription(prescriptionVo);
+                //遍历得到的处方表中的处方明细，如果没有就新增，有就更新
+                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
+                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
+                        prescriptionItemDao.save(fetchPrescriptionItemVo);
+                    }
+                }
+            } else {  //否则就修改
+                prescriptionDao.updateHitsPrescription(prescriptionVo);
+                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
+                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
+                        prescriptionItemDao.save(fetchPrescriptionItemVo);
+                    } else {
+                        prescriptionItemDao.updateHitsPrescriptionItem(fetchPrescriptionItemVo);
+                    }
+                }
+            }
+        }
+        return JsonResult.success();
+    }
+
+    /**
+     * @param fetchPrescriptionOneParam 更新单个处方
+     * @return JsonResult
+     */
+    @DbTransactional(type = DbType.SHOP_DB)
+    public JsonResult pullExternalOnePrescriptionInfo(FetchPrescriptionOneParam fetchPrescriptionOneParam) {
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
+        String str = "[{\"id\":100,\"prescriptionCode\":15,\"posCode\":1,\"patientId\":1,\"patientTreatmentCode\":1,\"identityCode\":11,\"patientName\":\"张麻子\",\"patientAge\":58,\"patientSex\":1,\"list\":[{\"id\":11,\"posCode\":11,\"posDetailCode\":11,\"prescriptionCode\":15,\"prescriptionDetailCode\":11,\"goodsId\":11,\"goodsCommonName\":\"麻黄\"}]}]";
+                //拉取数据
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
+            .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchPrescriptionOneParam));
+
+        // 数据拉取错误
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        //得到Data
+        String dataJson = apiExternalRequestResult.getData();
+        ArrayList<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
+        });
+        //数据库新增或更新
+        for (FetchPrescriptionVo prescriptionVo : fetchPrescriptionVos) {
+            //如果没有当前处方就新增
+            PrescriptionVo doByPrescriptionNo = prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode());
+            if (doByPrescriptionNo == null) {
+                prescriptionDao.addHitsPrescription(prescriptionVo);
+                //遍历得到的处方表中的处方明细，如果没有就新增，有就更新
+                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
+                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
+                        prescriptionItemDao.save(fetchPrescriptionItemVo);
+                    }
+                }
+            } else {  //否则就修改
+                prescriptionDao.updateHitsPrescription(prescriptionVo);
+                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
+                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
+                        prescriptionItemDao.save(fetchPrescriptionItemVo);
+                    } else {
+                        prescriptionItemDao.updateHitsPrescriptionItem(fetchPrescriptionItemVo);
+                    }
+                }
+            }
+        }
+        return JsonResult.success();
+    }
+
 }

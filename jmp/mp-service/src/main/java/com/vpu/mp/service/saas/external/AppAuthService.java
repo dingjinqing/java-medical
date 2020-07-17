@@ -27,6 +27,9 @@ public class AppAuthService extends MainBaseService {
     public AppAuthVo getAppAuth(String appId,Integer shopId){
         AppDo appDo = appDao.getAppDo(appId);
         AppAuthDo appAuthDo = appAuthDao.getAppAuth(shopId, appId, BaseConstant.ACTIVITY_STATUS_NORMAL);
+        if (appAuthDo == null) {
+            return null;
+        }
         AppAuthVo vo =new AppAuthVo();
         FieldsUtil.assign(appAuthDo,vo);
         vo.setAppSecret(appDo.getAppSecret());

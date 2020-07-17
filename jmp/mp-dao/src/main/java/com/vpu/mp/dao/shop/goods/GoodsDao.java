@@ -19,6 +19,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
 
@@ -51,10 +53,50 @@ public class GoodsDao extends ShopBaseDao {
         db().executeUpdate(goodsRecord);
     }
 
+    /**
+     * 批量插入商品信息
+     * @param goodsDos
+     */
+    public void batchInsert(List<GoodsDo> goodsDos) {
+        List<String> goodsSns =new ArrayList<>(goodsDos.size());
+        List<GoodsRecord> goodsRecords =new ArrayList<>(goodsDos.size());
+
+        for (GoodsDo goodsDo : goodsDos) {
+            goodsSns.add(goodsDo.getGoodsSn());
+            GoodsRecord goodsRecord = new GoodsRecord();
+            FieldsUtil.assign(goodsDo,goodsRecord);
+            // 临时添加
+            goodsRecord.setShareConfig("{\"shareAction\":1,\"shareDoc\":null,\"shareImgAction\":1,\"shareImgUrl\":null,\"shareImgPath\":null}");
+            goodsRecords.add(goodsRecord);
+        }
+        db().batchInsert(goodsRecords).execute();
+
+        Map<String, Integer> goodsSnIdMap = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN).from(GOODS).where(GOODS.GOODS_SN.in(goodsSns)).fetchMap(GOODS.GOODS_SN, GOODS.GOODS_ID);
+
+        for (GoodsDo goodsDo : goodsDos) {
+            goodsDo.setGoodsId(goodsSnIdMap.get(goodsDo.getGoodsSn()));
+        }
+    }
+
+    /**
+     * 批量更新
+     * @param goodsDos
+     */
+    public void batchUpdate(List<GoodsDo> goodsDos){
+        List<GoodsRecord> goodsRecords =new ArrayList<>(goodsDos.size());
+        for (GoodsDo goodsDo : goodsDos){
+            GoodsRecord goodsRecord = new GoodsRecord();
+            FieldsUtil.assign(goodsDo,goodsRecord);
+            goodsRecords.add(goodsRecord);
+        }
+        db().batchUpdate(goodsRecords).execute();
+    }
+
+
     public void deleteByGoodsId(Integer goodsId) {
         db().update(GOODS)
-            .set(GOODS.GOODS_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX, GOODS.GOODS_SN))
-            .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX, GOODS.GOODS_NAME))
+            .set(GOODS.GOODS_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX, GOODS.GOODS_SN).concat(GOODS.GOODS_ID))
+            .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX, GOODS.GOODS_NAME).concat(GOODS.GOODS_ID))
             .set(GOODS.DEL_FLAG, DelFlag.DISABLE_VALUE)
             .where(GOODS.GOODS_ID.eq(goodsId))
             .execute();
@@ -187,8 +229,12 @@ public class GoodsDao extends ShopBaseDao {
      * @param goodsSn
      * @return true 是 false 否
      */
-    public boolean isGoodsSnExist(String goodsSn) {
-        int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.eq(goodsSn)));
+    public boolean isGoodsSnExist(String goodsSn,Integer goodsId) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.eq(goodsSn));
+        if (goodsId != null) {
+            condition = condition.and(GOODS.GOODS_ID.ne(goodsId));
+        }
+        int count = db().fetchCount(GOODS, condition);
         return count > 0;
     }
 
@@ -201,11 +247,15 @@ public class GoodsDao extends ShopBaseDao {
     }
 
     /**
-     * 根据名称搜索商品
+     * 查询所有已有goodsSn
+     * @param goodsSn
+     * @param isMedical
+     * @return
      */
-    public void getByGoodsName(String goodsName) {
-        db().select().from(GOODS).where(GOODS.GOODS_NAME.eq(goodsName)).fetchAnyInto(GoodsDo.class);
-        return;
-    }
+   public Map<String,Integer> mapGoodsSnToGoodsId(List<String> goodsSn,Byte isMedical){
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsSn));
+       List<GoodsDo> goodsDos = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN).from(GOODS).where(condition).fetchInto(GoodsDo.class);
 
+       return goodsDos.stream().collect(Collectors.toMap(GoodsDo::getGoodsSn, GoodsDo::getGoodsId, (x1, x2) -> x1));
+   }
 }

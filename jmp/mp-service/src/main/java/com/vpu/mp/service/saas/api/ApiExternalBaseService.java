@@ -4,6 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.ApiExternalConfig;
 import com.vpu.mp.service.saas.external.ExternalRequestHistoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.*;
  * @date 2020年07月15日
  */
 @Service
+@Slf4j
 public class ApiExternalBaseService {
     @Autowired
     ApiExternalConfig apiExternalConfig;
@@ -29,7 +31,7 @@ public class ApiExternalBaseService {
      * @param curSecond 当前时间 秒为单位 字符串
      * @return
      */
-    protected String generateSign(String appId,String appSecret,String sessionKey,String serviceName,String content,String curSecond) {
+    public String generateSign(String appId, String appSecret, String sessionKey, String serviceName, String content, String curSecond) {
         List<String> list = new ArrayList<>(10);
         list.add(appId);
         list.add(appSecret);
@@ -44,9 +46,15 @@ public class ApiExternalBaseService {
                 sb.append("&");
             }
         }
+        long a=System.currentTimeMillis();
         String s = SecureUtil.md5(sb.toString());
+        long b=System.currentTimeMillis();
+        log.info("SecureUtil.md5--{}",a-b);
         s = s + curSecond + apiExternalConfig.getSignKey();
+        long c=System.currentTimeMillis();
         s = Util.md5(s);
+        long d=System.currentTimeMillis();
+        log.info("Util.md5--{}",c-d);
         return s;
     }
 

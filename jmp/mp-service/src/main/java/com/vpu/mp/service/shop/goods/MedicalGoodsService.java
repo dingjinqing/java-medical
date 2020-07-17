@@ -3,10 +3,19 @@ package com.vpu.mp.service.shop.goods;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.medical.DateFormatStr;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
+import com.vpu.mp.dao.foundation.transactional.DbTransactional;
+import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.sort.SortDao;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
@@ -15,19 +24,22 @@ import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.shop.medical.brand.vo.GoodsBrandVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
-import com.vpu.mp.service.pojo.shop.medical.goods.convertor.GoodsParamConverter;
+import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequestBo;
+import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequestItemBo;
+import com.vpu.mp.service.pojo.shop.medical.goods.convertor.GoodsConverter;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.medical.label.bo.LabelRelationInfoBo;
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
-import com.vpu.mp.service.pojo.shop.medical.sort.vo.GoodsSortVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductGoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.SpecVo;
+import com.vpu.mp.service.pojo.shop.medical.sort.vo.GoodsSortVo;
 import com.vpu.mp.service.shop.goods.aggregate.GoodsAggregate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +47,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -72,7 +86,7 @@ public class MedicalGoodsService extends ShopBaseService {
         if (StrUtil.isBlank(goodsEntity.getGoodsSn())) {
             goodsEntity.setGoodsSn(generateGoodsSn());
         } else {
-            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn())) {
+            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn(),null)) {
                 throw new IllegalArgumentException("商品goodsSn重复");
             }
         }
@@ -90,12 +104,12 @@ public class MedicalGoodsService extends ShopBaseService {
         // 处理标签、图片额外信息
         List<Integer> labelIds = goodsEntity.getLabelIds();
         if (labelIds != null && labelIds.size() > 0) {
-            medicalGoodsLabelService.batchInsertGoodsCouple(labelIds,goodsEntity.getGoodsId());
+            medicalGoodsLabelService.batchInsertGoodsCouple(labelIds, goodsEntity.getGoodsId());
         }
 
         // 处理图片
         if (goodsEntity.getImgPaths() != null && goodsEntity.getImgPaths().size() > 0) {
-            medicalGoodsImageService.batchInsertGoodsImageRelation(goodsEntity.getImgPaths(),goodsEntity.getGoodsId());
+            medicalGoodsImageService.batchInsertGoodsImageRelation(goodsEntity.getImgPaths(), goodsEntity.getGoodsId());
         }
     }
 
@@ -111,7 +125,7 @@ public class MedicalGoodsService extends ShopBaseService {
         if (StrUtil.isBlank(goodsEntity.getGoodsSn())) {
             goodsEntity.setGoodsSn(generateGoodsSn());
         } else {
-            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn())) {
+            if (goodsAggregate.isGoodsSnExist(goodsEntity.getGoodsSn(),goodsEntity.getGoodsId())) {
                 throw new IllegalArgumentException("商品goodsSn重复");
             }
         }
@@ -138,16 +152,15 @@ public class MedicalGoodsService extends ShopBaseService {
         medicalGoodsLabelService.deleteGoodsCouples(goodsId);
         List<Integer> labelIds = goodsEntity.getLabelIds();
         if (labelIds != null && labelIds.size() > 0) {
-            medicalGoodsLabelService.batchInsertGoodsCouple(labelIds,goodsId);
+            medicalGoodsLabelService.batchInsertGoodsCouple(labelIds, goodsId);
         }
 
         // 处理图片
         medicalGoodsImageService.deleteGoodsImageRelation(goodsId);
         if (goodsEntity.getImgPaths() != null && goodsEntity.getImgPaths().size() > 0) {
-           medicalGoodsImageService.batchInsertGoodsImageRelation(goodsEntity.getImgPaths(),goodsId);
+            medicalGoodsImageService.batchInsertGoodsImageRelation(goodsEntity.getImgPaths(), goodsId);
         }
     }
-
 
 
     /**
@@ -208,8 +221,8 @@ public class MedicalGoodsService extends ShopBaseService {
      * 分页查询商品信息
      * @param pageListParam
      */
-    public PageResult<GoodsPageListVo> getGoodsPageList(MedicalGoodsPageListParam pageListParam){
-        GoodsPageListCondition goodsPageListCondition = GoodsParamConverter.convertPageListConditionFromPageListParam(pageListParam);
+    public PageResult<GoodsPageListVo> getGoodsPageList(MedicalGoodsPageListParam pageListParam) {
+        GoodsPageListCondition goodsPageListCondition = GoodsConverter.convertPageListConditionFromPageListParam(pageListParam);
         if (pageListParam.getSortId() != null) {
             List<Integer> parentsSortIds = sortDao.getParentSortIds(pageListParam.getSortId());
             parentsSortIds.add(pageListParam.getSortId());
@@ -241,7 +254,7 @@ public class MedicalGoodsService extends ShopBaseService {
             goodsIds.add(goodsEntity.getGoodsId());
             sortIds.add(goodsEntity.getSortId());
         }
-        PageResult<GoodsPageListVo> retPageResult =new PageResult<>();
+        PageResult<GoodsPageListVo> retPageResult = new PageResult<>();
         retPageResult.setPage(goodsEntityPageResult.getPage());
         retPageResult.setDataList(goodsPageListVos);
 
@@ -279,6 +292,7 @@ public class MedicalGoodsService extends ShopBaseService {
         }
         return retPageResult;
     }
+
     /**
      * 当前时间
      * 生成商品GoodsSn
@@ -301,7 +315,144 @@ public class MedicalGoodsService extends ShopBaseService {
         return goodsMedicalInfoDao.getByGoodsId(goodsId);
     }
 
-    public void pullExternalMedicalInfoEg(){
 
+    @SuppressWarnings("all")
+    public JsonResult fetchExternalMedicalInfo() {
+        String appId = ApiExternalGateConstant.APP_ID_HIS;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS;
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS);
+        MedicalGoodsExternalRequestParam param = new MedicalGoodsExternalRequestParam();
+        param.setStartTime(lastRequestTime);
+
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+        // 数据拉取错误
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        String dataJson = apiExternalRequestResult.getData();
+        GoodsMedicalExternalRequestBo goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
+        if (goodsMedicalExternalRequestBo == null) {
+            return JsonResult.success();
+        }
+
+        for (Integer curPage = 1; curPage <= goodsMedicalExternalRequestBo.getPageSize(); curPage++) {
+
+            apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+            // 数据拉取错误
+            if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+                JsonResult result = new JsonResult();
+                result.setError(apiExternalRequestResult.getError());
+                result.setMessage(apiExternalRequestResult.getMsg());
+                result.setContent(apiExternalRequestResult.getData());
+                return result;
+            }
+            dataJson = apiExternalRequestResult.getData();
+            goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
+
+            List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalRequestBo.getDataList();
+            // 药品数据入库操作
+            batchStoreGoodsMedicalExternalInfo(dataList);
+        }
+        return JsonResult.success();
+    }
+
+    /**
+     * 插入医院his药品信息
+     * @param goodsMedicalExternalRequestItemBos
+     */
+    @DbTransactional(type = DbType.SHOP_DB)
+    private void batchStoreGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
+        List<String> goodsCodes = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
+        // 剔除没有药品编码的数据
+        goodsMedicalExternalRequestItemBos = goodsMedicalExternalRequestItemBos.stream().filter(x -> {
+            if (x.getGoodsCode() == null) {
+                return false;
+            } else {
+                goodsCodes.add(x.getGoodsCode());
+                return true;
+            }
+        }).collect(Collectors.toList());
+        // 获取已存在的goodsSn到goodsId映射
+        Map<String, Integer> existGoodsCodes = goodsAggregate.mapGoodsCodeToGoodsId(goodsCodes);
+
+        List<GoodsMedicalExternalRequestItemBo> readyForUpdate = new ArrayList<>(existGoodsCodes.size());
+        List<GoodsMedicalExternalRequestItemBo> readyForInsert = new ArrayList<>(goodsCodes.size() - existGoodsCodes.size());
+
+        for (int i = 0; i < goodsMedicalExternalRequestItemBos.size(); i++) {
+            GoodsMedicalExternalRequestItemBo bo = goodsMedicalExternalRequestItemBos.get(i);
+
+            if (existGoodsCodes.containsKey(bo.getGoodsCode())) {
+                bo.setGoodsId(existGoodsCodes.get(bo.getGoodsCode()));
+                readyForUpdate.add(bo);
+            } else {
+                // 对于数据库不存在，而数据自身状态是删除状态则不入库
+                if (BaseConstant.EXTERNAL_ITEM_STATE_DISABLE.equals(bo.getState())) {
+                    continue;
+                }
+                readyForInsert.add(bo);
+            }
+        }
+        // 新增，防止新增数据内存在goodsCode相同的数据
+        Map<String, GoodsMedicalExternalRequestItemBo> trimRepeated = readyForInsert.stream().collect(Collectors.toMap(GoodsMedicalExternalRequestItemBo::getGoodsCode, Function.identity(), (x1, x2) -> x1));
+        readyForInsert = new ArrayList<>(trimRepeated.values());
+        batchInsertGoodsMedicalExternalInfo(readyForInsert);
+
+        // 修改
+        batchUpdateGoodsMedicalExternalInfo(readyForUpdate);
+    }
+
+    /**
+     * 批量新增药品信息
+     * @param readyForInserts
+     */
+    private void batchInsertGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> readyForInserts) {
+        goodsAggregate.batchInsert(readyForInserts);
+        List<GoodsSpecProductEntity> goodsSpecProductEntities = new ArrayList<>(readyForInserts.size());
+
+        for (GoodsMedicalExternalRequestItemBo bo : readyForInserts) {
+            GoodsSpecProductEntity entity = new GoodsSpecProductEntity();
+            entity.setGoodsId(bo.getGoodsId());
+            entity.setPrdPrice(bo.getGoodsPrice());
+            entity.setPrdCostPrice(bo.getGoodsPrice());
+            entity.setPrdMarketPrice(bo.getGoodsPrice());
+            entity.setPrdNumber(bo.getGoodsNumber());
+            goodsSpecProductEntities.add(entity);
+        }
+        medicalGoodsSpecProductService.batchSkuInsert(goodsSpecProductEntities);
+    }
+
+    /**
+     * 批量更新药品信息
+     * @param readyForUpdates
+     */
+    private void batchUpdateGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> readyForUpdates) {
+        List<Integer> goodsIds = readyForUpdates.stream().map(GoodsMedicalExternalRequestItemBo::getGoodsId).collect(Collectors.toList());
+        Map<Integer, List<GoodsSpecProductGoodsPageListVo>> goodsIdSkuMap = medicalGoodsSpecProductService.groupSkuSimpleByGoodsIds(goodsIds);
+
+        List<GoodsSpecProductEntity> goodsSpecProductEntities = new ArrayList<>(readyForUpdates.size());
+        for (GoodsMedicalExternalRequestItemBo bo : readyForUpdates) {
+            List<GoodsSpecProductGoodsPageListVo> skus = goodsIdSkuMap.get(bo.getGoodsId());
+            if (skus == null || skus.size() == 0) {
+                continue;
+            }
+            GoodsSpecProductEntity entity = new GoodsSpecProductEntity();
+            entity.setPrdId(skus.get(0).getPrdId());
+            entity.setGoodsId(bo.getGoodsId());
+            entity.setPrdPrice(bo.getGoodsPrice());
+            entity.setPrdCostPrice(bo.getGoodsPrice());
+            entity.setPrdMarketPrice(bo.getGoodsPrice());
+            entity.setPrdNumber(bo.getGoodsNumber());
+            if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
+                entity.setDelFlag(DelFlag.DISABLE_VALUE);
+            }
+            goodsSpecProductEntities.add(entity);
+        }
+        goodsAggregate.batchUpdate(readyForUpdates);
+        medicalGoodsSpecProductService.batchSkuUpdate(goodsSpecProductEntities);
     }
 }

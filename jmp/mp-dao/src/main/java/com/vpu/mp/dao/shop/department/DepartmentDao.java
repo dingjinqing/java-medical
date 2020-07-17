@@ -121,12 +121,12 @@ public class DepartmentDao extends ShopBaseDao {
     public List<DepartmentListVo> listDepartmentByParentId(Integer departmentId) {
 
         if (ROOT_ID.equals(departmentId)) {
-            List<DepartmentListVo> departmentList = db().select().from(DEPARTMENT).where(DEPARTMENT.LEVEL.eq(1))
-                .fetch().into(DepartmentListVo.class);
+            List<DepartmentListVo> departmentList = db().select().from(DEPARTMENT).where(DEPARTMENT.LEVEL.eq(1).and(DEPARTMENT.IS_DELETE.eq((byte)0)))
+                .fetchInto(DepartmentListVo.class);
             return departmentList;
         } else {
-            List<DepartmentListVo> departmentList = db().select().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId))
-                .fetch().into(DepartmentListVo.class);
+            List<DepartmentListVo> departmentList = db().select().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId).and(DEPARTMENT.IS_DELETE.eq((byte)0)))
+                .fetchInto(DepartmentListVo.class);
             return departmentList;
         }
     }
@@ -138,7 +138,7 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public int countDepartment(Integer departmentId) {
-        int departmentNum = db().selectCount().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId)).fetchOneInto(int.class);
+        int departmentNum = db().selectCount().from(DEPARTMENT).where(DEPARTMENT.PARENT_ID.eq(departmentId).and(DEPARTMENT.IS_DELETE.eq((byte)0))).fetchOneInto(int.class);
         return departmentNum;
     }
 
@@ -162,7 +162,7 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public List<DepartmentOneParam> getListByIds(List<Integer> departmentIds) {
-        return db().select(DEPARTMENT.ID, DEPARTMENT.NAME).from(DEPARTMENT).where(DEPARTMENT.ID.in(departmentIds)).fetchInto(DepartmentOneParam.class);
+        return db().select(DEPARTMENT.ID, DEPARTMENT.NAME).from(DEPARTMENT).where(DEPARTMENT.ID.in(departmentIds).and(DEPARTMENT.IS_DELETE.eq((byte) 0))).fetchInto(DepartmentOneParam.class);
     }
 
     public List<Integer> getDepartmentIdsByName(String name) {
