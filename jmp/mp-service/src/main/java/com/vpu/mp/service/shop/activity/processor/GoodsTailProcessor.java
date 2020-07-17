@@ -186,9 +186,10 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
                 isAllCheck=0;
             }
         }
-        //减去折扣
-        totalPrice= totalPrice.subtract(cartBo.getFullReductionPrice());
-
+        if (cartBo.getFullReductionPrice()==null){
+            //减去折扣
+            totalPrice= totalPrice.subtract(cartBo.getFullReductionPrice());
+        }
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
 
