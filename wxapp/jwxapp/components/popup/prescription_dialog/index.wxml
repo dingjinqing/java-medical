@@ -1,7 +1,7 @@
 <wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
 	<view class="dialog-content">
-		<view class="prescription-content">
+		<view class="prescription-content" bindtap="viewRxSearch">
 			<view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
 				<view class="title">电子处方</view>
 			</view>

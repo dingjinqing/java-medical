@@ -59,7 +59,7 @@ global.wxComponent({
       this.setData({ showBrandDialog:true })
     },
     getFormatBrand(goodsBrands){
-      if (!goodsBrands) return null
+      if (!goodsBrands || !goodsBrands.length) return null
       let arr = []
       goodsBrands.forEach(item=>item.goodsBrands.forEach(brands=>arr.push(brands)))
       return arr

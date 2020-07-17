@@ -11,6 +11,11 @@ global.wxComponent({
     },
     bindMenuClick(e) {
 
+    },
+    viewRxSearch(){
+      util.jumpLink(`pages/search/search${util.getUrlParams({
+        pageFrom:101
+      })}`)
     }
   }
 });

@@ -20,5 +20,13 @@ global.wxComponent({
    * 组件的方法列表
    */
   methods: {
+    viewRxSearch(){
+      util.jumpLink(`pages/search/search${util.getUrlParams({
+        pageFrom:102,
+        outerPageParam:JSON.stringify({
+          prescriptionCode:this.data.prescriptionData.prescriptionCode
+        })
+      })}`)
+    }
   }
 });
