@@ -335,15 +335,16 @@ public class MedicalGoodsService extends ShopBaseService {
         }
         String dataJson = apiExternalRequestResult.getData();
         GoodsMedicalExternalRequestBo goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
-
         if (goodsMedicalExternalRequestBo == null) {
             return JsonResult.success();
         }
+
         for (Integer curPage = 0; curPage < goodsMedicalExternalRequestBo.getPageSize(); curPage++) {
             List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalRequestBo.getDataList();
+            // 药品数据入库操作
             batchStoreGoodsMedicalExternalInfo(dataList);
 
-             apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+            apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
             // 数据拉取错误
             if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
                 JsonResult result = new JsonResult();
@@ -352,8 +353,8 @@ public class MedicalGoodsService extends ShopBaseService {
                 result.setContent(apiExternalRequestResult.getData());
                 return result;
             }
-             dataJson = apiExternalRequestResult.getData();
-             goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
+            dataJson = apiExternalRequestResult.getData();
+            goodsMedicalExternalRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalRequestBo.class);
         }
         return JsonResult.success();
     }
@@ -364,18 +365,24 @@ public class MedicalGoodsService extends ShopBaseService {
      */
     @DbTransactional(type = DbType.SHOP_DB)
     private void batchStoreGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
-        List<String> goodsCodes = goodsMedicalExternalRequestItemBos.stream().filter(x->x.getGoodsCode()!=null)
-            .map(GoodsMedicalExternalRequestItemBo::getGoodsCode).collect(Collectors.toList());
-        Map<String,Integer> existGoodsCodes = goodsAggregate.listExistMedicalGoodsCode(goodsCodes);
+        List<String> goodsCodes = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
+        // 剔除没有药品编码的数据
+        goodsMedicalExternalRequestItemBos = goodsMedicalExternalRequestItemBos.stream().filter(x -> {
+            if (x.getGoodsCode() == null) {
+                return false;
+            } else {
+                goodsCodes.add(x.getGoodsCode());
+                return true;
+            }
+        }).collect(Collectors.toList());
+        // 获取已存在的goodsSn到goodsId映射
+        Map<String, Integer> existGoodsCodes = goodsAggregate.mapGoodsCodeToGoodsId(goodsCodes);
 
         List<GoodsMedicalExternalRequestItemBo> readyForUpdate = new ArrayList<>(existGoodsCodes.size());
-        List<GoodsMedicalExternalRequestItemBo> readyForInsert = new ArrayList<>(goodsCodes.size()-existGoodsCodes.size());
+        List<GoodsMedicalExternalRequestItemBo> readyForInsert = new ArrayList<>(goodsCodes.size() - existGoodsCodes.size());
 
         for (int i = 0; i < goodsMedicalExternalRequestItemBos.size(); i++) {
             GoodsMedicalExternalRequestItemBo bo = goodsMedicalExternalRequestItemBos.get(i);
-            if (bo.getGoodsCode() == null) {
-                continue;
-            }
 
             if (existGoodsCodes.containsKey(bo.getGoodsCode())) {
                 bo.setGoodsId(existGoodsCodes.get(bo.getGoodsCode()));
@@ -388,7 +395,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 readyForInsert.add(bo);
             }
         }
-        // 新增
+        // 新增，防止新增数据内存在goodsCode相同的数据
         Map<String, GoodsMedicalExternalRequestItemBo> trimRepeated = readyForInsert.stream().collect(Collectors.toMap(GoodsMedicalExternalRequestItemBo::getGoodsCode, Function.identity(), (x1, x2) -> x1));
         readyForInsert = new ArrayList<>(trimRepeated.values());
         batchInsertGoodsMedicalExternalInfo(readyForInsert);
@@ -403,10 +410,10 @@ public class MedicalGoodsService extends ShopBaseService {
      */
     private void batchInsertGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> readyForInserts) {
         goodsAggregate.batchInsert(readyForInserts);
-        List<GoodsSpecProductEntity> goodsSpecProductEntities =new ArrayList<>(readyForInserts.size());
+        List<GoodsSpecProductEntity> goodsSpecProductEntities = new ArrayList<>(readyForInserts.size());
 
         for (GoodsMedicalExternalRequestItemBo bo : readyForInserts) {
-            GoodsSpecProductEntity entity =new GoodsSpecProductEntity();
+            GoodsSpecProductEntity entity = new GoodsSpecProductEntity();
             entity.setGoodsId(bo.getGoodsId());
             entity.setPrdPrice(bo.getGoodsPrice());
             entity.setPrdCostPrice(bo.getGoodsPrice());
@@ -423,15 +430,15 @@ public class MedicalGoodsService extends ShopBaseService {
      */
     private void batchUpdateGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> readyForUpdates) {
         List<Integer> goodsIds = readyForUpdates.stream().map(GoodsMedicalExternalRequestItemBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, List<GoodsSpecProductGoodsPageListVo>> goodsIdMap = medicalGoodsSpecProductService.groupSkuSimpleByGoodsIds(goodsIds);
+        Map<Integer, List<GoodsSpecProductGoodsPageListVo>> goodsIdSkuMap = medicalGoodsSpecProductService.groupSkuSimpleByGoodsIds(goodsIds);
 
-        List<GoodsSpecProductEntity> goodsSpecProductEntities =new ArrayList<>(readyForUpdates.size());
+        List<GoodsSpecProductEntity> goodsSpecProductEntities = new ArrayList<>(readyForUpdates.size());
         for (GoodsMedicalExternalRequestItemBo bo : readyForUpdates) {
-            List<GoodsSpecProductGoodsPageListVo> skus = goodsIdMap.get(bo.getGoodsId());
+            List<GoodsSpecProductGoodsPageListVo> skus = goodsIdSkuMap.get(bo.getGoodsId());
             if (skus == null || skus.size() == 0) {
                 continue;
             }
-            GoodsSpecProductEntity entity =new GoodsSpecProductEntity();
+            GoodsSpecProductEntity entity = new GoodsSpecProductEntity();
             entity.setPrdId(skus.get(0).getPrdId());
             entity.setGoodsId(bo.getGoodsId());
             entity.setPrdPrice(bo.getGoodsPrice());
