@@ -47,16 +47,16 @@ global.wxPage({
   },
   getPrescription () {
     let prescription_info = [];
-    prescription_info.real_name = this.data.real_name;
+    prescription_info.name = this.data.real_name;
     prescription_info.mobile = this.data.mobile;
-    prescription_info.card_id = this.data.card_id;
+    prescription_info.identityCode = this.data.card_id;
     if (this.data.if_show_agree == 0 && this.data.if_agree == 0) {
       this.setData({
         if_show_agree:1
       });
       return false;
     }
-    if (!prescription_info.real_name) {
+    if (!prescription_info.name) {
       util.showModal("提示", "请输入姓名！");
       return false;
     }
@@ -67,6 +67,16 @@ global.wxPage({
       util.showModal("提示", "请输入正确的手机号！");
         return false;
     } 
+    util.api('/api/wxapp/user/patient/get/info', res => {
+      if(res.error == 0){
+        wx.navigateBack()
+      }
+    },{
+      userId: util.getCache("user_id"),
+      name: prescription_info.name,
+      mobile: prescription_info.mobile,
+      identityCode: prescription_info.identityCode,
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

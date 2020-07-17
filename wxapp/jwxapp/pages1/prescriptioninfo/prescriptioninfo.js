@@ -17,13 +17,18 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    this.data.prescriptionNo = options.prescriptionNo || 1;
+    this.data.prescriptionCode = options.prescriptionCode || 1;
     this.requestInfo();
   },
   requestInfo () {
     util.api('/api/wxapp/prescription/details', res => {
       if (res.error == 0) {
         res.content.prescriptionCreateTime = res.content.prescriptionCreateTime.substr(0, 10);
+        if(res.content.patientSex == 0){
+          res.content.patientSexName = '男'
+        }else{
+          res.content.patientSexName = '女'
+        }
         this.data.prescriptionInfo = res.content;
         this.setData({
           prescriptionInfo: this.data.prescriptionInfo
@@ -32,7 +37,7 @@ global.wxPage({
         util.showModal('提示', res.message)
         return false
       }
-    }, {prescriptionNo: this.data.prescriptionNo})
+    }, {prescriptionCode: this.data.prescriptionCode})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
