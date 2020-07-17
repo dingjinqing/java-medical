@@ -4,7 +4,7 @@ package com.vpu.mp.common.pojo.saas.api;
  * @author 李晓冰
  * @date 2020年07月15日
  */
-public class ApiExternalConstant {
+public class ApiExternalRequestConstant {
     /**
      * app_id码值定义
      */

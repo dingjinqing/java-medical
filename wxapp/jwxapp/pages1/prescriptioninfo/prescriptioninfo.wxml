@@ -18,7 +18,7 @@
               <view>姓名</view>
             </view>
             <view class="each_patient_column">
-              <view class="dark_one">{{prescriptionInfo.patientSex}}</view>
+              <view class="dark_one">{{prescriptionInfo.patientSexName}}</view>
               <view>性别</view>
             </view>
             <view class="each_patient_column">
@@ -47,9 +47,9 @@
       </view>
       <view class="doctor-info">
         <view class="doctor-name">
-          <view>处方医师： {{prescriptionInfo.doctorName}}<image src=""></image></view>
-          <view>审核医师： {{prescriptionInfo.pharmacistName}}<image src=""></image></view>
-          <view>发药医师： {{prescriptionInfo.pharmacistName}}<image src=""></image></view>
+          <view>处方医师： {{prescriptionInfo.doctorName}}</view>
+          <view>审核医师： {{prescriptionInfo.pharmacistName}}</view>
+          <view>发药医师： {{prescriptionInfo.pharmacistName}}</view>
         </view>
         <text class="item-date">日期：{{prescriptionInfo.prescriptionCreateTime}}</text>
       </view>

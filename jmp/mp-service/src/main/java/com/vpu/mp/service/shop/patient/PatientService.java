@@ -1,13 +1,12 @@
 package com.vpu.mp.service.shop.patient;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import java.util.List;
 
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
@@ -78,8 +77,8 @@ public class PatientService extends ShopBaseService{
         requestParam.setIdentityCode(userPatientOneParam.getIdentityCode());
         requestParam.setMobile(userPatientOneParam.getMobile());
         String requestJson=Util.toJson(requestParam);
-        ApiExternalRequestResult apiExternalRequestResult=saas().apiExternalRequestService.externalRequestGate(ApiExternalConstant.APP_ID_HIS,shopId,ApiExternalConstant.SERVICE_NAME_FETCH_PATIENT_INFO,requestJson);
-        if(ApiExternalConstant.ERROR_CODE.equals(apiExternalRequestResult.getError())) {
+        ApiExternalRequestResult apiExternalRequestResult=saas().apiExternalRequestService.externalRequestGate(ApiExternalRequestConstant.APP_ID_HIS,shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_PATIENT_INFO,requestJson);
+        if(ApiExternalRequestConstant.ERROR_CODE.equals(apiExternalRequestResult.getError())) {
             JsonResult result = new JsonResult();
             result.setError(apiExternalRequestResult.getError());
             result.setMessage(apiExternalRequestResult.getMsg());

@@ -3,8 +3,8 @@
 <view class="mian-container">
   <view class="prescription-content" wx:if='{{ dataList[0].length }}'>
     <block wx:for='{{dataList}}' wx:for-item="pageItem"  wx:key="key" wx:for-index="pageIndex">
-      <view class="prescription-item" bindtap="to_info" wx:for='{{pageItem}}' wx:key='key' data-prescriptionno='{{item.prescriptionNo}}'>
-        <view class="item-title">{{item.prescriptionNo}}</view>
+      <view class="prescription-item" bindtap="to_info" wx:for='{{pageItem}}' wx:key='key' data-prescriptionno='{{item.prescriptionCode}}'>
+        <view class="item-title">{{item.prescriptionCode}}</view>
         <view class="item-list-content">
           <view class="item-list">
             <view class="list-item">

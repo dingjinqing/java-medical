@@ -25,7 +25,7 @@ global.wxPage({
     util.jumpLink('/pages1/getprescription/getprescription')
   },
   to_info (e) {
-    util.jumpLink('/pages1/prescriptioninfo/prescriptioninfo?prescriptionNo=' + e.currentTarget.dataset.prescriptionno)
+    util.jumpLink('/pages1/prescriptioninfo/prescriptioninfo?prescriptionCode=' + e.currentTarget.dataset.prescriptionno)
   },  
   requestList () {
     let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;

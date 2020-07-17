@@ -9,7 +9,8 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.medical.DateFormatStr;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
@@ -317,16 +318,16 @@ public class MedicalGoodsService extends ShopBaseService {
 
     @SuppressWarnings("all")
     public JsonResult fetchExternalMedicalInfo() {
-        String appId = ApiExternalConstant.APP_ID_HIS;
+        String appId = ApiExternalGateConstant.APP_ID_HIS;
         Integer shopId = getShopId();
-        String serviceName = ApiExternalConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS;
-        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalConstant.APP_ID_HIS, shopId, ApiExternalConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS);
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS;
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS);
         MedicalGoodsExternalRequestParam param = new MedicalGoodsExternalRequestParam();
         param.setStartTime(lastRequestTime);
 
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
         // 数据拉取错误
-        if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
             JsonResult result = new JsonResult();
             result.setError(apiExternalRequestResult.getError());
             result.setMessage(apiExternalRequestResult.getMsg());
@@ -343,7 +344,7 @@ public class MedicalGoodsService extends ShopBaseService {
 
             apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
             // 数据拉取错误
-            if (!ApiExternalConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
                 JsonResult result = new JsonResult();
                 result.setError(apiExternalRequestResult.getError());
                 result.setMessage(apiExternalRequestResult.getMsg());

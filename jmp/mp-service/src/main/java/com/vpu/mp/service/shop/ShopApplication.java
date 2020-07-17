@@ -67,6 +67,7 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.OrderApiService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
+import com.vpu.mp.service.shop.order.action.AuditService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
@@ -592,4 +593,7 @@ public class ShopApplication {
      */
     @Autowired
     public MedicalHistoryService medicalHistoryService;
+
+    @Autowired
+    public AuditService auditService;
 }
