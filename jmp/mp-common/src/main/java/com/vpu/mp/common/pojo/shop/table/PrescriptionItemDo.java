@@ -7,6 +7,7 @@ package com.vpu.mp.common.pojo.shop.table;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -26,28 +27,29 @@ import javax.annotation.Generated;
 @Data
 public class PrescriptionItemDo implements Serializable {
 
-    private static final long serialVersionUID = -1714718912;
+    private static final long serialVersionUID = -401832866;
 
-    private Integer   id;
-    private String    posCode;
-    private String    posDetailCode;
-    private String    prescriptionCode;
-    private String    prescriptionDetailCode;
-    private Integer   goodsId;
-    private String    goodsCommonName;
-    private String    goodsQualityRatio;
-    private String    useMethod;
-    private Double    perTimeNum;
-    private String    perTimeUnit;
-    private Double    perTimeDosage;
-    private String    perTimeDosageUnit;
-    private Double    frequency;
-    private Double    dragSumNum;
-    private String    dragSumUnit;
-    private String    goodsUseMemo;
-    private String    goodsProductionEnterprise;
-    private Byte      isDelete;
-    private Timestamp createTime;
-    private Timestamp updateTime;
+    private Integer    id;
+    private String     posCode;
+    private String     posDetailCode;
+    private String     prescriptionCode;
+    private String     prescriptionDetailCode;
+    private Integer    goodsId;
+    private String     goodsCommonName;
+    private String     goodsQualityRatio;
+    private String     useMethod;
+    private Double     perTimeNum;
+    private String     perTimeUnit;
+    private Double     perTimeDosage;
+    private String     perTimeDosageUnit;
+    private Double     frequency;
+    private Double     dragSumNum;
+    private String     dragSumUnit;
+    private String     goodsUseMemo;
+    private String     goodsProductionEnterprise;
+    private BigDecimal medicinePrice;
+    private Byte       isDelete;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
 }
