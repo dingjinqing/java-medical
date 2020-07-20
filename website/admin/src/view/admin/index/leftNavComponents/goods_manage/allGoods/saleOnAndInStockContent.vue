@@ -142,7 +142,7 @@
                 width="130"
         >
           <template slot-scope="{row,$index}">
-            <span v-if="row.prdId === null">
+            <span v-if="row.isDefaultProduct === 0">
               {{row.goodsNumber}}
               <span
                       class="iconfont iconbianji"
@@ -690,7 +690,7 @@ export default {
       row.shopPrice = row.shopPriceOld
 
       let param = {
-        prdId: row.prdId,
+        prdId: row.goodsSpecProducts[0].prdId,
         shopPrice: row.shopPrice
       }
 
