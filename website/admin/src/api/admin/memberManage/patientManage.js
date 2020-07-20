@@ -23,3 +23,11 @@ export function getPrescriptionList (data) {
     data: data
   })
 }
+// 处方详情
+export function getPrescriptionMessage (data) {
+  return service({
+    url: `/api/admin/prescription/details`,
+    method: 'post',
+    data: data
+  })
+}

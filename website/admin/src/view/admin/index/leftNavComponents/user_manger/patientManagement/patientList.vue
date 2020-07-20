@@ -6,7 +6,7 @@
           <div class="filters_item">
             <span>手机号：</span>
             <el-input
-              v-model="queryParams.doctorNumber"
+              v-model="queryParams.mobile"
               size="small"
               style="width:190px;"
               placeholder="请输入患者手机号"
@@ -16,7 +16,7 @@
           <div class="filters_item">
             <span>姓名：</span>
             <el-input
-              v-model="queryParams.doctorName"
+              v-model="queryParams.name"
               size="small"
               style="width:190px;"
               placeholder="请输入姓名"
@@ -116,8 +116,7 @@ export default {
       },
       tableData: [],
       queryParams: {
-        doctorNumber: null,
-        doctorName: null,
+        name: null,
         mobile: null
       },
       // 表格原始数据
