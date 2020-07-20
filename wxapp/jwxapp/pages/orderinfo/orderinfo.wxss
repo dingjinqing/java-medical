@@ -34,6 +34,12 @@
   vertical-align: middle;
   margin-right: 10rpx;
 }
+.status-name>text {
+  width: 32rpx;
+  height: 32rpx;
+  vertical-align: middle;
+  margin-right: 10rpx;
+}
 
 .shipping_info {
   display: flex;

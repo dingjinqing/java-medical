@@ -40,7 +40,7 @@
               filterable
             >
               <el-option
-                v-for="item in $t('order.orderStatus')"
+                v-for="item in $t('order.orderStatusFilterList')"
                 :key="item[0]"
                 :label="item[1]"
                 :value="item[0]"
@@ -1076,7 +1076,7 @@ export default {
       this.searchParams.districtCode = data.district
     },
     arrayToMap () {
-      this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
+      this.orderStatusMap = new Map(this.$t('order.orderStatusFilterList'))
       console.log(this.orderStatusMap)
       this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
       this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
