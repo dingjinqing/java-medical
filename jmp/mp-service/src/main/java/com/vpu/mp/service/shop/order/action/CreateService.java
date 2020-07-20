@@ -267,7 +267,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //普通营销活动处理
                 processNormalActivity(order, orderBo, orderBeforeVo);
                 //计算其他数据（需关联去其他模块）
-                setOtherValue(order, orderBo, orderBeforeVo);
+                setOtherValue(param,order, orderBo, orderBeforeVo);
                 //商品退款退货配置
                 calculate.setReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order);
                 //订单类型拼接(支付有礼)
@@ -1064,7 +1064,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param orderBo
      * @param beforeVo
      */
-    private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
+    private void setOtherValue(CreateParam param, OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         Timestamp currentTime = DateUtils.getSqlTimestamp();
         //TODO 订单类型拼接(支付有礼)
         orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
@@ -1118,6 +1118,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 } else {
                     logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
                     order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+                    logger().info("订单支付成功->待审核状态");
+                    if (!param.getCheckPrescriptionStatus().equals(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
+                        order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+                        uploadPrescriptionService.uploadPrescription(param,orderBo,order);
+                    }
                 }
                 order.setPayTime(currentTime);
             }else {
@@ -1320,11 +1325,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("加锁{}",order.getOrderSn());
             atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
             logger().info("更新成功{}",order.getOrderSn());
-            logger().info("订单支付成功->待审核状态");
-            if (!param.getCheckPrescriptionStatus().equals(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
-                order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
-                uploadPrescriptionService.uploadPrescription(param,orderBo,order);
-            }
+
             return true;
         }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
             logger().info("下单时待付款且配置为下单减库存或者为秒杀时调用更新库存方法");
