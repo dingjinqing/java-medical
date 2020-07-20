@@ -34,10 +34,10 @@ public class AdminDoctorController extends AdminBaseController {
             return fail(JsonResultCode.DOCTOR_NAME_IS_NULL);
         }
 
-//        boolean isExist = shop().departmentService.isNameExist(null,param.getName());
-//        if (isExist) {
-//            return fail(JsonResultCode.DOCTOR_DEPARTMENT_NAME_EXIST);
-//        }
+        boolean isExist = shop().doctorService.isCodeExist(null,param.getName());
+        if (isExist) {
+            return fail(JsonResultCode.DOCTOR_NAME_IS_NULL);
+        }
 
         shop().doctorService.insertDoctor(param);
 
@@ -54,10 +54,10 @@ public class AdminDoctorController extends AdminBaseController {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
 
-//        boolean isExist = shop().departmentService.isNameExist(null,param.getName());
-//        if (isExist) {
-//            return fail(JsonResultCode.DOCTOR_DEPARTMENT_NAME_EXIST);
-//        }
+        boolean isExist = shop().doctorService.isCodeExist(param.getId(),param.getName());
+        if (isExist) {
+            return fail(JsonResultCode.DOCTOR_DEPARTMENT_NAME_EXIST);
+        }
 
         shop().doctorService.updateDoctor(param);
 

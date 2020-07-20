@@ -1330,4 +1330,5 @@ public class JsonResultMessage {
     public static final String DOCTOR_NAME_EXIST = "doctor.name.exist";
     public static final String DOCTOR_NAME_IS_NULL = "doctor.name.is.null";
     public static final String DOCTOR_ID_IS_NULL = "doctor.id.is.null";
+    public static final String DOCTOR_CODE_IS_EXIST = "doctor.code.is.exist";
 }

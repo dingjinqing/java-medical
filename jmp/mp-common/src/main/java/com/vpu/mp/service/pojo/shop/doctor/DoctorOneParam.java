@@ -10,6 +10,8 @@ import java.util.List;
 public class DoctorOneParam {
     private Integer   id;
     private Integer   accountId;
+    private Integer   age;
+    private Integer   workTime;
     private Byte      sex;
     private Byte      duty;
     private String    url;

@@ -697,6 +697,7 @@ public enum JsonResultCode {
 //    DOCTOR_NAME_EXIST(710007,JsonResultMessage.DOCTOR_NAME_EXIST),
     DOCTOR_NAME_IS_NULL(710008,JsonResultMessage.DOCTOR_NAME_IS_NULL),
     DOCTOR_ID_IS_NULL(710009,JsonResultMessage.DOCTOR_ID_IS_NULL),
+    DOCTOR_CODE_IS_EXIST(710010,JsonResultMessage.DOCTOR_CODE_IS_EXIST),
 
 
     //药品

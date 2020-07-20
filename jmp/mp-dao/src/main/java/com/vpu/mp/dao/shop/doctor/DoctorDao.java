@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
@@ -28,10 +29,7 @@ public class DoctorDao extends ShopBaseDao {
      */
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
         SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR.ID, DOCTOR.NAME, DOCTOR.CREATE_TIME,
-                DOCTOR.HOSPITAL_CODE, DOCTOR.REGISTER_HOSPITAL, DOCTOR.CERTIFICATE_CODE,DOCTOR.PROFESSIONAL_CODE,
-                DOCTOR.REGISTER_TIME,DOCTOR.MOBILE,DOCTOR.TITLE_ID,
-                DOCTOR.STATUS,DOCTOR_TITLE.NAME.as("titleName"))
+            .select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName"))
             .from(DOCTOR).leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
         select.where(DOCTOR.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
@@ -133,5 +131,20 @@ public class DoctorDao extends ShopBaseDao {
     public DoctorOneParam getDoctorByHospitalCode(String hospitalCode) {
         return db().select().from(DOCTOR).where(DOCTOR.HOSPITAL_CODE.eq(hospitalCode))
             .fetchOneInto(DoctorOneParam.class);
+    }
+
+    /**
+     * 医师是否存在，用来新增检查
+     * @param doctorId 医师ID
+     * @param code 医师Code
+     * @return true 存在 false 不存在
+     */
+    public boolean isCodeExist(Integer doctorId,String code) {
+        Condition condition = DOCTOR.HOSPITAL_CODE.eq(code);
+        if (doctorId != null) {
+            condition = condition.and(DOCTOR.ID.ne(doctorId));
+        }
+        int count = db().fetchCount(DEPARTMENT, condition);
+        return count>0;
     }
 }

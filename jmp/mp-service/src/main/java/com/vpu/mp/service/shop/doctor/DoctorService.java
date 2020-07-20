@@ -164,4 +164,9 @@ public class DoctorService extends ShopBaseService {
         return JsonResult.success();
     }
 
+    public boolean isCodeExist(Integer doctorId,String code) {
+        boolean flag = doctorDao.isCodeExist(doctorId,code);
+        return flag;
+    }
+
 }

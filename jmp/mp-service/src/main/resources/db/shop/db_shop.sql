@@ -4800,6 +4800,8 @@ create table b2c_doctor_title(
 create table b2c_doctor(
     `id`   int(11)      not null auto_increment,
     `account_id` int(11) not null comment '医师子账号id',
+    `age` int(11) not null default 0 comment '年龄',
+    `work_time` int(11) not null default 0 comment '从业时间',
     `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
     `name` varchar(32) not null default 0 comment '医师姓名',
     `url` varchar(128) not null default '' comment '医师头像',
