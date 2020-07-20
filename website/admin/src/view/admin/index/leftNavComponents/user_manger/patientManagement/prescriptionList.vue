@@ -117,9 +117,9 @@ export default {
     }
   },
   methods: {
-    initDataList (id) {
+    initDataList () {
       this.loading = true
-      this.queryParams.patientId = id
+      this.queryParams.patientId = this.id
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
       getPrescriptionList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
@@ -139,12 +139,14 @@ export default {
     },
     handleSeeMessage (userId) {
       console.log(this.$router)
-      this.$router.push({
+      let newpage = this.$router.resolve({
         name: 'prescription_message',
         query: {
-          userId: userId
+          prescriptionCode: userId
         }
       })
+      console.log(newpage)
+      window.open(newpage.href, '_blank')
     },
     handleData (data) {
       this.tableData = data
@@ -161,8 +163,8 @@ export default {
   //   }
   // },
   mounted () {
-    let id = this.$route.query.id ? this.$route.query.id : 0
-    this.initDataList(id)
+    this.id = this.$route.query.id ? this.$route.query.id : 0
+    this.initDataList()
   }
 }
 </script>

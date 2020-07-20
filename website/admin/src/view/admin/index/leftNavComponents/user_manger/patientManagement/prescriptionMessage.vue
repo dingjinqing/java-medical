@@ -4,10 +4,10 @@
       <div class="prescription-content">
         <div class="prescription-item">
           <div class="top_info">
-            <div class="item-title">电子处方1</div>
+            <div class="item-title">电子处方</div>
             <div class="top_content">
-              <div>就诊卡号：2006798749374837</div>
-              <div>编号：2006798749374837</div>
+              <div>就诊卡号：{{originalData.prescriptionCode}}</div>
+              <div>编号：{{originalData.patientTreatmentCode}}</div>
             </div>
           </div>
           <div class="item-list-content">
@@ -66,8 +66,32 @@
   </div>
 </template>
 <script>
+import { getPrescriptionMessage } from '@/api/admin/memberManage/patientManage.js'
 export default {
-
+  data () {
+    return {
+      langDefaultFlag: false,
+      originalData: []
+    }
+  },
+  methods: {
+    initDataList () {
+      let prescriptionCode = this.$router.query.prescriptionCode
+      getPrescriptionMessage(prescriptionCode).then((res) => {
+        if (res.error !== 0) {
+          this.$message.error({ message: res.message })
+          return
+        }
+        console.log(res.content)
+        this.originalData = res.content
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+  },
+  mounted () {
+    this.initDataList()
+  }
 }
 </script>
 <style  scoped>
@@ -203,15 +227,15 @@ export default {
   color: #999;
   margin-top: 10px;
 }
-.doctor-name{
-      height: 70px;
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
+.doctor-name {
+  height: 70px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
 }
-.item-date{
+.item-date {
   position: absolute;
-    right: 100px;
-    bottom: 17px;
+  right: 100px;
+  bottom: 17px;
 }
 </style>

@@ -17,7 +17,7 @@
         style="width: 100%"
       >
         <el-table-column
-          align="center"
+          align="left"
           label="科室名称"
         >
           <template v-slot="{row,$index}">
@@ -74,7 +74,7 @@
             >
               <span
                 class="iconfont iconshanchu2"
-                @click="deleteDepartmentClicked(scope.row)"
+                @click="deleteDepartmentClicked(scope.row,scope.$index)"
               ></span>
             </el-tooltip>
           </template>
@@ -156,7 +156,7 @@ export default {
       this.$router.push({ name: 'updateOffices', params: { id: row.id } })
     },
     /* 删除商品科室 */
-    deleteDepartmentClicked (row) {
+    deleteDepartmentClicked (row, $index) {
       let deleteMsg = row.level === 1 ? '删除一级科室，会删除该分类下的所有二级科室，确定删除？' : '确定删除？'
       this.$confirm(deleteMsg, '提示', {
         confirmButtonText: '确定',
@@ -164,7 +164,7 @@ export default {
         type: 'warning'
       }).then(() => {
         deleteDepartment(row.id).then(res => {
-          this.handleQuery()
+          row.level === 1 ? this.handleQuery() : this.departmentData.splice($index, 1)
         })
       })
     }
