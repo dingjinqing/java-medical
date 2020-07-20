@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.I18N;
 
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -124,5 +125,5 @@ public class MemberBasicInfoVo {
 	@I18N(propertiesFileName = "member")
 	private String industryInfo;
 	private Integer industryId;
-
+    private List<PatientOneParam> patientList;
 }

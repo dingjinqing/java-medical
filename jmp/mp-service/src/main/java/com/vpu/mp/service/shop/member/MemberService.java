@@ -48,6 +48,7 @@ import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
 import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
@@ -59,6 +60,7 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -145,6 +147,8 @@ public class MemberService extends ShopBaseService {
 	public AreaSelectService area;
 	@Autowired
 	public UserCardService userCardService;
+	@Autowired
+	public PatientService patientService;
 	@Autowired
 	public UserCardDaoService userCardDao;
 	@Autowired
@@ -608,7 +612,8 @@ public class MemberService extends ShopBaseService {
 		
 		/** 邀请人分销分组名称 */
 		memberBasicInfoVo.setInviteGroupName(distributorListService.getGroupName(userId));
-
+        List<PatientOneParam> patientList = patientService.listPatientByUserId(userId);
+        memberBasicInfoVo.setPatientList(patientList);
 		return memberBasicInfoVo;
 	}
 
