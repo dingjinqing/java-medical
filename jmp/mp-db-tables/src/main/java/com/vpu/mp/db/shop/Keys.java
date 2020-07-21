@@ -288,6 +288,8 @@ public class Keys {
     public static final Identity<DoctorDepartmentCoupleRecord, Integer> IDENTITY_DOCTOR_DEPARTMENT_COUPLE = Identities0.IDENTITY_DOCTOR_DEPARTMENT_COUPLE;
     public static final Identity<MedicalHistoryRecord, Integer> IDENTITY_MEDICAL_HISTORY = Identities0.IDENTITY_MEDICAL_HISTORY;
     public static final Identity<MedicalAdviceRecord, Integer> IDENTITY_MEDICAL_ADVICE = Identities0.IDENTITY_MEDICAL_ADVICE;
+    public static final Identity<ImSessionRecord, Integer> IDENTITY_IM_SESSION = Identities0.IDENTITY_IM_SESSION;
+    public static final Identity<ImSessionItemRecord, Integer> IDENTITY_IM_SESSION_ITEM = Identities0.IDENTITY_IM_SESSION_ITEM;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -564,6 +566,8 @@ public class Keys {
     public static final UniqueKey<DoctorDepartmentCoupleRecord> KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY;
     public static final UniqueKey<MedicalHistoryRecord> KEY_B2C_MEDICAL_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_MEDICAL_HISTORY_PRIMARY;
     public static final UniqueKey<MedicalAdviceRecord> KEY_B2C_MEDICAL_ADVICE_PRIMARY = UniqueKeys0.KEY_B2C_MEDICAL_ADVICE_PRIMARY;
+    public static final UniqueKey<ImSessionRecord> KEY_B2C_IM_SESSION_PRIMARY = UniqueKeys0.KEY_B2C_IM_SESSION_PRIMARY;
+    public static final UniqueKey<ImSessionItemRecord> KEY_B2C_IM_SESSION_ITEM_PRIMARY = UniqueKeys0.KEY_B2C_IM_SESSION_ITEM_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -819,6 +823,8 @@ public class Keys {
         public static Identity<DoctorDepartmentCoupleRecord, Integer> IDENTITY_DOCTOR_DEPARTMENT_COUPLE = Internal.createIdentity(DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID);
         public static Identity<MedicalHistoryRecord, Integer> IDENTITY_MEDICAL_HISTORY = Internal.createIdentity(MedicalHistory.MEDICAL_HISTORY, MedicalHistory.MEDICAL_HISTORY.ID);
         public static Identity<MedicalAdviceRecord, Integer> IDENTITY_MEDICAL_ADVICE = Internal.createIdentity(MedicalAdvice.MEDICAL_ADVICE, MedicalAdvice.MEDICAL_ADVICE.ID);
+        public static Identity<ImSessionRecord, Integer> IDENTITY_IM_SESSION = Internal.createIdentity(ImSession.IM_SESSION, ImSession.IM_SESSION.ID);
+        public static Identity<ImSessionItemRecord, Integer> IDENTITY_IM_SESSION_ITEM = Internal.createIdentity(ImSessionItem.IM_SESSION_ITEM, ImSessionItem.IM_SESSION_ITEM.ID);
 
     }
 
@@ -1099,5 +1105,7 @@ public class Keys {
         public static final UniqueKey<DoctorDepartmentCoupleRecord> KEY_B2C_DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Internal.createUniqueKey(DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, "KEY_b2c_doctor_department_couple_PRIMARY", DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID);
         public static final UniqueKey<MedicalHistoryRecord> KEY_B2C_MEDICAL_HISTORY_PRIMARY = Internal.createUniqueKey(MedicalHistory.MEDICAL_HISTORY, "KEY_b2c_medical_history_PRIMARY", MedicalHistory.MEDICAL_HISTORY.ID);
         public static final UniqueKey<MedicalAdviceRecord> KEY_B2C_MEDICAL_ADVICE_PRIMARY = Internal.createUniqueKey(MedicalAdvice.MEDICAL_ADVICE, "KEY_b2c_medical_advice_PRIMARY", MedicalAdvice.MEDICAL_ADVICE.ID);
+        public static final UniqueKey<ImSessionRecord> KEY_B2C_IM_SESSION_PRIMARY = Internal.createUniqueKey(ImSession.IM_SESSION, "KEY_b2c_im_session_PRIMARY", ImSession.IM_SESSION.ID);
+        public static final UniqueKey<ImSessionItemRecord> KEY_B2C_IM_SESSION_ITEM_PRIMARY = Internal.createUniqueKey(ImSessionItem.IM_SESSION_ITEM, "KEY_b2c_im_session_item_PRIMARY", ImSessionItem.IM_SESSION_ITEM.ID);
     }    
 }

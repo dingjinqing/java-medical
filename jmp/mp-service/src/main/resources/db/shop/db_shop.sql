@@ -4976,4 +4976,64 @@ CREATE TABLE `b2c_medical_advice` (
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     primary key (`id`)
-)comment '医嘱明细表';
+)comment ='医嘱明细表';
+
+-- 问诊会话表 记录一次医生和患者的在线会话
+create TABLE `b2c_im_session`(
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `doctor_id` int(11) NOT NULL COMMENT '医师在我方库内id值',
+    `user_id` int(11) NOT NULL COMMENT '小程序发起会话用户id',
+    `patient_id`  int(11) NOT NULL COMMENT '本次诊疗的患者id',
+    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0医师待接诊，1会话中，2会话取消，3会话结束',
+    `order_sn` varchar(32)  NOT NULL COMMENT '会话关联的订单sn',
+    `limit_time` timestamp  COMMENT '医生接诊后会话截止时间点',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key (`id`)
+) comment = '问诊会话记录一次医生和患者的在线会话';
+
+-- 问诊会话详情 记录每一条会话
+create TABLE `b2c_im_session_item`(
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `im_session_id` int(11)  NOT NULL COMMENT '会话id',
+    `form_id` int(11) COMMENT '本条消息发起者id 医师id或用户userId',
+    `to_id` int(11) COMMENT '本跳消息接收者id  医师id或用户userId',
+    `message` varchar(2048) COMMENT '本条消息内容',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    primary key (`id`)
+) comment = '问诊会话详情 记录每一条会话';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
