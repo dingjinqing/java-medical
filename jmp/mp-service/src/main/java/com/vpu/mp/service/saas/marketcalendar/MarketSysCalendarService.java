@@ -1,4 +1,4 @@
-package com.vpu.mp.service.saas.marketCalendar;
+package com.vpu.mp.service.saas.marketcalendar;
 
 import static com.vpu.mp.db.main.tables.MarketCalendar.MARKET_CALENDAR;
 

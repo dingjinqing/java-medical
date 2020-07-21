@@ -1,11 +1,10 @@
-package com.vpu.mp.service.shop.marketCalendar;
+package com.vpu.mp.service.shop.marketcalendar;
 
 import static com.vpu.mp.db.shop.tables.MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY;
 
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.common.foundation.data.DelFlag;

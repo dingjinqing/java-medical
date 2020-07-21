@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.marketCalendar;
+package com.vpu.mp.service.shop.marketcalendar;
 
 import static com.vpu.mp.db.shop.tables.MarketCalendar.MARKET_CALENDAR;
 
@@ -37,6 +37,9 @@ import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketcalendarParam;
 import com.vpu.mp.service.shop.ShopApplication;
 
+/**
+ * @author zhaojianqiang
+ */
 @Service
 public class MarketCalendarService extends ShopBaseService {
 	@Autowired
