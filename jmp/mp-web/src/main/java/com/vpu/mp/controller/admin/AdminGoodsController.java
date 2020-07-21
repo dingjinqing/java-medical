@@ -468,7 +468,8 @@ public class AdminGoodsController extends AdminBaseController {
         List<GoodsExportVo> goodsList = new ArrayList<>();
         int count = shop().goods.selectGoodsCount();
         String timeStr = DateUtils.getLocalDateFullTightFormat();
-        for (int i =1; i <= 2000; i++) {
+        int max = 2000;
+        for (int i = 1; i <= max; i++) {
             GoodsExportVo vo = new GoodsExportVo();
             vo.setSortNameParent("日化用品");
             vo.setSortNameChild("面部护肤");

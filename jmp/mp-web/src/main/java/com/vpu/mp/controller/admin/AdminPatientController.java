@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 
+/**
+ * @author chenjie
+ */
 @RestController
 public class AdminPatientController extends AdminBaseController {
 //    @Override

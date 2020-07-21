@@ -44,7 +44,9 @@ public class AdminIndexController extends AdminBaseController {
 	final protected String privilegeJsonPath = "admin.privilegePass.json";
 	
 	private static final String ENNAME="V-EnName";
-	// 版本控制传的值
+    /**
+     * 版本控制传的值
+     */
 	private static final String VSNAME="V-VsName";
 	final protected String versionJson = "admin.versionNew.json";
 	
@@ -146,7 +148,7 @@ public class AdminIndexController extends AdminBaseController {
 		String[] sub2 = VersionName.sub2;
 		List<String> list=new ArrayList<String>();
 		for(int i=0;i<verifys.length;i++) {
-			if(verifys[i].equals("true")) {
+			if("true".equals(verifys[i])) {
 				list.add(sub2[i]);
 			}
 		}

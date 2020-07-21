@@ -216,7 +216,6 @@ public class AdminAuth {
 	 * @return
 	 */
 	public int insert(AdminTokenAuthInfo info, ShopRecord shop) {
-		//saas.userLoginService.userLoginRecord(info, shop, Util.getCleintIp(request));
 		UserLoginRecordRecord record = new UserLoginRecordRecord();
 		record.setUserName(info.getUserName());
 		record.setUserId(info.getSysId());

@@ -12,6 +12,9 @@ import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import java.util.*;
 import com.vpu.mp.service.shop.ShopApplication;
 
+/**
+ * @author chenjie
+ */
 @RestController
 public class AdminDepartmentController extends AdminBaseController{
 //    @Override
