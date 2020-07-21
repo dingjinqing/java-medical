@@ -12,7 +12,7 @@ export const en = {
   },
   // leftNav
   leftNavArr: {
-    nav1: ['Overview of Mall', 'Overview Statistics', 'Real-time overview', 'User portrait', 'Access Analysis', 'Source analysis', 'User statistics', 'Commodity statistics', 'Transaction statistics', 'asset management', 'Search statistics'],
+    nav1: ['Overview of Mall', 'Overview Statistics', 'Real-time overview', 'Sales Report', 'User portrait', 'Access Analysis', 'Source analysis', 'User statistics', 'Commodity statistics', 'Transaction statistics', 'asset management', 'Search statistics'],
     nav2: ['Page decoration', 'Page classification', 'Picture space', 'shop style', 'Bottom navigation', 'Personal Center', 'search for configuration', 'Suspended window', 'Small program jump'],
     nav3: ['All commodities', 'All Sale out goods', 'Adding goods', 'Freight template', 'Business Classification Management', 'Brand Management', 'Evaluation management', 'Merchandise Recommendation', 'Commodity label', 'Commodity import'],
     nav4: ['Full order', 'Standby order', 'Return and refund orders', 'Self-ordering', 'Collaboration refund failure list', 'Purchase order', 'Bulk shipment'],
