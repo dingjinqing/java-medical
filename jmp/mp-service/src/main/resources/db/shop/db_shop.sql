@@ -4129,6 +4129,7 @@ CREATE TABLE `b2c_user` (
   `unit_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '客单价',
   `invite_time` timestamp NULL DEFAULT NULL COMMENT '邀请时间',
   `scene` int(11) DEFAULT '-1' COMMENT '用户微信来源 -1搜索、公众号等入口（主动）进入，-2分享（被动）进入，-3扫码进入 -4未获取',
+  `user_type`TINYINT NOT NULL DEFAULT 0 COMMENT '用户角色 0、患者 1、医师 2、药师',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `mobile` (`mobile`,`shop_id`),
   KEY `user_code` (`user_code`),
@@ -4820,6 +4821,7 @@ create table b2c_doctor(
     `mobile` varchar(32) not null default '' comment '手机号',
     `title_id` int(11) not null comment '职称id',
     `status` tinyint(1) not null default 1 comment '是否启用 1启用 0禁用',
+    `user_id` int(11) NOT NULL COMMENT '用户id，当前用户是否为医师',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
@@ -5004,6 +5006,37 @@ create TABLE `b2c_im_session_item`(
     primary key (`id`)
 ) comment = '问诊会话详情 记录每一条会话';
 
+--问诊订单表
+CREATE TABLE `b2c_inquiry_order` (
+ `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
+ `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
+ `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+ `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款  1待接诊 2已取消 3已完成',
+ `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
+ `doctor_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师名称',
+ `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '科室id',
+ `doctor_department_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师科室',
+ `patient_id` int(11) NOT NULL DEFAULT '0' COMMENT '患者id',
+ `patient_mobile` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '患者手机号码',
+ `patient_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '患者名称',
+ `patient_sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 0：未知 1：男 2：女',
+ `patient_identity_code` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '证件号码',
+ `patient_identity_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
+ `pay_code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付代号',
+ `pay_name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付名称',
+ `pay_sn` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付流水号',
+ `prepay_id` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
+ `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
+ `pay_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '支付时间',
+ `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
+ `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
+ `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
+ `image_url` varchar(256) NOT NULL  DEFAULT '' COMMENT '病情描述image',
+ `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+ `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+PRIMARY KEY (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='问诊订单表';
 
 
 
@@ -5036,4 +5069,35 @@ create TABLE `b2c_im_session_item`(
 
 
 
-
+)comment '医嘱明细表';
+--问诊订单表
+CREATE TABLE `b2c_inquiry_order` (
+ `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
+ `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
+ `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+ `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款  1待接诊 2已取消 3已完成',
+ `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
+ `doctor_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师名称',
+ `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '科室id',
+ `doctor_department_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师科室',
+ `patient_id` int(11) NOT NULL DEFAULT '0' COMMENT '患者id',
+ `patient_mobile` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '患者手机号码',
+ `patient_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '患者名称',
+ `patient_sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 0：未知 1：男 2：女',
+ `patient_identity_code` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '证件号码',
+ `patient_identity_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
+ `pay_code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付代号',
+ `pay_name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付名称',
+ `pay_sn` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付流水号',
+ `prepay_id` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
+ `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
+ `pay_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '支付时间',
+ `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
+ `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
+ `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
+ `image_url` varchar(256) NOT NULL  DEFAULT '' COMMENT '病情描述image',
+ `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+ `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+PRIMARY KEY (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='问诊订单表';
