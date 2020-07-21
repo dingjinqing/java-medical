@@ -1,6 +1,5 @@
 package com.vpu.mp.auth;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -11,7 +10,6 @@ import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
