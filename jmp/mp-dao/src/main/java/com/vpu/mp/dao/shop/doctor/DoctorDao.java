@@ -144,7 +144,7 @@ public class DoctorDao extends ShopBaseDao {
         if (doctorId != null) {
             condition = condition.and(DOCTOR.ID.ne(doctorId));
         }
-        int count = db().fetchCount(DEPARTMENT, condition);
+        int count = db().fetchCount(DOCTOR, condition);
         return count>0;
     }
 }
