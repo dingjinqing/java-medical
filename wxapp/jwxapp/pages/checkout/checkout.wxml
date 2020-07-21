@@ -345,5 +345,7 @@
 	<v-pre-sale-rule show="{{preSaleRuleShow}}" />
 	<!-- 处方详情展示弹窗 -->
 	<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>
+	<!-- 无处方提示弹窗 -->
+	<no-prescription-dialog show="{{showNoPrescription}}" />
 	<include src="../common/footer.wxml" />
 </view>

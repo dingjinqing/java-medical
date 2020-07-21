@@ -1,0 +1,102 @@
+@import "/css/iconfont.wxss";
+.main-container{
+  padding: 24rpx;
+  padding-bottom: 130rpx;
+}
+.title-module{
+  line-height: 46rpx;
+  font-weight: 600;
+}
+.card-content{
+  background-color: #fff;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  margin: 20rpx 0;
+}
+.list-item{
+  padding-right: 24rpx;
+  min-height: 98rpx;
+  display: flex;
+  align-items: center;
+}
+.list-item+.list-item{
+  border-top: 2rpx solid #eee;
+}
+.default-text{
+  font-size: 28rpx;
+}
+.emphasis-text{
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.space-between{
+  justify-content: space-between;
+}
+.radio-group,.radio-content{
+  display: flex;
+  align-items: center;
+}
+.radio-content+.radio-content{
+  margin-left: 60rpx;
+}
+.radio-content > .iconfont{
+  margin-right: 15rpx;
+  font-size: 32rpx;
+}
+.wrap{
+  flex-wrap: wrap;
+}
+.label-content{
+  display: flex;
+  margin-left: -24rpx;
+}
+.label-item{
+  padding: 20rpx 32rpx;
+  border-radius: 39rpx;
+  border: 2rpx solid #ccc;
+  margin-top: 24rpx;
+  margin-left: 24rpx;
+}
+.has-padding.p-top{
+  padding-top: 24rpx;
+}
+.has-padding.p-bottom{
+  padding-bottom: 24rpx;
+}
+.has-padding.p-left{
+  padding-left: 24rpx;
+}
+.has-padding.p-right{
+  padding-right: 24rpx;
+}
+.center{
+  align-items: center;
+}
+.column{
+  flex-direction: column;
+}
+.upload-icon{
+  width: 70rpx;
+  height: 56rpx;
+}
+.upload-tips{
+  color: #999;
+  margin-top: 22rpx;
+}
+.footer-content{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24rpx;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+}
+.footer-button{
+  width: 100%;
+  line-height: 80rpx;
+  border-radius: 40rpx;
+  color: #fff;
+  text-align: center;
+}
