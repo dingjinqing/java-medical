@@ -203,8 +203,9 @@ public class AdminServiceTechnicianController extends AdminBaseController {
      * @return
      */
     private boolean checkPurview(){
-        String[] verifys = saas.shop.version.verifyVerPurview(shopId(), VersionName.SUB_5_SERVICE);
-        if(verifys[0].equals("true")){
+        String[] verifies = saas.shop.version.verifyVerPurview(shopId(), VersionName.SUB_5_SERVICE);
+        String strTrue = "true";
+        if(strTrue.equals(verifies[0])){
             return true;
         }
         return false;

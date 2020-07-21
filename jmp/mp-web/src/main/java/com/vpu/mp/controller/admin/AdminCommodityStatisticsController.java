@@ -21,7 +21,7 @@ import static com.vpu.mp.service.pojo.shop.order.OrderExportVo.LANGUAGE_TYPE_EXC
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/19
  * 概览-商品统计
  */

@@ -63,7 +63,7 @@ public class WxAppLotteryController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/join")
-    public JsonResult JoinLottery(@RequestBody @Valid JoinLotteryParam param){
+    public JsonResult joinLottery(@RequestBody @Valid JoinLotteryParam param){
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
         JoinLottery joinLottery = shop().lottery.joinLottery(param);

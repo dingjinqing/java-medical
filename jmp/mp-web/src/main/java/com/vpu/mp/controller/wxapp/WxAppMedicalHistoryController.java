@@ -24,7 +24,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/detail")
-    public JsonResult MedicalHistoryDetail(@RequestBody MedicalHistoryListParam medicalHistoryListParam) {
+    public JsonResult medicalHistoryDetail(@RequestBody MedicalHistoryListParam medicalHistoryListParam) {
         return success(shop().medicalHistoryService.getMedicalHistoryDetail(medicalHistoryListParam));
     }
 

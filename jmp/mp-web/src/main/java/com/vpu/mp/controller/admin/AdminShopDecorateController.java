@@ -165,7 +165,8 @@ public class AdminShopDecorateController extends AdminBaseController {
      */
     @PostMapping(value = "/admin/decorate/page/save")
     public JsonResult saveDecoration(@RequestBody @Valid PageStoreParam param) {
-        if(param.getPageState() == 2){
+        int previewState = 2;
+        if(param.getPageState() == previewState){
             //预览，返回太阳码的图片链接
             return this.success(shop().adminDecoration.getPreviewCode(param));
         }else{
@@ -252,11 +253,13 @@ public class AdminShopDecorateController extends AdminBaseController {
     public JsonResult updateSearchCfg(@RequestBody SearchConfig config){
     	List<String> hotWords = config.getHotWords();
     	if(null!=hotWords) {
-    		if(hotWords.size()>11) {
+            int maxHotWordsNumber = 11;
+            if(hotWords.size()> maxHotWordsNumber) {
     			return fail(JsonResultCode.SEARCHCFG_HOTWORDS_LIMIT);
     		}
     	}
-    	if(config.getTitleAction().equals(3)&&StringUtils.isEmpty(config.getTitleCustom())) {
+        int customSearchAction = 3;
+        if(config.getTitleAction().equals(customSearchAction)&&StringUtils.isEmpty(config.getTitleCustom())) {
     		//自定义，titleCustom不能为空
     		return fail(JsonResultCode.SEARCHCFG_TITLECUSTOM_NOTNULL);
     	}

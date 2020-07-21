@@ -82,8 +82,9 @@ public class WxAppSubscribeMessageController extends WxAppBaseController {
 	private String[] getData(String[] data, String typs) {
 		if ((!StringUtils.isEmpty(typs)) && data.length == 0) {
 			String[] typesNames= {};
-			if (typs.contains(",")) {
-				typesNames = typs.split(",");
+            String comma = ",";
+            if (typs.contains(comma)) {
+				typesNames = typs.split(comma);
 			}else {
 				typesNames=new String[]{typs};
 			}

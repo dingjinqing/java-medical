@@ -234,7 +234,7 @@ public class AdminStoreController extends AdminBaseController{
         if(!shop().config.storeConfigService.getStoreBuy().equals(storeServiceConfig.getStoreBuy()) || !shop().config.storeConfigService.getTechnicianTitle().equals(storeServiceConfig.getTechnicianTitle())){
             String[] verifys = saas.shop.version.verifyVerPurview(shopId(), VersionName.SUB_5_STORE_PAY,VersionName.SUB_5_TECHNICIAN);
             for(String v: verifys){
-                if(!v.equals("true")){
+                if(!"true".equals(v)){
                     return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
                 }
             }

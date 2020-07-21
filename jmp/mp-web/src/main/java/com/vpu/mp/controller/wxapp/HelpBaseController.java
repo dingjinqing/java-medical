@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 
+/**
+ * @author zhaojianqiang
+ */
 public class HelpBaseController extends BaseController {
 
 	private static final String RSHOPID = "shop_id";
