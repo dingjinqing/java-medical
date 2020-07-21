@@ -79,7 +79,7 @@ public class AuditService extends ShopBaseService implements IorderOperate<Audit
         fetchparam.setPrescriptionCode(param.getPrescriptionCode());
         prescriptionService.pullExternalOnePrescriptionInfo(fetchparam);
         for (OrderGoodsRecord goods: oGoods){
-            goods.setPrescriptionNo(param.getPrescriptionCode());
+            goods.setPrescriptionCode(param.getPrescriptionCode());
             goods.setAuditTime(DateUtils.getLocalDateTime());
             if (param.getIsAudit().equals(BaseConstant.YES)){
                 goods.setMedicalAuditStatus((byte)1);

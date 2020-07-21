@@ -194,6 +194,20 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_web_manage/realTimeOverview/allRealTime'
               )
           },
+          // 销售报表
+          {
+            path: '/admin/home/main/salesreport',
+            name: 'sales_report',
+            meta: {
+              crumbTitle: 'router.sales_report',
+              meta: 'first_web_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/salesReport/salesReport'
+              )
+          },
+          // 用户画像
           {
             path: '/admin/home/main/userportrait',
             name: 'analysis_portrait',

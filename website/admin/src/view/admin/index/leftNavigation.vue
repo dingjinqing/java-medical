@@ -168,6 +168,13 @@ export default {
             imgUrl: this.$imageHost + '/image/admin/icon_left/new_analysis_portrait.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/new_analtsis_portrait_h.png',
             span: '',
+            name: 'sales_report',
+            flag: true
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/new_analysis_portrait.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/new_analtsis_portrait_h.png',
+            span: '',
             name: 'analysis_portrait',
             flag: false
           },
@@ -206,13 +213,13 @@ export default {
             name: 'trades_summary',
             flag: false
           },
-          {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/asset_manage.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/asset_manage_h.png',
-            span: '',
-            name: 'asset_summary',
-            flag: false
-          },
+          // {
+          //   imgUrl: this.$imageHost + '/image/admin/icon_left/asset_manage.png',
+          //   imgUrl_h: this.$imageHost + '/image/admin/icon_left/asset_manage_h.png',
+          //   span: '',
+          //   name: 'asset_summary',
+          //   flag: false
+          // },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/search_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/search_config_h.png',
