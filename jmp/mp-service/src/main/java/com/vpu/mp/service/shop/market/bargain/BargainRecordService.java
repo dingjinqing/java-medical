@@ -20,7 +20,7 @@ import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.*;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
-import com.vpu.mp.service.shop.image.postertraits.BargainPictorialService;
+import com.vpu.mp.service.shop.image.postertraits.BargainPictorialShareService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +70,7 @@ public class BargainRecordService extends ShopBaseService {
     @Autowired
     private OrderInfoService orderInfo;
     @Autowired
-    private BargainPictorialService shareImgService;
+    private BargainPictorialShareService shareImgService;
 
 	/**
 	 * 状态：正在砍价

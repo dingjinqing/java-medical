@@ -185,7 +185,8 @@ public class CouponMpService extends ShopBaseService {
         couponParam.setAccessMode((byte) 1);
         couponParam.setGetSource((byte) 5);
         //判断优惠券领取限制
-        if(couponData.getReceivePerPerson().intValue() != 0){//有限制领取
+        if(couponData.getReceivePerPerson().intValue() != 0){
+            //有限制领取
             Integer alreadyGet = this.couponAlreadyGet(userId, couponData.getId());
             if(couponData.getReceivePerPerson() > alreadyGet){
                 //添加优惠券到用户，调用定向发券通用方法
@@ -213,7 +214,7 @@ public class CouponMpService extends ShopBaseService {
         //通过alias_code查看优惠券是否存在
         if (null==couponData) {
            couponGetStatus = 1;
-        }else if(couponData.getValidityType() == 0 && couponData.getEndTime().before(nowDate)){//是否过期
+        }else if(couponData.getValidityType() == 0 && couponData.getEndTime().before(nowDate)){
             //是否过期
             couponGetStatus = 2;
         } else if (couponData.getEnabled() == 0) {

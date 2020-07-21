@@ -174,8 +174,8 @@ public class ShopOfficialAccount extends MainBaseService {
             .and(MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq(isAuthOk)));
     }
 
-	public List<MpOfficeAccountVo> findSamePrincipalMiniAndMP(Result<MpOfficialAccountRecord> oaRecords,
-			MpAuthShopRecord miniRecord) {
+	public List<MpOfficeAccountVo> findSamePrincipalMiniAndMp(Result<MpOfficialAccountRecord> oaRecords,
+                                                              MpAuthShopRecord miniRecord) {
 		List<MpOfficeAccountVo> list = new ArrayList<MpOfficeAccountVo>();
 		for (MpOfficialAccountRecord rAccountRecord : oaRecords) {
 			if (rAccountRecord.getIsAuthOk().equals((byte) 1)) {
@@ -251,7 +251,8 @@ public class ShopOfficialAccount extends MainBaseService {
 	 */
 	public void bindAllSamePrincipalOpenAppId(String principalName) throws WxErrorException {
 		logger().info("传入的principalName："+principalName);
-		if (!principalName.equals("个人")) {
+        String principalPersonal = "个人";
+        if (!principalName.equals(principalPersonal)) {
 			List<MaMpBindParam> apps = getSamePrincipalOfficeList(principalName);
 			List<MaMpBindParam> samePrincipalMaList = saas.shop.mp.getSamePrincipalMaList(principalName);
 			apps.addAll(samePrincipalMaList);
@@ -274,13 +275,15 @@ public class ShopOfficialAccount extends MainBaseService {
 			openAppId = saas.shop.mp.bindOpenAppId(false, app.getAppId(), openAppId);
 			if (!openAppId.equals(app.getBindOpenAppId())) {
 				// 更新数据库
-				if (app.getType().equals("1")) {
+                String typeMp = "1";
+                if (app.getType().equals(typeMp)) {
 					// 公众号
 					int execute = db().update(MP_OFFICIAL_ACCOUNT).set(MP_OFFICIAL_ACCOUNT.BIND_OPEN_APP_ID, openAppId)
 							.where(MP_OFFICIAL_ACCOUNT.APP_ID.eq(app.getAppId())).execute();
 					logger().info("公众号："+app.getAppId()+"更新bindOpenAppId："+openAppId+"结果："+execute);
 				}
-				if (app.getType().equals("2")) {
+                String typeMa = "2";
+                if (app.getType().equals(typeMa)) {
 					// 小程序
 					int updateBindOpenAppId = saas.shop.mp.updateBindOpenAppId(app.getAppId(), openAppId);
 					logger().info("小程序："+app.getAppId()+"更新bindOpenAppId："+openAppId+"结果："+updateBindOpenAppId);

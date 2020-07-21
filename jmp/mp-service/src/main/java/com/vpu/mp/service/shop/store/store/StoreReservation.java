@@ -801,10 +801,10 @@ public class StoreReservation extends ShopBaseService {
         serviceOrderService.updateServiceOrder(param.getOrderId(), map);
         int shopId = getShopId();
         // 调用微信关闭订单接口
-        CompletableFuture.supplyAsync(() -> cancelWXOrder(param.getOrderSn(),shopId));
+        CompletableFuture.supplyAsync(() -> cancelWxOrder(param.getOrderSn(),shopId));
     }
 
-    private boolean cancelWXOrder(String orderSn,int shopId) {
+    private boolean cancelWxOrder(String orderSn, int shopId) {
         // 队列五分钟后调用微信关闭订单接口
 
         OrderCloseQueenParam param = new OrderCloseQueenParam();

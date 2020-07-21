@@ -7,7 +7,10 @@ import com.vpu.mp.service.foundation.es.pojo.goods.EsSearchSource;
 
 import java.util.List;
 
-public abstract class SearchParam {
+/**
+ * @author lixinguo
+ */
+public abstract class BaseSearchParam {
 
 
     private Integer currentPage;

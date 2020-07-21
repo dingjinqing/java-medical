@@ -1309,7 +1309,9 @@ public class OrderInfoService extends ShopBaseService {
 				Arrays.asList(ORDER_FINISHED, ORDER_RETURN_FINISHED, ORDER_REFUND_FINISHED));
 
 		if (orderStatus.length > 0) {
-			if (orderSort == 4 && refundStatus.length > 0) {
+		    // TODO: 4 ???
+            int orderSort4 = 4;
+            if (orderSort == orderSort4 && refundStatus.length > 0) {
 				select.and(ORDER_INFO.ORDER_STATUS.notIn(orderStatusList));
 				select.and(ORDER_INFO.REFUND_STATUS.in(Arrays.asList(refundStatus)));
 			} else {

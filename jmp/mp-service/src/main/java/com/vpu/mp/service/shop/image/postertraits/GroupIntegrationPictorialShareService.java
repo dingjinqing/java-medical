@@ -28,7 +28,7 @@ import java.io.InputStream;
  * @date 2020年05月15日
  */
 @Service
-public class GroupIntegrationPictorialService extends ShareBaseService{
+public class GroupIntegrationPictorialShareService extends BaseShareService {
     @Autowired
     GroupIntegrationService groupIntegrationService;
 

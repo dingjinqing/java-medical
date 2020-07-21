@@ -32,7 +32,7 @@ import java.net.URL;
  * @date 2020年04月22日
  */
 @Service
-public class SeckillPictorialService extends ShareBaseService {
+public class SeckillPictorialShareService extends BaseShareService {
     @Autowired
     private SeckillService seckillService;
 

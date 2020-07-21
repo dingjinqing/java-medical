@@ -73,7 +73,8 @@ public class CardExchangService extends ShopBaseService {
 	 */
 	private List<GoodsCfg> parseExchangGoods(String exchangGoods) {
 		List<GoodsCfg> goodsCfgList = new ArrayList<GoodsCfg>();
-		if(exchangGoods.startsWith("{")) {
+        String leftBracket = "{";
+        if(exchangGoods.startsWith(leftBracket)) {
 			//	目前存储的数据格式为map
 			Map<String,Integer> map = Util.json2Object(exchangGoods, new TypeReference<Map<String,Integer>>() {}, false);
 			for(Map.Entry<String, Integer> entry: map.entrySet()) {

@@ -1161,13 +1161,13 @@ public class GoodsImportService extends ShopBaseService {
         }
 
         // 解析对应的规格组K
-        String[] specKVs = base.getPrdDesc().split(GoodsSpecProductService.PRD_DESC_DELIMITER);
-        if (specKVs.length ==0) {
+        String[] specKvs = base.getPrdDesc().split(GoodsSpecProductService.PRD_DESC_DELIMITER);
+        if (specKvs.length ==0) {
             return goodsSpecs;
         }
 
-        for (String specKV : specKVs) {
-            String[] kvs = specKV.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
+        for (String specKv : specKvs) {
+            String[] kvs = specKv.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
             if (kvs.length != 2) {
                 return goodsSpecs;
             }

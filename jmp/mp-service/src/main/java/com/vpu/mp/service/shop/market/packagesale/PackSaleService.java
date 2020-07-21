@@ -477,20 +477,24 @@ public class PackSaleService extends ShopBaseService {
             select.where(GOODS.GOODS_ID.in(inGoodsIds));
         }
         if(sortName != null && sortName > 0){
+            byte sortOrderDesc = (byte)1;
+            byte sortOrderAsc = (byte)2;
+            byte sortBySaleNum = (byte)1;
+            byte sortByShopPrice = (byte) 2;
             if(sortOrder != null && sortOrder > 0){
-                if(sortName == (byte)1 && sortOrder == 1){
+                if(sortName == sortBySaleNum && sortOrder == sortOrderDesc){
                     select.orderBy(GOODS.GOODS_SALE_NUM.desc());
-                }else if(sortName == (byte)1 && sortOrder == 2) {
+                }else if(sortName == sortBySaleNum && sortOrder == sortOrderAsc) {
                     select.orderBy(GOODS.GOODS_SALE_NUM.asc());
-                }else if(sortName == (byte)2 && sortOrder == 1) {
+                }else if(sortName == sortByShopPrice && sortOrder == sortOrderDesc) {
                     select.orderBy(GOODS.SHOP_PRICE.desc());
-                }else if(sortName == (byte)2 && sortOrder == 2) {
+                }else if(sortName == sortByShopPrice && sortOrder == sortOrderAsc) {
                     select.orderBy(GOODS.SHOP_PRICE.asc());
                 }
             }else {
-                if(sortName == (byte)1){
+                if(sortName == sortBySaleNum){
                     select.orderBy(GOODS.GOODS_SALE_NUM.desc());
-                }else if(sortName == (byte)2) {
+                }else if(sortName == sortByShopPrice) {
                     select.orderBy(GOODS.SHOP_PRICE.desc());
                 }
             }

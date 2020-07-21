@@ -1856,10 +1856,7 @@ public class GoodsService extends ShopBaseService {
      * @return 商品信息
      */
     public GoodsVo select(Integer goodsId) {
-        Record record = db().select()
-            .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
-            .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
-            .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
+        Record record = getGoodsAndBrandById(goodsId);
         if (record == null) {
             return null;
         }
@@ -1938,6 +1935,13 @@ public class GoodsService extends ShopBaseService {
         }
 
         return goodsVo;
+    }
+
+    private Record getGoodsAndBrandById(Integer goodsId) {
+        return db().select()
+                .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+                .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
+                .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
     }
 
     /**

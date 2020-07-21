@@ -44,6 +44,7 @@ import java.util.List;
 
 /**
  * 订单操作发送模板消息
+ * @author wangshuai
  */
 @Service
 public class OrderOperateSendMessage extends ShopBaseService {
@@ -331,8 +332,9 @@ public class OrderOperateSendMessage extends ShopBaseService {
 
     private String getString(String goodsName, int sum, int size) {
         StringBuilder result = new StringBuilder(goodsName);
-        if(result.length() > 32){
-            result.substring(0, 32);
+        int maxLength = 32;
+        if(result.length() > maxLength){
+            result.substring(0, maxLength);
         }
         result.append(size == 1 ? StringUtils.EMPTY : "等").append(sum).append("件");
         return result.toString();

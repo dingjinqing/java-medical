@@ -296,7 +296,8 @@ public class OrderOperationJudgment {
 			//自动收货时间
 			Instant autoReceive = order.getShippingTime().toInstant().plusSeconds(Duration.ofDays(order.getReturnDaysCfg()).getSeconds());
 			//用户在订单自动确认收货前2天可对该笔订单申请延长收货时间，申请后可延长 extendReceiveDays天，每笔订单可申请一次
-			if(Instant.now().plusSeconds(Duration.ofDays(2).getSeconds()).isAfter(autoReceive)) {
+            int twoDays = 2;
+            if(Instant.now().plusSeconds(Duration.ofDays(twoDays).getSeconds()).isAfter(autoReceive)) {
 				return Boolean.TRUE;
 			}
 		}

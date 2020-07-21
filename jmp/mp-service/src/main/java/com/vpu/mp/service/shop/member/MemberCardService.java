@@ -112,11 +112,11 @@ public class MemberCardService extends ShopBaseService {
     @Autowired
     protected ImageService imageService;
 	@Autowired
-	private NormalCardOpt normalCardOpt;
+	private NormalBaseCardOpt normalCardOpt;
 	@Autowired
-	private LimitCardOpt limitCardOpt;
+	private LimitBaseCardOpt limitCardOpt;
 	@Autowired
-	private GradeCardOpt gradeCardOpt;
+	private GradeBaseCardOpt gradeCardOpt;
 
 	@Autowired
 	public CardCreateService cardCreateSvc;
@@ -628,9 +628,9 @@ public class MemberCardService extends ShopBaseService {
 		for(Integer cardId: cardIdList) {
 			MemberCardRecord card = this.getCardById(cardId);
 			if(card != null) {
-				CardOpt cardOpt = getCardOpt(card.getCardType());
+				BaseCardOpt baseCardOpt = getCardOpt(card.getCardType());
 				for(Integer userId: userIdList) {
-					cardOpt.handleSendCard(userId, cardId, true);
+					baseCardOpt.handleSendCard(userId, cardId, true);
 				}
 			}else {
 				logger().info("该卡: "+cardId+" 不存在");
@@ -638,7 +638,7 @@ public class MemberCardService extends ShopBaseService {
 		}
 	}
 
-	public CardOpt getCardOpt(Byte type) {
+	public BaseCardOpt getCardOpt(Byte type) {
 		if(CardUtil.isNormalCard(type)) {
 			return normalCardOpt;
 		}else if(CardUtil.isLimitCard(type)) {
@@ -1351,7 +1351,7 @@ public class MemberCardService extends ShopBaseService {
         }else if(vo.getCardType().equals(MCARD_TP_GRADE)){
             //只要拥有一张等级卡，就认为是已领取
         	MemberCardRecord mCard = userCardService.userCardDao.getUserGradeCard(userId);
-            if( mCard != null && moduleCard.getCardId() == mCard.getId()){
+            if( mCard != null && moduleCard.getCardId().equals(mCard.getId())){
             	if(CardUtil.isStopUsing(mCard.getFlag())) {
             		vo.setStatus((byte)3);
             	}else {

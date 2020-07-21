@@ -63,8 +63,9 @@ public class EsGoodsThread  implements Callable<Boolean> {
         return result;
     }
     private Integer getTimes(Integer allSize){
-        Integer times = allSize/400;
-        if( allSize%400 != 0 ){
+        int perSize = 400;
+        Integer times = allSize/ perSize;
+        if( allSize% perSize != 0 ){
             times++;
         }
         return times;

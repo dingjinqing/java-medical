@@ -389,11 +389,11 @@ public class MpDistributionGoodsService extends ShopBaseService {
      */
     private void addRebatePriceRecord(GoodsDetailMpParam param){
         String rebateConfigInfo = Util.toJson(param.getRebateConfig());
-        String DataSign = Util.md5(rebateConfigInfo);
-        Integer into = db().selectCount().from(REBATE_PRICE_RECORD).where(REBATE_PRICE_RECORD.DATA_SIGN.eq(DataSign)).fetchOne().into(Integer.class);
+        String dataSign = Util.md5(rebateConfigInfo);
+        Integer into = db().selectCount().from(REBATE_PRICE_RECORD).where(REBATE_PRICE_RECORD.DATA_SIGN.eq(dataSign)).fetchOne().into(Integer.class);
         if (into < 1) {
             RebatePriceRecordRecord rebatePriceRecord = new RebatePriceRecordRecord();
-            rebatePriceRecord.setDataSign(DataSign);
+            rebatePriceRecord.setDataSign(dataSign);
             rebatePriceRecord.setRebateData(rebateConfigInfo);
             rebatePriceRecord.setUserId(param.getUserId());
             db().executeInsert(rebatePriceRecord);

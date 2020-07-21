@@ -35,7 +35,7 @@ import java.net.URL;
  * @date 2020年02月03日
  */
 @Service
-public class GroupDrawPictorialService extends ShareBaseService {
+public class GroupDrawPictorialShareService extends BaseShareService {
     @Autowired
     private GroupDrawService groupDrawService;
 

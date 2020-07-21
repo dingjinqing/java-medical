@@ -574,16 +574,16 @@ public class GroupIntegrationService extends ShopBaseService {
 			int existGroup = groupIntegrationList.getExistGroup(userId, pinInteId);
 			if (type != null) {
 				if (pinInteInfo.getEndTime().before(DateUtils.getLocalDateTime())
-						|| ((inteRemain < inteGroup && inteTotal > 0 && isDayDivide == IS_DAY_DIVIDE_N)
-								|| (inteRemain <= 0 && inteTotal > 0 && isDayDivide == IS_DAY_DIVIDE_Y))
+						|| ((inteRemain < inteGroup && inteTotal > 0 && isDayDivide.equals(IS_DAY_DIVIDE_N))
+								|| (inteRemain <= 0 && inteTotal > 0 && isDayDivide.equals(IS_DAY_DIVIDE_Y)))
 								&& existGroup == 0) {
 					//该活动已结束
 					return new CanApplyPinInteVo(STATUS_FOUR, Util.translateMessage(lang, JsonResultMessage.GROUP_INTEGRATION_ENDED, LANGUAGE_TYPE_MSG));
 				}
 			} else {
 				if (pinInteInfo.getEndTime().before(DateUtils.getLocalDateTime())
-						|| ((inteRemain < inteGroup && inteTotal > 0 && isDayDivide == IS_DAY_DIVIDE_N)
-								|| (inteRemain <= 0 && inteTotal > 0 && isDayDivide == IS_DAY_DIVIDE_Y))) {
+						|| ((inteRemain < inteGroup && inteTotal > 0 && isDayDivide.equals(IS_DAY_DIVIDE_N))
+								|| (inteRemain <= 0 && inteTotal > 0 && isDayDivide.equals(IS_DAY_DIVIDE_Y)))) {
 					//该活动已结束
 					return new CanApplyPinInteVo(STATUS_FOUR,  Util.translateMessage(lang, JsonResultMessage.GROUP_INTEGRATION_ENDED, LANGUAGE_TYPE_MSG));
 				}
@@ -1013,7 +1013,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		for (GroupIntegrationMaVo item : groupInfo) {
 			int inviteNum = groupIntegrationList.getInviteNum(groupId, item.getUserId(), pinInteId);
 			int inviteNewNum = groupIntegrationList.getInviteNewNum(groupId, item.getUserId(),pinInteId);
-			int selfNum = item.getIsNew() == STATUS_ONE ? 2 : 1;
+			int selfNum = item.getIsNew().equals(STATUS_ONE) ? 2 : 1;
 			int getNum = selfNum + inviteNewNum + inviteNum;
 			logger().info("userId:{},getNum:{}",item.getUserId(),getNum);
 			map.put(item, getNum);

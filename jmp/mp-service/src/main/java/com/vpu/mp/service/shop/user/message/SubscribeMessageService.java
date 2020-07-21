@@ -215,7 +215,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			return true;
 		}
 		// 用户拒绝接受消息，如果用户之前曾经订阅过，则表示用户取消了订阅关系
-		if (sendResult.getErrcode().equals("43101")) {
+		if ("43101".equals(sendResult.getErrcode())) {
 			modifySubscribeStatus(templateIdRecord);
 			return false;
 		}
@@ -683,10 +683,10 @@ public class SubscribeMessageService extends ShopBaseService {
 			if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
 				//有数字
 				value="店铺活动";
-				if(content.equals("活动名称")) {
+				if("活动名称".equals(content)) {
 					value = toReturnAnLog(name, value,"店铺活动");
 				}
-				if(content.equals("奖品名称")) {
+				if("奖品名称".equals(content)) {
 					value = toReturnAnLog(name, value,"店铺奖品");
 				}
 				logger().info("最后：{}",value);

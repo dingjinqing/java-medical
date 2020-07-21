@@ -23,8 +23,8 @@ import static com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
 public class OrderRefundRecordService extends ShopBaseService{
 
 	public final OrderRefundRecord TABLE = ORDER_REFUND_RECORD;
-    public static final Byte success = 1;
-    public static final Byte fail = 2;
+    public static final Byte SUCCESS = 1;
+    public static final Byte FAIL = 2;
     /**
      * 非系统金额退款记录
      * @param refundSn 退款流水号
@@ -43,12 +43,12 @@ public class OrderRefundRecordService extends ShopBaseService{
         record.setRefundAmount(money);
         if(refundResult != null) {
             //成功
-            record.setDealStatus(success);
+            record.setDealStatus(SUCCESS);
             record.setDealStatusName("非系统金额退款成功");
             record.setDealRemark(refundResult.toString());
         }else {
             //失败
-            record.setDealStatus(fail);
+            record.setDealStatus(FAIL);
             record.setDealStatusName("非系统金额退款失败");
             record.setRemark1(errorDesc);
         }
@@ -64,7 +64,7 @@ public class OrderRefundRecordService extends ShopBaseService{
         if(retId == null) {
             return false;
         }
-        OrderRefundRecordRecord count = db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(fail))).fetchAny();
+        OrderRefundRecordRecord count = db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(FAIL))).fetchAny();
         if(count != null) {
             return true;
         }
@@ -77,7 +77,7 @@ public class OrderRefundRecordService extends ShopBaseService{
      * @return
      */
     public boolean isExistSucess(Integer retId){
-        OrderRefundRecordRecord count = db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(success))).fetchAny();
+        OrderRefundRecordRecord count = db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(SUCCESS))).fetchAny();
         if(count != null) {
             return true;
         }
@@ -125,7 +125,7 @@ public class OrderRefundRecordService extends ShopBaseService{
      * @return
      */
     public List<OrderRefundRecordRecord> getSuccessRecord(Integer retId) {
-        return db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(success))).fetch();
+        return db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(SUCCESS))).fetch();
     }
 
     /**
@@ -134,6 +134,6 @@ public class OrderRefundRecordService extends ShopBaseService{
      * @return
      */
     public OrderRefundRecordRecord getFailRecord(Integer retId) {
-        return db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(fail))).fetchAny();
+        return db().selectFrom(TABLE).where(TABLE.RET_ID.eq(retId).and(TABLE.DEAL_STATUS.eq(FAIL))).fetchAny();
     }
 }

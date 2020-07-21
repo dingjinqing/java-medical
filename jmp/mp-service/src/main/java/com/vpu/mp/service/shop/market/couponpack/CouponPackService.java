@@ -467,11 +467,12 @@ public class CouponPackService extends ShopBaseService {
         vo.setMemberCardList(memberCardLit);
         if(StringUtils.isNoneBlank(param.getCardNo()) && !memberCardLit.isEmpty()){
             //默认选第一个
-            if(param.getCardNo().equals("0")){
+            String defaultCardNo = "0";
+            if(param.getCardNo().equals(defaultCardNo)){
                 vo.setMemberCardNo(memberCardLit.get(0).getCardNo());
                 vo.setMemberCardInfo(memberCardLit.get(0));
             }else{
-                vo.setMemberCardInfo(memberCardLit.stream().filter(GeneralUserCardVo->GeneralUserCardVo.getCardNo().equals(param.getCardNo())).collect(Collectors.toList()).get(0));
+                vo.setMemberCardInfo(memberCardLit.stream().filter(generalUserCardVo->generalUserCardVo.getCardNo().equals(param.getCardNo())).collect(Collectors.toList()).get(0));
                 vo.setMemberCardNo(param.getCardNo());
             }
         }else{

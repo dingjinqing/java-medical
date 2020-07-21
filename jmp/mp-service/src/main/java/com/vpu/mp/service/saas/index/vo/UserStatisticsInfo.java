@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * system 概况-概览 用户统计信息
+ * @author luguangyao
  */
 public class UserStatisticsInfo {
     private List<BaseInfo> userNumsInfo;

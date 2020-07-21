@@ -52,7 +52,8 @@ public class RemindService extends ShopBaseService implements IorderOperate<Orde
 		if(!OrderOperationJudgment.isShowRemindShip(order)) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_NOT_SUPPORTED, null);
 		}
-		if(order.getOrderRemind() == 3) {
+        int maxRemindNumber = 3;
+        if(order.getOrderRemind() == maxRemindNumber) {
 			//限制三次
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT, null);
 		}

@@ -126,7 +126,7 @@ public class AdminWechatApiController extends AdminBaseController {
 		//可以绑定的公众号列表
 		logger().info("开始查询可以绑定的公众号列表");
 		Result<MpOfficialAccountRecord> officialAccountBySysId = saas.shop.officeAccount.getOfficialAccountBySysId(adminAuth.user().sysId);
-		List<MpOfficeAccountVo> officialList = saas.shop.officeAccount.findSamePrincipalMiniAndMP(officialAccountBySysId, record);
+		List<MpOfficeAccountVo> officialList = saas.shop.officeAccount.findSamePrincipalMiniAndMp(officialAccountBySysId, record);
 		MpAuthShopToAdminVo into = record.into(MpAuthShopToAdminVo.class);
 		into.setOfficialList(officialList);
 		//查询已绑定的公众号信息

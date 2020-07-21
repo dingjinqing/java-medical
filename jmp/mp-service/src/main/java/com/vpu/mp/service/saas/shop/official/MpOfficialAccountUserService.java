@@ -15,6 +15,9 @@ import java.util.List;
 
 import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MpOfficialAccountUserService extends MainBaseService {
 

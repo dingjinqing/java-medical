@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
@@ -39,6 +40,7 @@ import javax.validation.constraints.Null;
  */
 @Service
 public class DistributorListService extends ShopBaseService{
+    public static final String ORDER_ASC = "asc";
     @Autowired
     public MpDistributionService mpDis;
 
@@ -63,7 +65,8 @@ public class DistributorListService extends ShopBaseService{
 
         //分销审核开关是否开启
         DistributionParam distributionCfg = dcs.getDistributionCfg();
-        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 0){//分销审核开关开启展示审核过的分销员
+        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 0){
+            //分销审核开关开启展示审核过的分销员
             //下级用户数
             recordTable = db().select(d.USER_ID,nextNumber.as("nextNumber")).from(d).leftJoin(a).on(a.INVITE_ID.eq(d.USER_ID)).groupBy(d.USER_ID).asTable();
         }
@@ -101,10 +104,12 @@ public class DistributorListService extends ShopBaseService{
 
         //分销审核开关是否开启
 //        DistributionParam distributionCfg = dcs.getDistributionCfg();
-        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 1){//分销审核开关开启展示审核过的分销员
+        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 1){
+            //分销审核开关开启展示审核过的分销员
             where.and(d.IS_DISTRIBUTOR.eq((byte) 1));
         }
-        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 0){//分销审核开关关闭 分销员列表默认展示有下级的分销员
+        if(distributionCfg.getJudgeStatus() != null && distributionCfg.getJudgeStatus() == 0){
+            //分销审核开关关闭 分销员列表默认展示有下级的分销员
             param.setHaveNextUser((byte)1);
         }
         SelectConditionStep<? extends Record> sql = buildOptions(where, param,record2Table,record3Table,record2Table2,recordTable);
@@ -159,24 +164,10 @@ public class DistributorListService extends ShopBaseService{
 		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
 			where.and(d.CREATE_TIME.ge(param.getStartCreateTime())).and(d.CREATE_TIME.le(param.getEndCreateTime()));
 		}
-		//被邀请人昵称 || 手机号
-		if(StringUtil.isNotEmpty(param.getInvitedMobile()) || StringUtil.isNotEmpty(param.getInvitedUserName())) {
-			SelectConditionStep<Record1<Integer>> selectInvites = db().select(a.INVITE_ID)
-					.from(a).where(a.INVITE_ID.ge(0));
-			if(StringUtil.isNotEmpty(param.getInvitedUserName())) {
-				selectInvites.and(a.USERNAME.contains(param.getInvitedUserName()));
-			}
-			if(StringUtil.isNotEmpty(param.getInvitedMobile())) {
-				selectInvites.and(a.MOBILE.contains(param.getInvitedMobile()));
-			}
-			ArrayList<Integer> inviteIds = new ArrayList<Integer>();
-			List<Integer> invites = selectInvites.fetch().into(Integer.class);
-			for(int invite : invites) {
-				inviteIds.add(invite);
-			}
-			where.and(a.USER_ID.in(inviteIds));
-		}
-		//分销分组
+
+        processInviteMobileAndName(where, param, a);
+
+        //分销分组
 		if(param.getDistributorGroup() != null) {
 			where.and(d.INVITE_GROUP.eq(param.getDistributorGroup()));
 		}
@@ -202,10 +193,15 @@ public class DistributorListService extends ShopBaseService{
         where.groupBy(d.USER_ID,recordTable.field("nextNumber"),record2Table.field("sublayerNumber"), record3Table.field("totalCanFanliMoney"),
             record3Table.field("totalFanliMoney"), record2Table2.field("waitFanliMoney"),d.USERNAME,d.MOBILE,d.INVITATION_CODE,
             d.CREATE_TIME,USER_DETAIL.REAL_NAME,DISTRIBUTOR_LEVEL.LEVEL_NAME,DISTRIBUTOR_GROUP.GROUP_NAME,d.INVITE_ID);
+        processOrderBy(where, param, record2Table, record3Table, record2Table2, recordTable);
 
+        return where;
+	}
+
+    private void processOrderBy(SelectConditionStep<? extends Record> where, DistributorListParam param, Table<Record2<Integer, BigDecimal>> record2Table, Table<Record3<Integer, BigDecimal, BigDecimal>> record3Table, Table<Record2<Integer, BigDecimal>> record2Table2, Table<Record1<Integer>> recordTable) {
         //表头排序
         if(param.getSortField().equals(SORT_BY_NEXT_NUM)){
-            if(param.getSortWay().equals("asc")){
+            if(param.getSortWay().equals(ORDER_ASC)){
                 where.orderBy(recordTable.field("nextNumber").asc());
             }else{
                 where.orderBy(recordTable.field("nextNumber").desc());
@@ -213,7 +209,7 @@ public class DistributorListService extends ShopBaseService{
         }
 
         if(param.getSortField().equals(SORT_BY_SUBLAYER_NUM)){
-           if(param.getSortWay().equals("asc")){
+           if(param.getSortWay().equals(ORDER_ASC)){
                where.orderBy(record2Table.field("sublayerNumber").asc());
            }else{
                where.orderBy(record2Table.field("sublayerNumber").desc());
@@ -221,7 +217,7 @@ public class DistributorListService extends ShopBaseService{
         }
 
         if(param.getSortField().equals(SORT_BY_TOTAL_CAN_FANLI)){
-            if(param.getSortWay().equals("asc")){
+            if(param.getSortWay().equals(ORDER_ASC)){
                 where.orderBy(record3Table.field("totalCanFanliMoney").asc());
             }else{
                 where.orderBy(record3Table.field("totalCanFanliMoney").desc());
@@ -229,7 +225,7 @@ public class DistributorListService extends ShopBaseService{
         }
 
         if(param.getSortField().equals(SORT_BY_TOTAL_FANLI)){
-            if(param.getSortWay().equals("asc")){
+            if(param.getSortWay().equals(ORDER_ASC)){
                 where.orderBy(record3Table.field("totalFanliMoney").asc());
             }else{
                 where.orderBy(record3Table.field("totalFanliMoney").desc());
@@ -237,17 +233,35 @@ public class DistributorListService extends ShopBaseService{
         }
 
         if(param.getSortField().equals(SORT_BY_WAIT_FANLI)){
-            if(param.getSortWay().equals("asc")){
+            if(param.getSortWay().equals(ORDER_ASC)){
                 where.orderBy(record2Table2.field("waitFanliMoney").asc());
             }else{
                 where.orderBy(record2Table2.field("waitFanliMoney").desc());
             }
         }
+    }
 
-		return where;
-	}
+    private void processInviteMobileAndName(SelectConditionStep<? extends Record> where, DistributorListParam param, User a) {
+        //被邀请人昵称 || 手机号
+        if(StringUtil.isNotEmpty(param.getInvitedMobile()) || StringUtil.isNotEmpty(param.getInvitedUserName())) {
+            SelectConditionStep<Record1<Integer>> selectInvites = db().select(a.INVITE_ID)
+                    .from(a).where(a.INVITE_ID.ge(0));
+            if(StringUtil.isNotEmpty(param.getInvitedUserName())) {
+                selectInvites.and(a.USERNAME.contains(param.getInvitedUserName()));
+            }
+            if(StringUtil.isNotEmpty(param.getInvitedMobile())) {
+                selectInvites.and(a.MOBILE.contains(param.getInvitedMobile()));
+            }
+            ArrayList<Integer> inviteIds = new ArrayList<Integer>();
+            List<Integer> invites = selectInvites.fetch().into(Integer.class);
+            for(int invite : invites) {
+                inviteIds.add(invite);
+            }
+            where.and(a.USER_ID.in(inviteIds));
+        }
+    }
 
-	/**
+    /**
 	 * 分销员已邀请用户列表
 	 * @param param
 	 * @return
@@ -260,15 +274,15 @@ public class DistributorListService extends ShopBaseService{
         SelectConditionStep<? extends Record> sql = getInvitedListOptions(select,param,userIds);
 		PageResult<InviteUserInfoVo> invitedList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), InviteUserInfoVo.class);
 		BigDecimal totalGetFanliMoney = new BigDecimal(0);
-        DistributorInvitedListVo InviteInfo = new DistributorInvitedListVo();
+        DistributorInvitedListVo inviteInfo = new DistributorInvitedListVo();
 		for(InviteUserInfoVo info:invitedList.dataList){
 		    if(info.getTotalFanliMoney() != null){
                 totalGetFanliMoney = totalGetFanliMoney.add(info.getTotalFanliMoney());
             }
         }
-        InviteInfo.setTotalGetFanliMoney(totalGetFanliMoney);
-		InviteInfo.setInviteUserInfo(invitedList);
-		return InviteInfo;
+        inviteInfo.setTotalGetFanliMoney(totalGetFanliMoney);
+		inviteInfo.setInviteUserInfo(invitedList);
+		return inviteInfo;
 	}
 
 	/**
@@ -334,15 +348,15 @@ public class DistributorListService extends ShopBaseService{
             SelectConditionStep<? extends Record> sql = getInvitedListOptions(select,param,userIds);
             PageResult<InviteUserInfoVo> invitedList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), InviteUserInfoVo.class);
             BigDecimal totalGetFanliMoney = new BigDecimal(0);
-            DistributorInvitedListVo InviteInfo = new DistributorInvitedListVo();
+            DistributorInvitedListVo inviteInfo = new DistributorInvitedListVo();
             for(InviteUserInfoVo info:invitedList.dataList){
                 if(info.getTotalFanliMoney() != null){
                     totalGetFanliMoney = totalGetFanliMoney.add(info.getTotalFanliMoney());
                 }
             }
-            InviteInfo.setTotalGetFanliMoney(totalGetFanliMoney);
-            InviteInfo.setInviteUserInfo(invitedList);
-            return InviteInfo;
+            inviteInfo.setTotalGetFanliMoney(totalGetFanliMoney);
+            inviteInfo.setInviteUserInfo(invitedList);
+            return inviteInfo;
         }else{
             return null;
         }

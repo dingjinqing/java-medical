@@ -445,7 +445,7 @@ public class ReducePriceService extends ShopBaseService {
                 if(oldRecord == null){
                     retMap.put(r.get(REDUCE_PRICE_PRODUCT.PRD_ID),r);
                 }else{
-                    if(oldRecord.get(REDUCE_PRICE.FIRST) < r.get(REDUCE_PRICE.FIRST) || (oldRecord.get(REDUCE_PRICE.FIRST) == r.get(REDUCE_PRICE.FIRST) && r.get(REDUCE_PRICE.CREATE_TIME).after(oldRecord.get(REDUCE_PRICE.CREATE_TIME)))){
+                    if(oldRecord.get(REDUCE_PRICE.FIRST) < r.get(REDUCE_PRICE.FIRST) || (oldRecord.get(REDUCE_PRICE.FIRST).equals(r.get(REDUCE_PRICE.FIRST)) && r.get(REDUCE_PRICE.CREATE_TIME).after(oldRecord.get(REDUCE_PRICE.CREATE_TIME)))){
                         retMap.put(r.get(REDUCE_PRICE_PRODUCT.PRD_ID),r);
                     }
                 }

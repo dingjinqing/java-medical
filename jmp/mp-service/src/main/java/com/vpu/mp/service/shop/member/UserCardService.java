@@ -60,10 +60,10 @@ import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.member.card.CardUserOpt;
-import com.vpu.mp.service.shop.member.card.GradeCardOpt;
-import com.vpu.mp.service.shop.member.card.LimitCardOpt;
-import com.vpu.mp.service.shop.member.card.NormalCardOpt;
+import com.vpu.mp.service.shop.member.card.BaseCardUserOpt;
+import com.vpu.mp.service.shop.member.card.GradeBaseCardOpt;
+import com.vpu.mp.service.shop.member.card.LimitBaseCardOpt;
+import com.vpu.mp.service.shop.member.card.NormalBaseCardOpt;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
@@ -161,13 +161,13 @@ public class UserCardService extends ShopBaseService {
     @Autowired
     private VirtualOrderService virtualOrderService;
     @Autowired
-    private LimitCardOpt limitCardOpt;
+    private LimitBaseCardOpt limitCardOpt;
     @Autowired
-    private NormalCardOpt normalCardOpt;
+    private NormalBaseCardOpt normalCardOpt;
     @Autowired
-    private GradeCardOpt gradeCardOpt;
+    private GradeBaseCardOpt gradeCardOpt;
     @Autowired
-    private CardUserOpt cardUserOpt;
+    private BaseCardUserOpt cardUserOpt;
     @Autowired
     private CardFreeShipService cardFreeShipSvc;
     @Autowired

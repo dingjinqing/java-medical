@@ -741,7 +741,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
 	private void checkAuth(String moduName) {
 		String[] auth1 = saas.shop.version.verifyVerPurview(getShopId(), moduName);
 		logger().info("{}权限：{}",moduName,auth1[0]);
-		Assert.isTrue(auth1[0].equals("true"), moduName+"have no auth");
+		Assert.isTrue("true".equals(auth1[0]), moduName+"have no auth");
 	}
 
     /**

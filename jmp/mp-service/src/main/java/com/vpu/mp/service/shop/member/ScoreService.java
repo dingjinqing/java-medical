@@ -820,7 +820,8 @@ public class ScoreService extends ShopBaseService {
 		ShopCfgRecord scoreLimitRecord = scoreCfgService.getScoreNum("score_limit");
 		ExpireVo vo=new ExpireVo();
 		if (scoreLimitRecord != null) {
-			if (scoreLimitRecord.getV().equals("1")) {
+            String scoreLimitOn = "1";
+            if (scoreLimitRecord.getV().equals(scoreLimitOn)) {
 				int scoreYear = Integer.parseInt(scoreCfgService.getScoreNum("score_year").getV());
 				int year = LocalDateTime.now().getYear();
 				year=year+scoreYear;
@@ -835,7 +836,8 @@ public class ScoreService extends ShopBaseService {
 				vo.setTime(String.valueOf(year)+"-"+month+"-"+day+" 23:59:59");
 				vo.setScore(getExpireScore(userId,  Timestamp.valueOf(vo.getTime())));
 			}
-			if (scoreLimitRecord.getV().equals("0")) {
+            String scoreLimitOff = "0";
+            if (scoreLimitRecord.getV().equals(scoreLimitOff)) {
 				DateTimeFormatter df = DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SIMPLE);
 				LocalDateTime localDateTime=LocalDateTime.now();
 				vo.setTime(df.format(localDateTime));
@@ -872,8 +874,8 @@ public class ScoreService extends ShopBaseService {
 			ScoreSignVo vo = record.into(ScoreSignVo.class);
 			// 处理连续签到的天数和积分数
 			Map<String, Integer> map = scoreDao.checkDays(record.get(USER_SCORE.USER_ID), record.get(USER_SCORE.CREATE_TIME), record.get(USER_SCORE.USABLE_SCORE));
-			vo.setContinueDays(map.get(scoreDao.SIGN_DAY));
-			vo.setTotalScore(map.get(scoreDao.SIGN_SCORE));
+			vo.setContinueDays(map.get(ScoreDaoService.SIGN_DAY));
+			vo.setTotalScore(map.get(ScoreDaoService.SIGN_SCORE));
 			// 处理用户标签
 			List<TagVo> tags = tagMap.get(record.get(USER_SCORE.USER_ID));
 			if(tags != null && tags.size()>0) {

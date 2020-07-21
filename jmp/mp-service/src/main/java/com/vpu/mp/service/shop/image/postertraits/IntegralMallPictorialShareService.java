@@ -25,7 +25,7 @@ import java.math.BigDecimal;
  * @date 2020年05月15日
  */
 @Service
-public class IntegralMallPictorialService extends ShareBaseService {
+public class IntegralMallPictorialShareService extends BaseShareService {
 
     @Autowired
     IntegralConvertService integralConvertService;

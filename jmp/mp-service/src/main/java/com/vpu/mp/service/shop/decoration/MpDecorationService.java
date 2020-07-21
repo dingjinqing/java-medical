@@ -424,7 +424,9 @@ public class MpDecorationService extends ShopBaseService {
 					}
                     return this.convertIntegralForIndex(objectMapper, node, user);
                 case ModuleConstant.M_PRESCRIPTION:
-                    if (GoodsConstant.ZERO.equals(patientId)) return null;
+                    if (GoodsConstant.ZERO.equals(patientId)) {
+                        return null;
+                    }
                     return this.convertPrescriptionForIndex(objectMapper, node, user);
                 case ModuleConstant.M_CASE_HISTORY:
                     return this.convertCaseHistoryForIndex(objectMapper, node, user);
@@ -446,7 +448,8 @@ public class MpDecorationService extends ShopBaseService {
      */
 	private boolean isNoAuth(String modeName) {
 		String[] verPurview = saas.shop.version.verifyVerPurview(getShopId(), modeName);
-		if(!verPurview[0].equals("true")) {
+        String strTrue = "true";
+        if(!verPurview[0].equals(strTrue)) {
 			logger().info("店铺：{}，的模块：{}没有权限",getShopId(),modeName);
 			return true;
 		}
@@ -801,8 +804,9 @@ public class MpDecorationService extends ShopBaseService {
                         case ModuleConstant.M_GOODS:
                             ModuleGoods moduleGoods = this.convertGoodsForModule(objectMapper, node, user.getUserId(),patientId);
                             if (!(GoodsConstant.AUTO_RECOMMEND.equals(moduleGoods.getRecommendType()) && GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(moduleGoods.getAutoRecommendType())
-                                && GoodsConstant.ZERO.equals(patientId)))
-                            return moduleGoods;
+                                && GoodsConstant.ZERO.equals(patientId))) {
+                                return moduleGoods;
+                            }
                         case ModuleConstant.M_GOODS_GROUP:
                             return this.convertGoodsGroupForModule(objectMapper, node, user.getUserId());
                         case ModuleConstant.M_COUPON:

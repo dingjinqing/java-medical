@@ -888,7 +888,8 @@ public class GroupDrawService extends ShopBaseService {
 				groupDrawList.setUserName("神秘小伙伴");
 			}
 			String userAvatar = groupDrawList.getUserAvatar();
-			if (StringUtils.isNotEmpty(userAvatar) && userAvatar.substring(0, 1).equals("/")) {
+            String pathSegment = "/";
+            if (StringUtils.isNotEmpty(userAvatar) && userAvatar.substring(0, 1).equals(pathSegment)) {
 				groupDrawList.setUserAvatar(imageService.imageUrl("/image/admin/head_icon.png"));
 			}
 		}

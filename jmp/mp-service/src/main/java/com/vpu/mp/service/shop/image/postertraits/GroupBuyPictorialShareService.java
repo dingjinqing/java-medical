@@ -36,7 +36,7 @@ import java.net.URL;
  * @date 2019/12/12 18:00
  */
 @Service
-public class GroupBuyPictorialService extends ShareBaseService {
+public class GroupBuyPictorialShareService extends BaseShareService {
     @Autowired
     private GroupBuyService groupBuyService;
 

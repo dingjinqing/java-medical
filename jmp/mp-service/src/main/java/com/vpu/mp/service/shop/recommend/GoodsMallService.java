@@ -112,7 +112,8 @@ public class GoodsMallService extends ShopBaseService {
 	 */
 	public List<ListProduct> checkShippingRecommendGoods(List<Integer> goodsId) {
 		List<ListProduct> list=new ArrayList<ListProduct>();
-		if(check("2")) {
+        String showInItemDetailPage = "2";
+        if(check(showInItemDetailPage)) {
 			list=shippingRecommendGoods(goodsId);
 		}
 		return list;
@@ -126,7 +127,8 @@ public class GoodsMallService extends ShopBaseService {
 	public boolean check(String value) {
 		WxShoppingListConfig config = shoppingListConfig.getShoppingListConfig();
 		String enabeld = config.getEnabeldWxShoppingList();
-		if(enabeld.equals("0")) {
+        String disabled = "0";
+        if(enabeld.equals(disabled)) {
 			//0"未开启 "1"开启
 			return false;
 		}

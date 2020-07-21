@@ -23,6 +23,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author luguangyao
+ */
 @Component
 public class SortDataHelper extends ShopBaseService implements DataHelperInterface<GoodsSortCacheInfo> {
 

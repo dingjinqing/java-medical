@@ -4,7 +4,6 @@ import static com.vpu.mp.db.main.Tables.SHOP;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,7 @@ public class StoreManageService extends MainBaseService {
 	public StoreAccountService storeAccountService;
 
 	private static final String STOREJSON = "admin.storeTop.json";
-	private static final String dot = ",";
+	private static final String DOT = ",";
 
 	/**
 	 * 获取店员权限的配置和选中状态
@@ -106,8 +105,8 @@ public class StoreManageService extends MainBaseService {
 	private List<Integer> splitString(String stores) {
 		List<Integer> list = new ArrayList<Integer>();
 		if (stores != null) {
-			if (stores.contains(dot)) {
-				String[] split = stores.split(dot);
+			if (stores.contains(DOT)) {
+				String[] split = stores.split(DOT);
 				for (String string : split) {
 					Integer valueOf = Integer.valueOf(string);
 					if(!list.contains(valueOf)) {
@@ -126,7 +125,7 @@ public class StoreManageService extends MainBaseService {
 		List<String> menuCfg = param.getMenuCfg();
 		boolean flag = false;
 		for (String string : menuCfg) {
-			if (string.equals("store_overview")) {
+			if ("store_overview".equals(string)) {
 				flag = true;
 			}
 		}

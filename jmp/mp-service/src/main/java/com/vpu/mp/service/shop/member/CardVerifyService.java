@@ -386,8 +386,8 @@ public class CardVerifyService extends ShopBaseService {
 			// 所有的卡
 			List<String> nos = results.dataList.stream().map(x->x.get(CARD_EXAMINE.CARD_NO)).distinct().collect(Collectors.toList());
 			Map<String, MemberCardRecord> cardMap = cardDaoSvc.getCardByNo(nos.toArray(new String[0]));
-			Map<String,List<String>> cardCfgMap = new HashMap<>();
-			Map<Integer,String> shopAccountMap = new HashMap<>();
+			Map<String,List<String>> cardCfgMap = new HashMap<>(16);
+			Map<Integer,String> shopAccountMap = new HashMap<>(16);
 			// 提前获取激活的选项
 			for(Map.Entry<String, MemberCardRecord> entry: cardMap.entrySet()) {
 				List<String> cfg = CardUtil.parseActivationCfg(entry.getValue().getActivationCfg());
@@ -480,7 +480,7 @@ public class CardVerifyService extends ShopBaseService {
 			}
 			// deal address
 			if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
-				Map<String,Object> adMap = new HashMap<>();
+				Map<String,Object> adMap = new HashMap<>(16);
 				adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
 				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
 				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
@@ -502,7 +502,8 @@ public class CardVerifyService extends ShopBaseService {
 	 */
 	public Workbook exportToExcel(ActiveAuditParam param,String lang) {
 		logger().info("导出会员卡审核数据为excel");
-		Map<Integer,String> sysIdNameMap = new HashMap<>();
+        int initialCapacity = 16;
+        Map<Integer,String> sysIdNameMap = new HashMap<>(initialCapacity);
 		//	审核中
 		String examing = Util.translateMessage(lang, JsonResultCode.MSG_CARD_EXAMINE_ING.getMessage(), BaseConstant.LANGUAGE_TYPE_EXCEL,null);
 		//	审核通过

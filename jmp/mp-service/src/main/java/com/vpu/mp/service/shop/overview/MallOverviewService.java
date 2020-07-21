@@ -51,7 +51,7 @@ import static org.apache.commons.lang3.math.NumberUtils.*;
 import static org.jooq.impl.DSL.*;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/15
  * 商城概览service
  */

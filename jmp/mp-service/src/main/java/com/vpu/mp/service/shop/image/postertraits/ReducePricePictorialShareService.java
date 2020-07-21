@@ -30,7 +30,7 @@ import java.net.URL;
  * @date 2020年02月06日
  */
 @Service
-public class ReducePricePictorialService extends ShareBaseService {
+public class ReducePricePictorialShareService extends BaseShareService {
 
     @Autowired
     private ReducePriceService reducePriceService;

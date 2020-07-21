@@ -18,9 +18,9 @@ import static com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant.SOU
  *
  */
 @Service
-public class LimitCardOpt extends CardOpt {
+public class LimitBaseCardOpt extends BaseCardOpt {
 
-	public LimitCardOpt() {
+	public LimitBaseCardOpt() {
 		super(CardConstant.MCARD_TP_LIMIT);
 	}
 

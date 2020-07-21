@@ -115,10 +115,14 @@ public class MpDistributionService extends ShopBaseService{
         }
         //性别
         if(baseInfo.getSex() != null){
-            if(baseInfo.getSex().equalsIgnoreCase("f")){
+            String female = "f";
+            if(baseInfo.getSex().equalsIgnoreCase(female)){
                 baseInfo.setSex("女");
-            }else if(baseInfo.getSex() != null && baseInfo.getSex().equalsIgnoreCase("m")){
-                baseInfo.setSex("男");
+            }else {
+                String male = "m";
+                if(baseInfo.getSex() != null && baseInfo.getSex().equalsIgnoreCase(male)){
+                    baseInfo.setSex("男");
+                }
             }
         }
         //婚姻状况
@@ -697,10 +701,11 @@ public class MpDistributionService extends ShopBaseService{
      */
      public int isBind(Integer userId){
          Record record = db().select(USER.INVITE_ID).from(USER).where(USER.USER_ID.eq(userId)).fetchOne();
-         if(record != null)
+         if(record != null) {
              return record.into(Integer.class);
-         else
+         } else {
              return 0;
+         }
     }
 
     /**
@@ -723,10 +728,13 @@ public class MpDistributionService extends ShopBaseService{
          Timestamp nowDate = Util.currentTimeStamp();
          Date foreverDate = new Date(946656000);
          Timestamp protectDate = Util.getEarlyTimeStamp(foreverDate,3650);
-         if(nowDate.compareTo(info.getInviteProtectDate()) > 0 && info.getInviteProtectDate().compareTo(protectDate)>0)
-             return 0; //邀请保护失效
-         else
-             return 1;  //邀请保护有效
+         if(nowDate.compareTo(info.getInviteProtectDate()) > 0 && info.getInviteProtectDate().compareTo(protectDate)>0) {
+             //邀请保护失效
+             return 0;
+         } else {
+             //邀请保护有效
+             return 1;
+         }
      }
 
     /**

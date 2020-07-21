@@ -139,7 +139,8 @@ public class CollectGiftConfigService extends BaseShopConfigService{
             }
             //判断当前用户是否第一次参与收藏有礼活动
             Integer into = db().select(USER.GET_COLLECT_GIFT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
-            if (into == 1) {//已参与，不展示支付有礼图标
+            if (into == 1) {
+                //已参与，不展示支付有礼图标
                 param.setOnOff(0);
             }
             //获取店铺名称

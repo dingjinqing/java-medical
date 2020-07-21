@@ -42,7 +42,9 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-
+/**
+ * @author luguangyao
+ */
 @Service
 @Slf4j
 public class EsMappingUpdateService extends MainBaseService {
@@ -185,10 +187,11 @@ public class EsMappingUpdateService extends MainBaseService {
     private Map<String,String> getOldMappingInfos(CompressedXContent oldMapping){
         Map<String,String> result = Maps.newHashMap();
         JsonNode jsonNode = Util.toJsonNode(oldMapping.toString());
-        if( jsonNode == null || jsonNode.get("properties").isNull() ){
+        String properties = "properties";
+        if( jsonNode == null || jsonNode.get(properties).isNull() ){
             return result;
         }
-        Iterator<Map.Entry<String,JsonNode>> iterator =  jsonNode.get("properties").fields();
+        Iterator<Map.Entry<String,JsonNode>> iterator =  jsonNode.get(properties).fields();
         while (iterator.hasNext()){
             Map.Entry<String,JsonNode> entry = iterator.next();
             result.put(entry.getKey(),entry.getValue().get("type").asText());

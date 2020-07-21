@@ -311,7 +311,7 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 
 	private SelectConditionStep<Record> selectValidCardCondition(Integer userId, Byte[] cardType) {
-		return selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
+		return selectValidCardSql().where(USER_CARD.USER_ID.eq(userId))
 							.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 							.and(MEMBER_CARD.CARD_TYPE.in(cardType))
 							.and(
@@ -338,7 +338,7 @@ public class UserCardDaoService extends ShopBaseService{
 	 */
 	private List<ValidUserCardBean> getAllValidCardList(Integer userId) {
 
-        return selectValidCardSQL()
+        return selectValidCardSql()
 			.where(USER_CARD.USER_ID.eq(userId))
 			.and(USER_CARD.FLAG.in(CardConstant.UCARD_FG_USING,CardConstant.UCARD_FG_GIVING))
 			.and(
@@ -356,7 +356,7 @@ public class UserCardDaoService extends ShopBaseService{
     /**
 	 * 查询用户有效卡的信息
 	 */
-	private SelectJoinStep<Record> selectValidCardSQL() {
+	private SelectJoinStep<Record> selectValidCardSql() {
 		 return db().select(USER_CARD.fields()).select(MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.DISCOUNT,MEMBER_CARD.BG_TYPE,MEMBER_CARD.BG_COLOR,
 				MEMBER_CARD.BG_IMG,MEMBER_CARD.BUY_SCORE,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME,MEMBER_CARD.RECEIVE_DAY,
 				MEMBER_CARD.DATE_TYPE,MEMBER_CARD.STORE_USE_SWITCH,MEMBER_CARD.STORE_LIST,MEMBER_CARD.ACTIVATION,MEMBER_CARD.GRADE)
@@ -594,7 +594,7 @@ public class UserCardDaoService extends ShopBaseService{
      * @return
      */
 	public OrderMemberVo getValidByCardNo(String cardNo){
-        ValidUserCardBean card = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
+        ValidUserCardBean card = selectValidCardSql().where(USER_CARD.CARD_NO.eq(cardNo))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(
                 (USER_CARD.EXPIRE_TIME.greaterThan(DateUtils.getLocalDateTime()))

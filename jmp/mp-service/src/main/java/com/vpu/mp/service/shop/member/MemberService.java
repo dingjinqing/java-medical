@@ -258,7 +258,7 @@ public class MemberService extends ShopBaseService {
 		logger().info("正在获取用户来源信息");
 		// 微信后台相关来源
 		String sourceName = SourceNameEnum.getI18NameByCode(member.getScene(), language);
-		final String SYMBOL = "; ";
+		final String symbol = "; ";
 		if(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
 			// 渠道页
 			StringBuilder tmp = new StringBuilder();
@@ -266,7 +266,7 @@ public class MemberService extends ShopBaseService {
 					.where(CHANNEL.ID.eq(member.getInviteActId())).fetchOne().into(String.class);
 			if(!StringUtils.isBlank(sourceName)) {
 				tmp.append(sourceName);
-				tmp.append(SYMBOL);
+				tmp.append(symbol);
 			}
 			tmp.append(Util.translateMessage(language, "member.channal.page", "member"));
 			tmp.append(channelName);
@@ -278,7 +278,7 @@ public class MemberService extends ShopBaseService {
 			StringBuilder tmp = new StringBuilder();
 			if(!StringUtils.isBlank(sourceName)) {
 				tmp.append(sourceName);
-				tmp.append(SYMBOL);
+				tmp.append(symbol);
 			}
 			tmp.append(store.getStoreName(new Integer(member.getSource())));
 			sourceName = tmp.toString();

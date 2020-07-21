@@ -42,7 +42,7 @@ import static java.lang.String.format;
  * @date 2020年01月03日
  */
 @Service
-public class BargainPictorialService extends ShareBaseService {
+public class BargainPictorialShareService extends BaseShareService {
     @Autowired
     private BargainService bargainService;
 

@@ -733,7 +733,7 @@ public class GoodsSpecProductService extends ShopBaseService {
      * @param goodsId
      * @return
      */
-    public List<GoodsSpecProductBakRecord> apiGetGoodsSpecPrdDeletedMByGoodsId(Integer goodsId) {
+    public List<GoodsSpecProductBakRecord> apiGetGoodsSpecPrdDeletedMbyGoodsId(Integer goodsId) {
         return db().select(GOODS_SPEC_PRODUCT_BAK.GOODS_ID, GOODS_SPEC_PRODUCT_BAK.PRD_ID, GOODS_SPEC_PRODUCT_BAK.PRD_SN, GOODS_SPEC_PRODUCT_BAK.PRD_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_NUMBER, GOODS_SPEC_PRODUCT_BAK.PRD_DESC, GOODS_SPEC_PRODUCT_BAK.PRD_IMG)
             .from(GOODS_SPEC_PRODUCT_BAK).where(GOODS_SPEC_PRODUCT_BAK.GOODS_ID.eq(goodsId)).fetchInto(GoodsSpecProductBakRecord.class);
     }

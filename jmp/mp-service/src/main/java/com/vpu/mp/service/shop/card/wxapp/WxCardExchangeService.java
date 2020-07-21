@@ -63,7 +63,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.mp.GoodsSearchMpService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.member.card.LimitCardOpt;
+import com.vpu.mp.service.shop.member.card.LimitBaseCardOpt;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserCheckedGoodsService;
 /**
@@ -81,7 +81,7 @@ public class WxCardExchangeService extends ShopBaseService {
 	@Autowired private DomainConfig domainConfig;
     @Autowired public UserCardService userCard;
     @Autowired private CardExchangService cardExchangSvc;
-    @Autowired private LimitCardOpt limitCardOpt;
+    @Autowired private LimitBaseCardOpt limitCardOpt;
     @Autowired private GoodsSearchMpService goodsSearchMpSvc;
 
     /**

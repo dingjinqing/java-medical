@@ -39,7 +39,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/15
  * 概览
  */
@@ -66,14 +66,16 @@ public class ShopOverviewService extends MainBaseService {
 			return false;
 		}
 		byte isBind = 0;
-		if ("bind".equals(act)) {
+        String bind = "bind";
+        if (bind.equals(act)) {
 			// 绑定
 			isBind = 1;
 		}
-		if ("del_bind".equals(act)) {
+        String delBind = "del_bind";
+        if (delBind.equals(act)) {
 			// 解绑
 			isBind = 0;
-		}if(!("bind".equals(act)||"del_bind".equals(act))) {
+		}if(!(bind.equals(act)|| delBind.equals(act))) {
 			logger().debug("绑定解绑传入act参数错误："+act);
 			return false;
 		}

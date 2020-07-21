@@ -42,6 +42,9 @@ import java.util.Objects;
 
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MpPaymentService extends ShopBaseService {
 

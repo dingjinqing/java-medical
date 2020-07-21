@@ -30,7 +30,7 @@ import com.vpu.mp.service.shop.member.tag.UserTagService;
  *
  */
 @Service
-public abstract class CardOpt extends ShopBaseService{
+public abstract class BaseCardOpt extends ShopBaseService{
 	@Autowired protected UserTagService userTagSvc;
 	@Autowired protected MemberCardService cardService;
 	@Autowired protected UserCardService userCardService;
@@ -40,20 +40,17 @@ public abstract class CardOpt extends ShopBaseService{
 	/**	卡类型	*/
 	private Byte type;
 
-	public CardOpt(Byte _type) {
-		this.type = _type;
+	public BaseCardOpt(Byte type) {
+		this.type = type;
 	}
 
 	public Byte getType() {
 		return this.type;
 	}
-	public void setType(Byte _type) {
-		this.type = _type;
+	public void setType(Byte type) {
+		this.type = type;
 	}
 
-	public Logger logger() {
-		return LoggerFactory.getLogger(getClass());
-	}
 	/**
 	 * 	发卡
 	 * @param userId 用户Id
@@ -102,7 +99,7 @@ public abstract class CardOpt extends ShopBaseService{
 
 		List<Integer> tagIdList = cardService.cardDetailSvc.getCardTag(mCard).getCardTagId();
 		if(tagIdList!=null && tagIdList.size()>0) {
-			userTagSvc.addActivityTag(userId, tagIdList, userTagSvc.SRC_CARD, mCard.getId());
+			userTagSvc.addActivityTag(userId, tagIdList, UserTagService.SRC_CARD, mCard.getId());
 		}
 	}
 

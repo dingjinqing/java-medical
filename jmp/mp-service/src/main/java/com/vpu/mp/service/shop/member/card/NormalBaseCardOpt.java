@@ -17,9 +17,9 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
  *
  */
 @Service
-public class NormalCardOpt extends CardOpt {
+public class NormalBaseCardOpt extends BaseCardOpt {
 
-	public NormalCardOpt() {
+	public NormalBaseCardOpt() {
 		super(CardConstant.MCARD_TP_NORMAL);
 	}
 

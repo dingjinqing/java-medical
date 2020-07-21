@@ -679,7 +679,7 @@ public class CouponGiveService extends ShopBaseService {
                         }else {
                             customerAvailCouponsRecord.setDivisionEnabled((byte)0);
                         }
-                        if (couponDetails.getType().equals((byte)1)&&couponDetails.getActCode().equals("random")){
+                        if (couponDetails.getType().equals((byte)1)&& "random".equals(couponDetails.getActCode())){
                             log.info("面额随机优惠券");
                             //Math.random()*(n-m)+m
                             BigDecimal randomAmount = couponDetails.getRandomMax().subtract(couponDetails.getRandomMin()).multiply(BigDecimal.valueOf(Math.random())).add(couponDetails.getRandomMin());

@@ -500,7 +500,7 @@ public class CouponService extends ShopBaseService {
      */
     public ExpireTimeVo getExpireTime(Timestamp endDate){
         //当前时间戳
-        long time = new Date().getTime();
+        long time = System.currentTimeMillis();
         //优惠券到期时间戳
         long time1 = endDate.getTime();
         //还剩总过期秒数
@@ -608,10 +608,11 @@ public class CouponService extends ShopBaseService {
                 list.setCanShare(0); //0不可以分享；1可以分享
                 if (list.getCouponType() == 1) {
                     DivisionReceiveRecordRecord canShare = isCanShare(list.getCouponSn());
-                    if(canShare != null)
+                    if(canShare != null) {
                         list.setIsShare(canShare.getIsShare());
-                    else
+                    } else {
                         list.setIsShare((byte)0);
+                    }
                     int hasReceive = hasReceive(param.getUserId(), param.couponSn);
                     if (!(list.getReceivePerNum() == 1 && hasReceive >= list.getReceiveNum())) {
                         list.setCanShare(1);

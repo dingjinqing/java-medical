@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author luguangyao
+ */
 public class GoodsSearchParamConverter implements EsParamConvertInterface {
 
     private GoodsSearchParam param;

@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * @author 李晓冰
  * @date 2020年04月23日
  */
-public abstract class ShareBaseService extends ShopBaseService {
+public abstract class BaseShareService extends ShopBaseService {
     @Autowired
     protected PictorialService pictorialService;
     @Autowired
@@ -46,6 +46,7 @@ public abstract class ShareBaseService extends ShopBaseService {
     private ShopStyleConfigService shopStyleConfigService;
     @Autowired
     private ShopCommonConfigService commonConfigService;
+    public static final Pattern patternNumber = Pattern.compile("\\d+");
 
     /**
      * 获取活动record信息
@@ -315,8 +316,7 @@ public abstract class ShareBaseService extends ShopBaseService {
         try {
             if (StringUtils.isNotBlank(shopStyleValue)) {
                 String[] splits = shopStyleValue.split("\\)");
-                Pattern compile = Pattern.compile("\\d+");
-                Matcher matcher = compile.matcher(splits[1]);
+                Matcher matcher = patternNumber.matcher(splits[1]);
                 matcher.find();
                 int red = Integer.parseInt(matcher.group());
                 matcher.find();

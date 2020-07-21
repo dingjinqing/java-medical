@@ -114,7 +114,8 @@ public class AuditService extends ShopBaseService implements IorderOperate<Audit
         Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(orderRecord.getOrderId());
         //组装退款param
         RefundParam param = new RefundParam();
-        param.setAction((byte) OrderServiceCode.RETURN.ordinal());//1是退款
+        //1是退款
+        param.setAction((byte) OrderServiceCode.RETURN.ordinal());
         param.setIsMp(OrderConstant.IS_MP_AUTO);
         param.setReturnSourceType(OrderConstant.RS_AUTO_COMMUNITY_GROUP);
         param.setOrderSn(orderSn);

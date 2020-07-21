@@ -16,8 +16,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
  *
  */
 @Service
-public class GradeCardOpt extends CardOpt {
-	public GradeCardOpt() {
+public class GradeBaseCardOpt extends BaseCardOpt {
+	public GradeBaseCardOpt() {
 		super(CardConstant.MCARD_TP_GRADE);
 	}
 

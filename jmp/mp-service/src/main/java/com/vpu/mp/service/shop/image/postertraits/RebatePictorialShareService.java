@@ -33,7 +33,7 @@ import java.util.Date;
  * @date 2020年04月27日
  */
 @Service
-public class RebatePictorialService extends ShareBaseService {
+public class RebatePictorialShareService extends BaseShareService {
 
     @Override
     Record getActivityRecord(Integer activityId) {
@@ -162,7 +162,7 @@ public class RebatePictorialService extends ShareBaseService {
         String endStr = DateUtils.dateFormat(DateUtils.DATE_FORMATE_MONTH,new Date(time+24*60*60*1000));
 
         String timeTipStr = "此价格在"+endStr+"前有效";
-        ImageUtil.addFont(bgBufferedImage, timeTipStr, imgPx.getLinePriceFont(), imgPx.getBottomTextStartX(), imgPx.getPriceY()+40, imgPx.LINE_PRICE_COLOR, false);
+        ImageUtil.addFont(bgBufferedImage, timeTipStr, imgPx.getLinePriceFont(), imgPx.getBottomTextStartX(), imgPx.getPriceY()+40, PictorialImgPx.LINE_PRICE_COLOR, false);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);

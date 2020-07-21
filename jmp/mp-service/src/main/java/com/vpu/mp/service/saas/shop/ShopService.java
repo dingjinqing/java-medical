@@ -26,7 +26,7 @@ import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
-import com.vpu.mp.service.saas.marketCalendar.MarketSysCalendarService;
+import com.vpu.mp.service.saas.marketcalendar.MarketSysCalendarService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;

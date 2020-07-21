@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.member.card;
 
 import java.math.BigDecimal;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import com.vpu.mp.service.shop.member.UserCardService;
  *
  */
 @Service
-public class CardUserOpt extends CardOpt {
+public class BaseCardUserOpt extends BaseCardOpt {
 	@Autowired
 	private MemberCardService mCardSvc;
 	@Autowired
@@ -28,17 +27,17 @@ public class CardUserOpt extends CardOpt {
 	@Autowired
 	private ScoreService scoreSvc;
 	
-	private CardOpt decorate;
+	private BaseCardOpt decorate;
 	
 	
-	public CardUserOpt() {
+	public BaseCardUserOpt() {
 		super(null);
 	}
 
 	
-	public void setDecorate(CardOpt _cardOpt) {
-		this.setType(_cardOpt.getType());
-		this.decorate = _cardOpt;
+	public void setDecorate(BaseCardOpt baseCardOpt) {
+		this.setType(baseCardOpt.getType());
+		this.decorate = baseCardOpt;
 	}
 	
 	@Override
