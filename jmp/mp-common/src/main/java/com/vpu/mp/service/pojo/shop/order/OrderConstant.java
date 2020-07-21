@@ -74,6 +74,8 @@ public class OrderConstant {
 	 * 待审核->待发货
 	 */
 	public final static byte ORDER_TO_AUDIT =14;
+	//待开方
+	public final static byte ORDER_TO_AUDIT_OPEN =15;
 
 
 	/**退货状态*/
