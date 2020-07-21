@@ -33,8 +33,8 @@ public class PullHitsHistoryPrescriptionService extends ShopBaseService {
     public JsonResult pullExternalHistoryPrescription(FetchMedicalHistoryParam fetchMedicalHistoryParam){
         FetchPrescriptionParam fetchPrescriptionParam = new FetchPrescriptionParam();
         FieldsUtil.assign(fetchMedicalHistoryParam, fetchPrescriptionParam);
-        medicalHistoryService.pullExternalMedicalHistoryList(fetchMedicalHistoryParam);
-        prescriptionService.pullExternalAllPrescriptionInfo(fetchPrescriptionParam);
-        return JsonResult.success();
+        JsonResult jsonResultMedicalHistory = medicalHistoryService.pullExternalMedicalHistoryList(fetchMedicalHistoryParam);
+        if (jsonResultMedicalHistory.getError() > 0) return jsonResultMedicalHistory;
+        return prescriptionService.pullExternalAllPrescriptionInfo(fetchPrescriptionParam);
     }
 }

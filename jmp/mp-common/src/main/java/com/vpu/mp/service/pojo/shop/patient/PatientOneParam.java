@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 public class  PatientOneParam {
@@ -25,4 +26,6 @@ public class  PatientOneParam {
     private Byte      gestationType;
     private Byte      kidneyFunctionOk;
     private Byte      liverFunctionOk;
+    private List<PatientMoreInfoParam> diseaseHistoryList;
+    private List<PatientMoreInfoParam> familyDiseaseHistoryList;
 }

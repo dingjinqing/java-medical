@@ -1,10 +1,9 @@
 package com.vpu.mp.service.shop.patient;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import java.util.List;
-
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
@@ -14,17 +13,22 @@ import com.vpu.mp.dao.foundation.transactional.DbTransactional;
 import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Service
-public class PatientService extends ShopBaseService{
+public class PatientService extends BaseShopConfigService{
     @Autowired
     protected PatientDao patientDao;
     @Autowired
     protected UserPatientCoupleDao userPatientCoupleDao;
+    @Autowired
+    public BaseShopConfigService baseShopConfigService;
     public static final int ZERO = 0;
 
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
@@ -113,5 +117,42 @@ public class PatientService extends ShopBaseService{
      */
     public PatientOneParam getPatientByNameAndMobile(UserPatientOneParam patientInfoParam){
         return patientDao.getPatientByNameAndMobile(patientInfoParam);
+    }
+
+    /**
+     * 获取疾病史选中List
+     * @param diseaseStr
+     * @return
+     */
+    public List<PatientMoreInfoParam> listDiseases(String diseaseStr) {
+        List<PatientMoreInfoParam> diseaseList = Util.parseJson(get("diseases"), new TypeReference<List<PatientMoreInfoParam>>() {
+        });
+        if (diseaseStr == null || diseaseStr == "") return diseaseList;
+        List<String> diseases = Arrays.asList(diseaseStr.split(","));
+        for (PatientMoreInfoParam disease : diseaseList) {
+            if (diseases.contains(disease.getId())) {
+                disease.setChecked((byte) 1);
+            }
+        }
+        return diseaseList;
+    }
+
+    /**
+     * 获取患者详情信息(小程序前端)
+     * @param patientId
+     * @return
+     */
+    public PatientOneParam getOneDetail(Integer patientId) {
+        if (patientId == 0) {
+            PatientOneParam patientInfo = new PatientOneParam();
+            patientInfo.setDiseaseHistoryList(listDiseases(null));
+            patientInfo.setFamilyDiseaseHistoryList(listDiseases(null));
+            return patientInfo;
+        } else {
+            PatientOneParam patientInfo = patientDao.getOneInfo(patientId);
+            patientInfo.setDiseaseHistoryList(listDiseases(patientInfo.getDiseaseHistory()));
+            patientInfo.setFamilyDiseaseHistoryList(listDiseases(patientInfo.getFamilyDiseaseHistory()));
+            return patientInfo;
+        }
     }
 }

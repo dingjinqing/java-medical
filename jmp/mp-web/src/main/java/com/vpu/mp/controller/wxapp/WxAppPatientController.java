@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
@@ -43,5 +44,27 @@ public class WxAppPatientController extends WxAppBaseController {
     public JsonResult getPatientInfo(@RequestBody UserPatientOneParam userPatientOneParam){
         JsonResult result= shop().patientService.getExternalPatientInfo(userPatientOneParam);
         return result;
+    }
+
+    /**
+     * 	手动添加患者
+     */
+    @PostMapping("/api/wxapp/user/patient/add")
+    public JsonResult addPatient(@RequestBody PatientDo patientDo) {
+        if (patientDo.getId() >0) {
+            shop().patientService.updatePatient(patientDo);
+        } else {
+            shop().patientService.insertPatient(patientDo);
+        }
+        return success();
+    }
+
+    /**
+     * 	患者详情
+     */
+    @PostMapping("/api/wxapp/user/patient/get/detail")
+    public JsonResult getPatientDetail(@RequestBody PatientOneParam patientOneParam) {
+        PatientOneParam patientDetail = shop().patientService.getOneDetail(patientOneParam.getId());
+        return success(patientDetail);
     }
 }
