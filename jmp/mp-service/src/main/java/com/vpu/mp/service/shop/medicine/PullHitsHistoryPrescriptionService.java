@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class PullHitsHistoryPrescription {
+public class PullHitsHistoryPrescriptionService {
 
     @Autowired
     private MedicalHistoryService medicalHistoryService;
