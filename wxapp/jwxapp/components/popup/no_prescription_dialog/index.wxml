@@ -1,0 +1,13 @@
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+    <view class="dialog-content">
+      <image src="{{imageUrl}}image/wxapp/no_prescription_bg.png"></image>
+      <view class="tips-content">
+        <text>药品中包含无处方的处方药</text>
+        <text>请填写问诊信息获取处方</text>
+      </view>
+      <view class="button" bindtap="viewPrescriptionSheet">
+        <text>去获取</text>
+        <text class="iconfont iconjiantou"></text>
+      </view>
+    </view>
+</v-popup>

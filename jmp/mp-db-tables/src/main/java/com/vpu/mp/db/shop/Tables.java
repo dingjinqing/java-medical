@@ -1150,6 +1150,10 @@ public class Tables {
      * 病历表
      */
     public static final MedicalHistory MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.MedicalHistory.MEDICAL_HISTORY;
+    /**
+     * 问诊订单表
+     */
+    public static final InquiryOrder INQUIRY_ORDER = com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
 
     /**
      * 问诊会话记录一次医生和患者的在线会话

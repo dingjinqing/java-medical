@@ -61,9 +61,11 @@ import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.marketCalendar.MarketCalendarService;
+import com.vpu.mp.service.shop.medicine.PullHitsHistoryPrescriptionService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.OrderApiService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
@@ -603,4 +605,15 @@ public class ShopApplication {
      */
     @Autowired
     public PrescriptionService prescriptionService;
+
+    /**
+     * 问诊订单
+     */
+    public InquiryOrderService inquiryOrderService;
+
+    /**
+     * 病历处方拉取
+     */
+    @Autowired
+    public PullHitsHistoryPrescriptionService pullHitsHistoryPrescriptionService;
 }

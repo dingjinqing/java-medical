@@ -1,10 +1,14 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.medicalHistory.FetchMedicalHistoryParam;
 import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListParam;
 import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
+import com.vpu.mp.service.shop.medicine.PullHitsHistoryPrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +40,14 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
     @RequestMapping("/list")
     public JsonResult getHistoryInfo(@RequestBody MedicalHistoryPageInfoParam medicalHistoryPageInfoParam) {
         return success(shop().medicalHistoryService.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam));
+    }
+
+    /**
+     * 	拉取病历信息
+     */
+    @PostMapping("/get/external/list")
+    public JsonResult getMedicalHistoryExternalList(@RequestBody FetchMedicalHistoryParam fetchMedicalHistoryParam){
+        JsonResult result= shop().pullHitsHistoryPrescriptionService.pullExternalHistoryPrescription(fetchMedicalHistoryParam);
+        return result;
     }
 }

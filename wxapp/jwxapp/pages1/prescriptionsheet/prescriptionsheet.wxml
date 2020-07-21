@@ -1,0 +1,81 @@
+<view class="body">
+  <include src="../../pages/common/header.wxml" />
+  <view class="main-container">
+    <view class="title-module">患者信息</view>
+    <view class="card-content has-padding p-left">
+      <view class="list-item">
+        <text class="default-text">姓名：</text>
+        <text class="emphasis-text">张三</text>
+      </view>
+      <view class="list-item">
+        <text class="default-text">年龄：</text>
+        <text class="emphasis-text">45</text>
+      </view>
+      <view class="list-item">
+        <text class="default-text">性别：</text>
+        <text class="emphasis-text">男</text>
+      </view>
+    </view>
+    <view class="title-module">历史诊断（可多选）</view>
+    <view class="card-content has-padding p-left">
+      <view class="list-item">
+        <view class="label-content wrap has-padding p-bottom">
+          <view class="label-item" style="{{true ? 'background-color:'+ somColor +';color:'+comColor+';border-color:'+comColor+';' : ''}}">心绞痛</view>
+          <view class="label-item">原发性高血压</view>
+          <view class="label-item">高血压</view>
+          <view class="label-item">心肌炎</view>
+          <view class="label-item">肺炎</view>
+          <view class="label-item">咳嗽</view>
+          <view class="label-item">感冒</view>
+        </view>
+      </view>
+      <view class="list-item space-between">
+        <text class="default-text">曾服用过本药品</text>
+        <view class="radio-group">
+          <view class="radio-content">
+            <text class="iconfont icondanxuanbiankuang" style="color:{{comColor}};"></text>
+            <text>是</text>
+          </view>
+          <view class="radio-content">
+            <text class="iconfont icondanxuan" style="color:{{comColor}};"></text>
+            <text>否</text>
+          </view>
+        </view>
+      </view>
+      <view class="list-item space-between">
+        <text class="default-text">有无不良反应</text>
+        <view class="radio-group">
+           <view class="radio-content">
+            <text class="iconfont icondanxuan" style="color:{{comColor}};"></text>
+            <text>是</text>
+          </view>
+          <view class="radio-content">
+            <text class="iconfont icondanxuanbiankuang" style="color:{{comColor}};"></text>
+            <text>否</text>
+          </view>
+        </view>
+      </view>
+      <view class="list-item space-between">
+        <text class="default-text">妊娠哺乳</text>
+        <view class="radio-group">
+           <view class="radio-content">
+            <text class="iconfont icondanxuan" style="color:{{comColor}};"></text>
+            <text>是</text>
+          </view>
+          <view class="radio-content">
+            <text class="iconfont icondanxuanbiankuang" style="color:{{comColor}};"></text>
+            <text>否</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="card-content center column has-padding p-top p-bottom">
+        <image class="upload-icon" src="{{imageUrl}}image/wxapp/upload_prescription-icon.png"></image>
+        <text class="upload-tips">上传历史处方</text>
+    </view>
+    <view class="footer-content">
+      <view class="footer-button" style="background-color:#26C4BC;">确定</view>
+    </view>
+    <include src="../../pages/common/footer.wxml" />
+  </view>
+</view>

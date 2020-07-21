@@ -59,7 +59,7 @@ public class PatientDao extends ShopBaseDao{
      */
     public PatientOneParam getOneInfo(Integer patientId) {
         PatientOneParam info = db().select().from(PATIENT).where(PATIENT.ID.eq(patientId))
-            .fetchOneInto(PatientOneParam.class);
+            .fetchAnyInto(PatientOneParam.class);
         return info;
     }
 
@@ -134,7 +134,7 @@ public class PatientDao extends ShopBaseDao{
             .where(PATIENT.NAME.eq(patientInfoParam.getName()))
             .and(PATIENT.MOBILE.eq(patientInfoParam.getMobile()));
         if(patientInfoParam.getIdentityCode()!=null)
-            select.and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode()));
+            select.and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode())).and(PATIENT.IDENTITY_TYPE.eq((byte)1));
         return select.fetchOneInto(PatientOneParam.class);
     }
 }

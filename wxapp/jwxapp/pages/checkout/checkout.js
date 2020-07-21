@@ -666,7 +666,9 @@ global.wxPage({
     }
 
     if(!this.getSubmitButtonStatus()){
-      util.showModal('提示',`请确认药品是否关联处方或\n处方中是否有对应药品`)
+      this.setData({
+        showNoPrescription:true
+      })
       return false
     }
 

@@ -57,6 +57,22 @@ public class WxAppSessionUser {
 	//图片地址，小程序前端用
 	String imageHost;
 
+    /**
+     * 用户类型
+     */
+	@JsonProperty(value = "user_type")
+    Byte userType;
+    /**
+     * 医师ID 如果当前用户不是医师那么为空
+     */
+	@JsonProperty(value = "doctor_id")
+    String doctorId;
+    /**
+     * 医师ID 如果当前用户不是医师那么为空
+     */
+	@JsonProperty(value = "pharmacist_id")
+    String pharmacistId;
+
 	
 	/**
 	 * 用户登录session信息
