@@ -71,4 +71,16 @@ public class MedicalHistoryDao extends ShopBaseDao {
         medicalHistoryRecord.update();
         fetchMedicalHistoryVo.setId(medicalHistoryRecord.getId());
     }
+
+    /**
+     * 病历详情查询
+     *
+     * @param posCode
+     * @return PageResult<MedicalHistoryListVo>
+     */
+    public Integer getMedicalHistoryDetailByCode(String posCode) {
+        return db().select(MEDICAL_HISTORY.ID).from(MEDICAL_HISTORY)
+            .where(MEDICAL_HISTORY.POS_CODE.eq(posCode)
+                .and(MEDICAL_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE))).fetchOneInto(Integer.class);
+    }
 }
