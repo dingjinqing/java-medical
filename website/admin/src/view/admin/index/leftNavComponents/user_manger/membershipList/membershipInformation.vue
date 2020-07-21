@@ -241,7 +241,74 @@
         >查看订单</el-button>
       </div>
     </div>
-    <div class="topContainer" v-if="memberBasicInfo.isDistributor">
+    <div class="topContainer">
+      <div class="titleEdit"><span>患者信息</span></div>
+      <div class="tablebox">
+        <el-table
+          v-loading='loading'
+          :data='tableData'
+          style="width:100%"
+          border
+          :header-cell-style="{
+              'background-color':'#f5f5f5',
+              'text-align':'center',
+              'border':'none',
+              'color': '#000'
+            }"
+          :cell-style="{
+              'text-align':'center'
+            }"
+        >
+          <el-table-column
+            prop='id'
+            label='患者编号'
+          ></el-table-column>
+          <el-table-column
+            prop='name'
+            label='姓名'
+          ></el-table-column>
+          <el-table-column
+            prop='mobile'
+            label='手机号'
+          ></el-table-column>
+          <el-table-column
+            prop='treatmentNo'
+            label='就诊卡号'
+          ></el-table-column>
+          <el-table-column
+            prop='sex'
+            label='性别'
+          ></el-table-column>
+          <el-table-column
+            prop='diseaseHistory'
+            label='疾病史'
+          ></el-table-column>
+          <el-table-column
+            prop='allergyHistory'
+            label='过敏史'
+          ></el-table-column>
+          <el-table-column label='操作'>
+            <template slot-scope="scope">
+              <div class="operation">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="查看详情"
+                  placement="top"
+                >
+                  <a @click='handleSeeMessage(scope.row.id)'>查看详情</a>
+                </el-tooltip>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+
+    <div
+      class="topContainer"
+      v-if="memberBasicInfo.isDistributor"
+    >
       <div class="titleEdit"><span>{{$t('membershipIntroduction.distributionStatistic')}}</span></div>
       <div class="transactionDiv">
         <div
@@ -939,6 +1006,8 @@ export default {
           // this.dealWithTransactionData()
           // 分销 统计
           this.dealWithdDistributionData()
+          // 患者列表
+          this.tableData = this.memberBasicInfo.patientList
         }
       })
       this.getAllAvailableMemberCard()
@@ -1591,12 +1660,21 @@ export default {
           customOrderStatus: '3, 4, 5, 6, 7, 8, 9, 10'
         }
       })
+    },
+    handleSeeMessage (userId) {
+      console.log(this.$router)
+      this.$router.push({
+        name: 'patient_message',
+        query: {
+          id: userId
+        }
+      })
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 .iconSpn {
   display: inline-block;
   font-size: 22px;
@@ -1990,5 +2068,12 @@ td {
 .topContainer .transactionOrder {
   padding-bottom: 20px;
   text-align: center;
+}
+.tablebox {
+  padding: 10px;
+}
+.tablebox a {
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>
