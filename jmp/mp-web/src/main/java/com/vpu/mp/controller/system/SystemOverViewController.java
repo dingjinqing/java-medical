@@ -6,7 +6,7 @@ import com.vpu.mp.service.pojo.saas.overView.LoginRecordVo;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @Auther 常乐
+ * @author  常乐
  * @Date 2019-12-03
  */
 @RestController
@@ -18,7 +18,7 @@ public class SystemOverViewController extends SystemBaseController{
      * @return
      */
     @PostMapping("/loginRecord")
-    public JsonResult LoginRecord(@RequestBody LoginRecordVo param){
+    public JsonResult loginRecord(@RequestBody LoginRecordVo param){
         PageResult<LoginRecordVo> res = saas.overviewService.loginRecord(param);
         return this.success(res);
     }

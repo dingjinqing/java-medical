@@ -118,14 +118,17 @@ public class WxAppAuth {
 		UserScoreRecord scoreInDay = shopApp.member.score.getScoreInDay(user.getUserId(), "score_login");
 		// 获取登录送积分开关配置
 		ShopCfgRecord isLoginScore = shopApp.score.getScoreNum("login_score");
-		if (scoreInDay != null || (isLoginScore == null || isLoginScore.getV() == "0")) {
+        String closeLoginScore = "0";
+        boolean noSettingLoginScore = scoreInDay != null || (isLoginScore == null || isLoginScore.getV().equals(closeLoginScore));
+        if (noSettingLoginScore) {
 			// 没有登录送积分设置
 			log.info("没有设置登录送积分");
 			// return
 		} else {
 			log.info("设置登录送积分");
 			ShopCfgRecord scoreNum = shopApp.score.getScoreNum("score_login");
-			if (scoreNum.getV() != "0") {
+            String zeroScore = "0";
+            if (!scoreNum.getV().equals(zeroScore)) {
 				ScoreParam param2=new ScoreParam();
 				param2.setDesc("score_login");
 				param2.setScore(Integer.parseInt(scoreNum.getV()));
