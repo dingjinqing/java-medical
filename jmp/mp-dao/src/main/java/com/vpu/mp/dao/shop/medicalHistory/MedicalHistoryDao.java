@@ -1,17 +1,19 @@
 package com.vpu.mp.dao.shop.medicalHistory;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.db.shop.tables.records.MedicalHistoryRecord;
+import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListParam;
-import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListVo;
+import com.vpu.mp.service.pojo.shop.medicalHistory.*;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoParam;
-import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
 
+import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
 import static com.vpu.mp.db.shop.tables.MedicalHistory.MEDICAL_HISTORY;
 
 
@@ -46,5 +48,27 @@ public class MedicalHistoryDao extends ShopBaseDao {
             .where(MEDICAL_HISTORY.PATIENT_ID.eq(medicalHistoryPageInfoParam.getPatientId())
                 .and(MEDICAL_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
         return getPageResult(and, medicalHistoryPageInfoParam, MedicalHistoryPageInfoVo.class);
+    }
+
+    /**
+     * 新增病历
+     * @param fetchMedicalHistoryVo 病历入参
+     */
+    public void addHitsMedicalHistory(FetchMedicalHistoryVo fetchMedicalHistoryVo){
+        MedicalHistoryRecord medicalHistoryRecord = db().newRecord(MEDICAL_HISTORY, fetchMedicalHistoryVo);
+        medicalHistoryRecord.insert();
+    }
+
+    /**
+     * 更新处方
+     * @param fetchMedicalHistoryVo 处方入参
+     */
+    public void updateHitsMedicalHistory(FetchMedicalHistoryVo fetchMedicalHistoryVo){
+        MedicalHistoryRecord medicalHistoryRecord = db().select().from(MEDICAL_HISTORY)
+            .where(MEDICAL_HISTORY.ID.eq(fetchMedicalHistoryVo.getId()))
+            .fetchOneInto(MedicalHistoryRecord.class);
+        FieldsUtil.assign(fetchMedicalHistoryVo, medicalHistoryRecord);
+        medicalHistoryRecord.update();
+        fetchMedicalHistoryVo.setId(medicalHistoryRecord.getId());
     }
 }
