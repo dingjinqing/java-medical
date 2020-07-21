@@ -18,7 +18,7 @@ export const cn = {
   // 概况 搜索统计
   search_summary: ['概况', '搜索统计'],
   // 概况 资产管理
-  asset_summary: ['概况', '资产管理'],
+  // asset_summary: ['概况', '资产管理'],
   // 概况 访问分析
   analysis_visit: ['概况', '访问分析'],
   // 概况 来源分析
@@ -27,6 +27,8 @@ export const cn = {
   analysis_portrait: ['概况', '用户画像'],
   // 概况 实时概况
   situation: ['概况', '实时概况'],
+  // 概况 销售报表
+  sales_report: ['概况', '销售报表'],
   // 小程序管理 页面分类
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间

@@ -19,4 +19,10 @@ public class  PatientOneParam {
     private String    remarks;
     private String    patientCode;
     private Byte      isDefault;
+    private String    diseaseHistory;
+    private String    allergyHistory;
+    private String    familyDiseaseHistory;
+    private Byte      gestationType;
+    private Byte      kidneyFunctionOk;
+    private Byte      liverFunctionOk;
 }

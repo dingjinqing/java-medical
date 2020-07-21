@@ -32,6 +32,8 @@ export const en = {
   analysis_portrait: ['Overview', 'User portrait'],
   // 概况 实时概况
   situation: ['Overview', 'Real Time Profile'],
+  // 概况 销售报表
+  sales_report: ['Overview', 'Sales Report'],
   // 会员管理 会员卡
   userCard: ['Membership', 'Normal Card'],
   // 会员管理 限次
