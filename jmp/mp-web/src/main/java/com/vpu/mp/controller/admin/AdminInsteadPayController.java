@@ -84,7 +84,8 @@ public class AdminInsteadPayController extends AdminBaseController {
                 //检查用户设置的金额比 范围
                 int ratioNum1 = param.getPayRatioNumber().get(0);
                 int ratioNum2 = param.getPayRatioNumber().get(1);
-                if (ratioNum1 > 100 || ratioNum1 < 0 || ratioNum2 > 100 || ratioNum2 < 0) {
+                int ratioMax = 100;
+                if (ratioNum1 > ratioMax || ratioNum1 < 0 || ratioNum2 > ratioMax || ratioNum2 < 0) {
                     return fail(JsonResultCode.INSTEAD_PAY_VALUE_OVER_RANGE);
                 }
 

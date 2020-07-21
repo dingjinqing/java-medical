@@ -375,7 +375,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/admin/distribution/level/list")
-	public JsonResult DistributorLevelList(){
+	public JsonResult getDistributorLevelList(){
 		DistributorLevelListVo res = shop().distributorLevel.distributorLevelList();
 		return this.success(res);
 	}
@@ -408,7 +408,7 @@ public class AdminDistributionController extends AdminBaseController{
      * @return
      */
 	@PostMapping("/admin/distribution/level/distributor/add")
-    public JsonResult addDistributorTOLevel(@RequestBody AddDistributorToLevelParam param){
+    public JsonResult addDistributorToLevel(@RequestBody AddDistributorToLevelParam param){
         int res = shop().distributorLevel.addDistributorTOLevel(param);
         return this.success(res);
     }
@@ -687,9 +687,9 @@ public class AdminDistributionController extends AdminBaseController{
                     list.getCheckField().setEducationName(education);
                 }
                 //性别
-                if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("f")){
+                if(list.getCheckField().getSex()!=null && "f".equalsIgnoreCase(list.getCheckField().getSex())){
                     list.getCheckField().setSex("女");
-                }else if(list.getCheckField().getSex()!=null && list.getCheckField().getSex().equalsIgnoreCase("m")){
+                }else if(list.getCheckField().getSex()!=null && "m".equalsIgnoreCase(list.getCheckField().getSex())){
                     list.getCheckField().setSex("男");
                 }
                 //婚姻状况

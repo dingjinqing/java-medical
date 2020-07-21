@@ -14,6 +14,9 @@ import com.vpu.mp.service.pojo.wxapp.collection.CollectListVo;
 
 
 
+/**
+ * @author changle
+ */
 @RestController
 @RequestMapping("/api/wxapp")
 public class WxAppCollectController extends WxAppBaseController{

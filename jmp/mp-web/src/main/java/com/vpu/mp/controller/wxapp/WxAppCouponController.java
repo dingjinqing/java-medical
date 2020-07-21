@@ -60,7 +60,7 @@ public class WxAppCouponController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/detail/byScore")
-    public JsonResult CouponDetailByScore(@RequestBody AvailCouponDetailParam param) {
+    public JsonResult couponDetailByScore(@RequestBody AvailCouponDetailParam param) {
         Integer userId = wxAppAuth.user().getUserId();
         Integer canUseScore = shop().member.score.getTotalAvailableScoreById(userId);
         param.setUserId(userId);

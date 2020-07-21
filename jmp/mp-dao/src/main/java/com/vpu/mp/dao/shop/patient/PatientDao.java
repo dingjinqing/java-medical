@@ -5,7 +5,6 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PatientRecord;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
@@ -15,7 +14,6 @@ import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.PATIENT;
 
@@ -136,7 +134,7 @@ public class PatientDao extends ShopBaseDao{
             .where(PATIENT.NAME.eq(patientInfoParam.getName()))
             .and(PATIENT.MOBILE.eq(patientInfoParam.getMobile()));
         if(patientInfoParam.getIdentityCode()!=null)
-            select.and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode()));
+            select.and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode())).and(PATIENT.IDENTITY_TYPE.eq((byte)1));
         return select.fetchOneInto(PatientOneParam.class);
     }
 }

@@ -1151,4 +1151,13 @@ public class Tables {
      */
     public static final MedicalHistory MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.MedicalHistory.MEDICAL_HISTORY;
 
+    /**
+     * 问诊会话记录一次医生和患者的在线会话
+     */
+    public static final ImSession IM_SESSION = com.vpu.mp.db.shop.tables.ImSession.IM_SESSION;
+
+    /**
+     * 问诊会话详情 记录每一条会话
+     */
+    public static final ImSessionItem IM_SESSION_ITEM = com.vpu.mp.db.shop.tables.ImSessionItem.IM_SESSION_ITEM;
 }

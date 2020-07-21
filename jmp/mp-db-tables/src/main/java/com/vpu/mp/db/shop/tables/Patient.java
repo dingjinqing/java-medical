@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Patient extends TableImpl<PatientRecord> {
 
-    private static final long serialVersionUID = -1154781331;
+    private static final long serialVersionUID = -1990245962;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_patient</code>
@@ -107,6 +107,36 @@ public class Patient extends TableImpl<PatientRecord> {
      * The column <code>mini_shop_471752.b2c_patient.birthday</code>. 出生年月
      */
     public final TableField<PatientRecord, Date> BIRTHDAY = createField("birthday", org.jooq.impl.SQLDataType.DATE, this, "出生年月");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_patient.disease_history</code>. 过往病史：null:未知，"":无，其他逗号隔开
+     */
+    public final TableField<PatientRecord, String> DISEASE_HISTORY = createField("disease_history", org.jooq.impl.SQLDataType.VARCHAR(64), this, "过往病史：null:未知，\"\":无，其他逗号隔开");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_patient.allergy_history</code>. 过敏史:null:未知，"":无
+     */
+    public final TableField<PatientRecord, String> ALLERGY_HISTORY = createField("allergy_history", org.jooq.impl.SQLDataType.VARCHAR(64), this, "过敏史:null:未知，\"\":无");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_patient.family_disease_history</code>. 家族病史：null:未知，"":无，其他逗号隔开
+     */
+    public final TableField<PatientRecord, String> FAMILY_DISEASE_HISTORY = createField("family_disease_history", org.jooq.impl.SQLDataType.VARCHAR(64), this, "家族病史：null:未知，\"\":无，其他逗号隔开");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_patient.gestation_type</code>. 妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳
+     */
+    public final TableField<PatientRecord, Byte> GESTATION_TYPE = createField("gestation_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_patient.kidney_function_ok</code>. 肾功能:0:未知，1：正常，2：异常
+     */
+    public final TableField<PatientRecord, Byte> KIDNEY_FUNCTION_OK = createField("kidney_function_ok", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "肾功能:0:未知，1：正常，2：异常");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_patient.liver_function_ok</code>. 肝功能:0:未知，1：正常，2：异常
+     */
+    public final TableField<PatientRecord, Byte> LIVER_FUNCTION_OK = createField("liver_function_ok", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "肝功能:0:未知，1：正常，2：异常");
 
     /**
      * The column <code>mini_shop_471752.b2c_patient.remarks</code>. 介绍

@@ -232,3 +232,8 @@ CREATE TABLE IF NOT EXISTS `b2c_order_info_new` (
 /*********************3.1*************************BEGIN*/
 ALTER TABLE `b2c_mp_auth_shop` CHANGE COLUMN `link_official_app_id` `link_official_app_id` VARCHAR(191) DEFAULT NULL COMMENT '关联公众号appId，用于发送模板消息' ;
 /*********************3.1*************************END*/
+
+/*********************3.2***********************BEGIN*/
+
+/*********************3.2*************************END*/
+

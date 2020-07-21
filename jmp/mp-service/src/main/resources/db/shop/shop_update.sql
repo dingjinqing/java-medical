@@ -586,3 +586,10 @@ ALTER TABLE b2c_user MODIFY COLUMN `invite_protect_date` datetime DEFAULT null C
 /***********************2.13*********************END*/
 /***********************3.1-医疗*********************START*/
 /***********************3.1-医疗*********************END*/
+
+/*********************3.2***********************BEGIN*/
+-- 2020.7.21 医师表增加判断登录信息字段
+ALTER TABLE `b2c_doctor` ADD `user_id` int(11) NOT NULL COMMENT '用户id，当前用户是否为医师';
+-- 2020.7.21 用户表新增字段判断当前用户角色
+ALTER TABLE `b2c_user` ADD `user_type`TINYINT NOT NULL DEFAULT 0 COMMENT '用户角色 0、患者 1、医师 2、药师';
+/*********************3.2*************************END*/

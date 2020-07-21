@@ -72,6 +72,8 @@ INSERT INTO `b2c_shop_cfg`(k, v) VALUES ('instead_pay', '{\"status\":false,\"sin
 INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('deliver_template','{\"templateName\":0,\"feeLimit\":0,\"price\":0}');
 #商品分词搜索配置
 INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('accurate_search',0);
+#商品推荐分类配置
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES('recommend_sort','{\"recommendSortStatus\":0,\"recommendSortImg\":null,\"recommendSortImgPath\":null,\"recommendImgLink\":null}');
 #模版消息
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (2001, 0, 0);
 INSERT INTO `b2c_message_template_config`(`id`, `open_ma`, `open_mp`) VALUES (2002, 1, 1);

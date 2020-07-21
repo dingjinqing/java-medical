@@ -2434,8 +2434,8 @@ CREATE TABLE `b2c_order_goods` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id',
-  `prescription_old_no` varchar(64)   NOT NULL DEFAULT '' COMMENT '老处方项目明细号码（可根据此字段反查批次号）',
-  `prescription_no` varchar(64)   NOT NULL DEFAULT '' COMMENT '处方项目明细号码（可根据此字段反查批次号）',
+  `prescription_old_code` varchar(64)   NOT NULL DEFAULT '' COMMENT '老处方项目明细号码（可根据此字段反查批次号）',
+  `prescription_code` varchar(64)   NOT NULL DEFAULT '' COMMENT '处方项目明细号码（可根据此字段反查批次号）',
   `medical_audit_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '药品审核状态 0未审核 1审核通过 2审核不通过',
   `audit_time`timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '药品审核时间',
   PRIMARY KEY (`rec_id`),
@@ -4752,7 +4752,13 @@ create table `b2c_patient`(
     `insurance_card_code` varchar(64) not null default '' comment '医保卡号',
     `sex` tinyint(1) not null default 1 comment '性别 0：未知 1：男 2：女',
     `birthday` date null comment '出生年月',
-    `remarks` text not null default '' comment '介绍',
+    `disease_history` varchar(64) default null comment '过往病史：null:未知，"":无，其他逗号隔开',
+    `allergy_history` varchar(64) default null comment '过敏史:null:未知，"":无',
+    `family_disease_history` varchar(64) default null comment '家族病史：null:未知，"":无，其他逗号隔开',
+    `gestation_type` tinyint(1) not null default 0 comment '妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳',
+    `kidney_function_ok` tinyint(1) not null default 0 comment '肾功能:0:未知，1：正常，2：异常',
+    `liver_function_ok` tinyint(1) not null default 0 comment '肝功能:0:未知，1：正常，2：异常',
+    `remarks` text not null comment '介绍',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
@@ -4970,4 +4976,64 @@ CREATE TABLE `b2c_medical_advice` (
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     primary key (`id`)
-)comment '医嘱明细表';
+)comment ='医嘱明细表';
+
+-- 问诊会话表 记录一次医生和患者的在线会话
+create TABLE `b2c_im_session`(
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `doctor_id` int(11) NOT NULL COMMENT '医师在我方库内id值',
+    `user_id` int(11) NOT NULL COMMENT '小程序发起会话用户id',
+    `patient_id`  int(11) NOT NULL COMMENT '本次诊疗的患者id',
+    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0医师待接诊，1会话中，2会话取消，3会话结束',
+    `order_sn` varchar(32)  NOT NULL COMMENT '会话关联的订单sn',
+    `limit_time` timestamp  COMMENT '医生接诊后会话截止时间点',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key (`id`)
+) comment = '问诊会话记录一次医生和患者的在线会话';
+
+-- 问诊会话详情 记录每一条会话
+create TABLE `b2c_im_session_item`(
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `im_session_id` int(11)  NOT NULL COMMENT '会话id',
+    `form_id` int(11) COMMENT '本条消息发起者id 医师id或用户userId',
+    `to_id` int(11) COMMENT '本跳消息接收者id  医师id或用户userId',
+    `message` varchar(2048) COMMENT '本条消息内容',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    primary key (`id`)
+) comment = '问诊会话详情 记录每一条会话';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

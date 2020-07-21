@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author chenjie
+ */
 @RestController
 @Slf4j
 public class WxAppPatientController extends WxAppBaseController {

@@ -3,13 +3,13 @@
 		"shop_view",
 		"analysis_basic",
 		"situation",
+		"sales_report",
 		"analysis_portrait",
 		"analysis_visit",
 		"analysis_visit_source",
 		"user_summary",
 		"goods_summary",
 		"trades_summary",
-		"asset_summary",
 		"search_summary"
 	],
 	"first_web_decoration": [

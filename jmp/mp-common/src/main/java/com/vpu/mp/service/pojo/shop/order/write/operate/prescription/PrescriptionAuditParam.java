@@ -19,7 +19,7 @@ public class PrescriptionAuditParam  extends AbstractOrderOperateQueryParam {
      * 处方号
      */
     @NotNull
-    private String prescriptionNo;
+    private String prescriptionCode;
     /**
      * 商品id
      */

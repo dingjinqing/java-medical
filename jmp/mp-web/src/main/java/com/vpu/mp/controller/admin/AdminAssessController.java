@@ -1,9 +1,6 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -20,12 +17,8 @@ import com.vpu.mp.service.shop.ShopApplication;
  * 2019年8月15日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminAssessController extends AdminBaseController{
-	@Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
 	/**
 	 * 测评活动列表
 	 * @param param
@@ -36,7 +29,7 @@ public class AdminAssessController extends AdminBaseController{
 		 PageResult<AssessActivityListVo> activityList = shop().assess.getActivityList(param);
 		 return this.success(activityList);
 	}
-	
+
 	/**
 	 * 获取一条测评活动信息
 	 * @param assessId
@@ -47,7 +40,7 @@ public class AdminAssessController extends AdminBaseController{
 		AssessActivityOneParam info = shop().assess.getOneInfo(assessId);
 		return this.success(info);
 	}
-	
+
 	/**
 	 * 编辑保存活动信息
 	 * @param param
@@ -58,7 +51,7 @@ public class AdminAssessController extends AdminBaseController{
 		int res = shop().assess.saveAssess(param);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 添加测评活动
 	 * @param param
@@ -69,7 +62,7 @@ public class AdminAssessController extends AdminBaseController{
 		int res = shop().assess.addAssess(param);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 停用测评活动
 	 * @param assessId
@@ -80,7 +73,7 @@ public class AdminAssessController extends AdminBaseController{
 		int res = shop().assess.pauseAssess(assessId);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 启用测评活动
 	 * @param assessId
@@ -91,7 +84,7 @@ public class AdminAssessController extends AdminBaseController{
 		int res = shop().assess.openAssess(assessId);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 发布活动
 	 * @param assessId
@@ -102,7 +95,7 @@ public class AdminAssessController extends AdminBaseController{
 		int res = shop().assess.publishAssess(assessId);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 添加测评题目
 	 * @param param
@@ -113,7 +106,7 @@ public class AdminAssessController extends AdminBaseController{
 		int res = shop().assess.addAssessTopic(param);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 获取测评题目单条信息
 	 * @param id
@@ -124,7 +117,7 @@ public class AdminAssessController extends AdminBaseController{
 		AssessTopicOneParam res = shop().assess.getAssessTopicOne(id);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 测评题目编辑保存
 	 * @param param
@@ -135,7 +128,7 @@ public class AdminAssessController extends AdminBaseController{
 		int res = shop().assess.saveAssessTopic(param);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 删除测评题目
 	 * @param id
@@ -146,7 +139,7 @@ public class AdminAssessController extends AdminBaseController{
 		int res = shop().assess.delAssessTopic(id);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 添加测评结果
 	 * @param param
