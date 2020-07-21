@@ -73,6 +73,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
@@ -204,6 +205,24 @@ public class UserService extends ShopBaseService {
 		logger().info("更新sessionKey："+sessionKey);
 		return record;
 	}
+
+    /**
+     * 得到当前用户类型
+     * @param userId 用户id
+     * @return Byte
+     */
+    public Byte getUserType(Integer userId){
+        return db().select(USER.USER_TYPE).from(USER).where(USER.USER_ID.eq(userId)).fetchOneInto(Byte.class);
+    }
+
+    /**
+     * 得到当前医师
+     * @param userId 用户id
+     * @return String
+     */
+    public String getDoctorId(Integer userId){
+        return db().select(DOCTOR.HOSPITAL_CODE).from(DOCTOR).where(DOCTOR.USER_ID.eq(userId)).fetchOneInto(String.class);
+    }
 
 	private String getSessionKey(Integer shopId, Integer userId) {
 		return SESSION_SIGN_KEY + Util.md5(shopId + "_" + userId);

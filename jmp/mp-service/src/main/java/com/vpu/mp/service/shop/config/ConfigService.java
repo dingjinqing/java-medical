@@ -101,6 +101,11 @@ public class ConfigService extends ShopBaseService {
         config.setLogoLink(shopCommonConfigCacheService.getLogoLink());
         config.setSetting(setting);
         config.setStatus(getStatus(user != null ? user.getUserId() : null));
+        //添加用户角色信息、医师id、药师id
+        assert user != null;
+        config.setUserType(user.getUserType());
+        config.setDoctorId(user.getDoctorId());
+        config.setPharmacistId(user.getPharmacistId());
         ShowPoster showPoster = new ShowPoster();
         // TODO: 取ShowPoster数据
         config.setShowPoster(showPoster);

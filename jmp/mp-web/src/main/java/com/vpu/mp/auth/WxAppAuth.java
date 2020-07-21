@@ -1,5 +1,6 @@
 package com.vpu.mp.auth;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -149,6 +150,8 @@ public class WxAppAuth {
 				.unionid(user.getWxUnionId()).mobile(user.getMobile() != null ? user.getMobile() : "").build();
 
 		String token = TOKEN_PREFIX + Util.md5(shopId + "_" + user.getUserId());
+		//获取用户角色
+        Byte userType = shopApp.user.getUserType(user.getUserId());
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
 		sessionUser.setWxUser(wxUser);
 		sessionUser.setToken(token);
@@ -158,6 +161,25 @@ public class WxAppAuth {
 		sessionUser.setUserAvatar(userDetail == null ? null : userDetail.getUserAvatar());
 		sessionUser.setUsername(userDetail == null ? null : userDetail.getUsername());
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
+
+		//添加用户个人角色信息
+        sessionUser.setUserType(userType);
+        if (userType == 0){
+            sessionUser.setDoctorId("");
+            sessionUser.setPharmacistId("");
+        }
+        //如果当前用户是医师，那么直接进入医师界面
+        if (userType == 1) {
+            String doctorId = shopApp.user.getDoctorId(user.getUserId());
+            sessionUser.setDoctorId(doctorId);
+        }
+
+        //TODO 后期药师角色验证
+        //如果当前用户是药师，直接进入药师界面
+//        if (userType == 2) {
+//
+//        }
+
 		jedis.set(token, Util.toJson(sessionUser));
 		sessionUser.setImageHost(imageService.getImageHost());
 		return sessionUser;

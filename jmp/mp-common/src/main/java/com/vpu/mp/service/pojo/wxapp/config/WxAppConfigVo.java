@@ -50,7 +50,23 @@ public class WxAppConfigVo {
 	 * 设置
 	 */
 	Setting setting;
-	
+
+    /**
+     * 用户类型
+     */
+    @JsonProperty(value = "user_type")
+    Byte userType;
+    /**
+     * 医师ID 如果当前用户不是医师那么为空
+     */
+    @JsonProperty(value = "doctor_id")
+    String doctorId;
+    /**
+     * 药师ID 如果当前用户不是药师那么为空
+     */
+    @JsonProperty(value = "pharmacist_id")
+    String pharmacistId;
+
 	@Data
 	public static final class ShowPoster{
 		/**
