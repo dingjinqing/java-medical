@@ -74,6 +74,7 @@ import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.overview.*;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.question.FeedbackService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -596,4 +597,10 @@ public class ShopApplication {
 
     @Autowired
     public AuditService auditService;
+
+    /**
+     * 处方
+     */
+    @Autowired
+    public PrescriptionService prescriptionService;
 }
