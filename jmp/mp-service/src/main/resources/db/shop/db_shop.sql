@@ -5000,6 +5000,7 @@ create TABLE `b2c_im_session_item`(
     `form_id` int(11) COMMENT '本条消息发起者id 医师id或用户userId',
     `to_id` int(11) COMMENT '本跳消息接收者id  医师id或用户userId',
     `message` varchar(2048) COMMENT '本条消息内容',
+    `send_time` timestamp COMMENT '用户消息发送时间',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     primary key (`id`)
 ) comment = '问诊会话详情 记录每一条会话';

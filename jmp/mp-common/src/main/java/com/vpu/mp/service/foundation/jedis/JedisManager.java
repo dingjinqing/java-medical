@@ -6,11 +6,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -62,13 +58,43 @@ public class JedisManager {
 	/**
 	 *
 	 * @param key
-	 * @param value
+	 * @param values
 	 */
-	public void lpush(String key, String[] value) {
+	public void lpush(String key, String[] values) {
 		try (Jedis jedis = getJedisPool().getResource()){
-			jedis.lpush(key, value);
+			jedis.lpush(key, values);
 		}
 	}
+
+    public void lpush(String key, List<String> values) {
+        String[] strings = values.toArray(new String[values.size()]);
+        lpush(key,strings);
+    }
+
+    public void lpush(String key, String value) {
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.lpush(key, value);
+        }
+    }
+
+    public void rpush(String key, List<String> values) {
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.rpush(key, values.toArray(new String[values.size()]));
+        }
+    }
+
+    public void rpush(String key, String value) {
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.rpush(key, value);
+        }
+    }
+
+    public void cleanList(String key){
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.ltrim(key,1,0);
+        }
+    }
+
 	/**
 	 *
 	 * @param key

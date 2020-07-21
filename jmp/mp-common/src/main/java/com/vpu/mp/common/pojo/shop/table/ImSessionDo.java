@@ -1,5 +1,7 @@
 package com.vpu.mp.common.pojo.shop.table;
 
+import lombok.Data;
+
 import java.sql.Timestamp;
 
 /**
@@ -7,6 +9,7 @@ import java.sql.Timestamp;
  * @author 李晓冰
  * @date 2020年07月21日
  */
+@Data
 public class ImSessionDo {
     private Integer   id;
     private Integer   doctorId;

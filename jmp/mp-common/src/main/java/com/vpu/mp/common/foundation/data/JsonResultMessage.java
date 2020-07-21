@@ -1,5 +1,7 @@
 package com.vpu.mp.common.foundation.data;
 
+import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementVo;
+
 /**
  * @author 新国
  */
@@ -1331,4 +1333,12 @@ public class JsonResultMessage {
     public static final String DOCTOR_NAME_IS_NULL = "doctor.name.is.null";
     public static final String DOCTOR_ID_IS_NULL = "doctor.id.is.null";
     public static final String DOCTOR_CODE_IS_EXIST = "doctor.code.is.exist";
+
+    /**
+     * 会话
+     */
+    public static final String IM_SESSION_ID_IS_NULL = "im.session.id.is.null";
+
+    public static final String IM_SESSION_NOT_EXIST = "im.session.not.exist";
+
 }

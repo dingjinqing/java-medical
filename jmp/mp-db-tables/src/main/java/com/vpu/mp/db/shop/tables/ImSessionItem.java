@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.ImSessionItemRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
 
-    private static final long serialVersionUID = 732764355;
+    private static final long serialVersionUID = 1612182236;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_im_session_item</code>
@@ -81,6 +70,11 @@ public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
      * The column <code>mini_shop_471752.b2c_im_session_item.message</code>. 本条消息内容
      */
     public final TableField<ImSessionItemRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(2048), this, "本条消息内容");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_im_session_item.send_time</code>. 用户消息发送时间
+     */
+    public final TableField<ImSessionItemRecord, Timestamp> SEND_TIME = createField("send_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "用户消息发送时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session_item.create_time</code>. 生成时间
