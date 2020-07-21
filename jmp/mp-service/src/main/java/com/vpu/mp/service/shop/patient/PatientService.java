@@ -8,6 +8,7 @@ import java.util.List;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.dao.foundation.transactional.DbTransactional;
 import com.vpu.mp.dao.foundation.transactional.DbType;
@@ -94,8 +95,9 @@ public class PatientService extends ShopBaseService{
             userPatientCoupleDo.setPatientId(patientId);
             userPatientCoupleDo.setUserId(userPatientOneParam.getUserId());
             List<PatientOneParam> patientList=userPatientCoupleDao.listPatientIdsByUser(userPatientOneParam.getUserId());
-            if(patientList.size()==0)
+            if(patientList.size()==0) {
                 userPatientCoupleDo.setIsDefault((byte) 1);
+            }
             userPatientCoupleDao.save(userPatientCoupleDo);
         } else {
             patientDo.setId(patientOneParam.getId());
