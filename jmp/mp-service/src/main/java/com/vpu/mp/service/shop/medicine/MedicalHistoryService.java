@@ -89,10 +89,8 @@ public class MedicalHistoryService extends ShopBaseService {
         // 数据库新增或更新
         assert fetchMedicalHistoryVos != null;
         for (FetchMedicalHistoryVo fetchMedicalHistoryVo : fetchMedicalHistoryVos) {
-            //如果没有当前处方就新增
-            MedicalHistoryListParam medicalHistoryListParam = new MedicalHistoryListParam();
-            medicalHistoryListParam.setId(fetchMedicalHistoryVo.getId());
-            if (medicalHistoryDao.getMedicalHistoryDetail(medicalHistoryListParam) == null) {
+            //如果没有当前病历就新增
+            if (medicalHistoryDao.getMedicalHistoryDetailByCode(fetchMedicalHistoryVo.getPosCode()) == null) {
                 medicalHistoryDao.addHitsMedicalHistory(fetchMedicalHistoryVo);
 
             } else {  //否则就修改
