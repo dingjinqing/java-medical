@@ -725,6 +725,12 @@ public class OrderReadService extends ShopBaseService {
         order.setShowMall(recommendService.goodsMallService.check("1"));
         //积分兑换商品价格小程序端特殊展示
         editShowGoodsPrice(order);
+        //关联的处方
+		goodsList.forEach(orderGoods->{
+
+		});
+
+
 		return order;
 
 	}

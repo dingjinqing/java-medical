@@ -159,8 +159,8 @@
       </view>
       <view class='ma_appoint clearfix'>
         <view class='patient_info' wx:if='{{!!item.content}}'>
-          <view>张三</view>
-          <view>13244556677</view>
+          <view>{{item.content.name}}</view>
+          <view>{{item.content.mobile}}</view>
         </view>
         <view class="no_patient_area" wx:else>
           <view class="brn_get_pre" bindtap="to_get_pre">

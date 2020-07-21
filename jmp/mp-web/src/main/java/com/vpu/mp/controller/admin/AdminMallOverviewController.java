@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/15
  * 商城概览
  */

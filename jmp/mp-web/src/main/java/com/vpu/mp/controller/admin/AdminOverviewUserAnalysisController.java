@@ -101,7 +101,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
      * @return 数据
      */
     @PostMapping("/rfm")
-    public JsonResult getRFMAnalysis(@RequestBody RFMParam param) {
+    public JsonResult getRfmAnalysis(@RequestBody RFMParam param) {
      //判断指定日期有无数据
      Boolean data = shop().overview.userAnalysisService.getRFMData(param);
      if (!data){

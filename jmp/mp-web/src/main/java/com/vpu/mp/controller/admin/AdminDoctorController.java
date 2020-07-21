@@ -7,6 +7,9 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author chenjie
+ */
 @RestController
 public class AdminDoctorController extends AdminBaseController {
 //    @Override

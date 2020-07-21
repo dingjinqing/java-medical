@@ -35,7 +35,7 @@ public class AdminMarketcalendarController extends AdminBaseController {
 		String act = param.getAct();
 		for (CalendarAct calendarAct : param.getCalendarAct()) {
 			String[] strings = saas.shop.version.verifyVerPurview(shopId(), calendarAct.getActivityType());
-			if(strings[0].equals("false")) {
+			if("false".equals(strings[0])) {
 				 return this.fail(JsonResultCode.SOME_NO_AUTH,""+calendarAct.getActivityType());
 			}
 		}

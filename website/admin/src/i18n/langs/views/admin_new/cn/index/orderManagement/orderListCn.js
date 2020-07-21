@@ -330,14 +330,12 @@ export const cn = {
     [4, '已发货'],
     [5, '已收货/已自提'],
     [6, '订单完成'],
-    [7, '退货中'],
-    [8, '退货完成'],
+    [7, '售后中'],
+    [8, '售后完成'],
     [11, '拼团中'],
     [12, '已成团'],
     [13, '送礼完成'],
-    [14, '待接单'],
-    [15, '已接单-取件中'],
-    [16, '已取件-配送中']
+    [14, '待审核']
   ],
   orderStatus: [
     [null, '全部订单'],
@@ -451,27 +449,27 @@ export const cn = {
   },
   remindTime: '用户提醒发货：',
   returnSortList: [
-    {value: 1, label: '按下单时间排序'},
-    {value: 2, label: '按申请售后时间排序'}
+    { value: 1, label: '按下单时间排序' },
+    { value: 2, label: '按申请售后时间排序' }
   ],
   returnWaysList: [
-    {value: -1, label: '全部'},
-    {value: 0, label: '商家主动售后'},
-    {value: 1, label: '下单人申请售后'},
-    {value: 2, label: '系统自动售后'}
+    { value: -1, label: '全部' },
+    { value: 0, label: '商家主动售后' },
+    { value: 1, label: '下单人申请售后' },
+    { value: 2, label: '系统自动售后' }
     // {value: 3, label: '旺店通ERP主动售后'},
     // {value: 4, label: '旺店通POS主动售后'}
   ],
   activityTypeList: {
-    1: {name: '拼团'},
-    3: {name: '砍价'},
-    4: {name: '积分兑换'},
-    5: {name: '秒杀'},
-    6: {name: '限时降价'},
-    7: {name: '换购'},
-    8: {name: '拼团抽奖'},
-    9: {name: '一口价'},
-    10: {name: '预售'},
-    18: {name: '首单特惠'}
+    1: { name: '拼团' },
+    3: { name: '砍价' },
+    4: { name: '积分兑换' },
+    5: { name: '秒杀' },
+    6: { name: '限时降价' },
+    7: { name: '换购' },
+    8: { name: '拼团抽奖' },
+    9: { name: '一口价' },
+    10: { name: '预售' },
+    18: { name: '首单特惠' }
   }
 }

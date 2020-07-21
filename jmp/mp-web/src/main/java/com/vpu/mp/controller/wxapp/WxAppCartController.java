@@ -32,8 +32,9 @@ public class WxAppCartController extends WxAppBaseController {
         WxAppSessionUser user = wxAppAuth.user();
         WxAppCartBo cartList = shop().cart.getCartList(user.getUserId());
         Iterator<WxAppCartGoods> iterator = cartList.getCartGoodsList().iterator();
-        cartList.setFullReductionGoodsMap(new HashMap<>());
-        cartList.setPurchasePriceGoodsMap(new HashMap<>());
+        int initialCapacity = 16;
+        cartList.setFullReductionGoodsMap(new HashMap<>(initialCapacity));
+        cartList.setPurchasePriceGoodsMap(new HashMap<>(initialCapacity));
         while (iterator.hasNext()){
             WxAppCartGoods next = iterator.next();
             if (BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(next.getActivityType())||BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(next.getActivityType())){
