@@ -43,4 +43,5 @@ public class OrderGoodsMpVo {
 	private Integer isGift;
 	private Integer giftId;
 	private BigDecimal discountedGoodsPrice;
+	private String prescriptionCode;
 }
