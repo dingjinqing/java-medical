@@ -234,7 +234,6 @@ ALTER TABLE `b2c_mp_auth_shop` CHANGE COLUMN `link_official_app_id` `link_offici
 /*********************3.1*************************END*/
 
 /*********************3.2***********************BEGIN*/
--- 2020.7.21 用户表新增字段判断当前用户角色
-ALTER TABLE `b2c_user` ADD `user_type`TINYINT NOT NULL DEFAULT 0 COMMENT '用户角色 0、患者 1、医师 2、药师';
+
 /*********************3.2*************************END*/
 
