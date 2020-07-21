@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.medicine;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.medicalHistory.FetchMedicalHistoryParam;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionParam;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class PullHitsHistoryPrescriptionService {
+public class PullHitsHistoryPrescriptionService extends ShopBaseService {
 
     @Autowired
     private MedicalHistoryService medicalHistoryService;

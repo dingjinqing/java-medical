@@ -106,4 +106,12 @@ public class PatientService extends ShopBaseService{
         return JsonResult.success();
     }
 
+    /**
+     * 根据姓名手机号身份证号查询患者信息
+     * @param patientInfoParam
+     * @return
+     */
+    public PatientOneParam getPatientByNameAndMobile(UserPatientOneParam patientInfoParam){
+        return patientDao.getPatientByNameAndMobile(patientInfoParam);
+    }
 }

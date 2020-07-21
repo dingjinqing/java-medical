@@ -14,9 +14,13 @@ import com.vpu.mp.dao.shop.medicalHistory.MedicalHistoryDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 
 import com.vpu.mp.service.pojo.shop.medicalHistory.*;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
+import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -34,6 +38,8 @@ public class MedicalHistoryService extends ShopBaseService {
 
     @Autowired
     private MedicalHistoryDao medicalHistoryDao;
+    @Autowired
+    public PatientService patientService;
 
     /**
      * 查询单条病历详情
@@ -88,8 +94,15 @@ public class MedicalHistoryService extends ShopBaseService {
 
         // 数据库新增或更新
         assert fetchMedicalHistoryVos != null;
+        UserPatientOneParam patientParam = new UserPatientOneParam();
+        patientParam.setName(fetchMedicalHistoryParam.getPatientName());
+        patientParam.setMobile(fetchMedicalHistoryParam.getMobile());
+        patientParam.setIdentityCode(fetchMedicalHistoryParam.getIdentityCode());
+        PatientOneParam patientInfo = patientService.getPatientByNameAndMobile(patientParam);
         for (FetchMedicalHistoryVo fetchMedicalHistoryVo : fetchMedicalHistoryVos) {
             //如果没有当前病历就新增
+            fetchMedicalHistoryVo.setPatientId(patientInfo.getId());
+            fetchMedicalHistoryVo.setPatientName(patientInfo.getName());
             if (medicalHistoryDao.getMedicalHistoryDetailByCode(fetchMedicalHistoryVo.getPosCode()) == null) {
                 medicalHistoryDao.addHitsMedicalHistory(fetchMedicalHistoryVo);
 
