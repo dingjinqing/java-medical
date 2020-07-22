@@ -16,6 +16,7 @@ public class ImSessionItemDo {
     private Integer   formId;
     private Integer   toId;
     private String    message;
+    private Byte type;
     private Timestamp sendTime;
     private Timestamp createTime;
 }

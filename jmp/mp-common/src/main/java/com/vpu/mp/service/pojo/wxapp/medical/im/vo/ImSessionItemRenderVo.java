@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.medical.im.vo;
 
+import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ImSessionItemRenderVo extends ImSessionItemVo{
+public class ImSessionItemRenderVo extends ImSessionItemBase {
     /**是否是医师话语*/
     private boolean isDoctor;
 }

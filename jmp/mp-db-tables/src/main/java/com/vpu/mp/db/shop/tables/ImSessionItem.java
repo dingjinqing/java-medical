@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
 
-    private static final long serialVersionUID = 1612182236;
+    private static final long serialVersionUID = 120253952;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_im_session_item</code>
@@ -70,6 +70,11 @@ public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
      * The column <code>mini_shop_471752.b2c_im_session_item.message</code>. 本条消息内容
      */
     public final TableField<ImSessionItemRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(2048), this, "本条消息内容");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型
+     */
+    public final TableField<ImSessionItemRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT, this, "消息类型");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session_item.send_time</code>. 用户消息发送时间
