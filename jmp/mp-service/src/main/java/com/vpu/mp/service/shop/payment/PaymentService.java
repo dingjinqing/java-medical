@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.payment;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -11,10 +12,12 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.action.InsteadPayService;
 import com.vpu.mp.service.shop.order.action.PayService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
@@ -96,6 +99,8 @@ public class PaymentService extends ShopBaseService {
     private MemberCardOrderService memberCardOrderService;
     @Autowired
     private UserCardService userCardService;
+    @Autowired
+    private InquiryOrderService inquiryOrderService;
 
 
 	public PaymentVo getPaymentInfo(String payCode) {
@@ -172,6 +177,10 @@ public class PaymentService extends ShopBaseService {
             case CardConstant.USER_CARD_RENEW_ORDER:
                 //会员卡续费支付回调
                 onPayNotifyCardRenew(param);
+                break;
+            case InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX:
+                //问诊订单支付回调
+                onPatNotifyInquiryOrder(param);
                 break;
             default:
         }
@@ -460,5 +469,30 @@ public class PaymentService extends ShopBaseService {
         PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
         userCardService.cardRenewFinish(order,paymentRecord);
         logger().info("会员卡续费支付回调end");
+    }
+    /**
+     * 问诊订单支付回调
+     * @param param
+     */
+    private void onPatNotifyInquiryOrder(PaymentRecordParam param)throws MpException,WxPayException{
+        logger().info("问诊订单支付回调start");
+        String orderSn = param.getOrderSn();
+        InquiryOrderRecord orderInfo=inquiryOrderService.getByOrderSn(param.getOrderSn());
+        if (Objects.isNull(orderInfo)) {
+            logger().error("问诊订单订单统一支付回调（onPatNotifyInquiryOrder）：订单【订单号：{}】不存在！", orderSn);
+            throw new WxPayException("onPayNotifyCardOrder：orderSn 【" + orderSn + "】not found ！");
+        }
+        if (NumberUtils.createBigDecimal(param.getTotalFee()).compareTo(orderInfo.getOrderAmount()) != INTEGER_ZERO) {
+            logger().error("问诊订单订单统一支付回调（onPatNotifyInquiryOrder）：订单【订单号：{}】实付金额不符【系统计算金额：{} != 微信支付金额：{}】！", orderSn, orderInfo.getOrderAmount(), param.getTotalFee());
+            throw new WxPayException("onPatNotifyInquiryOrder：orderSn 【 " + orderSn + "】 pay amount  did not match ！");
+        }
+        if (!InquiryOrderConstant.ORDER_TO_PAID.equals(orderInfo.getOrderStatus())) {
+            logger().info("问诊订单订单统一支付回调（onPatNotifyInquiryOrder）：订单【订单号：{}】已支付！", orderSn);
+            return;
+        }
+        //添加支付记录
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+        inquiryOrderService.inquiryOrderFinish(orderInfo,paymentRecord);
+        logger().info("问诊订单支付回调start");
     }
 }

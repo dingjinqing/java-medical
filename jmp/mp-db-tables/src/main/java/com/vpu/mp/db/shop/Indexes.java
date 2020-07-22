@@ -526,6 +526,7 @@ public class Indexes {
     public static final Index DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Indexes0.DOCTOR_DEPARTMENT_COUPLE_PRIMARY;
     public static final Index MEDICAL_HISTORY_PRIMARY = Indexes0.MEDICAL_HISTORY_PRIMARY;
     public static final Index MEDICAL_ADVICE_PRIMARY = Indexes0.MEDICAL_ADVICE_PRIMARY;
+    public static final Index INQUIRY_ORDER_PRIMARY = Indexes0.INQUIRY_ORDER_PRIMARY;
     public static final Index IM_SESSION_PRIMARY = Indexes0.IM_SESSION_PRIMARY;
     public static final Index IM_SESSION_ITEM_PRIMARY = Indexes0.IM_SESSION_ITEM_PRIMARY;
 
@@ -1031,6 +1032,7 @@ public class Indexes {
         public static Index DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Internal.createIndex("PRIMARY", DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, new OrderField[] { DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID }, true);
         public static Index MEDICAL_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", MedicalHistory.MEDICAL_HISTORY, new OrderField[] { MedicalHistory.MEDICAL_HISTORY.ID }, true);
         public static Index MEDICAL_ADVICE_PRIMARY = Internal.createIndex("PRIMARY", MedicalAdvice.MEDICAL_ADVICE, new OrderField[] { MedicalAdvice.MEDICAL_ADVICE.ID }, true);
+        public static Index INQUIRY_ORDER_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.ORDER_ID }, true);
         public static Index IM_SESSION_PRIMARY = Internal.createIndex("PRIMARY", ImSession.IM_SESSION, new OrderField[] { ImSession.IM_SESSION.ID }, true);
         public static Index IM_SESSION_ITEM_PRIMARY = Internal.createIndex("PRIMARY", ImSessionItem.IM_SESSION_ITEM, new OrderField[] { ImSessionItem.IM_SESSION_ITEM.ID }, true);
     }

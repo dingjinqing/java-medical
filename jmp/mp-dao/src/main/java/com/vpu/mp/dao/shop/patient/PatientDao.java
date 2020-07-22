@@ -59,7 +59,7 @@ public class PatientDao extends ShopBaseDao{
      */
     public PatientOneParam getOneInfo(Integer patientId) {
         PatientOneParam info = db().select().from(PATIENT).where(PATIENT.ID.eq(patientId))
-            .fetchOneInto(PatientOneParam.class);
+            .fetchAnyInto(PatientOneParam.class);
         return info;
     }
 
