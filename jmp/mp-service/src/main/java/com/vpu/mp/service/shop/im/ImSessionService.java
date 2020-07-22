@@ -66,6 +66,7 @@ public class ImSessionService extends ShopBaseService {
      */
     public void updateSessionToGoingOn(Integer sessionId){
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
+        imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
         imSessionDo.setLimitTime(DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS));
         imSessionDao.update(imSessionDo);
     }
@@ -200,8 +201,13 @@ public class ImSessionService extends ShopBaseService {
         String sessionBakKey = getSessionRedisKeyBak(getShopId(), departmentId,patientId, fromId, toId);
 
         List<String> readyToReadList = jedisManager.getList(sessionKey);
-        List<String> dumpList = new ArrayList<>(readyToReadList.size());
         List<ImSessionItemBase> retVos = new ArrayList<>(readyToReadList.size());
+        // 没有需要读的信息
+        if (readyToReadList.size() == 0) {
+            return retVos;
+        }
+
+        List<String> dumpList = new ArrayList<>(readyToReadList.size());
 
         Timestamp curTime = DateUtils.getLocalDateTime();
         for (String s : readyToReadList) {

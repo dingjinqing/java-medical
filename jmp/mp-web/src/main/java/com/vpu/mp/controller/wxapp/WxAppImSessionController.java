@@ -90,7 +90,7 @@ public class WxAppImSessionController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/api/wxapp/im/session/pull")
-    public JsonResult pullMsg(ImSessionPullMsgParam param){
+    public JsonResult pullMsg(@RequestBody  ImSessionPullMsgParam param){
         List<ImSessionItemBase> imSessionItemPullVos = imSessionService.pullMsg(param);
         return success(imSessionItemPullVos);
     }
