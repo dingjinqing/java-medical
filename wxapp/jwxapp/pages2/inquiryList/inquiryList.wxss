@@ -1,0 +1,101 @@
+.tabs{
+  display: flex;
+  height: 90rpx;
+  align-items: center;
+  background-color: #fff;
+}
+.tabs > view{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.tabs > view > text{
+  font-size: 28rpx;
+  color: #333;
+  position: relative;
+}
+.tabs > view > text.active{
+  font-weight: 600;
+}
+.tabs > view > text.active::after{
+  content: '';
+  width: 80%;
+  height:4rpx;
+  border-radius: 2rpx;
+  background-color: #26C4BC;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -12rpx;
+}
+.tabs > view + view{
+  border-left: 2rpx solid #eee;
+}
+.card-item{
+  width: 702rpx;
+  margin: 24rpx auto 0;
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding-left: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+.doctor-info{
+  display: flex;
+  align-items: center;
+  height: 98rpx;
+  border-bottom: 2rpx solid #eee;
+  padding-right: 24rpx;
+}
+.doctor-info > .doctor-name{
+  color: #333;
+  font-weight: 600;
+  font-size: 32rpx;
+  margin-right: 24rpx;
+}
+.doctor-info > .office{
+  color: #333;
+  margin-right: auto;
+}
+.doctor-info > .status{
+  line-height: 36rpx;
+  box-sizing: border-box;
+  padding: 0 16rpx;
+  margin-right: auto;
+  border-radius: 4rpx;
+}
+.doctor-info > .status.ongoing{
+  background-color: #FFF2E0;
+  color: #FF9F15;
+}
+.doctor-info > .status.end{
+  background-color: #E4FBFA;
+  color: #26C4BC;
+}
+.doctor-info > .date{
+  color: #999;
+}
+.button-content{
+  padding: 0 24rpx;
+  display: flex;
+  justify-content: flex-end;
+  height: 100rpx;
+  align-items: center;
+  line-height: 60rpx;
+  text-align: center;
+}
+.button-content > text{
+  border-radius: 30rpx;
+  width: 150rpx;
+  box-sizing: border-box;
+  border: 2rpx solid #ccc;
+  color: #333;
+}
+.button-content > text.pass{
+  background-color: #26C4BC;
+  border-color: #26C4BC;
+  color: #fff;
+}
+.button-content > text.reject{
+  border-color: #ccc;
+}

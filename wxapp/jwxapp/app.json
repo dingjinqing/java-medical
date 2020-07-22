@@ -145,7 +145,8 @@
       "pages": [
         "doctorConsultation/doctorConsultation",
         "allDepartment/allDepartment",
-        "operatePrescriptionList/operatePrescriptionList"
+        "operatePrescriptionList/operatePrescriptionList",
+        "inquiryList/inquiryList"
       ]
     }
   ],

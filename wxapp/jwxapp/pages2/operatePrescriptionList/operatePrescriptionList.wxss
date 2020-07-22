@@ -130,8 +130,6 @@
   justify-content: flex-end;
   height: 100rpx;
   align-items: center;
-}
-.button-content{
   line-height: 60rpx;
   text-align: center;
 }

@@ -129,6 +129,7 @@ module.exports = {
     "prescriptionsheet":"处方单信息",
     "doctorConsultation":"医师咨询",
     "allDepartment":"全部科室",
-    "operatePrescriptionList":"待审核处方"
+    "operatePrescriptionList":"待审核处方",
+    "inquiryList":"待问诊"
   }
 }
