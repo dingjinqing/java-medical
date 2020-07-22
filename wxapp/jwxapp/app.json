@@ -139,6 +139,13 @@
         "medicalrecordlist/medicalrecordlist",
         "prescriptionsheet/prescriptionsheet"
       ]
+    },
+    {
+      "root": "pages2",
+      "pages": [
+        "doctorConsultation/doctorConsultation",
+        "allDepartment/allDepartment"
+      ]
     }
   ],
   "sitemapLocation": "sitemap.json"

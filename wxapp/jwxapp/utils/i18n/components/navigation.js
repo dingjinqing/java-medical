@@ -126,6 +126,8 @@ module.exports = {
     "prescriptioninfo":"处方详情",
     "medicalrecordlist":"我的病历",
     "medicalrecordinfo":"病历详情",
-    "prescriptionsheet":"处方单信息"
+    "prescriptionsheet":"处方单信息",
+    "doctorConsultation":"医师咨询",
+    "allDepartment":"全部科室"
   }
 }
