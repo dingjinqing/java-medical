@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoods extends TableImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = 384689927;
+    private static final long serialVersionUID = 881541602;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_goods</code>
@@ -307,6 +307,11 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
      * The column <code>mini_shop_471752.b2c_order_goods.prescription_code</code>. 处方项目明细号码（可根据此字段反查批次号）
      */
     public final TableField<OrderGoodsRecord, String> PRESCRIPTION_CODE = createField("prescription_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "处方项目明细号码（可根据此字段反查批次号）");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_goods.medical_audit_type</code>. 药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     */
+    public final TableField<OrderGoodsRecord, Byte> MEDICAL_AUDIT_TYPE = createField("medical_audit_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "药品审核类型, 0不审核,1审核,2开方,3根据处方下单");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_goods.medical_audit_status</code>. 药品审核状态 0未审核 1审核通过 2审核不通过

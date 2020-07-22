@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS;
 
 /**
  * 药方
@@ -67,43 +67,89 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             Integer integer = patientService.defaultPatientId(param.getWxUserInfo().getUserId());
             param.setPatientId(integer);
         }
-        //药品处方
+        //订单药品信息 处方药和处方匹配
+        List<PrescriptionVo> prescriptionList = medicalOrderInit(param);
+        //处方状态,订单类型
+        auditPrescriptionValid(param, prescriptionList);
+        log.info("药品处方检查-结束");
+    }
+
+    /**
+     * 审核处方
+     * @param param
+     * @param prescriptionList
+     */
+    private void auditPrescriptionValid(OrderBeforeParam param, List<PrescriptionVo> prescriptionList) {
+        if (OrderConstant.MEDICAL_TYPE_RX.equals(param.getOrderMedicalType())){
+            if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
+                log.info("处方药订单,药品与处方匹配通过--审核/直接通过");
+                param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
+                PatientOneParam oneInfo = patientService.getOneInfo(param.getPatientId());
+                param.setPatientInfo(oneInfo);
+                //处方单号去重
+                prescriptionList = prescriptionList.stream()
+                        .collect(Collectors.collectingAndThen
+                                (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionCode))), ArrayList::new));
+                param.setPrescriptionList(prescriptionList);
+                //处方是否在有效期
+                long size = prescriptionList.stream().filter(prescriptionVo -> {
+                    if (prescriptionVo.getSource().equals(PrescriptionConstant.SOURCE_HIS_SYSTEM)) {
+                        //系统内
+                        if (PrescriptionConstant.EXPIRE_TYPE_EVER.equals(prescriptionVo.getExpireType())
+                                || prescriptionVo.getExpireType().equals(PrescriptionConstant.EXPIRE_TYPE_TIME)) {
+                            //处方有效期内
+                            return true;
+                        }
+                    }
+                    return false;
+                }).count();
+                if (prescriptionList.size()==size){
+                    log.info("所有处方都在有效-直接通过");
+                    param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED);
+                }
+            }else {
+                log.info("处方药订单,存在没有匹配到订单得药品--线上开方");
+                param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
+            }
+        }else {
+            log.info("没有处方药-不审核");
+            param.setOrderMedicalType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT);
+        }
+    }
+
+
+    /**
+     * 订单药品处方信息
+     * @param param
+     * @return
+     */
+    private List<PrescriptionVo> medicalOrderInit(OrderBeforeParam param) {
         List<PrescriptionVo> prescriptionList =new ArrayList<>();
-        byte checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED;
-        byte orderMedicalType = OrderConstant.MEDICAL_TYPE_OTC;
+        param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED);
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GoodsRecord goodsInfo = goods.getGoodsInfo();
             GoodsMedicalInfoDo medicalInfo = medicalGoodsService.getByGoodsId(goodsInfo.getGoodsId());
             //商品的医疗信息
             if (medicalInfo != null&&medicalInfo.getIsRx().equals(BaseConstant.YES)) {
-                orderMedicalType =OrderConstant.MEDICAL_TYPE_RX;
+                param.setOrderMedicalType(OrderConstant.MEDICAL_TYPE_RX);
                 goods.setMedicalInfo(medicalInfo);
                 PrescriptionVo prescriptionVo = prescriptionService
                         .getByGoodsInfo(goods.getGoodsId(),param.getPatientId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
                 //处方信息
                 if (prescriptionVo != null) {
                     prescriptionList.add(prescriptionVo);
-                    checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_PASS;
+                    goods.setPrescriptionInfo(prescriptionVo);
+                    param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
+                    if (prescriptionVo.getExpireType().equals(PrescriptionConstant.EXPIRE_TYPE_INVALID)){
+
+                    }
                 } else {
-                    log.info("{}药品没有找到对应的处方信息", goodsInfo.getGoodsName());
-                    goods.setCheckPrescriptionStatus(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS);
-                    checkPrescriptionStatus = PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS;
+                    log.info("{}处方药品没有找到对应的处方信息", goodsInfo.getGoodsName());
+                    param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS);
                 }
             }
         }
-        if (OrderConstant.MEDICAL_TYPE_RX.equals(orderMedicalType)){
-            log.info("处方药订单,增加患者和历史处方信息");
-            PatientOneParam oneInfo = patientService.getOneInfo(param.getPatientId());
-            param.setPatientInfo(oneInfo);
-            //处方单号去重
-            prescriptionList = prescriptionList.stream()
-                    .collect(Collectors.collectingAndThen
-                            (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionCode))), ArrayList::new));
-            param.setPrescriptionList(prescriptionList);
-        }
-        param.setCheckPrescriptionStatus(checkPrescriptionStatus);
-        param.setOrderMedicalType(orderMedicalType);
-        log.info("药品处方检查-结束");
+        return prescriptionList;
     }
 
     @Override
