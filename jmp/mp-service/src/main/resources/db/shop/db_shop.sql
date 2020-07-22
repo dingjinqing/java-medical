@@ -4878,6 +4878,8 @@ create table `b2c_prescription`(
     `prescription_create_time`   timestamp    not null default current_timestamp comment '开方时间',
     `prescription_expire_time`   timestamp    null default current_timestamp comment '处方过期时间',
     `is_delete`     tinyint(1)   not null default '0',
+    `is_used`     tinyint(1)   not null default '0' comment '是否使用过 0未使用  1已使用 ，默认0',,
+    `is_valid`     tinyint(1)   not null default '0' comment '是否有效   0有效 1失效，默认0',,
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
@@ -5016,7 +5018,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
  `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
- `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款  1待接诊 2已取消 3已完成',
+ `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消',
  `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
  `doctor_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师名称',
  `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '科室id',
@@ -5043,3 +5045,15 @@ CREATE TABLE `b2c_inquiry_order` (
 PRIMARY KEY (`order_id`)
 ) COMMENT='问诊订单表';
 
+-- 问诊订单退款记录表
+CREATE TABLE `b2c_inquiry_order_refund_list` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_sn` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `money_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款金额',
+  `refund_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单退款时间',
+  `is_success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '处理状态，1：退款失败，2：退款成功',
+  PRIMARY KEY (`id`),
+  KEY `order_sn` (`order_sn`),
+  KEY `user_id` (`user_id`)
+) COMMENT='问诊订单退款记录';

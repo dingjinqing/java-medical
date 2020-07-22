@@ -41,7 +41,6 @@ public class DoctorDo implements Serializable {
     private Date      registerTime;
     private String    registerHospital;
     private String    mobile;
-    private Integer   departmentId;
     private Integer   titleId;
     private Byte      status;
     private Integer   userId;

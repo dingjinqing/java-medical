@@ -3,6 +3,8 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -41,5 +43,14 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
     @PostMapping("/details")
     public JsonResult getPrescriptionDetails(@RequestBody @Validated PrescriptionNoParam param){
         return success(prescriptionService.getInfoByPrescriptionNo(param.getPrescriptionCode()));
+    }
+
+    /**
+     * 生成处方
+     * @return
+     */
+    @PostMapping("/add")
+    public JsonResult insertPrescription(@RequestBody PrescriptionOneParam prescriptionParam){
+        return success(prescriptionService.insertPrescription(prescriptionParam));
     }
 }

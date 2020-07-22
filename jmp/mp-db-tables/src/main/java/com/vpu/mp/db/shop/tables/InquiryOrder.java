@@ -76,7 +76,7 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款  1待接诊 2已取消 3已完成
      */
-    public final TableField<InquiryOrderRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态0待付款  1待接诊 2已取消 3已完成");
+    public final TableField<InquiryOrderRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.doctor_id</code>. 医师id

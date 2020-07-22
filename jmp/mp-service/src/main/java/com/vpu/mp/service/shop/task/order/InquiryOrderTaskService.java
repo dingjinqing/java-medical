@@ -50,7 +50,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
     public JsonResult closeExecute(InquiryOrderRecord order){
         try {
             transaction(()->{
-                order.setOrderStatus(InquiryOrderConstant.ORDER_TO_CANCELED);
+                order.setOrderStatus(InquiryOrderConstant.ORDER_CANCELED);
                 order.setCancelledTime(DateUtils.getLocalDateTime());
                 inquiryOrderDao.update(order);
             });

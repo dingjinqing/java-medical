@@ -2,22 +2,34 @@ package com.vpu.mp.service.shop.prescription;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.dao.foundation.transactional.DbTransactional;
 import com.vpu.mp.dao.foundation.transactional.DbType;
+import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
+import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
+import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +52,10 @@ public class PrescriptionService extends ShopBaseService {
     protected UserPatientCoupleDao userPatientCoupleDao;
     @Autowired
     protected GoodsDao goodsDao;
-
+    @Autowired
+    protected DoctorDao doctorDao;
+    @Autowired
+    protected PatientDao patientDao;
 
     /**
      * 保存处方
@@ -270,4 +285,49 @@ public class PrescriptionService extends ShopBaseService {
         return JsonResult.success();
     }
 
+
+    /**
+     * 上传保存处方
+     */
+    public JsonResult insertPrescription(PrescriptionOneParam param){
+        PrescriptionParam prescriptionParam=buildPrescription(param);
+        this.addPrescription(prescriptionParam);
+        return JsonResult.success();
+
+    }
+    public PrescriptionParam buildPrescription(PrescriptionOneParam param){
+
+        DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
+        PatientOneParam patient = patientDao.getOneInfo(param.getPatientId());
+        //生成处方
+        PrescriptionParam prescriptionParam=new PrescriptionParam();
+        FieldsUtil.assign(param,prescriptionParam);
+        prescriptionParam.setDoctorCode(doctor.getHospitalCode());
+        prescriptionParam.setDoctorName(doctor.getName());
+        prescriptionParam.setPatientName(patient.getName());
+        prescriptionParam.setPatientSex(patient.getSex());
+        prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistory());
+        prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
+        prescriptionParam.setIdentityType(patient.getIdentityType());
+        prescriptionParam.setIdentityCode(patient.getIdentityCode());
+        prescriptionParam.setPatientTreatmentCode(patient.getTreatmentCode());
+        prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
+        prescriptionParam.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
+        prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
+        //药品信息生成处方明细列表
+        List<GoodsMedicalInfoDo> goodsMedicalInfoDoList=goodsMedicalInfoDao.listByGoodsIds(param.getGoodsIdList());
+
+        List<PrescriptionItemParam> itemList=new ArrayList<>();
+        for (GoodsMedicalInfoDo info: goodsMedicalInfoDoList) {
+            PrescriptionItemParam item=new PrescriptionItemParam();
+            //药品信息映射
+            FieldsUtil.assign(info,item);
+            item.setPosCode(prescriptionParam.getPrescriptionCode());
+            GoodsDo goods=goodsDao.getByGoodsId(info.getGoodsId());
+            item.setMedicinePrice(goods.getShopPrice());
+            itemList.add(item);
+        }
+        prescriptionParam.setList(itemList);
+        return prescriptionParam;
+    }
 }
