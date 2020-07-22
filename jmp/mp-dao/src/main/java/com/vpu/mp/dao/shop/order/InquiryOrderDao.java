@@ -44,7 +44,7 @@ public class InquiryOrderDao extends ShopBaseDao {
         if(param.getDoctorId()!=null)
             select.where(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId()));
         if(param.getOrderStatus()!=null)
-            select.where(INQUIRY_ORDER.ORDER_STATUS.eq((byte)(param.getOrderStatus().intValue())));
+            select.where(INQUIRY_ORDER.ORDER_STATUS.eq(param.getOrderStatus()));
 
     }
     /*

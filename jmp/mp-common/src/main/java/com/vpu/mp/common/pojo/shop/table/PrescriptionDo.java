@@ -50,6 +50,7 @@ public class PrescriptionDo implements Serializable {
     private String    pharmacistCode;
     private String    diagnosisName;
     private String    diagnosisDetail;
+    private String    doctorAdvice;
     private String    patientComplain;
     private String    patientSign;
     private Byte      source;
