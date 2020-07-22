@@ -1,0 +1,38 @@
+.main-container{
+  padding-top: 24rpx;
+}
+.goods-content{
+  width: 702rpx;
+  margin: 0 auto;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background-color: #fff;
+}
+.footer-content{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+.footer-flex{
+  display: flex;
+  height: 100rpx;
+  line-height: 70rpx;
+  padding: 0 20rpx;
+  align-items: center;
+  background-color: #fff;
+}
+.footer-flex > view{
+  flex: 1;
+  text-align: center;
+  box-sizing: border-box;
+  border-radius: 35rpx;
+}
+.footer-flex > view + view{
+  margin-left: 24rpx;
+}
+.line{
+  height: 2rpx;
+  background-color: #eee;
+  margin-left: 20rpx;
+}

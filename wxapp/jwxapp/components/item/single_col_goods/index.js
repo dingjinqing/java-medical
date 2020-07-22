@@ -15,7 +15,7 @@ global.wxComponent({
     goodsData: {
       type: Object,
       value: null,
-      observer(){
+      observer(val){
         this.resetlimitData()
       }
     },

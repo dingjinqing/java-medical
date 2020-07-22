@@ -1,0 +1,17 @@
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main-container">
+    <view class="goods-content">
+      <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum"/>
+      <view class="line"></view>
+      <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum"/>
+    </view>
+    <view class="footer-content">
+      <view class="footer-flex">
+        <view style="color:#fff;background:#FF9F15;">加入清单</view>
+        <view style="color:#fff;background:#26C4BC;">立即购买</view>
+      </view>
+    </view>
+		<include src="../../pages/common/footer.wxml" />
+	</view>
+</view>
