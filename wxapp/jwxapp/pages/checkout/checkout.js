@@ -666,6 +666,15 @@ global.wxPage({
     }
 
     if(!this.getSubmitButtonStatus()){
+      if(!this.data.orderInfo.patientInfo || !this.data.orderInfo.patientInfo.id ){
+        this.setData({
+          noPrescriptionType:2
+        })
+      } else {
+        this.setData({
+          noPrescriptionType:1
+        })
+      }
       this.setData({
         showNoPrescription:true
       })
@@ -726,7 +735,6 @@ global.wxPage({
       if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
       if (this.data.inviteId) addParams.inviteId = Number(this.data.inviteId)
       if (this.data.orderInfo.patientInfo && this.data.orderInfo.patientInfo.id) addParams.patientId = Number(this.data.orderInfo.patientInfo.id)
-      console.log(addParams)
       let params = {
         goods,
         action: 10,

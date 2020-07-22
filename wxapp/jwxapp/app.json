@@ -144,7 +144,8 @@
       "root": "pages2",
       "pages": [
         "doctorConsultation/doctorConsultation",
-        "allDepartment/allDepartment"
+        "allDepartment/allDepartment",
+        "operatePrescriptionList/operatePrescriptionList"
       ]
     }
   ],

@@ -346,6 +346,6 @@
 	<!-- 处方详情展示弹窗 -->
 	<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>
 	<!-- 无处方提示弹窗 -->
-	<no-prescription-dialog show="{{showNoPrescription}}" />
+	<no-prescription-dialog show="{{showNoPrescription}}" dialog-type="{{noPrescriptionType}}"/>
 	<include src="../common/footer.wxml" />
 </view>

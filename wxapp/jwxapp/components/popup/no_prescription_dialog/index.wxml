@@ -1,12 +1,18 @@
 <v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
-    <view class="dialog-content">
+    <view class="dialog-content" style="{{ dialogType === 1 ? 'height: 612rpx;' : 'height: 539rpx;' }}">
       <image src="{{imageUrl}}image/wxapp/no_prescription_bg.png"></image>
       <view class="tips-content">
-        <text>药品中包含无处方的处方药</text>
-        <text>请填写问诊信息获取处方</text>
+        <block wx:if="{{dialogType === 1}}">
+          <text>药品中包含无处方的处方药</text>
+          <text>请填写问诊信息获取处方</text>
+        </block>
+        <block wx:if="{{dialogType === 2}}">
+          <text>暂无就诊人</text>
+        </block>
       </view>
       <view class="button" bindtap="viewPrescriptionSheet">
-        <text>去获取</text>
+        <text wx:if="{{dialogType === 1}}">去获取</text>
+        <text wx:if="{{dialogType === 2}}">去添加</text>
         <text class="iconfont iconjiantou"></text>
       </view>
     </view>
