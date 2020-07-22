@@ -4984,6 +4984,7 @@ CREATE TABLE `b2c_medical_advice` (
 create TABLE `b2c_im_session`(
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
     `doctor_id` int(11) NOT NULL COMMENT '医师在我方库内id值',
+    `department_id` int(11) NOT NULL COMMENT '科室id',
     `user_id` int(11) NOT NULL COMMENT '小程序发起会话用户id',
     `patient_id`  int(11) NOT NULL COMMENT '本次诊疗的患者id',
     `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0医师待接诊，1会话中，2会话取消，3会话结束',
