@@ -8,8 +8,10 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
+import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
 import com.vpu.mp.db.shop.tables.InquiryOrder;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.BusinessException;
@@ -59,6 +61,8 @@ public class InquiryOrderService extends ShopBaseService {
     private ReturnMethodService returnMethodService;
     @Autowired
     private TradesRecordService tradesRecord;
+    @Autowired
+    private InquiryOrderRefundListDao inquiryOrderRefundListDao;
 
     /*
      *问询订单列表
@@ -101,7 +105,7 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void inquiryOrderFinish(InquiryOrderRecord order, PaymentRecordRecord paymentRecord) throws MpException {
         logger().info("问诊订单-支付完成(回调)-开始");
-        order.setOrderStatus(InquiryOrderConstant.ORDER_TO_WAITING);
+        order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
         order.setPayTime(DateUtils.getLocalDateTime());
         inquiryOrderDao.update(order);
@@ -181,6 +185,7 @@ public class InquiryOrderService extends ShopBaseService {
     *退款调用
      */
     public void refundInquiryOrder(InquiryOrderRecord order)throws MpException{
+        boolean successFlag=true;
         if(InquiryOrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())){
             //退款流水号
             String refundSn = IncrSequenceUtil.generateOrderSn(InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX);
@@ -193,8 +198,15 @@ public class InquiryOrderService extends ShopBaseService {
             //微信金额单为为分需单位换算
             returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(order.getOrderAmount(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
         }
+        //退款记录
+        InquiryOrderRefundListDo refundListDo=new InquiryOrderRefundListDo();
+        refundListDo.setOrderSn(order.getOrderSn());
+        refundListDo.setMoneyAmout(order.getOrderAmount());
+        refundListDo.setUserId(order.getUserId());
+        refundListDo.setIsSuccess(successFlag?InquiryOrderConstant.REFUND_SUCCESS:InquiryOrderConstant.ORDER_TO_PAID);
+        inquiryOrderRefundListDao.save(refundListDo);
         //更新状态
-        order.setOrderStatus(InquiryOrderConstant.ORDER_TO_CANCELED);
+        order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
         order.setCancelledTime(DateUtils.getLocalDateTime());
         inquiryOrderDao.update(order);
         //交易记录

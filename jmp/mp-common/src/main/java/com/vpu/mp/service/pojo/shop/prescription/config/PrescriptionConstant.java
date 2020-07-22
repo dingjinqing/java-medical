@@ -36,11 +36,20 @@ public interface PrescriptionConstant {
     /**
      * 永久有效
      */
-    public static final Byte EXPIRE_TYPE_EVER =2;
+    public static final Byte EXPIRE_TYPE_EVER =1;
     /**
      * 时间段内有效
      */
     public static final Byte EXPIRE_TYPE_TIME=2;
+
+    /**
+     * 处方号前缀
+     */
+    public static final String PRESCRIPTION_CODE_PREFIX="P";
+    /**
+     * 默认过期时间
+     */
+    public static final int PRESCRIPTION_EXPIRE_DAY=3;
 
 
 }
