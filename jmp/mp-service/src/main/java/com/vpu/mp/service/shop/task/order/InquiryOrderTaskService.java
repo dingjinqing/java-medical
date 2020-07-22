@@ -4,7 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.order.inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.jooq.Result;
