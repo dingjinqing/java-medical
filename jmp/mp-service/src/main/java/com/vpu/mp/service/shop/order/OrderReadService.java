@@ -15,6 +15,7 @@ import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
@@ -61,6 +62,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFailModel;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -226,6 +228,8 @@ public class OrderReadService extends ShopBaseService {
     private UserCardService userCard;
     @Autowired
     private OrderRefundRecordService orderRefundRecord;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
 	/**
 	 * 订单查询
 	 * @param param
@@ -725,17 +729,23 @@ public class OrderReadService extends ShopBaseService {
         order.setShowMall(recommendService.goodsMallService.check("1"));
         //积分兑换商品价格小程序端特殊展示
         editShowGoodsPrice(order);
-        //关联的处方
-		goodsList.forEach(orderGoods->{
-
-		});
-
-
+		//处方信息
+		getPrescriptionInfo(order, goodsList);
 		return order;
-
 	}
 
-    private void editShowGoodsPrice(OrderListMpVo order) {
+	/**
+	 * 处方信息
+	 */
+	private void getPrescriptionInfo(OrderInfoMpVo order, List<OrderGoodsMpVo> goodsList) {
+		Set<String> prescriptionCodeSet = goodsList.stream().map(OrderGoodsMpVo::getPrescriptionCode).collect(Collectors.toSet());
+		if (!prescriptionCodeSet.isEmpty()){
+			List<PrescriptionVo> prescriptionVos = prescriptionDao.listPrescriptionList(prescriptionCodeSet);
+			order.setPrescriptionList(prescriptionVos);
+		}
+	}
+
+	private void editShowGoodsPrice(OrderListMpVo order) {
         if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_INTEGRAL)) {
             order.getGoods().forEach(x-> {
                 if(x.getIsGift().equals((int) NO)) {

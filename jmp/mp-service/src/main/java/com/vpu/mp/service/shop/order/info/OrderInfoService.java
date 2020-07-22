@@ -993,7 +993,7 @@ public class OrderInfoService extends ShopBaseService {
         //药品信息
         order.setPatientId(param.getPatientId());
 		order.setOrderMedicalType(param.getOrderMedicalType());
-		order.setOrderAuditStatus(param.getCheckPrescriptionStatus());
+		order.setOrderAuditType(param.getOrderMedicalType());
         return order;
     }
 

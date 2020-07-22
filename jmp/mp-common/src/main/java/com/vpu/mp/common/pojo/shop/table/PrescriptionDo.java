@@ -60,6 +60,8 @@ public class PrescriptionDo implements Serializable {
     private Timestamp prescriptionCreateTime;
     private Timestamp prescriptionExpireTime;
     private Byte      isDelete;
+    private Byte      isUsed;
+    private Byte      isValid;
     private Timestamp createTime;
     private Timestamp updateTime;
 

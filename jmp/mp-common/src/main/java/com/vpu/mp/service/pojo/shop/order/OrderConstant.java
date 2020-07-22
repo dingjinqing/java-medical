@@ -605,16 +605,46 @@ public class OrderConstant {
 	 * 审核未通过
 	 */
 	public static final byte MEDICAL_AUDIT_NOT_PASS = 2;
-
+	//********订单得处方校验*******//
+	/**
+	 * 不校验
+	 */
+	public static final Byte CHECK_ORDER_PRESCRIPTION_NO_NEED =0;
+	/**
+	 * 通过
+	 */
+	public static final Byte CHECK_ORDER_PRESCRIPTION_PASS=1;
+	/**
+	 * 不通过
+	 */
+	public static final Byte CHECK_ORDER_PRESCRIPTION_NO_PASS=2;
 	//*******订单药品类型*******//
 	/**
 	 * 非处方药品订单
 	 */
 	public static final Byte MEDICAL_TYPE_OTC = 0;
 	/**
-	 * 处方药
+	 * 处方药(审核)
 	 */
 	public static final Byte MEDICAL_TYPE_RX = 1;
+	//******订单审核流程*********//
+	/**
+	 *  0不审核
+	 */
+	public static final Byte MEDICAL_ORDER_AUDIT_TYPE_NOT = 0;
+	/**
+	 *  1审核
+	 */
+	public static final Byte MEDICAL_ORDER_AUDIT_TYPE_AUDIT = 1;
+	/**
+	 * 2开方
+	 */
+	public static final Byte MEDICAL_ORDER_AUDIT_TYPE_CREATE = 2;
+	/**
+	 * 3根据处方下单
+	 */
+	public static final Byte MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION = 3;
+
 
 
     /**对外接口 start*/

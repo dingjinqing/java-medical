@@ -89,6 +89,21 @@ public class WxAppOrderController extends WxAppBaseController{
         }
     }
 
+
+    /**
+     * 审核
+     * -通过
+     * -失败
+     * @return
+     */
+    @PostMapping("/audit")
+    public JsonResult auditOrderInfo(){
+        WxAppSessionUser user = wxAppAuth.user();
+
+        return success();
+    }
+
+
 	/**
 	 * 	退款、退货创建页面
 	 */

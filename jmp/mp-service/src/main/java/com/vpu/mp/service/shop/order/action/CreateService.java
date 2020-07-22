@@ -620,7 +620,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setTerm(calculate.getTermsofservice());
         //处方信息
         vo.setPrescriptionList(param.getPrescriptionList());
+        vo.setOrderMedicalType(param.getOrderMedicalType());
         vo.setCheckPrescriptionStatus(param.getCheckPrescriptionStatus());
+        vo.setOrderAuditType(param.getOrderAuditType());
         vo.setPatientInfo(param.getPatientInfo());
     }
 
@@ -1045,16 +1047,23 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         /**
          * 校验药品
          */
-        checkMedcail(param);
+        checkMedcail(param,bo);
     }
 
     /**
      * 校验药品
+     * -审核订单得处方药品必须关联处方
      * @param param
+     * @param bo
      */
-    private void checkMedcail(CreateParam param) throws MpException {
-        if (PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS.equals(param.getCheckPrescriptionStatus())){
-            throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+    private void checkMedcail(CreateParam param, CreateOrderBo bo) throws MpException {
+        //校验审核通过后处方药的关联处方
+        if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
+            for (OrderGoodsBo goods : bo.getOrderGoodsBo()) {
+                if (goods.getIsRx().equals(BaseConstant.YES) && goods.getPrescriptionInfo() == null) {
+                    throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+                }
+            }
         }
     }
 
@@ -1119,7 +1128,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
                     order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
                     logger().info("订单支付成功->待审核状态");
-                    if (!param.getCheckPrescriptionStatus().equals(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
+                    if (!param.getCheckPrescriptionStatus().equals(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
                         order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
                         uploadPrescriptionService.uploadPrescription(param,orderBo,order);
                     }

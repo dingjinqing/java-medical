@@ -4,6 +4,10 @@
 package com.vpu.mp.db.shop.tables;
 
 
+import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
+import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -12,10 +16,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_471752;
-import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -43,10 +43,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = 322336580;
+    private static final long serialVersionUID = 1644393976;
 
     /**
-     * The reference instance of <code>jmini_shop_224462.b2c_doctor</code>
+     * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
      */
     public static final Doctor DOCTOR = new Doctor();
 
@@ -59,116 +59,121 @@ public class Doctor extends TableImpl<DoctorRecord> {
     }
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.id</code>.
+     * The column <code>mini_shop_471752.b2c_doctor.id</code>.
      */
     public final TableField<DoctorRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.account_id</code>. 医师子账号id
+     * The column <code>mini_shop_471752.b2c_doctor.account_id</code>. 医师子账号id
      */
     public final TableField<DoctorRecord, Integer> ACCOUNT_ID = createField("account_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "医师子账号id");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.sex</code>. 0未知 1男 2 女
+     * The column <code>mini_shop_471752.b2c_doctor.age</code>. 年龄
      */
-    public final TableField<DoctorRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0未知 1男 2 女");
+    public final TableField<DoctorRecord, Integer> AGE = createField("age", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "年龄");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.name</code>. 医师姓名
+     * The column <code>mini_shop_471752.b2c_doctor.work_time</code>. 从业时间
      */
-    public final TableField<DoctorRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师姓名");
+    public final TableField<DoctorRecord, Integer> WORK_TIME = createField("work_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "从业时间");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.url</code>. 医师头像
+     * The column <code>mini_shop_471752.b2c_doctor.sex</code>. 0未知 1男 2 女
      */
-    public final TableField<DoctorRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师头像");
+    public final TableField<DoctorRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0未知 1男 2 女");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.duty</code>. 聘任职务
+     * The column <code>mini_shop_471752.b2c_doctor.name</code>. 医师姓名
      */
-    public final TableField<DoctorRecord, Byte> DUTY = createField("duty", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "聘任职务");
+    public final TableField<DoctorRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师姓名");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.hospital_code</code>. 医师院内编号
+     * The column <code>mini_shop_471752.b2c_doctor.url</code>. 医师头像
      */
-    public final TableField<DoctorRecord, String> HOSPITAL_CODE = createField("hospital_code", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师院内编号");
+    public final TableField<DoctorRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师头像");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.certificate_code</code>. 医师资格编码
+     * The column <code>mini_shop_471752.b2c_doctor.duty</code>. 聘任职务
      */
-    public final TableField<DoctorRecord, String> CERTIFICATE_CODE = createField("certificate_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师资格编码");
+    public final TableField<DoctorRecord, Byte> DUTY = createField("duty", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "聘任职务");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.professional_code</code>. 医师职业编码
+     * The column <code>mini_shop_471752.b2c_doctor.hospital_code</code>. 医师院内编号
      */
-    public final TableField<DoctorRecord, String> PROFESSIONAL_CODE = createField("professional_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师职业编码");
+    public final TableField<DoctorRecord, String> HOSPITAL_CODE = createField("hospital_code", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师院内编号");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.register_time</code>. 注册时间
+     * The column <code>mini_shop_471752.b2c_doctor.certificate_code</code>. 医师资格编码
+     */
+    public final TableField<DoctorRecord, String> CERTIFICATE_CODE = createField("certificate_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师资格编码");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.professional_code</code>. 医师职业编码
+     */
+    public final TableField<DoctorRecord, String> PROFESSIONAL_CODE = createField("professional_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师职业编码");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.register_time</code>. 注册时间
      */
     public final TableField<DoctorRecord, Date> REGISTER_TIME = createField("register_time", org.jooq.impl.SQLDataType.DATE, this, "注册时间");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.register_hospital</code>. 注册医院
+     * The column <code>mini_shop_471752.b2c_doctor.register_hospital</code>. 注册医院
      */
     public final TableField<DoctorRecord, String> REGISTER_HOSPITAL = createField("register_hospital", org.jooq.impl.SQLDataType.VARCHAR(32), this, "注册医院");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.mobile</code>. 手机号
+     * The column <code>mini_shop_471752.b2c_doctor.mobile</code>. 手机号
      */
-    public final TableField<DoctorRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "手机号");
+    public final TableField<DoctorRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "手机号");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.department_id</code>. 科室id
-     */
-    public final TableField<DoctorRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "科室id");
-
-    /**
-     * The column <code>jmini_shop_224462.b2c_doctor.title_id</code>. 职称id
+     * The column <code>mini_shop_471752.b2c_doctor.title_id</code>. 职称id
      */
     public final TableField<DoctorRecord, Integer> TITLE_ID = createField("title_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职称id");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.status</code>. 是否启用 1启用 0禁用
+     * The column <code>mini_shop_471752.b2c_doctor.status</code>. 是否启用 1启用 0禁用
      */
-    public final TableField<DoctorRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否启用 1启用 0禁用");
+    public final TableField<DoctorRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否启用 1启用 0禁用");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.is_delete</code>.
+     * The column <code>mini_shop_471752.b2c_doctor.user_id</code>. 用户id，当前用户是否为医师
      */
-    public final TableField<DoctorRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<DoctorRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id，当前用户是否为医师");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_doctor.is_delete</code>.
      */
-    public final TableField<DoctorRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<DoctorRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_doctor.create_time</code>.
      */
-    public final TableField<DoctorRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<DoctorRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_doctor.user_id</code>. 用户id，当前用户是否为医师
+     * The column <code>mini_shop_471752.b2c_doctor.update_time</code>. 最后修改时间
      */
-    public final TableField<DoctorRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id，当前用户是否为医师");
+    public final TableField<DoctorRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>jmini_shop_224462.b2c_doctor</code> table reference
+     * Create a <code>mini_shop_471752.b2c_doctor</code> table reference
      */
     public Doctor() {
         this(DSL.name("b2c_doctor"), null);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_224462.b2c_doctor</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_doctor</code> table reference
      */
     public Doctor(String alias) {
         this(DSL.name(alias), DOCTOR);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_224462.b2c_doctor</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_doctor</code> table reference
      */
     public Doctor(Name alias) {
         this(alias, DOCTOR);

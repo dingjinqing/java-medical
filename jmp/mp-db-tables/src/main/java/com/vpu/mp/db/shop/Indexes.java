@@ -529,7 +529,9 @@ public class Indexes {
     public static final Index INQUIRY_ORDER_PRIMARY = Indexes0.INQUIRY_ORDER_PRIMARY;
     public static final Index IM_SESSION_PRIMARY = Indexes0.IM_SESSION_PRIMARY;
     public static final Index IM_SESSION_ITEM_PRIMARY = Indexes0.IM_SESSION_ITEM_PRIMARY;
-
+    public static final Index INQUIRY_ORDER_REFUND_LIST_ORDER_SN = Indexes0.INQUIRY_ORDER_REFUND_LIST_ORDER_SN;
+    public static final Index INQUIRY_ORDER_REFUND_LIST_PRIMARY = Indexes0.INQUIRY_ORDER_REFUND_LIST_PRIMARY;
+    public static final Index INQUIRY_ORDER_REFUND_LIST_USER_ID = Indexes0.INQUIRY_ORDER_REFUND_LIST_USER_ID;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1035,5 +1037,8 @@ public class Indexes {
         public static Index INQUIRY_ORDER_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.ORDER_ID }, true);
         public static Index IM_SESSION_PRIMARY = Internal.createIndex("PRIMARY", ImSession.IM_SESSION, new OrderField[] { ImSession.IM_SESSION.ID }, true);
         public static Index IM_SESSION_ITEM_PRIMARY = Internal.createIndex("PRIMARY", ImSessionItem.IM_SESSION_ITEM, new OrderField[] { ImSessionItem.IM_SESSION_ITEM.ID }, true);
+        public static Index INQUIRY_ORDER_REFUND_LIST_ORDER_SN = Internal.createIndex("order_sn", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, new OrderField[] { InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ORDER_SN }, false);
+        public static Index INQUIRY_ORDER_REFUND_LIST_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, new OrderField[] { InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ID }, true);
+        public static Index INQUIRY_ORDER_REFUND_LIST_USER_ID = Internal.createIndex("user_id", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, new OrderField[] { InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.USER_ID }, false);
     }
 }
