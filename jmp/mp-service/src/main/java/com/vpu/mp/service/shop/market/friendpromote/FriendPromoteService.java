@@ -98,7 +98,7 @@ public class FriendPromoteService extends ShopBaseService {
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
 
-	private static final Byte[] s=new Byte[] {(byte)0,(byte)1};
+	private static final Byte[] REWARD_TYPES = new Byte[] {(byte)0,(byte)1};
 	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
 	private static final byte TWO = 2;
@@ -489,7 +489,7 @@ public class FriendPromoteService extends ShopBaseService {
 		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		SelectConditionStep<Record> where = db()
 				.select(fpl.asterisk(), fpa.ACT_CODE, fpa.ACT_NAME, fpa.REWARD_CONTENT, fpa.REWARD_TYPE).from(fpl, fpa)
-				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.REWARD_TYPE.in(s)).and(fpa.DEL_FLAG.eq(ZERO))
+				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.REWARD_TYPE.in(REWARD_TYPES)).and(fpa.DEL_FLAG.eq(ZERO))
 						.and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ONE)));
 		Field<String> left = DSL.left(DSL.dateAdd(fpl.SUCCESS_TIME.cast(Date.class),
 				DSL.when(fpa.REWARD_DURATION_UNIT.eq(ZERO), fpa.REWARD_DURATION)
@@ -544,49 +544,8 @@ public class FriendPromoteService extends ShopBaseService {
             promoteInfo.setHasPromoteTimes(getHasPromoteTimes(launchInfo.getId(),null,null,null));
         }
 
-        //如果是发起页面
-        if(launchFlag==1){
-            //是否可以再次发起好友助力
-            CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
-            promoteInfo.setCanLaunch(canLaunch.getCode());
-            //助力完成或者失效装修页进入后
-//            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
-//                promoteInfo.setPromoteStatus((byte)-1);
-//            }
-            //好友助力榜
-            if(launchInfo!=null&&promoteInfo.getPromoteStatus()>=0){
-                promoteInfo.setPromoteDetailList(friendPromoteDetail(launchInfo.getId()));
-            }
-            //设置订单
-            promoteInfo.setOrderSn(launchInfo==null?null:launchInfo.getOrderSn());
-            //助力完成订单操作标识：0不可下单，1立即下单，2查看订单详情
-            Byte orderFlag = 0;
-            //奖励类型不为优惠券
-            if (promoteInfo.getRewardType()!=2){
-                //助力进度为完成待领取
-                if (promoteInfo.getPromoteStatus()==1){
-//                    OrderInfoRecord orderInfo = getOrder(launchInfo.getOrderSn());
-//                    if (orderInfo==null||orderInfo.getOrderStatus()== OrderConstant.ORDER_CANCELLED||orderInfo.getOrderStatus()==OrderConstant.ORDER_CLOSED||DelFlag.DISABLE_VALUE.equals(orderInfo.getDelFlag())){
-                        orderFlag = 1;
-//                    }else {
-//                        orderFlag = 2;
-//                    }
-                }else if (promoteInfo.getPromoteStatus()==2){
-                    orderFlag = 2;
-                }
-            }
-            promoteInfo.setOrderFlag(orderFlag);
-        }
-
-        //否则为助力界面
-        else {
-            //是否可以继续助力
-            CanPromote canPromote = canPromote(promoteInfo,promoteInfo.getHasPromoteTimes(),param.getUserId(),param.getLaunchId());
-            promoteInfo.setCanPromote(canPromote);
-            //是否可以分享获取助力次数
-            Byte canShareTimes = canShareTimes(promoteInfo.getShareCreateTimes(),param.getUserId(),param.getLaunchId());
-            promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
-        }
+        // 处理发起页 和 助力页
+        processLaunchAndHelpPage(param, promoteInfo, launchInfo, launchFlag);
 
         //活动倒计时
         promoteDownTime(promoteInfo,launchInfo);
@@ -639,6 +598,53 @@ public class FriendPromoteService extends ShopBaseService {
         }
         return promoteInfo;
     }
+
+    private void processLaunchAndHelpPage(PromoteParam param, PromoteInfo promoteInfo, FriendPromoteLaunchRecord launchInfo, Integer launchFlag) {
+        //如果是发起页面
+        if(launchFlag==1){
+            //是否可以再次发起好友助力
+            CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
+            promoteInfo.setCanLaunch(canLaunch.getCode());
+            //助力完成或者失效装修页进入后
+//            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
+//                promoteInfo.setPromoteStatus((byte)-1);
+//            }
+            //好友助力榜
+            if(launchInfo!=null&&promoteInfo.getPromoteStatus()>=0){
+                promoteInfo.setPromoteDetailList(friendPromoteDetail(launchInfo.getId()));
+            }
+            //设置订单
+            promoteInfo.setOrderSn(launchInfo==null?null:launchInfo.getOrderSn());
+            //助力完成订单操作标识：0不可下单，1立即下单，2查看订单详情
+            Byte orderFlag = 0;
+            //奖励类型不为优惠券
+            if (promoteInfo.getRewardType()!=2){
+                //助力进度为完成待领取
+                if (promoteInfo.getPromoteStatus()==1){
+//                    OrderInfoRecord orderInfo = getOrder(launchInfo.getOrderSn());
+//                    if (orderInfo==null||orderInfo.getOrderStatus()== OrderConstant.ORDER_CANCELLED||orderInfo.getOrderStatus()==OrderConstant.ORDER_CLOSED||DelFlag.DISABLE_VALUE.equals(orderInfo.getDelFlag())){
+                        orderFlag = 1;
+//                    }else {
+//                        orderFlag = 2;
+//                    }
+                }else if (promoteInfo.getPromoteStatus()==2){
+                    orderFlag = 2;
+                }
+            }
+            promoteInfo.setOrderFlag(orderFlag);
+        }
+
+        //否则为助力界面
+        else {
+            //是否可以继续助力
+            CanPromote canPromote = canPromote(promoteInfo,promoteInfo.getHasPromoteTimes(),param.getUserId(),param.getLaunchId());
+            promoteInfo.setCanPromote(canPromote);
+            //是否可以分享获取助力次数
+            Byte canShareTimes = canShareTimes(promoteInfo.getShareCreateTimes(),param.getUserId(),param.getLaunchId());
+            promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
+        }
+    }
+
     /**
      * 修改助力状态
      * @param orderSn 订单号
@@ -738,13 +744,22 @@ public class FriendPromoteService extends ShopBaseService {
             promoteInfo.setActCopywriting(Util.json2Object(record.getActivityCopywriting(),promoteActCopywriting.class,false));
         }
 
+        // 设置商品信息和库存
+        setPromotGoodsAndStore(promoteInfo, record, rewardContent);
+
+        //销毁奖励内容
+        promoteInfo.setRewardContent(null);
+        return promoteInfo;
+    }
+
+    private void setPromotGoodsAndStore(PromoteInfo promoteInfo, FriendPromoteActivityRecord record, FpRewardContent rewardContent) {
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
             if (goodsInfo==null){
                 goodsInfo = new GoodsInfo();
             }
-            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
+            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice(): BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
             //检查活动库存是否发完
@@ -762,9 +777,6 @@ public class FriendPromoteService extends ShopBaseService {
             //检查活动库存是否发完
             promoteInfo.setMarketStore(promoteInfo.getMarketStore()>promoteInfo.getHasLaunchNum()?promoteInfo.getMarketStore()-promoteInfo.getHasLaunchNum():0);
         }
-        //销毁奖励内容
-        promoteInfo.setRewardContent(null);
-        return promoteInfo;
     }
 
     /**
@@ -1780,36 +1792,10 @@ public class FriendPromoteService extends ShopBaseService {
         List<ActEffectData> dataList = new ArrayList<>();
         while (startTime.before(endTime)){
             Timestamp tempEnd = Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_END,startTime));
-            Integer launch = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("launch"))
-                .from(FRIEND_PROMOTE_LAUNCH)
-                .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
-                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
-                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
-                .fetchOptionalInto(Integer.class)
-                .orElse(0);
-            Integer promote = db().select(DSL.count(FRIEND_PROMOTE_DETAIL.ID).as("promote"))
-                .from(FRIEND_PROMOTE_DETAIL)
-                .where(FRIEND_PROMOTE_DETAIL.PROMOTE_ID.eq(param.getId()))
-                .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.greaterOrEqual(startTime))
-                .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.lessOrEqual(tempEnd))
-                .fetchOptionalInto(Integer.class)
-                .orElse(0);
-            Integer success = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("success"))
-                .from(FRIEND_PROMOTE_LAUNCH)
-                .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
-                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
-                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
-                .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)1).or(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)2)))
-                .fetchOptionalInto(Integer.class)
-                .orElse(0);
-            Integer newUser = db().select(DSL.count(USER.USER_ID).as("new_user"))
-                .from(USER)
-                .where(USER.INVITE_ACT_ID.eq(param.getId()))
-                .and(USER.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE))
-                .and(USER.CREATE_TIME.greaterOrEqual(startTime))
-                .and(USER.CREATE_TIME.lessOrEqual(tempEnd))
-                .fetchOptionalInto(Integer.class)
-                .orElse(0);
+            Integer launch = getLaunchCount(param, startTime, tempEnd);
+            Integer promote = getPromoteCount(param, startTime, tempEnd);
+            Integer success = getSuccessCount(param, startTime, tempEnd);
+            Integer newUser = getActivityNewUserCount(param, startTime, tempEnd);
             String date = startTime.toString().substring(0,10);
             ActEffectData actEffectData = new ActEffectData();
             actEffectData.setDate(date);
@@ -1822,8 +1808,14 @@ public class FriendPromoteService extends ShopBaseService {
             Long longTime = startTime.getTime()+(long)1000*3600*24;
             startTime = new Timestamp(longTime);
         }
-        //处理dataList
 
+        //处理dataList
+        processTotalNumber(vo, dataList);
+
+        return vo;
+    }
+
+    private void processTotalNumber(ActEffectDataVo vo, List<ActEffectData> dataList) {
         Integer launchTotal = 0;
         Integer promoteTotal = 0;
         Integer successTotal = 0;
@@ -1872,8 +1864,50 @@ public class FriendPromoteService extends ShopBaseService {
         vo.setPromoteTotal(promoteTotal);
         vo.setSuccessTotal(successTotal);
         vo.setNewUserTotal(newUserTotal);
-        return vo;
     }
+
+    private Integer getActivityNewUserCount(FriendPromoteSelectParam param, Timestamp startTime, Timestamp tempEnd) {
+        return db().select(DSL.count(USER.USER_ID).as("new_user"))
+                    .from(USER)
+                    .where(USER.INVITE_ACT_ID.eq(param.getId()))
+                    .and(USER.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE))
+                    .and(USER.CREATE_TIME.greaterOrEqual(startTime))
+                    .and(USER.CREATE_TIME.lessOrEqual(tempEnd))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(0);
+    }
+
+    private Integer getSuccessCount(FriendPromoteSelectParam param, Timestamp startTime, Timestamp tempEnd) {
+        return db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("success"))
+                    .from(FRIEND_PROMOTE_LAUNCH)
+                    .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
+                    .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
+                    .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
+                    .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)1).or(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)2)))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(0);
+    }
+
+    private Integer getPromoteCount(FriendPromoteSelectParam param, Timestamp startTime, Timestamp tempEnd) {
+        return db().select(DSL.count(FRIEND_PROMOTE_DETAIL.ID).as("promote"))
+                    .from(FRIEND_PROMOTE_DETAIL)
+                    .where(FRIEND_PROMOTE_DETAIL.PROMOTE_ID.eq(param.getId()))
+                    .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.greaterOrEqual(startTime))
+                    .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.lessOrEqual(tempEnd))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(0);
+    }
+
+    private Integer getLaunchCount(FriendPromoteSelectParam param, Timestamp startTime, Timestamp tempEnd) {
+        return db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("launch"))
+                    .from(FRIEND_PROMOTE_LAUNCH)
+                    .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
+                    .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
+                    .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(0);
+    }
+
     /**
      * 分享
      * @param param 活动id
@@ -1902,7 +1936,8 @@ public class FriendPromoteService extends ShopBaseService {
         for (FriendPromoteLaunchVo item : pageResult.getDataList()){
             FriendPromoteLaunchVo tempVo = new FriendPromoteLaunchVo();
             FieldsUtil.assignNotNull(item,tempVo);
-            if (item.getPromoteStatus()!=null&&(item.getPromoteStatus()==(byte)1||item.getPromoteStatus()==(byte)2)){
+            boolean success = item.getPromoteStatus() != null && (item.getPromoteStatus() == (byte) 1 || item.getPromoteStatus() == (byte) 2);
+            if (success){
                 tempVo.setIsSuccess("是");
             }else {
                 tempVo.setIsSuccess("否");

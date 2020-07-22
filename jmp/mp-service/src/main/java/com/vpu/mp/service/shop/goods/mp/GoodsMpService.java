@@ -82,7 +82,7 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     FootPrintService footPrintService;
     @Autowired
-    public MPGoodsRecommendService mpGoodsRecommendService;
+    public MpGoodsRecommendService mpGoodsRecommendService;
     @Autowired
     EsGoodsSearchMpService esGoodsSearchMpService;
     @Autowired

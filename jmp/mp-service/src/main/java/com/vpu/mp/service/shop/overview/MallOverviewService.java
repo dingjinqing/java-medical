@@ -249,7 +249,11 @@ public class MallOverviewService extends ShopBaseService {
             .build().ruleHandler();
     }
 
-    // 是否开启客服
+
+    /**
+     * 是否开启客服
+     * @return
+     */
     private int isOpenCommon() {
         return shopCommonConfigService.getCustomService() + shopCommonConfigService.getReturnService() > 0 ? BYTE_ZERO : BYTE_ONE;
     }

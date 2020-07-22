@@ -248,8 +248,9 @@ public class CouponMpService extends ShopBaseService {
         MrkingVoucherRecord couponRecord = coupon.couponGiveService.getInfoById(param.getCouponId());
         Result<Record5<Integer, String, String, Timestamp, BigDecimal>> receiveInfo = getReceiveInfo(param.getCouponSn(), param.getShareUserId());
         long count = receiveInfo.stream().filter(info -> info.get(DIVISION_RECEIVE_RECORD.USER_ID).equals(param.getUserId())).count();
-        if ((couponRecord.getReceivePerNum()==1&&couponRecord.getReceiveNum()<=receiveInfo.size())
-                ||(couponRecord.getLimitSurplusFlag()==0&&couponRecord.getSurplus()<=0)){
+        boolean isCouponOver = (couponRecord.getReceivePerNum() == 1 && couponRecord.getReceiveNum() <= receiveInfo.size())
+            || (couponRecord.getLimitSurplusFlag() == 0 && couponRecord.getSurplus() <= 0);
+        if (isCouponOver){
             logger().info("已经领完");
             vo.setStatus((byte)2);
             return vo;
@@ -332,18 +333,21 @@ public class CouponMpService extends ShopBaseService {
             if (count>0){
                 logger().info("领取过改优惠券");
                 vo.setStatus((byte)2);
-            }else if ((couponRecord.getReceivePerNum()==1&&couponRecord.getReceiveNum()<=userInfos.size())
-                    ||(couponRecord.getLimitSurplusFlag()==0&&couponRecord.getSurplus()<=0)){
-                logger().info("已经领完");
-                vo.setStatus((byte)3);
             }else {
-                if (couponRecord.getValidity()>0){
-                    logger().info("优惠卷已过期");
-                    vo.setStatus((byte)4);
-                }
-                if (couponRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
-                    logger().info("优惠券已经删除");
-                    vo.setStatus((byte)5);
+                boolean isCouponOver = (couponRecord.getReceivePerNum() == 1 && couponRecord.getReceiveNum() <= userInfos.size())
+                    || (couponRecord.getLimitSurplusFlag() == 0 && couponRecord.getSurplus() <= 0);
+                if (isCouponOver){
+                    logger().info("已经领完");
+                    vo.setStatus((byte)3);
+                }else {
+                    if (couponRecord.getValidity()>0){
+                        logger().info("优惠卷已过期");
+                        vo.setStatus((byte)4);
+                    }
+                    if (couponRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+                        logger().info("优惠券已经删除");
+                        vo.setStatus((byte)5);
+                    }
                 }
             }
         }

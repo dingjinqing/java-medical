@@ -206,6 +206,6 @@ public class AdminIntegralConvertController extends AdminBaseController{
      */
     @PostMapping("/share")
     public JsonResult share(@RequestBody @Valid IntegralConvertId param){
-        return success(shop().integralConvertService.getMpQRCode(param));
+        return success(shop().integralConvertService.getMpQrCode(param));
     }
 }

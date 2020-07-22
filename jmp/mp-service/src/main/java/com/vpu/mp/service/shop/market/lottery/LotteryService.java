@@ -465,7 +465,8 @@ public class LotteryService extends ShopBaseService {
             } else {
                 join.setCanUseTime(shareChances - usedShareRecordTimes);
             }
-            if (shareTimes > usedShareTimes && shareTimes > usedShareRecordTimes && (usedShareRecordTimes < shareChances || shareChances.equals(0))) {
+            boolean isShareLottery = shareTimes > usedShareTimes && shareTimes > usedShareRecordTimes && (usedShareRecordTimes < shareChances || shareChances.equals(0));
+            if (isShareLottery) {
                 //分享抽奖
                 join.setChanceSource(LOTTERY_TIME_SHARE);
                 join.setCanUseTime(shareChances - usedShareRecordTimes - 1);

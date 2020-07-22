@@ -467,35 +467,40 @@ public class CardVerifyService extends ShopBaseService {
 			}
 		}
 		// deal with industry and education
-		for (ActiveAuditVo activeAuditVo : myList) {
-			// education
-			if(activeAuditVo.getEducation()!= null) {
-				String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
-				activeAuditVo.setEducationStr(educationStr);
-			}
-			// industry
-			if(activeAuditVo.getIndustryInfo() != null) {
-				String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
-				activeAuditVo.setIndustry(industry);
-			}
-			// deal address
-			if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
-				Map<String,Object> adMap = new HashMap<>(16);
-				adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
-				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
-				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
-				wxCardActSvc.dealWithAddressCode(adMap);
-				activeAuditVo.setCity(String.valueOf(adMap.get(WxAppCardActivationService.CITY_CODE)));
-				activeAuditVo.setProvince(String.valueOf(adMap.get(WxAppCardActivationService.PROVINCE_CODE)));
-				activeAuditVo.setDistrict(String.valueOf(adMap.get(WxAppCardActivationService.DISTRICT_CODE)));
-			}
+        processIndustryAndEducation(myList);
 
-		}
 		res.setDataList(myList);
 		return res;
 	}
 
-	/**
+    private void processIndustryAndEducation(List<ActiveAuditVo> myList) {
+        for (ActiveAuditVo activeAuditVo : myList) {
+            // education
+            if(activeAuditVo.getEducation()!= null) {
+                String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
+                activeAuditVo.setEducationStr(educationStr);
+            }
+            // industry
+            if(activeAuditVo.getIndustryInfo() != null) {
+                String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
+                activeAuditVo.setIndustry(industry);
+            }
+            // deal address
+            if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
+                Map<String,Object> adMap = new HashMap<>(16);
+                adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
+                adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
+                adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
+                wxCardActSvc.dealWithAddressCode(adMap);
+                activeAuditVo.setCity(String.valueOf(adMap.get(WxAppCardActivationService.CITY_CODE)));
+                activeAuditVo.setProvince(String.valueOf(adMap.get(WxAppCardActivationService.PROVINCE_CODE)));
+                activeAuditVo.setDistrict(String.valueOf(adMap.get(WxAppCardActivationService.DISTRICT_CODE)));
+            }
+
+        }
+    }
+
+    /**
 	 * 导出激活数据为excel
 	 * @param param
 	 * @return Workbook
@@ -579,76 +584,8 @@ public class CardVerifyService extends ShopBaseService {
 					 List<CardCustomActionParam> opts = Util.json2Object(customOpts,new TypeReference<List<CardCustomActionParam>>() {
 				        }, false);
 
-					 for(CardCustomActionParam item: opts) {
-						 Byte type = item.getCustomType();
-						 if(CardCustomAction.ActionType.SINGLE.val.equals(type)) {
-							 //	单选
-							 customContent
-							 	.append(item.getCustomTitle())
-							 	.append(":");
-
-							 List<SingleOption> optionArr = item.getOptionArr();
-							 if(optionArr!=null && optionArr.size()>0) {
-								 for(SingleOption choose: optionArr) {
-									 if(NumberUtils.BYTE_ONE.equals(choose.getIsChecked())) {
-										 customContent
-										 	.append(choose.getOptionTitle())
-										 	.append(";");
-										 break;
-									 }
-								 }
-
-							 }
-						 }else if(CardCustomAction.ActionType.MULTIPLE.val.equals(type)) {
-							 //	多选
-							 customContent
-							 	.append(item.getCustomTitle())
-							 	.append(":");
-
-							 List<SingleOption> optionArr = item.getOptionArr();
-							 if(optionArr!=null && optionArr.size()>0) {
-								 boolean notFirstFlag = false;
-								 for(SingleOption choose: optionArr) {
-									 if(NumberUtils.BYTE_ONE.equals(choose.getIsChecked())) {
-										 if(notFirstFlag) {
-											 customContent.append(",");
-										 }
-										 customContent
-										 	.append(choose.getOptionTitle());
-										 notFirstFlag = true;
-									 }
-								 }
-								 customContent.append(";");
-							 }
-
-						 }else if(CardCustomAction.ActionType.TEXT.val.equals(type)) {
-							 // 文本
-							 customContent
-							 	.append(item.getCustomTitle())
-							 	.append(":")
-							 	.append(item.getText())
-							 	.append(";");
-
-						 }else if(CardCustomAction.ActionType.PICTURE.val.equals(type)) {
-							 //	图片
-							 customContent
-							 	.append(item.getCustomTitle())
-							 	.append(":");
-							 String[] links = item.getPictureLinks();
-							 if(null != links && links.length>0) {
-								 for(int j=0;j<links.length;j++) {
-									 if(j>0) {
-										 customContent.append(",");
-									 }
-									 customContent
-									 	.append("\n")
-									 	.append(imageUrl(links[j]));
-								 }
-								 customContent.append(";");
-							 }
-						 }
-					 }
-				}
+                    processCustomOptsExport(customContent, opts);
+                }
 				vo.setCustomContent(customContent.toString());
 
 				// 审核时间
@@ -708,5 +645,83 @@ public class CardVerifyService extends ShopBaseService {
 		excelWriter.writeModelList(modelData, CardExamineDownVo.class);
 		return workbook;
 	}
+
+    /**
+     * 自定义权益导出设置
+     *
+     * @param customContent
+     * @param opts
+     */
+    private void processCustomOptsExport(StringBuilder customContent, List<CardCustomActionParam> opts) {
+        for(CardCustomActionParam item: opts) {
+            Byte type = item.getCustomType();
+            if(CardCustomAction.ActionType.SINGLE.val.equals(type)) {
+                //	单选
+                customContent
+                    .append(item.getCustomTitle())
+                    .append(":");
+
+                List<SingleOption> optionArr = item.getOptionArr();
+                if(optionArr!=null && optionArr.size()>0) {
+                    for(SingleOption choose: optionArr) {
+                        if(NumberUtils.BYTE_ONE.equals(choose.getIsChecked())) {
+                            customContent
+                                .append(choose.getOptionTitle())
+                                .append(";");
+                            break;
+                        }
+                    }
+
+                }
+            }else if(CardCustomAction.ActionType.MULTIPLE.val.equals(type)) {
+                //	多选
+                customContent
+                    .append(item.getCustomTitle())
+                    .append(":");
+
+                List<SingleOption> optionArr = item.getOptionArr();
+                if(optionArr!=null && optionArr.size()>0) {
+                    boolean notFirstFlag = false;
+                    for(SingleOption choose: optionArr) {
+                        if(NumberUtils.BYTE_ONE.equals(choose.getIsChecked())) {
+                            if(notFirstFlag) {
+                                customContent.append(",");
+                            }
+                            customContent
+                                .append(choose.getOptionTitle());
+                            notFirstFlag = true;
+                        }
+                    }
+                    customContent.append(";");
+                }
+
+            }else if(CardCustomAction.ActionType.TEXT.val.equals(type)) {
+                // 文本
+                customContent
+                    .append(item.getCustomTitle())
+                    .append(":")
+                    .append(item.getText())
+                    .append(";");
+
+            }else if(CardCustomAction.ActionType.PICTURE.val.equals(type)) {
+                //	图片
+                customContent
+                    .append(item.getCustomTitle())
+                    .append(":");
+                String[] links = item.getPictureLinks();
+                if(null != links && links.length>0) {
+                    for(int j=0;j<links.length;j++) {
+                        if(j>0) {
+                            customContent.append(",");
+                        }
+                        customContent
+                            .append("\n")
+                            .append(imageUrl(links[j]));
+                    }
+                    customContent.append(";");
+                }
+            }
+        }
+    }
 
 }

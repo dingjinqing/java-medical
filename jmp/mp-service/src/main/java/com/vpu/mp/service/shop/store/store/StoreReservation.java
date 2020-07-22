@@ -554,9 +554,7 @@ public class StoreReservation extends ShopBaseService {
      * Prefix check boolean.预约成功通知
      *
      * @param serviceOrder the service order
-     * @return the boolean
      */
-//    @Async
     public void sendAppointmentSuccess(ServiceOrderRecord serviceOrder) {
         int serviceId = serviceOrder.getServiceId();
         StoreServiceParam service = storeService.getStoreService(serviceId);

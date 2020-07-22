@@ -196,8 +196,12 @@ public class ShopApplication {
 	public RebateStrategyService rebateStrategy;
 	@Autowired
 	public RealTimeOverviewService realTimeOverview;
+
+    /**
+     *  小程序端优惠券
+     */
     @Autowired
-    public CouponMpService mpCoupon; //小程序端优惠券
+    public CouponMpService mpCoupon;
     /**
      * 分销员分组
      */

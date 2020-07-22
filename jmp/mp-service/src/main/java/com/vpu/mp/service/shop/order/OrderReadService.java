@@ -364,16 +364,8 @@ public class OrderReadService extends ShopBaseService {
 		//查询订单订单是否存在退款中订单
 		Map<Integer, Integer> returningCount = returnOrder.getOrderCount(orderIds.toArray(new Integer[orderIds.size()]), OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		//构造order
-		for (OrderInfoVo vo : orders) {
-			vo.setShippingList(shippingByOrderSn.get(vo.getOrderSn()));
-			vo.setRefundList(refundByOrderSn.get(vo.getOrderSn()));
-			vo.setGoods(goods.get(vo.getOrderId()));
-			//设置订单操作
-			OrderOperationJudgment.operationSet(vo,returningCount.get(vo.getOrderId()),ship.canBeShipped(vo.getOrderSn()));
-			//手动退款退货按钮显示
-            showManualReturn(vo);
-		}
-		//设置订单支付方式（无子单）
+        buildOrders(orders, goods, shippingByOrderSn, refundByOrderSn, returningCount);
+        //设置订单支付方式（无子单）
 		orderInfo.setPayCodeList(mainOrder);
 		//设置核销员
 		if(mainOrder.getVerifierId() > 0) {
@@ -395,6 +387,18 @@ public class OrderReadService extends ShopBaseService {
         mainOrder.setInsteadPayInfo(subOrderService.paymentDetails(mainOrder.getOrderSn()));
 		return mainOrder;
 	}
+
+    private void buildOrders(List<OrderInfoVo> orders, Map<Integer, List<OrderGoodsVo>> goods, Map<String, List<ShippingInfoVo>> shippingByOrderSn, Map<String, List<OrderConciseRefundInfoVo>> refundByOrderSn, Map<Integer, Integer> returningCount) {
+        for (OrderInfoVo vo : orders) {
+            vo.setShippingList(shippingByOrderSn.get(vo.getOrderSn()));
+            vo.setRefundList(refundByOrderSn.get(vo.getOrderSn()));
+            vo.setGoods(goods.get(vo.getOrderId()));
+            //设置订单操作
+            OrderOperationJudgment.operationSet(vo,returningCount.get(vo.getOrderId()),ship.canBeShipped(vo.getOrderSn()));
+            //手动退款退货按钮显示
+showManualReturn(vo);
+        }
+    }
 
     /**
      * 售后中心退款订单显示订单简略信息

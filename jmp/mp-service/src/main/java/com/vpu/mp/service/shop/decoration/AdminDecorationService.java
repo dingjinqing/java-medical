@@ -14,7 +14,7 @@ import com.vpu.mp.common.foundation.util.RegexUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
-import com.vpu.mp.config.TxMapLBSConfig;
+import com.vpu.mp.config.TxMapLbsConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
@@ -56,7 +56,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     @Autowired
     private QrCodeService qrCode;
     @Autowired
-    private TxMapLBSConfig txMapLBSConfig;
+    private TxMapLbsConfig txMapLbsConfig;
     @Autowired
     private UpYunConfig upYunConfig;
     @Autowired
@@ -264,114 +264,44 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             String moduleName = node.getValue().get("module_name").asText();
             switch (moduleName) {
                 case ModuleConstant.M_SCROLL_IMAGE:
-                    ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
-                    for (ModuleScrollImage.ImageItem imageItem : moduleScrollImage.getImgItems()) {
-                        imageItem.setImageUrl(imageUrl(imageItem.getImageUrl()));
-                    }
-                    return moduleScrollImage;
+                    return processScrollImageModule(objectMapper, node);
                 case ModuleConstant.M_IMAGE_GUIDE:
-                    ModuleImageGuide moduleImageGuide = objectMapper.readValue(node.getValue().toString(), ModuleImageGuide.class);
-                    for (ModuleImageGuide.NavItem navItem : moduleImageGuide.getNavGroup()) {
-                        navItem.setNavSrc(imageUrl(navItem.getNavSrc()));
-                    }
-                    return moduleImageGuide;
+                    return processImageGuideMudule(objectMapper, node);
                 case ModuleConstant.M_IMAGE_ADVER:
-                    ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
-                    for (ModuleImageAdver.ImageAdItem item : moduleImageAdver.getImageList()){
-                        item.setImage(imageUrl(item.getImage()));
-                    }
-                    return moduleImageAdver;
+                    return processImageAdverModule(objectMapper, node);
                 case ModuleConstant.M_MAGIC_CUBE:
-                    ModuleMagicCube moduleMagicCube = objectMapper.readValue(node.getValue().toString(), ModuleMagicCube.class);
-                    for(ModuleMagicCube.BlockItem blockItem : moduleMagicCube.getData().values()){
-                        blockItem.setImgUrl(imageUrl(blockItem.getImgUrl()));
-                    }
-                    return moduleMagicCube;
+                    return processMagicCubeModule(objectMapper, node);
                 case ModuleConstant.M_HOT_AREA:
-                    ModuleHotArea moduleHotArea = objectMapper.readValue(node.getValue().toString(), ModuleHotArea.class);
-                    moduleHotArea.getData().setBgImgUrl(imageUrl(moduleHotArea.getData().getBgImgUrl()));
-                    return moduleHotArea;
+                    return processHotAreaModule(objectMapper, node);
                 case ModuleConstant.M_TEXT_IMAGE:
-                    ModuleTextImage moduleTextImage = objectMapper.readValue(node.getValue().toString(), ModuleTextImage.class);
-                    moduleTextImage.setImgUrl(imageUrl(moduleTextImage.getImgUrl()));
-                    return moduleTextImage;
+                    return processTextImageModule(objectMapper, node);
                 case ModuleConstant.M_TITLE:
-                    ModuleTitle moduleTitle = objectMapper.readValue(node.getValue().toString(), ModuleTitle.class);
-                    if(StringUtil.isNotEmpty(moduleTitle.getImgUrl())){
-                        moduleTitle.setImgUrl(imageUrl(moduleTitle.getImgUrl()));
-                    }
-                    return moduleTitle;
+                    return processTitleModule(objectMapper, node);
                 case ModuleConstant.M_VIDEO:
-                    ModuleVideo moduleVideo = objectMapper.readValue(node.getValue().toString(), ModuleVideo.class);
-                    if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
-                        moduleVideo.setVideoUrl(domainConfig.videoUrl(moduleVideo.getVideoUrl()));
-                        moduleVideo.setVideoImg(domainConfig.videoUrl(moduleVideo.getVideoImg()));
-                    }
-                    if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
-                        moduleVideo.setImgUrl(imageUrl(moduleVideo.getImgUrl()));
-                    }
-                    return moduleVideo;
+                    return processVideoModule(objectMapper, node);
                 case ModuleConstant.M_MAP:
                     ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
                     moduleMap.setImgPath(imageUrl(moduleMap.getImgPath()));
                     return moduleMap;
                 case ModuleConstant.M_GOODS:
-                    ModuleGoods moduleGoods = saas.getShopApp(getShopId()).mpDecoration.convertGoodsForModule(objectMapper, node, null,null);
-                    if (moduleGoods.getOtherMessage().equals(0)) {
-                        if (StringUtil.isNotEmpty(moduleGoods.getImgUrl()) || StringUtil.isNotEmpty(moduleGoods.getTitle())) {
-                            moduleGoods.setGoodsModuleTitle((byte) 1);
-                        } else {
-                            moduleGoods.setGoodsModuleTitle((byte) 0);
-                        }
-                    }
-                    if (StringUtil.isNotEmpty(moduleGoods.getImgUrl())) {
-                        moduleGoods.setImgUrl(imageUrl(moduleGoods.getImgUrl()));
-                    }
-                    if (StringUtil.isNotEmpty(moduleGoods.getImgTitleUrl())) {
-                        moduleGoods.setImgTitleUrl(imageUrl(moduleGoods.getImgTitleUrl()));
-                    }
-                    return moduleGoods;
+                    return processGoodsModule(objectMapper, node);
                 case ModuleConstant.M_GOODS_GROUP:
-                    ModuleGoodsGroup moduleGoodsGroup = saas.getShopApp(getShopId()).mpDecoration.convertGoodsGroupForModule(objectMapper, node, null);
-                    if (moduleGoodsGroup.getOtherMessage() == null && moduleGoodsGroup.getShowPrice() == 0) {
-                        moduleGoodsGroup.setOtherMessage((byte) 0);
-                        moduleGoodsGroup.setShowMarket((byte) 1);
-                    }
-                    return moduleGoodsGroup;
+                    return processGoodsGroupModule(objectMapper, node);
                 case ModuleConstant.M_BARGAIN:
-                    ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
-                    moduleBargain = saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
-                    return moduleBargain;
+                    return processBargainModule(objectMapper, node);
                 case ModuleConstant.M_SECKILL:
-                    ModuleSeckill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSeckill.class);
-                    moduleSecKill = saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
-                    return moduleSecKill;
+                    return processSecKillModule(objectMapper, node);
                 case ModuleConstant.M_INTEGRAL:
-                    ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
-                    moduleIntegral = saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
-                    return moduleIntegral;
+                    return processIntegralModule(objectMapper, node);
                 case ModuleConstant.M_CARD:
-                    ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
-                   if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
-                       moduleCard.setBgImg(imageUrl(moduleCard.getBgImg()));
-                   }
-                    return moduleCard;
+                    return processCardModule(objectMapper, node);
                 case ModuleConstant.M_SHOP:
-                    ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
-                    if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
-                        moduleShop.setShopBgPath(imageUrl(moduleShop.getShopBgPath()));
-                    }
-                    if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
-                        moduleShop.setBgUrl(imageUrl(moduleShop.getBgUrl()));
-                    }
-                    return moduleShop;
+                    return processShopModule(objectMapper, node);
                 case ModuleConstant.M_GROUP_DRAW:
-                    ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
-                    moduleGroupDraw = saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
-                    return moduleGroupDraw;
+                    return processGroupDrawModule(objectMapper, node);
 
 
-                    /**
+                /**
                      * TODO: 添加其他模块
                      */
                     /**
@@ -392,6 +322,140 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             return pageCfg;
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
+    }
+
+    private Object processGroupDrawModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+        moduleGroupDraw = saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
+        return moduleGroupDraw;
+    }
+
+    private Object processShopModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+        if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
+            moduleShop.setShopBgPath(imageUrl(moduleShop.getShopBgPath()));
+        }
+        if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
+            moduleShop.setBgUrl(imageUrl(moduleShop.getBgUrl()));
+        }
+        return moduleShop;
+    }
+
+    private Object processCardModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
+        if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
+            moduleCard.setBgImg(imageUrl(moduleCard.getBgImg()));
+        }
+        return moduleCard;
+    }
+
+    private Object processIntegralModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+        moduleIntegral = saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
+        return moduleIntegral;
+    }
+
+    private Object processSecKillModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleSeckill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSeckill.class);
+        moduleSecKill = saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
+        return moduleSecKill;
+    }
+
+    private Object processBargainModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
+        moduleBargain = saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
+        return moduleBargain;
+    }
+
+    private Object processGoodsGroupModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleGoodsGroup moduleGoodsGroup = saas.getShopApp(getShopId()).mpDecoration.convertGoodsGroupForModule(objectMapper, node, null);
+        if (moduleGoodsGroup.getOtherMessage() == null && moduleGoodsGroup.getShowPrice() == 0) {
+            moduleGoodsGroup.setOtherMessage((byte) 0);
+            moduleGoodsGroup.setShowMarket((byte) 1);
+        }
+        return moduleGoodsGroup;
+    }
+
+    private Object processGoodsModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleGoods moduleGoods = saas.getShopApp(getShopId()).mpDecoration.convertGoodsForModule(objectMapper, node, null,null);
+        if (moduleGoods.getOtherMessage().equals((byte)0)) {
+            if (StringUtil.isNotEmpty(moduleGoods.getImgUrl()) || StringUtil.isNotEmpty(moduleGoods.getTitle())) {
+                moduleGoods.setGoodsModuleTitle((byte) 1);
+            } else {
+                moduleGoods.setGoodsModuleTitle((byte) 0);
+            }
+        }
+        if (StringUtil.isNotEmpty(moduleGoods.getImgUrl())) {
+            moduleGoods.setImgUrl(imageUrl(moduleGoods.getImgUrl()));
+        }
+        if (StringUtil.isNotEmpty(moduleGoods.getImgTitleUrl())) {
+            moduleGoods.setImgTitleUrl(imageUrl(moduleGoods.getImgTitleUrl()));
+        }
+        return moduleGoods;
+    }
+
+    private Object processVideoModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleVideo moduleVideo = objectMapper.readValue(node.getValue().toString(), ModuleVideo.class);
+        if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
+            moduleVideo.setVideoUrl(domainConfig.videoUrl(moduleVideo.getVideoUrl()));
+            moduleVideo.setVideoImg(domainConfig.videoUrl(moduleVideo.getVideoImg()));
+        }
+        if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+            moduleVideo.setImgUrl(imageUrl(moduleVideo.getImgUrl()));
+        }
+        return moduleVideo;
+    }
+
+    private Object processTitleModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleTitle moduleTitle = objectMapper.readValue(node.getValue().toString(), ModuleTitle.class);
+        if(StringUtil.isNotEmpty(moduleTitle.getImgUrl())){
+            moduleTitle.setImgUrl(imageUrl(moduleTitle.getImgUrl()));
+        }
+        return moduleTitle;
+    }
+
+    private Object processTextImageModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleTextImage moduleTextImage = objectMapper.readValue(node.getValue().toString(), ModuleTextImage.class);
+        moduleTextImage.setImgUrl(imageUrl(moduleTextImage.getImgUrl()));
+        return moduleTextImage;
+    }
+
+    private Object processHotAreaModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleHotArea moduleHotArea = objectMapper.readValue(node.getValue().toString(), ModuleHotArea.class);
+        moduleHotArea.getData().setBgImgUrl(imageUrl(moduleHotArea.getData().getBgImgUrl()));
+        return moduleHotArea;
+    }
+
+    private Object processMagicCubeModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleMagicCube moduleMagicCube = objectMapper.readValue(node.getValue().toString(), ModuleMagicCube.class);
+        for(ModuleMagicCube.BlockItem blockItem : moduleMagicCube.getData().values()){
+            blockItem.setImgUrl(imageUrl(blockItem.getImgUrl()));
+        }
+        return moduleMagicCube;
+    }
+
+    private Object processImageAdverModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
+        for (ModuleImageAdver.ImageAdItem item : moduleImageAdver.getImageList()){
+            item.setImage(imageUrl(item.getImage()));
+        }
+        return moduleImageAdver;
+    }
+
+    private Object processImageGuideMudule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleImageGuide moduleImageGuide = objectMapper.readValue(node.getValue().toString(), ModuleImageGuide.class);
+        for (ModuleImageGuide.NavItem navItem : moduleImageGuide.getNavGroup()) {
+            navItem.setNavSrc(imageUrl(navItem.getNavSrc()));
+        }
+        return moduleImageGuide;
+    }
+
+    private Object processScrollImageModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
+        for (ModuleScrollImage.ImageItem imageItem : moduleScrollImage.getImgItems()) {
+            imageItem.setImageUrl(imageUrl(imageItem.getImageUrl()));
+        }
+        return moduleScrollImage;
     }
 
     /**
@@ -600,93 +664,31 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             String moduleName = node.getValue().get("module_name").asText();
             switch (moduleName) {
                 case ModuleConstant.M_SCROLL_IMAGE:
-                    ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
-                    for (ModuleScrollImage.ImageItem imageItem : moduleScrollImage.getImgItems()) {
-                        imageItem.setImageUrl(RegexUtil.getUri(imageItem.getImageUrl()));
-                    }
-                    return moduleScrollImage;
+                    return confirmScrollImageModule(objectMapper, node);
                 case ModuleConstant.M_IMAGE_GUIDE:
-                    ModuleImageGuide moduleImageGuide = objectMapper.readValue(node.getValue().toString(), ModuleImageGuide.class);
-                    for (ModuleImageGuide.NavItem navItem : moduleImageGuide.getNavGroup()) {
-                        navItem.setNavSrc(RegexUtil.getUri(navItem.getNavSrc()));
-                    }
-                    return moduleImageGuide;
+                    return confirmImageGuideModule(objectMapper, node);
                 case ModuleConstant.M_IMAGE_ADVER:
-                    ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
-                    for (ModuleImageAdver.ImageAdItem item : moduleImageAdver.getImageList()){
-                        item.setImage(RegexUtil.getUri(item.getImage()));
-                    }
-                    return moduleImageAdver;
+                    return confirmImageAdverModule(objectMapper, node);
                 case ModuleConstant.M_MAGIC_CUBE:
-                    ModuleMagicCube moduleMagicCube = objectMapper.readValue(node.getValue().toString(), ModuleMagicCube.class);
-                    for(ModuleMagicCube.BlockItem blockItem : moduleMagicCube.getData().values()){
-                        blockItem.setImgUrl(RegexUtil.getUri(blockItem.getImgUrl()));
-                    }
-                    return moduleMagicCube;
+                    return confirmMagicCubeModule(objectMapper, node);
                 case ModuleConstant.M_HOT_AREA:
-                    ModuleHotArea moduleHotArea = objectMapper.readValue(node.getValue().toString(), ModuleHotArea.class);
-                    moduleHotArea.getData().setBgImgUrl(RegexUtil.getUri(moduleHotArea.getData().getBgImgUrl()));
-                    return moduleHotArea;
+                    return confirmHotAreaModule(objectMapper, node);
                 case ModuleConstant.M_TEXT_IMAGE:
-                    ModuleTextImage moduleTextImage = objectMapper.readValue(node.getValue().toString(), ModuleTextImage.class);
-                    moduleTextImage.setImgUrl(RegexUtil.getUri(moduleTextImage.getImgUrl()));
-                    return moduleTextImage;
+                    return confirmTextImageModule(objectMapper, node);
                 case ModuleConstant.M_TITLE:
-                    ModuleTitle moduleTitle = objectMapper.readValue(node.getValue().toString(), ModuleTitle.class);
-                    if(StringUtil.isNotEmpty(moduleTitle.getImgUrl())){
-                        moduleTitle.setImgUrl(RegexUtil.getUri(moduleTitle.getImgUrl()));
-                    }
-                    return moduleTitle;
+                    return confirmTitleModule(objectMapper, node);
                 case ModuleConstant.M_VIDEO:
-                    checkAuth(VersionName.SUB_2_M_VIDEO);
-                    ModuleVideo moduleVideo = objectMapper.readValue(node.getValue().toString(), ModuleVideo.class);
-                    if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())) {
-                        moduleVideo.setVideoUrl(RegexUtil.getUri(moduleVideo.getVideoUrl()));
-                        moduleVideo.setVideoImg(RegexUtil.getUri(moduleVideo.getVideoImg()));
-                    }
-                    if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
-                        moduleVideo.setImgUrl(RegexUtil.getUri(moduleVideo.getImgUrl()));
-                    }
-                    return moduleVideo;
+                    return confirmVideoModule(objectMapper, node);
                 case ModuleConstant.M_SHOP:
-                    ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
-                    if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
-                        moduleShop.setShopBgPath(RegexUtil.getUri(moduleShop.getShopBgPath()));
-                    }
-                    if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
-                        moduleShop.setBgUrl(RegexUtil.getUri(moduleShop.getBgUrl()));
-                    }
-                    return moduleShop;
+                    return confirmShopModule(objectMapper, node);
                 case ModuleConstant.M_MAP:
-                    ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
-                    String imgPath = getStaticMapImg(moduleMap.getLatitude(),moduleMap.getLongitude());
-                    moduleMap.setImgPath(imgPath);
-                    return moduleMap;
+                    return confirmMapModule(objectMapper, node);
                 case ModuleConstant.M_CARD:
-                	checkAuth(VersionName.SUB_2_M_MEMBER_CARD);
-                    ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
-                    if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
-                        moduleCard.setBgImg(RegexUtil.getUri(moduleCard.getBgImg()));
-                    }
-                    return moduleCard;
+                    return confirmCardModule(objectMapper, node);
                 case ModuleConstant.M_GROUP_DRAW:
-                	checkAuth(VersionName.SUB_2_M_GROUP_DRAW);
-                    ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
-                    if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
-                        moduleGroupDraw.setModuleImg(RegexUtil.getUri(moduleGroupDraw.getModuleImg()));
-                    }
-                    return moduleGroupDraw;
+                    return confirmGroupDrawModule(objectMapper, node);
                 case ModuleConstant.M_INTEGRAL:
-                	checkAuth(VersionName.SUB_2_M_INTEGRAL_GOODS);
-                    ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
-                    if(!moduleIntegral.getIntegralGoods().isEmpty()){
-                        for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
-                            if(StringUtil.isNotEmpty(g.getGoodsImg())){
-                                g.setGoodsImg(RegexUtil.getUri(g.getGoodsImg()));
-                            }
-                        }
-                    }
-                    return moduleIntegral;
+                    return confirmIntegralModule(objectMapper, node);
                 case ModuleConstant.M_COUPON:
                 	checkAuth(VersionName.SUB_2_M_VOUCHER);
                 	return objectMapper.readValue(node.getValue().toString(), Object.class);
@@ -704,14 +706,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     return objectMapper.readValue(node.getValue().toString(), Object.class);
 
                 case ModuleConstant.M_GOODS:
-                    ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
-                    if (StringUtil.isNotEmpty(moduleGoods.getImgUrl())) {
-                        moduleGoods.setImgUrl(RegexUtil.getUri(moduleGoods.getImgUrl()));
-                    }
-                    if (StringUtil.isNotEmpty(moduleGoods.getImgTitleUrl())) {
-                        moduleGoods.setImgTitleUrl(RegexUtil.getUri(moduleGoods.getImgTitleUrl()));
-                    }
-                    return moduleGoods;
+                    return confirmGoodsModule(objectMapper, node);
                 case ModuleConstant.M_PRESCRIPTION:
                     return objectMapper.readValue(node.getValue().toString(), ModulePrescription.class);
                 case ModuleConstant.M_CASE_HISTORY:
@@ -732,6 +727,131 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             return pageCfg;
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
+    }
+
+    private Object confirmGoodsModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
+        if (StringUtil.isNotEmpty(moduleGoods.getImgUrl())) {
+            moduleGoods.setImgUrl(RegexUtil.getUri(moduleGoods.getImgUrl()));
+        }
+        if (StringUtil.isNotEmpty(moduleGoods.getImgTitleUrl())) {
+            moduleGoods.setImgTitleUrl(RegexUtil.getUri(moduleGoods.getImgTitleUrl()));
+        }
+        return moduleGoods;
+    }
+
+    private Object confirmIntegralModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        checkAuth(VersionName.SUB_2_M_INTEGRAL_GOODS);
+        ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+        if(!moduleIntegral.getIntegralGoods().isEmpty()){
+            for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
+                if(StringUtil.isNotEmpty(g.getGoodsImg())){
+                    g.setGoodsImg(RegexUtil.getUri(g.getGoodsImg()));
+                }
+            }
+        }
+        return moduleIntegral;
+    }
+
+    private Object confirmGroupDrawModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        checkAuth(VersionName.SUB_2_M_GROUP_DRAW);
+        ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+        if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
+            moduleGroupDraw.setModuleImg(RegexUtil.getUri(moduleGroupDraw.getModuleImg()));
+        }
+        return moduleGroupDraw;
+    }
+
+    private Object confirmCardModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        checkAuth(VersionName.SUB_2_M_MEMBER_CARD);
+        ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
+        if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
+            moduleCard.setBgImg(RegexUtil.getUri(moduleCard.getBgImg()));
+        }
+        return moduleCard;
+    }
+
+    private Object confirmMapModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
+        String imgPath = getStaticMapImg(moduleMap.getLatitude(),moduleMap.getLongitude());
+        moduleMap.setImgPath(imgPath);
+        return moduleMap;
+    }
+
+    private Object confirmShopModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+        if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
+            moduleShop.setShopBgPath(RegexUtil.getUri(moduleShop.getShopBgPath()));
+        }
+        if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
+            moduleShop.setBgUrl(RegexUtil.getUri(moduleShop.getBgUrl()));
+        }
+        return moduleShop;
+    }
+
+    private Object confirmVideoModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        checkAuth(VersionName.SUB_2_M_VIDEO);
+        ModuleVideo moduleVideo = objectMapper.readValue(node.getValue().toString(), ModuleVideo.class);
+        if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())) {
+            moduleVideo.setVideoUrl(RegexUtil.getUri(moduleVideo.getVideoUrl()));
+            moduleVideo.setVideoImg(RegexUtil.getUri(moduleVideo.getVideoImg()));
+        }
+        if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+            moduleVideo.setImgUrl(RegexUtil.getUri(moduleVideo.getImgUrl()));
+        }
+        return moduleVideo;
+    }
+
+    private Object confirmTitleModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleTitle moduleTitle = objectMapper.readValue(node.getValue().toString(), ModuleTitle.class);
+        if(StringUtil.isNotEmpty(moduleTitle.getImgUrl())){
+            moduleTitle.setImgUrl(RegexUtil.getUri(moduleTitle.getImgUrl()));
+        }
+        return moduleTitle;
+    }
+
+    private Object confirmTextImageModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleTextImage moduleTextImage = objectMapper.readValue(node.getValue().toString(), ModuleTextImage.class);
+        moduleTextImage.setImgUrl(RegexUtil.getUri(moduleTextImage.getImgUrl()));
+        return moduleTextImage;
+    }
+
+    private Object confirmHotAreaModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleHotArea moduleHotArea = objectMapper.readValue(node.getValue().toString(), ModuleHotArea.class);
+        moduleHotArea.getData().setBgImgUrl(RegexUtil.getUri(moduleHotArea.getData().getBgImgUrl()));
+        return moduleHotArea;
+    }
+
+    private Object confirmMagicCubeModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleMagicCube moduleMagicCube = objectMapper.readValue(node.getValue().toString(), ModuleMagicCube.class);
+        for(ModuleMagicCube.BlockItem blockItem : moduleMagicCube.getData().values()){
+            blockItem.setImgUrl(RegexUtil.getUri(blockItem.getImgUrl()));
+        }
+        return moduleMagicCube;
+    }
+
+    private Object confirmImageAdverModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
+        for (ModuleImageAdver.ImageAdItem item : moduleImageAdver.getImageList()){
+            item.setImage(RegexUtil.getUri(item.getImage()));
+        }
+        return moduleImageAdver;
+    }
+
+    private Object confirmImageGuideModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleImageGuide moduleImageGuide = objectMapper.readValue(node.getValue().toString(), ModuleImageGuide.class);
+        for (ModuleImageGuide.NavItem navItem : moduleImageGuide.getNavGroup()) {
+            navItem.setNavSrc(RegexUtil.getUri(navItem.getNavSrc()));
+        }
+        return moduleImageGuide;
+    }
+
+    private Object confirmScrollImageModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+        ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
+        for (ModuleScrollImage.ImageItem imageItem : moduleScrollImage.getImgItems()) {
+            imageItem.setImageUrl(RegexUtil.getUri(imageItem.getImageUrl()));
+        }
+        return moduleScrollImage;
     }
 
     /**
@@ -768,7 +888,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     protected String getStaticMapImg(String latitude,String longitude){
         Map<String, Object> param = new HashMap<>(8);
         param.put("size","375*150");
-        param.put("key",txMapLBSConfig.getKey());
+        param.put("key", txMapLbsConfig.getKey());
         param.put("center",latitude + "," + longitude);
         param.put("zoom",16);
         param.put("format","png");

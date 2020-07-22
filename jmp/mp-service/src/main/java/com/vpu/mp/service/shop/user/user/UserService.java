@@ -238,8 +238,9 @@ public class UserService extends ShopBaseService {
 			WxMaJscode2SessionResult result) {
 		UserRecord ret = db().selectFrom(USER).where(USER.WX_OPENID.eq(openid)).fetchAny();
 		if (ret != null) {
-			if (StringUtils.isNotEmpty(userName)
-					&& (ret.getWxOpenid().equals(ret.getUsername()) || (!ret.getUsername().equals(userName)))) {
+            boolean canUpdateUserName = StringUtils.isNotEmpty(userName)
+                && (ret.getWxOpenid().equals(ret.getUsername()) || (!ret.getUsername().equals(userName)));
+            if (canUpdateUserName) {
 				db().update(USER).set(USER.USERNAME, userName).where(USER.WX_OPENID.eq(openid)).execute();
 				ret.setWxOpenid(openid);
 				//syncMainUser(ret);
@@ -308,15 +309,17 @@ public class UserService extends ShopBaseService {
 			String groupDrawId = pathQuery.getQuery().get("group_draw_id");
             String pingLotteryInfoPath = "pages1/pinlotteryinfo/pinlotteryinfo";
             String pingLotterInfoPath2 = "pages/pinlotteryinfo/pinlotteryinfo";
-            if ((path.equals(pingLotteryInfoPath)||path.equals(pingLotterInfoPath2)) && groupDrawId != null
-					&& pathQuery.getQuery().get("invite_id") != null) {
+            boolean isPinLotteryInvite = (path.equals(pingLotteryInfoPath) || path.equals(pingLotterInfoPath2)) && groupDrawId != null
+                && pathQuery.getQuery().get("invite_id") != null;
+            if (isPinLotteryInvite) {
 				pathQuery.getQuery().put("user_id", userId.toString());
 				saas.getShopApp(this.getShopId()).groupDraw.groupDrawInvite.createInviteRecord(path,  Integer.valueOf(groupDrawId),query, (byte) 1);
 			}
             String indexPath = "pages/index/index";
             String itemPath = "pages/item/item";
-            if (path.equals(indexPath)
-					|| path.equals(itemPath) && pathQuery.getQuery().get("c") != null) {
+            final boolean c = path.equals(indexPath)
+                || path.equals(itemPath) && pathQuery.getQuery().get("c") != null;
+            if (c) {
 				saas.getShopApp(getShopId()).channelService.recordChannel(pathQuery.getQuery().get("c"), userId, (byte) 1);
 			}
 			return user;
@@ -486,8 +489,9 @@ public class UserService extends ShopBaseService {
 		UserRecord record = getUserByUserId(userId);
 		UserDetailRecord userDetailRecord = getUserDetail(userId);
 		// 更新昵称
-		if ((StringUtils.isNotEmpty(username)
-				&& (StringUtils.isEmpty(record.getUsername())) || (!username.equals(record.getUsername())))) {
+        boolean canUpdateUserName = StringUtils.isNotEmpty(username)
+            && (StringUtils.isEmpty(record.getUsername())) || (!username.equals(record.getUsername()));
+        if (canUpdateUserName) {
 			db().update(USER).set(USER.USERNAME, username).where(USER.USER_ID.eq(param.getUserId())).execute();
 			db().update(USER_DETAIL).set(USER_DETAIL.USERNAME, username)
 					.where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
@@ -501,8 +505,9 @@ public class UserService extends ShopBaseService {
 
 		}
 		// 更新头像
-		if (StringUtils.isNotEmpty(userAvatar) && (StringUtils.isEmpty(userDetailRecord.getUserAvatar())
-				|| (!userAvatar.equals(userDetailRecord.getUserAvatar())))) {
+        boolean canUpdateAvatar = StringUtils.isNotEmpty(userAvatar) && (StringUtils.isEmpty(userDetailRecord.getUserAvatar())
+            || (!userAvatar.equals(userDetailRecord.getUserAvatar())));
+        if (canUpdateAvatar) {
 			db().update(USER_DETAIL).set(USER_DETAIL.USER_AVATAR, userAvatar)
 					.where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();
 			userDetailRecord.setUserAvatar(userAvatar);

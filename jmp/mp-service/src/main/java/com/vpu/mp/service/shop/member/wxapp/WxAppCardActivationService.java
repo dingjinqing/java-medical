@@ -65,7 +65,9 @@ public class WxAppCardActivationService extends ShopBaseService {
 	public final static String PROVINCE_CODE = "provinceCode";
 	public final static String CITY_CODE = "cityCode";
 	public final static String DISTRICT_CODE = "districtCode";
-	// 100000 110000 110100在省，市，区中都对应无效值
+
+	/**  100000 110000 110100在省，市，区中都对应无效值 **/
+
 	final static Integer DEFAULT_PROVINCEID = 100000;
 	final static Integer DEFAULT_CITYID = 110000;
 	final static Integer DEFAULT_DISTRICTID = 110100;

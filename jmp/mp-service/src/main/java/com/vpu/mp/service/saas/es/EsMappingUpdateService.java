@@ -62,7 +62,6 @@ public class EsMappingUpdateService extends MainBaseService {
     @Autowired
     private RabbitMqUtilService rabbitMqUtilService;
 
-    //es status
     private volatile Boolean enabled = Boolean.TRUE;
 
     public Boolean getEsStatus(){

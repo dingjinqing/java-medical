@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -458,10 +457,11 @@ public class CouponService extends ShopBaseService {
                 .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)));
 
         //根据优惠券使用状态、过期状态条件筛选
-        MpBuildOptions(select, param);
+        mpBuildOptions(select, param);
         PageResult<AvailCouponVo> lists = getPageResult(select, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
-            list.setCanShare(0); //0不可以分享；1可以分享
+            //0不可以分享；1可以分享
+            list.setCanShare(0);
             //分裂优惠券属性
             if(list.getCouponType() == 1){
                 Record record = db().select().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId()))
@@ -469,11 +469,14 @@ public class CouponService extends ShopBaseService {
                     .fetchOne();
                 if(record != null){
                     DivisionReceiveRecordRecord into = record.into(DivisionReceiveRecordRecord.class);
-                    list.setIsGrant(1); //发放人
-                    list.setIsShare(into.getIsShare());  //0:未分享；1：已分享
+                    //发放人
+                    list.setIsGrant(1);
+                    //0:未分享；1：已分享
+                    list.setIsShare(into.getIsShare());
                 }else{
                     list.setIsShare((byte)0);
-                    list.setIsGrant(0); //被发放
+                    //被发放
+                    list.setIsGrant(0);
                 }
 
                 int hasReceive = hasReceive(param.getUserId(), list.getCouponSn());
@@ -536,7 +539,7 @@ public class CouponService extends ShopBaseService {
      * @param select
      * @param param
      */
-    public void MpBuildOptions(SelectJoinStep<? extends Record> select, AvailCouponParam param) {
+    public void mpBuildOptions(SelectJoinStep<? extends Record> select, AvailCouponParam param) {
     	Byte isUsed = param.getNav();
     	Timestamp now = Timestamp.valueOf(LocalDateTime.now());
     	if(isUsed == 0 || isUsed == 1) {  //未使用、已使用状态
@@ -599,7 +602,8 @@ public class CouponService extends ShopBaseService {
                 //优惠券规则
                 Integer perNum = db().select(MRKING_VOUCHER.RECEIVE_PER_PERSON).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(param.couponId)).fetchOne().into(Integer.class);
                 Integer hasNum = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.couponId)).fetchOne().into(Integer.class);
-                if(perNum == 0 || (perNum != 0 && hasNum<perNum)){
+                boolean canReceive = perNum == 0 || (perNum != 0 && hasNum < perNum);
+                if(canReceive){
                     list.setCanReceive(1);
                 }
                 list.setLinkSource(1);
@@ -680,7 +684,8 @@ public class CouponService extends ShopBaseService {
         if(record != null){
             AvailCouponDetailVo info = record.into(AvailCouponDetailVo.class);
             List<Integer> cardIds = stringToList(info.getCardId());
-            int cardStatus = 0; //0：不能直接领取；1：可以直接领取
+            //0：不能直接领取；1：可以直接领取
+            int cardStatus = 0;
             //判断用户-会员卡详情
             for(Integer cardId : cardIds){
                 MemberCardRecord cardInfo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchOne().into(MemberCardRecord.class);
@@ -1133,7 +1138,7 @@ public class CouponService extends ShopBaseService {
 	 * @return
 	 * @return
 	 */
-	public CouponWxUserImportVo getOneMVById(Integer couponId,String lang) {
+	public CouponWxUserImportVo getOneMvById(Integer couponId, String lang) {
 		MrkingVoucherRecord record = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne();
 		if (record == null) {
 			return null;

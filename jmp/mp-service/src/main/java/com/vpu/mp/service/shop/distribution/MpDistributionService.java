@@ -63,6 +63,7 @@ import static org.jooq.impl.DSL.sum;
 
 /**
  * mp分销模块service
+ * @author changle
  */
 @Service
 public class MpDistributionService extends ShopBaseService{
@@ -157,10 +158,13 @@ public class MpDistributionService extends ShopBaseService{
 	 */
 	public int distributorApply(DistributorApplyParam param) {
         DistributorApplyRecord record = new DistributorApplyRecord();
-        Integer state = 0;//返回状态
+        //返回状态
+        int state = 0;
+
         //获取分销配置，成为分销员是否需要审核
         DistributionParam cfg = this.distributionCfg.getDistributionCfg();
-        if(cfg.getActivation() == 0){  //不提交审核信息，直接成为分销员
+        if(cfg.getActivation() == 0){
+            //不提交审核信息，直接成为分销员
             String checkInfo = Util.toJsonNotNull(param.getActivationFields());
             assign(param, record);
             record.setActivationFields(checkInfo);
@@ -170,16 +174,19 @@ public class MpDistributionService extends ShopBaseService{
             //生成有效邀请码
             String inviteCode = this.validInviteCode();
 
-            Integer codeIsExist = 1; //邀请码存在或不校验
+            Integer codeIsExist = 1;
+            //邀请码存在或不校验
             //用户提交邀请码不为空的时候判断邀请码是否存在有效
             if (param.getActivationFields().getInvitationCode() != null) {
                 codeIsExist = sentInviteCodeVerify(param.getActivationFields().getInvitationCode());
                 if (codeIsExist == 0) {
-                    state = -1; //邀请码不存在
+                    //邀请码不存在
+                    state = -1;
                 }
             }
             if (state != -1) {
-                if (cfg.getAutoExamine() == 1) {//自动审核
+                if (cfg.getAutoExamine() == 1) {
+                    //自动审核
                     //申请信息插入审核记录表
                     String checkInfo = Util.toJson(param.getActivationFields());
                     assign(param, record);
@@ -238,10 +245,10 @@ public class MpDistributionService extends ShopBaseService{
      */
 	public String generateInvitationCode(){
         String inviteCode = "";
-        char[] Str = "0123456789abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+        char[] str = "0123456789abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
         for (int i = 0; i < 6; i++) {
-            int index = (int) (Math.random() * Str.length);
-            inviteCode += Str[index];
+            int index = (int) (Math.random() * str.length);
+            inviteCode += str[index];
         }
         return inviteCode;
     }
@@ -344,7 +351,8 @@ public class MpDistributionService extends ShopBaseService{
                 rebateCenterVo.setCanWithdraw(canWithdraw);
             }
             rebateCenterVo.setTotalWithdraw(userRebate1.getFinalMoney());
-            if (distributionCfg.getStatus() != 1 || (isDistributor != 1 && distributionCfg.getJudgeStatus() == 1)) {
+            boolean canWithdraw = distributionCfg.getStatus() != 1 || (isDistributor != 1 && distributionCfg.getJudgeStatus() == 1);
+            if (canWithdraw) {
                 if (distributionCfg.getWithdrawStatus() != 1) {
                     BigDecimal account1 = new BigDecimal("0");
                     rebateCenterVo.setCanWithdraw(account1);
@@ -363,8 +371,8 @@ public class MpDistributionService extends ShopBaseService{
             Integer rebateOrderNum = distributorList.getRebateOrderNum(userId);
             rebateCenterVo.setRebateOrderNum(rebateOrderNum);
             //累积商品返利总额
-            BigDecimal TotalCanFanliMoney = this.TotalCanFanliMoney(userId);
-            rebateCenterVo.setTotalCanFanliMoney(TotalCanFanliMoney);
+            BigDecimal totalCanFanliMoney = this.totalCanFanliMoney(userId);
+            rebateCenterVo.setTotalCanFanliMoney(totalCanFanliMoney);
             //我的等级
             DistributorLevelParam distributorLevelInfo = this.distributorLevel(userId);
             rebateCenterVo.setDistributorLevel(distributorLevelInfo.getLevelName());
@@ -422,15 +430,15 @@ public class MpDistributionService extends ShopBaseService{
      * @param userId
      * @return
      */
-    public BigDecimal TotalCanFanliMoney(Integer userId){
+    public BigDecimal totalCanFanliMoney(Integer userId){
         //累积返利商品总额
-        BigDecimal TotalCanFanliMoney = db().select(sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("can_fanli_goods_money"))
+        BigDecimal totalCanFanli = db().select(sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("can_fanli_goods_money"))
             .from(USER_FANLI_STATISTICS).where(USER_FANLI_STATISTICS.FANLI_USER_ID.eq(userId))
             .fetchOne().into(BigDecimal.class);
-        if(TotalCanFanliMoney == null){
-            TotalCanFanliMoney = new BigDecimal(0.00);
+        if(totalCanFanli == null){
+            totalCanFanli = new BigDecimal(0.00);
         }
-        return TotalCanFanliMoney;
+        return totalCanFanli;
     }
 
     /**
@@ -459,7 +467,7 @@ public class MpDistributionService extends ShopBaseService{
      * @return
      */
     public List<RebateRankingTopVo> getRebateRankingTop(){
-        BigDecimal finalMoney = new BigDecimal(0.00);
+        BigDecimal finalMoney = BigDecimal.ZERO;
         Result<Record4<Integer, BigDecimal, String, String>> fetch = db().select(USER_TOTAL_FANLI.USER_ID, USER_TOTAL_FANLI.FINAL_MONEY, USER.USERNAME, USER_DETAIL.USER_AVATAR).from(USER_TOTAL_FANLI)
             .leftJoin(USER).on(USER_TOTAL_FANLI.USER_ID.eq(USER.USER_ID))
             .leftJoin(USER_DETAIL).on(USER_TOTAL_FANLI.USER_ID.eq(USER_DETAIL.USER_ID))
@@ -476,7 +484,7 @@ public class MpDistributionService extends ShopBaseService{
      * @param userId
      */
     public Integer getRebateRanking(Integer userId){
-        BigDecimal finalMoney = new BigDecimal(0.00);
+        BigDecimal finalMoney = BigDecimal.ZERO;
         Record record = db().select().from(USER_TOTAL_FANLI).where(USER_TOTAL_FANLI.USER_ID.eq(userId)).and(USER_TOTAL_FANLI.FINAL_MONEY.gt(finalMoney)).fetchOne();
         if(record != null){
             UserTotalFanliRecord userFanli = record.into(UserTotalFanliRecord.class);
@@ -510,7 +518,7 @@ public class MpDistributionService extends ShopBaseService{
      * @return
      */
     public List<RebateOrderListVo> getRebateOrderList(){
-        BigDecimal finalMoney = new BigDecimal(0.00);
+        BigDecimal finalMoney = BigDecimal.ZERO;
         Timestamp nowDate = Util.currentTimeStamp();
         Timestamp toDate = Util.getEarlyTimeStamp(nowDate, -30);
         Result<Record5<Integer, BigDecimal, Timestamp, String, String>> info = db().select(ORDER_INFO.FANLI_USER_ID, ORDER_INFO.FANLI_MONEY, ORDER_INFO.FINISHED_TIME, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
@@ -612,35 +620,43 @@ public class MpDistributionService extends ShopBaseService{
      * @param param
      */
     public void userBind(UserBindParam param){
-        int canBind = 0;  //0不能建立邀请关系；1：可以建立邀请关系；
+        int canBind = 0;
+        //0不能建立邀请关系；1：可以建立邀请关系；
         //一、排除二级成环情况
         //判断邀请人是否有上级，若有返回上级ID
         int upId = isBind(param.getInviteId());
-        if(upId > 0){//有上级邀请人
-            if(upId != param.getUserId()){// 邀请人的上级不是被邀请人，可以建立邀请关系
+        if(upId > 0){
+            //有上级邀请人
+            if(upId != param.getUserId()){
+                // 邀请人的上级不是被邀请人，可以建立邀请关系
                 canBind = 1;
             }
-        }else{ //无上级邀请人，可建立邀请关系
+        }else{
+            //无上级邀请人，可建立邀请关系
             canBind = 1;
         }
         //二、建立绑定关系
         if(canBind == 1){
             //判断被邀请人是否已有邀请人
             int inviteId = isBind(param.getUserId());
-            if(inviteId > 0){ //被邀请人已有上级
+            if(inviteId > 0){
+                //被邀请人已有上级
                 //判断上级是否为分销员
                 int isDistributor = isDistributor(inviteId);
                 //是分销员，判断保护期是否有效
                 if(isDistributor == 1){
                     int isEffective = inviteProtectIsEffective(param.getUserId());
-                    if(isEffective == 0){//不在有效保护期内，可以重新绑定
+                    if(isEffective == 0){
+                        //不在有效保护期内，可以重新绑定
                         //与当前邀请人建立绑定关系
                         confirmUserBind(param);
                     }
-                }else{ //当前邀请人是普通用户，可以与当前用户建立邀请绑定
+                }else{
+                    //当前邀请人是普通用户，可以与当前用户建立邀请绑定
                     confirmUserBind(param);
                 }
-            }else{//被邀请人没有上级，直接绑定
+            }else{
+                //被邀请人没有上级，直接绑定
                 confirmUserBind(param);
             }
         }
@@ -662,17 +678,20 @@ public class MpDistributionService extends ShopBaseService{
                 DistributionParam cfg = this.distributionCfg.getDistributionCfg();
                 //邀请保护时间
                 Timestamp protectDate = DateUtils.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
-                if(cfg.getProtectDate() == -1){  //-1为永久保护
+                if(cfg.getProtectDate() == -1){
+                    //-1为永久保护
                     Date foreverDate = new Date(946656000);
                     protectDate = Util.getEarlyTimeStamp(foreverDate,1);
                 }
-                if(cfg.getProtectDate() == 0){ //没有保护期
+                if(cfg.getProtectDate() == 0){
+                    //没有保护期
                     protectDate =Util.currentTimeStamp();
                 }
 
                 //邀请失效时间
                 Timestamp inviteExpiryDate = DateUtils.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
-                if(cfg.getVaild() == 0){  //永久返利有效
+                if(cfg.getVaild() == 0){
+                    //永久返利有效
                     Date foreverDate = new Date(946656000);
                     inviteExpiryDate = Util.getEarlyTimeStamp(foreverDate,1);
                 }
@@ -682,7 +701,8 @@ public class MpDistributionService extends ShopBaseService{
                     .set(USER.INVITE_PROTECT_DATE,protectDate)
                     .set(USER.INVITE_TIME,Util.currentTimeStamp())
                     .where(USER.USER_ID.eq(param.getUserId())).execute();
-            }else{//不是分销员，直接建立绑定关系
+            }else{
+                //不是分销员，直接建立绑定关系
                 db().update(USER).set(USER.INVITE_ID,param.getInviteId())
                     .set(USER.INVITE_TIME,Util.currentTimeStamp())
                     .where(USER.USER_ID.eq(param.getUserId())).execute();

@@ -52,12 +52,10 @@ public class OrderConstant {
 	/** 已完成 可进行操作：无 */
 	public final static byte ORDER_FINISHED = 6;
 	/** 目前没用-退货中 可进行操作：完成退货 已完成 */
-	@Deprecated
 	public final static byte ORDER_RETURNING = 7;
 	/** 完成退货 可进行操作：无 */
 	public final static byte ORDER_RETURN_FINISHED = 8;
 	/** 目前没用-退款中 可进行操作：无 */
-	@Deprecated
 	public final static byte ORDER_REFUNDING = 9;
 	/** 退款成功 可进行操作：无 */
 	public final static byte ORDER_REFUND_FINISHED = 10;
@@ -421,7 +419,6 @@ public class OrderConstant {
 	public static final byte WAIT_DELIVERY = 2;
 	public static final byte SHIPPED = 3;
 	public static final byte FINISHED = 4;
-	@Deprecated
 	public static final byte REFUND = 5;
 	//审核中
 	public static final byte AUDIT = 6;

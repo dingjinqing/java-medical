@@ -338,7 +338,12 @@ public class FormStatisticsService extends ShopBaseService {
         }
     }
 
-    // 从表单配置json串中获取元素value值
+    /**
+     * 从表单配置json串中获取元素value值
+     * @param cfg
+     * @param key
+     * @return
+     */
     private String getValueFromFormCfgByKey(String cfg, String key) {
         if (StringUtils.isBlank(cfg)) {
             log.info("表单配置信息为空");
@@ -930,34 +935,8 @@ public class FormStatisticsService extends ShopBaseService {
         /**
          * 提交次数限制
          */
-        if (formInfoBo.getFormCfgBo().getGet_times()>0){
-            Integer totalTime = getFromSubmitListCount(param.getPageId());
-            log.info("表单一共提交次数{}-{}",totalTime,formInfoBo.getFormCfgBo().getGet_times());
-            if (totalTime>=formInfoBo.getFormCfgBo().getGet_times()){
-                formSubmitDataVo.setStatus((byte)3);
-                formSubmitDataVo.setMessage("提交次数达到上限");
-                return true;
-            }
-        }
-        if (!BaseConstant.YES.equals(formInfoBo.getFormCfgBo().getPost_times())){
-            if (formInfoBo.getFormCfgBo().getDay_times()>0){
-                Integer daySubmitTimes = getDaySubmitTime(param.getPageId(), param.getUser().getUserId(), DateUtils.getLocalDateTime());
-                log.info("每天限制提交{}-{}",daySubmitTimes,formInfoBo.getFormCfgBo().getDay_times());
-                if (daySubmitTimes>=formInfoBo.getFormCfgBo().getDay_times()){
-                    formSubmitDataVo.setStatus((byte)3);
-                    formSubmitDataVo.setMessage("每天提交次数达到上限");
-                    return true;
-                }
-            }
-            if (formInfoBo.getFormCfgBo().getTotal_times()>0){
-                Integer submitTime = getSubmitTime(param.getPageId(), param.getUser().getUserId());
-                log.info("每人限制提交{}-{}",submitTime,formInfoBo.getFormCfgBo().getTotal_times());
-                if (submitTime>=formInfoBo.getFormCfgBo().getTotal_times()){
-                    formSubmitDataVo.setStatus((byte)3);
-                    formSubmitDataVo.setMessage("提交次数达到上限");
-                    return true;
-                }
-            }
+        if (checkSubmitNumber(param, formSubmitDataVo, formInfoBo)) {
+            return true;
         }
         /**
          * 表单校验
@@ -1012,6 +991,46 @@ public class FormStatisticsService extends ShopBaseService {
 
                     break;
                 default:
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 提交次数限制
+     * @param param
+     * @param formSubmitDataVo
+     * @param formInfoBo
+     * @return
+     */
+    private boolean checkSubmitNumber(FormSubmitDataParam param, FormSubmitDataVo formSubmitDataVo, FormInfoBo formInfoBo) {
+        if (formInfoBo.getFormCfgBo().getGet_times()>0){
+            Integer totalTime = getFromSubmitListCount(param.getPageId());
+            log.info("表单一共提交次数{}-{}",totalTime,formInfoBo.getFormCfgBo().getGet_times());
+            if (totalTime>=formInfoBo.getFormCfgBo().getGet_times()){
+                formSubmitDataVo.setStatus((byte)3);
+                formSubmitDataVo.setMessage("提交次数达到上限");
+                return true;
+            }
+        }
+        if (!BaseConstant.YES.equals(formInfoBo.getFormCfgBo().getPost_times())){
+            if (formInfoBo.getFormCfgBo().getDay_times()>0){
+                Integer daySubmitTimes = getDaySubmitTime(param.getPageId(), param.getUser().getUserId(), DateUtils.getLocalDateTime());
+                log.info("每天限制提交{}-{}",daySubmitTimes,formInfoBo.getFormCfgBo().getDay_times());
+                if (daySubmitTimes>=formInfoBo.getFormCfgBo().getDay_times()){
+                    formSubmitDataVo.setStatus((byte)3);
+                    formSubmitDataVo.setMessage("每天提交次数达到上限");
+                    return true;
+                }
+            }
+            if (formInfoBo.getFormCfgBo().getTotal_times()>0){
+                Integer submitTime = getSubmitTime(param.getPageId(), param.getUser().getUserId());
+                log.info("每人限制提交{}-{}",submitTime,formInfoBo.getFormCfgBo().getTotal_times());
+                if (submitTime>=formInfoBo.getFormCfgBo().getTotal_times()){
+                    formSubmitDataVo.setStatus((byte)3);
+                    formSubmitDataVo.setMessage("提交次数达到上限");
+                    return true;
+                }
             }
         }
         return false;

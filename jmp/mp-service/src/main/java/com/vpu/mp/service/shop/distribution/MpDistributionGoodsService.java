@@ -78,7 +78,13 @@ public class MpDistributionGoodsService extends ShopBaseService {
         }
     }
 
-    //分销配置
+    /**
+     * 分销配置
+     * @param goodsId
+     * @param catId
+     * @param sortId
+     * @return
+     */
     public DistributionStrategyParam distributionStrategyInfo(Integer goodsId,Integer catId,Integer sortId){
         //分销配置
         DistributionParam distributionCfg = distributionConf.getDistributionCfg();
@@ -370,7 +376,9 @@ public class MpDistributionGoodsService extends ShopBaseService {
             //判断优惠券库存和每人限领
             MrkingVoucherRecord info = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne().into(MrkingVoucherRecord.class);
 
-            if(!((info.getSurplus() <= 0 && info.getLimitSurplusFlag() == 0) || (hasReceive >= info.getReceivePerPerson() && info.getReceivePerPerson() != 0))){
+            boolean b = !((info.getSurplus() <= 0 && info.getLimitSurplusFlag() == 0)
+                || (hasReceive >= info.getReceivePerPerson() && info.getReceivePerPerson() != 0));
+            if(b){
                 mpGetCouponParam.setCouponId(couponId);
                 Byte res = mpCoupon.fetchCoupon(mpGetCouponParam);
 

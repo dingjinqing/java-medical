@@ -157,7 +157,8 @@ public class ReducePriceProcessor implements Processor, ActivityGoodsListProcess
                 if (reducePrize.compareTo(goods.getPrdPrice()) < 0) {
                     Integer limitNum = reducePriceRecord.get(REDUCE_PRICE.LIMIT_AMOUNT);
                     Byte limitFlag = reducePriceRecord.get(REDUCE_PRICE.LIMIT_FLAG);
-                    if (limitNum.equals(0) || goods.getCartNumber() <= limitNum || (goods.getCartNumber() > limitNum && limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE))) {
+                    boolean isInLimit = limitNum.equals(0) || goods.getCartNumber() <= limitNum || (goods.getCartNumber() > limitNum && limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE));
+                    if (isInLimit) {
                         log.info("购物车-限时降价-商品{}", goods.getGoodsName());
                         CartActivityInfo activityInfo = new CartActivityInfo();
                         activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);

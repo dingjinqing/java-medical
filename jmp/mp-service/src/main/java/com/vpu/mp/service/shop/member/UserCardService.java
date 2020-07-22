@@ -1169,17 +1169,18 @@ public class UserCardService extends ShopBaseService {
             // 折扣金额
             BigDecimal discountAmount = null;
             // 判断门店（无门店||全部门店||部分门店）
-            if (storeId == null || CardConstant.MCARD_STP_ALL.equals(Byte.valueOf(card.getInfo().getStoreList()))
-                || (CardConstant.MCARD_SUSE_OK.equals(card.getInfo().getStoreUseSwitch())
-                && Arrays.asList(card.getInfo().getStoreList().split(",")).contains(storeId.toString()))) {
+            boolean canDiscount = storeId == null || MCARD_STP_ALL.equals(Byte.valueOf(card.getInfo().getStoreList()))
+                || (MCARD_SUSE_OK.equals(card.getInfo().getStoreUseSwitch())
+                && Arrays.asList(card.getInfo().getStoreList().split(",")).contains(storeId.toString()));
+            if (canDiscount) {
                 // 折扣金额
                 discountAmount = getDiscountAmount(card, tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
             }
-            if(BigDecimalUtil.compareTo(discountAmount, null) < 1 &&
+            boolean noDiscount = BigDecimalUtil.compareTo(discountAmount, null) < 1 &&
                 CollectionUtils.isEmpty(card.getBos()) &&
                 BigDecimalUtil.compareTo(card.getInfo().getMoney(), BigDecimalUtil.BIGDECIMAL_ZERO) < 1 &&
-                (card.getInfo().getCardFreeShip() == null || card.getInfo().getCardFreeShip().getType() == CardFreeship.shipType.SHIP_NOT_AVAIL.getType() || card.getInfo().getCardFreeShip().getType() > CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType())
-            ) {
+                (card.getInfo().getCardFreeShip() == null || card.getInfo().getCardFreeShip().getType() == CardFreeship.shipType.SHIP_NOT_AVAIL.getType() || card.getInfo().getCardFreeShip().getType() > CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType());
+            if(noDiscount) {
                 //折扣金额为0，无折扣商品，无卡余额，无包邮权益->不展示
                 iterator.remove();
                 continue;
@@ -1351,173 +1352,178 @@ public class UserCardService extends ShopBaseService {
         }
 
         if (!isGet) {
-            // 返回新卡也就是memberCard的配置详情信息
-            logger().info("用户有此限次卡但是还可以继续领取，或者没有此卡");
-            if (!CardUtil.isNeedToBuy(mCard.getIsPay())) {
-                userCard.setPayFee(null);
-            }
-            if (!CardUtil.isCardTimeForever(userCard.getExpireType())) {
-                if (CardUtil.isCardFixTime(userCard.getExpireType()) && CardUtil.isCardExpired(userCard.getEndTime())) {
-                    logger().info("卡过期");
-                    userCard.setStatus(-1);
-                } else {
-                    userCard.setStatus(1);
-                }
+            return judgeByNoCard(param, lang, userCard, mCard);
+        }else{
 
-                if (CardUtil.isCardFixTime(userCard.getExpireType())) {
-                    userCard.setStartDate(userCard.getStartTime().toLocalDateTime().toLocalDate());
-                    userCard.setEndDate(userCard.getEndTime().toLocalDateTime().toLocalDate());
-                }
+            return judgeByGotCard(param, lang, userCard, mCard);
+        }
+    }
+
+    private UserCardJudgeVo judgeByNoCard(UserIdAndCardIdParam param, String lang, UserCardVo userCard, MemberCardRecord mCard) {
+        // 返回新卡也就是memberCard的配置详情信息
+        logger().info("用户有此限次卡但是还可以继续领取，或者没有此卡");
+        if (!CardUtil.isNeedToBuy(mCard.getIsPay())) {
+            userCard.setPayFee(null);
+        }
+        if (!CardUtil.isCardTimeForever(userCard.getExpireType())) {
+            if (CardUtil.isCardFixTime(userCard.getExpireType()) && CardUtil.isCardExpired(userCard.getEndTime())) {
+                logger().info("卡过期");
+                userCard.setStatus(-1);
             } else {
                 userCard.setStatus(1);
             }
 
-            userCard.setShopAvatar(getCardAvatar());
-            userCard.setScoreAmount(scoreService.getAccumulationScore(param.getUserId()));
-            userCard.setPaidAmount(orderInfoService.getAllConsumpAmount(param.getUserId()));
-            userCard.setBindMobile(shopCommonConfigService.getBindMobile());
-
-            //兑换商品
-            WxAppUserCardVo vo = new WxAppUserCardVo();
-            vo.setCardType(userCard.getCardType());
-            vo.setIsExchang(userCard.getIsExchang());
-            vo.setExchangGoods(userCard.getExchangGoods());
-            userCard.setGoodsList(getExchangGoodsDetail(vo));
-            // 处理限次兑换次数
-            String cardNo = userCard.getCardNo();
-            boolean toGetCard = StringUtils.isBlank(cardNo);
-            // 没有领取卡取卡的配置，已经领卡取用户卡的快照信息
-            if(CardUtil.isLimitCard(userCard.getCardType()) && toGetCard ) {
-                // 门店兑换次数
-                if(CardUtil.canUseInStore(userCard.getStoreUseSwitch())) {
-                    if(userCard.getSurplus()==null) {
-                        userCard.setSurplus(userCard.getCount());
-                    }
-                }
-                // 商品兑换次数
-                if(CardUtil.canExchangGoods(userCard.getIsExchang())) {
-                    userCard.setExchangSurplus(userCard.getExchangCount());
-                }
-
+            if (CardUtil.isCardFixTime(userCard.getExpireType())) {
+                userCard.setStartDate(userCard.getStartTime().toLocalDateTime().toLocalDate());
+                userCard.setEndDate(userCard.getEndTime().toLocalDateTime().toLocalDate());
             }
-
-            if(!StringUtil.isBlank(userCard.getStoreList()) && CardUtil.canUseInStore(userCard.getStoreUseSwitch())) {
-                dealWithCardStore(userCard);
-            }
-
-            // 包邮信息
-            dealWithJudgeFreeship(lang, userCard);
-            // 自定义权益信息
-            CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
-            userCard.setCardCustomRights(customRights);
-
-
-            logger().info("开卡送券");
-            wxCardDetailSvc.dealSendCouponInfo(userCard,lang);
-            UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
-            userCardJudgeVo.setStatus(1);
-
-            // 卡的显示金额
-            if(StringUtils.isBlank(userCard.getCardNo())) {
-                if(userCard.getSendMoney() != null) {
-                    userCard.setMoney(BigDecimal.valueOf(userCard.getSendMoney()));
-                }
-            }
-
-            // 有效时间
-            setEffectTimeForJudgeCard(userCard);
-            userCard.setUserId(param.getUserId());
-            userCard.setCardId(param.getCardId());
-            userCardJudgeVo.setCardInfo(userCard);
-            return userCardJudgeVo;
-        }else{
-            UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
-            uCard.setIsGet(isGet);
-
-            // 计算用户卡的有效时间
-            EffectTimeParam tp = new EffectTimeParam();
-            tp.setStartTime(uCard.getStartTime());
-            tp.setEndTime(uCard.getEndTime());
-            tp.setExpireTime(uCard.getExpireTime());
-            tp.setExpireType(uCard.getExpireType());
-            tp.setCreateTime(uCard.getUCreateTime());
-
-            EffectTimeBean tB = CardUtil.getUserCardEffectTime(tp);
-            if(CardUtil.isCardExpired(tB.getEndTime())) {
-                logger().info("卡过期");
-                uCard.setStatus(-1);
-            }else {
-                uCard.setStatus(1);
-            }
-            uCard.setStartDate(tB.getStartDate());
-            uCard.setEndDate(tB.getEndDate());
-            uCard.setExpireType(tB.getExpireType());
-
-            uCard.setScoreAmount(scoreService.getAccumulationScore(param.getUserId()));
-            uCard.setPaidAmount(orderInfoService.getAllConsumpAmount(param.getUserId()));
-            if(CardUtil.isGradeCard(uCard.getCardType())) {
-                // 升级进度条内容
-                NextGradeCardVo nextGradeCard = getNextGradeCard(uCard.getGrade());
-                uCard.setNext(nextGradeCard);
-            }
-            if(!CardUtil.isGradeCard(uCard.getCardType()) && !StringUtil.isBlank(uCard.getStoreList()) && CardUtil.canUseInStore(uCard.getStoreUseSwitch())) {
-                dealWithCardStore(uCard);
-            }
-            // 会员卡头像
-
-            uCard.setShopAvatar(getCardAvatar());
-            // 背景图片
-            logger().info("虚拟卡订单下单时间");
-            VirtualOrderRecord order = virtualOrderService.getInfoByNo(uCard.getCardNo());
-            if(order != null) {
-                Timestamp buyTime = order.getCreateTime();
-                uCard.setBuyTime(buyTime);
-            }
-
-            logger().info("卡的校验状态");
-            CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(uCard.getCardNo());
-            if(cardExamine != null) {
-                uCard.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(uCard.getCardNo()));
-                WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
-                cardExamineVo.setPassTime(cardExamine.getPassTime());
-                cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
-                cardExamineVo.setRefuseDesc(cardExamine.getRefuseDesc());
-                cardExamineVo.setStatus(cardExamine.getStatus());
-                uCard.setIsExamine(cardExamineVo);
-            }
-            if(CardUtil.isLimitCard(uCard.getCardType()) && CardUtil.canExchangGoods(uCard.getIsExchang())) {
-                logger().info("处理限次卡兑换的商品");
-                if(!StringUtils.isBlank(uCard.getExchangGoods())) {
-                    List<Integer> goodsIdList = Util.splitValueToList(uCard.getExchangGoods());
-                    List<GoodsSmallVo> goodsList = goodsService.getGoodsList(goodsIdList, false);
-                    uCard.setGoodsList(goodsList);
-                }
-                if(userCard.getGoodsList()!=null) {
-                    logger().info("价格处理为两位小数");
-                    for(GoodsSmallVo goodsVo: userCard.getGoodsList()) {
-                        BigDecimal shopPrice = goodsVo.getShopPrice();
-                        goodsVo.setShopPrice(shopPrice.setScale(2, BigDecimal.ROUND_HALF_EVEN));
-                    }
-                }
-            }
-            // 包邮信息
-            dealWithJudgeFreeship(lang, uCard);
-            // 自定义权益信息
-
-            CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
-            uCard.setCardCustomRights(customRights);
-
-            wxCardDetailSvc.dealSendCouponInfo(uCard,lang);
-            UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
-            userCardJudgeVo.setStatus(1);
-            setEffectTimeForJudgeCard(uCard);
-            uCard.setUserId(param.getUserId());
-            uCard.setCardId(param.getCardId());
-            uCard.setStoreUseSwitch(CardUtil.getUseStoreType(uCard.getStoreUseSwitch(),uCard.getStoreList()));
-            userCardJudgeVo.setCardInfo(uCard);
-
-            return userCardJudgeVo;
+        } else {
+            userCard.setStatus(1);
         }
+
+        userCard.setShopAvatar(getCardAvatar());
+        userCard.setScoreAmount(scoreService.getAccumulationScore(param.getUserId()));
+        userCard.setPaidAmount(orderInfoService.getAllConsumpAmount(param.getUserId()));
+        userCard.setBindMobile(shopCommonConfigService.getBindMobile());
+
+        //兑换商品
+        WxAppUserCardVo vo = new WxAppUserCardVo();
+        vo.setCardType(userCard.getCardType());
+        vo.setIsExchang(userCard.getIsExchang());
+        vo.setExchangGoods(userCard.getExchangGoods());
+        userCard.setGoodsList(getExchangGoodsDetail(vo));
+        // 处理限次兑换次数
+        String cardNo = userCard.getCardNo();
+        boolean toGetCard = StringUtils.isBlank(cardNo);
+        // 没有领取卡取卡的配置，已经领卡取用户卡的快照信息
+        if(CardUtil.isLimitCard(userCard.getCardType()) && toGetCard ) {
+            // 门店兑换次数
+            if(CardUtil.canUseInStore(userCard.getStoreUseSwitch())) {
+                if(userCard.getSurplus()==null) {
+                    userCard.setSurplus(userCard.getCount());
+                }
+            }
+            // 商品兑换次数
+            if(CardUtil.canExchangGoods(userCard.getIsExchang())) {
+                userCard.setExchangSurplus(userCard.getExchangCount());
+            }
+
+        }
+
+        if(!StringUtil.isBlank(userCard.getStoreList()) && CardUtil.canUseInStore(userCard.getStoreUseSwitch())) {
+            dealWithCardStore(userCard);
+        }
+
+        // 包邮信息
+        dealWithJudgeFreeship(lang, userCard);
+        // 自定义权益信息
+        CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
+        userCard.setCardCustomRights(customRights);
+
+
+        logger().info("开卡送券");
+        wxCardDetailSvc.dealSendCouponInfo(userCard,lang);
+        UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
+        userCardJudgeVo.setStatus(1);
+
+        // 卡的显示金额
+        if(StringUtils.isBlank(userCard.getCardNo())) {
+            if(userCard.getSendMoney() != null) {
+                userCard.setMoney(BigDecimal.valueOf(userCard.getSendMoney()));
+            }
+        }
+
+        // 有效时间
+        setEffectTimeForJudgeCard(userCard);
+        userCard.setUserId(param.getUserId());
+        userCard.setCardId(param.getCardId());
+        userCardJudgeVo.setCardInfo(userCard);
+        return userCardJudgeVo;
+    }
+
+    private UserCardJudgeVo judgeByGotCard(UserIdAndCardIdParam param, String lang, UserCardVo userCard, MemberCardRecord mCard) {
+        UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
+        uCard.setIsGet(true);
+
+        // 计算用户卡的有效时间
+        EffectTimeParam tp = new EffectTimeParam();
+        tp.setStartTime(uCard.getStartTime());
+        tp.setEndTime(uCard.getEndTime());
+        tp.setExpireTime(uCard.getExpireTime());
+        tp.setExpireType(uCard.getExpireType());
+        tp.setCreateTime(uCard.getUCreateTime());
+
+        EffectTimeBean tB = CardUtil.getUserCardEffectTime(tp);
+        if(CardUtil.isCardExpired(tB.getEndTime())) {
+            logger().info("卡过期");
+            uCard.setStatus(-1);
+        }else {
+            uCard.setStatus(1);
+        }
+        uCard.setStartDate(tB.getStartDate());
+        uCard.setEndDate(tB.getEndDate());
+        uCard.setExpireType(tB.getExpireType());
+        uCard.setScoreAmount(scoreService.getAccumulationScore(param.getUserId()));
+        uCard.setPaidAmount(orderInfoService.getAllConsumpAmount(param.getUserId()));
+        if(CardUtil.isGradeCard(uCard.getCardType())) {
+            // 升级进度条内容
+            NextGradeCardVo nextGradeCard = getNextGradeCard(uCard.getGrade());
+            uCard.setNext(nextGradeCard);
+        }
+        if(!CardUtil.isGradeCard(uCard.getCardType()) && !StringUtil.isBlank(uCard.getStoreList()) && CardUtil.canUseInStore(uCard.getStoreUseSwitch())) {
+            dealWithCardStore(uCard);
+        }
+        // 会员卡头像
+        uCard.setShopAvatar(getCardAvatar());
+        // 背景图片
+        logger().info("虚拟卡订单下单时间");
+        VirtualOrderRecord order = virtualOrderService.getInfoByNo(uCard.getCardNo());
+        if(order != null) {
+            Timestamp buyTime = order.getCreateTime();
+            uCard.setBuyTime(buyTime);
+        }
+
+        logger().info("卡的校验状态");
+        CardExamineRecord cardExamine = cardVerifyService.getStatusByNo(uCard.getCardNo());
+        if(cardExamine != null) {
+            uCard.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(uCard.getCardNo()));
+            WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
+            cardExamineVo.setPassTime(cardExamine.getPassTime());
+            cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
+            cardExamineVo.setRefuseDesc(cardExamine.getRefuseDesc());
+            cardExamineVo.setStatus(cardExamine.getStatus());
+            uCard.setIsExamine(cardExamineVo);
+        }
+        if(CardUtil.isLimitCard(uCard.getCardType()) && CardUtil.canExchangGoods(uCard.getIsExchang())) {
+            logger().info("处理限次卡兑换的商品");
+            if(!StringUtils.isBlank(uCard.getExchangGoods())) {
+                List<Integer> goodsIdList = Util.splitValueToList(uCard.getExchangGoods());
+                List<GoodsSmallVo> goodsList = goodsService.getGoodsList(goodsIdList, false);
+                uCard.setGoodsList(goodsList);
+            }
+            if(userCard.getGoodsList()!=null) {
+                logger().info("价格处理为两位小数");
+                for(GoodsSmallVo goodsVo: userCard.getGoodsList()) {
+                    BigDecimal shopPrice = goodsVo.getShopPrice();
+                    goodsVo.setShopPrice(shopPrice.setScale(2, BigDecimal.ROUND_HALF_EVEN));
+                }
+            }
+        }
+        // 包邮信息
+        dealWithJudgeFreeship(lang, uCard);
+        // 自定义权益信息
+        CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
+        uCard.setCardCustomRights(customRights);
+
+        wxCardDetailSvc.dealSendCouponInfo(uCard,lang);
+        UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
+        userCardJudgeVo.setStatus(1);
+        setEffectTimeForJudgeCard(uCard);
+        uCard.setUserId(param.getUserId());
+        uCard.setCardId(param.getCardId());
+        uCard.setStoreUseSwitch(CardUtil.getUseStoreType(uCard.getStoreUseSwitch(),uCard.getStoreList()));
+        userCardJudgeVo.setCardInfo(uCard);
+        return userCardJudgeVo;
     }
 
 
@@ -2049,60 +2055,7 @@ public class UserCardService extends ShopBaseService {
         WebPayVo webPayVo = new WebPayVo();
         //现金
         if (order.getRenewType()==(byte)0){
-            //使用账户余额数量大于0
-            if (order.getUseAccount().compareTo(BigDecimal.ZERO)>0){
-                logger().info("开始扣减余额");
-                AccountParam accountParam = new AccountParam();
-                accountParam.setUserId(userId);
-                accountParam.setAccount(userInfo.getAccount());
-                accountParam.setOrderSn(order.getRenewOrderSn());
-                accountParam.setAmount(new BigDecimal("-"+order.getUseAccount().toString()));
-                accountParam.setPayment("balance");
-                accountParam.setIsPaid((byte)1);
-                accountParam.setRemarkId(RemarkTemplate.CARD_RENEW.code);
-                accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
-                //扣减余额
-                accountService.updateUserAccount(accountParam,
-                    TradeOptParam.builder().tradeType(TYPE_CRASH_ACCOUNT_PAY.val()).tradeFlow(TRADE_FLOW_IN.val()).build());
-            }
-            if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
-                logger().info("开始增加会员卡消费记录");
-                //增加会员卡消费记录
-                UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
-                UserCardConsumeBean userCardConsume = UserCardConsumeBean.builder()
-                    .userId(userId)
-                    .moneyDis(cardInfo.getMoney())
-                    .money(new BigDecimal("-"+order.getMemberCardRedunce().toString()))
-                    .cardNo(param.getMemberCardNo())
-                    .cardId(cardInfo.getCardId())
-                    .reasonId("3008")
-                    .reason(order.getRenewOrderSn())
-                    .type(NumberUtils.BYTE_ZERO)
-                    .payment("")
-                    .build();
-                cardConsumer(userCardConsume);
-            }
-            //支付
-            if (order.getMoneyPaid().compareTo(BigDecimal.ZERO)>0){
-                //微信支付接口
-                try {
-                    logger().info("会员卡续费微信支付-开始");
-                    UserRecord user = memberService.getUserRecordById(param.getUserId());
-                    MemberCardRecord cardInfo = userCardDao.getMemberCardById(param.getCardId());
-                    webPayVo = mpPaymentService.wxUnitOrder(param.getClientIp(), cardInfo.getCardName(), order.getRenewOrderSn(), param.getMoneyPaid(), user.getWxOpenid());
-                } catch (WxPayException e) {
-                    logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", order.getRenewOrderSn(), e);
-                    throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-                }catch (Exception e) {
-                    logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", order.getRenewOrderSn(), e.getMessage());
-                    throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-                }
-                logger().debug("会员卡续费-微信支付接口调用结果：{}", webPayVo);
-                // 更新记录微信预支付id：prepayid
-                cardOrderService.updatePrepayId(order.getRenewOrderSn(),webPayVo.getResult().getPrepayId());
-            }
-            //更新订单信息
-            updateOrderInfo(order.getRenewOrderSn());
+            webPayVo = processCashPay(param, userId, userInfo, order, webPayVo);
             //修改会员卡过期时间
             expireTime = updateExpireTime(memberCard,order.getId());
             memberCard = userCardDao.getUserCardInfo(cardNo);
@@ -2132,6 +2085,64 @@ public class UserCardService extends ShopBaseService {
         vo.setMoney(money);
         vo.setWebPayVo(webPayVo);
         return vo;
+    }
+
+    private WebPayVo processCashPay(CardRenewCheckoutParam param, Integer userId, UserRecord userInfo, CardRenewRecord order, WebPayVo webPayVo) throws MpException {
+        //使用账户余额数量大于0
+        if (order.getUseAccount().compareTo(BigDecimal.ZERO)>0){
+            logger().info("开始扣减余额");
+            AccountParam accountParam = new AccountParam();
+            accountParam.setUserId(userId);
+            accountParam.setAccount(userInfo.getAccount());
+            accountParam.setOrderSn(order.getRenewOrderSn());
+            accountParam.setAmount(new BigDecimal("-"+order.getUseAccount().toString()));
+            accountParam.setPayment("balance");
+            accountParam.setIsPaid((byte)1);
+            accountParam.setRemarkId(RemarkTemplate.CARD_RENEW.code);
+            accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
+            //扣减余额
+            accountService.updateUserAccount(accountParam,
+                TradeOptParam.builder().tradeType(TYPE_CRASH_ACCOUNT_PAY.val()).tradeFlow(TRADE_FLOW_IN.val()).build());
+        }
+        if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
+            logger().info("开始增加会员卡消费记录");
+            //增加会员卡消费记录
+            UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
+            UserCardConsumeBean userCardConsume = UserCardConsumeBean.builder()
+                .userId(userId)
+                .moneyDis(cardInfo.getMoney())
+                .money(new BigDecimal("-"+order.getMemberCardRedunce().toString()))
+                .cardNo(param.getMemberCardNo())
+                .cardId(cardInfo.getCardId())
+                .reasonId("3008")
+                .reason(order.getRenewOrderSn())
+                .type(NumberUtils.BYTE_ZERO)
+                .payment("")
+                .build();
+            cardConsumer(userCardConsume);
+        }
+        //支付
+        if (order.getMoneyPaid().compareTo(BigDecimal.ZERO)>0){
+            //微信支付接口
+            try {
+                logger().info("会员卡续费微信支付-开始");
+                UserRecord user = memberService.getUserRecordById(param.getUserId());
+                MemberCardRecord cardInfo = userCardDao.getMemberCardById(param.getCardId());
+                webPayVo = mpPaymentService.wxUnitOrder(param.getClientIp(), cardInfo.getCardName(), order.getRenewOrderSn(), param.getMoneyPaid(), user.getWxOpenid());
+            } catch (WxPayException e) {
+                logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", order.getRenewOrderSn(), e);
+                throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+            }catch (Exception e) {
+                logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", order.getRenewOrderSn(), e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+            }
+            logger().debug("会员卡续费-微信支付接口调用结果：{}", webPayVo);
+            // 更新记录微信预支付id：prepayid
+            cardOrderService.updatePrepayId(order.getRenewOrderSn(),webPayVo.getResult().getPrepayId());
+        }
+        //更新订单信息
+        updateOrderInfo(order.getRenewOrderSn());
+        return webPayVo;
     }
 
     /**

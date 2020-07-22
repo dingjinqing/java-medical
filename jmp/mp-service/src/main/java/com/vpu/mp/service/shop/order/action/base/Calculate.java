@@ -180,8 +180,9 @@ public class Calculate extends ShopBaseService {
             //会员卡 或 优惠卷-> one
             if (OrderConstant.D_T_MEMBER_CARD.equals(discountType) || OrderConstant.D_T_COUPON.equals(discountType)) {
                 //加价购 或 满折满减 与 one 不共存
-                if ((bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) ||
-                    (bo.getStraId() != null && bo.getStraId() > 0)) {
+                boolean isPlusPriceBuyOrDiscountReduce = (bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) ||
+                    (bo.getStraId() != null && bo.getStraId() > 0);
+                if (isPlusPriceBuyOrDiscountReduce) {
                     continue;
                 }
 
@@ -891,6 +892,11 @@ public class Calculate extends ShopBaseService {
         UserRecord userInfo = user.getUserByUserId(param.getWxUserInfo().getUserId());
         //是否首单
         boolean isFs = orderInfoService.isNewUser(userInfo.getUserId());
+
+        rebateAll(param, order, cfg, avgScoreDiscount, goingStrategy, userInfo, isFs);
+    }
+
+    private void rebateAll(OrderBeforeParam param, OrderInfoRecord order, DistributionParam cfg, BigDecimal avgScoreDiscount, List<DistributionStrategyParam> goingStrategy, UserRecord userInfo, boolean isFs) {
         //是否进行返利标识
         boolean flag = false;
         //总返利

@@ -225,6 +225,26 @@ public class LotteryRecordService extends ShopBaseService {
         }
         joinValid.setPrizeImage(imageService.getImgFullUrl(lotteryPrizeRecord != null ? lotteryPrizeRecord.getIconImgsImage() : null));
         joinValid.setPrizeText(lotteryPrizeRecord!=null?lotteryPrizeRecord.getIconImgs():"");
+
+        // 处理抽奖
+        processLottery(userId, joinValid, lotteryPrizeRecord, lotteryRecord, recordRecord);
+
+        if (recordRecord.getId() == null) {
+            recordRecord.insert();
+        }
+    }
+
+    /**
+     * 处理抽奖
+     *
+     * @param userId
+     * @param joinValid
+     * @param lotteryPrizeRecord
+     * @param lotteryRecord
+     * @param recordRecord
+     * @throws MpException
+     */
+    private void processLottery(Integer userId, JoinLottery joinValid, LotteryPrizeRecord lotteryPrizeRecord, LotteryRecord lotteryRecord, LotteryRecordRecord recordRecord) throws MpException {
         logger().info("抽奖结果:");
         //选择奖类型
         switch (joinValid.getResultsType()) {
@@ -303,9 +323,6 @@ public class LotteryRecordService extends ShopBaseService {
                 recordRecord.setLotteryAward(lotteryPrizeRecord.getLotteryDetail());
                 break;
             default:
-        }
-        if (recordRecord.getId() == null) {
-            recordRecord.insert();
         }
     }
 

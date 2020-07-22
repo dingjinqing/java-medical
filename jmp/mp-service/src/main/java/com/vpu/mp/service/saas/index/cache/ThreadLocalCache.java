@@ -19,6 +19,10 @@ public class ThreadLocalCache {
         timestampThreadLocal.set(localDate);
     }
 
+    public static void removeTimestampThreadLocal() {
+        timestampThreadLocal.remove();
+    }
+
     public static Timestamp getSevenDayTimestamp() {
         return sevenDayTimestamp.get();
     }
@@ -27,5 +31,7 @@ public class ThreadLocalCache {
         sevenDayTimestamp.set(timestamp);
     }
 
-
+    public static void removeSevenDayTimestamp(Timestamp timestamp) {
+        sevenDayTimestamp.remove();
+    }
 }

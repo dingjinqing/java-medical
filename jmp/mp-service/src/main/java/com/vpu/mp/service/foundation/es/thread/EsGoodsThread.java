@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+/**
+ * @author luguangyao
+ */
 @Component
 @Slf4j
 public class EsGoodsThread  implements Callable<Boolean> {

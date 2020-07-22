@@ -896,7 +896,8 @@ public class MemberService extends ShopBaseService {
     private static Timestamp getMaxTimestamp(Timestamp... timestamps) {
         Timestamp r = null;
         for (Timestamp t : timestamps) {
-            if (t != null && (r == null || t.after(r))) {
+            boolean isMaxT = t != null && (r == null || t.after(r));
+            if (isMaxT) {
                 r = t;
             }
         }

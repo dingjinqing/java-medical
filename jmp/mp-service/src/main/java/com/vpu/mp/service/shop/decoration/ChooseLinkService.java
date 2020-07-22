@@ -59,7 +59,10 @@ public class ChooseLinkService extends ShopBaseService {
 	@Autowired
 	public AdminDecorationService adminDecoration;
 
-//	常用链接
+    /**
+     * 常用链接
+     * @return
+     */
 	public Boolean commonLink() {
 		return false;
 	}

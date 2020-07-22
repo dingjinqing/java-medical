@@ -64,7 +64,10 @@ public class CouponGiveService extends ShopBaseService {
      * 活动类型 定向发券 值为9
      */
     private static final Byte GET_SOURCE = 9;
-    //省市区编码
+
+    /* 省市区编码 */
+
+
     public static final String PROVINCE_CODE = "province_code";
     public static final String CITY_CODE = "city_code";
     public static final String DISTRICT_CODE = "district_code";
@@ -658,42 +661,8 @@ public class CouponGiveService extends ShopBaseService {
 
                     this.transaction(()-> {
                         // 库存足够，发券
-                        CustomerAvailCouponsRecord customerAvailCouponsRecord = db().newRecord(CUSTOMER_AVAIL_COUPONS);
-                        customerAvailCouponsRecord.setType(finalType);
-                        customerAvailCouponsRecord.setActId(Integer.valueOf(couponId));
-                        customerAvailCouponsRecord.setUserId(userId);
-                        customerAvailCouponsRecord.setActDesc(couponDetails.getActName());
-                        customerAvailCouponsRecord.setAmount(couponDetails.getDenomination());
-                        customerAvailCouponsRecord.setCouponSn(getCouponSn());
-                        customerAvailCouponsRecord.setAccessId(param.getActId());
-                        customerAvailCouponsRecord.setStartTime(timeMap.get("startTime"));
-                        customerAvailCouponsRecord.setEndTime(timeMap.get("endTime"));
-                        customerAvailCouponsRecord.setAccessMode(param.getAccessMode());
-                        customerAvailCouponsRecord.setGetSource(param.getGetSource());
-                        customerAvailCouponsRecord.setAccessOrderSn(StringUtil.isNotBlank(param.getAccessOrderSn()) ? param.getAccessOrderSn() : "");
-                        customerAvailCouponsRecord.setLimitOrderAmount(couponDetails.getLeastConsume());
-                        //判断如果是分裂优惠券默认不能使用
-                        if(couponDetails.getType().equals((byte)1)&&param.getSplitType().equals((byte)0)){
-                            log.info("发放的分裂优惠券不可用");
-                            customerAvailCouponsRecord.setDivisionEnabled((byte)1);
-                        }else {
-                            customerAvailCouponsRecord.setDivisionEnabled((byte)0);
-                        }
-                        if (couponDetails.getType().equals((byte)1)&& "random".equals(couponDetails.getActCode())){
-                            log.info("面额随机优惠券");
-                            //Math.random()*(n-m)+m
-                            BigDecimal randomAmount = couponDetails.getRandomMax().subtract(couponDetails.getRandomMin()).multiply(BigDecimal.valueOf(Math.random())).add(couponDetails.getRandomMin());
-                            customerAvailCouponsRecord.setAmount(randomAmount);
-                            log.info("随机生成优惠券金额在{}~{}直接:{}",couponDetails.getRandomMin(),couponDetails.getRandomMax(),randomAmount);
-                        }
-                        //发券操作
-                        sendRecord.add(customerAvailCouponsRecord);
-                        customerAvailCouponsRecord.insert();
-                        couponGiveBo.getCouponSn().add(customerAvailCouponsRecord.getCouponSn());
-                        if (couponDetails.getType().equals((byte)1)&& param.getSplitType().equals((byte)0)){
-                            log.info("分裂优惠券增领取记录");
-                            saveSplitRecord(param, couponId, userId, customerAvailCouponsRecord);
-                        }
+                        sendCoupon(param, couponGiveBo, sendRecord, couponId, couponDetails, timeMap, userId, finalType);
+
                     });
                 }catch (BusinessException e){
                         break;
@@ -717,6 +686,45 @@ public class CouponGiveService extends ShopBaseService {
         //发送公众号消息
         sendCouponMessage(couponGiveBo.getSendCoupons());
         return couponGiveBo;
+    }
+
+    private void sendCoupon(CouponGiveQueueParam param, CouponGiveQueueBo couponGiveBo, List<CustomerAvailCouponsRecord> sendRecord, String couponId, CouponDetailsVo couponDetails, Map<String, Timestamp> timeMap, Integer userId, byte finalType) {
+        CustomerAvailCouponsRecord customerAvailCouponsRecord = db().newRecord(CUSTOMER_AVAIL_COUPONS);
+        customerAvailCouponsRecord.setType(finalType);
+        customerAvailCouponsRecord.setActId(Integer.valueOf(couponId));
+        customerAvailCouponsRecord.setUserId(userId);
+        customerAvailCouponsRecord.setActDesc(couponDetails.getActName());
+        customerAvailCouponsRecord.setAmount(couponDetails.getDenomination());
+        customerAvailCouponsRecord.setCouponSn(getCouponSn());
+        customerAvailCouponsRecord.setAccessId(param.getActId());
+        customerAvailCouponsRecord.setStartTime(timeMap.get("startTime"));
+        customerAvailCouponsRecord.setEndTime(timeMap.get("endTime"));
+        customerAvailCouponsRecord.setAccessMode(param.getAccessMode());
+        customerAvailCouponsRecord.setGetSource(param.getGetSource());
+        customerAvailCouponsRecord.setAccessOrderSn(StringUtil.isNotBlank(param.getAccessOrderSn()) ? param.getAccessOrderSn() : "");
+        customerAvailCouponsRecord.setLimitOrderAmount(couponDetails.getLeastConsume());
+        //判断如果是分裂优惠券默认不能使用
+        if(couponDetails.getType().equals((byte)1)&&param.getSplitType().equals((byte)0)){
+            log.info("发放的分裂优惠券不可用");
+            customerAvailCouponsRecord.setDivisionEnabled((byte)1);
+        }else {
+            customerAvailCouponsRecord.setDivisionEnabled((byte)0);
+        }
+        if (couponDetails.getType().equals((byte)1)&& "random".equals(couponDetails.getActCode())){
+            log.info("面额随机优惠券");
+            //Math.random()*(n-m)+m
+            BigDecimal randomAmount = couponDetails.getRandomMax().subtract(couponDetails.getRandomMin()).multiply(BigDecimal.valueOf(Math.random())).add(couponDetails.getRandomMin());
+            customerAvailCouponsRecord.setAmount(randomAmount);
+            log.info("随机生成优惠券金额在{}~{}直接:{}",couponDetails.getRandomMin(),couponDetails.getRandomMax(),randomAmount);
+        }
+        //发券操作
+        sendRecord.add(customerAvailCouponsRecord);
+        customerAvailCouponsRecord.insert();
+        couponGiveBo.getCouponSn().add(customerAvailCouponsRecord.getCouponSn());
+        if (couponDetails.getType().equals((byte)1)&& param.getSplitType().equals((byte)0)){
+            log.info("分裂优惠券增领取记录");
+            saveSplitRecord(param, couponId, userId, customerAvailCouponsRecord);
+        }
     }
 
     /**

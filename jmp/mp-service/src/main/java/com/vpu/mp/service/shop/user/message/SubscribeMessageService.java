@@ -66,7 +66,10 @@ public class SubscribeMessageService extends ShopBaseService {
 	@Autowired
 	protected JedisManager jedis;
 
-	// 获取小程序的AppId
+    /**
+     * 获取小程序的AppId
+     * @return
+     */
 	private String getMaAppId() {
 		MpAuthShopRecord authShop = saas.shop.mp.getAuthShopByShopId(getShopId());
 		if (null == authShop) {
@@ -532,7 +535,7 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	/**
 	 * 对数据的格式进行校验并修改
-	 * @param templateList
+	 * @param templateLists
 	 * @param templateId
 	 * @param postData
 	 */
@@ -651,75 +654,95 @@ public class SubscribeMessageService extends ShopBaseService {
 			}
 			break;
 		case RuleKey.AMOUNT:
-			int yuan = value.indexOf("元");
-			if(yuan>0) {
-				value = subLimit(name,value,yuan);
-				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
-					value = toReturnAnLog(name, value,targValue);
-				}
-			}else {
-				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
-					value = toReturnAnLog(name, value,targValue);
-				}
-			}
-			break;
+            value = checkAmount(name, value, targValue);
+            break;
 		case RuleKey.PHONE_NUMBER:
-			value = subLimit(name,value,17);
-			if (Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
-				//包含中文
-				value = toReturnAnLog(name, value,targValue);
-			}
-			if (Pattern.matches(RuleKey.HAVEENGILSH_PATTERN, value)) {
-				//包含英文
-				value = toReturnAnLog(name, value,targValue);
-			}
-			break;
+            value = checkPhoneNumber(name, value, targValue);
+            break;
 		case RuleKey.CAR_NUMBER:
 			if (!Pattern.matches(RuleKey.CAR_NUMBER_PATTERN, value)) {
 				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.NAME:
-			if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
-				//有数字
-				value="店铺活动";
-				if("活动名称".equals(content)) {
-					value = toReturnAnLog(name, value,"店铺活动");
-				}
-				if("奖品名称".equals(content)) {
-					value = toReturnAnLog(name, value,"店铺奖品");
-				}
-				logger().info("最后：{}",value);
-				break;
-			}
-			if (!Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
-				//不包含中文
-				value = subLimit(name,value,20);
-			}else {
-				value = subLimit(name,value,10);
-			}
-			break;
+            value = checkName(name, value, content);
+            break;
 		case RuleKey.PHRASE:
-			if (!Pattern.matches(RuleKey.PHRASE_PATTERN, value)) {
-				//包含非中文
-				logger().info("类型：{}，校验不通过，原来值：{}",name,value);
-				StringBuilder builder=new StringBuilder();
-				for (int i = 0; i < value.length(); i++) {
-					if(isChineseChar(value.charAt(i))) {
-						builder.append(value.charAt(i));
-					}
-				}
-				value=builder.toString();
-				logger().info("类型：{}，校验不通过，新值：{}",name,value);
-			}
-			break;
+            value = checkPhrase(name, value);
+            break;
 		default:
 			break;
 		}
 		return value;
 	}
 
-	/**
+    private String checkAmount(String name, String value, String targValue) {
+        int yuan = value.indexOf("元");
+        if(yuan>0) {
+            value = subLimit(name,value,yuan);
+            if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
+                value = toReturnAnLog(name, value,targValue);
+            }
+        }else {
+            if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
+                value = toReturnAnLog(name, value,targValue);
+            }
+        }
+        return value;
+    }
+
+    private String checkPhoneNumber(String name, String value, String targValue) {
+        value = subLimit(name,value,17);
+        if (Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
+            //包含中文
+            value = toReturnAnLog(name, value,targValue);
+        }
+        if (Pattern.matches(RuleKey.HAVEENGILSH_PATTERN, value)) {
+            //包含英文
+            value = toReturnAnLog(name, value,targValue);
+        }
+        return value;
+    }
+
+    private String checkPhrase(String name, String value) {
+        if (!Pattern.matches(RuleKey.PHRASE_PATTERN, value)) {
+            //包含非中文
+            logger().info("类型：{}，校验不通过，原来值：{}",name,value);
+            StringBuilder builder=new StringBuilder();
+            for (int i = 0; i < value.length(); i++) {
+                if(isChineseChar(value.charAt(i))) {
+                    builder.append(value.charAt(i));
+                }
+            }
+            value=builder.toString();
+            logger().info("类型：{}，校验不通过，新值：{}",name,value);
+        }
+        return value;
+    }
+
+    private String checkName(String name, String value, String content) {
+        if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
+            //有数字
+            value="店铺活动";
+            if("活动名称".equals(content)) {
+                value = toReturnAnLog(name, value,"店铺活动");
+            }
+            if("奖品名称".equals(content)) {
+                value = toReturnAnLog(name, value,"店铺奖品");
+            }
+            logger().info("最后：{}",value);
+            return value;
+        }
+        if (!Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
+            //不包含中文
+            value = subLimit(name,value,20);
+        }else {
+            value = subLimit(name,value,10);
+        }
+        return value;
+    }
+
+    /**
 	 * 类型校验不通过的log
 	 * @param name       thing之类
 	 * @param value      原来的值

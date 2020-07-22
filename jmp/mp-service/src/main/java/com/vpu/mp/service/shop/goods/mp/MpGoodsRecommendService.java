@@ -36,7 +36,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  * @date 2019.12.23
  */
 @Service
-public class MPGoodsRecommendService extends ShopBaseService {
+public class MpGoodsRecommendService extends ShopBaseService {
     @Autowired
     ConfigService configService;
     @Autowired
@@ -364,6 +364,32 @@ public class MPGoodsRecommendService extends ShopBaseService {
         //推荐的商品id、商家分类id、品牌id、平台分类id
         Map<String, RecSource> recSource = getSmartRecommendSource(userId);
         //全部商品id集合
+        List<Integer> totalGoodsIds = getRecommendTotalGoodsIds(recommendNumber, recSource);
+        //来源遍历结束
+        int remainderNumber = recommendNumber - totalGoodsIds.size();
+        if (remainderNumber > 0) {
+            List<Integer> goodsList = getPageList(recommendNumber);
+            for (Integer item : goodsList) {
+                if (!totalGoodsIds.contains(item)) {
+                    totalGoodsIds.add(item);
+                    remainderNumber -= 1;
+                    if (remainderNumber <= 0) {
+                        break;
+                    }
+                }
+            }
+        }
+        logger().info("智能筛选后的商品id为：{}",totalGoodsIds);
+        return totalGoodsIds;
+    }
+
+    /**
+     * 得到推荐的全部商品id集合
+     * @param recommendNumber
+     * @param recSource
+     * @return
+     */
+    private List<Integer> getRecommendTotalGoodsIds(int recommendNumber, Map<String, RecSource> recSource) {
         List<Integer> totalGoodsIds = new ArrayList<>();
         if (recSource.size() > 0) {
             int average = (int) Math.floor(recommendNumber / recSource.size());
@@ -392,17 +418,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
                         List<Integer> sortGoods = getGoodsBySorts(source.getValue().getSortId());
                         sortGoodsId.addAll(sortGoods);
                     }
-                    while (sortGoodsId.size() > 0) {
-                        //当前id加入全部id集合中
-                        totalGoodsIds.addAll(sortGoodsId);
-                        //id去重
-                        totalGoodsIds = totalGoodsIds.stream().distinct().collect(Collectors.toList());
-                        //计数器自减
-                        source.getValue().setRemainderNumber(source.getValue().getRemainderNumber() - 1);
-                        if (source.getValue().getRemainderNumber() <= 0) {
-                            break;
-                        }
-                    }
+                    totalGoodsIds = processGoodsLabelIds(totalGoodsIds, source, sortGoodsId);
                     if (source.getValue().getRemainderNumber() <= 0) {
                         continue;
                     }
@@ -415,17 +431,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
                         List<Integer> labelGoods = getGoodsByLabel(labelId);
                         labelGoodsId.addAll(labelGoods);
                     }
-                    while (labelGoodsId.size() > 0) {
-                        //当前id加入全部id集合中
-                        totalGoodsIds.addAll(labelGoodsId);
-                        //id去重
-                        totalGoodsIds = totalGoodsIds.stream().distinct().collect(Collectors.toList());
-                        //计数器自减
-                        source.getValue().setRemainderNumber(source.getValue().getRemainderNumber() - 1);
-                        if (source.getValue().getRemainderNumber() <= 0) {
-                            break;
-                        }
-                    }
+                    totalGoodsIds = processGoodsLabelIds(totalGoodsIds, source, labelGoodsId);
                     if (source.getValue().getRemainderNumber() <= 0) {
                         continue;
                     }
@@ -437,17 +443,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
                         List<Integer> brandGoods = getGoodsByBrands(source.getValue().getBrandId());
                         brandGoodsId.addAll(brandGoods);
                     }
-                    while (brandGoodsId.size() > 0) {
-                        //当前id加入全部id集合中
-                        totalGoodsIds.addAll(brandGoodsId);
-                        //id去重
-                        totalGoodsIds = totalGoodsIds.stream().distinct().collect(Collectors.toList());
-                        //计数器自减
-                        source.getValue().setRemainderNumber(source.getValue().getRemainderNumber() - 1);
-                        if (source.getValue().getRemainderNumber() <= 0) {
-                            break;
-                        }
-                    }
+                    totalGoodsIds = processGoodsLabelIds(totalGoodsIds, source, brandGoodsId);
                     if (source.getValue().getRemainderNumber() <= 0) {
                         continue;
                     }
@@ -459,38 +455,28 @@ public class MPGoodsRecommendService extends ShopBaseService {
                         List<Integer> catGoods = getGoodsByCatIds(source.getValue().getCatId());
                         catGoodsId.addAll(catGoods);
                     }
-                    while (catGoodsId.size() > 0) {
-                        //当前id加入全部id集合中
-                        totalGoodsIds.addAll(catGoodsId);
-                        //id去重
-                        totalGoodsIds = totalGoodsIds.stream().distinct().collect(Collectors.toList());
-                        //计数器自减
-                        source.getValue().setRemainderNumber(source.getValue().getRemainderNumber() - 1);
-                        if (source.getValue().getRemainderNumber() <= 0) {
-                            break;
-                        }
-                    }
+                    totalGoodsIds = processGoodsLabelIds(totalGoodsIds, source, catGoodsId);
                     if (source.getValue().getRemainderNumber() <= 0) {
                         continue;
                     }
                 }
             }
         }
-        //来源遍历结束
-        int remainderNumber = recommendNumber - totalGoodsIds.size();
-        if (remainderNumber > 0) {
-            List<Integer> goodsList = getPageList(recommendNumber);
-            for (Integer item : goodsList) {
-                if (!totalGoodsIds.contains(item)) {
-                    totalGoodsIds.add(item);
-                    remainderNumber -= 1;
-                    if (remainderNumber <= 0) {
-                        break;
-                    }
-                }
+        return totalGoodsIds;
+    }
+
+    private List<Integer> processGoodsLabelIds(List<Integer> totalGoodsIds, Map.Entry<String, RecSource> source, List<Integer> labelGoodsId) {
+        while (labelGoodsId.size() > 0) {
+            //当前id加入全部id集合中
+            totalGoodsIds.addAll(labelGoodsId);
+            //id去重
+            totalGoodsIds = totalGoodsIds.stream().distinct().collect(Collectors.toList());
+            //计数器自减
+            source.getValue().setRemainderNumber(source.getValue().getRemainderNumber() - 1);
+            if (source.getValue().getRemainderNumber() <= 0) {
+                break;
             }
         }
-        logger().info("智能筛选后的商品id为：{}",totalGoodsIds);
         return totalGoodsIds;
     }
 

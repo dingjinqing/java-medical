@@ -416,7 +416,8 @@ public class MarketCalendarService extends ShopBaseService {
 		List<MarketVo> actInfoList = new ArrayList<MarketVo>();
 		for (MarketCalendarActivityVo item : calendarActList) {
 			String[] verPurview = saas.shop.version.verifyVerPurview(getShopId(), item.getActivityType());
-			if (verPurview[0].equals("true")) {
+            String strTrue = "true";
+            if (verPurview[0].equals(strTrue)) {
 				vo.setHasAct(true);
 				if (item.getActivityId() > 0) {
 					vo.setHasAct(true);

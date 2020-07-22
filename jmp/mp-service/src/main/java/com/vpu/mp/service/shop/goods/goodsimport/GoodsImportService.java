@@ -60,6 +60,14 @@ import java.util.stream.Collectors;
 @Service
 public class GoodsImportService extends ShopBaseService {
 
+    final static Pattern BODY_PATTERN = Pattern.compile("<body>([\\s\\S]*)</body>");
+    final static Pattern SCRIPT_PATTERN = Pattern.compile("(<script[\\s\\S]*?/>)|(?:<script[^/>]*?>[\\s\\S]*?<(\\s)*?/script(\\s\\S)*?>)");
+    final static Pattern STYLE_PATTERN = Pattern.compile("<style[^>]*>[\\s\\S]*</style>");
+    final static Pattern DOCUMENT_PATTERN = Pattern.compile("<!DOCTYPE[^>]*>");
+    final static Pattern LINE_FEED_PATTERN = Pattern.compile("[\\r\\n]*");
+    final static Pattern MEDIA_PATTERN = Pattern.compile("(<audio[^>]*>[\\s\\S]*</audio>)|(<video[^>]*>[\\s\\S]*</video>)|(<object[^>]*>[\\s\\S]*</object>)|(<embed[^>]*?/>)");
+
+
     @Autowired
     ImageService imageService;
     @Autowired
@@ -525,12 +533,6 @@ public class GoodsImportService extends ShopBaseService {
      * @param goodsSnMapBos
      */
     private void disposeGoodsDesc(HashMap<String, List<GoodsVpuExcelImportBo>> goodsSnMapBos) {
-        Pattern bodyPattern = Pattern.compile("<body>([\\s\\S]*)</body>");
-        Pattern scriptPattern = Pattern.compile("(<script[\\s\\S]*?/>)|(?:<script[^/>]*?>[\\s\\S]*?<(\\s)*?/script(\\s\\S)*?>)");
-        Pattern stylePattern = Pattern.compile("<style[^>]*>[\\s\\S]*</style>");
-        Pattern documentPattern = Pattern.compile("<!DOCTYPE[^>]*>");
-        Pattern lineFeedPattern = Pattern.compile("[\\r\\n]*");
-        Pattern mediaPattern = Pattern.compile("(<audio[^>]*>[\\s\\S]*</audio>)|(<video[^>]*>[\\s\\S]*</video>)|(<object[^>]*>[\\s\\S]*</object>)|(<embed[^>]*?/>)");
 
         for (Map.Entry<String, List<GoodsVpuExcelImportBo>> entry : goodsSnMapBos.entrySet()) {
             List<GoodsVpuExcelImportBo> bos = entry.getValue();
@@ -538,17 +540,17 @@ public class GoodsImportService extends ShopBaseService {
             if (StringUtils.isBlank(goodsDesc)) {
                 continue;
             }
-            Matcher matcher = bodyPattern.matcher(goodsDesc);
+            Matcher matcher = BODY_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = scriptPattern.matcher(goodsDesc);
+            matcher = SCRIPT_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = stylePattern.matcher(goodsDesc);
+            matcher = STYLE_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = documentPattern.matcher(goodsDesc);
+            matcher = DOCUMENT_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = lineFeedPattern.matcher(goodsDesc);
+            matcher = LINE_FEED_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = mediaPattern.matcher(goodsDesc);
+            matcher = MEDIA_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
 
             for (GoodsVpuExcelImportBo bo : bos) {

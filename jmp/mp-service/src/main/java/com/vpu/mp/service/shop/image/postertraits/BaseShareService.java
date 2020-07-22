@@ -46,7 +46,7 @@ public abstract class BaseShareService extends ShopBaseService {
     private ShopStyleConfigService shopStyleConfigService;
     @Autowired
     private ShopCommonConfigService commonConfigService;
-    public static final Pattern patternNumber = Pattern.compile("\\d+");
+    public static final Pattern PATTERN_NUMBER = Pattern.compile("\\d+");
 
     /**
      * 获取活动record信息
@@ -316,7 +316,7 @@ public abstract class BaseShareService extends ShopBaseService {
         try {
             if (StringUtils.isNotBlank(shopStyleValue)) {
                 String[] splits = shopStyleValue.split("\\)");
-                Matcher matcher = patternNumber.matcher(splits[1]);
+                Matcher matcher = PATTERN_NUMBER.matcher(splits[1]);
                 matcher.find();
                 int red = Integer.parseInt(matcher.group());
                 matcher.find();

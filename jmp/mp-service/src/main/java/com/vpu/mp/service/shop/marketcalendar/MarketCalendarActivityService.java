@@ -18,6 +18,9 @@ import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarActivityVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketcalendarParam;
 
+/**
+ * @author zhaojianqiang
+ */
 @Service
 public class MarketCalendarActivityService extends ShopBaseService {
 

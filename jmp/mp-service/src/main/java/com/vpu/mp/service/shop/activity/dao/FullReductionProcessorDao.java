@@ -251,8 +251,9 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                     break;
                 case 3:
                     //满折
-                    if ((BigDecimalUtil.compareTo(condition.getFullMoney(), null) > 0 && condition.getFullMoney().compareTo(price) < 1) ||
-                        (condition.getAmount() != null && condition.getAmount() > 0 && condition.getAmount() <= num)) {
+                    boolean isDiscountByFullMoney = (BigDecimalUtil.compareTo(condition.getFullMoney(), null) > 0 && condition.getFullMoney().compareTo(price) < 1) ||
+                        (condition.getAmount() != null && condition.getAmount() > 0 && condition.getAmount() <= num);
+                    if (isDiscountByFullMoney) {
                         result =
                             price.subtract(
                                 BigDecimalUtil.multiplyOrDivide(
@@ -584,7 +585,8 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                         }
                     }
                     break;
-                case 2://满减
+                case 2:
+                    //满减
                     if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
                         if (fullReductionRule.getAmount()<=totalNum){
                             reduceMoney =fullReductionRule.getReduceMoney();
@@ -599,7 +601,8 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                         }
                     }
                     break;
-                case 3://3满折
+                case 3:
+                    //3满折
                     if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
                         if (fullReductionRule.getAmount()<=totalNum){
                             reduceMoney = BigDecimal.ONE.subtract(fullReductionRule.getDiscount().multiply(new BigDecimal("0.1"))).multiply(totalMoney);
