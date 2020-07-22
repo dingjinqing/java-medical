@@ -1,0 +1,50 @@
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main-container">
+		<view class="tabs">
+			<view><text class="active">待问诊</text></view>
+			<view><text>我的问诊</text></view>
+		</view>
+		<view class="card-item">
+      <view class="doctor-info">
+        <text class="doctor-name">吴晓红</text>
+        <text class="office">皮肤科</text>
+        <text class="date">2020-07-14</text>
+      </view>
+      <view class="button-content">
+        <text class="pass">接诊</text>
+      </view>
+		</view>
+		<view class="card-item">
+      <view class="doctor-info">
+        <text class="doctor-name">何超</text>
+        <text class="office">皮肤科</text>
+        <text class="date">2020-07-14</text>
+      </view>
+      <view class="button-content">
+        <text class="pass">接诊</text>
+      </view>
+		</view>
+		<view class="card-item">
+      <view class="doctor-info">
+        <text class="doctor-name">吴晓红</text>
+        <text class="status ongoing">已接诊</text>
+        <text class="date">2020-07-14</text>
+      </view>
+      <view class="button-content">
+        <text class="reject">退款</text>
+      </view>
+		</view>
+		<view class="card-item">
+      <view class="doctor-info">
+        <text class="doctor-name">何超</text>
+        <text class="status end">问诊结束</text>
+        <text class="date">2020-07-14</text>
+      </view>
+      <view class="button-content">
+        <text class="pass">继续问诊</text>
+      </view>
+		</view>
+		<include src="../../pages/common/footer.wxml" />
+	</view>
+</view>

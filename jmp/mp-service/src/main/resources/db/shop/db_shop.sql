@@ -4866,6 +4866,7 @@ create table `b2c_prescription`(
     `pharmacist_code` varchar(32) not null default '' comment '药师编码',
     `diagnosis_name` varchar(1024) not null default '' comment '诊断名称',
     `diagnosis_detail` text comment '诊断详情',
+    `doctor_advice` text comment '医嘱',
     `patient_complain` text not null default '' comment '患者主诉',
     `patient_sign` text not null default '' comment '患者体征',
     `source` tinyint(1) not null default 0 comment '处方来源 0系统内部创建 1医院拉取',

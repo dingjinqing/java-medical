@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class InquiryOrderListParam extends BasePageParam {
     /*订单状态*/
-    private Integer orderStatus;
+    private Byte orderStatus;
     /*医师id*/
     private Integer doctorId;
 }

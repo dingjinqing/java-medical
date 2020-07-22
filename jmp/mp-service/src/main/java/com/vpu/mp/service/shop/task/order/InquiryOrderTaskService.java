@@ -1,6 +1,9 @@
 package com.vpu.mp.service.shop.task.order;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Service;
 public class InquiryOrderTaskService extends ShopBaseService {
     @Autowired
     private InquiryOrderService inquiryOrderService;
+    @Autowired
+    private InquiryOrderDao inquiryOrderDao;
     /**
      * 订单自动关闭
      */
@@ -33,25 +38,26 @@ public class InquiryOrderTaskService extends ShopBaseService {
     public void autoCloseInquiryOrder(){
         Result<InquiryOrderRecord> orderRecords=inquiryOrderService.getCanceledToPaidCloseOrder();
         orderRecords.forEach(order->{
-            ExecuteResult result= closeExecute(order);
-            if(result == null || result.isSuccess()) {
-                logger().info("订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
+            JsonResult result= closeExecute(order);
+            if(JsonResultCode.CODE_SUCCESS.getCode()==result.getError()) {
+                logger().info("问诊订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
             }else {
-                logger().error("订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());
+                logger().error("问诊订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getError() , result.getMessage().toString());
             }
         });
     }
 
-    public ExecuteResult closeExecute(InquiryOrderRecord order){
+    public JsonResult closeExecute(InquiryOrderRecord order){
         try {
             transaction(()->{
                 order.setOrderStatus(InquiryOrderConstant.ORDER_TO_CANCELED);
-                inquiryOrderService.update(order);
+                order.setCancelledTime(DateUtils.getLocalDateTime());
+                inquiryOrderDao.update(order);
             });
         } catch (Exception e) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
+            return new JsonResult().result(null,JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
         }
-        return ExecuteResult.create(null,null);
+        return new JsonResult().success();
 
     }
 
@@ -62,20 +68,21 @@ public class InquiryOrderTaskService extends ShopBaseService {
     public void autoCloseToWaitingInquiryOrder(){
         Result<InquiryOrderRecord> orderRecords=inquiryOrderService.getCanceledToWaitingCloseOrder();
         orderRecords.forEach(order->{
-            ExecuteResult result= refundExecute(order);
-            if(result == null || result.isSuccess()) {
-                logger().info("订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
+            JsonResult result= refundExecute(order);
+            if(JsonResultCode.CODE_SUCCESS.getCode()==result.getError()) {
+                logger().info("问诊订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
             }else {
-                logger().error("订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());
+                logger().error("问诊订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getError() , result.getMessage().toString());
             }
         });
     }
-    public ExecuteResult refundExecute(InquiryOrderRecord order){
+    public JsonResult refundExecute(InquiryOrderRecord order){
         try {
             inquiryOrderService.refundInquiryOrder(order);
         } catch (MpException e) {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
+            return new JsonResult().result(null,JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
         }
-        return ExecuteResult.create(null,null);
+        return new JsonResult().success();
+
     }
 }

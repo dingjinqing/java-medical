@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.Inquiry;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderOnParam;
 import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryToPayParam;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
@@ -80,8 +82,10 @@ public class InquiryOrderService extends ShopBaseService {
         return inquiryOrderDao.getByOrderSn(orderSn);
     }
 
-    public void update(InquiryOrderRecord inquiryOrderRecord){
-        inquiryOrderDao.update(inquiryOrderRecord);
+    public void update(InquiryOrderOnParam param){
+        InquiryOrderRecord record=inquiryOrderDao.getByOrderId(param.getOrderId());
+        FieldsUtil.assign(param,record);
+        inquiryOrderDao.update(record);
     }
 
     public Result<InquiryOrderRecord> getCanceledToPaidCloseOrder(){
@@ -159,9 +163,22 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDao.save(inquiryOrderDo);
         return orderSn;
     }
-
     /*
-    *退款
+     *退款
+     */
+    public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
+        InquiryOrderRecord record=inquiryOrderDao.getByOrderId(inquiryOrderOnParam.getOrderId());
+        try {
+            refundInquiryOrder(record);
+        } catch (MpException e) {
+            JsonResult jsonResult=new JsonResult();
+            jsonResult.result(null,JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER,null);
+            return  jsonResult;
+        }
+        return JsonResult.success();
+    }
+    /*
+    *退款调用
      */
     public void refundInquiryOrder(InquiryOrderRecord order)throws MpException{
         if(InquiryOrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())){
@@ -176,6 +193,10 @@ public class InquiryOrderService extends ShopBaseService {
             //微信金额单为为分需单位换算
             returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(order.getOrderAmount(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
         }
+        //更新状态
+        order.setOrderStatus(InquiryOrderConstant.ORDER_TO_CANCELED);
+        order.setCancelledTime(DateUtils.getLocalDateTime());
+        inquiryOrderDao.update(order);
         //交易记录
         tradesRecord.addRecord(order.getOrderAmount(),order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
     }

@@ -1,6 +1,7 @@
 .dialog-content{
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 .prescription-content{
   width: 702rpx;
@@ -132,4 +133,12 @@
   text-align: center;
   color: #fff;
   margin-top: 40rpx;
+}
+.button{
+  line-height: 80rpx;
+  width: 300rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  background-color: #26C4BC;
+  margin-top: 24rpx;
 }
