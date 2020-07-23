@@ -89,6 +89,10 @@ public class ImSessionDao extends ShopBaseDao {
         if (pageListParam.getSessionStatus() != null) {
             condition = condition.and(IM_SESSION.SESSION_STATUS.in(pageListParam.getSessionStatus()));
         }
+        if (pageListParam.getUserId() != null) {
+            condition =condition.and(IM_SESSION.USER_ID.eq(pageListParam.getUserId()));
+        }
+
         SelectSeekStep1<ImSessionRecord, Timestamp> select = db().selectFrom(IM_SESSION).where(condition).orderBy(IM_SESSION.CREATE_TIME.asc());
         return getPageResult(select,pageListParam.getCurrentPage(),pageListParam.getPageRows(),ImSessionListVo.class);
     }

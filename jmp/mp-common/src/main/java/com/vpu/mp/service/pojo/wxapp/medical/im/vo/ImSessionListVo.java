@@ -12,11 +12,13 @@ import java.sql.Timestamp;
 @Data
 public class ImSessionListVo {
     /**会话id*/
-    private Integer sessionId;
+    private Integer id;
     /**订单号*/
     private String orderSn;
     /**医生id*/
     private Integer doctorId;
+    /**医师名称*/
+    private String doctorName;
     /**科室id*/
     private Integer departmentId;
     /**科室名*/
