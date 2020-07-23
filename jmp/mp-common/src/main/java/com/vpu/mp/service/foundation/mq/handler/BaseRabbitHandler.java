@@ -48,5 +48,10 @@ public interface BaseRabbitHandler {
 			channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
 	}
 
+    /**
+     * 例外处理
+     * @param datas
+     * @param throwable
+     */
     void executeException(Object[] datas, Throwable throwable);
 }

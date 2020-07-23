@@ -1,5 +1,8 @@
 package com.vpu.mp.service.foundation.es.pojo;
 
+/**
+ * @author luguangyao
+ */
 public class EsMappingInfo {
 
     private String key;

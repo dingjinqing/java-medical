@@ -49,6 +49,11 @@ public interface StatusContainer {
      */
     Timestamp getPreEndTime2();
 
+    /**
+     * getPrePayStep
+     *
+     * @return
+     */
     Byte getPrePayStep();
 
     /**

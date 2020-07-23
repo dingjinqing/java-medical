@@ -4,6 +4,9 @@ import com.vpu.mp.common.foundation.util.Page;
 
 import lombok.Data;
 
+/**
+ * @author changle
+ */
 @Data
 public class GoodsLinkVo {
 	public Integer goodsId;

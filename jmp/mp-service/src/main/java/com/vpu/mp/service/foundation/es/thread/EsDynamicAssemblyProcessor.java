@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author luguangyao
+ */
 @Component
 public class EsDynamicAssemblyProcessor extends MainBaseService {
 

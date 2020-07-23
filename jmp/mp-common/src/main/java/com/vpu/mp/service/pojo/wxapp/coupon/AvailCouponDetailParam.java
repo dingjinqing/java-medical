@@ -30,7 +30,8 @@ public class AvailCouponDetailParam {
     private String scene;
 
     public void initScene(){
-        if((this.couponId == null || this.couponId <= 0) && StringUtil.isNotBlank(this.scene)){
+        boolean canResolve = (this.couponId == null || this.couponId <= 0) && StringUtil.isNotBlank(this.scene);
+        if(canResolve){
             String scene = null;
             try {
                 scene = URLDecoder.decode(this.scene,"UTF-8");

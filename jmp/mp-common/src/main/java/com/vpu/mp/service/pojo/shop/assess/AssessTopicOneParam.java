@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
+/**
+ * @author changle
+ */
 @Data
 public class AssessTopicOneParam {
 	private Integer   id;

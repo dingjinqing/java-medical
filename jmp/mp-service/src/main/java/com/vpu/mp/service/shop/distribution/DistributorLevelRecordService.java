@@ -16,12 +16,12 @@ import java.util.Collection;
 @Service
 public class DistributorLevelRecordService extends ShopBaseService {
 
-    DistributorLevelRecord TABLE = DistributorLevelRecord.DISTRIBUTOR_LEVEL_RECORD;
+    DistributorLevelRecord table = DistributorLevelRecord.DISTRIBUTOR_LEVEL_RECORD;
 
     public void add(Collection<UpdateUserLevel> params) {
         ArrayList<DistributorLevelRecordRecord> records = new ArrayList<>(params.size());
         for (UpdateUserLevel param: params) {
-            DistributorLevelRecordRecord record = db().newRecord(TABLE, param);
+            DistributorLevelRecordRecord record = db().newRecord(table, param);
             records.add(record);
         }
         db().batchInsert(records).execute();

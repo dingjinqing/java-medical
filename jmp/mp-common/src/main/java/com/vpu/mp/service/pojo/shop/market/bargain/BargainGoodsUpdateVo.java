@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @Getter
 public class BargainGoodsUpdateVo {
 
-    //主键
     private Integer id;
     private Integer goodsId;
     private String goodsName;
@@ -23,9 +22,9 @@ public class BargainGoodsUpdateVo {
     private Integer goodsNumber;
     /** 商品价格 */
     private BigDecimal shopPrice;
-    //指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限
+    /** 指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限 */
     private BigDecimal expectationPrice;
-    //任意金额结算模式的结算金额底价
+    /** 任意金额结算模式的结算金额底价 */
     private BigDecimal floorPrice;
     private Integer stock;
     private Integer saleNum;

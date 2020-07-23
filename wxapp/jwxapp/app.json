@@ -43,7 +43,8 @@
     "pages/personalcenter/personalcenter",
     "components/usercenter/useraddress/useraddress",
     "pages/search/search",
-    "components/popup/get-prescription/index"
+    "components/popup/get-prescription/index",
+    "components/doctor/doctor_list/doctor_list"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -138,7 +139,9 @@
         "medicalrecordinfo/medicalrecordinfo",
         "medicalrecordlist/medicalrecordlist",
         "prescriptionsheet/prescriptionsheet",
-        "repurchaselist/repurchaselist"
+        "repurchaselist/repurchaselist",
+        "patientinfo/patientinfo",
+        "messagelist/messagelist"
       ]
     },
     {

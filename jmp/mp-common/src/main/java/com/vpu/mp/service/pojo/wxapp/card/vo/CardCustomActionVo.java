@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class CardCustomActionVo {
 	/**

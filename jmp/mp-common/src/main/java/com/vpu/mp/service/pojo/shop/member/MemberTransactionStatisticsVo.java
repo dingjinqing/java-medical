@@ -15,20 +15,20 @@ import java.sql.Timestamp;
 @Getter
 public class MemberTransactionStatisticsVo {
 
-    //全部交易统计
+    /**  全部交易统计 */
     private GeneralTransactionStatisticsVo allTransactionStatistics = new GeneralTransactionStatisticsVo();
-    //实物交易统计
+    /**  实物交易统计 */
     private GeneralTransactionStatisticsVo physicalTransactionStatistics = new GeneralTransactionStatisticsVo();
-    //非实物交易统计 --暂时没有非实物商品订单
-    //private GeneralTransactionStatisticsVo nonPhysicalTransactionStatistics = new GeneralTransactionStatisticsVo();
-    //会员增值交易统计
+    /**  非实物交易统计 --暂时没有非实物商品订单 */
+    /**  private GeneralTransactionStatisticsVo nonPhysicalTransactionStatistics = new GeneralTransactionStatisticsVo();
+    /**  会员增值交易统计 */
     private AppreciationTransactionStatisticsVo appreciationTransactionStatistics = new AppreciationTransactionStatisticsVo();
-    //门店服务预约交易统计
+    /**  门店服务预约交易统计 */
     private GeneralTransactionStatisticsVo storeServiceOrderTransactionStatistics = new GeneralTransactionStatisticsVo();
-    //门店买单订单交易统计
+    /**  门店买单订单交易统计 */
     private StoreOrderTransactionStatisticsVo storeOrderTransactionStatistics = new StoreOrderTransactionStatisticsVo();
 
-    //分销统计
+    /**  分销统计 */
     private DistributionStatisticsVo distributionStatistics = new DistributionStatisticsVo();
 
 

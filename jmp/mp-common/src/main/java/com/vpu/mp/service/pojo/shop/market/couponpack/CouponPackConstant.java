@@ -23,12 +23,12 @@ public class CouponPackConstant {
      */
     public static final byte ACCESS_MODE_FREE = 2;
 
-    //定时发放的时间单位，0：自然天，1：自然周，2自然月
+    /**  定时发放的时间单位，0：自然天，1：自然周，2自然月 */
     public static final byte TIMING_UNIT_DAY = 0;
     public static final byte TIMING_UNIT_WEEK = 1;
     public static final byte TIMING_UNIT_MONTH = 2;
 
-    //优惠券礼包订单发放状态flag,（退款后是否继续发放优惠劵），1：继续发放，0：停止发放，2：已经发放完成
+    /**  优惠券礼包订单发放状态flag,（退款后是否继续发放优惠劵），1：继续发放，0：停止发放，2：已经发放完成 */
     public static final byte STILL_SEND_FLAG_STOP = 0;
     public static final byte STILL_SEND_FLAG_CONTINUE = 1;
     public static final byte STILL_SEND_FLAG_FINISH = 2;

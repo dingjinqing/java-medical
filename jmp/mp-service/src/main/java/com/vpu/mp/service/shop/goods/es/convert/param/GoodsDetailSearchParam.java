@@ -1,5 +1,9 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
+
+/**
+ * @author luguangyao
+ */
 public class GoodsDetailSearchParam {
 
     private Integer goodsId;

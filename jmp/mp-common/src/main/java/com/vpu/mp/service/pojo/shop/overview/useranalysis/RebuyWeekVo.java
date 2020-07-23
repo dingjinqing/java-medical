@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.overview.useranalysis;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -21,5 +22,6 @@ public class RebuyWeekVo {
     private String startTime;
     /** 结束时间 */
     private String endTime;
-    private String XAxis;
+    @JsonProperty("XAxis")
+    private String xAxis;
 }

@@ -96,5 +96,5 @@ public class PromoteInfo {
     /** 0可不授权个人信息，1必须授权 */
     private Byte promoteCondition;
     /** 活动说明相关 */
-    private promoteActCopywriting actCopywriting;
+    private PromoteActCopywriting actCopywriting;
 }

@@ -28,7 +28,7 @@ public class QrCodeGenerator {
 	 * @throws WriterException
 	 * @throws IOException
 	 */
-	public static byte[] generateQRCodeImg(String text,int width,int height) throws WriterException, IOException {
+	public static byte[] generateQrCodeImg(String text, int width, int height) throws WriterException, IOException {
 		QRCodeWriter qrWriter = new QRCodeWriter();
 		BitMatrix bitMatrix = qrWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 		
@@ -60,7 +60,7 @@ public class QrCodeGenerator {
 		return jpgData;
 	}
 	
-	private static void generateQRCodeImg(String text,int width,int height,String filePath) throws WriterException, IOException {
+	private static void generateQrCodeImg(String text, int width, int height, String filePath) throws WriterException, IOException {
 		QRCodeWriter qrWriter = new QRCodeWriter();
 		BitMatrix bitMatrix = qrWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 		
@@ -78,7 +78,7 @@ public class QrCodeGenerator {
 	
 	public static void main(String[] args) {
         try {
-        	generateQRCodeImg("This is my first QR Code", 350, 350, QR_CODE_IMAGE_PATH);
+        	generateQrCodeImg("This is my first QR Code", 350, 350, QR_CODE_IMAGE_PATH);
         	generateBarCodeImg("2455471008284385",100,80,BAR_CODE_IMAGE_PATH);
         } catch (WriterException e) {
             System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());

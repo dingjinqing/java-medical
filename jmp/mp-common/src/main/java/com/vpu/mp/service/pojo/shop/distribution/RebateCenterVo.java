@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderListVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.RebateRankingTopVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.UserRebateVo;
@@ -45,7 +46,8 @@ public class RebateCenterVo {
     /**
      * 累积返利商品总额
      */
-    private BigDecimal TotalCanFanliMoney;
+    @JsonProperty("TotalCanFanliMoney")
+    private BigDecimal totalCanFanliMoney;
     /**
      * 返利佣金排名
      */
@@ -65,7 +67,8 @@ public class RebateCenterVo {
     /**当前分销员返利佣金排名*/
     private Integer rebateRanking;
     /**返利轮播信息*/
-    private List<RebateOrderListVo> RebateOrderList;
+    @JsonProperty("RebateOrderList")
+    private List<RebateOrderListVo> rebateOrderList;
     /**是否是分销员*/
     private Integer isDistributor;
 

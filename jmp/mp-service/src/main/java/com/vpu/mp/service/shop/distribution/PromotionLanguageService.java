@@ -13,6 +13,9 @@ import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageAddParam;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListParam;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListVo;
 
+/**
+ * @author changle
+ */
 @Service
 public class PromotionLanguageService extends ShopBaseService{
 	/**

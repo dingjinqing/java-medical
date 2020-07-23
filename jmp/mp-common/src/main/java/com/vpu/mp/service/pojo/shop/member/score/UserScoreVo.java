@@ -31,7 +31,6 @@ public class UserScoreVo {
 	/** 备注模板数据 */
 	@JsonAlias("remark")
 	private String remarkData;
-	//private String remark;
 	private Timestamp createTime;
 	private Timestamp expireTime;
 	private String adminUser;

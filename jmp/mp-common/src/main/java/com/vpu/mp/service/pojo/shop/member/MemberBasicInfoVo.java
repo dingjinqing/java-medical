@@ -106,7 +106,6 @@ public class MemberBasicInfoVo {
 	private Integer birthdayDay;
 	
 	/** 性别：女f,男m */
-	//private char sex; 经过国际化时报错
 	private String sex;
 	
 	/** 婚姻状况：1未婚，2已婚，3保密  */

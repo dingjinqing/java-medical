@@ -173,7 +173,6 @@ public class OrderExportVo {
     @ExcelIgnore
     private Byte shippingId;
 
-    //列名常量
     public static final String ORDER_SN = "orderSn";
     public static final String ORDER_STATUS_NAME = "orderStatusName";
     public static final String PAY_NAMES = "payNames";

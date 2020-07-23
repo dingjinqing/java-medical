@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.medical.im.condition;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 李晓冰
@@ -15,4 +16,6 @@ public class ImSessionCondition {
     private Timestamp lessCreateTime;
 
     private Timestamp limitTime;
+
+    private List<String> orderSns;
 }

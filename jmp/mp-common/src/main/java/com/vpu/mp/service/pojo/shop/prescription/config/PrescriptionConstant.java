@@ -6,7 +6,6 @@ package com.vpu.mp.service.pojo.shop.prescription.config;
  */
 public interface PrescriptionConstant {
     //********处方来源******//
-
     /**
      * 0系统内
      */

@@ -8,10 +8,17 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    tabIndex: 'usercenter',
+    tabIndex: 'doctor',
     pageParams: null,
     dataList: null,
-    patientId: 1
+    patientId: 1,
+    can_show:false,
+    choose_type:'',
+    search_data:[
+      '主治医生',
+      '主治医生',
+      '主治医生'
+    ],
   },
 
   /**
@@ -26,12 +33,36 @@ global.wxPage({
     })
   },
   inputSearch() {
-    this.setData({
-      'pageParams.currentPage': 1
-    })
+    // this.setData({
+    //   'pageParams.currentPage': 1
+    // })
     // 添加热词
     var data = this.data.keyWords.replace(/\s/g, "");
   },
+  choose_type(e){
+    let that = this;
+    let type = e.currentTarget.dataset.type;
+    let choose_type = that.data.choose_type;
+    let can_show = false;
+    if(choose_type == '' || choose_type != type){
+      choose_type = type;
+      can_show = true;
+    }else{
+      choose_type = ''
+    }
+    that.setData({
+      can_show:can_show,
+      choose_type:choose_type
+    })
+  },
+  hide_cover(){
+    let that = this;
+    that.setData({
+      can_show:false,
+      choose_type:''
+    })
+  },
+
 
   /**
    * 生命周期函数--监听页面初次渲染完成

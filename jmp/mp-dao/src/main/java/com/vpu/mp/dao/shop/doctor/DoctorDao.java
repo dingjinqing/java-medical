@@ -1,26 +1,29 @@
 package com.vpu.mp.dao.shop.doctor;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.db.shop.tables.Doctor;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
-import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DOCTOR;
+import static com.vpu.mp.db.shop.Tables.DOCTOR_TITLE;
 
+/**
+ * @author chenjie
+ */
 @Repository
 public class DoctorDao extends ShopBaseDao {
     public static final Integer ROOT_ID = 0;
@@ -180,6 +183,16 @@ public class DoctorDao extends ShopBaseDao {
         return db().update(DOCTOR).set(DOCTOR.USER_ID, userDo.getUserId())
             .where(DOCTOR.NAME.eq(userDo.getUsername())
                 .and(DOCTOR.MOBILE.eq(userDo.getMobile()))).execute();
+    }
+
+    /**
+     * 查询医师信息集合
+     * @param doctorIds 医师id集合
+     * @return
+     */
+    public List<DoctorSimpleVo> listDoctorSimpleInfo(List<Integer> doctorIds) {
+        return db().select(DOCTOR.ID,DOCTOR.NAME).from(DOCTOR).where(DOCTOR.ID.in(doctorIds).and(DOCTOR.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(DoctorSimpleVo.class);
     }
 
 }

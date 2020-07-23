@@ -62,7 +62,7 @@ import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.ScoreService;
-import com.vpu.mp.service.shop.member.card.LimitCardOpt;
+import com.vpu.mp.service.shop.member.card.LimitBaseCardOpt;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -91,14 +91,14 @@ public class WxCardDetailService extends ShopBaseService{
 	@Autowired private CouponPackService couponPackService;
 	@Autowired private CardExchangService cardExchangSvc;
     @Autowired private WxCardExchangeService wxCardExchangSvc;
-	@Autowired private LimitCardOpt limitCardOpt;
+	@Autowired private LimitBaseCardOpt limitCardOpt;
 	
 	/**
 	 * 	获取自定义的激活项
 	 */
 	public List<CardCustomAction> getNeedActivationCustomOptions(MemberCardRecord card) {
 		List<CardCustomAction> customOptions = cardDetailSvc.getCustomAction(card);
-		customOptions.removeIf(action->action.getChecked()==NumberUtils.BYTE_ZERO);
+		customOptions.removeIf(action-> action.getChecked().equals(NumberUtils.BYTE_ZERO));
 		return customOptions;
 	}
 	
@@ -313,7 +313,8 @@ public class WxCardDetailService extends ShopBaseService{
 
 		Integer gVal = Integer.valueOf(currentGrade.substring(1));
 		gVal = gVal + 1;
-		while (gVal < 10) {
+		int max = 10;
+		while (gVal < max) {
 			logger().info("设置会员升级的下一张等级卡");
 			String newGrade = "v" + gVal;
 			MemberCardRecord gradeCard = getGradeCardByGrade(newGrade);
@@ -484,35 +485,14 @@ public class WxCardDetailService extends ShopBaseService{
 			if (day > 0 || hour > 0 || minute > 0) {
 				timeType = NumberUtils.BYTE_ZERO;
 				StringBuilder con = new StringBuilder();
-				StringBuilder timedhm = new StringBuilder();
+
 				// 领券日起
 				String receiveInfo = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_RECEIVE_DAY_START, i18nfile);
 				con.append(receiveInfo);
-				timedhm.append("{");
-				int comma = 0;
-				if (day> 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_DAY, i18nfile, day));
-					timedhm.append("\"day\": "+day);
-					comma++;
-				}
-				if (hour > 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_HOUR, i18nfile,hour));
-					if(comma>0) {
-						timedhm.append(",");
-					}
-					timedhm.append("\"hour\": "+hour);
-					comma++;
-				}
-				if (minute > 0) {
-					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_MINUTE, i18nfile,minute));
-					if(comma>0) {
-						timedhm.append(",");
-					}
-					timedhm.append("\"minute\": "+minute);
-				}
-				timedhm.append("}");
-				
-				desc = con.toString();
+
+                StringBuilder timedhm = buildTimeDhm(lang, i18nfile, day, hour, minute, con);
+
+                desc = con.toString();
 				couponExpireTimeDesc = timedhm.toString();
 			} else {
 				timeType = NumberUtils.BYTE_ONE;
@@ -555,5 +535,33 @@ public class WxCardDetailService extends ShopBaseService{
 		}
 		return res;
 	}
-	
+
+    private StringBuilder buildTimeDhm(String lang, String i18nfile, Integer day, Integer hour, Integer minute, StringBuilder con) {
+        StringBuilder timedhm = new StringBuilder();
+        timedhm.append("{");
+        int comma = 0;
+        if (day> 0) {
+            con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_DAY, i18nfile, day));
+            timedhm.append("\"day\": "+day);
+            comma++;
+        }
+        if (hour > 0) {
+            con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_HOUR, i18nfile,hour));
+            if(comma>0) {
+                timedhm.append(",");
+            }
+            timedhm.append("\"hour\": "+hour);
+            comma++;
+        }
+        if (minute > 0) {
+            con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_MINUTE, i18nfile,minute));
+            if(comma>0) {
+                timedhm.append(",");
+            }
+            timedhm.append("\"minute\": "+minute);
+        }
+        timedhm.append("}");
+        return timedhm;
+    }
+
 }

@@ -123,15 +123,17 @@ module.exports = {
     "prescriptionlist": "处方列表",
     "familylist": "我的家人",
     "getprescription": "获取病历",
-    "prescriptioninfo":"处方详情",
-    "medicalrecordlist":"我的病历",
-    "medicalrecordinfo":"病历详情",
-    "prescriptionsheet":"处方单信息",
-    "doctorConsultation":"医师咨询",
-    "allDepartment":"全部科室",
-    "operatePrescriptionList":"待审核处方",
-    "inquiryList":"待问诊",
-    "repurchaselist":"处方药品",
-    "prescribe":"待开方"
+    "prescriptioninfo": "处方详情",
+    "medicalrecordlist": "我的病历",
+    "medicalrecordinfo": "病历详情",
+    "prescriptionsheet": "处方单信息",
+    "doctorConsultation": "医师咨询",
+    "allDepartment": "全部科室",
+    "operatePrescriptionList": "待审核处方",
+    "inquiryList": "待问诊",
+    "repurchaselist": "处方药品",
+    "prescribe": "待开方",
+    "patientinfo": "患者信息",
+    "messagelist": "信息列表"
   }
 }

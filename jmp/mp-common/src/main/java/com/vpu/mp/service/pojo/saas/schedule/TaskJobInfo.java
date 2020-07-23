@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 
+/**
+ * @author luguangyao
+ */
 public class TaskJobInfo extends BaseTaskJob {
 
     public static Builder builder(Integer shopId){

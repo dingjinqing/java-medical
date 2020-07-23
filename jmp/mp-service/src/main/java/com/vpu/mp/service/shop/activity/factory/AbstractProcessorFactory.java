@@ -68,6 +68,7 @@ public abstract class AbstractProcessorFactory<P,T> {
      * 调用各个处理器处理函数进行数据处理
      * @param capsules 目标商品列表，数据不可为null
      * @param userId 用id
+     * @throws Exception 异常
      */
     public abstract void doProcess(List<T> capsules,Integer userId) throws Exception;
 }

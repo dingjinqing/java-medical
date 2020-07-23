@@ -2,6 +2,10 @@ package com.vpu.mp.service.pojo.shop.config.message;
 
 import com.vpu.mp.service.pojo.shop.config.ShopMsgTempConfig;
 
+/**
+ *
+ * @author lixinguo
+ */
 public class MessageTemplateConfigConstant {
     /** 预约取消通知 */
     public static final Integer BOOKING_CANCEL = 2001;

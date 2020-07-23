@@ -136,7 +136,8 @@ public class EnterPolitelyService extends ShopBaseService {
                 return noAward;
             }
             // 不满足新用户直接返回
-            if (BYTE_ONE.equals(record.getAction()) && (Timestamp.valueOf(LocalDateTime.now()).getTime() - userRecord.getCreateTime().getTime() >= 600)) {
+            int newUserCreateTimeExpire = 600;
+            if (BYTE_ONE.equals(record.getAction()) && (Timestamp.valueOf(LocalDateTime.now()).getTime() - userRecord.getCreateTime().getTime() >= newUserCreateTimeExpire)) {
                 logger().debug("不满足新用户");
                 return noAward;
             }
@@ -200,28 +201,9 @@ public class EnterPolitelyService extends ShopBaseService {
             case 1:
                 logger().info("优惠卷");
             case 6:
-                logger().info("分裂优惠卷");
-                String[] couponArray = awardContent.split(",");
-                List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringList2IntList(Arrays.asList(couponArray)));
-                CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
-                couponGive.setUserIds(Collections.singletonList(userId));
-                couponGive.setCouponArray(couponArray);
-                couponGive.setActId(activityId);
-                couponGive.setAccessMode(BYTE_ZERO);
-                couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
-                // 发送优惠卷
-                CouponGiveQueueBo sendData = couponGiveService.handlerCouponGive(couponGive);
-                // 一张都没发成功
-                if (sendData.getSuccessSize().compareTo(INTEGER_ZERO) <= INTEGER_ZERO) {
-                    logger().debug("优惠券发送全部失败");
+                if (!awardCouponGive(awardContent, userId, activityId, bo, award, record)) {
                     return noAward;
                 }
-                award.setExtContent(new HashMap<String, String>(INTEGER_TWO) {{
-                    put("title", bo.getTitle());
-                    put("coupon_detail", Util.toJson(couponViews));
-                    put("bg_img", StringUtils.isBlank(bo.getBgImg()) ? imageUrl(DEFAULT_COUPON_BG_IMG) : bo.getBgImg());
-                }});
-                record.setMrkingVoucherId(awardContent);
                 break;
             case 2:
                 logger().info("幸运大抽奖");
@@ -284,6 +266,43 @@ public class EnterPolitelyService extends ShopBaseService {
         }
         db().executeInsert(record);
         return award;
+    }
+
+    /**
+     * 发放分裂优惠券
+     *
+     * @param awardContent
+     * @param userId
+     * @param activityId
+     * @param bo
+     * @param award
+     * @param record
+     * @return
+     */
+    private boolean awardCouponGive(String awardContent, int userId, int activityId, ExtBo bo, AwardVo award, CoopenActivityRecordsRecord record) {
+        logger().info("分裂优惠卷");
+        String[] couponArray = awardContent.split(",");
+        List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringList2IntList(Arrays.asList(couponArray)));
+        CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
+        couponGive.setUserIds(Collections.singletonList(userId));
+        couponGive.setCouponArray(couponArray);
+        couponGive.setActId(activityId);
+        couponGive.setAccessMode(BYTE_ZERO);
+        couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
+        // 发送优惠卷
+        CouponGiveQueueBo sendData = couponGiveService.handlerCouponGive(couponGive);
+        // 一张都没发成功
+        if (sendData.getSuccessSize().compareTo(INTEGER_ZERO) <= INTEGER_ZERO) {
+            logger().debug("优惠券发送全部失败");
+            return false;
+        }
+        award.setExtContent(new HashMap<String, String>(INTEGER_TWO) {{
+            put("title", bo.getTitle());
+            put("coupon_detail", Util.toJson(couponViews));
+            put("bg_img", StringUtils.isBlank(bo.getBgImg()) ? imageUrl(DEFAULT_COUPON_BG_IMG) : bo.getBgImg());
+        }});
+        record.setMrkingVoucherId(awardContent);
+        return true;
     }
 
     /**

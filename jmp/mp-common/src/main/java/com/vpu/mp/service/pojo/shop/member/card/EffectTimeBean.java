@@ -5,6 +5,9 @@ import java.time.LocalDate;
 
 import lombok.Data;
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class EffectTimeBean {
 	/** 有效时间戳 - 起始时间 */

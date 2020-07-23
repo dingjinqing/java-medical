@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 public class PrdPriceNumberParam {
     private Integer prdId;
     private BigDecimal shopPrice;
-    /*单规格商品使用数据*/
+    /** 单规格商品使用数据*/
     private Integer goodsNumber;
-    /*多规格商品使用数据*/
+    /** 多规格商品使用数据*/
     private Integer prdNumber;
 }

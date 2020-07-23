@@ -19,7 +19,6 @@ public class ReservationDetail {
     private Integer userId;
     @NotBlank(groups = ValidCon.class)
     private String orderSn;
-    // 门店信息
     private Integer storeId;
     private String storeName;
     private String storeImgs;
@@ -32,28 +31,27 @@ public class ReservationDetail {
     private String address;
     private String mobile;
 
-    // 服务信息
+    /**   服务信息 */
     private Integer serviceId;
     private String serviceName;
     private String serviceImg;
-    // 价格
+    /**   价格 */
     private String servicePrice;
-    // 定金
+    /**   定金 */
     private String serviceSubsist;
 
-    // 核销码
+    /**   核销码 */
     private String verifyCode;
 
-    // 订单信息
-    // 下单时间
+    /**   订单信息  下单时间 */
     private Timestamp createTime;
-    // 订单状态 0待付款，1：待服务，2：已取消，3：已完成
+    /**   订单状态 0待付款，1：待服务，2：已取消，3：已完成 */
     private Byte orderStatus;
     private String orderStatusName;
     private String serviceDate;
     private String servicePeriod;
 
-    // 订单取消原因
+    /**   订单取消原因 */
     @NotEmpty(groups = {ValidCon2.class})
     private String cancelReason;
 }

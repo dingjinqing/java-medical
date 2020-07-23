@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.member.data;
 
 import lombok.Data;
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class EducationVo {
 	private Integer value;

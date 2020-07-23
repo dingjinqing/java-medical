@@ -89,7 +89,9 @@ public class RebateStrategyService extends ShopBaseService{
 				case 4:
 					sql = sql.and(DISTRIBUTION_STRATEGY.STATUS.eq(STATUS_DISABLED));
 					break;
-			}
+                default:
+                    break;
+            }
 		}
 		return sql;
 	}

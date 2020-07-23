@@ -21,7 +21,7 @@ public class ExpressPackageInfoList {
     private int expressCompanyId;
 	
 	@JsonProperty(value = "express_company_name")
-    private String express_companyName;
+    private String expressCompanyName;
 	
 	@JsonProperty(value = "express_code")
     private String expressCode;

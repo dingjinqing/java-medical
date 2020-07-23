@@ -36,6 +36,9 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.tables.UploadedVideo.UPLOADED_VIDEO;
 import static com.vpu.mp.db.shop.tables.UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class VideoService extends ShopBaseService {
 

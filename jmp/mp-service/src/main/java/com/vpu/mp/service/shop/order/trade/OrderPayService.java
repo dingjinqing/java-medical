@@ -89,12 +89,12 @@ public class OrderPayService extends ShopBaseService{
      * @param orderSn 订单号（定金bk特殊）
      * @param money 金额（定金bk特殊）
      * @param goodsNameForPay 商品描述
-     * @param ClientIp mp端ip
+     * @param clientIp mp端ip
      * @param openId openid
      * @param activityType 活动类型
      * @throws MpException
      */
-    public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String orderSn, BigDecimal money, String goodsNameForPay,String ClientIp, String openId, Byte activityType ) throws MpException {
+    public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String orderSn, BigDecimal money, String goodsNameForPay,String clientIp, String openId, Byte activityType ) throws MpException {
         logger().info("继续支付接口start");
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
             thirdPartyMsgServices.thirdPartService(orderInfo);
@@ -106,7 +106,7 @@ public class OrderPayService extends ShopBaseService{
             //非系统金额支付
             try {
                 logger().info("微信预支付调用接口调用start");
-                WebPayVo webPayVo = pay.wxUnitOrder(ClientIp, goodsNameForPay, orderSn, money, openId);
+                WebPayVo webPayVo = pay.wxUnitOrder(clientIp, goodsNameForPay, orderSn, money, openId);
                 webPayVo.setOrderSn(orderInfo.getOrderSn());
                 webPayVo.setOrderType(activityType == null ? null : activityType.toString());
                 order.updatePrepayId(webPayVo.getResult().getPrepayId(), orderInfo.getOrderId(), orderSn);
@@ -125,8 +125,9 @@ public class OrderPayService extends ShopBaseService{
 
     public String getGoodsNameForPay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo) {
         StringBuilder result = new StringBuilder(orderGoodsBo.get(0).getGoodsName());
-        if(result.length() > 32){
-            result.substring(0, 32);
+        int maxLength = 32;
+        if(result.length() > maxLength){
+            result.substring(0, maxLength);
         }
         result.append(orderGoodsBo.size() == 1 ? StringUtils.EMPTY : "等").append(orderInfo.getGoodsAmount()).append("件");
         return result.toString();
@@ -136,8 +137,9 @@ public class OrderPayService extends ShopBaseService{
         OrderInfoRecord orderInfo = order.getOrderByOrderSn(orderSn);
         List<OrderGoodsBo> orderGoodsBo = orderGoods.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
         StringBuilder result = new StringBuilder(orderGoodsBo.get(0).getGoodsName());
-        if(result.length() > 32){
-            result.substring(0, 32);
+        int maxLength = 32;
+        if(result.length() > maxLength){
+            result.substring(0, maxLength);
         }
         result.append(orderGoodsBo.size() == 1 ? StringUtils.EMPTY : "等").append(orderInfo.getGoodsAmount()).append("件");
         return result.toString();

@@ -60,12 +60,12 @@ import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
-import com.vpu.mp.service.shop.marketCalendar.MarketCalendarService;
+import com.vpu.mp.service.shop.marketcalendar.MarketCalendarService;
 import com.vpu.mp.service.shop.medicine.PullHitsHistoryPrescriptionService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.OrderApiService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
@@ -86,6 +86,7 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
+import com.vpu.mp.service.shop.task.order.InquiryOrderTaskService;
 import com.vpu.mp.service.shop.title.TitleService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.shop.user.message.MessageRecordService;
@@ -609,8 +610,13 @@ public class ShopApplication {
     /**
      * 问诊订单
      */
+    @Autowired
     public InquiryOrderService inquiryOrderService;
-
+    /**
+     * 问诊订单任务
+     */
+    @Autowired
+    public InquiryOrderTaskService inquiryOrderTaskService;
     /**
      * 病历处方拉取
      */

@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author chenjie
+ */
 @Service
 public class TitleService extends ShopBaseService{
     @Autowired
@@ -83,7 +86,9 @@ public class TitleService extends ShopBaseService{
             TitleOneParam title = new TitleOneParam();
             title.setName(list.getName());
             title.setCode(list.getPositionCode());
-            if (list.getState() > 1) title.setIsDelete((byte) 1);
+            if (list.getState() > 1) {
+                title.setIsDelete((byte) 1);
+            }
             synchroTitle(title);
         }
     }

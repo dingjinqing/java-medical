@@ -122,31 +122,35 @@ public class ConfigService extends ShopBaseService {
 			return new String[] { "", "" };
 		}
 		String style = config.getShopStyleValue().trim();
-		if (!style.contains("rgb")) {
+        String rgb = "rgb";
+        if (!style.contains(rgb)) {
 			return style.split(",");
-		} else if (style.startsWith("rgba")){
-			String pattern = "rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
-			Pattern r = Pattern.compile(pattern);
-			Matcher m = r.matcher(style);
-			if (m.find()) {
-				Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)),Integer.parseInt(m.group(4)));
-				Color color2 =new Color(Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)), Integer.parseInt(m.group(7)),Integer.parseInt(m.group(8)));
-				String hexColor1 = toHexFromColor(color1);
-				String hexColor2 = toHexFromColor(color2);
-				return new String[]{hexColor1,hexColor2};
-			}
 		} else {
-			String pattern = "rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
-			Pattern r = Pattern.compile(pattern);
-			Matcher m = r.matcher(style);
-			if (m.find()) {
-				Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
-				Color color2 =new Color(Integer.parseInt(m.group(4)), Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)));
-				String hexColor1 = toHexFromColor(color1);
-				String hexColor2 = toHexFromColor(color2);
-				return new String[]{hexColor1,hexColor2};
-			}
-		}
+            String rgba = "rgba";
+            if (style.startsWith(rgba)){
+                String pattern = "rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
+                Pattern r = Pattern.compile(pattern);
+                Matcher m = r.matcher(style);
+                if (m.find()) {
+                    Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)),Integer.parseInt(m.group(4)));
+                    Color color2 =new Color(Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)), Integer.parseInt(m.group(7)),Integer.parseInt(m.group(8)));
+                    String hexColor1 = toHexFromColor(color1);
+                    String hexColor2 = toHexFromColor(color2);
+                    return new String[]{hexColor1,hexColor2};
+                }
+            } else {
+                String pattern = "rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
+                Pattern r = Pattern.compile(pattern);
+                Matcher m = r.matcher(style);
+                if (m.find()) {
+                    Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
+                    Color color2 =new Color(Integer.parseInt(m.group(4)), Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)));
+                    String hexColor1 = toHexFromColor(color1);
+                    String hexColor2 = toHexFromColor(color2);
+                    return new String[]{hexColor1,hexColor2};
+                }
+            }
+        }
 		return new String[] {};
 	}
 	/**
@@ -187,7 +191,8 @@ public class ConfigService extends ShopBaseService {
 		byte status=0;
 		ShopSelectInnerResp shopInfo = saas.shop.getShopInfo(getShopId());
 		String expireTimeStatus = shopInfo.getExpireTimeStatus();
-		if(expireTimeStatus.equals("1")) {
+        String expiredStatus = "1";
+        if(expireTimeStatus.equals(expiredStatus)) {
 			//已过期
 			status=1;
 		}

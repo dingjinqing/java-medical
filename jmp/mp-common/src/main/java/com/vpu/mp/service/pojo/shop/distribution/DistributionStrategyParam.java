@@ -5,10 +5,14 @@ package com.vpu.mp.service.pojo.shop.distribution;
  * user：常乐
  */
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * @author changle
+ */
 @Data
 public class DistributionStrategyParam {
 	private Integer   id;
@@ -47,35 +51,48 @@ public class DistributionStrategyParam {
 	/**
 	 * 二级返利比例
 	 */
-	private Double    fanliRatio_2;
+    @JsonProperty("fanliRatio_2")
+	private Double fanliRatio2;
+
 	/**
 	 * 间接
 	 */
-	private Double    rebateRatio_2;
+    @JsonProperty("rebateRatio_2")
+	private Double rebateRatio2;
+
 	/**
 	 * 三级返利比例
 	 */
-	private Double    fanliRatio_3;
+    @JsonProperty("fanliRatio_3")
+	private Double fanliRatio3;
 	/**
 	 * 间接
 	 */
-	private Double    rebateRatio_3;
+    @JsonProperty("rebateRatio_3")
+	private Double rebateRatio3;
 	/**
 	 * 四级返利比例
 	 */
-	private Double    fanliRatio_4;
+    @JsonProperty("fanliRatio_4")
+	private Double fanliRatio4;
+
 	/**
 	 * 间接
 	 */
-	private Double    rebateRatio_4;
+    @JsonProperty("rebateRatio_4")
+	private Double rebateRatio4;
+
 	/**
 	 * 五级返利比例
 	 */
-	private Double    fanliRatio_5;
+    @JsonProperty("fanliRatio_5")
+	private Double fanliRatio5;
+
 	/**
 	 * 间接
 	 */
-	private Double    rebateRatio_5;
+    @JsonProperty("rebateRatio_5")
+	private Double rebateRatio5;
 
 	/**
 	 * 是否首单返利 0：关闭；1：开启
@@ -85,10 +102,18 @@ public class DistributionStrategyParam {
 	 * 首单返利比例
 	 */
 	private Double firstRatio;
-	private Double firstRatio_2;
-	private Double firstRatio_3;
-	private Double firstRatio_4;
-	private Double firstRatio_5;
+
+    @JsonProperty("firstRatio_2")
+	private Double firstRatio2;
+
+    @JsonProperty("firstRatio_3")
+	private Double firstRatio3;
+
+    @JsonProperty("firstRatio_4")
+	private Double firstRatio4;
+
+    @JsonProperty("firstRatio_5")
+	private Double firstRatio5;
 
 	/**
 	 * 返利商品类型 0：全部商品；1：部分商品

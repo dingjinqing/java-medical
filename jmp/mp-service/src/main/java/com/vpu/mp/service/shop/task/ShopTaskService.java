@@ -12,6 +12,9 @@ import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author luguangyao
+ */
 @Service
 public class ShopTaskService {
 

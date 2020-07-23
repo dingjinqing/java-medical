@@ -29,7 +29,7 @@ public class GroupBuyDetailListVo {
      * 用户手机号
      */
     private String mobile;
-    //团长信息
+    /**  团长信息 */
     private String commanderMobile;
     private String commanderName;
 

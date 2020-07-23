@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/18
  * 商城概览综合出参
  */

@@ -18,7 +18,7 @@ public class ProductParam {
     @JsonIgnore
     private Integer presaleId;
 
-    //主键
+    /**  主键 */
     private Integer id;
     /** 商品id **/
     @NotNull

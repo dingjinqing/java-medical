@@ -8,6 +8,9 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author wangshuai
+ */
 @Data
 public class ReturnOrderInfoVo {
     private String[] orderType;

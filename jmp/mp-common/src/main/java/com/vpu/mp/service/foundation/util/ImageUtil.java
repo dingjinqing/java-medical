@@ -292,7 +292,7 @@ public final class ImageUtil {
      * @param size  大小
      * @return
      */
-    public static Font SourceHanSansCN(Integer style, Integer size) {
+    public static Font sourceHanSansCn(Integer style, Integer size) {
         Font actionJsonBase = new Font(null, style, size);
         InputStream loadFile = Util.loadFile("font/wxapp/SourceHanSansCN-Normal.ttf");
         try {

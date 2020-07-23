@@ -2,6 +2,9 @@ package com.vpu.mp.service.foundation.es.pojo.goods;
 
 import static com.vpu.mp.service.pojo.shop.goods.es.EsSearchName.*;
 
+/**
+ * @author luguangyao
+ */
 public class EsSearchFieldsConstant {
     public static final String[] DEFAULT_STR = {GOODS_ID,SHOP_ID,IS_ON_SALE,GOODS_NUMBER};
 
@@ -54,10 +57,10 @@ public class EsSearchFieldsConstant {
         PRDS,
         VIDEO_INFO_JSON,
         UNIT,
-        PRD.PRD_ID,
-        PRD.PRD_SN,
-        PRD.PRD_REAL_PRICE,
-        PRD.PRD_IMG,
-        PRD.PRD_DESC
+        Prd.PRD_ID,
+        Prd.PRD_SN,
+        Prd.PRD_REAL_PRICE,
+        Prd.PRD_IMG,
+        Prd.PRD_DESC
     };
 }

@@ -13,8 +13,8 @@ import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateParam;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
 import com.vpu.mp.service.shop.ShopApplication;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.TypesNames;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.TypesNames;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 

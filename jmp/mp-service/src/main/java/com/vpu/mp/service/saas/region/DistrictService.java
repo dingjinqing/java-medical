@@ -70,16 +70,16 @@ public class DistrictService extends MainBaseService {
 
 	/**
 	 * 获取区县id
-	 * @param provinceNAME
+	 * @param provinceName
 	 * @param cityName
 	 * @param districtName
 	 * @return
 	 */
-	public Integer getDistrictIdByNames(String provinceNAME,String cityName,String districtName ){
+	public Integer getDistrictIdByNames(String provinceName,String cityName,String districtName ){
 		return db().select(DICT_DISTRICT.DISTRICT_ID).from(DICT_DISTRICT)
 				.leftJoin(DICT_CITY).on(DICT_CITY.CITY_ID.eq(DICT_DISTRICT.CITY_ID))
 				.leftJoin(DICT_PROVINCE).on(DICT_DISTRICT.DISTRICT_ID.eq(DICT_CITY.PROVINCE_ID))
-				.where(DICT_PROVINCE.NAME.like(likeValue(provinceNAME)))
+				.where(DICT_PROVINCE.NAME.like(likeValue(provinceName)))
 				.and(DICT_CITY.NAME.like(likeValue(cityName)))
 				.and(DICT_DISTRICT.NAME.like(likeValue(districtName)))
 				.fetchOne(DICT_DISTRICT.DISTRICT_ID);

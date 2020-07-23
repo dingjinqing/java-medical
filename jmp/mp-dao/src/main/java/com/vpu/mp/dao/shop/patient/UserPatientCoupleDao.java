@@ -3,7 +3,6 @@ package com.vpu.mp.dao.shop.patient;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.UserPatientCoupleRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
@@ -12,9 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PATIENT;
-import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_PATIENT_COUPLE;
 
+/**
+ * @author chenjie
+ */
 @Repository
 public class UserPatientCoupleDao  extends ShopBaseDao {
 
@@ -24,7 +25,7 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
      * @return
      */
     public Integer defaultPatientIdByUser(Integer userId) {
-        Integer patientId = db().select(USER_PATIENT_COUPLE.PATIENT_ID).from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.Default)))
+        Integer patientId = db().select(USER_PATIENT_COUPLE.PATIENT_ID).from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.DEFAULT)))
             .fetchOptional(USER_PATIENT_COUPLE.PATIENT_ID, int.class).orElse(0);
         return patientId;
     }

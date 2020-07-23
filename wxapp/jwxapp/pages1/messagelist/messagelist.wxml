@@ -1,0 +1,57 @@
+<!--pages1/messagelist/messagelist.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="top_nav" style="top:{{margin_top_nav + 8}}px;">
+    <view class="each_nav {{ is_system == 1 ? 'active':''}}" bindtap="change_square" data-nav_index='{{0}}'>系统公告</view>
+    <view class="each_nav {{ is_order == 1 ? 'active':''}}"  bindtap="change_square" data-nav_index='{{1}}'>订单动态</view>
+    <view class="each_nav {{ is_advisory == 1 ? 'active':''}}"  bindtap="change_square" data-nav_index='{{2}}'>我的咨询</view>
+  </view>
+  <view class="list_content">
+    <view class="each_square" wx:if='{{ is_system == 1 }}'>
+      <view class="each_line">
+        <view class="line_top">
+          <view class="lt_bold">系统公告</view>
+          <view>2013-07-13<text class="iconfont iconshanchu2"></text></view>
+        </view>
+        <view class="line_bottom" wx:if='{{if_show_all == 0}}' bindtap="bindChangeStyle" data-change='{{if_show_all}}'>
+          <view class="lt_text">{{system_notice1}}</view>
+          <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
+        </view>
+        <view class="line_bottom" style="align-items:flex-start" wx:if='{{if_show_all == 1}}' bindtap="bindChangeStyle" data-change='{{if_show_all}}'>
+          <view class="lt_text">{{system_notice}}</view>
+          <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix" style="transform:rotate(90deg);margin-top:5rpx"></image>
+        </view>
+      </view>
+    </view>
+    <view class="each_square" wx:if='{{ is_order == 1 }}'>
+      <view class="each_line">
+        <view class="line_top">
+          <view class="lt_bold">订单动态</view>
+          <view>2013-07-13<text class="iconfont iconshanchu2"></text></view>
+        </view>
+        <view class="line_bottom">
+          <view class="lt_text">您订单号为342334的订单未通过医师审</view>
+          <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
+        </view>
+      </view>
+    </view>
+    <view class="each_square" wx:if='{{ is_advisory == 1 }}'>
+      <view class="each_line">
+        <view class="line_top">
+          <view class="lt_bold">我的咨询</view>
+          <view>2013-07-13<text class="iconfont iconshanchu2"></text></view>
+        </view>
+        <view class="line_bottom">
+          <view class="lt_text">吴晓红医生：根据您的病情描述，为您开具以下处方</view>
+          <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 无内容样式 -->
+    <view class="no_content">
+      <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
+      <view class="no_word">暂无此类消息</view>
+    </view>
+  </view>
+</view>

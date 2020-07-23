@@ -5,6 +5,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+/**
+ * @author yangpengcheng
+ */
 @Data
 public class InquiryOrderRefundListDo {
     private static final long serialVersionUID = 1625068988;

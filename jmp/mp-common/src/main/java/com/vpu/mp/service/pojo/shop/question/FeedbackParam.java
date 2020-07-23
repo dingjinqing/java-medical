@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.question;
 
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 public class FeedbackParam {
 
 

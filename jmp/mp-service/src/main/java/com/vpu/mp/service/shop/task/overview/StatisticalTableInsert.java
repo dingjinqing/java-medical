@@ -172,7 +172,7 @@ public class StatisticalTableInsert extends ShopBaseService {
      */
     public void insertUserRfmSummary() {
         userSummary.getRecencyType(LocalDate.now().atStartOfDay()).forEach((k, v) -> {
-            Map<Integer, Record3<Integer, Integer, BigDecimal>> rfmData = userSummary.getRFMData(v.v1(), v.v2());
+            Map<Integer, Record3<Integer, Integer, BigDecimal>> rfmData = userSummary.getRrmData(v.v1(), v.v2());
             Stream.of(1, 2, 3, 4).forEach((n) -> {
                 Tuple3<Integer, Integer, BigDecimal> tuple3 = userSummary.reduceRfmData(rfmData, (e) -> e.equals(n));
                 UserRfmSummaryRecord record = createUserRfmSummary(tuple3, k, n);

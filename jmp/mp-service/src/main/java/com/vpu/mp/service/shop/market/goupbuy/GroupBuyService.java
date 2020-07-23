@@ -48,7 +48,7 @@ import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;

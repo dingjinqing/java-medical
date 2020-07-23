@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * 商品返利详情
+ * @author wangshuai
  */
 @Service
 public class OrderGoodsRebateService extends ShopBaseService {

@@ -91,21 +91,21 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                         .collect(Collectors.collectingAndThen
                                 (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionCode))), ArrayList::new));
                 param.setPrescriptionList(prescriptionList);
-                //处方是否在有效期
+                //处方是否过期/是否使用
                 long size = prescriptionList.stream().filter(prescriptionVo -> {
                     if (prescriptionVo.getSource().equals(PrescriptionConstant.SOURCE_HIS_SYSTEM)) {
                         //系统内
-                        if (PrescriptionConstant.EXPIRE_TYPE_EVER.equals(prescriptionVo.getExpireType())
-                                || prescriptionVo.getExpireType().equals(PrescriptionConstant.EXPIRE_TYPE_TIME)) {
+                        if (!PrescriptionConstant.EXPIRE_TYPE_INVALID.equals(prescriptionVo.getExpireType())) {
                             //处方有效期内
-                            return true;
+                            // 是否被使用
+                            return prescriptionVo.getIsUsed().equals(BaseConstant.NO);
                         }
                     }
                     return false;
                 }).count();
                 if (prescriptionList.size()==size){
                     log.info("所有处方都在有效-直接通过");
-                    param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED);
+                    param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
                 }
             }else {
                 log.info("处方药订单,存在没有匹配到订单得药品--线上开方");
@@ -114,6 +114,10 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         }else {
             log.info("没有处方药-不审核");
             param.setOrderMedicalType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT);
+        }
+        //处理审核以外
+        if (!param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
+            param.getGoods().forEach(goods -> goods.setOrderAuditType(param.getOrderAuditType()));
         }
     }
 
@@ -140,8 +144,13 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                     prescriptionList.add(prescriptionVo);
                     goods.setPrescriptionInfo(prescriptionVo);
                     param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
-                    if (prescriptionVo.getExpireType().equals(PrescriptionConstant.EXPIRE_TYPE_INVALID)){
-
+                    goods.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
+                    if (!prescriptionVo.getExpireType().equals(PrescriptionConstant.EXPIRE_TYPE_INVALID)){
+                        if (prescriptionVo.getIsUsed().equals(BaseConstant.NO)){
+                            goods.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
+                        }
+                    }else {
+                        goods.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
                     }
                 } else {
                     log.info("{}处方药品没有找到对应的处方信息", goodsInfo.getGoodsName());
