@@ -5058,3 +5058,19 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   KEY `order_sn` (`order_sn`),
   KEY `user_id` (`user_id`)
 ) COMMENT='问诊订单退款记录';
+
+CREATE TABLE `b2c_message` (
+    `message_id` int(11) NOT NULL AUTO_INCREMENT,
+    `message_name` varchar(255) NOT NULL DEFAULT '' COMMENT '消息名称，系统消息名称为日期',
+    `message_essentials` varchar(255) NOT NULL DEFAULT '' COMMENT '消息摘要',
+    `message_content` text not null default '' COMMENT '消息内容',
+    `message_type` tinyint(1) not null default 0 comment '消息类型 0：系统消息、1：订单消息、2：会话消息 默认0',
+    `receiver_id` int(11) not null comment '接收者id',
+    `receiver_name` varchar(100) not null default '接收者姓名',
+    `sender_id` int(11) not null default 0 comment '发送者id',
+    `sender_name` varchar(100) not null default '' comment '发送者姓名',
+    `message_status` tinyint(1) not null default 0 comment '消息状态 0：未读、1：已读、3：置顶消息 默认0',
+    `message_time` timestamp not null default CURRENT_TIMESTAMP comment '消息创建时间',
+    `message_relevance_id` int(11) not null default 0 comment '消息关联id 关联会话和订单id，关联系统消息、会话问诊、问诊订单主键',
+    PRIMARY KEY (`message_id`)
+) comment ='用户消息表';
