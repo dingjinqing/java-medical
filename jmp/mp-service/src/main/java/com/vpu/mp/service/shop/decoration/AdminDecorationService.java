@@ -319,7 +319,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 default:
             }
         }
-        if("page_cfg".equals(node.getKey())){
+        if(MODULE_PAGE_CONFIG.equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
                 pageCfg.setPageBgImage(imageUrl(pageCfg.getPageBgImage()));
@@ -678,7 +678,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     }
 
     private Object confirmPageContent(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
-        if (node.getKey().startsWith("c_")) {
+        if (node.getKey().startsWith(MODULE_NAME_PREFIX)) {
             String moduleName = node.getValue().get("module_name").asText();
             switch (moduleName) {
                 case ModuleConstant.M_SCROLL_IMAGE:
@@ -734,7 +734,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
 
             }
         }
-        if("page_cfg".equals(node.getKey())){
+        if(MODULE_PAGE_CONFIG.equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
                 pageCfg.setPageBgImage(RegexUtil.getUri(pageCfg.getPageBgImage()));
@@ -989,8 +989,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     }
 
     private Object processTemplateModuleForGet(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException, ClassNotFoundException {
-        if (node.getKey().startsWith("c_")) {
-            String moduleName = node.getValue().get("module_name").asText();
+        if (node.getKey().startsWith(MODULE_NAME_PREFIX)) {
+            String moduleName = node.getValue().get(MODULE_PAGE_CONFIG).asText();
 
             String moduleClassName = Util.underlineToHump(moduleName.split("_",2)[1]);
             moduleClassName = moduleClassName.substring(0, 1).toUpperCase() + moduleClassName.substring(1);
@@ -998,7 +998,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             Class m = Class.forName(moduleClassName);
             return objectMapper.readValue(node.getValue().toString(), m);
         }
-        if ("page_cfg".equals(node.getKey())) {
+        if (MODULE_PAGE_CONFIG.equals(node.getKey())) {
             PageCfgVo pageCfg = objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if (pageCfg.getPictorial() != null && StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())) {
                 pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
