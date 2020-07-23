@@ -13,13 +13,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
+/**
+ * @author cehnji
+ */
 public class WxAppDoctorConsultationController extends WxAppBaseController {
     /**
      * 	获取医师科室列表
      */
     @PostMapping("/api/wxapp/department/list")
     public JsonResult getDoctorDepartmentList(@RequestBody DepartmentListParam departmentListParam) {
-        List<DepartmentOneParam> departmentList = shop().departmentService.ListDepartmentsByName(departmentListParam.getKeyword());
+        List<DepartmentOneParam> departmentList = shop().departmentService.listDepartmentsByName(departmentListParam.getKeyword());
         return success(departmentList);
     }
 
@@ -29,7 +32,7 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
     @PostMapping("/api/wxapp/doctor/list")
     public JsonResult getDoctorList(@RequestBody DoctorConsultationParam doctorParam) {
         List<DoctorConsultationOneParam> doctorList = shop().doctorService.listDoctorForConsultation(doctorParam);
-        List<DepartmentOneParam> departmentList = shop().departmentService.ListDepartmentsByName(null);
+        List<DepartmentOneParam> departmentList = shop().departmentService.listDepartmentsByName(null);
         List<TitleOneParam> titleList = shop().titleService.listTitles();
         DoctorConsultationVo data = new DoctorConsultationVo();
         data.setDepartmentList(departmentList);

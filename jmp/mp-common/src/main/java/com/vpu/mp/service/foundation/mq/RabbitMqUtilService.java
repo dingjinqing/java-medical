@@ -12,6 +12,7 @@ import java.util.Collection;
 
 /**
  * mq工具
+ * @author luguangyao
  */
 @Component
 public class RabbitMqUtilService {

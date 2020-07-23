@@ -15,7 +15,6 @@ import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
-import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
@@ -33,6 +32,8 @@ import java.util.List;
  */
 @Service
 public class DoctorService extends ShopBaseService {
+    /**自动推荐最大数量*/
+    public static final int RECOMMEND_MAX_NUM = 10;
     @Autowired
     protected DoctorDao doctorDao;
     @Autowired
@@ -204,10 +205,11 @@ public class DoctorService extends ShopBaseService {
         }
     }
 
+
     public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
         List<Integer> doctorDepartments = doctorDepartmentCoupleDao.listHistoryDoctorDepartment(doctorParam);
         List<DoctorConsultationOneParam> historyDoctors = doctorDepartmentCoupleDao.listHistoryDoctor(doctorDepartments);
-        if (historyDoctors.size() < 10) {
+        if (historyDoctors.size() < RECOMMEND_MAX_NUM) {
             List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorDepartments, 10 - historyDoctors.size());
             historyDoctors.addAll(historyDoctorMore);
         }
@@ -217,4 +219,6 @@ public class DoctorService extends ShopBaseService {
     public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
         return doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
     }
+
+
 }

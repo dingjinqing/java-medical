@@ -21,6 +21,9 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author chenjie
+ */
 @Service
 public class PatientService extends BaseShopConfigService{
     @Autowired
@@ -127,7 +130,9 @@ public class PatientService extends BaseShopConfigService{
     public List<PatientMoreInfoParam> listDiseases(String diseaseStr) {
         List<PatientMoreInfoParam> diseaseList = Util.parseJson(get("diseases"), new TypeReference<List<PatientMoreInfoParam>>() {
         });
-        if (diseaseStr == null || diseaseStr == "") return diseaseList;
+        if (diseaseStr == null || diseaseStr.equals("")){
+            return diseaseList;
+        }
         List<String> diseases = Arrays.asList(diseaseStr.split(","));
         for (PatientMoreInfoParam disease : diseaseList) {
             if (diseases.contains(disease.getId())) {
@@ -154,5 +159,14 @@ public class PatientService extends BaseShopConfigService{
             patientInfo.setFamilyDiseaseHistoryList(listDiseases(patientInfo.getFamilyDiseaseHistory()));
             return patientInfo;
         }
+    }
+
+    /**
+     * 获取患者信息
+     * @param patientIds id集合
+     * @return
+     */
+    public List<PatientSimpleInfoVo> listPatientInfo(List<Integer> patientIds){
+        return patientDao.listPatientInfo(patientIds);
     }
 }

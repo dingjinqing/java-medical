@@ -1,18 +1,18 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderListParam;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderOnParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
- *问诊订单
+/**
+ * 问诊订单
+ * @author yangpengcheng
  */
 @RestController
 public class AdminInquiryOrderController extends AdminBaseController{

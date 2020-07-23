@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.department;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
@@ -12,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.vpu.mp.common.foundation.util.Util;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * @author chenjie
@@ -224,7 +224,16 @@ public class DepartmentService extends ShopBaseService {
      * @param name
      * @return
      */
-    public List<DepartmentOneParam> ListDepartmentsByName(String name) {
-        return departmentDao.ListDepartmentsByName(name);
+    public List<DepartmentOneParam> listDepartmentsByName(String name) {
+        return departmentDao.listDepartmentsByName(name);
+    }
+
+    /**
+     * 根据id集合查询科室信息
+     * @param departmentIds 科室id集合
+     * @return 信息集合
+     */
+    public List<DepartmentSimpleVo> listDepartmentInfo(List<Integer> departmentIds){
+        return departmentDao.listDepartmentInfo(departmentIds);
     }
 }

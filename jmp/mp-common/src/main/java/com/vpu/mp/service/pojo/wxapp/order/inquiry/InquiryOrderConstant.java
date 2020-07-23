@@ -1,6 +1,8 @@
-package com.vpu.mp.service.pojo.wxapp.order.Inquiry;
+package com.vpu.mp.service.pojo.wxapp.order.inquiry;
 
-
+/**
+ * @author yangpengcheng
+ */
 public class InquiryOrderConstant {
     //订单状态
     /**
