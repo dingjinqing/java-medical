@@ -1,5 +1,116 @@
 <!--pages2/awaitprescribe/awaitprescribe.wxml-->
 <include src="/pages/common/header.wxml"/>
 <view class="mian-container">
-
+  <view class="await_info">
+    <view class="await_title">
+      <view>提交时间：2012-09-18 15：44</view>
+      <view class="await_status">待开方</view>
+    </view>
+    <view class="pre_info">
+      <view class="top_area top_area1">
+        <view class="patient_title">患者信息</view>
+        <view class="patient_info">
+          <view class="each_line">
+            <view class="line_dot"></view>
+            <view class="line_content has_three">
+              <view>姓名：长官</view>
+              <view>年龄：34岁</view>
+              <view>性别：男</view>
+            </view>
+          </view>
+          <view class="each_line">
+            <view class="line_dot"></view>
+            <view class="line_content">疾病史：高血压，心绞痛</view>
+          </view>
+          <view class="each_line" wx:if='{{if_show_more == 1}}'>
+            <view class="line_dot"></view>
+            <view class="line_content">家族病史：高煦呀、心绞痛</view>
+          </view>
+          <view class="each_line" wx:if='{{if_show_more == 1}}'>
+            <view class="line_dot"></view>
+            <view class="line_content">过敏史：划分</view>
+          </view>
+          <view class="each_line has_bottom" wx:if='{{if_show_more == 1}}'>
+            <view class="line_dot"></view>
+            <view class="line_content">妊娠状态：怀孕中</view>
+          </view>
+        </view>
+      </view>
+      <view class="top_area" wx:if='{{if_show_more == 1}}'>
+        <view class="patient_title">历史诊断</view>
+        <view class="patient_info case_history">
+          <view class="each_line">
+            <view class="line_dot"></view>
+            <view class="line_content">原发性高血压，心绞痛</view>
+          </view>
+          <view class="each_line">
+            <view class="line_dot"></view>
+            <view class="line_content has_two">
+              <view class="">曾服用过本药品：</view>
+              <view class="has_iconfont">
+                <view><text class="iconfont icondanxuan"></text> 是</view>
+                <view><text class="iconfont icondanxuan"></text> 否</view>
+              </view>
+            </view>
+          </view>
+          <view class="each_line">
+            <view class="line_dot"></view>
+            <view class="line_content has_two">
+              <view class="">有无不良反应：</view>
+              <view class="has_iconfont">
+                <view><text class="iconfont icondanxuan"></text> 是</view>
+                <view><text class="iconfont icondanxuan"></text> 否</view>
+              </view>
+            </view>
+          </view>
+          <view class="each_line">
+            <view class="line_dot"></view>
+            <view class="line_content has_two">
+              <view class="">是否妊娠哺乳：</view>
+              <view class="has_iconfont">
+                <view><text class="iconfont icondanxuan"></text> 是</view>
+                <view><text class="iconfont icondanxuan"></text> 否</view>
+              </view>
+            </view>
+          </view>
+          <view class="each_line">
+            <image src="http://medicaldevimg.weipubao.cn/image/admin/img1.jpg" class="case_img"></image>
+          </view>
+        </view>
+      </view>
+      <!-- 展开和收起 -->
+      <view class="handle_line show_more" bindtap="show_more" wx:if='{{if_show_more == 0}}'>
+        查看更多 <image src="{{imageUrl}}/image/wxapp/right_into.png" mode="widthFix"></image>
+      </view>
+      <view class="handle_line show_less" bindtap="show_more" wx:if='{{if_show_more == 1}}'>
+        收起 <image src="{{imageUrl}}/image/wxapp/right_into.png" mode="widthFix"></image>
+      </view>
+    </view>
+    <view class="medicine_info">
+      <view class="each_medicine clearfix">
+        <view class="medi_img"><image src="http://medicaldevimg.weipubao.cn/image/admin/img1.jpg"></image></view>
+        <view class="medi_content">
+          <view class="medi_name">要批评你名称</view>
+          <view class="medi_info">
+            <view class="medi_price">￥<text>23.00</text></view>
+            <view class="medi_num">X1</view>
+          </view>
+        </view>
+      </view>
+      <view class="each_medicine clearfix">
+        <view class="medi_img"><image src="http://medicaldevimg.weipubao.cn/image/admin/img1.jpg"></image></view>
+        <view class="medi_content">
+          <view class="medi_name">要批评你名称</view>
+          <view class="medi_info">
+            <view class="medi_price">￥<text>23.00</text></view>
+            <view class="medi_num">X1</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="awati_fotter">
+      <view class="btn_not_agree">驳回</view>
+      <view class="btn_to_prescribe">去开方</view>
+    </view>
+  </view>
 </view>

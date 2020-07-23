@@ -7,7 +7,8 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    imageUrl: app.globalData.imageUrl 
+    imageUrl: app.globalData.imageUrl,
+    if_show_more: 0
   },
 
   /**
@@ -15,6 +16,12 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+  },
+  show_more () {
+    this.data.if_show_more = this.data.if_show_more == 0 ? 1 : 0;
+    this.setData({
+      if_show_more: this.data.if_show_more
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

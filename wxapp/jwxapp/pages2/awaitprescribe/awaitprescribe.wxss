@@ -1,4 +1,193 @@
 /* pages2/awaitprescribe/awaitprescribe.wxss */
+@import "../../css/iconfont.wxss";
 .mian-container{
-  padding-top: 20rpx;
+  padding: 20rpx 0 40rpx;
 }
+.await_info{
+  width: 700rpx;
+  padding: 30rpx 25rpx 0;
+  border-radius: 16rpx;
+  background: #fff;
+}
+.await_title{
+  margin-bottom: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.await_status{
+  color: #FF9F15;
+}
+.pre_info{
+  border-radius: 16rpx 16rpx 0 0;
+  border: 1rpx solid #eee;
+  position: relative;
+  margin-bottom: 35rpx;
+}
+.top_area{
+  padding-left: 25rpx;
+}
+.top_area1{
+  background: -webkit-linear-gradient(top,#E5F8F7,#fff);
+  padding-top: 30rpx;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.patient_title{
+  text-align: center;
+  background: url(http://medicaldevimg.weipubao.cn/image/wxapp/medical_history_bg2.png) no-repeat center bottom/120rpx 14rpx;
+  font-weight: bold;
+  font-size: 28rpx;
+  margin-bottom: 40rpx;
+}
+.each_line{
+  margin-bottom: 30rpx;
+  display: flex;
+  justify-content: flex-start;
+}
+.line_dot{
+  border: 4rpx solid #26C4BC;
+  border-radius: 50%;
+  height: 14rpx;
+  width: 14rpx;
+  margin-right: 20rpx;
+  display: block;
+  margin-top: 6rpx;
+}
+.line_content{
+  width: 600rpx;
+}
+.has_three{
+  display: flex;
+  justify-content: space-between;
+}
+.has_bottom{
+  padding-bottom: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+.has_two{
+  display: flex;
+  justify-content: space-between;
+} 
+.has_iconfont{
+  display: flex;
+  justify-content: space-between;
+}
+.has_iconfont view{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.iconfont{
+  margin: 0 15rpx 0 45rpx;
+  font-size: 32rpx;
+}
+.icondanxuan{
+  color: #26C4BC;
+}
+.case_img{
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 10rpx;
+  margin-right: 25rpx;
+}
+.handle_line{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  border-top: 1rpx solid #eee;
+}
+.handle_line image{
+  width: 14rpx;
+  margin-left: 14rpx;
+  transform: rotate(90deg);
+}
+.show_less image{
+  transform: rotate(-90deg);
+}
+.handle_line::after{
+  content: '';
+  position: absolute;
+  height: 16rpx;
+  width: 100%;
+  bottom: -16rpx;
+  left: 0;
+  background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
+  background-size: 40rpx 20rpx;
+}
+.each_medicine {
+  padding-bottom: 30rpx;
+  border-bottom: 1rpx solid #eee;
+  margin-bottom: 35rpx;
+}
+.each_medicine:last-of-type{
+  margin-bottom: 0;
+}
+.medi_img{
+  width: 160rpx;
+  height: 160rpx;
+  margin-right: 20rpx;
+  float: left;
+}
+.medi_img image{
+  width: 100%;
+  height: 100%;
+}
+.medi_content{
+  width: 510rpx;
+  float: right;
+  height: 160rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.medi_name{
+  width: 100%;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+}
+.medi_info{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.medi_price{
+  color:#FF9F15;
+}
+.medi_price text{
+  font-size: 30rpx;
+}
+.medi_num{
+  color: #999;
+}
+.awati_fotter{
+  width: 100%;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.awati_fotter > view{
+  width: 150rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  text-align: center;
+  line-height: 60rpx;
+  margin-left: 25rpx;
+  border: 1rpx solid #ccc;
+}
+.awati_fotter > .btn_to_prescribe{
+  border: none;
+  background: #26C4BC;
+  color: #fff;
+}
+.hidden_line{
+  display: none;
+}
+
+
+
