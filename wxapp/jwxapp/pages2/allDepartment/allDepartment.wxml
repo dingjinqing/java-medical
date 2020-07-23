@@ -1,2 +1,17 @@
-<!--pages2/allDepartment/allDepartment.wxml-->
-<text>pages2/allDepartment/allDepartment.wxml</text>
+<include src="/pages/common/header.wxml" />
+<view class="mian-container">
+	<view class="filter">
+		<view class="input_box">
+			<view>
+				<icon size="14" type="search" role="img"></icon>
+			</view>
+			<input placeholder='搜索科室' bindconfirm="inputSearch" bindinput="changeInput" value="{{keyWords}}"></input>
+		</view>
+	</view>
+  <view class="depar_content">
+     <view>皮肤科</view>
+     <view>耳鼻喉科</view>
+     <view>儿科</view>
+  </view>
+
+</view>
