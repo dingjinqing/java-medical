@@ -141,8 +141,8 @@ export default {
     }
   },
   methods: {
-      // 选择时间段
-      dateChangeHandler (time) {
+    // 选择时间段
+    dateChangeHandler (time) {
       if (time !== 0) {
         this.screeningTime = time
         this.isChange = true
@@ -154,7 +154,6 @@ export default {
       this.screeningTime = 0
       this.param.startDate = this.timeValue[0].substring(0, 4) + this.timeValue[0].substring(4, 6) + this.timeValue[0].substring(6, 8)
       this.param.endDate = this.timeValue[1].substring(0, 4) + this.timeValue[1].substring(4, 6) + this.timeValue[1].substring(6, 8)
-      console.log('选择器的时间：', this.param)
       this.isChange = true
       this.initData()
     },
@@ -166,8 +165,8 @@ export default {
       this.endDate.year = this.param.endDate.substring(0, 4)
       this.endDate.month = this.param.endDate.substring(4, 6)
       this.endDate.day = this.param.endDate.substring(6, 8)
-    },
-  },
+    }
+  }
 }
 </script>
 
