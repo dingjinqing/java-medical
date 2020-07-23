@@ -15,6 +15,9 @@ import static com.vpu.mp.db.shop.Tables.PATIENT;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_PATIENT_COUPLE;
 
+/**
+ * @author chenjie
+ */
 @Repository
 public class UserPatientCoupleDao  extends ShopBaseDao {
 

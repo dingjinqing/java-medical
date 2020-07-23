@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.medicine;
 
 
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.dao.shop.medicalHistory.MedicalHistoryDao;
+import com.vpu.mp.dao.shop.medicalhistory.MedicalHistoryDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 
 import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListParam;

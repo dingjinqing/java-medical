@@ -1,7 +1,6 @@
-package com.vpu.mp.dao.shop.medicalHistory;
+package com.vpu.mp.dao.shop.medicalhistory;
 
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListParam;
 import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListVo;
 import com.vpu.mp.common.foundation.data.DelFlag;
