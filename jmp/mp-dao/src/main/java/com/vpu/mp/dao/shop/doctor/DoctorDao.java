@@ -21,6 +21,9 @@ import java.util.List;
 import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.Tables.DOCTOR_TITLE;
 
+/**
+ * @author chenjie
+ */
 @Repository
 public class DoctorDao extends ShopBaseDao {
     public static final Integer ROOT_ID = 0;
