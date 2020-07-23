@@ -1,5 +1,8 @@
 package com.vpu.mp.service.foundation.email;
 
+/**
+ * @author luguangyao
+ */
 public class EmailMsgTemplate {
 
 

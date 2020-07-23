@@ -5,9 +5,12 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * @author yangpengcheng
+ */
 @Data
 public class InquiryToPayParam {
-    /*用户id*/
+    /** 用户id*/
     private WxAppSessionUser user;
     /**ip地址*/
     private String clientIp;

@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * 锁实体
+ * @author wangshuai
  */
 @Getter
 @Setter

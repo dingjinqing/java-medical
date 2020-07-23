@@ -3,6 +3,9 @@ package com.vpu.mp.service.foundation.es;
 import com.vpu.mp.service.pojo.shop.goods.es.EsLabelName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 
+/**
+ * @author luguangyao
+ */
 public interface EsAggregationName {
 
     String LABEL_NAME = "label_info";

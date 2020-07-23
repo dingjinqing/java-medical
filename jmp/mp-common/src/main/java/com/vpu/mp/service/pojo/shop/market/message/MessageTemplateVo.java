@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * @author luguangyao
+ */
 @Data
 public class MessageTemplateVo {
     /** 推送消息id */

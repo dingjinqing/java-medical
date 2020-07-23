@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
- *问诊订单
+/**
+ * 问诊订单
+ * @author yangpengcheng
  */
 @RestController
 public class AdminInquiryOrderController extends AdminBaseController{

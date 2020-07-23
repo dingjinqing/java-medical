@@ -6,6 +6,9 @@ import org.elasticsearch.index.query.*;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 public class QueryBuilderArrays {
     private List<TermQueryBuilder> termQueryBuilders;
     private List<TermsQueryBuilder> termsQueryBuilders;

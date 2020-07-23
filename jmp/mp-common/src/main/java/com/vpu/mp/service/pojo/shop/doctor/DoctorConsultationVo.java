@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * @author chenjie
+ */
 @Data
 public class DoctorConsultationVo {
     private List<DoctorConsultationOneParam> doctorList;

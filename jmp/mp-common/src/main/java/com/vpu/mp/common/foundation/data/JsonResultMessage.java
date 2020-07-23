@@ -590,6 +590,8 @@ public class JsonResultMessage {
     public static final String MSG_CARD_GRADE_NONE="card.grade.none";
 
     // 用户卡
+
+
     public static final String USER_CARD_NONE = "user.card.none";
     public static final String MSG_CARD_RECEIVE_FAIL = "card.receive.fail";
     public static final String MSG_CARD_RECEIVE_INVALID = "member.card.receive.invalid";
@@ -632,7 +634,7 @@ public class JsonResultMessage {
     public static final String CARD_SHIP_MONTH = "card.ship.month";
     public static final String CARD_SHIP_WEEK = "card.ship.week";
 
-    //会员导入
+    /** 会员导入 */
     public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
     public static final String CODE_NEED_ONE = "code.need.one";
     public static final String GET_TEMPLATE_NAME = "get.template.name";
