@@ -1127,10 +1127,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 } else {
                     logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
                     order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
-                    logger().info("订单支付成功->待审核状态");
-                    if (!param.getCheckPrescriptionStatus().equals(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
+                    if (param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)) {
+                        logger().info("订单支付成功->待审核状态");
+                        //1审核
                         order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
-                        uploadPrescriptionService.uploadPrescription(param,orderBo,order);
+                    }else if (param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                        logger().info("订单支付成功->待开方状态");
+                        //开方
+                        order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
                     }
                 }
                 order.setPayTime(currentTime);
