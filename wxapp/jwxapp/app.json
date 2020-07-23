@@ -138,7 +138,9 @@
         "medicalrecordinfo/medicalrecordinfo",
         "medicalrecordlist/medicalrecordlist",
         "prescriptionsheet/prescriptionsheet",
-        "repurchaselist/repurchaselist"
+        "repurchaselist/repurchaselist",
+        "patientinfo/patientinfo",
+        "messagelist/messagelist"
       ]
     },
     {

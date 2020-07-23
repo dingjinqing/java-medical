@@ -89,3 +89,9 @@ page{
   text-align: center;
   font-weight: bold;
 }
+.btn_get{
+  margin-top:36rpx;
+  text-align: center;
+  color: #26C4BC;
+  font-size: 28rpx;
+}
