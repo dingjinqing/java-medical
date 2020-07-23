@@ -134,6 +134,7 @@ module.exports = {
     "repurchaselist": "处方药品",
     "prescribe": "待开方",
     "patientinfo": "患者信息",
-    "messagelist": "信息列表"
+    "messagelist": "信息列表",
+    "awaitprescribe":"待开方"
   }
 }

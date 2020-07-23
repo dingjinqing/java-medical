@@ -1,0 +1,4 @@
+/* pages2/awaitprescribe/awaitprescribe.wxss */
+.mian-container{
+  padding-top: 20rpx;
+}

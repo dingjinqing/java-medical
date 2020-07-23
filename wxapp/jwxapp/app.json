@@ -151,7 +151,8 @@
         "allDepartment/allDepartment",
         "operatePrescriptionList/operatePrescriptionList",
         "inquiryList/inquiryList",
-        "prescribe/prescribe"
+        "prescribe/prescribe",
+        "awaitprescribe/awaitprescribe"
       ]
     }
   ],

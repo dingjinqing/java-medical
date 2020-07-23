@@ -1,0 +1,5 @@
+<!--pages2/awaitprescribe/awaitprescribe.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+
+</view>
