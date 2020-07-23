@@ -589,7 +589,7 @@ public class JsonResultMessage {
     public static final String MSG_CARD_SEND_REPEAT="card.send.repeat";
     public static final String MSG_CARD_GRADE_NONE="card.grade.none";
 
-    /**  用户卡
+    /**  用户卡 */
 
 
     public static final String USER_CARD_NONE = "user.card.none";
@@ -696,7 +696,7 @@ public class JsonResultMessage {
     public static final String CARD_EXAMINE_CONSUME_TITLE = "card.examine.consume.title";
     public static final String CARD_EXAMINE_CHARGE_TITLE = "card.examine.charge.title";
 
-    /**  会员卡优惠券信息
+    /**  会员卡优惠券信息 */
     public static final String CARD_COUPON_RECEIVE_DAY_START = "card.receive.day.start";
     public static final String CARD_COUPON_DAY = "card.receive.day";
     public static final String CARD_COUPON_HOUR = "card.receive.hour";
@@ -705,7 +705,7 @@ public class JsonResultMessage {
     public static final String CARD_COUPON_SATISFY = "card.coupon.satisfiy";
     public static final String CARD_COUPON_CON_ALL = "user.card.coupon.condition.all";
     public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
-    /** 用户-地址
+    /** 用户-地址 */
     public static final String USER_ADDRESS_COUNT_MORE_THAN_MAX = "user.address.count.more.than.max";
     public static final String USER_INVITED_MSG = "user.invited.msg";
     public static final String USER_INVITED_NOT_EACH_OTHER = "user.invited.not.each.other";
