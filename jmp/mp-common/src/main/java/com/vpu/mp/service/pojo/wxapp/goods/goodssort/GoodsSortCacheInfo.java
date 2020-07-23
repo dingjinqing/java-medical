@@ -1,5 +1,8 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goodssort;
 
+/**
+ * @author luguangyao
+ */
 public class GoodsSortCacheInfo {
 
     private Integer sortId;

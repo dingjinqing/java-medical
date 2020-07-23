@@ -3,6 +3,9 @@ package com.vpu.mp.service.pojo.shop.distribution;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ * @author changle
+ */
 @Data
 public class DistributorLevelUserNumVo {
     @JsonProperty("distributor_level")

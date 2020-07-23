@@ -4,6 +4,9 @@ import java.util.List;
 
 import lombok.Data;
 
+/**
+ * @author changle
+ */
 @Data
 public class DistributorLevelCfgVo {
 	private List<?> lavelData;

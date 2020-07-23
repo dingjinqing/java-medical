@@ -9,6 +9,9 @@ import com.google.gson.JsonSerializer;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessage;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessageData;
 
+/**
+ * @author zhaojianqiang
+ */
 public class WxMaSubscribeMessageGsonAdapter implements JsonSerializer<WxMaSubscribeMessage>{
 
 	@Override

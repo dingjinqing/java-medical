@@ -10,6 +10,9 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class ScoreSetParam {
 	/** 备注Id  {@link com.vpu.mp.service.pojo.shop.operation.RemarkTemplate}*/

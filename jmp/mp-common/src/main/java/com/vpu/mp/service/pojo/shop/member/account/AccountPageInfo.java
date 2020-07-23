@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.Data;
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class AccountPageInfo {
 	/** 用户名称 */

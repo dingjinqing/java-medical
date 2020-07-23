@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.member.builder;
 import java.sql.Timestamp;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 
+/**
+ * @author huangzhuangzhuang
+ */
 public class CardReceiveCodeRecordBuilder {
 	private CardReceiveCodeRecord record;
 	

@@ -7,6 +7,9 @@ import com.vpu.mp.common.foundation.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * @author kangyaxin
+ */
 @Getter
 @AllArgsConstructor
 public enum UserImportTemplate {

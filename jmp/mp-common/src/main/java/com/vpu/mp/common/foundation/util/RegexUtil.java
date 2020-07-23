@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author lixinguo
+ */
 public class RegexUtil {
 
     private static final List<String> STR = Arrays.asList(

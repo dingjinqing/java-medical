@@ -5,6 +5,9 @@ import lombok.NonNull;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author yangpengcheng
+ */
 @Data
 public class PatientExternalRequestParam {
     @NotNull

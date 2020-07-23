@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 
 /**
  * ES 商品中不同会员等级中的各个规格对应的价格
+ * @author luguangyao
  */
 public class EsGoodsGrade {
 

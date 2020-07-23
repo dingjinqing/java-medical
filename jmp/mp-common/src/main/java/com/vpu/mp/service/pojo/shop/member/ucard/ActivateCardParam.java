@@ -10,6 +10,9 @@ import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 @Builder
 public class ActivateCardParam {

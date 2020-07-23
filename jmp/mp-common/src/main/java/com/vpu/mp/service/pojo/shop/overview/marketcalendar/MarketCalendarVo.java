@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class MarketCalendarVo {
 	private Integer id;

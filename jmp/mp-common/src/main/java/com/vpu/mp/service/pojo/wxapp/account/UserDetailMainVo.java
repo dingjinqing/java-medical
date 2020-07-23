@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.wxapp.account;
 
 import lombok.Data;
 
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class UserDetailMainVo {
 	private Integer id;

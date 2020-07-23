@@ -8,6 +8,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 @Data
 public class EsGoodsProductEntity {
 
