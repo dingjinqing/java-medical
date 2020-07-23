@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+/**
+ * @author luguangyao
+ */
 @Component
 @Slf4j
 public class EsGoodsThread  implements Callable<Boolean> {
@@ -63,8 +66,9 @@ public class EsGoodsThread  implements Callable<Boolean> {
         return result;
     }
     private Integer getTimes(Integer allSize){
-        Integer times = allSize/400;
-        if( allSize%400 != 0 ){
+        int perSize = 400;
+        Integer times = allSize/ perSize;
+        if( allSize% perSize != 0 ){
             times++;
         }
         return times;

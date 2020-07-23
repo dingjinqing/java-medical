@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.form.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,54 +20,78 @@ import java.util.List;
 @ToString
 public class FormCfgBo {
     /**标题*/
-    private String page_name;
+    @JsonProperty("page_name")
+    private String pageName;
+
     /**有效期*/
-    private Byte is_forever_valid;
+    @JsonProperty("is_forever_valid")
+    private Byte isForeverValid;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp start_time;
+    @JsonProperty("start_time")
+    private Timestamp startTime;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp end_time;
+    @JsonProperty("end_time")
+    private Timestamp endTime;
     /**底部导航*/
-    private Byte has_bottom;
+    @JsonProperty("has_bottom")
+    private Byte hasBottom;
     /**提交次数限制 1不限制 */
-    private Byte post_times;
+    @JsonProperty("post_times")
+    private Byte postTimes;
     /**每天提交值*/
-    private Integer day_times;
+    @JsonProperty("post_times")
+    private Integer dayTimes;
     /**累计提交值*/
-    private Integer total_times;
+    @JsonProperty("total_times")
+    private Integer totalTimes;
     /**总反馈数量限制*/
-    private Integer get_times;
+    @JsonProperty("get_times")
+    private Integer getTimes;
     /**提交按钮文字*/
-    private String notice_name;
+    @JsonProperty("notice_name")
+    private String noticeName;
     /**提交按钮文字颜色*/
-    private String font_color;
+    @JsonProperty("font_color")
+    private String fontColor;
     /**提交按钮背景颜色*/
-    private String bg_color;
+    @JsonProperty("bg_color")
+    private String bgColor;
     /**表单海报背景图片*/
-    private String bg_img;
+    @JsonProperty("bg_img")
+    private String bgImg;
     /**自定义跳转checked*/
-    private Integer set_own_link;
+    @JsonProperty("set_own_link")
+    private Integer setOwnLink;
     /**自定义按钮名称*/
-    private String custom_btn_name;
+    @JsonProperty("custom_btn_name")
+    private String customBtnName;
     /**跳转链接*/
-    private String custom_link_path;
+    @JsonProperty("custom_link_path")
+    private String customLinkPath;
     /**跳转链接名称*/
-    private String custom_link_name;
+    @JsonProperty("custom_link_name")
+    private String customLinkName;
     /**参与送优惠卷checkbox*/
-    private Integer send_coupon;
+    @JsonProperty("send_coupon")
+    private Integer sendCoupon;
     /**选择的优惠卷数据列表*/
-    private List<SendCoupon> send_coupon_list;
+    @JsonProperty("send_coupon_list")
+    private List<SendCoupon> sendCouponList;
     /**参与送积分选中*/
-    private Byte send_score;
+    @JsonProperty("send_score")
+    private Byte sendScore;
     /**输入的送积分*/
-    private Integer send_score_number;
+    @JsonProperty("send_score_number")
+    private Integer sendScoreNumber;
     /**授权手机号*/
-    private Integer authorized_name;
+    @JsonProperty("authorized_name")
+    private Integer authorizedName;
     /**授权用户信息*/
-    private Integer authorized_mobile;
+    @JsonProperty("authorized_mobile")
+    private Integer authorizedMobile;
 
 }

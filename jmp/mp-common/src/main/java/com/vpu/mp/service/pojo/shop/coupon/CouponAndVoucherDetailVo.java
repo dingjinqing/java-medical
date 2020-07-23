@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,6 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 public class CouponAndVoucherDetailVo {
-    // customer_avail_coupons表数据
     private Integer id;
     private String couponSn;
     private Integer userId;
@@ -38,26 +38,60 @@ public class CouponAndVoucherDetailVo {
     private Timestamp updateTime;
     private String wxOpenid;
     private String wxUnionId;
-    //mrking_voucher表数据
+
     private String actName;
     private BigDecimal denomination;
-    private String act_code;
-    private String least_consume;
-    private String use_explain;
-    private String recommend_goods_id;
-    private String recommend_cat_id;
-    private String recommend_sort_id;
-    private String use_score;
-    private String score_number;
-    private String is_delete;
+
+    @JsonProperty("act_code")
+    private String actCode;
+
+    @JsonProperty("least_consume")
+    private String leastConsume;
+
+    @JsonProperty("use_explain")
+    private String useExplain;
+
+    @JsonProperty("recommend_goods_id")
+    private String recommendGoodsId;
+
+    @JsonProperty("recommend_cat_id")
+    private String recommendCatId;
+
+    @JsonProperty("recommend_sort_id")
+    private String recommendSortId;
+
+    @JsonProperty("use_score")
+    private String useScore;
+
+    @JsonProperty("score_number")
+    private String scoreNumber;
+
+    @JsonProperty("is_delete")
+    private String isDelete;
+
+
     private String validity;
-    private String validity_hour;
-    private String validity_minute;
-    private String random_max;
-    private String random_min;
-    private String coupon_type;
-    private String receive_per_num;
-    private String receive_num;
+
+    @JsonProperty("validity_hour")
+    private String validityHour;
+
+    @JsonProperty("validity_minute")
+    private String validityMinute;
+
+    @JsonProperty("random_max")
+    private String randomMax;
+
+    @JsonProperty("random_min")
+    private String randomMin;
+
+    @JsonProperty("coupon_type")
+    private String couponType;
+
+    @JsonProperty("receive_per_num")
+    private String receivePerNum;
+
+    @JsonProperty("receive_num")
+    private String receiveNum;
 
 
 }

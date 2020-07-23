@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.saas.shop.mp;
 
 import lombok.Data;
 
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class MpOfficeAccountVo {
 

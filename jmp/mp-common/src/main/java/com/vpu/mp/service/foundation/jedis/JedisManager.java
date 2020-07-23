@@ -137,6 +137,16 @@ public class JedisManager {
 		}
 	}
 
+    /**
+     * 删除key集合
+     * @param keys
+     */
+	public void delete(String[] keys){
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.del(keys);
+        }
+    }
+
 	/**
 	 * 删除key的缓存
 	 *

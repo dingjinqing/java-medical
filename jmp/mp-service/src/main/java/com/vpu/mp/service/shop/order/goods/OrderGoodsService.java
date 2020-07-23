@@ -344,6 +344,7 @@ public class OrderGoodsService extends ShopBaseService {
 			//处方信息
 			prescriptionInfo(goods.getPrescriptionInfo()).
 			checkPrescriptionStatus(goods.getCheckPrescriptionStatus()).
+			medicalAuditStatus(goods.getOrderAuditType()).
             build();
 		if (goods.getMedicalInfo()!=null){
 			bo.setIsRx(goods.getMedicalInfo().getIsRx());

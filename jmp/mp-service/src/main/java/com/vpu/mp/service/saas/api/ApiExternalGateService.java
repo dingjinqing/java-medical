@@ -77,7 +77,8 @@ public class ApiExternalGateService extends MainBaseService {
         Timestamp timestamp = new Timestamp(curSecond*1000);
         Timestamp now = DateUtils.getLocalDateTime();
         // 大于30秒
-        if (now.getTime() - timestamp.getTime() > 30000) {
+        int timeout = 30000;
+        if (now.getTime() - timestamp.getTime() > timeout) {
             logPrinter(param.getAppId(), "timestamp 超时");
             return false;
         }

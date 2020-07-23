@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.title;
 
 import lombok.Data;
 
+/**
+ * @author chenjie
+ */
 @Data
 public class TitleOneParam {
     private Integer id;

@@ -3,6 +3,9 @@ package com.vpu.mp.service.pojo.wxapp.account;
 import java.sql.Timestamp;
 
 import lombok.Data;
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class UserLoginRecordVo {
     private Long      id;

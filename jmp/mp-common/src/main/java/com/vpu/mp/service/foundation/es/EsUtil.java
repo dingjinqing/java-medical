@@ -25,6 +25,9 @@ import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Objects;
 
+/**
+ * @author luguangyao
+ */
 public class EsUtil {
 
 
@@ -40,7 +43,7 @@ public class EsUtil {
             xContentBuilder = JsonXContent.contentBuilder()
                 .startObject()
                 .startObject("properties");
-            assemblyXContentBuilder(xContentBuilder,clz);
+            assemblyXcontentBuilder(xContentBuilder,clz);
             xContentBuilder.endObject().endObject();
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +51,7 @@ public class EsUtil {
 
         return xContentBuilder;
     }
-    private static void assemblyXContentBuilder(XContentBuilder xContentBuilder,Class<?> clz) throws IOException {
+    private static void assemblyXcontentBuilder(XContentBuilder xContentBuilder, Class<?> clz) throws IOException {
         Field[] fieldArray = clz.getDeclaredFields();
         for( Field field : fieldArray ){
             EsFiled a = field.getAnnotation(EsFiled.class);
@@ -57,11 +60,11 @@ public class EsUtil {
                 xContentBuilder.field("type",a.type());
                 if( field.getName().equals(EsSearchName.PRDS) ){
                     xContentBuilder.startObject("properties");
-                    assemblyXContentBuilder(xContentBuilder,EsGoodsProduct.class);
+                    assemblyXcontentBuilder(xContentBuilder,EsGoodsProduct.class);
                     xContentBuilder.endObject();
                 }else if(EsSearchName.GRADES.equals(field.getName())){
                     xContentBuilder.startObject("properties");
-                    assemblyXContentBuilder(xContentBuilder, EsGoodsGrade.class);
+                    assemblyXcontentBuilder(xContentBuilder, EsGoodsGrade.class);
                     xContentBuilder.endObject();
                 }else{
                     xContentBuilder.field("index",a.index());
@@ -81,7 +84,8 @@ public class EsUtil {
                 if( "scaled_float".equals(a.type()) ){
                     xContentBuilder.field("scaling_factor",a.scaledNumber());
                 }
-                if( a.name().equals("goods_name") ){
+                String goodsName = "goods_name";
+                if( a.name().equals(goodsName) ){
                     xContentBuilder.startObject("fields")
                         .startObject("sing")
                         .field("type","text")

@@ -26,7 +26,7 @@ public enum SourceNameEnum {
 	private Integer code;
 	/**来源名称*/
 	private String name;
-	private final static String propertyFile = "member";
+	private final static String PROPERTY_FILE = "member";
 	private SourceNameEnum(Integer code,String name) {
 		this.code = code;
 		this.name = name;
@@ -49,7 +49,7 @@ public enum SourceNameEnum {
 	public static String getI18NameByCode(Integer code,String lang) {
 		for(SourceNameEnum e: SourceNameEnum.values()) {
 			if(e.getCode().equals(code)) {
-				return Util.translateMessage(lang,e.getName(),propertyFile);
+				return Util.translateMessage(lang,e.getName(), PROPERTY_FILE);
 			}
 		}
 		return null;

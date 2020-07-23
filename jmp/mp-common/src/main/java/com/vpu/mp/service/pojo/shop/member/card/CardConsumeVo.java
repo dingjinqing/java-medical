@@ -11,20 +11,20 @@ import lombok.Data;
 */
 @Data
 public class CardConsumeVo {
-	// 订单
+	/**   订单 */
 	private String orderSn;
-	// 商品兑换次数
+	/**   商品兑换次数 */
 	private Short exchangCount;
-	// 门店兑换次数
+	/**   门店兑换次数 */
 	private Short count;
-	// 次数变动时间
+	/**   次数变动时间 */
 	private Timestamp createTime;
-	// 用户名
+	/**   用户名 */
 	private String username;
-	// 手机号
+	/**   手机号 */
 	private String mobile;
-	// 商品名称
+	/**   商品名称 */
 	private String goodsName;
-	// 商品图片
+	/**   商品图片 */
 	private String goodsImg;
 }

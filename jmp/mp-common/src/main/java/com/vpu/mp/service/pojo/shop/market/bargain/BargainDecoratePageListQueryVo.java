@@ -40,7 +40,7 @@ public class BargainDecoratePageListQueryVo {
      */
     private Byte currentState;
 
-    //商品
+
     private Integer goodsId;
     private String goodsName;
     private String goodsImg;

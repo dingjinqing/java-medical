@@ -10,6 +10,9 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class ScoreSetParam {
 	/** 备注Id  {@link com.vpu.mp.service.pojo.shop.operation.RemarkTemplate}*/
@@ -31,7 +34,6 @@ public class ScoreSetParam {
 	private Integer[] userId;
 	
 	/** -积分变动数额 */
-	//@Min(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_BE_NEGATIVE, value = 0)
 	@NotNull(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_NULL)
 	private Integer score;
 	

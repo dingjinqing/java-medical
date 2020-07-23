@@ -3,6 +3,9 @@ package com.vpu.mp.service.pojo.saas.question.vo;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 public class FeedbackVo {
     private String submitUser;
 

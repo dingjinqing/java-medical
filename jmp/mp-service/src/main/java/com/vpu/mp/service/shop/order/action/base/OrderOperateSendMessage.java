@@ -28,7 +28,7 @@ import com.vpu.mp.service.shop.config.message.MessageConfigService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
@@ -44,6 +44,7 @@ import java.util.List;
 
 /**
  * 订单操作发送模板消息
+ * @author wangshuai
  */
 @Service
 public class OrderOperateSendMessage extends ShopBaseService {
@@ -331,8 +332,9 @@ public class OrderOperateSendMessage extends ShopBaseService {
 
     private String getString(String goodsName, int sum, int size) {
         StringBuilder result = new StringBuilder(goodsName);
-        if(result.length() > 32){
-            result.substring(0, 32);
+        int maxLength = 32;
+        if(result.length() > maxLength){
+            result.substring(0, maxLength);
         }
         result.append(size == 1 ? StringUtils.EMPTY : "等").append(sum).append("件");
         return result.toString();

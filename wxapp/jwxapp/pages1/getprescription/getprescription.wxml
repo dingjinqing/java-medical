@@ -13,18 +13,19 @@
         </view>
       </view>
       <view class="each_line">
+        <view class="el_left">身份证号码 <text>*</text></view>
+        <view class="el_right">
+          <input type="text" placeholder="请输入身份证号码" bindblur="cardIdInput"></input>
+        </view>
+      </view>
+      <view class="each_line">
         <view class="el_left">手机号 <text>*</text></view>
         <view class="el_right">
           <input type="text" placeholder="请输入手机号" bindblur="mobileInput"></input>
         </view>
       </view>
-      <view class="each_line">
-        <view class="el_left">身份证号码</view>
-        <view class="el_right">
-          <input type="text" placeholder="请输入身份证号码" bindblur="cardIdInput"></input>
-        </view>
-      </view>
       <view class="btn_add" bindtap="getPrescription">获取病历</view>
+      <view class="btn_get" bindtap="addFamily">手动添加就诊人</view>
     </view>
   </view>
   <!-- 需知 -->

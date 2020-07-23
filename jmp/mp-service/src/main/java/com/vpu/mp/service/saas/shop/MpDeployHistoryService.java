@@ -11,6 +11,9 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MpDeployHistoryService extends MainBaseService {
 		

@@ -699,7 +699,7 @@ public class IntegralConvertService extends ShopBaseService {
      * @param param 活动id
      * @retuen 二维码信息
      */
-    public ShareQrCodeVo getMpQRCode(IntegralConvertId param) {
+    public ShareQrCodeVo getMpQrCode(IntegralConvertId param) {
         Integer goodsId = db().select(INTEGRAL_MALL_DEFINE.GOODS_ID)
             .from(INTEGRAL_MALL_DEFINE)
             .where(INTEGRAL_MALL_DEFINE.ID.eq(param.getId()))

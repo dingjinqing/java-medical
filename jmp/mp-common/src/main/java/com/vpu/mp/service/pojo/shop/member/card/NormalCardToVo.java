@@ -59,7 +59,7 @@ public class NormalCardToVo extends NormalCardVo {
 	private String discountBrandId;
 	private String[] brandId;
 	
-	/**
+	/*
 	 * 积分具体详情
 	 */
 	/** 开卡送多少积分 */
@@ -69,7 +69,7 @@ public class NormalCardToVo extends NormalCardVo {
 	private ScoreJson scoreJson;
 	
 	
-	/**
+	/*
 	 * 卡充值
 	 */
 	/** 开卡送多少元 */
@@ -91,34 +91,34 @@ public class NormalCardToVo extends NormalCardVo {
 	
 	/** 激活需要的信息 */
 	private String[] activationCfgBox;
-	
-	// 是否开卡送券：0不是，1是
+
+    /** 是否开卡送券：0不是，1是 */
 	private Byte sendCouponSwitch;
-	// 送惠类型：0优惠券，1优惠券礼包
+    /** 送惠类型：0优惠券，1优惠券礼包 */
 	private Byte sendCouponType;
-	//赠送优惠券或礼包id，字符串逗号隔开
+    /** 赠送优惠券或礼包id，字符串逗号隔开 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String sendCouponIds;
 	private List<Integer> couponIds;
-	// 优惠券详细信息裂变
+    /** 优惠券详细信息裂变 */
 	private List<CouponGivePopVo> couponList;
-	
+
 	/**
 	 * 	同步打标签
 	 */
 	@JsonProperty("cardTag")
 	private CardTag myCardTag;
-	
+
 	/**
 	 *	不可与优惠券公用的营销活动
 	 */
 	List<CardMarketActivity> marketActivities;
-	
+
 	/**
 	 * 优惠券礼包
 	 */
 	UserCardCouponPack couponPack;
-	
+
 	/**
 	 * 处理策略
 	 */
@@ -126,38 +126,38 @@ public class NormalCardToVo extends NormalCardVo {
 	public void changeJsonCfg() {
 		log.info("执行NormalCardToVo的处理策略");
 		super.changeJsonCfg();
-		
-		/** 积分指定商品 处理 */
-		/** 商品id */
+
+		/* 积分指定商品 处理 */
+		/* 商品id */
 		if(isNotBlank(discountGoodsId)) {
 			goodsId = discountGoodsId.replaceAll("\\s+","").split(",");
 		}else {
 			goodsId = new String[] {};
 		}
-		/** 商家分类id */
+		/* 商家分类id */
 		if(isNotBlank(discountSortId)) {
 			shopCategoryIds = discountSortId.replaceAll("\\s+","").split(",");
 		}else {
 			shopCategoryIds = new String[] {};
 		}
-		/**平台分类id */
+		/*平台分类id */
 		if(isNotBlank(discountCatId)) {
 			platformCategoryIds = discountCatId.replaceAll("\\s+","").split(",");
 		}else {
 			platformCategoryIds = new String[] {};
 		}
-		/** 品牌分类id */
+		/* 品牌分类id */
 		if(isNotBlank(discountBrandId)) {
 			brandId = discountBrandId.replaceAll("\\s+","").split(",");
 		}else {
 			brandId = new String[] {};
 		}
-		
-		
-		
-		/** 购物送积分策略json对象 */
+
+
+
+		/* 购物送积分策略json对象 */
 		String buyScore = this.getBuyScore();
-		if (buyScore != null && !buyScore.equals("")) {
+		if (!StringUtils.isBlank(buyScore)) {
 			try {
 				log.info("正在解析数据");
 				scoreJson = MAPPER.readValue(buyScore, ScoreJson.class);
@@ -166,32 +166,32 @@ public class NormalCardToVo extends NormalCardVo {
 			}
 		}
 
-		/** 卡充值策略 */
+		/* 卡充值策略 */
 		String chargeMoney = this.getChargeMoney();
 		if (!StringUtils.isBlank(chargeMoney)) {
-	
+
 			try {
 				powerCardJson = MAPPER.readValue(chargeMoney, PowerCardJson.class);
 			} catch (Exception e) {
 				log.info("卡充值策略json解析失败");
 			}
 		}
-		
+
 		// 充值开关
 		if(sendMoney==null) {
 			this.powerCard = 0;
 		}else {
 			this.powerCard = 1;
 		}
-		
-		/** 门店策略处理 */
+
+		/* 门店策略处理 */
 		if (storeList != null) {
 			storeList = storeList.replaceAll("\\s+", "");
 			storeIdList = Util.json2Object(storeList, new TypeReference<List<Integer>>() {
             }, false);
-			
+
 			if(storeIdList != null && storeIdList.size()>0) {
-				/** 门店类型 */
+				/* 门店类型 */
 				if (MCARD_STP_BAN.equals(storeIdList.get(0).byteValue()) || MCARD_STP_ALL.equals(storeIdList.get(0).byteValue())) {
 					storeListType = storeIdList.get(0).byteValue();
 				} else {
@@ -199,20 +199,20 @@ public class NormalCardToVo extends NormalCardVo {
 				}
 			}
 		}
-		
-		/** 激活需要填写的信息 */
+
+		/* 激活需要填写的信息 */
 		String activationCfg = getActivationCfg();
 		if(null != activationCfg) {
 			activationCfgBox = activationCfg.replaceAll("\\s+","").split(",");
 		}
-		
-		/** 购买类型 */
+
+		/* 购买类型 */
 		if(BUY_BY_CRASH.equals(payType)) {
 			payMoney = payFee;
 		}else if(BUY_BY_SCORE.equals(payType)) {
 			payScore = payFee;
 		}
-		
+
 		// 优惠券
 		couponIds = Util.stringToList(sendCouponIds);
 	}

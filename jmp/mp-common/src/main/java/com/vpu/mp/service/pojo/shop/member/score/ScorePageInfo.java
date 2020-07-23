@@ -3,6 +3,9 @@ package com.vpu.mp.service.pojo.shop.member.score;
 import java.sql.Timestamp;
 
 import lombok.Data;
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class ScorePageInfo {
 	/** 用户名称 */

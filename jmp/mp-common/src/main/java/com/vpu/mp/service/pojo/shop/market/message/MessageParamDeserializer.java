@@ -16,7 +16,7 @@ import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubscribeMessageConfig;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubscribeMessageConfig;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,22 +37,22 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
         Iterator<String> iterator = node.fieldNames();
         while( iterator.hasNext() ){
             String key = iterator.next();
-            JsonNode j_node = node;
+            JsonNode jNode = node;
             if( "shopId".equals(key) ){
-                param.setShopId(j_node.findValue(key).asInt());
+                param.setShopId(jNode.findValue(key).asInt());
             }else if( "messageTemplateId".equals(key) ){
-                param.setMessageTemplateId(j_node.findValue(key).asInt());
+                param.setMessageTemplateId(jNode.findValue(key).asInt());
             }else if( "userIdList".equals(key) ){
                 List<Integer> ids = new ArrayList<>();
-                j_node.get(key).forEach(x->
+                jNode.get(key).forEach(x->
                     ids.add(x.intValue()) );
                 param.setUserIdList(ids);
             }else if( "page".equals(key )){
-                param.setPage(j_node.findValue(key).asText());
-            }else if( "type".equals(key) && !"null".equals(j_node.findValue(key).asText())){
-                param.setType(j_node.findValue(key).asInt());
+                param.setPage(jNode.findValue(key).asText());
+            }else if( "type".equals(key) && !"null".equals(jNode.findValue(key).asText())){
+                param.setType(jNode.findValue(key).asInt());
             }else if( "maTemplateData".equals(key) )  {
-                JsonNode maData = j_node.findValue(key);
+                JsonNode maData = jNode.findValue(key);
                 if( maData.size()>0 ){
                 	MaSubscribeData data = reSetMaData(maData);
                     MaTemplateData ma = MaTemplateData.builder()
@@ -62,7 +62,7 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
                     param.setMaTemplateData(ma);
                 }
             }else if( "mpTemplateData".equals(key) )  {
-                JsonNode mpData = j_node.findValue(key);
+                JsonNode mpData = jNode.findValue(key);
                 if( mpData.size()>0 ) {
                     String[][] data = assemblyArray(mpData);
                     MpTemplateConfig config = MpTemplateConfig.getConfig(mpData.findPath("config").asText());
@@ -73,9 +73,9 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
                     param.setMpTemplateData(mp);
                 }
             }else if( "emphasisKeywordSn".equals(key) ){
-                param.setEmphasisKeyword(j_node.findValue(key).asText());
+                param.setEmphasisKeyword(jNode.findValue(key).asText());
             }else if("taskJobId".equals(key)){
-                param.setTaskJobId(j_node.findValue(key).asInt());
+                param.setTaskJobId(jNode.findValue(key).asInt());
             }
         }
         return param;
@@ -84,9 +84,9 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
         int size = mData.findValue("data").size();
         String[][] data = new String[size][3];
         for (int i = 0; i < size; i++) {
-            JsonNode i_node = mData.findValue("data").get(i);
-            for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
-                data[i][j] = i_node.get(j).asText();
+            JsonNode iNode = mData.findValue("data").get(i);
+            for (int j = 0,jLen=iNode.size(); j < jLen ; j++) {
+                data[i][j] = iNode.get(j).asText();
             }
         }
         return data;
@@ -116,10 +116,10 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
         int size = mData.size();
         String[][] data = new String[size][1];
         for (int i = 0; i < size; i++) {
-            JsonNode i_node = mData.get(i);
-            for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
-            	log.info("值:{}",i_node.get(j).asText());
-                data[i][j] = i_node.get(j).asText();
+            JsonNode iNode = mData.get(i);
+            for (int j = 0,jLen=iNode.size(); j < jLen ; j++) {
+            	log.info("值:{}",iNode.get(j).asText());
+                data[i][j] = iNode.get(j).asText();
             }
         }
         return data;

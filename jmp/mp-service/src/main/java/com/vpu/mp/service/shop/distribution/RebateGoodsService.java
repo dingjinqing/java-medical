@@ -121,8 +121,8 @@ public class RebateGoodsService extends ShopBaseService{
 			select.where(ORDER_INFO.FINISHED_TIME.le(param.getEndRebateTme()));
 		}
 		//返利订单号
-		if(param.getRebateORderSn() != null) {
-			select.where(ORDER_GOODS_REBATE.ORDER_SN.contains(param.getRebateORderSn()));
+		if(param.getRebateOrderSn() != null) {
+			select.where(ORDER_GOODS_REBATE.ORDER_SN.contains(param.getRebateOrderSn()));
 		}
 		//返利状态
 		if(param.getRebateStatus() != null) {

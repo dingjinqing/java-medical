@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.payment;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -50,6 +51,9 @@ import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_ST
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class PaymentService extends ShopBaseService {
 
@@ -477,7 +481,7 @@ public class PaymentService extends ShopBaseService {
     private void onPatNotifyInquiryOrder(PaymentRecordParam param)throws MpException,WxPayException{
         logger().info("问诊订单支付回调start");
         String orderSn = param.getOrderSn();
-        InquiryOrderRecord orderInfo=inquiryOrderService.getByOrderSn(param.getOrderSn());
+        InquiryOrderDo orderInfo=inquiryOrderService.getByOrderSn(param.getOrderSn());
         if (Objects.isNull(orderInfo)) {
             logger().error("问诊订单订单统一支付回调（onPatNotifyInquiryOrder）：订单【订单号：{}】不存在！", orderSn);
             throw new WxPayException("onPayNotifyCardOrder：orderSn 【" + orderSn + "】not found ！");

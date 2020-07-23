@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * @author changle
+ */
 @Data
 public class DistributorLevelParam {
 	private Integer id;

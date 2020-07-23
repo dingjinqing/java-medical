@@ -17,13 +17,13 @@ import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeJsonVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetListParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetListVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetNoActListParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetNoActListVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportParam;
 
 /**
  * 会员导入
@@ -106,8 +106,8 @@ public class UserImportController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/user/import/list")
-	public JsonResult getList(@RequestBody UIGetListParam param) {
-		PageResult<UIGetListVo> descList = shop().member.userImportService.descList(param);
+	public JsonResult getList(@RequestBody UiGetListParam param) {
+		PageResult<UiGetListVo> descList = shop().member.userImportService.descList(param);
 		return success(descList);
 
 	}
@@ -119,9 +119,9 @@ public class UserImportController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/user/import/list/noActive")
-	public JsonResult listNoActive(@RequestBody UIGetNoActListParam param) {
+	public JsonResult listNoActive(@RequestBody UiGetNoActListParam param) {
 		param.setIsActivate(ZERO);
-		PageResult<UIGetNoActListVo> addGroupName = shop().member.userImportService.addGroupName(param);
+		PageResult<UiGetNoActListVo> addGroupName = shop().member.userImportService.addGroupName(param);
 		return success(addGroupName);
 	}
 
@@ -132,7 +132,7 @@ public class UserImportController extends AdminBaseController {
 	 * @param response
 	 */
 	@PostMapping(value = "/admin/user/import/export")
-	public void getErrorExcel(@RequestBody UIGetListParam param, HttpServletResponse response) {
+	public void getErrorExcel(@RequestBody UiGetListParam param, HttpServletResponse response) {
 		logger().info("开始下载失败数据");
 		Workbook workbook = shop().member.userImportService.getErrorMsg(param.getBatchId(), getLang());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.EXPORT_TEMPLATE_NAME, LANGUAGE_TYPE_EXCEL,
@@ -148,7 +148,7 @@ public class UserImportController extends AdminBaseController {
 	 * @param response
 	 */
 	@PostMapping(value = "/admin/user/import/exportActivate")
-	public void getexportActivate(@RequestBody UIGetListParam param, HttpServletResponse response) {
+	public void getexportActivate(@RequestBody UiGetListParam param, HttpServletResponse response) {
 		logger().info("开始下载激活数据");
 		Workbook workbook = shop().member.userImportService.getActiveExcel(param.getBatchId(), getLang());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.EXPORT_TEMPLATE_ACTIVE_NAME, LANGUAGE_TYPE_EXCEL,

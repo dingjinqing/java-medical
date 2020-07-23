@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -39,5 +40,6 @@ public class DistributionIndex {
      * 统计数据项
      * 数据库字段存储的是下划线格式，如果用驼峰会导致反序列化失败
      */
-    private List<DistributionIndexItem> item_list;
+    @JsonProperty("item_list")
+    private List<DistributionIndexItem> indexItems;
 }

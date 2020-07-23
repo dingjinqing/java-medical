@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * 小程序端用户领取优惠券入参
- * user:常乐
+ * @author 常乐
  * date:2019-11-21
  */
 @Data

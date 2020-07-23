@@ -75,7 +75,7 @@ public class GenerateQrCode {
     	// 会员卡二维码
     	BufferedImage cardQrCode = null;
     	try {
-			byte[] qrCodeByte = QrCodeGenerator.generateQRCodeImg(cardNo, 450, 450);
+			byte[] qrCodeByte = QrCodeGenerator.generateQrCodeImg(cardNo, 450, 450);
 			ByteArrayInputStream bais = new ByteArrayInputStream(qrCodeByte);
 			cardQrCode = ImageIO.read(bais);
 		} catch (Exception e) {

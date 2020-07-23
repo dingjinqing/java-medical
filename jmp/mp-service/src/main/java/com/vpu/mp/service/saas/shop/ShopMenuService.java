@@ -19,7 +19,7 @@ import com.vpu.mp.service.pojo.shop.auth.ShopMenuParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopPriPassParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopVersionListVo;
 import com.vpu.mp.service.pojo.shop.auth.ShopVersionParam;
-import com.vpu.mp.service.pojo.shop.auth.shopMenuList;
+import com.vpu.mp.service.pojo.shop.auth.ShopMenuList;
 
 /**
  * 
@@ -287,7 +287,7 @@ public class ShopMenuService extends MainBaseService {
 	 * 返回所有权限信息
 	 * @return
 	 */
-	public shopMenuList getAuthority() {
+	public ShopMenuList getAuthority() {
 		logger().info("查询Json");
 		String json = Util.loadResource(menuJson);
 		
@@ -322,7 +322,7 @@ public class ShopMenuService extends MainBaseService {
 				outPwdList.add(innerList);				
 			}
 		}
-		shopMenuList vo=new shopMenuList();
+		ShopMenuList vo=new ShopMenuList();
 		vo.setShopMenuList(outList);
 		vo.setShopPriPassList(outPwdList);
 		

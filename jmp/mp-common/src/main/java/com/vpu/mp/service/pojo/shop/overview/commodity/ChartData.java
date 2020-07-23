@@ -15,11 +15,11 @@ import java.util.Map;
 @Data
 @Builder
 public class ChartData {
-    // top10商品名称列表
+    /**   top10商品名称列表 */
     @Builder.Default
     List<String> columns = new ArrayList<>();
-    // key：日期date，value：2020-01-01
-    // key：商品名称，value：销售额/销售订单量（付款商品件数）
+    /**   key：日期date，value：2020-01-01 */
+    /**   key：商品名称，value：销售额/销售订单量（付款商品件数） */
     List<Map<String, Object>> rows;
 
     /*@PostConstruct

@@ -13,16 +13,29 @@ import com.vpu.mp.common.foundation.util.Util;
  *
  */
 public class CardHolderColNameI18n implements IDymicColNameI18n {
-	//	是否提交激活申请
+
+    /**
+     * 是否提交激活申请
+     */
 	public static final String IS_SUBMIT = "isSubmit";
-	//	审核状态
-	public static final String STATUS = "examineStatus"; 
-	//	卡余额
-	public static final String CARD_BALANCE = "balance";
-	//	消费次数
+
+    /**
+     * 审核状态
+     */
+    public static final String STATUS = "examineStatus";
+    /**
+     * 卡余额
+     */
+    public static final String CARD_BALANCE = "balance";
+    /**
+     *  消费次数
+     */
 	public static final String CONSUME_TIMES = "consumeTimes";
-	//	充值次数
-	public static final String CHARGE_TIMES = "chargeTimes";
+
+    /**
+     * 充值次数
+     */
+    public static final String CHARGE_TIMES = "chargeTimes";
 
 	private Map<String,String> map=null;
 	public CardHolderColNameI18n() {

@@ -82,7 +82,8 @@ public class ApiExternalRequestService extends MainBaseService {
         String post=null;
         try {
             HttpResponse response = HttpRequest.post(location).form(param).timeout(-1).execute();
-            if (response.getStatus()==200){
+            int successStatus = 200;
+            if (response.getStatus()== successStatus){
                 post =response.body();
             }else {
                 log.warn("请求外部服务-放回码{}：" , response.getStatus());

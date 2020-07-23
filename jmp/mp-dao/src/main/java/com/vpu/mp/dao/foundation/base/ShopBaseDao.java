@@ -20,7 +20,7 @@ public class ShopBaseDao extends AbstractCommonBaseDao {
     /**
      * Shop DB连接事务配置，线程内单例
      */
-    private static final ThreadLocal<Deque<Configuration>> shopDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
+    private static final ThreadLocal<Deque<Configuration>> SHOP_DB_CONFIGURATION = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
 
 
     /**
@@ -28,7 +28,7 @@ public class ShopBaseDao extends AbstractCommonBaseDao {
      */
     @Override
     protected DefaultDSLContext db() {
-        Deque<Configuration> config = shopDbConfiguration.get();
+        Deque<Configuration> config = SHOP_DB_CONFIGURATION.get();
         if (config.peek() != null) {
             return (DefaultDSLContext) DSL.using(config.peek());
         }
@@ -42,7 +42,7 @@ public class ShopBaseDao extends AbstractCommonBaseDao {
      */
     public void transaction(ContextTransactionalRunnable transactional) {
         db().transaction((configuration) -> {
-            Deque<Configuration> config = shopDbConfiguration.get();
+            Deque<Configuration> config = SHOP_DB_CONFIGURATION.get();
             config.push(configuration);
             try {
                 transactional.run();

@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.wxapp.medical.im.SessionTest;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPullMsgParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionSendMsgParam;
@@ -95,15 +96,16 @@ public class WxAppImSessionController extends WxAppBaseController{
         return success(imSessionItemPullVos);
     }
 
-    @PostMapping("/api/wxapp/im/session/test/{type}")
-    public JsonResult test(@PathVariable("type") Integer type) {
-        if (Integer.valueOf(1).equals(type)) {
-            imSessionService.batchCancelSession();
+    @PostMapping("/api/wxapp/im/session/test")
+    public JsonResult test(@RequestBody SessionTest sessionTest) {
+        if (Integer.valueOf(1).equals(sessionTest.getType())) {
+            imSessionService.batchCancelSession(sessionTest.getOrderSns());
         }
 
-        if (Integer.valueOf(1).equals(type)) {
-            imSessionService.batchCloseSession();
+        if (Integer.valueOf(1).equals(sessionTest.getType())) {
+            imSessionService.batchCloseSession(sessionTest.getOrderSns());
         }
         return success();
     }
+
 }

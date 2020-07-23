@@ -5,7 +5,16 @@ package com.vpu.mp.service.pojo.shop.overview;
  * @date 10/31/19
  */
 public interface Builder<T> {
+
+    /**
+     * reset
+     */
     void reset();
 
+    /**
+     * build
+     *
+     * @return T
+     */
     T build();
 }

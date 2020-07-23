@@ -209,8 +209,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     public int addCartUserNum(ProductOverviewParam param) {
         logger().info("开始计算加购人数");
         Map<Integer,Integer> addCartUser = addSingleCartUserNum(param);
-        Integer addCartUserNum = addCartUser.values().stream().reduce(INTEGER_ZERO, Integer::sum);
-        return addCartUserNum;
+        return addCartUser.values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -709,52 +708,52 @@ public class GoodsStatisticTaskService extends ShopBaseService {
                 setEndTime(endTimeStamp);
             }};
             // 商品UV数
-            getSingleGoodsUv(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.UV, v);
+            getSingleGoodsUv(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.UV, v);
             });
             // 新成交客户数
-            singleNewCustomerTranNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.NEW_USER_NUMBER, v);
+            singleNewCustomerTranNum(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.NEW_USER_NUMBER, v);
             });
             // 旧成交客户数
-            singleOldCustomerTranNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.OLD_USER_NUMBER, v);
+            singleOldCustomerTranNum(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.OLD_USER_NUMBER, v);
             });
             // 商品PV数
-            getSingleGoodsPv(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PV, v);
+            getSingleGoodsPv(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.PV, v);
             });
             // 加购人数
-            addSingleCartUserNum(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.CART_UV, v);
+            addSingleCartUserNum(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.CART_UV, v);
             });
             // 付款人数
-            singlePaidUv(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PAID_UV, v);
+            singlePaidUv(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.PAID_UV, v);
             });
             // 付款商品数
-            singlePaidGoodsNum(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PAID_GOODS_NUMBER, v);
+            singlePaidGoodsNum(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.PAID_GOODS_NUMBER, v);
             });
             // 销售额
-            singleGoodsSales(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODS_SALES, v);
+            singleGoodsSales(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.GOODS_SALES, v);
             });
             // 推荐人数
-            singleRecommendUserNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.RECOMMEND_USER_NUM, v);
+            singleRecommendUserNum(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.RECOMMEND_USER_NUM, v);
             });
             // 收藏人数
-            singleCollectUserNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.COLLECT_USE_NUM, v);
+            singleCollectUserNum(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.COLLECT_USE_NUM, v);
             });
             // 商品分享pv
-            getSingleShareGoodsPv(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.SHARE_PV, v);
+            getSingleShareGoodsPv(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.SHARE_PV, v);
             });
             // 商品分享uv
-            getSingleShareGoodsUv(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.SHARE_UV, v);
+            getSingleShareGoodsUv(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.SHARE_UV, v);
             });
         });
     }

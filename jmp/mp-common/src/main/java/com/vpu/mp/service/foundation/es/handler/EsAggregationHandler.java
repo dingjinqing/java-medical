@@ -47,7 +47,7 @@ public class EsAggregationHandler {
         return AggregationBuilders.nested(EsSearchName.PRDS,EsSearchName.PRDS).
             subAggregation(
                 AggregationBuilders.
-                    topHits(EsSearchName.PRD.PRD_ID).
+                    topHits(EsSearchName.Prd.PRD_ID).
                     from(from).
                     size(size)
             );

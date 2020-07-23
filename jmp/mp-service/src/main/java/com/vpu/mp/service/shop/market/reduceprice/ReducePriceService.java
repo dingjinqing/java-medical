@@ -445,7 +445,8 @@ public class ReducePriceService extends ShopBaseService {
                 if(oldRecord == null){
                     retMap.put(r.get(REDUCE_PRICE_PRODUCT.PRD_ID),r);
                 }else{
-                    if(oldRecord.get(REDUCE_PRICE.FIRST) < r.get(REDUCE_PRICE.FIRST) || (oldRecord.get(REDUCE_PRICE.FIRST) == r.get(REDUCE_PRICE.FIRST) && r.get(REDUCE_PRICE.CREATE_TIME).after(oldRecord.get(REDUCE_PRICE.CREATE_TIME)))){
+                    boolean isReducePrdOk = oldRecord.get(REDUCE_PRICE.FIRST) < r.get(REDUCE_PRICE.FIRST) || (oldRecord.get(REDUCE_PRICE.FIRST).equals(r.get(REDUCE_PRICE.FIRST)) && r.get(REDUCE_PRICE.CREATE_TIME).after(oldRecord.get(REDUCE_PRICE.CREATE_TIME)));
+                    if(isReducePrdOk){
                         retMap.put(r.get(REDUCE_PRICE_PRODUCT.PRD_ID),r);
                     }
                 }
@@ -511,7 +512,8 @@ public class ReducePriceService extends ShopBaseService {
         } else if (PERIOD_ACTION_EVERY_MONTH.equals(periodAction)) {
 
             //当前日大于目标日或日相同但是当前时刻大于等于目标时刻则本月活动已结束
-            if (comparedDate.getDayOfMonth() > extendTime.get(0) || (comparedDate.getDayOfMonth() == extendTime.get(0) && comparedTime.compareTo(endLocalTime) >= 0)) {
+            boolean isCurDayExpired = comparedDate.getDayOfMonth() > extendTime.get(0) || (comparedDate.getDayOfMonth() == extendTime.get(0) && comparedTime.compareTo(endLocalTime) >= 0);
+            if (isCurDayExpired) {
                 comparedDate = comparedDate.plusMonths(1);
             }
             LocalDate nextDate = LocalDate.of(comparedDate.getYear(), comparedDate.getMonth(), extendTime.get(0));

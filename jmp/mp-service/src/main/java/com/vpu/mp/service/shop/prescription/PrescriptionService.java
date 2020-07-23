@@ -322,7 +322,7 @@ public class PrescriptionService extends ShopBaseService {
             PrescriptionItemParam item=new PrescriptionItemParam();
             //药品信息映射
             FieldsUtil.assign(info,item);
-            item.setPosCode(prescriptionParam.getPrescriptionCode());
+            item.setPrescriptionCode(prescriptionParam.getPrescriptionCode());
             GoodsDo goods=goodsDao.getByGoodsId(info.getGoodsId());
             item.setMedicinePrice(goods.getShopPrice());
             itemList.add(item);

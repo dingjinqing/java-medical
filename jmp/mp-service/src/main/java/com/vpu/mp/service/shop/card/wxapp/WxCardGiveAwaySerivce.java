@@ -15,7 +15,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardGiveVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.member.card.LimitCardOpt;
+import com.vpu.mp.service.shop.member.card.LimitBaseCardOpt;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	 */
 	public final static Byte FLAG_SUCCESS = 2;
 
-	@Autowired private LimitCardOpt limitCardOpt;
+	@Autowired private LimitBaseCardOpt limitCardOpt;
 	@Autowired private QrCodeService qrCodeSvc;
 	/**
 	 *	添加限次卡转赠记录

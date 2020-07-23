@@ -1,11 +1,11 @@
-package com.vpu.mp.dao.shop.medicalHistory;
+package com.vpu.mp.dao.shop.medicalhistory;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.MedicalHistoryRecord;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.medicalHistory.*;
+import com.vpu.mp.service.pojo.shop.medicalhistory.*;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;

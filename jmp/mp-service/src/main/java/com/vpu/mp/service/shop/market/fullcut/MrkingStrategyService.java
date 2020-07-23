@@ -236,14 +236,14 @@ public class MrkingStrategyService extends ShopBaseService {
         MrkingStrategyGoodsListVo vo = new MrkingStrategyGoodsListVo();
 
         //校验活动
-        MrkingStrategyRecord MrkingStrategyAct = db().selectFrom(MRKING_STRATEGY).where(MRKING_STRATEGY.ID.eq(param.getStrategyId())).fetchAny();
-        if(MrkingStrategyAct == null || MrkingStrategyAct.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+        MrkingStrategyRecord mrkingStrategyAct = db().selectFrom(MRKING_STRATEGY).where(MRKING_STRATEGY.ID.eq(param.getStrategyId())).fetchAny();
+        if(mrkingStrategyAct == null || mrkingStrategyAct.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
             vo.setState((byte)1);
             return vo;
-        }else if(MrkingStrategyAct.getStartTime().after(DateUtils.getLocalDateTime())){
+        }else if(mrkingStrategyAct.getStartTime().after(DateUtils.getLocalDateTime())){
             vo.setState((byte)2);
             return vo;
-        }else if(MrkingStrategyAct.getEndTime().before(DateUtils.getLocalDateTime())){
+        }else if(mrkingStrategyAct.getEndTime().before(DateUtils.getLocalDateTime())){
             vo.setState((byte)3);
             return vo;
         }
@@ -251,18 +251,18 @@ public class MrkingStrategyService extends ShopBaseService {
         //Conditions
         List<MrkingStrategyCondition> conditions = getMrkingStrategyCondition(param.getStrategyId());
         vo.setCondition(conditions);
-        vo.setType(MrkingStrategyAct.getType());
+        vo.setType(mrkingStrategyAct.getType());
 
         //根据购物车里的商品计算底边条的提醒文案
         WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,param.getStrategyId());
-        vo.setFullPriceDoc(getStrategyGoodsDoc(cartBo,MrkingStrategyAct.getType(),conditions));
+        vo.setFullPriceDoc(getStrategyGoodsDoc(cartBo,mrkingStrategyAct.getType(),conditions));
         vo.setTotalPrice(cartBo.getCartGoodsList().stream().map(
             wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
         ).reduce(BigDecimal.ZERO, BigDecimal::add));
 
-        if(StringUtil.isNotEmpty(MrkingStrategyAct.getCardId())){
+        if(StringUtil.isNotEmpty(mrkingStrategyAct.getCardId())){
             //设置了持有会员卡才可以参与活动
-            List<Integer> cardIds = Util.splitValueToList(MrkingStrategyAct.getCardId());
+            List<Integer> cardIds = Util.splitValueToList(mrkingStrategyAct.getCardId());
             List<ValidUserCardBean> cards = saas.getShopApp(getShopId()).userCard.userCardDao.getValidCardList(userId);
             List<Integer> validCardIds = cards.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
             validCardIds.retainAll(cardIds);
@@ -275,8 +275,8 @@ public class MrkingStrategyService extends ShopBaseService {
 
         PageResult<MrkingStrategyGoodsListVo.Goods> goodsPageResult;
         //过滤掉其中用户不能买的会员专享商品
-        if (MrkingStrategyAct.getActType().equals(ACT_TYPE_SECTION)) {
-            List<Integer> inGoodsIds = getMrkingStrategyGoodsIds(MrkingStrategyAct);
+        if (mrkingStrategyAct.getActType().equals(ACT_TYPE_SECTION)) {
+            List<Integer> inGoodsIds = getMrkingStrategyGoodsIds(mrkingStrategyAct);
             List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
             inGoodsIds.removeAll(userExclusiveGoodsIds);
             goodsPageResult = getGoods(inGoodsIds,Collections.emptyList(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
@@ -379,159 +379,208 @@ public class MrkingStrategyService extends ShopBaseService {
         switch (strategyType){
             case 1:
                 //每满减，只有一条condition
-                MrkingStrategyCondition condition = conditions.get(0);
-                if(condition.getFullMoney() != null && condition.getFullMoney().compareTo(BigDecimal.ZERO) > 0){
-                    //满金额类型
-                    if(totalPrice.compareTo(condition.getFullMoney()) >= 0){
-                        BigDecimal reduceMoney = (totalPrice.divide(condition.getFullMoney(),0,BigDecimal.ROUND_DOWN)).multiply(condition.getReduceMoney()).setScale(2,BigDecimal.ROUND_HALF_UP);
-                        doc.setDocType((byte)1);
-                        doc.setReduceMoney(reduceMoney);
-                        return doc;
-                    }else{
-                        BigDecimal diffPrice = condition.getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
-                        doc.setDocType((byte)2);
-                        doc.setReduceMoney(condition.getReduceMoney());
-                        doc.setDiffPrice(diffPrice);
-                        return doc;
-                    }
-                }else if(condition.getAmount() != null && condition.getAmount() > 0){
-                    //满件数类型
-                    int totalGoodsNum = cartBo.getCartGoodsList().stream().mapToInt(WxAppCartGoods::getCartNumber).sum();
-                    if(totalGoodsNum >= condition.getAmount()){
-                        BigDecimal reduceMoney = condition.getReduceMoney().multiply(BigDecimal.valueOf(totalGoodsNum/condition.getAmount())).setScale(2,BigDecimal.ROUND_HALF_UP);
-                        doc.setDocType((byte)1);
-                        doc.setReduceMoney(reduceMoney);
-                        return doc;
-                    }else{
-                        int diffNumber = condition.getAmount() - totalGoodsNum;
-                        doc.setDocType((byte)4);
-                        doc.setDiffNumber(diffNumber);
-                        doc.setReduceMoney(condition.getReduceMoney());
-                        return doc;
-                    }
+                if (processStrategyType1(cartBo, conditions, doc, totalPrice)) {
+                    return doc;
                 }
                 break;
 
             case 2:
                 //满减，可以有多条condition
-                if(conditions.get(0).getFullMoney() != null && conditions.get(0).getFullMoney().compareTo(BigDecimal.ZERO) > 0){
-                    //满金额类型
-                    conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getFullMoney).reversed()).collect(Collectors.toList());
-                    BigDecimal reduceMoney = null;
-                    for(MrkingStrategyCondition c:conditions){
-                        if(totalPrice.compareTo(c.getFullMoney()) >= 0){
-                            reduceMoney = c.getReduceMoney();
-                            break;
-                        }
-                    }
-                    if(reduceMoney != null && reduceMoney.compareTo(BigDecimal.ZERO) > 0){
-                        doc.setDocType((byte)1);
-                        doc.setReduceMoney(reduceMoney);
-                        return doc;
-                    }else {
-                        BigDecimal diffPrice = conditions.get(conditions.size() - 1).getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
-                        doc.setDocType((byte)2);
-                        doc.setReduceMoney(conditions.get(conditions.size() - 1).getReduceMoney());
-                        doc.setDiffPrice(diffPrice);
-                        return doc;
-                    }
-
-                }else if(conditions.get(0).getAmount() != null && conditions.get(0).getAmount() > 0){
-                    //满件数类型
-                    int totalGoodsNum = cartBo.getCartGoodsList().stream().mapToInt(WxAppCartGoods::getCartNumber).sum();
-                    conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getAmount).reversed()).collect(Collectors.toList());
-                    BigDecimal reduceMoney = null;
-                    for(MrkingStrategyCondition c:conditions){
-                        if(totalGoodsNum >= c.getAmount()){
-                            reduceMoney = c.getReduceMoney();
-                            break;
-                        }
-                    }
-                    if(reduceMoney != null && reduceMoney.compareTo(BigDecimal.ZERO) > 0){
-                        doc.setDocType((byte)1);
-                        doc.setReduceMoney(reduceMoney);
-                        return doc;
-                    }else {
-                        int diffNumber = conditions.get(conditions.size() - 1).getAmount() - totalGoodsNum;
-                        doc.setDocType((byte)4);
-                        doc.setReduceMoney(conditions.get(conditions.size() - 1).getReduceMoney());
-                        doc.setDiffNumber(diffNumber);
-                        return doc;
-                    }
+                if (processStrategyType2(cartBo, conditions, doc, totalPrice)) {
+                    return doc;
                 }
                 break;
 
             case 3:
                 //满折，可以有多条condition
-                if(conditions.get(0).getFullMoney() != null && conditions.get(0).getFullMoney().compareTo(BigDecimal.ZERO) > 0) {
-                    //满金额类型
-                    conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getFullMoney).reversed()).collect(Collectors.toList());
-                    BigDecimal discount = null;
-                    for(MrkingStrategyCondition c:conditions){
-                        if(totalPrice.compareTo(c.getFullMoney()) >= 0){
-                            discount = c.getDiscount();
-                            break;
-                        }
-                    }
-                    if(discount != null && discount.compareTo(BigDecimal.ZERO) > 0){
-                        BigDecimal reduceMoney = totalPrice.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(10)))).setScale(2,BigDecimal.ROUND_HALF_UP);
-                        doc.setDocType((byte)1);
-                        doc.setReduceMoney(reduceMoney);
-                        return doc;
-                    }else {
-                        BigDecimal diffPrice = conditions.get(conditions.size() - 1).getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
-                        doc.setDocType((byte)3);
-                        doc.setDiffPrice(diffPrice);
-                        doc.setDiscount(conditions.get(conditions.size() - 1).getDiscount());
-                        return doc;
-                    }
-                }else if(conditions.get(0).getAmount() != null && conditions.get(0).getAmount() > 0){
-                    //满件数类型
-                    int totalGoodsNum = cartBo.getCartGoodsList().stream().mapToInt(WxAppCartGoods::getCartNumber).sum();
-                    conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getAmount).reversed()).collect(Collectors.toList());
-                    BigDecimal discount = null;
-                    for(MrkingStrategyCondition c:conditions){
-                        if(totalGoodsNum >= c.getAmount()){
-                            discount = c.getDiscount();
-                            break;
-                        }
-                    }
-                    if(discount != null && discount.compareTo(BigDecimal.ZERO) > 0){
-                        BigDecimal reduceMoney = totalPrice.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(10)))).setScale(2,BigDecimal.ROUND_HALF_UP);
-                        doc.setDocType((byte)1);
-                        doc.setReduceMoney(reduceMoney);
-                        return doc;
-                    }else {
-                        int diffNumber = conditions.get(conditions.size() - 1).getAmount() - totalGoodsNum;
-                        doc.setDocType((byte)5);
-                        doc.setDiscount(conditions.get(conditions.size() - 1).getDiscount());
-                        doc.setDiffNumber(diffNumber);
-                        return doc;
-                    }
+                if (processStrategyType3(cartBo, conditions, doc, totalPrice)) {
+                    return doc;
                 }
                 break;
             case 4:
                 //第amount件，打discount折，只有一条condition
-                MrkingStrategyCondition c = conditions.get(0);
-                BigDecimal reduceMoney = BigDecimal.ZERO;
-                for (WxAppCartGoods g : cartBo.getCartGoodsList()){
-                    if(g.getCartNumber() >= c.getAmount()){
-                        reduceMoney = reduceMoney.add(g.getGoodsPrice().multiply(BigDecimal.ONE.subtract(c.getDiscount().divide(BigDecimal.valueOf(10))))).setScale(2,BigDecimal.ROUND_HALF_UP);
-                    }
-                }
-                if(reduceMoney.compareTo(BigDecimal.ZERO) <= 0){
-                    doc.setDocType((byte)0);
-                    return doc;
-                }else {
-                    doc.setDocType((byte)1);
-                    doc.setReduceMoney(reduceMoney);
-                    return doc;
-                }
+                return processStrategyType4(cartBo, conditions, doc);
             default:
 
         }
 
         return doc;
+    }
+
+    /**
+     * 第amount件，打discount折，只有一条condition
+     * @param cartBo
+     * @param conditions
+     * @param doc
+     * @return
+     */
+    private MrkingStrategyGoodsListVo.FullPriceDoc processStrategyType4(WxAppCartBo cartBo, List<MrkingStrategyCondition> conditions, MrkingStrategyGoodsListVo.FullPriceDoc doc) {
+        MrkingStrategyCondition c = conditions.get(0);
+        BigDecimal reduceMoney = BigDecimal.ZERO;
+        for (WxAppCartGoods g : cartBo.getCartGoodsList()){
+            if(g.getCartNumber() >= c.getAmount()){
+                reduceMoney = reduceMoney.add(g.getGoodsPrice().multiply(BigDecimal.ONE.subtract(c.getDiscount().divide(BigDecimal.valueOf(10))))).setScale(2,BigDecimal.ROUND_HALF_UP);
+            }
+        }
+        if(reduceMoney.compareTo(BigDecimal.ZERO) <= 0){
+            doc.setDocType((byte)0);
+            return doc;
+        }else {
+            doc.setDocType((byte)1);
+            doc.setReduceMoney(reduceMoney);
+            return doc;
+        }
+    }
+
+    /**
+     * 满折，可以有多条condition
+     * @param cartBo
+     * @param conditions
+     * @param doc
+     * @param totalPrice
+     * @return
+     */
+    private boolean processStrategyType3(WxAppCartBo cartBo, List<MrkingStrategyCondition> conditions, MrkingStrategyGoodsListVo.FullPriceDoc doc, BigDecimal totalPrice) {
+        if(conditions.get(0).getFullMoney() != null && conditions.get(0).getFullMoney().compareTo(BigDecimal.ZERO) > 0) {
+            //满金额类型
+            conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getFullMoney).reversed()).collect(Collectors.toList());
+            BigDecimal discount = null;
+            for(MrkingStrategyCondition c:conditions){
+                if(totalPrice.compareTo(c.getFullMoney()) >= 0){
+                    discount = c.getDiscount();
+                    break;
+                }
+            }
+            if(discount != null && discount.compareTo(BigDecimal.ZERO) > 0){
+                BigDecimal reduceMoney = totalPrice.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(10)))).setScale(2,BigDecimal.ROUND_HALF_UP);
+                doc.setDocType((byte)1);
+                doc.setReduceMoney(reduceMoney);
+                return true;
+            }else {
+                BigDecimal diffPrice = conditions.get(conditions.size() - 1).getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
+                doc.setDocType((byte)3);
+                doc.setDiffPrice(diffPrice);
+                doc.setDiscount(conditions.get(conditions.size() - 1).getDiscount());
+                return true;
+            }
+        }else if(conditions.get(0).getAmount() != null && conditions.get(0).getAmount() > 0){
+            //满件数类型
+            int totalGoodsNum = cartBo.getCartGoodsList().stream().mapToInt(WxAppCartGoods::getCartNumber).sum();
+            conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getAmount).reversed()).collect(Collectors.toList());
+            BigDecimal discount = null;
+            for(MrkingStrategyCondition c:conditions){
+                if(totalGoodsNum >= c.getAmount()){
+                    discount = c.getDiscount();
+                    break;
+                }
+            }
+            if(discount != null && discount.compareTo(BigDecimal.ZERO) > 0){
+                BigDecimal reduceMoney = totalPrice.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(10)))).setScale(2,BigDecimal.ROUND_HALF_UP);
+                doc.setDocType((byte)1);
+                doc.setReduceMoney(reduceMoney);
+                return true;
+            }else {
+                int diffNumber = conditions.get(conditions.size() - 1).getAmount() - totalGoodsNum;
+                doc.setDocType((byte)5);
+                doc.setDiscount(conditions.get(conditions.size() - 1).getDiscount());
+                doc.setDiffNumber(diffNumber);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean processStrategyType2(WxAppCartBo cartBo, List<MrkingStrategyCondition> conditions, MrkingStrategyGoodsListVo.FullPriceDoc doc, BigDecimal totalPrice) {
+        //满减，可以有多条condition
+        if(conditions.get(0).getFullMoney() != null && conditions.get(0).getFullMoney().compareTo(BigDecimal.ZERO) > 0){
+            //满金额类型
+            conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getFullMoney).reversed()).collect(Collectors.toList());
+            BigDecimal reduceMoney = null;
+            for(MrkingStrategyCondition c:conditions){
+                if(totalPrice.compareTo(c.getFullMoney()) >= 0){
+                    reduceMoney = c.getReduceMoney();
+                    break;
+                }
+            }
+            if(reduceMoney != null && reduceMoney.compareTo(BigDecimal.ZERO) > 0){
+                doc.setDocType((byte)1);
+                doc.setReduceMoney(reduceMoney);
+                return true;
+            }else {
+                BigDecimal diffPrice = conditions.get(conditions.size() - 1).getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
+                doc.setDocType((byte)2);
+                doc.setReduceMoney(conditions.get(conditions.size() - 1).getReduceMoney());
+                doc.setDiffPrice(diffPrice);
+                return true;
+            }
+
+        }else if(conditions.get(0).getAmount() != null && conditions.get(0).getAmount() > 0){
+            //满件数类型
+            int totalGoodsNum = cartBo.getCartGoodsList().stream().mapToInt(WxAppCartGoods::getCartNumber).sum();
+            conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getAmount).reversed()).collect(Collectors.toList());
+            BigDecimal reduceMoney = null;
+            for(MrkingStrategyCondition c:conditions){
+                if(totalGoodsNum >= c.getAmount()){
+                    reduceMoney = c.getReduceMoney();
+                    break;
+                }
+            }
+            if(reduceMoney != null && reduceMoney.compareTo(BigDecimal.ZERO) > 0){
+                doc.setDocType((byte)1);
+                doc.setReduceMoney(reduceMoney);
+                return true;
+            }else {
+                int diffNumber = conditions.get(conditions.size() - 1).getAmount() - totalGoodsNum;
+                doc.setDocType((byte)4);
+                doc.setReduceMoney(conditions.get(conditions.size() - 1).getReduceMoney());
+                doc.setDiffNumber(diffNumber);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 每满减，只有一条condition
+     * @param cartBo
+     * @param conditions
+     * @param doc
+     * @param totalPrice
+     * @return true
+     */
+    private boolean processStrategyType1(WxAppCartBo cartBo, List<MrkingStrategyCondition> conditions, MrkingStrategyGoodsListVo.FullPriceDoc doc, BigDecimal totalPrice) {
+        MrkingStrategyCondition condition = conditions.get(0);
+        if(condition.getFullMoney() != null && condition.getFullMoney().compareTo(BigDecimal.ZERO) > 0){
+            //满金额类型
+            if(totalPrice.compareTo(condition.getFullMoney()) >= 0){
+                BigDecimal reduceMoney = (totalPrice.divide(condition.getFullMoney(),0,BigDecimal.ROUND_DOWN)).multiply(condition.getReduceMoney()).setScale(2,BigDecimal.ROUND_HALF_UP);
+                doc.setDocType((byte)1);
+                doc.setReduceMoney(reduceMoney);
+                return true;
+            }else{
+                BigDecimal diffPrice = condition.getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
+                doc.setDocType((byte)2);
+                doc.setReduceMoney(condition.getReduceMoney());
+                doc.setDiffPrice(diffPrice);
+                return true;
+            }
+        }else if(condition.getAmount() != null && condition.getAmount() > 0){
+            //满件数类型
+            int totalGoodsNum = cartBo.getCartGoodsList().stream().mapToInt(WxAppCartGoods::getCartNumber).sum();
+            if(totalGoodsNum >= condition.getAmount()){
+                BigDecimal reduceMoney = condition.getReduceMoney().multiply(BigDecimal.valueOf(totalGoodsNum/condition.getAmount())).setScale(2,BigDecimal.ROUND_HALF_UP);
+                doc.setDocType((byte)1);
+                doc.setReduceMoney(reduceMoney);
+                return true;
+            }else{
+                int diffNumber = condition.getAmount() - totalGoodsNum;
+                doc.setDocType((byte)4);
+                doc.setDiffNumber(diffNumber);
+                doc.setReduceMoney(condition.getReduceMoney());
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<WxAppCartGoods> getWxAppCheckedGoodsList(MrkingStrategyGoodsListParam param,Integer userId){

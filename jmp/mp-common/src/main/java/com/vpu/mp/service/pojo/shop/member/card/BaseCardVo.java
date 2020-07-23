@@ -24,7 +24,7 @@ public abstract class BaseCardVo {
 	 */
 	/** 会员卡id */
 	private Integer id;
-	// 会员卡类型
+	/** 会员卡类型 */
 	private Byte cardType;
 	/** 会员卡头像 */
 	private String avatar;
@@ -38,9 +38,7 @@ public abstract class BaseCardVo {
 	/** 背景图 */
 	private String bgImg;
 
-	/**
-	 * 领取设置
-	 */
+
 	/**
 	 * 领取类型 0：直接领取；1：需要购买；2：需要领取码
 	 */
@@ -57,16 +55,16 @@ public abstract class BaseCardVo {
 	/** 激活需要的信息 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String activationCfg;
-	// 专享商品
+	/**  专享商品 */
 	private List<Integer> ownGoodsId;
-	// 专享商家
+	/**  专享商家 */
 	private List<Integer> ownStoreCategoryIds;
-	// 专享平台
+	/**  专享平台 */
 	private List<Integer> ownPlatFormCategoryIds;
-	// 专享品牌
+	/**  专享品牌 */
 	private List<Integer> ownBrandId;
 
-	// 批次
+	/**  批次 */
 	private List<CardBatchVo> batchList;
 	
 	/**
@@ -98,6 +96,10 @@ public abstract class BaseCardVo {
 	 * 	会员卡使用统计数据
 	 */
 	private CardUseStats cardUseStats;
+
+    /**
+     * 修改配置
+     */
 	public abstract void changeJsonCfg();
 
 }

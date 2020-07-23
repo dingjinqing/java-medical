@@ -93,36 +93,7 @@ public class ShopPledgeService extends ShopBaseService {
     Integer count = db().select(DSL.count(PLEDGE.ID)).from(PLEDGE).fetchOneInto(Integer.class);
     // 第一次使用服务承诺插入默认三条数据
     if (count == 0) {
-      PledgeParam firstParam =
-          new PledgeParam() {
-            {
-              setPledgeName("7天退换");
-              setPledgeLogo("/image/admin/pledge_seven.png");
-              setPledgeContent("在未损坏商品的情况下，商家支持消费者申请7天无理由退换货。");
-              setType(NumberUtils.BYTE_ONE);
-            }
-          };
-      insertPledge(firstParam);
-      PledgeParam secondParam =
-          new PledgeParam() {
-            {
-              setPledgeName("正品保障");
-              setPledgeLogo("/image/admin/pledge_zp.png");
-              setPledgeContent("商家承诺，店铺内所有商品都为正品。");
-              setType(NumberUtils.BYTE_ONE);
-            }
-          };
-      insertPledge(secondParam);
-      PledgeParam thirdParam =
-          new PledgeParam() {
-            {
-              setPledgeName("闪电发货");
-              setPledgeLogo("/image/admin/pledfe_flash.png");
-              setPledgeContent("商家承诺23:00之前下单者，当日发货。");
-              setType(NumberUtils.BYTE_ONE);
-            }
-          };
-      insertPledge(thirdParam);
+        initPledgeParam();
     }
     List<PledgeListVo> list = new ArrayList<>();
     // 筛选-配置为全部商品的服务承诺
@@ -192,7 +163,40 @@ public class ShopPledgeService extends ShopBaseService {
     return list;
   }
 
-  public boolean judgeInsertParam() {
+    private void initPledgeParam() {
+        PledgeParam firstParam =
+            new PledgeParam() {
+              {
+                setPledgeName("7天退换");
+                setPledgeLogo("/image/admin/pledge_seven.png");
+                setPledgeContent("在未损坏商品的情况下，商家支持消费者申请7天无理由退换货。");
+                setType(NumberUtils.BYTE_ONE);
+              }
+            };
+        insertPledge(firstParam);
+        PledgeParam secondParam =
+            new PledgeParam() {
+              {
+                setPledgeName("正品保障");
+                setPledgeLogo("/image/admin/pledge_zp.png");
+                setPledgeContent("商家承诺，店铺内所有商品都为正品。");
+                setType(NumberUtils.BYTE_ONE);
+              }
+            };
+        insertPledge(secondParam);
+        PledgeParam thirdParam =
+            new PledgeParam() {
+              {
+                setPledgeName("闪电发货");
+                setPledgeLogo("/image/admin/pledfe_flash.png");
+                setPledgeContent("商家承诺23:00之前下单者，当日发货。");
+                setType(NumberUtils.BYTE_ONE);
+              }
+            };
+        insertPledge(thirdParam);
+    }
+
+    public boolean judgeInsertParam() {
     SelectWhereStep<? extends Record> select = db().select(PLEDGE.ID).from(PLEDGE);
     select.where(PLEDGE.DEL_FLAG.eq(PledgePojo.DELFLAG_NOT));
     int count = db().fetchCount(select);

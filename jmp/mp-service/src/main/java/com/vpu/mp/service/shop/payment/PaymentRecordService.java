@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import static com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class PaymentRecordService extends ShopBaseService {
 

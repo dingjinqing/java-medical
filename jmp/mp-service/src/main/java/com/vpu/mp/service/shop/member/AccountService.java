@@ -31,7 +31,7 @@ import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.member.dao.AccountDao;
 import com.vpu.mp.service.shop.member.dao.UserAccountDao;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -218,9 +218,11 @@ public class AccountService extends ShopBaseService {
 		return BigDecimalUtil.compareTo(val, BigDecimal.ZERO)>=0;
 	}
 	
-	/*
-	 * 插入交易记录
-	 */
+    /**
+     * 插入交易记录
+     * @param param
+     * @param tradeOpt
+     */
 	private void addTradeRecord(AccountParam param,TradeOptParam tradeOpt) {
 		logger().info("记录用户余额到交易tradeRecord表");
 		recordTradeService.insertTradeRecord(TradeOptParam.builder()

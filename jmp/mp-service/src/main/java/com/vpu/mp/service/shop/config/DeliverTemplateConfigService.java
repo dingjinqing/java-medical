@@ -4,6 +4,9 @@ package com.vpu.mp.service.shop.config;
 import com.vpu.mp.service.pojo.shop.config.DeliverTemplateConfig;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author liangchen
+ */
 @Service
 
 public class DeliverTemplateConfigService extends BaseShopConfigService{

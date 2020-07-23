@@ -17,6 +17,10 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
+
+/**
+ * @author luguangyao
+ */
 @Service
 public class ShopCommonConfigCacheService extends BaseShopConfigService {
 
@@ -43,7 +47,8 @@ public class ShopCommonConfigCacheService extends BaseShopConfigService {
                 .from(SHOP_CFG)
                 .where(SHOP_CFG.K.eq(ShopCommonConfigService.K_ACCURATE_SEARCH))
                 .fetchAny(SHOP_CFG.V));
-        return result != null && result.equals("1");
+        String enabledAnalyzer = "1";
+        return result != null && result.equals(enabledAnalyzer);
     }
 
     /**

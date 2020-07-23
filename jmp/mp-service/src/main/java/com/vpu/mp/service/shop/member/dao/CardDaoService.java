@@ -130,11 +130,11 @@ public class CardDaoService extends ShopBaseService {
 	 * @param select
 	 */
 	private void buildOptions(CardHolderParam param, SelectJoinStep<?> select) {
-		/** - 会员id */
+        /* - 会员id */
 		if (param.getUserId() != null) {
 			select.where(USER_CARD.USER_ID.eq(param.getUserId()));
 		}
-		/** - 昵称 */
+        /* - 昵称 */
 		if (!StringUtils.isBlank(param.getUsername())) {
 			String likeValue = likeValue(param.getUsername().trim());
 			select.where(USER.USERNAME.like(likeValue));
@@ -150,26 +150,10 @@ public class CardDaoService extends ShopBaseService {
 			select.where(USER_CARD.CARD_NO.like(likeValue));
 		}
 		/** - 卡状态 */
-		if (param.getFlag() != null && !NumberUtils.BYTE_MINUS_ONE.equals(param.getFlag())) {
-			/** - 状态为过期 */
-			Condition condition = DSL.noCondition();
-			if (param.getFlag().equals(UCARD_FG_EXPIRED)) {
+        buildCardFlagOption(param, select);
 
-				condition = condition.and(USER_CARD.EXPIRE_TIME.le(DateUtils.getLocalDateTime()));
-				select.where(condition);
-			} else if (param.getFlag().equals(UCARD_FG_USING)) {
-				condition = condition.and(USER_CARD.EXPIRE_TIME.ge(DateUtils.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
-									.and(USER_CARD.FLAG.eq(param.getFlag()));
-				select.where(condition);
-			}else if(param.getFlag().equals(UCARD_FG_STOP)) {
-				condition = condition.and(USER_CARD.FLAG.eq(param.getFlag()));
-				select.where(condition);
-			}else {
-				//	转赠中或已转赠
-				select.where(USER_CARD.FLAG.eq(param.getFlag()));
-			}
-		}
-		/** - 领卡时间 开始范围 */
+
+        /** - 领卡时间 开始范围 */
 		if (param.getFirstDateTime() != null) {
 			select.where(USER_CARD.CREATE_TIME.ge(param.getFirstDateTime()));
 		}
@@ -219,7 +203,35 @@ public class CardDaoService extends ShopBaseService {
 
 	}
 
-	/**
+    /**
+     * 卡状态选项
+     *
+     * @param param
+     * @param select
+     */
+    private void buildCardFlagOption(CardHolderParam param, SelectJoinStep<?> select) {
+        if (param.getFlag() != null && !NumberUtils.BYTE_MINUS_ONE.equals(param.getFlag())) {
+            /** - 状态为过期 */
+            Condition condition = DSL.noCondition();
+            if (param.getFlag().equals(UCARD_FG_EXPIRED)) {
+
+                condition = condition.and(USER_CARD.EXPIRE_TIME.le(DateUtils.getLocalDateTime()));
+                select.where(condition);
+            } else if (param.getFlag().equals(UCARD_FG_USING)) {
+                condition = condition.and(USER_CARD.EXPIRE_TIME.ge(DateUtils.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
+                                    .and(USER_CARD.FLAG.eq(param.getFlag()));
+                select.where(condition);
+            }else if(param.getFlag().equals(UCARD_FG_STOP)) {
+                condition = condition.and(USER_CARD.FLAG.eq(param.getFlag()));
+                select.where(condition);
+            }else {
+                //	转赠中或已转赠
+                select.where(USER_CARD.FLAG.eq(param.getFlag()));
+            }
+        }
+    }
+
+    /**
 	 * 分页查询会员卡领取详情
 	 */
 	public PageResult<CodeReceiveVo> getReceiveListSql(CodeReceiveParam param) {

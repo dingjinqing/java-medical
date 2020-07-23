@@ -12,9 +12,9 @@ import java.util.List;
 @Getter
 @Setter
 public class GoodsExportColumnVo {
-    //行数
+    /**  行数 */
     private Integer rows;
 
-    //当前已选列
+    /**  当前已选列 */
     private List<String> columns;
 }

@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.Data;
+
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class LiveGoodVo {
 	private Integer id;

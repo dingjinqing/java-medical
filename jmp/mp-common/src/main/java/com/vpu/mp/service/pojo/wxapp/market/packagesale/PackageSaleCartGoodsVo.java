@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @Getter
 public class PackageSaleCartGoodsVo {
 
-    //商品信息
     private Integer goodsId;
     private String goodsName;
     private String goodsImg;
@@ -25,7 +24,7 @@ public class PackageSaleCartGoodsVo {
     private String prdDesc;
     private String prdImg;
 
-    //已选数量
+    /** 已选数量 */
     private Integer goodsNumber;
 
 }

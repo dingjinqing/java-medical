@@ -10,7 +10,7 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/18
  */
 @Slf4j

@@ -8,6 +8,9 @@ import lombok.Data;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+/**
+ * @author yangpengcheng
+ */
 @Data
 public class PatientExternalVo {
     private Integer   id;

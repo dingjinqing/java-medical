@@ -66,7 +66,8 @@ public class SysCatServiceHelper  implements ApplicationListener<ContextRefreshe
             sysCateService = SpringUtil.getBean(SysCateService.class);
             initData();
         }
-        if("Root WebApplicationContext".equals(event.getApplicationContext().getDisplayName())){
+        String context = "Root WebApplicationContext";
+        if(context.equals(event.getApplicationContext().getDisplayName())){
 
         }
     }

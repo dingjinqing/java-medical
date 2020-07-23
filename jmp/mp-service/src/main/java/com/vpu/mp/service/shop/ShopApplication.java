@@ -60,7 +60,7 @@ import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
-import com.vpu.mp.service.shop.marketCalendar.MarketCalendarService;
+import com.vpu.mp.service.shop.marketcalendar.MarketCalendarService;
 import com.vpu.mp.service.shop.medicine.PullHitsHistoryPrescriptionService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
@@ -609,6 +609,7 @@ public class ShopApplication {
     /**
      * 问诊订单
      */
+    @Autowired
     public InquiryOrderService inquiryOrderService;
 
     /**

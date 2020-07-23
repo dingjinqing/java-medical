@@ -201,12 +201,12 @@ public class ArticleService extends MainBaseService {
 		int update = 0;
 		if (status.equals(ArticlesClass.OK)) {
 			// 状态为1
-			record.setStatus(ArticlesClass.ok);
+			record.setStatus(ArticlesClass.STATUS_OK);
 			update = record.update();
 		}
 		if (status.equals(ArticlesClass.CANCEL)) {
 			// 状态为1
-			record.setStatus(ArticlesClass.cancel);
+			record.setStatus(ArticlesClass.STATUS_CANCEL);
 			update = record.update();
 		} else {
 			return false;

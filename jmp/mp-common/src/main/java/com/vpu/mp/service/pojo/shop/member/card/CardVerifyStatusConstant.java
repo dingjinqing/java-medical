@@ -5,7 +5,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 * @Description:
 */
 public class CardVerifyStatusConstant {
-	//审核状态 1审核中 2通过 3拒绝
+	/**  审核状态 1审核中 2通过 3拒绝 */
 	final static Byte CARD_VERIFING = 1;
 	final static Byte CARD_VERIFY_PASSED = 2;
 	final static Byte CARD_VERIFY_REFUSED = 3;

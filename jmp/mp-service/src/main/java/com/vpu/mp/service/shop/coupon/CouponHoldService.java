@@ -109,19 +109,26 @@ public class CouponHoldService extends ShopBaseService {
         }
         if(param.getStatus() != null) {
             Timestamp nowTime =new Timestamp(System.currentTimeMillis());
-            if (param.getStatus()==1){
+            int statusNoUse = 1;
+            int statusUsed = 2;
+            int statusExpired = 3;
+            int statusAbandon = 4;
+            if (param.getStatus()== statusNoUse){
                 select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
                         .and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(nowTime))
                         .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
-            }else if (param.getStatus()==2){
-                select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1))
-                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
-            }else if (param.getStatus()==3){
-                select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
-                        .and(CUSTOMER_AVAIL_COUPONS.END_TIME.lt(nowTime))
-                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
-            }else if (param.getStatus()==4){
-                select.where(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 1));
+            }else {
+
+                if (param.getStatus()== statusUsed){
+                    select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1))
+                        .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+                }else if (param.getStatus()==statusExpired){
+                    select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
+                            .and(CUSTOMER_AVAIL_COUPONS.END_TIME.lt(nowTime))
+                        .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
+                }else if (param.getStatus()==statusAbandon){
+                    select.where(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 1));
+                }
             }
         }
         if (param.getAccessId()!=null && param.getGetSource()!=null){
