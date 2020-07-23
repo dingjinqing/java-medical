@@ -152,7 +152,8 @@
         "operatePrescriptionList/operatePrescriptionList",
         "inquiryList/inquiryList",
         "prescribe/prescribe",
-        "awaitprescribe/awaitprescribe"
+        "awaitprescribe/awaitprescribe",
+        "prescribeinfo/prescribeinfo"
       ]
     }
   ],
