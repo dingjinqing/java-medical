@@ -21,6 +21,9 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author chenjie
+ */
 @Service
 public class PatientService extends BaseShopConfigService{
     @Autowired
@@ -154,5 +157,14 @@ public class PatientService extends BaseShopConfigService{
             patientInfo.setFamilyDiseaseHistoryList(listDiseases(patientInfo.getFamilyDiseaseHistory()));
             return patientInfo;
         }
+    }
+
+    /**
+     * 获取患者信息
+     * @param patientIds id集合
+     * @return
+     */
+    public List<PatientSimpleInfoVo> listPatientInfo(List<Integer> patientIds){
+        return patientDao.listPatientInfo(patientIds);
     }
 }

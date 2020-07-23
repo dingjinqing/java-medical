@@ -2,13 +2,18 @@ package com.vpu.mp.dao.shop.session;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.ImSessionRecord;
 import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
 import org.jooq.Condition;
+import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.IM_SESSION;
@@ -69,6 +74,23 @@ public class ImSessionDao extends ShopBaseDao {
     public void batchUpdateSessionStatus(List<Integer> imSessionIds, Byte status) {
         db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS,status).where(IM_SESSION.ID.in(imSessionIds))
             .execute();
+    }
+
+    /**
+     * 分页查询会话列表信息
+     * @param pageListParam 分页信息
+     * @return 分页结果
+     */
+    public PageResult<ImSessionListVo> pageList(ImSessionPageListParam pageListParam) {
+        Condition condition = IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
+        if (pageListParam.getDoctorId() != null) {
+            condition = condition.and(IM_SESSION.DOCTOR_ID.eq(pageListParam.getDoctorId()));
+        }
+        if (pageListParam.getSessionStatus() != null) {
+            condition = condition.and(IM_SESSION.SESSION_STATUS.in(pageListParam.getSessionStatus()));
+        }
+        SelectSeekStep1<ImSessionRecord, Timestamp> select = db().selectFrom(IM_SESSION).where(condition).orderBy(IM_SESSION.CREATE_TIME.asc());
+        return getPageResult(select,pageListParam.getCurrentPage(),pageListParam.getPageRows(),ImSessionListVo.class);
     }
 
     /**
