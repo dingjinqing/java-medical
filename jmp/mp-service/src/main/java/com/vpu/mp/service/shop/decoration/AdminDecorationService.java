@@ -47,8 +47,7 @@ import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
-import static com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant.MODULE_NAME_PREFIX;
-import static com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant.MODULE_PAGE_CONFIG;
+import static com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant.*;
 
 /**
  * @author: 王兵兵
@@ -609,7 +608,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         record.setCatId(page.getCatId() == null ? 0 : page.getCatId());
 
 
-        if(page.getPageState() == 3){
+        if(page.getPageState().equals(PAGE_STATE_ROLLBACK)){
             //回退到当前已发布版本
 
             if(page.getPageId() != null && page.getPageId() > 0){
