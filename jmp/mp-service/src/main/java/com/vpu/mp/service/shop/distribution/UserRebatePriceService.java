@@ -18,7 +18,7 @@ import static com.vpu.mp.db.shop.tables.UserRebatePrice.USER_REBATE_PRICE;
 @Service
 public class UserRebatePriceService extends ShopBaseService {
 
-    private UserRebatePrice TABLE = USER_REBATE_PRICE;
+    final static private UserRebatePrice TABLE = USER_REBATE_PRICE;
 
     public Result<UserRebatePriceRecord> getUserRebatePrice(Integer userId, Integer[] prdIds) {
         return db().selectFrom(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.PRODUCT_ID.in(prdIds)).and(TABLE.EXPIRE_TIME.gt(DateUtils.getSqlTimestamp()))).fetch();

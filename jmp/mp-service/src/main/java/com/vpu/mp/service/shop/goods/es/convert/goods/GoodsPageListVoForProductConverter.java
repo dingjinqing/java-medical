@@ -8,6 +8,9 @@ import org.springframework.beans.BeanUtils;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+/**
+ * @author luguangyao
+ */
 public class GoodsPageListVoForProductConverter {
     public static GoodsPageListVo convert(EsGoodsProductEntity esProduct) {
             GoodsPageListVo vo = new GoodsPageListVo();

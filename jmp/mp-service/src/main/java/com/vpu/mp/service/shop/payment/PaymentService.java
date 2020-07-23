@@ -51,6 +51,9 @@ import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_ST
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class PaymentService extends ShopBaseService {
 

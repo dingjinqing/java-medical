@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author luguangyao
+ */
 @Slf4j
 @Service
 public class EsGoodsProductCreateService {

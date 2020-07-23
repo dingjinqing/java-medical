@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.distribution;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
@@ -20,6 +21,7 @@ public class ActivationInfoVo {
     private List<DistributorGroupListVo> groupList;
     private List<IndustryVo> industryList;
     private List<EducationVo> educationList;
-    private  List<MarriageData> MarriageData;
+    @JsonProperty("MarriageData")
+    private  List<MarriageData> marriageData;
     private DistributionParam cfg;
 }

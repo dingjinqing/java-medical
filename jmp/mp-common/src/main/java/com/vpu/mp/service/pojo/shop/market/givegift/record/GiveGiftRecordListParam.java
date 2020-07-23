@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class GiveGiftRecordListParam {
 
-    /* 分页信息 */
+    /** 分页信息 */
     private Integer currentPage;
     private Integer pageRows;
 

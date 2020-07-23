@@ -20,7 +20,7 @@ import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
 @Service
 public class UserTotalFanliService extends ShopBaseService {
 
-    UserTotalFanli TABLE = USER_TOTAL_FANLI;
+    final static UserTotalFanli TABLE = USER_TOTAL_FANLI;
 
 	public UserTotalFanliVo getUserRebate(Integer userId) {
 		  UserTotalFanliVo res = db().select(USER_DETAIL.USERNAME,USER_DETAIL.USER_AVATAR,USER_TOTAL_FANLI.asterisk())

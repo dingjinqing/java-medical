@@ -51,7 +51,7 @@ import static org.apache.commons.lang3.math.NumberUtils.*;
 import static org.jooq.impl.DSL.*;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/15
  * 商城概览service
  */
@@ -249,7 +249,11 @@ public class MallOverviewService extends ShopBaseService {
             .build().ruleHandler();
     }
 
-    // 是否开启客服
+
+    /**
+     * 是否开启客服
+     * @return
+     */
     private int isOpenCommon() {
         return shopCommonConfigService.getCustomService() + shopCommonConfigService.getReturnService() > 0 ? BYTE_ZERO : BYTE_ONE;
     }

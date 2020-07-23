@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -104,15 +105,20 @@ public class MpDeployQueryParam {
 	 * 
 	 */
 	Integer isSubMerchant;
-	//商户APPID
-	String union_pay_app_id;
-	//商户商户号
-	String union_pay_cus_id;
-	//商户密钥
-	String union_pay_app_key;
-	//MCC码
-	String merchant_category_code;
-	//标价币种
-	String fee_type;
+	/**  商户APPID */
+    @JsonProperty("union_pay_app_id")
+	String unionPayAppId;
+	/**  商户商户号 */
+    @JsonProperty("union_pay_cus_id")
+	String unionPayCusId;
+	/**  商户密钥 */
+    @JsonProperty("union_pay_app_key")
+	String unionPayAppKey;
+	/**  MCC码 */
+    @JsonProperty("merchant_category_code")
+	String merchantCategoryCode;
+	/**  标价币种 */
+    @JsonProperty("fee_type")
+	String feeType;
 	
 }

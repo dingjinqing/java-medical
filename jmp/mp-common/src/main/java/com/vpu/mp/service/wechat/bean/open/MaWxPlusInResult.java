@@ -9,6 +9,9 @@ import com.google.gson.reflect.TypeToken;
 import lombok.Data;
 import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class MaWxPlusInResult implements Serializable {
 	private static final long serialVersionUID = 1L;

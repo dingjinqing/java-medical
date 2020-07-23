@@ -129,9 +129,9 @@ public class PictorialImgPx {
 
             }
         }
-        goodsNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
-        priceFont = ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.LARGE_FONT_SIZE);
-        linePriceFont = ImageUtil.SourceHanSansCN(Font.PLAIN, PictorialImgPx.MEDIUM_FONT_SIZE);
+        goodsNameFont = ImageUtil.sourceHanSansCn(Font.PLAIN, MEDIUM_FONT_SIZE);
+        priceFont = ImageUtil.sourceHanSansCn(Font.PLAIN, PictorialImgPx.LARGE_FONT_SIZE);
+        linePriceFont = ImageUtil.sourceHanSansCn(Font.PLAIN, PictorialImgPx.MEDIUM_FONT_SIZE);
     }
 
     private void initForDefault() {
@@ -139,12 +139,12 @@ public class PictorialImgPx {
         // 用户名
         userNameX = headerStartX + userHeaderDiameter + 15;
         userNameY = headerStartY + userHeaderDiameter / 5 + 5;
-        userNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, SMALL_FONT_SIZE);
+        userNameFont = ImageUtil.sourceHanSansCn(Font.PLAIN, SMALL_FONT_SIZE);
 
         // 宣传语
         shareDocX = bgPadding;
         shareDocY = headerStartY + userHeaderDiameter + 7;
-        shareDocFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
+        shareDocFont = ImageUtil.sourceHanSansCn(Font.PLAIN, MEDIUM_FONT_SIZE);
         shareDocCanUseWidth = bgWidth - 2 * bgPadding;
 
         // 商品
@@ -207,11 +207,11 @@ public class PictorialImgPx {
      */
     private void initForSharePersonInfoStyle() {
         userNameY = headerStartY + userHeaderDiameter / 8;
-        userNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, MEDIUM_FONT_SIZE);
+        userNameFont = ImageUtil.sourceHanSansCn(Font.PLAIN, MEDIUM_FONT_SIZE);
         // 宣传语
         shareDocX = userNameX;
         shareDocY = headerStartY + userHeaderDiameter - 40;
-        shareDocFont = ImageUtil.SourceHanSansCN(Font.PLAIN, SMALL_FONT_SIZE);
+        shareDocFont = ImageUtil.sourceHanSansCn(Font.PLAIN, SMALL_FONT_SIZE);
         shareDocCanUseWidth = bgWidth - shareDocX - bgPadding;
     }
 
@@ -220,7 +220,7 @@ public class PictorialImgPx {
      */
     private void initForShareShopInfoStyle() {
         userNameY = headerStartY + userHeaderDiameter / 4;
-        userNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, LARGE_FONT_SIZE);
+        userNameFont = ImageUtil.sourceHanSansCn(Font.PLAIN, LARGE_FONT_SIZE);
     }
 
     /**
@@ -309,7 +309,7 @@ public class PictorialImgPx {
     }
 
     private Integer shopInfoStartY;
-    private Font shopInfoNameFont = ImageUtil.SourceHanSansCN(Font.PLAIN, SMALL_FONT_SIZE);
+    private Font shopInfoNameFont = ImageUtil.sourceHanSansCn(Font.PLAIN, SMALL_FONT_SIZE);
     /**
      * 图片上方，各个活动自定义内容区域
      * 自定义内容区域,背景边框位置和大小

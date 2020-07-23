@@ -249,7 +249,11 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
      * 订单处理end
      **/
 
-    //*******************购物车--满折满减
+
+    /**
+     * 购物车--满折满减
+     * @param cartBo 业务数据类
+     */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
         log.info("购物车-满折满减");

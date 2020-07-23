@@ -54,10 +54,10 @@ public class EsSearchFieldsConstant {
         PRDS,
         VIDEO_INFO_JSON,
         UNIT,
-        PRD.PRD_ID,
-        PRD.PRD_SN,
-        PRD.PRD_REAL_PRICE,
-        PRD.PRD_IMG,
-        PRD.PRD_DESC
+        Prd.PRD_ID,
+        Prd.PRD_SN,
+        Prd.PRD_REAL_PRICE,
+        Prd.PRD_IMG,
+        Prd.PRD_DESC
     };
 }

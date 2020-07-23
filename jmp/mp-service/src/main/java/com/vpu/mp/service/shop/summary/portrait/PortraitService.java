@@ -231,7 +231,11 @@ public class PortraitService extends ShopBaseService {
 
 	}
 
-	//移除省份中的省字，地图匹配用
+    /**
+     * 移除省份中的省字，地图匹配用
+     * @param portrait
+     * @return
+     */
 	private List<PortraitItem> remove(Portrait portrait) {
 		List<PortraitItem> provinceList = portrait.getProvince();
 		Boolean flag = true;
@@ -248,7 +252,11 @@ public class PortraitService extends ShopBaseService {
 		}
 		return provinceList;
 	}
-	//删除省市中数量为0的值
+
+    /**
+     * 删除省市中数量为0的值
+     * @param portrait
+     */
 	private void removeZero(Portrait portrait) {
 		Iterator<PortraitItem> iterator = portrait.getProvince().iterator();
 		while (iterator.hasNext()) {
@@ -264,7 +272,10 @@ public class PortraitService extends ShopBaseService {
 		}
 	}
 
-	// 删除设备中数量为0的值
+    /**
+     * 删除设备中数量为0的值
+     * @param portrait
+     */
 	private void removeZeroByDevices(Portrait portrait) {
 		Iterator<PortraitDeviceItem> iterator = portrait.getDevices().iterator();
 		while (iterator.hasNext()) {

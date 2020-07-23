@@ -467,11 +467,12 @@ public class CouponPackService extends ShopBaseService {
         vo.setMemberCardList(memberCardLit);
         if(StringUtils.isNoneBlank(param.getCardNo()) && !memberCardLit.isEmpty()){
             //默认选第一个
-            if(param.getCardNo().equals("0")){
+            String defaultCardNo = "0";
+            if(param.getCardNo().equals(defaultCardNo)){
                 vo.setMemberCardNo(memberCardLit.get(0).getCardNo());
                 vo.setMemberCardInfo(memberCardLit.get(0));
             }else{
-                vo.setMemberCardInfo(memberCardLit.stream().filter(GeneralUserCardVo->GeneralUserCardVo.getCardNo().equals(param.getCardNo())).collect(Collectors.toList()).get(0));
+                vo.setMemberCardInfo(memberCardLit.stream().filter(generalUserCardVo->generalUserCardVo.getCardNo().equals(param.getCardNo())).collect(Collectors.toList()).get(0));
                 vo.setMemberCardNo(param.getCardNo());
             }
         }else{
@@ -494,7 +495,7 @@ public class CouponPackService extends ShopBaseService {
             List<CouponPackVoucherBo> couponList = couponPackVoucherService.getCouponPackVoucherList(order.getVirtualGoodsId(),order.getUserId(),order.getOrderSn());
             int finishCount = 0;
             for(CouponPackVoucherBo coupon : couponList){
-                if(coupon.getLastSendTime() != null && DateUtils.TimestampIsNowDay(coupon.getLastSendTime())){
+                if(coupon.getLastSendTime() != null && DateUtils.timestampIsNowDay(coupon.getLastSendTime())){
                     // 说明今天已发送过，校验重复发送
                     continue;
                 }
@@ -503,62 +504,8 @@ public class CouponPackService extends ShopBaseService {
                     finishCount++;
                     continue;
                 }
-
-                //这一轮需要发出去的优惠券数量
-                int sentNum=0;
-
-                if(coupon.getLastSendTime() == null && coupon.getGrantCouponNumber() <= 0 && coupon.getImmediatelyGrantAmount() > 0){
-                    //立即发放
-                    sentNum = coupon.getImmediatelyGrantAmount();
-                }else{
-                    Timestamp lastTime;
-                    if(coupon.getLastSendTime() == null){
-                        lastTime = order.getPayTime();
-                    } else{
-                        lastTime = coupon.getLastSendTime();
-                    }
-                    if(coupon.getImmediatelyGrantAmount() < coupon.getTotalAmount()){
-                        Timestamp nextTime = null;
-                        if(DateUtils.TimestampIsSameDay(lastTime,order.getPayTime())){
-                            //立即发放之后的第一次周期发放
-                            Calendar cal = Calendar.getInstance();
-                            switch (coupon.getTimingUnit()){
-                                case CouponPackConstant.TIMING_UNIT_DAY:
-                                    nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
-                                    break;
-                                case CouponPackConstant.TIMING_UNIT_WEEK:
-                                    cal.setTime(DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS));
-                                    cal.setFirstDayOfWeek(Calendar.MONDAY);
-                                    cal.add(Calendar.DATE, cal.getFirstDayOfWeek()- cal.get(Calendar.DAY_OF_WEEK) + coupon.getTimingTime() - 1);
-                                    nextTime = new Timestamp(cal.getTime().getTime());
-                                    break;
-                                case CouponPackConstant.TIMING_UNIT_MONTH:
-                                    cal.setTime(DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS));
-                                    cal.set(Calendar.DATE,coupon.getTimingTime());
-                                    nextTime = new Timestamp(cal.getTime().getTime());
-                                    break;
-                                default:
-                            }
-                        }else{
-                            //不是第一次周期发放
-                            switch (coupon.getTimingUnit()){
-                                case CouponPackConstant.TIMING_UNIT_DAY:
-                                    nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
-                                    break;
-                                case CouponPackConstant.TIMING_UNIT_WEEK:
-                                    nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS);
-                                    break;
-                                case CouponPackConstant.TIMING_UNIT_MONTH:
-                                    nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS);
-                                    break;
-                                default:
-                            }
-                        }
-                        if(DateUtils.TimestampIsNowDay(nextTime)){
-                            sentNum = (coupon.getGrantCouponNumber() + coupon.getTimingAmount()) > coupon.getTotalAmount() ? coupon.getTotalAmount() - coupon.getGrantCouponNumber() : coupon.getTimingAmount();
-                        }
-                    }
-                }
+                // 得到发送优惠券数量
+                int sentNum = getSentNum(order, coupon);
 
                 //发放优惠券
                 List<Integer> userIds = new ArrayList<>();
@@ -580,6 +527,71 @@ public class CouponPackService extends ShopBaseService {
     }
 
     /**
+     * 得到发送优惠券数量
+     * @param order
+     * @param coupon
+     * @return
+     */
+    private int getSentNum(VirtualOrderRecord order, CouponPackVoucherBo coupon) {
+        //这一轮需要发出去的优惠券数量
+        int sentNum=0;
+
+        if(coupon.getLastSendTime() == null && coupon.getGrantCouponNumber() <= 0 && coupon.getImmediatelyGrantAmount() > 0){
+            //立即发放
+            sentNum = coupon.getImmediatelyGrantAmount();
+        }else{
+            Timestamp lastTime;
+            if(coupon.getLastSendTime() == null){
+                lastTime = order.getPayTime();
+            } else{
+                lastTime = coupon.getLastSendTime();
+            }
+            if(coupon.getImmediatelyGrantAmount() < coupon.getTotalAmount()){
+                Timestamp nextTime = null;
+                if(DateUtils.timestampIsSameDay(lastTime,order.getPayTime())){
+                    //立即发放之后的第一次周期发放
+                    Calendar cal = Calendar.getInstance();
+                    switch (coupon.getTimingUnit()){
+                        case CouponPackConstant.TIMING_UNIT_DAY:
+                            nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
+                            break;
+                        case CouponPackConstant.TIMING_UNIT_WEEK:
+                            cal.setTime(DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS));
+                            cal.setFirstDayOfWeek(Calendar.MONDAY);
+                            cal.add(Calendar.DATE, cal.getFirstDayOfWeek()- cal.get(Calendar.DAY_OF_WEEK) + coupon.getTimingTime() - 1);
+                            nextTime = new Timestamp(cal.getTime().getTime());
+                            break;
+                        case CouponPackConstant.TIMING_UNIT_MONTH:
+                            cal.setTime(DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS));
+                            cal.set(Calendar.DATE,coupon.getTimingTime());
+                            nextTime = new Timestamp(cal.getTime().getTime());
+                            break;
+                        default:
+                    }
+                }else{
+                    //不是第一次周期发放
+                    switch (coupon.getTimingUnit()){
+                        case CouponPackConstant.TIMING_UNIT_DAY:
+                            nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
+                            break;
+                        case CouponPackConstant.TIMING_UNIT_WEEK:
+                            nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS);
+                            break;
+                        case CouponPackConstant.TIMING_UNIT_MONTH:
+                            nextTime = DateUtils.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS);
+                            break;
+                        default:
+                    }
+                }
+                if(DateUtils.timestampIsNowDay(nextTime)){
+                    sentNum = (coupon.getGrantCouponNumber() + coupon.getTimingAmount()) > coupon.getTotalAmount() ? coupon.getTotalAmount() - coupon.getGrantCouponNumber() : coupon.getTimingAmount();
+                }
+            }
+        }
+        return sentNum;
+    }
+
+    /**
      * 购物车里可用的优惠券礼包
      *
      * @param userId
@@ -590,14 +602,7 @@ public class CouponPackService extends ShopBaseService {
         CouponPackCartVo vo = new CouponPackCartVo();
         Set<Integer> cartGoodsIds = new HashSet<>(cartGoodsIdsList);
 
-        List<CouponPackRecord> usablePackList = db().selectFrom(COUPON_PACK)
-            .where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .and(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(COUPON_PACK.ISSUED_AMOUNT.lt(COUPON_PACK.TOTAL_AMOUNT))
-            .and(COUPON_PACK.START_TIME.le(DateUtils.getLocalDateTime()))
-            .and(COUPON_PACK.END_TIME.ge(DateUtils.getLocalDateTime()))
-            .and(COUPON_PACK.SHOW_CART.eq(BaseConstant.YES))
-            .fetch();
+        List<CouponPackRecord> usablePackList = getCouponPackRecords();
 
         if (usablePackList != null && usablePackList.size() > 0) {
             for (CouponPackRecord couponPackRecord : usablePackList) {
@@ -669,7 +674,18 @@ public class CouponPackService extends ShopBaseService {
         }
     }
 
-	/**
+    private List<CouponPackRecord> getCouponPackRecords() {
+        return db().selectFrom(COUPON_PACK)
+                .where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(COUPON_PACK.ISSUED_AMOUNT.lt(COUPON_PACK.TOTAL_AMOUNT))
+                .and(COUPON_PACK.START_TIME.le(DateUtils.getLocalDateTime()))
+                .and(COUPON_PACK.END_TIME.ge(DateUtils.getLocalDateTime()))
+                .and(COUPON_PACK.SHOW_CART.eq(BaseConstant.YES))
+                .fetch();
+    }
+
+    /**
 	 * 营销日历用id查询活动
 	 *
 	 * @param id

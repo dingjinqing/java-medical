@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.department;
 
-import com.vpu.mp.common.foundation.data.BaseConstant;
+/**
+ * @author chenjie
+ */
 public class DepartmentConstant {
     /**
      * 科室

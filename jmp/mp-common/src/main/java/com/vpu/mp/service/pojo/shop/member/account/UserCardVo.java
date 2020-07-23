@@ -11,6 +11,10 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Data;
+
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class UserCardVo {
 	private Integer userId;
@@ -27,9 +31,9 @@ public class UserCardVo {
 	/**
 	 * 	用户卡的快照包邮信息
 	 */
-	// 包邮周期类型 
+	/**   包邮周期类型  */
 	protected Byte freeLimit;
-	// 包邮次数
+	/**   包邮次数 */
 	protected Integer freeNum; 
 	
 	private Integer id;
@@ -105,27 +109,27 @@ public class UserCardVo {
 	
 	
 	
-	// 用户是否有此卡
+	/**   用户是否有此卡 */
 	private Boolean isGet;
-	// 卡是否可用  1 可用，-1不可用
+	/**   卡是否可用  1 可用，-1不可用 */
 	private Integer status;
 	@JsonProperty("startDate")
 	private LocalDate startDate;
 	@JsonProperty("endDate")
 	private LocalDate endDate;
-	// 头像
+	/**   头像 */
 	@JsonProperty("avatar")
 	private String shopAvatar;
-	// 累积消费
+	/**   累积消费 */
 	private BigDecimal paidAmount;
-	// 累积积分
+	/**   累积积分 */
 	private Integer scoreAmount;
 	private Byte bindMobile;
 	private List<GoodsSmallVo> goodsList;
-	// 门店Id信息
+	/**   门店Id信息 */
 	@JsonProperty("storeList")
 	private List<Integer> storeIdList;
-	// 门店信息
+	/**   门店信息 */
 	private List<StoreBasicVo> storeInfoList;
 	/**
 	 *  优惠券列表
@@ -135,7 +139,7 @@ public class UserCardVo {
 	 *  优惠券礼包
 	 */
 	private List<UserCardCouponPack> couponPack;
-	// 升级进度
+	/**   升级进度 */
 	private NextGradeCardVo next;
 	private Timestamp buyTime;
 	private WxAppCardExamineVo isExamine;

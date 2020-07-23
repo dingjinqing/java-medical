@@ -12,7 +12,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class AppBo {
-    //app
     private String appId;
     private String appName;
     private String appSecret;

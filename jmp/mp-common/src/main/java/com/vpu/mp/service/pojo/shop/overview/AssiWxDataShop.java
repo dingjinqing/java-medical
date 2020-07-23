@@ -16,15 +16,15 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssiWxDataShop implements PendingRule<AssiWxDataShop> {
-    // 注册小程序 0：已完成，1：未完成
+    /**  注册小程序 0：已完成，1：未完成 */
     public Metadata registerApplet;
-    // 授权小程序 0：已完成，1：未完成
+    /**  授权小程序 0：已完成，1：未完成 */
     public Metadata authApplet;
-    // 配置小程序客服 0：已完成，1：未完成
+    /**  配置小程序客服 0：已完成，1：未完成 */
     public Metadata appletService;
-    // 开通微信支付 0：已完成，1：未完成
+    /**  开通微信支付 0：已完成，1：未完成 */
     public Metadata wxPayment;
-    // 配置微信支付 0：已完成，1：未完成
+    /**  配置微信支付 0：已完成，1：未完成 */
     public Metadata configWxPayment;
 
     /**

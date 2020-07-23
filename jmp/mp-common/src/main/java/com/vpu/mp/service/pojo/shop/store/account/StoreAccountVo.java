@@ -4,6 +4,10 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import lombok.Data;
+
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class StoreAccountVo {
 	private Integer accountId;
@@ -15,7 +19,6 @@ public class StoreAccountVo {
 	private Byte accountType;
 	private Byte status;
 	private Byte delFlag;
-	//private String accountPasswd;
 	private String storeList;
 	private Timestamp updateTime;
 

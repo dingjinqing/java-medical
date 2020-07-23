@@ -53,7 +53,7 @@ public class ShopCfgParam {
 	 * 自定义积分数额
 	 */
 	private Integer scorePayNum;
-	// 积分抵扣比例
+	/**   积分抵扣比例 */
 	private Integer scoreDiscountRatio;
 	
 	/**

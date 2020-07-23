@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,7 +44,8 @@ public class UserCardData extends BaseData {
 	/** 消费类型 0是普通卡 1限次卡   */
 	private Byte type;
 	/** 门店兑换 1，消费次数 0  */
-	private Byte StoreOrConsump;
+	@JsonProperty("StoreOrConsump")
+	private Byte storeOrConsume;
 	/** 订单编号 */
 	private String orderSn;
 	/** 兑换次数 */

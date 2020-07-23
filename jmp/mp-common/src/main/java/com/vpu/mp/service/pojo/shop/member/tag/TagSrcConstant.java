@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.tag;
 /**
  * 	用户打标签来源
+ * @author huangzhuangzhuang
  */
 public class TagSrcConstant {
 	/** 	后台admin操作	*/

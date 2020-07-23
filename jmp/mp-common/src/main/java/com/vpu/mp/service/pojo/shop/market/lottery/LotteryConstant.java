@@ -7,7 +7,7 @@ package com.vpu.mp.service.pojo.shop.market.lottery;
  * @date 2019/8/5 10:58
  */
 public class LotteryConstant {
-    //*****************每人n次 每人每天n次******
+    /**  *****************每人n次 每人每天n次******
     /**
      * 每人
      */
@@ -33,7 +33,7 @@ public class LotteryConstant {
     public final static Byte LOTTERY_TIME_SCORE=3;
 
 
-    //***********奖品类型*****************
+    /**  ***********奖品类型*****************
     /**
      * 未中奖
      */
@@ -64,7 +64,7 @@ public class LotteryConstant {
     public final static byte LOTTERY_TYPE_CUSTOM  =5;
 
 
-    //*************奖品领取状态************:0.待领取，1：已领取，2.已过期',
+    /**  *************奖品领取状态************:0.待领取，1：已领取，2.已过期',  */
     public final static byte LOTTERY_PRIZE_STATUS_UNCLAIMED  =0;
     public final static byte LOTTERY_PRIZE_STATUS_RECEIVED  =1;
     public final static byte LOTTERY_PRIZE_STATUS_OVERDUE  =2;

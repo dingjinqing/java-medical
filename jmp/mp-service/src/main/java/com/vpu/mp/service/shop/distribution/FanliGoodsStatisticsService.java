@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  */
 @Service
 public class FanliGoodsStatisticsService extends ShopBaseService {
-    FanliGoodsStatistics TABLE = FanliGoodsStatistics.FANLI_GOODS_STATISTICS;
+    FanliGoodsStatistics table = FanliGoodsStatistics.FANLI_GOODS_STATISTICS;
 
     /**
      * 删除record，并不入库
@@ -24,7 +24,7 @@ public class FanliGoodsStatisticsService extends ShopBaseService {
      * @return
      */
     public FanliGoodsStatisticsRecord createRecord(BigDecimal realRebateMoney, OrderGoodsRecord goods, Integer rebateNumber) {
-        FanliGoodsStatisticsRecord record = db().newRecord(TABLE);
+        FanliGoodsStatisticsRecord record = db().newRecord(table);
         record.setPrdId(goods.getProductId());
         record.setPrdSn(goods.getProductSn());
         record.setGoodsId(goods.getGoodsId());

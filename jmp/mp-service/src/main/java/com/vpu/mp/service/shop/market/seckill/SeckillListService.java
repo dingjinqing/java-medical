@@ -73,7 +73,7 @@ public class SeckillListService extends ShopBaseService {
                 .where(SEC_KILL_LIST.SK_ID.eq(skId)
                         .and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                         .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY))
-                        .and(ORDER_GOODS.PRODUCT_ID.eq(productId))).fetchOptionalInto(Integer.class);//.ofNullable(0).get();
+                        .and(ORDER_GOODS.PRODUCT_ID.eq(productId))).fetchOptionalInto(Integer.class);
         return  bigDecimalRecord1.orElse(0);
     }
 

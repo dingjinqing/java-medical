@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.share;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,6 +11,9 @@ import lombok.Data;
 @Data
 @Builder
 public class FormPictorialRule implements Rule {
-    String page_name;
-    String bg_img;
+    @JsonProperty("page_name")
+    String pageName;
+
+    @JsonProperty("bg_img")
+    String bgImg;
 }

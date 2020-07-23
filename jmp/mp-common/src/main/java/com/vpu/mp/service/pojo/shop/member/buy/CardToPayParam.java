@@ -16,9 +16,9 @@ import java.math.BigDecimal;
 @Setter
 @ToString
 public class CardToPayParam {
-    /*用户id*/
+    /** 用户id */
     private WxAppSessionUser user;
-    /**ip地址*/
+    /** ip地址 */
     private String clientIp;
     /**
      * 会员卡id

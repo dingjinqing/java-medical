@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.HttpsUtils;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.config.TxMapLBSConfig;
+import com.vpu.mp.config.TxMapLbsConfig;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -58,7 +58,7 @@ public class AddressService extends ShopBaseService {
     public static final Integer USER_ADDRESS_MAX_COUNT=50;
 
     @Autowired
-    private TxMapLBSConfig txMapLBSConfig;
+    private TxMapLbsConfig txMapLBSConfig;
     @Autowired
     private GoodsDeliverTemplateService shippingFeeTemplate;
     @Autowired

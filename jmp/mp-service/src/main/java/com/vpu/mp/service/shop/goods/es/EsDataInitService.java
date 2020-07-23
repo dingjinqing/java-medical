@@ -19,7 +19,6 @@ import java.util.UUID;
  * @date 2019-10-08 10:59
  *
 */
-//@Component
 @Slf4j
 public class EsDataInitService implements InitializingBean {
 

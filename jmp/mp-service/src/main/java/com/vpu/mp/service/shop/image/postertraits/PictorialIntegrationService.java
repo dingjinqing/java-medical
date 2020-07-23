@@ -39,37 +39,37 @@ public class PictorialIntegrationService extends ShopBaseService {
     private GoodsService goodsService;
 
     @Autowired
-    private NormalGoodsPictorialService normalGoodsPictorialService;
+    private NormalGoodsPictorialShareService normalGoodsPictorialService;
 
     @Autowired
-    private GroupBuyPictorialService groupBuyPictorialService;
+    private GroupBuyPictorialShareService groupBuyPictorialService;
 
     @Autowired
-    private BargainPictorialService bargainPictorialService;
+    private BargainPictorialShareService bargainPictorialService;
 
     @Autowired
-    private GroupDrawPictorialService groupDrawPictorialService;
+    private GroupDrawPictorialShareService groupDrawPictorialService;
 
     @Autowired
-    private PreSalePictorialService preSalePictorialService;
+    private PreSalePictorialShareService preSalePictorialService;
 
     @Autowired
-    private ReducePricePictorialService reducePricePictorialService;
+    private ReducePricePictorialShareService reducePricePictorialService;
 
     @Autowired
-    private FirstSpecialPictorialService firstSpecialPictorialService;
+    private FirstSpecialPictorialShareService firstSpecialPictorialService;
 
     @Autowired
-    private SeckillPictorialService seckillPictorialService;
+    private SeckillPictorialShareService seckillPictorialService;
 
     @Autowired
-    private RebatePictorialService rebatePictorialService;
+    private RebatePictorialShareService rebatePictorialService;
 
     @Autowired
-    private IntegralMallPictorialService integralMallPictorialService;
+    private IntegralMallPictorialShareService integralMallPictorialService;
 
     @Autowired
-    private GroupIntegrationPictorialService groupIntegrationPictorialService;
+    private GroupIntegrationPictorialShareService groupIntegrationPictorialService;
 
     /**
      * 获取商品所有图片base64格式集合
@@ -93,32 +93,32 @@ public class PictorialIntegrationService extends ShopBaseService {
         return imgList;
     }
 
-    private ShareBaseService findShareBaseService(GoodsShareBaseParam param) {
-        ShareBaseService shareBaseService;
+    private BaseShareService findShareBaseService(GoodsShareBaseParam param) {
+        BaseShareService baseShareService;
         if (param instanceof GroupBuyShareInfoParam) {
-            shareBaseService = groupBuyPictorialService;
+            baseShareService = groupBuyPictorialService;
         } else if (param instanceof BargainShareInfoParam) {
-            shareBaseService = bargainPictorialService;
+            baseShareService = bargainPictorialService;
         } else if (param instanceof GroupDrawShareInfoParam) {
-            shareBaseService = groupDrawPictorialService;
+            baseShareService = groupDrawPictorialService;
         } else if (param instanceof PreSaleShareInfoParam) {
-            shareBaseService = preSalePictorialService;
+            baseShareService = preSalePictorialService;
         } else if (param instanceof ReducePriceShareInfoParam) {
-            shareBaseService = reducePricePictorialService;
+            baseShareService = reducePricePictorialService;
         } else if (param instanceof FirstSpecialShareInfoParam) {
-            shareBaseService = firstSpecialPictorialService;
+            baseShareService = firstSpecialPictorialService;
         } else if (param instanceof SeckillShareInfoParam) {
-            shareBaseService = seckillPictorialService;
+            baseShareService = seckillPictorialService;
         } else if (param instanceof RebateShareInfoParam) {
-            shareBaseService = rebatePictorialService;
+            baseShareService = rebatePictorialService;
         } else if (param instanceof IntegralMallShareInfoParam) {
-            shareBaseService = integralMallPictorialService;
+            baseShareService = integralMallPictorialService;
         } else if (param instanceof GroupIntegralShareInfoParam) {
-            shareBaseService = groupIntegrationPictorialService;
+            baseShareService = groupIntegrationPictorialService;
         } else {
-            shareBaseService = normalGoodsPictorialService;
+            baseShareService = normalGoodsPictorialService;
         }
-        return shareBaseService;
+        return baseShareService;
     }
 
     /**
@@ -128,12 +128,12 @@ public class PictorialIntegrationService extends ShopBaseService {
      * @return {@link GoodsShareInfo}
      */
     public GoodsShareInfo getActivityShareInfo(GoodsShareBaseParam param) {
-        ShareBaseService shareBaseService = findShareBaseService(param);
-        return shareBaseService.getShareInfo(param);
+        BaseShareService baseShareService = findShareBaseService(param);
+        return baseShareService.getShareInfo(param);
     }
 
     public GoodsPictorialInfo getActivityPictorialInfo(GoodsShareBaseParam param) {
-        ShareBaseService shareBaseService = findShareBaseService(param);
-        return shareBaseService.getPictorialInfo(param);
+        BaseShareService baseShareService = findShareBaseService(param);
+        return baseShareService.getPictorialInfo(param);
     }
 }

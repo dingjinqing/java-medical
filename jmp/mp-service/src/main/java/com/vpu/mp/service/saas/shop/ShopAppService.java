@@ -118,7 +118,7 @@ public class ShopAppService  extends MainBaseService {
      * @param action
      * @return
      */
-    public AppAuthRecord AddAppAuthInfo(Integer sysId, Integer shopId, Byte action){
+    public AppAuthRecord addAppAuthInfo(Integer sysId, Integer shopId, Byte action){
         AppAuthRecord appAuthRecord = db().newRecord(APP_AUTH);
         appAuthRecord.setSysId(sysId);
         appAuthRecord.setShopId(shopId);

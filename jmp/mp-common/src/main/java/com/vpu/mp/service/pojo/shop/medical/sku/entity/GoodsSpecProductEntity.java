@@ -37,17 +37,17 @@ public class GoodsSpecProductEntity {
         if (StrUtil.isBlank(prdDesc)) {
             return;
         }
-        String[] specKVs = prdDesc.split(MedicalGoodsConstant.PRD_DESC_SPLITER);
-        if (specKVs.length < 1) {
+        String[] specKvs = prdDesc.split(MedicalGoodsConstant.PRD_DESC_SPLITER);
+        if (specKvs.length < 1) {
             throw new IllegalArgumentException("规格组描述信息错误：" + prdDesc);
         }
 
         StringBuilder idStrBuilder = new StringBuilder();
 
-        for (String specKV : specKVs) {
-            String[] split = specKV.split(MedicalGoodsConstant.SPEC_NAME_VAL_SPLITER);
+        for (String specKv : specKvs) {
+            String[] split = specKv.split(MedicalGoodsConstant.SPEC_NAME_VAL_SPLITER);
             if (split.length != 2) {
-                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
+                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKv));
             }
             String key = split[0];
             String val = split[1];
@@ -62,7 +62,7 @@ public class GoodsSpecProductEntity {
             idStrBuilder.append(specEntity.getSpecId()).append(MedicalGoodsConstant.SPEC_NAME_VAL_SPLITER);
             // 没有填写对应规格值
             if (StrUtil.isBlank(val)) {
-                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
+                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKv));
             }
 
             List<SpecValEntity> specValEntities = specEntity.getGoodsSpecVals();
@@ -75,7 +75,7 @@ public class GoodsSpecProductEntity {
             }
             // 规格值没法匹配
             if (i == specValEntities.size()) {
-                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKV));
+                throw new IllegalArgumentException(String.format("规格组%s名值信息错误：%s", prdDesc, specKv));
             }
         }
 

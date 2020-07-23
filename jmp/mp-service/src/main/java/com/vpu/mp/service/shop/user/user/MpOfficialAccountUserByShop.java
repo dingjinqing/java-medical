@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MpOfficialAccountUserByShop extends ShopBaseService{
 

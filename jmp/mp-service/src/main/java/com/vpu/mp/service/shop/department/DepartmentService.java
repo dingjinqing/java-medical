@@ -15,6 +15,9 @@ import java.util.List;
 import com.vpu.mp.common.foundation.util.Util;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+/**
+ * @author chenjie
+ */
 @Service
 public class DepartmentService extends ShopBaseService {
     @Autowired
@@ -157,9 +160,9 @@ public class DepartmentService extends ShopBaseService {
     }
 
     public void fetchDepartments(String json) {
-        List<DepartmentFetchOneParam> DepartmentFetchOneParam = Util.parseJson(json, new TypeReference<List<DepartmentFetchOneParam>>() {
+        List<DepartmentFetchOneParam> departmentFetchOneParams = Util.parseJson(json, new TypeReference<List<DepartmentFetchOneParam>>() {
         });
-        for (DepartmentFetchOneParam list : DepartmentFetchOneParam) {
+        for (DepartmentFetchOneParam list : departmentFetchOneParams) {
             DepartmentOneParam department = new DepartmentOneParam();
             department.setName(list.getDepartName());
             department.setCode(list.getDepartCode());
@@ -168,7 +171,9 @@ public class DepartmentService extends ShopBaseService {
             } else {
                 department.setParentId(getDepartmentIdNew(list.getPid()));
             }
-            if (list.getState() > 1) department.setIsDelete((byte) 1);
+            if (list.getState() > 1) {
+                department.setIsDelete((byte) 1);
+            }
             synchroDepartment(department);
         }
     }

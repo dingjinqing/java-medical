@@ -12,7 +12,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
-import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.verify.VerifyParam;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -34,7 +34,7 @@ import java.util.List;
  * @author 王帅
  */
 @Component
-public class VerifyService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, verifyParam> {
+public class VerifyService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, VerifyParam> {
 
 	@Autowired
 	private OrderInfoService orderInfo;
@@ -65,7 +65,7 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 	}
 
 	@Override
-	public ExecuteResult execute(verifyParam param) {
+	public ExecuteResult execute(VerifyParam param) {
 
 		OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
 

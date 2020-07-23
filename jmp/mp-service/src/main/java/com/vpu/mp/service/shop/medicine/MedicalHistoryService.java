@@ -3,27 +3,22 @@ package com.vpu.mp.service.shop.medicine;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.foundation.transactional.DbTransactional;
 import com.vpu.mp.dao.foundation.transactional.DbType;
-import com.vpu.mp.dao.shop.medicalHistory.MedicalHistoryDao;
+import com.vpu.mp.dao.shop.medicalhistory.MedicalHistoryDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 
-import com.vpu.mp.service.pojo.shop.medicalHistory.*;
+import com.vpu.mp.service.pojo.shop.medicalhistory.*;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
 import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;

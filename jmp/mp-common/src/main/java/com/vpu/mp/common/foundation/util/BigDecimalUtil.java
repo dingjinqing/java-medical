@@ -123,11 +123,11 @@ public class BigDecimalUtil {
      * @return value left/right为null,为0直接返回0.00
      */
     static public BigDecimal divideWithOutCheck(Object left, Object right) {
-    	String STRING_ZERO = "0";
-        if (left == null || StringUtils.isBlank(left.toString()) || STRING_ZERO.equals(left.toString())) {
+    	String stringZero = "0";
+        if (left == null || StringUtils.isBlank(left.toString()) || stringZero.equals(left.toString())) {
             return BigDecimal.ZERO;
         }
-        if (right == null || StringUtils.isBlank(right.toString()) || STRING_ZERO.equals(right.toString())) {
+        if (right == null || StringUtils.isBlank(right.toString()) || stringZero.equals(right.toString())) {
             return BigDecimal.ZERO;
         }
         BigDecimal tempLeft = new BigDecimal(left.toString());

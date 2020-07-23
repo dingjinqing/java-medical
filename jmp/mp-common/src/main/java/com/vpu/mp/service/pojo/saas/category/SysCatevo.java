@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * @author luguangyao
+ */
 @Data
 public class SysCatevo {
     private Integer catId;

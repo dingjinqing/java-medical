@@ -21,10 +21,9 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.verify.VerifyParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
@@ -204,7 +203,7 @@ public class AdminOrderController extends AdminBaseController {
 	 * 订单核销
 	 */
 	@PostMapping("/verify")
-	public JsonResult verify(@RequestBody @Valid verifyParam param) {
+	public JsonResult verify(@RequestBody @Valid VerifyParam param) {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);

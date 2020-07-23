@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.share.bargain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.wxapp.share.SceneValueBase;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,5 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BargainSceneValue extends SceneValueBase {
-    private Integer record_id;
+    @JsonProperty("record_id")
+    private Integer recordId;
 }

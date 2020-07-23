@@ -33,8 +33,10 @@ public class ValidatorConfig {
     public final static String JAVAX_VALIDATION_PREFIX ="message";
     public final static String JAVAX_ORG_HIBERNATE_KEY=".constraints.";
 
-    // 读取国际化文件
-    private static final List<String> bundleNames = new ArrayList<String>(){{
+    /**
+     * 读取国际化文件
+     */
+    private static final List<String> BUNDLE_NAMES = new ArrayList<String>(){{
         add("static/i18n/param");
         add("static/i18n/messages");
     }};
@@ -49,7 +51,7 @@ public class ValidatorConfig {
         properties.setProperty(HIBERNATE_VALIDATOR_FAIL_FAST, isFailFast);
         LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
         localValidatorFactoryBean.setValidationProperties(properties);
-        localValidatorFactoryBean.setMessageInterpolator(new MessageInterpolator(bundleNames));
+        localValidatorFactoryBean.setMessageInterpolator(new MessageInterpolator(BUNDLE_NAMES));
         return localValidatorFactoryBean;
     }
     @Bean
@@ -102,10 +104,11 @@ public class ValidatorConfig {
             @Override
             public Locale resolveLocale(HttpServletRequest request) {
                 Locale defaultLocale = Locale.SIMPLIFIED_CHINESE;
-                if (defaultLocale != null && request.getHeader("V-Lang") == null) {
+                String langHeader = "V-Lang";
+                if (defaultLocale != null && request.getHeader(langHeader) == null) {
                     return defaultLocale;
                 }
-                String langStr = request.getHeader("V-Lang");
+                String langStr = request.getHeader(langHeader);
                 String[] languages = langStr.split(UNDEER_LINE);
                 return new Locale(languages[0], languages[1]);
             }

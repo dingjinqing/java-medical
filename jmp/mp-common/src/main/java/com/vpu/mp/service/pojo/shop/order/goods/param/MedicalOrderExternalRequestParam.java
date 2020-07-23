@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * @author yangpengcheng
+ */
 @Data
 public class MedicalOrderExternalRequestParam {
     private Integer status;

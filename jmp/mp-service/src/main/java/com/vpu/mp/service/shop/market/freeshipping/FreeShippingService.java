@@ -101,9 +101,10 @@ public class FreeShippingService extends ShopBaseService {
                 });
 
             } else {
-                if (freeShip.getRecommendGoodsId().contains(goodsId.toString()) ||
-                        (goods.getSortId() != null && freeShip.getRecommendSortId().contains(goods.getSortId().toString())) ||
-                        (goods.getCatId() != null && freeShip.getRecommendCatId().contains(goods.getCatId().toString()))) {
+                boolean isRecommendGoods = freeShip.getRecommendGoodsId().contains(goodsId.toString()) ||
+                    (goods.getSortId() != null && freeShip.getRecommendSortId().contains(goods.getSortId().toString())) ||
+                    (goods.getCatId() != null && freeShip.getRecommendCatId().contains(goods.getCatId().toString()));
+                if (isRecommendGoods) {
                     ruleList.forEach(freeShipRule -> {
                         FreeShippingGoodsRuleVo ruleVo = new FreeShippingGoodsRuleVo();
                         ruleVo.setAction(5);
@@ -351,11 +352,13 @@ public class FreeShippingService extends ShopBaseService {
             List<Integer> districtCode = Util.stringToList(rule.getArea());
             if (matchDistrictCode(address.getDistrictCode(),districtCode)) {
                 logger().info("满包邮-在包邮地区");
-                if ((rule.getConType().equals(CONTYPE_NUM)||rule.getConType().equals(CONTYPE_NUM_MONEY)) && tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].intValue() >= rule.getNum()) {
+                boolean isFreeShipByNum = (rule.getConType().equals(CONTYPE_NUM) || rule.getConType().equals(CONTYPE_NUM_MONEY)) && tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].intValue() >= rule.getNum();
+                if (isFreeShipByNum) {
                     logger().info("满{}件包邮,商品数量{}",rule.getNum().toString(),tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].toString());
                     return true;
                 }
-                if ((rule.getConType().equals(CONTYPE_MONEY)||rule.getConType().equals(CONTYPE_NUM_MONEY))&&tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].compareTo(rule.getMoney())>=0){
+                boolean isFreeShipByPrice = (rule.getConType().equals(CONTYPE_MONEY) || rule.getConType().equals(CONTYPE_NUM_MONEY)) && tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].compareTo(rule.getMoney()) >= 0;
+                if (isFreeShipByPrice){
                     logger().info("满{}元包邮,商品价格{}",rule.getMoney().toString(),tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].toString());
                     return true;
                 }

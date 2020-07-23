@@ -9,32 +9,33 @@ import java.math.BigDecimal;
 
 /**
  * ElasticSearch goods product used
+ * @author luguangyao
  */
 public class EsGoodsProduct {
 
     /**规格id*/
-    @EsFiled(name = EsSearchName.PRD.PRD_ID,type = EsFiledTypeConstant.INTEGER)
+    @EsFiled(name = EsSearchName.Prd.PRD_ID,type = EsFiledTypeConstant.INTEGER)
     private Integer prdId;
-    @EsFiled(name = EsSearchName.PRD.PRD_NUMBER,type = EsFiledTypeConstant.INTEGER)
+    @EsFiled(name = EsSearchName.Prd.PRD_NUMBER,type = EsFiledTypeConstant.INTEGER)
     private Integer prdNumber;
     /**商品重量*/
-    @EsFiled(name = EsSearchName.PRD.PRD_WEIGHT,type = EsFiledTypeConstant.SCALED_FLOAT,scaledNumber = "1000")
+    @EsFiled(name = EsSearchName.Prd.PRD_WEIGHT,type = EsFiledTypeConstant.SCALED_FLOAT,scaledNumber = "1000")
     private BigDecimal prdWeight;
     /** 规格最终价格，数据库取prd_price*/
-    @EsFiled(name = EsSearchName.PRD.PRD_REAL_PRICE,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.Prd.PRD_REAL_PRICE,type = EsFiledTypeConstant.SCALED_FLOAT)
     private BigDecimal prdRealPrice;
     /**规格划线价,首次取时取市场价*/
-    @EsFiled(name = EsSearchName.PRD.PRD_LINE_PRICE,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.Prd.PRD_LINE_PRICE,type = EsFiledTypeConstant.SCALED_FLOAT)
     private BigDecimal prdLinePrice;
-    @EsFiled(name = EsSearchName.PRD.PRD_SPECS,type = EsFiledTypeConstant.KEYWORD)
+    @EsFiled(name = EsSearchName.Prd.PRD_SPECS,type = EsFiledTypeConstant.KEYWORD)
     private String prdSpecs;
-    @EsFiled(name = EsSearchName.PRD.PRD_DESC,type = EsFiledTypeConstant.KEYWORD)
+    @EsFiled(name = EsSearchName.Prd.PRD_DESC,type = EsFiledTypeConstant.KEYWORD)
     private String prdDesc;
-    @EsFiled(name = EsSearchName.PRD.PRD_IMG,type = EsFiledTypeConstant.KEYWORD)
+    @EsFiled(name = EsSearchName.Prd.PRD_IMG,type = EsFiledTypeConstant.KEYWORD)
     private String prdImg;
-    @EsFiled(name = EsSearchName.PRD.PRD_CODES,type = EsFiledTypeConstant.KEYWORD)
+    @EsFiled(name = EsSearchName.Prd.PRD_CODES,type = EsFiledTypeConstant.KEYWORD)
     private String prdCodes;
-    @EsFiled(name = EsSearchName.PRD.PRD_SN,type = EsFiledTypeConstant.KEYWORD)
+    @EsFiled(name = EsSearchName.Prd.PRD_SN,type = EsFiledTypeConstant.KEYWORD)
     private String prdSn;
 
     public EsGoodsProduct(){}

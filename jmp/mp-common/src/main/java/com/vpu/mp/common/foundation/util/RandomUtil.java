@@ -3,6 +3,9 @@ package com.vpu.mp.common.foundation.util;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * @author lixinguo
+ */
 public class RandomUtil {
 	/**随机数上限9999*/
 	public final static int MAX_RANDOM_9999 = 9999;

@@ -31,7 +31,6 @@ public class FieldsUtil {
      * @param to
      * @return
      */
-    @Deprecated
     public static Object assignNotNull(Object from, Object to) {
         return assignNotNull(from, to, null);
     }
@@ -43,7 +42,6 @@ public class FieldsUtil {
      * @param onlyPropNames 仅赋值的属性名字
      * @return
      */
-    @Deprecated
     public static Object assignNotNull(Object from, Object to, List<String> onlyPropNames) {
         Class<?> clazz = from.getClass();
         Field[] fields = clazz.getDeclaredFields();

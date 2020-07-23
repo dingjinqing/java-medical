@@ -28,7 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 public class CronTaskRegistrar implements DisposableBean {
-    // 定时任务启动器
+    /**
+     * 定时任务启动器
+     */
     @Autowired
     private TaskScheduler taskScheduler;
 

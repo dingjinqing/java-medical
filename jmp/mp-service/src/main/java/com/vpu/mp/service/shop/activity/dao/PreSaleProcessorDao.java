@@ -309,8 +309,9 @@ public class PreSaleProcessorDao extends PreSaleService {
         }
         if (PresaleConstant.PRESALE_MONEY_INTERVAL.equals(activityInfo.getPrePayStep())) {
             //定金期数2
-            if ((param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
-                || param.getDate().after(activityInfo.getPreEndTime2())) {
+            boolean isActivityEnd = (param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
+                || param.getDate().after(activityInfo.getPreEndTime2());
+            if (isActivityEnd) {
                 log.error("活动已结束");
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
             }

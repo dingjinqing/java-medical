@@ -116,7 +116,7 @@ public class RankCardToVo extends RankCardVo {
 		
 		//	购物送积分策略json对象 
 		String buyScore = this.getBuyScore();
-		if (buyScore != null && !buyScore.equals("")) {
+		if (!StringUtils.isBlank(buyScore)) {
 			try {
 				log.info("正在解析数据");
 				scoreJson = MAPPER.readValue(buyScore, ScoreJson.class);

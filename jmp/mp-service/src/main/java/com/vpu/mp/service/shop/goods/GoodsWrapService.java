@@ -41,9 +41,9 @@ public class GoodsWrapService extends ShopBaseService {
         }
         // 数据重复性判断
         //存在重复值则直接返回
-        GoodsDataIIllegalEnum goodsDataIIllegalEnum = goodsService.columnValueExistCheckForInsert(goods);
-        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(goodsDataIIllegalEnum)) {
-            return goodsDataIIllegalEnum;
+        GoodsDataIIllegalEnum goodsDataIllegalEnum = goodsService.columnValueExistCheckForInsert(goods);
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(goodsDataIllegalEnum)) {
+            return goodsDataIllegalEnum;
         }
 
         GoodsDataIllegalEnumWrap codeWrap = goodsService.insert(goods);

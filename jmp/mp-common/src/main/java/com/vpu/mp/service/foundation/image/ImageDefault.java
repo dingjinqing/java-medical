@@ -397,12 +397,14 @@ public interface ImageDefault {
 		return this.getUpYunClient().writeFile(upYunPath, inStream, true, null);
 	}
 
-	/**
-	 * 根据byte[] 上传图片到又拍云
-	 *
-	 * @return
-	 * @throws Exception
-	 */
+    /**
+     * 根据byte[] 上传图片到又拍云
+     *
+     * @param filePath
+     * @param datas
+     * @return
+     * @throws Exception
+     */
 	public default boolean uploadToUpYunByByte(String filePath, byte[] datas) throws Exception {
 		return this.getUpYunClient().writeFile(filePath,datas,true);
 	}

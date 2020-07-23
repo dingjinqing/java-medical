@@ -109,22 +109,29 @@ public class SysCateService extends MainBaseService {
         Short level = db().select(CATEGORY.LEVEL).from(CATEGORY).where(CATEGORY.CAT_ID.eq(catId)).fetchOne()
             .into(Short.class);
         res.add(catId);
-        if (level == 2) {
+        int level2 = 2;
+        if (level == level2) {
             /** 第三级，子分类 */
-        } else if (level == 1) {
-            /** 第二级分类 */
-            List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
-                .fetch(CATEGORY.CAT_ID);
-            res.addAll(children);
-        } else if (level == 0) {
-            /** 第一级分类 */
-            List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
-                .fetch(CATEGORY.CAT_ID);
-            res.addAll(children);
-            for (Integer id : children) {
-                List<Integer> grandchildren = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(id))
+        } else {
+            int level1 = 1;
+            if (level == level1) {
+                /** 第二级分类 */
+                List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
                     .fetch(CATEGORY.CAT_ID);
-                res.addAll(grandchildren);
+                res.addAll(children);
+            } else {
+                int level0 = 0;
+                if (level == level0) {
+                    /** 第一级分类 */
+                    List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
+                        .fetch(CATEGORY.CAT_ID);
+                    res.addAll(children);
+                    for (Integer id : children) {
+                        List<Integer> grandchildren = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(id))
+                            .fetch(CATEGORY.CAT_ID);
+                        res.addAll(grandchildren);
+                    }
+                }
             }
         }
         return res;

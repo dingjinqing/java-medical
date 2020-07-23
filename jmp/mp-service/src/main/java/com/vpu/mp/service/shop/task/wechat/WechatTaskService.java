@@ -71,7 +71,7 @@ public class WechatTaskService extends ShopBaseService {
 	private static final byte ONE = 1;
 	private static final byte TWO = 2;
     private static final String CONTENT = "wechat-context";
-    private static final ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
+    private static final ThreadLocal<String> LOCAL = ThreadLocal.withInitial(() -> {
         LocalDate date = LocalDate.now().minusDays(1);
         DateTimeFormatter faDateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SHORT);
         return date.format(faDateTimeFormatter);
@@ -292,7 +292,7 @@ public class WechatTaskService extends ShopBaseService {
      */
     private void getWeeklyVisitTrend(WxMaAnalysisService service, Date date) {
         try {
-            LocalDate startDate = LocalDate.parse(local.get(),
+            LocalDate startDate = LocalDate.parse(LOCAL.get(),
                     DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SHORT)).minusDays(6);
             List<WxMaVisitTrend> result = service.getWeeklyVisitTrend(
                     Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),date);
@@ -316,7 +316,7 @@ public class WechatTaskService extends ShopBaseService {
      */
     private void getMonthlyVisitTrend(WxMaAnalysisService service, Date date) {
         try {
-            LocalDate startDate = LocalDate.parse(local.get(),
+            LocalDate startDate = LocalDate.parse(LOCAL.get(),
                     DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SHORT)).withDayOfMonth(1);
             List<WxMaVisitTrend> result = service.getMonthlyVisitTrend(
                     Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),date);
@@ -454,7 +454,7 @@ public class WechatTaskService extends ShopBaseService {
         if( o == null ){
             return false;
         }
-        Field<String> data = DSL.val(local.get());
+        Field<String> data = DSL.val(LOCAL.get());
         return isHavingData(table, data);
     }
     private boolean isHavingData(Table<?> table,Field<String> date){

@@ -65,14 +65,16 @@ public class WxAppCardActivationService extends ShopBaseService {
 	public final static String PROVINCE_CODE = "provinceCode";
 	public final static String CITY_CODE = "cityCode";
 	public final static String DISTRICT_CODE = "districtCode";
-	// 100000 110000 110100在省，市，区中都对应无效值
+
+	/**  100000 110000 110100在省，市，区中都对应无效值 **/
+
 	final static Integer DEFAULT_PROVINCEID = 100000;
 	final static Integer DEFAULT_CITYID = 110000;
 	final static Integer DEFAULT_DISTRICTID = 110100;
 	
-	private static final Map<Integer,DictProvinceRecord> provinceMap=new HashMap<>();
-	private static final Map<Integer,DictCityRecord> cityMap = new HashMap<>();
-	private static final Map<Integer,DictDistrictRecord> districtMap = new HashMap<>();
+	private static final Map<Integer,DictProvinceRecord> PROVINCE_MAP =new HashMap<>();
+	private static final Map<Integer,DictCityRecord> CITY_MAP = new HashMap<>();
+	private static final Map<Integer,DictDistrictRecord> DISTRICT_MAP = new HashMap<>();
 	
 	/**
 	 * 	获取会员卡激活数据
@@ -331,10 +333,10 @@ public class WxAppCardActivationService extends ShopBaseService {
 		if(cityId==null) {
 			cityId = DEFAULT_CITYID;
 		}
-		DictCityRecord cityName = cityMap.get(cityId);
+		DictCityRecord cityName = CITY_MAP.get(cityId);
 		if(cityName == null) {
 			cityName = saas.region.city.getCityName(cityId);
-			cityMap.put(cityId,cityName);
+			CITY_MAP.put(cityId,cityName);
 		}
 		if(cityName != null) {
 			return cityName.getName();
@@ -353,10 +355,10 @@ public class WxAppCardActivationService extends ShopBaseService {
 		if(provinceId == null) {
 			provinceId = DEFAULT_PROVINCEID;
 		}
-		DictProvinceRecord provinceName = provinceMap.get(provinceId);
+		DictProvinceRecord provinceName = PROVINCE_MAP.get(provinceId);
 		if(provinceName==null) {
 			provinceName = saas.region.province.getProvinceName(provinceId);
-			provinceMap.put(provinceId, provinceName);
+			PROVINCE_MAP.put(provinceId, provinceName);
 		}
 		if(provinceName!=null) {
 			return provinceName.getName();
@@ -375,10 +377,10 @@ public class WxAppCardActivationService extends ShopBaseService {
 			districtId = DEFAULT_DISTRICTID;
 		}
 		
-		DictDistrictRecord districtName = districtMap.get(districtId);
+		DictDistrictRecord districtName = DISTRICT_MAP.get(districtId);
 		if(districtName==null) {
 			districtName = saas.region.district.getDistrictName(districtId);
-			districtMap.put(districtId, districtName);
+			DISTRICT_MAP.put(districtId, districtName);
 		}
 		if(districtName!=null) {
 			return districtName.getName();

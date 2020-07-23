@@ -3,7 +3,7 @@ package com.vpu.mp.common.foundation.util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.vpu.mp.common.pojo.shop.base.BASE64DecodedMultipartFile;
+import com.vpu.mp.common.pojo.shop.base.Base64DecodedMultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -124,7 +124,7 @@ public class FileUtil {
                     b[i] += 256;
                 }
             }
-            return new BASE64DecodedMultipartFile(b, baseStr[0]);
+            return new Base64DecodedMultipartFile(b, baseStr[0]);
         } catch (Exception e) {
             log.debug("base64转文件失败");
             e.printStackTrace();

@@ -15,20 +15,20 @@ public class CardConsumeParam {
 	public Integer pageRows;
 	/** -当前页 */
 	public Integer currentPage;
-	// 会员卡id
+	/**   会员卡id */
 	private Integer cardId;
-	// 订单号
+	/**   订单号 */
 	private String orderSn;
-	// 会员昵称
+	/**   会员昵称 */
 	private String username;
-	// 手机号
+	/**   手机号 */
 	private String mobile;
-	// 次数使用类型
+	/**   次数使用类型 */
 	private Byte type;
 	
-	// 次数变动时间 - 开始
+	/**   次数变动时间 - 开始 */
 	private Timestamp firstTime;
-	// 次数变动时间 - 结束
+	/**   次数变动时间 - 结束 */
 	private Timestamp secondTime;
 	
 }

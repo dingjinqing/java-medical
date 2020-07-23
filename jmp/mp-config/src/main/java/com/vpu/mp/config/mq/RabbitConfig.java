@@ -240,7 +240,7 @@ public class RabbitConfig {
      * @return 获取关注公众号的用户信息
      */
     @Bean
-    public Queue sendMpMABindQueue() {
+    public Queue sendMpMaBindQueue() {
     	return new Queue(QUEUE_MA_MAP_BIND,true);
     }
 
@@ -419,7 +419,7 @@ public class RabbitConfig {
      */
     @Bean
     public Binding bindingTemplateSend() {
-    	return BindingBuilder.bind(sendMpMABindQueue()).to(wxExchange()).with(BINDING_MA_MAP_BIND_KEY);
+    	return BindingBuilder.bind(sendMpMaBindQueue()).to(wxExchange()).with(BINDING_MA_MAP_BIND_KEY);
     }
 
 

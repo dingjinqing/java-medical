@@ -21,14 +21,14 @@ public class MainBaseDao extends AbstractCommonBaseDao {
 	/**
 	 * Main DB连接事务配置，线程内单例
 	 */
-	private static final ThreadLocal<Deque<Configuration>> mainDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
+	private static final ThreadLocal<Deque<Configuration>> MAIN_DB_CONFIGURATION = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
 
 	/**
 	 * 当前数据库
 	 */
 	@Override
 	protected DefaultDSLContext db() {
-		Deque<Configuration> config = mainDbConfiguration.get();
+		Deque<Configuration> config = MAIN_DB_CONFIGURATION.get();
 		if (config.peek() != null) {
 			return (DefaultDSLContext) DSL.using(config.peek());
 		}
@@ -41,7 +41,7 @@ public class MainBaseDao extends AbstractCommonBaseDao {
 	 */
     public  void transaction(ContextTransactionalRunnable transactional) {
 		db().transaction((configuration) -> {
-			Deque<Configuration> config = mainDbConfiguration.get();
+			Deque<Configuration> config = MAIN_DB_CONFIGURATION.get();
 			config.push(configuration);
 			try {
 				transactional.run();

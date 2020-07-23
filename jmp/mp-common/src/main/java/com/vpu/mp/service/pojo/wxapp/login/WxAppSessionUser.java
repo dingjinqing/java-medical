@@ -54,7 +54,7 @@ public class WxAppSessionUser {
 	Integer userId;
 	
 	String username;
-	//图片地址，小程序前端用
+	/**  图片地址，小程序前端用 */
 	String imageHost;
 
     /**
