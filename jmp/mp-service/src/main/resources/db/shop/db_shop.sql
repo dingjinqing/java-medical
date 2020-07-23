@@ -5069,7 +5069,7 @@ CREATE TABLE `b2c_message` (
     `message_content` text not null default '' COMMENT '消息内容',
     `message_type` tinyint(1) not null default 0 comment '消息类型 0：系统消息、1：订单消息、2：会话消息 默认0',
     `receiver_id` int(11) not null comment '接收者id',
-    `receiver_name` varchar(100) not null default '接收者姓名',
+    `receiver_name` varchar(100) not null default '' comment '接收者姓名',
     `sender_id` int(11) not null default 0 comment '发送者id',
     `sender_name` varchar(100) not null default '' comment '发送者姓名',
     `message_status` tinyint(1) not null default 0 comment '消息状态 0：未读、1：已读、3：置顶消息 默认0',
