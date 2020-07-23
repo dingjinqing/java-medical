@@ -1,0 +1,45 @@
+<!--components/doctor/doctor_list/doctor_list.wxml.wxml-->
+<view class="doctor_content">
+   <view class="doctor_item">
+      <view class="d_left">
+      <image src="https://bkimg.cdn.bcebos.com/pic/37d3d539b6003af3a09e2944372ac65c1038b6ea?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"></image>
+      </view>
+      <view class="d_right">
+        <view class="d_r_top">
+           <text>吴晓红</text>
+           <text>主任医师</text>
+        </view>
+        <view class="d_r_m_t">
+           <text>秦皇岛军工医院</text>
+           <text style="margin-left:10rpx">皮肤科</text>
+        </view>
+        <view class="d_r_m_b">
+           <view>擅长：痤疮、湿疹、白癜风</view>
+        </view>
+        <view class="d_r_bot">
+           <view >￥5<text>/次</text></view>
+        </view>
+      </view>
+   </view>
+      <view class="doctor_item">
+      <view class="d_left">
+      <image src="https://bkimg.cdn.bcebos.com/pic/37d3d539b6003af3a09e2944372ac65c1038b6ea?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"></image>
+      </view>
+      <view class="d_right">
+        <view class="d_r_top">
+           <text>吴晓红</text>
+           <text>主任医师</text>
+        </view>
+        <view class="d_r_m_t">
+           <text>秦皇岛军工医院</text>
+           <text style="margin-left:10rpx">皮肤科</text>
+        </view>
+        <view class="d_r_m_b">
+           <view>擅长：痤疮、湿疹、白癜风</view>
+        </view>
+        <view class="d_r_bot">
+           <view >￥5<text>/次</text></view>
+        </view>
+      </view>
+   </view>
+</view>
