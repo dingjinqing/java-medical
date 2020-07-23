@@ -687,7 +687,7 @@ public class CommodityStatisticsService extends ShopBaseService {
             list[i] = tempMap.values().toArray();
             tempMap.put(STRING_DATE, dateValue);
         }
-        return swapHV(list);
+        return swapHv(list);
     }
 
 
@@ -696,7 +696,7 @@ public class CommodityStatisticsService extends ShopBaseService {
      * @param array
      * @return
      */
-    private Object[][] swapHV(Object[][] array) {
+    private Object[][] swapHv(Object[][] array) {
         if (array.length <= 0) {
             return array;
         }

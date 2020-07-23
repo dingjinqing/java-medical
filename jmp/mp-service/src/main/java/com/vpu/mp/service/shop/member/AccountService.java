@@ -218,9 +218,11 @@ public class AccountService extends ShopBaseService {
 		return BigDecimalUtil.compareTo(val, BigDecimal.ZERO)>=0;
 	}
 	
-	/*
-	 * 插入交易记录
-	 */
+    /**
+     * 插入交易记录
+     * @param param
+     * @param tradeOpt
+     */
 	private void addTradeRecord(AccountParam param,TradeOptParam tradeOpt) {
 		logger().info("记录用户余额到交易tradeRecord表");
 		recordTradeService.insertTradeRecord(TradeOptParam.builder()
