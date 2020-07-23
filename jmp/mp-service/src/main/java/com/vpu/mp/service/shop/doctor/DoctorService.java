@@ -12,6 +12,7 @@ import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.*;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,4 +170,17 @@ public class DoctorService extends ShopBaseService {
         return flag;
     }
 
+    public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
+        return doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
+    }
+
+    public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
+        List<Integer> doctorDepartments = doctorDepartmentCoupleDao.listHistoryDoctorDepartment(doctorParam);
+        List<DoctorConsultationOneParam> historyDoctors = doctorDepartmentCoupleDao.listHistoryDoctor(doctorDepartments);
+        if (historyDoctors.size() < 10) {
+            List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorDepartments, 10 - historyDoctors.size());
+            historyDoctors.addAll(historyDoctorMore);
+        }
+        return historyDoctors;
+    }
 }

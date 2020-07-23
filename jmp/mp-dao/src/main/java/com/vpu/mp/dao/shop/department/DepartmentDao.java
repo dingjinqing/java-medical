@@ -7,6 +7,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.db.shop.tables.records.DepartmentRecord;
+import com.vpu.mp.service.pojo.shop.department.DepartmentConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListParam;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
@@ -196,5 +197,18 @@ public class DepartmentDao extends ShopBaseDao {
             .set(DEPARTMENT.LEVEL, level)
             .where(DEPARTMENT.ID.eq(id))
             .execute();
+    }
+
+    /**
+     * 获取子节点科室信息
+     * @param name
+     * @return
+     */
+    public List<DepartmentOneParam> ListDepartmentsByName(String name) {
+        Condition condition = DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF));
+        if (name != null) {
+            condition = condition.and(DEPARTMENT.NAME.like(likeValue(name)));
+        }
+        return db().select().from(DEPARTMENT).where(condition).fetchInto(DepartmentOneParam.class);
     }
 }
