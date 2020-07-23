@@ -27,6 +27,10 @@
     <view bindtap="bindJumpLink" data-url="/pages/userqrcode/userqrcode?userName={{user_name}}&userAvatar={{wx_user_avatar}}&myQrCode={{myQrCode}}">
       <image src="{{imageUrl}}image/wxapp/center_QR_Code.png" mode='widthFix' class="center_QR_code" />
     </view>
+    <view class="message_list_icon" bindtap='bindJumpLink' data-url='/pages1/messagelist/messagelist'>
+      <image src="http://medicaldevimg.weipubao.cn/image/wxapp/icon_message_list.png" mode='widthFix' />
+      <view class="not_read_icon"></view>
+    </view>
     <!-- <view bindtap="bindJumpLink" data-url="/pages/userinfo/userinfo">
       <image src="{{imageUrl}}image/wxapp/center_set.png" mode='widthFix' class="center_set" />
     </view> -->

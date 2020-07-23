@@ -106,6 +106,9 @@ public class InquiryOrderDao extends ShopBaseDao {
         return db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_ID.eq(orderId)).and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchOneInto(InquiryOrderDo.class);
     }
 
+    /**
+     * @param inquiryOrderDo
+     */
     public void update(InquiryOrderDo inquiryOrderDo){
         InquiryOrderRecord record=new InquiryOrderRecord();
         FieldsUtil.assign(inquiryOrderDo,record);
