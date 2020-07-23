@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrderRefundList extends TableImpl<InquiryOrderRefundListRecord> {
 
-    private static final long serialVersionUID = -916748467;
+    private static final long serialVersionUID = -1762584845;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order_refund_list</code>
@@ -64,29 +64,44 @@ public class InquiryOrderRefundList extends TableImpl<InquiryOrderRefundListReco
     public final TableField<InquiryOrderRefundListRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.order_sn</code>.
+     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.order_sn</code>. 订单号
      */
-    public final TableField<InquiryOrderRefundListRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<InquiryOrderRefundListRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.user_id</code>.
+     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.user_id</code>. 用户id
      */
-    public final TableField<InquiryOrderRefundListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<InquiryOrderRefundListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.money_amount</code>. 退款金额
      */
-    public final TableField<InquiryOrderRefundListRecord, BigDecimal> MONEY_AMOUNT = createField("money_amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款金额");
+    public final TableField<InquiryOrderRefundListRecord, BigDecimal> MONEY_AMOUNT = createField("money_amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.refund_time</code>. 订单退款时间
      */
-    public final TableField<InquiryOrderRefundListRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单退款时间");
+    public final TableField<InquiryOrderRefundListRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.is_success</code>. 处理状态，1：退款失败，2：退款成功
      */
-    public final TableField<InquiryOrderRefundListRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处理状态，1：退款失败，2：退款成功");
+    public final TableField<InquiryOrderRefundListRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处理状态，1：退款失败，2：退款成功");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.is_delete</code>. 删除
+     */
+    public final TableField<InquiryOrderRefundListRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.create_time</code>.
+     */
+    public final TableField<InquiryOrderRefundListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.update_time</code>. 最后修改时间
+     */
+    public final TableField<InquiryOrderRefundListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_inquiry_order_refund_list</code> table reference

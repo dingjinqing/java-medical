@@ -6,7 +6,6 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +20,7 @@ public class AdminInquiryOrderController extends AdminBaseController{
      * 获取订单详情
      */
     @PostMapping("/api/admin/inquiry/order/detail")
-    public JsonResult payOrder(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
+    public JsonResult payOrder(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
         if(inquiryOrderOnParam.getOrderId()==null){
             return fail(JsonResultCode.INQUIRY_ORDER_ID_IS_NULL);
         }
