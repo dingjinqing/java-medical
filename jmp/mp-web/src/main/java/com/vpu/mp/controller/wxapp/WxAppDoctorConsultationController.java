@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
+/**
+ * @author cehnji
+ */
 public class WxAppDoctorConsultationController extends WxAppBaseController {
     /**
      * 	获取医师科室列表

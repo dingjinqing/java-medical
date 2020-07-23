@@ -130,7 +130,9 @@ public class PatientService extends BaseShopConfigService{
     public List<PatientMoreInfoParam> listDiseases(String diseaseStr) {
         List<PatientMoreInfoParam> diseaseList = Util.parseJson(get("diseases"), new TypeReference<List<PatientMoreInfoParam>>() {
         });
-        if (diseaseStr == null || diseaseStr == "") return diseaseList;
+        if (diseaseStr == null || diseaseStr.equals("")){
+            return diseaseList;
+        }
         List<String> diseases = Arrays.asList(diseaseStr.split(","));
         for (PatientMoreInfoParam disease : diseaseList) {
             if (diseases.contains(disease.getId())) {
