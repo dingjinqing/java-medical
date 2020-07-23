@@ -10,7 +10,7 @@ public class JsonResultMessage {
     public static final String MSG_FAIL = "common.fail";
     public static final String MSG_PARAM_ERROR = "common.param.error";
     public static final String  MSG_API_NO_RESUBMIT = "api.no.resubmit";
-    /**  账号
+    /**  账号 */
 
     public static final String MSG_ACCOUNT_OR_PASSWORD_INCRRECT = "account.accountOrPassword.incrrect";
     public static final String MSG_ACCOUNT_MODILE_APPLIED = "account.mobile.applied";
@@ -53,7 +53,7 @@ public class JsonResultMessage {
     public static final String MSG_CODE_ACCOUNT_ID_NOT = "account.id.not";
 	public static final String MSG_CODE_SHOP_EXPIRE = "code.shop.expire";
 
-    /**  图片
+    /**  图片 */
 
     public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
     public static final String MSG_IMGAE_FORMAT_INVALID = "image.format.invalid";
@@ -732,7 +732,7 @@ public class JsonResultMessage {
     public static final String VISIT_EXPORT_COLUMN_STAY_TIME_UV = "visit.statistics.stay_time_uv";
     public static final String VISIT_EXPORT_COLUMN_STAY_TIME_SESSION = "visit.statistics.stay_time_session";
     public static final String VISIT_EXPORT_COLUMN_VISIT_DEPTH = "visit.statistics.visit_depth";
-    /**  资产明细导出
+    /**  资产明细导出 */
     public static final String ASSETS_EXPORT_FILE_NAME = "assets.export.file_name";
     public static final String ASSETS_EXPORT_COLUMN_TRADE_TIME = "overview.asset.management.trade_time";
     public static final String ASSETS_EXPORT_COLUMN_TRADE_NUM = "overview.asset.management.trade_num";
