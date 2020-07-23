@@ -5072,5 +5072,8 @@ CREATE TABLE `b2c_message` (
     `message_status` tinyint(1) not null default 0 comment '消息状态 0：未读、1：已读、3：置顶消息 默认0',
     `message_time` timestamp not null default CURRENT_TIMESTAMP comment '消息创建时间',
     `message_relevance_id` int(11) not null default 0 comment '消息关联id 关联会话和订单id，关联系统消息、会话问诊、问诊订单主键',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`message_id`)
 ) comment ='用户消息表';
