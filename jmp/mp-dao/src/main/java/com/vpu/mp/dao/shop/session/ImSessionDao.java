@@ -90,6 +90,10 @@ public class ImSessionDao extends ShopBaseDao {
             condition = condition.and(IM_SESSION.LIMIT_TIME.le(imSessionCondition.getLimitTime()));
         }
 
+        if (imSessionCondition.getOrderSns() != null) {
+            condition = condition.and(IM_SESSION.ORDER_SN.in(imSessionCondition.getOrderSns()));
+        }
+
         return db().selectFrom(IM_SESSION).where(condition).fetchInto(ImSessionDo.class);
     }
 }

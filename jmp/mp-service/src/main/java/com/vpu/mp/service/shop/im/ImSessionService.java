@@ -74,20 +74,18 @@ public class ImSessionService extends ShopBaseService {
     /**
      * 批量取消未接诊过期的会话
      */
-    public void batchCancelSession(){
+    public void batchCancelSession(List<String> orderSns){
         ImSessionCondition cancelCondition =new ImSessionCondition();
-        cancelCondition.setStatus(ImSessionConstant.SESSION_READY_TO_START);
-        Timestamp lessCreateTime = DateUtils.getTimeStampPlus(-ImSessionConstant.CANCEL_LIMIT_TIME, ChronoUnit.HOURS);
-        cancelCondition.setLessCreateTime(lessCreateTime);
+        cancelCondition.setOrderSns(orderSns);
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(cancelCondition);
         List<Integer> sessionIds = new ArrayList<>(imSessionDos.size());
         Integer shopId = getShopId();
 
         for (ImSessionDo imSessionDo : imSessionDos) {
             // 删除并入库用户聊天信息
-            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
             // 删除并入库医师聊天信息
-            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getPatientId());
+            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
             sessionIds.add(imSessionDo.getId());
         }
 
@@ -97,19 +95,17 @@ public class ImSessionService extends ShopBaseService {
     /**
      * 批量关闭到时间的会话
      */
-    public void batchCloseSession(){
+    public void batchCloseSession(List<String> orderSns){
         ImSessionCondition cancelCondition =new ImSessionCondition();
-        cancelCondition.setStatus(ImSessionConstant.SESSION_ON);
-        Timestamp limitTime = DateUtils.getLocalDateTime();
-        cancelCondition.setLimitTime(limitTime);
-        Integer shopId = getShopId();
+        cancelCondition.setOrderSns(orderSns);
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(cancelCondition);
+        Integer shopId = getShopId();
         List<Integer> sessionIds = new ArrayList<>(imSessionDos.size());
         for (ImSessionDo imSessionDo : imSessionDos) {
             // 删除并入库用户聊天信息
-            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
             // 删除并入库医师聊天信息
-            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getPatientId());
+            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
             sessionIds.add(imSessionDo.getId());
         }
         imSessionDao.batchUpdateSessionStatus(sessionIds,ImSessionConstant.SESSION_END);
@@ -169,9 +165,9 @@ public class ImSessionService extends ShopBaseService {
         Integer shopId = getShopId();
 
         // 删除并入库用户聊天信息
-        dumpAndDeleteSessionReadyAndBakToDb(shopId,sessionId,imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+        dumpAndDeleteSessionReadyAndBakToDb(shopId,sessionId,imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
         // 删除并入库医师聊天信息
-        dumpAndDeleteSessionReadyAndBakToDb(shopId,sessionId,imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getPatientId());
+        dumpAndDeleteSessionReadyAndBakToDb(shopId,sessionId,imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
     }
 
     private ImSessionItemDo convertImSessionItemBasetoDo(ImSessionItemBase imSessionItemBase,Integer sessionId,Integer fromId,Integer toId){
