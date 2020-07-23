@@ -5,6 +5,9 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 public final class EsSearchSourceBuilderParamBuilder {
     private EsSearchSourceBuilderParam esSearchSourceBuilderParam;
 

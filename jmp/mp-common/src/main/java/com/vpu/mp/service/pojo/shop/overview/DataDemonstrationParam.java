@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.overview;
 import lombok.Data;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/15
  * 商城概览-数据展示-入参
  */

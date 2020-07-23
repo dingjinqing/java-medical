@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 
 /**
  * ElasticSearch goods product used
+ * @author luguangyao
  */
 public class EsGoodsProduct {
 

@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.market.message.maconfig;
 
 import lombok.Data;
 
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class TypesNames {
 	/** 提交申请 */

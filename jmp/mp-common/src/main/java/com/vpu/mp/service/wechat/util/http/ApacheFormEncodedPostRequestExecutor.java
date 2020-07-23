@@ -16,6 +16,9 @@ import me.chanjar.weixin.common.util.http.RequestHttp;
 import me.chanjar.weixin.common.util.http.apache.ApacheSimplePostRequestExecutor;
 import me.chanjar.weixin.common.util.http.apache.Utf8ResponseHandler;
 
+/**
+ * @author lixinguo
+ */
 public class ApacheFormEncodedPostRequestExecutor extends ApacheSimplePostRequestExecutor {
 
 	public ApacheFormEncodedPostRequestExecutor(RequestHttp<CloseableHttpClient, HttpHost> requestHttp) {

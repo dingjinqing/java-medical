@@ -9,6 +9,9 @@ import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
 
+/**
+ * @author zhaojianqiang
+ */
 @ExcelSheet
 @Data
 public class UserImportPojo {
