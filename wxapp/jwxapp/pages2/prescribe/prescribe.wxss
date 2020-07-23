@@ -34,11 +34,13 @@
 }
 .prescription-info-content{
   background: #fff;
-  border-radius: 16rpx 16rpx 0 0;
-  margin-top: -20rpx;
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+}
+.top-radius{
+  border-radius: 16rpx 16rpx 0 0;
+  margin-top: -20rpx;
 }
 .prescription-item{
   margin-left: 32rpx;
@@ -47,6 +49,13 @@
   min-height: 100rpx;
   box-sizing: border-box;
   padding-right: 32rpx;
+}
+.column{
+  flex-direction: column;
+  align-items: inherit;
+}
+.line-title{
+  line-height: 100rpx;
 }
 .user-info > view{
   flex: 1;
@@ -129,6 +138,84 @@
   margin-left: auto;
 } 
 .goods-content{
+  overflow: hidden;
   background-color: #fff;
+}
+.goods-content > movable-area{
+  width: 100%;
   height: 208rpx;
+  box-sizing: border-box;
+}
+.goods-content > movable-area > movable-view{
+  width: 790rpx;
+  height: 100%;
+  padding-left: 32rpx;
+}
+.goods-line{
+  height: 2rpx;
+  background-color: #eee;
+  margin-left: 32rpx;
+}
+.goods-item{
+  display: flex;
+  width: 790rpx;
+}
+.goods-target{
+  width: 670rpx;
+  padding: 24rpx 32rpx 24rpx 0;
+  box-sizing: border-box;
+  display: flex;
+}
+.goods-target > image{
+  width: 160rpx;
+  height: 160rpx;
+  margin-right: 24rpx;
+}
+.goods-target > .goods-desc{
+  flex: 1;
+}
+.goods-desc{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.goods-name{
+  color: #333;
+  line-height: 42rpx;
+}
+.goods-price{
+  font-weight: 600;
+  color: #FF9F15;
+}
+.del{
+  width: 120rpx;
+  line-height: 208rpx;
+  color: #fff;
+  text-align: center;
+  background-color: #26C4BC;
+}
+.medical-advice{
+  height: 317rpx;
+  border-radius: 16rpx;
+  width: 100%;
+  background-color: #f5f5f5;
+  padding: 24rpx;
+  box-sizing: border-box;
+  margin-bottom: 32rpx;
+}
+.footer-content{
+  width: 100%;
+  padding: 24rpx;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+.footer-button{
+  line-height: 80rpx;
+  border-radius: 40rpx;
+  text-align: center;
+  color:#fff;
+  font-size: 28rpx;
+  background-color: #26C4BC;
 }
