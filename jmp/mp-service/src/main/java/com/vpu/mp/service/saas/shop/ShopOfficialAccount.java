@@ -11,7 +11,7 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MaMpBindParam;
-import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOAPayManageParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOaPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
@@ -140,7 +140,7 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param oaParam
 	 * @return
 	 */
-	public Integer updatePayInfo(MpOAPayManageParam oaParam) {
+	public Integer updatePayInfo(MpOaPayManageParam oaParam) {
 		MpOfficialAccountRecord newRecord = MP_OFFICIAL_ACCOUNT.newRecord();
 		FieldsUtil.assignNotNull(oaParam, newRecord);
 		return db().executeUpdate(newRecord);

@@ -32,6 +32,8 @@ public interface PendingRule<R> {
 
     /**
      * Handler 1.规则一(0已完成, 非0未完成)
+     *
+     * @param metadata
      */
     default void handler1(Metadata... metadata) {
         Arrays.stream(metadata).filter(Objects::nonNull).forEach(e -> {
@@ -43,8 +45,11 @@ public interface PendingRule<R> {
         });
     }
 
+
     /**
      * Handler 2.规则二(非0已完成, 0未完成)
+     *
+     * @param metadata
      */
     default void handler2(Metadata... metadata) {
         Arrays.stream(metadata).filter(Objects::nonNull).forEach(e -> {

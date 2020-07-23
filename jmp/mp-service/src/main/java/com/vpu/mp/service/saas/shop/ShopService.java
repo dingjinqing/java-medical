@@ -14,7 +14,7 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
-import com.vpu.mp.service.pojo.saas.marketCalendar.SysCalendarActVo;
+import com.vpu.mp.service.pojo.saas.marketcalendar.SysCalendarActVo;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;

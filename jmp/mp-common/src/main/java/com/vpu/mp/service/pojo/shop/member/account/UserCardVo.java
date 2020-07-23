@@ -11,6 +11,10 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Data;
+
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class UserCardVo {
 	private Integer userId;

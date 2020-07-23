@@ -12,6 +12,7 @@ import java.util.List;
 public interface EsSearchParamFunction {
 
     /**
+     * buildQueryBuilder
      *
      * @param searchList
      * @return

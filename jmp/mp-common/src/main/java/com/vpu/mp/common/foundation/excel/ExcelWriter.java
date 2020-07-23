@@ -305,29 +305,9 @@ public class ExcelWriter extends AbstractExcelDisposer {
         createExcelTemplate(clazz, sheetBean, sheet);
         Map<Integer, CellStyle> styleMap = new HashMap<>(sheetBean.columnMap.size());
         Map<Integer, CellType> typeMap = new HashMap<>(sheetBean.columnMap.size());
+
         // 设置单元格样式和类型缓存
-        String key = null;
-        for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
-            ExcelColumnBean columnBean = entry.getValue();
-            if (List.class.equals(columnBean.fieldClazz)) {
-                key = entry.getKey();
-                for (Map.Entry<String, ExcelColumnBean> entrySet : initSheet.columnMap.entrySet()) {
-                    ExcelColumnBean innerColumnBean = entrySet.getValue();
-                    CellStyle cellStyle = ExcelUtil.getCellStyle(innerColumnBean.fieldClazz, workbook);
-                    CellType cellType = ExcelUtil.convertJavaType2CellType(innerColumnBean.fieldClazz);
-
-                    styleMap.put(innerColumnBean.columnIndex, cellStyle);
-                    typeMap.put(innerColumnBean.columnIndex, cellType);
-
-                }
-            } else {
-
-                CellStyle cellStyle = ExcelUtil.getCellStyle(columnBean.fieldClazz, workbook);
-                CellType cellType = ExcelUtil.convertJavaType2CellType(columnBean.fieldClazz);
-                styleMap.put(columnBean.columnIndex, cellStyle);
-                typeMap.put(columnBean.columnIndex, cellType);
-            }
-        }
+        String key = processCellStyleAndTypeCache(sheetBean, initSheet, styleMap, typeMap);
 
         int beginDataIndex = sheetBean.beginDataNum;
         // 将model数据转换为对应的row
@@ -415,6 +395,32 @@ public class ExcelWriter extends AbstractExcelDisposer {
             }
             System.out.println();
         }
+    }
+
+    private String processCellStyleAndTypeCache(ExcelSheetBean sheetBean, ExcelSheetBean initSheet, Map<Integer, CellStyle> styleMap, Map<Integer, CellType> typeMap) {
+        String key = null;
+        for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
+            ExcelColumnBean columnBean = entry.getValue();
+            if (List.class.equals(columnBean.fieldClazz)) {
+                key = entry.getKey();
+                for (Map.Entry<String, ExcelColumnBean> entrySet : initSheet.columnMap.entrySet()) {
+                    ExcelColumnBean innerColumnBean = entrySet.getValue();
+                    CellStyle cellStyle = ExcelUtil.getCellStyle(innerColumnBean.fieldClazz, workbook);
+                    CellType cellType = ExcelUtil.convertJavaType2CellType(innerColumnBean.fieldClazz);
+
+                    styleMap.put(innerColumnBean.columnIndex, cellStyle);
+                    typeMap.put(innerColumnBean.columnIndex, cellType);
+
+                }
+            } else {
+
+                CellStyle cellStyle = ExcelUtil.getCellStyle(columnBean.fieldClazz, workbook);
+                CellType cellType = ExcelUtil.convertJavaType2CellType(columnBean.fieldClazz);
+                styleMap.put(columnBean.columnIndex, cellStyle);
+                typeMap.put(columnBean.columnIndex, cellType);
+            }
+        }
+        return key;
     }
 
 

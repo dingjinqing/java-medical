@@ -12,7 +12,7 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.wxapp.subscribe.MsgRecordParam;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
-import com.vpu.mp.service.pojo.shop.market.message.msgRecordConfig.MessageRecordType;
+import com.vpu.mp.service.pojo.shop.market.message.msgrecordconfig.MessageRecordType;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpTemplateMsgService;

@@ -4,17 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.io.FastByteArrayOutputStream;
 import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
-
-import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawList;
 
 import org.junit.Test;
 

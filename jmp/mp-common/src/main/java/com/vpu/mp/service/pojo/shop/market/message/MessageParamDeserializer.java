@@ -16,7 +16,7 @@ import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubscribeMessageConfig;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubscribeMessageConfig;
 
 import lombok.extern.slf4j.Slf4j;
 

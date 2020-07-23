@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class UserTotalFanliVo {
 	private Integer id;

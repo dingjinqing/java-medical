@@ -29,7 +29,7 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
-import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOAPayManageParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOaPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
@@ -267,7 +267,7 @@ public class AdminWechatApiController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/admin/public/service/auth/payManage")
-	public JsonResult payManage(@RequestBody MpOAPayManageParam oaParam) {
+	public JsonResult payManage(@RequestBody MpOaPayManageParam oaParam) {
 		oaParam.setSysId(adminAuth.user().getSysId());
 		Integer updatePayInfo = saas.shop.officeAccount.updatePayInfo(oaParam);
 		if(updatePayInfo>0) {

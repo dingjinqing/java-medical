@@ -277,7 +277,7 @@ public class QrCodeService extends ShopBaseService {
 		BufferedImage cardQrCode = null;
 		Integer size = 450;
     	try {
-			byte[] qrCodeByte = QrCodeGenerator.generateQRCodeImg(cardNo, size, size);
+			byte[] qrCodeByte = QrCodeGenerator.generateQrCodeImg(cardNo, size, size);
 			ByteArrayInputStream bais = new ByteArrayInputStream(qrCodeByte);
 			cardQrCode = ImageIO.read(bais);
 		} catch (Exception e) {

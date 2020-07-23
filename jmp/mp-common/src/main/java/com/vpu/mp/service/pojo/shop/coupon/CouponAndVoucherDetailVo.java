@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 public class CouponAndVoucherDetailVo {
-    // customer_avail_coupons表数据
     private Integer id;
     private String couponSn;
     private Integer userId;
@@ -39,7 +38,7 @@ public class CouponAndVoucherDetailVo {
     private Timestamp updateTime;
     private String wxOpenid;
     private String wxUnionId;
-    //mrking_voucher表数据
+
     private String actName;
     private BigDecimal denomination;
 

@@ -125,7 +125,7 @@ public class RegexUtil {
         final String iframeReg = "<iframe[^>]*>[\\s\\S]*</iframe>";
         return html.replaceAll(iframeReg,"");
     }
-    private static String removeATag(String html) {
+    private static String removeAtag(String html) {
         final String aTagReg = "<a[^>]*>[\\s\\S]*</a>";
         return html.replaceAll(aTagReg,"");
     }

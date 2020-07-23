@@ -110,14 +110,14 @@ public class UserExpVo {
 	 */
 	@ExcelColumn(columnName=JsonResultMessage.UEXP_RETURN_ORDER_MONEY)
 	@JsonProperty(value=UserExpCont.EXP_RETURN_ORDER_MONEY,index=12)
-	private BigDecimal return_order_money;
+	private BigDecimal returnOrderMoney;
 	
 	/**
 	 * 	累计退款订单数
 	 */
 	@ExcelColumn(columnName=JsonResultMessage.UEXP_RETURN_ORDER)
 	@JsonProperty(value=UserExpCont.EXP_RETURN_ORDER,index=13)
-	private Integer return_order;
+	private Integer returnOrder;
 	
 	/**
 	 * 	备注
@@ -173,7 +173,7 @@ public class UserExpVo {
 	 */
 	@ExcelColumn(columnName=JsonResultMessage.UEXP_SUBLAYER_NUMBER) 
 	@JsonProperty(value=UserExpCont.EXP_WITHDRAW_MONEY,index=21)
-	private BigDecimal withdraw_money;
+	private BigDecimal withdrawMoney;
 	
 	/**
 	 * 	下级用户数

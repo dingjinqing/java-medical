@@ -287,7 +287,7 @@ public class FormStatisticsService extends ShopBaseService {
         // 获取表单海报图片路径
         Tuple2<Integer, String> pictorial = generateFormPictorial(pageId, 0);
         try {
-            byte[] qrCodeByte = QrCodeGenerator.generateQRCodeImg(imageService.imageUrl(pictorial.v2),430,430);
+            byte[] qrCodeByte = QrCodeGenerator.generateQrCodeImg(imageService.imageUrl(pictorial.v2),430,430);
             Tuple2<String, String> path =pictorialService.getImgDir(16, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(16)));
             log.info("表单统计-分享二维码1-"+path.v2);
             imageService.getUpYunClient().writeFile(path.v1(), qrCodeByte, true);

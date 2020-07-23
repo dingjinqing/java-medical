@@ -13,7 +13,7 @@ import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
-import com.vpu.mp.service.pojo.wxapp.collectGift.SetCollectGiftVo;
+import com.vpu.mp.service.pojo.wxapp.collectgift.SetCollectGiftVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;

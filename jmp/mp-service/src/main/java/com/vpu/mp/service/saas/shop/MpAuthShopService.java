@@ -1171,15 +1171,15 @@ public class MpAuthShopService extends MainBaseService {
 	}
 
     private boolean setWxInternationalPayConfig(MpDeployQueryParam param, MpAuthShopRecord mp, WxOpenResult wxOpenResult) {
-        if (StringUtils.isEmpty(param.getMerchant_category_code()) || StringUtils.isEmpty(param.getFee_type())) {
+        if (StringUtils.isEmpty(param.getMerchantCategoryCode()) || StringUtils.isEmpty(param.getFeeType())) {
             wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_TABLE_ISNULL));
             wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_TABLE_ISNULL);
             operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_TABLE_ISNULL.code,new String[] {String.valueOf(param.getIsSubMerchant())});
             return true;
         }
         int execute2 = db().update(MP_AUTH_SHOP)
-                .set(MP_AUTH_SHOP.MERCHANT_CATEGORY_CODE, param.getMerchant_category_code())
-                .set(MP_AUTH_SHOP.FEE_TYPE, param.getFee_type())
+                .set(MP_AUTH_SHOP.MERCHANT_CATEGORY_CODE, param.getMerchantCategoryCode())
+                .set(MP_AUTH_SHOP.FEE_TYPE, param.getFeeType())
                 .set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
         if (execute2 > 0) {
             wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
@@ -1189,16 +1189,16 @@ public class MpAuthShopService extends MainBaseService {
     }
 
     private boolean setUnionPayConfig(MpDeployQueryParam param, MpAuthShopRecord mp, WxOpenResult wxOpenResult) {
-        if (StringUtils.isEmpty(param.getUnion_pay_app_id()) || StringUtils.isEmpty(param.getUnion_pay_cus_id())
-                || StringUtils.isEmpty(param.getUnion_pay_app_key())) {
+        if (StringUtils.isEmpty(param.getUnionPayAppId()) || StringUtils.isEmpty(param.getUnionPayCusId())
+                || StringUtils.isEmpty(param.getUnionPayAppKey())) {
             wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_TABLE_ISNULL));
             wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_TABLE_ISNULL);
             operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_TABLE_ISNULL.code, new String[] {String.valueOf(param.getIsSubMerchant())});
             return true;
         }
-        int execute = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.UNION_PAY_APP_ID, param.getUnion_pay_app_id())
-                .set(MP_AUTH_SHOP.UNION_PAY_CUS_ID, param.getUnion_pay_cus_id())
-                .set(MP_AUTH_SHOP.UNION_PAY_APP_KEY, param.getUnion_pay_app_key())
+        int execute = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.UNION_PAY_APP_ID, param.getUnionPayAppId())
+                .set(MP_AUTH_SHOP.UNION_PAY_CUS_ID, param.getUnionPayCusId())
+                .set(MP_AUTH_SHOP.UNION_PAY_APP_KEY, param.getUnionPayAppKey())
                 .set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).where(MP_AUTH_SHOP.APP_ID.eq(param.getAppId())).execute();
         if (execute > 0) {
             wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));

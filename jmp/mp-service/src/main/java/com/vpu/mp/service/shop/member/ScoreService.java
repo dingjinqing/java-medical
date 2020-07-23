@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
@@ -72,7 +71,7 @@ import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 
 /**
  * @author 黄壮壮

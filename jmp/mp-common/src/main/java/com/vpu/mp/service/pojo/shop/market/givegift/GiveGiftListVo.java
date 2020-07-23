@@ -24,7 +24,7 @@ public class GiveGiftListVo {
      * 是否永久有效 0 否 1 永久有效
      */
     private Byte      dueTimeType;
-    /*
+    /**
      * 活动开始时间
      */
     private Timestamp startTime;

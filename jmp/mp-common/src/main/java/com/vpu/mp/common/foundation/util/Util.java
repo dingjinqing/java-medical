@@ -817,7 +817,7 @@ public class Util {
         }
     }
 
-    // 地球半径
+    /** 地球半径 */
     private static final double EARTH_RADIUS = 6378.137;
 
     /**
