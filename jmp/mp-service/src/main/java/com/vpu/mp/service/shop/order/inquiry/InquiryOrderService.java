@@ -70,21 +70,31 @@ public class InquiryOrderService extends ShopBaseService {
     private InquiryOrderRefundListDao inquiryOrderRefundListDao;
     @Autowired
     private ImSessionService imSessionService;
-    /*
-     *问询订单列表
+
+
+    /**
+     * 问询订单列表
+     * @param param
+     * @return
      */
     public PageResult<InquiryOrderDo> getInquiryOrderList(InquiryOrderListParam param){
         return inquiryOrderDao.getInquiryOrderList(param);
     }
-    /*
-     *订单id获得订单
+
+    /**
+     * 订单id获得订单
+     * @param orderId
+     * @return
      */
     public InquiryOrderDo getByOrderId(Integer orderId){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(orderId);
         return inquiryOrderDo;
     }
-    /*
-    *订单号获得订单
+
+    /**
+     * 订单号获得订单
+     * @param orderSn
+     * @return
      */
     public InquiryOrderDo getByOrderSn(String orderSn){
         return inquiryOrderDao.getByOrderSn(orderSn);
@@ -113,10 +123,12 @@ public class InquiryOrderService extends ShopBaseService {
     public List<InquiryOrderDo> getCanceledToWaitingCloseOrder(){
         return inquiryOrderDao.getCanceledToWaitingCloseOrder();
     }
+
     /**
      * 问诊支付回调完成
-     * @param
-     * @return
+     * @param order
+     * @param paymentRecord
+     * @throws MpException
      */
     public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord) throws MpException {
         logger().info("问诊订单-支付完成(回调)-开始");
@@ -187,8 +199,11 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDao.save(inquiryOrderDo);
         return orderSn;
     }
-    /*
-     *退款
+
+    /**
+     * 退款
+     * @param inquiryOrderOnParam
+     * @return
      */
     public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(inquiryOrderOnParam.getOrderId());
@@ -201,8 +216,11 @@ public class InquiryOrderService extends ShopBaseService {
         }
         return JsonResult.success();
     }
-    /*
-    *退款调用
+
+    /**
+     * 退款调用
+     * @param order
+     * @throws MpException
      */
     public void refundInquiryOrder(InquiryOrderDo order)throws MpException{
         boolean successFlag=true;
