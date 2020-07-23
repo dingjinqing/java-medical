@@ -1,2 +1,44 @@
 <!--pages2/prescribeinfo/prescribeinfo.wxml-->
-<text>pages2/prescribeinfo/prescribeinfo.wxml</text>
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="prescription-content">
+    <view class="prescription-item">
+      <view class="top_info">
+        <view class="item-title">电子处方1</view>
+      </view>
+      <view class="item-list-content">
+        <view class="each_line has_three">
+          <view>姓名：<text class="bold">随便</text></view>
+          <view>年龄：<text class="bold">随便</text></view>
+          <view>性别：<text class="bold">随便</text></view>
+        </view>
+        <view class="each_line">
+          <view class="line_tit">科室：</view>
+          <view>请选择</view>
+        </view>
+        <view class="each_line">
+          <view class="line_tit">诊断：</view>
+        </view>
+        <view class="each_line">治疗建议：<text class="bold">没救了 等死吧</text></view>
+        <view class="special_one">
+          <view class="spe_tit">医嘱：</view>
+          <textarea placeholder="默认显示药品用法用量，医生手动修改"></textarea>
+        </view>
+      </view>
+      <view class="doctor-info">
+        <view class="some_name">
+          <view class="each_name">
+            <text>医师：</text>
+          </view>
+          <view class="each_name">
+            <text>审核医师：</text>
+          </view>
+          <view class="each_name">
+            <text>发药医师：</text>
+          </view>
+        </view>
+        <view class="date">日期：2020-09-07</view>
+      </view>
+    </view>
+  </view>
+</view>
