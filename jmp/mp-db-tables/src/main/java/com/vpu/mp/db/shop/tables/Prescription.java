@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Prescription extends TableImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 124616322;
+    private static final long serialVersionUID = 861359271;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription</code>
@@ -216,6 +216,16 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
      * The column <code>mini_shop_471752.b2c_prescription.is_delete</code>.
      */
     public final TableField<PrescriptionRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.is_used</code>. 是否使用过 0未使用  1已使用 ，默认0
+     */
+    public final TableField<PrescriptionRecord, Byte> IS_USED = createField("is_used", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否使用过 0未使用  1已使用 ，默认0");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效   0有效 1失效，默认0
+     */
+    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效   0有效 1失效，默认0");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription.create_time</code>.

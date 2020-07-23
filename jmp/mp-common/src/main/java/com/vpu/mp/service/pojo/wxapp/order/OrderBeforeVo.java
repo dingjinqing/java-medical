@@ -151,9 +151,17 @@ public class OrderBeforeVo {
     /*******处方列表*************/
     private List<PrescriptionVo> prescriptionList;
     /**
+     * 订单药品类型 0非处方药 1处方药
+     */
+    private Byte orderMedicalType;
+    /**
      * 处方药关联处方校验 0不校验 1 通过 2不通过
      */
     private Byte checkPrescriptionStatus;
+    /**
+     * 订单审核类型 0不审核 1审核 2开方 3有效处方
+     */
+    private Byte orderAuditType;
     /**
      * 患者信息
      */

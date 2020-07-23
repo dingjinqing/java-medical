@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = 2001569956;
+    private static final long serialVersionUID = -1707843438;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.order_id</code>. 订单id
@@ -2005,59 +2005,59 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.patient_id</code>. 患者id
-     */
-    public void setPatientId(Integer value) {
-        set(141, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.patient_id</code>. 患者id
-     */
-    public Integer getPatientId() {
-        return (Integer) get(141);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_order_info.order_medical_type</code>. 订单药品类型 0普通 1处方药
      */
     public void setOrderMedicalType(Byte value) {
-        set(142, value);
+        set(141, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.order_medical_type</code>. 订单药品类型 0普通 1处方药
      */
     public Byte getOrderMedicalType() {
+        return (Byte) get(141);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_order_info.order_audit_type</code>. 订单审核类型, 0不审核,1审核,2开方,3根据处方下单
+     */
+    public void setOrderAuditType(Byte value) {
+        set(142, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_order_info.order_audit_type</code>. 订单审核类型, 0不审核,1审核,2开方,3根据处方下单
+     */
+    public Byte getOrderAuditType() {
         return (Byte) get(142);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.prescription_code_list</code>. 处方号外键
-     */
-    public void setPrescriptionCodeList(String value) {
-        set(143, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.prescription_code_list</code>. 处方号外键
-     */
-    public String getPrescriptionCodeList() {
-        return (String) get(143);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.order_audit_status</code>. 订单审核状态 0未审核 1审核通过 2审核不通过
      */
     public void setOrderAuditStatus(Byte value) {
-        set(144, value);
+        set(143, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.order_audit_status</code>. 订单审核状态 0未审核 1审核通过 2审核不通过
      */
     public Byte getOrderAuditStatus() {
-        return (Byte) get(144);
+        return (Byte) get(143);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_order_info.prescription_code_list</code>. 处方号外键
+     */
+    public void setPrescriptionCodeList(String value) {
+        set(144, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_order_info.prescription_code_list</code>. 处方号外键
+     */
+    public String getPrescriptionCodeList() {
+        return (String) get(144);
     }
 
     /**
@@ -2072,6 +2072,20 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
      */
     public Timestamp getAuditTime() {
         return (Timestamp) get(145);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_order_info.patient_id</code>. 患者id
+     */
+    public void setPatientId(Integer value) {
+        set(146, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_order_info.patient_id</code>. 患者id
+     */
+    public Integer getPatientId() {
+        return (Integer) get(146);
     }
 
     // -------------------------------------------------------------------------
@@ -2100,7 +2114,7 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     /**
      * Create a detached, initialised OrderInfoRecord
      */
-    public OrderInfoRecord(Integer orderId, Integer shopId, String orderSn, String mainOrderSn, Integer userId, String userOpenid, Byte orderStatus, String orderStatusName, String consignee, Integer addressId, Integer countryCode, String countryName, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, String zipcode, String mobile, String addMessage, Byte shippingId, String shippingName, String payCode, String payName, String paySn, Short goodsAmount, BigDecimal shippingFee, BigDecimal moneyPaid, BigDecimal shoperReduceAmount, BigDecimal subOrderAmount, BigDecimal discount, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, BigDecimal gradePercent, BigDecimal discountPrice, BigDecimal dapeiReduceAmount, BigDecimal packageDiscount, Integer dapeiId, Timestamp createTime, Timestamp updateTime, Timestamp confirmTime, Timestamp payTime, Timestamp shippingTime, Timestamp closedTime, Timestamp cancelledTime, Timestamp finishedTime, Timestamp returnTime, Timestamp returnFinishTime, Timestamp refundTime, Timestamp refundFinishTime, String shippingNo, String shippingType, Byte isCod, Byte returnTypeCfg, Byte returnDaysCfg, Short orderTimeoutDays, String sellerRemark, String erpordercode, Byte commentFlag, Integer fanliUserId, String fanliGrade, BigDecimal fanliPercent, Byte settlementFlag, Integer invoiceId, Integer invoiceContent, String invoiceTitle, Byte refundStatus, String payOrderSn, String goodsType, Byte orderSource, Byte fanliType, Byte manualRefund, Byte orderPayWay, String bkOrderSn, BigDecimal bkOrderMoney, Byte bkOrderPaid, BigDecimal pinGoodsMoney, BigDecimal pinYjMoney, Integer activityId, Byte delFlag, String source, Byte partShipFlag, Integer promotionId, BigDecimal promotionReduce, Byte pushType, String pushDesc, Byte posFlag, String posShopName, Integer storeId, String storeName, Integer memberCardId, BigDecimal memberCardReduce, BigDecimal memberCardBalance, Timestamp expireTime, Timestamp delTime, String prepayId, Byte deliverType, String deliverTypeName, String pickupdateTime, Byte starFlag, String verifyCode, Integer split, String cardNo, BigDecimal fanliMoney, String trueName, String idCard, String aliTradeNo, BigDecimal grouperCheapReduce, Timestamp bkShippingTime, Byte bkReturnType, String bkPrepayId, BigDecimal preSaleDiscount, BigDecimal insteadPayMoney, String orderUserMessage, String insteadPay, Short insteadPayNum, Byte isPromote, Integer verifierId, Byte exchang, String currency, BigDecimal freeShip, String freeDetail, BigDecimal subGoodsPrice, Byte isRefundCoupon, Byte isFinishRefund, Byte isViewComment, Byte posOrderAction, Byte orderRemind, Timestamp orderRemindTime, Byte extendReceiveAction, Timestamp extendReceiveTime, Byte tkOrderType, Integer payAwardId, Byte isLock, Integer scoreProportion, Byte isFreeshipCard, Integer roomId, Integer patientId, Byte orderMedicalType, String prescriptionCodeList, Byte orderAuditStatus, Timestamp auditTime) {
+    public OrderInfoRecord(Integer orderId, Integer shopId, String orderSn, String mainOrderSn, Integer userId, String userOpenid, Byte orderStatus, String orderStatusName, String consignee, Integer addressId, Integer countryCode, String countryName, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, String zipcode, String mobile, String addMessage, Byte shippingId, String shippingName, String payCode, String payName, String paySn, Short goodsAmount, BigDecimal shippingFee, BigDecimal moneyPaid, BigDecimal shoperReduceAmount, BigDecimal subOrderAmount, BigDecimal discount, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, BigDecimal gradePercent, BigDecimal discountPrice, BigDecimal dapeiReduceAmount, BigDecimal packageDiscount, Integer dapeiId, Timestamp createTime, Timestamp updateTime, Timestamp confirmTime, Timestamp payTime, Timestamp shippingTime, Timestamp closedTime, Timestamp cancelledTime, Timestamp finishedTime, Timestamp returnTime, Timestamp returnFinishTime, Timestamp refundTime, Timestamp refundFinishTime, String shippingNo, String shippingType, Byte isCod, Byte returnTypeCfg, Byte returnDaysCfg, Short orderTimeoutDays, String sellerRemark, String erpordercode, Byte commentFlag, Integer fanliUserId, String fanliGrade, BigDecimal fanliPercent, Byte settlementFlag, Integer invoiceId, Integer invoiceContent, String invoiceTitle, Byte refundStatus, String payOrderSn, String goodsType, Byte orderSource, Byte fanliType, Byte manualRefund, Byte orderPayWay, String bkOrderSn, BigDecimal bkOrderMoney, Byte bkOrderPaid, BigDecimal pinGoodsMoney, BigDecimal pinYjMoney, Integer activityId, Byte delFlag, String source, Byte partShipFlag, Integer promotionId, BigDecimal promotionReduce, Byte pushType, String pushDesc, Byte posFlag, String posShopName, Integer storeId, String storeName, Integer memberCardId, BigDecimal memberCardReduce, BigDecimal memberCardBalance, Timestamp expireTime, Timestamp delTime, String prepayId, Byte deliverType, String deliverTypeName, String pickupdateTime, Byte starFlag, String verifyCode, Integer split, String cardNo, BigDecimal fanliMoney, String trueName, String idCard, String aliTradeNo, BigDecimal grouperCheapReduce, Timestamp bkShippingTime, Byte bkReturnType, String bkPrepayId, BigDecimal preSaleDiscount, BigDecimal insteadPayMoney, String orderUserMessage, String insteadPay, Short insteadPayNum, Byte isPromote, Integer verifierId, Byte exchang, String currency, BigDecimal freeShip, String freeDetail, BigDecimal subGoodsPrice, Byte isRefundCoupon, Byte isFinishRefund, Byte isViewComment, Byte posOrderAction, Byte orderRemind, Timestamp orderRemindTime, Byte extendReceiveAction, Timestamp extendReceiveTime, Byte tkOrderType, Integer payAwardId, Byte isLock, Integer scoreProportion, Byte isFreeshipCard, Integer roomId, Byte orderMedicalType, Byte orderAuditType, Byte orderAuditStatus, String prescriptionCodeList, Timestamp auditTime, Integer patientId) {
         super(OrderInfo.ORDER_INFO);
 
         set(0, orderId);
@@ -2244,10 +2258,11 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
         set(138, scoreProportion);
         set(139, isFreeshipCard);
         set(140, roomId);
-        set(141, patientId);
-        set(142, orderMedicalType);
-        set(143, prescriptionCodeList);
-        set(144, orderAuditStatus);
+        set(141, orderMedicalType);
+        set(142, orderAuditType);
+        set(143, orderAuditStatus);
+        set(144, prescriptionCodeList);
         set(145, auditTime);
+        set(146, patientId);
     }
 }

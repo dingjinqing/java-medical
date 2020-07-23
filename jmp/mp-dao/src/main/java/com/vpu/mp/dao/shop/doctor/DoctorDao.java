@@ -2,9 +2,13 @@ package com.vpu.mp.dao.shop.doctor;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.DoctorDo;
+import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.tables.Doctor;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import org.jooq.Condition;
@@ -147,4 +151,35 @@ public class DoctorDao extends ShopBaseDao {
         int count = db().fetchCount(DOCTOR, condition);
         return count>0;
     }
+
+    /**
+     * @Author 赵晓东
+     * @Create 2020-07-22 14:53:51
+     */
+    /**
+     * 医师认证
+     * @param doctorAuthParam 医师认证入参
+     * @return DoctorDo
+     */
+    public DoctorDo doctorAuth(DoctorAuthParam doctorAuthParam) {
+        DoctorDo doctorDo = new DoctorDo();
+        doctorDo = db().select().from(DOCTOR)
+            .where(DOCTOR.NAME.eq(doctorAuthParam.getName())
+            .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile())
+                .and(DOCTOR.HOSPITAL_CODE.eq(doctorAuthParam.getHospitalCode()))))
+            .fetchAnyInto(DoctorDo.class);
+        return doctorDo;
+    }
+
+    /**
+     * 更新医师表用户id
+     * @param userDo 当前用户
+     * @return int
+     */
+    public int updateUserId(UserDo userDo){
+        return db().update(DOCTOR).set(DOCTOR.USER_ID, userDo.getUserId())
+            .where(DOCTOR.NAME.eq(userDo.getUsername())
+                .and(DOCTOR.MOBILE.eq(userDo.getMobile()))).execute();
+    }
+
 }

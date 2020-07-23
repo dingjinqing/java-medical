@@ -7,9 +7,15 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.DoctorDo;
+import com.vpu.mp.common.pojo.shop.table.UserDo;
+import com.vpu.mp.dao.foundation.transactional.DbTransactional;
+import com.vpu.mp.dao.foundation.transactional.DbType;
+import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
@@ -34,6 +40,8 @@ public class DoctorService extends ShopBaseService {
     public DepartmentService departmentService;
     @Autowired
     public TitleService titleService;
+    @Autowired
+    public UserDao userDao;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -170,8 +178,27 @@ public class DoctorService extends ShopBaseService {
         return flag;
     }
 
-    public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
-        return doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
+    /**
+     * @Description
+     * @Author 赵晓东
+     * @Create 2020-07-22 14:51:11
+     * 医师认证
+     */
+    /**
+     * 医师认证
+     * @param doctorAuthParam 当前用户姓名、手机号、医师医院唯一编码
+     * @return 验证信息
+     */
+    @DbTransactional(type = DbType.SHOP_DB)
+    public String doctorAuth(DoctorAuthParam doctorAuthParam){
+        DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
+        if (doctorDo != null){
+            UserDo userDo = userDao.updateDoctorAuth(doctorAuthParam.getName(), doctorAuthParam.getMobile());
+            doctorDao.updateUserId(userDo);
+            return "验证成功";
+        } else {
+            return "验证失败";
+        }
     }
 
     public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
@@ -182,5 +209,9 @@ public class DoctorService extends ShopBaseService {
             historyDoctors.addAll(historyDoctorMore);
         }
         return historyDoctors;
+    }
+
+    public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
+        return doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
     }
 }

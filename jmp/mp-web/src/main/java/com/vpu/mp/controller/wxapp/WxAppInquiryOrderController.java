@@ -39,7 +39,7 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
         return result;
     }
     /**
-     * 获取待问诊的订单
+     * 查询问诊订单
      */
     @PostMapping("/api/wxapp/inquiry/order/list")
     public JsonResult refundOrder(@RequestBody InquiryOrderListParam param){

@@ -68,7 +68,7 @@ public class JedisKeyConstant {
     }
 
     /**会话未读信息表*/
-    public static final String IM_SESSION_ITEM_LIST_KEY = "session:dbId%d:patientId%d:fromId%d:toId%d";
+    public static final String IM_SESSION_ITEM_LIST_KEY = "session:shopId%d:departmentId%d:patientId%d:fromId%d:toId%d";
     /**会话已读信息表*/
-    public static final String IM_SESSION_ITEM_LIST_KEY_BAK = "session:dbId%d:patientId%d:fromId%d:toId%d:bak";
+    public static final String IM_SESSION_ITEM_LIST_KEY_BAK = "session:shopId%d:departmentId%d:patientId%d:fromId%d:toId%d:bak";
 }

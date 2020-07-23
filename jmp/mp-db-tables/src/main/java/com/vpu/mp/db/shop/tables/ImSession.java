@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImSession extends TableImpl<ImSessionRecord> {
 
-    private static final long serialVersionUID = 457607036;
+    private static final long serialVersionUID = -742213039;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_im_session</code>
@@ -55,6 +55,11 @@ public class ImSession extends TableImpl<ImSessionRecord> {
      * The column <code>mini_shop_471752.b2c_im_session.doctor_id</code>. 医师在我方库内id值
      */
     public final TableField<ImSessionRecord, Integer> DOCTOR_ID = createField("doctor_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "医师在我方库内id值");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_im_session.department_id</code>. 科室id
+     */
+    public final TableField<ImSessionRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "科室id");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session.user_id</code>. 小程序发起会话用户id

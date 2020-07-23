@@ -45,4 +45,22 @@ public class IncrSequenceUtil {
     public static String generateOrderSn(String prefix){
         return generateOrderSn(prefix,DATE_FORMAT_FULL_NO_UNDERLINE,prefix);
     }
+    /**
+     * 处方号生成
+     * @param prefix
+     * @return
+     */
+    public static String generatePrescriptionCode(String prefix,String dateFormat,String key){
+        return new StringBuilder(prefix)
+            .append(DateUtils.dateFormat(dateFormat))
+            .append(jedisManager.getIncrSequence(INCR_SEQUENCE+key)).toString();
+    }
+    /**
+     * 处方号生成
+     * @param prefix
+     * @return
+     */
+    public static String generatePrescriptionCode(String prefix){
+        return generateOrderSn(prefix,DATE_FORMAT_FULL_NO_UNDERLINE,prefix);
+    }
 }

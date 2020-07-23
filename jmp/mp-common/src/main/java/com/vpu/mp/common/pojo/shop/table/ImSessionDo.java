@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 @Data
 public class ImSessionDo {
     private Integer   id;
+    private Integer departmentId;
     private Integer   doctorId;
     private Integer   userId;
     private Integer   patientId;

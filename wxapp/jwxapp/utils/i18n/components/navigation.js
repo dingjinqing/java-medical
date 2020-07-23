@@ -130,6 +130,7 @@ module.exports = {
     "doctorConsultation":"医师咨询",
     "allDepartment":"全部科室",
     "operatePrescriptionList":"待审核处方",
-    "inquiryList":"待问诊"
+    "inquiryList":"待问诊",
+    "repurchaselist":"处方药品"
   }
 }

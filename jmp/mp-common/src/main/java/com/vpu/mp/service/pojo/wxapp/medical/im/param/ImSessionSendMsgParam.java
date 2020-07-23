@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.medical.im.param;
 
+import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import lombok.Data;
 
 /**
@@ -9,6 +10,10 @@ import lombok.Data;
  */
 @Data
 public class ImSessionSendMsgParam {
+    /**
+     * 科室id
+     */
+    private Integer departmentId;
     /**
      * 患者id
      */
@@ -24,5 +29,5 @@ public class ImSessionSendMsgParam {
     /**
      * 消息内容
      * */
-    private String msg;
+    private ImSessionItemBase imSessionItem;
 }
