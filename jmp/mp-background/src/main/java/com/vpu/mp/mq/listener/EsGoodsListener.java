@@ -17,11 +17,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 @Component
 @Slf4j
 @RabbitListener(queues = RabbitConfig.QUEUE_ES_GOODS,
     containerFactory = "currentSimpleRabbitListenerFactory")
-public class ESGoodsListener implements BaseRabbitHandler {
+public class EsGoodsListener implements BaseRabbitHandler {
 
     @Autowired
     protected SaasApplication saas;
