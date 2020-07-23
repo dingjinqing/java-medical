@@ -34,7 +34,7 @@
     <view class="each_p_line">
       <view class="el_left">手机号码</view>
       <view class="el_right">
-        <input type="text" value="{{patient_info.mobile}}" placeholder="请输入手机号码" placeholder-class="placeholder" bindtap="mobileInput"></input>
+        <input type="text" value="{{patient_info.mobile}}" placeholder="请输入手机号码" placeholder-class="placeholder" bindblur="mobileInput"></input>
       </view>
     </view>
     <view class="each_p_line">
@@ -55,6 +55,7 @@
   <view class="history_modal" wx:if='{{showModal == 1}}' style="padding-bottom:{{isIpx == 1 ? '85rpx':'25rpx'}}">
     <view class="modal_title">
       疾病史
+      <image src="http://medicaldevimg.weipubao.cn/image/wxapp/close_history.png" bindtap="close_modal"></image>
     </view>
     <view class="modal_content">
       <view class="each_pain_line">
@@ -120,9 +121,7 @@
         </view>
       </view>
       <view class="history_area">
-        <view class="each_his_item">备孕中</view>
-        <view class="each_his_item">怀孕中</view>
-        <view class="each_his_item">正在哺乳</view>
+        <view class="each_his_item {{ item.is_checked == 1 ? 'active':'' }}" wx:for='{{feedStatus}}' wx:key='key'>{{item.text}}</view>
       </view>
     </view>
     <view class="modal_btn">提交</view>

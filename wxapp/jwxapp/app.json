@@ -139,7 +139,8 @@
         "medicalrecordlist/medicalrecordlist",
         "prescriptionsheet/prescriptionsheet",
         "repurchaselist/repurchaselist",
-        "patientinfo/patientinfo"
+        "patientinfo/patientinfo",
+        "messagelist/messagelist"
       ]
     },
     {

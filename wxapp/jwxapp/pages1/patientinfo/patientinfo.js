@@ -18,7 +18,25 @@ global.wxPage({
     pat_age: '',
     pat_mobile: '',
     pat_id_num: '',
-    pat_tip: ''
+    pat_tip: '',
+    // 妊娠哺乳
+    feedStatus: [
+      {
+        id: 0,
+        is_checked: 1,
+        text: '备孕中'
+      },
+      {
+        id: 1,
+        is_checked: 0,
+        text: '怀孕中'
+      },
+      {
+        id: 2,
+        is_checked: 0,
+        text: '正在哺乳'
+      }
+    ]
   },
 
   /**

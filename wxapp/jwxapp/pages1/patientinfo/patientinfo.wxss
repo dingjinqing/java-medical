@@ -89,6 +89,14 @@
   padding-right: 25rpx;
   height: 110rpx;
   line-height: 110rpx;
+  position: relative;
+}
+.modal_title image{
+  width: 36rpx;
+  height: 36rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 37rpx;
 }
 .modal_content{
   max-height: 700rpx;
@@ -161,7 +169,7 @@
   text-align: center;
   height: 60rpx;
   line-height: 60rpx;
-  border-radius: 3  0rpx;
+  border-radius: 30rpx;
 }
 
 

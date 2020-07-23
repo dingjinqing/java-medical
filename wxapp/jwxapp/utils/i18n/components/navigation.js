@@ -132,6 +132,7 @@ module.exports = {
     "operatePrescriptionList":"待审核处方",
     "inquiryList":"待问诊",
     "repurchaselist":"处方药品",
-    "patientinfo":"患者信息"
+    "patientinfo":"患者信息",
+    "messagelist":"信息列表"
   }
 }
