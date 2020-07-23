@@ -50,7 +50,7 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
      * 获取订单详情
      */
     @PostMapping("/api/wxapp/inquiry/order/detail")
-    public JsonResult payOrder(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
+    public JsonResult payOrder(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
         InquiryOrderDo inquiryOrderDo= shop().inquiryOrderService.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         return success(inquiryOrderDo);
     }
@@ -58,11 +58,20 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
      * 更改问诊订单状态
      */
     @PostMapping("/api/wxapp/inquiry/order/status/update")
-    public JsonResult updateStatus(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
+    public JsonResult updateStatus(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
         shop().inquiryOrderService.updateOrderReceiving(inquiryOrderOnParam);
         return success();
     }
 
-
+    /**
+     * 新增
+     * @param inquiryOrderDo
+     * @return
+     */
+    @PostMapping("/api/wxapp/inquiry/order/insert")
+    public JsonResult insert(@RequestBody InquiryOrderDo inquiryOrderDo){
+        shop().inquiryOrderService.insert(inquiryOrderDo);
+        return success();
+    }
 
 }

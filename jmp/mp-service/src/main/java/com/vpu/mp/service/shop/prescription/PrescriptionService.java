@@ -289,10 +289,9 @@ public class PrescriptionService extends ShopBaseService {
     /**
      * 上传保存处方
      */
-    public JsonResult insertPrescription(PrescriptionOneParam param){
+    public void insertPrescription(PrescriptionOneParam param){
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
-        return JsonResult.success();
 
     }
     public PrescriptionParam buildPrescription(PrescriptionOneParam param){

@@ -51,7 +51,8 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      */
     @PostMapping("/add")
     public JsonResult insertPrescription(@RequestBody PrescriptionOneParam prescriptionParam){
-        return success(prescriptionService.insertPrescription(prescriptionParam));
+        prescriptionService.insertPrescription(prescriptionParam);
+        return success();
     }
 
     /**
