@@ -30,6 +30,9 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.main.tables.QfImg.QF_IMG;
 import static com.vpu.mp.db.main.tables.ShopQuestionFeedback.SHOP_QUESTION_FEEDBACK;
 
+/**
+ * @author luguangyao
+ */
 @Service
 public class QuestionService extends MainBaseService {
 

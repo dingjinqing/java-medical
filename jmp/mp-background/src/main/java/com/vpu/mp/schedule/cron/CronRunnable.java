@@ -27,6 +27,9 @@ public interface CronRunnable extends Runnable {
      */
     void execute();
 
+    /**
+     * run
+     */
     @Override
     @Retryable(value = Throwable.class, maxAttempts = 5, backoff = @Backoff(value = 100))
     default void run() {

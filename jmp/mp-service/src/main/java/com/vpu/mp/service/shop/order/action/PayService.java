@@ -287,7 +287,17 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             orderInfo.setOrderStatus(OrderConstant.ORDER_PIN_PAYED_GROUPING);
         }else{
             //TODO 通知服务、上报广告信息
-            orderInfo.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+            if (orderInfo.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
+                //待审核
+                orderInfo.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+            }else if (orderInfo.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                //待开方
+                orderInfo.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
+            }else {
+                //代发货
+                orderInfo.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+            }
+
         }
         orderInfo.setPayTime(DateUtils.getSqlTimestamp());
         orderInfo.setPaySn(payRecord == null ? StringUtils.EMPTY : payRecord.getPaySn());

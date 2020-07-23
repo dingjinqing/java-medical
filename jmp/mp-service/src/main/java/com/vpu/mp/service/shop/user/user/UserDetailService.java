@@ -6,6 +6,9 @@ import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class UserDetailService extends ShopBaseService {
 	

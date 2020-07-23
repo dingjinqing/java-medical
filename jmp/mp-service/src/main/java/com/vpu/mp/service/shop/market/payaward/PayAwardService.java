@@ -493,30 +493,7 @@ public class PayAwardService extends ShopBaseService {
                 }
             }
             if (count == size) {
-                String payAwardPrizeName = getPayAwardPrizeName(payAwardPrizeList.get(count - 1), lang);
-                logger().info("最后一次奖励");
-                if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())) {
-                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
-                        logger().info("多次不限制");
-                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_UNCONDITIONAL, MESSAGE, new Object[]{size, payAwardPrizeName});
-                    } else {
-                        String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, new Object[]{payAward.getMinPayMoney()});
-                        logger().info("多次限制-最少金额");
-                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitAmount, payAwardPrizeName});
-                    }
-                } else {
-                    logger().info("多次限制");
-                    String limitGoods = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS, MESSAGE);
-                    if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
-                        logger().info("多次限制-指定商品");
-                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitGoods, payAwardPrizeName});
-                    } else {
-                        logger().info("多次限制-指定商品,最少金额");
-                        String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, new Object[]{payAward.getMinPayMoney()});
-                        limitGoods = limitGoods + Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL, MESSAGE) + limitAmount;
-                        return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitGoods, payAwardPrizeName});
-                    }
-                }
+                return processLastAward(payAward, payAwardPrizeList, lang, size, count);
             } else {
                 count=0;
                 for (PayAwardPrizeRecord payAwardPrize:payAwardPrizeList){
@@ -566,6 +543,33 @@ public class PayAwardService extends ShopBaseService {
 
         }
         return "";
+    }
+
+    private String processLastAward(PayAwardRecord payAward, List<PayAwardPrizeRecord> payAwardPrizeList, String lang, int size, int count) {
+        String payAwardPrizeName = getPayAwardPrizeName(payAwardPrizeList.get(count - 1), lang);
+        logger().info("最后一次奖励");
+        if (payAward.getGoodsAreaType().equals(BaseConstant.GOODS_AREA_TYPE_ALL.intValue())) {
+            if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
+                logger().info("多次不限制");
+                return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_UNCONDITIONAL, MESSAGE, new Object[]{size, payAwardPrizeName});
+            } else {
+                String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, new Object[]{payAward.getMinPayMoney()});
+                logger().info("多次限制-最少金额");
+                return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitAmount, payAwardPrizeName});
+            }
+        } else {
+            logger().info("多次限制");
+            String limitGoods = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_DESIGNATED_GOODS, MESSAGE);
+            if (payAward.getMinPayMoney().compareTo(BigDecimal.ZERO) == 0) {
+                logger().info("多次限制-指定商品");
+                return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitGoods, payAwardPrizeName});
+            } else {
+                logger().info("多次限制-指定商品,最少金额");
+                String limitAmount = Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_GOODS, MESSAGE, new Object[]{payAward.getMinPayMoney()});
+                limitGoods = limitGoods + Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_CONDITIONAL, MESSAGE) + limitAmount;
+                return Util.translateMessage(lang, JsonResultMessage.PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL, MESSAGE, new Object[]{size, limitGoods, payAwardPrizeName});
+            }
+        }
     }
 
     /**

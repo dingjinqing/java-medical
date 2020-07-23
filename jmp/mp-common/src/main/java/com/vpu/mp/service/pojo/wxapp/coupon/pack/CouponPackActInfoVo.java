@@ -13,10 +13,10 @@ import java.util.List;
 @Setter
 public class CouponPackActInfoVo {
 
-    //活动配置信息
+    /**  活动配置信息 */
     private CouponPackActBaseVo packInfo;
-    //活动下属优惠券
+    /**  活动下属优惠券 */
     private List<CouponPackVoucherVo> packList;
-    //用户已购买或领取的礼包数量
+    /**  用户已购买或领取的礼包数量 */
     private Integer buyCount;
 }

@@ -25,8 +25,8 @@ import java.util.List;
 @Service
 public class SubOrderService  extends ShopBaseService {
 
-    private SubOrderInfo TABLE = SubOrderInfo.SUB_ORDER_INFO;
-    private UserDetail TABLE_USER_DETAIL = UserDetail.USER_DETAIL;
+    final static private SubOrderInfo TABLE = SubOrderInfo.SUB_ORDER_INFO;
+    final static private UserDetail TABLE_USER_DETAIL = UserDetail.USER_DETAIL;
 
     public SubOrderInfoRecord create(String orderSn, BigDecimal money, String message, Integer userId, String userName){
         logger().info("代付生成sub order start");

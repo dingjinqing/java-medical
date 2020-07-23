@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.validator.ListValid;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
 
@@ -26,10 +28,10 @@ public class InquiryOrderDao extends ShopBaseDao {
 
     public PageResult<InquiryOrderDo> getInquiryOrderList(InquiryOrderListParam param){
         SelectJoinStep<? extends Record> select = db()
-            .select(INQUIRY_ORDER.ORDER_ID,INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,INQUIRY_ORDER.DEPARTMENT_NAME,INQUIRY_ORDER.CREATE_TIME)
+            .select()
             .from(INQUIRY_ORDER);
         select.where(INQUIRY_ORDER.IS_DELETE.eq((byte)0));
-        buildOptions(select, param);
+        select=buildOptions(select, param);
         PageResult<InquiryOrderDo> list=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderDo.class);
         return list;
     }
@@ -39,13 +41,19 @@ public class InquiryOrderDao extends ShopBaseDao {
      * @param select
      * @param param
      */
-    protected void buildOptions(SelectJoinStep<? extends Record> select, InquiryOrderListParam param) {
+    protected SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select, InquiryOrderListParam param) {
         Timestamp nowDate = new Timestamp(System.currentTimeMillis());
         if(param.getDoctorId()!=null)
             select.where(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId()));
         if(param.getOrderStatus()!=null)
             select.where(INQUIRY_ORDER.ORDER_STATUS.eq(param.getOrderStatus()));
-
+        if(param.getDepartmentId()!=null)
+            select.where(INQUIRY_ORDER.DEPARTMENT_ID.eq(param.getDepartmentId()));
+        if(StringUtils.isNotBlank(param.getDoctorName()))
+            select.where(INQUIRY_ORDER.DOCTOR_NAME.like(this.likeValue(param.getDoctorName())));
+        if(StringUtils.isNotBlank(param.getPatientName()))
+            select.where(INQUIRY_ORDER.PATIENT_NAME.like(this.likeValue(param.getPatientName())));
+        return select;
     }
     /*
      *新增
@@ -66,29 +74,36 @@ public class InquiryOrderDao extends ShopBaseDao {
      *@param orderSn
      * @return
      */
-    public InquiryOrderRecord getByOrderSn(String orderSn){
-        return db().fetchAny(INQUIRY_ORDER,INQUIRY_ORDER.ORDER_SN.eq(orderSn));
+    public InquiryOrderDo getByOrderSn(String orderSn){
+        return db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_SN.eq(orderSn)).and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchOneInto(InquiryOrderDo.class);
+
     }
     /*
      *@param orderId
      * @return
      */
-    public InquiryOrderRecord getByOrderId(Integer orderId){
-        return db().fetchAny(INQUIRY_ORDER,INQUIRY_ORDER.ORDER_ID.eq(orderId).and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
+    public InquiryOrderDo getByOrderId(Integer orderId){
+        return db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_ID.eq(orderId)).and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchOneInto(InquiryOrderDo.class);
     }
 
-    public void update(InquiryOrderRecord inquiryOrderRecord){
-        db().executeUpdate(inquiryOrderRecord);
+    public void update(InquiryOrderDo inquiryOrderDo){
+        InquiryOrderRecord record=new InquiryOrderRecord();
+        FieldsUtil.assign(inquiryOrderDo,record);
+        db().executeUpdate(record);
     }
 
-    //获得待支付的超时问诊订单
-    public Result<InquiryOrderRecord> getCanceledToPaidCloseOrder(){
+    /**
+     * 获得待支付的超时问诊订单
+     */
+    public List<InquiryOrderDo> getCanceledToPaidCloseOrder(){
         return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_PAID))
-            .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetch();
+            .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(0-InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetchInto(InquiryOrderDo.class);
     }
-    //获得待接诊的超时未接诊的问诊订单
-    public Result<InquiryOrderRecord> getCanceledToWaitingCloseOrder(){
-        return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_WAITING))
-            .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetch();
+    /**
+     * 获得待接诊的超时未接诊的问诊订单
+     */
+    public List<InquiryOrderDo>  getCanceledToWaitingCloseOrder(){
+        return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_RECEIVE))
+            .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(0-InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetchInto(InquiryOrderDo.class);
     }
 }

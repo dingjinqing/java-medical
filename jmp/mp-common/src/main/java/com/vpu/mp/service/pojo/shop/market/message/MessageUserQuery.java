@@ -7,6 +7,9 @@ import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author luguangyao
+ */
 @Getter
 @Setter
 public class MessageUserQuery extends BasePageParam {

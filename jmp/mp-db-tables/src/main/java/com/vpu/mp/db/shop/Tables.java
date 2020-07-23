@@ -1164,4 +1164,8 @@ public class Tables {
      * 问诊会话详情 记录每一条会话
      */
     public static final ImSessionItem IM_SESSION_ITEM = com.vpu.mp.db.shop.tables.ImSessionItem.IM_SESSION_ITEM;
+    /**
+     * 问诊订单退款记录
+     */
+    public static final InquiryOrderRefundList INQUIRY_ORDER_REFUND_LIST = com.vpu.mp.db.shop.tables.InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST;
 }

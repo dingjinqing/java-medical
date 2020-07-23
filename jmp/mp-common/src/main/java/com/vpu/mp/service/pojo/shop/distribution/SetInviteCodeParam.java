@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -15,5 +16,6 @@ public class SetInviteCodeParam {
     /**
      * 邀请码
      */
-    private String InviteCode;
+    @JsonProperty("InviteCode")
+    private String inviteCode;
 }

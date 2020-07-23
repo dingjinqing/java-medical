@@ -5,7 +5,7 @@ import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.WxMaSubscribeMessage;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessage;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
@@ -175,11 +175,8 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 	 * 发送订阅消息
 	 * 
 	 * @param appId
-	 * @param toUser     接收者（用户）的 openid
-	 * @param templateId 所需下发的订阅模板id
-	 * @param page       点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
-	 * @param data       模板内容，格式形如 { "key1": { "value": any }, "key2": { "value":
-	 *                   any } }
+	 * @param param   参数
+     *
 	 * @return
 	 * @throws WxErrorException
 	 */

@@ -13,6 +13,7 @@ import java.util.Objects;
 
 /**
  * 小程序商品详情页查询条件转换
+ * @author luguangyao
  */
 public class GoodsDetailMpConverter {
 

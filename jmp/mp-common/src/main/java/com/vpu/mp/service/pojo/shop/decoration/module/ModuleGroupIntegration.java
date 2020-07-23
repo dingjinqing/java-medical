@@ -46,7 +46,7 @@ public class ModuleGroupIntegration extends ModuleBase {
     @JsonProperty("font_color")
     private String fontColor;
 
-    //输出属性
+    /**  输出属性 */
     @JsonProperty("name")
     private String name;
 

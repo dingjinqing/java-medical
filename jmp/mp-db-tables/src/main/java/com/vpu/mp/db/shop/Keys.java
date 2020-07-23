@@ -290,6 +290,7 @@ public class Keys {
     public static final Identity<MedicalAdviceRecord, Integer> IDENTITY_MEDICAL_ADVICE = Identities0.IDENTITY_MEDICAL_ADVICE;
     public static final Identity<ImSessionRecord, Integer> IDENTITY_IM_SESSION = Identities0.IDENTITY_IM_SESSION;
     public static final Identity<ImSessionItemRecord, Integer> IDENTITY_IM_SESSION_ITEM = Identities0.IDENTITY_IM_SESSION_ITEM;
+    public static final Identity<InquiryOrderRefundListRecord, Integer> IDENTITY_INQUIRY_ORDER_REFUND_LIST = Identities0.IDENTITY_INQUIRY_ORDER_REFUND_LIST;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -570,6 +571,7 @@ public class Keys {
     public static final UniqueKey<InquiryOrderRecord> KEY_B2C_INQUIRY_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_INQUIRY_ORDER_PRIMARY;
     public static final UniqueKey<ImSessionRecord> KEY_B2C_IM_SESSION_PRIMARY = UniqueKeys0.KEY_B2C_IM_SESSION_PRIMARY;
     public static final UniqueKey<ImSessionItemRecord> KEY_B2C_IM_SESSION_ITEM_PRIMARY = UniqueKeys0.KEY_B2C_IM_SESSION_ITEM_PRIMARY;
+    public static final UniqueKey<InquiryOrderRefundListRecord> KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY = UniqueKeys0.KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -828,6 +830,7 @@ public class Keys {
         public static Identity<InquiryOrderRecord, Integer> IDENTITY_INQUIRY_ORDER = Internal.createIdentity(InquiryOrder.INQUIRY_ORDER, InquiryOrder.INQUIRY_ORDER.ORDER_ID);
         public static Identity<ImSessionRecord, Integer> IDENTITY_IM_SESSION = Internal.createIdentity(ImSession.IM_SESSION, ImSession.IM_SESSION.ID);
         public static Identity<ImSessionItemRecord, Integer> IDENTITY_IM_SESSION_ITEM = Internal.createIdentity(ImSessionItem.IM_SESSION_ITEM, ImSessionItem.IM_SESSION_ITEM.ID);
+        public static Identity<InquiryOrderRefundListRecord, Integer> IDENTITY_INQUIRY_ORDER_REFUND_LIST = Internal.createIdentity(InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ID);
 
     }
 
@@ -1112,5 +1115,7 @@ public class Keys {
 
         public static final UniqueKey<ImSessionRecord> KEY_B2C_IM_SESSION_PRIMARY = Internal.createUniqueKey(ImSession.IM_SESSION, "KEY_b2c_im_session_PRIMARY", ImSession.IM_SESSION.ID);
         public static final UniqueKey<ImSessionItemRecord> KEY_B2C_IM_SESSION_ITEM_PRIMARY = Internal.createUniqueKey(ImSessionItem.IM_SESSION_ITEM, "KEY_b2c_im_session_item_PRIMARY", ImSessionItem.IM_SESSION_ITEM.ID);
+        public static final UniqueKey<InquiryOrderRefundListRecord> KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY = Internal.createUniqueKey(InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, "KEY_b2c_inquiry_order_refund_list_PRIMARY", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ID);
+
     }
 }

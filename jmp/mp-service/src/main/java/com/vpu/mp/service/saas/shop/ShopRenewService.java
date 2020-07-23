@@ -95,7 +95,9 @@ public class ShopRenewService extends MainBaseService {
 
 	public int insertShopRenew(ShopRenewReq sReq,SystemTokenAuthInfo info) {
 		ShopRenewRecord sRecord=db().newRecord(SHOP_RENEW,sReq);
-		if(sReq.getRenewType().equals((byte)4)){
+		// 续费类型：1续费，2试用，3赠送，4退款
+        byte renewTypeRefund = (byte) 4;
+        if(sReq.getRenewType().equals(renewTypeRefund)){
 			logger().info("退款{}",sReq.getRenewMoney());
 			//改为负数
 			sRecord.setRenewMoney(sReq.getRenewMoney().negate());

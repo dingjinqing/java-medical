@@ -6,6 +6,9 @@ import org.jooq.Record;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.UploadedVideo.UPLOADED_VIDEO;
+/**
+ * @author luguangyao
+ */
 public class GoodsVideoBo {
 
     private Integer id;

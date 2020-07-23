@@ -332,20 +332,23 @@ public class CardUtil {
 				bean.setEndDate(card.getExpireTime().toLocalDateTime().toLocalDate());
 				bean.setEndTime(card.getExpireTime());
 			}
-		}else if(isCardTimeStartFrom(card.getExpireType()) ||
-				(isCardTimeForever(card.getExpireType()) &&
-						card.getExpireTime() != null) ) {
-			//	自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
-			if(card.getCreateTime() != null) {
-				bean.setStartDate(card.getCreateTime().toLocalDateTime().toLocalDate());
-				bean.setStartTime(card.getCreateTime());
-			}
+		}else {
+            boolean isValid = isCardTimeStartFrom(card.getExpireType()) ||
+                (isCardTimeForever(card.getExpireType()) &&
+                    card.getExpireTime() != null);
+            if(isValid) {
+                //	自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
+                if(card.getCreateTime() != null) {
+                    bean.setStartDate(card.getCreateTime().toLocalDateTime().toLocalDate());
+                    bean.setStartTime(card.getCreateTime());
+                }
 
-			if(card.getExpireTime() != null) {
-				bean.setEndDate(card.getExpireTime().toLocalDateTime().toLocalDate());
-				bean.setEndTime(card.getExpireTime());
-			}
-		}
+                if(card.getExpireTime() != null) {
+                    bean.setEndDate(card.getExpireTime().toLocalDateTime().toLocalDate());
+                    bean.setEndTime(card.getExpireTime());
+                }
+            }
+        }
 
 		if(card.getExpireTime() != null) {
 			//	取快照 有效期

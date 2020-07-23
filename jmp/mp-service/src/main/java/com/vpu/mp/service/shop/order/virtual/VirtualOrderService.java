@@ -85,78 +85,9 @@ public class VirtualOrderService extends ShopBaseService {
         /** 是否退款成功 */
         boolean successFlag = true;
         try {
-        	transaction(() -> {
-    			if (param.getAccount().compareTo(BigDecimal.ZERO) > 0) {
-    				/** TODO 余额退款服务 */
-    				AccountData accountData = AccountData.newBuilder().userId(payInfo.getUserId())
-    						.orderSn(payInfo.getOrderSn()).
-    				// 退款金额
-    				amount(param.getAccount())
-    						.remarkCode(RemarkTemplate.ORDER_VIRTUAL_RETURN.code)
-    						.remarkData(String.format(payInfo.getOrderSn()))
-    						.payment(OrderConstant.PAY_CODE_BALANCE_PAY).
-    				// 支付类型
-    				isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
-    				// 后台处理时为操作人id为0
-    				adminUser(0).
-    				// 用户余额退款
-    				tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
-    				// 资金流量-支出
-    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
-    				// 调用退余额接口
-    				recordMemberTrade.updateUserEconomicData(accountData);
-    			}
+            processRefund(param, payInfo);
 
-    			if (param.getMemberCardBalance().compareTo(BigDecimal.ZERO) > 0) {
-
-    				/**
-    				 * 交易记录信息
-    				 */
-    				TradeOptParam tradeOpt = TradeOptParam
-    						.builder()
-    						.adminUserId(0)
-    						.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
-    						.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
-    						.build();
-
-    				/** TODO 会员卡余额退款服务 */
-    				UserCardData userCardData = UserCardData.newBuilder().userId(payInfo.getUserId())
-                        .cardNo(payInfo.getCardNo()).money(param.getMemberCardBalance()).reasonId(RemarkTemplate.ORDER_VIRTUAL_RETURN_DEFAULT.code).
-                        // 普通会员卡
-                            type(CardConstant.MCARD_TP_NORMAL).orderSn(param.getOrderSn()).
-                            tradeOpt(tradeOpt).chargeType(CardConstant.CHARGE_TYPE_REFUND).build();
-    				// 调用退会员卡接口
-    				recordMemberTrade.updateUserEconomicData(userCardData);
-    			}
-
-    			if (param.getScore() > 0) {
-    				/** TODO 积分退款服务 */
-    				ScoreData scoreData = ScoreData.newBuilder().userId(payInfo.getUserId()).orderSn(payInfo.getOrderSn()).
-    				// 退款积分
-    				score(param.getScore()).
-    				remarkCode(RemarkTemplate.ORDER_VIRTUAL_RETURN_SCORE_ACCOUNT.code).
-    				remarkData(payInfo.getOrderSn()+","+param.getScore()).
-    				//remark(String.format("虚拟订单退款:%s，退积分：%s", payInfo.getOrderSn(), param.getScore())).
-    				// 后台处理时为操作人id为0
-    				adminUser(0).
-    				// 用户余额充值
-    				tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
-    				// 资金流量-支出
-    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
-    				// 积分变动是否来自退款
-    				isFromRefund(NumberUtils.BYTE_ONE).build();
-    				// 调用退积分接口
-    				recordMemberTrade.updateUserEconomicData(scoreData);
-    			}
-
-    			if (param.getMoney().compareTo(BigDecimal.ZERO) > 0) {
-    				/** TODO 微信退款服务 */
-    				returnMethod.refundVirtualWx(payInfo, param.getMoney());
-    			}
-
-    		});
-
-		}  catch (DataAccessException e) {
+        }  catch (DataAccessException e) {
 			logger().error("退款捕获DataAccessException异常", e);
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
@@ -177,23 +108,104 @@ public class VirtualOrderService extends ShopBaseService {
         byte isSuccess = successFlag ? REFUND_STATUS_SUCCESS : REFUND_STATUS_FAILED;
 
         // 记录退款信息
+        insertRefundInfo(param, payInfo, isSuccess);
+
+        if(successFlag){
+            // 更新订单状态
+            updateOrderState(param, finalReturnMoney, finalReturnAccount, finalReturnMemberCardBalance, finalReturnScore);
+        }
+    }
+
+    private void processRefund(VirtualOrderRefundParam param, VirtualOrderPayInfo payInfo) {
+        transaction(() -> {
+            if (param.getAccount().compareTo(BigDecimal.ZERO) > 0) {
+                /** TODO 余额退款服务 */
+                AccountData accountData = AccountData.newBuilder().userId(payInfo.getUserId())
+                        .orderSn(payInfo.getOrderSn()).
+                // 退款金额
+                amount(param.getAccount())
+                        .remarkCode(RemarkTemplate.ORDER_VIRTUAL_RETURN.code)
+                        .remarkData(String.format(payInfo.getOrderSn()))
+                        .payment(OrderConstant.PAY_CODE_BALANCE_PAY).
+                // 支付类型
+                isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
+                // 后台处理时为操作人id为0
+                adminUser(0).
+                // 用户余额退款
+                tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
+                // 资金流量-支出
+                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
+                // 调用退余额接口
+                recordMemberTrade.updateUserEconomicData(accountData);
+            }
+
+            if (param.getMemberCardBalance().compareTo(BigDecimal.ZERO) > 0) {
+
+                /**
+                 * 交易记录信息
+                 */
+                TradeOptParam tradeOpt = TradeOptParam
+                        .builder()
+                        .adminUserId(0)
+                        .tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
+                        .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+                        .build();
+
+                /** TODO 会员卡余额退款服务 */
+                UserCardData userCardData = UserCardData.newBuilder().userId(payInfo.getUserId())
+.cardNo(payInfo.getCardNo()).money(param.getMemberCardBalance()).reasonId(RemarkTemplate.ORDER_VIRTUAL_RETURN_DEFAULT.code).
+// 普通会员卡
+type(CardConstant.MCARD_TP_NORMAL).orderSn(param.getOrderSn()).
+tradeOpt(tradeOpt).chargeType(CardConstant.CHARGE_TYPE_REFUND).build();
+                // 调用退会员卡接口
+                recordMemberTrade.updateUserEconomicData(userCardData);
+            }
+
+            if (param.getScore() > 0) {
+                /** TODO 积分退款服务 */
+                ScoreData scoreData = ScoreData.newBuilder().userId(payInfo.getUserId()).orderSn(payInfo.getOrderSn()).
+                // 退款积分
+                score(param.getScore()).
+                remarkCode(RemarkTemplate.ORDER_VIRTUAL_RETURN_SCORE_ACCOUNT.code).
+                remarkData(payInfo.getOrderSn()+","+param.getScore()).
+                //remark(String.format("虚拟订单退款:%s，退积分：%s", payInfo.getOrderSn(), param.getScore())).
+                // 后台处理时为操作人id为0
+                adminUser(0).
+                // 用户余额充值
+                tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
+                // 资金流量-支出
+                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
+                // 积分变动是否来自退款
+                isFromRefund(NumberUtils.BYTE_ONE).build();
+                // 调用退积分接口
+                recordMemberTrade.updateUserEconomicData(scoreData);
+            }
+
+            if (param.getMoney().compareTo(BigDecimal.ZERO) > 0) {
+                /** TODO 微信退款服务 */
+                returnMethod.refundVirtualWx(payInfo, param.getMoney());
+            }
+
+        });
+    }
+
+    private void insertRefundInfo(VirtualOrderRefundParam param, VirtualOrderPayInfo payInfo, byte isSuccess) {
         db().insertInto(VIRTUAL_ORDER_REFUND_RECORD, VIRTUAL_ORDER_REFUND_RECORD.ORDER_SN, VIRTUAL_ORDER_REFUND_RECORD.USER_ID,
             VIRTUAL_ORDER_REFUND_RECORD.MONEY_PAID, VIRTUAL_ORDER_REFUND_RECORD.USE_ACCOUNT, VIRTUAL_ORDER_REFUND_RECORD.USE_SCORE,
             VIRTUAL_ORDER_REFUND_RECORD.MEMBER_CARD_BALANCE,
             VIRTUAL_ORDER_REFUND_RECORD.IS_SUCCESS)
             .values(payInfo.getOrderSn(),payInfo.getUserId(),param.getMoney(),param.getAccount(),param.getScore(),param.getMemberCardBalance(),isSuccess).execute();
+    }
 
-        if(successFlag){
-            // 更新订单状态
-            db().update(VIRTUAL_ORDER)
-                .set(VIRTUAL_ORDER.RETURN_FLAG, REFUND_STATUS_SUCCESS)
-                .set(VIRTUAL_ORDER.RETURN_MONEY, finalReturnMoney)
-                .set(VIRTUAL_ORDER.RETURN_ACCOUNT, finalReturnAccount)
-                .set(VIRTUAL_ORDER.RETURN_CARD_BALANCE, finalReturnMemberCardBalance)
-                .set(VIRTUAL_ORDER.RETURN_SCORE, finalReturnScore)
-                .set(VIRTUAL_ORDER.RETURN_TIME, DateUtils.getLocalDateTime())
-                .where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn())).execute();
-        }
+    private void updateOrderState(VirtualOrderRefundParam param, BigDecimal finalReturnMoney, BigDecimal finalReturnAccount, BigDecimal finalReturnMemberCardBalance, Integer finalReturnScore) {
+        db().update(VIRTUAL_ORDER)
+            .set(VIRTUAL_ORDER.RETURN_FLAG, REFUND_STATUS_SUCCESS)
+            .set(VIRTUAL_ORDER.RETURN_MONEY, finalReturnMoney)
+            .set(VIRTUAL_ORDER.RETURN_ACCOUNT, finalReturnAccount)
+            .set(VIRTUAL_ORDER.RETURN_CARD_BALANCE, finalReturnMemberCardBalance)
+            .set(VIRTUAL_ORDER.RETURN_SCORE, finalReturnScore)
+            .set(VIRTUAL_ORDER.RETURN_TIME, DateUtils.getLocalDateTime())
+            .where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn())).execute();
     }
 
     private VirtualOrderPayInfo getOrderPayInfo(Integer orderId){
@@ -324,16 +336,16 @@ public class VirtualOrderService extends ShopBaseService {
      * return <累计退款金额,累计退款订单数>
      */
     public Tuple2<BigDecimal, Integer> getUserReturnOrderStatistics(Integer userId) {
-        VirtualOrderRefundRecord LOCAL_TABLE = VIRTUAL_ORDER_REFUND_RECORD;
-        Record2<Integer, BigDecimal> r = db().select(DSL.countDistinct(LOCAL_TABLE.ORDER_SN).as("orderNum"),
-            DSL.sum(LOCAL_TABLE.MONEY_PAID
-                .add(LOCAL_TABLE.USE_ACCOUNT)
-                .add(LOCAL_TABLE.MEMBER_CARD_BALANCE)
+        VirtualOrderRefundRecord localTable = VIRTUAL_ORDER_REFUND_RECORD;
+        Record2<Integer, BigDecimal> r = db().select(DSL.countDistinct(localTable.ORDER_SN).as("orderNum"),
+            DSL.sum(localTable.MONEY_PAID
+                .add(localTable.USE_ACCOUNT)
+                .add(localTable.MEMBER_CARD_BALANCE)
             ).as("totalMoneyPaid")
         )
-            .from(LOCAL_TABLE)
-            .where(LOCAL_TABLE.IS_SUCCESS.eq(REFUND_STATUS_SUCCESS))
-            .and(LOCAL_TABLE.USER_ID.eq(userId))
+            .from(localTable)
+            .where(localTable.IS_SUCCESS.eq(REFUND_STATUS_SUCCESS))
+            .and(localTable.USER_ID.eq(userId))
             .fetchAny();
         return new Tuple2<>(r.value2(), r.value1());
     }

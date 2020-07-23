@@ -53,6 +53,7 @@ public interface CreateOrderProcessor extends Processor {
      * @param returnOrderRecord
      * @param activityId 活动id
      * @param returnGoods 退款商品
+     * @throws MpException 异常
      */
     void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods)throws MpException;
 }

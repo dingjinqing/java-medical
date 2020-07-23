@@ -2,6 +2,9 @@ package com.vpu.mp.service.saas.index.param;
 
 import java.sql.Timestamp;
 
+/**
+ * @author luguangyao
+ */
 public class ShopViewParam {
 
     private Timestamp startTime;

@@ -119,6 +119,42 @@ public class SendUserService extends ShopBaseService {
         if (query.getOnClickUser() && !CollectionUtils.isEmpty(query.getUserIdList())){
             userIdSet.addAll(new ArrayList<>(query.getUserIdList()));
         }
+
+        processCustomRule(query, userIdSet);
+
+
+        if( !userIdSet.isEmpty() ){
+                List<UserInfoByRedis> list= new ArrayList<>(userIdSet.size());
+                Map<Integer,UserInfoByRedis> map = Maps.newHashMap();
+                if( StringUtils.isNotBlank(query.getUserKey()) ){
+                    List<UserInfoByRedis> redisList = getSendUserInfoByRedisKey(query.getUserKey());
+                    map= redisList
+                        .stream()
+                        .collect(Collectors.toMap(UserInfoByRedis::getUserId,x->x));
+                }
+                Map<Integer, Record4<Integer,String,String,String>> mpMap = getAllMpUser(new ArrayList<>(userIdSet));
+                for( Integer id:userIdSet ){
+                    UserInfoByRedis info = new UserInfoByRedis();
+                    info.setUserId(id);
+                    if(mpMap.containsKey(id)  ){
+                        info.setIsChecked(Boolean.TRUE);
+                        info.setIsVisitMp(Boolean.TRUE);
+                        info.setCanSend(Boolean.TRUE);
+                    }
+                    if( StringUtils.isNotBlank(query.getUserKey()) && map.containsKey(id)){
+                        info.setIsChecked(map.get(id).getIsChecked());
+                    }
+                    if( info.getCanSend() && info.getIsChecked()){
+                        result += 1;
+                    }
+                    list.add(info);
+                }
+                setUserToJedis(key,list);
+            }
+        return result;
+    }
+
+    private void processCustomRule(UserInfoQuery query, Set<Integer> userIdSet) {
         if (query.getOnClickCustomRule()){
             CustomRuleInfo info = query.getCustomRuleInfo();
             if (info != null){
@@ -150,39 +186,8 @@ public class SendUserService extends ShopBaseService {
                 }
             }
         }
-
-
-
-            if( !userIdSet.isEmpty() ){
-                List<UserInfoByRedis> list= new ArrayList<>(userIdSet.size());
-                Map<Integer,UserInfoByRedis> map = Maps.newHashMap();
-                if( StringUtils.isNotBlank(query.getUserKey()) ){
-                    List<UserInfoByRedis> redisList = getSendUserInfoByRedisKey(query.getUserKey());
-                    map= redisList
-                        .stream()
-                        .collect(Collectors.toMap(UserInfoByRedis::getUserId,x->x));
-                }
-                Map<Integer, Record4<Integer,String,String,String>> mpMap = getAllMpUser(new ArrayList<>(userIdSet));
-                for( Integer id:userIdSet ){
-                    UserInfoByRedis info = new UserInfoByRedis();
-                    info.setUserId(id);
-                    if(mpMap.containsKey(id)  ){
-                        info.setIsChecked(Boolean.TRUE);
-                        info.setIsVisitMp(Boolean.TRUE);
-                        info.setCanSend(Boolean.TRUE);
-                    }
-                    if( StringUtils.isNotBlank(query.getUserKey()) && map.containsKey(id)){
-                        info.setIsChecked(map.get(id).getIsChecked());
-                    }
-                    if( info.getCanSend() && info.getIsChecked()){
-                        result += 1;
-                    }
-                    list.add(info);
-                }
-                setUserToJedis(key,list);
-            }
-        return result;
     }
+
     public void setUserToJedis(String key,List<UserInfoByRedis> list){
         jedisManager.delete(key);
         jedisManager.set(key, Util.toJson(list));

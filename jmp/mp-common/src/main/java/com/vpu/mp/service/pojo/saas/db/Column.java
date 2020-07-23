@@ -98,7 +98,8 @@ public class Column {
 			Integer i2 = Util.convert(v2, Integer.class, -2);
 			return i1.equals(i2);
 		}
-		if((isDecimalType(type) || isFloatType(type) ) && v1!=null && v2!=null) {
+        boolean canConvertFloat = (isDecimalType(type) || isFloatType(type)) && v1 != null && v2 != null;
+        if(canConvertFloat) {
 			Double i1 = Util.convert(v1, Double.class, -1.0);
 			Double i2 = Util.convert(v2, Double.class, -2.0);
 			return i1.equals(i2);

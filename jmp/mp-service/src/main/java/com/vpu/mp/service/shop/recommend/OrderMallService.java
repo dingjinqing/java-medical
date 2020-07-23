@@ -341,7 +341,7 @@ public class OrderMallService extends ShopMallBaseService {
 			param.setExpressGoodsInfoList(itemList);
 			ExpressParam expressCompany = getExpressCompany(partShip.getShippingId(), partShip.getShippingName());
 			param.setExpressCompanyId(expressCompany.getCode());
-			param.setExpress_companyName(expressCompany.getName());
+			param.setExpressCompanyName(expressCompany.getName());
 			param.setExpressCode(partShip.getShippingNo());
 			param.setShipTime(partShip.getShippingTime().getTime() / 1000L);
 			param.setExpressPage(new ExpressPage(
@@ -418,8 +418,8 @@ public class OrderMallService extends ShopMallBaseService {
 		for (String goods : goodsAttrs) {
 			StockAttrInfo sAttrInfo = new StockAttrInfo();
 			String[] split = goods.split(":");
-			sAttrInfo.setAttr_name(new AttrName(split[0]));
-			sAttrInfo.setAttr_value(new AttrValue(split[1]));
+			sAttrInfo.setAttrName(new AttrName(split[0]));
+			sAttrInfo.setAttrValue(new AttrValue(split[1]));
 			stockAttrInfo.add(sAttrInfo);
 		}
 

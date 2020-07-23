@@ -128,6 +128,11 @@ module.exports = {
     "medicalrecordinfo":"病历详情",
     "prescriptionsheet":"处方单信息",
     "doctorConsultation":"医师咨询",
-    "allDepartment":"全部科室"
+    "allDepartment":"全部科室",
+    "operatePrescriptionList":"待审核处方",
+    "inquiryList":"待问诊",
+    "repurchaselist":"处方药品",
+    "patientinfo":"患者信息",
+    "messagelist":"信息列表"
   }
 }

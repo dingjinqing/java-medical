@@ -17,52 +17,69 @@ import org.springframework.util.Assert;
 */
 public class BaseScoreCfgService extends BaseShopConfigService {
 	
-	// 积分有效期  0: 永久积分
+    /**
+     * 积分有效期  0: 永久积分
+     */
 	final public static Byte SCORE_LT_FOREVER = 0;
-	// 积分有效期  1: 从获得开始至 年-月-日
+    /**
+     * 积分有效期  1: 从获得开始至 年-月-日
+     */
 	final public static Byte SCORE_LT_YMD = 1;
-	// 2: 从获得积分当天起-内有效
-	final public static Byte SCORE_LT_NOW = 2;
+
+    /**
+     * 2: 从获得积分当天起-内有效
+     */
+    final public static Byte SCORE_LT_NOW = 2;
 	final public static List<Integer> SCORE_PROPORTION_LIST = Arrays.asList(new Integer[] {1,10,100,1000});
-	// 积分抵扣比例 默认50%
-	final public static Integer DEFAULT_SCORE_DISCOUNT_RATIO=50;
-	// 积分有效期  0: 永久积分; 1: 从获得开始至 年-月-日; 2: 从获得积分当天起-内有效
-	final public static String SCORE_LIMIT = "score_limit";
-	// 积分有效期-从获得开始至 ：日
-	final public static String SCORE_DAY = "score_day";
-	// 积分有效期-从获得开始至 ：月
+
+    /**
+     * 积分抵扣比例 默认50%
+     */
+    final public static Integer DEFAULT_SCORE_DISCOUNT_RATIO=50;
+
+    /**
+     * 积分有效期  0: 永久积分; 1: 从获得开始至 年-月-日; 2: 从获得积分当天起-内有效
+     */
+    final public static String SCORE_LIMIT = "score_limit";
+    /**
+     *  积分有效期-从获得开始至 ：日
+     */
+    final public static String SCORE_DAY = "score_day";
+	/*** 积分有效期-从获得开始至 ：月 */
 	final public static String SCORE_MONTH = "score_month";
-	// 积分有效期-从获得开始至 ：年
+	/**
+     *  积分有效期-从获得开始至 ：年
+     */
 	final public static String SCORE_YEAR = "score_year";
-	// 积分有效期-从获得积分当天起 多少数额
+	/** 积分有效期-从获得积分当天起 多少数额 */
 	final public static String SCORE_LIMIT_NUMBER = "score_limit_number";
-	// 积分有效期-从获得积分当天起  数额单位 
+    /** 积分有效期-从获得积分当天起  数额单位  */
 	final public static String SCORE_PERIOD = "score_period";
-	// 积分支付限制 0： 不限制；1：自定义
+	/** 积分支付限制 0： 不限制；1：自定义 */
 	final public static String SCORE_PAY_LIMIT = "score_pay_limit";
-	// 每单支付的积分数量少于 score_pay_num 积分，不可使用积分支付
+	/** 每单支付的积分数量少于 score_pay_num 积分，不可使用积分支付 */
 	final public static String SCORE_PAY_NUM = "score_pay_num";
-	// 积分抵扣比例用户可使用积分抵扣订单折后金额的 百分比 
+	/** 积分抵扣比例用户可使用积分抵扣订单折后金额的 百分比  */
 	final public static String SCORE_DISCOUNT_RATIO="score_discount_ratio";
-	// 购物送积分开关： 0： 关闭； 1： 开启
+	/** 购物送积分开关： 0： 关闭； 1： 开启 */
 	final public static String SHOPPING_SCORE ="shopping_score";
-	// 购物送积分类型： 0： 购物满；1：购物每满
+	/** 购物送积分类型： 0： 购物满；1：购物每满 */
 	final public static String SCORE_TYPE = "score_type";
-	// 门店买单送积分： 0： 关闭； 1： 开启
+	/** 门店买单送积分： 0： 关闭； 1： 开启 */
 	final public static String STORE_SCORE = "store_score";
-	// 登录送积分： 0： 关闭；1： 开启
+	/** 登录送积分： 0： 关闭；1： 开启 */
 	final public static String LOGIN_SCORE = "login_score";
-	// 登录送 score_login 积分
+	/** 登录送 score_login 积分 */
 	final public static String SCORE_LOGIN = "score_login";
-	// 签到送积分： json字符数据，包括开关和数据
+	/** 签到送积分： json字符数据，包括开关和数据 */
 	final public static String SIGN_IN_SCORE = "sign_in_score";
-	// 模板页面id
+	/** 模板页面id */
 	final public static String SCORE_PAGE_ID = "score_page_id";
-	// 积分说明
+	/** 积分说明 */
 	final public static String SCORE_DOCUMENT = "score_document";
-	// 积分兑换比
+	/** 积分兑换比 */
 	final public static String SCORE_PROPORTION = "score_proportion";
-	//订单折后金额是否包含运费 
+    /** 订单折后金额是否包含运费  */
 	public static final String DISCOUNT_HAS_SHIPPING="discount_has_shipping";
 	
 	//-------------------------------------------------------

@@ -13,8 +13,17 @@ import me.chanjar.weixin.common.error.WxErrorException;
 public interface WxMaLiveService extends WxOpenMaMpHttpBase {
 	/** 获取直播房间列表*/
 	static final String GET_LIVE_INFO = "http://api.weixin.qq.com/wxa/business/getliveinfo";
-	
-	
+
+
+    /**
+     * getLiveInfo
+     *
+     * @param appId
+     * @param start
+     * @param limit
+     * @return
+     * @throws WxErrorException
+     */
 	default WxMaLiveInfoResult getLiveInfo(String appId,Integer start,Integer limit) throws WxErrorException {
 		JsonObject param = new JsonObject();
 		param.addProperty("start", start);

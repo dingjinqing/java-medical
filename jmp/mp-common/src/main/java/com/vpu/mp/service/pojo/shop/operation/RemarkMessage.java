@@ -57,9 +57,9 @@ public class RemarkMessage {
     public static final String CARD_RENEW = "member.card.renew";
     /** 会员卡续费: {订单号} */
     public static final String CARD_RENEW_ORDER="member.card.renew.order";
-    // 继承转赠卡：{0} - 门店服务次数
+    /**   继承转赠卡：{0} - 门店服务次数 */
     public static final String CARD_GIVE_COUNT="member.card.give.count";
-    //  继承转赠卡：{0} - 兑换服务次数
+    /**    继承转赠卡：{0} - 兑换服务次数 */
     public static final String CARD_GIVE_EXCHANGCOUNT="member.card.give.exchangCount";
 	/**
 	 * 登录

@@ -82,7 +82,7 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     FootPrintService footPrintService;
     @Autowired
-    public MPGoodsRecommendService mpGoodsRecommendService;
+    public MpGoodsRecommendService mpGoodsRecommendService;
     @Autowired
     EsGoodsSearchMpService esGoodsSearchMpService;
     @Autowired
@@ -462,9 +462,9 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setShareAwardId(param.getShareAwardId());
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
         // 处理分销信息临时这样处理，分销返利方法个人不建议在此处处理。
-        if (param.getRebateSId() != null) {
+        if (param.getRebateSid() != null) {
             try {
-                String qrCodeValue = qrCodeService.getQrCodeParamInfoBySceneId(param.getRebateSId());
+                String qrCodeValue = qrCodeService.getQrCodeParamInfoBySceneId(param.getRebateSid());
                 GoodsRebateConfigParam goodsRebateConfigParam = Util.parseJson(qrCodeValue, GoodsRebateConfigParam.class);
                 param.setRebateConfig(goodsRebateConfigParam);
             } catch (Exception e) {

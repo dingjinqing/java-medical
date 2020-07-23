@@ -6,7 +6,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/22
  */
 @Data

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -49,5 +50,6 @@ public class GoodsDetailMpParam {
      * 由于时间原因此处未能对二维码进行参数统一解析，
      * 可以和分销活动一起进行代码抽取
      */
-    private Integer rebateSId;
+    @JsonProperty("rebateSId")
+    private Integer rebateSid;
 }

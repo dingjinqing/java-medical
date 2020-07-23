@@ -145,7 +145,8 @@ public class ShareRewardService extends BaseShopConfigService {
             //未开始状态
             return PURCHASE_PREPARE;
         }
-        if (foreverFlag || (vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now()) && vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now()))) {
+        boolean isProcessing = foreverFlag || (vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now()) && vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now()));
+        if (isProcessing) {
             //进行中状态
             return PURCHASE_PROCESSING;
         }
@@ -281,7 +282,11 @@ public class ShareRewardService extends BaseShopConfigService {
         return awardRecord;
     }
 
-    // ShareRule奖励规则数据清洗
+    /**
+     * ShareRule奖励规则数据清洗
+     * @param shareRule
+     * @return
+     */
     private ShareRule dataClean(ShareRule shareRule) {
         if (Objects.isNull(shareRule)) {
             return null;

@@ -19,7 +19,7 @@ public class Location {
      */
     public double longitude;
 
-    // todo 预留字段,暂时未使用
+    /**   todo 预留字段,暂时未使用 */
     public String speed;
     public String accuracy;
     public String verticalAccuracy;

@@ -12,6 +12,9 @@ import com.vpu.mp.common.foundation.util.Page;
 import lombok.Data;
 
 
+/**
+ * @author lixinguo
+ */
 @Data
 public class XcxCustomerPageVo implements Serializable {
 

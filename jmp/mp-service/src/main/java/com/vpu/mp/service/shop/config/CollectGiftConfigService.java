@@ -13,7 +13,7 @@ import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
-import com.vpu.mp.service.pojo.wxapp.collectGift.SetCollectGiftVo;
+import com.vpu.mp.service.pojo.wxapp.collectgift.SetCollectGiftVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -139,7 +139,8 @@ public class CollectGiftConfigService extends BaseShopConfigService{
             }
             //判断当前用户是否第一次参与收藏有礼活动
             Integer into = db().select(USER.GET_COLLECT_GIFT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
-            if (into == 1) {//已参与，不展示支付有礼图标
+            if (into == 1) {
+                //已参与，不展示支付有礼图标
                 param.setOnOff(0);
             }
             //获取店铺名称

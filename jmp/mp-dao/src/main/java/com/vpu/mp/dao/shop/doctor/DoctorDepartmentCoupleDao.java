@@ -4,13 +4,17 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorDepartmentCoupleRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
-import static com.vpu.mp.db.shop.Tables.DOCTOR_DEPARTMENT_COUPLE;
+import static com.vpu.mp.db.shop.Tables.*;
 
 @Repository
 public class DoctorDepartmentCoupleDao extends ShopBaseDao{
@@ -99,5 +103,94 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .where(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID.in(departmentIds)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
             .fetchInto(Integer.class);
         return doctorIds;
+    }
+
+    /**
+     * 供咨询的医师列表
+     *
+     * @param doctorParam
+     * @return
+     */
+    public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
+        Condition condition = DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1));
+        if (doctorParam.getKeyword() != null) {
+            condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DEPARTMENT.NAME.like(likeValue(doctorParam.getKeyword()))));
+        }
+        if (doctorParam.getDepartmentId() != null) {
+            condition = condition.and(DEPARTMENT.ID.eq(doctorParam.getDepartmentId()));
+        }
+        if (doctorParam.getTitleId() != null) {
+            condition = condition.and(DOCTOR_TITLE.ID.eq(doctorParam.getTitleId()));
+        }
+        return db().select().from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
+            .where(condition)
+            .fetchInto(DoctorConsultationOneParam.class);
+
+    }
+
+    /**
+     * 供咨询的医师科室列表
+     *
+     * @param doctorParam
+     * @return
+     */
+    public List<Integer> listHistoryDoctorDepartment(UserPatientParam doctorParam) {
+        return db().selectDistinct(DOCTOR_DEPARTMENT_COUPLE.ID).from(IM_SESSION)
+            .leftJoin(DOCTOR_DEPARTMENT_COUPLE).on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(IM_SESSION.DOCTOR_ID))
+            .where(IM_SESSION.USER_ID.eq(doctorParam.getUserId()))
+            .and(IM_SESSION.PATIENT_ID.eq(doctorParam.getPatientId()))
+            .and(DOCTOR_DEPARTMENT_COUPLE.ID.gt(0))
+            .fetchInto(Integer.class);
+    }
+
+    /**
+     * 供咨询的医师科室列表
+     *
+     * @param doctorDepartments
+     * @return
+     */
+    public List<DoctorConsultationOneParam> listHistoryDoctor(List<Integer> doctorDepartments) {
+        SelectHavingStep<Record2<Integer, Integer>> table = db().select(DOCTOR_DEPARTMENT_COUPLE.ID, DSL.count(IM_SESSION.ID).as("number"))
+            .from(IM_SESSION)
+            .leftJoin(DOCTOR_DEPARTMENT_COUPLE).on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(IM_SESSION.DOCTOR_ID))
+            .and(DOCTOR_DEPARTMENT_COUPLE.ID.gt(0)).groupBy(DOCTOR_DEPARTMENT_COUPLE.ID);
+        return db().select().from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
+            .leftJoin(table).on(table.field(DOCTOR_DEPARTMENT_COUPLE.ID).eq(DOCTOR_DEPARTMENT_COUPLE.ID))
+            .where(DOCTOR_DEPARTMENT_COUPLE.ID.in(doctorDepartments))
+            .and(DOCTOR.IS_DELETE.eq((byte) 0))
+            .and(DOCTOR.STATUS.eq((byte) 1))
+            .orderBy(table.field("number"))
+            .limit(10)
+            .fetchInto(DoctorConsultationOneParam.class);
+    }
+
+    /**
+     * 供咨询的医师科室列表
+     *
+     * @param doctorDepartments
+     * @return
+     */
+    public List<DoctorConsultationOneParam> listDoctorMore(List<Integer> doctorDepartments, Integer limit) {
+        SelectHavingStep<Record2<Integer, Integer>> table = db().select(DOCTOR_DEPARTMENT_COUPLE.ID, DSL.count(IM_SESSION.ID).as("number"))
+            .from(IM_SESSION)
+            .leftJoin(DOCTOR_DEPARTMENT_COUPLE).on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(IM_SESSION.DOCTOR_ID))
+            .and(DOCTOR_DEPARTMENT_COUPLE.ID.gt(0)).groupBy(DOCTOR_DEPARTMENT_COUPLE.ID);
+        return db().select().from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
+            .leftJoin(table).on(table.field(DOCTOR_DEPARTMENT_COUPLE.ID).eq(DOCTOR_DEPARTMENT_COUPLE.ID))
+            .where(DOCTOR_DEPARTMENT_COUPLE.ID.notIn(doctorDepartments))
+            .and(DOCTOR.IS_DELETE.eq((byte) 0))
+            .and(DOCTOR.STATUS.eq((byte) 1))
+            .orderBy(table.field("number"))
+            .limit(limit)
+            .fetchInto(DoctorConsultationOneParam.class);
     }
 }

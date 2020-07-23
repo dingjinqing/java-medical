@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * @author lixinguo
+ */
 @Builder
 @Data
 public class PaymentRecordParam {

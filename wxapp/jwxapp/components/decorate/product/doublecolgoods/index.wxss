@@ -19,7 +19,7 @@
     box-sizing: border-box;
     overflow: hidden;
     position: relative;
-    height: 500rpx;
+    height: 554rpx;
   }
   
   .two_column .each_module:nth-of-type(odd) {
@@ -47,28 +47,35 @@
   }
   
   .two_column .each_module .product-name {
-    width: 330rpx;
+    width: 310rpx;
     font-size: 26rpx;
-    margin-bottom: 5rpx;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     overflow: hidden;
-    padding: 0 10rpx;
-    margin-top: 15rpx;
+    padding: 0 20rpx;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+  }
+  .two_column .each_module .product-name .title_label_container{
+    position: static;
+    margin-top: 20rpx;
   }
   .two_column .each_module .product-price {
     font-size: 30rpx;
     font-weight: bold;
     color: #f66;
-    padding: 0 10rpx;
-    margin-bottom: 6rpx;
+    padding: 0 20rpx;
     position: absolute;
-    bottom: 0;
-    width: 330rpx;
+    bottom: 20rpx;
+    width: 310rpx;
     display: flex;
     justify-content: space-between;
+  }
+  .van-ellipsis{
+    margin-bottom: 0;
+  }
+  .van-two-ellipsis{
+    margin-bottom: 0;
   }
   
   .two_column .each_module .product-price .sale_price {

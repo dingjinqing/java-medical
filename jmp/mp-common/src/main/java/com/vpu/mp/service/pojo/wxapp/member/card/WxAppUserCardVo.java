@@ -25,22 +25,22 @@ public class WxAppUserCardVo extends UserCardParam {
 	final static Byte PERMANENT = 2;
 	final static Byte NON_RENEWAL = 0;
 	final static Byte AVAILABLE_RENEWAL = 1;
-	// 是否过期
+	/**   是否过期 */
 	protected Byte expire;
-	// 是否可续费
+	/**   是否可续费 */
 	protected Byte renewal;
 	protected LocalDate startDate;
 	protected LocalDate endDate;
 	protected String avatar;
-	// 使用商品列表
+	/**   使用商品列表 */
 	protected List<GoodsSmallVo> goodsList;
-	// 门店信息
+	/**   门店信息 */
 	protected List<StoreBasicVo> storeInfoList;
-	// 累积积分
+	/**   累积积分 */
 	protected Integer cumulativeScore;
-	// 累积消费金额
+	/**   累积消费金额 */
 	protected BigDecimal cumulativeConsumptionAmounts;
-	// 审核状态
+	/**   审核状态 */
 	protected Byte cardVerifyStatus;
 	public void calcCardIsExpired(){
 		if(isExpire()) {
@@ -63,7 +63,7 @@ public class WxAppUserCardVo extends UserCardParam {
 		}
 	}
 	private boolean isExpire() {
-		// means endless time,maximum time
+		//   means endless time,maximum time
 		if(!hasExpireTime() && isPermanent()) {
 			return false;
 		}

@@ -28,8 +28,7 @@ global.wxPage({
     this.data.mobile = e.detail.value;
   },
   cardIdInput (e) {
-    this.data.card_id = e.detail.value;
-    prescription_info.card_id = this.data.card_id
+    this.data.card_id = e.detail.value
   },
   close_modal (e) {
     this.setData({
@@ -60,16 +59,25 @@ global.wxPage({
       util.showModal("提示", "请输入姓名！");
       return false;
     }
+    if (!prescription_info.identityCode) {
+      util.showModal("提示", "请输入身份证号！");
+      return false;
+    }
     if (!prescription_info.mobile) {
       util.showModal("提示", "请输入手机号！");
       return false;
-    } else if (!/^1[3456789]\d{9}$/.test(prescription_info.mobile)) {
+    } 
+    if (!/^1[3456789]\d{9}$/.test(prescription_info.mobile)) {
       util.showModal("提示", "请输入正确的手机号！");
         return false;
     } 
     util.api('/api/wxapp/user/patient/get/info', res => {
-      if(res.error == 0){
-        wx.navigateBack()
+      if(res.error != 0){
+        
+      } else {
+        util.showModal('提示', '您暂无本医院就诊记录，请先添加就诊人', () => {
+          util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + prescription_info);
+        }, true, '取消', '去添加')
       }
     },{
       userId: util.getCache("user_id"),
@@ -77,6 +85,35 @@ global.wxPage({
       mobile: prescription_info.mobile,
       identityCode: prescription_info.identityCode,
     })
+  },
+  addFamily () {
+    let prescription_info = [];
+    prescription_info.name = this.data.real_name;
+    prescription_info.mobile = this.data.mobile;
+    prescription_info.identityCode = this.data.card_id;
+    if (this.data.if_show_agree == 0 && this.data.if_agree == 0) {
+      this.setData({
+        if_show_agree:1
+      });
+      return false;
+    }
+    if (!prescription_info.name) {
+      util.showModal("提示", "请输入姓名！");
+      return false;
+    }
+    if (!prescription_info.identityCode) {
+      util.showModal("提示", "请输入身份证号！");
+      return false;
+    }
+    if (!prescription_info.mobile) {
+      util.showModal("提示", "请输入手机号！");
+      return false;
+    } 
+    if (!/^1[3456789]\d{9}$/.test(prescription_info.mobile)) {
+      util.showModal("提示", "请输入正确的手机号！");
+        return false;
+    } 
+    util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + prescription_info);
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

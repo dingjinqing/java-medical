@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
+/**
+ * @author luguangyao
+ */
 public class FeedBackParam extends BasePageParam {
 
     private String name;

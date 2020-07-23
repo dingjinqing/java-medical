@@ -10,6 +10,9 @@ import java.util.Map;
 
 import com.vpu.mp.common.foundation.util.PageResult;
 
+/**
+ * @author wangshuai
+ */
 @Getter
 @Setter
 @ToString

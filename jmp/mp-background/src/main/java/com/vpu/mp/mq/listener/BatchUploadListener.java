@@ -160,7 +160,15 @@ public class BatchUploadListener implements BaseRabbitHandler {
 		return saas.shop.backProcessService.getRow(recId);
 	}
 
-	//更新b2c_task_job_main表中数据
+
+    /**
+     * 更新b2c_task_job_main表中数据
+     *
+     * @param content
+     * @param recId
+     * @param failSize
+     * @param allSize
+     */
 	private void updateJobState(String content, Integer recId, int failSize, int allSize) {
 		BackProcessRecord row = getRecord(recId);
 		if (row != null) {
@@ -172,7 +180,11 @@ public class BatchUploadListener implements BaseRabbitHandler {
 		saas.shop.backProcessService.updateKill(recId, failReason);
 	}
 
-	// 可以运行是true，不可运行是false
+    /**
+     * 可以运行是true，不可运行是false
+     * @param recId
+     * @return
+     */
 	private Boolean isKill(Integer recId) {
 		BackProcessRecord row = getRecord(recId);
 		if (row != null) {

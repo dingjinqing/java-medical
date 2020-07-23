@@ -10,12 +10,12 @@ import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MaMpBindParam;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MaMpBindParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOaPayManageParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.market.message.BindOARabbitParam;
+import com.vpu.mp.service.pojo.shop.market.message.BindRabbitParam;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
 import com.vpu.mp.service.wechat.api.WxOpenMpampLinkService;
@@ -140,7 +140,7 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param oaParam
 	 * @return
 	 */
-	public Integer updatePayInfo(MpOAPayManageParam oaParam) {
+	public Integer updatePayInfo(MpOaPayManageParam oaParam) {
 		MpOfficialAccountRecord newRecord = MP_OFFICIAL_ACCOUNT.newRecord();
 		FieldsUtil.assignNotNull(oaParam, newRecord);
 		return db().executeUpdate(newRecord);
@@ -174,8 +174,8 @@ public class ShopOfficialAccount extends MainBaseService {
             .and(MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq(isAuthOk)));
     }
 
-	public List<MpOfficeAccountVo> findSamePrincipalMiniAndMP(Result<MpOfficialAccountRecord> oaRecords,
-			MpAuthShopRecord miniRecord) {
+	public List<MpOfficeAccountVo> findSamePrincipalMiniAndMp(Result<MpOfficialAccountRecord> oaRecords,
+                                                              MpAuthShopRecord miniRecord) {
 		List<MpOfficeAccountVo> list = new ArrayList<MpOfficeAccountVo>();
 		for (MpOfficialAccountRecord rAccountRecord : oaRecords) {
 			if (rAccountRecord.getIsAuthOk().equals((byte) 1)) {
@@ -251,7 +251,8 @@ public class ShopOfficialAccount extends MainBaseService {
 	 */
 	public void bindAllSamePrincipalOpenAppId(String principalName) throws WxErrorException {
 		logger().info("传入的principalName："+principalName);
-		if (!principalName.equals("个人")) {
+        String principalPersonal = "个人";
+        if (!principalName.equals(principalPersonal)) {
 			List<MaMpBindParam> apps = getSamePrincipalOfficeList(principalName);
 			List<MaMpBindParam> samePrincipalMaList = saas.shop.mp.getSamePrincipalMaList(principalName);
 			apps.addAll(samePrincipalMaList);
@@ -274,13 +275,15 @@ public class ShopOfficialAccount extends MainBaseService {
 			openAppId = saas.shop.mp.bindOpenAppId(false, app.getAppId(), openAppId);
 			if (!openAppId.equals(app.getBindOpenAppId())) {
 				// 更新数据库
-				if (app.getType().equals("1")) {
+                String typeMp = "1";
+                if (app.getType().equals(typeMp)) {
 					// 公众号
 					int execute = db().update(MP_OFFICIAL_ACCOUNT).set(MP_OFFICIAL_ACCOUNT.BIND_OPEN_APP_ID, openAppId)
 							.where(MP_OFFICIAL_ACCOUNT.APP_ID.eq(app.getAppId())).execute();
 					logger().info("公众号："+app.getAppId()+"更新bindOpenAppId："+openAppId+"结果："+execute);
 				}
-				if (app.getType().equals("2")) {
+                String typeMa = "2";
+                if (app.getType().equals(typeMa)) {
 					// 小程序
 					int updateBindOpenAppId = saas.shop.mp.updateBindOpenAppId(app.getAppId(), openAppId);
 					logger().info("小程序："+app.getAppId()+"更新bindOpenAppId："+openAppId+"结果："+updateBindOpenAppId);
@@ -361,12 +364,12 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param shopId
 	 */
 	public void batchGetUsersByRabbitMq(String appId, String language, Integer sysId,Integer shopId) {
-		BindOARabbitParam param=new BindOARabbitParam();
+		BindRabbitParam param=new BindRabbitParam();
 		param.setAppId(appId);
 		param.setLanguage(language);
 		param.setSysId(sysId);
 		logger().debug("批量获取公众号关注用户"+param.toString());
-		saas.taskJobMainService.dispatchImmediately(param,BindOARabbitParam.class.getName(),shopId,TaskJobEnum.MP_BIND_MA.getExecutionType());
+		saas.taskJobMainService.dispatchImmediately(param, BindRabbitParam.class.getName(),shopId,TaskJobEnum.MP_BIND_MA.getExecutionType());
 		//rabbitTemplate.convertAndSend("bind.mamp.template", "bind.mamp.key", param);
 	}
 

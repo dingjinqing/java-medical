@@ -104,7 +104,8 @@ public class DomainConfig {
 	 * @return
 	 */
 	private String pathJudge(String relativePath) {
-		if(relativePath.charAt(0)=='/') {
+        char c = '/';
+        if(relativePath.charAt(0)== c) {
 			relativePath=relativePath.replaceFirst("/", "");
 		}
 		return relativePath;

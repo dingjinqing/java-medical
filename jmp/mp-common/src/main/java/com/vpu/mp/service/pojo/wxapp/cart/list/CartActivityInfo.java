@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
@@ -60,7 +61,8 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
     @Getter
     public static  class FullReduction{
         /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
-        private Byte FullReductiontype;
+        @JsonProperty("FullReductiontype")
+        private Byte fullReductionType;
         /**是否会员专享*/
         private Boolean isExclusive;
         /**

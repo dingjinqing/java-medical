@@ -17,7 +17,9 @@ import static com.vpu.mp.db.shop.tables.FootprintRecord.FOOTPRINT_RECORD;
 @Service
 public class FootprintDeleteTaskService extends ShopBaseService {
 
-    //足迹保存的时长（自然月）
+    /**
+     * 足迹保存的时长（自然月）
+     */
     private static final int RECORD_SAVED_MONTHS = 3;
 
     public void deleteFootprint(){

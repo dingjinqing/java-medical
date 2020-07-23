@@ -1161,8 +1161,8 @@ public class GoodsService extends ShopBaseService {
         try {
             transaction(() -> {
                 //存在重复值则直接返回
-                GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForUpdate(goods);
-                codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
+                GoodsDataIIllegalEnum goodsDataIllegalEnum = columnValueExistCheckForUpdate(goods);
+                codeWrap.setIllegalEnum(goodsDataIllegalEnum);
                 if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
                     return;
                 }
@@ -1856,10 +1856,7 @@ public class GoodsService extends ShopBaseService {
      * @return 商品信息
      */
     public GoodsVo select(Integer goodsId) {
-        Record record = db().select()
-            .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
-            .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
-            .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
+        Record record = getGoodsAndBrandById(goodsId);
         if (record == null) {
             return null;
         }
@@ -1878,28 +1875,11 @@ public class GoodsService extends ShopBaseService {
         setGoodsImgs(goodsVo);
 
         //设置商品指定标签
-        Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
-        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId)==null ? new ArrayList<>(0):gtaLabelMap.get(goodsId));
-        goodsVo.setGoodsLabelNormalListVos(new ArrayList<>(5));
-        // 商家分类关联标签
-        if (!GoodsConstant.GOODS_SORT_DEFAULT_VALUE.equals(goodsVo.getSortId())){
-            Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelSortMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsVo.getSortId()), GoodsLabelCoupleTypeEnum.SORTTYPE);
-            if (gtaLabelSortMap.get(goodsVo.getSortId()) != null && gtaLabelSortMap.get(goodsVo.getSortId()).size() > 0) {
-                goodsVo.getGoodsLabelNormalListVos().addAll(gtaLabelSortMap.get(goodsVo.getSortId()));
-            }
-        }
-        // 绑定全部商品上的标签
-        List<GoodsLabelSelectListVo> allGoodsLabels = goodsLabel.getAllGoodsLabels();
-        goodsVo.getGoodsLabelNormalListVos().addAll(allGoodsLabels);
+        setGoodsTags(goodsId, goodsVo);
 
 
         //设置sku
-        List<GoodsSpecProduct> goodsSpecProducts = goodsSpecProductService.selectByGoodsId(goodsId);
-        goodsSpecProducts.forEach(goodsSpecProduct -> goodsSpecProduct.setPrdImgUrl(getImgFullUrlUtil(goodsSpecProduct.getPrdImg())));
-        goodsVo.setGoodsSpecProducts(goodsSpecProducts);
-
-        List<GoodsSpec> goodsSpecs = goodsSpecProductService.selectSpecByGoodsId(goodsId);
-        goodsVo.setGoodsSpecs(goodsSpecs);
+        setGoodsSku(goodsId, goodsVo);
 
         //设置商品规格会员价
         List<GoodsGradePrd> goodsGradePrds = selectGoodsGradePrd(goodsId);
@@ -1938,6 +1918,38 @@ public class GoodsService extends ShopBaseService {
         }
 
         return goodsVo;
+    }
+
+    private void setGoodsSku(Integer goodsId, GoodsVo goodsVo) {
+        List<GoodsSpecProduct> goodsSpecProducts = goodsSpecProductService.selectByGoodsId(goodsId);
+        goodsSpecProducts.forEach(goodsSpecProduct -> goodsSpecProduct.setPrdImgUrl(getImgFullUrlUtil(goodsSpecProduct.getPrdImg())));
+        goodsVo.setGoodsSpecProducts(goodsSpecProducts);
+
+        List<GoodsSpec> goodsSpecs = goodsSpecProductService.selectSpecByGoodsId(goodsId);
+        goodsVo.setGoodsSpecs(goodsSpecs);
+    }
+
+    private void setGoodsTags(Integer goodsId, GoodsVo goodsVo) {
+        Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
+        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId)==null ? new ArrayList<>(0):gtaLabelMap.get(goodsId));
+        goodsVo.setGoodsLabelNormalListVos(new ArrayList<>(5));
+        // 商家分类关联标签
+        if (!GoodsConstant.GOODS_SORT_DEFAULT_VALUE.equals(goodsVo.getSortId())){
+            Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelSortMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsVo.getSortId()), GoodsLabelCoupleTypeEnum.SORTTYPE);
+            if (gtaLabelSortMap.get(goodsVo.getSortId()) != null && gtaLabelSortMap.get(goodsVo.getSortId()).size() > 0) {
+                goodsVo.getGoodsLabelNormalListVos().addAll(gtaLabelSortMap.get(goodsVo.getSortId()));
+            }
+        }
+        // 绑定全部商品上的标签
+        List<GoodsLabelSelectListVo> allGoodsLabels = goodsLabel.getAllGoodsLabels();
+        goodsVo.getGoodsLabelNormalListVos().addAll(allGoodsLabels);
+    }
+
+    private Record getGoodsAndBrandById(Integer goodsId) {
+        return db().select()
+                .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+                .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
+                .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
     }
 
     /**

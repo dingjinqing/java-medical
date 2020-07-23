@@ -19,7 +19,7 @@ public class PackageSaleGoodsListParam {
 
     @NotNull
     private Integer packageId;
-    //取值1-3
+    /**  取值1-3 */
     private Byte groupId = 1;
 
     private String search;

@@ -36,7 +36,8 @@ public class FreeShippingGoodsListParam extends BasePageParam {
     private String scene;
 
     public void initScene(){
-        if((this.ruleId == null || this.ruleId <= 0) && StringUtil.isNotBlank(this.scene)){
+        boolean canResolve = (this.ruleId == null || this.ruleId <= 0) && StringUtil.isNotBlank(this.scene);
+        if(canResolve){
             String scene = null;
             try {
                 scene = URLDecoder.decode(this.scene,"UTF-8");

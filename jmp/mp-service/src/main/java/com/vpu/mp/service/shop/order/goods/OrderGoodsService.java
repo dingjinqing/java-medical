@@ -341,9 +341,15 @@ public class OrderGoodsService extends ShopBaseService {
             isCardExclusive(goods.getIsCardExclusive() == null ? OrderConstant.NO : goods.getIsCardExclusive()).
             reducePriceId(goods.getReducePriceId()).
             promoteInfo(null).
+			//处方信息
+			prescriptionInfo(goods.getPrescriptionInfo()).
+			checkPrescriptionStatus(goods.getCheckPrescriptionStatus()).
+			medicalAuditStatus(goods.getOrderAuditType()).
             build();
 		if (goods.getMedicalInfo()!=null){
 			bo.setIsRx(goods.getMedicalInfo().getIsRx());
+		}else {
+			bo.setIsRx(BaseConstant.NO);
 		}
         //限时降价的ID和TYPE存入order_goods
         if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsPriceAction()) && goods.getReducePriceId() != null){

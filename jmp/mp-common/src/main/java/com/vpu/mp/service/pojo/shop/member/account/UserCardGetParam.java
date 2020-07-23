@@ -4,6 +4,9 @@ import javax.validation.constraints.AssertTrue;
 
 import lombok.Data;
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class UserCardGetParam {
 	private Byte getType;

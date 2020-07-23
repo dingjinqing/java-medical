@@ -112,7 +112,7 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
             Integer sysId = getSysId();
             AppAuthRecord appAuthInfo = saas.shop.shopApp.getAppAuthInfo(sysId, shopId, action);
             if (appAuthInfo==null){
-               return saas.shop.shopApp.AddAppAuthInfo(sysId,shopId,action);
+               return saas.shop.shopApp.addAppAuthInfo(sysId,shopId,action);
             }
             return appAuthInfo;
         }

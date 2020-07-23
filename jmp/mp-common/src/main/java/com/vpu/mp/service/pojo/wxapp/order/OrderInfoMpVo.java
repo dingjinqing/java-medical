@@ -3,8 +3,9 @@ package com.vpu.mp.service.pojo.wxapp.order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOrderVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawInfoByOrderVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,10 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	private List<ShippingInfoVo> shippingInfo;
 	/**子单信息*/
 	private List<OrderInfoMpVo> subOrder;
+	/**
+	 * 处方列表
+	 */
+	private List<PrescriptionVo> prescriptionList;
 	/**发票信息*/
 	private InvoiceVo invoiceInfo;
 	private String verifierName;
@@ -88,7 +93,7 @@ public class OrderInfoMpVo extends OrderListMpVo{
      * 客服按钮展示开关
      */
     private Byte orderDetailService;
-    
+
     /**是否显示好物圈的按钮 */
     private Boolean showMall;
     /**商品数量（不包含赠品） */

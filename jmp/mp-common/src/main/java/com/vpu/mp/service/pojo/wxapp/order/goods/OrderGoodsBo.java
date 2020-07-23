@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.order.goods;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -115,4 +116,19 @@ public class OrderGoodsBo {
 	 * 是否是处方药
 	 */
 	private Byte isRx;
+
+	/**处方详情*/
+	private PrescriptionVo prescriptionInfo;
+	/**
+	 * 处方号
+	 */
+	private String prescriptionOldCode;
+	/**
+	 * 药品审核状态 0未审核 1审核通过 2审核不通过
+	 */
+	private Byte medicalAuditStatus;
+	/**
+	 * 处方药关联处方校验 0不校验 1 通过 2不通过
+	 */
+	private Byte checkPrescriptionStatus;
 }

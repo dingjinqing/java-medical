@@ -44,9 +44,9 @@ public class UserCardParam {
 	/**
 	 * 	用户卡的快照包邮信息
 	 */
-	// 包邮周期类型 
+	/**   包邮周期类型  */
 	protected Byte freeLimit;
-	// 包邮次数
+	/**   包邮次数 */
 	protected Integer freeNum;
 	
 	/** member_card bean */
@@ -167,7 +167,7 @@ public class UserCardParam {
 		}
 	}
 	
-	// 是否可以在门店使用
+	/**   是否可以在门店使用 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	public boolean isStoreAvailable() {
 		return !StringUtils.isBlank(storeList) && AVAILABLE_IN_STORE.equals(storeUseSwitch);

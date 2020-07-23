@@ -246,6 +246,11 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     //*******************购物车***************/
+
+    /**
+     * 购物车
+     * @param cartBo 业务数据类
+     */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
         log.info("购物车-预售-开始");

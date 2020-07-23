@@ -41,8 +41,8 @@ public class TableSynchronizeTask {
 	}
     /**
      * order表同步到主库，半夜三点执行
+     * //    @Scheduled(cron = "0 0 0,3 * * ?")
      */
-//    @Scheduled(cron = "0 0 0,3 * * ?")
     public void orderSynchronize() {
         log.info("【同步任务】---订单数据同步到主库");
         Result<ShopRecord> result = saas.shop.getAll();

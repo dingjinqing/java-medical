@@ -223,36 +223,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
         //order before data ready
         try {
-            //初始化paramGoods
-            initParamGoods(param);
-            //init
-            orderBo = initCreateOrderBo(param);
-            //校验
-            checkCreateOrderBo(orderBo, param);
-            //设置规格和商品信息、基础校验规格与商品
-            processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
-            //TODO 营销相关 活动校验或活动参数初始化
-            marketProcessorFactory.processInitCheckedOrderCreate(param);
-            //下架商品校验
-            checkGoodsIsOnSale(param.getGoods());
-            if(null != param.getActivityId() && null != param.getActivityType()) {
-                //活动生成ordergodos;
-                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
-            }else {
-                //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
-                //初始化订单商品
-                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId());
-            }
-            //生成订单商品后校验必填项
-            checkMust(orderGoodsBos, param);
-
-            orderBo.setOrderGoodsBo(orderGoodsBos);
-
-            //处理orderBeforeVo
-            orderBeforeVo.setAddress(orderBo.getAddress());
-            processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
-            //校验
-            checkOrder(orderBeforeVo, orderBo, param);
+            orderBo = processPrepairCreateOrder(param, orderBeforeVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), e.getErrorResult(),  e.getCodeParam());
         }
@@ -324,6 +295,41 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
         }
+    }
+
+    private CreateOrderBo processPrepairCreateOrder(CreateParam param, OrderBeforeVo orderBeforeVo) throws MpException {
+        CreateOrderBo orderBo;
+        List<OrderGoodsBo> orderGoodsBos;//初始化paramGoods
+        initParamGoods(param);
+        //init
+        orderBo = initCreateOrderBo(param);
+        //校验
+        checkCreateOrderBo(orderBo, param);
+        //设置规格和商品信息、基础校验规格与商品
+        processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
+        //TODO 营销相关 活动校验或活动参数初始化
+        marketProcessorFactory.processInitCheckedOrderCreate(param);
+        //下架商品校验
+        checkGoodsIsOnSale(param.getGoods());
+        if(null != param.getActivityId() && null != param.getActivityType()) {
+            //活动生成ordergodos;
+            orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
+        }else {
+            //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
+            //初始化订单商品
+            orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId());
+        }
+        //生成订单商品后校验必填项
+        checkMust(orderGoodsBos, param);
+
+        orderBo.setOrderGoodsBo(orderGoodsBos);
+
+        //处理orderBeforeVo
+        orderBeforeVo.setAddress(orderBo.getAddress());
+        processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
+        //校验
+        checkOrder(orderBeforeVo, orderBo, param);
+        return orderBo;
     }
 
     private OrderBeforeVo init(OrderBeforeParam param) throws MpException {
@@ -620,7 +626,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setTerm(calculate.getTermsofservice());
         //处方信息
         vo.setPrescriptionList(param.getPrescriptionList());
+        vo.setOrderMedicalType(param.getOrderMedicalType());
         vo.setCheckPrescriptionStatus(param.getCheckPrescriptionStatus());
+        vo.setOrderAuditType(param.getOrderAuditType());
         vo.setPatientInfo(param.getPatientInfo());
     }
 
@@ -1045,16 +1053,23 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         /**
          * 校验药品
          */
-        checkMedcail(param);
+        checkMedcail(param,bo);
     }
 
     /**
      * 校验药品
+     * -审核订单得处方药品必须关联处方
      * @param param
+     * @param bo
      */
-    private void checkMedcail(CreateParam param) throws MpException {
-        if (PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS.equals(param.getCheckPrescriptionStatus())){
-            throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+    private void checkMedcail(CreateParam param, CreateOrderBo bo) throws MpException {
+        //校验审核通过后处方药的关联处方
+        if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
+            for (OrderGoodsBo goods : bo.getOrderGoodsBo()) {
+                if (goods.getIsRx().equals(BaseConstant.YES) && goods.getPrescriptionInfo() == null) {
+                    throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+                }
+            }
         }
     }
 
@@ -1118,10 +1133,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 } else {
                     logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
                     order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
-                    logger().info("订单支付成功->待审核状态");
-                    if (!param.getCheckPrescriptionStatus().equals(PrescriptionConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
+                    if (param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)) {
+                        logger().info("订单支付成功->待审核状态");
+                        //1审核
                         order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
-                        uploadPrescriptionService.uploadPrescription(param,orderBo,order);
+                    }else if (param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                        logger().info("订单支付成功->待开方状态");
+                        //开方
+                        order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
                     }
                 }
                 order.setPayTime(currentTime);

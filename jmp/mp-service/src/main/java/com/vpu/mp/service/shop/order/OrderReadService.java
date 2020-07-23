@@ -15,6 +15,7 @@ import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
@@ -61,14 +62,15 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFailModel;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOrderVo;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsVo;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawInfoByOrderVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawInfoByOsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderCenter;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
@@ -226,6 +228,8 @@ public class OrderReadService extends ShopBaseService {
     private UserCardService userCard;
     @Autowired
     private OrderRefundRecordService orderRefundRecord;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
 	/**
 	 * 订单查询
 	 * @param param
@@ -364,16 +368,8 @@ public class OrderReadService extends ShopBaseService {
 		//查询订单订单是否存在退款中订单
 		Map<Integer, Integer> returningCount = returnOrder.getOrderCount(orderIds.toArray(new Integer[orderIds.size()]), OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		//构造order
-		for (OrderInfoVo vo : orders) {
-			vo.setShippingList(shippingByOrderSn.get(vo.getOrderSn()));
-			vo.setRefundList(refundByOrderSn.get(vo.getOrderSn()));
-			vo.setGoods(goods.get(vo.getOrderId()));
-			//设置订单操作
-			OrderOperationJudgment.operationSet(vo,returningCount.get(vo.getOrderId()),ship.canBeShipped(vo.getOrderSn()));
-			//手动退款退货按钮显示
-            showManualReturn(vo);
-		}
-		//设置订单支付方式（无子单）
+        buildOrders(orders, goods, shippingByOrderSn, refundByOrderSn, returningCount);
+        //设置订单支付方式（无子单）
 		orderInfo.setPayCodeList(mainOrder);
 		//设置核销员
 		if(mainOrder.getVerifierId() > 0) {
@@ -395,6 +391,18 @@ public class OrderReadService extends ShopBaseService {
         mainOrder.setInsteadPayInfo(subOrderService.paymentDetails(mainOrder.getOrderSn()));
 		return mainOrder;
 	}
+
+    private void buildOrders(List<OrderInfoVo> orders, Map<Integer, List<OrderGoodsVo>> goods, Map<String, List<ShippingInfoVo>> shippingByOrderSn, Map<String, List<OrderConciseRefundInfoVo>> refundByOrderSn, Map<Integer, Integer> returningCount) {
+        for (OrderInfoVo vo : orders) {
+            vo.setShippingList(shippingByOrderSn.get(vo.getOrderSn()));
+            vo.setRefundList(refundByOrderSn.get(vo.getOrderSn()));
+            vo.setGoods(goods.get(vo.getOrderId()));
+            //设置订单操作
+            OrderOperationJudgment.operationSet(vo,returningCount.get(vo.getOrderId()),ship.canBeShipped(vo.getOrderSn()));
+            //手动退款退货按钮显示
+showManualReturn(vo);
+        }
+    }
 
     /**
      * 售后中心退款订单显示订单简略信息
@@ -725,17 +733,23 @@ public class OrderReadService extends ShopBaseService {
         order.setShowMall(recommendService.goodsMallService.check("1"));
         //积分兑换商品价格小程序端特殊展示
         editShowGoodsPrice(order);
-        //关联的处方
-		goodsList.forEach(orderGoods->{
-
-		});
-
-
+		//处方信息
+		getPrescriptionInfo(order, goodsList);
 		return order;
-
 	}
 
-    private void editShowGoodsPrice(OrderListMpVo order) {
+	/**
+	 * 处方信息
+	 */
+	private void getPrescriptionInfo(OrderInfoMpVo order, List<OrderGoodsMpVo> goodsList) {
+		Set<String> prescriptionCodeSet = goodsList.stream().map(OrderGoodsMpVo::getPrescriptionCode).collect(Collectors.toSet());
+		if (!prescriptionCodeSet.isEmpty()){
+			List<PrescriptionVo> prescriptionVos = prescriptionDao.listPrescriptionList(prescriptionCodeSet);
+			order.setPrescriptionList(prescriptionVos);
+		}
+	}
+
+	private void editShowGoodsPrice(OrderListMpVo order) {
         if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_INTEGRAL)) {
             order.getGoods().forEach(x-> {
                 if(x.getIsGift().equals((int) NO)) {
@@ -1545,155 +1559,11 @@ public class OrderReadService extends ShopBaseService {
                     order.setIsNew(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_NEW_USER ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
             }
-            if(columns.contains(OrderExportVo.PAY_NAMES)){
-                //支付方式
-                StringBuffer payNames = new StringBuffer();
-                if(order.getIsCod() > 0){
-                    //货到付款
-                    payNames.append(",");
-                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_COD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                }
-                if(order.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0){
-                    //微信支付
-                    payNames.append(",");
-                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_WXPAY ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                }
-                if(order.getUseAccount().compareTo(BigDecimal.ZERO) > 0){
-                    //余额支付
-                    payNames.append(",");
-                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_BALANCE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                }
-                if(order.getScoreDiscount().compareTo(BigDecimal.ZERO) > 0){
-                    //积分支付
-                    payNames.append(",");
-                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_SCORE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                }
-                if(order.getMemberCardReduce().compareTo(BigDecimal.ZERO) > 0){
-                    //会员卡支付
-                    payNames.append(",");
-                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_MEMBER_CARD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                }
-                if(payNames.length() > 0){
-                    payNames.deleteCharAt(0);
-                }
-                order.setPayNames(payNames.toString());
-            }
-            if(columns.contains(OrderExportVo.PRD_COST_PRICE)){
-                //成本价
-                order.setPrdCostPrice(saas.getShopApp(getShopId()).goods.goodsPrice.getCostPrice(order.getProductId()));
-            }
-            if(columns.contains(OrderExportVo.PRD_WEIGHT)){
-                //规格重量（暂时取商品重量）
-                order.setPrdWeight(saas.getShopApp(getShopId()).goods.getGoodsWeightById(order.getGoodsId()));
-            }
-            if(columns.contains(OrderExportVo.ORDER_STATUS_NAME)){
-                //订单状态
-                order.setOrderStatusName(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
-            }
-            if(order.getPartShipFlag() == OrderConstant.PART_SHIP){
-                //部分发货
-                BaseShippingInfoVo shipping = shipInfo.getOrderGoodsShipping(order.getOrderSn(),order.getRecId());
-                if(shipping != null){
-                    if(shipping.getConfirmTime() != null){
-                        order.setOrderStatusName(OrderConstant.getOrderStatusName(OrderConstant.ORDER_RECEIVED,lang));
-                    }else{
-                        order.setOrderStatusName(OrderConstant.getOrderStatusName(OrderConstant.ORDER_WAIT_DELIVERY,lang));
-                    }
-                    order.setShippingTime(shipping.getShippingTime());
-                    order.setShippingName(shipping.getShippingName());
-                    order.setShippingNo(shipping.getShippingNo());
-                }else{
-                    order.setShippingTime(null);
-                    order.setShippingName("");
-                    order.setShippingNo("");
-                }
-            }
-            if(columns.contains(OrderExportVo.RETURN_SHIPPING_FEE)){
-                //退运费
-                order.setReturnShippingFee(returnOrder.getReturnShippingFee(order.getOrderSn()));
-            }
-            if(columns.contains(OrderExportVo.RETURN_TIME) || columns.contains(OrderExportVo.RETURN_FINISH_TIME) || columns.contains(OrderExportVo.RETURN_ORDER_MONEY)){
-                //退货退款信息
-                OrderConciseRefundInfoVo returnInfo = returnOrderGoods.getOrderGoodsReturnInfo(order.getRecId());
-                if(returnInfo != null){
-                    order.setReturnTime(OrderConstant.RT_ONLY_MONEY == returnInfo.getReturnType() ? returnInfo.getApplyTime() : returnInfo.getShippingOrRefundTime());
-                    order.setReturnFinishTime(returnInfo.getRefundSuccessTime());
-                    order.setReturnOrderMoney(returnOrderGoods.getReturnGoodsMoney(order.getRecId()));
-                }
-            }
-            if(columns.contains(OrderExportVo.IS_COD)){
-                //是否货到付款
-                order.setIsCodString(OrderConstant.IS_COD_YES.equals(order.getIsCod()) ? Util.translateMessage(lang, JsonResultMessage.YES ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL) : Util.translateMessage(lang, JsonResultMessage.NO ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-            }
-            if(columns.contains(OrderExportVo.SOURCE)){
-                //商品来源
-                GoodsRecord goods= saas.getShopApp(getShopId()).goods.getGoodsById(order.getGoodsId()).get();
-                order.setSource(goods.getSource() > 0 ? Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_GOODS_SOURCE_SELF_OPERATED ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL) : Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_GOODS_SOURCE_PLATFORM ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-            }
-            if(columns.contains(OrderExportVo.CUSTOM)){
-                //下单必填信息
-                OrderMustVo orderMustVo = orderMust.getOrderMustByOrderSn(order.getOrderSn());
-                if(orderMustVo != null){
-                    orderMustVo.setLang(lang);
-                    order.setCustom(orderMustVo.toString());
-                }
-            }
-            if(columns.contains(OrderExportVo.USER_SOURCE)){
-                //下单用户来源
-                UserRecord userRecord = user.getUserByUserId(order.getUserId());
-                if(userRecord != null){
-                    MemberInfoVo memberInfo = userRecord.into(MemberInfoVo.class);
-                    order.setUserSourceString(saas.getShopApp(getShopId()).member.getSourceName(lang,memberInfo));
-                }
-            }
-            if(columns.contains(OrderExportVo.DELIVER_TYPE_NAME)){
-                //配送类型
-                switch (order.getDeliverType()){
-                    case OrderConstant.DELIVER_TYPE_COURIER:
-                        order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_DELIVER_TYPE_COURIER ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                        break;
-                    case OrderConstant.DELIVER_TYPE_SELF:
-                        order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_DELIVER_TYPE_SELF ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                        break;
-                    case OrderConstant.CITY_EXPRESS_SERVICE:
-                        order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_CITY_EXPRESS_SERVICE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                        break;
-                    default:
-                }
-            }
-            if(columns.contains(OrderExportVo.USER_TAG)){
-                //用户标签
-                List<TagVo> tagList = saas.getShopApp(getShopId()).member.getTagForMember(order.getUserId());
-                StringBuffer tags = new StringBuffer();
-                for(TagVo tag : tagList){
-                    tags.append(tag.getTagName()).append(";");
-                }
-                order.setUserTag(tags.toString());
-            }
-            if(columns.contains(OrderExportVo.RETURN_TIME)){
-                //退款时间
-                ReturnOrderGoodsRecord returnOrderGoodsRecord = returnOrderGoods.getByRecId(order.getRecId());
-                if(returnOrderGoodsRecord != null){
-                    order.setReturnTime(returnOrderGoodsRecord.getCreateTime());
-                    order.setReturnOrderMoney(returnOrderGoodsRecord.getReturnMoney());
-                }
-            }
-            if(columns.contains(OrderExportVo.SHIPPING_NAME)){
-                //发货时间
-                if(order.getShippingId() != null && order.getShippingId() > 0){
-                    order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
-                }
-            }
-            if(columns.contains(OrderExportVo.REBATE)) {
-                //返利金额，最多有两级
-                Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(), order.getRecId());
-                if (orderRebate.size() == 2) {
-                    order.setRebateLevelOne(orderRebate.get(0).getRebateMoney());
-                    order.setRebateLevelTwo(orderRebate.get(1).getRebateMoney());
-                } else if (orderRebate.size() == 1) {
-                    order.setRebateLevelOne(orderRebate.get(0).getRebateMoney());
-                }
-            }
+            processPayName(columns, lang, order);
+
+            processOrderAndGoods(columns, lang, order);
+
+            processOther(columns, lang, order);
         }
 
         //返利金额列特殊处理
@@ -1708,7 +1578,166 @@ public class OrderReadService extends ShopBaseService {
         excelWriter.writeModelList(orderList, OrderExportVo.class,columns);
         return workbook;
     }
-	/**
+
+    private void processOther(List<String> columns, String lang, OrderExportVo order) {
+        if(columns.contains(OrderExportVo.CUSTOM)){
+            //下单必填信息
+            OrderMustVo orderMustVo = orderMust.getOrderMustByOrderSn(order.getOrderSn());
+            if(orderMustVo != null){
+                orderMustVo.setLang(lang);
+                order.setCustom(orderMustVo.toString());
+            }
+        }
+        if(columns.contains(OrderExportVo.USER_SOURCE)){
+            //下单用户来源
+            UserRecord userRecord = user.getUserByUserId(order.getUserId());
+            if(userRecord != null){
+                MemberInfoVo memberInfo = userRecord.into(MemberInfoVo.class);
+                order.setUserSourceString(saas.getShopApp(getShopId()).member.getSourceName(lang,memberInfo));
+            }
+        }
+        if(columns.contains(OrderExportVo.DELIVER_TYPE_NAME)){
+            //配送类型
+            switch (order.getDeliverType()){
+                case OrderConstant.DELIVER_TYPE_COURIER:
+                    order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_DELIVER_TYPE_COURIER ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    break;
+                case OrderConstant.DELIVER_TYPE_SELF:
+                    order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_DELIVER_TYPE_SELF ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    break;
+                case OrderConstant.CITY_EXPRESS_SERVICE:
+                    order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_CITY_EXPRESS_SERVICE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                    break;
+                default:
+            }
+        }
+        if(columns.contains(OrderExportVo.USER_TAG)){
+            //用户标签
+            List<TagVo> tagList = saas.getShopApp(getShopId()).member.getTagForMember(order.getUserId());
+            StringBuffer tags = new StringBuffer();
+            for(TagVo tag : tagList){
+                tags.append(tag.getTagName()).append(";");
+            }
+            order.setUserTag(tags.toString());
+        }
+        if(columns.contains(OrderExportVo.RETURN_TIME)){
+            //退款时间
+            ReturnOrderGoodsRecord returnOrderGoodsRecord = returnOrderGoods.getByRecId(order.getRecId());
+            if(returnOrderGoodsRecord != null){
+                order.setReturnTime(returnOrderGoodsRecord.getCreateTime());
+                order.setReturnOrderMoney(returnOrderGoodsRecord.getReturnMoney());
+            }
+        }
+        if(columns.contains(OrderExportVo.SHIPPING_NAME)){
+            //发货时间
+            if(order.getShippingId() != null && order.getShippingId() > 0){
+                order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
+            }
+        }
+        if(columns.contains(OrderExportVo.REBATE)) {
+            //返利金额，最多有两级
+            Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(), order.getRecId());
+            if (orderRebate.size() == 2) {
+                order.setRebateLevelOne(orderRebate.get(0).getRebateMoney());
+                order.setRebateLevelTwo(orderRebate.get(1).getRebateMoney());
+            } else if (orderRebate.size() == 1) {
+                order.setRebateLevelOne(orderRebate.get(0).getRebateMoney());
+            }
+        }
+    }
+
+    private void processOrderAndGoods(List<String> columns, String lang, OrderExportVo order) {
+        if(columns.contains(OrderExportVo.PRD_COST_PRICE)){
+            //成本价
+            order.setPrdCostPrice(saas.getShopApp(getShopId()).goods.goodsPrice.getCostPrice(order.getProductId()));
+        }
+        if(columns.contains(OrderExportVo.PRD_WEIGHT)){
+            //规格重量（暂时取商品重量）
+            order.setPrdWeight(saas.getShopApp(getShopId()).goods.getGoodsWeightById(order.getGoodsId()));
+        }
+        if(columns.contains(OrderExportVo.ORDER_STATUS_NAME)){
+            //订单状态
+            order.setOrderStatusName(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
+        }
+        if(order.getPartShipFlag() == OrderConstant.PART_SHIP){
+            //部分发货
+            BaseShippingInfoVo shipping = shipInfo.getOrderGoodsShipping(order.getOrderSn(),order.getRecId());
+            if(shipping != null){
+                if(shipping.getConfirmTime() != null){
+                    order.setOrderStatusName(OrderConstant.getOrderStatusName(OrderConstant.ORDER_RECEIVED,lang));
+                }else{
+                    order.setOrderStatusName(OrderConstant.getOrderStatusName(OrderConstant.ORDER_WAIT_DELIVERY,lang));
+                }
+                order.setShippingTime(shipping.getShippingTime());
+                order.setShippingName(shipping.getShippingName());
+                order.setShippingNo(shipping.getShippingNo());
+            }else{
+                order.setShippingTime(null);
+                order.setShippingName("");
+                order.setShippingNo("");
+            }
+        }
+        if(columns.contains(OrderExportVo.RETURN_SHIPPING_FEE)){
+            //退运费
+            order.setReturnShippingFee(returnOrder.getReturnShippingFee(order.getOrderSn()));
+        }
+        if(columns.contains(OrderExportVo.RETURN_TIME) || columns.contains(OrderExportVo.RETURN_FINISH_TIME) || columns.contains(OrderExportVo.RETURN_ORDER_MONEY)){
+            //退货退款信息
+            OrderConciseRefundInfoVo returnInfo = returnOrderGoods.getOrderGoodsReturnInfo(order.getRecId());
+            if(returnInfo != null){
+                order.setReturnTime(OrderConstant.RT_ONLY_MONEY == returnInfo.getReturnType() ? returnInfo.getApplyTime() : returnInfo.getShippingOrRefundTime());
+                order.setReturnFinishTime(returnInfo.getRefundSuccessTime());
+                order.setReturnOrderMoney(returnOrderGoods.getReturnGoodsMoney(order.getRecId()));
+            }
+        }
+        if(columns.contains(OrderExportVo.IS_COD)){
+            //是否货到付款
+            order.setIsCodString(OrderConstant.IS_COD_YES.equals(order.getIsCod()) ? Util.translateMessage(lang, JsonResultMessage.YES ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL) : Util.translateMessage(lang, JsonResultMessage.NO ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+        }
+        if(columns.contains(OrderExportVo.SOURCE)){
+            //商品来源
+            GoodsRecord goods= saas.getShopApp(getShopId()).goods.getGoodsById(order.getGoodsId()).get();
+            order.setSource(goods.getSource() > 0 ? Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_GOODS_SOURCE_SELF_OPERATED ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL) : Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_GOODS_SOURCE_PLATFORM ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+        }
+    }
+
+    private void processPayName(List<String> columns, String lang, OrderExportVo order) {
+        if(columns.contains(OrderExportVo.PAY_NAMES)){
+            //支付方式
+            StringBuffer payNames = new StringBuffer();
+            if(order.getIsCod() > 0){
+                //货到付款
+                payNames.append(",");
+                payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_COD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+            }
+            if(order.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0){
+                //微信支付
+                payNames.append(",");
+                payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_WXPAY ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+            }
+            if(order.getUseAccount().compareTo(BigDecimal.ZERO) > 0){
+                //余额支付
+                payNames.append(",");
+                payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_BALANCE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+            }
+            if(order.getScoreDiscount().compareTo(BigDecimal.ZERO) > 0){
+                //积分支付
+                payNames.append(",");
+                payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_SCORE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+            }
+            if(order.getMemberCardReduce().compareTo(BigDecimal.ZERO) > 0){
+                //会员卡支付
+                payNames.append(",");
+                payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_MEMBER_CARD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+            }
+            if(payNames.length() > 0){
+                payNames.deleteCharAt(0);
+            }
+            order.setPayNames(payNames.toString());
+        }
+    }
+
+    /**
 	 *  购买商品记录(三个月内)
 	 * @param userId  用户ID
 	 * @param keyWord 关键字

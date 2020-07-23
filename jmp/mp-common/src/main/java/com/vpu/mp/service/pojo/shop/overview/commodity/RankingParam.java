@@ -16,10 +16,10 @@ public class RankingParam {
     private Date startTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date endTime;
-    // 0天，1月，2年 3周
+    /**   0天，1月，2年 3周 */
     private Byte unit;
 
-    // 0 商品销售额；1 商品销售订单
+    /**   0 商品销售额；1 商品销售订单 */
     private Byte flag;
 
     /**

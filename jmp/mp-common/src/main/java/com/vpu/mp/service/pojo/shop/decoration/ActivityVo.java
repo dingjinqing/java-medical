@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * @author changle
+ */
 @Data
 public class ActivityVo {
 	public Integer id;

@@ -11,7 +11,7 @@
           <view class='top_title' wx:if='{{m.hide_name != 0}}'>
             <view class="{{(item.activityLabelData.length)?'van-ellipsis':'van-two-ellipsis'}}">{{item.goodsName}}</view>
           </view>
-           <view class='title_label_container' style="bottom:54rpx">
+           <view class='title_label_container' wx:if="{{!item.activityLabelData.length}}">
               <view style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}" class='title_label' wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
             {{itemC.text}}</view>
             </view>

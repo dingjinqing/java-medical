@@ -138,14 +138,19 @@
         "prescriptioninfo/prescriptioninfo",
         "medicalrecordinfo/medicalrecordinfo",
         "medicalrecordlist/medicalrecordlist",
-        "prescriptionsheet/prescriptionsheet"
+        "prescriptionsheet/prescriptionsheet",
+        "repurchaselist/repurchaselist",
+        "patientinfo/patientinfo",
+        "messagelist/messagelist"
       ]
     },
     {
       "root": "pages2",
       "pages": [
         "doctorConsultation/doctorConsultation",
-        "allDepartment/allDepartment"
+        "allDepartment/allDepartment",
+        "operatePrescriptionList/operatePrescriptionList",
+        "inquiryList/inquiryList"
       ]
     }
   ],

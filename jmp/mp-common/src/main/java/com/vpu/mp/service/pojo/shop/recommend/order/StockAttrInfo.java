@@ -17,8 +17,8 @@ import lombok.Data;
 public class StockAttrInfo {
 
 	@JsonProperty(value = "attr_name")
-    private AttrName attr_name;
+    private AttrName attrName;
 	
 	@JsonProperty(value = "attr_value")
-    private AttrValue attr_value;
+    private AttrValue attrValue;
 }

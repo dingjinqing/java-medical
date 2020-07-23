@@ -7,11 +7,18 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.DoctorDo;
+import com.vpu.mp.common.pojo.shop.table.UserDo;
+import com.vpu.mp.dao.foundation.transactional.DbTransactional;
+import com.vpu.mp.dao.foundation.transactional.DbType;
+import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.*;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author chenjie
+ */
 @Service
 public class DoctorService extends ShopBaseService {
     @Autowired
@@ -33,6 +43,8 @@ public class DoctorService extends ShopBaseService {
     public DepartmentService departmentService;
     @Autowired
     public TitleService titleService;
+    @Autowired
+    public UserDao userDao;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -169,4 +181,40 @@ public class DoctorService extends ShopBaseService {
         return flag;
     }
 
+    /**
+     * @Description
+     * @Author 赵晓东
+     * @Create 2020-07-22 14:51:11
+     * 医师认证
+     */
+    /**
+     * 医师认证
+     * @param doctorAuthParam 当前用户姓名、手机号、医师医院唯一编码
+     * @return 验证信息
+     */
+    @DbTransactional(type = DbType.SHOP_DB)
+    public String doctorAuth(DoctorAuthParam doctorAuthParam){
+        DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
+        if (doctorDo != null){
+            UserDo userDo = userDao.updateDoctorAuth(doctorAuthParam.getName(), doctorAuthParam.getMobile());
+            doctorDao.updateUserId(userDo);
+            return "验证成功";
+        } else {
+            return "验证失败";
+        }
+    }
+
+    public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
+        List<Integer> doctorDepartments = doctorDepartmentCoupleDao.listHistoryDoctorDepartment(doctorParam);
+        List<DoctorConsultationOneParam> historyDoctors = doctorDepartmentCoupleDao.listHistoryDoctor(doctorDepartments);
+        if (historyDoctors.size() < 10) {
+            List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorDepartments, 10 - historyDoctors.size());
+            historyDoctors.addAll(historyDoctorMore);
+        }
+        return historyDoctors;
+    }
+
+    public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
+        return doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
+    }
 }

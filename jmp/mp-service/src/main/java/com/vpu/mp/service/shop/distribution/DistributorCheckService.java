@@ -182,12 +182,12 @@ public class DistributorCheckService extends ShopBaseService{
     /**
      * 设置审核更新数据
      * @param userId 申请人id
-     * @param GroupId 分组id
+     * @param groupId 分组id
      */
-    private void updateApplyGroup(Integer userId,Integer GroupId){
+    private void updateApplyGroup(Integer userId,Integer groupId){
         db().update(USER)
             .set(USER.IS_DISTRIBUTOR, (byte)1)
-            .set(USER.INVITE_GROUP,GroupId)
+            .set(USER.INVITE_GROUP,groupId)
             .where(USER.USER_ID.eq(userId))
             .execute();
     }

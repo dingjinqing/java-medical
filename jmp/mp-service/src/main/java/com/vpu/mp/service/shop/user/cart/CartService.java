@@ -142,7 +142,8 @@ public class CartService extends ShopBaseService {
                 }
             }
         });
-        if (CollectionUtils.isNotEmpty(goodsIds) || (activityId != null && activityId > 0)) {
+        boolean hasActivityGoods = CollectionUtils.isNotEmpty(goodsIds) || (activityId != null && activityId > 0);
+        if (hasActivityGoods) {
             cartBo.setCartGoodsList(activityGoods);
         }
         return cartBo;

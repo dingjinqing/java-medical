@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.form.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,15 +21,18 @@ public class FormModulesBo {
     /**
      * 标号
      */
-    private String cur_idx;
+    @JsonProperty("cur_idx")
+    private String curIdx;
     /**
      * 模块名
      */
-    private String module_name;
+    @JsonProperty("module_name")
+    private String moduleName;
     /**
      * 是否点击确认
      */
-    private Byte ok_ajax;
+    @JsonProperty("ok_ajax")
+    private Byte okAjax;
     /**
      * 条件验证
      */
@@ -36,7 +40,8 @@ public class FormModulesBo {
     /**
      * 标题文字input值
      */
-    private String form_title;
+    @JsonProperty("form_title")
+    private String formTitle;
     /**
      * 提示语input值
      */
@@ -44,56 +49,71 @@ public class FormModulesBo {
     /**
      * 展现形式radio
      */
-    private Byte image_type;
+    @JsonProperty("image_type")
+    private Byte imageType;
     /**
      *展现形式
      */
-    private Byte show_types;
-    private Byte show_type;
+    @JsonProperty("show_types")
+    private Byte showTypes;
+
+    @JsonProperty("show_type")
+    private Byte showType;
     /**
      * 展现形式
      */
-    private Integer with_detail;
+    @JsonProperty("with_detail")
+    private Integer withDetail;
     /**
      * 图标图片地址
      */
-    private String name_url;
+    @JsonProperty("name_url")
+    private String nameUrl;
     /**
      * 校验最小值
      */
-    private Integer least_number;
+    @JsonProperty("least_number")
+    private Integer leastNumber;
     /**
      * 校验最大值
      */
-    private Integer most_number;
+    @JsonProperty("most_number")
+    private Integer mostNumber;
     /**
      * 图片校验 最多上传六个
      */
-    private Integer max_number;
+    @JsonProperty("max_number")
+    private Integer maxNumber;
     /**
      * 宽度
      */
-    private Integer width_size;
+    @JsonProperty("max_number")
+    private Integer widthSize;
     /**
      * 图片 大小校验
      */
-    private Integer size_types;
+    @JsonProperty("size_types")
+    private Integer sizeTypes;
     /**
      * 高度
      */
-    private Integer height_size;
+    @JsonProperty("height_size")
+    private Integer heightSize;
     /**
      * 轮播图 图片地址
      */
-    private List<FormImgItem> img_items;
+    @JsonProperty("img_items")
+    private List<FormImgItem> imgItems;
     /**
      * 预览原图
      */
-    private Byte is_preview;
+    @JsonProperty("is_preview")
+    private Byte isPreview;
     /**
      * 富文本内容
      */
-    private String rich_text;
+    @JsonProperty("rich_text")
+    private String richText;
     /**
      * 广告 文本 标题
      */
@@ -101,20 +121,40 @@ public class FormModulesBo {
     /**
      * 广告 连接
      */
-    private String title_link;
+    @JsonProperty("title_link")
+    private String titleLink;
     /**
      * 广告 图片
      */
-    private String img_url;
-    private Integer fonts_size;
-    private String fonts_color;
-    private String bgs_color;
-    private String show_pos;
-    private String blank_height;
-    private String sps_icon;
-    private Byte align_type;
+    @JsonProperty("img_url")
+    private String imgUrl;
+
+    @JsonProperty("fonts_size")
+    private Integer fontsSize;
+
+    @JsonProperty("fonts_color")
+    private String fontsColor;
+
+    @JsonProperty("bgs_color")
+    private String bgsColor;
+
+    @JsonProperty("show_pos")
+    private String showPos;
+
+    @JsonProperty("blank_height")
+    private String blankHeight;
+
+    @JsonProperty("sps_icon")
+    private String spsIcon;
+
+    @JsonProperty("align_type")
+    private Byte alignType;
+
     private String color;
-    private String background_color;
+
+    @JsonProperty("background_color")
+    private String backgroundColor;
+
     /**
      * 选择项
      */

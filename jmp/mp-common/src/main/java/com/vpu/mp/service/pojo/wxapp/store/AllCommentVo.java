@@ -16,10 +16,10 @@ public class AllCommentVo {
 
     private List<Comment> comment;
 
-    //评价的数量，4条数据，顺序是全部、好评、中评、差评
+    /** 评价的数量，4条数据，顺序是全部、好评、中评、差评 */
     private int[] numbers;
 
-    //好评、中评、差评 的比率
+    /** 好评、中评、差评 的比率 */
     private double[] ratio;
 
     @Setter

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 1979913041;
+    private static final long serialVersionUID = 556629616;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.id</code>. 主键id
@@ -478,31 +478,59 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_prescription.is_used</code>. 是否使用过 0未使用  1已使用 ，默认0
+     */
+    public void setIsUsed(Byte value) {
+        set(32, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription.is_used</code>. 是否使用过 0未使用  1已使用 ，默认0
+     */
+    public Byte getIsUsed() {
+        return (Byte) get(32);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效   0有效 1失效，默认0
+     */
+    public void setIsValid(Byte value) {
+        set(33, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效   0有效 1失效，默认0
+     */
+    public Byte getIsValid() {
+        return (Byte) get(33);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_prescription.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(32, value);
+        set(34, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(32);
+        return (Timestamp) get(34);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(33, value);
+        set(35, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(33);
+        return (Timestamp) get(35);
     }
 
     // -------------------------------------------------------------------------
@@ -531,7 +559,7 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     /**
      * Create a detached, initialised PrescriptionRecord
      */
-    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, Integer patientId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, Byte source, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, Integer patientId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, Byte source, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Timestamp createTime, Timestamp updateTime) {
         super(Prescription.PRESCRIPTION);
 
         set(0, id);
@@ -566,7 +594,9 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
         set(29, prescriptionCreateTime);
         set(30, prescriptionExpireTime);
         set(31, isDelete);
-        set(32, createTime);
-        set(33, updateTime);
+        set(32, isUsed);
+        set(33, isValid);
+        set(34, createTime);
+        set(35, updateTime);
     }
 }

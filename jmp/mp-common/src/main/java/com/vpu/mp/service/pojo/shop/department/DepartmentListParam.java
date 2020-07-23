@@ -13,6 +13,7 @@ public class DepartmentListParam {
     private Integer nav;
     private Integer currentPage;
     private Integer pageRows;
+    private String keyword;
 
     @Override
     public String toString() {
@@ -20,6 +21,7 @@ public class DepartmentListParam {
             "nav=" + nav +
             ", currentPage=" + currentPage +
             ", pageRows=" + pageRows +
+            ", keyword='" + keyword + '\'' +
             '}';
     }
 }

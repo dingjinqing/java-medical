@@ -3,6 +3,9 @@ package com.vpu.mp.service.pojo.shop.user.message;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * @author luguangyao
+ */
 @Data
 @Builder
 public class MaTemplateData {
