@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.order.Inquiry;
+package com.vpu.mp.service.pojo.wxapp.order.inquiry;
 
 /**
  * @author yangpengcheng

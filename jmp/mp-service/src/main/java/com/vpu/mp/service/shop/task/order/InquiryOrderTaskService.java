@@ -5,20 +5,16 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
-import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /*

@@ -4,15 +4,13 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.validator.ListValid;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderConstant;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
