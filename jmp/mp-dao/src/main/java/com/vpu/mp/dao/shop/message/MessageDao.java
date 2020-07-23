@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.message;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.Message;
@@ -54,18 +55,21 @@ public class MessageDao extends ShopBaseDao {
         //置顶消息
         List<UserMessageVo> userMessageVos = db().selectFrom(Message.MESSAGE)
             .where(Message.MESSAGE.MESSAGE_STATUS.eq((byte) 3)
-                .and(Message.MESSAGE.RECEIVER_ID.eq(userId)))
+                .and(Message.MESSAGE.RECEIVER_ID.eq(userId))
+                .and(Message.MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(UserMessageVo.class);
         //未读消息
         List<UserMessageVo> willMessages = db().selectFrom(Message.MESSAGE)
             .where(Message.MESSAGE.MESSAGE_STATUS.eq((byte) 1)
-                .and(Message.MESSAGE.RECEIVER_ID.eq(userId)))
+                .and(Message.MESSAGE.RECEIVER_ID.eq(userId))
+                .and(Message.MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(UserMessageVo.class);
         //已读消息
         List<UserMessageVo> alreadyMessages = db().selectFrom(Message.MESSAGE)
             .where(Message.MESSAGE.MESSAGE_STATUS.ne((byte) 1)
-                .and(Message.MESSAGE.RECEIVER_ID.eq(userId)))
+                .and(Message.MESSAGE.RECEIVER_ID.eq(userId))
                 .and(Message.MESSAGE.MESSAGE_STATUS.ne((byte) 3))
+                .and(Message.MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(UserMessageVo.class);
         list.addAll(userMessageVos);
         list.addAll(willMessages);

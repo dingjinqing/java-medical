@@ -16,7 +16,9 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.TxMapLbsConfig;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.dao.shop.message.MessageDao;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
+import com.vpu.mp.db.shop.tables.Message;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -26,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.config.SuspendWindowConfig;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.decorate.PageCfgVo;
 import com.vpu.mp.service.shop.config.SuspendWindowConfigService;
@@ -63,6 +66,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     private StorageConfig storageConfig;
     @Autowired
     private SuspendWindowConfigService suspendWindowConfigService;
+
+    @Autowired
+    private MessageDao messageDao;
 
     /**
      * 静态图API
@@ -581,6 +587,16 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             logger().error("装修页面保存格式错误：", e);
             return 0;
         }
+
+        //如果增加了系统公告
+        if (page.getNoticeContext() != null && !"".equals(page.getNoticeContext())) {
+            //添加消息至消息列表
+            UserMessageParam userMessageParam = new UserMessageParam();
+            userMessageParam.setMessageContent(page.getNoticeContext());
+            userMessageParam.setMessageType((byte) 0);
+            messageDao.addMessage(userMessageParam);
+        }
+
 
         //记录页面变化
         recordPageChange(page);
