@@ -40,13 +40,15 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+import static com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant.MODULE_NAME_PREFIX;
+import static com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant.MODULE_PAGE_CONFIG;
 
 /**
  * @author: 王兵兵
@@ -266,8 +268,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      */
     public Object processModuleForGet(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node)
         throws JsonParseException, JsonMappingException, IOException {
-        if (node.getKey().startsWith("c_")) {
-            String moduleName = node.getValue().get("module_name").asText();
+        if (node.getKey().startsWith(MODULE_NAME_PREFIX)) {
+            String moduleName = node.getValue().get(MODULE_PAGE_CONFIG).asText();
             switch (moduleName) {
                 case ModuleConstant.M_SCROLL_IMAGE:
                     return processScrollImageModule(objectMapper, node);

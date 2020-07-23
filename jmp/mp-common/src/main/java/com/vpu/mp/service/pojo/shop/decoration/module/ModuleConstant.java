@@ -181,5 +181,11 @@ public class ModuleConstant {
      * 我的病历模块
      */
     public static final String M_CASE_HISTORY = "m_case_history";
+
+    /**
+     * 装修模块参数
+     */
+    public static String MODULE_NAME_PREFIX = "c_";
+    public static String MODULE_PAGE_CONFIG = "page_cfg";
 	
 }
