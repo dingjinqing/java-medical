@@ -23,12 +23,14 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
 import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderOnParam;
 import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryToPayParam;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
+import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.patient.PatientService;
@@ -40,6 +42,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class InquiryOrderService extends ShopBaseService {
@@ -63,7 +67,8 @@ public class InquiryOrderService extends ShopBaseService {
     private TradesRecordService tradesRecord;
     @Autowired
     private InquiryOrderRefundListDao inquiryOrderRefundListDao;
-
+    @Autowired
+    private ImSessionService imSessionService;
     /*
      *问询订单列表
      */
@@ -74,28 +79,37 @@ public class InquiryOrderService extends ShopBaseService {
      *订单id获得订单
      */
     public InquiryOrderDo getByOrderId(Integer orderId){
-        InquiryOrderRecord record=inquiryOrderDao.getByOrderId(orderId);
-        InquiryOrderDo inquiryOrderDo=new InquiryOrderDo();
-        FieldsUtil.assign(record,inquiryOrderDo);
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(orderId);
         return inquiryOrderDo;
     }
     /*
     *订单号获得订单
      */
-    public InquiryOrderRecord getByOrderSn(String orderSn){
+    public InquiryOrderDo getByOrderSn(String orderSn){
         return inquiryOrderDao.getByOrderSn(orderSn);
     }
 
-    public void update(InquiryOrderOnParam param){
-        InquiryOrderRecord record=inquiryOrderDao.getByOrderId(param.getOrderId());
-        FieldsUtil.assign(param,record);
-        inquiryOrderDao.update(record);
+    /**
+     * 更改问诊状态为接诊中
+     * @param param
+     */
+    public void updateOrderReceiving(InquiryOrderOnParam param){
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(param.getOrderSn());
+        FieldsUtil.assign(param,inquiryOrderDo);
+        inquiryOrderDo.setOrderStatus(InquiryOrderConstant.ORDER_RECEIVING);
+        inquiryOrderDao.update(inquiryOrderDo);
+        //更新会话状态修改为进行中
+        imSessionService.updateSessionToGoingOn(param.getSessionId());
+    }
+    public void insert(InquiryOrderDo inquiryOrderDo){
+        int orderId=inquiryOrderDao.save(inquiryOrderDo);
+        inquiryOrderDo.setOrderId(orderId);
     }
 
-    public Result<InquiryOrderRecord> getCanceledToPaidCloseOrder(){
+    public List<InquiryOrderDo> getCanceledToPaidCloseOrder(){
         return inquiryOrderDao.getCanceledToPaidCloseOrder();
     }
-    public Result<InquiryOrderRecord> getCanceledToWaitingCloseOrder(){
+    public List<InquiryOrderDo> getCanceledToWaitingCloseOrder(){
         return inquiryOrderDao.getCanceledToWaitingCloseOrder();
     }
     /**
@@ -103,12 +117,17 @@ public class InquiryOrderService extends ShopBaseService {
      * @param
      * @return
      */
-    public void inquiryOrderFinish(InquiryOrderRecord order, PaymentRecordRecord paymentRecord) throws MpException {
+    public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord) throws MpException {
         logger().info("问诊订单-支付完成(回调)-开始");
         order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
         order.setPayTime(DateUtils.getLocalDateTime());
+        //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
+        //添加会话问诊
+        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
+        FieldsUtil.assign(order,imSessionNewParam);
+        imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
@@ -171,9 +190,9 @@ public class InquiryOrderService extends ShopBaseService {
      *退款
      */
     public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
-        InquiryOrderRecord record=inquiryOrderDao.getByOrderId(inquiryOrderOnParam.getOrderId());
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(inquiryOrderOnParam.getOrderId());
         try {
-            refundInquiryOrder(record);
+            refundInquiryOrder(inquiryOrderDo);
         } catch (MpException e) {
             JsonResult jsonResult=new JsonResult();
             jsonResult.result(null,JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER,null);
@@ -184,7 +203,7 @@ public class InquiryOrderService extends ShopBaseService {
     /*
     *退款调用
      */
-    public void refundInquiryOrder(InquiryOrderRecord order)throws MpException{
+    public void refundInquiryOrder(InquiryOrderDo order)throws MpException{
         boolean successFlag=true;
         if(InquiryOrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())){
             //退款流水号
@@ -209,6 +228,10 @@ public class InquiryOrderService extends ShopBaseService {
         order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
         order.setCancelledTime(DateUtils.getLocalDateTime());
         inquiryOrderDao.update(order);
+        //取消未接诊过期的会话
+        List<String> orderSnList=new ArrayList<>();
+        orderSnList.add(order.getOrderSn());
+        imSessionService.batchCancelSession(orderSnList);
         //交易记录
         tradesRecord.addRecord(order.getOrderAmount(),order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
     }

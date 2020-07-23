@@ -609,6 +609,7 @@ public class ShopApplication {
     /**
      * 问诊订单
      */
+    @Autowired
     public InquiryOrderService inquiryOrderService;
 
     /**

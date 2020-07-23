@@ -51,9 +51,7 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/inquiry/order/detail")
     public JsonResult payOrder(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
-        if(inquiryOrderOnParam.getOrderId()==null)
-            return fail(JsonResultCode.MEDICAL_GOODS_ID_IS_NULL);
-        InquiryOrderDo inquiryOrderDo= shop().inquiryOrderService.getByOrderId(inquiryOrderOnParam.getOrderId());
+        InquiryOrderDo inquiryOrderDo= shop().inquiryOrderService.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         return success(inquiryOrderDo);
     }
     /**
@@ -61,11 +59,10 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/inquiry/order/status/update")
     public JsonResult updateStatus(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
-        if(inquiryOrderOnParam.getOrderId()==null)
-            return fail(JsonResultCode.MEDICAL_GOODS_ID_IS_NULL);
-        shop().inquiryOrderService.update(inquiryOrderOnParam);
+        shop().inquiryOrderService.updateOrderReceiving(inquiryOrderOnParam);
         return success();
     }
+
 
 
 }

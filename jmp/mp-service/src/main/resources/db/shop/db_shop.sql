@@ -5023,7 +5023,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
  `doctor_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师名称',
  `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '科室id',
- `doctor_department_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师科室',
+ `department_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师科室',
  `patient_id` int(11) NOT NULL DEFAULT '0' COMMENT '患者id',
  `patient_mobile` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '患者手机号码',
  `patient_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '患者名称',

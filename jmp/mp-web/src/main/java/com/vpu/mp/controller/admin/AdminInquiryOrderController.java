@@ -21,8 +21,6 @@ public class AdminInquiryOrderController extends AdminBaseController{
      */
     @PostMapping("/api/admin/inquiry/order/detail")
     public JsonResult payOrder(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
-        if(inquiryOrderOnParam.getOrderId()==null)
-            return fail(JsonResultCode.MEDICAL_GOODS_ID_IS_NULL);
         InquiryOrderDo inquiryOrderDo= shop().inquiryOrderService.getByOrderId(inquiryOrderOnParam.getOrderId());
         return success(inquiryOrderDo);
     }
