@@ -206,7 +206,7 @@ public class DepartmentDao extends ShopBaseDao {
      */
     public List<DepartmentOneParam> ListDepartmentsByName(String name) {
         Condition condition = DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF));
-        if (name != null) {
+        if (name != null && name != "") {
             condition = condition.and(DEPARTMENT.NAME.like(likeValue(name)));
         }
         return db().select().from(DEPARTMENT).where(condition).fetchInto(DepartmentOneParam.class);

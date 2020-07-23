@@ -8,6 +8,7 @@ import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequestItemBo;
 import com.vpu.mp.service.pojo.shop.medical.goods.convertor.GoodsConverter;
@@ -240,5 +241,20 @@ public class GoodsAggregate {
         assignIgnoreField.add("imgPaths");
         assignIgnoreField.add("labelIds");
         return assignIgnoreField;
+    }
+
+    private Integer matchGoodsMedical(GoodsMatchParam goodsMatchParam) {
+        Integer goodsId;
+        goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
+        if (goodsId != null) return goodsId;
+        goodsMatchParam.setGoodsId(null);
+        goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
+        if (goodsId != null) return goodsId;
+        goodsMatchParam.setProductionEnterprise(null);
+        goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
+        if (goodsId != null) return goodsId;
+        goodsMatchParam.setGoodsQualityRatio(null);
+        goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
+        return goodsId;
     }
 }
