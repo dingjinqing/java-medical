@@ -16,6 +16,9 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
 
+/**
+ * @author chenjie
+ */
 @Repository
 public class DepartmentDao extends ShopBaseDao {
     public static final Integer ROOT_ID = 0;
@@ -201,7 +204,7 @@ public class DepartmentDao extends ShopBaseDao {
      * @param name
      * @return
      */
-    public List<DepartmentOneParam> ListDepartmentsByName(String name) {
+    public List<DepartmentOneParam> listDepartmentsByName(String name) {
         Condition condition = DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF));
         if (name != null) {
             condition = condition.and(DEPARTMENT.NAME.like(likeValue(name)));

@@ -224,8 +224,8 @@ public class DepartmentService extends ShopBaseService {
      * @param name
      * @return
      */
-    public List<DepartmentOneParam> ListDepartmentsByName(String name) {
-        return departmentDao.ListDepartmentsByName(name);
+    public List<DepartmentOneParam> listDepartmentsByName(String name) {
+        return departmentDao.listDepartmentsByName(name);
     }
 
     /**
