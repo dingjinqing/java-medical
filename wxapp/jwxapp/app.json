@@ -147,7 +147,8 @@
         "doctorConsultation/doctorConsultation",
         "allDepartment/allDepartment",
         "operatePrescriptionList/operatePrescriptionList",
-        "inquiryList/inquiryList"
+        "inquiryList/inquiryList",
+        "prescribe/prescribe"
       ]
     }
   ],
