@@ -1,7 +1,5 @@
 package com.vpu.mp.service.shop.task.order;
 
-import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
@@ -12,8 +10,6 @@ import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,26 +42,17 @@ public class InquiryOrderTaskService extends ShopBaseService {
     public void autoCloseInquiryOrder() {
         List<InquiryOrderDo> orderList = inquiryOrderService.getCanceledToPaidCloseOrder();
         orderList.forEach(order -> {
-            JsonResult result = closeExecute(order);
-            if (JsonResultCode.CODE_SUCCESS.getCode() == result.getError()) {
-                logger().info("问诊订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
-            } else {
-                logger().error("问诊订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getError(), result.getMessage().toString());
-            }
+            closeExecute(order);
         });
     }
 
-    public JsonResult closeExecute(InquiryOrderDo order) {
-        try {
-            transaction(() -> {
-                order.setOrderStatus(InquiryOrderConstant.ORDER_CANCELED);
-                order.setCancelledTime(DateUtils.getLocalDateTime());
-                inquiryOrderDao.update(order);
-            });
-        } catch (Exception e) {
-            return new JsonResult().result(null, JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);
-        }
-        return new JsonResult().success();
+    public void closeExecute(InquiryOrderDo order) {
+        boolean successFlag=true;
+        transaction(() -> {
+            order.setOrderStatus(InquiryOrderConstant.ORDER_CANCELED);
+            order.setCancelledTime(DateUtils.getLocalDateTime());
+            inquiryOrderDao.update(order);
+        });
 
     }
 
@@ -73,7 +60,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
     /**
      * 待接诊订单自动关闭
      */
-    public void closeToWaitingInquiryOrder() throws MpException {
+    public void closeToWaitingInquiryOrder()  {
         logger().info("待接诊问诊订单关闭定时任务start,shop:{}", getShopId());
         autoCloseToWaitingInquiryOrder();
         logger().info("待接诊问诊订单关闭定时任务end");
@@ -82,22 +69,17 @@ public class InquiryOrderTaskService extends ShopBaseService {
     /**
      * 自动任务关闭待接诊的问诊订单退款
      */
-    public void autoCloseToWaitingInquiryOrder() throws MpException  {
+    public void autoCloseToWaitingInquiryOrder()  {
         List<InquiryOrderDo> orderList = inquiryOrderService.getCanceledToWaitingCloseOrder();
-        //订单号集合
-        List<String> orderSnList = new ArrayList<>();
         orderList.forEach(order -> {
             try {
                 refundExecute(order);
-                orderSnList.add(order.getOrderSn());
                 logger().info("问诊订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
             } catch (MpException e) {
                 e.printStackTrace();
                 logger().error("问诊订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage().toString());
             }
         });
-        //批量取消未接诊过期的会话
-        imSessionService.batchCancelSession(orderSnList);
     }
 
     /**

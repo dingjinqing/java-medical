@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
@@ -21,6 +22,9 @@ public class AdminInquiryOrderController extends AdminBaseController{
      */
     @PostMapping("/api/admin/inquiry/order/detail")
     public JsonResult payOrder(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
+        if(inquiryOrderOnParam.getOrderId()==null){
+            return fail(JsonResultCode.INQUIRY_ORDER_ID_IS_NULL);
+        }
         InquiryOrderDo inquiryOrderDo= shop().inquiryOrderService.getByOrderId(inquiryOrderOnParam.getOrderId());
         return success(inquiryOrderDo);
     }

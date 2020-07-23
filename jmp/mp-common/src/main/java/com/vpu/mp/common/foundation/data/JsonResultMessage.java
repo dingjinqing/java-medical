@@ -1343,4 +1343,9 @@ public class JsonResultMessage {
 
     public static final String IM_SESSION_NOT_EXIST = "im.session.not.exist";
 
+    /**
+     * 问诊订单
+     */
+    public static final String INQUIRY_ORDER_SN_IS_NULL="inquiry.order.sn.is.null";
+    public static final String INQUIRY_ORDER_ID_IS_NULL="inquiry.order.id.is.null";
 }

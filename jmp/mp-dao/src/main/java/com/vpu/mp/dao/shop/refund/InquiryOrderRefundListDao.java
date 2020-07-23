@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import static com.vpu.mp.db.shop.Tables.INQUIRY_ORDER_REFUND_LIST;
 
+/**
+ * @author 杨鹏程
+ * @date 2020/7/23
+ **/
 @Repository
 public class InquiryOrderRefundListDao extends ShopBaseDao {
 
