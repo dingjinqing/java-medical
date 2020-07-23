@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Message extends TableImpl<MessageRecord> {
 
-    private static final long serialVersionUID = 47764658;
+    private static final long serialVersionUID = 408016953;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_message</code>
@@ -117,6 +117,21 @@ public class Message extends TableImpl<MessageRecord> {
      * The column <code>mini_shop_471752.b2c_message.message_relevance_id</code>. 消息关联id 关联会话和订单id，关联系统消息、会话问诊、问诊订单主键
      */
     public final TableField<MessageRecord, Integer> MESSAGE_RELEVANCE_ID = createField("message_relevance_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "消息关联id 关联会话和订单id，关联系统消息、会话问诊、问诊订单主键");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_message.is_delete</code>. 删除
+     */
+    public final TableField<MessageRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_message.create_time</code>.
+     */
+    public final TableField<MessageRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_message.update_time</code>. 最后修改时间
+     */
+    public final TableField<MessageRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_message</code> table reference

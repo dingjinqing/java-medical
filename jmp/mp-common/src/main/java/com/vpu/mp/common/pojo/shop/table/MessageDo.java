@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @Data
 public class MessageDo implements Serializable {
 
-    private static final long serialVersionUID = -1024022086;
+    private static final long serialVersionUID = -331112832;
 
     private Integer   messageId;
     private String    messageName;
@@ -40,5 +40,8 @@ public class MessageDo implements Serializable {
     private Byte      messageStatus;
     private Timestamp messageTime;
     private Integer   messageRelevanceId;
+    private Byte      isDelete;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
 }
