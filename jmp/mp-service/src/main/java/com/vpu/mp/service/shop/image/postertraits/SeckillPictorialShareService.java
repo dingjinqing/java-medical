@@ -83,12 +83,12 @@ public class SeckillPictorialShareService extends BaseShareService {
             PictorialImgPx imgPx = new PictorialImgPx(shopStyleColor);
             // "秒杀" 文字
             String seckillText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_SECKILL, null, "messages");
-            ImageUtil.addFontWithRect(bgBufferImg,  textStartX, toTop + 20, seckillText, ImageUtil.SourceHanSansCn(Font.PLAIN, 16), imgPx.getRealPriceColor(), imgPx.getShareImgRectInnerColor(), imgPx.getRealPriceColor());
+            ImageUtil.addFontWithRect(bgBufferImg,  textStartX, toTop + 20, seckillText, ImageUtil.sourceHanSansCn(Font.PLAIN, 16), imgPx.getRealPriceColor(), imgPx.getShareImgRectInnerColor(), imgPx.getRealPriceColor());
 
             // 添加秒杀价￥
-            ImageUtil.addFont(bgBufferImg, realPrice, ImageUtil.SourceHanSansCn(Font.PLAIN, 20), textStartX, toTop + 80, imgPx.getRealPriceColor() );
+            ImageUtil.addFont(bgBufferImg, realPrice, ImageUtil.sourceHanSansCn(Font.PLAIN, 20), textStartX, toTop + 80, imgPx.getRealPriceColor() );
             // 添加划线价￥
-            ImageUtil.addFontWithLine(bgBufferImg, textStartX, toTop + 100, linePrice, ImageUtil.SourceHanSansCn(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
+            ImageUtil.addFontWithLine(bgBufferImg, textStartX, toTop + 100, linePrice, ImageUtil.sourceHanSansCn(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(secKillDefineRecord.getSkId());

@@ -65,18 +65,18 @@ public class OrderConstant {
 	public final static byte ORDER_PIN_SUCCESSS = 12;
 	/** 礼单(主订单)环节已完成 */
 	public final static byte ORDER_GIVE_GIFT_FINISHED = 13;
-	//********医药*********//
+	/* *******医药******** */
 	/**
 	 * 审核中
 	 * 支付完成即待审核
 	 * 待审核->待发货
 	 */
 	public final static byte ORDER_TO_AUDIT =14;
-	//待开方
-	public final static byte ORDER_TO_AUDIT_OPEN =15;
+	/** 待开方 */
+ 	public final static byte ORDER_TO_AUDIT_OPEN =15;
 
 
-	/**退货状态*/
+	/*退货状态*/
     /** 退货的默认状态 */
     public final static byte REFUND_DEFAULT_STATUS = 0;
 	/**审核中,退款且退货申请*/
@@ -420,9 +420,9 @@ public class OrderConstant {
 	public static final byte SHIPPED = 3;
 	public static final byte FINISHED = 4;
 	public static final byte REFUND = 5;
-	//审核中
+	/** 审核中 */
 	public static final byte AUDIT = 6;
-	//已取消
+	/** 已取消 */
 	public static final byte RETURNING = 7;
 
 	/**

@@ -7,6 +7,9 @@ import com.vpu.mp.common.foundation.util.PageResult;
 
 import lombok.Builder;
 import lombok.Data;
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 @Builder
 public class DistributorWithdrawSumDetailVo {

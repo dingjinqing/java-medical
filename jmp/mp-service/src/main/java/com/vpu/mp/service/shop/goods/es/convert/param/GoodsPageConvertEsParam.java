@@ -95,7 +95,7 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         }
         if (GoodsConstant.SALE_OUT.equals(param.getIsSaleOut())) {
             if (param.getSelectType().equals(GoodsPageListParam.GOODS_PRD_LIST)) {
-                propertyList.add(new FieldProperty(EsSearchName.PRD.PRD_NUMBER, 0, Operator.EQ));
+                propertyList.add(new FieldProperty(EsSearchName.Prd.PRD_NUMBER, 0, Operator.EQ));
             } else {
                 propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER, 0, Operator.EQ));
             }

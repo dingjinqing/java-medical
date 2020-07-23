@@ -41,10 +41,9 @@ public interface WxOpenMaLogisticsService extends WxOpenMaMpHttpBase {
 
     /**
      * 绑定物流公司
-     *
-     * @param appId     https调用凭证
+     * @param appId https调用凭证 {@value LOGISTICS_BIND_ACCOUNT}
      * @param jsonParam 绑定参数
-     *                  {@value LOGISTICS_BIND_ACCOUNT}
+     * @return
      * @throws WxErrorException
      */
     default WxOpenResult bindAccount(String appId, String jsonParam) throws WxErrorException {
@@ -57,6 +56,7 @@ public interface WxOpenMaLogisticsService extends WxOpenMaMpHttpBase {
      *
      * @param appId https调用凭证
      *              {@value LOGISTICS_GET_ALL_ACCOUNT}
+     * @return
      * @throws WxErrorException
      */
     default String getAllAccount(String appId) throws WxErrorException {

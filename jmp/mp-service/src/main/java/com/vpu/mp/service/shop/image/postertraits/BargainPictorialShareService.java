@@ -93,15 +93,15 @@ public class BargainPictorialShareService extends BaseShareService {
 
             ShopRecord shop = saas.shop.getShopById(getShopId());
             // 添加商品名称
-            ImageUtil.addFont(bgBufferImg, goodsRecord.getGoodsName(), ImageUtil.SourceHanSansCn(Font.PLAIN, 14), 200, 140, new Color(51, 51, 51));
+            ImageUtil.addFont(bgBufferImg, goodsRecord.getGoodsName(), ImageUtil.sourceHanSansCn(Font.PLAIN, 14), 200, 140, new Color(51, 51, 51));
 
             // 添加原价
             String realPriceStr = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP) + Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
-            ImageUtil.addFont(bgBufferImg, realPriceStr, ImageUtil.SourceHanSansCn(Font.PLAIN, 23), 200, 180, shopStyleColor, false);
-            Integer realPriceLength = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.SourceHanSansCn(Font.PLAIN, 23), realPriceStr);
+            ImageUtil.addFont(bgBufferImg, realPriceStr, ImageUtil.sourceHanSansCn(Font.PLAIN, 23), 200, 180, shopStyleColor, false);
+            Integer realPriceLength = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.sourceHanSansCn(Font.PLAIN, 23), realPriceStr);
             // 添加划线价
             String linePriceStr = param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFontWithLine(bgBufferImg, 200 + realPriceLength + 5, 185, linePriceStr, ImageUtil.SourceHanSansCn(Font.PLAIN, 18), PictorialImgPx.LINE_PRICE_COLOR);
+            ImageUtil.addFontWithLine(bgBufferImg, 200 + realPriceLength + 5, 185, linePriceStr, ImageUtil.sourceHanSansCn(Font.PLAIN, 18), PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(bargainRecord.getId());
@@ -218,19 +218,19 @@ public class BargainPictorialShareService extends BaseShareService {
 
             ShopRecord shop = saas.shop.getShopById(getShopId());
             // 添加商品名称
-            ImageUtil.addFont(bgBufferImg, bargainRecordInfo.getGoodsName(), ImageUtil.SourceHanSansCn(Font.PLAIN, 14), 200, 140, new Color(51, 51, 51));
+            ImageUtil.addFont(bgBufferImg, bargainRecordInfo.getGoodsName(), ImageUtil.sourceHanSansCn(Font.PLAIN, 14), 200, 140, new Color(51, 51, 51));
 
             // 活动价
             BigDecimal bargainPrice = bargainRecordInfo.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) ? bargainRecordInfo.getFloorPrice() : bargainRecordInfo.getExpectationPrice();
             String bargainPriceString = bargainPrice.setScale(2, BigDecimal.ROUND_HALF_UP) + Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
-            ImageUtil.addFont(bgBufferImg, bargainPriceString, ImageUtil.SourceHanSansCn(Font.PLAIN, 23), 200, 250, new Color(255, 102, 102));
+            ImageUtil.addFont(bgBufferImg, bargainPriceString, ImageUtil.sourceHanSansCn(Font.PLAIN, 23), 200, 250, new Color(255, 102, 102));
 
 
-            Integer bargainPriceLength = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.SourceHanSansCn(Font.PLAIN, 23), bargainPriceString);
+            Integer bargainPriceLength = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.sourceHanSansCn(Font.PLAIN, 23), bargainPriceString);
             // 添加划线价
             String linePriceStr = bargainRecordInfo.getGoodsPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferImg, linePriceStr, ImageUtil.SourceHanSansCn(Font.PLAIN, 13), 220 + bargainPriceLength, 251, new Color(153, 153, 153));
-            Integer linePriceLength = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.SourceHanSansCn(Font.PLAIN, 10), linePriceStr);
+            ImageUtil.addFont(bgBufferImg, linePriceStr, ImageUtil.sourceHanSansCn(Font.PLAIN, 13), 220 + bargainPriceLength, 251, new Color(153, 153, 153));
+            Integer linePriceLength = ImageUtil.getTextWidth(bgBufferImg, ImageUtil.sourceHanSansCn(Font.PLAIN, 10), linePriceStr);
             ImageUtil.addLine(bgBufferImg, 220 + bargainPriceLength, 245, 222 + bargainPriceLength + linePriceLength, 245, new Color(153, 153, 153));
 
             // 上传u盘云并缓存入库

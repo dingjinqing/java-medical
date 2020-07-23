@@ -783,7 +783,7 @@ public class ScoreService extends ShopBaseService {
         UserScoreRecord record = db().selectFrom(USER_SCORE).where(USER_SCORE.USER_ID.eq(userId))
             .and(USER_SCORE.DESC.eq("sign_score")).orderBy(USER_SCORE.ID.desc()).fetchAny();
         if (record != null) {
-            if (DateUtils.TimestampIsNowDay(record.getCreateTime())) {
+            if (DateUtils.timestampIsNowDay(record.getCreateTime())) {
                 return false;
             }
         }

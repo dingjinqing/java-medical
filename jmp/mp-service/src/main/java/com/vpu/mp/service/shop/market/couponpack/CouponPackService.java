@@ -495,7 +495,7 @@ public class CouponPackService extends ShopBaseService {
             List<CouponPackVoucherBo> couponList = couponPackVoucherService.getCouponPackVoucherList(order.getVirtualGoodsId(),order.getUserId(),order.getOrderSn());
             int finishCount = 0;
             for(CouponPackVoucherBo coupon : couponList){
-                if(coupon.getLastSendTime() != null && DateUtils.TimestampIsNowDay(coupon.getLastSendTime())){
+                if(coupon.getLastSendTime() != null && DateUtils.timestampIsNowDay(coupon.getLastSendTime())){
                     // 说明今天已发送过，校验重复发送
                     continue;
                 }
@@ -548,7 +548,7 @@ public class CouponPackService extends ShopBaseService {
             }
             if(coupon.getImmediatelyGrantAmount() < coupon.getTotalAmount()){
                 Timestamp nextTime = null;
-                if(DateUtils.TimestampIsSameDay(lastTime,order.getPayTime())){
+                if(DateUtils.timestampIsSameDay(lastTime,order.getPayTime())){
                     //立即发放之后的第一次周期发放
                     Calendar cal = Calendar.getInstance();
                     switch (coupon.getTimingUnit()){
@@ -583,7 +583,7 @@ public class CouponPackService extends ShopBaseService {
                         default:
                     }
                 }
-                if(DateUtils.TimestampIsNowDay(nextTime)){
+                if(DateUtils.timestampIsNowDay(nextTime)){
                     sentNum = (coupon.getGrantCouponNumber() + coupon.getTimingAmount()) > coupon.getTotalAmount() ? coupon.getTotalAmount() - coupon.getGrantCouponNumber() : coupon.getTimingAmount();
                 }
             }

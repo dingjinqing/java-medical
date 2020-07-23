@@ -274,7 +274,7 @@ public final class DateUtils {
 	 * @param timestamp
 	 * @return
 	 */
-	public static Boolean TimestampIsNowDay(Timestamp timestamp) {
+	public static Boolean timestampIsNowDay(Timestamp timestamp) {
 	    if(timestamp == null){
 	        return false;
         }
@@ -292,7 +292,7 @@ public final class DateUtils {
      * @param timestamp2
      * @return
      */
-    public static Boolean TimestampIsSameDay(Timestamp timestamp1,Timestamp timestamp2) {
+    public static Boolean timestampIsSameDay(Timestamp timestamp1, Timestamp timestamp2) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_FORMAT_SIMPLE);
         LocalDateTime localDateTime=timestamp1.toLocalDateTime();
         String formate1 = df.format(localDateTime);

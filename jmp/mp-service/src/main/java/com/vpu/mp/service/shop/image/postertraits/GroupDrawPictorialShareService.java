@@ -85,15 +85,15 @@ public class GroupDrawPictorialShareService extends BaseShareService {
             PictorialImgPx imgPx = new PictorialImgPx(shopStyleColor);
             //添加拼团抽奖文字
             String msg = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_INFO, "messages");
-            ImageUtil.addFontWithRect(bgBufferImg, textStartX, toTop + 20, msg, ImageUtil.SourceHanSansCn(Font.PLAIN, 16), imgPx.getRealPriceColor(),imgPx.getShareImgRectInnerColor(), imgPx.getRealPriceColor());
+            ImageUtil.addFontWithRect(bgBufferImg, textStartX, toTop + 20, msg, ImageUtil.sourceHanSansCn(Font.PLAIN, 16), imgPx.getRealPriceColor(),imgPx.getShareImgRectInnerColor(), imgPx.getRealPriceColor());
 
             //添加真实价格
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
             String realPrice = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferImg, moneyFlag + realPrice, ImageUtil.SourceHanSansCn(Font.PLAIN, 20), textStartX, toTop + 80,imgPx.getRealPriceColor());
+            ImageUtil.addFont(bgBufferImg, moneyFlag + realPrice, ImageUtil.sourceHanSansCn(Font.PLAIN, 20), textStartX, toTop + 80,imgPx.getRealPriceColor());
             //添加划线价格
             String linePrice = param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFontWithLine(bgBufferImg, textStartX, toTop + 100, moneyFlag+linePrice, ImageUtil.SourceHanSansCn(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
+            ImageUtil.addFontWithLine(bgBufferImg, textStartX, toTop + 100, moneyFlag+linePrice, ImageUtil.sourceHanSansCn(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(groupDrawRecord.getId());

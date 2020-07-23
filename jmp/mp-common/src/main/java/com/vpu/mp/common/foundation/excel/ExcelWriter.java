@@ -369,31 +369,39 @@ public class ExcelWriter extends AbstractExcelDisposer {
                 }
             }
             // 因为翻译时候有站位，要去掉不是合并单元格的列的列数
-            List<Integer> cnList = new ArrayList<Integer>(cNo);
-            columnList.removeAll(cnList);
-            if (innerRow.size() > 1) {
-                // List中的类如果是一行的就不要合并
-                for (int e = 0; e < columnList.size(); e++) {
-                    // 合并日期占两行(4个参数，分别为起始行，结束行，起始列，结束列)
-                    CellRangeAddress region = new CellRangeAddress(rowList.get(0), rowList.get(1), columnList.get(e),
-                        columnList.get(e));
-                    sheet.addMergedRegion(region);
-                    // 考虑是否合并单元格，
-                    sheet.autoSizeColumn(columnList.get(e), true);
-                    // 格式化后设置边框
-                    setBorderStyle(BorderStyle.THIN, region, sheet);
-
-                }
-                for (Integer coum : cNo) {
-                    sheet.autoSizeColumn(coum);
-                }
-            } else {
-                for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
-                    ExcelColumnBean columnBean = entry.getValue();
-                    sheet.autoSizeColumn(columnBean.columnIndex);
-                }
-            }
+            processDropColumns(sheetBean, sheet, rowList, columnList, cNo, innerRow);
             System.out.println();
+        }
+    }
+
+    private void processDropColumns(ExcelSheetBean sheetBean, Sheet sheet, List<Integer> rowList, List<Integer> columnList, Set<Integer> cNo, Set<Integer> innerRow) {
+        List<Integer> cnList = new ArrayList<Integer>(cNo);
+        columnList.removeAll(cnList);
+        if (innerRow.size() > 1) {
+            // List中的类如果是一行的就不要合并
+            processMergeRegion(sheet, rowList, columnList);
+            for (Integer coum : cNo) {
+                sheet.autoSizeColumn(coum);
+            }
+        } else {
+            for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
+                ExcelColumnBean columnBean = entry.getValue();
+                sheet.autoSizeColumn(columnBean.columnIndex);
+            }
+        }
+    }
+
+    private void processMergeRegion(Sheet sheet, List<Integer> rowList, List<Integer> columnList) {
+        for (int e = 0; e < columnList.size(); e++) {
+            // 合并日期占两行(4个参数，分别为起始行，结束行，起始列，结束列)
+            CellRangeAddress region = new CellRangeAddress(rowList.get(0), rowList.get(1), columnList.get(e),
+                columnList.get(e));
+            sheet.addMergedRegion(region);
+            // 考虑是否合并单元格，
+            sheet.autoSizeColumn(columnList.get(e), true);
+            // 格式化后设置边框
+            setBorderStyle(BorderStyle.THIN, region, sheet);
+
         }
     }
 

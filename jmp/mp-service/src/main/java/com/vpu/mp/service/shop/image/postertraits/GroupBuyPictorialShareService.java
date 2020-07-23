@@ -85,12 +85,12 @@ public class GroupBuyPictorialShareService extends BaseShareService {
             PictorialImgPx imgPx = new PictorialImgPx(shopStyleColor);
             // "开团省2元" 文字
             String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_SAVE, null, "messages", saveMoney);
-            ImageUtil.addFontWithRect(bgBufferImg, 250, 130, startGroupMoneyText, ImageUtil.SourceHanSansCn(Font.PLAIN, 18), imgPx.getRealPriceColor(), imgPx.getShareImgRectInnerColor(), imgPx.getRealPriceColor());
+            ImageUtil.addFontWithRect(bgBufferImg, 250, 130, startGroupMoneyText, ImageUtil.sourceHanSansCn(Font.PLAIN, 18), imgPx.getRealPriceColor(), imgPx.getShareImgRectInnerColor(), imgPx.getRealPriceColor());
 
             // 添加拼团价￥
-            ImageUtil.addFont(bgBufferImg, realPrice, ImageUtil.SourceHanSansCn(Font.PLAIN, 20), 250, 200, imgPx.getRealPriceColor());
+            ImageUtil.addFont(bgBufferImg, realPrice, ImageUtil.sourceHanSansCn(Font.PLAIN, 20), 250, 200, imgPx.getRealPriceColor());
             // 添加划线价￥
-            ImageUtil.addFontWithLine(bgBufferImg,250,220,linePrice,ImageUtil.SourceHanSansCn(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
+            ImageUtil.addFontWithLine(bgBufferImg,250,220,linePrice,ImageUtil.sourceHanSansCn(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(groupBuyDefineRecord.getId());

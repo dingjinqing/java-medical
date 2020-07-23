@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class SetNoticeJson {
 	/** 通知说明 */
