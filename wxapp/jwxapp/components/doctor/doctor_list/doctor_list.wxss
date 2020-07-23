@@ -1,0 +1,46 @@
+/* components/doctor/doctor_list/doctor_list.wxml.wxss */
+.doctor_content {
+  padding: 0 20rpx;
+}
+
+.doctor_item {
+  background: #fff;
+  padding: 20rpx;
+  display: flex;
+  border-radius:16rpx;
+  margin-bottom: 20rpx;
+}
+
+.doctor_item .d_left image {
+  height: 120rpx;
+  width: 120rpx;
+  border-radius: 50%;
+}
+.doctor_item .d_right{
+  margin-left: 20rpx;
+  color: #333;
+}
+.doctor_item .d_right .d_r_top text:first-of-type{
+ font-size: 32rpx;
+ font-weight: bold;
+ margin-right: 20rpx;
+}
+.doctor_item .d_right .d_r_m_t{
+  font-weight:400;
+}
+.doctor_item .d_right .d_r_m_b view{
+color: #999;
+font-weight: 400;
+}
+.doctor_item .d_right .d_r_bot view{
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #FF9F15;
+}
+.doctor_item .d_right .d_r_bot text{
+  font-weight: 400;
+  font-size: 26rpx;
+}
+.d_r_m_t,.d_r_m_b{
+  margin: 10rpx 0;
+}
