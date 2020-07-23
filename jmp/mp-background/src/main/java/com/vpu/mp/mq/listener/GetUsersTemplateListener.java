@@ -11,7 +11,7 @@ import com.rabbitmq.client.Channel;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
-import com.vpu.mp.service.pojo.shop.market.message.BindOARabbitParam;
+import com.vpu.mp.service.pojo.shop.market.message.BindRabbitParam;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**
@@ -29,7 +29,7 @@ public class GetUsersTemplateListener implements BaseRabbitHandler {
 	private SaasApplication saas;
 
 	@RabbitHandler
-	public void handler(@Payload BindOARabbitParam param, Message message, Channel channel) {
+	public void handler(@Payload BindRabbitParam param, Message message, Channel channel) {
 		
 		saas.shop.officeAccount.batchGetUsers(param.getAppId(), param.getLanguage(), param.getSysId());
 		saas.taskJobMainService.updateProgress(Util.toJson(param),param.getTaskJobId(),0,1);

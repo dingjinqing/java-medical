@@ -70,7 +70,7 @@ public class ArticleCategoryService extends MainBaseService {
 	
 	public boolean insertArticleCategory(ArticleCategoryParam arArticleCategory) {
 		Byte useFooterNav = extracted(arArticleCategory);
-		if(useFooterNav.equals(ArticlesClass.cuo)) {
+		if(useFooterNav.equals(ArticlesClass.INVALID)) {
 			logger().info("传入参数错误，传入参数为："+arArticleCategory.getUseFooterNav());
 			return false;
 		}
@@ -112,7 +112,7 @@ public class ArticleCategoryService extends MainBaseService {
 
 	public boolean updateArticleCategory(ArticleCategoryParam arArticleCategory) {
 		Byte useFooterNav = extracted(arArticleCategory);
-		if(useFooterNav.equals(ArticlesClass.cuo)) {
+		if(useFooterNav.equals(ArticlesClass.INVALID)) {
 			logger().info("传入参数错误，传入参数为："+arArticleCategory.getUseFooterNav());
 			return false;
 		}

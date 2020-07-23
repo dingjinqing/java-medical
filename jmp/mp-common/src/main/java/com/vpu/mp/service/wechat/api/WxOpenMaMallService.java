@@ -49,7 +49,8 @@ public interface WxOpenMaMallService extends WxOpenMaMpHttpBase {
      * 导入订单
      *
      * @param appId https调用凭证
-     *              {@value LOGISTICS_GET_ALL_DELIVERY}
+     *              {@value LOGISTICS_GET_ALL_ACCOUNT}
+     * @throws WxErrorException
      */
     default WxOpenResult importorderAdd(String appId,String orderList) throws WxErrorException {
     	String json = post(appId, WX_COMMOND_IMPORTORDER_ADD, orderList);
@@ -62,6 +63,7 @@ public interface WxOpenMaMallService extends WxOpenMaMpHttpBase {
      *
      * @param appId https调用凭证
      *              {@value LOGISTICS_GET_ALL_DELIVERY}
+     * @throws WxErrorException
      */
     default WxOpenResult importorderUpdate(String appId,String orderList) throws WxErrorException {
     	String json = post(appId, WX_COMMOND_IMPORTORDER_UPDATE, orderList);
@@ -74,6 +76,7 @@ public interface WxOpenMaMallService extends WxOpenMaMpHttpBase {
      *
      * @param appId https调用凭证
      *              {@value LOGISTICS_GET_ALL_DELIVERY}
+     * @throws WxErrorException
      */
     default WxOpenResult addshoppinglistAdd(String appId,String orderList) throws WxErrorException {
     	String json = post(appId, WX_ADDSHOPPINGLIST_ADD, orderList);
@@ -86,6 +89,7 @@ public interface WxOpenMaMallService extends WxOpenMaMpHttpBase {
      *
      * @param appId https调用凭证
      *              {@value LOGISTICS_GET_ALL_DELIVERY}
+     * @throws WxErrorException
      */
     default WxOpenResult addshoppinglistDel(String appId,String orderList) throws WxErrorException {
     	String json = post(appId, WX_ADDSHOPPINGLIST_DEL, orderList);
@@ -97,6 +101,7 @@ public interface WxOpenMaMallService extends WxOpenMaMpHttpBase {
      *
      * @param appId https调用凭证
      *              {@value LOGISTICS_GET_ALL_DELIVERY}
+     * @throws WxErrorException
      */
     default WxOpenResult importProductUpdate(String appId,String orderList) throws WxErrorException {
     	String json = post(appId, WX_IMPORTPRODUCT_UPDATE, orderList);

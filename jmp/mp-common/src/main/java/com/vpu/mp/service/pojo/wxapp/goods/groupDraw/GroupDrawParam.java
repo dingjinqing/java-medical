@@ -25,7 +25,8 @@ public class GroupDrawParam {
     private String scene;
 
     public void initScene(){
-        if((this.groupDrawId == null || this.groupDrawId <= 0) && StringUtil.isNotBlank(this.scene)){
+        boolean canResolve = (this.groupDrawId == null || this.groupDrawId <= 0) && StringUtil.isNotBlank(this.scene);
+        if(canResolve){
             String scene = null;
             try {
                 scene = URLDecoder.decode(this.scene,"UTF-8");

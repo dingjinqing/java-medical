@@ -388,7 +388,7 @@ public class FriendPromoteService extends ShopBaseService {
 		FriendPromoteSelectVo vo = db().select().from(fpa).where(fpa.ID.eq(param.getId()))
 				.fetchOneInto(FriendPromoteSelectVo.class);
         if (vo!=null&&vo.getActivityCopywriting()!=null){
-            promoteActCopywriting copywriting = Util.json2Object(vo.getActivityCopywriting(),promoteActCopywriting.class,false);
+            PromoteActCopywriting copywriting = Util.json2Object(vo.getActivityCopywriting(), PromoteActCopywriting.class,false);
             vo.setActCopywriting(copywriting);
         }
 		return vo;
@@ -741,7 +741,7 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setPromoteCondition(record.getPromoteCondition());
         //设置活动说明相关
         if (record.getActivityCopywriting()!=null){
-            promoteInfo.setActCopywriting(Util.json2Object(record.getActivityCopywriting(),promoteActCopywriting.class,false));
+            promoteInfo.setActCopywriting(Util.json2Object(record.getActivityCopywriting(), PromoteActCopywriting.class,false));
         }
 
         // 设置商品信息和库存
@@ -2027,17 +2027,17 @@ public class FriendPromoteService extends ShopBaseService {
     /**
      * 小程序-根据actCode获得当前活动的活动说明
      * @param actCode actCode
-     * @return {{@link promoteActCopywriting}}
+     * @return {{@link PromoteActCopywriting}}
      */
-	public promoteActCopywriting getActCopywriting(String actCode){
+	public PromoteActCopywriting getActCopywriting(String actCode){
 	    String activityCopywriting = db().select(FRIEND_PROMOTE_ACTIVITY.ACTIVITY_COPYWRITING)
             .from(FRIEND_PROMOTE_ACTIVITY)
             .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
             .fetchOptionalInto(String.class)
             .orElse(null);
-	    promoteActCopywriting actCopywriting = new promoteActCopywriting();
+	    PromoteActCopywriting actCopywriting = new PromoteActCopywriting();
 	    if (activityCopywriting!=null){
-	        actCopywriting = Util.json2Object(activityCopywriting,promoteActCopywriting.class,false);
+	        actCopywriting = Util.json2Object(activityCopywriting, PromoteActCopywriting.class,false);
         }
 	    return actCopywriting;
     }

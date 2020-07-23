@@ -132,7 +132,7 @@ public class OrderBeforeVo {
     private Timestamp bkShippingTime;
     /**补款是否自动退定金*/
     private Byte bkReturnType;
-    /*代付金额*/
+    /** 代付金额*/
     @Builder.Default
     private BigDecimal insteadPayMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**默认支付配置->会员卡余额*/

@@ -16,15 +16,15 @@ public class ChargeParam {
 	/** -当前页 */
 	public Integer currentPage;
 	private Integer userId;
-	// 会员卡id
+	/**   会员卡id */
 	private Integer cardId;
-	// 会员卡类型
+	/**   会员卡类型 */
 	private Byte cardType;
-	// 会员昵称
+	/**   会员昵称 */
 	private String username;
-	// 手机号
+	/**   手机号 */
 	private String mobile;
-	// 余额变动时间
+	/**   余额变动时间 */
 	private Timestamp startTime;
 	private Timestamp endTime;
 

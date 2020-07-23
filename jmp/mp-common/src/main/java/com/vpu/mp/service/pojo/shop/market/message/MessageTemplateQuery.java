@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.message;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 
 import lombok.Getter;
@@ -26,7 +27,8 @@ public class MessageTemplateQuery extends BasePageParam {
     /** 用户手机号 */
     private String userMobile;
     /** 是否关注公众号 */
-    private Boolean isConcernWP;
+    @JsonProperty("isConcernWP")
+    private Boolean isConcernWp;
     /** 消息名称 */
     private String messageName;
     /** 业务标题 */

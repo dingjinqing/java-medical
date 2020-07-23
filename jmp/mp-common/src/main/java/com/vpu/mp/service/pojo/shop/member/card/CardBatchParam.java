@@ -11,24 +11,24 @@ import lombok.Data;
 */
 @Data
 public class CardBatchParam {
-	// 领取方式： 领取码 1，  卡号+密码 2
+	/**   领取方式： 领取码 1，  卡号+密码 2 */
 	private Byte receiveAction;
 	/** 领取码获得方式 1：自动生成 2：导入  */
 	private Byte action;
-	// 批次名称
+	/**   批次名称 */
 	private String batchName;
-	// 领取码位数 或 卡号位数
+	/**   领取码位数 或 卡号位数 */
 	private Byte codeSize;
-	// 发放数量
+	/**   发放数量 */
 	private Integer number;
-	// 领取码前缀  或 卡号前缀
+	/**   领取码前缀  或 卡号前缀 */
 	private String codePrefix;
-	// 密码位数
+	/**   密码位数 */
 	private Byte cardPwdSize;
 	
-	// 批次id
+	/**   批次id */
 	private Integer batchId;
-	// 分组id
+	/**   分组id */
 	private Integer groupId;
 	
 	private MultipartFile file;

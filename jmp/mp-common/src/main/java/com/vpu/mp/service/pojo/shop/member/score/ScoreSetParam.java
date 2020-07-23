@@ -31,7 +31,6 @@ public class ScoreSetParam {
 	private Integer[] userId;
 	
 	/** -积分变动数额 */
-	//@Min(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_BE_NEGATIVE, value = 0)
 	@NotNull(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_NULL)
 	private Integer score;
 	

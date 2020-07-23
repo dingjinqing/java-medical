@@ -13,6 +13,6 @@ import java.util.List;
  */
 @Data
 public class CommentInfo {
-    private PageResult<MPGoodsCommentVo> comment;
+    private PageResult<MpGoodsCommentVo> comment;
     private List<CommentDetailVo.CommentLevelInfo> number;
 }

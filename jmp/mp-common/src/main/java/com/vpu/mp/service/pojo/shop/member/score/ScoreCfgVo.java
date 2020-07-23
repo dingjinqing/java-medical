@@ -64,7 +64,7 @@ public class ScoreCfgVo {
 	@JsonAlias("score_page_id")
 	public String scorePageId;
 	
-	// 模板页面名称
+	/**   模板页面名称 */
 	public String pageName;
 	
 	public ArrayList<String> buy = new ArrayList<>();
@@ -72,9 +72,9 @@ public class ScoreCfgVo {
 	public ArrayList<String> buyEach = new ArrayList<>();
 	public ArrayList<String> buyEachScore = new ArrayList<>();
 	
-	// 签到积分开关
+	/**   签到积分开关 */
 	public String signInScore;
-	// 签到积分数据 如第一天签到送多少积分
+	/**   签到积分数据 如第一天签到送多少积分 */
 	public String[] signScore;
 	/**
 	 * 签到类型 0：连续签到；1：循环签到

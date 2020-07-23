@@ -24,7 +24,8 @@ public class ReservationParam {
     private String scene;
 
     public void initScene(){
-        if((this.serviceId == null || this.serviceId <= 0) && StringUtil.isNotBlank(this.scene)){
+        boolean canResolve = (this.serviceId == null || this.serviceId <= 0) && StringUtil.isNotBlank(this.scene);
+        if(canResolve){
             String scene = null;
             try {
                 scene = URLDecoder.decode(this.scene,"UTF-8");

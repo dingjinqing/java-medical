@@ -24,7 +24,7 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountPojo;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.CanSendVo;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.CanSendVo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;

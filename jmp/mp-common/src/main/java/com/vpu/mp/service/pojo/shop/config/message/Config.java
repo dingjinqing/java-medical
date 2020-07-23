@@ -1,5 +1,8 @@
 package com.vpu.mp.service.pojo.shop.config.message;
 
+/**
+ * @author lixinguo
+ */
 public class Config {
     private Integer id;
 

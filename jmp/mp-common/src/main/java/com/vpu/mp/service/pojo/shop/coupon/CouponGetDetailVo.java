@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
+/**
+ * @author changle
+ */
 @Data
 public class CouponGetDetailVo {
 	private String userName;

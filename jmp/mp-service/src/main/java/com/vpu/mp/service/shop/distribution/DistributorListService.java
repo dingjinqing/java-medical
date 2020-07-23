@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -30,8 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-
-import javax.validation.constraints.Null;
 
 /**
  * 分销员列表

@@ -63,21 +63,21 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportActivePojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
+import com.vpu.mp.service.pojo.shop.member.userimp.CardInfoVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeJson;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeJsonDetailVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeJsonVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetListParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetListVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetNoActListParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetNoActListVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportActivePojo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportErroPojo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportMqParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportPojo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.shop.config.ConfigService;
@@ -638,7 +638,7 @@ public class UserImportService extends ShopBaseService {
 		return result;
 	}
 
-	public PageResult<UIGetListVo> getList(UIGetListParam param) {
+	public PageResult<UiGetListVo> getList(UiGetListParam param) {
 		SelectWhereStep<UserImportRecord> selectFrom = db().selectFrom(USER_IMPORT);
 		Integer batchId = param.getBatchId();
 		if (batchId != null) {
@@ -654,7 +654,7 @@ public class UserImportService extends ShopBaseService {
 		}
 		selectFrom.where(USER_IMPORT.TOTAL_NUM.gt(0));
 		selectFrom.orderBy(USER_IMPORT.ID.desc());
-		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UIGetListVo.class);
+		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UiGetListVo.class);
 	}
 
 	/**
@@ -663,9 +663,9 @@ public class UserImportService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<UIGetListVo> descList(UIGetListParam param) {
-		PageResult<UIGetListVo> list = getList(param);
-		for (UIGetListVo vo : list.getDataList()) {
+	public PageResult<UiGetListVo> descList(UiGetListParam param) {
+		PageResult<UiGetListVo> list = getList(param);
+		for (UiGetListVo vo : list.getDataList()) {
 			vo.setFailNum(vo.getTotalNum() - vo.getSuccessNum());
 			int activateNum = getActivateNum(vo.getId(), ONE);
 			vo.setActivateNum(activateNum);
@@ -700,7 +700,7 @@ public class UserImportService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<UIGetNoActListVo> getDetailList(UIGetNoActListParam param) {
+	public PageResult<UiGetNoActListVo> getDetailList(UiGetNoActListParam param) {
 		SelectWhereStep<UserImportDetailRecord> selectFrom = db().selectFrom(USER_IMPORT_DETAIL);
 		selectFrom.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull());
 		Timestamp startTime = param.getStartTime();
@@ -736,12 +736,12 @@ public class UserImportService extends ShopBaseService {
 			selectFrom.where(USER_IMPORT_DETAIL.GROUP_ID.eq(groupId));
 		}
 		selectFrom.orderBy(USER_IMPORT_DETAIL.ID.desc());
-		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UIGetNoActListVo.class);
+		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UiGetNoActListVo.class);
 	}
 
-	public PageResult<UIGetNoActListVo> addGroupName(UIGetNoActListParam param) {
-		PageResult<UIGetNoActListVo> detailList = getDetailList(param);
-		for (UIGetNoActListVo vo : detailList.dataList) {
+	public PageResult<UiGetNoActListVo> addGroupName(UiGetNoActListParam param) {
+		PageResult<UiGetNoActListVo> detailList = getDetailList(param);
+		for (UiGetNoActListVo vo : detailList.dataList) {
 			DistributorGroupListVo oneInfo = saas.getShopApp(getShopId()).distributorGroup.getOneInfo(vo.getGroupId());
 			if (oneInfo == null) {
 				//TODO 国际化

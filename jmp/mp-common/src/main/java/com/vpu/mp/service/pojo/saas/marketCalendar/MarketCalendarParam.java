@@ -22,7 +22,6 @@ public class MarketCalendarParam {
 	private String eventDesc;
 	@NotEmpty
 	private List<SysCalendarAct> calendarAct;
-	//CalendarAction
 	@NotNull
 	private String act;
 	/** 更新时用的market_calendar表的id*/

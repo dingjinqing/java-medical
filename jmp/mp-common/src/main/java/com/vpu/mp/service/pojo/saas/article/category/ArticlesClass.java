@@ -12,8 +12,8 @@ import lombok.Data;
 public class ArticlesClass {
 	public static final String OK = "ok";
 	public static final String CANCEL = "cancel";
-	public static final Byte ok = 1;
-	public static final Byte cancel = 0;
-	public static final Byte cuo = -1;
+	public static final Byte STATUS_OK = 1;
+	public static final Byte STATUS_CANCEL = 0;
+	public static final Byte INVALID = -1;
 	
 }

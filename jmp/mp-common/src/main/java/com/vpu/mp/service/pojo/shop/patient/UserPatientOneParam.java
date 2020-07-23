@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author yangpengcheng
+ */
 @Data
 public class UserPatientOneParam extends UserPatientParam{
     @NotNull

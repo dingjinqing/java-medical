@@ -3,6 +3,9 @@ package com.vpu.mp.service.pojo.shop.doctor;
 import lombok.Data;
 import java.util.List;
 
+/**
+ * @author chenjie
+ */
 @Data
 public class DoctorListParam {
     private Integer nav;

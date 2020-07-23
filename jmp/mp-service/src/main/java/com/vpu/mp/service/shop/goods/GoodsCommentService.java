@@ -1213,14 +1213,14 @@ public class GoodsCommentService extends ShopBaseService {
      * @param param goodsId和筛选条件
      * @return 评价详情和百分比
      */
-    public CommentInfo goodsComment(MPGoodsCommentParam param) {
+    public CommentInfo goodsComment(MpGoodsCommentParam param) {
         //0不用审核，1先发后审，2先审后发
         Byte commentFlag = commentConfigService.getCommentConfig();
         //设置前端是否隐藏未填写心得的评价，0关，1开
         Byte commentSee = commentConfigService.getSwitchConfig();
-        PageResult<MPGoodsCommentVo> comment = getGoodsComment(param.getGoodsId(), param.getType(), commentFlag, commentSee, param.getCurrentPage(), param.getPageRows());
+        PageResult<MpGoodsCommentVo> comment = getGoodsComment(param.getGoodsId(), param.getType(), commentFlag, commentSee, param.getCurrentPage(), param.getPageRows());
         if (comment != null) {
-            for (MPGoodsCommentVo item : comment.getDataList()) {
+            for (MpGoodsCommentVo item : comment.getDataList()) {
                 Integer answerId = db().select(COMMENT_GOODS_ANSWER.ANSWER_ID)
                     .from(COMMENT_GOODS_ANSWER)
                     .where(COMMENT_GOODS_ANSWER.COMMENT_ID.eq(item.getId()))
@@ -1275,7 +1275,7 @@ public class GoodsCommentService extends ShopBaseService {
      * @param type        筛选条件
      * @return 评价详情
      */
-    public PageResult<MPGoodsCommentVo> getGoodsComment(Integer goodsId, Byte type, Byte commentFlag, Byte commentSee, Integer currentPage, Integer pageRows) {
+    public PageResult<MpGoodsCommentVo> getGoodsComment(Integer goodsId, Byte type, Byte commentFlag, Byte commentSee, Integer currentPage, Integer pageRows) {
         SelectConditionStep<? extends Record> sql = db().select(COMMENT_GOODS.ID, COMMENT_GOODS.COMMSTAR,
             COMMENT_GOODS.ANONYMOUSFLAG, COMMENT_GOODS.COMM_NOTE, COMMENT_GOODS.COMM_IMG,
             ORDER_GOODS.GOODS_ATTR, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR,
@@ -1317,8 +1317,8 @@ public class GoodsCommentService extends ShopBaseService {
             sql.and(COMMENT_GOODS.COMM_IMG.isNotNull().and(COMMENT_GOODS.COMM_IMG.notEqual("[]")));
         }
         sql.orderBy(COMMENT_GOODS.IS_TOP.desc(), COMMENT_GOODS.TOP_TIME.desc(), COMMENT_GOODS.CREATE_TIME.desc())
-            .fetchInto(MPGoodsCommentVo.class);
-        PageResult<MPGoodsCommentVo> vo = this.getPageResult(sql, currentPage, pageRows, MPGoodsCommentVo.class);
+            .fetchInto(MpGoodsCommentVo.class);
+        PageResult<MpGoodsCommentVo> vo = this.getPageResult(sql, currentPage, pageRows, MpGoodsCommentVo.class);
         return vo;
     }
 

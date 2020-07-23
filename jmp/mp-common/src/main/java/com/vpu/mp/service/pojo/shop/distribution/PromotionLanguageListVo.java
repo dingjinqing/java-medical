@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -13,7 +14,8 @@ import lombok.Data;
 public class PromotionLanguageListVo {
 	private Integer id;
 	private String title;
-	private String  PromotionLanguage;
+	@JsonProperty("PromotionLanguage")
+	private String promotionLanguage;
 	private Byte isBlock;
 	private Byte delFlag;
 	private Timestamp createTime;

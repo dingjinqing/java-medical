@@ -31,7 +31,7 @@ public class CardConstant {
     /** receive_action 卡号+密码 2*/
     public static final Byte MCARD_REA_PWD = 2;
 
-    //******* 0:不支持现金购买，1:支持现金购买
+    /**  ******* 0:不支持现金购买，1:支持现金购买
     /**
      * 0:不支持现金购买
      */
@@ -62,42 +62,42 @@ public class CardConstant {
     /**
      * 门店类型 全部门店，部分门店，不可在门店使用
      */
-    // 全部门店
+    /**   全部门店 */
     public static final Byte MCARD_STP_ALL= 0;
-    // 部分门店
+    /**   部分门店 */
     public static final Byte MCARD_STP_PART = 1;
-    //不可在门店使用
+    /**  不可在门店使用 */
     public static final Byte MCARD_STP_BAN = -1;
     /**
      * store_use_switch 可否在门店使用  0不可以 1可以
      */
-    // 1可以 在门店使用
+    /**   1可以 在门店使用 */
     public static final Byte MCARD_SUSE_OK = 1;
-    // 0不可以 在门店使用
+    /**   0不可以 在门店使用 */
     public static final Byte MCARD_SUSE_NO = 0;
 
 
     /**
      * receive_action 领取方式 1:领取码 2：卡号+密码
      */
-    // 领取方式 1:领取码
+    /**   领取方式 1:领取码 */
     public static final Byte MCARD_RA_CODE = 1;
-    // 领取方式 2:卡号+密码
+    /**   领取方式 2:卡号+密码 */
     public static final Byte MCARD_RA_PWD = 2;
 
     /**
      * 激活： 0：不用激活，1：需要激活
      */
-    // 不用激活
+    /**   不用激活 */
     public static final Byte MCARD_ACT_NO = 0;
-    // 需要激活
+    /**   需要激活 */
     public static final Byte MCARD_ACT_YES = 1;
     /**
      * 	 是否审核 0不审核 1审核
      */
-    // 0不审核
+    /**   0不审核 */
     public static final Byte MCARD_EXAMINE_OFF=0;
-    //  1审核
+    /**    1审核 */
     public static final Byte MCARD_EXAMINE_ON=1;
 
     /** date_type 天数类型 0:日*/
@@ -110,11 +110,11 @@ public class CardConstant {
     /**
      * is_exchang 限次会员卡适用商品 0： 不可兑换商品 ；1 ：部分商品；2：全部商品
      */
-    // 不可兑换商品
+    /**   不可兑换商品 */
     public static final Byte MCARD_ISE_NON = 0;
-    // 部分商品
+    /**   部分商品 */
     public static final Byte MCARD_ISE_PART = 1;
-    // 全部商品
+    /**   全部商品 */
     public static final Byte MCARD_ISE_ALL = 2;
 
     /** del_flag 删除状态： 0：没有删除 */
@@ -141,16 +141,16 @@ public class CardConstant {
     public static final Byte MCARD_COUPON_TYPE = 0;
     public static final Byte MCARD_COUPON_PACK_TYPE = 1;
 
-    // 是否专属购买商品 0 不是 1 是
+    /**   是否专属购买商品 0 不是 1 是
 
     /** -专享商品:标签关联类型  */
-    // 1：关联商品
+    /**   1：关联商品 */
     public static final Byte COUPLE_TP_GOODS = 1;
-    //  2：关联商家分类
+    /**    2：关联商家分类 */
     public static final Byte COUPLE_TP_STORE = 2;
-    // 3：关联平台分类
+    /**   3：关联平台分类 */
     public static final Byte COUPLE_TP_PLAT = 3;
-    // 4， 关联品牌分类
+    /**   4， 关联品牌分类 */
     public static final Byte COUPLE_TP_BRAND = 4;
     public static final String BUTTON_ON = "on";
     public static final String BUTTON_OFF = "off";
@@ -199,7 +199,7 @@ public class CardConstant {
     public static final Boolean UCARD_ACT_TRUE = true;
 
 
-    // member_card
+    /**   member_card
 
     /** 是否专属购买商品 0不是 1是 */
     public static final Byte PAY_OWN_GOOD_YES=1;
@@ -208,16 +208,16 @@ public class CardConstant {
     public static final Byte NOT_SUPPORT_PAY_BY_CASH = 0;
 
 
-    // card_receive_code
+    /**   card_receive_code */
     public static final Integer ALL_BATCH = 0;
 
-    // card_examine
+    /**   card_examine */
     public static final Byte UNDER_REVIEW = 1;
     public static final Byte VERIFIED = 2;
     public static final Byte REFUSED = 3;
 
 
-    // card_consumer
+    /**   card_consumer */
     public static final Short SHORT_ZERO = 0;
     public static final Byte EXCHANG_COUNT_TYPE = 1;
     public static final Byte COUNT_TYPE = 2;

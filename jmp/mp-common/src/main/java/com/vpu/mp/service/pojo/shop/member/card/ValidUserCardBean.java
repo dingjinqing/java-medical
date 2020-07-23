@@ -18,8 +18,7 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 */
 @Data
 public class ValidUserCardBean {
-	
-	// userCard表字段映射
+
 	private Integer  userId;
 	private Integer  cardId;
 	private Byte  flag;
@@ -35,14 +34,14 @@ public class ValidUserCardBean {
 	/**
 	 * 	用户卡的快照包邮信息
 	 */
-	// 包邮周期类型
+	/**   包邮周期类型 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected Byte freeLimit;
-	// 包邮次数
+	/**   包邮次数 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected Integer freeNum;
 	
-	// memberCard表字段映射
+	/**   memberCard表字段映射 */
 	private String cardName;
     private Byte cardType;
 	private BigDecimal discount;
@@ -71,7 +70,7 @@ public class ValidUserCardBean {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected Integer freeshipNum;
 	
-	// 头像
+	/**   头像 */
 	private String avatar;
     private LocalDate startDate;
     private LocalDate endDate;

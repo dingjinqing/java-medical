@@ -15,14 +15,23 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  */
 public interface PendingRule<R> {
 
+    /**
+     * ruleHandler
+     *
+     * @return
+     */
     R ruleHandler();
 
+    /**
+     * getUnFinished
+     *
+     * @return
+     */
     int getUnFinished();
 
 
     /**
      * Handler 1.规则一(0已完成, 非0未完成)
-     *
      */
     default void handler1(Metadata... metadata) {
         Arrays.stream(metadata).filter(Objects::nonNull).forEach(e -> {
@@ -36,7 +45,6 @@ public interface PendingRule<R> {
 
     /**
      * Handler 2.规则二(非0已完成, 0未完成)
-     *
      */
     default void handler2(Metadata... metadata) {
         Arrays.stream(metadata).filter(Objects::nonNull).forEach(e -> {
@@ -49,6 +57,12 @@ public interface PendingRule<R> {
     }
 
 
+    /**
+     * unFinished
+     *
+     * @param metadata
+     * @return
+     */
     default int unFinished(Metadata... metadata) {
         return (int) Arrays.stream(metadata)
             .filter(e -> e.getStatus() == BYTE_ZERO).count();

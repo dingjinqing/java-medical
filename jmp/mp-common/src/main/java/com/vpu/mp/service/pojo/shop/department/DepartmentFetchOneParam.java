@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * @author chenjie
+ */
 @Data
 public class DepartmentFetchOneParam {
     private String departCode;

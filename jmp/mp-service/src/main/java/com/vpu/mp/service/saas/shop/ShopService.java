@@ -215,13 +215,13 @@ public class ShopService extends MainBaseService {
     private void buildShopTypeOption(SelectWhereStep<?> select, ShopListQueryParam param) {
         if (StringUtils.isEmpty(param.shopType) && !StringUtils.isEmpty(param.shopTypes)) {
             // 区分体验版和付费版
-            if (param.shopTypes.equals(ShopConst.shopTypes.TRIAL_VERSION)) {
+            if (param.shopTypes.equals(ShopConst.ShopTypes.TRIAL_VERSION)) {
                 // 体验版
-                select.where(SHOP.SHOP_TYPE.eq(ShopConst.shopType.V_1));
+                select.where(SHOP.SHOP_TYPE.eq(ShopConst.ShopType.V_1));
             }
-            if (param.shopTypes.equals(ShopConst.shopTypes.PAID_VERSION)) {
+            if (param.shopTypes.equals(ShopConst.ShopTypes.PAID_VERSION)) {
                 // 付费版
-                select.where(SHOP.SHOP_TYPE.in(ShopConst.shopType.V_2, ShopConst.shopType.V_3, ShopConst.shopType.V_4));
+                select.where(SHOP.SHOP_TYPE.in(ShopConst.ShopType.V_2, ShopConst.ShopType.V_3, ShopConst.ShopType.V_4));
             }
 
         }

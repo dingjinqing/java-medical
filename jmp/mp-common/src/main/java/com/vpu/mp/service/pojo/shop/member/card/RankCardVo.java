@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
 * @author 黄壮壮
@@ -85,7 +86,7 @@ public class RankCardVo extends BaseCardVo {
 		 * 等级会员卡升级策略
 		 */
 		/** 等级卡升级策略 */
-		if(gradeCondition !=null && !gradeCondition.equals("")) {
+		if(!StringUtils.isBlank(gradeCondition)) {
 			try {
 				gradeConditionJson = MAPPER.readValue(gradeCondition, GradeConditionJson.class);
 			} catch (Exception e) {

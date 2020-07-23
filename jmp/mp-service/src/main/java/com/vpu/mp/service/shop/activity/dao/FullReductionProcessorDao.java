@@ -331,7 +331,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             activityInfo.setFullReduction(fullReduction);
 
             Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal> record = values.get(0);
-            fullReduction.setFullReductiontype(record.get(MRKING_STRATEGY.TYPE));
+            fullReduction.setFullReductionType(record.get(MRKING_STRATEGY.TYPE));
             //会员专享
             if (StringUtils.isNotBlank(record.get(MRKING_STRATEGY.CARD_ID))) {
                 fullReduction.setIsExclusive(true);
@@ -373,7 +373,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
         if (reduceMoney.compareTo(BigDecimal.ZERO)>0){
             /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
             byte typeDiscountNth = (byte) 4;
-            if (!fullReduction.getFullReductiontype().equals(typeDiscountNth)){
+            if (!fullReduction.getFullReductionType().equals(typeDiscountNth)){
                 if (fullReduction.getRulesType().equals((byte)1)){
                     logger().info("已满{}元,减{}元",rule.getFullMoney(),reduceMoney);
                     return "已购满"+rule.getFullMoney()+"元,下单立减"+reduceMoney+"元";
@@ -387,7 +387,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             }
         }
         //满减
-        switch (fullReduction.getFullReductiontype()){
+        switch (fullReduction.getFullReductionType()){
             case 1:
                 //每满减
                 if (rule.getFullMoney().compareTo(BigDecimal.ZERO)>0&&rule.getReduceMoney()!=null){
@@ -442,7 +442,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                 CartActivityInfo.FullReduction fullReduction = cartActivityInfo.getFullReduction();
                 CartActivityInfo.FullReductionRule fullReductionRule = fullReduction.getRules().get(0);
                 /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
-                switch (fullReduction.getFullReductiontype()) {
+                switch (fullReduction.getFullReductionType()) {
                     case 1:
                         break;
                     case 2:
@@ -569,7 +569,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             BigDecimal totalMoney = goodsList.stream().filter(fullGoods->fullGoods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)).map(FullReductionGoodsCartBo::getMoney).reduce(BigDecimal.ZERO, BigDecimal::add);
             BigDecimal reduceMoney=BigDecimal.ZERO;
             /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
-            switch (fullReduction.getFullReduction().getFullReductiontype()) {
+            switch (fullReduction.getFullReduction().getFullReductionType()) {
                 case 1:
                     if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
                         if (fullReductionRule.getAmount()<=totalNum){

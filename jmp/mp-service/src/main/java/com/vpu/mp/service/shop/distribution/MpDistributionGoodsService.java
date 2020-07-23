@@ -203,27 +203,27 @@ public class MpDistributionGoodsService extends ShopBaseService {
         }
         if(level.equals(DistributionConstant.level_2)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
-            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_2());
-            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_2());
-            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_2());
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio2());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio2());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio2());
         }
         if(level.equals(DistributionConstant.level_3)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
-            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_3());
-            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_3());
-            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_3());
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio3());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio3());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio3());
         }
         if(level.equals(DistributionConstant.level_4)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
-            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_4());
-            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_4());
-            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_4());
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio4());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio4());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio4());
         }
         if(level.equals(DistributionConstant.level_5)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
-            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_5());
-            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_5());
-            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_5());
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio5());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio5());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio5());
         }
     }
 

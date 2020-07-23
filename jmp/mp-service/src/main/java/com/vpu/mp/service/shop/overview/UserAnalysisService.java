@@ -725,7 +725,7 @@ public class UserAnalysisService extends ShopBaseService {
    * @param param 时间
    * @return 是否有数据 true or false
    */
-  public Boolean getRFMData(RFMParam param) {
+  public Boolean getRFMData(RfmParam param) {
     try {
       // 格式化日期格式
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -766,7 +766,7 @@ public class UserAnalysisService extends ShopBaseService {
    * @param param 时间
    * @return 数据
    */
-  public List<RFMVo> getRFMAnalysis(RFMParam param) {
+  public List<RfmVo> getRFMAnalysis(RfmParam param) {
     try {
       // 格式化日期格式
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -776,7 +776,7 @@ public class UserAnalysisService extends ShopBaseService {
       }
       java.util.Date refDate = sdf.parse(param.getRefDate());
       // 出参
-      List<RFMVo> result = new ArrayList<>();
+      List<RfmVo> result = new ArrayList<>();
       // 先得到用户总数
       Integer userData =
           db().select(DSL.sum(USER_RFM_SUMMARY.PAY_USER_NUM))
@@ -787,7 +787,7 @@ public class UserAnalysisService extends ShopBaseService {
       // 循环遍历不同消费时间
       for (Byte i = NumberUtils.BYTE_ONE; i <= RECENCY_TYPE_SEVEN; i++) {
         // 查库
-        List<RFMTableVo> tableVo =
+        List<RfmTableVo> tableVo =
             db().select(
                     USER_RFM_SUMMARY.FREQUENCY_TYPE,
                     USER_RFM_SUMMARY.TOTAL_PAID_MONEY,
@@ -796,12 +796,12 @@ public class UserAnalysisService extends ShopBaseService {
                 .from(USER_RFM_SUMMARY)
                 .where(USER_RFM_SUMMARY.REF_DATE.eq(new Date(refDate.getTime())))
                 .and(USER_RFM_SUMMARY.RECENCY_TYPE.eq(i))
-                .fetchInto(RFMTableVo.class);
+                .fetchInto(RfmTableVo.class);
         // 数据处理
-        List<RFMRowVo> rfmRowVo = new ArrayList<>();
-        for (RFMTableVo tempTableVo : tableVo) {
-          RFMRowVo tempRFMRowVo =
-              new RFMRowVo() {
+        List<RfmRowVo> rfmRowVo = new ArrayList<>();
+        for (RfmTableVo tempTableVo : tableVo) {
+          RfmRowVo tempRfmRowVo =
+              new RfmRowVo() {
                 {
                   setFrequencyType(tempTableVo.getFrequencyType());
                   setPayUserNum(tempTableVo.getPayUserNum());
@@ -811,14 +811,14 @@ public class UserAnalysisService extends ShopBaseService {
                       getUnitPrice(tempTableVo.getTotalPaidMoney(), tempTableVo.getOrderNum()));
                 }
               };
-          rfmRowVo.add(tempRFMRowVo);
+          rfmRowVo.add(tempRfmRowVo);
         }
         // 行总和
         Integer rowUserNum = 0;
         Double rowUserRate = 0.0000;
         BigDecimal rowMoney = BigDecimal.valueOf(0.00);
         BigDecimal rowPrice = BigDecimal.valueOf(0.00);
-        for (RFMRowVo rowTotalVo : rfmRowVo) {
+        for (RfmRowVo rowTotalVo : rfmRowVo) {
           rowUserNum += rowTotalVo.getPayUserNum();
           rowUserRate += rowTotalVo.getUserRate();
           rowMoney = rowMoney.add(rowTotalVo.getTotalPaidMoney());
@@ -826,7 +826,7 @@ public class UserAnalysisService extends ShopBaseService {
             rowPrice = rowPrice.add(rowTotalVo.getPrice());
           }
         }
-        RFMRowVo rowTotalVo = new RFMRowVo();
+        RfmRowVo rowTotalVo = new RfmRowVo();
         rowTotalVo.setFrequencyType(COLUMN_TYPE);
         rowTotalVo.setPayUserNum(rowUserNum);
         rowTotalVo.setUserRate(rowUserRate);
@@ -835,8 +835,8 @@ public class UserAnalysisService extends ShopBaseService {
         rfmRowVo.add(rowTotalVo);
         // 当前行作为一个对象
         Byte finalI = i;
-        RFMVo rfmVo =
-            new RFMVo() {
+        RfmVo rfmVo =
+            new RfmVo() {
               {
                 setRecencyType(finalI);
                 setRfmRowVo(rfmRowVo);
@@ -845,9 +845,9 @@ public class UserAnalysisService extends ShopBaseService {
         result.add(rfmVo);
       }
       // 列总和
-      RFMVo columnRFMVo = new RFMVo();
+      RfmVo columnRfmVo = new RfmVo();
 
-      List<RFMRowVo> columnRFMRowVo = new ArrayList<>();
+      List<RfmRowVo> columnRfmRowVo = new ArrayList<>();
       for (int j = NumberUtils.INTEGER_ZERO; j <= COLUMN_MAX; j++) {
         Integer columnUserNum = 0;
         Double columnUserRate = 0.0000;
@@ -861,18 +861,18 @@ public class UserAnalysisService extends ShopBaseService {
             columnPrice = columnPrice.add(result.get(k).getRfmRowVo().get(j).getPrice());
           }
         }
-        RFMRowVo columnTotalVo = new RFMRowVo();
+        RfmRowVo columnTotalVo = new RfmRowVo();
         columnTotalVo.setFrequencyType((byte) (j + NumberUtils.INTEGER_ONE));
         columnTotalVo.setPayUserNum(columnUserNum);
         columnTotalVo.setUserRate(columnUserRate);
         columnTotalVo.setTotalPaidMoney(columnMoney);
         columnTotalVo.setPrice(columnPrice);
-        columnRFMRowVo.add(columnTotalVo);
+        columnRfmRowVo.add(columnTotalVo);
       }
-      columnRFMVo.setRecencyType(ROW_TYPE);
-      columnRFMVo.setRfmRowVo(columnRFMRowVo);
+      columnRfmVo.setRecencyType(ROW_TYPE);
+      columnRfmVo.setRfmRowVo(columnRfmRowVo);
 
-      result.add(columnRFMVo);
+      result.add(columnRfmVo);
       return result;
     } catch (ParseException e) {
       e.printStackTrace();

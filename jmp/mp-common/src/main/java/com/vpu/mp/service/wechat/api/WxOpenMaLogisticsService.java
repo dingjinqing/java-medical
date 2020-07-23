@@ -31,8 +31,9 @@ public interface WxOpenMaLogisticsService extends WxOpenMaMpHttpBase {
     /**
      * 获取支持的快递公司列表
      *
-     * @param appId https调用凭证
-     *              {@value LOGISTICS_GET_ALL_DELIVERY}
+     * @param appId  https调用凭证 {@value LOGISTICS_GET_ALL_DELIVERY}
+     * @return
+     * @throws WxErrorException
      */
     default String getAllDelivery(String appId) throws WxErrorException {
         return post(appId, LOGISTICS_GET_ALL_DELIVERY, StringUtils.EMPTY);
@@ -44,6 +45,7 @@ public interface WxOpenMaLogisticsService extends WxOpenMaMpHttpBase {
      * @param appId     https调用凭证
      * @param jsonParam 绑定参数
      *                  {@value LOGISTICS_BIND_ACCOUNT}
+     * @throws WxErrorException
      */
     default WxOpenResult bindAccount(String appId, String jsonParam) throws WxErrorException {
         String jsonResult = post(appId, LOGISTICS_BIND_ACCOUNT, jsonParam);
@@ -55,6 +57,7 @@ public interface WxOpenMaLogisticsService extends WxOpenMaMpHttpBase {
      *
      * @param appId https调用凭证
      *              {@value LOGISTICS_GET_ALL_ACCOUNT}
+     * @throws WxErrorException
      */
     default String getAllAccount(String appId) throws WxErrorException {
         return post(appId, LOGISTICS_GET_ALL_ACCOUNT, StringUtils.EMPTY);

@@ -10,12 +10,12 @@ import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MaMpBindParam;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MaMpBindParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOAPayManageParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.market.message.BindOARabbitParam;
+import com.vpu.mp.service.pojo.shop.market.message.BindRabbitParam;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
 import com.vpu.mp.service.wechat.api.WxOpenMpampLinkService;
@@ -364,12 +364,12 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param shopId
 	 */
 	public void batchGetUsersByRabbitMq(String appId, String language, Integer sysId,Integer shopId) {
-		BindOARabbitParam param=new BindOARabbitParam();
+		BindRabbitParam param=new BindRabbitParam();
 		param.setAppId(appId);
 		param.setLanguage(language);
 		param.setSysId(sysId);
 		logger().debug("批量获取公众号关注用户"+param.toString());
-		saas.taskJobMainService.dispatchImmediately(param,BindOARabbitParam.class.getName(),shopId,TaskJobEnum.MP_BIND_MA.getExecutionType());
+		saas.taskJobMainService.dispatchImmediately(param, BindRabbitParam.class.getName(),shopId,TaskJobEnum.MP_BIND_MA.getExecutionType());
 		//rabbitTemplate.convertAndSend("bind.mamp.template", "bind.mamp.key", param);
 	}
 

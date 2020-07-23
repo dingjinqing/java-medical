@@ -123,7 +123,7 @@ public class GroupIntegrationPictorialShareService extends BaseShareService {
         int goldIconStartY = (int)(imgPx.getGoodsStartY()+imgPx.getGoodsWidth()*(3.0/4)-70);
         int goldTextGap = 10;
         String scoreText = scoreNum.toString();
-        Font scoreFont = ImageUtil.SourceHanSansCN(Font.BOLD,50);
+        Font scoreFont = ImageUtil.SourceHanSansCn(Font.BOLD,50);
         Integer scoreTextWidth = groupGoldImg.getWidth()+goldTextGap+ImageUtil.getTextWidth(bgBufferedImage,scoreFont,scoreText);
 
         int goldIconStartX=  bgMiddleX-scoreTextWidth/2;
@@ -133,7 +133,7 @@ public class GroupIntegrationPictorialShareService extends BaseShareService {
         // 添加 '新用户可瓜分双份'文字
         if (GroupIntegrationService.ACTIVITY_DIVIDE_TYPE_NEW.equals(record.getDivideType())) {
             String newUserTextStr = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_INTEGRAL_SHARE_NEW_USER_DOC, "", "messages");
-            Font textFont = ImageUtil.SourceHanSansCN(Font.BOLD,25);
+            Font textFont = ImageUtil.SourceHanSansCn(Font.BOLD,25);
             Integer newUserTextWidth = ImageUtil.getTextWidth(bgBufferedImage,textFont,newUserTextStr);
             Integer newUserTextStartX =  bgMiddleX-newUserTextWidth/2;
             int newUserTextStartY = imgPx.getGoodsStartY()+imgPx.getGoodsWidth()-130;
@@ -146,7 +146,7 @@ public class GroupIntegrationPictorialShareService extends BaseShareService {
         timeTextSb.append(Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_INTEGRAL_LIMIT_TIME, "", "messages"));
         timeTextSb.append(startTime).append("-").append(endTime);
         String timeText = timeTextSb.toString();
-        Font textFont = ImageUtil.SourceHanSansCN(Font.BOLD,20);
+        Font textFont = ImageUtil.SourceHanSansCn(Font.BOLD,20);
         Integer timeTextWidth = ImageUtil.getTextWidth(bgBufferedImage,textFont,timeText);
         Integer timeTextStartX =  bgMiddleX-timeTextWidth/2;
         int timeTextStartY = imgPx.getGoodsStartY()+imgPx.getGoodsWidth()-90;
@@ -159,10 +159,10 @@ public class GroupIntegrationPictorialShareService extends BaseShareService {
         ImageUtil.addTwoImage(bgBufferedImage, qrCodeBufferImg, imgPx.getQrCodeStartX(), imgPx.getBottomStartY());
         // ‘瓜分积分’文字
         String bottomText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_INTEGRAL_SHARE_SCORE, "", "messages");
-        Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCN(Font.PLAIN,PictorialImgPx.MEDIUM_FONT_SIZE),bottomText);
+        Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage,ImageUtil.SourceHanSansCn(Font.PLAIN,PictorialImgPx.MEDIUM_FONT_SIZE),bottomText);
         int bottomTextStartX = (imgPx.getBgWidth()-textWidth)/2;
         int bottomTextStartY =imgPx.getBottomStartY()+imgPx.getQrCodeWidth()+40;
-        ImageUtil.addFont(bgBufferedImage,bottomText,ImageUtil.SourceHanSansCN(Font.PLAIN,PictorialImgPx.MEDIUM_FONT_SIZE),bottomTextStartX,bottomTextStartY,imgPx.getHeadFontColor(),true);
+        ImageUtil.addFont(bgBufferedImage,bottomText,ImageUtil.SourceHanSansCn(Font.PLAIN,PictorialImgPx.MEDIUM_FONT_SIZE),bottomTextStartX,bottomTextStartY,imgPx.getHeadFontColor(),true);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);

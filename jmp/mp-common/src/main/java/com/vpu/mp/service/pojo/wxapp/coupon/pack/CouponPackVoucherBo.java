@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Setter
 @Getter
 public class CouponPackVoucherBo {
-    //礼包配置内容
+    /**  礼包配置内容
     /**主键 */
     private Integer id;
     /** 优惠券id */
@@ -30,8 +30,8 @@ public class CouponPackVoucherBo {
     /** 定时发放的数量 */
     private Integer timingAmount;
 
-    //相对于totalAmount已经发放出去的优惠券数量
+    /**  相对于totalAmount已经发放出去的优惠券数量 */
     private Integer grantCouponNumber;
-    //最后一次发放的时间
+    /**  最后一次发放的时间 */
     private Timestamp lastSendTime;
 }

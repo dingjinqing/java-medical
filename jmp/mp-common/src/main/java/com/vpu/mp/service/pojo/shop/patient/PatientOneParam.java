@@ -5,6 +5,9 @@ import lombok.Data;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+/**
+ * @author chenjie
+ */
 @Data
 public class  PatientOneParam {
     private Integer   id;

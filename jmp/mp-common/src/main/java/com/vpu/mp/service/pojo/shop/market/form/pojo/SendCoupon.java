@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.form.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,12 +13,25 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SendCoupon {
-    private String act_code;
+    @JsonProperty("act_code")
+    private String actCode;
+
     private int denomination;
-    private String consume_text;
-    private String receive_text;
-    private Integer coupon_id;
-    private int use_score;
-    private int score_number;
+
+    @JsonProperty("consume_text")
+    private String consumeText;
+
+    @JsonProperty("receive_text")
+    private String receiveText;
+
+    @JsonProperty("coupon_id")
+    private Integer couponId;
+
+    @JsonProperty("use_score")
+    private int useScore;
+
+    @JsonProperty("score_number")
+    private int scoreNumber;
+
     private int limitSurplusFlag;
 }
