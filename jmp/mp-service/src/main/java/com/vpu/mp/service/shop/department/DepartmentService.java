@@ -213,4 +213,13 @@ public class DepartmentService extends ShopBaseService {
 
         return JsonResult.success();
     }
+
+    /**
+     * 根据名字查找
+     * @param name
+     * @return
+     */
+    public List<DepartmentOneParam> ListDepartmentsByName(String name) {
+        return departmentDao.ListDepartmentsByName(name);
+    }
 }

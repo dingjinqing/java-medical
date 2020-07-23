@@ -42,7 +42,7 @@ public class ImSessionService extends ShopBaseService {
     private JedisManager jedisManager;
 
     /**
-     * 新增会话
+     * 新增待接诊会话
      * @param param 新增会话信息
      * @return 会话id
      */
@@ -80,8 +80,17 @@ public class ImSessionService extends ShopBaseService {
         Timestamp lessCreateTime = DateUtils.getTimeStampPlus(-ImSessionConstant.CANCEL_LIMIT_TIME, ChronoUnit.HOURS);
         cancelCondition.setLessCreateTime(lessCreateTime);
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(cancelCondition);
+        List<Integer> sessionIds = new ArrayList<>(imSessionDos.size());
+        Integer shopId = getShopId();
 
-        List<Integer> sessionIds = imSessionDos.stream().map(ImSessionDo::getId).collect(Collectors.toList());
+        for (ImSessionDo imSessionDo : imSessionDos) {
+            // 删除并入库用户聊天信息
+            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+            // 删除并入库医师聊天信息
+            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getPatientId());
+            sessionIds.add(imSessionDo.getId());
+        }
+
         imSessionDao.batchUpdateSessionStatus(sessionIds,ImSessionConstant.SESSION_CANCEL);
     }
 
@@ -93,8 +102,16 @@ public class ImSessionService extends ShopBaseService {
         cancelCondition.setStatus(ImSessionConstant.SESSION_ON);
         Timestamp limitTime = DateUtils.getLocalDateTime();
         cancelCondition.setLimitTime(limitTime);
+        Integer shopId = getShopId();
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(cancelCondition);
-        List<Integer> sessionIds = imSessionDos.stream().map(ImSessionDo::getId).collect(Collectors.toList());
+        List<Integer> sessionIds = new ArrayList<>(imSessionDos.size());
+        for (ImSessionDo imSessionDo : imSessionDos) {
+            // 删除并入库用户聊天信息
+            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+            // 删除并入库医师聊天信息
+            dumpAndDeleteSessionReadyAndBakToDb(shopId,imSessionDo.getId(),imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getPatientId());
+            sessionIds.add(imSessionDo.getId());
+        }
         imSessionDao.batchUpdateSessionStatus(sessionIds,ImSessionConstant.SESSION_END);
     }
 
@@ -150,30 +167,11 @@ public class ImSessionService extends ShopBaseService {
         }
         imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END);
         Integer shopId = getShopId();
-        // 用户发送的消息列表
-        List<String> userSession = removeSessionReadyAndBak(shopId, imSessionDo.getDepartmentId(),imSessionDo.getPatientId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
-        // 医生发送的消息列表
-        List<String> doctorSession = removeSessionReadyAndBak(shopId,imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
 
-        List<ImSessionItemDo> readyToDb = new ArrayList<>();
-        for (String s : userSession) {
-            ImSessionItemBase imSessionItemBase = Util.parseJson(s, ImSessionItemBase.class);
-            if (imSessionItemBase == null) {
-                continue;
-            }
-            ImSessionItemDo imSessionItemDo = convertImSessionItemBasetoDo(imSessionItemBase, sessionId, imSessionDo.getUserId(), imSessionDo.getDoctorId());
-            readyToDb.add(imSessionItemDo);
-        }
-        for (String s : doctorSession) {
-            ImSessionItemBase imSessionItemBase = Util.parseJson(s, ImSessionItemBase.class);
-            if (imSessionItemBase == null) {
-                continue;
-            }
-            ImSessionItemDo imSessionItemDo = convertImSessionItemBasetoDo(imSessionItemBase, sessionId, imSessionDo.getDoctorId(), imSessionDo.getUserId());
-            readyToDb.add(imSessionItemDo);
-        }
-
-        imSessionItemDao.batchInsert(readyToDb);
+        // 删除并入库用户聊天信息
+        dumpAndDeleteSessionReadyAndBakToDb(shopId,sessionId,imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+        // 删除并入库医师聊天信息
+        dumpAndDeleteSessionReadyAndBakToDb(shopId,sessionId,imSessionDo.getDepartmentId(),imSessionDo.getPatientId(),imSessionDo.getUserId(),imSessionDo.getPatientId());
     }
 
     private ImSessionItemDo convertImSessionItemBasetoDo(ImSessionItemBase imSessionItemBase,Integer sessionId,Integer fromId,Integer toId){
@@ -188,7 +186,7 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
-     * 将待查看会话中的信息内容移动至会话过往记录列表内
+     * 将待查看会话中的信息内容移动至已读会话记录列表内
      * @param shopId 店铺id
      * @param departmentId 科室id
      * @param patientId 患者id
@@ -197,8 +195,8 @@ public class ImSessionService extends ShopBaseService {
      * @return 待查看会话集合
      */
     private List<ImSessionItemBase> dumpSessionReadyToBak(Integer shopId, Integer departmentId,Integer patientId, Integer fromId, Integer toId) {
-        String sessionKey = getSessionRedisKey(getShopId(), departmentId,patientId, fromId, toId);
-        String sessionBakKey = getSessionRedisKeyBak(getShopId(), departmentId,patientId, fromId, toId);
+        String sessionKey = getSessionRedisKey(shopId, departmentId,patientId, fromId, toId);
+        String sessionBakKey = getSessionRedisKeyBak(shopId, departmentId,patientId, fromId, toId);
 
         List<String> readyToReadList = jedisManager.getList(sessionKey);
         List<ImSessionItemBase> retVos = new ArrayList<>(readyToReadList.size());
@@ -225,24 +223,51 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
-     * 清空待查看和已查看redis key
+     * 将已读会话记录信息的从redis清空并入库
      * @param shopId 店铺id
+     * @param sessionId 会话id
      * @param departmentId 科室id
      * @param patientId 患者id
      * @param fromId 发送者id
      * @param toId 接受者id
-     * @return 所有会话记录集合
      */
-    private List<String> removeSessionReadyAndBak(Integer shopId,Integer departmentId,Integer patientId, Integer fromId, Integer toId){
-        dumpSessionReadyToBak(shopId,departmentId,patientId,fromId,toId);
-        String sessionKey = getSessionRedisKey(shopId,departmentId,patientId, fromId,toId);
+    private void dumpSessionBakToDb(Integer shopId,Integer sessionId,Integer departmentId,Integer patientId,Integer fromId,Integer toId){
         String sessionBakKey = getSessionRedisKeyBak(shopId,departmentId,patientId, fromId, toId);
         List<String> list = jedisManager.getList(sessionBakKey);
-        jedisManager.delete(sessionKey);
-        jedisManager.delete(sessionBakKey);
-        return list;
+        if (list.size() == 0) {
+            return;
+        }
+
+        jedisManager.cleanList(sessionBakKey);
+        List<ImSessionItemDo> readyToDb = new ArrayList<>();
+        for (String s : list) {
+            ImSessionItemBase imSessionItemBase = Util.parseJson(s, ImSessionItemBase.class);
+            if (imSessionItemBase == null) {
+                continue;
+            }
+            ImSessionItemDo imSessionItemDo = convertImSessionItemBasetoDo(imSessionItemBase, sessionId, fromId,toId);
+            readyToDb.add(imSessionItemDo);
+        }
+        imSessionItemDao.batchInsert(readyToDb);
     }
 
+    /**
+     * 删除未读和已读的所有消息，并将已有消息入库
+     * @param shopId 店铺id
+     * @param sessionId 会话id
+     * @param departmentId 科室id
+     * @param patientId 患者id
+     * @param fromId 发送者id
+     * @param toId 接受者id
+     */
+    private void dumpAndDeleteSessionReadyAndBakToDb(Integer shopId,Integer sessionId,Integer departmentId,Integer patientId,Integer fromId,Integer toId){
+        dumpSessionReadyToBak(shopId,departmentId,patientId,fromId,toId);
+        dumpSessionBakToDb(shopId,sessionId,departmentId,patientId,fromId,toId);
+        String sessionRedisKey = getSessionRedisKey(shopId, departmentId, patientId, fromId, toId);
+        String sessionRedisKeyBak = getSessionRedisKeyBak(shopId, departmentId, patientId, fromId, toId);
+
+        jedisManager.delete(new String[]{sessionRedisKey,sessionRedisKeyBak});
+    }
     /**
      * 判断信息
      * @param sessionId
