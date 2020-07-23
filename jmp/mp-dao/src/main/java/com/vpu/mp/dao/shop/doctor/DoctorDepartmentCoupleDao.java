@@ -16,6 +16,9 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
+/**
+ * @author chenjie
+ */
 @Repository
 public class DoctorDepartmentCoupleDao extends ShopBaseDao{
     /**

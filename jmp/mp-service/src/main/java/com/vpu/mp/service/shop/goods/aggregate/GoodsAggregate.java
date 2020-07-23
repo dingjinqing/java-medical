@@ -246,13 +246,19 @@ public class GoodsAggregate {
     private Integer matchGoodsMedical(GoodsMatchParam goodsMatchParam) {
         Integer goodsId;
         goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
-        if (goodsId != null) return goodsId;
+        if (goodsId != null) {
+            return goodsId;
+        }
         goodsMatchParam.setGoodsId(null);
         goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
-        if (goodsId != null) return goodsId;
+        if (goodsId != null) {
+            return goodsId;
+        }
         goodsMatchParam.setProductionEnterprise(null);
         goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
-        if (goodsId != null) return goodsId;
+        if (goodsId != null) {
+            return goodsId;
+        }
         goodsMatchParam.setGoodsQualityRatio(null);
         goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
         return goodsId;
