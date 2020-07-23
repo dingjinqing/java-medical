@@ -9,7 +9,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.shop.im.ImSessionService;
-import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -17,7 +17,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.action.InsteadPayService;
 import com.vpu.mp.service.shop.order.action.PayService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;

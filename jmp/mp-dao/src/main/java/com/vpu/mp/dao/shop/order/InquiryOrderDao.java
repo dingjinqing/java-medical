@@ -20,6 +20,9 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
 
+/**
+ * @author yangpengcheng
+ */
 @Repository
 public class InquiryOrderDao extends ShopBaseDao {
 
@@ -41,20 +44,29 @@ public class InquiryOrderDao extends ShopBaseDao {
      */
     protected SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select, InquiryOrderListParam param) {
         Timestamp nowDate = new Timestamp(System.currentTimeMillis());
-        if(param.getDoctorId()!=null)
+        if(param.getDoctorId()!=null) {
             select.where(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId()));
-        if(param.getOrderStatus()!=null)
+        }
+        if(param.getOrderStatus()!=null) {
             select.where(INQUIRY_ORDER.ORDER_STATUS.eq(param.getOrderStatus()));
-        if(param.getDepartmentId()!=null)
+        }
+        if(param.getDepartmentId()!=null) {
             select.where(INQUIRY_ORDER.DEPARTMENT_ID.eq(param.getDepartmentId()));
-        if(StringUtils.isNotBlank(param.getDoctorName()))
+        }
+        if(StringUtils.isNotBlank(param.getDoctorName())) {
             select.where(INQUIRY_ORDER.DOCTOR_NAME.like(this.likeValue(param.getDoctorName())));
-        if(StringUtils.isNotBlank(param.getPatientName()))
+        }
+        if(StringUtils.isNotBlank(param.getPatientName())) {
             select.where(INQUIRY_ORDER.PATIENT_NAME.like(this.likeValue(param.getPatientName())));
+        }
         return select;
     }
-    /*
-     *新增
+
+    /**
+     * 新增
+     *
+     * @param inquiryOrderDo
+     * @return
      */
     public int save(InquiryOrderDo inquiryOrderDo){
         InquiryOrderRecord inquiryOrderRecord=db().newRecord(INQUIRY_ORDER);
@@ -62,22 +74,32 @@ public class InquiryOrderDao extends ShopBaseDao {
         inquiryOrderRecord.insert();
         return inquiryOrderRecord.getOrderId();
     }
-    /*
-     *更新微信支付id
+
+    /**
+     * 更新微信支付id
+     *
+     * @param orderSn
+     * @param prepayId
      */
     public void updatePrepayId(String orderSn ,String prepayId){
         db().update(INQUIRY_ORDER).set(INQUIRY_ORDER.PREPAY_ID,prepayId).where(INQUIRY_ORDER.ORDER_SN.eq(orderSn)).execute();
     }
-    /*
-     *@param orderSn
+
+
+    /**
+     * getByOrderSn
+     *
+     * @param orderSn
      * @return
      */
     public InquiryOrderDo getByOrderSn(String orderSn){
         return db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_SN.eq(orderSn)).and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchOneInto(InquiryOrderDo.class);
 
     }
-    /*
-     *@param orderId
+
+    /**
+     * getByOrderId
+     * @param orderId
      * @return
      */
     public InquiryOrderDo getByOrderId(Integer orderId){
@@ -92,13 +114,17 @@ public class InquiryOrderDao extends ShopBaseDao {
 
     /**
      * 获得待支付的超时问诊订单
+     * @return
      */
     public List<InquiryOrderDo> getCanceledToPaidCloseOrder(){
         return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_PAID))
             .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(0-InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetchInto(InquiryOrderDo.class);
     }
+
     /**
      * 获得待接诊的超时未接诊的问诊订单
+     *
+     * @return
      */
     public List<InquiryOrderDo>  getCanceledToWaitingCloseOrder(){
         return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_RECEIVE))

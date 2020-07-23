@@ -65,7 +65,7 @@ import com.vpu.mp.service.shop.medicine.PullHitsHistoryPrescriptionService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.OrderApiService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;

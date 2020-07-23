@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.order.Inquiry;
+package com.vpu.mp.service.shop.order.inquiry;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.JsonResult;
@@ -43,6 +43,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author yangpengcheng
+ */
 @Service
 public class InquiryOrderService extends ShopBaseService {
     @Autowired
