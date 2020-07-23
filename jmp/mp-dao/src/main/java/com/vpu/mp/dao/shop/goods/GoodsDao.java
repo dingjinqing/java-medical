@@ -267,9 +267,15 @@ public class GoodsDao extends ShopBaseDao {
         if (goodsMatchParam.getGoodsId() > 0) {
             condition.and(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsMatchParam.getGoodsId()));
         } else {
-            if (goodsMatchParam.getGoodsCommonName() != null) condition.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(goodsMatchParam.getGoodsCommonName()));
-            if (goodsMatchParam.getGoodsQualityRatio() != null) condition.and(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.eq(goodsMatchParam.getGoodsQualityRatio()));
-            if (goodsMatchParam.getProductionEnterprise() != null) condition.and(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.eq(goodsMatchParam.getProductionEnterprise()));
+            if (goodsMatchParam.getGoodsCommonName() != null) {
+                condition.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(goodsMatchParam.getGoodsCommonName()));
+            }
+            if (goodsMatchParam.getGoodsQualityRatio() != null) {
+                condition.and(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.eq(goodsMatchParam.getGoodsQualityRatio()));
+            }
+            if (goodsMatchParam.getProductionEnterprise() != null) {
+                condition.and(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.eq(goodsMatchParam.getProductionEnterprise()));
+            }
         }
         return db().select(GOODS.GOODS_ID).from(GOODS)
             .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_ID.eq(GOODS.GOODS_ID))

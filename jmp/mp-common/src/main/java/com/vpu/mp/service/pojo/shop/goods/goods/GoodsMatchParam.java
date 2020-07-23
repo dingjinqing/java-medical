@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.goods.goods;
 
 import lombok.Data;
 
+/**
+ * @author chenjie
+ */
 @Data
 public class GoodsMatchParam {
     private Integer goodsId;
