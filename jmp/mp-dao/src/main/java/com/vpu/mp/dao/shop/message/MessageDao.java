@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.Message;
 import com.vpu.mp.db.shop.tables.records.MessageRecord;
+import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_NOT_READ;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_TOP;
 
@@ -91,6 +93,18 @@ public class MessageDao extends ShopBaseDao {
                 .and(Message.MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_NOT_READ))
                 .and(Message.MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class);
         return integers.get(0);
+    }
+
+    /**
+     * 消息已读状态变更
+     * @param messageId 消息id
+     */
+    public void changeMessageStatus(Integer messageId, Byte status){
+        MessageRecord messageRecord = db().select().from(Message.MESSAGE)
+            .where(Message.MESSAGE.MESSAGE_ID.eq(messageId))
+            .fetchOneInto(MessageRecord.class);
+        messageRecord.setMessageStatus(status);
+        messageRecord.update();
     }
 
 }

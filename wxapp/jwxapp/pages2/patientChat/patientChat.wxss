@@ -1,1 +1,48 @@
 /* pages2/patientChat/patientChat.wxss */
+.origin_message {
+  max-width: 450rpx;
+  min-height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  position: relative;
+}
+
+.origin_left {
+  background: #fff;
+  font-size: 32rpx;
+  color: #333;
+  margin-left: 20rpx;
+}
+
+.origin_left::before {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 34rpx;
+  left: -10rpx;
+  border-top: solid 10rpx transparent;
+  border-right: solid 10rpx #fff;
+  border-bottom: solid 10rpx transparent;
+}
+
+.origin_right {
+  background: #26C4BC;
+  font-size: 32rpx;
+  color: #fff;
+  margin-right: 20rpx;
+}
+.origin_right::before {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 34rpx;
+  right: -10rpx;
+  border-top: solid 10rpx transparent;
+  border-left: solid 10rpx #26C4BC;
+  border-bottom: solid 10rpx transparent;
+}
