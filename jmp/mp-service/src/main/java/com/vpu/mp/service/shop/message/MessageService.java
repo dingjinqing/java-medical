@@ -48,4 +48,13 @@ public class MessageService extends ShopBaseService {
         return messageDao.countMessageNum(receiveId);
     }
 
+    /**
+     * 更改消息已读状态
+     * @param messageId 消息id
+     * @param status 消息状态
+     */
+    public void changeMessageStatus(Integer messageId, Byte status) {
+        messageDao.changeMessageStatus(messageId, status);
+    }
+
 }
