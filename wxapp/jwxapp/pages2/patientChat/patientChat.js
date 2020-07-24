@@ -1,7 +1,7 @@
 // pages1/prescriptionsheet/prescriptionsheet.js
 var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
-var util = require('../../utils/util.js')
+var util = require('../../utils/util.js');
 global.wxPage({
 
   /**
@@ -9,7 +9,8 @@ global.wxPage({
    */
   data: {
     time: '2020-07-23 13:35:01',
-    page_name: 'saoyang'
+    page_name: 'saoyang',
+    send_message:''
   },
 
   /**
@@ -19,8 +20,10 @@ global.wxPage({
     this.requsetMessage()
   },
   getInputMessage(e){
+    let that = this
     let {detail:message} = e 
     console.log(message)
+    that.sendMessage(message)
   },
 
   /**
@@ -71,7 +74,27 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
+  sendMessage: function (message) {
+    let that = this;
+    if (message == '') return;
+    let imSessionItem ={
+      "type":0,
+      "message":""
+    }
+    imSessionItem.message = message;
+    util.api('/api/wxapp/im/session/send', res => {
+      console.log(res)
+      if (res.error === 0) {
 
+      }
+    }, {
+      departmentId: 12,
+      patientId: 3,//患者
+      fromId: 2,//小程序用户
+      toId: 1,//to医生
+      imSessionItem:imSessionItem
+    }, '', true);
+  },
   requsetMessage: function () {
 
     util.api('/api/wxapp/im/session/pull', res => {
