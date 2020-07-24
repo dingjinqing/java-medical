@@ -18,7 +18,10 @@ global.wxPage({
   onLoad: function (options) {
     this.requsetMessage()
   },
-
+  getInputMessage(e){
+    let {detail:message} = e 
+    console.log(message)
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
