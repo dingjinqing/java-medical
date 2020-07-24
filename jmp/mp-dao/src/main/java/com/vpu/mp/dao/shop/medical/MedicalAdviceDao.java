@@ -1,16 +1,13 @@
-package com.vpu.mp.dao.shop.medicalHistory;
+package com.vpu.mp.dao.shop.medical;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.MedicalAdviceRecord;
-import com.vpu.mp.db.shop.tables.records.MedicalHistoryRecord;
 import com.vpu.mp.service.pojo.shop.medical.FetchMedicalAdviceVo;
-import com.vpu.mp.service.pojo.shop.medicalhistory.FetchMedicalHistoryVo;
 import org.springframework.stereotype.Repository;
 
 import static com.vpu.mp.db.shop.tables.MedicalAdvice.MEDICAL_ADVICE;
-import static com.vpu.mp.db.shop.tables.MedicalHistory.MEDICAL_HISTORY;
 
 
 /**
