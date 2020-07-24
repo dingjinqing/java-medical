@@ -1,0 +1,48 @@
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main-container">
+		<view class="title-module">患者信息</view>
+		<view class="card-content has-padding p-left">
+			<view class="list-item">
+				<text class="default-text">姓名</text>
+				<input class="emphasis-text" placeholder="请输入姓名" placeholder-class="phClass" />
+			</view>
+			<view class="list-item">
+				<text class="default-text">年龄</text>
+				<input class="emphasis-text" placeholder="请输入年龄" placeholder-class="phClass" />
+			</view>
+			<view class="list-item">
+				<text class="default-text">性别</text>
+				<view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+					<picker mode="selector" value="{{sex_index}}" range="{{array}}" bindchange="bindSexChange">
+						<view class="picker">
+							{{array[sex_index]}}
+						</view>
+					</picker>
+				</view>
+			</view>
+		</view>
+		<view class="title-module">病情描述</view>
+		<view class="card-content column has-padding p-top p-bottom">
+			<textarea placeholder="请在此填写病情描述" maxlength='300'></textarea>
+			<view class="image-con">
+
+				<block wx:for="{{comm_img}}" wx:key="index" wx:for-item="imgitem" wx:for-index="imgindex">
+					<view class='shai_view'>
+						<image src='{{imageUrl}}image/wxapp/dele_service.png' class="shai_close" bindtap='customDelImage' data-imgindex="{{imgindex}}" data-idx='{{index}}'></image>
+						<image src="{{imgitem}}"></image>
+					</view>
+				</block>
+				<view class="upload-image" bindtap="customUpImage" >
+					<image class="upload-icon" src="{{imageUrl}}image/wxapp/upload_prescription-icon.png"></image>
+					<text class="upload-tips">上传图片</text>
+				</view>
+			</view>
+
+		</view>
+		<view class="footer-content">
+			<view class="footer-button" style="background-color:#26C4BC;">问诊￥0/次</view>
+		</view>
+
+	</view>
+</view>

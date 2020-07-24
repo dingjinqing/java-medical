@@ -133,6 +133,7 @@ module.exports = {
     "inquiryList":"待问诊",
     "repurchaselist":"处方药品",
     "patientinfo":"患者信息",
-    "messagelist":"信息列表"
+    "messagelist":"信息列表",
+    "doctorPatientMessage":"患者信息",
   }
 }

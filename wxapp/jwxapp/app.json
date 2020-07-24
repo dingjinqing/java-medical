@@ -44,7 +44,8 @@
     "components/usercenter/useraddress/useraddress",
     "pages/search/search",
     "components/popup/get-prescription/index",
-    "components/doctor/doctor_list/doctor_list"
+    "components/doctor/doctor_list/doctor_list",
+    "components/doctor/doctor_chat_message/doctor_chat_message"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -150,7 +151,10 @@
         "doctorConsultation/doctorConsultation",
         "allDepartment/allDepartment",
         "operatePrescriptionList/operatePrescriptionList",
-        "inquiryList/inquiryList"
+        "inquiryList/inquiryList",
+        "doctorPatientMessage/doctorPatientMessage",
+        "doctorChat/doctorChat",
+        "patientChat/patientChat"
       ]
     }
   ],

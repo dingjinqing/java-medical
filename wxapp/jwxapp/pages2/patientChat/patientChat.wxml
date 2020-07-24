@@ -1,0 +1,7 @@
+<!--pages2/patientChat/patientChat.wxml-->
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main-container">
+      <chat-date send-time='{{time}}'  />
+	</view>
+</view>

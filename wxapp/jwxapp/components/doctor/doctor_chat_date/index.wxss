@@ -1,0 +1,7 @@
+/* components/doctor/doctor_chat_date/index1.wxss */
+.chat-date{
+  color: #999;
+  font-size: 24rpx;
+  text-align: center;
+  padding:30rpx 0;
+}
