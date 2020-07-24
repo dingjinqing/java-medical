@@ -1,0 +1,221 @@
+@import "/css/iconfont.wxss";
+.main-container{
+  padding: 24rpx;
+}
+.dialog-content{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.prescription-content{
+  width: 702rpx;
+  display: flex;
+  flex-direction: column;
+}
+.prescription-title-content{
+  height: 180rpx;
+  background:#26C4BC;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.prescription-title-content .title{
+  color: #fff;
+  font-size: 40rpx;
+  text-align: center;
+  font-weight: 600;
+  line-height: 160rpx;
+}
+.prescription-title-content .title-item{
+  color: #fff;
+  font-size: 26rpx;
+  padding-left: 33rpx;
+}
+.prescription-title-content .title-item + .title-item{
+  margin-top: 20rpx;
+}
+.prescription-info-content{
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+.top-radius{
+  border-radius: 16rpx 16rpx 0 0;
+  margin-top: -20rpx;
+}
+.prescription-item{
+  margin-left: 32rpx;
+  display: flex;
+  align-items: center;
+  min-height: 100rpx;
+  box-sizing: border-box;
+  padding-right: 32rpx;
+}
+.column{
+  flex-direction: column;
+  align-items: inherit;
+}
+.line-title{
+  line-height: 100rpx;
+}
+.user-info > view{
+  flex: 1;
+  display: flex;
+  color: #333;
+}
+.user-info > view > text{
+  font-weight: 600;
+}
+.user-info > view:nth-child(2){
+  justify-content: center;
+}
+.user-info > view:last-of-type{
+  justify-content: flex-end;
+}
+.prescription-item{
+  border-bottom: 2rpx solid #eee;
+}
+.prescription-item > .item-center{
+  flex: 1;
+}
+.item-left,.item-center,.item-right{
+  display: flex;
+  align-items: center;
+}
+.item-left{
+  color: #333;
+}
+.item-center{
+  color: #999;
+}
+.item-right > .iconjiantou{
+  font-size: 26rpx;
+  color: #666;
+}
+.item-right > .iconshanchu{
+  font-size: 38rpx;
+  color: #666;
+}
+.item-right > .icontianjia{
+  font-size: 38rpx;
+  color: #26C4BC;
+}
+.prescription-content > .prescription-doctor-info{
+  padding-left: 32rpx;
+  position: relative;
+  background: #fff;
+}
+.prescription-content > .prescription-doctor-info > .doctor-info{
+  height: 80rpx;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  color: #999;
+  padding-right: 32rpx;
+}
+/* .prescription-content > .prescription-doctor-info > .doctor-info:first-of-type{
+  border-top:2rpx solid #eee;
+} */
+.prescription-content > .prescription-doctor-info::after{
+  content: '';
+  position: absolute;
+  height: 16rpx;
+  width: 100%;
+  bottom: -16rpx;
+  left: 0;
+  background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
+  background-size: 40rpx 20rpx;
+}
+.prescription-content > .prescription-doctor-info > .doctor-info > .doctor-name {
+  color: #333;
+  font-size: 26rpx;
+} 
+.prescription-content > .prescription-doctor-info > .doctor-info > .sign-img{
+  width: 200rpx;
+  height: 60rpx;
+}
+.prescription-content > .prescription-doctor-info > .doctor-info > .item-date {
+  font-size: 26rpx;
+  margin-left: auto;
+} 
+.goods-content{
+  overflow: hidden;
+  background-color: #fff;
+}
+.goods-content > movable-area{
+  width: 100%;
+  height: 208rpx;
+  box-sizing: border-box;
+}
+.goods-content > movable-area > movable-view{
+  width: 790rpx;
+  height: 100%;
+  padding-left: 32rpx;
+}
+.goods-line{
+  height: 2rpx;
+  background-color: #eee;
+  margin-left: 32rpx;
+}
+.goods-item{
+  display: flex;
+  width: 790rpx;
+}
+.goods-target{
+  width: 670rpx;
+  padding: 24rpx 32rpx 24rpx 0;
+  box-sizing: border-box;
+  display: flex;
+}
+.goods-target > image{
+  width: 160rpx;
+  height: 160rpx;
+  margin-right: 24rpx;
+}
+.goods-target > .goods-desc{
+  flex: 1;
+}
+.goods-desc{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.goods-name{
+  color: #333;
+  line-height: 42rpx;
+}
+.goods-price{
+  font-weight: 600;
+  color: #FF9F15;
+}
+.del{
+  width: 120rpx;
+  line-height: 208rpx;
+  color: #fff;
+  text-align: center;
+  background-color: #26C4BC;
+}
+.medical-advice{
+  height: 317rpx;
+  border-radius: 16rpx;
+  width: 100%;
+  background-color: #f5f5f5;
+  padding: 24rpx;
+  box-sizing: border-box;
+  margin-bottom: 32rpx;
+}
+.footer-content{
+  width: 100%;
+  padding: 24rpx;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+.footer-button{
+  line-height: 80rpx;
+  border-radius: 40rpx;
+  text-align: center;
+  color:#fff;
+  font-size: 28rpx;
+  background-color: #26C4BC;
+}

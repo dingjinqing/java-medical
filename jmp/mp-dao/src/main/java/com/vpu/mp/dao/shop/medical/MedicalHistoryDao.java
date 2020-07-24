@@ -1,19 +1,15 @@
-package com.vpu.mp.dao.shop.medicalhistory;
+package com.vpu.mp.dao.shop.medical;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.MedicalHistoryRecord;
-import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.medicalhistory.*;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
 
-import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
 import static com.vpu.mp.db.shop.tables.MedicalHistory.MEDICAL_HISTORY;
 
 
@@ -75,8 +71,8 @@ public class MedicalHistoryDao extends ShopBaseDao {
     /**
      * 病历详情查询
      *
-     * @param posCode
-     * @return PageResult<MedicalHistoryListVo>
+     * @param posCode 医嘱编码
+     * @return Integer
      */
     public Integer getMedicalHistoryDetailByCode(String posCode) {
         return db().select(MEDICAL_HISTORY.ID).from(MEDICAL_HISTORY)

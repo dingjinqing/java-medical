@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.order.Inquiry;
+package com.vpu.mp.service.shop.order.inquiry;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.JsonResult;
@@ -12,7 +12,6 @@ import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
-import com.vpu.mp.db.shop.tables.InquiryOrder;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -24,10 +23,10 @@ import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderConstant;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderListParam;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderOnParam;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryToPayParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -37,7 +36,6 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
-import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +43,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author yangpengcheng
+ */
 @Service
 public class InquiryOrderService extends ShopBaseService {
     @Autowired
@@ -69,21 +70,31 @@ public class InquiryOrderService extends ShopBaseService {
     private InquiryOrderRefundListDao inquiryOrderRefundListDao;
     @Autowired
     private ImSessionService imSessionService;
-    /*
-     *问询订单列表
+
+
+    /**
+     * 问询订单列表
+     * @param param
+     * @return
      */
     public PageResult<InquiryOrderDo> getInquiryOrderList(InquiryOrderListParam param){
         return inquiryOrderDao.getInquiryOrderList(param);
     }
-    /*
-     *订单id获得订单
+
+    /**
+     * 订单id获得订单
+     * @param orderId
+     * @return
      */
     public InquiryOrderDo getByOrderId(Integer orderId){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(orderId);
         return inquiryOrderDo;
     }
-    /*
-    *订单号获得订单
+
+    /**
+     * 订单号获得订单
+     * @param orderSn
+     * @return
      */
     public InquiryOrderDo getByOrderSn(String orderSn){
         return inquiryOrderDao.getByOrderSn(orderSn);
@@ -93,10 +104,10 @@ public class InquiryOrderService extends ShopBaseService {
      * 更改问诊状态为接诊中
      * @param param
      */
-    public void updateOrderReceiving(InquiryOrderOnParam param){
+    public void updateOrder(InquiryOrderOnParam param){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(param.getOrderSn());
         FieldsUtil.assign(param,inquiryOrderDo);
-        inquiryOrderDo.setOrderStatus(InquiryOrderConstant.ORDER_RECEIVING);
+        inquiryOrderDo.setOrderStatus(param.getOrderStatus());
         inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
         imSessionService.updateSessionToGoingOn(param.getSessionId());
@@ -112,10 +123,12 @@ public class InquiryOrderService extends ShopBaseService {
     public List<InquiryOrderDo> getCanceledToWaitingCloseOrder(){
         return inquiryOrderDao.getCanceledToWaitingCloseOrder();
     }
+
     /**
      * 问诊支付回调完成
-     * @param
-     * @return
+     * @param order
+     * @param paymentRecord
+     * @throws MpException
      */
     public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord) throws MpException {
         logger().info("问诊订单-支付完成(回调)-开始");
@@ -186,8 +199,11 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDao.save(inquiryOrderDo);
         return orderSn;
     }
-    /*
-     *退款
+
+    /**
+     * 退款
+     * @param inquiryOrderOnParam
+     * @return
      */
     public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(inquiryOrderOnParam.getOrderId());
@@ -200,8 +216,11 @@ public class InquiryOrderService extends ShopBaseService {
         }
         return JsonResult.success();
     }
-    /*
-    *退款调用
+
+    /**
+     * 退款调用
+     * @param order
+     * @throws MpException
      */
     public void refundInquiryOrder(InquiryOrderDo order)throws MpException{
         boolean successFlag=true;

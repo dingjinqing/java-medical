@@ -1,0 +1,111 @@
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main-container">
+		<view class="prescription-content" bindtap="viewRxSearch">
+			<view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
+				<view class="title">电子处方</view>
+			</view>
+			<view class="prescription-info-content top-radius">
+				<view class="prescription-item user-info">
+					<view>姓名：<text>张三</text></view>
+					<view>年龄：<text>45岁</text></view>
+					<view>性别：<text>男</text></view>
+				</view>
+				<view class="prescription-item">
+					<view class="item-left">科室：</view>
+					<view class="item-center">
+						请选择
+					</view>
+					<view class="item-right">
+						<text class="iconfont iconjiantou"></text>
+					</view>
+				</view>
+				<view class="prescription-item">
+					<view class="item-left">诊断：</view>
+					<view class="item-center">
+						<input type="text" placeholder="请输入诊断信息"></input>
+					</view>
+					<view class="item-right">
+						<text class="iconfont iconshanchu"></text>
+					</view>
+				</view>
+				<view class="prescription-item">
+					<view class="item-left">治疗建议：</view>
+					<view class="item-center">
+						苯磺酸氨氯地平片
+					</view>
+					<view class="item-right">
+						<text class="iconfont icontianjia"></text>
+					</view>
+				</view>
+			</view>
+			<view class="goods-content">
+				<movable-area>
+					<movable-view damping="100" out-of-bounds="true" direction="horizontal">
+						<view class="goods-item">
+							<view class="goods-target">
+								<image src="http://medicaldevimg.weipubao.cn/upload/224462/image/20200715/C7IzFaMAx415k7OYI8uu.jpg"></image>
+							<view class="goods-desc">
+								<text class="goods-name">敖东安神补脑液口服液10支治多梦神经 衰弱安眠药失眠中药调理安神</text>
+								<view class="goods-price-content">
+									<text class="goods-price">￥99.00</text>
+								</view>
+							</view>
+							</view>
+							<view class="del">
+								删除
+							</view>
+						</view>
+					</movable-view>
+				</movable-area>
+				<view class="goods-line"></view>
+				<movable-area>
+					<movable-view damping="100" out-of-bounds="true" direction="horizontal">
+						<view class="goods-item">
+							<view class="goods-target">
+								<image src="http://medicaldevimg.weipubao.cn/upload/224462/image/20200715/C7IzFaMAx415k7OYI8uu.jpg"></image>
+							<view class="goods-desc">
+								<text class="goods-name">敖东安神补脑液口服液10支治多梦神经 衰弱安眠药失眠中药调理安神</text>
+								<view class="goods-price-content">
+									<text class="goods-price">￥99.00</text>
+								</view>
+							</view>
+							</view>
+							<view class="del">
+								删除
+							</view>
+						</view>
+					</movable-view>
+				</movable-area>
+				<view class="goods-line"></view>
+			</view>
+			<view class="prescription-info-content">
+				<view class="prescription-item column">
+					<view class="line-title">医嘱：</view>
+					<textarea class="medical-advice" placeholder="默认显示药品用法用量，医生可手动更改"></textarea>
+				</view>
+			</view>
+			<view class="prescription-doctor-info">
+				<view class="doctor-info">
+					<text class="doctor-name">处方医师：</text>
+					<!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
+					<text>6666666</text>
+				</view>
+				<!-- <view class="doctor-info">
+          <text class="doctor-name">审核药师：</text>
+          <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
+        </view> -->
+				<view class="doctor-info">
+					<text class="doctor-name">发药药师：</text>
+					<!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
+					<text>66666666</text>
+					<text class="item-date">日期：{{filter.substring(prescriptionData.prescriptionCreateTime,0,10)}}</text>
+				</view>
+			</view>
+		</view>
+		<view class="footer-content">
+			<view class="footer-button">确认开方</view>
+		</view>
+		<include src="../../pages/common/footer.wxml" />
+	</view>
+</view>

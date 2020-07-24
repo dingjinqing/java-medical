@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
 
+/**
+ * @author zhaojianqiang
+ */
 @Data
 public class MaWxPlusInListInner implements Serializable {
 	private static final long serialVersionUID = 1L;

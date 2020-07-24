@@ -181,5 +181,19 @@ public class ModuleConstant {
      * 我的病历模块
      */
     public static final String M_CASE_HISTORY = "m_case_history";
+
+    /**
+     * 装修模块参数
+     */
+    public static String MODULE_NAME_PREFIX = "c_";
+    public static String MODULE_PAGE_CONFIG = "page_cfg";
+
+    /**
+     * 0保存为草稿，1保存并发布，2预览，3回退到当前已发布版本
+     */
+    public static Byte PAGE_STATE_DRAFT = 0;
+    public static Byte PAGE_STATE_SAVE = 1;
+    public static Byte PAGE_STATE_PREVIEW = 2;
+    public static Byte PAGE_STATE_ROLLBACK = 3;
 	
 }

@@ -1,9 +1,10 @@
-package com.vpu.mp.service.pojo.wxapp.order.Inquiry;
+package com.vpu.mp.service.pojo.wxapp.order.inquiry;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-
+/**
+ * @author yangpengcheng
+ */
 @Data
 public class InquiryOrderOnParam {
     private Integer orderId;

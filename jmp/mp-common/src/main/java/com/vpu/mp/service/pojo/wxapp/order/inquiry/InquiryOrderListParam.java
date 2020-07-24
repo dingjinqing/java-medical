@@ -1,8 +1,11 @@
-package com.vpu.mp.service.pojo.wxapp.order.Inquiry;
+package com.vpu.mp.service.pojo.wxapp.order.inquiry;
 
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
+/**
+ * @author yangpengcheng
+ */
 @Data
 public class InquiryOrderListParam extends BasePageParam {
     /**

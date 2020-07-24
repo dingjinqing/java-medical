@@ -1,13 +1,14 @@
 package com.vpu.mp.dao.shop.patient;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PatientRecord;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
@@ -15,10 +16,12 @@ import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.PATIENT;
 
+/**
+ * @author chenjie
+ */
 @Repository
 public class PatientDao extends ShopBaseDao{
     /**
@@ -139,5 +142,15 @@ public class PatientDao extends ShopBaseDao{
             select.and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode()));
         }
         return select.fetchOneInto(PatientOneParam.class);
+    }
+
+    /**
+     * 获取患者信息
+     * @param patientIds id集合
+     * @return
+     */
+    public List<PatientSimpleInfoVo> listPatientInfo(List<Integer> patientIds){
+        return db().select(PATIENT.ID,PATIENT.NAME).from(PATIENT).where(PATIENT.ID.in(patientIds).and(PATIENT.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(PatientSimpleInfoVo.class);
     }
 }

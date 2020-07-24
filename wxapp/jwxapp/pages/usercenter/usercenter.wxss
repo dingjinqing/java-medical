@@ -353,9 +353,31 @@ view{
 .center_QR_code{
   position: absolute;
   top: 30rpx;
-  right: 40rpx;
+  right: 115rpx;
   width: 42rpx;
   z-index: 200
+}
+.message_list_icon{
+  position: absolute;
+  top: 30rpx;
+  right: 40rpx;
+  width:40rpx;
+  height: 40rpx;
+  z-index: 200;
+}
+.message_list_icon image{
+  width: 40rpx;
+  height: 40rpx;
+}
+.not_read_icon{
+  position: absolute;
+  top: 0;
+  right: -4rpx;
+  width: 14rpx;
+  height: 14rpx;
+  background: #FF9F15;
+  border-radius: 100%;
+  z-index: 201;
 }
 .zhezhao{
   width: 750rpx;

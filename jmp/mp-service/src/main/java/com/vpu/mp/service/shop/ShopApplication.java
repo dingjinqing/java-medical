@@ -65,7 +65,7 @@ import com.vpu.mp.service.shop.medicine.PullHitsHistoryPrescriptionService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.shop.order.Inquiry.InquiryOrderService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.OrderApiService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
@@ -86,6 +86,7 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
+import com.vpu.mp.service.shop.task.order.InquiryOrderTaskService;
 import com.vpu.mp.service.shop.title.TitleService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.shop.user.message.MessageRecordService;
@@ -611,7 +612,11 @@ public class ShopApplication {
      */
     @Autowired
     public InquiryOrderService inquiryOrderService;
-
+    /**
+     * 问诊订单任务
+     */
+    @Autowired
+    public InquiryOrderTaskService inquiryOrderTaskService;
     /**
      * 病历处方拉取
      */

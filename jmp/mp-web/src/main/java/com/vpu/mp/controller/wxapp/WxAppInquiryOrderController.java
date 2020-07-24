@@ -6,16 +6,18 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderListParam;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryOrderOnParam;
-import com.vpu.mp.service.pojo.wxapp.order.Inquiry.InquiryToPayParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
-*问诊订单
+/**
+ * 问诊订单
+ * @author yangpengcheng
  */
 @RestController
 public class WxAppInquiryOrderController extends WxAppBaseController{
@@ -50,7 +52,10 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
      * 获取订单详情
      */
     @PostMapping("/api/wxapp/inquiry/order/detail")
-    public JsonResult payOrder(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
+    public JsonResult payOrder(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
+        if(StringUtils.isBlank(inquiryOrderOnParam.getOrderSn())){
+            return fail(JsonResultCode.INQUIRY_ORDER_SN_IS_NULL);
+        }
         InquiryOrderDo inquiryOrderDo= shop().inquiryOrderService.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         return success(inquiryOrderDo);
     }
@@ -58,11 +63,20 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
      * 更改问诊订单状态
      */
     @PostMapping("/api/wxapp/inquiry/order/status/update")
-    public JsonResult updateStatus(@RequestBody @Validated InquiryOrderOnParam inquiryOrderOnParam){
-        shop().inquiryOrderService.updateOrderReceiving(inquiryOrderOnParam);
+    public JsonResult updateStatus(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
+        shop().inquiryOrderService.updateOrder(inquiryOrderOnParam);
         return success();
     }
 
-
+    /**
+     * 新增
+     * @param inquiryOrderDo
+     * @return
+     */
+    @PostMapping("/api/wxapp/inquiry/order/insert")
+    public JsonResult insert(@RequestBody InquiryOrderDo inquiryOrderDo){
+        shop().inquiryOrderService.insert(inquiryOrderDo);
+        return success();
+    }
 
 }

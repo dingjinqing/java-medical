@@ -154,7 +154,10 @@
         "inquiryList/inquiryList",
         "doctorPatientMessage/doctorPatientMessage",
         "doctorChat/doctorChat",
-        "patientChat/patientChat"
+        "patientChat/patientChat",
+        "prescribe/prescribe",
+        "awaitprescribe/awaitprescribe",
+        "prescribeinfo/prescribeinfo"
       ]
     }
   ],

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+/**
+ * @author yangpengcheng
+ */
 @Data
 @NoArgsConstructor
 public class InquiryOrderDo {

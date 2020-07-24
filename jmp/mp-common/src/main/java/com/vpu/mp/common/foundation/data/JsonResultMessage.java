@@ -10,7 +10,7 @@ public class JsonResultMessage {
     public static final String MSG_FAIL = "common.fail";
     public static final String MSG_PARAM_ERROR = "common.param.error";
     public static final String  MSG_API_NO_RESUBMIT = "api.no.resubmit";
-    // 账号
+    /**  账号 */
 
     public static final String MSG_ACCOUNT_OR_PASSWORD_INCRRECT = "account.accountOrPassword.incrrect";
     public static final String MSG_ACCOUNT_MODILE_APPLIED = "account.mobile.applied";
@@ -53,7 +53,7 @@ public class JsonResultMessage {
     public static final String MSG_CODE_ACCOUNT_ID_NOT = "account.id.not";
 	public static final String MSG_CODE_SHOP_EXPIRE = "code.shop.expire";
 
-    // 图片
+    /**  图片 */
 
     public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
     public static final String MSG_IMGAE_FORMAT_INVALID = "image.format.invalid";
@@ -589,7 +589,9 @@ public class JsonResultMessage {
     public static final String MSG_CARD_SEND_REPEAT="card.send.repeat";
     public static final String MSG_CARD_GRADE_NONE="card.grade.none";
 
-    // 用户卡
+    /**  用户卡 */
+
+
     public static final String USER_CARD_NONE = "user.card.none";
     public static final String MSG_CARD_RECEIVE_FAIL = "card.receive.fail";
     public static final String MSG_CARD_RECEIVE_INVALID = "member.card.receive.invalid";
@@ -632,7 +634,7 @@ public class JsonResultMessage {
     public static final String CARD_SHIP_MONTH = "card.ship.month";
     public static final String CARD_SHIP_WEEK = "card.ship.week";
 
-    //会员导入
+    /** 会员导入 */
     public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
     public static final String CODE_NEED_ONE = "code.need.one";
     public static final String GET_TEMPLATE_NAME = "get.template.name";
@@ -694,7 +696,7 @@ public class JsonResultMessage {
     public static final String CARD_EXAMINE_CONSUME_TITLE = "card.examine.consume.title";
     public static final String CARD_EXAMINE_CHARGE_TITLE = "card.examine.charge.title";
 
-    // 会员卡优惠券信息
+    /**  会员卡优惠券信息 */
     public static final String CARD_COUPON_RECEIVE_DAY_START = "card.receive.day.start";
     public static final String CARD_COUPON_DAY = "card.receive.day";
     public static final String CARD_COUPON_HOUR = "card.receive.hour";
@@ -703,7 +705,7 @@ public class JsonResultMessage {
     public static final String CARD_COUPON_SATISFY = "card.coupon.satisfiy";
     public static final String CARD_COUPON_CON_ALL = "user.card.coupon.condition.all";
     public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
-    //用户-地址
+    /** 用户-地址 */
     public static final String USER_ADDRESS_COUNT_MORE_THAN_MAX = "user.address.count.more.than.max";
     public static final String USER_INVITED_MSG = "user.invited.msg";
     public static final String USER_INVITED_NOT_EACH_OTHER = "user.invited.not.each.other";
@@ -730,7 +732,7 @@ public class JsonResultMessage {
     public static final String VISIT_EXPORT_COLUMN_STAY_TIME_UV = "visit.statistics.stay_time_uv";
     public static final String VISIT_EXPORT_COLUMN_STAY_TIME_SESSION = "visit.statistics.stay_time_session";
     public static final String VISIT_EXPORT_COLUMN_VISIT_DEPTH = "visit.statistics.visit_depth";
-    // 资产明细导出
+    /**  资产明细导出 */
     public static final String ASSETS_EXPORT_FILE_NAME = "assets.export.file_name";
     public static final String ASSETS_EXPORT_COLUMN_TRADE_TIME = "overview.asset.management.trade_time";
     public static final String ASSETS_EXPORT_COLUMN_TRADE_NUM = "overview.asset.management.trade_num";
@@ -1106,7 +1108,7 @@ public class JsonResultMessage {
     public static final String WX_MA_SECKILL="wx.ma.seckill";
     /**分销 ‘【特价专享】唯一渠道，专享价格，等你来抢！’*/
     public static final String WX_MA_REBATE_DOC = "wx.ma.rebate.doc";
-    /**分销 ‘专享价格’*/
+    /**分销 ‘专享价格’ */
     public static final String WX_MA_REBATE_SPECIAL_DOC = "wx.ma.rebate.special.doc";
 
     /** 预售图片相关*/
@@ -1119,25 +1121,25 @@ public class JsonResultMessage {
     /**"200.00元,限时预售" 分享图片*/
     public static final String WX_MA_PRESALE_PICTORIAL_DOC = "wx.ma.presale.pictorial.doc";
     /**积分兑换相关*/
-    // ￥5.00+10050积分兑换商品
+    /**  ￥5.00+10050积分兑换商品 */
     public static final String WX_MA_INTEGRAL_MALL_SHARE_DOC="wx.ma.integral.mall.share.doc";
     public static final String WX_MA_INTEGRAL_MALL_SHARE_NO_MONEY_DOC="wx.ma.integral.mall.share.no.money.doc";
-    // ￥5.00+10050积分
+    /**  ￥5.00+10050积分 */
     public static final String WX_MA_INTEGRAL_MALL_PRICE_SCORE = "wx.ma.integral.mall.price.score";
     public static final String WX_MA_INTEGRAL_MALL_SCORE = "wx.ma.integral.mall.score";
-    // 积分兑换
+    /**  积分兑换 */
     public static final String WX_MA_INTEGRAL_MALL_EXCHANGE= "wx.ma.integral.mall.exchange";
     /**瓜分积分*/
-    // 2人瓜分10积分
+    /**  2人瓜分10积分 */
     public static final String WX_MA_GROUP_INTEGRAL_SHARE_DOC= "wx.ma.group.integral.share.doc";
-    // 瓜分积分
+    /**  瓜分积分 */
     public static final String WX_MA_GROUP_INTEGRAL_SHARE_SCORE= "wx.ma.group.integral.share.score";
-    // 新用户可瓜分双份
+    /**  新用户可瓜分双份 */
     public static final String WX_MA_GROUP_INTEGRAL_SHARE_NEW_USER_DOC = "wx.ma.group.integral.share.new.user.doc";
-    // 有效期
+    /**  有效期 */
     public static final String WX_MA_GROUP_INTEGRAL_LIMIT_TIME = "wx.ma.group.integral.limit.time";
 
-    //持卡会员导出
+    /** 持卡会员导出 */
     public static final String USER_CARD_OK = "user.card.ok";
     public static final String USER_CARD_ONOK = "user.card.onok";
     public static final String USER_CARD_TEMPLATE_NAME = "user.card.template.name";
@@ -1148,7 +1150,7 @@ public class JsonResultMessage {
     public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
     public static final String CARD_EXAMINE_FILE_NAME = "card.examine.file.name";
 
-    // 商品效果导出
+    /**  商品效果导出 */
     public static final String GOODS_EFFECT_FILE_NAME = "overview.commodity.effect.file_name";
     public static final String GOODS_EFFECT_GOODS_INFO = "overview.commodity.effect.goods_info";
     public static final String GOODS_EFFECT_GOODS_LABEL = "overview.commodity.effect.goods_label";
@@ -1168,19 +1170,19 @@ public class JsonResultMessage {
     public static final String GOODS_EFFECT_RECONNEND_USER_NUM = "overview.commodity.effect.recommend_user_num";
     public static final String GOODS_EFFECT_COLLECT_USER_NUM = "overview.commodity.effect.collect_use_num";
 
-    // 商品排行导出
+    /**  商品排行导出 */
     public static final String GOODS_RANKING_SALES_TOP10 = "overview.commodity.rank.sales_top10";
     public static final String GOODS_RANKING_SALES_ORDER_TOP10 = "overview.commodity.rank.sales_order_top10";
     public static final String GOODS_RANKING_GOODS_NAME = "overview.commodity.rank.goods_name";
 
-    // 小程序-分享图片-下载海报错误信息
+    /**  小程序-分享图片-下载海报错误信息 */
     public static final String WX_SHARE_ACTIVITY_DELETED = "wx.share.activity.deleted";
     public static final String WX_SHARE_GOODS_DELETED = "wx.share.goods.deleted";
     public static final String WX_SHARE_PIC_ERROR = "wx.share.pic.error";
     public static final String WX_SHARE_QRCDOE_ERROR = "wx.share.qrcode.error";
     public static final String WX_SHARE_USER_PIC_ERROR = "wx.share.user.pic.error";
 
-    // 表单反馈列表导出
+    /**  表单反馈列表导出 */
     public static final String FORM_FEED_FILE_NAME = "form.feed.file_name";
     public static final String FORM_FEED_NICKNAME = "form.feed.nickname";
     public static final String FORM_FEED_MOBILE = "form.feed.mobile";
@@ -1341,4 +1343,9 @@ public class JsonResultMessage {
 
     public static final String IM_SESSION_NOT_EXIST = "im.session.not.exist";
 
+    /**
+     * 问诊订单
+     */
+    public static final String INQUIRY_ORDER_SN_IS_NULL="inquiry.order.sn.is.null";
+    public static final String INQUIRY_ORDER_ID_IS_NULL="inquiry.order.id.is.null";
 }

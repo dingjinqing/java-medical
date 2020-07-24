@@ -51,4 +51,6 @@ public class ApiExternalRequestConstant {
     public static final String SERVICE_NAME_FETCH_DOCTOR_TITLE_INFOS=  "fetchDoctorTitleInfos";
     /**拉取病历信息**/
     public static final String SERVICE_NAME_FETCH_MEDICAL_HISTORY_INFOS = "fetchMedicalHistoryInfos";
+    /**同步医嘱信息**/
+    public static final String SERVICE_NAME_FETCH_MEDICAL_ADVICE_INFOS = "fetchMedicalAdviceInfos";
 }

@@ -1,24 +1,24 @@
 package com.vpu.mp.dao.shop.department;
 
-import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
-
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.db.shop.tables.records.DepartmentRecord;
-import com.vpu.mp.service.pojo.shop.department.DepartmentConstant;
-import com.vpu.mp.service.pojo.shop.department.DepartmentListParam;
-import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
+import com.vpu.mp.service.pojo.shop.department.*;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
-import org.jooq.Condition;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
+
+/**
+ * @author chenjie
+ */
 @Repository
 public class DepartmentDao extends ShopBaseDao {
     public static final Integer ROOT_ID = 0;
@@ -204,11 +204,22 @@ public class DepartmentDao extends ShopBaseDao {
      * @param name
      * @return
      */
-    public List<DepartmentOneParam> ListDepartmentsByName(String name) {
+    public List<DepartmentOneParam> listDepartmentsByName(String name) {
         Condition condition = DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF));
-        if (name != null) {
+        if (name != null && name != "") {
             condition = condition.and(DEPARTMENT.NAME.like(likeValue(name)));
         }
         return db().select().from(DEPARTMENT).where(condition).fetchInto(DepartmentOneParam.class);
     }
+
+    /**
+     * 根据id集合查询对应信息
+     * @param departmentIds id集合
+     * @return 科室信息集合
+     */
+    public List<DepartmentSimpleVo> listDepartmentInfo(List<Integer> departmentIds) {
+        return db().select(DEPARTMENT.ID,DEPARTMENT.NAME).from(DEPARTMENT).where(DEPARTMENT.ID.in(departmentIds).and(DEPARTMENT.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(DepartmentSimpleVo.class);
+    }
+
 }
