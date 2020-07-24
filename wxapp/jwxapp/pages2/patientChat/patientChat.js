@@ -10,11 +10,7 @@ global.wxPage({
   data: {
     time: '2020-07-23 13:35:01',
     page_name: 'saoyang',
-<<<<<<< HEAD
     chatContent:[]
-=======
-    send_message: ''
->>>>>>> 22ec963bc3df1ddd739700462d3d8d61e987b2a0
   },
 
   /**
@@ -102,16 +98,6 @@ global.wxPage({
       }
     }, {
       departmentId: 12,
-<<<<<<< HEAD
-      patientId: 3,//患者
-      fromId: 2,//小程序用户
-      toId: 1,//to医生
-      imSessionItem:imSessionItem
-    }, '', false);
-  },
-  requsetMessage: function () {
-    let that = this;
-=======
       patientId: 3, //患者
       fromId: 2, //小程序用户
       toId: 1, //to医生
@@ -123,7 +109,6 @@ global.wxPage({
     this.timer = setInterval(this.messageApi,15000)
   },
   messageApi () {
->>>>>>> 22ec963bc3df1ddd739700462d3d8d61e987b2a0
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
       if (res.error === 0 && res.content.message) {
@@ -139,13 +124,8 @@ global.wxPage({
     }, {
       departmentId: 12,
       patientId: 3,
-<<<<<<< HEAD
-      pullFromId: 1,
-      selfId: 2
-=======
       pullFromId: 2,
       selfId: 1
->>>>>>> 22ec963bc3df1ddd739700462d3d8d61e987b2a0
     }, '', false);
   }
 })
