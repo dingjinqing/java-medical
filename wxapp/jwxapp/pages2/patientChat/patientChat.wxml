@@ -3,14 +3,17 @@
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
 		<chat-date send-time='{{time}}' />
-		<chat-message>
-			<view slot='origin_message' class="origin_message origin_left">
-				您好，就诊过吗？用过什么药？用过什么药？
-			</view>
-			<view slot='origin_mes' class="origin_message origin_right">
-				您好，就诊过吗？用过什么药？
-			</view>
-		</chat-message>
+		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
+			<chat-message chat-content='{{item}}'>
+				<view slot='origin_message_left' class="origin_message origin_left" wx:if='{{item.type == 0}}'>
+					{{item.message}}
+				</view>
+				<view slot='origin_message_right' class="origin_message origin_right" wx:if='{{item.type == 1}}'>
+					{{item.message}}
+				</view>
+			</chat-message>
+		</block>
+
 		<chat-input bindgetInputMessage="getInputMessage">
 		</chat-input>
 	</view>

@@ -10,7 +10,7 @@ global.wxPage({
   data: {
     time: '2020-07-23 13:35:01',
     page_name: 'saoyang',
-    send_message:''
+    chatContent:[]
   },
 
   /**
@@ -84,8 +84,15 @@ global.wxPage({
     imSessionItem.message = message;
     util.api('/api/wxapp/im/session/send', res => {
       console.log(res)
-      if (res.error === 0) {
-
+      if (res.error === 0 ) {
+        let chat = {}
+        let chatContent = that.data.chatContent;
+        chat.message = message;
+        chat.type = 1;
+        chatContent.push(chat)
+        that.setData({
+          chatContent:chatContent
+        })
       }
     }, {
       departmentId: 12,
@@ -93,20 +100,27 @@ global.wxPage({
       fromId: 2,//小程序用户
       toId: 1,//to医生
       imSessionItem:imSessionItem
-    }, '', true);
+    }, '', false);
   },
   requsetMessage: function () {
-
+    let that = this;
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
-      if (res.error === 0) {
-
+      if (res.error === 0 && res.content.message) {
+          let chat = {}
+          let chatContent = that.data.chatContent;
+          chat.message = res.content.message;
+          chat.type = 0;
+          chatContent.push(chat)
+          that.setData({
+            chatContent:chatContent
+          })
       }
     }, {
-      departmentId: 2,
+      departmentId: 12,
       patientId: 3,
-      pullFromId: 2,
-      selfId: 1
-    }, '', true);
+      pullFromId: 1,
+      selfId: 2
+    }, '', false);
   }
 })

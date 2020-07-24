@@ -7,7 +7,10 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    sendTime: String
+    chatContent: Object
+  },
+  options:{
+    multipleSlots:true
   },
 
   /**
@@ -18,7 +21,7 @@ global.wxComponent({
   },
 
   ready () {
-    
+    console.log(this.data.chatContent)
   },
 
   /**
