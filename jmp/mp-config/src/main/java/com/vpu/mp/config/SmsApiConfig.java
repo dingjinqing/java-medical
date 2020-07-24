@@ -20,9 +20,9 @@ public class SmsApiConfig {
     @Value(value = "${sms.huice.charge.url}")
     private String chargeUrl;
     @Value(value = "${sms.huice.app.key}")
-    private  String APP_KEY ;
+    private  String appKey ;
     @Value(value = "${sms.huice.app.secret}")
-    private  String APP_SECRET ;
+    private  String appSecret ;
 
     //*********接口方法*********//
     /**

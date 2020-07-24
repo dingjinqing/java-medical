@@ -16,7 +16,7 @@ public class SmsResult {
     private Object data;
 
     @Data
-    public class smsMobile{
+    public class SmsMobile{
         /**
          * 电话
          */
