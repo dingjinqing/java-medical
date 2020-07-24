@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_NOT_READ;
+import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_TOP;
+
 /**
  * @author 赵晓东
  * @description 用户消息dao层
@@ -54,27 +57,40 @@ public class MessageDao extends ShopBaseDao {
         List<UserMessageVo> list = new ArrayList<>();
         //置顶消息
         List<UserMessageVo> userMessageVos = db().selectFrom(Message.MESSAGE)
-            .where(Message.MESSAGE.MESSAGE_STATUS.eq((byte) 3)
+            .where(Message.MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_TOP)
                 .and(Message.MESSAGE.RECEIVER_ID.eq(userId))
                 .and(Message.MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(UserMessageVo.class);
         //未读消息
         List<UserMessageVo> willMessages = db().selectFrom(Message.MESSAGE)
-            .where(Message.MESSAGE.MESSAGE_STATUS.eq((byte) 1)
+            .where(Message.MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_NOT_READ)
                 .and(Message.MESSAGE.RECEIVER_ID.eq(userId))
                 .and(Message.MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(UserMessageVo.class);
         //已读消息
         List<UserMessageVo> alreadyMessages = db().selectFrom(Message.MESSAGE)
-            .where(Message.MESSAGE.MESSAGE_STATUS.ne((byte) 1)
+            .where(Message.MESSAGE.MESSAGE_STATUS.ne(USER_MESSAGE_STATUS_NOT_READ)
                 .and(Message.MESSAGE.RECEIVER_ID.eq(userId))
-                .and(Message.MESSAGE.MESSAGE_STATUS.ne((byte) 3))
+                .and(Message.MESSAGE.MESSAGE_STATUS.ne(USER_MESSAGE_STATUS_TOP))
                 .and(Message.MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(UserMessageVo.class);
         list.addAll(userMessageVos);
         list.addAll(willMessages);
         list.addAll(alreadyMessages);
         return list;
+    }
+
+    /**
+     * 查询该用户未读消息总数
+     * @param receiveId 用户id
+     * @return Integer
+     */
+    public Integer countMessageNum(Integer receiveId){
+        List<Integer> integers = db().selectCount().from(Message.MESSAGE)
+            .where(Message.MESSAGE.RECEIVER_ID.eq(receiveId)
+                .and(Message.MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_NOT_READ))
+                .and(Message.MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class);
+        return integers.get(0);
     }
 
 }

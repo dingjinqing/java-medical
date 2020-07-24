@@ -15,6 +15,13 @@ public class UserMessageConstant {
     public static final Byte USER_MESSAGE_ORDER = 1;
     public static final Byte USER_MESSAGE_CHAT = 2;
 
+    /**
+     * 消息状态 0未读，1已读，3置顶
+     */
+    public static final Byte USER_MESSAGE_STATUS_NOT_READ = 0;
+    public static final Byte USER_MESSAGE_STATUS_ALREADY_READ = 1;
+    public static final Byte USER_MESSAGE_STATUS_TOP = 3;
+
 
 
 }

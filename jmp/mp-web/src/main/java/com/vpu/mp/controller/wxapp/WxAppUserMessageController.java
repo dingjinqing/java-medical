@@ -31,4 +31,15 @@ public class WxAppUserMessageController extends WxAppBaseController{
         return this.success(messageService.showUserMessage(userId));
     }
 
+    /**
+     * 用户未读消息统计
+     * @param userId 接收消息用户id
+     * @return JsonResult
+     */
+    @RequestMapping("count")
+    @ResponseBody
+    public JsonResult countMessage(Integer userId){
+        return this.success(messageService.countMessage(userId));
+    }
+
 }

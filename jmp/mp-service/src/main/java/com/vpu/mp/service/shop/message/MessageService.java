@@ -28,8 +28,7 @@ public class MessageService extends ShopBaseService {
      * @return List<UserMessageVo>
      */
     public List<UserMessageVo> showUserMessage(Integer userId){
-        List<UserMessageVo> userMessageVos = messageDao.showMessage(userId);
-        return userMessageVos;
+        return messageDao.showMessage(userId);
     }
 
     /**
@@ -38,6 +37,15 @@ public class MessageService extends ShopBaseService {
      */
     public void addUserMessage(UserMessageParam userMessageParam){
         messageDao.addMessage(userMessageParam);
+    }
+
+    /**
+     * 该用户未读消息总数
+     * @param receiveId 消息接收者id
+     * @return Integer
+     */
+    public Integer countMessage(Integer receiveId){
+        return messageDao.countMessageNum(receiveId);
     }
 
 }
