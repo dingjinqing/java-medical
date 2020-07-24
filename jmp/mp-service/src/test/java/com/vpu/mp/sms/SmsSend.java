@@ -21,7 +21,7 @@ import java.util.TreeMap;
  * @author 孔德成
  * @date 2020/7/23 8:49
  */
-public class smsSend {
+public class SmsSend {
     public static void main(String[] args) {
         String msg ="【旺店通】验证码2356，用于登录，10分钟内有效。验证码提供给他人可能导致账号被盗，请勿泄漏，谨防被骗";
         String iphone ="15910451510";
