@@ -75,8 +75,8 @@ public class MedicalHistoryDao extends ShopBaseDao {
     /**
      * 病历详情查询
      *
-     * @param posCode
-     * @return PageResult<MedicalHistoryListVo>
+     * @param posCode 医嘱编码
+     * @return Integer
      */
     public Integer getMedicalHistoryDetailByCode(String posCode) {
         return db().select(MEDICAL_HISTORY.ID).from(MEDICAL_HISTORY)
