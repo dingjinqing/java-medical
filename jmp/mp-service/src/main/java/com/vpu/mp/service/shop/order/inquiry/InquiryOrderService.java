@@ -104,10 +104,10 @@ public class InquiryOrderService extends ShopBaseService {
      * 更改问诊状态为接诊中
      * @param param
      */
-    public void updateOrderReceiving(InquiryOrderOnParam param){
+    public void updateOrder(InquiryOrderOnParam param){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(param.getOrderSn());
         FieldsUtil.assign(param,inquiryOrderDo);
-        inquiryOrderDo.setOrderStatus(InquiryOrderConstant.ORDER_RECEIVING);
+        inquiryOrderDo.setOrderStatus(param.getOrderStatus());
         inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
         imSessionService.updateSessionToGoingOn(param.getSessionId());
