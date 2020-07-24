@@ -14,10 +14,21 @@
         </view>
         <view class="each_line">
           <view class="line_tit">科室：</view>
-          <view>请选择</view>
+          <view style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;width:580rpx'>
+            <picker mode="selector" value="" range="" 
+                    bindchange="">
+              <!-- <view class="picker" wx:if=''>
+              </view> -->
+              <view class='place'>请选择</view>
+				    </picker>
+          </view>
         </view>
         <view class="each_line">
           <view class="line_tit">诊断：</view>
+          <view class="ipt_line">
+            <input type="text" placeholder="请输入诊断内容" value='{{diagnosis}}' placeholder-class="place"></input>
+            <text class="iconfont iconshanchu" bindtap="bindClear"></text>
+          </view>
         </view>
         <view class="each_line">治疗建议：<text class="bold">没救了 等死吧</text></view>
         <view class="special_one">

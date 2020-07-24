@@ -8,6 +8,8 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    // 诊断内容
+    diagnosis: ''
   },
 
   /**
@@ -15,6 +17,9 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+  },
+  bindClear () {
+    this.setData({diagnosis: ''})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

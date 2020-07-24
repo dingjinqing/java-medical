@@ -1,4 +1,5 @@
 /* pages2/prescribeinfo/prescribeinfo.wxss */
+@import "../../css/iconfont.wxss";
 .prescription-content{
   padding: 20rpx 15rpx;
   display: flex;
@@ -78,4 +79,22 @@
 }
 .each_name{
   margin-top: 30rpx;
+}
+.ipt_line{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 580rpx;
+}
+.ipt_line input{
+  font-weight: bold;
+}
+.ipt_line .iconfont{
+  font-size: 36rpx;
+  color: #333;
+  opacity: 0.6;
+}
+.place{
+  color: #999;
+  font-weight: normal !important;
 }
