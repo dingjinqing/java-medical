@@ -102,7 +102,7 @@ global.wxPage({
       fromId: 2, //小程序用户
       toId: 1, //to医生
       imSessionItem: imSessionItem
-    }, '', true);
+    }, '', false);
   },
   requsetMessage () {
     this.messageApi()
