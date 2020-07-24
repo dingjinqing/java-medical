@@ -8,17 +8,20 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    time:'2020-07-23 13:35:01',
-    page_name:'saoyang'
+    time: '2020-07-23 13:35:01',
+    page_name: 'saoyang'
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.requsetMessage()
   },
-
+  getInputMessage(e){
+    let {detail:message} = e 
+    console.log(message)
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -67,5 +70,20 @@ global.wxPage({
    */
   onShareAppMessage: function () {
 
+  },
+
+  requsetMessage: function () {
+
+    util.api('/api/wxapp/im/session/pull', res => {
+      console.log(res)
+      if (res.error === 0) {
+
+      }
+    }, {
+      departmentId: 2,
+      patientId: 3,
+      pullFromId: 2,
+      selfId: 1
+    }, '', true);
   }
 })

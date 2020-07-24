@@ -11,5 +11,7 @@
 				您好，就诊过吗？用过什么药？
 			</view>
 		</chat-message>
+		<chat-input bindgetInputMessage="getInputMessage">
+		</chat-input>
 	</view>
 </view>
