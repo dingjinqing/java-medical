@@ -75,7 +75,7 @@ page{
 .modal_btn_group > view{
   width: 50%;
   height: 80rpx;
-  line-height: 80rpx;
+  line-height: 70rpx;
   box-sizing: border-box;
   text-align: center;
 }
@@ -94,4 +94,16 @@ page{
   text-align: center;
   color: #26C4BC;
   font-size: 28rpx;
+}
+.button.mobile{
+  border-radius: 8rpx;
+  background-color: #26C4BC;
+  color: #fff;
+  line-height: 80rpx;
+  text-align: center;
+  width: 200rpx;
+}
+.button.mobile.gray{
+  color: #fff;
+  background-color: #999;
 }

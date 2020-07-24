@@ -23,6 +23,13 @@
         <view class="el_right">
           <input type="text" placeholder="请输入手机号" bindblur="mobileInput"></input>
         </view>
+        <view class="button mobile {{countDown ? 'gray' : ''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
+      </view>
+      <view class="each_line">
+        <view class="el_left">验证码 <text>*</text></view>
+        <view class="el_right">
+          <input type="text" placeholder="请输入验证码" bindblur="verificationInput"></input>
+        </view>
       </view>
       <view class="btn_add" bindtap="getPrescription">获取病历</view>
       <view class="btn_get" bindtap="addFamily">手动添加就诊人</view>

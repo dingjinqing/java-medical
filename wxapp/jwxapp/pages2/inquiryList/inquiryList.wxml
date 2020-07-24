@@ -1,21 +1,27 @@
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
-		<view class="tabs">
-			<view><text class="active">待问诊</text></view>
-			<view><text>我的问诊</text></view>
+		<view class="tabs" >
+			<view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === '1' ? 'active' : ''}}">待问诊</text></view>
+			<view data-type="2" bindtap="toggleStatus"><text class="{{targetStatus === '2' ? 'active' : ''}}">我的问诊</text></view>
 		</view>
-		<view class="card-item">
-      <view class="doctor-info">
-        <text class="doctor-name">吴晓红</text>
-        <text class="office">皮肤科</text>
-        <text class="date">2020-07-14</text>
-      </view>
-      <view class="button-content">
-        <text class="pass">接诊</text>
-      </view>
-		</view>
-		<view class="card-item">
+     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+      <block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+        <view class="card-item">
+          <view class="doctor-info">
+            <text class="doctor-name">{{item.patientName}}</text>
+            <text class="office" wx:if="{{targetStatus === '1'}}">{{item.departmentName}}</text>
+            <text class="status {{item.sessionStatus === 1 ? 'ongoing' : 'end'}}" wx:if="{{targetStatus === '2'}}">{{item.sessionStatus === 1 ? '已接诊':'问诊结束'}}</text>
+            <text class="date">{{item.createTime}}</text>
+          </view>
+          <view class="button-content">
+            <text class="pass" wx:if="{{targetStatus === '1' || (targetStatus === '2' && item.sessionStatus === 3)}}">{{targetStatus === '1' ? '接诊' : '继续问诊'}}</text>
+            <text class="reject" wx:if="{{targetStatus === '2' && item.sessionStatus === 1}}">退款</text>
+          </view>
+        </view>
+      </block>
+     </block> 
+		<!-- <view class="card-item">
       <view class="doctor-info">
         <text class="doctor-name">何超</text>
         <text class="office">皮肤科</text>
@@ -44,7 +50,7 @@
       <view class="button-content">
         <text class="pass">继续问诊</text>
       </view>
-		</view>
+		</view> -->
 		<include src="../../pages/common/footer.wxml" />
 	</view>
 </view>
