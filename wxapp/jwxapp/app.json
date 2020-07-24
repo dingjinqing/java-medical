@@ -157,7 +157,8 @@
         "patientChat/patientChat",
         "prescribe/prescribe",
         "awaitprescribe/awaitprescribe",
-        "prescribeinfo/prescribeinfo"
+        "prescribeinfo/prescribeinfo",
+        "doctorIndex/doctorIndex"
       ]
     }
   ],
