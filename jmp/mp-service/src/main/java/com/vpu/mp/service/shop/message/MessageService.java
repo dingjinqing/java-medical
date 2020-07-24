@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.message;
 
 import com.vpu.mp.dao.shop.message.MessageDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,14 @@ public class MessageService extends ShopBaseService {
     public List<UserMessageVo> showUserMessage(Integer userId){
         List<UserMessageVo> userMessageVos = messageDao.showMessage(userId);
         return userMessageVos;
+    }
+
+    /**
+     * 新增消息
+     * @param userMessageParam 用户消息入参
+     */
+    public void addUserMessage(UserMessageParam userMessageParam){
+        messageDao.addMessage(userMessageParam);
     }
 
 }

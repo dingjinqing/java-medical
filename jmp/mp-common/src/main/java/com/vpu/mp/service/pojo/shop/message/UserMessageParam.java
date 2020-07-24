@@ -14,7 +14,7 @@ public class UserMessageParam {
      */
     private String    messageContent;
     /**
-     * 消息类型
+     * 消息类型 系统消息0，订单消息1，会话消息2
      */
     private Byte      messageType;
     /**
@@ -34,7 +34,7 @@ public class UserMessageParam {
      */
     private String    senderName;
     /**
-     * 消息关联id
+     * 消息关联id 系统为0，订单关联订单主键、会话关联会话主键
      */
     private Integer   messageRelevanceId;
 }
