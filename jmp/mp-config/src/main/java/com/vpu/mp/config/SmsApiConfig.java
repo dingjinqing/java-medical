@@ -56,7 +56,7 @@ public class SmsApiConfig {
     /**
      * 验证码
      */
-    public static final String EXT_CHECK_CODE  = "-3";
+    public static final String EXT_CHECK_CODE  = "checkcode";
     /**
      * 营销
      */

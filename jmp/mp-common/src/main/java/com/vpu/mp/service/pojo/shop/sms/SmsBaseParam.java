@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.sms;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.config.SmsApiConfig;
 import lombok.Data;
 
@@ -26,6 +27,7 @@ public class SmsBaseParam {
      * -3验证码、-1行业、营销-2  默认验证码
      */
     private String ext =SmsApiConfig.EXT_CHECK_CODE;
+    private Integer type =0;
     /**
      * 电话 ,分隔
      */
@@ -33,6 +35,7 @@ public class SmsBaseParam {
     /**
      * 用户id 0系统
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Integer userId =0;
     /**
      * 短信内容

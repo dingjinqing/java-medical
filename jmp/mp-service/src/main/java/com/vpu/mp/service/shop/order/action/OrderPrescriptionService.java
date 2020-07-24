@@ -5,6 +5,7 @@ import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
@@ -14,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.Prescriptio
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
+import com.vpu.mp.service.shop.message.MessageService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -45,6 +47,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
     private OrderGoodsService orderGoods;
     @Autowired
     private MedicalGoodsService medicalGoodsService;
+    @Autowired
+    private MessageService messageService;
 
 
     @Override
@@ -136,6 +140,10 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      */
     @Override
     public ExecuteResult execute(OrderOperateQueryParam obj) {
+        //
+        UserMessageParam param =new UserMessageParam();
+        param.setMessageContent("审核通过");
+        messageService.addUserMessage(param);
         return null;
     }
 }
