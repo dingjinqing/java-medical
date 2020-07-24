@@ -1,5 +1,7 @@
 package com.vpu.mp.common.foundation.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -11,7 +13,7 @@ public class RandomUtil {
 	public final static int MAX_RANDOM_9999 = 9999;
 	/**随机数下限1000*/
 	public final static int MIN_RANDOM_1000 = 1000;
-	
+
 	/**
 	 * 	获取[min,max)区间的随机整数数
 	 * @param min
@@ -21,7 +23,7 @@ public class RandomUtil {
 	public static int getIntRandom (int min , int max) {
 		return min + ThreadLocalRandom.current().nextInt(max - min);
 	}
-	
+
 	/**
 	 * 	获取[1000,9999)区间的随机整数数
 	 * @return

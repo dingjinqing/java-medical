@@ -664,6 +664,10 @@ public enum JsonResultCode {
     CODE_CART_MINIMUM_PURCHASE(401003,JsonResultMessage.CART_MINIMUM_PURCHASE),
     CODE_CART_MAXIMUM_PURCHASE(401004,JsonResultMessage.CART_MAXIMUM_PURCHASE),
 
+    //患者手机号验证码
+    PATIENT_MOBILE_CHECK_CODE_ERROR(402001,JsonResultMessage.PATIENT_MOBILE_CHECK_CODE_ERROR),
+
+
     /**微信支付错误信息
      *
      */

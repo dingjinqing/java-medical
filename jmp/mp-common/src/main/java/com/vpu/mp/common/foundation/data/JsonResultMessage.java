@@ -1348,4 +1348,10 @@ public class JsonResultMessage {
      */
     public static final String INQUIRY_ORDER_SN_IS_NULL="inquiry.order.sn.is.null";
     public static final String INQUIRY_ORDER_ID_IS_NULL="inquiry.order.id.is.null";
+    /**
+     * 验证码错误
+     */
+    public static final String PATIENT_MOBILE_CHECK_CODE_ERROR = "patient.mobile.check.code.error";
+
+
 }

@@ -4,12 +4,17 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.shop.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +25,7 @@ import java.util.List;
 @RestController
 @Slf4j
 public class WxAppPatientController extends WxAppBaseController {
+
     /**
      * 	获取用户的患者列表
      */
@@ -41,9 +47,27 @@ public class WxAppPatientController extends WxAppBaseController {
      * 	拉取患者信息
      */
     @PostMapping("/api/wxapp/user/patient/get/info")
-    public JsonResult getPatientInfo(@RequestBody UserPatientOneParam userPatientOneParam){
+    public JsonResult getPatientInfo(@RequestBody @Validated UserPatientOneParam userPatientOneParam){
         JsonResult result= shop().patientService.getExternalPatientInfo(userPatientOneParam);
+        if (result==null){
+            return fail(JsonResultCode.PATIENT_MOBILE_CHECK_CODE_ERROR);
+        }
         return result;
+    }
+
+    /**
+     * 发送短信校验
+     * @return
+     */
+    @PostMapping("/api/wxapp/user/patient/send/sms")
+    public JsonResult sendCheckSms(@RequestBody @Validated PatientSmsCheckParam param){
+        param.setUserId(wxAppAuth.user().getUserId());
+        try {
+            shop().patientService.sendCheckSms(param);
+        } catch (MpException e) {
+            return success();
+        }
+        return success();
     }
 
     /**

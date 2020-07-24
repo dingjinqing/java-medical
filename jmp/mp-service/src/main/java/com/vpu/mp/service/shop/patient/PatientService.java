@@ -4,17 +4,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.RandomUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
-import com.vpu.mp.dao.foundation.transactional.DbTransactional;
-import com.vpu.mp.dao.foundation.transactional.DbType;
+import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import com.vpu.mp.service.shop.sms.SmsService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +36,12 @@ public class PatientService extends BaseShopConfigService{
     @Autowired
     protected UserPatientCoupleDao userPatientCoupleDao;
     @Autowired
-    public BaseShopConfigService baseShopConfigService;
+    protected BaseShopConfigService baseShopConfigService;
+    @Autowired
+    protected SmsService smsService;
+    @Autowired
+    protected JedisManager jedisManager;
+
     public static final int ZERO = 0;
 
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
@@ -76,8 +86,11 @@ public class PatientService extends BaseShopConfigService{
     /**
      * 拉取患者信息
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult getExternalPatientInfo(UserPatientOneParam userPatientOneParam){
+        boolean b = checkMobileCode(userPatientOneParam);
+        if (b){
+            return null;
+        }
         Integer shopId =getShopId();
         PatientExternalRequestParam requestParam=new PatientExternalRequestParam();
         requestParam.setName(userPatientOneParam.getName());
@@ -111,6 +124,22 @@ public class PatientService extends BaseShopConfigService{
             patientDao.updatePatient(patientDo);
         }
         return JsonResult.success();
+    }
+
+    /**
+     * 短信验证码校验
+     * @param param param
+     * @return
+     */
+    private boolean checkMobileCode(UserPatientOneParam param) {
+        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_PATIENT_MOBILE,getShopId(), param.getUserId(), param.getMobile());
+        String s = jedisManager.get(key);
+        if (!Strings.isBlank(s)&&Strings.isBlank(param.getMobileCheckCode())){
+            if (s.equals(param.getMobileCheckCode())){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -168,5 +197,18 @@ public class PatientService extends BaseShopConfigService{
      */
     public List<PatientSimpleInfoVo> listPatientInfo(List<Integer> patientIds){
         return patientDao.listPatientInfo(patientIds);
+    }
+
+    /**
+     * 发送短信校验码
+     * @param param
+     */
+    public void sendCheckSms(PatientSmsCheckParam param) throws MpException {
+        //0000-9999
+        int intRandom = RandomUtil.getIntRandom();
+        String smsContent = String.format( SmsTemplate.PATIENT_CHECK_MOBILE, "XX医院",intRandom);
+        smsService.sendSms(param.getUserId(), param.getMobile(), smsContent);
+        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_PATIENT_MOBILE,getShopId(), param.getUserId(), param.getMobile());
+        jedisManager.set(key,intRandom+"",600);
     }
 }
