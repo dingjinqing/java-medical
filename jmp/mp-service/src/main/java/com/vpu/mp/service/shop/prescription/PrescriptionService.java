@@ -291,12 +291,19 @@ public class PrescriptionService extends ShopBaseService {
 
     /**
      * 上传保存处方
+     * @param param
      */
     public void insertPrescription(PrescriptionOneParam param){
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
 
     }
+
+    /**
+     * 生成处方，处方明细数据
+     * @param param
+     * @return
+     */
     public PrescriptionParam buildPrescription(PrescriptionOneParam param){
 
         DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());

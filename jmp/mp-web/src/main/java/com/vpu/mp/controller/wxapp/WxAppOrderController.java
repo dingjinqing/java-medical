@@ -14,6 +14,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -333,5 +335,37 @@ public class WxAppOrderController extends WxAppBaseController{
         }
         return fail();
 
+    }
+
+    /**
+     * 获取待开方的订单
+     * @param param
+     * @return
+     */
+    @PostMapping("/medical/get")
+    public JsonResult getMakePrescriptionOrder(OrderToPrescribeQueryParam param){
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        try {
+            return(success(shop().orderActionFactory.orderQuery(param)));
+        } catch (MpException e) {
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
+        }
+    }
+
+    /**
+     * 待开方的生成处方
+     * @param param
+     * @return
+     */
+    @PostMapping("/prescription/make")
+    public JsonResult makePrescription(PrescriptionMakeParam param){
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        ExecuteResult executeResult=shop().orderActionFactory.orderOperate(param);
+        if(executeResult == null || executeResult.isSuccess()) {
+            return success();
+        }
+        return success();
     }
 }
