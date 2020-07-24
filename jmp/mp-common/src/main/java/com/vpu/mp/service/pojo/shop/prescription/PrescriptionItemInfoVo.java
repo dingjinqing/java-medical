@@ -65,5 +65,8 @@ public class PrescriptionItemInfoVo {
      */
     private BigDecimal medicinePrice;
 
-
+    /**
+     * 药品Id
+     */
+    private Integer goodsId;
 }

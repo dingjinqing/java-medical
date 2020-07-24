@@ -243,7 +243,12 @@ public class GoodsAggregate {
         return assignIgnoreField;
     }
 
-    private Integer matchGoodsMedical(GoodsMatchParam goodsMatchParam) {
+    /**
+     * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品Id
+     * @param goodsMatchParam
+     * @return
+     */
+    public Integer matchGoodsMedical(GoodsMatchParam goodsMatchParam) {
         Integer goodsId;
         goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
         if (goodsId != null) {

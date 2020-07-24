@@ -2,10 +2,7 @@ package com.vpu.mp.service.shop.prescription;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
@@ -23,9 +20,13 @@ import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,8 @@ public class PrescriptionService extends ShopBaseService {
     protected DoctorDao doctorDao;
     @Autowired
     protected PatientDao patientDao;
+    @Autowired
+    public MedicalGoodsService medicalGoodsService;
 
     /**
      * 保存处方
@@ -329,5 +332,24 @@ public class PrescriptionService extends ShopBaseService {
         }
         prescriptionParam.setList(itemList);
         return prescriptionParam;
+    }
+
+    /**
+     * 根据处方号匹配系统中已有药品信息列表
+     * @param code
+     * @return
+     */
+    public List<GoodsPrdVo> listGoodsByPrescriptionCode(String code) {
+        List<PrescriptionItemInfoVo> prescriptionItemList = prescriptionItemDao.listByPrescriptionNo(code);
+        List<GoodsPrdVo> goodsList = new ArrayList<>();
+        for (PrescriptionItemInfoVo prescriptionItem : prescriptionItemList) {
+            GoodsMatchParam goodsMatchParam = new GoodsMatchParam();
+            FieldsUtil.assign(prescriptionItem, goodsMatchParam);
+            GoodsPrdVo goodsDetail = medicalGoodsService.matchGoodsMedicalDetail(goodsMatchParam);
+            if (goodsDetail != null) {
+                goodsList.add(goodsDetail);
+            }
+        }
+        return goodsList;
     }
 }

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.user.cart;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
@@ -11,6 +12,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppBatchAddGoodsToCartParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartGoodsResultVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -639,5 +642,27 @@ public class CartService extends ShopBaseService {
 
     private boolean isLimitValid(Integer limitNum) {
         return limitNum != null && !limitNum.equals(0);
+    }
+
+    /**
+     * 修改购物车商品数量
+     *
+     * @param param
+     * @return
+     */
+    public WxAppCartGoodsResultVo addBatchGoodsToCart(WxAppBatchAddGoodsToCartParam param, Integer userId) {
+        ResultMessage s = addGoodsToCart(param.getWxAppAddGoodsToCartParams().get(0));
+        WxAppCartGoodsResultVo cartGoodsResultVo = new WxAppCartGoodsResultVo();
+        for (WxAppAddGoodsToCartParam addGoodsToCartParam : param.getWxAppAddGoodsToCartParams()) {
+            s = addGoodsToCart(addGoodsToCartParam);
+            if (!s.getFlag()){
+                cartGoodsResultVo.setResultMessage(s);
+                cartGoodsResultVo.setPrdId(addGoodsToCartParam.getPrdId());
+                return cartGoodsResultVo;
+            }
+        }
+        cartGoodsResultVo.setResultMessage(s);
+        cartGoodsResultVo.setPrdId(0);
+        return cartGoodsResultVo;
     }
 }
