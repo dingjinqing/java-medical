@@ -38,7 +38,8 @@
 	"first_trade_manage": [
 		"order",
 		"check_order",
-		"member_card_order"
+		"member_card_order",
+		"advisory_order"
 	],
 	"first_market_manage": [
 		"kanjia",

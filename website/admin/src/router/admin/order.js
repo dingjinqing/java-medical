@@ -163,6 +163,27 @@ const routes = [
       category: 'bulk_shipment'
     },
     component: () => import('@/view/admin/index/leftNavComponents/first_trade_manageL/orders/bulkShipment/bulkShipmentList')
+  },
+  // 咨询订单
+  {
+    path: '/admin/home/main/orders/advisoryOrder/list',
+    name: 'advisory_order',
+    meta: {
+      crumbTitle: 'router.advisory_order',
+      meta: 'first_trade_manage',
+      category: 'advisory_order'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_trade_manageL/orders/advisoryOrder/advisoryOrderList')
+  },
+  {
+    path: '/admin/home/main/orders/advisoryOrder/info',
+    name: 'advisory_order_info',
+    meta: {
+      crumbTitle: 'router.advisory_order',
+      meta: 'first_trade_manage',
+      category: 'advisory_order'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_trade_manageL/orders/advisoryOrder/advisoryOrderInfo')
   }
 ]
 
