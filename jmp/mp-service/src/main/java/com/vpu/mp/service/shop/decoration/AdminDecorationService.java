@@ -16,7 +16,9 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.TxMapLbsConfig;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.dao.shop.message.MessageDao;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
+import com.vpu.mp.db.shop.tables.Message;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -26,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.config.SuspendWindowConfig;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.decorate.PageCfgVo;
 import com.vpu.mp.service.shop.config.SuspendWindowConfigService;
@@ -37,13 +40,14 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+import static com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant.*;
 
 /**
  * @author: 王兵兵
@@ -63,6 +67,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     private StorageConfig storageConfig;
     @Autowired
     private SuspendWindowConfigService suspendWindowConfigService;
+
+    @Autowired
+    private MessageDao messageDao;
 
     /**
      * 静态图API
@@ -260,8 +267,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      */
     public Object processModuleForGet(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node)
         throws JsonParseException, JsonMappingException, IOException {
-        if (node.getKey().startsWith("c_")) {
-            String moduleName = node.getValue().get("module_name").asText();
+        if (node.getKey().startsWith(MODULE_NAME_PREFIX)) {
+            String moduleName = node.getValue().get(MODULE_PAGE_CONFIG).asText();
             switch (moduleName) {
                 case ModuleConstant.M_SCROLL_IMAGE:
                     return processScrollImageModule(objectMapper, node);
@@ -311,7 +318,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 default:
             }
         }
-        if("page_cfg".equals(node.getKey())){
+        if(MODULE_PAGE_CONFIG.equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
                 pageCfg.setPageBgImage(imageUrl(pageCfg.getPageBgImage()));
@@ -582,6 +589,16 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             return 0;
         }
 
+        //如果增加了系统公告
+        if (page.getNoticeContext() != null && !"".equals(page.getNoticeContext())) {
+            //添加消息至消息列表
+            UserMessageParam userMessageParam = new UserMessageParam();
+            userMessageParam.setMessageContent(page.getNoticeContext());
+            userMessageParam.setMessageType((byte) 0);
+            messageDao.addMessage(userMessageParam);
+        }
+
+
         //记录页面变化
         recordPageChange(page);
 
@@ -591,7 +608,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         record.setCatId(page.getCatId() == null ? 0 : page.getCatId());
 
 
-        if(page.getPageState() == 3){
+        if(page.getPageState().equals(PAGE_STATE_ROLLBACK)){
             //回退到当前已发布版本
 
             if(page.getPageId() != null && page.getPageId() > 0){
@@ -660,7 +677,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     }
 
     private Object confirmPageContent(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
-        if (node.getKey().startsWith("c_")) {
+        if (node.getKey().startsWith(MODULE_NAME_PREFIX)) {
             String moduleName = node.getValue().get("module_name").asText();
             switch (moduleName) {
                 case ModuleConstant.M_SCROLL_IMAGE:
@@ -716,7 +733,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
 
             }
         }
-        if("page_cfg".equals(node.getKey())){
+        if(MODULE_PAGE_CONFIG.equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
                 pageCfg.setPageBgImage(RegexUtil.getUri(pageCfg.getPageBgImage()));
@@ -971,8 +988,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     }
 
     private Object processTemplateModuleForGet(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException, ClassNotFoundException {
-        if (node.getKey().startsWith("c_")) {
-            String moduleName = node.getValue().get("module_name").asText();
+        if (node.getKey().startsWith(MODULE_NAME_PREFIX)) {
+            String moduleName = node.getValue().get(MODULE_PAGE_CONFIG).asText();
 
             String moduleClassName = Util.underlineToHump(moduleName.split("_",2)[1]);
             moduleClassName = moduleClassName.substring(0, 1).toUpperCase() + moduleClassName.substring(1);
@@ -980,7 +997,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             Class m = Class.forName(moduleClassName);
             return objectMapper.readValue(node.getValue().toString(), m);
         }
-        if ("page_cfg".equals(node.getKey())) {
+        if (MODULE_PAGE_CONFIG.equals(node.getKey())) {
             PageCfgVo pageCfg = objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if (pageCfg.getPictorial() != null && StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())) {
                 pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));

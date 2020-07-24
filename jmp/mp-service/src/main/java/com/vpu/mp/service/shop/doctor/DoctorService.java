@@ -220,5 +220,13 @@ public class DoctorService extends ShopBaseService {
         return doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
     }
 
+    /**
+     * 查询医师信息集合
+     * @param doctorIds 医师id集合
+     * @return
+     */
+    public List<DoctorSimpleVo> listDoctorSimpleInfo(List<Integer> doctorIds){
+        return doctorDao.listDoctorSimpleInfo(doctorIds);
+    }
 
 }

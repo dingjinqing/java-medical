@@ -14,4 +14,6 @@ public class ImSessionPageListParam extends BasePageParam {
     private List<Integer> sessionStatus;
 
     private Integer doctorId;
+
+    private Integer userId;
 }

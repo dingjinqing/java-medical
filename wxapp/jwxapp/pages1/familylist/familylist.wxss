@@ -23,7 +23,7 @@ page{
   justify-content: flex-start;
   align-items: center;
   padding-bottom: 30rpx;
-  border-bottom: 2rpx solid #eee;
+  border-bottom: 1rpx solid #eee;
   margin-left: 25rpx;
   font-weight: bold;
 }
@@ -32,10 +32,14 @@ page{
 }
 .ef_bottom{
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  padding-top: 20rpx;
+  padding: 20rpx 25rpx 0 0;
   margin-left: 25rpx;
+}
+.ef_bott_left{
+  display: flex;
+  align-items: center;
 }
 .iconfont_set_default{
   margin-right:16rpx;
@@ -89,7 +93,16 @@ page{
   border-radius: 30rpx;
   margin: 0 auto;
 }
-
+.some_opea{
+  display: flex;
+  align-items: center;
+  color: #999;
+}
+.some_opea text:first-of-type{
+  padding-right: 40rpx;
+  margin-right: 40rpx;
+  border-right: 1rpx solid #999
+}
 
 
 

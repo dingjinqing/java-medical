@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.medicine;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.medical.FetchMedicalAdviceParam;
 import com.vpu.mp.service.pojo.shop.medicalhistory.FetchMedicalHistoryParam;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionParam;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
@@ -24,17 +25,33 @@ public class PullHitsHistoryPrescriptionService extends ShopBaseService {
     @Autowired
     private PrescriptionService prescriptionService;
 
+    @Autowired
+    private MedicalAdviceService medicalAdviceService;
+
 
     /**
-     * 通过患者姓名、患者手机号、患者身份证号码、患者医院唯一编码、增量查询时间从hits系统拉取本地病历信息和处方信息（医嘱信息未实现）
+     * 通过患者姓名、患者手机号、患者身份证号码、患者医院唯一编码、增量查询时间从hits系统拉取本地病历信息和处方信息
      * @param fetchMedicalHistoryParam 拉取时入参
      * @return JsonResult
      */
     public JsonResult pullExternalHistoryPrescription(FetchMedicalHistoryParam fetchMedicalHistoryParam){
         FetchPrescriptionParam fetchPrescriptionParam = new FetchPrescriptionParam();
+        FetchMedicalAdviceParam fetchMedicalAdviceParam = new FetchMedicalAdviceParam();
         FieldsUtil.assign(fetchMedicalHistoryParam, fetchPrescriptionParam);
-        JsonResult jsonResultMedicalHistory = medicalHistoryService.pullExternalMedicalHistoryList(fetchMedicalHistoryParam);
-        if (jsonResultMedicalHistory.getError() > 0) return jsonResultMedicalHistory;
+        FieldsUtil.assign(fetchMedicalHistoryParam, fetchMedicalAdviceParam);
+        JsonResult jsonResultMedicalHistory
+            = medicalHistoryService.pullExternalMedicalHistoryList(fetchMedicalHistoryParam);
+        JsonResult pullExternalMedicalHistoryList
+            = medicalAdviceService.pullExternalMedicalHistoryList(fetchMedicalAdviceParam);
+        JsonResult pullExternalAllPrescriptionInfo
+            = prescriptionService.pullExternalAllPrescriptionInfo(fetchPrescriptionParam);
+        // 拉取处方、病历、医嘱都成功
+        if (jsonResultMedicalHistory.getError() > 0
+            && pullExternalMedicalHistoryList.getError() > 0
+            && pullExternalAllPrescriptionInfo.getError() > 0) {
+            return jsonResultMedicalHistory;
+        }
+        // 失败
         return prescriptionService.pullExternalAllPrescriptionInfo(fetchPrescriptionParam);
     }
 }

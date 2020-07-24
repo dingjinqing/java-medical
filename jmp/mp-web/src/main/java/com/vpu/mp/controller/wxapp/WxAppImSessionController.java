@@ -2,10 +2,13 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.wxapp.medical.im.SessionTest;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPullMsgParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionSendMsgParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionRenderVo;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +29,18 @@ public class WxAppImSessionController extends WxAppBaseController{
     @Autowired
     private ImSessionService imSessionService;
 
+    @PostMapping("/api/wxapp/im/session/page/list")
+    public JsonResult pageList(@RequestBody ImSessionPageListParam pageListParam) {
+        PageResult<ImSessionListVo> pageResult = imSessionService.pageList(pageListParam);
+        return success(pageResult);
+    }
+
     /**
      *  过往聊天内容初始化
      * @param sessionId 会话id
      * @return 过往会话内容
      */
-    @PostMapping("/api/wxapp/im/render/session/{sessionId}")
+    @PostMapping("/api/wxapp/im/session/render/{sessionId}")
     public JsonResult renderSession(@PathVariable("sessionId") Integer sessionId) {
         if (sessionId == null) {
             return fail(JsonResultCode.IM_SESSION_ID_IS_NULL);
@@ -50,7 +59,7 @@ public class WxAppImSessionController extends WxAppBaseController{
      * @param sessionId 会话id
      * @return jsonResult
      */
-    @PostMapping("/api/wxapp/im/close/session/{sessionId}")
+    @PostMapping("/api/wxapp/im/session/close/{sessionId}")
     public JsonResult closeSession(@PathVariable("sessionId") Integer sessionId) {
         if (sessionId == null) {
             return fail(JsonResultCode.IM_SESSION_ID_IS_NULL);
@@ -64,7 +73,7 @@ public class WxAppImSessionController extends WxAppBaseController{
      * @param sessionId 会话id
      * @return jsonResult
      */
-    @PostMapping("/api/wxapp/im/going/session/{sessionId}")
+    @PostMapping("/api/wxapp/im/session/going/{sessionId}")
     public JsonResult goingSession(@PathVariable("sessionId") Integer sessionId) {
         if (sessionId == null) {
             return fail(JsonResultCode.IM_SESSION_ID_IS_NULL);

@@ -22,4 +22,9 @@ public class PageStoreParam {
     private Byte pageState;
     private Integer catId;
     private Byte  pageTplType;
+
+    /**
+     * 店铺公告
+     */
+    private String noticeContext;
 }

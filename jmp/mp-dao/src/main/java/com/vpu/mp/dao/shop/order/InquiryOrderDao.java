@@ -31,7 +31,7 @@ public class InquiryOrderDao extends ShopBaseDao {
         SelectJoinStep<? extends Record> select = db()
             .select()
             .from(INQUIRY_ORDER);
-        select.where(INQUIRY_ORDER.IS_DELETE.eq((byte)0));
+        select.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         select=buildOptions(select, param);
         PageResult<InquiryOrderDo> list=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderDo.class);
         return list;

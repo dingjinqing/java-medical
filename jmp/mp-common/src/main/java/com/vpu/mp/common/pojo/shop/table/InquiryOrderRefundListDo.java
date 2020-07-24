@@ -18,4 +18,7 @@ public class InquiryOrderRefundListDo {
     private BigDecimal moneyAmout;
     private Timestamp refundTime;
     private Byte       isSuccess;
+    private Byte       isDelete;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 }

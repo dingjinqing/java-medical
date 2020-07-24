@@ -9,7 +9,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.foundation.transactional.DbTransactional;
 import com.vpu.mp.dao.foundation.transactional.DbType;
-import com.vpu.mp.dao.shop.medicalhistory.MedicalHistoryDao;
+import com.vpu.mp.dao.shop.medical.MedicalHistoryDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 
 import com.vpu.mp.service.pojo.shop.medicalhistory.*;

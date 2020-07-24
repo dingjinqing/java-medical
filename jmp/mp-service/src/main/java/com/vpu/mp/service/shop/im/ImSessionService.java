@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentSimpleVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.ImSessionConstant;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionRenderVo;
 import com.vpu.mp.service.shop.department.DepartmentService;
+import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,8 @@ public class ImSessionService extends ShopBaseService {
     DepartmentService departmentService;
     @Autowired
     PatientService patientService;
+    @Autowired
+    DoctorService doctorService;
 
     @Autowired
     private ImSessionDao imSessionDao;
@@ -63,18 +67,22 @@ public class ImSessionService extends ShopBaseService {
         PageResult<ImSessionListVo> pageResult = imSessionDao.pageList(param);
         List<ImSessionListVo> dataList = pageResult.getDataList();
         List<Integer> departmentIds = new ArrayList<>(dataList.size() / 2);
+        List<Integer> doctorIds = new ArrayList<>(dataList.size() / 2);
         List<Integer> patientIds = new ArrayList<>(dataList.size());
         for (ImSessionListVo imSession : dataList) {
             departmentIds.add(imSession.getDepartmentId());
             patientIds.add(imSession.getPatientId());
+            doctorIds.add(imSession.getDoctorId());
         }
 
         Map<Integer, String> departmentIdMap = departmentService.listDepartmentInfo(departmentIds).stream().collect(Collectors.toMap(DepartmentSimpleVo::getId, DepartmentSimpleVo::getName, (x1, x2) -> x2));
         Map<Integer, String> patientIdMap = patientService.listPatientInfo(patientIds).stream().collect(Collectors.toMap(PatientSimpleInfoVo::getId, PatientSimpleInfoVo::getName, (x1, x2) -> x2));
+        Map<Integer, String> doctorIdMap = doctorService.listDoctorSimpleInfo(doctorIds).stream().collect(Collectors.toMap(DoctorSimpleVo::getId, DoctorSimpleVo::getName, (x1, x2) -> x2));
 
         for (ImSessionListVo imSession : dataList) {
             imSession.setDepartmentName(departmentIdMap.get(imSession.getDepartmentId()));
-            imSession.setPatientName(patientIdMap.get(imSession.getDepartmentId()));
+            imSession.setPatientName(patientIdMap.get(imSession.getPatientId()));
+            imSession.setDoctorName(doctorIdMap.get(imSession.getDoctorId()));
         }
 
         return pageResult;
