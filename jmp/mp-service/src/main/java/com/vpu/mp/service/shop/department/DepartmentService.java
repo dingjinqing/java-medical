@@ -9,17 +9,19 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.*;
+import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author chenjie
  */
 @Service
-public class DepartmentService extends ShopBaseService {
+public class DepartmentService extends BaseShopConfigService {
     @Autowired
     protected DepartmentDao departmentDao;
     public static final int ZERO = 0;
@@ -235,5 +237,15 @@ public class DepartmentService extends ShopBaseService {
      */
     public List<DepartmentSimpleVo> listDepartmentInfo(List<Integer> departmentIds){
         return departmentDao.listDepartmentInfo(departmentIds);
+    }
+
+    /**
+     * 获取疾病史选中List
+     * @return
+     */
+    public List<DepartmentIdNameVo> listRecommendDepartment() {
+        List<DepartmentIdNameVo> departmentList = Util.parseJson(get("recommendDepartments"), new TypeReference<List<DepartmentIdNameVo>>() {
+        });
+        return departmentList;
     }
 }

@@ -261,6 +261,11 @@ public class GoodsDao extends ShopBaseDao {
        return goodsDos.stream().collect(Collectors.toMap(GoodsDo::getGoodsSn, GoodsDo::getGoodsId, (x1, x2) -> x1));
    }
 
+    /**
+     * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品Id
+     * @param goodsMatchParam
+     * @return
+     */
     public Integer getGoodsIdByInfo(GoodsMatchParam goodsMatchParam) {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(GOODS.IS_ON_SALE.eq((byte) 1));

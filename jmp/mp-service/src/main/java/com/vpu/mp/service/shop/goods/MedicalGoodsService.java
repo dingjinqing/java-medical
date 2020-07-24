@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.medical.DateFormatStr;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.brand.vo.GoodsBrandVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequestBo;
@@ -32,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalRequ
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
 import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
 import com.vpu.mp.service.pojo.shop.medical.label.bo.LabelRelationInfoBo;
 import com.vpu.mp.service.pojo.shop.medical.label.vo.GoodsLabelVo;
@@ -74,6 +77,8 @@ public class MedicalGoodsService extends ShopBaseService {
     private MedicalGoodsBrandService medicalGoodsBrandService;
     @Autowired
     private MedicalGoodsImageService medicalGoodsImageService;
+    @Autowired
+    private GoodsSpecProductService goodsSpecProductService;
 
     /**
      * 新增
@@ -454,5 +459,23 @@ public class MedicalGoodsService extends ShopBaseService {
         }
         goodsAggregate.batchUpdate(readyForUpdates);
         medicalGoodsSpecProductService.batchSkuUpdate(goodsSpecProductEntities);
+    }
+
+    /**
+     * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品信息
+     * @param goodsMatchParam
+     * @return
+     */
+    public GoodsPrdVo matchGoodsMedicalDetail(GoodsMatchParam goodsMatchParam) {
+        Integer goodsId = goodsAggregate.matchGoodsMedical(goodsMatchParam);
+        if (goodsId == null) {
+            return null;
+        }
+        GoodsDetailVo goodsDetail = goodsAggregate.getByGoodsId(goodsId);
+        GoodsPrdVo goodsPrd = new GoodsPrdVo();
+        FieldsUtil.assign(goodsDetail,goodsPrd);
+        Integer prdId = goodsSpecProductService.getDefaultPrdId(goodsDetail.getGoodsId());
+        goodsPrd.setPrdId(prdId);
+        return goodsPrd;
     }
 }
