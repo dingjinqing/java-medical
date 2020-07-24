@@ -1,6 +1,6 @@
 <view class="input-content">
     <view class="message-input">
-      <input type="text" placeholder="请仔细描述您的问题" placeholder-style="color:#999;" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}"></input>
+      <input type="text" cursor-spacing="8" placeholder="请仔细描述您的问题" placeholder-style="color:#999;" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}"></input>
       <text class="iconfont icontianjia"></text>
     </view>
 </view>
