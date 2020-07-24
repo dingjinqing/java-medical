@@ -1,18 +1,31 @@
-// pages2/doctorChat/doctorChat.js
-Page({
+// pages1/prescriptionsheet/prescriptionsheet.js
+var app = new getApp();
+var imageUrl = app.globalData.imageUrl;
+var util = require('../../utils/util.js');
+global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    time: '2020-07-23 13:35:01',
+    page_name: 'saoyang',
+    send_message: ''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.requsetMessage()
+  },
+  getInputMessage(e) {
+    let that = this
+    let {
+      detail: message
+    } = e
+    console.log(message)
+    that.sendMessage(message)
   },
 
   /**
@@ -26,14 +39,14 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.requsetMessage()
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-
+    clearInterval(this.timer)
   },
 
   /**
@@ -62,5 +75,43 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  sendMessage: function (message) {
+    let that = this;
+    if (message == '') return;
+    let imSessionItem = {
+      "type": 0,
+      "message": ""
+    }
+    imSessionItem.message = message;
+    util.api('/api/wxapp/im/session/send', res => {
+      console.log(res)
+      if (res.error === 0) {
+
+      }
+    }, {
+      departmentId: 12,
+      patientId: 3, //患者
+      fromId: 1, //医生
+      toId: 2, //to患者
+      imSessionItem: imSessionItem
+    }, '', true);
+  },
+  requsetMessage () {
+    this.messageApi()
+    this.timer = setInterval(this.messageApi,15000)
+  },
+  messageApi () {
+    util.api('/api/wxapp/im/session/pull', res => {
+      console.log(res)
+      if (res.error === 0) {
+
+      }
+    }, {
+      departmentId: 12,
+      patientId: 3,
+      pullFromId: 2,
+      selfId: 1
+    }, '', false);
   }
 })
