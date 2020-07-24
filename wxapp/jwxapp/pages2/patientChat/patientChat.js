@@ -17,7 +17,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.requsetMessage()
+
   },
   getInputMessage(e) {
     let that = this
@@ -106,26 +106,26 @@ global.wxPage({
   },
   requsetMessage () {
     this.messageApi()
-    this.timer = setInterval(this.messageApi,15000)
+    // this.timer = setInterval(this.messageApi,30000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
-      if (res.error === 0 && res.content.message) {
+      if (res.error === 0 && res.content[0]) {
           let chat = {}
-          let chatContent = that.data.chatContent;
-          chat.message = res.content.message;
+          let chatContent = this.data.chatContent;
+          chat.message = res.content[0].message;
           chat.type = 0;
           chatContent.push(chat)
-          that.setData({
+          this.setData({
             chatContent:chatContent
           })
       }
     }, {
       departmentId: 12,
       patientId: 3,
-      pullFromId: 2,
-      selfId: 1
+      pullFromId: 1,
+      selfId: 2
     }, '', false);
   }
 })
