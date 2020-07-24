@@ -10,12 +10,16 @@ import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.im.ImSessionConstant.IM_SESSION_STATUS_NOT_USE;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_NOT_READ;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_TOP;
+import static com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant.EXPIRE_TYPE_INVALID;
 
 /**
  * @author 赵晓东
@@ -105,6 +109,42 @@ public class MessageDao extends ShopBaseDao {
             .fetchOneInto(MessageRecord.class);
         messageRecord.setMessageStatus(status);
         messageRecord.update();
+    }
+
+
+    /**
+     * 医师端显示待问诊数量
+     * @param status 问诊状态
+     * @return Integer
+     */
+    public Integer countDoctorImMessageMum(Integer userId, Byte status){
+        return db().selectCount().from(IM_SESSION).where(IM_SESSION.SESSION_STATUS.eq(status)
+            .and(IM_SESSION.DOCTOR_ID.eq(userId))
+            .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
+    }
+
+    /**
+     * 医师端显示开方数量
+     * @param status 开方状态
+     * @return Integer
+     */
+    public Integer countDoctorOrderMessageMum(Byte status){
+        return db().selectCount().from(ORDER_INFO).where(ORDER_INFO.ORDER_AUDIT_STATUS.eq(status)
+            .and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
+    }
+
+    /**
+     * 医师端显示续方数量
+     * @param status 续方状态
+     * @return Integer
+     */
+    public Integer countDoctorPrescriptionMessageMum(Byte status){
+        Date a = new Date();
+        Timestamp ts = new Timestamp(a.getTime());
+        return db().selectCount().from(PRESCRIPTION).where(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)
+            .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.ge(ts))
+            .and(PRESCRIPTION.IS_VALID.eq(status))
+            .and(PRESCRIPTION.STATUS.eq(status))).fetchInto(Integer.class).get(0);
     }
 
 }

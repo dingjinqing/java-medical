@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountParam;
 import com.vpu.mp.service.shop.message.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,6 +54,12 @@ public class WxAppUserMessageController extends WxAppBaseController{
     public JsonResult changeMessageStatus(Integer messageId, Byte status) {
         messageService.changeMessageStatus(messageId, status);
         return this.success();
+    }
+
+    @RequestMapping("/doctor/count")
+    @ResponseBody
+    public JsonResult doctorMessageCount(DoctorMessageCountParam doctorMessageCountParam){
+        return this.success(messageService.countDoctorMessage(doctorMessageCountParam));
     }
 
 
