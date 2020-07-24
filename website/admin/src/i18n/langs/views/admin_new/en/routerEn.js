@@ -530,6 +530,8 @@ export const en = {
   manualRefund: ['Order management', 'Manual return refund'],
   // 订单管理 批量发货
   bulk_shipment: ['Order Management', 'Bulk Delivery'],
+  // 订单管理 咨询订单
+  advisory_order: ['Order Management', 'Advisory Order'],
 
   // 门店管理 门店列表
   store_list: ['Store management', 'Stores list'],

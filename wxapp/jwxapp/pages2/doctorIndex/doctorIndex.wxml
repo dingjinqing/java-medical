@@ -1,0 +1,40 @@
+<!--pages2/doctorIndex/doctorIndex.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="top_doc_info">
+    <view class="doc_square">
+      <image class="doc_img" src="https://bkimg.cdn.bcebos.com/pic/37d3d539b6003af3a09e2944372ac65c1038b6ea?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"></image>
+      <view class="doc_message">
+        <view class="doc_name"> <text>大神医</text> 主任医师</view>
+        <view class="doc_hos">秦皇岛军工医院 皮肤科</view>
+        <view class="doc_depart">擅长：癌症、神经病</view>
+      </view>
+    </view>
+  </view>
+  <view class="list">
+    <view class="item">
+      <image class="item_img"></image>
+      <view class="item_text">待续方</view>
+    </view>
+    <view class="item">
+      <image class="item_img"></image>
+      <view class="item_text">待开方</view>
+    </view>
+    <view class="item">
+      <image class="item_img"></image>
+      <view class="item_text">待问诊</view>
+    </view>
+    <view class="item">
+      <image class="item_img"></image>
+      <view class="item_text">已续方</view>
+    </view>
+    <view class="item">
+      <image class="item_img"></image>
+      <view class="item_text">已开具</view>
+    </view>
+    <view class="item">
+      <image class="item_img"></image>
+      <view class="item_text">我的问诊</view>
+    </view>
+  </view>
+</view>

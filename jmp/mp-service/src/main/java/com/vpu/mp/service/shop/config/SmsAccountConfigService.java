@@ -20,7 +20,7 @@ public class SmsAccountConfigService extends BaseShopConfigService{
      * @return
      */
     public String getShopSmsAccountConfig() {
-        return this.getJsonObject(SHOP_SMS_ACCOUNT, String.class);
+        return this.get(SHOP_SMS_ACCOUNT, String.class,"");
     }
 
     /**
@@ -30,7 +30,7 @@ public class SmsAccountConfigService extends BaseShopConfigService{
      * @return
      */
     public int setShopSmsAccountConfig(String config) {
-        return this.setJsonObject(SHOP_SMS_ACCOUNT, config);
+        return this.set(SHOP_SMS_ACCOUNT, config);
     }
 
 

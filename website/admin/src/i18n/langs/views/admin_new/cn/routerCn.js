@@ -388,7 +388,8 @@ export const cn = {
   manualRefund: ['订单管理', '手动退货退款'],
   // 订单管理 批量发货
   bulk_shipment: ['订单管理', '批量发货'],
-
+  // 订单管理 咨询订单
+  advisory_order: ['订单管理', '咨询订单'],
   // 门店管理 门店列表
   store_list: ['门店管理', '门店列表'],
   storeGoodsList: ['门店管理', '商品管理'],

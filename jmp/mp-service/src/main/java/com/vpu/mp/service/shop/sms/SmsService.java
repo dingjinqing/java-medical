@@ -12,13 +12,20 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.sms.SmsBaseParam;
 import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordParam;
+import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
 import com.vpu.mp.service.shop.config.SmsAccountConfigService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -46,7 +53,7 @@ public class SmsService {
      */
     public String sendSms(SmsBaseParam param) throws MpException {
         String account = smsAccountConfigService.getShopSmsAccountConfig();
-        if (account==null){
+        if (Strings.isBlank(account)){
             return null;
         }
         param.setSid(account);
@@ -82,13 +89,13 @@ public class SmsService {
      */
     public String sendSms(Integer userId,String mobiles,String content,String ext) throws MpException {
         String account = smsAccountConfigService.getShopSmsAccountConfig();
-        if (account==null){
+        if (Strings.isBlank(account)){
             return null;
         }
         SmsBaseParam param =new SmsBaseParam();
         param.setContent(content);
         param.setMobiles(mobiles);
-        param.setSid(smsAccountConfigService.getShopSmsAccountConfig());
+        param.setSid(account);
         param.setChannel(SmsApiConfig.CHANNEL_DEFAULT);
         param.setProduct(SmsApiConfig.PRODUCT_WPB_WX);
         param.setExt(ext);
@@ -105,13 +112,13 @@ public class SmsService {
      */
     public String sendSms(Integer userId,String mobiles,String content) throws MpException {
         String account = smsAccountConfigService.getShopSmsAccountConfig();
-        if (account==null){
+        if (Strings.isBlank(account)){
             return null;
         }
         SmsBaseParam param =new SmsBaseParam();
         param.setContent(content);
         param.setMobiles(mobiles);
-        param.setSid(smsAccountConfigService.getShopSmsAccountConfig());
+        param.setSid(account);
         param.setChannel(SmsApiConfig.CHANNEL_DEFAULT);
         param.setProduct(SmsApiConfig.PRODUCT_WPB_WX);
         param.setExt(SmsApiConfig.EXT_CHECK_CODE);
@@ -121,25 +128,30 @@ public class SmsService {
 
 
     /**
-     * 获取请求参数
+     * 发送短信请求
      * @param param
      * @return
      */
     private String sendSmsParam(SmsBaseParam param) throws MpException {
-        Map<String, Object> postBody = new TreeMap<>(Comparator.naturalOrder());
         long time = System.currentTimeMillis()/1000;
-        postBody.put("appKey",smsApiConfig.getAppKey());
-        postBody.put("timestamp",time);
-        postBody.put("apiMethod", SmsApiConfig.METHOD_SMS_SEND);
-        postBody.put("sms",Util.toJson(param));
+        SmsBaseRequest request  =new SmsBaseRequest();
+        request.setSms(Util.toJson(param));
+        request.setApiMethod(SmsApiConfig.METHOD_SMS_SEND);
+        request.setAppKey(smsApiConfig.getAppKey());
+        request.setTimestamp(time);
+        Map<String, Object> postBody = Util.transBeanToMap(request);
         postBody.put("sign", generateSing(postBody));
+        HttpResponse response = requestApi(postBody);
         SmsSendRecordParam record =new SmsSendRecordParam();
         record.setAccountName(param.getSid());
         record.setUserId(param.getUserId());
         record.setMobile(param.getMobiles());
         record.setExt(param.getExt());
         record.setRequestMsg(param.getContent());
-        return requestApi(postBody,record);
+        record.setResponseMsg(response.body());
+        record.setResponseCode(response.getStatus()+"");
+        smsSendRecordDao.save(record);
+        return response.body();
     }
 
     /**
@@ -161,7 +173,7 @@ public class SmsService {
      * @param map
      * @return
      */
-    private String generateSing(Map<String, Object> map){
+    public String generateSing(Map<String, Object> map){
         StringBuilder str = new StringBuilder(smsApiConfig.getAppSecret());
         map.forEach((k, v)-> str.append(k).append(v));
         str.append(smsApiConfig.getAppSecret());
@@ -171,27 +183,24 @@ public class SmsService {
     /**
      * 调用接口,并保存发送记录
      * @param postBody
-     * @param record
      * @return
      */
-    private String requestApi(Map<String, Object> postBody, SmsSendRecordParam record) throws MpException {
+    public HttpResponse requestApi(Map<String, Object> postBody) throws MpException {
         log.info("短信request--{}",postBody);
-        String body;
+        HttpResponse response;
         try {
-            HttpResponse response = HttpRequest.post(smsApiConfig.getSmsUrl())
+             response = HttpRequest.post(smsApiConfig.getSmsUrl())
                     .header(Header.CONTENT_TYPE, "multipart/form-data")
                     .form(postBody)
                     .timeout(20000)
                     .execute();
-            record.setResponseMsg(response.body());
-            record.setResponseCode(response.getStatus()+"");
-            smsSendRecordDao.save(record);
-            body = response.body();
         }catch (Exception e){
             throw new MpException(JsonResultCode.CODE_ACCOUNT_SAME);
         }
-        log.info("短信resPonse--{}",body);
-        return body;
+        log.info("短信resPonse--{}",response.body());
+        return response;
     }
+
+
 
 }

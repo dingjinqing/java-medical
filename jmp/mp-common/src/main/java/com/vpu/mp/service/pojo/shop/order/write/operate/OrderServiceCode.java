@@ -38,8 +38,9 @@ public enum OrderServiceCode {
     //12:好友代付
     INSTEAD_PAY(),
     //13:订单得处方续方
-    PRESCRIPTION();
-
+    PRESCRIPTION(),
+    //14:订单待开方
+    MAKE_PRESCRIPTION();
     OrderServiceCode() {
     }
 }

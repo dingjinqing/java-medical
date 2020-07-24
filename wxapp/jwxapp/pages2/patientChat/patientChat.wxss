@@ -11,6 +11,8 @@
   border-radius: 16rpx;
   padding: 20rpx;
   position: relative;
+  word-wrap:break-word;
+  word-break: break-all;
 }
 
 .origin_left {

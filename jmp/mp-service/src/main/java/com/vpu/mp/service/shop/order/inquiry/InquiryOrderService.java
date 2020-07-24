@@ -101,7 +101,7 @@ public class InquiryOrderService extends ShopBaseService {
     }
 
     /**
-     * 更改问诊状态为接诊中
+     * 更改问诊状态
      * @param param
      */
     public void updateOrder(InquiryOrderOnParam param){
@@ -110,7 +110,13 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setOrderStatus(param.getOrderStatus());
         inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
-        imSessionService.updateSessionToGoingOn(param.getSessionId());
+        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
+            imSessionService.updateSessionToGoingOn(param.getSessionId());
+        }
+        //更新会话状态为关闭
+        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
+            imSessionService.closeImSession(param.getSessionId());
+        }
     }
     public void insert(InquiryOrderDo inquiryOrderDo){
         int orderId=inquiryOrderDao.save(inquiryOrderDo);

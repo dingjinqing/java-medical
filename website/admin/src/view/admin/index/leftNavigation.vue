@@ -421,6 +421,13 @@ export default {
             span: '',
             name: 'bulk_shipment',
             flag: true
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/checkout.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/checkout_h.png',
+            span: '',
+            name: 'advisory_order',
+            flag: true
           }
         ],
         first_market_manage: [

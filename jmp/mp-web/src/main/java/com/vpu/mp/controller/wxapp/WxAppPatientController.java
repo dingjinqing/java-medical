@@ -10,7 +10,9 @@ import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
 import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.shop.sms.SmsAccountService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ import java.util.List;
 @RestController
 @Slf4j
 public class WxAppPatientController extends WxAppBaseController {
+    @Autowired
+    private SmsAccountService smsAccountService;
 
     /**
      * 	获取用户的患者列表
@@ -65,7 +69,7 @@ public class WxAppPatientController extends WxAppBaseController {
         try {
             shop().patientService.sendCheckSms(param);
         } catch (MpException e) {
-            return success();
+            return fail();
         }
         return success();
     }
@@ -90,5 +94,22 @@ public class WxAppPatientController extends WxAppBaseController {
     public JsonResult getPatientDetail(@RequestBody PatientOneParam patientOneParam) {
         PatientOneParam patientDetail = shop().patientService.getOneDetail(patientOneParam.getId());
         return success(patientDetail);
+    }
+
+    /**
+     * 测试
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/user/sms/add")
+    public JsonResult createSmsAccount(@RequestBody  SmsAccountParam param){
+        String smsAccount = null;
+        try {
+            smsAccount = smsAccountService.createSmsAccount(param);
+        } catch (MpException e) {
+            e.printStackTrace();
+            return fail();
+        }
+        return success(smsAccount);
     }
 }

@@ -3,9 +3,13 @@ package com.vpu.mp.common.foundation.util;
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 import static java.util.stream.Collectors.toList;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,6 +26,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -31,6 +36,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -841,4 +847,27 @@ public class Util {
         s = Math.round(s * 10000d) / 10000d;
         return s;
     }
+	public static Map<String, Object> transBeanToMap(Object obj) {
+		if (obj == null) {
+			return null;
+		}
+		Map<String, Object> map = new TreeMap<>(Comparator.naturalOrder());
+		try {
+			BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
+			PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+			for (PropertyDescriptor property : propertyDescriptors) {
+				String key = property.getName();
+				// 过滤class属性
+				if (!"class".equals(key)) {
+					// 得到property对应的getter方法
+					Method getter = property.getReadMethod();
+					Object value = getter.invoke(obj);
+					map.put(key, value);
+				}
+			}
+		} catch (Exception e) {
+			log.error("transBeanToMap error {}", e.getMessage());
+		}
+		return map;
+	}
 }
