@@ -1,1 +1,24 @@
 /* components/doctor/doctor_chat_message/doctor_chat_message.wxss */
+.user_icon{
+  width:80rpx;
+height:80rpx;
+border-radius:50%;
+overflow: hidden;
+}
+.user_icon image{
+  width: 100%;
+  height: 100%;
+}
+.user_left{
+  margin-left: 30rpx;
+}
+.user_right{
+  margin-right:30rpx;
+}
+.user_con{
+  display: flex;
+  margin-bottom: 30rpx;
+}
+.con_right{
+  flex-direction: row-reverse;
+}

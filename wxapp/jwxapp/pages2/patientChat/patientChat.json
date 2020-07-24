@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "chat-date": "../../components/doctor/doctor_chat_date/index"
+    "chat-date": "../../components/doctor/doctor_chat_date/index",
+    "chat-message": "../../components/doctor/doctor_chat_message/doctor_chat_message"
   }
 }
