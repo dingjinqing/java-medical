@@ -128,7 +128,7 @@ public class SmsService {
     private String sendSmsParam(SmsBaseParam param) throws MpException {
         Map<String, Object> postBody = new TreeMap<>(Comparator.naturalOrder());
         long time = System.currentTimeMillis()/1000;
-        postBody.put("appKey",smsApiConfig.getAPP_KEY());
+        postBody.put("appKey",smsApiConfig.getAppKey());
         postBody.put("timestamp",time);
         postBody.put("apiMethod", SmsApiConfig.METHOD_SMS_SEND);
         postBody.put("sms",Util.toJson(param));
@@ -162,9 +162,9 @@ public class SmsService {
      * @return
      */
     private String generateSing(Map<String, Object> map){
-        StringBuilder str = new StringBuilder(smsApiConfig.getAPP_KEY());
+        StringBuilder str = new StringBuilder(smsApiConfig.getAppSecret());
         map.forEach((k, v)-> str.append(k).append(v));
-        str.append(smsApiConfig.getAPP_KEY());
+        str.append(smsApiConfig.getAppSecret());
         return Util.md5(str.toString()).toUpperCase();
     }
 
