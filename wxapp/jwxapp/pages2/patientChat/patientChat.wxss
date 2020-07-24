@@ -10,7 +10,6 @@
   position: relative;
   word-wrap:break-word;
   word-break: break-all;
-  overflow: hidden;
 }
 
 .origin_left {

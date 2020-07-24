@@ -106,7 +106,7 @@ global.wxPage({
   },
   requsetMessage () {
     this.messageApi()
-    // this.timer = setInterval(this.messageApi,30000)
+    this.timer = setInterval(this.messageApi,30000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
