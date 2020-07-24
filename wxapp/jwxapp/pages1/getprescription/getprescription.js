@@ -137,7 +137,7 @@ global.wxPage({
     }
     util.api('/api/wxapp/user/patient/send/sms', res => {
       if (res.error === 0) {
-        const TIME_COUNT = 10;
+        const TIME_COUNT = 60;
         this.setData({
           countDown: TIME_COUNT
         })

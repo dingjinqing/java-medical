@@ -27,6 +27,11 @@ global.wxComponent({
           prescriptionCode:this.data.prescriptionData.prescriptionCode
         })
       })}`)
+    },
+    viewRepurchase(){
+      util.jumpLink(`pages1/repurchaselist/repurchaselist${util.getUrlParams({
+        prescriptionCode:this.data.prescriptionData.prescriptionCode
+      })}`)
     }
   }
 });

@@ -10,14 +10,14 @@ global.wxPage({
   data: {
     time: '2020-07-23 13:35:01',
     page_name: 'saoyang',
-    send_message: ''
+    chatContent:[]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.requsetMessage()
+    // this.requsetMessage()
   },
   getInputMessage(e) {
     let that = this
@@ -53,7 +53,7 @@ global.wxPage({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    clearInterval(this.timer)
   },
 
   /**
@@ -86,8 +86,15 @@ global.wxPage({
     imSessionItem.message = message;
     util.api('/api/wxapp/im/session/send', res => {
       console.log(res)
-      if (res.error === 0) {
-
+      if (res.error === 0 ) {
+        let chat = {}
+        let chatContent = that.data.chatContent;
+        chat.message = message;
+        chat.type = 1;
+        chatContent.push(chat)
+        that.setData({
+          chatContent:chatContent
+        })
       }
     }, {
       departmentId: 12,
@@ -95,18 +102,25 @@ global.wxPage({
       fromId: 1, //医生
       toId: 2, //to患者
       imSessionItem: imSessionItem
-    }, '', true);
+    }, '', false);
   },
   requsetMessage () {
     this.messageApi()
-    this.timer = setInterval(this.messageApi,15000)
+    this.timer = setInterval(this.messageApi,2000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
-      if (res.error === 0) {
-
-      }
+      if (res.error === 0 && res.content[0]) {
+        let chat = {}
+        let chatContent = this.data.chatContent;
+        chat.message = res.content[0].message;
+        chat.type = 0;
+        chatContent.push(chat)
+        this.setData({
+          chatContent:chatContent
+        })
+    }
     }, {
       departmentId: 12,
       patientId: 3,

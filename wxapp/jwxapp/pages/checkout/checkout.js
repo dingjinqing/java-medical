@@ -897,7 +897,7 @@ global.wxPage({
     })
   },
   handleShowDialog(e){
-    let {prescriptionNo} = e.currentTarget.dataset
+    let {prescriptionCode} = e.currentTarget.dataset
     util.api('/api/wxapp/prescription/details',res=>{
       if(res.error === 0){
         this.setData({

@@ -2,9 +2,10 @@
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
     <view class="goods-content">
-      <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum"/>
-      <view class="line"></view>
-      <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum"/>
+      <block wx:for="{{goodsList}}" wx:for-item="goodsItem" wx:key="index">
+        <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum"/>
+        <view class="line" wx:if="{{index !== goodsList.length - 1}}"></view>
+      </block>
     </view>
     <view class="footer-content">
       <view class="footer-flex">

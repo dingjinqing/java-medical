@@ -99,11 +99,14 @@ page{
   border-radius: 8rpx;
   background-color: #26C4BC;
   color: #fff;
-  line-height: 80rpx;
+  line-height: 70rpx;
   text-align: center;
   width: 200rpx;
 }
 .button.mobile.gray{
   color: #fff;
   background-color: #999;
+}
+.mobile-input{
+  width: 270rpx;
 }

@@ -71,7 +71,7 @@
 			</view>
 		</view>
 		<view class="warn-tips">本处方内容仅供参考，自行下载配药不具有处方效力</view>
-		<view class="button">去买药</view>
+		<view class="button" bindtap="viewRepurchase">去买药</view>
 	</view>
 
 </v-popup>

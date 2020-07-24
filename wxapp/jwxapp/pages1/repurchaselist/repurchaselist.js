@@ -1,3 +1,5 @@
+const util = require("../../utils/util")
+
 global.wxPage({
 
   /**
@@ -25,9 +27,48 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    let {prescriptionCode} = options
+    this.setData({
+      prescriptionCode
+    })
+    this.requestList()
   },
-
+  requestList(){
+    util.api('/api/wxapp/prescription/goods/list',res=>{
+      if(res.error === 0){
+        this.setData({
+          goodsList:this.resetCartList(res.content)
+        })
+      }
+    },{
+      prescriptionCode:this.data.prescriptionCode
+    })
+  },
+  resetCartList(goodsList){
+    return goodsList.map(item => {
+      item.prdNumber = item.goodsNumber;
+      item.cartNumber = 1;
+      item.goodsImg = this.data.imageUrl + item.goodsImg;
+      item.prdPrice = item.shopPrice;
+      return item
+    })
+  },
+  cartNumChange({detail:goodsInfo}){
+    let targetIndex = this.data.goodsList.findIndex(item=> item.goodsId === goodsInfo.goodsId)
+    this.setData({
+      [`goodsList[${targetIndex}].cartNumber`]: goodsInfo.type === 'plus' ? goodsInfo.cartNumber + 1 : goodsInfo.cartNumber - 1
+    })
+  },
+  customCartNum({detail:goodsInfo}){
+    console.log(goodsInfo)
+    let {goodsNumber,prdNumber} = goodsInfo
+    let targetIndex = this.data.goodsList.findIndex(item=> item.goodsId === goodsInfo.goodsId)
+    if(goodsNumber > prdNumber) goodsNumber = prdNumber
+    if(goodsNumber < 1)  goodsNumber = 1
+    this.setData({
+      [`goodsList[${targetIndex}].cartNumber`]:goodsNumber
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

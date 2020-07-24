@@ -1,4 +1,7 @@
 /* pages2/patientChat/patientChat.wxss */
+.main-container{
+  padding-bottom: 100rpx;
+}
 .origin_message {
   max-width: 450rpx;
   min-height: 50rpx;

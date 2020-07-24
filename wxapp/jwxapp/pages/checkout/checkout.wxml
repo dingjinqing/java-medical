@@ -86,7 +86,7 @@
 			</view>
 		</view>
 
-		<view class="prescription-item" bindtap="handleShowDialog" data-prescription-no="{{item.prescriptionNo}}" wx:for="{{orderInfo.prescriptionList}}" wx:key="id">
+		<view class="prescription-item" bindtap="handleShowDialog" data-prescription-code="{{item.prescriptionCode}}" wx:for="{{orderInfo.prescriptionList}}" wx:key="id">
 			<view class="item-title" style="background: #DBEFEE url({{imageUrl}}image/wxapp/order-prescription-bg.png) no-repeat left top/100% 80rpx;">电子处方</view>
 			<view class="item-list-content">
 				<view class="item-list">
