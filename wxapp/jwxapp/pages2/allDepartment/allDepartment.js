@@ -1,5 +1,7 @@
 // pages2/allDepartment/allDepartment.js
-Page({
+var util = require('../../utils/util.js')
+var app = getApp()
+global.wxPage({
 
   /**
    * 页面的初始数据
@@ -12,7 +14,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+     this.requestList()
   },
 
   /**
@@ -62,5 +64,18 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  requestList:function(){
+    // let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
+    util.api('/api/wxapp/doctor/list', (res) => {
+      console.log(res)
+      if (res.error === 0) {
+      
+      }
+    }, {
+      keyword: '',
+      departmentId:0,
+      titleId:0
+      });
   }
 })

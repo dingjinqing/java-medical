@@ -1,9 +1,11 @@
 /* pages2/doctorPatientMessage/doctorPatientMessage.wxss */
 @import "/css/iconfont.wxss";
 
-.main-container {
+.main_container {
   padding: 24rpx;
   padding-bottom: 130rpx;
+  width: 100%;
+  height: auto;
 }
 
 .title-module {
@@ -107,10 +109,11 @@
   width: 100%;
   box-sizing: border-box;
   padding: 24rpx;
+  background-color: #fff;
   position: fixed;
   bottom: 0;
   left: 0;
-  background-color: #fff;
+
 }
 
 .footer-button {
@@ -139,15 +142,17 @@ textarea {
   min-height: 300rpx;
   border-bottom: 2rpx solid #eee;
 }
-.upload-image{
+
+.upload-image {
   width: 160rpx;
   height: 160rpx;
-  border:2rpx dashed #ddd;
+  border: 2rpx dashed #ddd;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+
 .shai_view {
   border: 1px solid #eee;
   position: relative;
@@ -157,13 +162,16 @@ textarea {
   align-items: center;
   justify-content: center;
   margin-right: 30rpx;
+  margin-bottom: 20rpx;
 }
 
-.shai_view image,.shai_right image {
+.shai_view image,
+.shai_right image {
   width: 160rpx;
   height: 160rpx;
 
 }
+
 .shai_view .shai_close {
   position: absolute;
   top: -10rpx;
@@ -171,7 +179,8 @@ textarea {
   width: 26rpx;
   height: 26rpx;
 }
-.image-con{
+
+.image-con {
   display: flex;
   flex-wrap: wrap;
   margin-left: 30rpx;

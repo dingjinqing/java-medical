@@ -8,14 +8,14 @@
 			<input placeholder='搜索医生、科室、疾病' bindconfirm="inputSearch" bindinput="changeInput" value="{{keyWords}}"></input>
 		</view>
 	</view>
-	<block wx:if='{{1 == 2}}'>
+	<block wx:if='{{1 == 1}}'>
 		<view class="top_nav">
 			<view class="top_nav_item {{tabIndex == 'doctor' ? 'top_choose' : ''}}" data-id="doctor" bindtap="">医师列表</view>
 			<view class="top_nav_item {{tabIndex == 'myChat' ? 'top_choose' : ''}}" data-id="address" bindtap="">我的咨询</view>
 		</view>
-		<block wx:if='{{1 == 2}}'>
+		<block wx:if='{{1 == 1}}'>
 			<view class="department">
-				<view class="dep_item dep_choose">耳鼻喉科</view>
+				<view class="dep_item">耳鼻喉科</view>
 				<view class="dep_item">风湿病科</view>
 				<view class="dep_item">儿科</view>
 				<view class="dep_item">预防保健科</view>

@@ -1,6 +1,6 @@
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
-	<view class="main-container">
+	<view class="main_container">
 		<view class="title-module">患者信息</view>
 		<view class="card-content has-padding p-left">
 			<view class="list-item">
