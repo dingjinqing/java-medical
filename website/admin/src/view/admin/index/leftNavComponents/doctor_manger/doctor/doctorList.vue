@@ -261,7 +261,7 @@ export default {
     // 编辑
     editDoctor (id) {
       this.$router.push({
-        path: '/admin/home/main/doctor/addDoctor',
+        path: '/admin/home/main/doctor/updateDoctor',
         query: {
           id: id
         }
