@@ -1168,4 +1168,8 @@ public class Tables {
      * 问诊订单退款记录
      */
     public static final InquiryOrderRefundList INQUIRY_ORDER_REFUND_LIST = com.vpu.mp.db.shop.tables.InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST;
+    /**
+     * 充值记录表
+     */
+    public static final Recharge RECHARGE = com.vpu.mp.db.shop.tables.Recharge.RECHARGE;
 }

@@ -23,6 +23,7 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.List;
  * @author yangpengcheng
  * @date 2020/7/24
  **/
+@Service
 public class OrderMakePrescriptionService extends ShopBaseService implements IorderOperate<OrderToPrescribeQueryParam, PrescriptionMakeParam> {
 
     @Autowired

@@ -119,8 +119,8 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param list
      * @return
      */
-    public List<PrescriptionVo> listPrescriptionList(Collection<String> list){
-       return db().select(PRESCRIPTION.asterisk()).from(PRESCRIPTION).where(PRESCRIPTION.PRESCRIPTION_CODE.in(list)).fetchInto(PrescriptionVo.class);
+    public List<PrescriptionVo> listPrescriptionList(Collection<String> codeList){
+       return db().select(PRESCRIPTION.asterisk()).from(PRESCRIPTION).where(PRESCRIPTION.PRESCRIPTION_CODE.in(codeList)).fetchInto(PrescriptionVo.class);
     }
 
     /**

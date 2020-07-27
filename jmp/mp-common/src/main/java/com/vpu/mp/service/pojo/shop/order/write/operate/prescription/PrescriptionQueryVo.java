@@ -15,5 +15,6 @@ public class PrescriptionQueryVo {
     /**
      * 处方列表
      */
-    List<PrescriptionOrderGoodsVo> list;
+    List<PrescriptionOrderGoodsVo> auditedList;
+    List<PrescriptionOrderGoodsVo> unauditedList;
 }
