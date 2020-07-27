@@ -7,7 +7,9 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-
+    imageUrl: util.getImageUrl(""),
+    departmentList:[],
+    keyword:''
   },
 
   /**
@@ -58,24 +60,34 @@ global.wxPage({
   onReachBottom: function () {
 
   },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
+  toDoctorSearch:function(e){
+    let id = e.currentTarget.dataset.id;
+    let name = e.currentTarget.dataset.name;
+    util.navigateTo({
+      url: "/pages2/doctorSearch/doctorSearch?id=" + id + '&name=' + name 
+    })
   },
-  requestList:function(){
+  changeInput (e) {
+    this.setData({
+      keyword: e.detail.value
+    })
+  },
+  inputSearch () {
+    let keyword = this.data.keyword;
+    this.requestList(keyword)
+  },
+  requestList:function(keyword = ''){
+    let that = this;
     // let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
-    util.api('/api/wxapp/doctor/list', (res) => {
+    util.api('/api/wxapp/department/list', (res) => {
       console.log(res)
       if (res.error === 0) {
-      
+         that.setData({
+          departmentList:res.content
+         })
       }
     }, {
-      keyword: '',
-      departmentId:0,
-      titleId:0
+      keyword: keyword,
       });
   }
 })

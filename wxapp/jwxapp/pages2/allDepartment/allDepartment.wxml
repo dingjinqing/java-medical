@@ -8,10 +8,15 @@
 			<input placeholder='搜索科室' bindconfirm="inputSearch" bindinput="changeInput" value="{{keyWords}}"></input>
 		</view>
 	</view>
-  <view class="depar_content">
-     <view>皮肤科</view>
-     <view>耳鼻喉科</view>
-     <view>儿科</view>
-  </view>
+	<view class="depar_content" wx:if='{{departmentList != ""}}'>
+		<block wx:for='{{departmentList}}' wx:key='id'>
+			<view data-id='{{item.id}}' data-name='{{item.name}}' catchtap="toDoctorSearch">{{item.name}}</view>
+		</block>
+	</view>
+
+	<view class="is-null" wx:else>
+		<image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+		<text>暂无搜索结果</text>
+	</view>
 
 </view>

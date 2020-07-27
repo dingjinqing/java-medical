@@ -19,6 +19,8 @@ global.wxPage({
       '主治医生',
       '主治医生'
     ],
+    departmentList:[],
+    doctorList:[]
   },
 
   /**
@@ -60,6 +62,13 @@ global.wxPage({
     that.setData({
       can_show:false,
       choose_type:''
+    })
+  },
+  handleChangeNav (e) {
+    
+    let id = e.currentTarget.dataset.id
+    this.setData({
+      tabIndex: id
     })
   },
 
@@ -117,12 +126,23 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
+  toAllDepartment:function(){
+    util.navigateTo({
+      url: "/pages2/allDepartment/allDepartment"
+    })
+  },
 
   requestList:function(){
+    let that = this;
     // let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
     util.api('/api/wxapp/recommend/doctor/list', (res) => {
       console.log(res)
       if (res.error === 0) {
+        let con = res.content;
+        that.setData({
+          departmentList:con.recommendDepartment,
+          doctorList:con.doctorList
+        })
         // let dataList = this.formatData(res.content.dataList);
         // this.setData({
         //   pageParams: res.content.page,
