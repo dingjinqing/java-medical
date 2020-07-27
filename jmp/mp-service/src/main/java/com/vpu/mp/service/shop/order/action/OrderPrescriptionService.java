@@ -1,8 +1,11 @@
 package com.vpu.mp.service.shop.order.action;
 
+import cn.hutool.db.sql.Order;
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
@@ -28,6 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 订单处方处理类
@@ -49,6 +54,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
     private MedicalGoodsService medicalGoodsService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
 
 
     @Override
@@ -64,72 +71,82 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      */
     @Override
     public Object query(PrescriptionQueryParam param) throws MpException {
-        List<OrderInfoVo> orders = orderInfo.getOrdersByCondition(orderInfo.TABLE.MAIN_ORDER_SN.eq("")
-                .or(orderInfo.TABLE.ORDER_SN.eq(param.getOrderSn())) , OrderInfoVo.class);
-        int size = orders.size();
-        if(size == 0) {
-            return null;
+        if (param.getOrderId()!=null){
+            return getOneOrderPrescription(param);
         }
-        OrderInfoVo orderInfoVo = orders.get(0);
+
+
+        return null;
+    }
+
+    private Object getOneOrderPrescription(PrescriptionQueryParam param) {
+        OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
+        if(order == null) {
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
+        }
         //查询商品行
-        List<OrderGoodsDo> goodsDoList = orderGoods.getByOrderId(orderInfoVo.getOrderId()).into(OrderGoodsDo.class);
-        Map<String, PrescriptionOrderGoodsVo> defailtMap =new HashMap<>();
-        Map<String, PrescriptionOrderGoodsVo> auditPassMap =new HashMap<>();
-        for (OrderGoodsDo orderGoodsDo : goodsDoList) {
-            GoodsMedicalInfoDo medicalInfo = medicalGoodsService.getByGoodsId(orderGoodsDo.getGoodsId());
-            //商品的医疗信息
-            if (medicalInfo != null && medicalInfo.getIsRx().equals(BaseConstant.YES)) {
-                //未审核
-                orderGoodsAuditDefault(defailtMap, orderGoodsDo, medicalInfo);
-                //审核通过的
-                orderGoodsAuditPass(auditPassMap, orderGoodsDo);
-            }
-        }
+        List<OrderGoodsDo> goodsDoList = orderGoods.getByOrderId(order.getOrderId()).into(OrderGoodsDo.class);
+        //已审核
+        List<String> auditedPrescriptionCodes = auditedPrescriptionCode(goodsDoList);
+        //未审核
+        List<String> unauditedPrescriptionCodes = unauditedPrescriptionCode(goodsDoList);
+        Map<String, PrescriptionOrderGoodsVo> auditedMap =new HashMap<>();
+        Map<String, PrescriptionOrderGoodsVo> unauditedMap =new HashMap<>();
+        assembleData(goodsDoList, auditedPrescriptionCodes, unauditedPrescriptionCodes, auditedMap, unauditedMap);
         PrescriptionQueryVo vo =new PrescriptionQueryVo();
-        vo.setList(new ArrayList<>(auditPassMap.values()));
-        vo.getList().addAll(new ArrayList<>(defailtMap.values()));
+        vo.setUnauditedList(new ArrayList<>(unauditedMap.values()));
+        vo.setAuditedList(new ArrayList<>(auditedMap.values()));
         return vo;
     }
 
-    /**
-     * 未审核
-     * @param prescriptionMap
-     * @param orderGoodsDo
-     */
-    private void orderGoodsAuditPass(Map<String, PrescriptionOrderGoodsVo> prescriptionMap, OrderGoodsDo orderGoodsDo) {
-        if (orderGoodsDo.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
-            PrescriptionVo prescriptionVo = prescriptionService.getDoByPrescriptionNo(orderGoodsDo.getPrescriptionOldCode());
-            if (prescriptionVo!=null){
-                PrescriptionOrderGoodsVo pog =new PrescriptionOrderGoodsVo();
-                pog.setPrescriptionVo(prescriptionVo);
-                PrescriptionOrderGoodsVo preOrderGoods = prescriptionMap.putIfAbsent(prescriptionVo.getPrescriptionCode(), pog);
-                preOrderGoods.getOrderGoodsList().add(orderGoodsDo);
+    private void assembleData(List<OrderGoodsDo> goodsDoList, List<String> auditedPrescriptionCodes, List<String> unauditedPrescriptionCodes, Map<String, PrescriptionOrderGoodsVo> auditedMap, Map<String, PrescriptionOrderGoodsVo> unauditedMap) {
+        List<String> allCode =new ArrayList<>();
+        allCode.addAll(auditedPrescriptionCodes);
+        allCode.addAll(unauditedPrescriptionCodes);
+        List<PrescriptionVo> prescriptionVos = prescriptionDao.listPrescriptionList(allCode);
+        prescriptionVos.forEach(prescriptionVo -> {
+            PrescriptionOrderGoodsVo pog =new PrescriptionOrderGoodsVo();
+            pog.setPrescriptionVo(prescriptionVo);
+            if (auditedPrescriptionCodes.contains(prescriptionVo.getPrescriptionCode())){
+                auditedMap.putIfAbsent(prescriptionVo.getPrescriptionCode(), pog);
+            }
+            if (unauditedPrescriptionCodes.contains(prescriptionVo.getPrescriptionCode())){
+                unauditedMap.putIfAbsent(prescriptionVo.getPrescriptionCode(), pog);
+            }
+        });
+        for (OrderGoodsDo orderGoodsDo : goodsDoList) {
+            if (orderGoodsDo.getMedicalAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
+                if (orderGoodsDo.getMedicalAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)) {
+                     if (orderGoodsDo.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)&&auditedMap.containsKey(orderGoodsDo.getPrescriptionCode())){
+                         auditedMap.get(orderGoodsDo.getPrescriptionCode()).getOrderGoodsList().add(orderGoodsDo);
+                     }else if (orderGoodsDo.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_DEFAULT)&&unauditedMap.containsKey(orderGoodsDo.getPrescriptionOldCode())){
+                         unauditedMap.get(orderGoodsDo.getPrescriptionCode()).getOrderGoodsList().add(orderGoodsDo);
+                     }
+                }
             }
         }
     }
 
-    /**
-     * 审核通过的
-     * @param prescriptionMap
-     * @param orderGoodsDo
-     * @param medicalInfo
-     */
-    private void orderGoodsAuditDefault(Map<String, PrescriptionOrderGoodsVo> prescriptionMap, OrderGoodsDo orderGoodsDo, GoodsMedicalInfoDo medicalInfo) {
-        if (orderGoodsDo.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_DEFAULT)){
-            //todo  订单表增加患者字段,下单时绑定患者id
-            PrescriptionVo prescriptionVo = prescriptionService
-                    .getByGoodsInfo(orderGoodsDo.getGoodsId(), 1, medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
-            //处方信息
-            if (prescriptionVo != null) {
-                PrescriptionOrderGoodsVo pog =new PrescriptionOrderGoodsVo();
-                pog.setPrescriptionVo(prescriptionVo);
-                PrescriptionOrderGoodsVo preOrderGoods = prescriptionMap.putIfAbsent(prescriptionVo.getPrescriptionCode(), pog);
-                preOrderGoods.getOrderGoodsList().add(orderGoodsDo);
-            } else {
-                logger().info("{}药品没有找到对应的处方信息", orderGoodsDo.getGoodsName());
+    private List<String> unauditedPrescriptionCode(List<OrderGoodsDo> goodsDoList) {
+        List<OrderGoodsDo> unauditedGoodsList = goodsDoList.stream().filter(goods -> {
+            if (goods.getMedicalAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)) {
+                return goods.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_DEFAULT);
             }
-        }
+            return false;
+        }).collect(Collectors.toList());
+        return unauditedGoodsList.stream().map(OrderGoodsDo::getPrescriptionOldCode).distinct().collect(Collectors.toList());
     }
+
+    private List<String> auditedPrescriptionCode(List<OrderGoodsDo> goodsDoList) {
+        List<OrderGoodsDo> auditedGoodsList = goodsDoList.stream().filter(goods -> {
+            if (goods.getMedicalAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)) {
+                return goods.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS);
+            }
+            return false;
+        }).collect(Collectors.toList());
+        return auditedGoodsList.stream().map(OrderGoodsDo::getPrescriptionCode).distinct().collect(Collectors.toList());
+    }
+
 
     /**
      * 审核

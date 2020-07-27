@@ -9,6 +9,7 @@ import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import org.jooq.Condition;
@@ -269,17 +270,17 @@ public class GoodsDao extends ShopBaseDao {
     public Integer getGoodsIdByInfo(GoodsMatchParam goodsMatchParam) {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(GOODS.IS_ON_SALE.eq((byte) 1));
-        if (goodsMatchParam.getGoodsId() > 0) {
+        if (goodsMatchParam.getGoodsId() != null && goodsMatchParam.getGoodsId() > 0) {
             condition.and(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsMatchParam.getGoodsId()));
         } else {
-            if (goodsMatchParam.getGoodsCommonName() != null) {
-                condition.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(goodsMatchParam.getGoodsCommonName()));
+            if (goodsMatchParam.getGoodsCommonName() != null && !GoodsConstant.BLACK.equals(goodsMatchParam.getGoodsCommonName())) {
+                condition = condition.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(goodsMatchParam.getGoodsCommonName()));
             }
-            if (goodsMatchParam.getGoodsQualityRatio() != null) {
-                condition.and(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.eq(goodsMatchParam.getGoodsQualityRatio()));
+            if (goodsMatchParam.getGoodsQualityRatio() != null && !GoodsConstant.BLACK.equals(goodsMatchParam.getGoodsQualityRatio())) {
+                condition = condition.and(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.eq(goodsMatchParam.getGoodsQualityRatio()));
             }
-            if (goodsMatchParam.getProductionEnterprise() != null) {
-                condition.and(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.eq(goodsMatchParam.getProductionEnterprise()));
+            if (goodsMatchParam.getProductionEnterprise() != null && !GoodsConstant.BLACK.equals(goodsMatchParam.getProductionEnterprise())) {
+                condition = condition.and(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.eq(goodsMatchParam.getProductionEnterprise()));
             }
         }
         return db().select(GOODS.GOODS_ID).from(GOODS)

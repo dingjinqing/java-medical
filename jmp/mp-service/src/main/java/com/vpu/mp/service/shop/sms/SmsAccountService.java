@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.sms;
 
 import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.config.ShopCfgDao;
@@ -8,6 +9,8 @@ import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
+import com.vpu.mp.service.pojo.shop.sms.recharge.SmsAccountRechargeListVo;
+import com.vpu.mp.service.pojo.shop.sms.recharge.SmsAccountRechargeRecordParam;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
 import com.vpu.mp.service.shop.config.SmsAccountConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,23 @@ public class SmsAccountService extends ShopBaseService {
         postBody.put("sign", smsService.generateSing(postBody));
         HttpResponse response = smsService.requestApi(postBody);
         return response.body();
+    }
+
+    /**
+     * 短信账户的充值记录
+     * @return
+     */
+    public SmsAccountRechargeListVo listSmsAccountRechargeRecord(SmsAccountRechargeRecordParam param) throws MpException {
+        SmsBaseRequest request  =new SmsBaseRequest();
+        request.setSms(Util.toJson(param));
+        request.setApiMethod(SmsApiConfig.METHOD_CREATE_ACCOUNT);
+        request.setAppKey(smsApiConfig.getAppKey());
+        request.setTimestamp(System.currentTimeMillis()/1000);
+        Map<String, Object> postBody = Util.transBeanToMap(request);
+        postBody.put("sign", smsService.generateSing(postBody));
+        HttpResponse response = smsService.requestApi(postBody);
+        response.body();
+        return JSONUtil.toBean(response.body(),SmsAccountRechargeListVo.class);
     }
 
 

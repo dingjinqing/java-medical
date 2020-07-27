@@ -81,8 +81,8 @@ global.wxPage({
       return false;
     }
     util.api('/api/wxapp/user/patient/get/info', res => {
-      if (res.error != 0) {
-
+      if (res.error == 0) {
+        this.getPreInfo(prescription_info)
       } else {
         util.showModal('提示', '您暂无本医院就诊记录，请先添加就诊人', () => {
           util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + prescription_info);
@@ -97,7 +97,7 @@ global.wxPage({
     })
   },
   addFamily() {
-    let prescription_info = [];
+    let prescription_info = {};
     prescription_info.name = this.data.real_name;
     prescription_info.mobile = this.data.mobile;
     prescription_info.identityCode = this.data.card_id;
@@ -123,7 +123,7 @@ global.wxPage({
       util.showModal("提示", "请输入正确的手机号！");
       return false;
     }
-    util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + prescription_info);
+    util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + JSON.stringify(prescription_info));
   },
   getVerificationCode() {
     if (this.data.countDown) return false
@@ -156,6 +156,15 @@ global.wxPage({
       }
     }, {
       mobile: this.data.mobile
+    })
+  },
+  getPreInfo (prescription_info) {
+    util.api('/api/wxapp/medicine/history/get/external/list', res => {
+      console.log(res)
+    },{
+      patientName: prescription_info.name,
+      mobile: prescription_info.mobile,
+      identityCode: prescription_info.identityCode
     })
   },
   /**

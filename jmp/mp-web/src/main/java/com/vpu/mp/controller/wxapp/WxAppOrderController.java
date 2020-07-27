@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseParam;
 import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseVo;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayParam;
@@ -343,8 +344,9 @@ public class WxAppOrderController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/medical/get")
-    public JsonResult getMakePrescriptionOrder(OrderToPrescribeQueryParam param){
+    public JsonResult getMakePrescriptionOrder(@RequestBody OrderToPrescribeQueryParam param){
         param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setAction((byte)OrderServiceCode.MAKE_PRESCRIPTION.ordinal());
         param.setWxUserInfo(wxAppAuth.user());
         try {
             return(success(shop().orderActionFactory.orderQuery(param)));
@@ -359,8 +361,9 @@ public class WxAppOrderController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/prescription/make")
-    public JsonResult makePrescription(PrescriptionMakeParam param){
+    public JsonResult makePrescription(@RequestBody PrescriptionMakeParam param){
         param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setAction((byte)OrderServiceCode.MAKE_PRESCRIPTION.ordinal());
         param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult=shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {

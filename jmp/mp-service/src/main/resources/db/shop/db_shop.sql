@@ -3680,6 +3680,8 @@ CREATE TABLE `b2c_sms_send_record` (
   `response_msg` text COMMENT '响应内容',
   `ext` varchar(20) DEFAULT NULL COMMENT '行业账号 默认:行业 market:营销,checkcode:验证码',
   `sms` varchar(20) DEFAULT NULL COMMENT '短信通道 默认短信策略:mxt',
+  `response_msg_code` varchar(50) NOT NULL default 0 comment '短信平台发送响应码',
+  `response_time` timestamp NOT NULL  default CURRENT_TIMESTAMP comment '响应时间',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`)
@@ -5080,3 +5082,19 @@ CREATE TABLE `b2c_message` (
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`message_id`)
 ) comment ='用户消息表';
+
+CREATE TABLE `b2c_recharge` (
+    `recharge_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '充值记录主键',
+    `sid` varchar(255) NOT NULL DEFAULT '' COMMENT '充值账户id',
+    `version` int(11) NOT NULL DEFAULT 4 COMMENT '充值版本，微铺宝默认4',
+    `total` int(11) NOT NULL DEFAULT 0 COMMENT '当前充值次数总计',
+    `recharge_time` timestamp NOT NULL DEFAULT current_timestamp COMMENT '充值时间',
+    `pay_no` varchar(255) NOT NULL DEFAULT '' COMMENT '充值单号',
+    `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '充值金额',
+    `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '充值说明',
+    `sms_num` int(11) NOT NULL DEFAULT 0 COMMENT '当前充值到额短信数',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`recharge_id`)
+) comment ='充值记录表';

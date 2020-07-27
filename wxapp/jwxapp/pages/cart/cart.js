@@ -48,8 +48,8 @@ global.wxPage({
         this.setData({
           cartGoodsList: res.content.cartGoodsList.length == 0 ? null : res.content.cartGoodsList,
           invalidCartList: res.content.invalidCartList.length == 0 ? null : res.content.invalidCartList,
-          fullList: Object.keys(res.content.fullReductionGoodsMap).length == 0 ? null : res.content.fullReductionGoodsMap,
-          purchaseList: Object.keys(res.content.purchasePriceGoodsMap).length == 0 ? null : res.content.purchasePriceGoodsMap,
+          fullList: Object.keys(res.content.fullReductionGoodsMap || {}).length == 0 ? null : res.content.fullReductionGoodsMap,
+          purchaseList: Object.keys(res.content.purchasePriceGoodsMap || {}).length == 0 ? null : res.content.purchasePriceGoodsMap,
           isAllCheck: res.content.isAllCheck,
           totalPrice: res.content.totalPrice,
           couponPackage: res.content.couponPackage

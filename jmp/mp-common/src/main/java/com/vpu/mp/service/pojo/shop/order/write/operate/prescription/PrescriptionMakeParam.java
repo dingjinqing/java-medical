@@ -2,9 +2,6 @@ package com.vpu.mp.service.pojo.shop.order.write.operate.prescription;
 
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +17,6 @@ public class PrescriptionMakeParam extends AbstractOrderOperateQueryParam {
     private String departmentCode;
     private String departmentName;
     private String diagnosisName;
-    private Timestamp diagnoseTime;
     private String doctorAdvice;
     private List<Integer> goodsIdList=new ArrayList<>();
 }

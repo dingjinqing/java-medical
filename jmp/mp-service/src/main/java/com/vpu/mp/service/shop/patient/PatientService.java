@@ -88,7 +88,7 @@ public class PatientService extends BaseShopConfigService{
      */
     public JsonResult getExternalPatientInfo(UserPatientOneParam userPatientOneParam){
         boolean b = checkMobileCode(userPatientOneParam);
-        if (b){
+        if (!b){
             return null;
         }
         Integer shopId =getShopId();
@@ -134,10 +134,8 @@ public class PatientService extends BaseShopConfigService{
     private boolean checkMobileCode(UserPatientOneParam param) {
         String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_PATIENT_MOBILE,getShopId(), param.getUserId(), param.getMobile());
         String s = jedisManager.get(key);
-        if (!Strings.isBlank(s)&&Strings.isBlank(param.getMobileCheckCode())){
-            if (s.equals(param.getMobileCheckCode())){
-                return true;
-            }
+        if (!Strings.isBlank(s)&&!Strings.isBlank(param.getMobileCheckCode())){
+            return s.equals(param.getMobileCheckCode());
         }
         return false;
     }

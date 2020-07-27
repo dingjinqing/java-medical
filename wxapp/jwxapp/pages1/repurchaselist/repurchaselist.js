@@ -6,21 +6,6 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    goodsItem:{
-      goodsId: 397,
-        goodsName: "华为 HUAWEI nova 5 Pro 前置3200万人像超级夜景4800万AI四摄麒麟980芯片8GB+128GB绮",
-        goodsImg: "http://jmptestimg.weipubao.cn/upload/819021/image/20200527/xPKbEWZobOdlLxJAcydo.jpeg",
-        marketPrice: null,
-        shopPrice: 2399,
-        productId: 1797,
-        prdPrice: 2399,
-        prdNumber: 5,
-        prdDesc: "颜色:绮境森林;版本:8GB+128GB;选择版本:标准版",
-        prdImg: "",
-        goodsNumber: 2,
-        cartNumber: 2,
-        groupId: 1
-    }
   },
 
   /**
@@ -50,6 +35,7 @@ global.wxPage({
       item.cartNumber = 1;
       item.goodsImg = this.data.imageUrl + item.goodsImg;
       item.prdPrice = item.shopPrice;
+      item.selected = true
       return item
     })
   },
@@ -67,6 +53,45 @@ global.wxPage({
     if(goodsNumber < 1)  goodsNumber = 1
     this.setData({
       [`goodsList[${targetIndex}].cartNumber`]:goodsNumber
+    })
+  },
+  orderSettlement(){
+    let goodsList = this.data.goodsList.filter(item=>item.selected).map(item=>{
+      let {goodsId,shopPrice:prdRealPrice,cartNumber:goodsNum,prdId} = item
+      return {goodsId,prdRealPrice,goodsNum,prdId}
+    })
+    if(!goodsList.length) {
+      util.showModal('提示','请确认已选商品') 
+      return false
+    }
+    util.jumpLink(`pages/checkout/checkout${util.getUrlParams({
+      goodsList:JSON.stringify(goodsList)
+    })}`)
+  },
+  toggleSelect(e){
+    let {goodsId} = e.detail
+    let targetIndex = this.data.goodsList.findIndex(item=>item.goodsId === goodsId)
+    this.setData({
+      [`goodsList[${targetIndex}].selected`]:!this.data.goodsList[targetIndex].selected
+    })
+  },
+  addCart(){
+    let wxAppAddGoodsToCartParams = this.data.goodsList.filter(item=>item.selected).map(item=>{
+        let {cartNumber:goodsNumber,prdId} = item
+        return {userId:util.getCache('user_id'),type:2,goodsNumber,activityType:0,activityId:0,prdId}
+    })
+    if(!wxAppAddGoodsToCartParams.length) {
+      util.showModal('提示','请确认已选商品') 
+      return false
+    }
+    util.api('/api/wxapp/prescription/cart/batch/add',res=>{
+      if(res.error === 0){
+        util.showModal('提示','已加入清单',()=>{
+          util.jumpLink('pages/cart/cart')
+        },true,'取消','查看清单')
+      }
+    },{
+      wxAppAddGoodsToCartParams
     })
   },
   /**
