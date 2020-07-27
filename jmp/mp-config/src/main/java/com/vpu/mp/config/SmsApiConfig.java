@@ -38,6 +38,10 @@ public class SmsApiConfig {
      * 查询账号信息
      */
     public static final String METHOD_SMS_CHECK = "wdt.sms.send.check";
+    /**
+     * 充值记录
+     */
+    public static final String METHOD_SMS_RECHARGE_RECORD = "wdt.sms.recharge.recharge_record";
     //************redis_key********//
     /**
      * 短信验证码

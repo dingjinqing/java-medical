@@ -1,0 +1,40 @@
+package com.vpu.mp.service.pojo.shop.sms.recharge;
+
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.common.foundation.util.Page;
+import lombok.Data;
+
+/**
+ * 短信充值记录
+ * @author 孔德成
+ * @date 2020/7/27 14:54
+ */
+@Data
+public class SmsAccountRechargeRecordParam {
+
+    /**
+     * 账户id
+     */
+    private String sid;
+    /**
+     * 版本毕传
+     */
+    private Integer version=4;
+    /**
+     * 时间不传 默认三个月
+     */
+    @JsonProperty(value = "start_time")
+    private String startTime;
+    @JsonProperty(value = "end_time")
+    private String endTime;
+    /**
+     * 默认全部 0自助充值 1手动充值 2赠送
+     */
+    @JsonProperty(value = "recharge_type")
+    private String rechargeType;
+    private Integer page = Page.DEFAULT_CURRENT_PAGE;
+    private Integer rows = Page.DEFAULT_PAGE_ROWS;
+
+
+}
