@@ -7,6 +7,7 @@ package com.vpu.mp.db.shop.tables.records;
 import com.vpu.mp.db.shop.tables.InquiryOrder;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -28,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = -361164524;
+    private static final long serialVersionUID = 1816331318;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.order_id</code>. 订单id
@@ -73,14 +74,14 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款  1待接诊 2已取消 3已完成
+     * Setter for <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消
      */
     public void setOrderStatus(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款  1待接诊 2已取消 3已完成
+     * Getter for <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消
      */
     public Byte getOrderStatus() {
         return (Byte) get(3);
@@ -199,213 +200,227 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_inquiry_order.patient_birthday</code>. 出生年月
+     */
+    public void setPatientBirthday(Date value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_inquiry_order.patient_birthday</code>. 出生年月
+     */
+    public Date getPatientBirthday() {
+        return (Date) get(12);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.patient_identity_code</code>. 证件号码
      */
     public void setPatientIdentityCode(String value) {
-        set(12, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.patient_identity_code</code>. 证件号码
      */
     public String getPatientIdentityCode() {
-        return (String) get(12);
+        return (String) get(13);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.patient_identity_type</code>. 证件类型: 1：身份证 2：军人证 3：护照 4：社保卡
      */
     public void setPatientIdentityType(Byte value) {
-        set(13, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.patient_identity_type</code>. 证件类型: 1：身份证 2：军人证 3：护照 4：社保卡
      */
     public Byte getPatientIdentityType() {
-        return (Byte) get(13);
+        return (Byte) get(14);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.pay_code</code>. 支付代号
      */
     public void setPayCode(String value) {
-        set(14, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.pay_code</code>. 支付代号
      */
     public String getPayCode() {
-        return (String) get(14);
+        return (String) get(15);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.pay_name</code>. 支付名称
      */
     public void setPayName(String value) {
-        set(15, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.pay_name</code>. 支付名称
      */
     public String getPayName() {
-        return (String) get(15);
+        return (String) get(16);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.pay_sn</code>. 支付流水号
      */
     public void setPaySn(String value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.pay_sn</code>. 支付流水号
      */
     public String getPaySn() {
-        return (String) get(16);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public void setPrepayId(String value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public String getPrepayId() {
-        return (String) get(17);
+        return (String) get(18);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.order_amount</code>. 订单总金额
      */
     public void setOrderAmount(BigDecimal value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.order_amount</code>. 订单总金额
      */
     public BigDecimal getOrderAmount() {
-        return (BigDecimal) get(18);
+        return (BigDecimal) get(19);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.pay_time</code>. 支付时间
      */
     public void setPayTime(Timestamp value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.pay_time</code>. 支付时间
      */
     public Timestamp getPayTime() {
-        return (Timestamp) get(19);
+        return (Timestamp) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.cancelled_time</code>. 取消时间
      */
     public void setCancelledTime(Timestamp value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.cancelled_time</code>. 取消时间
      */
     public Timestamp getCancelledTime() {
-        return (Timestamp) get(20);
+        return (Timestamp) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.finished_time</code>. 订单完成时间
      */
     public void setFinishedTime(Timestamp value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.finished_time</code>. 订单完成时间
      */
     public Timestamp getFinishedTime() {
-        return (Timestamp) get(21);
+        return (Timestamp) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.description_disease</code>. 病情描述
      */
     public void setDescriptionDisease(String value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.description_disease</code>. 病情描述
      */
     public String getDescriptionDisease() {
-        return (String) get(22);
+        return (String) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.image_url</code>. 病情描述image
      */
     public void setImageUrl(String value) {
-        set(23, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.image_url</code>. 病情描述image
      */
     public String getImageUrl() {
-        return (String) get(23);
+        return (String) get(24);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除
      */
     public void setIsDelete(Byte value) {
-        set(24, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除
      */
     public Byte getIsDelete() {
-        return (Byte) get(24);
+        return (Byte) get(25);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(25, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(25);
+        return (Timestamp) get(26);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(26, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(26);
+        return (Timestamp) get(27);
     }
 
     // -------------------------------------------------------------------------
@@ -434,7 +449,7 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
     /**
      * Create a detached, initialised InquiryOrderRecord
      */
-    public InquiryOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, Integer doctorId, String doctorName, Integer departmentId, String departmentName, Integer patientId, String patientMobile, String patientName, Byte patientSex, String patientIdentityCode, Byte patientIdentityType, String payCode, String payName, String paySn, String prepayId, BigDecimal orderAmount, Timestamp payTime, Timestamp cancelledTime, Timestamp finishedTime, String descriptionDisease, String imageUrl, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
+    public InquiryOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, Integer doctorId, String doctorName, Integer departmentId, String departmentName, Integer patientId, String patientMobile, String patientName, Byte patientSex, Date patientBirthday, String patientIdentityCode, Byte patientIdentityType, String payCode, String payName, String paySn, String prepayId, BigDecimal orderAmount, Timestamp payTime, Timestamp cancelledTime, Timestamp finishedTime, String descriptionDisease, String imageUrl, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
         super(InquiryOrder.INQUIRY_ORDER);
 
         set(0, orderId);
@@ -449,20 +464,21 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
         set(9, patientMobile);
         set(10, patientName);
         set(11, patientSex);
-        set(12, patientIdentityCode);
-        set(13, patientIdentityType);
-        set(14, payCode);
-        set(15, payName);
-        set(16, paySn);
-        set(17, prepayId);
-        set(18, orderAmount);
-        set(19, payTime);
-        set(20, cancelledTime);
-        set(21, finishedTime);
-        set(22, descriptionDisease);
-        set(23, imageUrl);
-        set(24, isDelete);
-        set(25, createTime);
-        set(26, updateTime);
+        set(12, patientBirthday);
+        set(13, patientIdentityCode);
+        set(14, patientIdentityType);
+        set(15, payCode);
+        set(16, payName);
+        set(17, paySn);
+        set(18, prepayId);
+        set(19, orderAmount);
+        set(20, payTime);
+        set(21, cancelledTime);
+        set(22, finishedTime);
+        set(23, descriptionDisease);
+        set(24, imageUrl);
+        set(25, isDelete);
+        set(26, createTime);
+        set(27, updateTime);
     }
 }

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -27,6 +28,7 @@ public class InquiryOrderDo {
     private String     patientMobile;
     private String     patientName;
     private Byte       patientSex;
+    private Date patientBirthday;
     private String     patientIdentityCode;
     private Byte       patientIdentityType;
     private String     payCode;

@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +25,8 @@ public class AdminInquiryOrderController extends AdminBaseController{
         if(inquiryOrderOnParam.getOrderId()==null){
             return fail(JsonResultCode.INQUIRY_ORDER_ID_IS_NULL);
         }
-        InquiryOrderDo inquiryOrderDo= shop().inquiryOrderService.getByOrderId(inquiryOrderOnParam.getOrderId());
-        return success(inquiryOrderDo);
+        InquiryOrderDetailVo inquiryOrderDetailVo= shop().inquiryOrderService.getDetailByOrderId(inquiryOrderOnParam.getOrderId());
+        return success(inquiryOrderDetailVo);
     }
     /**
      * 查询问诊订单
