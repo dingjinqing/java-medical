@@ -12,12 +12,14 @@ import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.title.TitleOneParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 /**
  * @author chenjie
  */
+@RestController
 public class WxAppDoctorConsultationController extends WxAppBaseController {
     /**
      * 	获取医师科室列表
@@ -48,6 +50,7 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/recommend/doctor/list")
     public JsonResult getDoctorList(@RequestBody UserPatientParam doctorParam) {
+        doctorParam.setPatientId(shop().patientService.defaultPatientId(doctorParam.getUserId()));
         List<DepartmentIdNameVo> recommendDepartment = shop().departmentService.listRecommendDepartment();
         List<DoctorConsultationOneParam> doctorList = shop().doctorService.listRecommendDoctorForConsultation(doctorParam);
         DoctorRecommendVo data = new DoctorRecommendVo();

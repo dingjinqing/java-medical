@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.medicalhistory.FetchMedicalHistoryParam;
 import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryListParam;
 import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryPageInfoParam;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,5 +35,15 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
     @RequestMapping("/list")
     public JsonResult getHistoryInfo(@RequestBody MedicalHistoryPageInfoParam medicalHistoryPageInfoParam) {
         return success(shop().medicalHistoryService.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam));
+    }
+
+    /**
+     * 拉取病历处方
+     * @param param 病历列表入参
+     * @return JsonResult
+     */
+    @RequestMapping("/get/external/list")
+    public JsonResult pullHistoryPrescription(@RequestBody FetchMedicalHistoryParam param) {
+        return success(shop().pullHitsHistoryPrescriptionService.pullExternalHistoryPrescription(param));
     }
 }
