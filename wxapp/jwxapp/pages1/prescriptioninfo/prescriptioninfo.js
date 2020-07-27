@@ -39,6 +39,11 @@ global.wxPage({
       }
     }, {prescriptionCode: this.data.prescriptionCode})
   },
+  viewRepurchase(){
+    util.jumpLink(`pages1/repurchaselist/repurchaselist${util.getUrlParams({
+      prescriptionCode:this.data.prescriptionInfo.prescriptionCode
+    })}`)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
