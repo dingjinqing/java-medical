@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.order.write.operate.prescription;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
