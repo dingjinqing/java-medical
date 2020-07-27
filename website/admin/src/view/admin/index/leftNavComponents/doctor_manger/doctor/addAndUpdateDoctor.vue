@@ -161,7 +161,8 @@ export default {
         duty: '',
         departmentIdsStr: [],
         sex: 1,
-        mobile: ''
+        mobile: '',
+        account_id: 0
       },
       doctorFormRules: {
         name: [{required: true, message: '请输入医生姓名', trigger: 'blur'}],
@@ -233,7 +234,8 @@ export default {
         duty: '',
         departmentIdsStr: [],
         sex: 1,
-        mobile: ''
+        mobile: '',
+        account_id: 0
       }
     },
     // 获取医师详情
@@ -281,7 +283,7 @@ export default {
               console.log(res)
               if (res.error === 0) {
                 this.$message.success({
-                  message: 'success',
+                  message: '添加成功',
                   showClose: true
                 })
                 this.$router.push({ name: 'doctorList' })
@@ -297,7 +299,7 @@ export default {
               console.log(res)
               if (res.error === 0) {
                 this.$message.success({
-                  message: 'success',
+                  message: '更新成功',
                   showClose: true
                 })
                 this.$router.push({ name: 'doctorList' })

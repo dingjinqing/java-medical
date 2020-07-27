@@ -43,7 +43,7 @@ const routes = [
       },
       {
         // 编辑医师
-        path: '/admin/home/main/doctor/updateDoctor/:doctorId',
+        path: '/admin/home/main/doctor/updateDoctor',
         name: 'addDoctor',
         meta: {
           crumbTitle: 'router.addDoctor',
