@@ -17,7 +17,7 @@
                <div class="item_box">
                   <div class="item">订单状态：{{orderContent.orderStatusName}}</div>
                   <div class="item">订单金额：{{orderContent.orderAmount}}</div>
-                  <div class="item">下单时间：{{orderContent.payTime}}</div>
+                  <div class="item">下单时间：{{orderContent.createTime}}</div>
                   <div class="item">用户：{{orderContent.orderStatusName}}</div>
                   <div class="item">订单号：{{orderContent.orderSn}}</div>
                   <div class="item">下单人手机：{{orderContent.orderStatusName}}</div>
@@ -65,7 +65,7 @@ export default {
    initOrderInfo (id) {
      advisoryOrderInfo({orderId:id}).then(res => {
        if (res.error === 0) {
-         res.content.payTime = res.content.payTime.substr(0, 10)
+         res.content.createTime = res.content.createTime.substr(0, 10)
          res.content.orderStatusName = this.getStatusName(res.content.orderStatus)
          res.content.patientSexName = this.getPatientSex(res.content.patientSex)
          res.content.patientIdentityName = this.getIdentityName(res.content.patientIdentityType)

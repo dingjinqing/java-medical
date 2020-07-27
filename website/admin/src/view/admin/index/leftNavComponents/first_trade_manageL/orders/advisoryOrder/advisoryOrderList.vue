@@ -136,8 +136,8 @@ export default {
     pagination
   },
   mounted () {
-    this.initDoctorPart();
-    this.initDataList();
+    this.initDoctorPart()
+    this.initDataList()
   },
   data () {
     return {
@@ -226,7 +226,7 @@ export default {
         case 5:
           return '已取消'
       }
-    },
+    }
   }
 }
 </script>
