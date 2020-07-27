@@ -3680,6 +3680,7 @@ CREATE TABLE `b2c_sms_send_record` (
   `response_msg` text COMMENT '响应内容',
   `ext` varchar(20) DEFAULT NULL COMMENT '行业账号 默认:行业 market:营销,checkcode:验证码',
   `sms` varchar(20) DEFAULT NULL COMMENT '短信通道 默认短信策略:mxt',
+  `response_time ` timestamp NOT NULL  default CURRENT_TIMESTAMP comment '响应时间',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`)
