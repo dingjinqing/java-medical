@@ -5030,6 +5030,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `patient_mobile` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '患者手机号码',
  `patient_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '患者名称',
  `patient_sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 0：未知 1：男 2：女',
+ `patient_birthday` date DEFAULT NULL COMMENT '出生年月',
  `patient_identity_code` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '证件号码',
  `patient_identity_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
  `pay_code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付代号',

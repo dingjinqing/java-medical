@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = 544646587;
+    private static final long serialVersionUID = 941960611;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order</code>
@@ -66,82 +67,87 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.order_sn</code>. 订单编号
      */
-    public final TableField<InquiryOrderRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单编号");
+    public final TableField<InquiryOrderRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单编号");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.user_id</code>. 用户id
      */
-    public final TableField<InquiryOrderRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
+    public final TableField<InquiryOrderRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款  1待接诊 2已取消 3已完成
+     * The column <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消
      */
-    public final TableField<InquiryOrderRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消");
+    public final TableField<InquiryOrderRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.doctor_id</code>. 医师id
      */
-    public final TableField<InquiryOrderRecord, Integer> DOCTOR_ID = createField("doctor_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "医师id");
+    public final TableField<InquiryOrderRecord, Integer> DOCTOR_ID = createField("doctor_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "医师id");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.doctor_name</code>. 医师名称
      */
-    public final TableField<InquiryOrderRecord, String> DOCTOR_NAME = createField("doctor_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师名称");
+    public final TableField<InquiryOrderRecord, String> DOCTOR_NAME = createField("doctor_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.department_id</code>. 科室id
      */
-    public final TableField<InquiryOrderRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "科室id");
+    public final TableField<InquiryOrderRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "科室id");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.department_name</code>. 医师科室
      */
-    public final TableField<InquiryOrderRecord, String> DEPARTMENT_NAME = createField("department_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师科室");
+    public final TableField<InquiryOrderRecord, String> DEPARTMENT_NAME = createField("department_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师科室");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.patient_id</code>. 患者id
      */
-    public final TableField<InquiryOrderRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "患者id");
+    public final TableField<InquiryOrderRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "患者id");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.patient_mobile</code>. 患者手机号码
      */
-    public final TableField<InquiryOrderRecord, String> PATIENT_MOBILE = createField("patient_mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者手机号码");
+    public final TableField<InquiryOrderRecord, String> PATIENT_MOBILE = createField("patient_mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者手机号码");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.patient_name</code>. 患者名称
      */
-    public final TableField<InquiryOrderRecord, String> PATIENT_NAME = createField("patient_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者名称");
+    public final TableField<InquiryOrderRecord, String> PATIENT_NAME = createField("patient_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.patient_sex</code>. 性别 0：未知 1：男 2：女
      */
-    public final TableField<InquiryOrderRecord, Byte> PATIENT_SEX = createField("patient_sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "性别 0：未知 1：男 2：女");
+    public final TableField<InquiryOrderRecord, Byte> PATIENT_SEX = createField("patient_sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "性别 0：未知 1：男 2：女");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.patient_birthday</code>. 出生年月
+     */
+    public final TableField<InquiryOrderRecord, Date> PATIENT_BIRTHDAY = createField("patient_birthday", org.jooq.impl.SQLDataType.DATE, this, "出生年月");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.patient_identity_code</code>. 证件号码
      */
-    public final TableField<InquiryOrderRecord, String> PATIENT_IDENTITY_CODE = createField("patient_identity_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "证件号码");
+    public final TableField<InquiryOrderRecord, String> PATIENT_IDENTITY_CODE = createField("patient_identity_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "证件号码");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.patient_identity_type</code>. 证件类型: 1：身份证 2：军人证 3：护照 4：社保卡
      */
-    public final TableField<InquiryOrderRecord, Byte> PATIENT_IDENTITY_TYPE = createField("patient_identity_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "证件类型: 1：身份证 2：军人证 3：护照 4：社保卡");
+    public final TableField<InquiryOrderRecord, Byte> PATIENT_IDENTITY_TYPE = createField("patient_identity_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "证件类型: 1：身份证 2：军人证 3：护照 4：社保卡");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.pay_code</code>. 支付代号
      */
-    public final TableField<InquiryOrderRecord, String> PAY_CODE = createField("pay_code", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付代号");
+    public final TableField<InquiryOrderRecord, String> PAY_CODE = createField("pay_code", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付代号");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.pay_name</code>. 支付名称
      */
-    public final TableField<InquiryOrderRecord, String> PAY_NAME = createField("pay_name", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付名称");
+    public final TableField<InquiryOrderRecord, String> PAY_NAME = createField("pay_name", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.pay_sn</code>. 支付流水号
      */
-    public final TableField<InquiryOrderRecord, String> PAY_SN = createField("pay_sn", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付流水号");
+    public final TableField<InquiryOrderRecord, String> PAY_SN = createField("pay_sn", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付流水号");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.prepay_id</code>. 微信支付id，用于发送模板消息
@@ -151,47 +157,47 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.order_amount</code>. 订单总金额
      */
-    public final TableField<InquiryOrderRecord, BigDecimal> ORDER_AMOUNT = createField("order_amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "订单总金额");
+    public final TableField<InquiryOrderRecord, BigDecimal> ORDER_AMOUNT = createField("order_amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "订单总金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.pay_time</code>. 支付时间
      */
-    public final TableField<InquiryOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
+    public final TableField<InquiryOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.cancelled_time</code>. 取消时间
      */
-    public final TableField<InquiryOrderRecord, Timestamp> CANCELLED_TIME = createField("cancelled_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "取消时间");
+    public final TableField<InquiryOrderRecord, Timestamp> CANCELLED_TIME = createField("cancelled_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "取消时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.finished_time</code>. 订单完成时间
      */
-    public final TableField<InquiryOrderRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单完成时间");
+    public final TableField<InquiryOrderRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单完成时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.description_disease</code>. 病情描述
      */
-    public final TableField<InquiryOrderRecord, String> DESCRIPTION_DISEASE = createField("description_disease", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "病情描述");
+    public final TableField<InquiryOrderRecord, String> DESCRIPTION_DISEASE = createField("description_disease", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "病情描述");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.image_url</code>. 病情描述image
      */
-    public final TableField<InquiryOrderRecord, String> IMAGE_URL = createField("image_url", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "病情描述image");
+    public final TableField<InquiryOrderRecord, String> IMAGE_URL = createField("image_url", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "病情描述image");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除
      */
-    public final TableField<InquiryOrderRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+    public final TableField<InquiryOrderRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.
      */
-    public final TableField<InquiryOrderRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<InquiryOrderRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.update_time</code>. 最后修改时间
      */
-    public final TableField<InquiryOrderRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<InquiryOrderRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_inquiry_order</code> table reference

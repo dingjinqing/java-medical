@@ -9,6 +9,8 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
+import com.vpu.mp.common.pojo.shop.table.UserDo;
+import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
@@ -27,6 +29,7 @@ import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -70,7 +73,8 @@ public class InquiryOrderService extends ShopBaseService {
     private InquiryOrderRefundListDao inquiryOrderRefundListDao;
     @Autowired
     private ImSessionService imSessionService;
-
+    @Autowired
+    private UserDao userDao;
 
     /**
      * 问询订单列表
@@ -86,9 +90,14 @@ public class InquiryOrderService extends ShopBaseService {
      * @param orderId
      * @return
      */
-    public InquiryOrderDo getByOrderId(Integer orderId){
+    public InquiryOrderDetailVo getDetailByOrderId(Integer orderId){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(orderId);
-        return inquiryOrderDo;
+        UserDo userDo=userDao.getUserById(inquiryOrderDo.getUserId());
+        InquiryOrderDetailVo inquiryOrderDetailVo=new InquiryOrderDetailVo();
+        FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
+        inquiryOrderDetailVo.setUserMobile(userDo.getMobile());
+        inquiryOrderDetailVo.setUserName(userDo.getUsername());
+        return inquiryOrderDetailVo;
     }
 
     /**

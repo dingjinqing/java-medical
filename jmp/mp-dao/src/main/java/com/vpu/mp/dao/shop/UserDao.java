@@ -30,4 +30,9 @@ public class UserDao extends ShopBaseDao {
          return userDo;
     }
 
+    public UserDo getUserById(Integer userId){
+        UserDo userDo= db().select().from(USER).where(USER.USER_ID.eq(userId)).fetchOneInto(UserDo.class);
+        return userDo;
+    }
+
 }
