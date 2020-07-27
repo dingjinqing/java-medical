@@ -9,9 +9,14 @@
       </view>
     </view>
     <view class="each_p_line">
-      <view class="el_left">年龄</view>
-      <view class="el_right">
-        <input type="text" value="{{patient_info.age}}" placeholder="请输入年龄" placeholder-class="placeholder" bindblur="ageInput"></input>
+      <view class="el_left">出生日期</view>
+      <view class='el_right' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+        <picker mode="date" value="{{date}}" start="1900-01-01" end="2080-1-23" bindchange="bindDateChange">  
+          <view class='placeholder' wx:if="{{dates == ''}}">选择您的生日</view>
+          <view class="picker" wx:else>  
+            {{dates}}  
+          </view>   
+        </picker>  
       </view>
     </view>
     <view class="each_p_line">
@@ -28,7 +33,7 @@
     <view class="each_p_line">
       <view class="el_left">身份证号码</view>
       <view class="el_right">
-        <input type="text" value="{{patient_info.cardId}}" placeholder="请输入身份证号码" placeholder-class="placeholder" bindblur="idInput"></input>
+        <input type="text" value="{{patient_info.identityCode}}" placeholder="请输入身份证号码" placeholder-class="placeholder" bindblur="idInput"></input>
       </view>
     </view>
     <view class="each_p_line">
@@ -40,12 +45,13 @@
     <view class="each_p_line">
       <view class="el_left">疾病史</view>
       <view class="el_right" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;' bindtap="open_modal">
-        疾病历史
+        <view class="history" wx:if='{{!!his_summary}}'>{{his_summary}}</view>
+        <view class="placeholder" wx:if='{{!his_summary}}'>请选择疾病史</view>
       </view>
     </view>
     <view class="spcial_line">
       <view class="ape_title">备注</view>
-      <textarea placeholder="其他病史或注意事项" bindblur="tipInpuit"></textarea>
+      <textarea placeholder="其他病史或注意事项" bindblur="tipInpuit" placeholder-class="placeholder"></textarea>
     </view>
   </view>
   <view class="btn_submit"  bindtap="bindSubmit" style="padding-bottom:{{isIpx == 1 ? '60rpx':'0'}}">
@@ -61,69 +67,68 @@
       <view class="each_pain_line">
         <view class="epl_tit">过往病史</view>
         <view class="epl_choose">
-          <view><text class="iconfont icondanxuan"></text> 是</view>
-          <view><text class="iconfont icondanxuanbiankuang"></text> 否</view>
+          <view bindtap="changeDisHis" data-has_dis_his='1'><text class="iconfont {{has_dis_his == 1 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 是</view>
+          <view bindtap="changeDisHis" data-has_dis_his='0'><text class="iconfont {{has_dis_his == 0 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 否</view>
         </view>
       </view>
-      <view class="history_area">
-        <view class="each_his_item active">高血压</view>
-        <view class="each_his_item">心脏病</view>
-        <view class="each_his_item">糖尿病</view>
-        <view class="each_his_item">高血压</view>
-        <view class="each_his_item">心脏病</view>
-        <view class="each_his_item">糖尿病</view>
-        <view class="each_his_item">高血压</view>
-        <view class="each_his_item">心脏病</view>
-        <view class="each_his_item">糖尿病</view>
+      <view class="history_area" wx:if='{{has_dis_his == 1}}'>
+        <view class="each_his_item {{ item.checked == 1 ? 'active':'' }}" wx:for='{{patient_info.diseaseHistoryList}}' wx:key='key'
+              data-check='{{item.checked}}' data-id='{{item.id}}' data-index='{{index}}' data-name='{{item.name}}' bindtap="choose_dis_his">
+              {{item.name}}
+        </view>
       </view>
       <view class="each_pain_line">
         <view class="epl_tit">过敏史</view>
         <view class="epl_choose">
-          <view><text class="iconfont icondanxuan"></text> 是</view>
-          <view><text class="iconfont icondanxuanbiankuang"></text> 否</view>
+          <view bindtap="changeAllHis" data-has_all_his='1'><text class="iconfont {{has_all_his == 1 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 是</view>
+          <view bindtap="changeAllHis" data-has_all_his='0'><text class="iconfont {{has_all_his == 0 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 否</view>
         </view>
       </view>
-      <view class="guomin_his">
-        <textarea placeholder="请输入过敏原"></textarea>
-        <view class="btn_save_guomin">保存</view>
+      <view class="guomin_his" wx:if='{{has_all_his == 1}}'>
+        <textarea placeholder="请输入过敏原" value="{{allergyHistory}}" bindblur="saveAllHis"></textarea>
+        <!-- <view class="btn_save_guomin">保存</view> -->
       </view>
       <view class="each_pain_line">
         <view class="epl_tit">家族病史</view>
         <view class="epl_choose">
-          <view><text class="iconfont icondanxuan"></text> 是</view>
-          <view><text class="iconfont icondanxuanbiankuang"></text> 否</view>
+          <view bindtap="changeFimHis" data-has_fam_his='1'><text class="iconfont {{has_fam_his == 1 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 是</view>
+          <view bindtap="changeFimHis" data-has_fam_his='0'><text class="iconfont {{has_fam_his == 0 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 否</view>
         </view>
       </view>
-      <view class="history_area">
-        <view class="each_his_item">高血压</view>
-        <view class="each_his_item">心脏病</view>
-        <view class="each_his_item">糖尿病</view>
+      <view class="history_area" wx:if='{{has_fam_his == 1}}'>
+        <view class="each_his_item {{ item.checked == 1 ? 'active':'' }}" wx:for='{{patient_info.familyDiseaseHistoryList}}' wx:key='key'
+              data-check='{{item.checked}}' data-id='{{item.id}}' data-index='{{index}}' data-name='{{item.name}}' bindtap="choose_fam_his">
+              {{item.name}}
+        </view>
       </view>
       <view class="each_pain_line">
         <view class="epl_tit">肝功能</view>
         <view class="epl_choose">
-          <view><text class="iconfont icondanxuan"></text> 正常</view>
-          <view><text class="iconfont icondanxuanbiankuang"></text> 异常</view>
+          <view bindtap="changeLiveFun" data-live_fun_ok='1'><text class="iconfont {{liverFunctionOk == 1 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 正常</view>
+          <view bindtap="changeLiveFun" data-live_fun_ok='0'><text class="iconfont {{liverFunctionOk == 0 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 异常</view>
         </view>
       </view>
       <view class="each_pain_line">
         <view class="epl_tit">肾功能</view>
         <view class="epl_choose">
-          <view><text class="iconfont icondanxuan"></text> 正常</view>
-          <view><text class="iconfont icondanxuanbiankuang"></text> 异常</view>
+          <view bindtap="changeKidney" data-kidney_ok='1'><text class="iconfont {{kidneyFunctionOk == 1 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 正常</view>
+          <view bindtap="changeKidney" data-kidney_ok='1'><text class="iconfont {{kidneyFunctionOk == 0 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 异常</view>
         </view>
       </view>
       <view class="each_pain_line">
         <view class="epl_tit">妊娠哺乳</view>
         <view class="epl_choose">
-          <view><text class="iconfont icondanxuan"></text> 是</view>
-          <view><text class="iconfont icondanxuanbiankuang"></text> 否</view>
+          <view bindtap="changFeedStatus" data-is_feed='0'><text class="iconfont {{is_feed == 0 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 是</view>
+          <view bindtap="changFeedStatus" data-is_feed='1'><text class="iconfont {{is_feed == 1 ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 否</view>
         </view>
       </view>
-      <view class="history_area">
-        <view class="each_his_item {{ item.is_checked == 1 ? 'active':'' }}" wx:for='{{feedStatus}}' wx:key='key'>{{item.text}}</view>
+      <view class="history_area" wx:if='{{is_feed == 0}}'>
+        <view class="each_his_item {{ item.is_checked == 1 ? 'active':'' }}" wx:for='{{feedStatus}}' wx:key='key' 
+              bindtap='chooseFeedType' data-text='{{item.text}}' data-id='{{item.id}}' data-index='{{index}}'>
+              {{item.text}}
+        </view>
       </view>
     </view>
-    <view class="modal_btn">提交</view>
+    <view class="modal_btn" bindtap="checkHistory">提交</view>
   </view>
 </view>

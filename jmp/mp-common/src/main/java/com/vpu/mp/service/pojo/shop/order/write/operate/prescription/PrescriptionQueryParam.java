@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.prescription;
 
+import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import lombok.Data;
 
@@ -13,9 +14,13 @@ import javax.validation.constraints.NotNull;
 @Data
 public class PrescriptionQueryParam extends AbstractOrderOperateQueryParam {
 
-    @NotNull
-    private String orderSn;
+
+    private Integer orderId;
     @NotNull
     private Integer accountId;
+
+    private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+
+    private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 
 }

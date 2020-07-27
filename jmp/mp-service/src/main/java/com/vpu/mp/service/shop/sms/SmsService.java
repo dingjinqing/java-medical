@@ -198,6 +198,7 @@ public class SmsService {
                     .timeout(20000)
                     .execute();
         }catch (Exception e){
+            e.printStackTrace();
             throw new MpException(JsonResultCode.CODE_ACCOUNT_SAME);
         }
         log.info("短信resPonse--{}",response.body());

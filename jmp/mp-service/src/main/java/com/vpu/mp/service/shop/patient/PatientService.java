@@ -88,7 +88,7 @@ public class PatientService extends BaseShopConfigService{
      */
     public JsonResult getExternalPatientInfo(UserPatientOneParam userPatientOneParam){
         boolean b = checkMobileCode(userPatientOneParam);
-        if (b){
+        if (!b){
             return null;
         }
         Integer shopId =getShopId();
