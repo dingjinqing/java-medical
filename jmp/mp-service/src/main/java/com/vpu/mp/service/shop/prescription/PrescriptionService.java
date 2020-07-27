@@ -351,6 +351,7 @@ public class PrescriptionService extends ShopBaseService {
         for (PrescriptionItemInfoVo prescriptionItem : prescriptionItemList) {
             GoodsMatchParam goodsMatchParam = new GoodsMatchParam();
             FieldsUtil.assign(prescriptionItem, goodsMatchParam);
+            System.out.printf(goodsMatchParam.getGoodsCommonName());
             GoodsPrdVo goodsDetail = medicalGoodsService.matchGoodsMedicalDetail(goodsMatchParam);
             if (goodsDetail != null) {
                 goodsList.add(goodsDetail);
