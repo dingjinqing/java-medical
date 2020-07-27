@@ -4,6 +4,7 @@ import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.config.ShopCfgDao;
@@ -11,6 +12,8 @@ import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.sms.SmsBaseParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminVo;
 import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordParam;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
 import com.vpu.mp.service.shop.config.SmsAccountConfigService;
@@ -201,6 +204,17 @@ public class SmsService {
         return response;
     }
 
-
+    /**
+     * @author 赵晓东
+     * @create 2020-07-27 13:53:10
+     */
+    /**
+     * admin端分页显示短信信息
+     * @param smsSendRecordAdminParam 条件查询入参
+     * @return PageResult<SmsSendRecordAdminVo>
+     */
+    public PageResult<SmsSendRecordAdminVo> getAdminSmsSendRecordPageList(SmsSendRecordAdminParam smsSendRecordAdminParam){
+        return smsSendRecordDao.selectSmsSendRecordAdmin(smsSendRecordAdminParam);
+    }
 
 }

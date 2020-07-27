@@ -43,10 +43,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SmsSendRecord extends TableImpl<SmsSendRecordRecord> {
 
-    private static final long serialVersionUID = 383857612;
+    private static final long serialVersionUID = -2081803910;
 
     /**
-     * The reference instance of <code>jmini_shop_224462.b2c_sms_send_record</code>
+     * The reference instance of <code>mini_shop_471752.b2c_sms_send_record</code>
      */
     public static final SmsSendRecord SMS_SEND_RECORD = new SmsSendRecord();
 
@@ -59,81 +59,86 @@ public class SmsSendRecord extends TableImpl<SmsSendRecordRecord> {
     }
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.id</code>.
+     * The column <code>mini_shop_471752.b2c_sms_send_record.id</code>.
      */
     public final TableField<SmsSendRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.account_name</code>. 账号
+     * The column <code>mini_shop_471752.b2c_sms_send_record.account_name</code>. 账号
      */
     public final TableField<SmsSendRecordRecord, String> ACCOUNT_NAME = createField("account_name", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "账号");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.user_id</code>.
+     * The column <code>mini_shop_471752.b2c_sms_send_record.user_id</code>.
      */
     public final TableField<SmsSendRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.mobile</code>.
+     * The column <code>mini_shop_471752.b2c_sms_send_record.mobile</code>.
      */
     public final TableField<SmsSendRecordRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.request_msg</code>. 请求内容
+     * The column <code>mini_shop_471752.b2c_sms_send_record.request_msg</code>. 请求内容
      */
     public final TableField<SmsSendRecordRecord, String> REQUEST_MSG = createField("request_msg", org.jooq.impl.SQLDataType.CLOB, this, "请求内容");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.response_code</code>. 响应码
+     * The column <code>mini_shop_471752.b2c_sms_send_record.response_code</code>. 响应码
      */
     public final TableField<SmsSendRecordRecord, String> RESPONSE_CODE = createField("response_code", org.jooq.impl.SQLDataType.VARCHAR(50), this, "响应码");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.response_msg</code>. 响应内容
+     * The column <code>mini_shop_471752.b2c_sms_send_record.response_msg</code>. 响应内容
      */
     public final TableField<SmsSendRecordRecord, String> RESPONSE_MSG = createField("response_msg", org.jooq.impl.SQLDataType.CLOB, this, "响应内容");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.ext</code>. 行业账号 默认:行业 market:营销,checkcode:验证码
+     * The column <code>mini_shop_471752.b2c_sms_send_record.ext</code>. 行业账号 默认:行业 market:营销,checkcode:验证码
      */
     public final TableField<SmsSendRecordRecord, String> EXT = createField("ext", org.jooq.impl.SQLDataType.VARCHAR(20), this, "行业账号 默认:行业 market:营销,checkcode:验证码");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.sms</code>. 短信通道 默认短信策略:mxt
+     * The column <code>mini_shop_471752.b2c_sms_send_record.sms</code>. 短信通道 默认短信策略:mxt
      */
     public final TableField<SmsSendRecordRecord, String> SMS = createField("sms", org.jooq.impl.SQLDataType.VARCHAR(20), this, "短信通道 默认短信策略:mxt");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.response_time</code>. 响应时间
+     * The column <code>mini_shop_471752.b2c_sms_send_record.response_msg_code</code>. 短信平台发送响应码
+     */
+    public final TableField<SmsSendRecordRecord, String> RESPONSE_MSG_CODE = createField("response_msg_code", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "短信平台发送响应码");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_sms_send_record.response_time</code>. 响应时间
      */
     public final TableField<SmsSendRecordRecord, Timestamp> RESPONSE_TIME = createField("response_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "响应时间");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_sms_send_record.create_time</code>.
      */
     public final TableField<SmsSendRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_sms_send_record.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_sms_send_record.update_time</code>. 最后修改时间
      */
     public final TableField<SmsSendRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>jmini_shop_224462.b2c_sms_send_record</code> table reference
+     * Create a <code>mini_shop_471752.b2c_sms_send_record</code> table reference
      */
     public SmsSendRecord() {
         this(DSL.name("b2c_sms_send_record"), null);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_224462.b2c_sms_send_record</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_sms_send_record</code> table reference
      */
     public SmsSendRecord(String alias) {
         this(DSL.name(alias), SMS_SEND_RECORD);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_224462.b2c_sms_send_record</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_sms_send_record</code> table reference
      */
     public SmsSendRecord(Name alias) {
         this(alias, SMS_SEND_RECORD);
