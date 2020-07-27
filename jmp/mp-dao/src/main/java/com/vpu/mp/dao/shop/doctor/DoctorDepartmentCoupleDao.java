@@ -160,7 +160,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .from(IM_SESSION)
             .leftJoin(DOCTOR_DEPARTMENT_COUPLE).on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(IM_SESSION.DOCTOR_ID))
             .and(DOCTOR_DEPARTMENT_COUPLE.ID.gt(0)).groupBy(DOCTOR_DEPARTMENT_COUPLE.ID);
-        return db().select().from(DOCTOR_DEPARTMENT_COUPLE)
+        return db().select(DOCTOR.asterisk(),DEPARTMENT.ID.as("departmentId"),DEPARTMENT.NAME.as("departmentName"),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR_DEPARTMENT_COUPLE)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
             .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
@@ -184,7 +184,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .from(IM_SESSION)
             .leftJoin(DOCTOR_DEPARTMENT_COUPLE).on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(IM_SESSION.DOCTOR_ID))
             .and(DOCTOR_DEPARTMENT_COUPLE.ID.gt(0)).groupBy(DOCTOR_DEPARTMENT_COUPLE.ID);
-        return db().select().from(DOCTOR_DEPARTMENT_COUPLE)
+        return db().select(DOCTOR.asterisk(),DEPARTMENT.ID.as("departmentId"),DEPARTMENT.NAME.as("departmentName"),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR_DEPARTMENT_COUPLE)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
             .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
