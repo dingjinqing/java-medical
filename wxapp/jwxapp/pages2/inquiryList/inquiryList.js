@@ -40,6 +40,7 @@ global.wxPage({
           })
         }
         this.setData({
+          targetStatus:this.data.filterParams.sessionStatus.includes(1||3) ? '2' : '1',
           pageParams:res.content.page
         })
       }
@@ -51,7 +52,6 @@ global.wxPage({
   toggleStatus(e){
     let {type} = e.currentTarget.dataset
     this.setData({
-      targetStatus:type,
       'pageParams.currentPage':1,
       'filterParams.sessionStatus':type === '1' ? [0] : [1,3]
     })

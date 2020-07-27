@@ -137,6 +137,7 @@ module.exports = {
     "doctorPatientMessage":"患者信息",
     "awaitprescribe":"待开方",
     "prescribeinfo":"开方",
-    "doctorIndex":"首页"
+    "doctorIndex":"首页",
+    "prescribe":"待开方"
   }
 }

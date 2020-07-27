@@ -1,0 +1,6 @@
+<v-popup show="{{show}}" bindtap="bindClose" bind:close="bindClose" horizon="center" vertical="bottom" close_pos="inner">
+  <view class="dialog-content">
+    <view class="dialog-title">治疗建议</view>
+    <slot name="content"/>
+  </view>
+</v-popup>

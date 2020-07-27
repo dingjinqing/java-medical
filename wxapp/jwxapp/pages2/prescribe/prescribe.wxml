@@ -23,9 +23,9 @@
 				<view class="prescription-item">
 					<view class="item-left">诊断：</view>
 					<view class="item-center">
-						<input type="text" placeholder="请输入诊断信息"></input>
+						<input type="text" placeholder="请输入诊断信息" bindinput="getDiagnose" value="{{prescriptionInfo.diagnose.info}}"></input>
 					</view>
-					<view class="item-right">
+					<view class="item-right" bindtap="clearInput" wx:if="{{prescriptionInfo.diagnose.canClear}}">
 						<text class="iconfont iconshanchu"></text>
 					</view>
 				</view>
@@ -34,7 +34,7 @@
 					<view class="item-center">
 						苯磺酸氨氯地平片
 					</view>
-					<view class="item-right">
+					<view class="item-right" bindtap="addGoods">
 						<text class="iconfont icontianjia"></text>
 					</view>
 				</view>
@@ -99,7 +99,7 @@
 					<text class="doctor-name">发药药师：</text>
 					<!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
 					<text>66666666</text>
-					<text class="item-date">日期：{{filter.substring(prescriptionData.prescriptionCreateTime,0,10)}}</text>
+					<text class="item-date">日期：{{theDateToday}}</text>
 				</view>
 			</view>
 		</view>
@@ -109,3 +109,25 @@
 		<include src="../../pages/common/footer.wxml" />
 	</view>
 </view>
+
+<v-footer-dialog show="{{showGoodsListDialog}}" >
+	<view slot="content" class="page-dialog-content">
+		<view class="search-content">
+			<view class="search-input-content">
+				<text class="iconfont iconsousuo"></text>
+				<input class="search-input" placeholder="搜索药品" placeholder-style="color:#999;font-size:28rpx;"></input>
+			</view>
+		</view>
+		<view class="goods-content">
+			<block wx:for="{{goodsList}}" wx:for-item="goodsItem" wx:key="index">
+        <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-select enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum" bindtoggleSelect="toggleSelect"/>
+        <view class="line" wx:if="{{index !== goodsList.length - 1}}"></view>
+      </block>
+		</view>
+		<view class="dialog-footer-content">
+			<view class="footer">.
+				<view class="button">添加</view>
+			</view>
+		</view>
+	</view>
+</v-footer-dialog>
