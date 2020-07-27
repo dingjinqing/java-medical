@@ -37,6 +37,7 @@ public class SmsSendRecordDo implements Serializable {
     private String    responseMsg;
     private String    ext;
     private String    sms;
+    private String    responseMsgCode;
     private Timestamp responseTime;
     private Timestamp createTime;
     private Timestamp updateTime;

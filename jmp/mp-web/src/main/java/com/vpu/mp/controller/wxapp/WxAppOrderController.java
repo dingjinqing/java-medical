@@ -343,7 +343,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/medical/get")
-    public JsonResult getMakePrescriptionOrder(OrderToPrescribeQueryParam param){
+    public JsonResult getMakePrescriptionOrder(@RequestBody OrderToPrescribeQueryParam param){
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
         try {
@@ -359,7 +359,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/prescription/make")
-    public JsonResult makePrescription(PrescriptionMakeParam param){
+    public JsonResult makePrescription(@RequestBody PrescriptionMakeParam param){
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult=shop().orderActionFactory.orderOperate(param);
