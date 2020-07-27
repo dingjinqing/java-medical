@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.order.goods;
 
-import com.sun.jmx.snmp.Timestamp;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalOneInfoVo;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
