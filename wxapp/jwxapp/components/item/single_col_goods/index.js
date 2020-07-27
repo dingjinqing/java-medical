@@ -34,6 +34,10 @@ global.wxComponent({
     customControlNum:{
       type:Boolean,
       value:false
+    },
+    isSelect:{
+      type:Boolean,
+      value:false
     }
   },
 
@@ -211,6 +215,10 @@ global.wxComponent({
         canMinus: cartNumber <= limitBuyNum ? false : true,
         canPlus: cartNumber < limitMaxNum ? true : false,
       })
+    },
+    toggleSelect(e){
+      let {goodsId} = e.currentTarget.dataset
+      this.triggerEvent('toggleSelect',{goodsId})
     }
   }
 })
