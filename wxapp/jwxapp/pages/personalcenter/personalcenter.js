@@ -33,10 +33,7 @@ global.wxPage({
    * 切换tab框
    */
   handleChangeNav (e) {
-    console.log(e)
     let id = e.currentTarget.dataset.id
-    console.log(id)
-    console.log(this.data.tabIndex === 'usercenter', this.data.tabIndex === 'address')
     this.setData({
       tabIndex: id
     })

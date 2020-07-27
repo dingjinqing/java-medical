@@ -3,8 +3,8 @@
       <div class="since-info">
          <div class="since-info-top">
             <div class="order_mes">
-               <span>订单号：202020202020202020202</span>
-               <span>订单状态：订单完成</span>
+               <span>订单号：{{orderContent.orderSn}}</span>
+               <span>订单状态：{{orderContent.orderStatusName}}</span>
             </div>
             <el-button
                type='primary'
@@ -15,23 +15,23 @@
             <div class="order_info">
                <div class="title">订单信息</div>
                <div class="item_box">
-                  <div class="item">订单状态：</div>
-                  <div class="item">订单金额：</div>
-                  <div class="item">下单时间：</div>
-                  <div class="item">用户：</div>
-                  <div class="item">订单号：</div>
-                  <div class="item">下单人手机：</div>
+                  <div class="item">订单状态：{{orderContent.orderStatusName}}</div>
+                  <div class="item">订单金额：{{orderContent.orderAmount}}</div>
+                  <div class="item">下单时间：{{orderContent.createTime}}</div>
+                  <div class="item">用户：{{orderContent.orderStatusName}}</div>
+                  <div class="item">订单号：{{orderContent.orderSn}}</div>
+                  <div class="item">下单人手机：{{orderContent.orderStatusName}}</div>
                </div>
             </div>
             <div class="user_info">
                <div class="title">患者信息</div>
                <div class="item_box">
-                  <div class="item">姓名：</div>
-                  <div class="item">性别：</div>
-                  <div class="item">生日：</div>
-                  <div class="item">证件类型：</div>
-                  <div class="item">证件号码：</div>
-                  <div class="item">手机号：</div>
+                  <div class="item">姓名：{{orderContent.patientName}}</div>
+                  <div class="item">性别：{{orderContent.patientSexName}}</div>
+                  <div class="item">生日：{{orderContent.orderStatusName}}</div>
+                  <div class="item">证件类型：{{orderContent.patientIdentityName}}</div>
+                  <div class="item">证件号码：{{orderContent.patientIdentityCode}}</div>
+                  <div class="item">手机号：{{orderContent.patientMobile}}</div>
                </div>
             </div>
          </div>
@@ -40,8 +40,84 @@
 </template>
 
 <script>
+import { advisoryOrderInfo } from '@/api/admin/orderManage/order.js'
 export default {
-
+  mounted () {
+   if (this.$route.query.orderId) {
+     this.id = this.$route.query.orderId
+     this.initOrderInfo(this.id)
+   }
+  },
+  watch: {
+   '$route.query.orderId': function (newVal) {
+     if (newVal) {
+      this.id = this.$route.query.orderId
+      this.initOrderInfo(this.id)
+     }
+   }
+  },
+  data () {
+   return {
+     orderContent: {}
+   }
+  },
+  methods: {
+   initOrderInfo (id) {
+     advisoryOrderInfo({orderId:id}).then(res => {
+       if (res.error === 0) {
+         res.content.createTime = res.content.createTime.substr(0, 10)
+         res.content.orderStatusName = this.getStatusName(res.content.orderStatus)
+         res.content.patientSexName = this.getPatientSex(res.content.patientSex)
+         res.content.patientIdentityName = this.getIdentityName(res.content.patientIdentityType)
+         this.orderContent = res.content
+         console.log(this.orderContent)
+       } else {
+         this.$message.error({
+           message: '获取失败',
+           showClose: true
+         })
+       }
+     })
+   },
+   getStatusName (data) {
+      switch (data) {
+        case 0:
+          return '待付款'
+        case 1:
+          return '待接诊'
+        case 2:
+          return '接诊中'
+        case 3:
+          return '已完成'
+        case 4:
+          return '已退款'
+        case 5:
+          return '已取消'
+      }
+   },
+   getPatientSex (data) {
+      switch (data) {
+        case 0:
+          return '未知'
+        case 1:
+          return '男'
+        case 2:
+          return '女'
+      }
+   },
+   getIdentityName (data) {
+      switch (data) {
+        case 1:
+          return '身份证'
+        case 2:
+          return '军人证'
+        case 3:
+          return '护照'
+        case 4:
+          return '社保卡'
+      }
+   }
+  }
 }
 </script>
 

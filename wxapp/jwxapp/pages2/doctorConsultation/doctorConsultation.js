@@ -19,13 +19,15 @@ global.wxPage({
       '主治医生',
       '主治医生'
     ],
+    departmentList:[],
+    doctorList:[]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+     this.requestList()
   },
   changeInput(e) {
     this.setData({
@@ -60,6 +62,13 @@ global.wxPage({
     that.setData({
       can_show:false,
       choose_type:''
+    })
+  },
+  handleChangeNav (e) {
+    
+    let id = e.currentTarget.dataset.id
+    this.setData({
+      tabIndex: id
     })
   },
 
@@ -103,12 +112,12 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage)
-      return;
-    this.setData({
-      'pageParams.currentPage': this.data.pageParams.currentPage + 1
-    });
-    this.requestList();
+    // if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage)
+    //   return;
+    // this.setData({
+    //   'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    // });
+    // this.requestList();
   },
 
   /**
@@ -116,5 +125,33 @@ global.wxPage({
    */
   onShareAppMessage: function () {
 
+  },
+  toAllDepartment:function(){
+    util.navigateTo({
+      url: "/pages2/allDepartment/allDepartment"
+    })
+  },
+
+  requestList:function(){
+    let that = this;
+    // let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
+    util.api('/api/wxapp/recommend/doctor/list', (res) => {
+      console.log(res)
+      if (res.error === 0) {
+        let con = res.content;
+        that.setData({
+          departmentList:con.recommendDepartment,
+          doctorList:con.doctorList
+        })
+        // let dataList = this.formatData(res.content.dataList);
+        // this.setData({
+        //   pageParams: res.content.page,
+        //   ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
+        // })
+      }
+    }, {
+        userId: util.getCache("user_id"),
+        patierntId:2
+      });
   }
 })

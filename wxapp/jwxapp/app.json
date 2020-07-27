@@ -158,7 +158,8 @@
         "prescribe/prescribe",
         "awaitprescribe/awaitprescribe",
         "prescribeinfo/prescribeinfo",
-        "doctorIndex/doctorIndex"
+        "doctorIndex/doctorIndex",
+        "doctorSearch/doctorSearch"
       ]
     }
   ],

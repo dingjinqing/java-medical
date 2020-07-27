@@ -1,170 +1,274 @@
 <template>
   <div class="main1">
     <div class="nav_box">
-        <div class="filters">
-            <div class="filters_item">
-                <span class="fil_span">医生：</span>
-                <el-input
-                    v-model="queryParams.doctorName"
-                    size="small"
-                    style="width:150px;"
-                    placeholder="请输入医生姓名"
-                ></el-input>
-            </div>
-            <div class="filters_item">
-                <span class="fil_span">科室：</span>
-                <el-select
-                    size="small"
-                    clearable
-                    class="timeSelect"
-                >
-                    <el-option>123</el-option>
-                </el-select>
-            </div>
-            <div class="filters_item">
-                <span class="fil_span">患者：</span>
-                <el-input
-                    v-model="queryParams.patientName"
-                    size="small"
-                    style="width:150px;"
-                    placeholder="请输入患者姓名"
-                ></el-input>
-            </div>
-            <div class="filters_item">
-                <span class="fil_span">订单状态：</span>
-                <el-select
-                    size="small"
-                    clearable
-                    class="timeSelect"
-                >
-                    <el-option>123</el-option>
-                </el-select>
-            </div>
-            <div class="btn_wrap">
-                <el-button
-                    type='primary'
-                    size='small'
-                >搜索</el-button>
-            </div>
+      <div class="filters">
+        <div class="filters_item">
+          <span class="fil_span">医生：</span>
+          <el-input
+            v-model="queryParams.doctorName"
+            size="small"
+            style="width:150px;"
+            placeholder="请输入医生姓名"
+          ></el-input>
         </div>
+        <div class="filters_item">
+          <span class="fil_span">科室：</span>
+          <el-select
+            size="small"
+            clearable
+            class="timeSelect"
+            v-model="queryParams.departmentId"
+            placeholder='请选择科室'
+          >
+            <el-option-group
+              v-for="group in belongParts"
+              :key="group.name"
+              :label="group.name"
+            >
+              <el-option
+                v-for="item in group.childDepartmentList"
+                :key="item.name"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-option-group>
+          </el-select>
+        </div>
+        <div class="filters_item">
+          <span class="fil_span">患者：</span>
+          <el-input
+            v-model="queryParams.patientName"
+            size="small"
+            style="width:150px;"
+            placeholder="请输入患者姓名"
+          ></el-input>
+        </div>
+        <div class="filters_item">
+          <span class="fil_span">订单状态：</span>
+          <el-select
+            size="small"
+            clearable
+            class="timeSelect"
+            v-model='queryParams.orderStatus'
+          >
+            <el-option
+              v-for="item in orderStatusInfo"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div class="btn_wrap">
+          <el-button
+            type='primary'
+            size='small'
+            @click="initDataList"
+          >搜索</el-button>
+        </div>
+      </div>
     </div>
     <div class="table_box">
-        <el-table
-          v-loading='loading'
-          :data='tableData'
-          style="width:100%"
-          border
-          :header-cell-style="{
+      <el-table
+        v-loading='loading'
+        :data='tableData'
+        style="width:100%"
+        border
+        :header-cell-style="{
             'background-color':'#f5f5f5',
             'text-align':'center',
             'border':'none',
             'color': '#000'
           }"
-          :cell-style="{
+        :cell-style="{
             'text-align':'center'
           }"
-        >
-            <el-table-column
-                prop=''
-                label='医生'
-            ></el-table-column>
-            <el-table-column
-                prop=''
-                label='患者'
-            ></el-table-column>
-            <el-table-column
-                prop=''
-                label='科室'
-            ></el-table-column>
-            <el-table-column
-                prop=''
-                label='咨询费'
-            ></el-table-column>
-            <el-table-column
-                prop=''
-                label='订单状态'
-            ></el-table-column>
-            <el-table-column
-                prop=''
-                label='提交时间'
-            ></el-table-column>
-            <el-table-column
-                label='操作'
-            >
-                <template slot-scope="scope">
-                    <div class="operation">
-                        <a href="##">退款</a>
-                        <a href="##" @click='toDetail'>详情</a>
-                    </div>
-                </template>
-            </el-table-column>
-        </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-        />
+      >
+        <el-table-column
+          prop='doctorName'
+          label='医生'
+        ></el-table-column>
+        <el-table-column
+          prop='patientName'
+          label='患者'
+        ></el-table-column>
+        <el-table-column
+          prop='departmentName'
+          label='科室'
+        ></el-table-column>
+        <el-table-column
+          prop='orderAmount'
+          label='咨询费'
+        ></el-table-column>
+        <el-table-column
+          prop='orderStatusName'
+          label='订单状态'
+        ></el-table-column>
+        <el-table-column
+          prop='createTime'
+          label='提交时间'
+        ></el-table-column>
+        <el-table-column label='操作'>
+          <template slot-scope="scope">
+            <div class="operation">
+              <a href="javaScript:void(0);">退款</a>
+              <a
+                href="javaScript:void(0);"
+                @click='toDetail(scope.row.orderId)'
+              >详情</a>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination :page-params.sync="pageParams" />
     </div>
   </div>
 </template>
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
+import { getBelongParts } from '@/api/admin/doctorManage/doctorInfo/doctor'
+import { advisoryOrderList } from '@/api/admin/orderManage/order.js'
 export default {
   components: {
     pagination
   },
+  mounted () {
+    this.initDoctorPart()
+    this.initDataList()
+  },
   data () {
     return {
+      loading: false,
       queryParams: {
-        doctorName: null,
-        patientName: null
+        doctorName: '',
+        patientName: '',
+        departmentId: '',
+        orderStatus: ''
       },
       pageParams: {},
-      tableData: []
+      tableData: [],
+      belongParts: {},
+      orderStatusInfo: [
+        {
+          id: 0,
+          text: '待付款'
+        },
+        {
+          id: 1,
+          text: '待接诊'
+        },
+        {
+          id: 2,
+          text: '接诊中'
+        },
+        {
+          id: 3,
+          text: '已完成'
+        },
+        {
+          id: 4,
+          text: '已退款'
+        },
+        {
+          id: 5,
+          text: '已取消'
+        },
+      ]
     }
   },
   methods: {
-    toDetail () {
-      this.$router.push({name: 'advisory_order_info'})
-      console.log(this.$router)
+    toDetail (id) {
+      this.$router.push({
+        path: '/admin/home/main/orders/advisoryOrder/info',
+        query: {
+          orderId: id
+        }
+      })
+    },
+    // 获取科室
+    initDoctorPart () {
+      let params = {}
+      getBelongParts(params).then(res => {
+        this.belongParts = res.content
+      })
+    },
+    // 数据
+    initDataList () {
+      this.loading = true
+      advisoryOrderList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+        console.log(res)
+        let oriData = JSON.parse(JSON.stringify(res.content.dataList))
+        for (let i in oriData) {
+          oriData[i].createTime = oriData[i].createTime.substr(0, 10)
+          oriData[i].orderStatusName = this.getStatusName(oriData[i].orderStatus)
+        }
+        this.tableData = oriData
+        this.pageParams = res.content.page
+        this.loading = false
+      })
+    },
+    // 订单状态
+    getStatusName (data) {
+      switch (data) {
+        case 0:
+          return '待付款'
+        case 1:
+          return '待接诊'
+        case 2:
+          return '接诊中'
+        case 3:
+          return '已完成'
+        case 4:
+          return '已退款'
+        case 5:
+          return '已取消'
+      }
     }
   }
 }
 </script>
 
 <style scoped lang='scss'>
-.main1{
-    margin: 10px;
-    min-width: auto !important;
-    .nav_box{
+.main1 {
+  margin: 10px;
+  min-width: auto !important;
+  .nav_box {
+    display: flex;
+    width: 100%;
+    background-color: #fff;
+    padding: 15px;
+    .filters {
+      flex: 2;
+      display: flex;
+      flex-wrap: wrap;
+      line-height: 32px;
+      margin-left: -15px;
+      .filters_item {
         display: flex;
-        width: 100%;
-        background-color: #fff;
-        padding: 15px;
-        .filters{
-            flex: 2;
-            display: flex;
-            flex-wrap: wrap;
-            line-height: 32px;
-            margin-left: -15px;
-            .filters_item {
-                display: flex;
-                justify-content: flex-end;
-                margin-left: 15px;
-                > span {
-                    width: 80px;
-                    font-size: 14px;
-                    text-align: right;
-                }
-                .timeSelect {
-                    width: 140px;
-                    margin: 0 10px 0 10px;
-                }
-            }
+        justify-content: flex-end;
+        margin-left: 15px;
+        > span {
+          width: 80px;
+          font-size: 14px;
+          text-align: right;
         }
+        .timeSelect {
+          width: 140px;
+          margin: 0 10px 0 10px;
+        }
+      }
     }
-    .table_box{
-        padding: 10px;
-        background: #fff;
+  }
+  .table_box {
+    padding: 10px;
+    background: #fff;
+    .operation a {
+      color: #5a8bff;
+      text-decoration: none;
     }
+  }
 }
 </style>
