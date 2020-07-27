@@ -71,6 +71,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         List<PrescriptionVo> prescriptionList = medicalOrderInit(param);
         //处方状态,订单类型
         auditPrescriptionValid(param, prescriptionList);
+        PatientOneParam oneInfo = patientService.getOneInfo(param.getPatientId());
+        param.setPatientInfo(oneInfo);
         log.info("药品处方检查-结束");
     }
 
@@ -84,8 +86,6 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
                 log.info("处方药订单,药品与处方匹配通过--审核/直接通过");
                 param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
-                PatientOneParam oneInfo = patientService.getOneInfo(param.getPatientId());
-                param.setPatientInfo(oneInfo);
                 //处方单号去重
                 prescriptionList = prescriptionList.stream()
                         .collect(Collectors.collectingAndThen
