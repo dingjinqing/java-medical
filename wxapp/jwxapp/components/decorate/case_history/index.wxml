@@ -8,7 +8,7 @@
 	<block wx:if="{{m.caseHistoryListData.length}}">
 		<view class="case-history-list" wx:for="{{m.caseHistoryListData}}" bindtap="handleShowDialog" wx:key="id" data-case-history-id="{{item.id}}">
 			<view class="list-item title" style="background:url({{imageUrl}}image/wxapp/case-history-top-bg.png) no-repeat left top/100% 100rpx , linear-gradient(#d0edeb, #ffffff);">
-				<text style="background: url({{imageUrl}}image/wxapp/medical_history_bg2.png) no-repeat center 68%/80% 14rpx;">电子病历</text>
+				<text style="background: url({{imageUrl}}image/wxapp/medical_history_bg2.png) no-repeat center 54rpx/80% 14rpx;">电子病历</text>
 			</view>
 			<view class="list-item">
 				<view class="item-line">

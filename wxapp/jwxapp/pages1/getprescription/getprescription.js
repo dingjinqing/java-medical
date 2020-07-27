@@ -83,6 +83,8 @@ global.wxPage({
     util.api('/api/wxapp/user/patient/get/info', res => {
       if (res.error == 0) {
         this.getPreInfo(prescription_info)
+      } else if (res.error === 402001){
+        util.showModal('提示', '验证码错误')
       } else {
         util.showModal('提示', '您暂无本医院就诊记录，请先添加就诊人', () => {
           util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + prescription_info);

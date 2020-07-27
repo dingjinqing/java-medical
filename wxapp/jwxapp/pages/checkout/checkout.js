@@ -906,7 +906,7 @@ global.wxPage({
         })
       }
     },{
-      prescriptionNo
+      prescriptionCode
     })
     
   },

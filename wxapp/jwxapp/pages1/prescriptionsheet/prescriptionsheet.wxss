@@ -2,6 +2,7 @@
 .main-container{
   padding: 24rpx;
   padding-bottom: 130rpx;
+  box-sizing: border-box;
 }
 .title-module{
   line-height: 46rpx;

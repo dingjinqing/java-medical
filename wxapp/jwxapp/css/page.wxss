@@ -10,8 +10,7 @@ view, text {
 
 .main-container {
   height: auto;
-  position: fixed;
-  width: 100%;
+  min-height: 940rpx;
 }
 
 /* common footer css */
