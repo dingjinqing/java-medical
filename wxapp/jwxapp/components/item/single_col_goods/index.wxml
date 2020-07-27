@@ -2,6 +2,9 @@
   <view class="edit" wx:if="{{isEdit}}">
     <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" data-goods-id="{{goodsData.goodsId}}" catchtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
   </view>
+  <view class="edit" wx:if="{{isSelect}}">
+    <text class="iconfont {{goodsData.selected ? 'icondanxuan' : 'icondanxuanbiankuang' }} " data-cart-id="{{goodsData.cartId}}" data-goods-id="{{goodsData.goodsId}}" catchtap="toggleSelect" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
+  </view>
   <view class="all-image">
     <image class="goods-image" src="{{goodsData.goodsImg}}" lazy-load="true"></image>
     <view wx:if="{{actInfo.actName}}" class="act-tags" style="background-color:{{main_setting.linColor}};">{{actInfo.actName}}</view>

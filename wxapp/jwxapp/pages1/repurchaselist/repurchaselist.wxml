@@ -3,14 +3,14 @@
 	<view class="main-container">
     <view class="goods-content">
       <block wx:for="{{goodsList}}" wx:for-item="goodsItem" wx:key="index">
-        <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum"/>
+        <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-select enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum" bindtoggleSelect="toggleSelect"/>
         <view class="line" wx:if="{{index !== goodsList.length - 1}}"></view>
       </block>
     </view>
     <view class="footer-content">
       <view class="footer-flex">
-        <view style="color:#fff;background:#FF9F15;">加入清单</view>
-        <view style="color:#fff;background:#26C4BC;">立即购买</view>
+        <view style="color:#fff;background:#FF9F15;" bindtap="addCart">加入清单</view>
+        <view style="color:#fff;background:#26C4BC;" bindtap="orderSettlement">立即购买</view>
       </view>
     </view>
 		<include src="../../pages/common/footer.wxml" />

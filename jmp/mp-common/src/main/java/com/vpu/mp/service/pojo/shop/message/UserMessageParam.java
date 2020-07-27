@@ -14,7 +14,7 @@ public class UserMessageParam {
      */
     private String    messageContent;
     /**
-     * 消息类型 系统消息0，订单消息1，会话消息2
+     * 消息类型 系统消息0USER_MESSAGE_SYSTEM，订单消息1USER_MESSAGE_ORDER，会话消息2USER_MESSAGE_CHAT
      */
     private Byte      messageType;
     /**
