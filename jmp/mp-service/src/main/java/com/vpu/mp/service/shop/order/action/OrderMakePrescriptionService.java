@@ -58,7 +58,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      */
     @Override
     public Object query(OrderToPrescribeQueryParam param) throws MpException {
-        List<OrderInfoVo> orders = orderInfoService.getOrdersByCondition(orderInfoService.TABLE.ORDER_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE) , OrderInfoVo.class);
+        List<OrderInfoVo> orders = orderInfoService.getOrdersByCondition(orderInfoService.TABLE.ORDER_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE).and(orderInfoService.TABLE.ORDER_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT)) , OrderInfoVo.class);
         List<OrderGoodsMedicalVo> orderGoodsMedicalVoList=new ArrayList<>();
         for(OrderInfoVo orderInfo:orders){
             OrderGoodsMedicalVo orderGoodsMedicalVo=new OrderGoodsMedicalVo();
@@ -95,6 +95,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         FieldsUtil.assign(obj,prescriptionOneParam);
         //生成处方，处方明细
         prescriptionService.insertPrescription(prescriptionOneParam);
+        orderInfoService.updateAuditStatus(obj.getOrderId(),OrderConstant.MEDICAL_AUDIT_PASS);
         return ExecuteResult.create();
     }
 

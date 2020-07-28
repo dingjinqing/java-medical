@@ -45,6 +45,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author yangpengcheng
@@ -209,7 +210,9 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientMobile(patientOneParam.getMobile());
         inquiryOrderDo.setPatientIdentityCode(patientOneParam.getIdentityCode());
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
-        inquiryOrderDo.setImageUrl(payParam.getImagUrl());
+        List<String> imageList=payParam.getImagUrl();
+        String imageUrl=imageList.stream().collect(Collectors.joining(","));
+        inquiryOrderDo.setImageUrl(imageUrl);
         inquiryOrderDo.setDescriptionDisease(payParam.getDescriptionDisease());
         inquiryOrderDao.save(inquiryOrderDo);
         return orderSn;

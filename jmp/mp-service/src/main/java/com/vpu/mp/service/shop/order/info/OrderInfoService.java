@@ -10,6 +10,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.DateUtils.IntervalType;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.dao.foundation.database.DslPlus;
+import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -103,6 +104,7 @@ public class OrderInfoService extends ShopBaseService {
 
     public final OrderInfo TABLE = ORDER_INFO;
 
+    private OrderInfoDao orderInfoDao;
     /**
      * 支付种类（细分）PAY_SUBDIVISION
      */
@@ -1673,5 +1675,14 @@ public class OrderInfoService extends ShopBaseService {
                     .and(TABLE.ORDER_STATUS.in(ORDER_RETURN_FINISHED, ORDER_REFUND_FINISHED))
             )
             .fetch(x -> x.into(String.class));
+    }
+
+    /**
+     *
+     * @param orderId
+     * @param auditStatus
+     */
+    public void updateAuditStatus(Integer orderId,Byte auditStatus){
+        orderInfoDao.updateAuditStatus(orderId,auditStatus);
     }
 }

@@ -83,6 +83,10 @@ public class PatientService extends BaseShopConfigService{
         userPatientCoupleDao.setDefaultPatient(userPatient);
     }
 
+    public PatientOneParam getDefaultPatient(Integer userId){
+        Integer patientId=userPatientCoupleDao.defaultPatientIdByUser(userId);
+        return getOneDetail(patientId);
+    }
     /**
      * 拉取患者信息
      */

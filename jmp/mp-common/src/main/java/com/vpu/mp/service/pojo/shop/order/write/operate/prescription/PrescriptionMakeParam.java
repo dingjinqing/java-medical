@@ -12,6 +12,7 @@ import java.util.List;
  **/
 @Data
 public class PrescriptionMakeParam extends AbstractOrderOperateQueryParam {
+    private Integer orderId;
     private Integer patientId;
     private Integer doctorId;
     private String departmentCode;
