@@ -6,7 +6,9 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
+import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
@@ -18,8 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
-import static com.vpu.mp.db.shop.Tables.DOCTOR_TITLE;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author chenjie
@@ -193,6 +194,21 @@ public class DoctorDao extends ShopBaseDao {
     public List<DoctorSimpleVo> listDoctorSimpleInfo(List<Integer> doctorIds) {
         return db().select(DOCTOR.ID,DOCTOR.NAME).from(DOCTOR).where(DOCTOR.ID.in(doctorIds).and(DOCTOR.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(DoctorSimpleVo.class);
+    }
+
+    /**
+     *
+     * 	根据医生id查询医生所属科室
+     * @param doctorId 医师id
+     * @return List<Department>
+     */
+    public List<DepartmentListVo> selectDepartmentsByDoctorId(Integer doctorId){
+        return db().select().from(DEPARTMENT)
+            .join(DOCTOR_DEPARTMENT_COUPLE)
+            .on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID)
+            .and(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId))
+            .and(DEPARTMENT.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(DepartmentListVo.class);
     }
 
 }
