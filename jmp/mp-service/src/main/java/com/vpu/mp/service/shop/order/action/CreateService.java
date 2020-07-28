@@ -1125,6 +1125,34 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }
         }
         //订单状态
+        makeOrderStatus(param, order, orderBo, beforeVo, currentTime);
+        //设置支付过期时间(默认30minutes)
+        Integer cancelTime = tradeCfg.getCancelTime();
+        cancelTime = cancelTime < 1 ? OrderConstant.DEFAULT_AUTO_CANCEL_TIME : cancelTime;
+        if(beforeVo.getOrderPayWay() != null && OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay()) {
+            //代付
+            order.setExpireTime(DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS));
+            order.setInsteadPay(Util.toJson(beforeVo.getInsteadPayCfg()));
+            order.setOrderUserMessage(beforeVo.getInsteadPayNum() == 0 ? beforeVo.getInsteadPayCfg().getOrderUserMessageMultiple() : beforeVo.getInsteadPayCfg().getOrderUserMessageSingle());
+        }else {
+            order.setExpireTime(DateUtils.getTimeStampPlus(cancelTime, ChronoUnit.MINUTES));
+        }
+        /**
+         * 配置
+         */
+        //是否退优惠卷
+        order.setIsRefundCoupon(returnCfg.getIsReturnCoupon());
+        //order是否支持退款
+        order.setReturnTypeCfg(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT) ? OrderConstant.CFG_RETURN_TYPE_N : OrderConstant.CFG_RETURN_TYPE_Y);
+        //发货后自动确认收货时间设置
+        order.setReturnDaysCfg(tradeCfg.getDrawbackDays().byteValue());
+        //确认收货后order_timeout_days天，订单完成
+        order.setOrderTimeoutDays(tradeCfg.getOrderTimeoutDays().shortValue());
+        //是否下单减库存
+        order.setIsLock(Collections.disjoint(AtomicOperation.ACT_IS_LOCK,orderBo.getOrderType()) ? tradeCfg.getIsLock() : YES);
+    }
+
+    private void makeOrderStatus(CreateParam param, OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo, Timestamp currentTime) {
         if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_PRE_SALE)) {
             //预售
             if(order.getBkOrderPaid() != null && order.getBkOrderPaid().equals(OrderConstant.BK_PAY_FINISH)) {
@@ -1187,30 +1215,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);
             }
         }
-        //设置支付过期时间(默认30minutes)
-        Integer cancelTime = tradeCfg.getCancelTime();
-        cancelTime = cancelTime < 1 ? OrderConstant.DEFAULT_AUTO_CANCEL_TIME : cancelTime;
-        if(beforeVo.getOrderPayWay() != null && OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay()) {
-            //代付
-            order.setExpireTime(DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS));
-            order.setInsteadPay(Util.toJson(beforeVo.getInsteadPayCfg()));
-            order.setOrderUserMessage(beforeVo.getInsteadPayNum() == 0 ? beforeVo.getInsteadPayCfg().getOrderUserMessageMultiple() : beforeVo.getInsteadPayCfg().getOrderUserMessageSingle());
-        }else {
-            order.setExpireTime(DateUtils.getTimeStampPlus(cancelTime, ChronoUnit.MINUTES));
-        }
-        /**
-         * 配置
-         */
-        //是否退优惠卷
-        order.setIsRefundCoupon(returnCfg.getIsReturnCoupon());
-        //order是否支持退款
-        order.setReturnTypeCfg(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT) ? OrderConstant.CFG_RETURN_TYPE_N : OrderConstant.CFG_RETURN_TYPE_Y);
-        //发货后自动确认收货时间设置
-        order.setReturnDaysCfg(tradeCfg.getDrawbackDays().byteValue());
-        //确认收货后order_timeout_days天，订单完成
-        order.setOrderTimeoutDays(tradeCfg.getOrderTimeoutDays().shortValue());
-        //是否下单减库存
-        order.setIsLock(Collections.disjoint(AtomicOperation.ACT_IS_LOCK,orderBo.getOrderType()) ? tradeCfg.getIsLock() : YES);
     }
 
     /**
