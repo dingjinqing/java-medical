@@ -73,9 +73,9 @@ public class OrderMedicalHistory extends TableImpl<OrderMedicalHistoryRecord> {
     public final TableField<OrderMedicalHistoryRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "患者id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_medical_history.patient_name</code>. 充值单号
+     * The column <code>mini_shop_471752.b2c_order_medical_history.patient_name</code>. 患者姓名
      */
-    public final TableField<OrderMedicalHistoryRecord, String> PATIENT_NAME = createField("patient_name", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "充值单号");
+    public final TableField<OrderMedicalHistoryRecord, String> PATIENT_NAME = createField("patient_name", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者姓名");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.sex</code>. 0男1女
@@ -98,9 +98,9 @@ public class OrderMedicalHistory extends TableImpl<OrderMedicalHistoryRecord> {
     public final TableField<OrderMedicalHistoryRecord, String> DISEASE_HISTORY = createField("disease_history", org.jooq.impl.SQLDataType.VARCHAR(1000).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "历史诊断");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_medical_history.images_list</code>. 充值单号
+     * The column <code>mini_shop_471752.b2c_order_medical_history.images_list</code>. 图片地址
      */
-    public final TableField<OrderMedicalHistoryRecord, String> IMAGES_LIST = createField("images_list", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "充值单号");
+    public final TableField<OrderMedicalHistoryRecord, String> IMAGES_LIST = createField("images_list", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "图片地址");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.is_delete</code>. 删除

@@ -48,7 +48,8 @@ global.wxComponent({
       util.uploadImage(1, (res) => {
         let data = JSON.parse(res.data);
         if (data.error == 0) {
-          this.triggerEvent('sendImage',{image:data.content.imgUrl})
+          console.log(data)
+          this.triggerEvent('sendImage',{image:data.content.imgUrl,imgWidth:data.content.imgWidth,imgHeight:data.content.imgHeight})
           this.hideMoreActions()
         }
       });

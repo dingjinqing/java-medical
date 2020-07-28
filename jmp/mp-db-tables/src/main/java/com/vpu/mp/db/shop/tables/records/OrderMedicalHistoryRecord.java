@@ -75,14 +75,14 @@ public class OrderMedicalHistoryRecord extends UpdatableRecordImpl<OrderMedicalH
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_medical_history.patient_name</code>. 充值单号
+     * Setter for <code>mini_shop_471752.b2c_order_medical_history.patient_name</code>. 患者姓名
      */
     public void setPatientName(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_medical_history.patient_name</code>. 充值单号
+     * Getter for <code>mini_shop_471752.b2c_order_medical_history.patient_name</code>. 患者姓名
      */
     public String getPatientName() {
         return (String) get(3);
@@ -145,14 +145,14 @@ public class OrderMedicalHistoryRecord extends UpdatableRecordImpl<OrderMedicalH
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_medical_history.images_list</code>. 充值单号
+     * Setter for <code>mini_shop_471752.b2c_order_medical_history.images_list</code>. 图片地址
      */
     public void setImagesList(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_medical_history.images_list</code>. 充值单号
+     * Getter for <code>mini_shop_471752.b2c_order_medical_history.images_list</code>. 图片地址
      */
     public String getImagesList() {
         return (String) get(8);

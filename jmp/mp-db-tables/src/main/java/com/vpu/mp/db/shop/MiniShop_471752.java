@@ -1329,7 +1329,7 @@ public class MiniShop_471752 extends SchemaImpl {
             PrescriptionItem.PRESCRIPTION_ITEM,
             UserPatientCouple.USER_PATIENT_COUPLE,
             MedicalHistory.MEDICAL_HISTORY,
-            OrderMedicalHistory.ORDER_MEDICAL_HISTORY),
+            OrderMedicalHistory.ORDER_MEDICAL_HISTORY,
         DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE);
 
     }
