@@ -30,9 +30,6 @@ public class WxAppUserMessageController extends WxAppBaseController{
     @Autowired
     private MessageService messageService;
 
-    @Autowired
-    private DoctorService doctorService;
-
     /**
      * 用户消息列表展示
      * @param messageParam 接收消息用户id
@@ -65,17 +62,6 @@ public class WxAppUserMessageController extends WxAppBaseController{
     }
 
     /**
-     * 医师端首页消息总计
-     * @param doctorMessageCountParam 医师端消息入参
-     * @return JsonResult
-     */
-    @RequestMapping("/doctor/count")
-    @ResponseBody
-    public JsonResult doctorMessageCount(DoctorMessageCountParam doctorMessageCountParam){
-        return this.success(messageService.countDoctorMessage(doctorMessageCountParam.getDoctorId()));
-    }
-
-    /**
      * 用户删除消息
      * @param messageParam 用户消息入参
      * @return JsonResult
@@ -85,30 +71,4 @@ public class WxAppUserMessageController extends WxAppBaseController{
         messageService.deleteUserMessage(messageParam.getMessageId());
         return this.success();
     }
-
-    /**
-     * 医师端首页信息展示 消息统计和医师个人信息
-     * @return JsonResult
-     */
-    @RequestMapping("/main")
-    public JsonResult doctorMainShow(){
-        Integer doctorId = wxAppAuth.user().getDoctorId();
-        DoctorMessageCountVo doctorMessageCountVo = messageService.countDoctorMessage(doctorId);
-        DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
-        DoctorMainShowVo doctorMainShowVo = new DoctorMainShowVo();
-        FieldsUtil.assign(oneInfo, doctorMainShowVo);
-        doctorMainShowVo.setDoctorMessageCountVo(doctorMessageCountVo);
-        List<DepartmentListVo> departmentListVos = doctorService.selectDepartmentsByDoctorId(doctorId);
-        List<String> list = new ArrayList<>();
-        for (DepartmentListVo departmentListVo : departmentListVos){
-            list.add(departmentListVo.getName());
-        }
-        doctorMainShowVo.setDepartmentName(list);
-        return super.success(doctorMainShowVo);
-    }
-
-
-
-
-
 }

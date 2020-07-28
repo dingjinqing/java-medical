@@ -1,16 +1,25 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.controller.BaseController;
+import com.vpu.mp.db.shop.tables.Message;
+import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorMainShowVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.doctor.DoctorService;
+import com.vpu.mp.service.shop.message.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description 医师端
@@ -25,6 +34,9 @@ public class WxAppDoctorController extends WxAppBaseController {
 
     @Autowired
     private DoctorService doctorService;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 医师认证接口
@@ -46,5 +58,26 @@ public class WxAppDoctorController extends WxAppBaseController {
         WxAppSessionUser user=wxAppAuth.user();
         DoctorOneParam doctor= doctorService.getOneInfo(user.getDoctorId());
         return success(doctor);
+    }
+
+    /**
+     * 医师端首页信息展示 消息统计和医师个人信息
+     * @return JsonResult
+     */
+    @RequestMapping("/main")
+    public JsonResult doctorMainShow(){
+        Integer doctorId = wxAppAuth.user().getDoctorId();
+        DoctorMessageCountVo doctorMessageCountVo = messageService.countDoctorMessage(doctorId);
+        DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
+        DoctorMainShowVo doctorMainShowVo = new DoctorMainShowVo();
+        FieldsUtil.assign(oneInfo, doctorMainShowVo);
+        doctorMainShowVo.setDoctorMessageCountVo(doctorMessageCountVo);
+        List<DepartmentListVo> departmentListVos = doctorService.selectDepartmentsByDoctorId(doctorId);
+        List<String> list = new ArrayList<>();
+        for (DepartmentListVo departmentListVo : departmentListVos){
+            list.add(departmentListVo.getName());
+        }
+        doctorMainShowVo.setDepartmentName(list);
+        return super.success(doctorMainShowVo);
     }
 }
