@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.db.shop.tables.Prescription;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
@@ -115,8 +114,26 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
+     * 小程序分页
+     * @return
+     */
+    public <E> List<E> listPrescriptionByCode(Collection<String> codeList, Class<? extends E> type) {
+       return db().select().from(PRESCRIPTION)
+                .where(PRESCRIPTION.PRESCRIPTION_CODE.in(codeList))
+               .fetchInto(type);
+    }
+    /**
+     * 小程序分页
+     * @return
+     */
+    public <E> Map<String, E> mapPrescriptionByCode(Collection<String> codeList, Class<? extends E> type) {
+       return db().select().from(PRESCRIPTION)
+                .where(PRESCRIPTION.PRESCRIPTION_CODE.in(codeList))
+               .fetchMap(PRESCRIPTION.PHARMACIST_CODE,type);
+    }
+
+    /**
      * 根据处方号查询处方信息
-     * @param list
      * @return
      */
     public List<PrescriptionVo> listPrescriptionList(Collection<String> codeList){

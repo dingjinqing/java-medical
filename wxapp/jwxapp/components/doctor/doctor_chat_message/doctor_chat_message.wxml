@@ -5,5 +5,7 @@
     </view>
     <slot name='origin_message_left' />
     <slot name='origin_message_right' />
+    <slot name="origin_image_left" />
+    <slot name="origin_image_right" />
 </view>
 

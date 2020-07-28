@@ -1073,7 +1073,7 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_471752.b2c_bargain_goods</code>.
      */
     public final BargainGoods BARGAIN_GOODS = com.vpu.mp.db.shop.tables.BargainGoods.BARGAIN_GOODS;
-    
+
     /**
      * The table <code>mini_shop_471752..b2c_card_renew</code>.
      */
@@ -1084,6 +1084,11 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>jmini_shop_224462.b2c_medical_history</code>.
      */
     public final MedicalHistory MEDICAL_HISTORY = MedicalHistory.MEDICAL_HISTORY;
+    /**
+     * 充值记录表
+     */
+    public final OrderMedicalHistory ORDER_MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.OrderMedicalHistory.ORDER_MEDICAL_HISTORY;
+
 
     /**
      * No further instances allowed
@@ -1324,7 +1329,8 @@ public class MiniShop_471752 extends SchemaImpl {
             PrescriptionItem.PRESCRIPTION_ITEM,
             UserPatientCouple.USER_PATIENT_COUPLE,
             MedicalHistory.MEDICAL_HISTORY,
-            DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE);
+            OrderMedicalHistory.ORDER_MEDICAL_HISTORY),
+        DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE);
 
     }
 }

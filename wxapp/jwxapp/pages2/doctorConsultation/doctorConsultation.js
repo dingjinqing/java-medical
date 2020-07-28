@@ -12,63 +12,57 @@ global.wxPage({
     pageParams: null,
     dataList: null,
     patientId: 1,
-    can_show:false,
-    choose_type:'',
-    search_data:[
+    can_show: false,
+    choose_type: '',
+    search_data: [
       '主治医生',
       '主治医生',
       '主治医生'
     ],
-    departmentList:[],
-    doctorList:[]
+    departmentList: [],
+    doctorList: []
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-     this.requestList()
+    this.requestList()
   },
-  changeInput(e) {
-    this.setData({
-      keyWords: e.detail.value
-    })
-  },
-  inputSearch() {
-    // this.setData({
-    //   'pageParams.currentPage': 1
-    // })
-    // 添加热词
-    var data = this.data.keyWords.replace(/\s/g, "");
-  },
-  choose_type(e){
+
+  choose_type(e) {
     let that = this;
     let type = e.currentTarget.dataset.type;
     let choose_type = that.data.choose_type;
     let can_show = false;
-    if(choose_type == '' || choose_type != type){
+    if (choose_type == '' || choose_type != type) {
       choose_type = type;
       can_show = true;
-    }else{
+    } else {
       choose_type = ''
     }
     that.setData({
-      can_show:can_show,
-      choose_type:choose_type
+      can_show: can_show,
+      choose_type: choose_type
     })
   },
-  hide_cover(){
+  hide_cover() {
     let that = this;
     that.setData({
-      can_show:false,
-      choose_type:''
+      can_show: false,
+      choose_type: ''
     })
   },
-  handleChangeNav (e) {
-    
+  handleChangeNav(e) {
+
     let id = e.currentTarget.dataset.id
     this.setData({
       tabIndex: id
+    })
+  },
+  toDoctorSearch() {
+    util.navigateTo({
+      url: "/pages2/doctorSearch/doctorSearch?id=" + id + '&name=' + name 
     })
   },
 
@@ -126,13 +120,13 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
-  toAllDepartment:function(){
+  toAllDepartment: function () {
     util.navigateTo({
       url: "/pages2/allDepartment/allDepartment"
     })
   },
 
-  requestList:function(){
+  requestList: function () {
     let that = this;
     // let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
     util.api('/api/wxapp/recommend/doctor/list', (res) => {
@@ -140,8 +134,8 @@ global.wxPage({
       if (res.error === 0) {
         let con = res.content;
         that.setData({
-          departmentList:con.recommendDepartment,
-          doctorList:con.doctorList
+          departmentList: con.recommendDepartment,
+          doctorList: con.doctorList
         })
         // let dataList = this.formatData(res.content.dataList);
         // this.setData({
@@ -150,8 +144,8 @@ global.wxPage({
         // })
       }
     }, {
-        userId: util.getCache("user_id"),
-        patierntId:2
-      });
+      userId: util.getCache("user_id"),
+      patierntId: 2
+    });
   }
 })

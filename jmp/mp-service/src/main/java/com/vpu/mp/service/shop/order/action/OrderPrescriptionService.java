@@ -3,19 +3,25 @@ package com.vpu.mp.service.shop.order.action;
 import cn.hutool.db.sql.Order;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionOrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.AuditOrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.message.MessageService;
@@ -24,6 +30,7 @@ import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +63,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
     private MessageService messageService;
     @Autowired
     private PrescriptionDao prescriptionDao;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
 
 
     @Override
@@ -74,9 +83,25 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         if (param.getOrderId()!=null){
             return getOneOrderPrescription(param);
         }
-
-
-        return null;
+        PageResult<OrderPrescriptionVo> orderPrescriptionVoList = orderGoodsDao.listGoodsOldPrescription(param);
+        List<String> prescriptionCodeList = orderPrescriptionVoList.getDataList().stream().map(OrderPrescriptionVo::getPrescriptionOldCode).distinct().collect(Collectors.toList());
+        List<Integer> orderIdList = orderPrescriptionVoList.getDataList().stream().map(OrderPrescriptionVo::getGoodsId).distinct().collect(Collectors.toList());
+        Map<String, PrescriptionSimpleVo> prescriptionMap = prescriptionDao.mapPrescriptionByCode(prescriptionCodeList, PrescriptionSimpleVo.class);
+        Map<Integer, List<OrderGoodsDo>> goodsVoMap = orderGoodsDao.mapOrderGoodsByOrderId(orderIdList, prescriptionCodeList);
+        PageResult<AuditOrderGoodsVo> pageResult =new PageResult<>();
+        pageResult.setDataList(new ArrayList<>());
+        pageResult.setPage(orderPrescriptionVoList.page);
+        goodsVoMap.forEach((goodsId,goodsList) -> {
+            List<String> prescriptionCode = goodsList.stream().map(OrderGoodsDo::getPrescriptionOldCode).distinct().collect(Collectors.toList());
+            prescriptionCode.forEach(code->{
+                AuditOrderGoodsVo vo =new AuditOrderGoodsVo();
+                vo.setPrescription(prescriptionMap.get(code));
+                List<OrderGoodsDo> goodsDoList = goodsList.stream().filter(goods -> goods.getPrescriptionOldCode().equals(code)).collect(Collectors.toList());
+                vo.setGoodsList(goodsDoList);
+                pageResult.getDataList().add(vo);
+            });
+        });
+        return pageResult;
     }
 
     private Object getOneOrderPrescription(PrescriptionQueryParam param) {

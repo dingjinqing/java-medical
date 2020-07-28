@@ -20,12 +20,10 @@ global.wxPage({
     // this.requsetMessage()
   },
   getInputMessage(e) {
-    let that = this
     let {
       detail: message
     } = e
-    console.log(message)
-    that.sendMessage(message)
+    this.sendMessage(message,0)
   },
 
   /**
@@ -39,7 +37,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.requsetMessage()
+    // this.requsetMessage()
   },
 
   /**
@@ -76,33 +74,8 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
-  sendMessage: function (message) {
-    let that = this;
-    if (message == '') return;
-    let imSessionItem = {
-      "type": 0,
-      "message": ""
-    }
-    imSessionItem.message = message;
-    util.api('/api/wxapp/im/session/send', res => {
-      console.log(res)
-      if (res.error === 0 ) {
-        let chat = {}
-        let chatContent = that.data.chatContent;
-        chat.message = message;
-        chat.type = 1;
-        chatContent.push(chat)
-        that.setData({
-          chatContent:chatContent
-        })
-      }
-    }, {
-      departmentId: 12,
-      patientId: 3, //患者
-      fromId: 1, //医生
-      toId: 2, //to患者
-      imSessionItem: imSessionItem
-    }, '', false);
+  sendImage({detail:{image}}){
+    this.sendMessage(image,1)
   },
   requsetMessage () {
     this.messageApi()
@@ -127,5 +100,35 @@ global.wxPage({
       pullFromId: 2,
       selfId: 1
     }, '', false);
+  },
+  hideMoreActions(){
+    let chatInput = this.selectComponent('#chatinput')
+    chatInput.hideMoreActions()
+  },
+  sendMessage(message,type){
+    if(!message) return
+    let imSessionItem = {
+      message,
+      type
+    }
+    util.api('/api/wxapp/im/session/send',res => {
+      console.log(res)
+      if (res.error === 0 ) {
+        let chat = {}
+        let chatContent = this.data.chatContent;
+        chat.messageInfo = imSessionItem;
+        chat.type = 1;
+        chatContent.push(chat)
+        this.setData({
+          chatContent:chatContent
+        })
+      }
+    },{
+      departmentId:12,
+      patientId:3,
+      fromId:1,
+      toId:2,
+      imSessionItem
+    })
   }
 })

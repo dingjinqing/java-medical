@@ -1,6 +1,16 @@
 <view class="input-content">
     <view class="message-input">
-      <input type="text" cursor-spacing="8" placeholder="请仔细描述您的问题" placeholder-style="color:#999;" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}"></input>
-      <text class="iconfont icontianjia"></text>
+      <input type="text" cursor-spacing="8" placeholder="请仔细描述您的问题" placeholder-style="color:#999;" bindfocus="getFocus" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}"></input>
+      <text class="iconfont icontianjia" bindtap="showMoreActions"></text>
+    </view>
+    <view class="custom-footer" wx:if="{{moreActions}}">
+      <view class="custom-content">
+        <view class="item" bindtap="sendImage">
+          <view class="item-image">
+            <image mode="widthFix" src="http://medicaldevimg.weipubao.cn/image/wxapp/upload_prescription-icon.png"></image>
+          </view>
+          <view class="item-text">发送图片</view>
+        </view>
+      </view>
     </view>
 </view>

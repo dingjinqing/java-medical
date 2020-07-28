@@ -70,8 +70,13 @@
       </view>
     </view>
     <view class="card-content center column has-padding p-top p-bottom">
+      <view class="image-content center column" wx:if="{{prescriptionImageList.length}}">
+        <image mode='widthFix' src="{{item}}" wx:for="{{prescriptionImageList}}" wx:key="index"></image>
+      </view>
+      <view class="upload-content center column" bindtap="uploadImage">
         <image class="upload-icon" src="{{imageUrl}}image/wxapp/upload_prescription-icon.png"></image>
         <text class="upload-tips">上传历史处方</text>
+      </view>
     </view>
     <view class="footer-content">
       <view class="footer-button" style="background-color:#26C4BC;">确定</view>
