@@ -89,6 +89,8 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
                     FieldsUtil.assign(goodsMedicalInfoDo, goodsMedicalOneInfoVo);
                     GoodsDo goodsDo=goodsDao.getByGoodsId(goodsMedicalInfoDo.getGoodsId());
                     goodsMedicalOneInfoVo.setShopPrice(goodsDo.getShopPrice());
+                    goodsMedicalOneInfoVo.setGoodsImg(goodsDo.getGoodsImg());
+                    goodsMedicalOneInfoVo.setGoodsNumber(orderGoodsDo.getGoodsNumber());
                     goodsMedicalOneInfoVoList.add(goodsMedicalOneInfoVo);
                 }
 

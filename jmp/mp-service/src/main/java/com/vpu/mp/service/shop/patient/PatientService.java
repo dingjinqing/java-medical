@@ -2,10 +2,7 @@ package com.vpu.mp.service.shop.patient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.RandomUtil;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
@@ -181,6 +178,8 @@ public class PatientService extends BaseShopConfigService{
             return patientInfo;
         } else {
             PatientOneParam patientInfo = patientDao.getOneInfo(patientId);
+            //根据出生日期获取年龄
+            patientInfo.setAge(DateUtils.getAgeByBirthDay(patientInfo.getBirthday()));
             patientInfo.setDiseaseHistoryList(listDiseases(patientInfo.getDiseaseHistory()));
             patientInfo.setFamilyDiseaseHistoryList(listDiseases(patientInfo.getFamilyDiseaseHistory()));
             return patientInfo;
