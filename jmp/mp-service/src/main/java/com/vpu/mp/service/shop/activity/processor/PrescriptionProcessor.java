@@ -93,13 +93,15 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 param.setPrescriptionList(prescriptionList);
                 //处方是否过期/是否使用
                 long size = prescriptionList.stream().filter(prescriptionVo -> {
-                    if (prescriptionVo.getSource().equals(PrescriptionConstant.SOURCE_HIS_SYSTEM)) {
-                        //系统内
+                    if (prescriptionVo.getSource().equals(PrescriptionConstant.SOURCE_MP_SYSTEM)) {
                         if (!PrescriptionConstant.EXPIRE_TYPE_INVALID.equals(prescriptionVo.getExpireType())) {
-                            //处方有效期内
-                            // 是否被使用
-                            return prescriptionVo.getIsUsed().equals(BaseConstant.NO);
+                            //系统内
+                            if (BaseConstant.YES.equals(prescriptionVo.getIsValid())) {
+                                //处方有效期内,没有被使用
+                                return prescriptionVo.getIsUsed().equals(BaseConstant.NO);
+                            }
                         }
+
                     }
                     return false;
                 }).count();
@@ -118,7 +120,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         }
         //处理审核以外
         if (!param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
-            param.getGoods().forEach(goods -> goods.setOrderAuditType(param.getOrderAuditType()));
+            param.getGoods().forEach(goods -> goods.setMedicalAuditType(param.getOrderAuditType()));
         }
     }
 
@@ -144,19 +146,25 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 if (prescriptionVo != null) {
                     prescriptionList.add(prescriptionVo);
                     goods.setPrescriptionInfo(prescriptionVo);
+                    goods.setPrescriptionCode(prescriptionVo.getPrescriptionCode());
                     param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
-                    goods.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
-                    if (!prescriptionVo.getExpireType().equals(PrescriptionConstant.EXPIRE_TYPE_INVALID)){
-                        if (prescriptionVo.getIsUsed().equals(BaseConstant.NO)){
-                            goods.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
+                    if (prescriptionVo.getIsValid().equals(BaseConstant.YES) && !PrescriptionConstant.EXPIRE_TYPE_INVALID.equals(prescriptionVo.getExpireType())) {
+                        if (prescriptionVo.getSource().equals(PrescriptionConstant.SOURCE_MP_SYSTEM) && prescriptionVo.getIsUsed().equals(BaseConstant.NO)) {
+                            goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
+                        } else {
+                            goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
                         }
-                    }else {
-                        goods.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
+                    } else {
+                        goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
                     }
                 } else {
                     log.info("{}处方药品没有找到对应的处方信息", goodsInfo.getGoodsName());
+                    goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
                     param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS);
                 }
+            }else {
+                goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT);
+
             }
         }
         return prescriptionList;
