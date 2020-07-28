@@ -95,7 +95,9 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         FieldsUtil.assign(obj,prescriptionOneParam);
         //生成处方，处方明细
         prescriptionService.insertPrescription(prescriptionOneParam);
+        //更新审核状态
         orderInfoService.updateAuditStatus(obj.getOrderId(),OrderConstant.MEDICAL_AUDIT_PASS);
+        orderGoodsService.updateAuditStatus(obj.getGoodsIdList(),OrderConstant.MEDICAL_AUDIT_PASS);
         return ExecuteResult.create();
     }
 
