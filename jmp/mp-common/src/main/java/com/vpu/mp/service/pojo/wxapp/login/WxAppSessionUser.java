@@ -66,12 +66,12 @@ public class WxAppSessionUser {
      * 医师ID 如果当前用户不是医师那么为空
      */
 	@JsonProperty(value = "doctor_id")
-    String doctorId;
+    Integer doctorId;
     /**
      * 医师ID 如果当前用户不是医师那么为空
      */
 	@JsonProperty(value = "pharmacist_id")
-    String pharmacistId;
+    Integer pharmacistId;
 
 	
 	/**

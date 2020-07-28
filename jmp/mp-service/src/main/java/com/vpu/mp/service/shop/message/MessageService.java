@@ -67,12 +67,12 @@ public class MessageService extends ShopBaseService {
 
     /**
      * 医师首页展示未读消息计数
-     * @param doctorMessageCountParam 医师id
+     * @param doctorId 医师id
      * @return DoctorMessageCountVo
      */
-    public DoctorMessageCountVo countDoctorMessage(DoctorMessageCountParam doctorMessageCountParam) {
+    public DoctorMessageCountVo countDoctorMessage(Integer doctorId) {
         DoctorMessageCountVo doctorMessageCountVo = new DoctorMessageCountVo();
-        doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorMessageCountParam.getDoctorId(), IM_SESSION_STATUS_NOT_USE));
+        doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorId, IM_SESSION_STATUS_NOT_USE));
         doctorMessageCountVo.setNotOrderInfoCount(messageDao.countDoctorOrderMessageMum(IM_SESSION_STATUS_NOT_USE));
         doctorMessageCountVo.setNotPrescription(messageDao.countDoctorPrescriptionMessageMum(IM_SESSION_STATUS_NOT_USE));
         return doctorMessageCountVo;
