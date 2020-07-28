@@ -42,9 +42,9 @@
 				<image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
 			</view>
 			<view class="patient-info" catchtap="togglePatient" wx:if="{{orderInfo.checkPrescriptionStatus !== 0}}">
-				<text class="title">当前就诊人：</text>
+				<text class="title">{{orderInfo.patientInfo ? '当前就诊人：':'暂无就诊人'}}</text>
 				<text class="info">{{orderInfo.patientInfo.name}} {{orderInfo.patientInfo.mobile}}</text>
-				<text class="toggle">去切换</text>
+				<text class="toggle">{{orderInfo.patientInfo ? '去切换':'去添加'}}</text>
 				<image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
 			</view>
 		</view>
@@ -346,6 +346,6 @@
 	<!-- 处方详情展示弹窗 -->
 	<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>
 	<!-- 无处方提示弹窗 -->
-	<no-prescription-dialog show="{{showNoPrescription}}" dialog-type="{{noPrescriptionType}}"/>
+	<no-prescription-dialog show="{{showNoPrescription}}" dialog-type="{{noPrescriptionType}}" patient-info="{{orderInfo.patientInfo}}"/>
 	<include src="../common/footer.wxml" />
 </view>

@@ -10,7 +10,7 @@
           <text>暂无就诊人</text>
         </block>
       </view>
-      <view class="button" bindtap="viewPrescriptionSheet">
+      <view class="button" bindtap="{{dialogType === 1 ? 'viewPrescriptionSheet':'addPatient'}}">
         <text wx:if="{{dialogType === 1}}">去获取</text>
         <text wx:if="{{dialogType === 2}}">去添加</text>
         <text class="iconfont iconjiantou"></text>

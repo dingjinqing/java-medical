@@ -56,7 +56,8 @@ global.wxPage({
       custom: ''
     },
     options: {},
-    title_bgColor:'#26C4BC'
+    title_bgColor:'#26C4BC',
+    patientDiagnose:null
   },
 
   /**
@@ -735,6 +736,7 @@ global.wxPage({
       if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
       if (this.data.inviteId) addParams.inviteId = Number(this.data.inviteId)
       if (this.data.orderInfo.patientInfo && this.data.orderInfo.patientInfo.id) addParams.patientId = Number(this.data.orderInfo.patientInfo.id)
+      if (this.data.patientDiagnose) addParams.patientDiagnose = this.data.patientDiagnose
       let params = {
         goods,
         action: 10,
@@ -912,7 +914,6 @@ global.wxPage({
   },
   getSubmitButtonStatus(){
     let {checkPrescriptionStatus:status} = this.data.orderInfo
-    console.log()
     if(status === 2) return false
     return true
   },
@@ -928,6 +929,10 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    if(this.data.patientDiagnose){
+      this.confirm()
+      return
+    }
     this.requestOrder()
   },
 
