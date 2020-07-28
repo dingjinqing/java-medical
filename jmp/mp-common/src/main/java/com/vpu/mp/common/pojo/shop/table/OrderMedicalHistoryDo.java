@@ -1,11 +1,14 @@
 package com.vpu.mp.common.pojo.shop.table;
 
+import lombok.Data;
+
 import java.sql.Timestamp;
 
 /**
  * @author 孔德成
  * @date 2020/7/28 14:07
  */
+@Data
 public class OrderMedicalHistoryDo {
 
     private Integer   id;
