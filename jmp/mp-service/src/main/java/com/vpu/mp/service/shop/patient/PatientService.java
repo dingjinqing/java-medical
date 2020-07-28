@@ -16,10 +16,12 @@ import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.sms.SmsService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -165,7 +167,21 @@ public class PatientService extends BaseShopConfigService{
         }
         return diseaseList;
     }
-
+    public String strDisease(String diseaseStr){
+        List<PatientMoreInfoParam> diseaseList = Util.parseJson(get("diseases"), new TypeReference<List<PatientMoreInfoParam>>() {
+        });
+        if (diseaseStr == null || diseaseStr.equals("")){
+            return "";
+        }
+        List<String> strList=new ArrayList<>();
+        List<String> diseases = Arrays.asList(diseaseStr.split(","));
+        for (PatientMoreInfoParam disease : diseaseList) {
+            if (diseases.contains(disease.getId())) {
+                strList.add(disease.getName());
+            }
+        }
+        return StringUtils.join(strList.toArray(),",");
+    }
     /**
      * 获取患者详情信息(小程序前端)
      * @param patientId
@@ -183,6 +199,8 @@ public class PatientService extends BaseShopConfigService{
             patientInfo.setAge(DateUtils.getAgeByBirthDay(patientInfo.getBirthday()));
             patientInfo.setDiseaseHistoryList(listDiseases(patientInfo.getDiseaseHistory()));
             patientInfo.setFamilyDiseaseHistoryList(listDiseases(patientInfo.getFamilyDiseaseHistory()));
+            patientInfo.setDiseaseHistoryStr(strDisease(patientInfo.getDiseaseHistory()));
+            patientInfo.setFamilyDiseaseHistoryStr(strDisease(patientInfo.getFamilyDiseaseHistory()));
             return patientInfo;
         }
     }

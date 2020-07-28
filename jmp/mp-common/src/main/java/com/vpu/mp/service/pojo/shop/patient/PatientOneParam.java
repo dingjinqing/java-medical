@@ -32,4 +32,6 @@ public class  PatientOneParam {
     private Byte      liverFunctionOk;
     private List<PatientMoreInfoParam> diseaseHistoryList;
     private List<PatientMoreInfoParam> familyDiseaseHistoryList;
+    private String diseaseHistoryStr;
+    private String familyDiseaseHistoryStr;
 }
