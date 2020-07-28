@@ -96,8 +96,8 @@ public class WxAppUserMessageController extends WxAppBaseController{
         DoctorMessageCountVo doctorMessageCountVo = messageService.countDoctorMessage(doctorId);
         DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
         DoctorMainShowVo doctorMainShowVo = new DoctorMainShowVo();
+        FieldsUtil.assign(oneInfo, doctorMainShowVo);
         doctorMainShowVo.setDoctorMessageCountVo(doctorMessageCountVo);
-        doctorMainShowVo.setDoctorOneParam(oneInfo);
         List<DepartmentListVo> departmentListVos = doctorService.selectDepartmentsByDoctorId(doctorId);
         List<String> list = new ArrayList<>();
         for (DepartmentListVo departmentListVo : departmentListVos){
