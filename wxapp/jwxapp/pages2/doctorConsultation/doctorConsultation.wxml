@@ -1,11 +1,11 @@
 <include src="/pages/common/header.wxml" />
 <view class="mian-container">
 	<view class="filter">
-		<view class="input_box">
+		<view class="input_box" catchtap="toDoctorSearch">
 			<view>
 				<icon size="14" type="search" role="img"></icon>
 			</view>
-			<input placeholder='搜索医生、科室、疾病' bindconfirm="inputSearch" bindinput="changeInput" value="{{keyWords}}"></input>
+			<input placeholder='搜索医生、科室、疾病' ></input>
 		</view>
 	</view>
 

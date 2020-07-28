@@ -3,6 +3,7 @@
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
 		<chat-date send-time='{{time}}' />
+		<chat-system-info system-info='{{system_info}}'/>
 		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
 			<chat-message chat-content='{{item}}'>
 				<view slot='origin_message_left' class="origin_message origin_left" wx:if='{{item.type == 0}}'>
