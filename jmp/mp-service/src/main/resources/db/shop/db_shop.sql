@@ -4883,7 +4883,7 @@ create table `b2c_prescription`(
     `prescription_expire_time`   timestamp    null default current_timestamp comment '处方过期时间',
     `is_delete`     tinyint(1)   not null default '0',
     `is_used`     tinyint(1)   not null default '0' comment '是否使用过 0未使用  1已使用 ，默认0',,
-    `is_valid`     tinyint(1)   not null default '0' comment '是否有效   0有效 1失效，默认0',,
+    `is_valid`     tinyint(1)   not null default '0' comment '是否有效  0无效 1有效，默认1',,
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)

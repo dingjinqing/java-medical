@@ -225,7 +225,7 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效   0有效 1失效，默认0
      */
-    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效   0有效 1失效，默认0");
+    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效   0无效 1有效，默认1");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription.create_time</code>.
