@@ -17,6 +17,6 @@ public class OrderInfoDao extends ShopBaseDao {
      * @param auditStatus
      */
     public void updateAuditStatus(Integer orderId,Byte auditStatus){
-        db().update(ORDER_INFO).set(ORDER_INFO.ORDER_AUDIT_STATUS,auditStatus).where(ORDER_INFO.ORDER_ID.eq(orderId));
+        db().update(ORDER_INFO).set(ORDER_INFO.ORDER_AUDIT_STATUS,auditStatus).where(ORDER_INFO.ORDER_ID.eq(orderId)).execute();
     }
 }
