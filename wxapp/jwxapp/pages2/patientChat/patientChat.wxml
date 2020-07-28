@@ -5,16 +5,22 @@
 		<chat-date send-time='{{time}}' />
 		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
 			<chat-message chat-content='{{item}}'>
-				<view slot='origin_message_left' class="origin_message origin_left" wx:if='{{item.type == 0}}'>
-					{{item.message}}
+				<view slot='origin_message_left' class="origin_message origin_left" wx:if='{{item.type == 0 && item.messageInfo.type === 0}}'>
+					{{item.messageInfo.message}}
 				</view>
-				<view slot='origin_message_right' class="origin_message origin_right" wx:if='{{item.type == 1}}'>
-					{{item.message}}
+				<view slot='origin_message_right' class="origin_message origin_right" wx:if='{{item.type == 1 && item.messageInfo.type === 0}}'>
+					{{item.messageInfo.message}}
+				</view>
+				<view slot='origin_image_left' class="origin_message origin_left" wx:if="{{item.type === 0 && item.messageInfo.type === 1}}">
+					<image class="image-message" mode="widthFix" src="{{item.messageInfo.message}}"></image>
+				</view>
+				<view slot='origin_image_right' class="origin_message origin_right" wx:if="{{item.type === 1 && item.messageInfo.type === 1}}">
+					<image class="image-message" mode="widthFix" src="{{item.messageInfo.message}}"></image>
 				</view>
 			</chat-message>
 		</block>
 
-		<chat-input bindgetInputMessage="getInputMessage">
-		</chat-input>
+		<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput">
+	</chat-input>
 	</view>
 </view>

@@ -77,11 +77,21 @@
 .column{
   flex-direction: column;
 }
-.upload-icon{
+.upload-content{
+  display: flex;
+}
+.upload-content > .upload-icon{
   width: 70rpx;
   height: 56rpx;
 }
-.upload-tips{
+.image-content{
+  display: flex;
+  margin-bottom: 24rpx;
+}
+.image-content > image{
+  width: 654rpx;
+}
+.upload-content > .upload-tips{
   color: #999;
   margin-top: 22rpx;
 }

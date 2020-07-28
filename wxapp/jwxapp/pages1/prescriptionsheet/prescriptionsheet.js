@@ -1,11 +1,11 @@
-// pages1/prescriptionsheet/prescriptionsheet.js
+var util = require('../../utils/util.js')
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    prescriptionImageList:[]
   },
 
   /**
@@ -14,7 +14,18 @@ global.wxPage({
   onLoad: function (options) {
 
   },
-
+  uploadImage(){
+    let prescriptionImageList = this.data.prescriptionImageList
+    util.uploadImage(1, (res) => {
+      let data = JSON.parse(res.data);
+      if (data.error == 0) {
+        prescriptionImageList.push(data.content.imgUrl);
+        this.setData({
+          prescriptionImageList
+        })
+      }
+    });
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
