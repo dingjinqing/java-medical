@@ -7,49 +7,49 @@
     <view class="each_nav {{ is_advisory == 1 ? 'active':''}}"  bindtap="change_square" data-nav_index='{{2}}'>我的咨询</view>
   </view>
   <view class="list_content">
-    <view class="each_square" wx:if='{{ is_system == 1 }}'>
-      <view class="each_line">
+    <view class="each_square" wx:if='{{ is_system == 1 && !!system_notice }}'>
+      <view class="each_line" wx:for='{{system_notice}}' wx:key='key'>
         <view class="line_top">
           <view class="lt_bold">系统公告</view>
-          <view>2013-07-13<text class="iconfont iconshanchu2"></text></view>
+          <view>{{item.messageTime}}<text class="iconfont iconshanchu2" bindtap="delete_this" data-mes_id='{{item.messageId}}' data-form='sys'></text></view>
         </view>
-        <view class="line_bottom" wx:if='{{if_show_all == 0}}' bindtap="bindChangeStyle" data-change='{{if_show_all}}'>
-          <view class="lt_text">{{system_notice1}}</view>
+        <view class="line_bottom" wx:if='{{item.if_show_all == 0}}' bindtap="{{item.messageContent !== item.messageContent1 ? 'bindChangeStyle':''}}" data-index='{{index}}'>
+          <view class="lt_text">{{item.messageContent1}}</view>
           <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
         </view>
-        <view class="line_bottom" style="align-items:flex-start" wx:if='{{if_show_all == 1}}' bindtap="bindChangeStyle" data-change='{{if_show_all}}'>
-          <view class="lt_text">{{system_notice}}</view>
+        <view class="line_bottom" style="align-items:flex-start" wx:if='{{item.if_show_all == 1}}' bindtap="bindChangeStyle" data-index='{{index}}'>
+          <view class="lt_text">{{item.messageContent}}</view>
           <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix" style="transform:rotate(90deg);margin-top:5rpx"></image>
         </view>
       </view>
     </view>
-    <view class="each_square" wx:if='{{ is_order == 1 }}'>
-      <view class="each_line">
+    <view class="each_square" wx:if='{{ is_order == 1 && !!order_message }}'>
+      <view class="each_line" wx:for='{{order_message}}' wx:key='key'>
         <view class="line_top">
           <view class="lt_bold">订单动态</view>
-          <view>2013-07-13<text class="iconfont iconshanchu2"></text></view>
+          <view>{{item.messageTime}}<text class="iconfont iconshanchu2" bindtap="delete_this" data-mes_id='{{item.messageId}}' data-form='order'></text></view>
         </view>
-        <view class="line_bottom">
-          <view class="lt_text">您订单号为342334的订单未通过医师审</view>
+        <view class="line_bottom" bindtap="to_order" data-order='{{item.messageRelevanceId}}'>
+          <view class="lt_text">{{item.messageContent}}</view>
           <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
         </view>
       </view>
     </view>
-    <view class="each_square" wx:if='{{ is_advisory == 1 }}'>
-      <view class="each_line">
+    <view class="each_square" wx:if='{{ is_advisory == 1 && !!advisory_list }}'>
+      <view class="each_line" wx:for='{{advisory_list}}' wx:key='key'>
         <view class="line_top">
           <view class="lt_bold">我的咨询</view>
-          <view>2013-07-13<text class="iconfont iconshanchu2"></text></view>
+          <view>{{item.messageTime}}<text class="iconfont iconshanchu2" bindtap="delete_this" data-mes_id='{{item.messageId}}' data-form='advi'></text></view>
         </view>
         <view class="line_bottom">
-          <view class="lt_text">吴晓红医生：根据您的病情描述，为您开具以下处方</view>
+          <view class="lt_text">{{item.messageContent}}</view>
           <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
         </view>
       </view>
     </view>
 
     <!-- 无内容样式 -->
-    <view class="no_content">
+    <view class="no_content" wx:if='{{(is_advisory == 1 && advisory_list == "") || (is_order == 1 && order_message == "") || (is_system == 1 && system_notice == "")}}'>
       <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
       <view class="no_word">暂无此类消息</view>
     </view>
