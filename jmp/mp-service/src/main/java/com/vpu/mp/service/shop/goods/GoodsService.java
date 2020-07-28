@@ -156,13 +156,13 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  * 商品标签(b2c_goods_label,b2c_goods_label_couple)标签可以打在平台和商家分类上，在通过标签查商品时要进行关联查询，
  * 会员等价卡价格(b2c_grade_prd)，运费模板(b2c_deliver_fee_template)，会员专享商品(b2c_goods_card_couple),商品页模板，
  * 分销改价(b2c_goods_rebate_price)
+ * TODO:1.所有操作添加操作记录
+ * TODO:2.自定义商品上架时间的时候在新增删除修改的时候修改定时任务
  *
  * @author 李晓冰
  * @date 2019年6月25日
  */
 @Service
-// TODO:1.所有操作添加操作记录
-// TODO:2.自定义商品上架时间的时候在新增删除修改的时候修改定时任务
 @Slf4j
 public class GoodsService extends ShopBaseService {
 
