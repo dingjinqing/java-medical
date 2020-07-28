@@ -2,14 +2,11 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
 import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
@@ -78,11 +75,20 @@ public class WxAppPatientController extends WxAppBaseController {
      * 	手动添加患者
      */
     @PostMapping("/api/wxapp/user/patient/add")
-    public JsonResult addPatient(@RequestBody PatientDo patientDo) {
+    public JsonResult addPatient(@RequestBody PatientAddParam patientAddParam) {
+        Integer userId = patientAddParam.getUserId();
+        PatientDo patientDo = new PatientDo();
+        FieldsUtil.assign(patientAddParam,patientDo);
         if (patientDo.getId() >0) {
             shop().patientService.updatePatient(patientDo);
         } else {
-            shop().patientService.insertPatient(patientDo);
+            PatientExternalRequestParam param = new PatientExternalRequestParam();
+            FieldsUtil.assign(patientDo,param);
+            boolean isExist = shop().patientService.isPatientExist(param);
+            if (isExist) {
+                return fail(JsonResultCode.PATIENT_IS_EXIST);
+            }
+            shop().patientService.addPatient(patientDo,userId);
         }
         return success();
     }
@@ -100,7 +106,7 @@ public class WxAppPatientController extends WxAppBaseController {
      * 获取用户默认患者信息
      * @return
      */
-    @GetMapping("/api/wxapp/user/patient/get/default")
+    @PostMapping("/api/wxapp/user/patient/get/default")
     public JsonResult getDefaultPatient(){
         Integer userId=wxAppAuth.user().getUserId();
         return success(shop().patientService.getDefaultPatient(userId));

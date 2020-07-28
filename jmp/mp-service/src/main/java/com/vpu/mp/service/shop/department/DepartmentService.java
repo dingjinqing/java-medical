@@ -257,7 +257,7 @@ public class DepartmentService extends BaseShopConfigService {
         List<DepartmentOneParam> departmentList = departmentDao.listDepartmentsByName(null);
         DepartmentOneParam allItem = new DepartmentOneParam();
         allItem.setId(0);
-        allItem.setName("全部");
+        allItem.setName("全部科室");
         departmentList.add(0,allItem);
         return departmentList;
     }

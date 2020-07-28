@@ -142,7 +142,7 @@ public class TitleService extends ShopBaseService{
         List<TitleOneParam> titleList = titleDao.listTitles();
         TitleOneParam allItem = new TitleOneParam();
         allItem.setId(0);
-        allItem.setName("全部");
+        allItem.setName("全部职称");
         titleList.add(0,allItem);
         return titleList;
     }

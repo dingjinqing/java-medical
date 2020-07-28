@@ -605,6 +605,11 @@ public class OrderGoodsService extends ShopBaseService {
 
     }
 
+    /**
+     * 修改审核状态
+     * @param goodsIds
+     * @param auditStatus
+     */
     public void updateAuditStatus(List<Integer> goodsIds,Byte auditStatus){
         orderGoodsDao.updateAuditStatus(goodsIds,auditStatus);
     }

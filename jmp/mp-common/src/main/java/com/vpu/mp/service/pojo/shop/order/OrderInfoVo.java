@@ -94,4 +94,8 @@ public class OrderInfoVo extends OrderListInfoVo {
     private Timestamp refundFinishTime;
     /**代付明细*/
     private List<InsteadPayDetailsVo> insteadPayInfo;
+    /**
+     * 患者id
+     */
+    private Integer patientId;
 }

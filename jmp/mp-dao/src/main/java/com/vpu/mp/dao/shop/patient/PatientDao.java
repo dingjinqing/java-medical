@@ -6,10 +6,9 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PatientRecord;
-import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -152,5 +151,17 @@ public class PatientDao extends ShopBaseDao{
     public List<PatientSimpleInfoVo> listPatientInfo(List<Integer> patientIds){
         return db().select(PATIENT.ID,PATIENT.NAME).from(PATIENT).where(PATIENT.ID.in(patientIds).and(PATIENT.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(PatientSimpleInfoVo.class);
+    }
+
+
+    /**
+     * 患者是否存在，用来新增检查
+     * @param param
+     * @return
+     */
+    public boolean isPatientExist(PatientExternalRequestParam param) {
+        Condition condition = PATIENT.NAME.eq(param.getName()).and(PATIENT.MOBILE.eq(param.getMobile())).and(PATIENT.IDENTITY_TYPE.eq((byte) 1)).and(PATIENT.IDENTITY_CODE.eq(param.getIdentityCode()));
+        int count = db().fetchCount(PATIENT, condition);
+        return count>0;
     }
 }
