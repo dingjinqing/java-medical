@@ -147,4 +147,14 @@ public class MessageDao extends ShopBaseDao {
             .and(PRESCRIPTION.STATUS.eq(status))).fetchInto(Integer.class).get(0);
     }
 
+    /**
+     * 用户删除列表消息
+     * @param messageId 消息id
+     */
+    public void deleteUserMessage(Integer messageId){
+        db().update(Message.MESSAGE)
+            .set(Message.MESSAGE.IS_DELETE, DelFlag.DISABLE_VALUE)
+            .where(Message.MESSAGE.MESSAGE_ID.eq(messageId)).execute();
+    }
+
 }

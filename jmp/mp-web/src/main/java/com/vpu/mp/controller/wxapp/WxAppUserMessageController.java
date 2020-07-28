@@ -2,11 +2,10 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountParam;
+import com.vpu.mp.service.pojo.shop.message.MessageParam;
 import com.vpu.mp.service.shop.message.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 赵晓东
@@ -23,36 +22,32 @@ public class WxAppUserMessageController extends WxAppBaseController{
 
     /**
      * 用户消息列表展示
-     * @param userId 接收消息用户id
+     * @param messageParam 接收消息用户id
      * @return JsonResult
      */
     @RequestMapping("/list")
-    @ResponseBody
-    public JsonResult showMessageList(Integer userId){
-        return this.success(messageService.showUserMessage(userId));
+    public JsonResult showMessageList(@RequestBody MessageParam messageParam){
+        return this.success(messageService.showUserMessage(messageParam.getUserId()));
     }
 
     /**
      * 用户未读消息统计
-     * @param userId 接收消息用户id
+     * @param messageParam 接收消息用户id
      * @return JsonResult
      */
     @RequestMapping("/count")
-    @ResponseBody
-    public JsonResult countMessage(Integer userId){
-        return this.success(messageService.countMessage(userId));
+    public JsonResult countMessage(@RequestBody MessageParam messageParam){
+        return this.success(messageService.countMessage(messageParam.getUserId()));
     }
 
     /**
      * 消息读取状态变更
-     * @param messageId 消息id
-     * @param status 消息更新状态
+     * @param messageParam 消息id
      * @return JsonResult
      */
     @RequestMapping("/change")
-    @ResponseBody
-    public JsonResult changeMessageStatus(Integer messageId, Byte status) {
-        messageService.changeMessageStatus(messageId, status);
+    public JsonResult changeMessageStatus(@RequestBody MessageParam messageParam) {
+        messageService.changeMessageStatus(messageParam.getMessageId(), messageParam.getStatus());
         return this.success();
     }
 
@@ -60,6 +55,12 @@ public class WxAppUserMessageController extends WxAppBaseController{
     @ResponseBody
     public JsonResult doctorMessageCount(DoctorMessageCountParam doctorMessageCountParam){
         return this.success(messageService.countDoctorMessage(doctorMessageCountParam));
+    }
+
+    @RequestMapping("/delete")
+    public JsonResult deleteUserMessage(@RequestBody MessageParam messageParam){
+        messageService.deleteUserMessage(messageParam.getMessageId());
+        return this.success();
     }
 
 

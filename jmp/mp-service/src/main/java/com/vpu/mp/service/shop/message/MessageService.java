@@ -78,4 +78,12 @@ public class MessageService extends ShopBaseService {
         return doctorMessageCountVo;
     }
 
+    /**
+     * 根据消息id删除消息
+     * @param messageId 消息id
+     */
+    public void deleteUserMessage(Integer messageId) {
+        messageDao.deleteUserMessage(messageId);
+    }
+
 }

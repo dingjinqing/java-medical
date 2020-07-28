@@ -62,7 +62,7 @@ public class SmsAccountService extends ShopBaseService {
     public SmsAccountRechargeListVo listSmsAccountRechargeRecord(SmsAccountRechargeRecordParam param) throws MpException {
         SmsBaseRequest request  =new SmsBaseRequest();
         request.setSms(Util.toJson(param));
-        request.setApiMethod(SmsApiConfig.METHOD_CREATE_ACCOUNT);
+        request.setApiMethod(SmsApiConfig.METHOD_SMS_RECHARGE_RECORD);
         request.setAppKey(smsApiConfig.getAppKey());
         request.setTimestamp(System.currentTimeMillis()/1000);
         Map<String, Object> postBody = Util.transBeanToMap(request);
