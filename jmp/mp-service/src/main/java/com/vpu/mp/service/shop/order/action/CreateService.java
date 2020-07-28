@@ -858,6 +858,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         BigDecimal goodsPricsAndShipping = BigDecimalUtil.add(tolalDiscountAfterPrice, vo.getShippingFee());
         //当前微信支付金额
         BigDecimal currentMoneyPaid = goodsPricsAndShipping;
+        processOrderBeforeVo2(param, vo, bos, scoreProportion, scoreDiscount, useAccount, cardBalance, tolalNumberAndPrice, orderPreSale, grouperCheapReduce, preSaleDiscount, fullReduceDiscount, orderPackageSale, packageSaleDiscount, memberDiscount, couponDiscount, tolalDiscountAfterPrice, goodsPricsAndShipping, currentMoneyPaid);
+        logger().info("金额处理赋值(processOrderBeforeVo),end");
+    }
+
+    private void processOrderBeforeVo2(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos, Integer scoreProportion, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal cardBalance, BigDecimal[] tolalNumberAndPrice, OrderPreSale orderPreSale, BigDecimal grouperCheapReduce, BigDecimal preSaleDiscount, BigDecimal fullReduceDiscount, OrderPackageSale orderPackageSale, BigDecimal packageSaleDiscount, BigDecimal memberDiscount, BigDecimal couponDiscount, BigDecimal tolalDiscountAfterPrice, BigDecimal goodsPricsAndShipping, BigDecimal currentMoneyPaid) throws MpException {
         //预售处理
         if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PresaleConstant.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
             vo.setOrderPayWay(OrderConstant.PAY_WAY_DEPOSIT);
@@ -936,7 +941,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setGrouperCheapReduce(grouperCheapReduce);
         // 积分使用规则
         setScorePayRule(vo);
-        logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
 
     /**
@@ -948,13 +952,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     private void shippingFeeLogic(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice) {
         //包邮策略
-        if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER) && (param.getActivityType() == null || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType()))){
-            List<Integer> goodsIds = fullPackage(vo.getAddress(), bos, tolalNumberAndPrice, param.getDate());
-            bos.forEach(bo->{
-                if (goodsIds.contains(bo.getGoodsId())){
-                    bo.setFreeShip((int) OrderConstant.YES);
-                }
-            });
+        if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER)){
+            if (param.getActivityType() == null || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType())) {
+                List<Integer> goodsIds = fullPackage(vo.getAddress(), bos, tolalNumberAndPrice, param.getDate());
+                bos.forEach(bo -> {
+                    if (goodsIds.contains(bo.getGoodsId())) {
+                        bo.setFreeShip((int) OrderConstant.YES);
+                    }
+                });
+            }
         }
         //计算运费
         if(vo.getAddress() != null){
@@ -1136,10 +1142,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
             order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);
         }else {
-            if((orderBo.getPayment() != null && OrderConstant.PAY_CODE_COD.equals(orderBo.getPayment().getPayCode()) ||
-                BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
+            if (orderBo.getPayment() != null && OrderConstant.PAY_CODE_COD.equals(orderBo.getPayment().getPayCode())) {
                 //货到付款 || 待支付=0
-                if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY) || orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW)) {
+                if (orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY) || orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW)) {
                     //拼团
                     logger().info("订单状态:{}", OrderConstant.ORDER_PIN_PAYED_GROUPING);
                     order.setOrderStatus(OrderConstant.ORDER_PIN_PAYED_GROUPING);
@@ -1150,14 +1155,34 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                         logger().info("订单支付成功->待审核状态");
                         //1审核
                         order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
-                    }else if (param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                    } else if (param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)) {
                         logger().info("订单支付成功->待开方状态");
                         //开方
                         order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
                     }
                 }
                 order.setPayTime(currentTime);
-            }else {
+            } else if (BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0) {
+                //货到付款 || 待支付=0
+                if (orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY) || orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW)) {
+                    //拼团
+                    logger().info("订单状态:{}", OrderConstant.ORDER_PIN_PAYED_GROUPING);
+                    order.setOrderStatus(OrderConstant.ORDER_PIN_PAYED_GROUPING);
+                } else {
+                    logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
+                    order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+                    if (param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)) {
+                        logger().info("订单支付成功->待审核状态");
+                        //1审核
+                        order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+                    } else if (param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)) {
+                        logger().info("订单支付成功->待开方状态");
+                        //开方
+                        order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
+                    }
+                }
+                order.setPayTime(currentTime);
+            } else {
                 logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);
             }
@@ -1345,29 +1370,60 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @return
      */
     private boolean processEffective(CreateParam param, CreateOrderBo orderBo, OrderInfoRecord order) throws MpException {
-        if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY) || order.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING) ||
-            (BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && order.getBkOrderPaid() > OrderConstant.BK_PAY_NO)) {
+        if (!order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)) {
+            if (!order.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING)) {
+                if (!BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) || order.getBkOrderPaid() <= OrderConstant.BK_PAY_NO) {
+                    if (order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
+                        logger().info("下单时待付款且配置为下单减库存或者为秒杀时调用更新库存方法");
+                        //加锁
+                        atomicOperation.addLock(orderBo.getOrderGoodsBo());
+                        //下单减库存
+                        marketProcessorFactory.processUpdateStock(param, order);
+                        logger().info("加锁{}", order.getOrderSn());
+                        atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
+                        logger().info("更新成功{}", order.getOrderSn());
+                        return true;
+                    }
+                } else {
+                    logger().info("下单时待发货、拼团中、预售支付定金或支付完成减库存、调用Effective方法");
+                    //加锁
+                    atomicOperation.addLock(orderBo.getOrderGoodsBo());
+                    //货到付款、余额、积分(非微信混合)付款，生成订单时修改活动状态
+                    marketProcessorFactory.processOrderEffective(param, order);
+                    //更新活动库存
+                    marketProcessorFactory.processUpdateStock(param, order);
+                    logger().info("加锁{}", order.getOrderSn());
+                    atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
+                    logger().info("更新成功{}", order.getOrderSn());
+
+                    return true;
+                }
+            } else {
+                logger().info("下单时待发货、拼团中、预售支付定金或支付完成减库存、调用Effective方法");
+                //加锁
+                atomicOperation.addLock(orderBo.getOrderGoodsBo());
+                //货到付款、余额、积分(非微信混合)付款，生成订单时修改活动状态
+                marketProcessorFactory.processOrderEffective(param, order);
+                //更新活动库存
+                marketProcessorFactory.processUpdateStock(param, order);
+                logger().info("加锁{}", order.getOrderSn());
+                atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
+                logger().info("更新成功{}", order.getOrderSn());
+
+                return true;
+            }
+        } else {
             logger().info("下单时待发货、拼团中、预售支付定金或支付完成减库存、调用Effective方法");
             //加锁
             atomicOperation.addLock(orderBo.getOrderGoodsBo());
             //货到付款、余额、积分(非微信混合)付款，生成订单时修改活动状态
-            marketProcessorFactory.processOrderEffective(param,order);
+            marketProcessorFactory.processOrderEffective(param, order);
             //更新活动库存
-            marketProcessorFactory.processUpdateStock(param,order);
-            logger().info("加锁{}",order.getOrderSn());
+            marketProcessorFactory.processUpdateStock(param, order);
+            logger().info("加锁{}", order.getOrderSn());
             atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
-            logger().info("更新成功{}",order.getOrderSn());
+            logger().info("更新成功{}", order.getOrderSn());
 
-            return true;
-        }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
-            logger().info("下单时待付款且配置为下单减库存或者为秒杀时调用更新库存方法");
-            //加锁
-            atomicOperation.addLock(orderBo.getOrderGoodsBo());
-            //下单减库存
-            marketProcessorFactory.processUpdateStock(param,order);
-            logger().info("加锁{}",order.getOrderSn());
-            atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
-            logger().info("更新成功{}",order.getOrderSn());
             return true;
         }
         return false;
