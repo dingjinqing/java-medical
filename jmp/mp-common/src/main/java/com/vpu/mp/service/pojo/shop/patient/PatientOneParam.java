@@ -20,6 +20,7 @@ public class  PatientOneParam {
     private String    insuranceCardCode;
     private Byte      sex;
     private Date birthday;
+    private Integer age;
     private String    remarks;
     private String    patientCode;
     private Byte      isDefault;
@@ -31,4 +32,6 @@ public class  PatientOneParam {
     private Byte      liverFunctionOk;
     private List<PatientMoreInfoParam> diseaseHistoryList;
     private List<PatientMoreInfoParam> familyDiseaseHistoryList;
+    private String diseaseHistoryStr;
+    private String familyDiseaseHistoryStr;
 }

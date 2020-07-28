@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
@@ -84,11 +85,22 @@ public class WxAppPatientController extends WxAppBaseController {
         } else {
             PatientExternalRequestParam param = new PatientExternalRequestParam();
             FieldsUtil.assign(patientDo,param);
-            boolean isExist = shop().patientService.isPatientExist(param);
-            if (isExist) {
-                return fail(JsonResultCode.PATIENT_IS_EXIST);
+            Integer patientId = shop().patientService.getPatientExist(param);
+            if (patientId == null) {
+                patientId = shop().patientService.insertPatient(patientDo);
+            } else {
+                patientDo.setId(patientId);
+                UserPatientParam userPatientParam = new UserPatientParam();
+                userPatientParam.setUserId(userId);
+                userPatientParam.setPatientId(patientId);
+                Boolean isExist = shop().patientService.isExistUserPatient(userPatientParam);
+                if (isExist) {
+                    return fail(JsonResultCode.PATIENT_IS_EXIST);
+                }
+                shop().patientService.updatePatient(patientDo);
             }
-            shop().patientService.addPatient(patientDo,userId);
+            shop().patientService.addPatientUser(patientId,userId);
+
         }
         return success();
     }

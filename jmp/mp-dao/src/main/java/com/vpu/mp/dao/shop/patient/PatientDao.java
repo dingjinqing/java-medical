@@ -159,9 +159,9 @@ public class PatientDao extends ShopBaseDao{
      * @param param
      * @return
      */
-    public boolean isPatientExist(PatientExternalRequestParam param) {
+    public Integer getPatientExist(PatientExternalRequestParam param) {
         Condition condition = PATIENT.NAME.eq(param.getName()).and(PATIENT.MOBILE.eq(param.getMobile())).and(PATIENT.IDENTITY_TYPE.eq((byte) 1)).and(PATIENT.IDENTITY_CODE.eq(param.getIdentityCode()));
-        int count = db().fetchCount(PATIENT, condition);
-        return count>0;
+        Integer patientId = db().select(PATIENT.ID).where(condition).fetchAnyInto(Integer.class);
+        return patientId;
     }
 }

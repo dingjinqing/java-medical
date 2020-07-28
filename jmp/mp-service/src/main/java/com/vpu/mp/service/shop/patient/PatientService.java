@@ -2,10 +2,7 @@ package com.vpu.mp.service.shop.patient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.RandomUtil;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
@@ -19,10 +16,12 @@ import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.sms.SmsService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -117,7 +116,8 @@ public class PatientService extends BaseShopConfigService{
         FieldsUtil.assign(patientInfoVo, patientDo);
         PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);
         if (patientOneParam == null) {
-            addPatient(patientDo,userPatientOneParam.getUserId());
+            int patientId=patientDao.insertPatient(patientDo);
+            addPatientUser(patientId,userPatientOneParam.getUserId());
         } else {
             patientDo.setId(patientOneParam.getId());
             patientDao.updatePatient(patientDo);
@@ -167,7 +167,21 @@ public class PatientService extends BaseShopConfigService{
         }
         return diseaseList;
     }
-
+    public String strDisease(String diseaseStr){
+        List<PatientMoreInfoParam> diseaseList = Util.parseJson(get("diseases"), new TypeReference<List<PatientMoreInfoParam>>() {
+        });
+        if (diseaseStr == null || diseaseStr.equals("")){
+            return "";
+        }
+        List<String> strList=new ArrayList<>();
+        List<String> diseases = Arrays.asList(diseaseStr.split(","));
+        for (PatientMoreInfoParam disease : diseaseList) {
+            if (diseases.contains(disease.getId())) {
+                strList.add(disease.getName());
+            }
+        }
+        return StringUtils.join(strList.toArray(),",");
+    }
     /**
      * 获取患者详情信息(小程序前端)
      * @param patientId
@@ -181,8 +195,12 @@ public class PatientService extends BaseShopConfigService{
             return patientInfo;
         } else {
             PatientOneParam patientInfo = patientDao.getOneInfo(patientId);
+            //根据出生日期获取年龄
+            patientInfo.setAge(DateUtils.getAgeByBirthDay(patientInfo.getBirthday()));
             patientInfo.setDiseaseHistoryList(listDiseases(patientInfo.getDiseaseHistory()));
             patientInfo.setFamilyDiseaseHistoryList(listDiseases(patientInfo.getFamilyDiseaseHistory()));
+            patientInfo.setDiseaseHistoryStr(strDisease(patientInfo.getDiseaseHistory()));
+            patientInfo.setFamilyDiseaseHistoryStr(strDisease(patientInfo.getFamilyDiseaseHistory()));
             return patientInfo;
         }
     }
@@ -214,12 +232,11 @@ public class PatientService extends BaseShopConfigService{
      * @param param
      * @return
      */
-    public boolean isPatientExist(PatientExternalRequestParam param) {
-        return patientDao.isPatientExist(param);
+    public Integer getPatientExist(PatientExternalRequestParam param) {
+        return patientDao.getPatientExist(param);
     }
 
-    public void addPatient(PatientDo patientDo,Integer userId) {
-        int patientId=patientDao.insertPatient(patientDo);
+    public void addPatientUser(Integer patientId,Integer userId) {
         UserPatientCoupleDo userPatientCoupleDo=new UserPatientCoupleDo();
         userPatientCoupleDo.setPatientId(patientId);
         userPatientCoupleDo.setUserId(userId);
@@ -228,5 +245,9 @@ public class PatientService extends BaseShopConfigService{
             userPatientCoupleDo.setIsDefault((byte) 1);
         }
         userPatientCoupleDao.save(userPatientCoupleDo);
+    }
+
+    public boolean isExistUserPatient(UserPatientParam param) {
+        return userPatientCoupleDao.isExistUserPatient(param);
     }
 }

@@ -85,8 +85,9 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
             return success();
         }
         JsonResult data = fail(s);
+        String goodsName = shop().goodsService.getGoodsNameByPrdId(cgr.getPrdId());
         Object message = data.getMessage();
-        Object msg = "hello" + message;
+        Object msg = goodsName + message;
         data.setMessage(msg);
         return data;
     }

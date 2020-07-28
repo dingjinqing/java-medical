@@ -622,4 +622,9 @@ public class ShopApplication {
      */
     @Autowired
     public PullHitsHistoryPrescriptionService pullHitsHistoryPrescriptionService;
+
+    /**
+     * 商品
+     */
+    public GoodsService goodsService;
 }

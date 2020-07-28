@@ -534,4 +534,38 @@ public final class DateUtils {
         startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtils.MAX_TIME));
         return startAndEnd;
     }
+
+    /**
+     * 根据出生日期获得年龄
+     * @param date
+     * @return
+     */
+    public static int getAgeByBirthDay(Date date){
+        Calendar calendar1=Calendar.getInstance();
+        calendar1.setTime(date);
+        Date dateNow=new Date();
+        Calendar calendar2=Calendar.getInstance();
+        calendar2.setTime(dateNow);
+        int year1=calendar1.get(Calendar.YEAR);
+        int year2=calendar2.get(Calendar.YEAR);
+        int month1=calendar1.get(Calendar.MONTH);
+        int month2=calendar2.get(Calendar.MONTH);
+        int day1=calendar1.get(Calendar.DAY_OF_MONTH);
+        int day2=calendar2.get(Calendar.DAY_OF_MONTH);
+        //整岁数
+        int age=year2-year1;
+        //判断月份
+        if(month2>=month1){
+            if(month2==month1){
+                //判断具体日
+                if(day2<day1){
+                    age--;
+                }
+            }
+        }else {
+            age--;
+        }
+        return age;
+
+    }
 }
