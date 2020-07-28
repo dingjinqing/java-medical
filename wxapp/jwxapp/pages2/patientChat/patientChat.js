@@ -25,7 +25,7 @@ global.wxPage({
     let {
       detail: message
     } = e
-    this.sendMessage(message,0)
+    this.sendMessage({content:message},0)
   },
 
   /**
@@ -76,8 +76,8 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
-  sendImage({detail:{image}}){
-    this.sendMessage(image,1)
+  sendImage({detail:{image,imgWidth,imgHeight}}){
+    this.sendMessage({content:image,imgWidth,imgHeight},1)
   },
   requsetMessage () {
     this.messageApi()
@@ -89,7 +89,10 @@ global.wxPage({
       if (res.error === 0 && res.content[0]) {
           let chat = {}
           let chatContent = this.data.chatContent;
-          chat.message = res.content[0].message;
+          chat.messageInfo = {
+            message:JSON.parse(res.content[0].message),
+            type:res.content[0].type
+          };
           chat.type = 0;
           chatContent.push(chat)
           this.setData({
@@ -108,9 +111,9 @@ global.wxPage({
     chatInput.hideMoreActions()
   },
   sendMessage(message,type){
-    if(!message) return
+    if(!message.content) return
     let imSessionItem = {
-      message,
+      message:JSON.stringify(message),
       type
     }
     util.api('/api/wxapp/im/session/send',res => {
@@ -118,7 +121,10 @@ global.wxPage({
       if (res.error === 0 ) {
         let chat = {}
         let chatContent = this.data.chatContent;
-        chat.messageInfo = imSessionItem;
+        chat.messageInfo = {
+          ...imSessionItem,
+          message:JSON.parse(imSessionItem.message)
+        };
         chat.type = 1;
         chatContent.push(chat)
         this.setData({
