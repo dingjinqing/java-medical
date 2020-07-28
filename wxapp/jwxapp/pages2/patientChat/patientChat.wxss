@@ -51,3 +51,7 @@
   border-left: solid 10rpx #26C4BC;
   border-bottom: solid 10rpx transparent;
 }
+
+.image-message{
+  max-width: 450rpx;
+}
