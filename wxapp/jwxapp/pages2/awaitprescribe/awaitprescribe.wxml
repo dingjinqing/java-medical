@@ -3,7 +3,7 @@
 <view class="mian-container">
   <view class="await_info">
     <view class="await_title">
-      <view>提交时间：2012-09-18 15：44</view>
+      <view>提交时间：{{page_info.createTime}}</view>
       <view class="await_status">待开方</view>
     </view>
     <view class="pre_info">
@@ -13,26 +13,26 @@
           <view class="each_line">
             <view class="line_dot"></view>
             <view class="line_content has_three">
-              <view>姓名：长官</view>
-              <view>年龄：34岁</view>
-              <view>性别：男</view>
+              <view>姓名：{{page_info.patient.name}}</view>
+              <view>年龄：岁</view>
+              <view>性别：{{page_info.patient.sex == 1 ? '男' : '女'}}</view>
             </view>
           </view>
           <view class="each_line">
             <view class="line_dot"></view>
-            <view class="line_content">疾病史：高血压，心绞痛</view>
+            <view class="line_content">疾病史：{{page_info.patient.diseaseHistory}}</view>
           </view>
           <view class="each_line" wx:if='{{if_show_more == 1}}'>
             <view class="line_dot"></view>
-            <view class="line_content">家族病史：高煦呀、心绞痛</view>
+            <view class="line_content">家族病史：{{page_info.patient.familyDiseaseHistory}}</view>
           </view>
           <view class="each_line" wx:if='{{if_show_more == 1}}'>
             <view class="line_dot"></view>
-            <view class="line_content">过敏史：划分</view>
+            <view class="line_content">过敏史：{{page_info.patient.allergyHistory}}</view>
           </view>
           <view class="each_line has_bottom" wx:if='{{if_show_more == 1}}'>
             <view class="line_dot"></view>
-            <view class="line_content">妊娠状态：怀孕中</view>
+            <view class="line_content">妊娠状态：{{page_info.patient.allergyHistory}}</view>
           </view>
         </view>
       </view>
@@ -86,23 +86,13 @@
         收起 <image src="{{imageUrl}}/image/wxapp/right_into.png" mode="widthFix"></image>
       </view>
     </view>
-    <view class="medicine_info">
-      <view class="each_medicine clearfix">
+    <view class="medicine_info" wx:if='{{!!page_info.goodsMedicalOneInfoVoList}}'>
+      <view class="each_medicine clearfix" wx:for='{{page_info.goodsMedicalOneInfoVoList}}' wx:key='key'>
         <view class="medi_img"><image src="http://medicaldevimg.weipubao.cn/image/admin/img1.jpg"></image></view>
         <view class="medi_content">
-          <view class="medi_name">要批评你名称</view>
+          <view class="medi_name">{{item.goodsCommonName}}</view>
           <view class="medi_info">
-            <view class="medi_price">￥<text>23.00</text></view>
-            <view class="medi_num">X1</view>
-          </view>
-        </view>
-      </view>
-      <view class="each_medicine clearfix">
-        <view class="medi_img"><image src="http://medicaldevimg.weipubao.cn/image/admin/img1.jpg"></image></view>
-        <view class="medi_content">
-          <view class="medi_name">要批评你名称</view>
-          <view class="medi_info">
-            <view class="medi_price">￥<text>23.00</text></view>
+            <view class="medi_price">￥<text>{{item.shopPrice}}</text></view>
             <view class="medi_num">X1</view>
           </view>
         </view>

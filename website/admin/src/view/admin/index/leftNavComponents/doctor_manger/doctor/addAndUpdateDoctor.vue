@@ -125,6 +125,24 @@
               placeholder="请输入手机号码"
             ></el-input>
           </el-form-item>
+          <el-form-item
+            label='问诊费用'
+            prop='consultationPrice'
+          >
+            <el-input
+              v-model="doctorFormInfo.consultationPrice"
+              placeholder="请填写问诊费用"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label='擅长疾病'
+            prop='treatDisease'
+          >
+            <el-input
+              v-model="doctorFormInfo.treatDisease"
+              placeholder="请填写擅长疾病"
+            ></el-input>
+          </el-form-item>
         </el-form>
       </div>
       <div class="addDoctorFooter">
@@ -162,7 +180,9 @@ export default {
         departmentIdsStr: [],
         sex: 1,
         mobile: '',
-        account_id: 0
+        account_id: 0,
+        consultationPrice: 0.00,
+        treatDisease: ''
       },
       doctorFormRules: {
         name: [{required: true, message: '请输入医生姓名', trigger: 'blur'}],
@@ -235,7 +255,9 @@ export default {
         departmentIdsStr: [],
         sex: 1,
         mobile: '',
-        account_id: 0
+        account_id: 0,
+        consultationPrice: 0.00,
+        treatDisease: ''
       }
     },
     // 获取医师详情
@@ -277,6 +299,8 @@ export default {
           let params = this.doctorFormInfo
           // 科室需要字符串
           params.departmentIdsStr = params.departmentIdsStr.join(',')
+          // 费用写成浮点型
+          params.consultationPrice = parseFloat(params.consultationPrice)
           console.log(params)
           if (!this.id) {
             addDoctor(params).then(res => {
