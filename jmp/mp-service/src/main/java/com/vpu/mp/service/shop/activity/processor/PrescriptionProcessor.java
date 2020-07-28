@@ -113,7 +113,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             }
         }else {
             log.info("没有处方药-不审核");
-            param.setOrderMedicalType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT);
+            param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT);
+            param.setOrderMedicalType(OrderConstant.MEDICAL_TYPE_OTC);
         }
         //处理审核以外
         if (!param.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){

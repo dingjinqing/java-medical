@@ -7,6 +7,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -188,6 +189,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
    @Autowired
     private OrderCreateMpProcessorFactory marketProcessorFactory;
+    @Autowired
+    private OrderMedicalHistoryDao orderMedicalHistoryDao;
+
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -249,6 +253,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
+                addOrderMedicalHistory(param,order);
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
@@ -294,6 +299,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
+        }
+    }
+
+    private void addOrderMedicalHistory(CreateParam param, OrderInfoRecord order) {
+        if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+            logger().info("待开方订单保存患者信息");
+            param.getPatientDiagnose().setOrderId(order.getOrderId());
+            orderMedicalHistoryDao.save(param.getPatientDiagnose());
         }
     }
 
