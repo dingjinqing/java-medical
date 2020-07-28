@@ -133,4 +133,17 @@ public class TitleService extends ShopBaseService{
 
         return JsonResult.success();
     }
+
+    /**
+     * 小程序医师下拉职称列表
+     * @return
+     */
+    public List<TitleOneParam> listTitlesSelect(){
+        List<TitleOneParam> titleList = titleDao.listTitles();
+        TitleOneParam allItem = new TitleOneParam();
+        allItem.setId(0);
+        allItem.setName("全部");
+        titleList.add(0,allItem);
+        return titleList;
+    }
 }

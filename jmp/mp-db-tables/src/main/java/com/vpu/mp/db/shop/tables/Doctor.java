@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = -1644998584;
+    private static final long serialVersionUID = 1710388707;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
@@ -132,6 +132,16 @@ public class Doctor extends TableImpl<DoctorRecord> {
      * The column <code>mini_shop_471752.b2c_doctor.title_id</code>. 职称id
      */
     public final TableField<DoctorRecord, Integer> TITLE_ID = createField("title_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职称id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.consultation_price</code>. 问诊费用
+     */
+    public final TableField<DoctorRecord, Long> CONSULTATION_PRICE = createField("consultation_price", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "问诊费用");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.treat_disease</code>. 主治疾病
+     */
+    public final TableField<DoctorRecord, String> TREAT_DISEASE = createField("treat_disease", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "主治疾病");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor.status</code>. 是否启用 1启用 0禁用

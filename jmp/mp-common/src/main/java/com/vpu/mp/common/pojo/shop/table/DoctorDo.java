@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorDo implements Serializable {
 
-    private static final long serialVersionUID = -763385213;
+    private static final long serialVersionUID = -713395963;
 
     private Integer   id;
     private Integer   accountId;
@@ -41,6 +41,8 @@ public class DoctorDo implements Serializable {
     private String    registerHospital;
     private String    mobile;
     private Integer   titleId;
+    private Long      consultationPrice;
+    private String    treatDisease;
     private Byte      status;
     private Integer   userId;
     private Byte      isDelete;
@@ -65,6 +67,8 @@ public class DoctorDo implements Serializable {
         this.registerHospital = value.registerHospital;
         this.mobile = value.mobile;
         this.titleId = value.titleId;
+        this.consultationPrice = value.consultationPrice;
+        this.treatDisease = value.treatDisease;
         this.status = value.status;
         this.userId = value.userId;
         this.isDelete = value.isDelete;
@@ -88,6 +92,8 @@ public class DoctorDo implements Serializable {
         String    registerHospital,
         String    mobile,
         Integer   titleId,
+        Long      consultationPrice,
+        String    treatDisease,
         Byte      status,
         Integer   userId,
         Byte      isDelete,
@@ -109,6 +115,8 @@ public class DoctorDo implements Serializable {
         this.registerHospital = registerHospital;
         this.mobile = mobile;
         this.titleId = titleId;
+        this.consultationPrice = consultationPrice;
+        this.treatDisease = treatDisease;
         this.status = status;
         this.userId = userId;
         this.isDelete = isDelete;
@@ -236,6 +244,22 @@ public class DoctorDo implements Serializable {
         this.titleId = titleId;
     }
 
+    public Long getConsultationPrice() {
+        return this.consultationPrice;
+    }
+
+    public void setConsultationPrice(Long consultationPrice) {
+        this.consultationPrice = consultationPrice;
+    }
+
+    public String getTreatDisease() {
+        return this.treatDisease;
+    }
+
+    public void setTreatDisease(String treatDisease) {
+        this.treatDisease = treatDisease;
+    }
+
     public Byte getStatus() {
         return this.status;
     }
@@ -295,6 +319,8 @@ public class DoctorDo implements Serializable {
         sb.append(", ").append(registerHospital);
         sb.append(", ").append(mobile);
         sb.append(", ").append(titleId);
+        sb.append(", ").append(consultationPrice);
+        sb.append(", ").append(treatDisease);
         sb.append(", ").append(status);
         sb.append(", ").append(userId);
         sb.append(", ").append(isDelete);

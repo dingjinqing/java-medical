@@ -4824,6 +4824,8 @@ create table b2c_doctor(
     `register_hospital` varchar(32) comment '注册医院',
     `mobile` varchar(32) not null default '' comment '手机号',
     `title_id` int(11) not null comment '职称id',
+    `consultation_price` decimal not null  default 0 comment '问诊费用',
+    `treat_disease` varchar(256) not null default '' comment '主治疾病',
     `status` tinyint(1) not null default 1 comment '是否启用 1启用 0禁用',
     `user_id` int(11) NOT NULL COMMENT '用户id，当前用户是否为医师',
     `is_delete`     tinyint(1)   not null default '0',

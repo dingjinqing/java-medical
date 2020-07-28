@@ -33,4 +33,6 @@ public class DoctorOneParam {
     private List<Integer> departmentIds;
     private List<String> departmentNames;
     private String departmentIdsStr;
+    private Long      consultationPrice;
+    private String    treatDisease;
 }

@@ -248,4 +248,17 @@ public class DepartmentService extends BaseShopConfigService {
         });
         return departmentList;
     }
+
+    /**
+     * 小程序医师下拉科室列表
+     * @return
+     */
+    public List<DepartmentOneParam> listDepartmentsSelect() {
+        List<DepartmentOneParam> departmentList = departmentDao.listDepartmentsByName(null);
+        DepartmentOneParam allItem = new DepartmentOneParam();
+        allItem.setId(0);
+        allItem.setName("全部");
+        departmentList.add(0,allItem);
+        return departmentList;
+    }
 }

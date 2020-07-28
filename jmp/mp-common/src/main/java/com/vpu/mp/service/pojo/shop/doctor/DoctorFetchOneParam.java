@@ -21,4 +21,6 @@ public class DoctorFetchOneParam {
     private Integer state;
     private Integer createTime;
     private Date lastUpdateTime;
+    private Long    consultationPrice;
+    private String  treatDisease;
 }
