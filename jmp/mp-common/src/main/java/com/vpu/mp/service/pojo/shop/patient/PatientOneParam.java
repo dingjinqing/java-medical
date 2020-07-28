@@ -20,6 +20,7 @@ public class  PatientOneParam {
     private String    insuranceCardCode;
     private Byte      sex;
     private Date birthday;
+    private Integer age;
     private String    remarks;
     private String    patientCode;
     private Byte      isDefault;

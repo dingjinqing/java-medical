@@ -3,8 +3,11 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/wxapp/doctor")
-public class WxAppDoctorController extends BaseController {
+public class WxAppDoctorController extends WxAppBaseController {
 
 
     @Autowired
@@ -32,5 +35,16 @@ public class WxAppDoctorController extends BaseController {
     @ResponseBody
     public JsonResult doctorAuth(DoctorAuthParam doctorAuthParam) {
         return this.success(doctorService.doctorAuth(doctorAuthParam));
+    }
+
+    /**
+     * 获取当前医师登录的信息
+     * @return
+     */
+    @PostMapping("/auth/info")
+    public JsonResult getDoctorAuthInfo(){
+        WxAppSessionUser user=wxAppAuth.user();
+        DoctorOneParam doctor= doctorService.getOneInfo(user.getDoctorId());
+        return success(doctor);
     }
 }

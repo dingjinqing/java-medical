@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.user.AdminUserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,6 +50,9 @@ public class WxAppAuth {
 	
 	@Autowired
 	protected ImageService imageService;
+
+	@Autowired
+	protected AdminUserService adminUserService;
 
 	public static final String TOKEN = "V-Token";
 
@@ -163,12 +167,12 @@ public class WxAppAuth {
 		//添加用户个人角色信息
         sessionUser.setUserType(userType);
         if (userType == 0){
-            sessionUser.setDoctorId("");
-            sessionUser.setPharmacistId("");
+            sessionUser.setDoctorId(0);
+            sessionUser.setPharmacistId(0);
         }
         //如果当前用户是医师，那么直接进入医师界面
         if (userType == 1) {
-            String doctorId = shopApp.user.getDoctorId(user.getUserId());
+            Integer doctorId = adminUserService.getDoctorId(user.getUserId());
             sessionUser.setDoctorId(doctorId);
         }
 

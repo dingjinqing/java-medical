@@ -11,9 +11,12 @@ global.wxPage({
     is_system: 1,
     is_order: 0,
     is_advisory: 0,
-    system_notice: "消费累计1234.56元，可持就诊人医保卡至本院划卡至本院划卡至本院划卡。",
-    if_show_all:0,
-    system_notice1: '' 
+    // 系统公告列表
+    system_notice: [],
+    // 订单动态列表
+    order_message: [],
+    // 我的咨询列表
+    advisory_list: []
   },
 
   /**
@@ -21,10 +24,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    this.data.system_notice1 = this.data.system_notice.substr(0,25) + "..."
-    this.setData({
-      system_notice1: this.data.system_notice1
-    })
+    this.requestList()
   },
   change_square (e) {
     var nav_index = e.currentTarget.dataset.nav_index;
@@ -49,15 +49,68 @@ global.wxPage({
     }
   },
   bindChangeStyle (e) {
-    if (e.currentTarget.dataset.change == 0) {
-      this.setData({
-        if_show_all:1
-      })
-    } else {
-      this.setData({
-        if_show_all:0
-      })
+    var this_index = e.currentTarget.dataset.index;
+    if(this.data.system_notice[this_index].if_show_all == 0) {
+      this.data.system_notice[this_index].if_show_all == 1
+    } else{
+      this.data.system_notice[this_index].if_show_all == 0
     }
+    this.setData({
+      system_notice: this.data.system_notice
+    })
+  },
+  to_order (e) {
+    util.jumpLink('/pages/orderinfo/orderinfo?orderSn=' + e.currentTarget.dataset.order)
+  },
+  delete_this (e) {
+    let from = e.currentTarget.dataset.form;
+    util.api('/api/wxapp/message/delete', res => {
+      if(res.error == 0) {
+        this.data.system_notice = [];
+        this.data.order_message = [];
+        this.data.advisory_list = [];
+        this.requestList()
+      }
+    },{messageId: e.currentTarget.dataset.mes_id})
+  },
+  requestList () {
+    util.api('/api/wxapp/message/list', res => {
+      if (res.error === 0) {
+        if(res.content != "") {
+          this.data.system_notice = [];
+          this.data.order_message = [];
+          this.data.advisory_list = [];
+          for (let i in res.content) {
+            res.content[i].messageTime = res.content[i].messageTime.substr(0, 10);
+            if(res.content[i].messageType == 0){
+              this.data.system_notice.push(res.content[i])
+            } else if(res.content[i].messageType == 1) {
+              this.data.order_message.push(res.content[i])
+            }else{
+              this.data.advisory_list.push(res.content[i])
+            }
+          }
+          if(this.data.system_notice != ""){
+            for (let i in this.data.system_notice) {
+              this.data.system_notice[i].if_show_all = 0;
+              if(this.data.system_notice[i].messageContent.length > 26) {
+                this.data.system_notice[i].messageContent1 = this.data.system_notice[i].messageContent.substr(0, 25) + "...";
+              } else {
+                this.data.system_notice[i].messageContent1 = this.data.system_notice[i].messageContent;
+              }
+            }
+          }
+        }
+        this.setData({
+          system_notice: this.data.system_notice,
+          advisory_list: this.data.advisory_list,
+          order_message: this.data.order_message
+        })
+      } else {
+        util.showModal('提示', res.message)
+        return false
+      }
+    },{ userId: util.getCache('user_id'),})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

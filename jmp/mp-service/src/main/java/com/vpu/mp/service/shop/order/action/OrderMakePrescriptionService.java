@@ -4,8 +4,10 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderMedicalHistoryDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
+import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalOneInfoVo;
@@ -15,12 +17,14 @@ import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsMedicalVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,10 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
     private OrderGoodsService orderGoodsService;
     @Autowired
     private PrescriptionService prescriptionService;
+    @Autowired
+    private OrderMedicalHistoryDao orderMedicalHistoryDao;
+    @Autowired
+    private PatientService patientService;
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.MAKE_PRESCRIPTION;
@@ -63,6 +71,13 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         for(OrderInfoVo orderInfo:orders){
             OrderGoodsMedicalVo orderGoodsMedicalVo=new OrderGoodsMedicalVo();
             FieldsUtil.assign(orderInfo,orderGoodsMedicalVo);
+            //患者信息
+            PatientOneParam patient=patientService.getOneDetail(orderInfo.getPatientId());
+            orderGoodsMedicalVo.setPatient(patient);
+            //历史诊断
+            OrderMedicalHistoryDo medicalHistoryDo= orderMedicalHistoryDao.getByOrderId(orderInfo.getOrderId());
+            orderGoodsMedicalVo.setMedicalHistory(medicalHistoryDo);
+            //药品数组
             List<GoodsMedicalOneInfoVo> goodsMedicalOneInfoVoList=new ArrayList<>();
             //根据goodsId查出orderGoods列表
             List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsDo.class);
@@ -74,6 +89,8 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
                     FieldsUtil.assign(goodsMedicalInfoDo, goodsMedicalOneInfoVo);
                     GoodsDo goodsDo=goodsDao.getByGoodsId(goodsMedicalInfoDo.getGoodsId());
                     goodsMedicalOneInfoVo.setShopPrice(goodsDo.getShopPrice());
+                    goodsMedicalOneInfoVo.setGoodsImg(goodsDo.getGoodsImg());
+                    goodsMedicalOneInfoVo.setGoodsNumber(orderGoodsDo.getGoodsNumber());
                     goodsMedicalOneInfoVoList.add(goodsMedicalOneInfoVo);
                 }
 

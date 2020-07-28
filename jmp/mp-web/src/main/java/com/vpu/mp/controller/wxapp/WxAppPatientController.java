@@ -118,7 +118,7 @@ public class WxAppPatientController extends WxAppBaseController {
      * 获取用户默认患者信息
      * @return
      */
-    @GetMapping("/api/wxapp/user/patient/get/default")
+    @PostMapping("/api/wxapp/user/patient/get/default")
     public JsonResult getDefaultPatient(){
         Integer userId=wxAppAuth.user().getUserId();
         return success(shop().patientService.getDefaultPatient(userId));

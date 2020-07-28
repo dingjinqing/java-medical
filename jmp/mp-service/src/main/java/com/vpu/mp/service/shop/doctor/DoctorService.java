@@ -15,7 +15,9 @@ import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
+import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
@@ -227,6 +229,15 @@ public class DoctorService extends ShopBaseService {
      */
     public List<DoctorSimpleVo> listDoctorSimpleInfo(List<Integer> doctorIds){
         return doctorDao.listDoctorSimpleInfo(doctorIds);
+    }
+
+    /**
+     * 根据医师信息获取医师所属科室
+     * @param doctorId 医师id
+     * @return List<Department>
+     */
+    public List<DepartmentListVo> selectDepartmentsByDoctorId(Integer doctorId){
+        return doctorDao.selectDepartmentsByDoctorId(doctorId);
     }
 
 }
