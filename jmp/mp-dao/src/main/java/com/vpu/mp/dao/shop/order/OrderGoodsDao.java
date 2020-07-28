@@ -1,11 +1,18 @@
 package com.vpu.mp.dao.shop.order;
 
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
+import org.jooq.Record2;
+import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
@@ -18,6 +25,7 @@ public class OrderGoodsDao extends ShopBaseDao {
 
     /**
      * 根据订单号获取订单商品的规格id
+     *
      * @param orderSn 订单号
      * @return 规格ids
      */
@@ -26,13 +34,37 @@ public class OrderGoodsDao extends ShopBaseDao {
     }
 
     /**
+     * 待审核处方列表
      *
+     * @return
      */
-    public void  listGoodsOldPrescription(){
-        db().select(ORDER_GOODS.ORDER_ID,ORDER_GOODS.PRESCRIPTION_OLD_CODE)
+    public PageResult<OrderPrescriptionVo> listGoodsOldPrescription(PrescriptionQueryParam param) {
+        SelectJoinStep<Record2<Integer, String>> from = db()
+                .select(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
+                .from(ORDER_GOODS);
+        if (param.getAuditType() != null) {
+            from.where(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(param.getAuditType()));
+        }
+        if (param.getAuditStatus() != null) {
+            from.where(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(param.getAuditStatus()));
+        }
+        from.groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE);
+        return getPageResult(from, param.getCurrentPage(), param.getPageRows(), OrderPrescriptionVo.class);
+    }
+
+    /**
+     *  @param orderIdList
+     * @param prescriptionCodeList
+     * @return
+     */
+    public Map<Integer, List<OrderGoodsDo>> mapOrderGoodsByOrderId(List<Integer> orderIdList, List<String> prescriptionCodeList) {
+        return db().select()
                 .from(ORDER_GOODS)
-                .where(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT))
-                .groupBy(ORDER_GOODS.ORDER_ID,ORDER_GOODS.PRESCRIPTION_OLD_CODE)
-                .fetch();
+                .where(ORDER_GOODS.ORDER_ID.in(orderIdList))
+                .and(ORDER_GOODS.PRESCRIPTION_OLD_CODE.in(prescriptionCodeList))
+                .and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT))
+                .and(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT))
+                .fetchGroups(ORDER_GOODS.ORDER_ID, OrderGoodsDo.class);
+
     }
 }

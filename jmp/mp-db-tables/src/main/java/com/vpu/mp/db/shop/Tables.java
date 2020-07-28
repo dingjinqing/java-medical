@@ -1172,4 +1172,9 @@ public class Tables {
      * 充值记录表
      */
     public static final Recharge RECHARGE = com.vpu.mp.db.shop.tables.Recharge.RECHARGE;
+    /**
+     * 充值记录表
+     */
+    public static final OrderMedicalHistory ORDER_MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.OrderMedicalHistory.ORDER_MEDICAL_HISTORY;
+
 }

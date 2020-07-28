@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.prescription;
 
 import com.vpu.mp.common.foundation.util.Page;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import lombok.Data;
 
@@ -16,6 +17,9 @@ public class PrescriptionQueryParam extends AbstractOrderOperateQueryParam {
 
 
     private Integer orderId;
+    private Byte auditType = OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT;
+    private Byte auditStatus =OrderConstant.MEDICAL_AUDIT_DEFAULT;
+
     @NotNull
     private Integer accountId;
 

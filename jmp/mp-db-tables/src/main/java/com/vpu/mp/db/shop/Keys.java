@@ -293,6 +293,7 @@ public class Keys {
     public static final Identity<InquiryOrderRefundListRecord, Integer> IDENTITY_INQUIRY_ORDER_REFUND_LIST = Identities0.IDENTITY_INQUIRY_ORDER_REFUND_LIST;
     public static final Identity<MessageRecord, Integer> IDENTITY_MESSAGE = Identities0.IDENTITY_MESSAGE;
     public static final Identity<RechargeRecord, Integer> IDENTITY_RECHARGE = Identities0.IDENTITY_RECHARGE;
+    public static final Identity<OrderMedicalHistoryRecord, Integer> IDENTITY_ORDER_MEDICAL_HISTORY = Identities0.IDENTITY_ORDER_MEDICAL_HISTORY;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -576,6 +577,7 @@ public class Keys {
     public static final UniqueKey<InquiryOrderRefundListRecord> KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY = UniqueKeys0.KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY;
     public static final UniqueKey<MessageRecord> KEY_B2C_MESSAGE_PRIMARY = UniqueKeys0.KEY_B2C_MESSAGE_PRIMARY;
     public static final UniqueKey<RechargeRecord> KEY_B2C_RECHARGE_PRIMARY = UniqueKeys0.KEY_B2C_RECHARGE_PRIMARY;
+    public static final UniqueKey<OrderMedicalHistoryRecord> KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -724,7 +726,6 @@ public class Keys {
         public static Identity<ReducePriceProductRecord, Integer> IDENTITY_REDUCE_PRICE_PRODUCT = Internal.createIdentity(ReducePriceProduct.REDUCE_PRICE_PRODUCT, ReducePriceProduct.REDUCE_PRICE_PRODUCT.ID);
         public static Identity<RefundAmountRecordRecord, Integer> IDENTITY_REFUND_AMOUNT_RECORD = Internal.createIdentity(RefundAmountRecord.REFUND_AMOUNT_RECORD, RefundAmountRecord.REFUND_AMOUNT_RECORD.REC_ID);
         public static Identity<VirtualOrderRefundRecordRecord, Integer> IDENTITY_VIRTUAL_ORDER_REFUND_RECORD = Internal.createIdentity(VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD, VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD.ID);
-
         public static Identity<ReturnOrderRecord, Integer> IDENTITY_RETURN_ORDER = Internal.createIdentity(ReturnOrder.RETURN_ORDER, ReturnOrder.RETURN_ORDER.RET_ID);
         public static Identity<ReturnOrderGoodsRecord, Integer> IDENTITY_RETURN_ORDER_GOODS = Internal.createIdentity(ReturnOrderGoods.RETURN_ORDER_GOODS, ReturnOrderGoods.RETURN_ORDER_GOODS.ID);
         public static Identity<ReturnStatusChangeRecord, Integer> IDENTITY_RETURN_STATUS_CHANGE = Internal.createIdentity(ReturnStatusChange.RETURN_STATUS_CHANGE, ReturnStatusChange.RETURN_STATUS_CHANGE.ID);
@@ -837,6 +838,7 @@ public class Keys {
         public static Identity<InquiryOrderRefundListRecord, Integer> IDENTITY_INQUIRY_ORDER_REFUND_LIST = Internal.createIdentity(InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ID);
         public static Identity<MessageRecord, Integer> IDENTITY_MESSAGE = Internal.createIdentity(Message.MESSAGE, Message.MESSAGE.MESSAGE_ID);
         public static Identity<RechargeRecord, Integer> IDENTITY_RECHARGE = Internal.createIdentity(Recharge.RECHARGE, Recharge.RECHARGE.RECHARGE_ID);
+        public static Identity<OrderMedicalHistoryRecord, Integer> IDENTITY_ORDER_MEDICAL_HISTORY = Internal.createIdentity(OrderMedicalHistory.ORDER_MEDICAL_HISTORY, OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1123,5 +1125,7 @@ public class Keys {
         public static final UniqueKey<InquiryOrderRefundListRecord> KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY = Internal.createUniqueKey(InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, "KEY_b2c_inquiry_order_refund_list_PRIMARY", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ID);
         public static final UniqueKey<MessageRecord> KEY_B2C_MESSAGE_PRIMARY = Internal.createUniqueKey(Message.MESSAGE, "KEY_b2c_message_PRIMARY", Message.MESSAGE.MESSAGE_ID);
         public static final UniqueKey<RechargeRecord> KEY_B2C_RECHARGE_PRIMARY = Internal.createUniqueKey(Recharge.RECHARGE, "KEY_b2c_recharge_PRIMARY", Recharge.RECHARGE.RECHARGE_ID);
+        public static final UniqueKey<OrderMedicalHistoryRecord> KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY = Internal.createUniqueKey(OrderMedicalHistory.ORDER_MEDICAL_HISTORY, "KEY_b2c_order_medical_history_PRIMARY", OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID);
+
     }
 }

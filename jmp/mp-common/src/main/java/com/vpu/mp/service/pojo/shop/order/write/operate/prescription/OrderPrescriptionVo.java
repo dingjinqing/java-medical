@@ -1,19 +1,22 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.prescription;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
  * @author 孔德成
  * @date 2020/7/9 14:03
  */
+@Data
 public class OrderPrescriptionVo {
     /**
-     * 处方
+     * 处方号
      */
-
+    private String prescriptionOldCode;
     /**
-     * 关联商品
+     * 订单id
      */
-    List<OrderGoodsPrescriptionInfoVo> goodsList;
+    private Integer goodsId;
 
 }

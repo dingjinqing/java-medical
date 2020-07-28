@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * 处方全字段
+ * 处方简略对象
  * @author 孔德成
  * @date 2020/7/2 18:09
  */

@@ -534,6 +534,8 @@ public class Indexes {
     public static final Index INQUIRY_ORDER_REFUND_LIST_USER_ID = Indexes0.INQUIRY_ORDER_REFUND_LIST_USER_ID;
     public static final Index MESSAGE_PRIMARY = Indexes0.MESSAGE_PRIMARY;
     public static final Index RECHARGE_PRIMARY = Indexes0.RECHARGE_PRIMARY;
+    public static final Index ORDER_MEDICAL_HISTORY_PRIMARY = Indexes0.ORDER_MEDICAL_HISTORY_PRIMARY;
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1044,5 +1046,6 @@ public class Indexes {
         public static Index INQUIRY_ORDER_REFUND_LIST_USER_ID = Internal.createIndex("user_id", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, new OrderField[] { InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.USER_ID }, false);
         public static Index MESSAGE_PRIMARY = Internal.createIndex("PRIMARY", Message.MESSAGE, new OrderField[] { Message.MESSAGE.MESSAGE_ID }, true);
         public static Index RECHARGE_PRIMARY = Internal.createIndex("PRIMARY", Recharge.RECHARGE, new OrderField[] { Recharge.RECHARGE.RECHARGE_ID }, true);
+        public static Index ORDER_MEDICAL_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", OrderMedicalHistory.ORDER_MEDICAL_HISTORY, new OrderField[] { OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID }, true);
     }
 }
