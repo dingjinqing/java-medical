@@ -39,7 +39,7 @@ public class AdminDoctorController extends AdminBaseController {
 
         boolean isExist = shop().doctorService.isCodeExist(null,param.getName());
         if (isExist) {
-            return fail(JsonResultCode.DOCTOR_NAME_IS_NULL);
+            return fail(JsonResultCode.DOCTOR_NAME_EXIST);
         }
 
         shop().doctorService.insertDoctor(param);
