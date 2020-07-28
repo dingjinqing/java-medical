@@ -23,8 +23,14 @@ public class DoctorMainShowVo {
 
     /**
      * 医师端首页个人信息
+     *
      */
-    private DoctorOneParam doctorOneParam;
+    private Byte      sex;
+    private String    url;
+    private Byte      duty;
+    private Integer   age;
+    private String    registerHospital;
+    private String    treatDisease;
 
     /**
      * 医师科室名称
