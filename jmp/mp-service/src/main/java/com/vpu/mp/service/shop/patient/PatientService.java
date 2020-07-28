@@ -59,9 +59,7 @@ public class PatientService extends BaseShopConfigService{
     }
 
     public Integer updatePatient(PatientDo param) {
-        transaction(() -> {
-            patientDao.updatePatient(param);
-        });
+        patientDao.updatePatient(param);
         return param.getId();
     }
 
@@ -114,15 +112,7 @@ public class PatientService extends BaseShopConfigService{
         FieldsUtil.assign(patientInfoVo, patientDo);
         PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);
         if (patientOneParam == null) {
-            int patientId=patientDao.insertPatient(patientDo);
-            UserPatientCoupleDo userPatientCoupleDo=new UserPatientCoupleDo();
-            userPatientCoupleDo.setPatientId(patientId);
-            userPatientCoupleDo.setUserId(userPatientOneParam.getUserId());
-            List<PatientOneParam> patientList=userPatientCoupleDao.listPatientIdsByUser(userPatientOneParam.getUserId());
-            if(patientList.size()==0) {
-                userPatientCoupleDo.setIsDefault((byte) 1);
-            }
-            userPatientCoupleDao.save(userPatientCoupleDo);
+            addPatient(patientDo,userPatientOneParam.getUserId());
         } else {
             patientDo.setId(patientOneParam.getId());
             patientDao.updatePatient(patientDo);
@@ -208,9 +198,30 @@ public class PatientService extends BaseShopConfigService{
     public void sendCheckSms(PatientSmsCheckParam param) throws MpException {
         //0000-9999
         int intRandom = RandomUtil.getIntRandom();
-        String smsContent = String.format( SmsTemplate.PATIENT_CHECK_MOBILE, "XX医院",intRandom);
+        String smsContent = String.format(SmsTemplate.PATIENT_CHECK_MOBILE, "XX医院", intRandom);
         smsService.sendSms(param.getUserId(), param.getMobile(), smsContent);
-        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_PATIENT_MOBILE,getShopId(), param.getUserId(), param.getMobile());
-        jedisManager.set(key,intRandom+"",600);
+        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_PATIENT_MOBILE, getShopId(), param.getUserId(), param.getMobile());
+        jedisManager.set(key, intRandom + "", 600);
+    }
+
+    /**
+     * 患者是否存在，用来新增检查
+     * @param param
+     * @return
+     */
+    public boolean isPatientExist(PatientExternalRequestParam param) {
+        return patientDao.isPatientExist(param);
+    }
+
+    public void addPatient(PatientDo patientDo,Integer userId) {
+        int patientId=patientDao.insertPatient(patientDo);
+        UserPatientCoupleDo userPatientCoupleDo=new UserPatientCoupleDo();
+        userPatientCoupleDo.setPatientId(patientId);
+        userPatientCoupleDo.setUserId(userId);
+        List<PatientOneParam> patientList=userPatientCoupleDao.listPatientIdsByUser(userId);
+        if(patientList.size()==0) {
+            userPatientCoupleDo.setIsDefault((byte) 1);
+        }
+        userPatientCoupleDao.save(userPatientCoupleDo);
     }
 }
