@@ -18,9 +18,9 @@
                   <div class="item">订单状态：{{orderContent.orderStatusName}}</div>
                   <div class="item">订单金额：{{orderContent.orderAmount}}</div>
                   <div class="item">下单时间：{{orderContent.createTime}}</div>
-                  <div class="item">用户：{{orderContent.orderStatusName}}</div>
+                  <div class="item">用户：{{orderContent.userName}}</div>
                   <div class="item">订单号：{{orderContent.orderSn}}</div>
-                  <div class="item">下单人手机：{{orderContent.orderStatusName}}</div>
+                  <div class="item">下单人手机：{{orderContent.userMobile}}</div>
                </div>
             </div>
             <div class="user_info">
@@ -28,7 +28,7 @@
                <div class="item_box">
                   <div class="item">姓名：{{orderContent.patientName}}</div>
                   <div class="item">性别：{{orderContent.patientSexName}}</div>
-                  <div class="item">生日：{{orderContent.orderStatusName}}</div>
+                  <div class="item">生日：{{orderContent.patientBirthday}}</div>
                   <div class="item">证件类型：{{orderContent.patientIdentityName}}</div>
                   <div class="item">证件号码：{{orderContent.patientIdentityCode}}</div>
                   <div class="item">手机号：{{orderContent.patientMobile}}</div>
@@ -43,43 +43,43 @@
 import { advisoryOrderInfo } from '@/api/admin/orderManage/order.js'
 export default {
   mounted () {
-   if (this.$route.query.orderId) {
-     this.id = this.$route.query.orderId
-     this.initOrderInfo(this.id)
-   }
-  },
-  watch: {
-   '$route.query.orderId': function (newVal) {
-     if (newVal) {
+    if (this.$route.query.orderId) {
       this.id = this.$route.query.orderId
       this.initOrderInfo(this.id)
-     }
-   }
+    }
+  },
+  watch: {
+    '$route.query.orderId': function (newVal) {
+      if (newVal) {
+        this.id = this.$route.query.orderId
+        this.initOrderInfo(this.id)
+      }
+    }
   },
   data () {
-   return {
-     orderContent: {}
-   }
+    return {
+      orderContent: {}
+    }
   },
   methods: {
-   initOrderInfo (id) {
-     advisoryOrderInfo({orderId:id}).then(res => {
-       if (res.error === 0) {
-         res.content.createTime = res.content.createTime.substr(0, 10)
-         res.content.orderStatusName = this.getStatusName(res.content.orderStatus)
-         res.content.patientSexName = this.getPatientSex(res.content.patientSex)
-         res.content.patientIdentityName = this.getIdentityName(res.content.patientIdentityType)
-         this.orderContent = res.content
-         console.log(this.orderContent)
-       } else {
-         this.$message.error({
-           message: '获取失败',
-           showClose: true
-         })
-       }
-     })
-   },
-   getStatusName (data) {
+    initOrderInfo (id) {
+      advisoryOrderInfo({orderId: id}).then(res => {
+        if (res.error === 0) {
+          res.content.createTime = res.content.createTime.substr(0, 10)
+          res.content.orderStatusName = this.getStatusName(res.content.orderStatus)
+          res.content.patientSexName = this.getPatientSex(res.content.patientSex)
+          res.content.patientIdentityName = this.getIdentityName(res.content.patientIdentityType)
+          this.orderContent = res.content
+          console.log(this.orderContent)
+        } else {
+          this.$message.error({
+            message: '获取失败',
+            showClose: true
+          })
+        }
+      })
+    },
+    getStatusName (data) {
       switch (data) {
         case 0:
           return '待付款'
@@ -94,8 +94,8 @@ export default {
         case 5:
           return '已取消'
       }
-   },
-   getPatientSex (data) {
+    },
+    getPatientSex (data) {
       switch (data) {
         case 0:
           return '未知'
@@ -104,8 +104,8 @@ export default {
         case 2:
           return '女'
       }
-   },
-   getIdentityName (data) {
+    },
+    getIdentityName (data) {
       switch (data) {
         case 1:
           return '身份证'
@@ -116,7 +116,7 @@ export default {
         case 4:
           return '社保卡'
       }
-   }
+    }
   }
 }
 </script>

@@ -13,28 +13,74 @@
   </view>
   <view class="list">
     <view class="item">
-      <image class="item_img"></image>
+      <view class="item_has_num">
+        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
+        <view class="item_num">12</view>
+      </view>
       <view class="item_text">待续方</view>
     </view>
     <view class="item">
-      <image class="item_img"></image>
+      <view class="item_has_num">
+        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon1.png"></image>
+        <view class="item_num">12</view>
+      </view>
       <view class="item_text">待开方</view>
     </view>
     <view class="item">
-      <image class="item_img"></image>
+      <view class="item_has_num">
+        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
+        <view class="item_num">12</view>
+      </view>
       <view class="item_text">待问诊</view>
     </view>
     <view class="item">
-      <image class="item_img"></image>
+      <view class="item_has_num">
+        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
+        <view class="item_dot"></view>
+      </view>
       <view class="item_text">已续方</view>
     </view>
     <view class="item">
-      <image class="item_img"></image>
+      <view class="item_has_num">
+        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon1.png"></image>
+        <view class="item_dot"></view>
+      </view>
       <view class="item_text">已开具</view>
     </view>
     <view class="item">
-      <image class="item_img"></image>
+      <view class="item_has_num">
+        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
+        <view class="item_dot"></view>
+      </view>
       <view class="item_text">我的问诊</view>
     </view>
   </view>
+
+  <!-- 医生认证 -->
+  <view class="modal_bg" wx:if='{{show_modal == 1}}'></view>
+  <view class="modal" wx:if='{{show_modal == 1}}'>
+    <view class="modal_content">
+      <view class="for_bg">
+        <image src="http://medicaldevimg.weipubao.cn/image/wxapp/medical_history_bg1.png"></image>
+        <view class="em_title">医生认证</view>
+      </view>
+      <view class="modal_info">
+        <view class="each_line">
+          <view class="left_text">姓名<text>*</text></view>
+          <input type="text" placeholder="请输入姓名" bindblur="docName"></input>
+        </view>
+        <view class="each_line">
+          <view class="left_text">手机号<text>*</text></view>
+          <input type="text" placeholder="请输入手机号" bindblur="docMobile"></input>
+        </view>
+        <view class="each_line">
+          <view class="left_text">院内编号<text>*</text></view>
+          <input type="text" placeholder="请输入院内编号" bindblur="docCode"></input>
+        </view>
+      </view>
+      <view class="modal_fotter" bindtap="to_verify">确定</view>
+    </view>
+    <view class="btn_close" bindtap="close"><image src="http://medicaldevimg.weipubao.cn/image/wxapp/close_icon.png"></image></view>
+  </view>
+  
 </view>

@@ -175,7 +175,7 @@ export default {
         {
           id: 5,
           text: '已取消'
-        },
+        }
       ]
     }
   },

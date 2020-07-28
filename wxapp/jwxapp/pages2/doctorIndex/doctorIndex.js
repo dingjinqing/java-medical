@@ -8,13 +8,44 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    show_modal: 0,
+    name: '',
+    mobile: '',
+    hosCode: ''
   },
-
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+  },
+  close () {
+    this.setData({
+      show_modal: 0
+    })
+  },
+  docName (e) {
+    this.data.name = e.detail.value
+  },
+  docMobile (e) {
+    this.data.mobile = e.detail.value
+  },
+  docCode (e) {
+    this.data.hosCode = e.detail.value
+  },
+  to_verify () {
+    if(!this.data.name){
+      util.showModal('提示','请输入医生姓名');
+      return false
+    }
+    if(!this.data.mobile){
+      util.showModal('提示','请输入医生手机号');
+      return false
+    }
+    if(!this.data.hosCode){
+      util.showModal('提示','请输入医生院内编号');
+      return false
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

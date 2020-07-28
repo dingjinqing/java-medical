@@ -17,7 +17,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    this.data.id = options.id || 1;
+    this.data.id = options.id;
     this.requestInfo();
   },
   requestInfo () {
