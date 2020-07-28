@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
 /**
  * 商品dao
@@ -287,5 +288,17 @@ public class GoodsDao extends ShopBaseDao {
             .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_ID.eq(GOODS.GOODS_ID))
             .where(condition)
             .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 根据prdId获取商品名称
+     * @param prdId
+     * @return
+     */
+    public String getGoodsNameByPrdId(Integer prdId) {
+        return db().select(GOODS.GOODS_NAME).from(GOODS)
+            .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
+            .fetchAnyInto(String.class);
     }
 }

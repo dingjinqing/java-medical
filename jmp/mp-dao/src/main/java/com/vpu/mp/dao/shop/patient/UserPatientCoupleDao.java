@@ -6,11 +6,13 @@ import com.vpu.mp.db.shop.tables.records.UserPatientCoupleRecord;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import org.jooq.Condition;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PATIENT;
+import static com.vpu.mp.db.shop.Tables.USER_COLLECTION;
 import static com.vpu.mp.db.shop.Tables.USER_PATIENT_COUPLE;
 
 /**
@@ -69,5 +71,11 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
         record.insert();
         userPatientCoupleDo.setId(record.getId());
         return record.getId();
+    }
+
+    public boolean isExistUserPatient(UserPatientParam param) {
+        Condition condition = USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId())).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0));
+        int count = db().fetchCount(USER_PATIENT_COUPLE, condition);
+        return count>0;
     }
 }

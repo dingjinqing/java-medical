@@ -14,6 +14,7 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRebatePriceRecord;
@@ -217,6 +218,8 @@ public class GoodsService extends ShopBaseService {
     private BargainProcessorDao bargainProcessorDao;
     @Autowired
     private GroupBuyProcessorDao groupBuyProcessorDao;
+    @Autowired
+    private GoodsDao goodsDao;
     @Autowired
     private StoreService storeService;
     @Autowired
@@ -2893,5 +2896,14 @@ public class GoodsService extends ShopBaseService {
         Integer prdNum = (int) (Math.floor(param.getNumber()));
         storeGoodsService.updatePrdNumForPosSyncStock(storeRecord.getStoreId(),prdId,prdNum);
         return apiJsonResult;
+    }
+
+    /**
+     * 根据prdId获取商品名称
+     * @param prdId
+     * @return
+     */
+    public String getGoodsNameByPrdId(Integer prdId) {
+        return goodsDao.getGoodsNameByPrdId(prdId);
     }
 }

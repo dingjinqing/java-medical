@@ -117,7 +117,8 @@ public class PatientService extends BaseShopConfigService{
         FieldsUtil.assign(patientInfoVo, patientDo);
         PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);
         if (patientOneParam == null) {
-            addPatient(patientDo,userPatientOneParam.getUserId());
+            int patientId=patientDao.insertPatient(patientDo);
+            addPatientUser(patientId,userPatientOneParam.getUserId());
         } else {
             patientDo.setId(patientOneParam.getId());
             patientDao.updatePatient(patientDo);
@@ -214,12 +215,11 @@ public class PatientService extends BaseShopConfigService{
      * @param param
      * @return
      */
-    public boolean isPatientExist(PatientExternalRequestParam param) {
-        return patientDao.isPatientExist(param);
+    public Integer getPatientExist(PatientExternalRequestParam param) {
+        return patientDao.getPatientExist(param);
     }
 
-    public void addPatient(PatientDo patientDo,Integer userId) {
-        int patientId=patientDao.insertPatient(patientDo);
+    public void addPatientUser(Integer patientId,Integer userId) {
         UserPatientCoupleDo userPatientCoupleDo=new UserPatientCoupleDo();
         userPatientCoupleDo.setPatientId(patientId);
         userPatientCoupleDo.setUserId(userId);
@@ -228,5 +228,9 @@ public class PatientService extends BaseShopConfigService{
             userPatientCoupleDo.setIsDefault((byte) 1);
         }
         userPatientCoupleDao.save(userPatientCoupleDo);
+    }
+
+    public boolean isExistUserPatient(UserPatientParam param) {
+        return userPatientCoupleDao.isExistUserPatient(param);
     }
 }
