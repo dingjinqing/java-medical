@@ -56,6 +56,16 @@ global.wxPage({
     let {type,orderId,orderSn,parentIndex} = e.currentTarget.dataset
     let dataListItem = this.data.dataList[parentIndex]
     let targetIndex = dataListItem.findIndex(item=>item.orderSn === orderSn && item.orderId === orderId)
+    util.api('/api/wxapp/docker/audit/pass',res=>{
+
+    },{
+      orderId,
+      orderSn,
+      doctorId,
+      prescriptionOldCode,
+      auditStatus,
+      doctorAdvice
+    })
     if(res.error === 0){
       dataListItem.splice(targetIndex,1)
       this.setData({
