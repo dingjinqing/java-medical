@@ -1698,7 +1698,7 @@ public class OrderInfoService extends ShopBaseService {
      */
     public JsonResult rejectAudit(OrderGoodsParam orderGoodsParam){
         OrderInfoDo orderInfoDo=getByOrderId(orderGoodsParam.getOrderId(),OrderInfoDo.class);
-        if(orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
+        if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
             return new JsonResult().result(null, JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
         }
         List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfoDo.getOrderId()).into(OrderGoodsDo.class);
