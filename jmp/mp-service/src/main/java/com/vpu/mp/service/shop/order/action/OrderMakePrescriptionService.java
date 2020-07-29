@@ -134,6 +134,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
             PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
             FieldsUtil.assign(obj,prescriptionOneParam);
+            prescriptionOneParam.setIsUsed((byte)1);
             transaction(() -> {
                 //生成处方，处方明细
                 PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
