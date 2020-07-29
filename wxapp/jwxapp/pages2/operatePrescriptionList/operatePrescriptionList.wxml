@@ -1,60 +1,56 @@
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
-		<view class="card-item">
-			<view class="status-title">
-				<text>提交时间：2020-7-16 15:33</text>
-				<text>待审核</text>
-			</view>
-			<view class="prescription-item">
-				<view class="item-list-content">
-					<view class="item-list">
-						<view class="list-item">
-							<text class="list-item-dot"></text>
-							<view class="list-item-content">
-								诊断：原发性高血压
+		<block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+				<view class="card-item">
+					<view class="status-title">
+						<text>提交时间：2020-7-16 15:33</text>
+						<text>待审核</text>
+					</view>
+					<view class="prescription-item" data-prescription-code="{{item.prescription.prescriptionCode}}" bindtap="handleShowDialog">
+						<view class="item-list-content">
+							<view class="item-list">
+								<view class="list-item">
+									<text class="list-item-dot"></text>
+									<view class="list-item-content">
+										诊断：{{item.prescription.diagnosisName}}
+									</view>
+								</view>
+								<view class="list-item">
+									<text class="list-item-dot"></text>
+									<view class="list-item-content">
+										科室：{{item.prescription.departmentName}}
+									</view>
+								</view>
 							</view>
 						</view>
-						<view class="list-item">
-							<text class="list-item-dot"></text>
-							<view class="list-item-content">
-								科室：神经科
+						<view class="doctor-info">
+							<text class="doctor-name">医师：{{item.prescription.doctorName}}</text>
+							<text class="item-date">日期：{{item.prescription.prescriptionCreateTime}}</text>
+						</view>
+					</view>
+					<view class="goods-content" wx:if="{{item.goodsList.length}}">
+						<view class="goods-item" wx:for="{{item.goodsList}}" wx:key="goodsId" wx:for-item="goodsItem" wx:for-index="goodsIndex">
+							<image src="{{imageUrl + goodsItem.goodsImg}}"></image>
+							<view class="goods-desc">
+								<text class="goods-name">{{goodsItem.goodsName}}</text>
+								<view class="price-content">
+									<text class="goods-price">￥{{goodsItem.goodsPrice}}</text>
+									<text class="num">x{{goodsItem.goodsNumber}}</text>
+								</view>
 							</view>
 						</view>
 					</view>
+					<view class="button-content">
+						<text class="reject" data-type="reject" data-order-id="1" data-order-sn="1" data-parentIndex="{{pageIndex}}" bindtap="changeStatus" >驳回</text>
+						<text class="pass" data-type="pass" data-order-id="1" data-order-sn="1" data-parentIndex="{{pageIndex}}" bindtap="changeStatus">通过</text>
+					</view>
 				</view>
-				<view class="doctor-info">
-					<text class="doctor-name">医师：张三</text>
-					<text class="item-date">日期：2020.06.30</text>
-				</view>
-			</view>
-      <view class="goods-content">
-        <view class="goods-item">
-          <image src="http://medicaldevimg.weipubao.cn/upload/224462/image/20200715/C7IzFaMAx415k7OYI8uu.jpg"></image>
-          <view class="goods-desc">
-            <text class="goods-name">敖东安神补脑液口服液10支治多梦神经衰弱 安眠药失眠中药调理安神</text>
-            <view class="price-content">
-              <text class="goods-price">￥23.00</text>
-              <text class="num">x1</text>
-            </view>
-          </view>
-        </view>
-        <view class="goods-item">
-          <image src="http://medicaldevimg.weipubao.cn/upload/224462/image/20200715/C7IzFaMAx415k7OYI8uu.jpg"></image>
-          <view class="goods-desc">
-            <text class="goods-name">敖东安神补脑液口服液10支治多梦神经衰弱 安眠药失眠中药调理安神</text>
-            <view class="price-content">
-              <text class="goods-price">￥23.00</text>
-              <text class="num">x1</text>
-            </view>
-          </view>
-        </view>
-      </view>
-      <view class="button-content">
-        <text class="reject">驳回</text>
-        <text class="pass">通过</text>
-      </view>
-		</view>
+			</block>
+		</block>
 		<include src="../../pages/common/footer.wxml" />
 	</view>
 </view>
+
+<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>

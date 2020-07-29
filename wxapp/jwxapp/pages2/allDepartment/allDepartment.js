@@ -16,6 +16,10 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+     let {source = null} = options
+     this.setData({
+      source
+     })
      this.requestList()
   },
 
@@ -63,9 +67,20 @@ global.wxPage({
   toDoctorSearch:function(e){
     let id = e.currentTarget.dataset.id;
     let name = e.currentTarget.dataset.name;
-    util.navigateTo({
-      url: "/pages2/doctorSearch/doctorSearch?id=" + id + '&name=' + name 
-    })
+    let code = e.currentTarget.dataset.code;
+    if(this.data.source === 'prescribe'){
+      let pageList = getCurrentPages();
+      let prevPage = pageList[pageList.length - 2];
+      prevPage.setData({
+        departmentCode:code,
+        departmentName:name
+      })
+      wx.navigateBack()
+    } else {
+      util.navigateTo({
+        url: "/pages2/doctorSearch/doctorSearch?id=" + id + '&name=' + name 
+      })
+    }
   },
   changeInput (e) {
     this.setData({

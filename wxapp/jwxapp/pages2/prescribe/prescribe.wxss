@@ -154,9 +154,12 @@
   height: 100%;
   padding-left: 32rpx;
 }
-.goods-line{
+.goods-line,.line{
   height: 2rpx;
   background-color: #eee;
+  
+}
+.goods-line{
   margin-left: 32rpx;
 }
 .goods-item{
