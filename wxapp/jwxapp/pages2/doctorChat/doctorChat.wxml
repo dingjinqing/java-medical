@@ -13,7 +13,7 @@
 					<image class="image-message" style="width:{{item.messageInfo.message.imgWidth > 450 ? '450' : item.messageInfo.message.imgWidth}}rpx;{{item.messageInfo.message.imgWidth > 450 ? '' : 'height:'+item.messageInfo.message.imgHidth+'rpx;'}}" mode="widthFix" src="{{item.messageInfo.message.content}}"></image>
 				</view>
 
-				<view slot="patient_pres_message" class="patient_message {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 2}}'>
+				<view slot="patient_pres_message" class="patient_message {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 3}}'>
 					<view class="p_m_top">
 						<text>患者: {{item.messageInfo.message.content.name}}</text>
 						<text>{{item.messageInfo.message.content.sex}}</text>
@@ -25,7 +25,7 @@
 					</view>
 				</view>
 
-				<view slot='doctor_pres_message' class="prescription-item {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 3}}'>
+				<view slot='doctor_pres_message' class="prescription-item {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 2}}'>
 					<view class="item-title" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方</view>
 					<view class="item-list-content">
 						<view class="item-list">
