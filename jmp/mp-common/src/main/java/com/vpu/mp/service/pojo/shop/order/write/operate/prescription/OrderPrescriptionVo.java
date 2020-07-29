@@ -17,6 +17,6 @@ public class OrderPrescriptionVo {
     /**
      * 订单id
      */
-    private Integer goodsId;
+    private Integer orderId;
 
 }

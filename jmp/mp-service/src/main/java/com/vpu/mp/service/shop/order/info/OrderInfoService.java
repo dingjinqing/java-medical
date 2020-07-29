@@ -10,6 +10,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.DateUtils.IntervalType;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.dao.foundation.database.DslPlus;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.goods.param.OrderGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
@@ -46,6 +48,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -104,7 +107,10 @@ public class OrderInfoService extends ShopBaseService {
 
     public final OrderInfo TABLE = ORDER_INFO;
 
+    @Autowired
     private OrderInfoDao orderInfoDao;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
     /**
      * 支付种类（细分）PAY_SUBDIVISION
      */
@@ -870,6 +876,10 @@ public class OrderInfoService extends ShopBaseService {
                 break;
             case OrderConstant.ORDER_WAIT_DELIVERY:
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+                //如果是开方,则审核通过
+                if(order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                    order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
+                }
                 break;
             default:
                 return;
@@ -1032,7 +1042,8 @@ public class OrderInfoService extends ShopBaseService {
         //药品信息
         order.setPatientId(param.getPatientId());
         order.setOrderMedicalType(param.getOrderMedicalType());
-        order.setOrderAuditStatus(param.getCheckPrescriptionStatus());
+        order.setOrderAuditType(param.getOrderAuditType());
+        order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_DEFAULT);
         return order;
     }
 
@@ -1677,12 +1688,15 @@ public class OrderInfoService extends ShopBaseService {
             .fetch(x -> x.into(String.class));
     }
 
+
     /**
-     *
-     * @param orderId
-     * @param auditStatus
+     * auditStatus驳回
+     * @param orderGoodsParam
      */
-    public void updateAuditStatus(Integer orderId,Byte auditStatus){
-        orderInfoDao.updateAuditStatus(orderId,auditStatus);
+    public void rejectAudit(OrderGoodsParam orderGoodsParam){
+        transaction(() -> {
+            orderInfoDao.updateAuditStatus(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+            orderGoodsDao.updateAuditStatus(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+        });
     }
 }

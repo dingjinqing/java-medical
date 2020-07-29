@@ -10,6 +10,10 @@ global.wxComponent({
    dialogType:{
      type:Number,
      value:1
+   },
+   patientInfo:{
+     type:Object,
+     value:null
    }
   },
 
@@ -24,7 +28,14 @@ global.wxComponent({
    */
   methods: {
     viewPrescriptionSheet(){
-      util.jumpLink('pages1/prescriptionsheet/prescriptionsheet')
+      util.jumpLink(`pages1/prescriptionsheet/prescriptionsheet${util.getUrlParams({
+        patientInfo:JSON.stringify(this.data.patientInfo)
+      })}`)
+      this.bindClose()
+    },
+    addPatient(){
+      util.jumpLink('pages1/familylist/familylist?source=checkout')
+      this.bindClose()
     }
   }
 });

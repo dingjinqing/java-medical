@@ -5,14 +5,29 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    prescriptionImageList:[]
+    prescriptionImageList:[],
+    diagnose:['心绞痛','高血压','心肌炎','肺炎','咳嗽','感冒'],
+    selectedDiagnose:[],
+    optionsList:{
+      isUsed:false,
+      hasBadReaction:false,
+      isGravida:false 
+    },
+    optionsName:{
+      isUsed:'曾服用过本药品',
+      hasBadReaction:'有无不良反应',
+      isGravida:'妊娠哺乳'
+    }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    let {patientInfo} = options
+    this.setData({
+      patientInfo:JSON.parse(patientInfo)
+    })
   },
   uploadImage(){
     let prescriptionImageList = this.data.prescriptionImageList
@@ -25,6 +40,48 @@ global.wxPage({
         })
       }
     });
+  },
+  chooseDiagnose(e){
+    let {index:targetIndex} = e.currentTarget.dataset
+    let selectedDiagnose = this.data.selectedDiagnose
+    if(selectedDiagnose.includes(this.data.diagnose[targetIndex])){
+      selectedDiagnose.splice(selectedDiagnose.findIndex(item=>item===this.data.diagnose[targetIndex]),1)
+    } else {
+      selectedDiagnose.push(this.data.diagnose[targetIndex])
+    }
+    this.setData({
+      selectedDiagnose
+    })
+  },
+  toggleOptions(e){
+    let {key,status} = e.currentTarget.dataset
+    console.log(key,status)
+    this.setData({
+      [`optionsList.${key}`]:!!Number(status)
+    })
+  },
+  confirm(){
+    if(!this.data.selectedDiagnose.length)  {
+      this.showModal('提示','请选择历史诊断内容')
+      return
+    }
+    let params = {
+      patientName:this.data.patientInfo.name,
+      patientId:this.data.patientInfo.id,
+      sex:this.data.patientInfo.sex,
+      age:1,
+      imagesList:JSON.stringify(this.data.prescriptionImageList),
+      patientComplanin:JSON.stringify({
+        ...this.data.optionsList,
+        selectedDiagnose:this.data.selectedDiagnose,
+      })
+    }
+    let pageList = getCurrentPages();
+    let prevPage = pageList[pageList.length - 2];
+    prevPage.setData({
+      patientDiagnose:params
+    })
+    wx.navigateBack()
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

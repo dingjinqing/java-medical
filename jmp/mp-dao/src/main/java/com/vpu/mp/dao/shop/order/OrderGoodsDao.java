@@ -67,8 +67,12 @@ public class OrderGoodsDao extends ShopBaseDao {
                 .fetchGroups(ORDER_GOODS.ORDER_ID, OrderGoodsDo.class);
 
     }
-    public void updateAuditStatus(List<Integer> goodIds,Byte auditStatus){
-        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.GOODS_ID.in(goodIds)).execute();
+    public void updateAuditStatus(Integer orderId,Byte auditStatus){
+        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.ORDER_ID.eq(orderId).and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE))).execute();
+
+    }
+    public void updatePrescriptionCode(Integer orderId,String prescriptionCode){
+        db().update(ORDER_GOODS).set(ORDER_GOODS.PRESCRIPTION_CODE,prescriptionCode).where(ORDER_GOODS.ORDER_ID.eq(orderId)).execute();
 
     }
 }

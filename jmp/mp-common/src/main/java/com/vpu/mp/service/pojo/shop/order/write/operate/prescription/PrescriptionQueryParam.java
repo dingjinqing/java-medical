@@ -20,9 +20,6 @@ public class PrescriptionQueryParam extends AbstractOrderOperateQueryParam {
     private Byte auditType = OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT;
     private Byte auditStatus =OrderConstant.MEDICAL_AUDIT_DEFAULT;
 
-    @NotNull
-    private Integer accountId;
-
     private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
 
     private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
