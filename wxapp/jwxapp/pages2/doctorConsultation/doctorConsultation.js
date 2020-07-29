@@ -62,7 +62,7 @@ global.wxPage({
   },
   toDoctorSearch() {
     util.navigateTo({
-      url: "/pages2/doctorSearch/doctorSearch?id=" + id + '&name=' + name 
+      url: "/pages2/doctorSearch/doctorSearch"
     })
   },
 

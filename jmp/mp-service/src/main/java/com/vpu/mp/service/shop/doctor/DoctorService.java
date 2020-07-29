@@ -171,7 +171,7 @@ public class DoctorService extends ShopBaseService {
     }
 
     /**
-     * 拉取科室列表
+     * 拉取医师列表
      * @return
      */
     public JsonResult fetchExternalDoctor(){

@@ -1,6 +1,6 @@
 <!--components/doctor/doctor_list/doctor_list.wxml.wxml-->
 <view class="doctor_content" wx:for='{{doctorList}}' wx:key='id'>
-	<view class="doctor_item">
+	<view class="doctor_item" catchtap="toChat" data-doctor_id='{{item.id}}' data-depar_id='{{item.departmentId}}'>
 		<view class="d_left">
 			<image src="{{item.url}}" wx:if='{{item.url != ""}}'></image>
          <image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>
@@ -15,10 +15,10 @@
 				<text style="margin-left:10rpx">{{item.departmentName}}</text>
 			</view>
 			<view class="d_r_m_b">
-				<view>擅长：痤疮、湿疹、白癜风</view>
+				<view>擅长：{{item.treatDisease}}</view>
 			</view>
 			<view class="d_r_bot">
-				<view>￥5<text>/次</text></view>
+				<view>￥{{item.consultationPrice}}<text>/次</text></view>
 			</view>
 		</view>
 	</view>
