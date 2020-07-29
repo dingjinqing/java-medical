@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.prescription;
 
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDrugVo;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,5 +21,5 @@ public class PrescriptionMakeParam extends AbstractOrderOperateQueryParam {
     private String diagnosisName;
     private String doctorAdvice;
     private Byte auditStatus;
-    private List<Integer> goodsIdList=new ArrayList<>();
+    private List<PrescriptionDrugVo> goodsList=new ArrayList<>();
 }
