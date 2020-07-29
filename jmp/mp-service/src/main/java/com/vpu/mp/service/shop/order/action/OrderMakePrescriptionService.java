@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderMedicalHistoryDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
@@ -19,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPres
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -110,11 +112,16 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
     public ExecuteResult execute(PrescriptionMakeParam obj) {
         PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
         FieldsUtil.assign(obj,prescriptionOneParam);
-        //生成处方，处方明细
-        prescriptionService.insertPrescription(prescriptionOneParam);
-        //更新审核状态
-        orderInfoService.updateAuditStatus(obj.getOrderId(),OrderConstant.MEDICAL_AUDIT_PASS);
-        orderGoodsService.updateAuditStatus(obj.getGoodsIdList(),OrderConstant.MEDICAL_AUDIT_PASS);
+        OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
+        transaction(() -> {
+            //生成处方，处方明细
+            PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
+            //更新状态
+            orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.ORDER_WAIT_DELIVERY);
+            orderGoodsService.updateAuditStatus(obj.getOrderId(), OrderConstant.MEDICAL_AUDIT_PASS);
+            //更新处方号
+            orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
+        });
         return ExecuteResult.create();
     }
 

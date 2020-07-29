@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseParam;
 import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseVo;
+import com.vpu.mp.service.pojo.shop.order.goods.param.OrderGoodsParam;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -26,6 +27,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +47,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/wxapp/order")
 public class WxAppOrderController extends WxAppBaseController{
+    @Autowired
+    private OrderInfoService orderInfoService;
 
     /**
      * 	结算页面
@@ -369,6 +374,11 @@ public class WxAppOrderController extends WxAppBaseController{
         if(executeResult == null || executeResult.isSuccess()) {
             return success();
         }
+        return success();
+    }
+    @PostMapping("/prescription/reject")
+    public JsonResult rejectOrder(@RequestBody OrderGoodsParam orderGoodsParam){
+        orderInfoService.rejectAudit(orderGoodsParam);
         return success();
     }
 }
