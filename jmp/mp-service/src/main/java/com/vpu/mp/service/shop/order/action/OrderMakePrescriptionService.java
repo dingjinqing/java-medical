@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
@@ -110,9 +111,12 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      */
     @Override
     public ExecuteResult execute(PrescriptionMakeParam obj) {
+        OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
+        if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE);
+        }
         PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
         FieldsUtil.assign(obj,prescriptionOneParam);
-        OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
         transaction(() -> {
             //生成处方，处方明细
             PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);

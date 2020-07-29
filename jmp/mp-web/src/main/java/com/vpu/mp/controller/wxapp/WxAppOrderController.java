@@ -374,11 +374,10 @@ public class WxAppOrderController extends WxAppBaseController{
         if(executeResult == null || executeResult.isSuccess()) {
             return success();
         }
-        return success();
+        return result(executeResult.getErrorCode(),executeResult.getResult());
     }
     @PostMapping("/prescription/reject")
     public JsonResult rejectOrder(@RequestBody OrderGoodsParam orderGoodsParam){
-        orderInfoService.rejectAudit(orderGoodsParam);
-        return success();
+        return success(orderInfoService.rejectAudit(orderGoodsParam));
     }
 }
