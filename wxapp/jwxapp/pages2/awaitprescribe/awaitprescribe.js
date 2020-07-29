@@ -8,7 +8,6 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    if_show_more: 0,
     page_info: []
   },
 
@@ -22,7 +21,19 @@ global.wxPage({
   requestInfo () {
     util.api('/api/wxapp/order/medical/get', res => {
       if(res.error == 0) {
-        this.data.page_info = res.content[0];
+        this.data.page_info = res.content;
+        for (var i in this.data.page_info) {
+          this.data.page_info[i].if_show_more = 0;
+          this.data.page_info[i].patient.gestationName = this.getGesName(this.data.page_info[i].patient.gestationType);
+          if(!!this.data.page_info[i].medicalHistory && !!this.data.page_info[i].medicalHistory.diseaseHistory){
+            this.data.page_info[i].medicalHistory.diseaseHistory =JSON.parse(JSON.stringify(this.data.page_info[i].medicalHistory.diseaseHistory));
+            console.log(this.data.page_info[i].medicalHistory.diseaseHistory)
+          }
+          if(!!this.data.page_info[i].medicalHistory && !!this.data.page_info[i].medicalHistory.imagesList){
+            this.data.page_info[i].medicalHistory.imagesList = JSON.parse(this.data.page_info[i].medicalHistory.imagesList);
+            console.log(this.data.page_info[i].medicalHistory.imagesList)
+          }
+        }
         this.setData({
           page_info: this.data.page_info
         })
@@ -32,10 +43,29 @@ global.wxPage({
       }
     },{})
   },
-  show_more () {
-    this.data.if_show_more = this.data.if_show_more == 0 ? 1 : 0;
+  getGesName (data) {
+    switch(data){
+      case 0:
+        return '未知'
+      case 1:
+        return '无'
+      case 2:
+        return '备孕中'
+      case 3:
+        return '怀孕中'
+      case 4:
+        return '正在哺乳'
+    }
+  },
+  show_more (e) {
+    var this_index = e.currentTarget.dataset.index;
+    if(this.data.page_info[this_index].if_show_more == 0) {
+      this.data.page_info[this_index].if_show_more = 1
+    } else {
+      this.data.page_info[this_index].if_show_more = 0
+    }
     this.setData({
-      if_show_more: this.data.if_show_more
+      page_info: this.data.page_info
     })
   },
   /**

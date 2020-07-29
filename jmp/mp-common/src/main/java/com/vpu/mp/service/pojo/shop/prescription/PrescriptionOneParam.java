@@ -18,5 +18,6 @@ public class PrescriptionOneParam {
     private String diagnosisName;
     private Timestamp diagnoseTime;
     private String doctorAdvice;
+    private Byte isUsed;
     private List<Integer> goodsIdList=new ArrayList<>();
 }

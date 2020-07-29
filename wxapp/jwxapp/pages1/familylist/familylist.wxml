@@ -18,8 +18,8 @@
             <view catchtap="changeDefault" data-id='{{item.id}}'>{{ item.isDefault == 1 ? "":"设为"}}默认</view>
           </view>
           <view class="some_opea">
-            <text>编辑</text>
-            <text>删除</text>
+            <text bindtap="edit_patient" data-id='{{item.id}}'>编辑</text>
+            <text bindtap="del_patient" data-id='{{item.id}}'>删除</text>
           </view>
         </view>
       </view>

@@ -65,6 +65,20 @@ global.wxPage({
       userId: util.getCache('user_id')
     })
   },
+  edit_patient (e) {
+    util.jumpLink('/pages1/patientinfo/patientinfo?is_edit=1&patient_id=' + e.currentTarget.dataset.id)
+  },
+  del_patient (e) {
+    util.api('/api/wxapp/user/patient/delete', res => {
+      if(res.error == 0){
+        util.toast_success('删除成功!')
+        this.requestList()
+      }
+    },{
+      userId: util.getCache('user_id'),
+      patientId: e.currentTarget.dataset.id
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

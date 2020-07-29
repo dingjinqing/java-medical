@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class GoodsMedicalExternalRequestBo {
     private Integer totalCount;
+    private Integer pageRows;
     private Integer curPage;
     private Integer pageSize;
     private List<GoodsMedicalExternalRequestItemBo> dataList;

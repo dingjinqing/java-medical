@@ -607,12 +607,12 @@ public class OrderGoodsService extends ShopBaseService {
     }
 
     /**
-     * 批量修改审核状态
-     * @param recIds
+     * 修改审核状态
+     * @param orderId
      * @param auditStatus
      */
-    public void batchUpdateAuditStatusByRecId(List<Integer> recIds,Byte auditStatus){
-        orderGoodsDao.batchUpdateAuditStatusByRecId(recIds,auditStatus);
+    public void updateAuditStatusByOrderId(Integer orderId,Byte auditStatus){
+        orderGoodsDao.updateAuditStatusByOrderId(orderId,auditStatus);
     }
 
     /**

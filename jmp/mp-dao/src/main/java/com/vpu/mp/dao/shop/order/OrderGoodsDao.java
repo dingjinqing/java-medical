@@ -69,12 +69,12 @@ public class OrderGoodsDao extends ShopBaseDao {
     }
 
     /**
-     * 批量更改审核状态
-     * @param recIds
+     * 更改审核状态
+     * @param orderId
      * @param auditStatus
      */
-    public void batchUpdateAuditStatusByRecId(List<Integer> recIds,Byte auditStatus){
-        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.REC_ID.in(recIds)).execute();
+    public void updateAuditStatusByOrderId(Integer orderId,Byte auditStatus){
+        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.ORDER_ID.in(orderId).and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE))).execute();
 
     }
 
