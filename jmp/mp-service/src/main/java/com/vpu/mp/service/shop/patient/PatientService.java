@@ -250,4 +250,12 @@ public class PatientService extends BaseShopConfigService{
     public boolean isExistUserPatient(UserPatientParam param) {
         return userPatientCoupleDao.isExistUserPatient(param);
     }
+
+    /**
+     * 接触用户患者关联
+     * @param param
+     */
+    public void deleteUserPatient(UserPatientParam param) {
+        userPatientCoupleDao.deleteUserPatient(param);
+    }
 }

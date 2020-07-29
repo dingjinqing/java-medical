@@ -78,4 +78,13 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
         int count = db().fetchCount(USER_PATIENT_COUPLE, condition);
         return count>0;
     }
+
+    /**
+     * 接触用户患者关联
+     * @param param
+     */
+    public void deleteUserPatient(UserPatientParam param) {
+        db().delete(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId())).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
+            .execute();
+    }
 }

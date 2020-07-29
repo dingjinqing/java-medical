@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.doctor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
@@ -28,6 +29,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author chenjie
@@ -123,7 +126,8 @@ public class DoctorService extends ShopBaseService {
     public void fetchDoctor(String json) {
         List<DoctorFetchOneParam> doctorFetchList = Util.parseJson(json, new TypeReference<List<DoctorFetchOneParam>>() {
         });
-        for (DoctorFetchOneParam list : doctorFetchList) {
+        List<DoctorFetchOneParam> doctorFetchListNew = listDoctorFetch(doctorFetchList);
+        for (DoctorFetchOneParam list : doctorFetchListNew) {
             DoctorOneParam doctor = new DoctorOneParam();
             doctor.setName(list.getDoctorName());
             doctor.setCertificateCode(list.getCertificateCode());
@@ -132,11 +136,6 @@ public class DoctorService extends ShopBaseService {
             doctor.setUrl(list.getDocUrl());
             doctor.setMobile(list.getDocPhone());
             doctor.setSex((list.getDoctorSex() == 1) ? (byte)0:(byte)1);
-            if (list.getState() == 3) {
-                doctor.setIsDelete((byte) 1);
-            } else if(list.getState() == 2) {
-                doctor.setStatus((byte) 0);
-            }
             doctor.setTitleId(titleService.getTitleIdNew(list.getPositionCode()));
 
             List<String> result = Arrays.asList(list.getDepartCode().split(","));
@@ -148,6 +147,27 @@ public class DoctorService extends ShopBaseService {
             doctor.setDepartmentIdsStr(departmentStr);
             synchroDoctor(doctor);
         }
+    }
+
+    public List<DoctorFetchOneParam> listDoctorFetch(List<DoctorFetchOneParam> doctorFetchList){
+        Map<String, List<DoctorFetchOneParam>> doctorCodeMap = doctorFetchList.stream().collect(Collectors.groupingBy(DoctorFetchOneParam::getDoctorCode));
+
+        List<DoctorFetchOneParam> doctorList = new ArrayList<>();
+        doctorCodeMap.forEach((k, v) -> {
+            List<String> departmentCodes = new ArrayList<>();
+            for (DoctorFetchOneParam doctor : v) {
+                if (doctor.getState() > 1) {
+                    continue;
+                }
+                departmentCodes.add(doctor.getDepartCode());
+            }
+            int number = v.size();
+            DoctorFetchOneParam newDoctor = new DoctorFetchOneParam();
+            FieldsUtil.assign(v.get(number-1),newDoctor);
+            newDoctor.setDepartCode(Joiner.on(",").join(departmentCodes));
+            doctorList.add(newDoctor);
+        });
+        return doctorList;
     }
 
     /**

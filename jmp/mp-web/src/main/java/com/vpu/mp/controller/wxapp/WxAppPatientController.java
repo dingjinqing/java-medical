@@ -139,4 +139,13 @@ public class WxAppPatientController extends WxAppBaseController {
         }
         return success(smsAccount);
     }
+
+    /**
+     * 	手动删除患者
+     */
+    @PostMapping("/api/wxapp/user/patient/delete")
+    public JsonResult deletePatient(@RequestBody UserPatientParam param) {
+        shop().patientService.deleteUserPatient(param);
+        return success();
+    }
 }
