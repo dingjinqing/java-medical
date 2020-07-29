@@ -19,9 +19,9 @@ global.wxPage({
     titleList: [],
     deparName: '科室',
     doctorName: '职称',
-    deparId:0,
-    doctorId:0,
-    keyword:''
+    deparId: 0,
+    doctorId: 0,
+    keyword: ''
   },
 
   /**
@@ -29,12 +29,19 @@ global.wxPage({
    */
   onLoad: function (options) {
     let that = this;
-    this.requestList('', options.id)
+    let deparId = 0;
+    if (options.id) {
+      that.setData({
+        deparId: options.id
+      })
+      deparId = options.id
+    }
     if (options.name) {
       that.setData({
         deparName: options.name
       })
     }
+    this.requestList('', deparId)
   },
   choose_type(e) {
     let that = this;
@@ -71,21 +78,21 @@ global.wxPage({
     let deparId = that.data.deparId;
     let doctorId = that.data.doctorId;
     let keyword = that.data.keyword;
-    if(choose_type == 'doctor'){
+    if (choose_type == 'doctor') {
       doctorName = name;
       doctorId = id;
-    }else{
+    } else {
       deparName = name;
       deparId = id;
     }
-    this.requestList(keyword,deparId,doctorId)
+    this.requestList(keyword, deparId, doctorId)
     that.setData({
-      doctorName:doctorName,
-      deparName:deparName,
-      doctorId:doctorId,
-      deparId:deparId,
-      can_show:false,
-      choose_type:''
+      doctorName: doctorName,
+      deparName: deparName,
+      doctorId: doctorId,
+      deparId: deparId,
+      can_show: false,
+      choose_type: ''
     })
   },
   hide_cover() {
@@ -150,16 +157,16 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
-  changeInput (e) {
+  changeInput(e) {
     this.setData({
       keyword: e.detail.value
     })
   },
-  inputSearch () {
+  inputSearch() {
     let keyword = this.data.keyword;
     let deparId = this.data.deparId;
     let doctorId = this.data.doctorId;
-    this.requestList(keyword,deparId,doctorId)
+    this.requestList(keyword, deparId, doctorId)
   },
 
   requestList: function (keyword = '', departmentId = 0, titleId = 0) {

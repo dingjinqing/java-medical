@@ -5,26 +5,29 @@
 		<view class="card-content has-padding p-left">
 			<view class="list-item">
 				<text class="default-text">姓名</text>
-				<input class="emphasis-text" placeholder="请输入姓名" placeholder-class="phClass" />
+				<input class="emphasis-text" placeholder="请输入姓名" placeholder-class="phClass" wx:if='{{edit == false}}' bindblur="realName"/>
+				<text class="emphasis-text" wx:else>{{name}}</text>
 			</view>
 			<view class="list-item">
 				<text class="default-text">年龄</text>
-				<input class="emphasis-text" placeholder="请输入年龄" placeholder-class="phClass" />
+				<input class="emphasis-text" placeholder="请输入年龄" placeholder-class="phClass" wx:if='{{edit == false}}' bindblur="realAge"/>
+				<text class="emphasis-text" wx:else>{{age}}</text>
 			</view>
 			<view class="list-item">
 				<text class="default-text">性别</text>
-				<view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
-					<picker mode="selector" value="{{sex_index}}" range="{{array}}" bindchange="bindSexChange">
+				<view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;' wx:if='{{edit == false}}'>
+					<picker mode="selector" value="{{sex}}" range="{{array}}" bindchange="bindSexChange">
 						<view class="picker">
-							{{array[sex_index]}}
+							{{array[sex]}}
 						</view>
 					</picker>
 				</view>
+	      <text class="emphasis-text" wx:else>array{{sex}}</text>
 			</view>
 		</view>
 		<view class="title-module">病情描述</view>
 		<view class="card-content column has-padding p-top p-bottom">
-			<textarea placeholder="请在此填写病情描述" maxlength='300'></textarea>
+			<textarea placeholder="请在此填写病情描述" maxlength='300' bindblur='bindCheckInput'></textarea>
 			<view class="image-con">
 
 				<block wx:for="{{comm_img}}" wx:key="index" wx:for-item="imgitem" wx:for-index="imgindex">
@@ -41,7 +44,7 @@
 
 		</view>
 		<view class="footer-content">
-			<view class="footer-button" style="background-color:#26C4BC;">问诊￥0/次</view>
+			<view class="footer-button" style="background-color:#26C4BC;" bindtap="toOrder">问诊￥{{orderAmount}}/次</view>
 		</view>
 
 	</view>
