@@ -70,11 +70,11 @@ public class SmsSendRecordDao extends ShopBaseDao {
         if (smsSendRecordAdminParam.getExt() != null) {
             select.where(SMS_SEND_RECORD.EXT.like(smsSendRecordAdminParam.getExt()));
         }
-        if (smsSendRecordAdminParam.getLessTime() != null) {
-            select.where(SMS_SEND_RECORD.CREATE_TIME.gt(smsSendRecordAdminParam.getLessTime()));
+        if (smsSendRecordAdminParam.getStartCreateTime() != null) {
+            select.where(SMS_SEND_RECORD.CREATE_TIME.gt(smsSendRecordAdminParam.getStartCreateTime()));
         }
-        if (smsSendRecordAdminParam.getGreaterTime() != null) {
-            select.where(SMS_SEND_RECORD.CREATE_TIME.lt(smsSendRecordAdminParam.getGreaterTime()));
+        if (smsSendRecordAdminParam.getEndCreateTime() != null) {
+            select.where(SMS_SEND_RECORD.CREATE_TIME.lt(smsSendRecordAdminParam.getEndCreateTime()));
         }
         if (smsSendRecordAdminParam.getResponseMsgCode() != null) {
             select.where(SMS_SEND_RECORD.RESPONSE_MSG_CODE.eq(smsSendRecordAdminParam.getResponseMsgCode()));
