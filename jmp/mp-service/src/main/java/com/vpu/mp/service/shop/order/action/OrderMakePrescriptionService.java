@@ -1,9 +1,11 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderMedicalHistoryDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
@@ -19,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPres
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -31,6 +34,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**订单待开方
  * @author yangpengcheng
@@ -108,13 +112,23 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      */
     @Override
     public ExecuteResult execute(PrescriptionMakeParam obj) {
+        OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
+        if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE);
+        }
         PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
         FieldsUtil.assign(obj,prescriptionOneParam);
-        //生成处方，处方明细
-        prescriptionService.insertPrescription(prescriptionOneParam);
-        //更新审核状态
-        orderInfoService.updateAuditStatus(obj.getOrderId(),OrderConstant.MEDICAL_AUDIT_PASS);
-        orderGoodsService.updateAuditStatus(obj.getGoodsIdList(),OrderConstant.MEDICAL_AUDIT_PASS);
+        List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfoDo.getOrderId()).into(OrderGoodsDo.class);
+        List<Integer> recIdList=orderGoodsDoList.stream().map(OrderGoodsDo::getRecId).collect(Collectors.toList());
+        transaction(() -> {
+            //生成处方，处方明细
+            PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
+            //更新状态
+            orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.ORDER_WAIT_DELIVERY);
+            orderGoodsService.batchUpdateAuditStatusByRecId(recIdList, OrderConstant.MEDICAL_AUDIT_PASS);
+            //更新处方号
+            orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
+        });
         return ExecuteResult.create();
     }
 

@@ -129,7 +129,7 @@ public class PrescriptionDao extends ShopBaseDao {
     public <E> Map<String, E> mapPrescriptionByCode(Collection<String> codeList, Class<? extends E> type) {
        return db().select().from(PRESCRIPTION)
                 .where(PRESCRIPTION.PRESCRIPTION_CODE.in(codeList))
-               .fetchMap(PRESCRIPTION.PHARMACIST_CODE,type);
+               .fetchMap(PRESCRIPTION.PRESCRIPTION_CODE,type);
     }
 
     /**

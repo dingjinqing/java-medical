@@ -343,8 +343,9 @@ public class OrderGoodsService extends ShopBaseService {
             promoteInfo(null).
 			//处方信息
 			prescriptionInfo(goods.getPrescriptionInfo()).
-			checkPrescriptionStatus(goods.getCheckPrescriptionStatus()).
-			medicalAuditStatus(goods.getOrderAuditType()).
+			prescriptionOldCode(goods.getPrescriptionCode()).
+			medicalAuditStatus(goods.getMedicalAuditStatus()).
+			medicalAuditType(goods.getMedicalAuditType()).
             build();
 		if (goods.getMedicalInfo()!=null){
 			bo.setIsRx(goods.getMedicalInfo().getIsRx());
@@ -606,12 +607,21 @@ public class OrderGoodsService extends ShopBaseService {
     }
 
     /**
-     * 修改审核状态
-     * @param goodsIds
+     * 批量修改审核状态
+     * @param recIds
      * @param auditStatus
      */
-    public void updateAuditStatus(List<Integer> goodsIds,Byte auditStatus){
-        orderGoodsDao.updateAuditStatus(goodsIds,auditStatus);
+    public void batchUpdateAuditStatusByRecId(List<Integer> recIds,Byte auditStatus){
+        orderGoodsDao.batchUpdateAuditStatusByRecId(recIds,auditStatus);
+    }
+
+    /**
+     * 更改处方号
+     * @param orderId
+     * @param prescriptionCode
+     */
+    public void updatePrescriptionCode(Integer orderId,String prescriptionCode){
+        orderGoodsDao.updatePrescriptionCode(orderId,prescriptionCode);
     }
 
 }

@@ -1,15 +1,16 @@
 package com.vpu.mp.service.shop.order.info;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.data.*;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.DateUtils.IntervalType;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.dao.foundation.database.DslPlus;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -28,12 +29,14 @@ import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.goods.param.OrderGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.DatePart;
@@ -46,6 +49,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -104,7 +108,12 @@ public class OrderInfoService extends ShopBaseService {
 
     public final OrderInfo TABLE = ORDER_INFO;
 
+    @Autowired
     private OrderInfoDao orderInfoDao;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
     /**
      * 支付种类（细分）PAY_SUBDIVISION
      */
@@ -870,6 +879,10 @@ public class OrderInfoService extends ShopBaseService {
                 break;
             case OrderConstant.ORDER_WAIT_DELIVERY:
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+                //如果是开方,则审核通过
+                if(order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                    order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
+                }
                 break;
             default:
                 return;
@@ -1032,7 +1045,8 @@ public class OrderInfoService extends ShopBaseService {
         //药品信息
         order.setPatientId(param.getPatientId());
         order.setOrderMedicalType(param.getOrderMedicalType());
-        order.setOrderAuditStatus(param.getCheckPrescriptionStatus());
+        order.setOrderAuditType(param.getOrderAuditType());
+        order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_DEFAULT);
         return order;
     }
 
@@ -1677,12 +1691,23 @@ public class OrderInfoService extends ShopBaseService {
             .fetch(x -> x.into(String.class));
     }
 
+
     /**
-     *
-     * @param orderId
-     * @param auditStatus
+     * auditStatus驳回
+     * @param orderGoodsParam
      */
-    public void updateAuditStatus(Integer orderId,Byte auditStatus){
-        orderInfoDao.updateAuditStatus(orderId,auditStatus);
+    public JsonResult rejectAudit(OrderGoodsParam orderGoodsParam){
+        OrderInfoDo orderInfoDo=getByOrderId(orderGoodsParam.getOrderId(),OrderInfoDo.class);
+        if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
+            return new JsonResult().result(null, JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
+        }
+        List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfoDo.getOrderId()).into(OrderGoodsDo.class);
+        List<Integer> recIdList=orderGoodsDoList.stream().map(OrderGoodsDo::getRecId).collect(Collectors.toList());
+
+        transaction(() -> {
+            orderInfoDao.updateAuditStatus(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+            orderGoodsDao.batchUpdateAuditStatusByRecId(recIdList,OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+        });
+        return JsonResult.success();
     }
 }

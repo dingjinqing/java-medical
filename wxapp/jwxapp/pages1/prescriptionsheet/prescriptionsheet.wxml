@@ -1,3 +1,4 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <view class="body">
   <include src="../../pages/common/header.wxml" />
   <view class="main-container">
@@ -5,65 +6,33 @@
     <view class="card-content has-padding p-left">
       <view class="list-item">
         <text class="default-text">姓名：</text>
-        <text class="emphasis-text">张三</text>
+        <text class="emphasis-text">{{patientInfo.name}}</text>
       </view>
       <view class="list-item">
         <text class="default-text">年龄：</text>
-        <text class="emphasis-text">45</text>
+        <text class="emphasis-text">{{patientInfo.age}}</text>
       </view>
       <view class="list-item">
         <text class="default-text">性别：</text>
-        <text class="emphasis-text">男</text>
+        <text class="emphasis-text">{{filter.getSex(patientInfo.sex)}}</text>
       </view>
     </view>
     <view class="title-module">历史诊断（可多选）</view>
     <view class="card-content has-padding p-left">
       <view class="list-item">
         <view class="label-content wrap has-padding p-bottom">
-          <view class="label-item" style="{{true ? 'background-color:'+ somColor +';color:'+comColor+';border-color:'+comColor+';' : ''}}">心绞痛</view>
-          <view class="label-item">原发性高血压</view>
-          <view class="label-item">高血压</view>
-          <view class="label-item">心肌炎</view>
-          <view class="label-item">肺炎</view>
-          <view class="label-item">咳嗽</view>
-          <view class="label-item">感冒</view>
+          <view class="label-item" style="{{filter.includes(selectedDiagnose,item) ? 'background-color:'+ somColor +';color:'+comColor+';border-color:'+comColor+';' : ''}}" wx:for="{{diagnose}}" wx:key="index" data-index="{{index}}" bindtap="chooseDiagnose">{{item}}</view>
         </view>
       </view>
-      <view class="list-item space-between">
-        <text class="default-text">曾服用过本药品</text>
+      <view class="list-item space-between" wx:for="{{optionsList}}" wx:for-index="key" wx:key="key">
+        <text class="default-text">{{optionsName[key]}}</text>
         <view class="radio-group">
-          <view class="radio-content">
-            <text class="iconfont icondanxuanbiankuang" style="color:{{comColor}};"></text>
+          <view class="radio-content" data-key="{{key}}" data-status="1" bindtap="toggleOptions">
+            <text class="iconfont {{item ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};"></text>
             <text>是</text>
           </view>
-          <view class="radio-content">
-            <text class="iconfont icondanxuan" style="color:{{comColor}};"></text>
-            <text>否</text>
-          </view>
-        </view>
-      </view>
-      <view class="list-item space-between">
-        <text class="default-text">有无不良反应</text>
-        <view class="radio-group">
-           <view class="radio-content">
-            <text class="iconfont icondanxuan" style="color:{{comColor}};"></text>
-            <text>是</text>
-          </view>
-          <view class="radio-content">
-            <text class="iconfont icondanxuanbiankuang" style="color:{{comColor}};"></text>
-            <text>否</text>
-          </view>
-        </view>
-      </view>
-      <view class="list-item space-between">
-        <text class="default-text">妊娠哺乳</text>
-        <view class="radio-group">
-           <view class="radio-content">
-            <text class="iconfont icondanxuan" style="color:{{comColor}};"></text>
-            <text>是</text>
-          </view>
-          <view class="radio-content">
-            <text class="iconfont icondanxuanbiankuang" style="color:{{comColor}};"></text>
+          <view class="radio-content" data-key="{{key}}" data-status="0" bindtap="toggleOptions">
+            <text class="iconfont {{!item ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};"></text>
             <text>否</text>
           </view>
         </view>
@@ -79,7 +48,7 @@
       </view>
     </view>
     <view class="footer-content">
-      <view class="footer-button" style="background-color:#26C4BC;">确定</view>
+      <view class="footer-button" style="background-color:#26C4BC;" bindtap="confirm">确定</view>
     </view>
     <include src="../../pages/common/footer.wxml" />
   </view>

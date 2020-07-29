@@ -1,6 +1,5 @@
 package com.vpu.mp.service.saas.api;
 
-import cn.hutool.crypto.SecureUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.ApiExternalConfig;
 import com.vpu.mp.service.saas.external.ExternalRequestHistoryService;
@@ -46,15 +45,9 @@ public class ApiExternalBaseService {
                 sb.append("&");
             }
         }
-        long a=System.currentTimeMillis();
-        String s = SecureUtil.md5(sb.toString());
-        long b=System.currentTimeMillis();
-        log.info("SecureUtil.md5--{}",a-b);
+        String s = Util.md5(sb.toString());
         s = s + curSecond + apiExternalConfig.getSignKey();
-        long c=System.currentTimeMillis();
         s = Util.md5(s);
-        long d=System.currentTimeMillis();
-        log.info("Util.md5--{}",c-d);
         return s;
     }
 

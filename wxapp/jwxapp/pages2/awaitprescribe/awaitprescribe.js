@@ -8,7 +8,8 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    if_show_more: 0
+    if_show_more: 0,
+    page_info: []
   },
 
   /**
@@ -16,6 +17,20 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    this.requestInfo();
+  },
+  requestInfo () {
+    util.api('/api/wxapp/order/medical/get', res => {
+      if(res.error == 0) {
+        this.data.page_info = res.content[0];
+        this.setData({
+          page_info: this.data.page_info
+        })
+      } else {
+        util.showModal('提示', res.message);
+        return false
+      }
+    },{})
   },
   show_more () {
     this.data.if_show_more = this.data.if_show_more == 0 ? 1 : 0;

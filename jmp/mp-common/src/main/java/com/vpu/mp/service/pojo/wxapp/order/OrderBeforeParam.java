@@ -208,13 +208,17 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         /**处方详情*/
         private PrescriptionVo prescriptionInfo;
         /**
+         * 处方号
+         */
+        private String prescriptionCode;
+        /**
          * 处方药关联处方校验 0不校验 1 通过 2不通过
          */
-        private Byte checkPrescriptionStatus;
+        private Byte medicalAuditStatus;
         /**
          * 订单审核类型 0不审核 1审核 2开方 3有效处方
          */
-        private Byte orderAuditType;
+        private Byte medicalAuditType;
 
         public static Goods init(Integer goodsId, Integer goodsNumber, Integer productId) {
             OrderBeforeParam.Goods goods = new OrderBeforeParam.Goods();

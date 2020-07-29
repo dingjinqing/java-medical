@@ -293,9 +293,10 @@ public class PrescriptionService extends ShopBaseService {
      * 上传保存处方
      * @param param
      */
-    public void insertPrescription(PrescriptionOneParam param){
+    public PrescriptionParam insertPrescription(PrescriptionOneParam param){
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
+        return prescriptionParam;
 
     }
 
