@@ -1,14 +1,14 @@
 package com.vpu.mp.service.shop.order.info;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.data.*;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.DateUtils.IntervalType;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
@@ -36,6 +36,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.DatePart;
@@ -111,6 +112,8 @@ public class OrderInfoService extends ShopBaseService {
     private OrderInfoDao orderInfoDao;
     @Autowired
     private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
     /**
      * 支付种类（细分）PAY_SUBDIVISION
      */
@@ -1693,10 +1696,18 @@ public class OrderInfoService extends ShopBaseService {
      * auditStatus驳回
      * @param orderGoodsParam
      */
-    public void rejectAudit(OrderGoodsParam orderGoodsParam){
+    public JsonResult rejectAudit(OrderGoodsParam orderGoodsParam){
+        OrderInfoDo orderInfoDo=getByOrderId(orderGoodsParam.getOrderId(),OrderInfoDo.class);
+        if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
+            return new JsonResult().result(null, JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
+        }
+        List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfoDo.getOrderId()).into(OrderGoodsDo.class);
+        List<Integer> recIdList=orderGoodsDoList.stream().map(OrderGoodsDo::getRecId).collect(Collectors.toList());
+
         transaction(() -> {
             orderInfoDao.updateAuditStatus(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
-            orderGoodsDao.updateAuditStatus(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+            orderGoodsDao.batchUpdateAuditStatusByRecId(recIdList,OrderConstant.MEDICAL_AUDIT_NOT_PASS);
         });
+        return JsonResult.success();
     }
 }

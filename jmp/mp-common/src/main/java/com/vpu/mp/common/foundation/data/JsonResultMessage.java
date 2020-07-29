@@ -860,6 +860,11 @@ public class JsonResultMessage {
      */
     public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK = "order.medical.prescription.check";
 
+    /**
+     * 订单状态
+     */
+    public static final String CODE_ORDER_STATUS_ALREADY_CHANGE = "order.status.is.already.change";
+
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
     public static final String MSG_ORDER_CARD_EXCHGE_NO_CHOOSE_GOODS = "order.card.exchge.no.choose.goods";
