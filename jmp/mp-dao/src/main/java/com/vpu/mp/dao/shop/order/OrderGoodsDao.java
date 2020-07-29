@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import org.jooq.Record2;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
@@ -83,8 +84,51 @@ public class OrderGoodsDao extends ShopBaseDao {
      * @param orderId
      * @param prescriptionCode
      */
-    public void updatePrescriptionCode(Integer orderId,String prescriptionCode){
-        db().update(ORDER_GOODS).set(ORDER_GOODS.PRESCRIPTION_CODE,prescriptionCode).where(ORDER_GOODS.ORDER_ID.eq(orderId)).execute();
+    public void updatePrescriptionCode(Integer orderId,String prescriptionCode) {
+        db().update(ORDER_GOODS).set(ORDER_GOODS.PRESCRIPTION_CODE, prescriptionCode).where(ORDER_GOODS.ORDER_ID.eq(orderId)).execute();
+    }
 
+    /**
+     *
+     * @param goodIds
+     * @param auditStatus
+     */
+    public void updateAuditStatusByOrderId(List<Integer> goodIds,Byte auditStatus){
+        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.GOODS_ID.in(goodIds)).execute();
+
+    }
+
+    /**
+     * 审核通过 更新订单商品状态
+     * @param prescriptionCode
+     */
+    public void updateAuditedToWaitDelivery(List<Integer> recIds,String prescriptionCode){
+        db().update(ORDER_GOODS)
+                .set(ORDER_GOODS.PRESCRIPTION_CODE,prescriptionCode)
+                .where(ORDER_GOODS.REC_ID.in(recIds)).execute();
+
+    }
+
+    /**
+     * 审核订单商品状态
+     * @param recIds
+     * @param auditStatus
+     */
+    public void updateAuditStatusByRecIds(List<Integer> recIds, byte auditStatus) {
+        db().update(ORDER_GOODS)
+                .set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus)
+                .where(ORDER_GOODS.REC_ID.in(recIds)).execute();
+    }
+
+    /**
+     * 获取审核订单信息
+     * @param orderId 订单id
+     * @return
+     */
+    public List<OrderGoodsSimpleAuditVo> listSimpleAuditByOrderId(Integer orderId) {
+        return db().select(ORDER_GOODS.REC_ID,ORDER_GOODS.PRESCRIPTION_OLD_CODE,ORDER_GOODS.PRESCRIPTION_CODE,
+                ORDER_GOODS.MEDICAL_AUDIT_TYPE,ORDER_GOODS.MEDICAL_AUDIT_STATUS)
+                .where(ORDER_GOODS.ORDER_ID.eq(orderId))
+                .fetchInto(OrderGoodsSimpleAuditVo.class);
     }
 }

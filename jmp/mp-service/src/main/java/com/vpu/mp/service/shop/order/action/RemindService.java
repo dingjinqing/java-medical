@@ -65,7 +65,7 @@ public class RemindService extends ShopBaseService implements IorderOperate<Orde
 		orderInfo.remind(order);
 		//TODO 发送通知
 		//操作记录
-		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_REMIND.code }), new String[] {param.getOrderSn()});
+		record.insertRecord(Arrays.asList(RecordContentTemplate.ORDER_REMIND.code), param.getOrderSn());
 		return null;
 	}
 

@@ -4,6 +4,7 @@ import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -18,4 +19,14 @@ public class AuditOrderGoodsVo {
     private List<OrderGoodsDo> goodsList;
 
     private PrescriptionSimpleVo prescription;
+
+    private Timestamp time;
+    /**
+     * 订单id
+     */
+    private Integer orderId;
+    /**
+     * 订单号
+     */
+    private String orderSn;
 }

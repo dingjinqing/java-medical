@@ -12,6 +12,7 @@ import com.vpu.mp.common.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -74,6 +75,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_ONLY_MONEY;
 
 /**
  * @author 王帅
@@ -175,6 +178,36 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             return result;
         }
 
+    }
+
+    /**
+     * 审核失败退款
+     * @param orderSn
+     * @return
+     */
+    public ExecuteResult auditNotPassRefund(String orderSn){
+        OrderInfoRecord orderRecord = orderInfo.getOrderByOrderSn(orderSn);
+        Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(orderRecord.getOrderId());
+        //组装退款param
+        RefundParam param = new RefundParam();
+        param.setAction((byte) OrderServiceCode.RETURN.ordinal());//1是退款
+        param.setIsMp(OrderConstant.IS_MP_DOCTOR);
+        param.setOrderSn(orderSn);
+        param.setOrderId(orderRecord.getOrderId());
+        param.setReturnType(OrderConstant.RT_ONLY_MONEY);
+        param.setReturnMoney(orderRecord.getMoneyPaid().add(orderRecord.getScoreDiscount()).add(orderRecord.getUseAccount()).add(orderRecord.getMemberCardBalance()).subtract(orderRecord.getShippingFee()));
+        param.setShippingFee(orderRecord.getShippingFee());
+        List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
+        oGoods.forEach(orderGoods -> {
+            RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();
+            returnGoods.setRecId(orderGoods.getRecId());
+            returnGoods.setReturnNumber(orderGoods.getGoodsNumber());
+
+            returnGoodsList.add(returnGoods);
+        });
+        param.setReturnGoods(returnGoodsList);
+        execute(param);
+        return execute(param);
     }
 
     /**
@@ -452,7 +485,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         vo.setOrderType(OrderInfoService.orderTypeToArray(currentOrder.getGoodsType()));
         //退款校验
         if (OrderOperationJudgment.isReturnMoney(currentOrder, isMp)) {
-            vo.getReturnType()[OrderConstant.RT_ONLY_MONEY] = true;
+            vo.getReturnType()[RT_ONLY_MONEY] = true;
         }
         //退货校验
         if (OrderOperationJudgment.isReturnGoods(currentOrder, isMp)) {
@@ -683,7 +716,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //是否恢复库存（仅限普通商品与赠品）->(配置可退 && (退款退货 || 换货)) || (退款待发货)）
         boolean isRestore = (
             (autoReturnGoodsStock == OrderConstant.YES && (returnOrderRecord.getReturnType().equals(OrderConstant.RT_GOODS) || returnOrderRecord.getReturnType().equals(OrderConstant.RT_CHANGE))) ||
-                (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
+                (returnOrderRecord.getReturnType().equals(RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
         //修改商品库存-销量
         atomicOperation.updateStockAndSales(returnGoods, order, isRestore);
         //处理活动库存等
@@ -796,11 +829,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 param.setIsMp(OrderConstant.IS_MP_AUTO);
                 param.setOrderId(order.getOrderId());
                 param.setOrderSn(order.getOrderSn());
-                param.setRetId(order.getRetId());
                 param.setReturnType(order.getReturnType());
                 param.setReturnMoney(order.getMoney());
                 param.setShippingFee(order.getShippingFee());
-                if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && order.getReturnType().equals(OrderConstant.RT_ONLY_MONEY)) {
+                if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && order.getReturnType().equals(RT_ONLY_MONEY)) {
                     //买家发起退款申请后，商家在 returnMoneyDays 日内未处理，系统将自动退款
                     param.setReturnOperate(null);
                 } else if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING) && (order.getReturnType().equals(OrderConstant.RT_GOODS) || order.getReturnType().equals(OrderConstant.RT_CHANGE))) {
@@ -887,7 +919,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //获取当前操作
         if (OrderConstant.API_RETURN_AGREE.equals(param.getRefundType())) {
             //同意
-            if (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && rOrder.getReturnType().equals(OrderConstant.RT_ONLY_MONEY)) {
+            if (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && rOrder.getReturnType().equals(RT_ONLY_MONEY)) {
                 //同意买家仅退款申请
                 executeParam.setReturnOperate(null);
             } else if (rOrder.getReturnType().equals(OrderConstant.RT_GOODS) && rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING)) {

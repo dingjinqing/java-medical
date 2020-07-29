@@ -217,6 +217,7 @@ public class OrderConstant {
     public final static byte IS_MP_MQ = 3;
     public final static byte IS_MP_POS = 4;
     public final static byte IS_MP_ERP_OR_EKB = 5;
+    public final static byte IS_MP_DOCTOR = 6;
 
     /**
      *   ReturnSource

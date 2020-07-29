@@ -879,6 +879,9 @@ public class OrderInfoService extends ShopBaseService {
                 break;
             case OrderConstant.ORDER_WAIT_DELIVERY:
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+                if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
+                    order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
+                }
                 //如果是开方,则审核通过
                 if(order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
                     order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
