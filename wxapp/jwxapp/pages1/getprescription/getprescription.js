@@ -49,7 +49,7 @@ global.wxPage({
     })
   },
   getPrescription() {
-    let prescription_info = [];
+    let prescription_info = {};
     prescription_info.name = this.data.real_name;
     prescription_info.mobile = this.data.mobile;
     prescription_info.identityCode = this.data.card_id;
@@ -87,7 +87,7 @@ global.wxPage({
         util.showModal('提示', '验证码错误')
       } else {
         util.showModal('提示', '您暂无本医院就诊记录，请先添加就诊人', () => {
-          util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + prescription_info);
+          util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + JSON.stringify(prescription_info));
         }, true, '取消', '去添加')
       }
     }, {
