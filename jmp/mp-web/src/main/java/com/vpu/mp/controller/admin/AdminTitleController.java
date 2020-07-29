@@ -104,4 +104,12 @@ public class AdminTitleController extends AdminBaseController {
         return success();
     }
 
+
+    /**
+     *  职称拉取
+     */
+    @PostMapping("/api/admin/doctor/title/fetch")
+    public JsonResult fetchDoctorTitles() {
+        return shop().titleService.fetchExternalTitles();
+    }
 }

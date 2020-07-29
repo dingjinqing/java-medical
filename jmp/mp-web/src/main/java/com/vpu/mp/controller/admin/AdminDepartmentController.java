@@ -131,4 +131,12 @@ public class AdminDepartmentController extends AdminBaseController{
     public JsonResult getDepartmentTreeList() {
         return success(shop().departmentService.listDepartmentTree());
     }
+
+    /**
+     *  科室拉取
+     */
+    @PostMapping("/api/admin/doctor/department/fetch")
+    public JsonResult fetchDoctorDepartments() {
+        return shop().departmentService.fetchExternalDepartments();
+    }
 }

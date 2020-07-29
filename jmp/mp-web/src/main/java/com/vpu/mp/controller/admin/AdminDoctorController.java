@@ -98,4 +98,12 @@ public class AdminDoctorController extends AdminBaseController {
 
         return success();
     }
+
+    /**
+     *  医师拉取
+     */
+    @PostMapping("/api/admin/doctors/fetch")
+    public JsonResult fetchDoctors() {
+        return shop().doctorService.fetchExternalDoctor();
+    }
 }
