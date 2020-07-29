@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminParam;
 import com.vpu.mp.service.shop.sms.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +23,7 @@ public class AdminSmsSendRecordController extends AdminBaseController {
     private SmsService smsService;
 
     @RequestMapping("/list")
-    @ResponseBody
-    public JsonResult getAdminSmsSendRecord(SmsSendRecordAdminParam smsSendRecordAdminParam){
+    public JsonResult getAdminSmsSendRecord(@RequestBody SmsSendRecordAdminParam smsSendRecordAdminParam){
         return super.success(smsService.getAdminSmsSendRecordPageList(smsSendRecordAdminParam));
     }
 
