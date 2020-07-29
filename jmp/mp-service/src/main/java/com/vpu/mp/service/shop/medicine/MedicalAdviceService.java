@@ -35,7 +35,7 @@ public class MedicalAdviceService extends ShopBaseService {
      * @return JsonResult
      */
     @DbTransactional(type = DbType.SHOP_DB)
-    public JsonResult pullExternalMedicalHistoryList(FetchMedicalAdviceParam fetchMedicalAdviceParam) {
+    public JsonResult pullExternalMedicalAdviceList(FetchMedicalAdviceParam fetchMedicalAdviceParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_ADVICE_INFOS;

@@ -59,7 +59,6 @@ public class MedicalHistoryService extends ShopBaseService {
      * @param fetchMedicalHistoryParam 拉取病历信息
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalMedicalHistoryList(FetchMedicalHistoryParam fetchMedicalHistoryParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
