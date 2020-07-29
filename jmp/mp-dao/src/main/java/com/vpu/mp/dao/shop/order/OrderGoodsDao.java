@@ -67,10 +67,22 @@ public class OrderGoodsDao extends ShopBaseDao {
                 .fetchGroups(ORDER_GOODS.ORDER_ID, OrderGoodsDo.class);
 
     }
-    public void updateAuditStatus(Integer orderId,Byte auditStatus){
-        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.ORDER_ID.eq(orderId).and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE))).execute();
+
+    /**
+     * 批量更改审核状态
+     * @param recIds
+     * @param auditStatus
+     */
+    public void batchUpdateAuditStatusByRecId(List<Integer> recIds,Byte auditStatus){
+        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.REC_ID.in(recIds)).execute();
 
     }
+
+    /**
+     * 更改处方号
+     * @param orderId
+     * @param prescriptionCode
+     */
     public void updatePrescriptionCode(Integer orderId,String prescriptionCode){
         db().update(ORDER_GOODS).set(ORDER_GOODS.PRESCRIPTION_CODE,prescriptionCode).where(ORDER_GOODS.ORDER_ID.eq(orderId)).execute();
 

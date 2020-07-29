@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**订单待开方
  * @author yangpengcheng
@@ -117,12 +118,14 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         }
         PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
         FieldsUtil.assign(obj,prescriptionOneParam);
+        List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfoDo.getOrderId()).into(OrderGoodsDo.class);
+        List<Integer> recIdList=orderGoodsDoList.stream().map(OrderGoodsDo::getRecId).collect(Collectors.toList());
         transaction(() -> {
             //生成处方，处方明细
             PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
             //更新状态
             orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.ORDER_WAIT_DELIVERY);
-            orderGoodsService.updateAuditStatus(obj.getOrderId(), OrderConstant.MEDICAL_AUDIT_PASS);
+            orderGoodsService.batchUpdateAuditStatusByRecId(recIdList, OrderConstant.MEDICAL_AUDIT_PASS);
             //更新处方号
             orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
         });
