@@ -835,15 +835,22 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && order.getReturnType().equals(RT_ONLY_MONEY)) {
                     //买家发起退款申请后，商家在 returnMoneyDays 日内未处理，系统将自动退款
                     param.setReturnOperate(null);
-                } else if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING) && (order.getReturnType().equals(OrderConstant.RT_GOODS) || order.getReturnType().equals(OrderConstant.RT_CHANGE))) {
-                    //商家已发货，买家发起退款退货申请，商家在 ? 日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
-                    param.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_AGREE_RETURN);
-                    ReturnBusinessAddressParam defaultAddress = shopReturncfg.getDefaultAddress();
-                    if (defaultAddress != null) {
-                        param.setConsignee(defaultAddress.getConsignee());
-                        param.setReturnAddress(defaultAddress.getReturnAddress());
-                        param.setMerchantTelephone(defaultAddress.getMerchantTelephone());
-                        param.setZipCode(defaultAddress.getZipCode());
+                } else if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING)) {
+                    if (order.getReturnType().equals(OrderConstant.RT_GOODS) || order.getReturnType().equals(OrderConstant.RT_CHANGE)) {
+                        //商家已发货，买家发起退款退货申请，商家在 ? 日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
+                        param.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_AGREE_RETURN);
+                        ReturnBusinessAddressParam defaultAddress = shopReturncfg.getDefaultAddress();
+                        if (defaultAddress != null) {
+                            param.setConsignee(defaultAddress.getConsignee());
+                            param.setReturnAddress(defaultAddress.getReturnAddress());
+                            param.setMerchantTelephone(defaultAddress.getMerchantTelephone());
+                            param.setZipCode(defaultAddress.getZipCode());
+                        }
+                    } else if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && order.getReturnType().equals(OrderConstant.RT_GOODS)) {
+                        //买家已提交物流信息，商家在 ? 日内未处理，系统将默认同意退款退货，并自动退款给买家
+                        param.setReturnOperate(null);
+                    } else if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) && order.getReturnType().equals(OrderConstant.RT_GOODS)) {
+                        //商家同意退款退货，买家在 ? 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
                     }
                 } else if (order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && order.getReturnType().equals(OrderConstant.RT_GOODS)) {
                     //买家已提交物流信息，商家在 ? 日内未处理，系统将默认同意退款退货，并自动退款给买家
@@ -873,9 +880,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         }
         OrderInfoRecord orderInfoRecord = orderInfo.getOrderByOrderSn(order.getOrderSn());
         if (BigDecimalUtil.compareTo(order.getDiscount(), BigDecimal.ZERO) > 0
-            && orderInfoRecord.getIsRefundCoupon().equals(OrderConstant.YES)
-            && (orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED) || orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED))) {
-            coupon.releaserCoupon(order.getOrderSn());
+                && orderInfoRecord.getIsRefundCoupon().equals(OrderConstant.YES)) {
+            if (orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED) || orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)) {
+                coupon.releaserCoupon(order.getOrderSn());
+            }
         }
     }
 
@@ -917,11 +925,37 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         executeParam.setReturnMoney(rOrder.getMoney());
         executeParam.setShippingFee(rOrder.getShippingFee());
         //获取当前操作
+        if (returnOrderApiBuild(param, result, rOrder, executeParam)){
+            return result;
+        }
+        return result;
+    }
+
+    private boolean returnOrderApiBuild(ApiReturnParam param, ApiJsonResult result, ReturnOrderRecord rOrder, RefundParam executeParam) {
         if (OrderConstant.API_RETURN_AGREE.equals(param.getRefundType())) {
             //同意
-            if (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && rOrder.getReturnType().equals(RT_ONLY_MONEY)) {
-                //同意买家仅退款申请
-                executeParam.setReturnOperate(null);
+            if (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)) {
+                if (rOrder.getReturnType().equals(RT_ONLY_MONEY)) {
+                    //同意买家仅退款申请
+                    executeParam.setReturnOperate(null);
+                } else if (rOrder.getReturnType().equals(OrderConstant.RT_GOODS) && rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING)) {
+                    //同意买家退货申请
+                    executeParam.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_AGREE_RETURN);
+                    ReturnBusinessAddressParam defaultAddress = shopReturncfg.getDefaultAddress();
+                    if (defaultAddress != null) {
+                        executeParam.setConsignee(defaultAddress.getConsignee());
+                        executeParam.setReturnAddress(defaultAddress.getReturnAddress());
+                        executeParam.setMerchantTelephone(defaultAddress.getMerchantTelephone());
+                        executeParam.setZipCode(defaultAddress.getZipCode());
+                    }
+                } else if (rOrder.getReturnType().equals(OrderConstant.RT_GOODS) && (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) || rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING))) {
+                    //卖家同意退货申请或者买家提交物流后可以完成退款
+                    executeParam.setReturnOperate(null);
+                } else {
+                    result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                    result.setMsg("当前退款订单无法执行当前操作");
+                    return true;
+                }
             } else if (rOrder.getReturnType().equals(OrderConstant.RT_GOODS) && rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING)) {
                 //同意买家退货申请
                 executeParam.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_AGREE_RETURN);
@@ -932,13 +966,19 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                     executeParam.setMerchantTelephone(defaultAddress.getMerchantTelephone());
                     executeParam.setZipCode(defaultAddress.getZipCode());
                 }
-            } else if (rOrder.getReturnType().equals(OrderConstant.RT_GOODS) && (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) || rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING))) {
-                //卖家同意退货申请或者买家提交物流后可以完成退款
-                executeParam.setReturnOperate(null);
+            } else if (rOrder.getReturnType().equals(OrderConstant.RT_GOODS)) {
+                if (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) || rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)) {
+                    //卖家同意退货申请或者买家提交物流后可以完成退款
+                    executeParam.setReturnOperate(null);
+                } else {
+                    result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                    result.setMsg("当前退款订单无法执行当前操作");
+                    return true;
+                }
             } else {
                 result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
                 result.setMsg("当前退款订单无法执行当前操作");
-                return result;
+                return true;
             }
         } else {
             //拒绝
@@ -951,7 +991,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             } else {
                 result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
                 result.setMsg("当前退款订单无法执行当前操作");
-                return result;
+                return true;
             }
             ExecuteResult executeResult = saas().getShopApp(getShopId()).orderActionFactory.orderOperate(executeParam);
             if (executeResult == null || executeResult.isSuccess()) {
@@ -962,7 +1002,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 result.setMsg(Util.translateMessage(AbstractExcelDisposer.DEFAULT_LANGUAGE, executeResult.getErrorCode().getMessage(), JsonResult.LANGUAGE_TYPE_MSG, executeResult.getErrorParam()));
             }
         }
-        return result;
+        return false;
     }
 
     private class InnerProcessReturnOrder {
