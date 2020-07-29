@@ -29,6 +29,7 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +81,9 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             orderGoodsMedicalVo.setPatient(patient);
             //历史诊断
             OrderMedicalHistoryDo medicalHistoryDo= orderMedicalHistoryDao.getByOrderId(orderInfo.getOrderId());
+            if(medicalHistoryDo!=null){
+                medicalHistoryDo.setDiseaseHistory(splitDiseaseHistory(medicalHistoryDo.getDiseaseHistory()));
+            }
             orderGoodsMedicalVo.setMedicalHistory(medicalHistoryDo);
             //药品数组
             List<GoodsMedicalOneInfoVo> goodsMedicalOneInfoVoList=new ArrayList<>();
@@ -106,6 +110,19 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
     }
 
     /**
+     * 截图json字符串
+     * @param diseaseHistory
+     * @return
+     */
+    public String splitDiseaseHistory(String diseaseHistory){
+        if(StringUtils.isBlank(diseaseHistory)){
+            return null;
+        }
+        int index=diseaseHistory.indexOf(":");
+        return  diseaseHistory.substring(index+1);
+
+    }
+    /**
      * 生成处方
      * @param obj 参数
      * @return
@@ -116,21 +133,26 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE);
         }
-        PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
-        FieldsUtil.assign(obj,prescriptionOneParam);
-        List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfoDo.getOrderId()).into(OrderGoodsDo.class);
-        List<Integer> recIdList=orderGoodsDoList.stream().map(OrderGoodsDo::getRecId).collect(Collectors.toList());
-        transaction(() -> {
-            //生成处方，处方明细
-            PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
-            //更新状态
-            orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.ORDER_WAIT_DELIVERY);
-            orderGoodsService.batchUpdateAuditStatusByRecId(recIdList, OrderConstant.MEDICAL_AUDIT_PASS);
-            //更新处方号
-            orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
-        });
+        if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
+            PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
+            FieldsUtil.assign(obj,prescriptionOneParam);
+            prescriptionOneParam.setIsUsed((byte)1);
+            transaction(() -> {
+                //生成处方，处方明细
+                PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
+                //更新状态
+                orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.ORDER_WAIT_DELIVERY);
+                orderGoodsService.updateAuditStatusByOrderId(obj.getOrderId(), OrderConstant.MEDICAL_AUDIT_PASS);
+                //更新处方号
+                orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
+            });
+        }else if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_NOT_PASS)){
+            //审核未通过 驳回
+        }
+
         return ExecuteResult.create();
     }
+
 
 
 }

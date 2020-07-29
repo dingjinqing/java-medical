@@ -376,8 +376,6 @@ public class WxAppOrderController extends WxAppBaseController{
         }
         return result(executeResult.getErrorCode(),executeResult.getResult());
     }
-    @PostMapping("/prescription/reject")
-    public JsonResult rejectOrder(@RequestBody OrderGoodsParam orderGoodsParam){
-        return success(orderInfoService.rejectAudit(orderGoodsParam));
-    }
+
+
 }

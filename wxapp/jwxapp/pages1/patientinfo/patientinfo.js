@@ -12,7 +12,7 @@ global.wxPage({
     patient_id: 0,
     prescription_info: {},
     patient_info: {},
-    showModal: 1,
+    showModal: 0,
     // 性别
     sex_index: -1,
     gender: ['男', '女'],
@@ -58,7 +58,11 @@ global.wxPage({
     // 妊娠哺乳
     is_feed: 1,
     gestationType: 2,
-    feedText: ''
+    feedText: '',
+    // 是否编辑患者
+    is_edit: 0,
+    // 编辑的时候显示的疾病史
+    edit_his_summary: []
   },
 
   /**
@@ -68,25 +72,109 @@ global.wxPage({
     if (!util.check_setting(options)) return;
     if(options.prescription_info) {
       this.data.prescription_info  = JSON.parse(options.prescription_info);
-      this.data.patient_info = this.data.prescription_info
+      this.data.patient_info = this.data.prescription_info;
+      this.data.pat_name = this.data.prescription_info.name;
+      this.data.pat_mobile = this.data.prescription_info.mobile;
+      this.data.pat_id_num = this.data.prescription_info.identityCode;
       this.setData({
         patient_info: this.data.patient_info
       })
     }
+    this.data.is_edit = !!options.is_edit ? "1":"0";
+    this.setData({
+      is_edit: this.data.is_edit
+    })
     this.data.patient_id = options.patient_id ? options.patient_id : 0;
     this.getPatientInfo();
   },
   getPatientInfo () {
     util.api('/api/wxapp/user/patient/get/detail', res => {
       if(res.error == 0) {
-        if(this.data.patient_info) {
+        if(!!this.data.patient_info.name) {
           res.content.name = this.data.patient_info.name;
+          this.data.pat_name = this.data.patient_info.name;
+        }
+        if(!!this.data.patient_info.mobile){
           res.content.mobile = this.data.patient_info.mobile;
+          this.data.pat_mobile = this.data.patient_info.mobile;
+        }
+        if(!!this.data.patient_info.identityCode){
           res.content.identityCode = this.data.patient_info.identityCode;
+          this.data.pat_id_num = this.data.patient_info.identityCode;
         }
         this.data.patient_info = res.content;
+        this.data.pat_name = this.data.patient_info.name;
+        this.data.pat_mobile = this.data.patient_info.mobile;
+        this.data.pat_id_num = this.data.patient_info.identityCode;
+        this.data.sex_index = this.data.patient_info.sex - 1;
+        this.data.dates = !!this.data.patient_info.birthday ? this.data.patient_info.birthday:'';
+        // 疾病史编辑
+        // 过往病史
+        if(!!this.data.patient_info.diseaseHistory){
+          this.data.has_dis_his = 1;
+          this.data.diseaseHistory = this.data.patient_info.diseaseHistory.split(',');
+          var dis_arr = [];
+          dis_arr = this.data.patient_info.diseaseHistory.split(',');
+          for (let i in dis_arr) {
+            for (let j in this.data.patient_info.diseaseHistoryList){
+              if(this.data.patient_info.diseaseHistoryList[j].id == dis_arr[i]) {
+                this.data.patient_info.diseaseHistoryList[j].checked = 1;
+                this.data.edit_his_summary.push(this.data.patient_info.diseaseHistoryList[j].name)
+              }
+            }
+          }
+        }
+        // 过敏史
+        if(!!this.data.patient_info.allergyHistory){
+          this.data.has_all_his = 1;
+          this.data.allergyHistory = this.data.patient_info.allergyHistory;
+          this.data.edit_his_summary.push(this.data.patient_info.allergyHistory)
+        }
+        // 家族病史
+        if( !!this.data.patient_info.familyDiseaseHistory ){
+          this.data.has_fam_his = 1;
+          this.data.familyDiseaseHistory = this.data.patient_info.familyDiseaseHistory.split(',');
+          var dis_arr1 = [];
+          dis_arr1 = this.data.patient_info.familyDiseaseHistory.split(',');
+          for (let i in dis_arr1) {
+            for (let j in this.data.patient_info.familyDiseaseHistoryList){
+              if(this.data.patient_info.familyDiseaseHistoryList[j].id == dis_arr1[i]) {
+                this.data.patient_info.familyDiseaseHistoryList[j].checked = 1;
+                this.data.edit_his_summary.push(this.data.patient_info.familyDiseaseHistoryList[j].name)
+              }
+            }
+          }
+        }
+        // 肝肾功能
+        this.data.liverFunctionOk = !!this.data.patient_info.liverFunctionOk ? this.data.patient_info.liverFunctionOk : 1;
+        this.data.kidneyFunctionOk = !!this.data.patient_info.kidneyFunctionOk ? this.data.patient_info.liverFunctionOk : 1;
+        // 妊娠哺乳
+        if(this.data.patient_info.gestationType > 1) {
+          this.data.is_feed = 0;
+          for (var i in this.data.feedStatus ){
+            if(this.data.feedStatus[i].id == this.data.gestationType){
+              this.data.feedStatus[i].is_checked = 1;
+              this.data.edit_his_summary.push(this.data.feedStatus[i].text)
+            }
+          }
+        }
+        this.data.pat_tip = !!this.data.patient_info.remarks ? this.data.patient_info.remarks : ''
+        if(!!this.data.edit_his_summary){
+          this.data.his_summary = this.data.edit_his_summary.join(',')
+        }
         this.setData({
-          patient_info: this.data.patient_info
+          patient_info: this.data.patient_info,
+          sex_index: this.data.sex_index,
+          dates: this.data.dates,
+          has_dis_his:this.data.has_dis_his,
+          has_all_his: this.data.has_all_his,
+          has_fam_his: this.data.has_fam_his,
+          liverFunctionOk:this.data.liverFunctionOk,
+          kidneyFunctionOk:this.data.kidneyFunctionOk,
+          is_feed: this.data.is_feed,
+          feedStatus: this.data.feedStatus,
+          his_summary: this.data.his_summary,
+          allergyHistory:this.data.allergyHistory
         })
       }else {
         util.showModal("提示",res.message)
@@ -175,7 +263,8 @@ global.wxPage({
     this.data.patient_info.gestationType = this.data.gestationType;
     this.data.patient_info.remarks = this.data.pat_tip;
     util.api('/api/wxapp/user/patient/add', res => {
-      console.log(res)
+      console.log(res);
+      util.jumpLink('/pages1/familylist/familylist','redirectTo')
     },{
       id:this.data.patient_id,
       name: this.data.patient_info.name,
@@ -190,7 +279,9 @@ global.wxPage({
       kidneyFunctionOk:this.data.patient_info.kidneyFunctionOk,
       liverFunctionOk:this.data.patient_info.liverFunctionOk,
       gestationType:this.data.patient_info.gestationType,
-      remarks:this.data.patient_info.remarks
+      remarks:this.data.patient_info.remarks,
+      userId: util.getCache('user_id'),
+      patientCode: ''
     })
   },
 
@@ -201,6 +292,7 @@ global.wxPage({
       this.setData({
         has_dis_his: 0
       })
+      this.data.diseaseHistory = []
     }else{
       this.setData({
         has_dis_his: 1
@@ -229,6 +321,7 @@ global.wxPage({
       this.setData({
         has_all_his: 0
       })
+      this.data.allergyHistory = ''
     }else{
       this.setData({
         has_all_his: 1
@@ -244,6 +337,7 @@ global.wxPage({
       this.setData({
         has_fam_his: 0
       })
+      this.data.familyDiseaseHistory = []
     }else{
       this.setData({
         has_fam_his: 1
@@ -300,6 +394,7 @@ global.wxPage({
       this.setData({
         is_feed: 1
       })
+      this.data.gestationType = 1
     }
   },
   chooseFeedType (e) {

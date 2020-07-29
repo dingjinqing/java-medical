@@ -1701,12 +1701,9 @@ public class OrderInfoService extends ShopBaseService {
         if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
             return new JsonResult().result(null, JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
         }
-        List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfoDo.getOrderId()).into(OrderGoodsDo.class);
-        List<Integer> recIdList=orderGoodsDoList.stream().map(OrderGoodsDo::getRecId).collect(Collectors.toList());
-
         transaction(() -> {
             orderInfoDao.updateAuditStatus(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
-            orderGoodsDao.batchUpdateAuditStatusByRecId(recIdList,OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+            orderGoodsDao.updateAuditStatusByOrderId(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
         });
         return JsonResult.success();
     }

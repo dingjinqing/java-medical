@@ -36,44 +36,45 @@
   margin: 24rpx auto 0;
   background-color: #fff;
   border-radius: 16rpx;
-  padding-left: 24rpx;
+  padding:24rpx 0rpx 24rpx 24rpx;
   display: flex;
-  flex-direction: column;
+  align-items: center;
 }
 .doctor-info{
   display: flex;
-  align-items: center;
-  height: 98rpx;
-  border-bottom: 2rpx solid #eee;
   padding-right: 24rpx;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
 }
-.doctor-info > .doctor-name{
+.doctor-info > .doctor-desc > .doctor-name{
   color: #333;
   font-weight: 600;
   font-size: 32rpx;
   margin-right: 24rpx;
 }
-.doctor-info > .office{
+.doctor-info > .doctor-desc > .office{
   color: #333;
   margin-right: auto;
 }
-.doctor-info > .status{
+.doctor-info > .doctor-desc > .status{
   line-height: 36rpx;
   box-sizing: border-box;
-  padding: 0 16rpx;
+  padding: 4rpx 16rpx;
   margin-right: auto;
   border-radius: 4rpx;
 }
-.doctor-info > .status.ongoing{
+.doctor-info > .doctor-desc > .status.ongoing{
   background-color: #FFF2E0;
   color: #FF9F15;
 }
-.doctor-info > .status.end{
+.doctor-info > .doctor-desc > .status.end{
   background-color: #E4FBFA;
   color: #26C4BC;
 }
 .doctor-info > .date{
   color: #999;
+  margin-top: 20rpx;
 }
 .button-content{
   padding: 0 24rpx;

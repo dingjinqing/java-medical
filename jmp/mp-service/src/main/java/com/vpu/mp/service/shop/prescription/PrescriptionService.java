@@ -34,6 +34,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 处方
@@ -244,9 +247,8 @@ public class PrescriptionService extends ShopBaseService {
     public JsonResult pullExternalOnePrescriptionInfo(FetchPrescriptionOneParam fetchPrescriptionOneParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
-        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
-        String str = "[{\"id\":100,\"prescriptionCode\":15,\"posCode\":1,\"patientId\":1,\"patientTreatmentCode\":1,\"identityCode\":11,\"patientName\":\"张麻子\",\"patientAge\":58,\"patientSex\":1,\"list\":[{\"id\":11,\"posCode\":11,\"posDetailCode\":11,\"prescriptionCode\":15,\"prescriptionDetailCode\":11,\"goodsId\":11,\"goodsCommonName\":\"麻黄\"}]}]";
-                //拉取数据
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_DETAIL;
+
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
             .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchPrescriptionOneParam));
 
@@ -324,8 +326,11 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
         prescriptionParam.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
+        List<PrescriptionDrugVo> goodsList=param.getGoodsList();
+        List<Integer> goodsIdList=goodsList.stream().map(PrescriptionDrugVo::getGoodsId).collect(Collectors.toList());
+        Map<Integer,PrescriptionDrugVo> goodsMap=goodsList.stream().collect(Collectors.toMap(PrescriptionDrugVo::getGoodsId, Function.identity(),(x1, x2) -> x1));
         //药品信息生成处方明细列表
-        List<GoodsMedicalInfoDo> goodsMedicalInfoDoList=goodsMedicalInfoDao.listByGoodsIds(param.getGoodsIdList());
+        List<GoodsMedicalInfoDo> goodsMedicalInfoDoList=goodsMedicalInfoDao.listByGoodsIds(goodsIdList);
 
         List<PrescriptionItemParam> itemList=new ArrayList<>();
         for (GoodsMedicalInfoDo info: goodsMedicalInfoDoList) {
@@ -335,11 +340,13 @@ public class PrescriptionService extends ShopBaseService {
             item.setPrescriptionCode(prescriptionParam.getPrescriptionCode());
             GoodsDo goods=goodsDao.getByGoodsId(info.getGoodsId());
             item.setMedicinePrice(goods.getShopPrice());
+            item.setDragSumNum(goodsMap.get(info.getGoodsId()).getDragSumNum());
             itemList.add(item);
         }
         prescriptionParam.setList(itemList);
         return prescriptionParam;
     }
+
 
     /**
      * 根据处方号匹配系统中已有药品信息列表

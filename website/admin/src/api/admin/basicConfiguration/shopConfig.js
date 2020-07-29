@@ -99,3 +99,21 @@ export function versionChangeRenew (data) {
     method: 'post'
   })
 }
+
+// 短信列表展示
+export function getSmsListPage (data) {
+  return service({
+    url: '/api/admin/sms/list',
+    data,
+    method: 'post'
+  })
+}
+
+// 充值列表展示
+export function getSmsPayListPage (data) {
+  return service({
+    url: '/api/admin/recharge/list',
+    data,
+    method: 'post'
+  })
+}

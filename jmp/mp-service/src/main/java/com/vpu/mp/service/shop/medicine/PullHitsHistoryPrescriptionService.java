@@ -39,17 +39,20 @@ public class PullHitsHistoryPrescriptionService extends ShopBaseService {
         FetchMedicalAdviceParam fetchMedicalAdviceParam = new FetchMedicalAdviceParam();
         FieldsUtil.assign(fetchMedicalHistoryParam, fetchPrescriptionParam);
         FieldsUtil.assign(fetchMedicalHistoryParam, fetchMedicalAdviceParam);
-        JsonResult jsonResultMedicalHistory
-            = medicalHistoryService.pullExternalMedicalHistoryList(fetchMedicalHistoryParam);
+//        //拉取病历
+//        JsonResult jsonResultMedicalHistory
+//            = medicalHistoryService.pullExternalMedicalHistoryList(fetchMedicalHistoryParam);
+        //拉取医嘱
         JsonResult pullExternalMedicalHistoryList
-            = medicalAdviceService.pullExternalMedicalHistoryList(fetchMedicalAdviceParam);
+            = medicalAdviceService.pullExternalMedicalAdviceList(fetchMedicalAdviceParam);
+        //拉取处方
         JsonResult pullExternalAllPrescriptionInfo
             = prescriptionService.pullExternalAllPrescriptionInfo(fetchPrescriptionParam);
         // 拉取处方、病历、医嘱都成功
-        if (jsonResultMedicalHistory.getError() > 0
+        if (pullExternalMedicalHistoryList.getError() > 0
             && pullExternalMedicalHistoryList.getError() > 0
             && pullExternalAllPrescriptionInfo.getError() > 0) {
-            return jsonResultMedicalHistory;
+            return pullExternalMedicalHistoryList;
         }
         // 失败
         return prescriptionService.pullExternalAllPrescriptionInfo(fetchPrescriptionParam);

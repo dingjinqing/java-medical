@@ -11,10 +11,10 @@
 					<view>年龄：<text>45岁</text></view>
 					<view>性别：<text>男</text></view>
 				</view>
-				<view class="prescription-item">
+				<view class="prescription-item" bindtap="selectDepartment">
 					<view class="item-left">科室：</view>
 					<view class="item-center">
-						请选择
+						{{departmentName ? departmentName : '请选择'}}
 					</view>
 					<view class="item-right">
 						<text class="iconfont iconjiantou"></text>
@@ -23,9 +23,9 @@
 				<view class="prescription-item">
 					<view class="item-left">诊断：</view>
 					<view class="item-center">
-						<input type="text" placeholder="请输入诊断信息" bindinput="getDiagnose" value="{{prescriptionInfo.diagnose.info}}"></input>
+						<input type="text" placeholder="请输入诊断信息" bindinput="getDiagnose" value="{{diagnose.info}}"></input>
 					</view>
-					<view class="item-right" bindtap="clearInput" wx:if="{{prescriptionInfo.diagnose.canClear}}">
+					<view class="item-right" bindtap="clearInput" wx:if="{{diagnose.canClear}}">
 						<text class="iconfont iconshanchu"></text>
 					</view>
 				</view>
@@ -40,49 +40,32 @@
 				</view>
 			</view>
 			<view class="goods-content">
-				<movable-area>
-					<movable-view damping="100" out-of-bounds="true" direction="horizontal">
-						<view class="goods-item">
-							<view class="goods-target">
-								<image src="http://medicaldevimg.weipubao.cn/upload/224462/image/20200715/C7IzFaMAx415k7OYI8uu.jpg"></image>
-							<view class="goods-desc">
-								<text class="goods-name">敖东安神补脑液口服液10支治多梦神经 衰弱安眠药失眠中药调理安神</text>
-								<view class="goods-price-content">
-									<text class="goods-price">￥99.00</text>
+				<block wx:for="{{pageGoodsList}}" wx:key="index">
+					<movable-area>
+						<movable-view damping="100" out-of-bounds="true" direction="horizontal">
+							<view class="goods-item">
+								<view class="goods-target">
+									<image src="{{item.goodsImg}}"></image>
+								<view class="goods-desc">
+									<text class="goods-name">{{item.goodsName}}</text>
+									<view class="goods-price-content">
+										<text class="goods-price">￥{{item.prdPrice}}</text>
+									</view>
+								</view>
+								</view>
+								<view class="del" bindtap="delGoodsItem" data-goods-id="{{item.goodsId}}">
+									删除
 								</view>
 							</view>
-							</view>
-							<view class="del">
-								删除
-							</view>
-						</view>
-					</movable-view>
-				</movable-area>
-				<view class="goods-line"></view>
-				<movable-area>
-					<movable-view damping="100" out-of-bounds="true" direction="horizontal">
-						<view class="goods-item">
-							<view class="goods-target">
-								<image src="http://medicaldevimg.weipubao.cn/upload/224462/image/20200715/C7IzFaMAx415k7OYI8uu.jpg"></image>
-							<view class="goods-desc">
-								<text class="goods-name">敖东安神补脑液口服液10支治多梦神经 衰弱安眠药失眠中药调理安神</text>
-								<view class="goods-price-content">
-									<text class="goods-price">￥99.00</text>
-								</view>
-							</view>
-							</view>
-							<view class="del">
-								删除
-							</view>
-						</view>
-					</movable-view>
-				</movable-area>
-				<view class="goods-line"></view>
+						</movable-view>
+					</movable-area>
+					<view class="goods-line"></view>
+				</block>
 			</view>
 			<view class="prescription-info-content">
 				<view class="prescription-item column">
 					<view class="line-title">医嘱：</view>
-					<textarea class="medical-advice" placeholder="默认显示药品用法用量，医生可手动更改"></textarea>
+					<textarea class="medical-advice" placeholder="默认显示药品用法用量，医生可手动更改" bindinput="getDoctorAdvice" value="{{doctorAdvice}}"></textarea>
 				</view>
 			</view>
 			<view class="prescription-doctor-info">
@@ -104,7 +87,7 @@
 			</view>
 		</view>
 		<view class="footer-content">
-			<view class="footer-button">确认开方</view>
+			<view class="footer-button" bindtap="createPrescription">确认开方</view>
 		</view>
 		<include src="../../pages/common/footer.wxml" />
 	</view>
@@ -115,18 +98,20 @@
 		<view class="search-content">
 			<view class="search-input-content">
 				<text class="iconfont iconsousuo"></text>
-				<input class="search-input" placeholder="搜索药品" placeholder-style="color:#999;font-size:28rpx;"></input>
+				<input class="search-input" placeholder="搜索药品" placeholder-style="color:#999;font-size:28rpx;" bindconfirm="searchDialogGoods" value="{{goodsName}}"></input>
 			</view>
 		</view>
 		<view class="goods-content">
-			<block wx:for="{{goodsList}}" wx:for-item="goodsItem" wx:key="index">
-        <v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-select enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum" bindtoggleSelect="toggleSelect"/>
-        <view class="line" wx:if="{{index !== goodsList.length - 1}}"></view>
-      </block>
+			<block wx:for="{{dialogGoodsList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+				<block wx:for="{{pageItem}}" wx:for-item="goodsItem" wx:key="id" wx:for-index="itemIndex">
+					<v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-select enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum" bindtoggleSelect="toggleSelect"/>
+					<view class="line" wx:if="{{index !== goodsList.length - 1}}"></view>
+				</block>
+			</block>
 		</view>
 		<view class="dialog-footer-content">
-			<view class="footer">.
-				<view class="button">添加</view>
+			<view class="footer">
+				<view class="button" bindtap="confirmGoods">添加</view>
 			</view>
 		</view>
 	</view>

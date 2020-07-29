@@ -96,7 +96,16 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (
+      this.data.pageParams &&
+      this.data.pageParams.currentPage === this.data.pageParams.lastPage
+    ) {
+      return;
+    }
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestSessionList();
   },
 
   /**

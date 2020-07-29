@@ -27,11 +27,11 @@ public class SmsSendRecordAdminParam {
     /**
      * 条件查询时间下界
      */
-    private Timestamp lessTime;
+    private Timestamp startCreateTime;
     /**
      * 条件查询时间上界
      */
-    private Timestamp greaterTime;
+    private Timestamp endCreateTime;
 
     /**
      * 分页查询参数
