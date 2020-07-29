@@ -51,14 +51,14 @@ public final class DateUtils {
 	public static final String DATE_FORMAT_FULL_END="yyyy-MM-dd 23:59:59";
     public static final String DATE_FORMAT_API_EXTERNAL = "yyyyMMddHHmmss";
 
-    //时分秒最小
-    public static final LocalTime minTime = LocalTime.of(0, 0, 0);
-    //时分秒最大
-    public static final LocalTime maxTime = LocalTime.of(23, 59, 59);
+    /** 时分秒最小 */
+    public static final LocalTime MIN_TIME = LocalTime.of(0, 0, 0);
+    /** 时分秒最大 */
+    public static final LocalTime MAX_TIME = LocalTime.of(23, 59, 59);
 
 
 
-    private static final  ZoneId defaultZoneId = ZoneId.systemDefault();
+    private static final  ZoneId DEFAULT_ZONE_ID = ZoneId.systemDefault();
 
 	/**
 	 * 转换日期格式输出
@@ -96,7 +96,7 @@ public final class DateUtils {
      */
     public static LocalDate convert(Date source) {
         Instant instant = source.toInstant();
-        return  instant.atZone(defaultZoneId).toLocalDate();
+        return  instant.atZone(DEFAULT_ZONE_ID).toLocalDate();
     }
     /**
      * 日期类型转换
@@ -104,7 +104,7 @@ public final class DateUtils {
      * @return localDate
      */
     public static Date convert(LocalDate source) {
-        return  Date.from(source.atStartOfDay(defaultZoneId).toInstant());
+        return  Date.from(source.atStartOfDay(DEFAULT_ZONE_ID).toInstant());
     }
 
 	/**
@@ -274,7 +274,7 @@ public final class DateUtils {
 	 * @param timestamp
 	 * @return
 	 */
-	public static Boolean TimestampIsNowDay(Timestamp timestamp) {
+	public static Boolean timestampIsNowDay(Timestamp timestamp) {
 	    if(timestamp == null){
 	        return false;
         }
@@ -292,7 +292,7 @@ public final class DateUtils {
      * @param timestamp2
      * @return
      */
-    public static Boolean TimestampIsSameDay(Timestamp timestamp1,Timestamp timestamp2) {
+    public static Boolean timestampIsSameDay(Timestamp timestamp1, Timestamp timestamp2) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern(DATE_FORMAT_SIMPLE);
         LocalDateTime localDateTime=timestamp1.toLocalDateTime();
         String formate1 = df.format(localDateTime);
@@ -530,8 +530,8 @@ public final class DateUtils {
             return null;
         }
         Timestamp[] startAndEnd =  new Timestamp[2];
-        startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtils.minTime));
-        startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtils.maxTime));
+        startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtils.MIN_TIME));
+        startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtils.MAX_TIME));
         return startAndEnd;
     }
 }

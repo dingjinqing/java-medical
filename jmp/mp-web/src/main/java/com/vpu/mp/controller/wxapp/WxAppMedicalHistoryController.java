@@ -1,10 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryListParam;
-import com.vpu.mp.service.pojo.shop.medicalHistory.MedicalHistoryPageInfoParam;
-import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryListParam;
+import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryPageInfoParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +22,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/detail")
-    public JsonResult MedicalHistoryDetail(@RequestBody MedicalHistoryListParam medicalHistoryListParam) {
+    public JsonResult medicalHistoryDetail(@RequestBody MedicalHistoryListParam medicalHistoryListParam) {
         return success(shop().medicalHistoryService.getMedicalHistoryDetail(medicalHistoryListParam));
     }
 

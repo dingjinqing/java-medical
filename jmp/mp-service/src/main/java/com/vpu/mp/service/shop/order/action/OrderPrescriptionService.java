@@ -94,7 +94,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      */
     private void orderGoodsAuditPass(Map<String, PrescriptionOrderGoodsVo> prescriptionMap, OrderGoodsDo orderGoodsDo) {
         if (orderGoodsDo.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
-            PrescriptionVo prescriptionVo = prescriptionService.getDoByPrescriptionNo(orderGoodsDo.getPrescriptionOldNo());
+            PrescriptionVo prescriptionVo = prescriptionService.getDoByPrescriptionNo(orderGoodsDo.getPrescriptionOldCode());
             if (prescriptionVo!=null){
                 PrescriptionOrderGoodsVo pog =new PrescriptionOrderGoodsVo();
                 pog.setPrescriptionVo(prescriptionVo);

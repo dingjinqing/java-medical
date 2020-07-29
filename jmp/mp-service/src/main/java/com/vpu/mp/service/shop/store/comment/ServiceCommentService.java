@@ -259,18 +259,24 @@ public class ServiceCommentService extends ShopBaseService {
             where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())));
 
         Byte commConfig = saas.getShopApp(getShopId()).config.storeConfigService.getServiceComment();
-        if(commConfig == 2){
+        int publishAfterAudit = 2;
+        if(commConfig == publishAfterAudit){
             select.and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE));
         }else{
             select.and(COMMENT_SERVICE.FLAG.notEqual((byte)2));
         }
 
-        if(param.getType() == 1){
+        int typeGoodComment = 1;
+        int typeMiddleComment = 2;
+        int typeBadComment = 3;
+        if(param.getType() == typeGoodComment){
             select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)4).or(COMMENT_SERVICE.COMMSTAR.eq((byte)5)));
-        }else if(param.getType() == 2){
-            select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)2).or(COMMENT_SERVICE.COMMSTAR.eq((byte)3)));
-        }else if(param.getType() == 3){
-            select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)0).or(COMMENT_SERVICE.COMMSTAR.eq((byte)1)));
+        }else {
+            if(param.getType() == typeMiddleComment){
+                select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)2).or(COMMENT_SERVICE.COMMSTAR.eq((byte)3)));
+            }else if(param.getType() == typeBadComment){
+                select.and(COMMENT_SERVICE.COMMSTAR.eq((byte)0).or(COMMENT_SERVICE.COMMSTAR.eq((byte)1)));
+            }
         }
 
         List<AllCommentVo.Comment> commentList = select.orderBy(COMMENT_SERVICE.CREATE_TIME.desc()).fetchInto(AllCommentVo.Comment.class);
@@ -307,7 +313,8 @@ public class ServiceCommentService extends ShopBaseService {
      */
     private int[] getCommentsNumber(AllCommentParam param,Byte commConfig){
         int[] numbers = new int[4];
-        if(commConfig == 2){
+        int publishAfterAudit = 2;
+        if(commConfig == publishAfterAudit){
             numbers[1] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)4).or(COMMENT_SERVICE.COMMSTAR.eq((byte)5)))).fetchOptionalInto(Integer.class).orElse(0);
             numbers[2] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)2).or(COMMENT_SERVICE.COMMSTAR.eq((byte)3)))).fetchOptionalInto(Integer.class).orElse(0);
             numbers[3] = db().selectCount().from(COMMENT_SERVICE).where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_SERVICE.SERVICE_ID.eq(param.getServiceId())).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE)).and(COMMENT_SERVICE.COMMSTAR.eq((byte)0).or(COMMENT_SERVICE.COMMSTAR.eq((byte)1)))).fetchOptionalInto(Integer.class).orElse(0);

@@ -92,7 +92,7 @@ public interface EsSearchName {
     String PRDS = "prds";
     String GRADES = "grades";
 
-     interface PRD{
+     interface Prd {
         String PRD_ID = "prd_id";
 
         String PRD_NUMBER = "prd_number";
@@ -114,7 +114,7 @@ public interface EsSearchName {
          String PRD_SN = "prd_sn";
 
     }
-    interface GRADE{
+    interface Grade {
         String PRD_ID = "prd_id";
         String GRADE_PRICE = "grade_price";
         String GRADE = "grade";

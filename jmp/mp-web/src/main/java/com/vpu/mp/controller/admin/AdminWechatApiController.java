@@ -29,9 +29,9 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
-import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOaPayManageParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListParam;
+import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
@@ -126,7 +126,7 @@ public class AdminWechatApiController extends AdminBaseController {
 		//可以绑定的公众号列表
 		logger().info("开始查询可以绑定的公众号列表");
 		Result<MpOfficialAccountRecord> officialAccountBySysId = saas.shop.officeAccount.getOfficialAccountBySysId(adminAuth.user().sysId);
-		List<MpOfficeAccountVo> officialList = saas.shop.officeAccount.findSamePrincipalMiniAndMP(officialAccountBySysId, record);
+		List<MpOfficeAccountVo> officialList = saas.shop.officeAccount.findSamePrincipalMiniAndMp(officialAccountBySysId, record);
 		MpAuthShopToAdminVo into = record.into(MpAuthShopToAdminVo.class);
 		into.setOfficialList(officialList);
 		//查询已绑定的公众号信息
@@ -267,7 +267,7 @@ public class AdminWechatApiController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/admin/public/service/auth/payManage")
-	public JsonResult payManage(@RequestBody MpOAPayManageParam oaParam) {
+	public JsonResult payManage(@RequestBody MpOaPayManageParam oaParam) {
 		oaParam.setSysId(adminAuth.user().getSysId());
 		Integer updatePayInfo = saas.shop.officeAccount.updatePayInfo(oaParam);
 		if(updatePayInfo>0) {

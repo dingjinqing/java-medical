@@ -153,13 +153,13 @@ public class StoreService extends ShopBaseService {
         PageResult<StorePageListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StorePageListVo.class);
         Integer totalNum = 0;
         String shopVersion = shopOverviewService.getShopVersion(getShopId());
-        if (ShopConst.shopType.V_1.equals(shopVersion)){
+        if (ShopConst.ShopType.V_1.equals(shopVersion)){
             totalNum = 1;
-        }else if(ShopConst.shopType.V_2.equals(shopVersion)){
+        }else if(ShopConst.ShopType.V_2.equals(shopVersion)){
             totalNum = 5;
-        }else if(ShopConst.shopType.V_3.equals(shopVersion)){
+        }else if(ShopConst.ShopType.V_3.equals(shopVersion)){
             totalNum = 10;
-        }else if(ShopConst.shopType.V_4.equals(shopVersion)){
+        }else if(ShopConst.ShopType.V_4.equals(shopVersion)){
             totalNum = 200;
         }
         Integer nowNum = pageResult.getDataList().size();

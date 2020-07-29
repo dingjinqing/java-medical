@@ -60,7 +60,7 @@ import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
-import com.vpu.mp.service.shop.marketCalendar.MarketCalendarService;
+import com.vpu.mp.service.shop.marketcalendar.MarketCalendarService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
@@ -196,8 +196,12 @@ public class ShopApplication {
 	public RebateStrategyService rebateStrategy;
 	@Autowired
 	public RealTimeOverviewService realTimeOverview;
+
+    /**
+     *  小程序端优惠券
+     */
     @Autowired
-    public CouponMpService mpCoupon; //小程序端优惠券
+    public CouponMpService mpCoupon;
     /**
      * 分销员分组
      */

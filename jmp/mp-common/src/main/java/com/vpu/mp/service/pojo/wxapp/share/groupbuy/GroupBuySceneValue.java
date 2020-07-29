@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.share.groupbuy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.wxapp.share.SceneValueBase;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,5 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GroupBuySceneValue extends SceneValueBase {
-    private Integer group_id;
+    @JsonProperty("group_id")
+    private Integer groupId;
 }

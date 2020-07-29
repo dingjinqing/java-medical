@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  **/
 @Data
 public class SeckillProductAddParam {
-    //主键，更新时使用
+    /**  主键，更新时使用 */
     private Integer skproId;
     @NotNull
     private Integer goodsId;

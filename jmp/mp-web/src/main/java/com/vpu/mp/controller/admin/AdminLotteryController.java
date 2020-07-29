@@ -5,7 +5,6 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryByIdParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListVo;
@@ -89,7 +88,7 @@ public class AdminLotteryController extends AdminBaseController {
      */
     @PostMapping("/share")
     public JsonResult share(@RequestBody @Valid LotteryByIdParam param){
-        return success(shop().lottery.getMpQRCode(param));
+        return success(shop().lottery.getMpQrCode(param));
     }
 
     /**

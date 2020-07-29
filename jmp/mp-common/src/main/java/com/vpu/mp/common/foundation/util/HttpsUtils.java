@@ -134,7 +134,7 @@ public class HttpsUtils {
         HttpClient httpClient;
         log.info("下载图片：请求地址 = {},请求参数 = {},请求协议是否是https = {}",url,JSONObject.toJSONString(headers),url.contains("https"));
         if (url.contains("https")) {
-            httpClient = createSSLClientDefault();
+            httpClient = createSslClientDefault();
         } else {
             httpClient =  HttpClients.createDefault();
         }
@@ -171,7 +171,7 @@ public class HttpsUtils {
             log.info("请求方式 = {},请求地址 = {},请求参数 = {},请求头信息 = {},https请求 = {}", method, url, JSONObject.toJSONString(params), JSONObject.toJSONString(headers), isHttps);
             HttpClient httpClient;
             if (isHttps) {
-                httpClient = createSSLClientDefault();
+                httpClient = createSslClientDefault();
             } else {
                 httpClient = HttpClients.createDefault();
             }
@@ -213,7 +213,7 @@ public class HttpsUtils {
         try {
             HttpClient httpClient;
             if (isHttps) {
-                httpClient = createSSLClientDefault();
+                httpClient = createSslClientDefault();
             } else {
                 httpClient = HttpClients.createDefault();
             }
@@ -294,10 +294,10 @@ public class HttpsUtils {
      *
      * @return
      */
-    private static CloseableHttpClient createSSLClientDefault() {
+    private static CloseableHttpClient createSslClientDefault() {
         try {
             HttpClientBuilder custom = HttpClients.custom();
-            custom.setSSLSocketFactory(createSSLConnSocketFactory());
+            custom.setSSLSocketFactory(createSslConnSocketFactory());
             custom.setConnectionManager(connMgr);
             custom.setDefaultRequestConfig(requestConfig);
             return custom.build();
@@ -312,7 +312,7 @@ public class HttpsUtils {
      *
      * @return
      */
-    private static SSLConnectionSocketFactory createSSLConnSocketFactory() throws RuntimeException {
+    private static SSLConnectionSocketFactory createSslConnSocketFactory() throws RuntimeException {
         SSLConnectionSocketFactory sslsf = null;
         try {
             SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (TrustStrategy) (chain, authType) -> true).build();

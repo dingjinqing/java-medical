@@ -25,7 +25,7 @@ import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListVo;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;

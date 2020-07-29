@@ -1,5 +1,8 @@
 package com.vpu.mp.service.pojo.saas.schedule.rabbit;
 
+/**
+ * @author luguangyao
+ */
 public class RabbitDataConstant {
 
     public enum State{

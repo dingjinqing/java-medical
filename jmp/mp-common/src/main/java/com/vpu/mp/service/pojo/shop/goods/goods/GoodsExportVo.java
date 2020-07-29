@@ -160,7 +160,6 @@ public class GoodsExportVo {
     @ExcelIgnore
     private Integer prdId;
 
-    //列名常量
     public static final String CREATE_TIME = "createTime";
     public static final String SORT_NAME_PARENT = "sortNameParent";
     public static final String SORT_NAME_CHILD = "sortNameChild";

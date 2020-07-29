@@ -54,7 +54,8 @@ public class CollectService extends ShopBaseService{
 
                 BigDecimal groupPrice = goodsInfo.getCollectPrice() ;
                 System.out.println(groupPrice);
-                for(CollectGroupVo info:infos){//规格商品、获取最低规格价
+                for(CollectGroupVo info:infos){
+                    //规格商品、获取最低规格价
                     System.out.println(info.getGroupPrice());
                     if(info.getGroupPrice().compareTo(groupPrice)<0){
                         groupPrice = info.getGroupPrice();

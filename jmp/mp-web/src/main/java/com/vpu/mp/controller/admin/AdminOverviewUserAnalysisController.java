@@ -101,14 +101,14 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
      * @return 数据
      */
     @PostMapping("/rfm")
-    public JsonResult getRFMAnalysis(@RequestBody RFMParam param) {
+    public JsonResult getRfmAnalysis(@RequestBody RfmParam param) {
      //判断指定日期有无数据
      Boolean data = shop().overview.userAnalysisService.getRFMData(param);
      if (!data){
          return fail(JsonResultMessage.OVERVIEW_USER_ANALYSIS_RFM_NULL);
      }
      //得到RFM数据
-     List<RFMVo> rfmVoList = shop().overview.userAnalysisService.getRFMAnalysis(param);
+     List<RfmVo> rfmVoList = shop().overview.userAnalysisService.getRFMAnalysis(param);
      return success(rfmVoList);
     }
 }

@@ -2,7 +2,7 @@
   <div class="main">
     <div class="navBox">
       <div class="filters">
-        <div class="filters_item">
+        <!-- <div class="filters_item">
           <span>医师院内编号：</span>
           <el-input
             v-model="queryParams.hospitalCode"
@@ -11,7 +11,7 @@
             placeholder="请输入医师院内编号"
           >
           </el-input>
-        </div>
+        </div> -->
         <div class="filters_item">
           <span>姓名：</span>
           <el-input
@@ -67,16 +67,24 @@
             label='医师院内编号'
           ></el-table-column>
           <el-table-column
+            prop='url'
+            label='头像'
+          >
+            <template slot-scope="scope">
+              <img
+                class="doc_img"
+                v-if='scope.row.url'
+                :src="scope.row.url"
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
             prop='name'
             label='姓名'
           ></el-table-column>
           <el-table-column
-            prop='mobile'
-            label='手机号'
-          ></el-table-column>
-          <el-table-column
-            prop='registerHospital'
-            label='注册医院'
+            prop='age'
+            label='年龄'
           ></el-table-column>
           <el-table-column
             prop='departmentNames'
@@ -87,8 +95,12 @@
             label='职称'
           ></el-table-column>
           <el-table-column
-            prop='registerTime'
-            label='注册时间'
+            prop='mobile'
+            label='手机号'
+          ></el-table-column>
+          <el-table-column
+            prop='workTime'
+            label='从业时间'
           ></el-table-column>
           <el-table-column
             label='操作'
@@ -155,7 +167,6 @@ export default {
       pageParams: {},
       tableData: [],
       queryParams: {
-        hospitalCode: null,
         name: null,
         departmentName: null
       },
@@ -167,9 +178,6 @@ export default {
     // 数据初始化
     initDataList () {
       this.loading = true
-      if (this.queryParams.hospitalCode === '') {
-        this.queryParams.hospitalCode = null
-      }
       if (this.queryParams.name === '') {
         this.queryParams.name = null
       }
@@ -184,8 +192,8 @@ export default {
           if (originalData[i].departmentNames) {
             originalData[i].departmentNames = originalData[i].departmentNames.join('，')
           }
-          if (originalData[i].registerTime !== null) {
-            originalData[i].registerTime = originalData[i].registerTime.substr(0, 10)
+          if (originalData[i].workTime !== null && originalData[i].workTime !== 0) {
+            originalData[i].workTime = originalData[i].workTime.substr(0, 10)
           }
         }
         console.log(originalData)
@@ -253,7 +261,7 @@ export default {
     // 编辑
     editDoctor (id) {
       this.$router.push({
-        path: '/admin/home/main/doctor/addDoctor',
+        path: '/admin/home/main/doctor/updateDoctor',
         query: {
           id: id
         }
@@ -309,6 +317,10 @@ export default {
         padding: 10px;
         background: #fff;
         margin-top: 10px;
+        .doc_img{
+          width: 45px;
+          height: 45px;
+        }
         .operation {
           display: flex;
           justify-content: center;

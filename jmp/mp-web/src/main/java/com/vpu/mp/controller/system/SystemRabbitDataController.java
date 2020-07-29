@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.saas.SaasApplication;
 
+/**
+ * @author luguangyao
+ */
 @RestController
 public class SystemRabbitDataController extends SystemBaseController {
 

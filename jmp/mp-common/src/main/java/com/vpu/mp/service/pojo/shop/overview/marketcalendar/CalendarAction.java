@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.overview.marketcalendar;
 
 import lombok.Getter;
 
+/**
+ * @author zhaojianqiang
+ */
 @Getter
 public class CalendarAction {
 	public static final String ADD = "add";

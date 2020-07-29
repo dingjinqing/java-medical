@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.member;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
+import com.vpu.mp.service.pojo.shop.member.userexp.UserExpParam;
 
 import lombok.Getter;
 import lombok.Setter;

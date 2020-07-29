@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.saas.question.bo;
 
 import java.sql.Timestamp;
 
+/**
+ * @author luguangyao
+ */
 public class FeedbackBo {
 
     private String submitUser;

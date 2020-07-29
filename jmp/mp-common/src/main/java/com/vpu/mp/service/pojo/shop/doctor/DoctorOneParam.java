@@ -6,6 +6,9 @@ import lombok.Data;
 import java.sql.Date;
 import java.util.List;
 
+/**
+ * @author chenjie
+ */
 @Data
 public class DoctorOneParam {
     private Integer   id;
@@ -25,7 +28,6 @@ public class DoctorOneParam {
     private Integer   titleId;
     private Byte      status = 1;
     private Byte      isDelete = 0;
-//    private String    departments;
     private List<DepartmentOneParam> departmentList;
     private String    titleName;
     private List<Integer> departmentIds;

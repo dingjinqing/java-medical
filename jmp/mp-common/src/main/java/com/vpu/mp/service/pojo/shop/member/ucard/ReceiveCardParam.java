@@ -4,6 +4,9 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
+/**
+ * @author huangzhuangzhuang
+ */
 @Data
 public class ReceiveCardParam {
 	@NotNull

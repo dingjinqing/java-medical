@@ -10,6 +10,9 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 
 import me.chanjar.weixin.mp.api.WxMpService;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MpOfficialAccountService extends MainBaseService {
 

@@ -53,7 +53,7 @@ public class WxAppCommentController extends WxAppBaseController {
      * @param param
      */
     @PostMapping("/goods")
-    public JsonResult getGoodsComment(@RequestBody MPGoodsCommentParam param) {
+    public JsonResult getGoodsComment(@RequestBody MpGoodsCommentParam param) {
         CommentInfo commentInfo = shop().goods.goodsComment.goodsComment(param);
         return success(commentInfo);
     }

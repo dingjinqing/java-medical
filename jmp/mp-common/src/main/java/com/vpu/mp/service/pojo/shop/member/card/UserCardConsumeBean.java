@@ -14,47 +14,47 @@ import lombok.Data;
 @Data
 @Builder
 public class UserCardConsumeBean {
-	// 用户Id
+	/**   用户Id */
 	private Integer userId;
-	// 会员卡Id
+	/**   会员卡Id */
 	private Integer cardId;
-	// 会员卡号
+	/**   会员卡号 */
 	private String cardNo;
-	//消费类型 0是普通卡 1限次卡
+	/**  消费类型 0是普通卡 1限次卡 */
 	private Byte type;
-	// 门店兑换次数
+	/**   门店兑换次数 */
 	private Integer countDis;
-	// 原来的钱
+	/**   原来的钱 */
 	private BigDecimal moneyDis;
-	// 卡变动金额（如要消耗或充值的钱，区分正负号 必须填）
+	/**   卡变动金额（如要消耗或充值的钱，区分正负号 必须填） */
 	private BigDecimal money;
-	// 创建时间
+	/**   创建时间 */
 	private Timestamp createTime;
-	// 消费原因模板id
+	/**   消费原因模板id */
 	private String reasonId;
-	// 模板消费原因
+	/**   模板消费原因 */
 	private String reason;
 	private Integer exchangCount;
-	// 订单号
+	/**   订单号 */
 	private String orderSn;
-	// 备注
+	/**   备注 */
 	private String message;
 
-	// 消费次数
+	/**   消费次数 */
 	private Integer count;
-	// 充值的钱 (不需要填写)
+	/**   充值的钱 (不需要填写) */
 	private BigDecimal charge;
-	// 支付方式
+	/**   支付方式 */
 	private String payment;
-	// 支付宝交易单号
+	/**   支付宝交易单号 */
 	private String aliTradeNo;
-	// 0按规则 1自定义
+	/**   0按规则 1自定义 */
 	private Byte chargeType;
-	// 订单应付金额
+	/**   订单应付金额 */
 	private BigDecimal moneyPaid;
-	// 订单状态
+	/**   订单状态 */
 	private Byte orderStatus;
-	// 微信支付id，用于发送模板消息
+	/**   微信支付id，用于发送模板消息 */
 	private String prepayId;
 	/**
 	 * 	充值类型 1 发卡，2 用户充值，3 管理员操作 

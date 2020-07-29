@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,5 +28,7 @@ public class WxAppChangeNumberParam {
     private Integer cartId;
     @Min(value = 0)
     private Integer cartNumber;
-    private Integer UserId;
+
+    @JsonProperty("UserId")
+    private Integer userId;
 }

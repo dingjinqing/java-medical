@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -18,7 +19,8 @@ public class RebateGoodsDetailParam {
 	private String username;
 	private Timestamp startRebateTime;
 	private Timestamp endRebateTme;
-	private String rebateORderSn;
+	@JsonProperty("rebateORderSn")
+	private String rebateOrderSn;
 	private Byte rebateStatus;
 	
 	/**

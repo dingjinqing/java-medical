@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.distribution;
 import lombok.Data;
 
 /**
- * @Auther 常乐
+ * @author  常乐
  * @Date 2019-12-10
  */
 @Data

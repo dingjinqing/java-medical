@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MessageConfigService extends ShopBaseService {
 

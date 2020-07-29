@@ -61,12 +61,15 @@ public class MarketOrderListParam{
         }else if(orderStatus.length == 1 && orderStatus[0] == 8){
             //售后完成
             orderStatus = new Byte[]{8, 10};
-        }else if(orderStatus.length == 1 && (orderStatus[0] == 9 || orderStatus[0] == 10 || orderStatus[0] == 11)){
-            //同城配送的状态，先过滤掉
-            orderStatus= new Byte[]{127};
-        }else if(orderStatus.length == 1 && orderStatus[0] == 7){
-            //售后中
-            orderStatus = new Byte[]{7, 9};
+        }else {
+            boolean isSameCityShip = orderStatus.length == 1 && (orderStatus[0] == 9 || orderStatus[0] == 10 || orderStatus[0] == 11);
+            if(isSameCityShip){
+                //同城配送的状态，先过滤掉
+                orderStatus= new Byte[]{127};
+            }else if(orderStatus.length == 1 && orderStatus[0] == 7){
+                //售后中
+                orderStatus = new Byte[]{7, 9};
+            }
         }
     }
 }

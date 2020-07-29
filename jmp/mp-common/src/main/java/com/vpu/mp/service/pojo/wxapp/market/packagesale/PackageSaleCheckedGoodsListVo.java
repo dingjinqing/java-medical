@@ -14,9 +14,9 @@ import java.util.List;
 @Setter
 public class PackageSaleCheckedGoodsListVo {
     private List<GroupGoodsVo> goodsList;
-    //所选商品件数
+    /**  所选商品件数 */
     private Integer totalSelectNumber;
-    //所选商品总价
+    /**  所选商品总价 */
     private BigDecimal totalSelectMoney;
     /**
      * 总金额合优惠金额
@@ -30,7 +30,7 @@ public class PackageSaleCheckedGoodsListVo {
         private Integer goodsNumber;
         private Byte groupId;
         private String groupName;
-        //选的商品
+        /**  选的商品 */
         private List<PackageSaleCartGoodsVo> selectList;
     }
 }

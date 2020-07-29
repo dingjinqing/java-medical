@@ -120,7 +120,7 @@ public class CardParam {
 	private BigDecimal payMoney;
 	/** 积分购买金额 */
 	private BigDecimal payScore;
-	// 领取码类型  1: 领取码 ； 2： 卡号+密码
+	/**   领取码类型  1: 领取码 ； 2： 卡号+密码 */
 	private Byte receiveAction;
 	private List<Integer> batchIdList;
 	
@@ -164,13 +164,13 @@ public class CardParam {
 	/** 是否审核 0： 否；1： 是 */
 	private Byte examine;
 	
-	// 发送会员卡开关
+	/**   发送会员卡开关 */
 	private String sendCoupon;
-	// 优惠券类型
+	/**   优惠券类型 */
 	private Byte couponType;
-	// 赠送优惠券id
+	/**   赠送优惠券id */
 	private List<Integer> couponIds;
-	// 赠送优惠礼包id
+	/**   赠送优惠礼包id */
 	private Integer couponPackage;
 	
 	/**

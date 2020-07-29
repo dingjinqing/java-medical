@@ -1,5 +1,8 @@
 package com.vpu.mp.service.foundation.language;
 
+/**
+ * @author lixinguo
+ */
 public class LanguageManager {
 
 	/**

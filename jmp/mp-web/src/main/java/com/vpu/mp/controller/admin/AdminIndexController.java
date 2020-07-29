@@ -2,15 +2,12 @@ package com.vpu.mp.controller.admin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -44,7 +41,9 @@ public class AdminIndexController extends AdminBaseController {
 	final protected String privilegeJsonPath = "admin.privilegePass.json";
 	
 	private static final String ENNAME="V-EnName";
-	// 版本控制传的值
+    /**
+     * 版本控制传的值
+     */
 	private static final String VSNAME="V-VsName";
 	final protected String versionJson = "admin.versionNew.json";
 	
@@ -142,11 +141,11 @@ public class AdminIndexController extends AdminBaseController {
 	 */
 	@RequestMapping(value = "/admin/checkMenu/showMa")
 	public JsonResult wxMaShow() {
-		String[] verifys = saas.shop.version.verifyVerPurview(adminAuth.user().loginShopId, VersionName.sub2);
-		String[] sub2 = VersionName.sub2;
+		String[] verifys = saas.shop.version.verifyVerPurview(adminAuth.user().loginShopId, VersionName.SUB_2);
+		String[] sub2 = VersionName.SUB_2;
 		List<String> list=new ArrayList<String>();
 		for(int i=0;i<verifys.length;i++) {
-			if(verifys[i].equals("true")) {
+			if("true".equals(verifys[i])) {
 				list.add(sub2[i]);
 			}
 		}

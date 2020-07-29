@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 @Component
 public class EsAssemblyProductService {
     public List<EsGoodsProductEntity> getEsProduct(List<EsGoods> esGoodsList){

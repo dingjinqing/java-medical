@@ -91,20 +91,24 @@ public class TaskJobMainService extends MainBaseService {
     }
 
     private String setTaskJobId(String jsonStr,String clzName,Integer jobId){
-            if( !jsonStr.contains("taskJobId")&& assertContainsTaskJobId(clzName) ){
+        String taskJobId = "taskJobId";
+        if( !jsonStr.contains(taskJobId)&& assertContainsTaskJobId(clzName) ){
                 String jobIdStr = "\"taskJobId\":"+jobId+",";
                 String resultString = jsonStr.replaceFirst("\\[\\{","[{"+jobIdStr);
-                if (!resultString.contains("taskJobId")) {
+                if (!resultString.contains(taskJobId)) {
 					resultString = resultString.replaceFirst("\\{", "{"+jobIdStr);
 				}
                 return  resultString;
-            }else if( jsonStr.contains("\"taskJobId\":null") ){
+            }else {
+            String taskJobNullKey = "\"taskJobId\":null";
+            if( jsonStr.contains(taskJobNullKey) ){
                 String jobIdStr = "\"taskJobId\":"+jobId;
-                return jsonStr.replaceFirst("\"taskJobId\":null",jobIdStr);
+                return jsonStr.replaceFirst(taskJobNullKey,jobIdStr);
             }
             else{
                 return jsonStr;
             }
+        }
     }
     private Boolean assertContainsTaskJobId(String clzName)  {
         try {
@@ -138,7 +142,8 @@ public class TaskJobMainService extends MainBaseService {
      */
     public  void  getAndSendMessage(){
         String uuid = Util.randomId();
-        if( jedisManager.addLock(JedisKeyConstant.TASK_JOB_LOCK,uuid,60*60*1000) ){
+        int timeOut = 60 * 60 * 1000;
+        if( jedisManager.addLock(JedisKeyConstant.TASK_JOB_LOCK,uuid, timeOut) ){
             db().transaction(configuration -> {
 
                 Result<Record4<Integer,String,String,Integer>> result = DSL.using(configuration)

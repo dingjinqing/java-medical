@@ -2,12 +2,12 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsParam;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsVo;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoParam;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawParam;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawReturn;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawInfoByOsParam;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawInfoByOsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawInfoParam;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawParam;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawReturn;
+import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

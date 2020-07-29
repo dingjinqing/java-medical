@@ -180,8 +180,9 @@ public class Calculate extends ShopBaseService {
             //会员卡 或 优惠卷-> one
             if (OrderConstant.D_T_MEMBER_CARD.equals(discountType) || OrderConstant.D_T_COUPON.equals(discountType)) {
                 //加价购 或 满折满减 与 one 不共存
-                if ((bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) ||
-                    (bo.getStraId() != null && bo.getStraId() > 0)) {
+                boolean isPlusPriceBuyOrDiscountReduce = (bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) ||
+                    (bo.getStraId() != null && bo.getStraId() > 0);
+                if (isPlusPriceBuyOrDiscountReduce) {
                     continue;
                 }
 
@@ -891,6 +892,11 @@ public class Calculate extends ShopBaseService {
         UserRecord userInfo = user.getUserByUserId(param.getWxUserInfo().getUserId());
         //是否首单
         boolean isFs = orderInfoService.isNewUser(userInfo.getUserId());
+
+        rebateAll(param, order, cfg, avgScoreDiscount, goingStrategy, userInfo, isFs);
+    }
+
+    private void rebateAll(OrderBeforeParam param, OrderInfoRecord order, DistributionParam cfg, BigDecimal avgScoreDiscount, List<DistributionStrategyParam> goingStrategy, UserRecord userInfo, boolean isFs) {
         //是否进行返利标识
         boolean flag = false;
         //总返利
@@ -985,12 +991,12 @@ public class Calculate extends ShopBaseService {
      * 自购返利(当自购返利开关开启，若下单人是分销员，则该下单人的间接邀请人不会获得返利，其直接邀请人可获得返利，返利比例为直接邀请人所在等级的间接邀请返利比例)
      * @param cfg
      * @param userInfo
-     * @param isFS
+     * @param isFs
      * @param goodsStrategy
      * @param current
      * @return
      */
-    private ArrayList<RebateRecord> selfRebate(DistributionParam cfg, UserRecord userInfo, boolean isFS, DistributionStrategyParam goodsStrategy, Timestamp current) {
+    private ArrayList<RebateRecord> selfRebate(DistributionParam cfg, UserRecord userInfo, boolean isFs, DistributionStrategyParam goodsStrategy, Timestamp current) {
         logger().info("自购返利start");
         if (goodsStrategy.getSelfPurchase() == OrderConstant.YES) {
             ArrayList<RebateRecord> result = new ArrayList<>();
@@ -1012,7 +1018,7 @@ public class Calculate extends ShopBaseService {
                     //自购二级返利（下单用户的直接邀请人，间接返利比例（或首单返利比例））
                     RebateRatioVo userRebateRatio2 = distributionGoods.getUserRebateRatio(userInfo2, goodsStrategy, cfg);
                     if(userRebateRatio2 != null) {
-                        Double rebateRatio2 = (isFS && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio2.getFirstRatio() : userRebateRatio2.getRebateRatio();
+                        Double rebateRatio2 = (isFs && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio2.getFirstRatio() : userRebateRatio2.getRebateRatio();
                         if(rebateRatio2 != null) {
                             logger().info("自购直接上级返利");
                             BigDecimal ratio2 = BigDecimalUtil.divide(new BigDecimal(rebateRatio2.toString()), BigDecimalUtil.BIGDECIMAL_100);

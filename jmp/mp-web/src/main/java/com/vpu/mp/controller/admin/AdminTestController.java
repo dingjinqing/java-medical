@@ -26,7 +26,7 @@ import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;

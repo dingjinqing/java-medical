@@ -125,17 +125,6 @@
               placeholder="请输入手机号码"
             ></el-input>
           </el-form-item>
-          <el-form-item
-            label='注册时间'
-            prop='registerTime'
-          >
-            <el-date-picker
-              v-model="doctorFormInfo.registerTime"
-              type="date"
-              placeholder="请选择注册时间"
-              value-format="yyyy-MM-dd HH:mm:ss"
-            ></el-date-picker>
-          </el-form-item>
         </el-form>
       </div>
       <div class="addDoctorFooter">
@@ -154,7 +143,7 @@ export default {
   data () {
     var validatePartId = (rule, value, callback) => {
       console.log(value)
-      if (!value) {
+      if (!value.length) {
         callback(new Error('请选择医生所属科室'))
       } else {
         callback()
@@ -173,7 +162,7 @@ export default {
         departmentIdsStr: [],
         sex: 1,
         mobile: '',
-        registerTime: ''
+        account_id: 0
       },
       doctorFormRules: {
         name: [{required: true, message: '请输入医生姓名', trigger: 'blur'}],
@@ -246,7 +235,7 @@ export default {
         departmentIdsStr: [],
         sex: 1,
         mobile: '',
-        registerTime: ''
+        account_id: 0
       }
     },
     // 获取医师详情
@@ -294,7 +283,7 @@ export default {
               console.log(res)
               if (res.error === 0) {
                 this.$message.success({
-                  message: 'success',
+                  message: '添加成功',
                   showClose: true
                 })
                 this.$router.push({ name: 'doctorList' })
@@ -306,13 +295,11 @@ export default {
               }
             })
           } else {
-            // 时间需要时分秒，简单粗暴加一个
-            params.registerTime = params.registerTime + ' 00:00:00'
             updateDoctor(params).then(res => {
               console.log(res)
               if (res.error === 0) {
                 this.$message.success({
-                  message: 'success',
+                  message: '更新成功',
                   showClose: true
                 })
                 this.$router.push({ name: 'doctorList' })

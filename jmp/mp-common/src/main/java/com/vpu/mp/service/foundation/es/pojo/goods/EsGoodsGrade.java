@@ -9,15 +9,16 @@ import java.math.BigDecimal;
 
 /**
  * ES 商品中不同会员等级中的各个规格对应的价格
+ * @author luguangyao
  */
 public class EsGoodsGrade {
 
 
-    @EsFiled(name = EsSearchName.GRADE.PRD_ID,type = EsFiledTypeConstant.INTEGER)
+    @EsFiled(name = EsSearchName.Grade.PRD_ID,type = EsFiledTypeConstant.INTEGER)
     private Integer prdId;
-    @EsFiled(name = EsSearchName.GRADE.GRADE_PRICE,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.Grade.GRADE_PRICE,type = EsFiledTypeConstant.SCALED_FLOAT)
     private BigDecimal gradePrice;
-    @EsFiled(name = EsSearchName.GRADE.GRADE,type = EsFiledTypeConstant.KEYWORD)
+    @EsFiled(name = EsSearchName.Grade.GRADE,type = EsFiledTypeConstant.KEYWORD)
     private String grade;
 
     public EsGoodsGrade(){}

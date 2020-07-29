@@ -13,8 +13,8 @@ import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateParam;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
 import com.vpu.mp.service.shop.ShopApplication;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.SubcribeTemplateCategory;
-import com.vpu.mp.service.pojo.shop.market.message.maConfig.TypesNames;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.TypesNames;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 
@@ -82,8 +82,9 @@ public class WxAppSubscribeMessageController extends WxAppBaseController {
 	private String[] getData(String[] data, String typs) {
 		if ((!StringUtils.isEmpty(typs)) && data.length == 0) {
 			String[] typesNames= {};
-			if (typs.contains(",")) {
-				typesNames = typs.split(",");
+            String comma = ",";
+            if (typs.contains(comma)) {
+				typesNames = typs.split(comma);
 			}else {
 				typesNames=new String[]{typs};
 			}

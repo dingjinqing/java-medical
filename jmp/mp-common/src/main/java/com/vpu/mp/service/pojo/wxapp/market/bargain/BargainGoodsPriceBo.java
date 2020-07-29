@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @Setter
 public class BargainGoodsPriceBo {
 
-    //活动ID
+    /** 活动ID */
     private Integer    id;
 
     private Integer goodsId;

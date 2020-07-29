@@ -175,7 +175,8 @@ public class MemberCardOrderService extends VirtualOrderService {
             if (o.getUseScore() != null && o.getUseScore() > 0) {
                 o.setPrice(o.getUseScore().toString() + Util.translateMessage(lang, JsonResultMessage.UEXP_SCORE, OrderConstant.LANGUAGE_TYPE_EXCEL));
             } else {
-                if ("CNY".equals(o.getCurrency())) {
+                String cny = "CNY";
+                if (cny.equals(o.getCurrency())) {
                     o.setPrice("￥" + o.getOrderAmount().toString());
                 } else {
                     o.setPrice("$" + o.getOrderAmount().toString());

@@ -2,6 +2,9 @@ package com.vpu.mp.service.saas.index.vo;
 
 import java.math.BigDecimal;
 
+/**
+ * @author luguangyao
+ */
 public class OrderMoneyInfo {
 
     private String time;

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/18
  */
 @Slf4j

@@ -8,10 +8,10 @@ import java.util.stream.IntStream;
  * @time   下午1:36:17
  */
 public class IdentityUtils {
-	// 身份证校验码
+	/**   身份证校验码 */
     private static final int[] COEFFICIENT_ARRAY = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
 
-    // 身份证号的尾数规则
+    /**   身份证号的尾数规则 */
     private static final String[] IDENTITY_MANTISSA = {"1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2"};
 
     private static final String IDENTITY_PATTERN = "^[0-9]{17}[0-9Xx]$";
@@ -37,7 +37,7 @@ public class IdentityUtils {
             return digit * coefficient;
         }).summaryStatistics().getSum();
 
-        // 计算出的尾数索引
+        //   计算出的尾数索引
         int mantissaIndex = (int) (sum % 11);
         String mantissa = IDENTITY_MANTISSA[mantissaIndex];
 

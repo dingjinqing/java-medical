@@ -236,7 +236,7 @@ public class ApiGoodsService extends ShopBaseService {
         // 处理规格信息
         // 需要处理商品已经被删除情况
         Map<Integer, List<GoodsSpecProductRecord>> specPrdMap = goodsSpecProductService.apiGetGoodsSpecPrdMapByGoodsIds(Collections.singletonList(goodsDetailVo.getGoodsId()));
-        List<GoodsSpecProductBakRecord> goodsSpecProductBakRecords = goodsSpecProductService.apiGetGoodsSpecPrdDeletedMByGoodsId(goodsDetailVo.getGoodsId());
+        List<GoodsSpecProductBakRecord> goodsSpecProductBakRecords = goodsSpecProductService.apiGetGoodsSpecPrdDeletedMbyGoodsId(goodsDetailVo.getGoodsId());
         List<GoodsSpecProductRecord> specPrdList = specPrdMap.get(goodsDetailVo.getGoodsId());
 
         List<ApiGoodsSkuVo> apiGoodsSkuVos = new ArrayList<>(2);

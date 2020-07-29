@@ -223,36 +223,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
         //order before data ready
         try {
-            //初始化paramGoods
-            initParamGoods(param);
-            //init
-            orderBo = initCreateOrderBo(param);
-            //校验
-            checkCreateOrderBo(orderBo, param);
-            //设置规格和商品信息、基础校验规格与商品
-            processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
-            //TODO 营销相关 活动校验或活动参数初始化
-            marketProcessorFactory.processInitCheckedOrderCreate(param);
-            //下架商品校验
-            checkGoodsIsOnSale(param.getGoods());
-            if(null != param.getActivityId() && null != param.getActivityType()) {
-                //活动生成ordergodos;
-                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
-            }else {
-                //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
-                //初始化订单商品
-                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId());
-            }
-            //生成订单商品后校验必填项
-            checkMust(orderGoodsBos, param);
-
-            orderBo.setOrderGoodsBo(orderGoodsBos);
-
-            //处理orderBeforeVo
-            orderBeforeVo.setAddress(orderBo.getAddress());
-            processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
-            //校验
-            checkOrder(orderBeforeVo, orderBo, param);
+            orderBo = processPrepairCreateOrder(param, orderBeforeVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), e.getErrorResult(),  e.getCodeParam());
         }
@@ -324,6 +295,41 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
         }
+    }
+
+    private CreateOrderBo processPrepairCreateOrder(CreateParam param, OrderBeforeVo orderBeforeVo) throws MpException {
+        CreateOrderBo orderBo;
+        List<OrderGoodsBo> orderGoodsBos;//初始化paramGoods
+        initParamGoods(param);
+        //init
+        orderBo = initCreateOrderBo(param);
+        //校验
+        checkCreateOrderBo(orderBo, param);
+        //设置规格和商品信息、基础校验规格与商品
+        processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
+        //TODO 营销相关 活动校验或活动参数初始化
+        marketProcessorFactory.processInitCheckedOrderCreate(param);
+        //下架商品校验
+        checkGoodsIsOnSale(param.getGoods());
+        if(null != param.getActivityId() && null != param.getActivityType()) {
+            //活动生成ordergodos;
+            orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
+        }else {
+            //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
+            //初始化订单商品
+            orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId());
+        }
+        //生成订单商品后校验必填项
+        checkMust(orderGoodsBos, param);
+
+        orderBo.setOrderGoodsBo(orderGoodsBos);
+
+        //处理orderBeforeVo
+        orderBeforeVo.setAddress(orderBo.getAddress());
+        processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
+        //校验
+        checkOrder(orderBeforeVo, orderBo, param);
+        return orderBo;
     }
 
     private OrderBeforeVo init(OrderBeforeParam param) throws MpException {

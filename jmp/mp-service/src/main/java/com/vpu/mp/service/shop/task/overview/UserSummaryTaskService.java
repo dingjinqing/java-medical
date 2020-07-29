@@ -428,7 +428,7 @@ public class UserSummaryTaskService extends ShopBaseService {
      * @param end   the end
      * @return the rfm data
      */
-    public Map<Integer, Record3<Integer, Integer, BigDecimal>> getRFMData(Timestamp start, Timestamp end) {
+    public Map<Integer, Record3<Integer, Integer, BigDecimal>> getRrmData(Timestamp start, Timestamp end) {
         return db().select(ORDER_I.USER_ID, DSL.count(ORDER_I.USER_ID), DSL.sum(ORDER_I.MONEY_PAID).add(DSL.sum(ORDER_I.USE_ACCOUNT)).add(DSL.sum(ORDER_I.MEMBER_CARD_BALANCE)))
             .from(ORDER_I)
             .where(STATUS_CONDITION).and(ORDER_SN_CONDITION)

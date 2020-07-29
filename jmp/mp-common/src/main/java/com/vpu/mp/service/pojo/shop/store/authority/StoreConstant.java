@@ -35,5 +35,5 @@ public class StoreConstant {
 	public static final String ACT_ADD = "add";
 	
 	/** 编辑*/
-	public static final String ACT_edit = "edit";
+	public static final String ACT_EDIT = "edit";
 }

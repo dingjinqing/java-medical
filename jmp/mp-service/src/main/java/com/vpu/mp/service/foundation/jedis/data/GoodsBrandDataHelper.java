@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author luguangyao
+ */
 @Service
 public class GoodsBrandDataHelper extends ShopBaseService implements DataHelperInterface<GoodsBrandMpVo>{
 

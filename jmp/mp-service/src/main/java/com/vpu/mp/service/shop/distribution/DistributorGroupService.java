@@ -16,6 +16,9 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
+/**
+ * @author changle
+ */
 @Service
 public class DistributorGroupService extends ShopBaseService{
 	/**
@@ -201,8 +204,8 @@ public class DistributorGroupService extends ShopBaseService{
     public int showDistributionGroup(ShowDistributionGroupParam param){
         int res;
         //判断是否已设置
-        int show_distributor_group = db().selectCount().from(SHOP_CFG).where(SHOP_CFG.K.eq("show_distributor_group")).fetchOne().into(Integer.class);
-        if(show_distributor_group == 1){
+        int showDistributorGroup = db().selectCount().from(SHOP_CFG).where(SHOP_CFG.K.eq("show_distributor_group")).fetchOne().into(Integer.class);
+        if(showDistributorGroup == 1){
             res = db().update(SHOP_CFG).set(SHOP_CFG.V, param.getV()).where(SHOP_CFG.K.eq("show_distributor_group")).execute();
         }else{
             ShopCfgRecord record = new ShopCfgRecord();

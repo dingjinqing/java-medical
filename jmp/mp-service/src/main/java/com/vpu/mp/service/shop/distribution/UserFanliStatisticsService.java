@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Service
 public class UserFanliStatisticsService extends ShopBaseService {
 
-    UserFanliStatistics TABLE = UserFanliStatistics.USER_FANLI_STATISTICS;
+    final static UserFanliStatistics TABLE = UserFanliStatistics.USER_FANLI_STATISTICS;
 
     public void update(Integer userId, Integer inviteId, Byte level, BigDecimal currentMoney, BigDecimal totalMoney) {
         UserFanliStatisticsRecord record = db().selectFrom(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.REBATE_LEVEL.eq(level).and(TABLE.FANLI_USER_ID.eq(inviteId)))).fetchOne();

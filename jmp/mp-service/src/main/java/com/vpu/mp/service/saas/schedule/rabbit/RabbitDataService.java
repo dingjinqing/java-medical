@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 @Slf4j
 @Service
 public class RabbitDataService extends MainBaseService {

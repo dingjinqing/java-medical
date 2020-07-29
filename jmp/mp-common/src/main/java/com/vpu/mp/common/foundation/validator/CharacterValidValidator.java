@@ -7,6 +7,7 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * 字符校验,中文,英文,及个数限制
+ *
  * @author 孔德成
  * @date 2019/12/3 9:19
  */
@@ -22,139 +23,83 @@ public class CharacterValidValidator implements ConstraintValidator<CharacterVal
 
     @Override
     public void initialize(CharacterValid constraintAnnotation) {
-        max=constraintAnnotation.max();
-        min=constraintAnnotation.min();
-        letterDigit=constraintAnnotation.letterDigit();
-        chinese=constraintAnnotation.chinese();
-        message =constraintAnnotation.message();
+        max = constraintAnnotation.max();
+        min = constraintAnnotation.min();
+        letterDigit = constraintAnnotation.letterDigit();
+        chinese = constraintAnnotation.chinese();
+        message = constraintAnnotation.message();
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
-        if (value==null){
-            if (min<=0){
+        if (value == null) {
+            if (min <= 0) {
                 return true;
             }
             //最少输入
-            message="{com.vpu.validation.constraints.CharacterValid.min}";
+            message = "{com.vpu.validation.constraints.CharacterValid.min}";
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return false;
         }
-        int num=0;
+        int num = 0;
         char[] charArray = value.toCharArray();
         //中文和英文
-        if (letterDigit&&chinese){
-            for (char c : charArray) {
-                int cnorEn = isCnorEn(c);
-                if (cnorEn==0){
-                    //只能输入中文英文
-                    message="{com.vpu.validation.constraints.CharacterValid.CnAEn}";
-                    context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                    return false;
-                }
-                num+=cnorEn;
-            }
-            if (min>=0&&num<min){
-                //至少输入几个字符
-                chineseNum =min/2;
-                message="{com.vpu.validation.constraints.CharacterValid.CnAEn.min}";
-//                context.buildConstraintViolationWithTemplate(message).addPropertyNode("chineseNum").inContainer(Integer.class,chineseNum)
-//                        .addConstraintViolation();
-                context.unwrap(HibernateConstraintValidatorContext.class)
-                        .addMessageParameter("chineseNum",chineseNum)
-                .buildConstraintViolationWithTemplate(message)
-                .addConstraintViolation();
-                return false;
-            }
-            if (max>=0&&num>max){
-                //至多输入几个字符
-                chineseNum =max/2;
-                message="{com.vpu.validation.constraints.CharacterValid.CnAEn.max}";
-                HibernateConstraintValidatorContext hcontext = context.unwrap(HibernateConstraintValidatorContext.class);
-                hcontext.addMessageParameter("chineseNum",chineseNum)
-                        .buildConstraintViolationWithTemplate(message)
-                        .addConstraintViolation();
-                return false;
-            }
-            return true;
+        if (letterDigit && chinese) {
+            return processChineseAndLetterDigit(context, num, charArray);
         }
         //英文
-        if (letterDigit){
-            for (char c : charArray) {
-                int cnorEn = isCnorEn(c);
-                if (cnorEn==0){
-                    //只能输入英文
-                    message="{com.vpu.validation.constraints.CharacterValid.English}";
-                    context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                    return false;
-                }
-                num+=cnorEn;
-            }
-            if (min>=0&&num<min){
-                //至少输入几个字符
-                chineseNum =min/2;
-                message="{com.vpu.validation.constraints.CharacterValid.English.min}";
-                context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                return false;
-            }
-            if (max>=0&&num>max){
-                //至多输入几个字符
-                chineseNum =max/2;
-                message="{com.vpu.validation.constraints.CharacterValid.English.max}";
-                context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                return false;
-            }
-            return true;
+        if (letterDigit) {
+            return processLetterDigit(context, num, charArray);
         }
         //中文
-        if (chinese){
+        if (chinese) {
             for (char c : charArray) {
                 int cnorEn = isCnorEn(c);
-                if (cnorEn==0){
+                if (cnorEn == 0) {
                     //只能输入中文
-                    message="{com.vpu.validation.constraints.CharacterValid.Chinese}";
+                    message = "{com.vpu.validation.constraints.CharacterValid.Chinese}";
                     context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
                     return false;
                 }
-                num+=cnorEn;
+                num += cnorEn;
             }
-            if (min>=0&&num<min){
+            if (min >= 0 && num < min) {
                 //至少输入几个字符
-                chineseNum =min/2;
-                message="{com.vpu.validation.constraints.CharacterValid.Chinese.min}";
+                chineseNum = min / 2;
+                message = "{com.vpu.validation.constraints.CharacterValid.Chinese.min}";
                 context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
                 return false;
             }
-            if (max>=0&&num>max){
+            if (max >= 0 && num > max) {
                 //至多输入几个字符
-                chineseNum =max/2;
-                message="{com.vpu.validation.constraints.CharacterValid.Chinese.max}";
+                chineseNum = max / 2;
+                message = "{com.vpu.validation.constraints.CharacterValid.Chinese.max}";
                 context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
                 return false;
             }
         }
         for (char c : charArray) {
             int cnorEn = isCnorEn(c);
-            if (cnorEn==0){
+            if (cnorEn == 0) {
                 //只能输入中文
-                message="{com.vpu.validation.constraints.CharacterValid.Chinese}";
+                message = "{com.vpu.validation.constraints.CharacterValid.Chinese}";
                 context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
                 return false;
             }
-            num+=1;
+            num += 1;
         }
-        if (min>=0&&num<min){
+        if (min >= 0 && num < min) {
             //至少输入几个字符
-            chineseNum =min/2;
-            message="{com.vpu.validation.constraints.CharacterValid.min}";
+            chineseNum = min / 2;
+            message = "{com.vpu.validation.constraints.CharacterValid.min}";
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return false;
         }
-        if (max>=0&&num>max){
+        if (max >= 0 && num > max) {
             //至多输入几个字符
-            chineseNum =max/2;
-            message="{com.vpu.validation.constraints.CharacterValid.max}";
+            chineseNum = max / 2;
+            message = "{com.vpu.validation.constraints.CharacterValid.max}";
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return false;
         }
@@ -162,18 +107,84 @@ public class CharacterValidValidator implements ConstraintValidator<CharacterVal
         return true;
     }
 
+    private boolean processLetterDigit(ConstraintValidatorContext context, int num, char[] charArray) {
+        for (char c : charArray) {
+            int cnorEn = isCnorEn(c);
+            if (cnorEn == 0) {
+                //只能输入英文
+                message = "{com.vpu.validation.constraints.CharacterValid.English}";
+                context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+                return false;
+            }
+            num += cnorEn;
+        }
+        if (min >= 0 && num < min) {
+            //至少输入几个字符
+            chineseNum = min / 2;
+            message = "{com.vpu.validation.constraints.CharacterValid.English.min}";
+            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+            return false;
+        }
+        if (max >= 0 && num > max) {
+            //至多输入几个字符
+            chineseNum = max / 2;
+            message = "{com.vpu.validation.constraints.CharacterValid.English.max}";
+            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean processChineseAndLetterDigit(ConstraintValidatorContext context, int num, char[] charArray) {
+        for (char c : charArray) {
+            int cnorEn = isCnorEn(c);
+            if (cnorEn == 0) {
+                //只能输入中文英文
+                message = "{com.vpu.validation.constraints.CharacterValid.CnAEn}";
+                context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+                return false;
+            }
+            num += cnorEn;
+        }
+        if (min >= 0 && num < min) {
+            //至少输入几个字符
+            chineseNum = min / 2;
+            message = "{com.vpu.validation.constraints.CharacterValid.CnAEn.min}";
+//                context.buildConstraintViolationWithTemplate(message).addPropertyNode("chineseNum").inContainer(Integer.class,chineseNum)
+//                        .addConstraintViolation();
+            context.unwrap(HibernateConstraintValidatorContext.class)
+                .addMessageParameter("chineseNum", chineseNum)
+                .buildConstraintViolationWithTemplate(message)
+                .addConstraintViolation();
+            return false;
+        }
+        if (max >= 0 && num > max) {
+            //至多输入几个字符
+            chineseNum = max / 2;
+            message = "{com.vpu.validation.constraints.CharacterValid.CnAEn.max}";
+            HibernateConstraintValidatorContext hcontext = context.unwrap(HibernateConstraintValidatorContext.class);
+            hcontext.addMessageParameter("chineseNum", chineseNum)
+                .buildConstraintViolationWithTemplate(message)
+                .addConstraintViolation();
+            return false;
+        }
+        return true;
+    }
+
+
     /**
      * 判断是否是中文和英文
+     *
      * @param c
      * @return
      */
-    private static int isCnorEn(char c){
+    private static int isCnorEn(char c) {
         //中文字符
-        if(c >= 0x0391 && c <= 0xFFE5) {
+        if (c >= 0x0391 && c <= 0xFFE5) {
             return 2;
         }
         //英文字符
-        if(c <= 0x00FF){
+        if (c <= 0x00FF) {
             return 1;
         }
         return 0;
@@ -188,8 +199,8 @@ public class CharacterValidValidator implements ConstraintValidator<CharacterVal
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
 
         if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A) {
+            || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+            || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A) {
             return true;
 
         }
@@ -200,12 +211,12 @@ public class CharacterValidValidator implements ConstraintValidator<CharacterVal
     @Override
     public String toString() {
         return "CharacterValidValidator{" +
-                "min=" + min +
-                ", max=" + max +
-                ", chineseNum=" + chineseNum +
-                ", letterDigit=" + letterDigit +
-                ", chinese=" + chinese +
-                ", message='" + message + '\'' +
-                '}';
+            "min=" + min +
+            ", max=" + max +
+            ", chineseNum=" + chineseNum +
+            ", letterDigit=" + letterDigit +
+            ", chinese=" + chinese +
+            ", message='" + message + '\'' +
+            '}';
     }
 }

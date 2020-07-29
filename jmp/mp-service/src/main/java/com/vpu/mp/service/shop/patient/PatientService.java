@@ -19,6 +19,9 @@ import com.vpu.mp.service.pojo.shop.patient.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author chenjie
+ */
 @Service
 public class PatientService extends ShopBaseService{
     @Autowired
@@ -95,8 +98,9 @@ public class PatientService extends ShopBaseService{
             userPatientCoupleDo.setPatientId(patientId);
             userPatientCoupleDo.setUserId(userPatientOneParam.getUserId());
             List<PatientOneParam> patientList=userPatientCoupleDao.listPatientIdsByUser(userPatientOneParam.getUserId());
-            if(patientList.size()==0)
+            if(patientList.size()==0) {
                 userPatientCoupleDo.setIsDefault((byte) 1);
+            }
             userPatientCoupleDao.save(userPatientCoupleDo);
         } else {
             patientDo.setId(patientOneParam.getId());

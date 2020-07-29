@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
+/**
+ * @author lixinguo
+ */
 @Data
 public class UploadedVideoVo {
 	private Integer videoId;

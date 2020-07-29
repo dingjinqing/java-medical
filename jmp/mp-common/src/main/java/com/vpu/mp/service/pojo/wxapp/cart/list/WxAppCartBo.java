@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackCartVo;
 import lombok.Builder;
@@ -49,11 +50,13 @@ public class WxAppCartBo {
     /**
      * 满折满减 k活动id
      */
-    Map<Integer,List<WxAppCartGoods>> FullReductionGoodsMap;
+    @JsonProperty("FullReductionGoodsMap")
+    Map<Integer,List<WxAppCartGoods>> fullReductionGoodsMap;
     /**
      * 加价购 k活动id
      */
-    Map<Integer,List<WxAppCartGoods>> PurchasePriceGoodsMap;
+    @JsonProperty("PurchasePriceGoodsMap")
+    Map<Integer,List<WxAppCartGoods>> purchasePriceGoodsMap;
     /**
      * 购物车 - 失效商品
      */

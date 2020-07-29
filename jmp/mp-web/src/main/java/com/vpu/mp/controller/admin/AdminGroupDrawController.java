@@ -139,7 +139,7 @@ public class AdminGroupDrawController extends AdminBaseController {
      */
     @PostMapping("/share")
     public JsonResult getGroupDrawShare(@RequestBody GroupDrawShareParam param) throws Exception {
-        return success(shop().groupDraw.getMpQRCode(param));
+        return success(shop().groupDraw.getMpQrCode(param));
     }
     /**
      * 活动分享

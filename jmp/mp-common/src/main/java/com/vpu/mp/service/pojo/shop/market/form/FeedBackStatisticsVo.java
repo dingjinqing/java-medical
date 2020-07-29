@@ -12,9 +12,9 @@ import java.util.List;
  */
 @Data
 public class FeedBackStatisticsVo {
-    // 表单参与用户数
+    /**   表单参与用户数 */
     private Integer participantsNum;
-    // 表单参与人数/反馈数
+    /**   表单参与人数/反馈数 */
     private Integer submitNum;
     private Byte isForeverValid;
     private Timestamp startTime;

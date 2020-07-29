@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * @author chenjie
+ */
 @Data
 public class DoctorFetchOneParam {
     private String doctorCode;
