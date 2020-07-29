@@ -101,7 +101,6 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                                 return prescriptionVo.getIsUsed().equals(BaseConstant.NO);
                             }
                         }
-
                     }
                     return false;
                 }).count();
