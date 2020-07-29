@@ -1018,7 +1018,21 @@ const routes = [
               import(
                 '@/view/admin/index/leftNavComponents/base_manger/thirdConfig/thirdPartyConfig'
               )
-          }
+          },
+          // 短信配置路由
+          {
+            path: '/admin/home/main/base_manger/smsConfig',
+            name: 'smsConfig',
+            meta: {
+              crumbTitle: 'router.smsConfig',
+              meta: 'smsConfig',
+              category: 'smsConfig'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/smsRecord/smsConfig'
+                )
+          },
         ].concat(
           marketing,
           member,
