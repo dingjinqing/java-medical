@@ -131,17 +131,22 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE);
         }
-        PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
-        FieldsUtil.assign(obj,prescriptionOneParam);
-        transaction(() -> {
-            //生成处方，处方明细
-            PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
-            //更新状态
-            orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.ORDER_WAIT_DELIVERY);
-            orderGoodsService.updateAuditStatusByOrderId(obj.getOrderId(), OrderConstant.MEDICAL_AUDIT_PASS);
-            //更新处方号
-            orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
-        });
+        if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
+            PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
+            FieldsUtil.assign(obj,prescriptionOneParam);
+            transaction(() -> {
+                //生成处方，处方明细
+                PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
+                //更新状态
+                orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.ORDER_WAIT_DELIVERY);
+                orderGoodsService.updateAuditStatusByOrderId(obj.getOrderId(), OrderConstant.MEDICAL_AUDIT_PASS);
+                //更新处方号
+                orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
+            });
+        }else if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_NOT_PASS)){
+            //审核未通过 驳回
+        }
+
         return ExecuteResult.create();
     }
 

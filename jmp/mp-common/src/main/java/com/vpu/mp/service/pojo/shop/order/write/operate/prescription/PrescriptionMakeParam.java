@@ -19,5 +19,6 @@ public class PrescriptionMakeParam extends AbstractOrderOperateQueryParam {
     private String departmentName;
     private String diagnosisName;
     private String doctorAdvice;
+    private Byte auditStatus;
     private List<Integer> goodsIdList=new ArrayList<>();
 }
