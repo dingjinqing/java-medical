@@ -13,9 +13,9 @@ const routes = [{
       component: () => import('@/view/system/index/leftNavComponents/overview/overview_index/overview'),
       name: 'overview',
       meta: {
-        title: '概览',
-        imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
-        imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png'
+        title: '概览'
+        // imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+        // imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png'
       }
     },
     {
