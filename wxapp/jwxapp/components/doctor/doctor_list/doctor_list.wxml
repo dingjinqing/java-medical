@@ -1,6 +1,6 @@
 <!--components/doctor/doctor_list/doctor_list.wxml.wxml-->
 <view class="doctor_content" wx:for='{{doctorList}}' wx:key='id'>
-	<view class="doctor_item" catchtap="toChat" data-doctor_id='{{item.id}}' data-depar_id='{{item.departmentId}}'>
+	<view class="doctor_item" catchtap="toChat" data-doctor_id='{{item.id}}' data-depar_id='{{item.departmentId}}' data-price='{{item.consultationPrice}}'>
 		<view class="d_left">
 			<image src="{{item.url}}" wx:if='{{item.url != ""}}'></image>
          <image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>

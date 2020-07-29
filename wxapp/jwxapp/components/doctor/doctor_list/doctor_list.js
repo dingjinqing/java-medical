@@ -37,8 +37,9 @@ global.wxComponent({
     toChat(e) {
       let doctor_id = e.currentTarget.dataset.doctor_id;
       let depar_id = e.currentTarget.dataset.depar_id;
+      let price = e.currentTarget.dataset.price;
       util.navigateTo({
-        url: "/pages2/doctorPatientMessage/doctorPatientMessage?doctor_id=" + doctor_id + "&depar_id=" + depar_id
+        url: "/pages2/doctorPatientMessage/doctorPatientMessage?doctor_id=" + doctor_id + "&depar_id=" + depar_id + "&price=" + price
       })
     }
   },

@@ -18,6 +18,15 @@ global.wxPage({
    */
   onLoad: function (options) {
     // this.requsetMessage()
+    let patient_message = {
+      content:{
+        name:'saoyang',
+        sex:'男',
+        age:'24',
+        mess:'你猜猜猜IC爱慈爱IC爱爱CIA慈爱爱车'
+      }
+    }
+    this.sendMessage(patient_message,2)
   },
   getInputMessage(e) {
     let {
@@ -91,7 +100,7 @@ global.wxPage({
           message:JSON.parse(res.content[0].message),
           type:res.content[0].type
         };
-        chat.type = 0;
+        chat.position = 0;
         chatContent.push(chat)
         this.setData({
           chatContent:chatContent
@@ -123,7 +132,7 @@ global.wxPage({
           ...imSessionItem,
           message:JSON.parse(imSessionItem.message)
         };
-        chat.type = 1;
+        chat.position = 1;
         chatContent.push(chat)
         this.setData({
           chatContent:chatContent
