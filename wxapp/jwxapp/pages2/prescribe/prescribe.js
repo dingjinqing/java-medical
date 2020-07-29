@@ -14,7 +14,7 @@ global.wxPage({
     cacheGoodsIdList: [], //商品ID缓存列表
     goodsIdList: [],
     cacheGoodsIdNum: [],
-    GoodsIdNum: [],
+    goodsIdNum: [],
     cachePageGoodsList: [], //页面商品列表
     pageGoodsList: [], //页面商品缓存列表
     goodsName: '', //搜索商品名
@@ -99,7 +99,7 @@ global.wxPage({
     if (selected) {
       cacheGoodsIdList.push(Target.goodsId)
       cachePageGoodsList.push(Target)
-      cacheGoodsIdNum.push({ goodsId: Target.goodsId, goodsNumber: Target.cartNumber })
+      cacheGoodsIdNum.push({ goodsId: Target.goodsId, dragSumNum: Target.cartNumber })
       this.setData({
         cacheGoodsIdList,
         cachePageGoodsList,
@@ -165,7 +165,7 @@ global.wxPage({
       departmentName: this.data.departmentName,
       diagnosisName: this.data.diagnose.info,
       doctorAdvice: this.data.doctorAdvice,
-      goodsIdList: this.data.goodsIdList
+      goodsIdList: this.data.goodsIdNum
     }
     util.api('/api/wxapp/prescription/add', res => {
       console.log(res)
