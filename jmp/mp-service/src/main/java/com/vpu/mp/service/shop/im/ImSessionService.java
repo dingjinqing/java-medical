@@ -217,7 +217,7 @@ public class ImSessionService extends ShopBaseService {
         dumpAndDeleteSessionReadyAndBakToDb(shopId, sessionId, imSessionDo.getDepartmentId(), imSessionDo.getPatientId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
     }
 
-    private ImSessionItemDo convertImSessionItemBasetoDo(ImSessionItemBase imSessionItemBase, Integer sessionId, Integer fromId, Integer toId) {
+    private ImSessionItemDo convertImSessionItemBaseToDo(ImSessionItemBase imSessionItemBase, Integer sessionId, Integer fromId, Integer toId) {
         ImSessionItemDo imSessionItemDo = new ImSessionItemDo();
         imSessionItemDo.setImSessionId(sessionId);
         imSessionItemDo.setFormId(fromId);
@@ -288,7 +288,7 @@ public class ImSessionService extends ShopBaseService {
             if (imSessionItemBase == null) {
                 continue;
             }
-            ImSessionItemDo imSessionItemDo = convertImSessionItemBasetoDo(imSessionItemBase, sessionId, fromId, toId);
+            ImSessionItemDo imSessionItemDo = convertImSessionItemBaseToDo(imSessionItemBase, sessionId, fromId, toId);
             readyToDb.add(imSessionItemDo);
         }
         imSessionItemDao.batchInsert(readyToDb);

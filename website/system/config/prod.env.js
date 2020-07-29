@@ -1,6 +1,6 @@
 'use strict';
 module.exports = {
   NODE_ENV: '"production"',
-  API_DOMAIN: '"jmp.weipubao.cn"',
-  IMAGE_DOMAIN: '"jmpimg.weipubao.cn"'
+  API_DOMAIN: '"medical.weipubao.cn"',
+  IMAGE_DOMAIN: '"medicalimg.weipubao.cn"'
 };
