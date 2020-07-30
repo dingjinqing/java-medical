@@ -9,7 +9,8 @@ global.wxPage({
    */
   data: {
     time: '2020-07-23 13:35:01',
-    page_name: 'saoyang',
+    page_name: '',
+    prescriptionMessage:null,
     chatContent:[]
   },
 
@@ -37,6 +38,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    if(this.data.prescriptionMessage) this.sendMessage({content:this.data.prescriptionMessage},2)
     this.requsetMessage()
   },
 
@@ -99,9 +101,9 @@ global.wxPage({
     }
     }, {
       departmentId: 12,
-      patientId: 3,
-      pullFromId: 2,
-      selfId: 1
+      patientId: 137,
+      pullFromId: 7,
+      selfId: util.getCache('user_id')
     }, '', false);
   },
   hideMoreActions(){
@@ -131,10 +133,15 @@ global.wxPage({
       }
     },{
       departmentId:12,
-      patientId:3,
-      fromId:1,
-      toId:2,
+      patientId:137,
+      fromId:util.getCache('user_id'),
+      toId:7,
       imSessionItem
     })
+  },
+  createPrescription(){
+    util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
+      patientId:137
+    })}`)
   }
 })

@@ -8,7 +8,7 @@ global.wxPage({
     targetStatus:'1',
     filterParams:{
       sessionStatus:[0],
-      doctorId:null,
+      doctorId:util.getCache('doctor_id'),
       userId:null
     },
     pageParams:{
@@ -21,9 +21,6 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.setData({
-      'filterParams.doctorId':1
-    })
     this.requestSessionList()
   },
   requestSessionList(){

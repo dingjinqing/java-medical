@@ -278,4 +278,13 @@ public class DoctorService extends ShopBaseService {
         return doctorDao.selectDepartmentsByDoctorId(doctorId);
     }
 
+    /**
+     * 根据医师职称id查询职称名
+     * @param doctorOneParam 医师职称id
+     * @return String
+     */
+    public String selectDoctorTitle(DoctorOneParam doctorOneParam){
+        return doctorDao.selectDoctorTitle(doctorOneParam);
+    }
+
 }

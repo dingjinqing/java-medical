@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.doctor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import lombok.AllArgsConstructor;
@@ -28,10 +29,12 @@ public class DoctorMainShowVo {
     private String name;
     private Byte      sex;
     private String    url;
+    @JsonIgnore
     private Byte      duty;
     private Integer   age;
     private String    registerHospital;
     private String    treatDisease;
+    private String doctorTitle;
 
     /**
      * 医师科室名称

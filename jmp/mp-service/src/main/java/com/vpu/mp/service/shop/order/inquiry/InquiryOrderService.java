@@ -146,7 +146,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param paymentRecord
      * @throws MpException
      */
-    public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord) throws MpException {
+    public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord)  {
         logger().info("问诊订单-支付完成(回调)-开始");
         order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
@@ -174,19 +174,21 @@ public class InquiryOrderService extends ShopBaseService {
         UserRecord userRecord=userService.getUserByUserId(param.getUser().getUserId());
         WebPayVo vo = new WebPayVo();
         //微信支付接口
-        try {
-            vo = mpPaymentService.wxUnitOrder(param.getClientIp(), InquiryOrderConstant.GOODS_NAME, orderSn, param.getOrderAmount(), userRecord.getWxOpenid());
-        } catch (WxPayException e) {
-            logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderSn, e);
-            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-        }catch (Exception e) {
-            logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderSn, e.getMessage());
-            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-        }
+//        try {
+//            vo = mpPaymentService.wxUnitOrder(param.getClientIp(), InquiryOrderConstant.GOODS_NAME, orderSn, param.getOrderAmount(), userRecord.getWxOpenid());
+//        } catch (WxPayException e) {
+//            logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderSn, e);
+//            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+//        }catch (Exception e) {
+//            logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderSn, e.getMessage());
+//            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+//        }
         logger().debug("微信支付接口调用结果：{}", vo);
         // 更新记录微信预支付id：prepayid
-        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
+//        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
         vo.setOrderSn(orderSn);
+        InquiryOrderDo orderInfo=getByOrderSn(orderSn);
+        inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         logger().debug("微信支付创建订单结束");
         return vo;
     }
@@ -208,6 +210,7 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientName(patientOneParam.getName());
         inquiryOrderDo.setPatientSex(patientOneParam.getSex());
         inquiryOrderDo.setPatientMobile(patientOneParam.getMobile());
+        inquiryOrderDo.setPatientBirthday(patientOneParam.getBirthday());
         inquiryOrderDo.setPatientIdentityCode(patientOneParam.getIdentityCode());
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
         List<String> imageList=payParam.getImagUrl();

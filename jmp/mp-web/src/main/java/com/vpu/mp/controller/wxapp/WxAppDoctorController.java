@@ -80,6 +80,9 @@ public class WxAppDoctorController extends WxAppBaseController {
         // 获取医师首页个人信息
         DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
         DoctorMainShowVo doctorMainShowVo = new DoctorMainShowVo();
+        //添加医师职称
+        String duty = doctorService.selectDoctorTitle(oneInfo);
+        doctorMainShowVo.setDoctorTitle(duty);
         FieldsUtil.assign(oneInfo, doctorMainShowVo);
         doctorMainShowVo.setDoctorMessageCountVo(doctorMessageCountVo);
         // 获取医师所属科室列表
