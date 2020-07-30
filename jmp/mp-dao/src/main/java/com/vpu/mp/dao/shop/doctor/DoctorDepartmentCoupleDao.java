@@ -1,8 +1,10 @@
 package com.vpu.mp.dao.shop.doctor;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorDepartmentCoupleRecord;
+import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationParam;
@@ -35,6 +37,20 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
             .fetchInto(DepartmentOneParam.class);
         return departmentList;
+    }
+
+    /**
+     * 获取医师的一个科室
+     * @return
+     */
+    public DepartmentCodeVo getOneCodeByByDoctorId(Integer doctorId){
+       return db()
+                .select(DEPARTMENT.CODE,DEPARTMENT.NAME)
+                .from(DOCTOR_DEPARTMENT_COUPLE)
+                .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+                .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId))
+                .and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+                .fetchAnyInto(DepartmentCodeVo.class);
     }
 
     /**

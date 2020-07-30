@@ -272,7 +272,7 @@ public class GoodsDao extends ShopBaseDao {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(GOODS.IS_ON_SALE.eq((byte) 1));
         if (goodsMatchParam.getGoodsId() != null && goodsMatchParam.getGoodsId() > 0) {
-            condition.and(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsMatchParam.getGoodsId()));
+            condition = condition.and(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsMatchParam.getGoodsId()));
         } else {
             if (goodsMatchParam.getGoodsCommonName() != null && !GoodsConstant.BLACK.equals(goodsMatchParam.getGoodsCommonName())) {
                 condition = condition.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(goodsMatchParam.getGoodsCommonName()));

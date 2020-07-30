@@ -75,6 +75,15 @@ public class PatientService extends BaseShopConfigService{
         return userPatientCoupleDao.defaultPatientIdByUser(userId);
     }
 
+    /**
+     * 获取默认患者 没有为null
+     * @param userId
+     * @return
+     */
+    public UserPatientParam defaultPatientByUser(Integer userId) {
+        return userPatientCoupleDao.defaultPatientByUser(userId);
+    }
+
     public void setDefaultPatient (UserPatientParam userPatient) {
         userPatientCoupleDao.initDefaultUserPatient(userPatient.getUserId());
         userPatientCoupleDao.setDefaultPatient(userPatient);
@@ -257,5 +266,14 @@ public class PatientService extends BaseShopConfigService{
      */
     public void deleteUserPatient(UserPatientParam param) {
         userPatientCoupleDao.deleteUserPatient(param);
+    }
+
+    /**
+     * 根据用户患者Id获取用户患者
+     * @param param
+     * @return
+     */
+    public UserPatientParam getUserPatient(UserPatientParam param) {
+        return userPatientCoupleDao.getUserPatient(param);
     }
 }

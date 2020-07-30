@@ -148,7 +148,10 @@ global.wxPage({
             let {
               orderSn
             } = res.content
-            console.log(res)
+            console.log(orderSn)
+            util.navigateTo({
+              url: "/pages2/patientChat/patientChat?orderSn=" + orderSn
+            })
             // if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
             //   wx.requestPayment({
             //     timeStamp: res.content.webPayVo.timeStamp,
@@ -189,5 +192,5 @@ global.wxPage({
         })
       }
     }, {})
-  }
+  },
 })

@@ -191,5 +191,18 @@
   display: none;
 }
 
-
+.no_content {
+  text-align: center;
+  padding-top: 350rpx;
+}
+.no_content image{
+  height: 450rpx;
+  width: 750rpx;
+  margin: 0 auto 40rpx;
+}
+.no_content .no_word{
+  text-align: center;
+  margin-bottom: 20rpx;
+  color: #999;
+}
 

@@ -136,6 +136,7 @@ global.wxPage({
           chatContent:chatContent,
           prescriptionMessage:null
         })
+        this.pageScrollBottom()
       }
     },{
       departmentId:this.data.targetUserInfo.departmentId,
@@ -149,6 +150,14 @@ global.wxPage({
     util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
       patientId:137
     })}`)
+  },
+  pageScrollBottom() {
+    wx.createSelectorQuery().select('.main-container').boundingClientRect(function (rect) {
+      console.log(rect);
+      wx.pageScrollTo({
+        scrollTop: rect.height,
+      });
+    }).exec()
   },
   handleShowPrescriptionDialog(e){
     let {prescriptionCode} = e.currentTarget.dataset

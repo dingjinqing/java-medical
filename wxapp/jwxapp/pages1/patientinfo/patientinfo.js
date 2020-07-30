@@ -111,7 +111,7 @@ global.wxPage({
         this.data.pat_name = this.data.patient_info.name;
         this.data.pat_mobile = this.data.patient_info.mobile;
         this.data.pat_id_num = this.data.patient_info.identityCode;
-        this.data.sex_index = this.data.patient_info.sex - 1;
+        this.data.sex_index = !!this.data.patient_info.sex ? this.data.patient_info.sex : -1;
         this.data.dates = !!this.data.patient_info.birthday ? this.data.patient_info.birthday:'';
         // 疾病史编辑
         // 过往病史

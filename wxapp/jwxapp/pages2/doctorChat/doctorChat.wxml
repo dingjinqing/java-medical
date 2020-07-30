@@ -51,7 +51,7 @@
 			</chat-message>
 		</block>
 	</view>
-	<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput">
+	<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
 		<view class="bottom-button-content" slot="custom-bottom">
 			<view class="has-border">结束问诊</view>
 			<view class="no-border" bindtap="createPrescription">去开方</view>
