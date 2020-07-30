@@ -54,6 +54,19 @@ public class WxAppImSessionController extends WxAppBaseController{
         return success(imSessionRenderVo);
     }
 
+    @PostMapping("/api/wxapp/im/session/status/{sessionId}")
+    public JsonResult getSessionStatus(@PathVariable("sessionId") Integer sessionId){
+        if (sessionId == null) {
+            return fail(JsonResultCode.IM_SESSION_ID_IS_NULL);
+        }
+
+        if (!imSessionService.sessionExist(sessionId)) {
+            return fail(JsonResultCode.IM_SESSION_NOT_EXIST);
+        }
+
+        return success(imSessionService.getSessionStatus(sessionId));
+    }
+
     /**
      * 关闭会话
      * @param sessionId 会话id
