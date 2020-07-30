@@ -29,7 +29,7 @@
     </view>
     <view class="message_list_icon" bindtap='bindJumpLink' data-url='/pages1/messagelist/messagelist'>
       <image src="http://medicaldevimg.weipubao.cn/image/wxapp/icon_message_list.png" mode='widthFix' />
-      <view class="not_read_icon"></view>
+      <view class="not_read_icon" wx:if='{{mes_count > 0}}'></view>
     </view>
     <!-- <view bindtap="bindJumpLink" data-url="/pages/userinfo/userinfo">
       <image src="{{imageUrl}}image/wxapp/center_set.png" mode='widthFix' class="center_set" />
@@ -280,6 +280,7 @@
           <view class='each_service' wx:if='{{item3.is_show == 1}}' bindtap='bindJumpLink' data-url="{{item3.link}}">
             <view class='es_img'>
               <image src='{{item3.icon}}'></image>
+              <view class="item_mes_num" wx:if='{{item3.title == "我的消息"}}'>{{mes_count}}</view>
             </view>
             <view class='es_word'>{{item3.title}}</view>
           </view>

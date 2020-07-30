@@ -37,6 +37,7 @@ global.wxPage({
       win_h: win_h
     })
     that.usercenterRequest(that);
+    this.getMessageUnread()
   },
 
   /**
@@ -273,6 +274,21 @@ global.wxPage({
   },
   allPrescription () {
     util.jumpLink('/pages1/familylist/familylist')
+  },
+  // 获取未读消息的条数
+  getMessageUnread () {
+    util.api('/api/wxapp/message/count', res => {
+      if(res.error == 0){
+        this.data.mes_count = res.content;
+        this.data.mes_count = Number(this.data.mes_count);
+        this.data.mes_count = this.data.mes_count > 0 ? this.data.mes_count : 0
+        this.setData({
+          mes_count: this.data.mes_count
+        })
+      }
+    },{
+      userId: util.getCache("user_id")
+    })
   },
   /**
    * 生命周期函数--监听页面隐藏
