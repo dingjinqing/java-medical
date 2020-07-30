@@ -32,20 +32,20 @@
 							<view class="list-item">
 								<view class="list-item-content">
 									<text class="list-item-dot"></text>
-									<text>诊断：原发性高</text>
+									<text>诊断：{{item.messageInfo.message.content.diagnosisName}}</text>
 								</view>
 							</view>
 							<view class="list-item">
 								<view class="list-item-content">
 									<text class="list-item-dot"></text>
-									<text>科室：呼吸科</text>
+									<text>科室：{{item.messageInfo.message.content.departmentName}}</text>
 								</view>
 							</view>
 						</view>
 					</view>
 					<view class="doctor-info">
-						<text class="doctor-name">医师：张三</text>
-						<text class="item-date">日期：2020.06.30</text>
+						<text class="doctor-name">医师：{{item.messageInfo.message.content.doctorName}}</text>
+						<text class="item-date">日期：{{item.messageInfo.message.content.time}}</text>
 					</view>
 				</view>
 

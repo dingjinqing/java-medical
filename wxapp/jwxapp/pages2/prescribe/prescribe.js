@@ -30,6 +30,13 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let {patientId} = options,doctorId = util.getCache('doctor_id')
+    this.setData({
+      patientId,
+      doctorId
+    })
+    this.getDoctorDetail()
+    this.getPatientDetail()
   },
   clearInput () {
     this.setData({
@@ -74,6 +81,7 @@ global.wxPage({
       }
     }, {
       ...this.data.dialogPageParams,
+      isMedical:1,
       goodsName: this.data.goodsName
     })
   },
@@ -165,15 +173,55 @@ global.wxPage({
       departmentName: this.data.departmentName,
       diagnosisName: this.data.diagnose.info,
       doctorAdvice: this.data.doctorAdvice,
-      goodsIdList: JSON.stringify(this.data.goodsIdNum)
+      goodsList: this.data.goodsIdNum
     }
     util.api('/api/wxapp/prescription/add', res => {
       console.log(res)
       if (res.error === 0) {
-
+        let {prescriptionCode,diagnosisName,departmentName} = res.content
+        let pageList = getCurrentPages();
+        let prevPage = pageList[pageList.length - 2];
+        prevPage.setData({
+          prescriptionMessage:{
+            prescriptionCode,
+            diagnosisName,
+            departmentName,
+            doctorName:this.data.doctorInfo.name,
+            time:this.getToday()
+          }
+        })
+        wx.navigateBack()
       }
     }, {
       ...params
+    })
+  },
+  getDoctorDetail(){
+    util.api('/api/wxapp/doctor/auth/info',res=>{
+      let {name} = res.content
+      if(res.error === 0){
+        this.setData({
+          doctorInfo:{
+            name
+          }
+        })
+      }
+    })
+  },
+  getPatientDetail(){
+    util.api('/api/wxapp/user/patient/get/detail',res=>{
+      if(res.error === 0){
+        let {name,sex,age} = res.content
+        this.setData({
+          patientInfo:{
+            name,
+            sex,
+            age
+          }
+        })
+      }
+    },{
+      id:this.data.patientId
     })
   },
   /**
@@ -222,7 +270,6 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
   }
 })
 
