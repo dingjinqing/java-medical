@@ -32,6 +32,6 @@ public class PatientExternalVo {
     @JsonProperty("state")
     @JsonDeserialize(using = StateDeSerialize.class)
     private Byte      isDelete;
-    private Timestamp createTime;
-    private Timestamp updateTime;
+    private Integer createTime;
+    private Integer lastUpdateTime;
 }
