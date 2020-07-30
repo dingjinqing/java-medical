@@ -22,4 +22,6 @@ public class DoctorAuthParam {
      * 医师医院唯一编码
      */
     private String hospitalCode;
+
+    private Integer userId;
 }

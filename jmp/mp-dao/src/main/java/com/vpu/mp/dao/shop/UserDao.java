@@ -17,15 +17,12 @@ public class UserDao extends ShopBaseDao {
 
     /**
      * 根据用户名和手机查询用户id，再讲该用户权限设置为医师
-     * @param name 用户姓名
-     * @param mobail 手机号
      * @return UserDo
      */
-    public UserDo updateDoctorAuth(String name, String mobail) {
-        UserDo userDo = db().select().from(USER).where(USER.USERNAME.eq(name)
-            .and(USER.MOBILE.eq(mobail))).fetchAnyInto(UserDo.class);
+    public UserDo updateDoctorAuth(Integer userId) {
+        UserDo userDo = db().select().from(USER).where(USER.USER_ID.eq(userId)).fetchAnyInto(UserDo.class);
          db().update(USER).set(USER.USER_TYPE, (byte) 1)
-            .where(USER.USERNAME.eq(name).and(USER.MOBILE.eq(mobail)))
+            .where(USER.USER_ID.eq(userId))
             .execute();
          return userDo;
     }
