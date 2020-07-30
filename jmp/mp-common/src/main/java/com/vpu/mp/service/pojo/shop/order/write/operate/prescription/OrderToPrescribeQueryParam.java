@@ -9,4 +9,5 @@ import lombok.Data;
  **/
 @Data
 public class OrderToPrescribeQueryParam extends AbstractOrderOperateQueryParam {
+    private Integer orderId;
 }
