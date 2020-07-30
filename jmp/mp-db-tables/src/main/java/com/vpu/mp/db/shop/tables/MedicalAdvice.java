@@ -4,6 +4,10 @@
 package com.vpu.mp.db.shop.tables;
 
 
+import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
+import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.tables.records.MedicalAdviceRecord;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -11,10 +15,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_471752;
-import com.vpu.mp.db.shop.tables.records.MedicalAdviceRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MedicalAdvice extends TableImpl<MedicalAdviceRecord> {
 
-    private static final long serialVersionUID = 1425306028;
+    private static final long serialVersionUID = -71057351;
 
     /**
-     * The reference instance of <code>jmini_shop_224462.b2c_medical_advice</code>
+     * The reference instance of <code>mini_shop_471752.b2c_medical_advice</code>
      */
     public static final MedicalAdvice MEDICAL_ADVICE = new MedicalAdvice();
 
@@ -58,131 +58,131 @@ public class MedicalAdvice extends TableImpl<MedicalAdviceRecord> {
     }
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.id</code>. 主键id
+     * The column <code>mini_shop_471752.b2c_medical_advice.id</code>. 主键id
      */
     public final TableField<MedicalAdviceRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "主键id");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.pos_code</code>. 医嘱单号
+     * The column <code>mini_shop_471752.b2c_medical_advice.pos_code</code>. 医嘱单号
      */
     public final TableField<MedicalAdviceRecord, String> POS_CODE = createField("pos_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医嘱单号");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.pos_detail_code</code>. 医嘱明细单号
+     * The column <code>mini_shop_471752.b2c_medical_advice.pos_detail_code</code>. 医嘱明细单号
      */
     public final TableField<MedicalAdviceRecord, String> POS_DETAIL_CODE = createField("pos_detail_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医嘱明细单号");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.diagnosis_name</code>. 诊断名称
+     * The column <code>mini_shop_471752.b2c_medical_advice.diagnosis_name</code>. 诊断名称
      */
     public final TableField<MedicalAdviceRecord, String> DIAGNOSIS_NAME = createField("diagnosis_name", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "诊断名称");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.diagnosis_code</code>. 诊断编码
+     * The column <code>mini_shop_471752.b2c_medical_advice.diagnosis_code</code>. 诊断编码
      */
     public final TableField<MedicalAdviceRecord, String> DIAGNOSIS_CODE = createField("diagnosis_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "诊断编码");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.diagnosis_content</code>. 诊断描述
+     * The column <code>mini_shop_471752.b2c_medical_advice.diagnosis_content</code>. 诊断描述
      */
-    public final TableField<MedicalAdviceRecord, String> DIAGNOSIS_CONTENT = createField("diagnosis_content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "诊断描述");
+    public final TableField<MedicalAdviceRecord, String> DIAGNOSIS_CONTENT = createField("diagnosis_content", org.jooq.impl.SQLDataType.CLOB, this, "诊断描述");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.order_create_time</code>. 医嘱创建时间
+     * The column <code>mini_shop_471752.b2c_medical_advice.order_create_time</code>. 医嘱创建时间
      */
     public final TableField<MedicalAdviceRecord, Timestamp> ORDER_CREATE_TIME = createField("order_create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "医嘱创建时间");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.take_effect_time</code>. 医嘱生效时间
+     * The column <code>mini_shop_471752.b2c_medical_advice.take_effect_time</code>. 医嘱生效时间
      */
     public final TableField<MedicalAdviceRecord, Timestamp> TAKE_EFFECT_TIME = createField("take_effect_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "医嘱生效时间");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.pos_content</code>. 医嘱内容
+     * The column <code>mini_shop_471752.b2c_medical_advice.pos_content</code>. 医嘱内容
      */
-    public final TableField<MedicalAdviceRecord, String> POS_CONTENT = createField("pos_content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "医嘱内容");
+    public final TableField<MedicalAdviceRecord, String> POS_CONTENT = createField("pos_content", org.jooq.impl.SQLDataType.CLOB, this, "医嘱内容");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.goods_num</code>. 总量
+     * The column <code>mini_shop_471752.b2c_medical_advice.goods_num</code>. 总量
      */
     public final TableField<MedicalAdviceRecord, Double> GOODS_NUM = createField("goods_num", org.jooq.impl.SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.DOUBLE)), this, "总量");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.goods_basic_unit</code>. 单位 例：500
+     * The column <code>mini_shop_471752.b2c_medical_advice.goods_basic_unit</code>. 单位 例：500
      */
     public final TableField<MedicalAdviceRecord, String> GOODS_BASIC_UNIT = createField("goods_basic_unit", org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "单位 例：500");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.goods_equivalent_quantity</code>. 单量 例:500
+     * The column <code>mini_shop_471752.b2c_medical_advice.goods_equivalent_quantity</code>. 单量 例:500
      */
     public final TableField<MedicalAdviceRecord, Double> GOODS_EQUIVALENT_QUANTITY = createField("goods_equivalent_quantity", org.jooq.impl.SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.DOUBLE)), this, "单量 例:500");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.goods_equivalent_unit</code>. 单位(单量单位)例:ml
+     * The column <code>mini_shop_471752.b2c_medical_advice.goods_equivalent_unit</code>. 单位(单量单位)例:ml
      */
     public final TableField<MedicalAdviceRecord, String> GOODS_EQUIVALENT_UNIT = createField("goods_equivalent_unit", org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "单位(单量单位)例:ml");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.goods_price</code>. 金额
+     * The column <code>mini_shop_471752.b2c_medical_advice.goods_price</code>. 金额
      */
     public final TableField<MedicalAdviceRecord, Long> GOODS_PRICE = createField("goods_price", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "金额");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.goods_use_frequency</code>. 使用频次
+     * The column <code>mini_shop_471752.b2c_medical_advice.goods_use_frequency</code>. 使用频次
      */
     public final TableField<MedicalAdviceRecord, String> GOODS_USE_FREQUENCY = createField("goods_use_frequency", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "使用频次");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.goods_use_method</code>. 使用方法
+     * The column <code>mini_shop_471752.b2c_medical_advice.goods_use_method</code>. 使用方法
      */
     public final TableField<MedicalAdviceRecord, String> GOODS_USE_METHOD = createField("goods_use_method", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "使用方法");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.doctor_memo</code>. 医师嘱托
+     * The column <code>mini_shop_471752.b2c_medical_advice.doctor_memo</code>. 医师嘱托
      */
-    public final TableField<MedicalAdviceRecord, String> DOCTOR_MEMO = createField("doctor_memo", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "医师嘱托");
+    public final TableField<MedicalAdviceRecord, String> DOCTOR_MEMO = createField("doctor_memo", org.jooq.impl.SQLDataType.CLOB, this, "医师嘱托");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.doctor</code>. 开嘱医师
+     * The column <code>mini_shop_471752.b2c_medical_advice.doctor</code>. 开嘱医师
      */
     public final TableField<MedicalAdviceRecord, String> DOCTOR = createField("doctor", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "开嘱医师");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.basic_medical</code>. 是否表示当前医嘱明细是个药品 0:否、1:是
+     * The column <code>mini_shop_471752.b2c_medical_advice.basic_medical</code>. 是否表示当前医嘱明细是个药品 0:否、1:是
      */
     public final TableField<MedicalAdviceRecord, Byte> BASIC_MEDICAL = createField("basic_medical", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否表示当前医嘱明细是个药品 0:否、1:是");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.is_delete</code>. 删除标记
+     * The column <code>mini_shop_471752.b2c_medical_advice.is_delete</code>. 删除标记
      */
     public final TableField<MedicalAdviceRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标记");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.create_time</code>. 生成时间
+     * The column <code>mini_shop_471752.b2c_medical_advice.create_time</code>. 生成时间
      */
     public final TableField<MedicalAdviceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "生成时间");
 
     /**
-     * The column <code>jmini_shop_224462.b2c_medical_advice.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_medical_advice.update_time</code>. 最后修改时间
      */
     public final TableField<MedicalAdviceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>jmini_shop_224462.b2c_medical_advice</code> table reference
+     * Create a <code>mini_shop_471752.b2c_medical_advice</code> table reference
      */
     public MedicalAdvice() {
         this(DSL.name("b2c_medical_advice"), null);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_224462.b2c_medical_advice</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_medical_advice</code> table reference
      */
     public MedicalAdvice(String alias) {
         this(DSL.name(alias), MEDICAL_ADVICE);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_224462.b2c_medical_advice</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_medical_advice</code> table reference
      */
     public MedicalAdvice(Name alias) {
         this(alias, MEDICAL_ADVICE);

@@ -16,7 +16,6 @@ import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
-import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
@@ -215,11 +214,10 @@ public class DoctorService extends ShopBaseService {
      * @param doctorAuthParam 当前用户姓名、手机号、医师医院唯一编码
      * @return 验证信息
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public String doctorAuth(DoctorAuthParam doctorAuthParam){
         DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
         if (doctorDo != null){
-            UserDo userDo = userDao.updateDoctorAuth(doctorAuthParam.getName(), doctorAuthParam.getMobile());
+            UserDo userDo = userDao.updateDoctorAuth(doctorAuthParam.getUserId());
             doctorDao.updateUserId(userDo);
             return "验证成功";
         } else {

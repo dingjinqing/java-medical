@@ -23,11 +23,12 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPatientCoupleDo implements Serializable {
 
-    private static final long serialVersionUID = -1818298179;
+    private static final long serialVersionUID = 1028816799;
 
     private Integer   id;
     private Integer   userId;
     private Integer   patientId;
+    private Byte      isFetch;
     private Byte      isDefault;
     private Byte      isDelete;
     private Timestamp createTime;
@@ -39,6 +40,7 @@ public class UserPatientCoupleDo implements Serializable {
         this.id = value.id;
         this.userId = value.userId;
         this.patientId = value.patientId;
+        this.isFetch = value.isFetch;
         this.isDefault = value.isDefault;
         this.isDelete = value.isDelete;
         this.createTime = value.createTime;
@@ -49,6 +51,7 @@ public class UserPatientCoupleDo implements Serializable {
         Integer   id,
         Integer   userId,
         Integer   patientId,
+        Byte      isFetch,
         Byte      isDefault,
         Byte      isDelete,
         Timestamp createTime,
@@ -57,6 +60,7 @@ public class UserPatientCoupleDo implements Serializable {
         this.id = id;
         this.userId = userId;
         this.patientId = patientId;
+        this.isFetch = isFetch;
         this.isDefault = isDefault;
         this.isDelete = isDelete;
         this.createTime = createTime;
@@ -85,6 +89,14 @@ public class UserPatientCoupleDo implements Serializable {
 
     public void setPatientId(Integer patientId) {
         this.patientId = patientId;
+    }
+
+    public Byte getIsFetch() {
+        return this.isFetch;
+    }
+
+    public void setIsFetch(Byte isFetch) {
+        this.isFetch = isFetch;
     }
 
     public Byte getIsDefault() {
@@ -126,6 +138,7 @@ public class UserPatientCoupleDo implements Serializable {
         sb.append(id);
         sb.append(", ").append(userId);
         sb.append(", ").append(patientId);
+        sb.append(", ").append(isFetch);
         sb.append(", ").append(isDefault);
         sb.append(", ").append(isDelete);
         sb.append(", ").append(createTime);

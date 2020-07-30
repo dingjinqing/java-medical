@@ -32,6 +32,7 @@ public class MedicalHistoryDo implements Serializable {
     private String    posCode;
     private Integer   patientId;
     private String    patientName;
+    private Integer   userId;
     private Byte      sex;
     private Integer   age;
     private Integer   departmentId;

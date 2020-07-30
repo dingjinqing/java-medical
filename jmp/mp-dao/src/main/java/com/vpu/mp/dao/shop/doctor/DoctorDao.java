@@ -168,7 +168,7 @@ public class DoctorDao extends ShopBaseDao {
     public DoctorDo doctorAuth(DoctorAuthParam doctorAuthParam) {
         DoctorDo doctorDo = new DoctorDo();
         doctorDo = db().select().from(DOCTOR)
-            .where(DOCTOR.NAME.eq(doctorAuthParam.getName())
+            .where(DOCTOR.NAME.eq(doctorAuthParam.getDoctorName())
             .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile())
                 .and(DOCTOR.HOSPITAL_CODE.eq(doctorAuthParam.getHospitalCode()))))
             .fetchAnyInto(DoctorDo.class);
