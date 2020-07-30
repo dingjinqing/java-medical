@@ -948,9 +948,15 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                         executeParam.setMerchantTelephone(defaultAddress.getMerchantTelephone());
                         executeParam.setZipCode(defaultAddress.getZipCode());
                     }
-                } else if (rOrder.getReturnType().equals(OrderConstant.RT_GOODS) && (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) || rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING))) {
-                    //卖家同意退货申请或者买家提交物流后可以完成退款
-                    executeParam.setReturnOperate(null);
+                } else if (rOrder.getReturnType().equals(OrderConstant.RT_GOODS)) {
+                    if (rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) || rOrder.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)) {
+                        //卖家同意退货申请或者买家提交物流后可以完成退款
+                        executeParam.setReturnOperate(null);
+                    } else {
+                        result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                        result.setMsg("当前退款订单无法执行当前操作");
+                        return true;
+                    }
                 } else {
                     result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
                     result.setMsg("当前退款订单无法执行当前操作");
