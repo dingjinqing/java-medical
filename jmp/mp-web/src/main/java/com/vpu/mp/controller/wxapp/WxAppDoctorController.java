@@ -13,10 +13,7 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.message.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +41,13 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/auth")
-    @ResponseBody
-    public JsonResult doctorAuth(DoctorAuthParam doctorAuthParam) {
+    public JsonResult doctorAuth(@RequestBody DoctorAuthParam doctorAuthParam) {
         return this.success(doctorService.doctorAuth(doctorAuthParam));
     }
 
     /**
      * 获取当前医师登录的信息
-     * @return
+     * @return JsonResult
      */
     @PostMapping("/auth/info")
     public JsonResult getDoctorAuthInfo(){

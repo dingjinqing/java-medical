@@ -58,6 +58,8 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
     private OrderMedicalHistoryDao orderMedicalHistoryDao;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private ReturnService  returnService;
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.MAKE_PRESCRIPTION;
@@ -81,7 +83,9 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             orderGoodsMedicalVo.setPatient(patient);
             //历史诊断
             OrderMedicalHistoryDo medicalHistoryDo= orderMedicalHistoryDao.getByOrderId(orderInfo.getOrderId());
-            medicalHistoryDo.setDiseaseHistory(splitDiseaseHistory(medicalHistoryDo.getDiseaseHistory()));
+            if(medicalHistoryDo!=null){
+                medicalHistoryDo.setDiseaseHistory(splitDiseaseHistory(medicalHistoryDo.getDiseaseHistory()));
+            }
             orderGoodsMedicalVo.setMedicalHistory(medicalHistoryDo);
             //药品数组
             List<GoodsMedicalOneInfoVo> goodsMedicalOneInfoVoList=new ArrayList<>();
@@ -127,11 +131,13 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      */
     @Override
     public ExecuteResult execute(PrescriptionMakeParam obj) {
+        logger().info("医师开方-开始");
         OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
         if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE);
         }
         if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
+            logger().info("orderId:{}开方通过",orderInfoDo.getOrderId());
             PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
             FieldsUtil.assign(obj,prescriptionOneParam);
             prescriptionOneParam.setIsUsed((byte)1);
@@ -146,7 +152,14 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             });
         }else if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_NOT_PASS)){
             //审核未通过 驳回
+            logger().info("orderId:{}开方驳回",orderInfoDo.getOrderId());
+            //更新状态
+            orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+            orderGoodsService.updateAuditStatusByOrderId(obj.getOrderId(), OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+            //退款
+            returnService.auditNotPassRefund(orderInfoDo.getOrderSn());
         }
+        logger().info("医师开方-结束");
 
         return ExecuteResult.create();
     }
