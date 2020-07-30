@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.medicalhistory;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author 赵晓东
  * @description
@@ -16,4 +18,13 @@ public class MedicalHistoryPageInfoParam extends BasePageParam {
      */
     private int patientId;
 
+    /**
+     * 用户ID
+     */
+    private Integer userId;
+
+    /**
+     * 处方Nos
+     */
+    private List<String> prescriptionNos;
 }

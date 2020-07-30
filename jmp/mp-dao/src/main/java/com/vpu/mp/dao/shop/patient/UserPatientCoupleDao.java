@@ -96,4 +96,16 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
         db().delete(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId())).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
             .execute();
     }
+
+    /**
+     * 根据用户患者Id获取用户患者
+     * @param param
+     * @return
+     */
+    public UserPatientParam getUserPatient(UserPatientParam param) {
+        return db().select().from(USER_PATIENT_COUPLE)
+            .where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()))
+            .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
+            .fetchAnyInto(UserPatientParam.class);
+    }
 }

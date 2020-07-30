@@ -29,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +65,8 @@ public class PrescriptionService extends ShopBaseService {
     protected PatientDao patientDao;
     @Autowired
     public MedicalGoodsService medicalGoodsService;
+    @Autowired
+    public PatientService patientService;
 
     /**
      * 保存处方
@@ -90,6 +93,10 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionListVo> listPageResult(PrescriptionListParam param){
+        if (param.getUserId() != null) {
+            List<String> prescriptionNos = getPrescriptionNosByUserId(param.getUserId());
+            param.setPrescriptionNos(prescriptionNos);
+        }
         return prescriptionDao.listPageResult(param);
     }
 
@@ -98,21 +105,23 @@ public class PrescriptionService extends ShopBaseService {
      *  获取处方关联商品
      *  1商品id 2通用名+系数 3系数
      * @param goodsId 商品id
-     * @param patientId
+     * @param param
      * @param goodsCommonName 商品通用名
      * @param goodsQualityRatio 商品规格系数
      * @return 处方明细
      */
-    public PrescriptionVo getByGoodsInfo(Integer goodsId, Integer patientId, String goodsCommonName, String goodsQualityRatio, String productionEnterprise) {
-        PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId,patientId);
+    public PrescriptionVo getByGoodsInfo(Integer goodsId, UserPatientParam param, String goodsCommonName, String goodsQualityRatio, String productionEnterprise) {
+        UserPatientParam userPatientParam = patientService.getUserPatient(param);
+        List<String> prescriptionNos = getValidPrescriptionByUserPatient(userPatientParam);
+        PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId,prescriptionNos);
         if (prescriptionItem==null){
-            prescriptionItem=  prescriptionDao.getValidByCommonNameAndQualityRatio(patientId,goodsCommonName,goodsQualityRatio,productionEnterprise);
+            prescriptionItem=  prescriptionDao.getValidByCommonNameAndQualityRatio(prescriptionNos,goodsCommonName,goodsQualityRatio,productionEnterprise);
         }
         if (prescriptionItem==null){
-            prescriptionItem = prescriptionDao.getValidByCommonNameAndQualityRatio(patientId,goodsCommonName, goodsQualityRatio);
+            prescriptionItem = prescriptionDao.getValidByCommonNameAndQualityRatio(prescriptionNos,goodsCommonName, goodsQualityRatio);
         }
         if (prescriptionItem==null){
-            prescriptionItem = prescriptionDao.getValidByCommonName(patientId,goodsCommonName);
+            prescriptionItem = prescriptionDao.getValidByCommonName(prescriptionNos,goodsCommonName);
         }
         return prescriptionItem;
     }
@@ -125,8 +134,8 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionListParam param) {
-        Integer patientId = userPatientCoupleDao.defaultPatientIdByUser(param.getUserId());
-        param.setPatientId(patientId);
+        UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(param.getUserId());
+        param.setUserPatientParam(userPatientParam);
         return prescriptionDao.listPageResultWx(param);
     }
 
@@ -179,6 +188,17 @@ public class PrescriptionService extends ShopBaseService {
         return getPrescriptionGoodsIdsByUserPatient(userPatientParam);
     }
 
+    /**
+     * *****
+     * 获取用户患者的处方药集合（包括已删除，未上架以及售罄的）
+     * @param userId
+     * @return
+     */
+    public List<String> getPrescriptionNosByUserId(Integer userId) {
+        UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(userId);
+        List<String> prescriptionNos = getValidPrescriptionByUserPatient(userPatientParam);
+        return prescriptionNos;
+    }
     /**
      * *****
      * 患者未过期的历史处方no

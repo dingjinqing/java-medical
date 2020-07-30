@@ -1038,6 +1038,7 @@ public class MpDecorationService extends ShopBaseService {
         PrescriptionListParam prescriptionListParam = new PrescriptionListParam();
         prescriptionListParam.setPageRows((Integer) 3);
         prescriptionListParam.setPatientId(patientId);
+        prescriptionListParam.setUserId(user.getUserId());
         PageResult<PrescriptionListVo> prescriptionListData = prescriptionService.listPageResult(prescriptionListParam);
         moduleIntegral.setPrescriptionListData(prescriptionListData.getDataList());
         moduleIntegral.setHasMore(prescriptionListData.getPage().getLastPage() > 1);
@@ -1060,6 +1061,7 @@ public class MpDecorationService extends ShopBaseService {
         MedicalHistoryPageInfoParam medicalHistoryPageInfoParam = new MedicalHistoryPageInfoParam();
         medicalHistoryPageInfoParam.setPageRows((Integer) 3);
         medicalHistoryPageInfoParam.setPatientId(patientId);
+        medicalHistoryPageInfoParam.setUserId(user.getUserId());
         PageResult<MedicalHistoryPageInfoVo> medicalHistoryListData = medicalHistoryService.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam);
         moduleCaseHistory.setCaseHistoryListData(medicalHistoryListData.getDataList());
         moduleCaseHistory.setHasMore(medicalHistoryListData.getPage().getLastPage() > 1);

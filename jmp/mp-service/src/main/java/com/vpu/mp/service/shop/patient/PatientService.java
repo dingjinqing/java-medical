@@ -267,4 +267,13 @@ public class PatientService extends BaseShopConfigService{
     public void deleteUserPatient(UserPatientParam param) {
         userPatientCoupleDao.deleteUserPatient(param);
     }
+
+    /**
+     * 根据用户患者Id获取用户患者
+     * @param param
+     * @return
+     */
+    public UserPatientParam getUserPatient(UserPatientParam param) {
+        return userPatientCoupleDao.getUserPatient(param);
+    }
 }

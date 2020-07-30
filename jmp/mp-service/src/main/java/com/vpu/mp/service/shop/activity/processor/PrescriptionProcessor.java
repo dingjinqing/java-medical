@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -132,6 +133,9 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     private List<PrescriptionVo> medicalOrderInit(OrderBeforeParam param) {
         List<PrescriptionVo> prescriptionList =new ArrayList<>();
         param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED);
+        UserPatientParam userPatientParam = new UserPatientParam();
+        userPatientParam.setUserId(param.getWxUserInfo().getUserId());
+        userPatientParam.setPatientId(param.getPatientId());
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GoodsRecord goodsInfo = goods.getGoodsInfo();
             GoodsMedicalInfoDo medicalInfo = medicalGoodsService.getByGoodsId(goodsInfo.getGoodsId());
@@ -140,7 +144,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 param.setOrderMedicalType(OrderConstant.MEDICAL_TYPE_RX);
                 goods.setMedicalInfo(medicalInfo);
                 PrescriptionVo prescriptionVo = prescriptionService
-                        .getByGoodsInfo(goods.getGoodsId(),param.getPatientId(), medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
+                        .getByGoodsInfo(goods.getGoodsId(),userPatientParam, medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
                 //处方信息
                 if (prescriptionVo != null) {
                     prescriptionList.add(prescriptionVo);

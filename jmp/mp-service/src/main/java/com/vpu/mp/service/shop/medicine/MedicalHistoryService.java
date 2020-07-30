@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
 import com.vpu.mp.service.shop.patient.PatientService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,8 @@ public class MedicalHistoryService extends ShopBaseService {
     private MedicalHistoryDao medicalHistoryDao;
     @Autowired
     public PatientService patientService;
+    @Autowired
+    public PrescriptionService prescriptionService;
 
     /**
      * 查询单条病历详情
@@ -51,6 +54,10 @@ public class MedicalHistoryService extends ShopBaseService {
      * @return PageResult<MedicalHistoryPageInfoVo>
      */
     public PageResult<MedicalHistoryPageInfoVo> getMedicalHistoryPageInfo(MedicalHistoryPageInfoParam medicalHistoryPageInfoParam){
+        if (medicalHistoryPageInfoParam.getUserId() != null) {
+            List<String> prescriptionNos = prescriptionService.getPrescriptionNosByUserId(medicalHistoryPageInfoParam.getUserId());
+            medicalHistoryPageInfoParam.setPrescriptionNos(prescriptionNos);
+        }
         return medicalHistoryDao.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam);
     }
 
