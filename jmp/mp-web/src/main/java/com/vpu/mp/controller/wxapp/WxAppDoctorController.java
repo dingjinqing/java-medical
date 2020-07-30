@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.controller.BaseController;
@@ -42,7 +43,14 @@ public class WxAppDoctorController extends WxAppBaseController {
      */
     @RequestMapping("/auth")
     public JsonResult doctorAuth(@RequestBody DoctorAuthParam doctorAuthParam) {
-        return this.success(doctorService.doctorAuth(doctorAuthParam));
+        doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
+        doctorAuthParam.setToken(wxAppAuth.user().getToken());
+        Byte doctorAuth = doctorService.doctorAuth(doctorAuthParam);
+        if (DelFlag.NORMAL_VALUE.equals(doctorAuth)) {
+            return success(doctorAuth);
+        } else {
+            return fail();
+        }
     }
 
     /**
