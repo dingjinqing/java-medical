@@ -14,7 +14,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 医师表
+ * @author chenjie
  */
 @Generated(
     value = {
