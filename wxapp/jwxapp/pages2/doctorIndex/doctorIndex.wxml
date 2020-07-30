@@ -80,7 +80,7 @@
       </view>
       <view class="modal_fotter" bindtap="to_verify">确定</view>
     </view>
-    <view class="btn_close" bindtap="close"><image src="http://medicaldevimg.weipubao.cn/image/wxapp/close_icon.png"></image></view>
+    <view class="btn_close" bindtap="close"><image src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_close.png"></image></view>
   </view>
   
 </view>

@@ -13,7 +13,9 @@ global.wxPage({
     card_id: '',
     mobileCheckCode: '',
     if_show_agree: 0,
-    if_agree: 0
+    if_agree: 0,
+    // 从咨询页面调过来
+    list: 0
   },
 
   /**
@@ -21,6 +23,9 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    if(options.list && options.list == 1){
+      this.data.list = 1
+    }
   },
   realName(e) {
     this.data.real_name = e.detail.value;
@@ -87,7 +92,7 @@ global.wxPage({
         util.showModal('提示', '验证码错误')
       } else {
         util.showModal('提示', '您暂无本医院就诊记录，请先添加就诊人', () => {
-          util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + JSON.stringify(prescription_info));
+          util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + JSON.stringify(prescription_info) + '&list=' + this.data.list);
         }, true, '取消', '去添加')
       }
     }, {
@@ -125,7 +130,7 @@ global.wxPage({
       util.showModal("提示", "请输入正确的手机号！");
       return false;
     }
-    util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + JSON.stringify(prescription_info));
+    util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + JSON.stringify(prescription_info) + '&list=' + this.data.list);
   },
   getVerificationCode() {
     if (this.data.countDown) return false
@@ -162,7 +167,14 @@ global.wxPage({
   },
   getPreInfo (prescription_info) {
     util.api('/api/wxapp/medicine/history/get/external/list', res => {
-      console.log(res)
+      if(res.error == 0) {
+        util.toast_success('获取成功');
+        if(this.data.list == 1){
+          util.jumpLink('/pages2/doctorConsultation/doctorConsultation');
+        }else{
+          util.jumpLink('/pages1/familylist/familylist');
+        }
+      }
     },{
       patientName: prescription_info.name,
       mobile: prescription_info.mobile,
