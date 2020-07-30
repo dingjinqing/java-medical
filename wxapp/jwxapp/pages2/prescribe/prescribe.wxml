@@ -1,3 +1,17 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
+<wxs module="prescribe">
+var getGoodsName = function(goodsList){
+  if(!goodsList.length) return null;
+	var goodsNameList = []
+	goodsList.forEach(function(item){
+		goodsNameList.push(item.goodsName)
+	})
+	return goodsNameList.join(',')
+}
+module.exports = {
+  getGoodsName:getGoodsName
+}
+</wxs>
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
@@ -7,9 +21,9 @@
 			</view>
 			<view class="prescription-info-content top-radius">
 				<view class="prescription-item user-info">
-					<view>姓名：<text>张三</text></view>
-					<view>年龄：<text>45岁</text></view>
-					<view>性别：<text>男</text></view>
+					<view>姓名：<text>{{patientInfo.name}}</text></view>
+					<view>年龄：<text>{{patientInfo.age}}岁</text></view>
+					<view>性别：<text>{{filter.getSex(patientInfo.sex)}}</text></view>
 				</view>
 				<view class="prescription-item" bindtap="selectDepartment">
 					<view class="item-left">科室：</view>
@@ -32,7 +46,7 @@
 				<view class="prescription-item">
 					<view class="item-left">治疗建议：</view>
 					<view class="item-center">
-						苯磺酸氨氯地平片
+						<text>{{prescribe.getGoodsName(pageGoodsList) || '请选择药品'}}</text>
 					</view>
 					<view class="item-right" bindtap="addGoods">
 						<text class="iconfont icontianjia"></text>
@@ -69,19 +83,17 @@
 				</view>
 			</view>
 			<view class="prescription-doctor-info">
-				<view class="doctor-info">
+				<!-- <view class="doctor-info">
 					<text class="doctor-name">处方医师：</text>
-					<!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
 					<text>6666666</text>
-				</view>
+				</view> -->
 				<!-- <view class="doctor-info">
           <text class="doctor-name">审核药师：</text>
           <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
         </view> -->
 				<view class="doctor-info">
-					<text class="doctor-name">发药药师：</text>
-					<!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
-					<text>66666666</text>
+					<text class="doctor-name">处方医师：</text>
+					<text>{{doctorInfo.name}}</text>
 					<text class="item-date">日期：{{theDateToday}}</text>
 				</view>
 			</view>

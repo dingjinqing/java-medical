@@ -8,9 +8,9 @@ var substring = function (str,start,end) {
 }
 var getSex = function (type){
   var sexData = {
-    '0':'未知',
-    '1':'男',
-    '2':'女'
+    '0':'男',
+    '1':'女',
+    '2':'未知'
   }
   return sexData[''+type]
 }

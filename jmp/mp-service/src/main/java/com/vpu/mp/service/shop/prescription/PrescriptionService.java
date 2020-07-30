@@ -34,10 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -365,6 +362,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setDoctorName(doctor.getName());
         prescriptionParam.setPatientName(patient.getName());
         prescriptionParam.setPatientSex(patient.getSex());
+        prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
         prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistory());
         prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
         prescriptionParam.setIdentityType(patient.getIdentityType());
@@ -384,7 +382,7 @@ public class PrescriptionService extends ShopBaseService {
         for (GoodsMedicalInfoDo info: goodsMedicalInfoDoList) {
             PrescriptionItemParam item=new PrescriptionItemParam();
             //药品信息映射
-            FieldsUtil.assign(info,item);
+            FieldsUtil.assignWithIgnoreField(info,item,getPrescriptionIgnoreFields());
             item.setUseMethod(info.getGoodsUseMethod());
             item.setPrescriptionCode(prescriptionParam.getPrescriptionCode());
             GoodsDo goods=goodsDao.getByGoodsId(info.getGoodsId());
@@ -396,6 +394,16 @@ public class PrescriptionService extends ShopBaseService {
         return prescriptionParam;
     }
 
+    /**
+     * 拷贝要忽略的字段
+     * @return
+     */
+    private Set<String> getPrescriptionIgnoreFields(){
+        Set<String> ignoreField = new HashSet<>(2);
+        ignoreField.add("createTime");
+        ignoreField.add("updateTime");
+        return ignoreField;
+    }
 
     /**
      * 根据处方号匹配系统中已有药品信息列表

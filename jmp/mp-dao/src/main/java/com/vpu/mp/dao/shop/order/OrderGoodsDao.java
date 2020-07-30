@@ -69,15 +69,6 @@ public class OrderGoodsDao extends ShopBaseDao {
 
     }
 
-    /**
-     * 更改审核状态
-     * @param orderId
-     * @param auditStatus
-     */
-    public void updateAuditStatusByOrderId(Integer orderId,Byte auditStatus){
-        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.ORDER_ID.in(orderId).and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE))).execute();
-
-    }
 
     /**
      * 更改处方号
@@ -88,15 +79,6 @@ public class OrderGoodsDao extends ShopBaseDao {
         db().update(ORDER_GOODS).set(ORDER_GOODS.PRESCRIPTION_CODE, prescriptionCode).where(ORDER_GOODS.ORDER_ID.eq(orderId)).execute();
     }
 
-    /**
-     *
-     * @param goodIds
-     * @param auditStatus
-     */
-    public void updateAuditStatusByOrderId(List<Integer> goodIds,Byte auditStatus){
-        db().update(ORDER_GOODS).set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus).where(ORDER_GOODS.GOODS_ID.in(goodIds)).execute();
-
-    }
 
     /**
      * 审核通过 更新订单商品状态

@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.doctor;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -20,10 +22,13 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -214,14 +219,29 @@ public class DoctorService extends ShopBaseService {
      * @param doctorAuthParam 当前用户姓名、手机号、医师医院唯一编码
      * @return 验证信息
      */
-    public String doctorAuth(DoctorAuthParam doctorAuthParam){
+    public Byte doctorAuth(DoctorAuthParam doctorAuthParam){
+        // 查询是否有当前医师信息
         DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
+        // 如果医师存在
         if (doctorDo != null){
+            // 修改user表中用户类型为医师
             UserDo userDo = userDao.updateDoctorAuth(doctorAuthParam.getUserId());
-            doctorDao.updateUserId(userDo);
-            return "验证成功";
+            // 修改doctor表中userId为当前用户
+            doctorDo.setUserId(doctorAuthParam.getUserId());
+            doctorDao.updateUserId(doctorDo);
+            // 更新缓存
+            Jedis jedis = new Jedis();
+            String json = jedis.get(doctorAuthParam.getToken());
+            if (!StringUtils.isBlank(json)) {
+                WxAppSessionUser wxAppSessionUser = Util.parseJson(json, WxAppSessionUser.class);
+                assert wxAppSessionUser != null;
+                wxAppSessionUser.setUserType((byte) 1);
+                wxAppSessionUser.setDoctorId(doctorDo.getId());
+                jedis.set(doctorAuthParam.getToken(), Util.toJson(wxAppSessionUser));
+            }
+            return DelFlag.NORMAL_VALUE;
         } else {
-            return "验证失败";
+            return DelFlag.DISABLE_VALUE;
         }
     }
 
@@ -256,6 +276,15 @@ public class DoctorService extends ShopBaseService {
      */
     public List<DepartmentListVo> selectDepartmentsByDoctorId(Integer doctorId){
         return doctorDao.selectDepartmentsByDoctorId(doctorId);
+    }
+
+    /**
+     * 根据医师职称id查询职称名
+     * @param doctorOneParam 医师职称id
+     * @return String
+     */
+    public String selectDoctorTitle(DoctorOneParam doctorOneParam){
+        return doctorDao.selectDoctorTitle(doctorOneParam);
     }
 
 }

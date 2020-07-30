@@ -7,18 +7,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.HttpsUtils;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.RegexUtil;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.TxMapLbsConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.dao.shop.message.MessageDao;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
-import com.vpu.mp.db.shop.tables.Message;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -40,7 +35,7 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -268,7 +263,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     public Object processModuleForGet(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node)
         throws JsonParseException, JsonMappingException, IOException {
         if (node.getKey().startsWith(MODULE_NAME_PREFIX)) {
-            String moduleName = node.getValue().get(MODULE_PAGE_CONFIG).asText();
+            String moduleName = node.getValue().get(MODULE_NAME_KEY).asText();
             switch (moduleName) {
                 case ModuleConstant.M_SCROLL_IMAGE:
                     return processScrollImageModule(objectMapper, node);

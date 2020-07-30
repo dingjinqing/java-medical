@@ -177,13 +177,13 @@ public class DoctorDao extends ShopBaseDao {
 
     /**
      * 更新医师表用户id
-     * @param userDo 当前用户
+     * @param doctorDo 当前用户
      * @return int
      */
-    public int updateUserId(UserDo userDo){
-        return db().update(DOCTOR).set(DOCTOR.USER_ID, userDo.getUserId())
-            .where(DOCTOR.NAME.eq(userDo.getUsername())
-                .and(DOCTOR.MOBILE.eq(userDo.getMobile()))).execute();
+    public int updateUserId(DoctorDo doctorDo){
+        return db().update(DOCTOR).set(DOCTOR.USER_ID, doctorDo.getUserId())
+            .where(DOCTOR.NAME.eq(doctorDo.getName())
+                .and(DOCTOR.MOBILE.eq(doctorDo.getMobile()))).execute();
     }
 
     /**
@@ -209,6 +209,16 @@ public class DoctorDao extends ShopBaseDao {
             .and(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId))
             .and(DEPARTMENT.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(DepartmentListVo.class);
+    }
+
+    /**
+     * 根据职称id查询职称名称
+     * @param doctorOneParam 医师职称id
+     * @return String
+     */
+    public String selectDoctorTitle(DoctorOneParam doctorOneParam){
+        return db().select(DOCTOR_TITLE.NAME).from(DOCTOR_TITLE)
+            .where(DOCTOR_TITLE.ID.eq(Integer.valueOf(doctorOneParam.getDuty()))).fetchAnyInto(String.class);
     }
 
 }
