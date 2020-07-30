@@ -187,7 +187,7 @@ global.wxPage({
             diagnosisName,
             departmentName,
             doctorName:this.data.doctorInfo.name,
-            time:this.getToday()
+            time:this.data.theDateToday
           }
         })
         wx.navigateBack()

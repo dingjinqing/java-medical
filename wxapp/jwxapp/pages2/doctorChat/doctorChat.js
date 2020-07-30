@@ -128,7 +128,8 @@ global.wxPage({
         chat.position = 1;
         chatContent.push(chat)
         this.setData({
-          chatContent:chatContent
+          chatContent:chatContent,
+          prescriptionMessage:null
         })
       }
     },{
@@ -143,5 +144,18 @@ global.wxPage({
     util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
       patientId:137
     })}`)
+  },
+  handleShowPrescriptionDialog(e){
+    let {prescriptionCode} = e.currentTarget.dataset
+    util.api('/api/wxapp/prescription/details',res=>{
+      if(res.error === 0){
+        this.setData({
+          showPrescription:true,
+          prescriptionData:res.content
+        })
+      }
+    },{
+      prescriptionCode
+    })
   }
 })
