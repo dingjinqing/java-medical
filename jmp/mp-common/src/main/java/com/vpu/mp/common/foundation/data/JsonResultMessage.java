@@ -1359,5 +1359,8 @@ public class JsonResultMessage {
      */
     public static final String PATIENT_MOBILE_CHECK_CODE_ERROR = "patient.mobile.check.code.error";
 
+    public static final String DOCTOR_LOGIN_AUTH_ERROR = "认证失败";
+    public static final String DOCTOR_LOGIN_AUTH_ALREADY_LOGIN="医师信息已被认证";
+
 
 }

@@ -234,7 +234,6 @@ public class DoctorService extends ShopBaseService {
             String json = jedis.get(doctorAuthParam.getToken());
             if (!StringUtils.isBlank(json)) {
                 WxAppSessionUser wxAppSessionUser = Util.parseJson(json, WxAppSessionUser.class);
-                System.out.println(wxAppSessionUser);
                 assert wxAppSessionUser != null;
                 wxAppSessionUser.setUserType((byte) 1);
                 wxAppSessionUser.setDoctorId(doctorDo.getId());
