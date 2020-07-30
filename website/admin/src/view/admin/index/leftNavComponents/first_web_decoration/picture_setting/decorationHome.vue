@@ -416,9 +416,13 @@ export default {
           console.log(content)
           this.pageSetData.page_name = res.content.page_name
           this.pageSetData.cat_id = res.content.cat_id
-          content.page_cfg.cat_id = JSON.stringify(content.page_cfg.cat_id)
-          this.pageSetData = content.page_cfg
-          this.cur_idx = content.page_cfg.last_cur_idx
+          let conarr = Object.keys(content)
+          if (conarr.length > 0) {
+            content.page_cfg.cat_id = JSON.stringify(content.page_cfg.cat_id)
+            this.pageSetData = content.page_cfg
+            this.cur_idx = content.page_cfg.last_cur_idx
+          }
+
           let moduleDataCopy = JSON.parse(JSON.stringify(content))
           delete moduleDataCopy.page_cfg
           let arr = []

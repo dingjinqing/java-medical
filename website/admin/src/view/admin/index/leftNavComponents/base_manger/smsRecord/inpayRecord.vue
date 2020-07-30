@@ -88,109 +88,109 @@
 </template>
 
 <script>
-  import { getSmsPayListPage } from '@/api/admin/basicConfiguration/shopConfig.js'
-  export default {
-    components: {
-    },
-    data () {
-      return {
-        userName: null,
-        actionType: null,
-        actionTypes: this.$t('actionRecord.action_Type'),
-        date: null,
-        startCreateTime: null,
-        endCreateTime: null,
-        totalRows: null,
-        pageRows: 20,
-        currentPage: null,
-        pagination_b: true,
-        pageCount: null,
-        firstPage: null,
-        lastPage: null,
-        nextPage: null,
-        tableData: null
-      }
-    },
-    mounted () {
-      // 初始化数据
-      this.langDefault()
+import { getSmsPayListPage } from '@/api/admin/basicConfiguration/shopConfig.js'
+export default {
+  components: {
+  },
+  data () {
+    return {
+      userName: null,
+      actionType: null,
+      actionTypes: this.$t('actionRecord.action_Type'),
+      date: null,
+      startCreateTime: null,
+      endCreateTime: null,
+      totalRows: null,
+      pageRows: 20,
+      currentPage: null,
+      pagination_b: true,
+      pageCount: null,
+      firstPage: null,
+      lastPage: null,
+      nextPage: null,
+      tableData: null
+    }
+  },
+  mounted () {
+    // 初始化数据
+    this.langDefault()
+    this.defaluteData()
+  },
+  watch: {
+    lang () {
+      this.actionTypes = this.$t('actionRecord.action_Type')
       this.defaluteData()
+    }
+  },
+  methods: {
+    defaluteData () {
+      this.search()
     },
-    watch: {
-      lang () {
-        this.actionTypes = this.$t('actionRecord.action_Type')
-        this.defaluteData()
+    search () {
+      console.log(this.date)
+      let params = {
+        'currentPage': this.currentPage,
+        'pageRows': this.pageRows,
+        'userName': this.userName,
+        'actionType': this.actionType,
+        'startCreateTime': this.startCreateTime,
+        'endCreateTime': this.endCreateTime
       }
+      getSmsPayListPage(params).then((res) => {
+        console.log('res-----------------------------------')
+        console.log(res)
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.page = res.content.page
+          this.currentPage = res.content.page.currentPage
+          this.pageRows = res.content.page.pageRows
+          this.firstPage = res.content.page.firstPage
+          this.lastPage = res.content.page.lastPage
+          this.nextPage = res.content.page.nextPage
+          this.pageCount = res.content.page.pageCount
+          this.totalRows = res.content.page.totalRows
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     },
-    methods: {
-      defaluteData () {
-        this.search()
-      },
-      search () {
-        console.log(this.date)
-        let params = {
-          'currentPage': this.currentPage,
-          'pageRows': this.pageRows,
-          'userName': this.userName,
-          'actionType': this.actionType,
-          'startCreateTime': this.startCreateTime,
-          'endCreateTime': this.endCreateTime
-        }
-        getSmsPayListPage(params).then((res) => {
-          console.log('res-----------------------------------')
-          console.log(res)
-          if (res.error === 0) {
-            this.tableData = res.content.dataList
-            this.page = res.content.page
-            this.currentPage = res.content.page.currentPage
-            this.pageRows = res.content.page.pageRows
-            this.firstPage = res.content.page.firstPage
-            this.lastPage = res.content.page.lastPage
-            this.nextPage = res.content.page.nextPage
-            this.pageCount = res.content.page.pageCount
-            this.totalRows = res.content.page.totalRows
-          } else {
-            this.$message.error(res.message)
-          }
-        })
-      },
-      // currnentPage 改变时会触发
-      handleCurrentChange () {
-        this.search()
-      },
-      bindFormatter (row, column) {
-        switch (row.accountType) {
-          case 1:
-            row.accountTypeTran = this.$t('actionRecord.mAccount')
-            break
-          case 0:
-            row.accountTypeTran = this.$t('actionRecord.mAccount2')
-            break
-        }
-        return row.accountTypeTran
-      },
-      actionTypeFormatter (row, column) {
-        switch (row.actionType) {
-          case 1:
-            row.actionTypeTran = this.$t('actionRecord.decoration')
-            break
-          case 2:
-            row.actionTypeTran = this.$t('actionRecord.commodity')
-            break
-          case 3:
-            row.actionTypeTran = this.$t('actionRecord.order')
-            break
-          case 4:
-            row.actionTypeTran = this.$t('actionRecord.member')
-            break
-          case 5:
-            row.actionTypeTran = this.$t('actionRecord.marketing')
-            break
-        }
-        return row.actionTypeTran
+    // currnentPage 改变时会触发
+    handleCurrentChange () {
+      this.search()
+    },
+    bindFormatter (row, column) {
+      switch (row.accountType) {
+        case 1:
+          row.accountTypeTran = this.$t('actionRecord.mAccount')
+          break
+        case 0:
+          row.accountTypeTran = this.$t('actionRecord.mAccount2')
+          break
       }
+      return row.accountTypeTran
+    },
+    actionTypeFormatter (row, column) {
+      switch (row.actionType) {
+        case 1:
+          row.actionTypeTran = this.$t('actionRecord.decoration')
+          break
+        case 2:
+          row.actionTypeTran = this.$t('actionRecord.commodity')
+          break
+        case 3:
+          row.actionTypeTran = this.$t('actionRecord.order')
+          break
+        case 4:
+          row.actionTypeTran = this.$t('actionRecord.member')
+          break
+        case 5:
+          row.actionTypeTran = this.$t('actionRecord.marketing')
+          break
+      }
+      return row.actionTypeTran
     }
   }
+}
 
 </script>
 <style lang="scss" scoped>

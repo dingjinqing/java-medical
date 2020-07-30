@@ -11,5 +11,5 @@ import java.util.List;
 public class MedicalOrderExternalRequestParam {
     private Integer status;
     private String orderSn;
-    private List<GoodsItem> list;
+    private List<GoodsItem> goodsItemList;
 }

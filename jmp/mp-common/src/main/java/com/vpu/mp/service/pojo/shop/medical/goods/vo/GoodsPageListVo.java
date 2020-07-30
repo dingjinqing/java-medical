@@ -55,6 +55,7 @@ public class GoodsPageListVo {
         sortId = goodsEntity.getSortId();
         isMedical = goodsEntity.getIsMedical();
         isDefaultProduct = goodsEntity.getIsDefaultProduct();
+        shopPrice=goodsEntity.getShopPrice();
         if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(isMedical)) {
             GoodsMedicalInfoEntity goodsMedicalInfo = goodsEntity.getGoodsMedicalInfo();
             goodsCommonName = goodsMedicalInfo.getGoodsCommonName();

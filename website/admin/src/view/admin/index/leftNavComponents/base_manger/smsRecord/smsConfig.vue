@@ -19,19 +19,19 @@
   </div>
 </template>
 <script>
-  export default {
-    components: {
-      smsRecord: () => import('./smsRecord'),
-      inpayRecord: () => import('./inpayRecord')
-    },
-    data () {
-      return {
-        activeTab: 'first'
-      }
+export default {
+  components: {
+    smsRecord: () => import('./smsRecord'),
+    inpayRecord: () => import('./inpayRecord')
+  },
+  data () {
+    return {
+      activeTab: 'first'
     }
   }
+}
 </script>
-<style scoped lang="scss">
+<style lang="scss">
   .base_manger {
     padding: 10px;
     min-width: 100%;
@@ -43,5 +43,11 @@
       background-color: #fff;
       padding: 10px 20px 0 20px;
     }
+  }
+  .content .el-tabs__header{
+    margin:10px;
+    padding:10px;
+    margin-bottom: 0;
+    background: #fff;
   }
 </style>

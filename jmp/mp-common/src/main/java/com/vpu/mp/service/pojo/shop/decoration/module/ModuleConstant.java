@@ -187,6 +187,7 @@ public class ModuleConstant {
      */
     public static String MODULE_NAME_PREFIX = "c_";
     public static String MODULE_PAGE_CONFIG = "page_cfg";
+    public static String MODULE_NAME_KEY = "module_name";
 
     /**
      * 0保存为草稿，1保存并发布，2预览，3回退到当前已发布版本

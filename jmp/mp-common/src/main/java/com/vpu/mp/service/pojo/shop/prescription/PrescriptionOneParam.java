@@ -13,6 +13,7 @@ import java.util.List;
 public class PrescriptionOneParam {
     private Integer patientId;
     private Integer doctorId;
+    private Integer userId;
     private String departmentCode;
     private String departmentName;
     private String diagnosisName;

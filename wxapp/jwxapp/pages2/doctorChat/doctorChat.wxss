@@ -1,1 +1,29 @@
-@import '/pages2/patientChat/patientChat.wxss'
+@import '/pages2/patientChat/patientChat.wxss';
+.bottom-button-content{
+  height: 110rpx;
+  line-height: 80rpx;
+  background-color: #fff;
+  padding:0 40rpx;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border-top: 2rpx solid #eee;
+}
+.bottom-button-content > view{
+  flex: 1;
+  text-align: center;
+  border-radius: 40rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+}
+.bottom-button-content > view + view{
+  margin-left: 23rpx;
+}
+.bottom-button-content > view.has-border{
+  border:2rpx solid #26C4BC;
+  color: #26C4BC;
+}
+.bottom-button-content > view.no-border{
+  background-color: #26C4BC;
+  color: #fff;
+}

@@ -1031,8 +1031,8 @@ const routes = [
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/base_manger/smsRecord/smsConfig'
-                )
-          },
+              )
+          }
         ].concat(
           marketing,
           member,

@@ -72,7 +72,8 @@ global.wxPage({
     },{
       doctorName: this.data.name,
       mobile: this.data.mobile,
-      hospitalCode: this.data.hosCode
+      hospitalCode: this.data.hosCode,
+      userId: util.getCache('user_id')
     })
   },
   requestInfo () {

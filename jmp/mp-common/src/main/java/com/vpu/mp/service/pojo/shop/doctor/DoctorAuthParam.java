@@ -13,7 +13,7 @@ public class DoctorAuthParam {
     /**
      * 医师姓名
      */
-    private String name;
+    private String doctorName;
     /**
      * 医师电话
      */
@@ -22,4 +22,12 @@ public class DoctorAuthParam {
      * 医师医院唯一编码
      */
     private String hospitalCode;
+    /**
+     * 当前用户id
+     */
+    private Integer userId;
+    /**
+     * 用户缓存信息
+     */
+    private String token;
 }
