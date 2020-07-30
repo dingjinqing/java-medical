@@ -230,7 +230,6 @@ public class PrescriptionService extends ShopBaseService {
      * @param fetchPrescriptionParam 处方页面入参
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalAllPrescriptionInfo(FetchPrescriptionParam fetchPrescriptionParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
@@ -287,7 +286,6 @@ public class PrescriptionService extends ShopBaseService {
      * @param fetchPrescriptionOneParam 更新单个处方
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalOnePrescriptionInfo(FetchPrescriptionOneParam fetchPrescriptionOneParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
@@ -343,7 +341,6 @@ public class PrescriptionService extends ShopBaseService {
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
         return prescriptionParam;
-
     }
 
     /**

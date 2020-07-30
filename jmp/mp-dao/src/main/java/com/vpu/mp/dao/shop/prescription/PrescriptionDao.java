@@ -43,6 +43,21 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
+     * @description hits系统拉取处方信息入库
+     * @author zhaoxiaodong
+     * @create 2020-7-16 9:40
+     */
+    /**
+     * 新增处方
+     * @param fetchPrescriptionVo 处方入参
+     */
+    public void addHitsPrescription(FetchPrescriptionVo fetchPrescriptionVo){
+        PrescriptionRecord prescriptionRecord = db().newRecord(PRESCRIPTION, fetchPrescriptionVo);
+        prescriptionRecord.insert();
+    }
+
+
+    /**
      * 获取一条记录
      *
      * @param id
@@ -284,19 +299,7 @@ public class PrescriptionDao extends ShopBaseDao {
                 .fetchInto(PrescriptionDo.class);
     }
 
-    /**
-     * @description hits系统拉取处方信息入库
-     * @author zhaoxiaodong
-     * @create 2020-7-16 9:40
-     */
-    /**
-     * 新增处方
-     * @param fetchPrescriptionVo 处方入参
-     */
-    public void addHitsPrescription(FetchPrescriptionVo fetchPrescriptionVo){
-        PrescriptionRecord prescriptionRecord = db().newRecord(PRESCRIPTION, fetchPrescriptionVo);
-        prescriptionRecord.insert();
-    }
+
 
     /**
      * 更新处方

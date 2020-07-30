@@ -109,7 +109,9 @@ public class OrderGoodsDao extends ShopBaseDao {
      */
     public List<OrderGoodsSimpleAuditVo> listSimpleAuditByOrderId(Integer orderId) {
         return db().select(ORDER_GOODS.REC_ID,ORDER_GOODS.PRESCRIPTION_OLD_CODE,ORDER_GOODS.PRESCRIPTION_CODE,
-                ORDER_GOODS.MEDICAL_AUDIT_TYPE,ORDER_GOODS.MEDICAL_AUDIT_STATUS)
+                ORDER_GOODS.MEDICAL_AUDIT_TYPE,ORDER_GOODS.MEDICAL_AUDIT_STATUS,ORDER_GOODS.GOODS_ID,
+                ORDER_GOODS.GOODS_NUMBER)
+                .from(ORDER_GOODS)
                 .where(ORDER_GOODS.ORDER_ID.eq(orderId))
                 .fetchInto(OrderGoodsSimpleAuditVo.class);
     }

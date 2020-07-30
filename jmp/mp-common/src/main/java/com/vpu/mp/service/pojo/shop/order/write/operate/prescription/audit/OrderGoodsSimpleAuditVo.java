@@ -13,6 +13,14 @@ public class OrderGoodsSimpleAuditVo {
      */
     private Integer recId;
     /**
+     * 商品id
+     */
+    private Integer goodsId;
+    /**
+     * 商品数量
+     */
+    private Integer goodsNumber;
+    /**
      * 关联处方号
      */
     private String prescriptionOldCode;
