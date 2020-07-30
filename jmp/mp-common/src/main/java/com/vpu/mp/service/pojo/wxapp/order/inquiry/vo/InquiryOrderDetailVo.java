@@ -13,5 +13,6 @@ import java.util.List;
 public class InquiryOrderDetailVo extends InquiryOrderDo {
     private String userName;
     private String userMobile;
+    private Integer patientAge;
     private List<String> imgUrlList;
 }

@@ -108,7 +108,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param orderSn
      * @return
      */
-    public InquiryOrderDo getByOrderSn(String orderSn){
+    public InquiryOrderDetailVo getByOrderSn(String orderSn){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(orderSn);
         InquiryOrderDetailVo inquiryOrderDetailVo=new InquiryOrderDetailVo();
         FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
@@ -118,6 +118,7 @@ public class InquiryOrderService extends ShopBaseService {
         }
 
         inquiryOrderDetailVo.setImgUrlList(imgUrlList);
+        inquiryOrderDetailVo.setPatientAge(DateUtils.getAgeByBirthDay(inquiryOrderDetailVo.getPatientBirthday()));
         return inquiryOrderDetailVo;
     }
 
