@@ -31,6 +31,16 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
         return patientId;
     }
 
+    /**
+     * 获取默认患者 没有为null
+     * @param userId
+     * @return
+     */
+    public UserPatientParam defaultPatientByUser(Integer userId) {
+        return db().select(USER_PATIENT_COUPLE.PATIENT_ID,USER_PATIENT_COUPLE.USER_ID,USER_PATIENT_COUPLE.IS_FETCH).from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.DEFAULT)))
+            .fetchOptionalInto(UserPatientParam.class).orElse(null);
+    }
+
     public List<PatientOneParam> listPatientIdsByUser(Integer userId) {
         List<PatientOneParam> patientList = db().select(USER_PATIENT_COUPLE.IS_DEFAULT,PATIENT.asterisk()).from(USER_PATIENT_COUPLE)
             .leftJoin(PATIENT).on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))

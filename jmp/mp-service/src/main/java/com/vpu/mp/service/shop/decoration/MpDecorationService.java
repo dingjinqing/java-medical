@@ -11,6 +11,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryPageInfoParam;
 import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryPageInfoVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
 import com.vpu.mp.config.DomainConfig;
@@ -775,8 +776,8 @@ public class MpDecorationService extends ShopBaseService {
         if (distributionCfg != null && DistributionConfigService.ENABLE_STATUS.equals(distributionCfg.getStatus()) && isDistributor) {
             pageContent = pageContent.replace("pages/distribution/distribution", "pages/distributionspread/distributionspread");
         }
-        Integer patientId = patientService.defaultPatientId(param.getUserId());
-        Object o = getDetailDecoratePageModule(pageContent, param.getModuleIndex(), userRecord, patientId);
+        UserPatientParam userPatientParam = patientService.defaultPatientByUser(param.getUserId());
+        Object o = getDetailDecoratePageModule(pageContent, param.getModuleIndex(), userRecord);
 
         return o;
     }
@@ -786,7 +787,8 @@ public class MpDecorationService extends ShopBaseService {
      * @param keyIdx
      * @param user
      */
-    private Object getDetailDecoratePageModule(String pageContent, String keyIdx, UserRecord user, Integer patientId) {
+    private Object getDetailDecoratePageModule(String pageContent, String keyIdx, UserRecord user) {
+        Integer patientId = patientService.defaultPatientId(user.getUserId());
         pageContent = StringUtils.isBlank(pageContent) ? "{}" : pageContent;
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -801,7 +803,7 @@ public class MpDecorationService extends ShopBaseService {
                     String moduleName = node.getValue().get("module_name").asText();
                     switch (moduleName) {
                         case ModuleConstant.M_GOODS:
-                            ModuleGoods moduleGoods = this.convertGoodsForModule(objectMapper, node, user.getUserId(),patientId);
+                            ModuleGoods moduleGoods = this.convertGoodsForModule(objectMapper, node, user.getUserId());
                             if (!(GoodsConstant.AUTO_RECOMMEND.equals(moduleGoods.getRecommendType()) && GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(moduleGoods.getAutoRecommendType())
                                 && GoodsConstant.ZERO.equals(patientId))) {
                                 return moduleGoods;
@@ -847,7 +849,7 @@ public class MpDecorationService extends ShopBaseService {
      * @return
      * @throws IOException
      */
-    public ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, Integer userId,Integer patientId) throws IOException {
+    public ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, Integer userId) throws IOException {
         ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(moduleGoods.getRecommendType());
@@ -868,7 +870,7 @@ public class MpDecorationService extends ShopBaseService {
         param.setGoodsNum(moduleGoods.getGoodsNum());
         param.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
         // 转换实时信息
-        PageResult<GoodsListMpBo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId, patientId);
+        PageResult<GoodsListMpBo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId);
         List<? extends GoodsListMpVo> goodsList = pageIndexGoodsList.getDataList();
         moduleGoods.setGoodsListData(goodsList);
         moduleGoods.setHasMore(pageIndexGoodsList.getPage().getLastPage() > 1);

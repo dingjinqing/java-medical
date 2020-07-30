@@ -23,7 +23,9 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -157,13 +159,38 @@ public class PrescriptionService extends ShopBaseService {
     /**
      * *****
      * 获取患者的处方药集合（包括已删除，未上架以及售罄的）
-     * @param patientId
+     * @param param
      * @return
      */
-    public List<Integer> getPrescriptionGoodsIdsByPatientId(Integer patientId) {
-        List<String> prescriptionNos = prescriptionDao.getValidPrescriptionByPatient(patientId);
+    public List<Integer> getPrescriptionGoodsIdsByUserPatient(UserPatientParam param) {
+        List<String> prescriptionNos = getValidPrescriptionByUserPatient(param);
         List<Integer> goodsIds = prescriptionItemDao.getPrescriptionGoodsIdsByPrescriptionNos(prescriptionNos);
         return goodsIds;
+    }
+
+    /**
+     * *****
+     * 获取用户患者的处方药集合（包括已删除，未上架以及售罄的）
+     * @param userId
+     * @return
+     */
+    public List<Integer> getPrescriptionGoodsIdsByUserId(Integer userId) {
+        UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(userId);
+        return getPrescriptionGoodsIdsByUserPatient(userPatientParam);
+    }
+
+    /**
+     * *****
+     * 患者未过期的历史处方no
+     * @param param
+     * @return
+     */
+    public List<String> getValidPrescriptionByUserPatient(UserPatientParam param) {
+        if (PatientConstant.FETCH.equals(param.getIsFetch())) {
+            return prescriptionDao.getValidPrescriptionByPatient(param.getPatientId());
+        } else {
+            return prescriptionDao.getValidPrescriptionByUserPatient(param);
+        }
     }
 
     /**

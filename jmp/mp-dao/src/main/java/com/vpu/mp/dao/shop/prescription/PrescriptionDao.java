@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
@@ -224,13 +225,28 @@ public class PrescriptionDao extends ShopBaseDao {
 
     /**
      * *****
-     * 患者未过期的历史处方no
+     * 患者未过期的历史处方no(所有)
      * @param patientId
      * @return
      */
     public List<String> getValidPrescriptionByPatient(Integer patientId) {
         return db().select(PRESCRIPTION.PRESCRIPTION_CODE).from(PRESCRIPTION)
             .where(PRESCRIPTION.PATIENT_ID.eq(patientId)
+                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
+                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(String.class);
+    }
+
+    /**
+     * *****
+     * 患者未过期的历史处方no（仅用户自己）
+     * @param param
+     * @return
+     */
+    public List<String> getValidPrescriptionByUserPatient(UserPatientParam param) {
+        return db().select(PRESCRIPTION.PRESCRIPTION_CODE).from(PRESCRIPTION)
+            .where(PRESCRIPTION.PATIENT_ID.eq(param.getPatientId())
+                .and(PRESCRIPTION.USER_ID.eq(param.getUserId()))
                 .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(String.class);

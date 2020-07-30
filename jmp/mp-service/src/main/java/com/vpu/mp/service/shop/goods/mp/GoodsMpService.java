@@ -6,12 +6,14 @@ import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -40,6 +42,7 @@ import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import lombok.extern.slf4j.Slf4j;
@@ -109,6 +112,8 @@ public class GoodsMpService extends ShopBaseService {
     private QrCodeService qrCodeService;
     @Autowired
     private PrescriptionService prescriptionService;
+    @Autowired
+    private PatientService patientService;
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
      *
@@ -116,12 +121,11 @@ public class GoodsMpService extends ShopBaseService {
      * @param userId 用户id
      * @return 对应的商品集合信息
      */
-    public PageResult<GoodsListMpBo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId, Integer patientId) {
+    public PageResult<GoodsListMpBo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
         List<GoodsListMpBo> goodsListCapsules;
         PageResult<GoodsListMpBo> goodsListCapsulesPage;
 
         param.setSoldOutGoodsShow(canShowSoldOutGoods());
-
         if (esUtilSearchService.esState()) {
             try {
                 if (userId == null) {
@@ -140,13 +144,13 @@ public class GoodsMpService extends ShopBaseService {
                 log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsulesPage);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
-                goodsListCapsulesPage = getPageIndexGoodsListFromDb(param,patientId);
+                goodsListCapsulesPage = getPageIndexGoodsListFromDb(param,userId);
 //                goodsListCapsules = goodsListCapsulesPage.getDataList();
                 log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsulesPage);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
-            goodsListCapsulesPage = getPageIndexGoodsListFromDb(param,patientId);
+            goodsListCapsulesPage = getPageIndexGoodsListFromDb(param,userId);
 //            goodsListCapsules = goodsListCapsulesPage.getDataList();
             log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsulesPage);
         }
@@ -161,13 +165,13 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 装修页面配置的商品获取过滤条件
      * @return 对应的商品集合信息
      */
-    private PageResult<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param,Integer patientId) {
+    private PageResult<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param, Integer userId) {
         // 手动推荐展示但是未指定商品数据
         boolean specifiedNoContent = (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
         if (specifiedNoContent) {
             return new PageResult<>();
         }
-        Condition condition = buildPageIndexCondition(param,patientId);
+        Condition condition = buildPageIndexCondition(param,userId);
         PageResult<GoodsListMpBo> pageResult;
         // 手动推荐拼接排序条件
         if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
@@ -192,7 +196,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 过滤参数
      * @return 拼接后的条件
      */
-    private Condition buildPageIndexCondition(GoodsListMpParam param,Integer patientId) {
+    private Condition buildPageIndexCondition(GoodsListMpParam param,Integer userId) {
         // 获取在售商品
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
@@ -207,7 +211,7 @@ public class GoodsMpService extends ShopBaseService {
         }
 
         if (GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(param.getAutoRecommendType())){
-            List<Integer> goodsIds = prescriptionService.getPrescriptionGoodsIdsByPatientId(patientId);
+            List<Integer> goodsIds = prescriptionService.getPrescriptionGoodsIdsByUserId(userId);
             condition = condition.and(GOODS.GOODS_ID.in(goodsIds));
             return condition;
         }

@@ -384,7 +384,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     }
 
     private Object processGoodsModule(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
-        ModuleGoods moduleGoods = saas.getShopApp(getShopId()).mpDecoration.convertGoodsForModule(objectMapper, node, null,null);
+        ModuleGoods moduleGoods = saas.getShopApp(getShopId()).mpDecoration.convertGoodsForModule(objectMapper, node, null);
         if (moduleGoods.getOtherMessage().equals((byte)0)) {
             if (StringUtil.isNotEmpty(moduleGoods.getImgUrl()) || StringUtil.isNotEmpty(moduleGoods.getTitle())) {
                 moduleGoods.setGoodsModuleTitle((byte) 1);
