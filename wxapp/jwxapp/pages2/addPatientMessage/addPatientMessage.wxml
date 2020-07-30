@@ -1,6 +1,0 @@
-<include src="/pages/common/header.wxml" />
-<view class="mian-container">
-   <view class="add_patient" bindtap="toPatient">
-        <text>+</text>添加就诊人
-   </view>
-</view>
