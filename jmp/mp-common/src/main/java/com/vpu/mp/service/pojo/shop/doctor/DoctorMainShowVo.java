@@ -25,6 +25,7 @@ public class DoctorMainShowVo {
      * 医师端首页个人信息
      *
      */
+    private String name;
     private Byte      sex;
     private String    url;
     private Byte      duty;

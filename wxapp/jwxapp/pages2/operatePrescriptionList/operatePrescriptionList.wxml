@@ -1,3 +1,5 @@
+
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
@@ -5,7 +7,7 @@
 			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
 				<view class="card-item">
 					<view class="status-title">
-						<text>提交时间：2020-7-16 15:33</text>
+						<text>提交时间：{{filter.substring(item.time,0,16)}}</text>
 						<text>待审核</text>
 					</view>
 					<view class="prescription-item" data-prescription-code="{{item.prescription.prescriptionCode}}" bindtap="handleShowDialog">
@@ -43,8 +45,8 @@
 						</view>
 					</view>
 					<view class="button-content">
-						<text class="reject" data-type="reject" data-order-id="1" data-order-sn="1" data-parentIndex="{{pageIndex}}" bindtap="changeStatus" >驳回</text>
-						<text class="pass" data-type="pass" data-order-id="1" data-order-sn="1" data-parentIndex="{{pageIndex}}" bindtap="changeStatus">通过</text>
+						<text class="reject" data-type="reject" data-order-id="{{item.orderId}}" data-order-sn="{{item.orderSn}}" data-prescription-old-code="{{item.prescription.prescriptionCode}}" data-parent-index="{{pageIndex}}"  bindtap="changeStatus">驳回</text>
+						<text class="pass" data-type="pass" data-order-id="{{item.orderId}}" data-order-sn="{{item.orderSn}}" data-prescription-old-code="{{item.prescription.prescriptionCode}}" data-parent-index="{{pageIndex}}" bindtap="changeStatus">通过</text>
 					</view>
 				</view>
 			</block>
