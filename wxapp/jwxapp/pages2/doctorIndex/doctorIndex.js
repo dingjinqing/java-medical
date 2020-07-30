@@ -71,7 +71,7 @@ global.wxPage({
     },{
       name: this.data.name,
       mobile: this.data.mobile,
-      hospitalCode: this.data.hospitalCode
+      hospitalCode: this.data.hosCode
     })
   },
   requestInfo () {
