@@ -4,12 +4,12 @@
 package com.vpu.mp.db.shop.tables.records;
 
 
+import com.vpu.mp.db.shop.tables.MedicalAdvice;
 
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.tables.MedicalAdvice;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record22;
@@ -30,311 +30,311 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MedicalAdviceRecord extends UpdatableRecordImpl<MedicalAdviceRecord> implements Record22<Integer, String, String, String, String, String, Timestamp, Timestamp, String, Double, String, Double, String, Long, String, String, String, String, Byte, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1430395294;
+    private static final long serialVersionUID = 811102894;
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.id</code>. 主键id
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.id</code>. 主键id
      */
     public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.id</code>. 主键id
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.id</code>. 主键id
      */
     public Integer getId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.pos_code</code>. 医嘱单号
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.pos_code</code>. 医嘱单号
      */
     public void setPosCode(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.pos_code</code>. 医嘱单号
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.pos_code</code>. 医嘱单号
      */
     public String getPosCode() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.pos_detail_code</code>. 医嘱明细单号
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.pos_detail_code</code>. 医嘱明细单号
      */
     public void setPosDetailCode(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.pos_detail_code</code>. 医嘱明细单号
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.pos_detail_code</code>. 医嘱明细单号
      */
     public String getPosDetailCode() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.diagnosis_name</code>. 诊断名称
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.diagnosis_name</code>. 诊断名称
      */
     public void setDiagnosisName(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.diagnosis_name</code>. 诊断名称
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.diagnosis_name</code>. 诊断名称
      */
     public String getDiagnosisName() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.diagnosis_code</code>. 诊断编码
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.diagnosis_code</code>. 诊断编码
      */
     public void setDiagnosisCode(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.diagnosis_code</code>. 诊断编码
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.diagnosis_code</code>. 诊断编码
      */
     public String getDiagnosisCode() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.diagnosis_content</code>. 诊断描述
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.diagnosis_content</code>. 诊断描述
      */
     public void setDiagnosisContent(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.diagnosis_content</code>. 诊断描述
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.diagnosis_content</code>. 诊断描述
      */
     public String getDiagnosisContent() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.order_create_time</code>. 医嘱创建时间
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.order_create_time</code>. 医嘱创建时间
      */
     public void setOrderCreateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.order_create_time</code>. 医嘱创建时间
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.order_create_time</code>. 医嘱创建时间
      */
     public Timestamp getOrderCreateTime() {
         return (Timestamp) get(6);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.take_effect_time</code>. 医嘱生效时间
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.take_effect_time</code>. 医嘱生效时间
      */
     public void setTakeEffectTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.take_effect_time</code>. 医嘱生效时间
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.take_effect_time</code>. 医嘱生效时间
      */
     public Timestamp getTakeEffectTime() {
         return (Timestamp) get(7);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.pos_content</code>. 医嘱内容
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.pos_content</code>. 医嘱内容
      */
     public void setPosContent(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.pos_content</code>. 医嘱内容
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.pos_content</code>. 医嘱内容
      */
     public String getPosContent() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.goods_num</code>. 总量
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.goods_num</code>. 总量
      */
     public void setGoodsNum(Double value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.goods_num</code>. 总量
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.goods_num</code>. 总量
      */
     public Double getGoodsNum() {
         return (Double) get(9);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.goods_basic_unit</code>. 单位 例：500
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.goods_basic_unit</code>. 单位 例：500
      */
     public void setGoodsBasicUnit(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.goods_basic_unit</code>. 单位 例：500
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.goods_basic_unit</code>. 单位 例：500
      */
     public String getGoodsBasicUnit() {
         return (String) get(10);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.goods_equivalent_quantity</code>. 单量 例:500
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.goods_equivalent_quantity</code>. 单量 例:500
      */
     public void setGoodsEquivalentQuantity(Double value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.goods_equivalent_quantity</code>. 单量 例:500
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.goods_equivalent_quantity</code>. 单量 例:500
      */
     public Double getGoodsEquivalentQuantity() {
         return (Double) get(11);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.goods_equivalent_unit</code>. 单位(单量单位)例:ml
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.goods_equivalent_unit</code>. 单位(单量单位)例:ml
      */
     public void setGoodsEquivalentUnit(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.goods_equivalent_unit</code>. 单位(单量单位)例:ml
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.goods_equivalent_unit</code>. 单位(单量单位)例:ml
      */
     public String getGoodsEquivalentUnit() {
         return (String) get(12);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.goods_price</code>. 金额
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.goods_price</code>. 金额
      */
     public void setGoodsPrice(Long value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.goods_price</code>. 金额
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.goods_price</code>. 金额
      */
     public Long getGoodsPrice() {
         return (Long) get(13);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.goods_use_frequency</code>. 使用频次
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.goods_use_frequency</code>. 使用频次
      */
     public void setGoodsUseFrequency(String value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.goods_use_frequency</code>. 使用频次
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.goods_use_frequency</code>. 使用频次
      */
     public String getGoodsUseFrequency() {
         return (String) get(14);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.goods_use_method</code>. 使用方法
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.goods_use_method</code>. 使用方法
      */
     public void setGoodsUseMethod(String value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.goods_use_method</code>. 使用方法
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.goods_use_method</code>. 使用方法
      */
     public String getGoodsUseMethod() {
         return (String) get(15);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.doctor_memo</code>. 医师嘱托
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.doctor_memo</code>. 医师嘱托
      */
     public void setDoctorMemo(String value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.doctor_memo</code>. 医师嘱托
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.doctor_memo</code>. 医师嘱托
      */
     public String getDoctorMemo() {
         return (String) get(16);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.doctor</code>. 开嘱医师
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.doctor</code>. 开嘱医师
      */
     public void setDoctor(String value) {
         set(17, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.doctor</code>. 开嘱医师
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.doctor</code>. 开嘱医师
      */
     public String getDoctor() {
         return (String) get(17);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.basic_medical</code>. 是否表示当前医嘱明细是个药品 0:否、1:是
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.basic_medical</code>. 是否表示当前医嘱明细是个药品 0:否、1:是
      */
     public void setBasicMedical(Byte value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.basic_medical</code>. 是否表示当前医嘱明细是个药品 0:否、1:是
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.basic_medical</code>. 是否表示当前医嘱明细是个药品 0:否、1:是
      */
     public Byte getBasicMedical() {
         return (Byte) get(18);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.is_delete</code>. 删除标记
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.is_delete</code>. 删除标记
      */
     public void setIsDelete(Byte value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.is_delete</code>. 删除标记
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.is_delete</code>. 删除标记
      */
     public Byte getIsDelete() {
         return (Byte) get(19);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.create_time</code>. 生成时间
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.create_time</code>. 生成时间
      */
     public void setCreateTime(Timestamp value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.create_time</code>. 生成时间
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.create_time</code>. 生成时间
      */
     public Timestamp getCreateTime() {
         return (Timestamp) get(20);
     }
 
     /**
-     * Setter for <code>jmini_shop_224462.b2c_medical_advice.update_time</code>. 最后修改时间
+     * Setter for <code>mini_shop_471752.b2c_medical_advice.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_224462.b2c_medical_advice.update_time</code>. 最后修改时间
+     * Getter for <code>mini_shop_471752.b2c_medical_advice.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(21);

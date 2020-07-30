@@ -4,12 +4,12 @@
 package com.vpu.mp.db.shop.tables.records;
 
 
+import com.vpu.mp.db.shop.tables.Message;
 
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.tables.Message;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record15;
@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MessageRecord extends UpdatableRecordImpl<MessageRecord> implements Record15<Integer, String, String, String, Byte, Integer, String, Integer, String, Byte, Timestamp, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 2130178605;
+    private static final long serialVersionUID = -1663671175;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_message.message_id</code>.
@@ -117,14 +117,14 @@ public class MessageRecord extends UpdatableRecordImpl<MessageRecord> implements
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_message.receiver_name</code>.
+     * Setter for <code>mini_shop_471752.b2c_message.receiver_name</code>. 接收者姓名
      */
     public void setReceiverName(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_message.receiver_name</code>.
+     * Getter for <code>mini_shop_471752.b2c_message.receiver_name</code>. 接收者姓名
      */
     public String getReceiverName() {
         return (String) get(6);

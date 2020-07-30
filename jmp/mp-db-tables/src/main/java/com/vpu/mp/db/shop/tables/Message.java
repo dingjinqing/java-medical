@@ -4,7 +4,10 @@
 package com.vpu.mp.db.shop.tables;
 
 
-
+import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
+import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.tables.records.MessageRecord;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -12,10 +15,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_471752;
-import com.vpu.mp.db.shop.tables.records.MessageRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -43,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Message extends TableImpl<MessageRecord> {
 
-    private static final long serialVersionUID = 408016953;
+    private static final long serialVersionUID = -1244909920;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_message</code>
@@ -76,7 +75,7 @@ public class Message extends TableImpl<MessageRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_message.message_content</code>. 消息内容
      */
-    public final TableField<MessageRecord, String> MESSAGE_CONTENT = createField("message_content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "消息内容");
+    public final TableField<MessageRecord, String> MESSAGE_CONTENT = createField("message_content", org.jooq.impl.SQLDataType.CLOB, this, "消息内容");
 
     /**
      * The column <code>mini_shop_471752.b2c_message.message_type</code>. 消息类型 0：系统消息、1：订单消息、2：会话消息 默认0
@@ -89,9 +88,9 @@ public class Message extends TableImpl<MessageRecord> {
     public final TableField<MessageRecord, Integer> RECEIVER_ID = createField("receiver_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "接收者id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_message.receiver_name</code>.
+     * The column <code>mini_shop_471752.b2c_message.receiver_name</code>. 接收者姓名
      */
-    public final TableField<MessageRecord, String> RECEIVER_NAME = createField("receiver_name", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(DSL.inline("接收者姓名", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<MessageRecord, String> RECEIVER_NAME = createField("receiver_name", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "接收者姓名");
 
     /**
      * The column <code>mini_shop_471752.b2c_message.sender_id</code>. 发送者id

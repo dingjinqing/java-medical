@@ -62,7 +62,9 @@ global.wxPage({
     // 是否编辑患者
     is_edit: 0,
     // 编辑的时候显示的疾病史
-    edit_his_summary: []
+    edit_his_summary: [],
+    // 是否来自咨询页面
+    list: 0
   },
 
   /**
@@ -85,6 +87,9 @@ global.wxPage({
       is_edit: this.data.is_edit
     })
     this.data.patient_id = options.patient_id ? options.patient_id : 0;
+    if(options.list && options.list == 1){
+      this.data.list = 1
+    }
     this.getPatientInfo();
   },
   getPatientInfo () {
@@ -263,8 +268,14 @@ global.wxPage({
     this.data.patient_info.gestationType = this.data.gestationType;
     this.data.patient_info.remarks = this.data.pat_tip;
     util.api('/api/wxapp/user/patient/add', res => {
-      console.log(res);
-      util.jumpLink('/pages1/familylist/familylist','redirectTo')
+      if(res.error == 0){
+        util.toast_success('成功')
+        if(this.data.list == 1){
+          util.jumpLink('/pages2/doctorConsultation/doctorConsultation','redirectTo');
+        }else{
+          util.jumpLink('/pages1/familylist/familylist','redirectTo')
+        }
+      }
     },{
       id:this.data.patient_id,
       name: this.data.patient_info.name,

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PATIENT;
-import static com.vpu.mp.db.shop.Tables.USER_COLLECTION;
 import static com.vpu.mp.db.shop.Tables.USER_PATIENT_COUPLE;
 
 /**
