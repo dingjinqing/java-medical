@@ -159,8 +159,7 @@
         "awaitprescribe/awaitprescribe",
         "prescribeinfo/prescribeinfo",
         "doctorIndex/doctorIndex",
-        "doctorSearch/doctorSearch",
-        "addPatientMessage/addPatientMessage"
+        "doctorSearch/doctorSearch"
       ]
     }
   ],
