@@ -32,6 +32,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,7 +80,11 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      */
     @Override
     public Object query(OrderToPrescribeQueryParam param) throws MpException {
-        List<OrderInfoVo> orders = orderInfoService.getOrdersByCondition(orderInfoService.TABLE.ORDER_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE).and(orderInfoService.TABLE.ORDER_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT)) , OrderInfoVo.class);
+        Condition condition=orderInfoService.TABLE.ORDER_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE).and(orderInfoService.TABLE.ORDER_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT));
+        if(param.getOrderId()!=null){
+             condition=condition.and(orderInfoService.TABLE.ORDER_ID.eq(param.getOrderId()));
+        }
+        List<OrderInfoVo> orders = orderInfoService.getOrdersByCondition(condition, OrderInfoVo.class);
         List<OrderGoodsMedicalVo> orderGoodsMedicalVoList=new ArrayList<>();
         for(OrderInfoVo orderInfo:orders){
             OrderGoodsMedicalVo orderGoodsMedicalVo=new OrderGoodsMedicalVo();

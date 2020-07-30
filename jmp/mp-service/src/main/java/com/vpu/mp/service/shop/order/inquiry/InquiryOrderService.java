@@ -39,11 +39,13 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,8 +108,18 @@ public class InquiryOrderService extends ShopBaseService {
      * @param orderSn
      * @return
      */
-    public InquiryOrderDo getByOrderSn(String orderSn){
-        return inquiryOrderDao.getByOrderSn(orderSn);
+    public InquiryOrderDetailVo getByOrderSn(String orderSn){
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(orderSn);
+        InquiryOrderDetailVo inquiryOrderDetailVo=new InquiryOrderDetailVo();
+        FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
+        List<String> imgUrlList=new ArrayList<>();
+        if(StringUtils.isNotBlank(inquiryOrderDo.getImageUrl())){
+            imgUrlList= Arrays.asList(inquiryOrderDo.getImageUrl().split(","));
+        }
+
+        inquiryOrderDetailVo.setImgUrlList(imgUrlList);
+        inquiryOrderDetailVo.setPatientAge(DateUtils.getAgeByBirthDay(inquiryOrderDetailVo.getPatientBirthday()));
+        return inquiryOrderDetailVo;
     }
 
     /**
@@ -187,7 +199,7 @@ public class InquiryOrderService extends ShopBaseService {
         // 更新记录微信预支付id：prepayid
 //        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
         vo.setOrderSn(orderSn);
-        InquiryOrderDo orderInfo=getByOrderSn(orderSn);
+        InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
         inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         logger().debug("微信支付创建订单结束");
         return vo;

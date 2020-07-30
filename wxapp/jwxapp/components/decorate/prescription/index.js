@@ -16,7 +16,6 @@ global.wxComponent({
       },{
         prescriptionCode
       })
-      
     },
     viewPrescriptionList(){
       util.jumpLink('pages1/prescriptionlist/prescriptionlist')

@@ -136,10 +136,7 @@ public class PatientDao extends ShopBaseDao{
     public PatientOneParam getPatientByNameAndMobile(UserPatientOneParam patientInfoParam){
         SelectConditionStep<? extends Record> select= db().select().from(PATIENT)
             .where(PATIENT.NAME.eq(patientInfoParam.getName()))
-            .and(PATIENT.MOBILE.eq(patientInfoParam.getMobile()));
-        if(patientInfoParam.getIdentityCode()!=null) {
-            select.and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode()));
-        }
+            .and(PATIENT.MOBILE.eq(patientInfoParam.getMobile())).and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode()));
         return select.fetchOneInto(PatientOneParam.class);
     }
 

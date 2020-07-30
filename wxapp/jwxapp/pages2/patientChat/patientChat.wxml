@@ -26,7 +26,7 @@
 				</view>
 
 				<view slot='doctor_pres_message' class="prescription-item {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 2}}'>
-					<view class="item-title" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方</view>
+					<view class="item-title" bindtap="handleShowPrescriptionDialog" data-prescription-code="{{item.messageInfo.message.content.prescriptionCode}}" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方</view>
 					<view class="item-list-content">
 						<view class="item-list">
 							<view class="list-item">
@@ -53,6 +53,7 @@
 		</block>
 		
 	</view>
+	<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
+  </chat-input>
 </view>
-<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
-</chat-input>
+<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}" />

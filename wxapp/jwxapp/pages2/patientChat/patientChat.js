@@ -165,6 +165,19 @@ global.wxPage({
       });
     }).exec()
   },
+  handleShowPrescriptionDialog(e){
+    let {prescriptionCode} = e.currentTarget.dataset
+    util.api('/api/wxapp/prescription/details',res=>{
+      if(res.error === 0){
+        this.setData({
+          showPrescription:true,
+          prescriptionData:res.content
+        })
+      }
+    },{
+      prescriptionCode
+    })
+  },
   requestDetail(orderSn) {
     let that = this;
     util.api('/api/wxapp/inquiry/order/detail', res => {
