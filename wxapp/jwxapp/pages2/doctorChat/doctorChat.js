@@ -11,14 +11,19 @@ global.wxPage({
     time: '2020-07-23 13:35:01',
     page_name: '',
     prescriptionMessage:null,
-    chatContent:[]
+    chatContent:[],
+    targetUserInfo:{}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // this.requsetMessage()
+    let {targetUserInfo} = options
+    this.setData({
+      targetUserInfo,
+      page_name:targetUserInfo.patientName
+    })
   },
   getInputMessage(e) {
     let {
@@ -100,10 +105,10 @@ global.wxPage({
         })
     }
     }, {
-      departmentId: 12,
-      patientId: 137,
-      pullFromId: 7,
-      selfId: util.getCache('user_id')
+      departmentId: this.data.targetUserInfo.departmentId,
+      patientId: this.data.targetUserInfo.patientId,
+      pullFromId: this.data.targetUserInfo.userId,
+      selfId: util.getCache('doctor_id')
     }, '', false);
   },
   hideMoreActions(){
@@ -133,10 +138,10 @@ global.wxPage({
         })
       }
     },{
-      departmentId:12,
-      patientId:137,
-      fromId:util.getCache('user_id'),
-      toId:7,
+      departmentId:this.data.targetUserInfo.departmentId,
+      patientId:this.data.targetUserInfo.patientId,
+      fromId:util.getCache('doctor_id'),
+      toId:this.data.targetUserInfo.userId,
       imSessionItem
     })
   },

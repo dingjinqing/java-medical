@@ -1,4 +1,3 @@
-
 <wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
