@@ -108,7 +108,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param orderSn
      * @return
      */
-    public InquiryOrderDetailVo getByOrderSn(String orderSn){
+    public InquiryOrderDetailVo getDetailByOrderSn(String orderSn){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(orderSn);
         InquiryOrderDetailVo inquiryOrderDetailVo=new InquiryOrderDetailVo();
         FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
