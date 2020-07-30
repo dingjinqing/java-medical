@@ -28,7 +28,8 @@ var user = {
               cache.setCache("avatarUrl", d.content.user_avatar);
               cache.setCache("shop_flag", d.content.shop_flag);
               cache.setCache("geographic_location", d.content.geographic_location);
-              cache.setCache("imageHost",d.content.imageHost)
+              cache.setCache("imageHost",d.content.imageHost);
+              cache.setCache("doctor_id",d.content.doctor_id);
               if (cb) cb(d.content);
             }
           }, data);

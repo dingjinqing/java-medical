@@ -18,15 +18,6 @@ global.wxPage({
    */
   onLoad: function (options) {
     // this.requsetMessage()
-    let patient_message = {
-      content:{
-        name:'saoyang',
-        sex:'男',
-        age:'24',
-        mess:'你猜猜猜IC爱慈爱IC爱爱CIA慈爱爱车'
-      }
-    }
-    this.sendMessage(patient_message,2)
   },
   getInputMessage(e) {
     let {

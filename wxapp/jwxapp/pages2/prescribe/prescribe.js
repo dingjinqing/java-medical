@@ -160,12 +160,12 @@ global.wxPage({
   createPrescription () {
     let params = {
       patientId: 137,
-      doctorId: 1,
+      doctorId: util.getCache('doctor_id'),
       departmentCode: this.data.departmentCode,
       departmentName: this.data.departmentName,
       diagnosisName: this.data.diagnose.info,
       doctorAdvice: this.data.doctorAdvice,
-      goodsIdList: this.data.goodsIdNum
+      goodsIdList: JSON.stringify(this.data.goodsIdNum)
     }
     util.api('/api/wxapp/prescription/add', res => {
       console.log(res)
