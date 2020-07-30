@@ -99,7 +99,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsDo.class);
             for(OrderGoodsDo orderGoodsDo:orderGoodsDoList ){
                 //只需要开方的药品
-                if(orderGoodsDo.getMedicalAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                if(orderGoodsDo.getMedicalAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)&&orderGoodsDo.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_DEFAULT)){
                     GoodsMedicalInfoDo goodsMedicalInfoDo=medicalGoodsService.getByGoodsId(orderGoodsDo.getGoodsId());
                     GoodsMedicalOneInfoVo goodsMedicalOneInfoVo=new GoodsMedicalOneInfoVo();
                     FieldsUtil.assign(goodsMedicalInfoDo, goodsMedicalOneInfoVo);
