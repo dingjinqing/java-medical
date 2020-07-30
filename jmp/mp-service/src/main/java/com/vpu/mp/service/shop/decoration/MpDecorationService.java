@@ -73,6 +73,10 @@ import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 @Service
 public class MpDecorationService extends ShopBaseService {
 
+    public static final String PAGE_ID = "page_id";
+    public static final String PAGE = "page";
+    public static final String C_ = "c_";
+    public static final String PAGE_CFG = "page_cfg";
     @Autowired
     protected ConfigService config;
     @Autowired
@@ -229,10 +233,10 @@ public class MpDecorationService extends ShopBaseService {
                     String[] sceneParam = scene.split("=",2);
                     pageId =  Integer.valueOf(sceneParam[1]);
                     record = getPageById(pageId);
-                    if("page_id".equals(sceneParam[0])){
+                    if(PAGE_ID.equals(sceneParam[0])){
                         //页面预览
                         pageContent = record.getPageContent();
-                    }else if("page".equals(sceneParam[0])){
+                    }else if(PAGE.equals(sceneParam[0])){
                         //页面分享
                         pageContent = record.getPagePublishContent();
                     }else{
@@ -353,44 +357,33 @@ public class MpDecorationService extends ShopBaseService {
      */
     public Object convertModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user, Integer patientId)
         throws JsonParseException, JsonMappingException, IOException {
-        if (node.getKey().startsWith("c_")) {
+        if (node.getKey().startsWith(C_)) {
             String moduleName = node.getValue().get("module_name").asText();
             switch (moduleName) {
                 case ModuleConstant.M_GOODS_GROUP:
                     return this.convertGoodsGroupForIndex(objectMapper, node, user);
                 case ModuleConstant.M_GOODS:
                     ModuleGoods moduleGoods = this.convertGoodsForIndex(objectMapper, node, user);
-                    if (GoodsConstant.AUTO_RECOMMEND.equals(moduleGoods.getRecommendType())
-                        && GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(moduleGoods.getAutoRecommendType()) && GoodsConstant.ZERO.equals(patientId)) {
+                    if (GoodsConstant.AUTO_RECOMMEND.equals(moduleGoods.getRecommendType()) && GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(moduleGoods.getAutoRecommendType()) && GoodsConstant.ZERO.equals(patientId)) {
                         return  null;
                     }
                     return moduleGoods;
                 case ModuleConstant.M_COUPON:
-					if (isNoAuth(VersionName.SUB_2_M_VOUCHER)) {
-						return null;
-					}
+					if (isNoAuth(VersionName.SUB_2_M_VOUCHER)) { return null; }
                     return this.convertCouponForIndex(objectMapper, node, user);
                 case ModuleConstant.M_CARD:
-					if (isNoAuth(VersionName.SUB_2_M_MEMBER_CARD)) {
-						return null;
-					}
+					if (isNoAuth(VersionName.SUB_2_M_MEMBER_CARD)) { return null; }
 					return this.convertCardForIndex(objectMapper, node, user);
                 case ModuleConstant.M_BARGAIN:
-					if (isNoAuth(VersionName.SUB_2_M_MEMBER_CARD)) {
-						return null;
-					}
+					if (isNoAuth(VersionName.SUB_2_M_MEMBER_CARD)) { return null; }
                     return this.convertBargainForIndex(objectMapper, node, user);
                 case ModuleConstant.M_SECKILL:
-					if (isNoAuth(VersionName.SUB_2_M_SECKILL_GOODS)) {
-						return null;
-					}
+					if (isNoAuth(VersionName.SUB_2_M_SECKILL_GOODS)) { return null; }
                     return this.convertSeckillForIndex(objectMapper, node, user);
                 case ModuleConstant.M_IMAGE_ADVER:
                     return this.convertImageAdverForIndex(objectMapper, node, user);
                 case ModuleConstant.M_PIN_INTEGRATION:
-					if (isNoAuth(VersionName.SUB_2_M_PIN_INTEGRATION)) {
-						return null;
-					}
+					if (isNoAuth(VersionName.SUB_2_M_PIN_INTEGRATION)) { return null; }
                     return this.convertGroupIntegrationForIndex(objectMapper, node, user);
                 case ModuleConstant.M_GROUP_DRAW:
 					if (isNoAuth(VersionName.SUB_2_M_GROUP_DRAW)) {
@@ -400,9 +393,7 @@ public class MpDecorationService extends ShopBaseService {
                 case ModuleConstant.M_SCROLL_IMAGE:
                     return this.convertScrollImageForIndex(objectMapper, node, user);
                 case ModuleConstant.M_VIDEO:
-					if (isNoAuth(VersionName.SUB_2_M_VIDEO)) {
-						return null;
-					}
+					if (isNoAuth(VersionName.SUB_2_M_VIDEO)) { return null; }
                     return this.convertVideoForIndex(objectMapper, node, user);
                 case ModuleConstant.M_IMAGE_GUIDE:
                     return this.convertImageGuideForIndex(objectMapper, node, user);
@@ -419,14 +410,10 @@ public class MpDecorationService extends ShopBaseService {
                 case ModuleConstant.M_SHOP:
                     return this.convertShopBgForIndex(objectMapper, node, user);
                 case ModuleConstant.M_INTEGRAL:
-					if (isNoAuth(VersionName.SUB_2_M_INTEGRAL_GOODS)) {
-						return null;
-					}
+					if (isNoAuth(VersionName.SUB_2_M_INTEGRAL_GOODS)) { return null; }
                     return this.convertIntegralForIndex(objectMapper, node, user);
                 case ModuleConstant.M_PRESCRIPTION:
-                    if (GoodsConstant.ZERO.equals(patientId)) {
-                        return null;
-                    }
+                    if (GoodsConstant.ZERO.equals(patientId)) { return null; }
                     return this.convertPrescriptionForIndex(objectMapper, node, user);
                 case ModuleConstant.M_CASE_HISTORY:
                     return this.convertCaseHistoryForIndex(objectMapper, node, user);
@@ -436,7 +423,7 @@ public class MpDecorationService extends ShopBaseService {
                 default:
             }
         }
-        if("page_cfg".equals(node.getKey())){
+        if(PAGE_CFG.equals(node.getKey())){
             return this.convertPageCfgIndex(objectMapper, node, user);
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
