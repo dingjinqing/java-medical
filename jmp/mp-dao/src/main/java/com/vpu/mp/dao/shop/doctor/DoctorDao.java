@@ -211,4 +211,14 @@ public class DoctorDao extends ShopBaseDao {
             .fetchInto(DepartmentListVo.class);
     }
 
+    /**
+     * 根据职称id查询职称名称
+     * @param doctorOneParam 医师职称id
+     * @return String
+     */
+    public String selectDoctorTitle(DoctorOneParam doctorOneParam){
+        return db().select(DOCTOR_TITLE.NAME).from(DOCTOR_TITLE)
+            .where(DOCTOR_TITLE.ID.eq(Integer.valueOf(doctorOneParam.getDuty()))).fetchAnyInto(String.class);
+    }
+
 }
