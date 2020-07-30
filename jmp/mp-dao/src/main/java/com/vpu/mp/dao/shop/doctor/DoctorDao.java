@@ -177,13 +177,13 @@ public class DoctorDao extends ShopBaseDao {
 
     /**
      * 更新医师表用户id
-     * @param userDo 当前用户
+     * @param doctorDo 当前用户
      * @return int
      */
-    public int updateUserId(UserDo userDo){
-        return db().update(DOCTOR).set(DOCTOR.USER_ID, userDo.getUserId())
-            .where(DOCTOR.NAME.eq(userDo.getUsername())
-                .and(DOCTOR.MOBILE.eq(userDo.getMobile()))).execute();
+    public int updateUserId(DoctorDo doctorDo){
+        return db().update(DOCTOR).set(DOCTOR.USER_ID, doctorDo.getUserId())
+            .where(DOCTOR.NAME.eq(doctorDo.getName())
+                .and(DOCTOR.MOBILE.eq(doctorDo.getMobile()))).execute();
     }
 
     /**

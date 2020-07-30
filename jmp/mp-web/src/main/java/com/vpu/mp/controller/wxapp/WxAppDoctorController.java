@@ -1,6 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.db.shop.tables.Message;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.vpu.mp.common.foundation.data.JsonResultCode.DOCTOR_LOGIN_AUTH_ERROR;
 
 /**
  * @Description 医师端
@@ -42,7 +46,14 @@ public class WxAppDoctorController extends WxAppBaseController {
      */
     @RequestMapping("/auth")
     public JsonResult doctorAuth(@RequestBody DoctorAuthParam doctorAuthParam) {
-        return this.success(doctorService.doctorAuth(doctorAuthParam));
+        doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
+        doctorAuthParam.setToken(wxAppAuth.user().getToken());
+        Byte doctorAuth = doctorService.doctorAuth(doctorAuthParam);
+        if (DelFlag.NORMAL_VALUE.equals(doctorAuth)) {
+            return success();
+        } else {
+            return fail(DOCTOR_LOGIN_AUTH_ERROR);
+        }
     }
 
     /**
@@ -62,12 +73,16 @@ public class WxAppDoctorController extends WxAppBaseController {
      */
     @RequestMapping("/main")
     public JsonResult doctorMainShow(){
+        // 获取缓存中当前用户信息
         Integer doctorId = wxAppAuth.user().getDoctorId();
+        // 获取当前医师消息列表
         DoctorMessageCountVo doctorMessageCountVo = messageService.countDoctorMessage(doctorId);
+        // 获取医师首页个人信息
         DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
         DoctorMainShowVo doctorMainShowVo = new DoctorMainShowVo();
         FieldsUtil.assign(oneInfo, doctorMainShowVo);
         doctorMainShowVo.setDoctorMessageCountVo(doctorMessageCountVo);
+        // 获取医师所属科室列表
         List<DepartmentListVo> departmentListVos = doctorService.selectDepartmentsByDoctorId(doctorId);
         List<String> list = new ArrayList<>();
         for (DepartmentListVo departmentListVo : departmentListVos){
