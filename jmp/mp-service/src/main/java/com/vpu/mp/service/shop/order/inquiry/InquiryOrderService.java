@@ -239,7 +239,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @return
      */
     public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
-        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(inquiryOrderOnParam.getOrderId());
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         try {
             refundInquiryOrder(inquiryOrderDo);
         } catch (MpException e) {
