@@ -1695,19 +1695,4 @@ public class OrderInfoService extends ShopBaseService {
     }
 
 
-    /**
-     * auditStatus驳回
-     * @param orderGoodsParam
-     */
-    public JsonResult rejectAudit(OrderGoodsParam orderGoodsParam){
-        OrderInfoDo orderInfoDo=getByOrderId(orderGoodsParam.getOrderId(),OrderInfoDo.class);
-        if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
-            return new JsonResult().result(null, JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
-        }
-        transaction(() -> {
-            orderInfoDao.updateAuditStatus(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
-            orderGoodsDao.updateAuditStatusByOrderId(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
-        });
-        return JsonResult.success();
-    }
 }
