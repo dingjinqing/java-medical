@@ -32,6 +32,7 @@ public class PrescriptionDo implements Serializable {
     private String    prescriptionCode;
     private String    posCode;
     private Integer   patientId;
+    private Integer   userId;
     private String    patientTreatmentCode;
     private String    identityCode;
     private Byte      identityType;

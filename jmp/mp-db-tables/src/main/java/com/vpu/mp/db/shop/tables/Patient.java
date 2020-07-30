@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Patient extends TableImpl<PatientRecord> {
 
-    private static final long serialVersionUID = -1990245962;
+    private static final long serialVersionUID = -1766576809;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_patient</code>
@@ -141,7 +141,7 @@ public class Patient extends TableImpl<PatientRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_patient.remarks</code>. 介绍
      */
-    public final TableField<PatientRecord, String> REMARKS = createField("remarks", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "介绍");
+    public final TableField<PatientRecord, String> REMARKS = createField("remarks", org.jooq.impl.SQLDataType.CLOB, this, "介绍");
 
     /**
      * The column <code>mini_shop_471752.b2c_patient.is_delete</code>.
