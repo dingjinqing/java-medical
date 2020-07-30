@@ -130,6 +130,7 @@ global.wxPage({
         this.setData({
           chatContent:chatContent
         })
+        this.pageScrollBottom()
       }
     },{
       departmentId:12,
@@ -143,5 +144,13 @@ global.wxPage({
     util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
       patientId:137
     })}`)
-  }
+  },
+  pageScrollBottom() {
+    wx.createSelectorQuery().select('.main-container').boundingClientRect(function (rect) {
+      console.log(rect);
+      wx.pageScrollTo({
+        scrollTop: rect.height,
+      });
+    }).exec()
+  },
 })
