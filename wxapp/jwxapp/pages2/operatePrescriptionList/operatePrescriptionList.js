@@ -53,25 +53,37 @@ global.wxPage({
     })
   },
   changeStatus(e){
-    let {type,orderId,orderSn,parentIndex} = e.currentTarget.dataset
+    let {type,orderId,orderSn,parentIndex,prescriptionOldCode,doctorAdvice=null} = e.currentTarget.dataset
     let dataListItem = this.data.dataList[parentIndex]
     let targetIndex = dataListItem.findIndex(item=>item.orderSn === orderSn && item.orderId === orderId)
-    util.api('/api/wxapp/docker/audit/pass',res=>{
-
-    },{
-      orderId,
-      orderSn,
-      doctorId,
-      prescriptionOldCode,
-      auditStatus,
-      doctorAdvice
-    })
-    if(res.error === 0){
-      dataListItem.splice(targetIndex,1)
-      this.setData({
-        [`dataList[${parentIndex}]`]:dataListItems
-      })
+    let auditStatus = {
+      'reject':2,
+      'pass':1
     }
+    let tipsInfo = {
+      'reject':['确认驳回患者处方申请并退款吗？','驳回'],
+      'pass':['确认通过患者处方申请吗？','通过']
+    }
+    util.showModal('提示',tipsInfo[type][0],()=>{
+      util.api('/api/wxapp/docker/audit/pass',res=>{
+        console.log(res)
+        if(res.error === 0){
+          dataListItem.splice(targetIndex,1)
+          this.setData({
+            [`dataList[${parentIndex}]`]:dataListItems
+          })
+        } else {
+          util.showModal('提示',res.message)
+        }
+      },{
+        orderId,
+        orderSn,
+        doctorId:1,
+        prescriptionOldCode,
+        auditStatus:auditStatus[type],
+        doctorAdvice
+      })
+    },true,'取消',tipsInfo[type][1])
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
