@@ -26,7 +26,13 @@ global.wxPage({
     if (!options) return;
     let doctorId = options.doctor_id;
     let departmentId = options.depar_id;
+    let orderAmount = options.price;
     this.requestDefault()
+    this.setData({
+      doctorId:doctorId,
+      departmentId:departmentId,
+      orderAmount:orderAmount
+    })
   },
   bindSexChange: function (e) {
     this.setData({
