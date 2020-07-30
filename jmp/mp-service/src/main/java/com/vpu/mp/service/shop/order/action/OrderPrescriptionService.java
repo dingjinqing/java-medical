@@ -354,6 +354,9 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
 
 
     private ExecuteResult checkOrder(OrderInfoDo orderInfoDo) {
+        if (orderInfoDo==null){
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, "订单不存在", null);
+        }
         if (!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT)){
             logger().info("订单状态不是待审核");
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, "订单状态不是待审核", null);

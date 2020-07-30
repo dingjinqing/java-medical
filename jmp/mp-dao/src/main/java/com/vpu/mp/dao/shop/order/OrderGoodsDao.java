@@ -49,7 +49,8 @@ public class OrderGoodsDao extends ShopBaseDao {
         if (param.getAuditStatus() != null) {
             from.where(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(param.getAuditStatus()));
         }
-        from.groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE);
+        from.groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
+        .orderBy(ORDER_GOODS.CREATE_TIME.desc());
         return getPageResult(from, param.getCurrentPage(), param.getPageRows(), OrderPrescriptionVo.class);
     }
 
@@ -65,6 +66,7 @@ public class OrderGoodsDao extends ShopBaseDao {
                 .and(ORDER_GOODS.PRESCRIPTION_OLD_CODE.in(prescriptionCodeList))
                 .and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT))
                 .and(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT))
+                .orderBy(ORDER_GOODS.CREATE_TIME.desc())
                 .fetchGroups(ORDER_GOODS.ORDER_ID, OrderGoodsDo.class);
 
     }
