@@ -15,8 +15,6 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
-import com.vpu.mp.dao.foundation.transactional.DbTransactional;
-import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.sort.SortDao;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
@@ -370,45 +368,47 @@ public class MedicalGoodsService extends ShopBaseService {
      * 插入医院his药品信息
      * @param goodsMedicalExternalRequestItemBos
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     private void batchStoreGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
-        List<String> goodsCodes = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
-        // 剔除没有药品编码的数据
-        goodsMedicalExternalRequestItemBos = goodsMedicalExternalRequestItemBos.stream().filter(x -> {
-            if (x.getGoodsCode() == null) {
-                return false;
-            } else {
-                goodsCodes.add(x.getGoodsCode());
-                return true;
-            }
-        }).collect(Collectors.toList());
-        // 获取已存在的goodsSn到goodsId映射
-        Map<String, Integer> existGoodsCodes = goodsAggregate.mapGoodsCodeToGoodsId(goodsCodes);
+        transaction(()->{
 
-        List<GoodsMedicalExternalRequestItemBo> readyForUpdate = new ArrayList<>(existGoodsCodes.size());
-        List<GoodsMedicalExternalRequestItemBo> readyForInsert = new ArrayList<>(goodsCodes.size() - existGoodsCodes.size());
-
-        for (int i = 0; i < goodsMedicalExternalRequestItemBos.size(); i++) {
-            GoodsMedicalExternalRequestItemBo bo = goodsMedicalExternalRequestItemBos.get(i);
-
-            if (existGoodsCodes.containsKey(bo.getGoodsCode())) {
-                bo.setGoodsId(existGoodsCodes.get(bo.getGoodsCode()));
-                readyForUpdate.add(bo);
-            } else {
-                // 对于数据库不存在，而数据自身状态是删除状态则不入库
-                if (BaseConstant.EXTERNAL_ITEM_STATE_DISABLE.equals(bo.getState())) {
-                    continue;
+            List<String> goodsCodes = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
+            // 剔除没有药品编码的数据
+            List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemReadyToStore = goodsMedicalExternalRequestItemBos.stream().filter(x -> {
+                if (x.getGoodsCode() == null) {
+                    return false;
+                } else {
+                    goodsCodes.add(x.getGoodsCode());
+                    return true;
                 }
-                readyForInsert.add(bo);
-            }
-        }
-        // 新增，防止新增数据内存在goodsCode相同的数据
-        Map<String, GoodsMedicalExternalRequestItemBo> trimRepeated = readyForInsert.stream().collect(Collectors.toMap(GoodsMedicalExternalRequestItemBo::getGoodsCode, Function.identity(), (x1, x2) -> x1));
-        readyForInsert = new ArrayList<>(trimRepeated.values());
-        batchInsertGoodsMedicalExternalInfo(readyForInsert);
+            }).collect(Collectors.toList());
+            // 获取已存在的goodsSn到goodsId映射
+            Map<String, Integer> existGoodsCodes = goodsAggregate.mapGoodsCodeToGoodsId(goodsCodes);
 
-        // 修改
-        batchUpdateGoodsMedicalExternalInfo(readyForUpdate);
+            List<GoodsMedicalExternalRequestItemBo> readyForUpdate = new ArrayList<>(existGoodsCodes.size());
+            List<GoodsMedicalExternalRequestItemBo> readyForInsert = new ArrayList<>(goodsCodes.size() - existGoodsCodes.size());
+
+            for (int i = 0; i < goodsMedicalExternalRequestItemReadyToStore.size(); i++) {
+                GoodsMedicalExternalRequestItemBo bo = goodsMedicalExternalRequestItemReadyToStore.get(i);
+
+                if (existGoodsCodes.containsKey(bo.getGoodsCode())) {
+                    bo.setGoodsId(existGoodsCodes.get(bo.getGoodsCode()));
+                    readyForUpdate.add(bo);
+                } else {
+                    // 对于数据库不存在，而数据自身状态是删除状态则不入库
+                    if (BaseConstant.EXTERNAL_ITEM_STATE_DISABLE.equals(bo.getState())) {
+                        continue;
+                    }
+                    readyForInsert.add(bo);
+                }
+            }
+            // 新增，防止新增数据内存在goodsCode相同的数据
+            Map<String, GoodsMedicalExternalRequestItemBo> trimRepeated = readyForInsert.stream().collect(Collectors.toMap(GoodsMedicalExternalRequestItemBo::getGoodsCode, Function.identity(), (x1, x2) -> x1));
+            readyForInsert = new ArrayList<>(trimRepeated.values());
+            batchInsertGoodsMedicalExternalInfo(readyForInsert);
+
+            // 修改
+            batchUpdateGoodsMedicalExternalInfo(readyForUpdate);
+        });
     }
 
     /**
