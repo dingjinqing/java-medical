@@ -318,6 +318,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setDoctorName(doctor.getName());
         prescriptionParam.setPatientName(patient.getName());
         prescriptionParam.setPatientSex(patient.getSex());
+        prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
         prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistory());
         prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
         prescriptionParam.setIdentityType(patient.getIdentityType());

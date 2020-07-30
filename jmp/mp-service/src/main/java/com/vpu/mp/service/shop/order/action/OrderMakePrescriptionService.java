@@ -122,14 +122,15 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      * @param diseaseHistory
      * @return
      */
-    public String splitDiseaseHistory(String diseaseHistory){
+    public static String splitDiseaseHistory(String diseaseHistory){
         if(StringUtils.isBlank(diseaseHistory)){
             return null;
         }
-        int index=diseaseHistory.indexOf(":");
-        return  diseaseHistory.substring(index+1);
+        int index=diseaseHistory.indexOf("{");
+        return  diseaseHistory.substring(index,diseaseHistory.length()-1);
 
     }
+
     /**
      * 生成处方
      * @param obj 参数
