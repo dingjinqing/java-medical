@@ -6,7 +6,9 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -20,7 +22,10 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescr
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionOrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.AuditOrderGoodsParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.AuditOrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -50,7 +55,7 @@ import java.util.stream.Stream;
  * @date 2020/7/9 9:30
  */
 @Service
-public class OrderPrescriptionService  extends ShopBaseService implements IorderOperate<PrescriptionQueryParam, OrderOperateQueryParam> {
+public class OrderPrescriptionService  extends ShopBaseService implements IorderOperate<PrescriptionQueryParam, AuditOrderGoodsParam> {
     @Autowired
     private PrescriptionService prescriptionService;
     @Autowired
@@ -65,6 +70,10 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
     private PrescriptionDao prescriptionDao;
     @Autowired
     private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private OrderInfoDao orderInfoDao;
+    @Autowired
+    private ReturnService  returnService;
 
 
     @Override
@@ -98,6 +107,9 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 vo.setPrescription(prescriptionMap.get(code));
                 List<OrderGoodsDo> goodsDoList = goodsList.stream().filter(goods -> goods.getPrescriptionOldCode().equals(code)).collect(Collectors.toList());
                 vo.setGoodsList(goodsDoList);
+                vo.setTime(goodsDoList.get(0).getCreateTime());
+                vo.setOrderId(goodsDoList.get(0).getOrderId());
+                vo.setOrderSn(goodsDoList.get(0).getOrderSn());
                 pageResult.getDataList().add(vo);
             });
         });
@@ -177,15 +189,86 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      * 审核
      * 通过
      * 不通过
-     * @param obj 参数
      * @return
      */
     @Override
-    public ExecuteResult execute(OrderOperateQueryParam obj) {
-        //
-        UserMessageParam param =new UserMessageParam();
-        param.setMessageContent("审核通过");
-        messageService.addUserMessage(param);
+    public ExecuteResult execute(AuditOrderGoodsParam param)  {
+        logger().info("审核订单-审核-开始");
+        //检查
+        OrderInfoDo orderInfoDo = orderInfo.getByOrderId(param.getOrderId(), OrderInfoDo.class);
+        ExecuteResult x = checkOrder(orderInfoDo);
+        if (x != null) {
+            return x;
+        }
+        //修改订单状态
+        List<OrderGoodsSimpleAuditVo> allGoods = orderGoodsDao.listSimpleAuditByOrderId(orderInfoDo.getOrderId());
+        List<Integer> unAuditGoodsId = getUnAuditRecIds(param, allGoods);
+        //审核通过
+        auditPass(param, orderInfoDo, allGoods, unAuditGoodsId);
+        //审核不通过
+        if (param.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_NOT_PASS)){
+            logger().info("orderId:{}审核不通过",orderInfoDo.getOrderId());
+            orderGoodsDao.updateAuditStatusByRecIds(unAuditGoodsId,OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+            orderInfoDao.updateAuditStatus(orderInfoDo.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
+            //退款
+            returnService.auditNotPassRefund(orderInfoDo.getOrderSn());
+        }
+        logger().info("审核订单-审核-开始");
+        return null;
+    }
+
+    private void auditPass(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo, List<OrderGoodsSimpleAuditVo> allGoods, List<Integer> unAuditGoodsId) {
+        if (param.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
+            logger().info("orderId:{}审核通过",orderInfoDo.getOrderId());
+            //生成处方
+            PrescriptionVo prescriptionVo = prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionOldCode());
+            //修改状态
+            orderGoodsDao.updateAuditedToWaitDelivery(unAuditGoodsId,prescriptionVo.getPrescriptionCode());
+            List<Integer> allUnAuditRecIds = getAllUnAuditRecIds(allGoods);
+            if (allUnAuditRecIds.containsAll(unAuditGoodsId)){
+                logger().info("订单处方全部通过");
+                orderInfo.setOrderstatus(orderInfoDo.getOrderSn(), OrderConstant.ORDER_WAIT_DELIVERY);
+            }
+        }
+    }
+
+    private List<Integer> getAllUnAuditRecIds(List<OrderGoodsSimpleAuditVo> allGoods) {
+        return allGoods.stream().filter(goods -> {
+            if (goods.getMedicalAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)) {
+                return goods.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_DEFAULT);
+            }
+            return false;
+        }).map(OrderGoodsSimpleAuditVo::getRecId).collect(Collectors.toList());
+    }
+
+    private List<Integer> getUnAuditRecIds(AuditOrderGoodsParam param, List<OrderGoodsSimpleAuditVo> allGoods) {
+        return allGoods.stream().filter(goods -> {
+            if (goods.getPrescriptionOldCode().equals(param.getPrescriptionOldCode())) {
+                if (goods.getMedicalAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)) {
+                    return goods.getMedicalAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_DEFAULT);
+                }
+            }
+            return false;
+        }).map(OrderGoodsSimpleAuditVo::getRecId).collect(Collectors.toList());
+    }
+
+
+
+    private ExecuteResult checkOrder(OrderInfoDo orderInfoDo) {
+        if (!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT)){
+            logger().info("订单状态不是待审核");
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, "订单状态不是待审核", null);
+
+        }
+        if (!orderInfoDo.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
+            logger().info("不是审核订单");
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, "不是审核订单", null);
+
+        }
+        if (!orderInfoDo.getOrderAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_DEFAULT)){
+            logger().info("商品不是待审核状态");
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, "商品不是待审核状态", null);
+        }
         return null;
     }
 }

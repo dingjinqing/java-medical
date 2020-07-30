@@ -879,6 +879,9 @@ public class OrderInfoService extends ShopBaseService {
                 break;
             case OrderConstant.ORDER_WAIT_DELIVERY:
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+                if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
+                    order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
+                }
                 //如果是开方,则审核通过
                 if(order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
                     order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
@@ -1692,19 +1695,4 @@ public class OrderInfoService extends ShopBaseService {
     }
 
 
-    /**
-     * auditStatus驳回
-     * @param orderGoodsParam
-     */
-    public JsonResult rejectAudit(OrderGoodsParam orderGoodsParam){
-        OrderInfoDo orderInfoDo=getByOrderId(orderGoodsParam.getOrderId(),OrderInfoDo.class);
-        if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
-            return new JsonResult().result(null, JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
-        }
-        transaction(() -> {
-            orderInfoDao.updateAuditStatus(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
-            orderGoodsDao.updateAuditStatusByOrderId(orderGoodsParam.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
-        });
-        return JsonResult.success();
-    }
 }
