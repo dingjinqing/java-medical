@@ -27,7 +27,7 @@ global.wxPage({
         mess:'你猜猜猜IC爱慈爱IC爱爱CIA慈爱爱车'
       }
     }
-    this.sendMessage(patient_message,2)
+    this.sendMessage(patient_message,3)
   },
   getInputMessage(e) {
     let that = this

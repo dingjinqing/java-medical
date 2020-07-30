@@ -1,5 +1,6 @@
 // pages2/prescribeinfo/prescribeinfo.js
-var util = require('../../utils/util.js')
+var util = require('../../utils/util.js');
+const zh_CN = require('../../utils/i18n/zh_CN.js');
 var app = getApp()
 global.wxPage({
 
@@ -8,6 +9,7 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    page_info: [],
     // 诊断内容
     diagnosis: ''
   },
@@ -17,6 +19,14 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    this.requestInfo();
+  },
+  requestInfo () {
+    util.api('/api/wxapp/doctor/auth/info', res => {
+      if(res.error == 0) {
+        console.log(res)
+      }
+    },{})
   },
   bindClear () {
     this.setData({diagnosis: ''})

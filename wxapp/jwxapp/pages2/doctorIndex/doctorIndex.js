@@ -18,11 +18,21 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    if(this.data.bottom.user_type == 0) {
+      this.data.show_modal = 1
+    } else {
+      this.data.show_modal = 0
+    }
+    this.setData({
+      show_modal: this.data.show_modal
+    })
+    this.requestInfo();
   },
   close () {
     this.setData({
       show_modal: 0
     })
+    util.jumpLink('/pages/usercenter/usercenter','reLaunch')
   },
   docName (e) {
     this.data.name = e.detail.value
@@ -46,6 +56,30 @@ global.wxPage({
       util.showModal('提示','请输入医生院内编号');
       return false
     }
+    util.api('/api/wxapp/doctor/auth', res => {
+      if(res.error == 0) {
+        if(res.content == '验证失败'){
+          util.toast_fail('认证失败');
+          util.jumpLink('/pages/usercenter/usercenter','reLaunch')
+        } else {
+          this.setData({
+            show_modal: 0
+          })
+          util.jumpLink('/pages2/doctorIndex/doctorIndex','reLaunch')
+        }
+      }
+    },{
+      name: this.data.name,
+      mobile: this.data.mobile,
+      hospitalCode: this.data.hosCode
+    })
+  },
+  requestInfo () {
+    util.api('/api/wxapp/doctor/main', res => {
+      if(res.error == 0) {
+        console.log(res.content)
+      }
+    },{})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

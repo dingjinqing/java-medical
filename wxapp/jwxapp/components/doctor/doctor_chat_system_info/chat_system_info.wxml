@@ -1,8 +1,0 @@
-<view class="system_info">
-	{{systemInfo}}
-</view>
-<view class="medical-begin">
-	<view class="liner-left"></view>
-	<view class="begin">问诊已开始</view>
-	<view class="liner-right"></view>
-</view>

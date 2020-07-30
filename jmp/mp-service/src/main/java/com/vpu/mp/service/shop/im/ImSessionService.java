@@ -113,6 +113,16 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
+     * 查询会话状态
+     * @param sessionId 会话id
+     * @return 会话状态码
+     */
+    public Byte getSessionStatus(Integer sessionId){
+        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
+        return imSessionDo.getSessionStatus();
+    }
+
+    /**
      * 新增待接诊会话
      * @param param 新增会话信息
      * @return 会话id

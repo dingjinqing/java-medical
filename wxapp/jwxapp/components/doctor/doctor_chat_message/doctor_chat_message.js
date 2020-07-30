@@ -7,7 +7,8 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    chatContent: Object
+    chatContent: Object,
+    systemInfo: String
   },
   options:{
     multipleSlots:true
