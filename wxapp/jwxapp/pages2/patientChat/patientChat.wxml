@@ -54,5 +54,5 @@
 		
 	</view>
 </view>
-<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput">
+<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
 </chat-input>

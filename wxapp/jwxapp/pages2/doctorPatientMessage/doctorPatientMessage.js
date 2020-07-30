@@ -12,7 +12,6 @@ global.wxPage({
     array: ['请选择', '男', '女'],
     sex: 0,
     comm_img: [],
-    edit: false,
     name: '',
     age: '',
     orderAmount:0,
@@ -133,20 +132,6 @@ global.wxPage({
   },
   toOrder: function () {
     let that = this;
-    if(that.data.edit == false){
-      if(that.data.name == 0){
-        util.showModal("提示", "请填写姓名");
-        return;
-       }
-       if(that.data.age == 0){
-        util.showModal("提示", "请填写年龄");
-        return;
-       }
-       if(that.data.sex == 0){
-        util.showModal("提示", "请选择性别");
-        return;
-       }
-    }
     let params = {
       doctorId:that.data.doctorId,
       departmentId:that.data.departmentId,
@@ -158,31 +143,33 @@ global.wxPage({
     util.api(
       '/api/wxapp/inquiry/order/pay',
       async res => {
+        console.log(res)
           if (res.error === 0) {
             let {
               orderSn
             } = res.content
-            if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
-              wx.requestPayment({
-                timeStamp: res.content.webPayVo.timeStamp,
-                nonceStr: res.content.webPayVo.nonceStr,
-                package: res.content.webPayVo.package,
-                signType: 'MD5',
-                paySign: res.content.webPayVo.paySign,
-                success: async res => {
-                  util.toast_success('支付成功')
-                  console.log(res)
-                },
-                fail: res => {
-                  console.log(res)
-                },
-                complete: res => {}
-              })
-            }
+            console.log(res)
+            // if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
+            //   wx.requestPayment({
+            //     timeStamp: res.content.webPayVo.timeStamp,
+            //     nonceStr: res.content.webPayVo.nonceStr,
+            //     package: res.content.webPayVo.package,
+            //     signType: 'MD5',
+            //     paySign: res.content.webPayVo.paySign,
+            //     success: async res => {
+            //       util.toast_success('支付成功')
+            //       console.log(res)
+            //     },
+            //     fail: res => {
+            //       console.log(res)
+            //     },
+            //     complete: res => {}
+            //   })
+            // }
           } else {
-            util.showModal('提示', res.message, function () {
-              util.jumpLink('/pages/index/index', 'redirectTo')
-            })
+            // util.showModal('提示', res.message, function () {
+            //   util.jumpLink('/pages/index/index', 'redirectTo')
+            // })
           }
         },
         params
@@ -198,8 +185,7 @@ global.wxPage({
           patientId: res.content.id,
           name: res.content.name,
           age: res.content.age,
-          sex: res.content.sex,
-          edit: true
+          sex: res.content.sex++
         })
       }
     }, {})

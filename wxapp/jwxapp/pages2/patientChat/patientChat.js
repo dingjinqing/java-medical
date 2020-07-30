@@ -110,9 +110,9 @@ global.wxPage({
       }
     }, {
       departmentId: 12,
-      patientId: 3,
+      patientId: 137,
       pullFromId: 1,
-      selfId: 2
+      selfId: util.getCache('user_id')
     }, '', false);
   },
   hideMoreActions(){
@@ -139,13 +139,23 @@ global.wxPage({
         this.setData({
           chatContent:chatContent
         })
+        this.pageScrollBottom()
       }
     },{
       departmentId:12,
-      patientId:3,
-      fromId:2,
+      patientId:137,
+      fromId:util.getCache('user_id'),
       toId:1,
       imSessionItem
     })
+
   },
+  pageScrollBottom(){
+    wx.createSelectorQuery().select('.main-container').boundingClientRect(function (rect) {
+      console.log(rect);
+      wx.pageScrollTo({
+        scrollTop: rect.height,
+      });
+    }).exec()
+  }
 })
