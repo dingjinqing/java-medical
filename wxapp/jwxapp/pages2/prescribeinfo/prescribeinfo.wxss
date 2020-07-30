@@ -98,3 +98,14 @@
   color: #999;
   font-weight: normal !important;
 }
+.btn_check{
+  width: 700rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  color:#fff;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  background: #26C4BC;
+  margin: 0 auto;
+}

@@ -73,6 +73,11 @@ global.wxPage({
       util.showModal("提示", "请输入身份证号！");
       return false;
     }
+    var re = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+    if (!(re.test(prescription_info.identityCode)) || prescription_info.identityCode.replace(/^\s+|\s+$/g, '').length != 18) {
+      util.showModal("提示", "请输入正确的身份证号");
+      return false;
+    }
     if (!prescription_info.mobile) {
       util.showModal("提示", "请输入手机号！");
       return false;

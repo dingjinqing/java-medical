@@ -11,7 +11,8 @@ global.wxPage({
     show_modal: 0,
     name: '',
     mobile: '',
-    hosCode: ''
+    hosCode: '',
+    doctorInfo: []
   },
   /**
    * 生命周期函数--监听页面加载
@@ -69,7 +70,7 @@ global.wxPage({
         }
       }
     },{
-      name: this.data.name,
+      doctorName: this.data.name,
       mobile: this.data.mobile,
       hospitalCode: this.data.hosCode
     })
@@ -77,9 +78,22 @@ global.wxPage({
   requestInfo () {
     util.api('/api/wxapp/doctor/main', res => {
       if(res.error == 0) {
-        console.log(res.content)
+        this.data.doctorInfo = res.content;
+        this.data.doctorInfo.departArr = [];
+        for (var i in this.data.doctorInfo.departmentName){
+          if(!!this.data.doctorInfo.departmentName[i]){
+            this.data.doctorInfo.departArr.push(this.data.doctorInfo.departmentName[i])
+          }
+        }
+        this.data.doctorInfo.departArr = this.data.doctorInfo.departArr.join(',');
+        this.setData({
+          doctorInfo: this.data.doctorInfo
+        })
       }
     },{})
+  },
+  to_awaitPre () {
+    util.jumpLink('/pages2/awaitprescribe/awaitprescribe')
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

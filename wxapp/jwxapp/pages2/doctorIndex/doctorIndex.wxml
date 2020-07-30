@@ -3,11 +3,11 @@
 <view class="mian-container">
   <view class="top_doc_info">
     <view class="doc_square">
-      <image class="doc_img" src="https://bkimg.cdn.bcebos.com/pic/37d3d539b6003af3a09e2944372ac65c1038b6ea?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"></image>
+      <image class="doc_img" src="{{doctorInfo.url}}"></image>
       <view class="doc_message">
-        <view class="doc_name"> <text>大神医</text> 主任医师</view>
-        <view class="doc_hos">秦皇岛军工医院 皮肤科</view>
-        <view class="doc_depart">擅长：癌症、神经病</view>
+        <view class="doc_name"> <text>{{doctorInfo.name}}</text> {{doctorInfo.duty}}</view>
+        <view class="doc_hos">{{doctorInfo.registerHospital}} {{doctorInfo.departArr}}</view>
+        <view class="doc_depart">擅长：{{doctorInfo.treatDisease}}</view>
       </view>
     </view>
   </view>
@@ -15,21 +15,21 @@
     <view class="item">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
-        <view class="item_num">12</view>
+        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notPrescription}}</view>
       </view>
       <view class="item_text">待续方</view>
     </view>
-    <view class="item">
+    <view class="item" bindtap="to_awaitPre">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon1.png"></image>
-        <view class="item_num">12</view>
+        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notOrderInfoCount}}</view>
       </view>
       <view class="item_text">待开方</view>
     </view>
     <view class="item">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
-        <view class="item_num">12</view>
+        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notImSessionCount}}</view>
       </view>
       <view class="item_text">待问诊</view>
     </view>
