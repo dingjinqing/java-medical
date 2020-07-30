@@ -38,9 +38,20 @@ global.wxComponent({
       let doctor_id = e.currentTarget.dataset.doctor_id;
       let depar_id = e.currentTarget.dataset.depar_id;
       let price = e.currentTarget.dataset.price;
-      util.navigateTo({
-        url: "/pages2/doctorPatientMessage/doctorPatientMessage?doctor_id=" + doctor_id + "&depar_id=" + depar_id + "&price=" + price
-      })
+      let that = this;
+      util.api('/api/wxapp/user/patient/get/default', function (res) {
+        console.log(res)
+        if (res.error == 0 && res.content.id) {
+          util.navigateTo({
+            url: "/pages2/doctorPatientMessage/doctorPatientMessage?doctor_id=" + doctor_id + "&depar_id=" + depar_id + "&price=" + price
+          })
+        }else{
+          util.navigateTo({
+            url: "pages1/getprescription/getprescription?list=1"
+          })
+        }
+
+      }, {})
     }
   },
 })
