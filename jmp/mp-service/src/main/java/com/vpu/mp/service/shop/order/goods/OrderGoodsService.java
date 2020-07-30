@@ -606,14 +606,7 @@ public class OrderGoodsService extends ShopBaseService {
 
     }
 
-    /**
-     * 修改审核状态
-     * @param orderId
-     * @param auditStatus
-     */
-    public void updateAuditStatusByOrderId(Integer orderId,Byte auditStatus){
-        orderGoodsDao.updateAuditStatusByOrderId(orderId,auditStatus);
-    }
+
 
     /**
      * 更改处方号
