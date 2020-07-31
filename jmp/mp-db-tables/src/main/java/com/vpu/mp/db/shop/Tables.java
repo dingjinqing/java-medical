@@ -1176,5 +1176,9 @@ public class Tables {
      * 充值记录表
      */
     public static final OrderMedicalHistory ORDER_MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.OrderMedicalHistory.ORDER_MEDICAL_HISTORY;
+    /**
+     * 用户消息表
+     */
+    public static final UserMessage USER_MESSAGE = com.vpu.mp.db.shop.tables.UserMessage.USER_MESSAGE;
 
 }

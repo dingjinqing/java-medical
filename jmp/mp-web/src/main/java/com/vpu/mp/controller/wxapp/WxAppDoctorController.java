@@ -1,11 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.controller.BaseController;
-import com.vpu.mp.db.shop.tables.Message;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorMainShowVo;
@@ -14,11 +10,10 @@ import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.doctor.DoctorService;
-import com.vpu.mp.service.shop.message.MessageService;
+import com.vpu.mp.service.shop.message.UserMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +34,7 @@ public class WxAppDoctorController extends WxAppBaseController {
     private DoctorService doctorService;
 
     @Autowired
-    private MessageService messageService;
+    private UserMessageService messageService;
 
     /**
      * 医师认证接口

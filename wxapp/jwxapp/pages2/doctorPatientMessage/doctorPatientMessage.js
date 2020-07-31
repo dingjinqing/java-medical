@@ -47,9 +47,9 @@ global.wxPage({
       console.log(data)
       if (data.error == 0) {
         let image = {
-          image: data.content.imgUrl,
-          imgWidth: data.content.imgWidth,
-          imgHeight: data.content.imgHeight
+          imageUrl: data.content.imgUrl,
+          imageHeight: data.content.imgHeight,
+          imageWidth: data.content.imgWidth
         }
         comm_img.push(image);
         that.setData({
@@ -146,7 +146,7 @@ global.wxPage({
       departmentId:that.data.departmentId,
       patientId:that.data.patientId,
       descriptionDisease:that.data.descriptionDisease,
-      imagUrl:that.data.comm_img,
+      imageList:that.data.comm_img,
       orderAmount:that.data.orderAmount
     }
     util.api(
@@ -194,7 +194,7 @@ global.wxPage({
       console.log(res)
       if (res.error == 0 && res.content.id) {
         that.setData({
-          patientId: res.content.id,
+          patientId: res.content.patientId,
           name: res.content.name,
           age: res.content.age,
           sex: res.content.sex
