@@ -16,4 +16,7 @@ public class UserPatientDetailVo extends UserPatientCoupleDo {
     private String diseaseHistoryStr;
     private String familyDiseaseHistoryStr;
     private Integer age;
+    private String    name;
+    private String    mobile;
+    private String    identityCode;
 }

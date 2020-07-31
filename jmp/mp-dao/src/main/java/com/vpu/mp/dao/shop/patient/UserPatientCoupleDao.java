@@ -6,6 +6,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.UserPatientCoupleRecord;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import org.jooq.Condition;
 import org.springframework.stereotype.Repository;
@@ -137,10 +138,11 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
      * @param param
      * @return
      */
-    public UserPatientCoupleDo getUserPatientInfo(UserPatientParam param) {
-        return db().select().from(USER_PATIENT_COUPLE)
+    public UserPatientDetailVo getUserPatientInfo(UserPatientParam param) {
+        return db().select(USER_PATIENT_COUPLE.asterisk(),PATIENT.NAME,PATIENT.MOBILE,PATIENT.IDENTITY_CODE).from(USER_PATIENT_COUPLE)
+            .leftJoin(PATIENT).on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
             .where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()))
             .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
-            .fetchAnyInto(UserPatientCoupleDo.class);
+            .fetchAnyInto(UserPatientDetailVo.class);
     }
 }

@@ -67,7 +67,7 @@ public class PatientService extends BaseShopConfigService{
         return patientDao.getOneInfo(patientId);
     }
 
-    public UserPatientCoupleDo getOneInfoForWx(UserPatientParam userPatientParam) {
+    public UserPatientDetailVo getOneInfoForWx(UserPatientParam userPatientParam) {
         return userPatientCoupleDao.getUserPatientInfo(userPatientParam);
     }
 
@@ -214,15 +214,13 @@ public class PatientService extends BaseShopConfigService{
             userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(null));
             return userPatientDetail;
         } else {
-            UserPatientCoupleDo patientInfo = getOneInfoForWx(userPatientParam);
-            UserPatientDetailVo userPatientDetail = new UserPatientDetailVo();
-            FieldsUtil.assign(patientInfo,userPatientDetail);
+            UserPatientDetailVo userPatientDetail = getOneInfoForWx(userPatientParam);
             //根据出生日期获取年龄
-            userPatientDetail.setAge(DateUtils.getAgeByBirthDay(patientInfo.getBirthday()));
-            userPatientDetail.setDiseaseHistoryList(listDiseases(patientInfo.getDiseaseHistory()));
-            userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(patientInfo.getFamilyDiseaseHistory()));
-            userPatientDetail.setDiseaseHistoryStr(strDisease(patientInfo.getDiseaseHistory()));
-            userPatientDetail.setFamilyDiseaseHistoryStr(strDisease(patientInfo.getFamilyDiseaseHistory()));
+            userPatientDetail.setAge(DateUtils.getAgeByBirthDay(userPatientDetail.getBirthday()));
+            userPatientDetail.setDiseaseHistoryList(listDiseases(userPatientDetail.getDiseaseHistory()));
+            userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(userPatientDetail.getFamilyDiseaseHistory()));
+            userPatientDetail.setDiseaseHistoryStr(strDisease(userPatientDetail.getDiseaseHistory()));
+            userPatientDetail.setFamilyDiseaseHistoryStr(strDisease(userPatientDetail.getFamilyDiseaseHistory()));
             return userPatientDetail;
         }
     }
