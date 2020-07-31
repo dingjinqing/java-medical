@@ -78,7 +78,7 @@ global.wxPage({
       },{
         orderId,
         orderSn,
-        doctorId:util.getCache('doctor_id'),
+        doctorId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
         prescriptionOldCode,
         auditStatus:auditStatus[type],
         doctorAdvice

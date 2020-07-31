@@ -50,8 +50,11 @@
 				</view>
 			</block>
 		</block>
-		<include src="../../pages/common/footer.wxml" />
+		<view class="is-null" wx:if="{{dataList[0].length <= 0}}">
+        <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+        <text>您还没有相应记录</text>
+      </view>
 	</view>
+	<include src="../../pages/common/footer.wxml" />
 </view>
-
 <v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>
