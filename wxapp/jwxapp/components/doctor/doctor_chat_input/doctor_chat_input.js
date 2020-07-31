@@ -36,12 +36,14 @@ global.wxComponent({
       if (!this.data.inputMessage) return
       this.triggerEvent('getInputMessage', this.data.inputMessage)
       this.setData({
-        inputMessage: ''
+        inputMessage: '',
+        bottom:0
       })
     },
     showMoreActions() {
       this.setData({
-        moreActions: true
+        moreActions: true,
+        bottom:0
       })
     },
     getFocus(e) {
