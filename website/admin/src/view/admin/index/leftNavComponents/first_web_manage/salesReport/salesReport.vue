@@ -176,7 +176,8 @@ export default {
         display: flex;
         width: 100%;
         background-color: #fff;
-        padding: 15px;
+        padding: 10px 15px;
+        margin-top: 10px;
         .filters{
             flex: 2;
             display: flex;
@@ -208,7 +209,6 @@ export default {
     .table_box{
         padding: 10px;
         background: #fff;
-        margin-top: 10px;
     }
 }
 </style>
