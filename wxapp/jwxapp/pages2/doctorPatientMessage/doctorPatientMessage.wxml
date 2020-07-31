@@ -27,7 +27,7 @@
 				<block wx:for="{{comm_img}}" wx:key="index" wx:for-item="imgitem" wx:for-index="imgindex">
 					<view class='shai_view'>
 						<image src='{{imageUrl}}image/wxapp/dele_service.png' class="shai_close" bindtap='customDelImage' data-imgindex="{{imgindex}}" data-idx='{{index}}'></image>
-						<image src="{{imgitem}}"></image>
+						<image src="{{imgitem.image}}"></image>
 					</view>
 				</block>
 				<view class="upload-image" bindtap="customUpImage" >

@@ -46,7 +46,12 @@ global.wxPage({
       let data = JSON.parse(res.data);
       console.log(data)
       if (data.error == 0) {
-        comm_img.push(data.content.imgUrl);
+        let image = {
+          image: data.content.imgUrl,
+          imgWidth: data.content.imgWidth,
+          imgHeight: data.content.imgHeight
+        }
+        comm_img.push(image);
         that.setData({
           comm_img: comm_img,
           image: true,
@@ -128,7 +133,7 @@ global.wxPage({
     let descriptionDisease = e.detail.value;
     this.setData({
       descriptionDisease:descriptionDisease
-    })
+    }) 
   },
   toOrder: function () {
     let that = this;
@@ -136,7 +141,7 @@ global.wxPage({
       doctorId:that.data.doctorId,
       departmentId:that.data.departmentId,
       patientId:that.data.patientId,
-      descriptionDisease:that.data.departmentId,
+      descriptionDisease:that.data.descriptionDisease,
       imagUrl:that.data.comm_img,
       orderAmount:that.data.orderAmount
     }
@@ -188,7 +193,7 @@ global.wxPage({
           patientId: res.content.id,
           name: res.content.name,
           age: res.content.age,
-          sex: res.content.sex++
+          sex: res.content.sex
         })
       }
     }, {})
