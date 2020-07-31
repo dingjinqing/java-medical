@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order.inquiry;
 
+import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import lombok.Data;
 
@@ -18,7 +19,7 @@ public class InquiryToPayParam {
     private Integer doctorId;
     private Integer departmentId;
     private Integer patientId;
-    private List<String> imagUrl;
+    private List<ImageSimpleVo> imageList;
     private String descriptionDisease;
     /**支付金额*/
     private BigDecimal orderAmount =BigDecimal.ZERO;
