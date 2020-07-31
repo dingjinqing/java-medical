@@ -2,11 +2,10 @@ package com.vpu.mp.service.shop.recharge;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.dao.shop.recharge.RechargeDao;
+import com.vpu.mp.dao.shop.recharge.SmsRechargeDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.recharge.RechargeParam;
-import com.vpu.mp.service.pojo.shop.recharge.RechargeVo;
 import com.vpu.mp.service.pojo.shop.sms.recharge.SmsAccountRechargeListVo;
 import com.vpu.mp.service.pojo.shop.sms.recharge.SmsAccountRechargeRecordParam;
 import com.vpu.mp.service.shop.config.SmsAccountConfigService;
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class RechargeService extends ShopBaseService {
 
     @Autowired
-    private RechargeDao rechargeDao;
+    private SmsRechargeDao rechargeDao;
 
     @Autowired
     private SmsAccountService smsAccountService;

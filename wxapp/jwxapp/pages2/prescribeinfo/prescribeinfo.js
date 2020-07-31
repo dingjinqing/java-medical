@@ -24,7 +24,7 @@ global.wxPage({
     doctorAdvice: '',
     // 开方请求的参数
     doctorId: '',
-    goodsIdList: [],
+    goodsList: [],
   },
 
   /**
@@ -42,13 +42,17 @@ global.wxPage({
   requestPatient () {
     util.api('/api/wxapp/order/medical/get', res => {
       if(res.error == 0){
-        this.data.page_info = res.content[0];
+        this.data.page_info = res.content.dataList[0];
         let advice_arr = [];
-        this.data.goodsIdList = [];
+        this.data.goodsList = [];
         for(let i in this.data.page_info.goodsMedicalOneInfoVoList){
+          let each_obj = {};
           advice_arr.push(this.data.page_info.goodsMedicalOneInfoVoList[i].goodsCommonName)
-          this.data.goodsIdList.push(this.data.page_info.goodsMedicalOneInfoVoList[i].goodsId)
+          each_obj.goodsId = this.data.page_info.goodsMedicalOneInfoVoList[i].goodsId
+          each_obj.dragSumNum = this.data.page_info.goodsMedicalOneInfoVoList[i].goodsNumber
+          this.data.goodsList.push(each_obj)
         }
+        console.log(this.data.goodsList)
         this.data.page_info.advice = advice_arr.join(',');
         this.data.page_info.now_time = util.formatTime(new Date()).substr(0, 10);
         this.setData({
@@ -97,7 +101,6 @@ global.wxPage({
     })
   },
   btn_check () {
-    this.data.goodsIdList = this.data.goodsIdList.join(',')
     util.api('/api/wxapp/order/prescription/make', res => {
       if(res.error == 0){
         util.toast_success('成功')
@@ -106,13 +109,13 @@ global.wxPage({
     },{
       orderId: this.data.orderId,
       auditStatus: 1,
-      patientId: this.data.page_info.patient.id,
+      patientId: this.data.page_info.patient.patientId,
       doctorId: this.data.doctorId,
       departmentCode: this.data.depart_id,
       departmentName: this.data.depart_name,
       diagnosisName: this.data.diagnosis,
       doctorAdvice: this.data.doctorAdvice,
-      goodsIdList: this.data.goodsIdList
+      goodsList: this.data.goodsList
     })
   },
   /**

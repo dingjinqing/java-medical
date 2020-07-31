@@ -139,7 +139,7 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
      * @return
      */
     public UserPatientDetailVo getUserPatientInfo(UserPatientParam param) {
-        return db().select(USER_PATIENT_COUPLE.asterisk(),PATIENT.NAME,PATIENT.MOBILE,PATIENT.IDENTITY_CODE).from(USER_PATIENT_COUPLE)
+        return db().select(USER_PATIENT_COUPLE.asterisk(),PATIENT.NAME,PATIENT.MOBILE,PATIENT.IDENTITY_CODE,PATIENT.BIRTHDAY).from(USER_PATIENT_COUPLE)
             .leftJoin(PATIENT).on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
             .where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()))
             .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))

@@ -152,7 +152,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         logger().info("医师开方-开始");
         OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
         if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
         }
         List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(obj.getOrderId()).into(OrderGoodsDo.class);
         List<Integer> recIds=getUnAuditAllRecIds(orderGoodsDoList);

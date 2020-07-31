@@ -14,6 +14,7 @@ import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -312,5 +313,21 @@ public class PrescriptionDao extends ShopBaseDao {
         FieldsUtil.assign(fetchPrescriptionVo, prescriptionRecord);
         prescriptionRecord.update();
         fetchPrescriptionVo.setId(prescriptionRecord.getId());
+    }
+
+    /**
+     * 根据上次打开已开具页面查询是否有未读消息
+     * @param timestamp 上次打开已开具页面时间
+     * @return Byte
+     */
+    public Byte isExistAlreadyReadPrescription(Timestamp timestamp){
+        List<Timestamp> timestamps = db().select(PRESCRIPTION.UPDATE_TIME).from(PRESCRIPTION)
+            .where(PRESCRIPTION.UPDATE_TIME.gt(timestamp)
+                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+                .and(PRESCRIPTION.IS_VALID.eq(DelFlag.NORMAL_VALUE))).fetchInto(Timestamp.class);
+        if (timestamps.isEmpty()) {
+            return DelFlag.DISABLE_VALUE;
+        }
+        return DelFlag.NORMAL_VALUE;
     }
 }

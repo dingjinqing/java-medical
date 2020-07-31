@@ -59,7 +59,7 @@ global.wxPage({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    clearInterval(this.timer)
   },
 
   /**
@@ -196,22 +196,20 @@ global.wxPage({
             mess: con.descriptionDisease
           }
         }
-        that.sendMessage(patient_message, 3)
         that.setData({
           page_name: con.doctorName,
           doctorId: con.doctorId,
           departmentId: con.departmentId,
           patientId: con.patientId
         })
-        let imageUrl = con.imgUrlList;
+        that.sendMessage(patient_message, 3)
+        let imageUrl = JSON.parse(con.imageUrl);
         if (imageUrl) {
           imageUrl.forEach(function (val) {
             let img = {
-              content: {
-                image: val.image,
-                imgWidth: val.imgWidth,
-                imgHeight: val.imgHeight
-              }
+              content: val.imageUrl,
+              imgWidth: val.imageWidth,
+              imgHeight: val.imageHeight
             }
             that.sendMessage(img, 1)
           })

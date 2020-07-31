@@ -98,11 +98,11 @@ export default {
     getPatientSex (data) {
       switch (data) {
         case 0:
-          return '未知'
-        case 1:
           return '男'
-        case 2:
+        case 1:
           return '女'
+        case 2:
+          return '未知'
       }
     },
     getIdentityName (data) {

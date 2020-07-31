@@ -111,9 +111,9 @@
             prop='sex'
           >
             <el-radio-group v-model="doctorFormInfo.sex">
-                <el-radio :label="1">男</el-radio>
-                <el-radio :label="2">女</el-radio>
-                <el-radio :label="0">未知</el-radio>
+                <el-radio :label="0">男</el-radio>
+                <el-radio :label="1">女</el-radio>
+                <el-radio :label="2">未知</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item
@@ -178,7 +178,7 @@ export default {
         titleId: '',
         duty: '',
         departmentIdsStr: [],
-        sex: 1,
+        sex: 0,
         mobile: '',
         account_id: 0,
         consultationPrice: 0.00,
@@ -253,7 +253,7 @@ export default {
         titleId: '',
         duty: '',
         departmentIdsStr: [],
-        sex: 1,
+        sex: 0,
         mobile: '',
         account_id: 0,
         consultationPrice: 0.00,
