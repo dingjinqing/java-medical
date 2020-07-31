@@ -110,12 +110,6 @@ public class InquiryOrderService extends ShopBaseService {
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(orderSn);
         InquiryOrderDetailVo inquiryOrderDetailVo=new InquiryOrderDetailVo();
         FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
-        List<String> imgUrlList=new ArrayList<>();
-        if(StringUtils.isNotBlank(inquiryOrderDo.getImageUrl())){
-            imgUrlList= Arrays.asList(inquiryOrderDo.getImageUrl().split(","));
-        }
-
-        inquiryOrderDetailVo.setImgUrlList(imgUrlList);
         inquiryOrderDetailVo.setPatientAge(DateUtils.getAgeByBirthDay(inquiryOrderDetailVo.getPatientBirthday()));
         return inquiryOrderDetailVo;
     }
@@ -243,7 +237,7 @@ public class InquiryOrderService extends ShopBaseService {
             refundInquiryOrder(inquiryOrderDo);
         } catch (MpException e) {
             JsonResult jsonResult=new JsonResult();
-            jsonResult.result(null,JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER,null);
+            jsonResult.result(null,e.getErrorCode(),null);
             return  jsonResult;
         }
         return JsonResult.success();
