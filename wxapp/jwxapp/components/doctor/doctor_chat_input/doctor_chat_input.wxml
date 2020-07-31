@@ -1,6 +1,18 @@
+<wxs module="chatInput">
+  var getPlaceholderSource = function (source) {
+    var placeholderTxt = {
+      'doctor':'',
+      'patient':'请仔细描述您的问题'
+    }
+    return placeholderTxt[source]
+  }
+  module.exports = {
+    getPlaceholderSource:getPlaceholderSource
+  }
+</wxs>
 <view class="input-content" style='bottom:{{bottom}}px'>
-    <view class="message-input">
-      <input type="text" cursor-spacing="8" placeholder="请仔细描述您的问题" placeholder-style="color:#999;" bindfocus="getFocus" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}" adjust-position='{{false}}'></input>
+    <view class="message-input"  wx:if="{{hasInput}}">
+      <input type="text" cursor-spacing="8" placeholder="{{chatInput.getPlaceholderSource(source)}}" placeholder-style="color:#999;" bindfocus="getFocus" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}" adjust-position='{{false}}'></input>
       <text class="iconfont icontianjia" bindtap="showMoreActions"></text>
     </view>
     <view class="custom-footer" wx:if="{{moreActions}}">

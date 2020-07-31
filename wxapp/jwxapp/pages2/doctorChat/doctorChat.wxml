@@ -51,10 +51,13 @@
 			</chat-message>
 		</block>
 	</view>
-	<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
+	<chat-input source="doctor" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom" has-input="{{targetUserInfo.sessionStatus !== 3}}">
 		<view class="bottom-button-content" slot="custom-bottom">
-			<view class="has-border">结束问诊</view>
-			<view class="no-border" bindtap="createPrescription">去开方</view>
+			<block wx:if="{{targetUserInfo.sessionStatus === 1}}">
+				<view class="has-border" bindtap="chatEnd">结束问诊</view>
+				<view class="no-border" bindtap="createPrescription">去开方</view>
+			</block>
+			<view class="no-border" wx:if="{{targetUserInfo.sessionStatus === 3}}" bindtap="chatContinue">继续问诊</view>
 		</view>
 	</chat-input>
 </view>

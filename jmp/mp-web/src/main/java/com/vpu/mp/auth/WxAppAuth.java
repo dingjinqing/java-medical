@@ -25,8 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
 
 /**
  * 
@@ -202,4 +205,18 @@ public class WxAppAuth {
 		}
 		return null;
 	}
+
+    /**
+     * 更新当前医师缓存信息
+     */
+	public void updateUserType(Integer doctorId){
+        String json = jedis.get(getToken());
+        if (!StringUtils.isBlank(json)) {
+            WxAppSessionUser wxAppSessionUser = Util.parseJson(json, WxAppSessionUser.class);
+            assert wxAppSessionUser != null;
+            wxAppSessionUser.setUserType(AUTH_TYPE_DOCTOR_USER);
+            wxAppSessionUser.setDoctorId(doctorId);
+            jedis.set(getToken(), Util.toJson(wxAppSessionUser));
+        }
+    }
 }

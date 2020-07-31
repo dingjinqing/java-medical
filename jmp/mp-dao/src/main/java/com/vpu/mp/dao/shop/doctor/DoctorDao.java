@@ -166,13 +166,11 @@ public class DoctorDao extends ShopBaseDao {
      * @return DoctorDo
      */
     public DoctorDo doctorAuth(DoctorAuthParam doctorAuthParam) {
-        DoctorDo doctorDo = new DoctorDo();
-        doctorDo = db().select().from(DOCTOR)
+        return db().select().from(DOCTOR)
             .where(DOCTOR.NAME.eq(doctorAuthParam.getDoctorName())
             .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile())
                 .and(DOCTOR.HOSPITAL_CODE.eq(doctorAuthParam.getHospitalCode()))))
             .fetchAnyInto(DoctorDo.class);
-        return doctorDo;
     }
 
     /**
@@ -202,7 +200,7 @@ public class DoctorDao extends ShopBaseDao {
      * @param doctorId 医师id
      * @return List<Department>
      */
-    public List<DepartmentListVo> selectDepartmentsByDoctorId(Integer doctorId){
+    public List<DepartmentListVo>   selectDepartmentsByDoctorId(Integer doctorId){
         return db().select().from(DEPARTMENT)
             .join(DOCTOR_DEPARTMENT_COUPLE)
             .on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID)

@@ -4,7 +4,14 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-
+    source:{
+      type:String,
+      value:'patient' // patient | doctor
+    },
+    hasInput:{
+      type:Boolean,
+      value:true
+    }
   },
 
   /**
@@ -13,7 +20,7 @@ global.wxComponent({
   data: {
     inputMessage: '',
     moreActions: false,
-    bottom:0
+    bottom:0,
   },
 
   /**

@@ -53,7 +53,7 @@
 		</block>
 		
 	</view>
-	<chat-input bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
+	<chat-input source="patient" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
   </chat-input>
 </view>
 <v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}" />

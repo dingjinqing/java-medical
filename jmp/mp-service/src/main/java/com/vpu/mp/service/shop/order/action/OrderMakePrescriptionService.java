@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.action;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
@@ -82,13 +83,12 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      */
     @Override
     public Object query(OrderToPrescribeQueryParam param) throws MpException {
-        Condition condition=orderInfoService.TABLE.ORDER_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE).and(orderInfoService.TABLE.ORDER_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT));
-        if(param.getOrderId()!=null){
-             condition=condition.and(orderInfoService.TABLE.ORDER_ID.eq(param.getOrderId()));
-        }
-        List<OrderInfoVo> orders = orderInfoService.getOrdersByCondition(condition, OrderInfoVo.class);
+        PageResult<OrderInfoVo> orderPageResult=orderInfoDao.listOrderInfo(param);
+        List<OrderInfoVo> orderList=orderPageResult.getDataList();
+        PageResult<OrderGoodsMedicalVo> pageResult=new PageResult<>();
+        pageResult.setPage(orderPageResult.getPage());
         List<OrderGoodsMedicalVo> orderGoodsMedicalVoList=new ArrayList<>();
-        for(OrderInfoVo orderInfo:orders){
+        for(OrderInfoVo orderInfo:orderList){
             OrderGoodsMedicalVo orderGoodsMedicalVo=new OrderGoodsMedicalVo();
             FieldsUtil.assign(orderInfo,orderGoodsMedicalVo);
             //患者信息
@@ -124,7 +124,8 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             orderGoodsMedicalVo.setGoodsMedicalOneInfoVoList(goodsMedicalOneInfoVoList);
             orderGoodsMedicalVoList.add(orderGoodsMedicalVo);
         }
-        return orderGoodsMedicalVoList;
+        pageResult.setDataList(orderGoodsMedicalVoList);
+        return pageResult;
     }
 
     /**

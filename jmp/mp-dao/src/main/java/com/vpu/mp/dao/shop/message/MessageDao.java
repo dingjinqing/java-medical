@@ -128,7 +128,7 @@ public class MessageDao extends ShopBaseDao {
      */
     public Integer countDoctorOrderMessageMum(Byte status){
         return db().selectCount().from(PRESCRIPTION).where(PRESCRIPTION.STATUS.eq(status)
-            .and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
     }
 
     /**

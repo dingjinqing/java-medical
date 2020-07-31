@@ -30,10 +30,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {patientId} = options,doctorId = util.getCache('doctor_id')
+    let {patientId,userId:patientUserId} = options,doctorId = util.getCache('doctor_id') || util.getCache('bottom').doctor_id
     this.setData({
       patientId,
-      doctorId
+      doctorId,
+      patientUserId
     })
     this.getDoctorDetail()
     this.getPatientDetail()
@@ -168,12 +169,13 @@ global.wxPage({
   createPrescription () {
     let params = {
       patientId: 137,
-      doctorId: util.getCache('doctor_id'),
+      doctorId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       departmentCode: this.data.departmentCode,
       departmentName: this.data.departmentName,
       diagnosisName: this.data.diagnose.info,
       doctorAdvice: this.data.doctorAdvice,
-      goodsList: this.data.goodsIdNum
+      goodsList: this.data.goodsIdNum,
+      userId:this.data.patientUserId
     }
     util.api('/api/wxapp/prescription/add', res => {
       console.log(res)
@@ -221,7 +223,8 @@ global.wxPage({
         })
       }
     },{
-      id:this.data.patientId
+      patientId:this.data.patientId,
+      userId:this.data.patientUserId
     })
   },
   /**

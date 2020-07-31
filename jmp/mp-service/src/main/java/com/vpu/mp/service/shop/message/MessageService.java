@@ -8,6 +8,7 @@ import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
 import com.vpu.mp.db.main.tables.OrderInfo;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
@@ -44,6 +45,9 @@ public class MessageService extends ShopBaseService {
 
     @Autowired
     private ImSessionDao imSessionDao;
+
+    @Autowired
+    private JedisManager jedisManager;
 
 
     /**
@@ -92,8 +96,7 @@ public class MessageService extends ShopBaseService {
      */
     public DoctorMessageCountVo countDoctorMessage(Integer doctorId, String token) {
         // 将访问当前页面时间置入缓存中，如果存在上次缓存
-        Jedis jedis = new Jedis();
-        String json = jedis.get(token);
+        String json = jedisManager.get(token);
         DoctorMessageCountVo doctorMessageCountVo = new DoctorMessageCountVo();
         WxAppSessionUser wxAppSessionUser = null;
         Timestamp doctorMainDate;
@@ -116,7 +119,7 @@ public class MessageService extends ShopBaseService {
         doctorMainDate = new Timestamp(System.currentTimeMillis());
         assert wxAppSessionUser != null;
         wxAppSessionUser.setDoctorMainDate(doctorMainDate);
-        jedis.set(token, Util.toJson(wxAppSessionUser));
+        jedisManager.set(token, Util.toJson(wxAppSessionUser));
         // 查询未读消息
         doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorId, DelFlag.NORMAL_VALUE));
         doctorMessageCountVo.setNotOrderInfoCount(messageDao.countDoctorOrderMessageMum(DelFlag.NORMAL_VALUE));

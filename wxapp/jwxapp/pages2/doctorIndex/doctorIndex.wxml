@@ -26,7 +26,7 @@
       </view>
       <view class="item_text">待开方</view>
     </view>
-    <view class="item">
+    <view class="item" bindtap="viewInquiryList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
         <view class="item_num">{{doctorInfo.doctorMessageCountVo.notImSessionCount}}</view>
