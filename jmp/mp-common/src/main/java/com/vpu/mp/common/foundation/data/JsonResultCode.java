@@ -1,5 +1,6 @@
 package com.vpu.mp.common.foundation.data;
 
+import com.vpu.mp.db.shop.tables.Doctor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -724,7 +725,12 @@ public enum JsonResultCode {
     IM_SESSION_PARAM_LACK(140003,JsonResultMessage.IM_SESSION_PARAM_LACK),
     //问诊订单
     INQUIRY_ORDER_ID_IS_NULL(300001,JsonResultMessage.INQUIRY_ORDER_ID_IS_NULL),
-    INQUIRY_ORDER_SN_IS_NULL(300002,JsonResultMessage.INQUIRY_ORDER_SN_IS_NULL);
+    INQUIRY_ORDER_SN_IS_NULL(300002,JsonResultMessage.INQUIRY_ORDER_SN_IS_NULL),
+
+    //医师登录
+    DOCTOR_LOGIN_AUTH_ERROR(400031,JsonResultMessage.DOCTOR_LOGIN_AUTH_ERROR),
+    DOCTOR_LOGIN_AUTH_ALREADY_LOGIN(400032,JsonResultMessage.DOCTOR_LOGIN_AUTH_ALREADY_LOGIN);
+
     /**
      * 得到返回码
      */

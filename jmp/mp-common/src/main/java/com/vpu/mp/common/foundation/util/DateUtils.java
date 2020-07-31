@@ -541,6 +541,9 @@ public final class DateUtils {
      * @return
      */
     public static int getAgeByBirthDay(Date date){
+        if(date==null){
+            return 0;
+        }
         Calendar calendar1=Calendar.getInstance();
         calendar1.setTime(date);
         Date dateNow=new Date();

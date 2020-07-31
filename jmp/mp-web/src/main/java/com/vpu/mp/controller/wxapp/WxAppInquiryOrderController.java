@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,12 +53,12 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
      * 获取订单详情
      */
     @PostMapping("/api/wxapp/inquiry/order/detail")
-    public JsonResult payOrder(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
+    public JsonResult orderDetail(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
         if(StringUtils.isBlank(inquiryOrderOnParam.getOrderSn())){
             return fail(JsonResultCode.INQUIRY_ORDER_SN_IS_NULL);
         }
-        InquiryOrderDo inquiryOrderDo= shop().inquiryOrderService.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        return success(inquiryOrderDo);
+        InquiryOrderDetailVo inquiryOrderDetailVo= shop().inquiryOrderService.getDetailByOrderSn(inquiryOrderOnParam.getOrderSn());
+        return success(inquiryOrderDetailVo);
     }
     /**
      * 更改问诊订单状态

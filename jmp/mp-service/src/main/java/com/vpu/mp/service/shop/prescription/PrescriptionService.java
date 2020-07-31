@@ -23,18 +23,18 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,6 +62,8 @@ public class PrescriptionService extends ShopBaseService {
     protected PatientDao patientDao;
     @Autowired
     public MedicalGoodsService medicalGoodsService;
+    @Autowired
+    public PatientService patientService;
 
     /**
      * 保存处方
@@ -88,6 +90,10 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionListVo> listPageResult(PrescriptionListParam param){
+        if (param.getUserId() != null) {
+            List<String> prescriptionNos = getPrescriptionNosByUserId(param.getUserId());
+            param.setPrescriptionNos(prescriptionNos);
+        }
         return prescriptionDao.listPageResult(param);
     }
 
@@ -96,21 +102,23 @@ public class PrescriptionService extends ShopBaseService {
      *  获取处方关联商品
      *  1商品id 2通用名+系数 3系数
      * @param goodsId 商品id
-     * @param patientId
+     * @param param
      * @param goodsCommonName 商品通用名
      * @param goodsQualityRatio 商品规格系数
      * @return 处方明细
      */
-    public PrescriptionVo getByGoodsInfo(Integer goodsId, Integer patientId, String goodsCommonName, String goodsQualityRatio, String productionEnterprise) {
-        PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId,patientId);
+    public PrescriptionVo getByGoodsInfo(Integer goodsId, UserPatientParam param, String goodsCommonName, String goodsQualityRatio, String productionEnterprise) {
+        UserPatientParam userPatientParam = patientService.getUserPatient(param);
+        List<String> prescriptionNos = getValidPrescriptionByUserPatient(userPatientParam);
+        PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId,prescriptionNos);
         if (prescriptionItem==null){
-            prescriptionItem=  prescriptionDao.getValidByCommonNameAndQualityRatio(patientId,goodsCommonName,goodsQualityRatio,productionEnterprise);
+            prescriptionItem=  prescriptionDao.getValidByCommonNameAndQualityRatio(prescriptionNos,goodsCommonName,goodsQualityRatio,productionEnterprise);
         }
         if (prescriptionItem==null){
-            prescriptionItem = prescriptionDao.getValidByCommonNameAndQualityRatio(patientId,goodsCommonName, goodsQualityRatio);
+            prescriptionItem = prescriptionDao.getValidByCommonNameAndQualityRatio(prescriptionNos,goodsCommonName, goodsQualityRatio);
         }
         if (prescriptionItem==null){
-            prescriptionItem = prescriptionDao.getValidByCommonName(patientId,goodsCommonName);
+            prescriptionItem = prescriptionDao.getValidByCommonName(prescriptionNos,goodsCommonName);
         }
         return prescriptionItem;
     }
@@ -123,8 +131,8 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionListParam param) {
-        Integer patientId = userPatientCoupleDao.defaultPatientIdByUser(param.getUserId());
-        param.setPatientId(patientId);
+        UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(param.getUserId());
+        param.setUserPatientParam(userPatientParam);
         return prescriptionDao.listPageResultWx(param);
     }
 
@@ -157,13 +165,49 @@ public class PrescriptionService extends ShopBaseService {
     /**
      * *****
      * 获取患者的处方药集合（包括已删除，未上架以及售罄的）
-     * @param patientId
+     * @param param
      * @return
      */
-    public List<Integer> getPrescriptionGoodsIdsByPatientId(Integer patientId) {
-        List<String> prescriptionNos = prescriptionDao.getValidPrescriptionByPatient(patientId);
+    public List<Integer> getPrescriptionGoodsIdsByUserPatient(UserPatientParam param) {
+        List<String> prescriptionNos = getValidPrescriptionByUserPatient(param);
         List<Integer> goodsIds = prescriptionItemDao.getPrescriptionGoodsIdsByPrescriptionNos(prescriptionNos);
         return goodsIds;
+    }
+
+    /**
+     * *****
+     * 获取用户患者的处方药集合（包括已删除，未上架以及售罄的）
+     * @param userId
+     * @return
+     */
+    public List<Integer> getPrescriptionGoodsIdsByUserId(Integer userId) {
+        UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(userId);
+        return getPrescriptionGoodsIdsByUserPatient(userPatientParam);
+    }
+
+    /**
+     * *****
+     * 获取用户患者的处方药集合（包括已删除，未上架以及售罄的）
+     * @param userId
+     * @return
+     */
+    public List<String> getPrescriptionNosByUserId(Integer userId) {
+        UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(userId);
+        List<String> prescriptionNos = getValidPrescriptionByUserPatient(userPatientParam);
+        return prescriptionNos;
+    }
+    /**
+     * *****
+     * 患者未过期的历史处方no
+     * @param param
+     * @return
+     */
+    public List<String> getValidPrescriptionByUserPatient(UserPatientParam param) {
+        if (PatientConstant.FETCH.equals(param.getIsFetch())) {
+            return prescriptionDao.getValidPrescriptionByPatient(param.getPatientId());
+        } else {
+            return prescriptionDao.getValidPrescriptionByUserPatient(param);
+        }
     }
 
     /**
@@ -186,7 +230,6 @@ public class PrescriptionService extends ShopBaseService {
      * @param fetchPrescriptionParam 处方页面入参
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalAllPrescriptionInfo(FetchPrescriptionParam fetchPrescriptionParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
@@ -243,7 +286,6 @@ public class PrescriptionService extends ShopBaseService {
      * @param fetchPrescriptionOneParam 更新单个处方
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalOnePrescriptionInfo(FetchPrescriptionOneParam fetchPrescriptionOneParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
@@ -299,7 +341,6 @@ public class PrescriptionService extends ShopBaseService {
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
         return prescriptionParam;
-
     }
 
     /**
@@ -318,6 +359,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setDoctorName(doctor.getName());
         prescriptionParam.setPatientName(patient.getName());
         prescriptionParam.setPatientSex(patient.getSex());
+        prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
         prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistory());
         prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
         prescriptionParam.setIdentityType(patient.getIdentityType());
@@ -326,7 +368,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
         prescriptionParam.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
-        prescriptionParam.setStatus(PrescriptionConstant.STATUS__PASS);
+        prescriptionParam.setStatus(PrescriptionConstant.STATUS_PASS);
         List<PrescriptionDrugVo> goodsList=param.getGoodsList();
         List<Integer> goodsIdList=goodsList.stream().map(PrescriptionDrugVo::getGoodsId).collect(Collectors.toList());
         Map<Integer,PrescriptionDrugVo> goodsMap=goodsList.stream().collect(Collectors.toMap(PrescriptionDrugVo::getGoodsId, Function.identity(),(x1, x2) -> x1));
@@ -337,7 +379,7 @@ public class PrescriptionService extends ShopBaseService {
         for (GoodsMedicalInfoDo info: goodsMedicalInfoDoList) {
             PrescriptionItemParam item=new PrescriptionItemParam();
             //药品信息映射
-            FieldsUtil.assign(info,item);
+            FieldsUtil.assignWithIgnoreField(info,item,getPrescriptionIgnoreFields());
             item.setUseMethod(info.getGoodsUseMethod());
             item.setPrescriptionCode(prescriptionParam.getPrescriptionCode());
             GoodsDo goods=goodsDao.getByGoodsId(info.getGoodsId());
@@ -349,6 +391,16 @@ public class PrescriptionService extends ShopBaseService {
         return prescriptionParam;
     }
 
+    /**
+     * 拷贝要忽略的字段
+     * @return
+     */
+    private Set<String> getPrescriptionIgnoreFields(){
+        Set<String> ignoreField = new HashSet<>(2);
+        ignoreField.add("createTime");
+        ignoreField.add("updateTime");
+        return ignoreField;
+    }
 
     /**
      * 根据处方号匹配系统中已有药品信息列表

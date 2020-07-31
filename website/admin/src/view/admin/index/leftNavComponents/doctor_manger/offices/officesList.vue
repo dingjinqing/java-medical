@@ -104,12 +104,12 @@ export default {
     return {
       departmentData: [],
       pageParams: {
-        pageRows: 3,
+        pageRows: 10,
         currentPage: 1
       },
       requestParams: {
         keywords: null,
-        pageRows: 3,
+        pageRows: 10,
         currentPage: 1
       }
     }

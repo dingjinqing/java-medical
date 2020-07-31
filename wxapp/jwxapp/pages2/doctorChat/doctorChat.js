@@ -9,15 +9,21 @@ global.wxPage({
    */
   data: {
     time: '2020-07-23 13:35:01',
-    page_name: 'saoyang',
-    chatContent:[]
+    page_name: '',
+    prescriptionMessage:null,
+    chatContent:[],
+    targetUserInfo:{}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // this.requsetMessage()
+    let {targetUserInfo} = options
+    this.setData({
+      targetUserInfo,
+      page_name:targetUserInfo.patientName
+    })
   },
   getInputMessage(e) {
     let {
@@ -37,6 +43,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    if(this.data.prescriptionMessage) this.sendMessage({content:this.data.prescriptionMessage},2)
     this.requsetMessage()
   },
 
@@ -98,10 +105,10 @@ global.wxPage({
         })
     }
     }, {
-      departmentId: 12,
-      patientId: 3,
-      pullFromId: 2,
-      selfId: 1
+      departmentId: this.data.targetUserInfo.departmentId,
+      patientId: this.data.targetUserInfo.patientId,
+      pullFromId: this.data.targetUserInfo.userId,
+      selfId: util.getCache('doctor_id')
     }, '', false);
   },
   hideMoreActions(){
@@ -126,15 +133,43 @@ global.wxPage({
         chat.position = 1;
         chatContent.push(chat)
         this.setData({
-          chatContent:chatContent
+          chatContent:chatContent,
+          prescriptionMessage:null
+        })
+        this.pageScrollBottom()
+      }
+    },{
+      departmentId:this.data.targetUserInfo.departmentId,
+      patientId:this.data.targetUserInfo.patientId,
+      fromId:util.getCache('doctor_id'),
+      toId:this.data.targetUserInfo.userId,
+      imSessionItem
+    })
+  },
+  createPrescription(){
+    util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
+      patientId:137
+    })}`)
+  },
+  pageScrollBottom() {
+    wx.createSelectorQuery().select('.main-container').boundingClientRect(function (rect) {
+      console.log(rect);
+      wx.pageScrollTo({
+        scrollTop: rect.height,
+      });
+    }).exec()
+  },
+  handleShowPrescriptionDialog(e){
+    let {prescriptionCode} = e.currentTarget.dataset
+    util.api('/api/wxapp/prescription/details',res=>{
+      if(res.error === 0){
+        this.setData({
+          showPrescription:true,
+          prescriptionData:res.content
         })
       }
     },{
-      departmentId:12,
-      patientId:3,
-      fromId:1,
-      toId:2,
-      imSessionItem
+      prescriptionCode
     })
   }
 })

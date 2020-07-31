@@ -49,6 +49,7 @@
   min-height: 100rpx;
   box-sizing: border-box;
   padding-right: 32rpx;
+  min-width: 0;
 }
 .column{
   flex-direction: column;
@@ -76,6 +77,12 @@
 }
 .prescription-item > .item-center{
   flex: 1;
+  min-width: 0;
+}
+.prescription-item > .item-center > text{
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .prescription-item > .item-center > input{
   width: 100%;
@@ -265,6 +272,7 @@
   left: 0;
   background-color: #fff;
   box-sizing: border-box;
+  z-index: 3;
 }
 .dialog-footer-content > .footer{
   padding:0 24rpx;

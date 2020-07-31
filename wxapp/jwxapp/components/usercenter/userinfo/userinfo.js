@@ -331,6 +331,9 @@ global.wxComponent({
         },
         { iv: iv, encrypted_data: data }
       );
+    },
+    to_doc_index () {
+      util.jumpLink('/pages2/doctorIndex/doctorIndex', 'reLaunch')
     }
   },
 

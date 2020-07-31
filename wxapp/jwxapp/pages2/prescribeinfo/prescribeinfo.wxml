@@ -8,48 +8,48 @@
       </view>
       <view class="item-list-content">
         <view class="each_line has_three">
-          <view>姓名：<text class="bold">随便</text></view>
-          <view>年龄：<text class="bold">随便</text></view>
-          <view>性别：<text class="bold">随便</text></view>
+          <view>姓名：<text class="bold">{{page_info.patient.name}}</text></view>
+          <view>年龄：<text class="bold">{{page_info.patient.age}}岁</text></view>
+          <view>性别：<text class="bold">{{page_info.patient.sex == 1 ? '女':'男'}}</text></view>
         </view>
         <view class="each_line">
           <view class="line_tit">科室：</view>
           <view style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;width:580rpx'>
-            <picker mode="selector" value="" range="" 
-                    bindchange="">
-              <!-- <view class="picker" wx:if=''>
-              </view> -->
-              <view class='place'>请选择</view>
+            <picker mode="selector" value="{{depart_index}}" range="{{depart_arr}}" 
+                    bindchange="changeDepart">
+              <view class="picker" wx:if='{{depart_index != -1}}'>{{depart_arr[depart_index]}}</view>
+              <view class='place' wx:else>请选择</view>
 				    </picker>
           </view>
         </view>
         <view class="each_line">
           <view class="line_tit">诊断：</view>
           <view class="ipt_line">
-            <input type="text" placeholder="请输入诊断内容" value='{{diagnosis}}' placeholder-class="place"></input>
+            <input type="text" placeholder="请输入诊断内容" value='{{diagnosis}}' placeholder-class="place" bindblur="disInput"></input>
             <text class="iconfont iconshanchu" bindtap="bindClear"></text>
           </view>
         </view>
-        <view class="each_line">治疗建议：<text class="bold">没救了 等死吧</text></view>
+        <view class="each_line">治疗建议：<text class="bold">{{page_info.advice}}</text></view>
         <view class="special_one">
           <view class="spe_tit">医嘱：</view>
-          <textarea placeholder="默认显示药品用法用量，医生手动修改"></textarea>
+          <textarea placeholder="默认显示药品用法用量，医生手动修改" value='{{doctorAdvice}}' bindblur="adviInput"></textarea>
         </view>
       </view>
       <view class="doctor-info">
         <view class="some_name">
           <view class="each_name">
-            <text>医师：</text>
+            <text>医师：{{doc_name}}</text>
           </view>
-          <view class="each_name">
+          <!-- <view class="each_name">
             <text>审核医师：</text>
           </view>
           <view class="each_name">
             <text>发药医师：</text>
-          </view>
+          </view> -->
         </view>
-        <view class="date">日期：2020-09-07</view>
+        <view class="date">日期：{{page_info.now_time}}</view>
       </view>
     </view>
   </view>
+  <view class="btn_check" bindtap="btn_check">确认开方</view>
 </view>

@@ -3,10 +3,7 @@ package com.vpu.mp.service.shop.order.inquiry;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
@@ -24,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
@@ -39,11 +37,13 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,8 +106,12 @@ public class InquiryOrderService extends ShopBaseService {
      * @param orderSn
      * @return
      */
-    public InquiryOrderDo getByOrderSn(String orderSn){
-        return inquiryOrderDao.getByOrderSn(orderSn);
+    public InquiryOrderDetailVo getDetailByOrderSn(String orderSn){
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(orderSn);
+        InquiryOrderDetailVo inquiryOrderDetailVo=new InquiryOrderDetailVo();
+        FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
+        inquiryOrderDetailVo.setPatientAge(DateUtils.getAgeByBirthDay(inquiryOrderDetailVo.getPatientBirthday()));
+        return inquiryOrderDetailVo;
     }
 
     /**
@@ -146,7 +150,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param paymentRecord
      * @throws MpException
      */
-    public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord) throws MpException {
+    public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord)  {
         logger().info("问诊订单-支付完成(回调)-开始");
         order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
@@ -174,19 +178,21 @@ public class InquiryOrderService extends ShopBaseService {
         UserRecord userRecord=userService.getUserByUserId(param.getUser().getUserId());
         WebPayVo vo = new WebPayVo();
         //微信支付接口
-        try {
-            vo = mpPaymentService.wxUnitOrder(param.getClientIp(), InquiryOrderConstant.GOODS_NAME, orderSn, param.getOrderAmount(), userRecord.getWxOpenid());
-        } catch (WxPayException e) {
-            logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderSn, e);
-            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-        }catch (Exception e) {
-            logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderSn, e.getMessage());
-            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-        }
+//        try {
+//            vo = mpPaymentService.wxUnitOrder(param.getClientIp(), InquiryOrderConstant.GOODS_NAME, orderSn, param.getOrderAmount(), userRecord.getWxOpenid());
+//        } catch (WxPayException e) {
+//            logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderSn, e);
+//            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+//        }catch (Exception e) {
+//            logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderSn, e.getMessage());
+//            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+//        }
         logger().debug("微信支付接口调用结果：{}", vo);
         // 更新记录微信预支付id：prepayid
-        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
+//        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
         vo.setOrderSn(orderSn);
+        InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
+        inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         logger().debug("微信支付创建订单结束");
         return vo;
     }
@@ -208,10 +214,12 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientName(patientOneParam.getName());
         inquiryOrderDo.setPatientSex(patientOneParam.getSex());
         inquiryOrderDo.setPatientMobile(patientOneParam.getMobile());
+        inquiryOrderDo.setPatientBirthday(patientOneParam.getBirthday());
         inquiryOrderDo.setPatientIdentityCode(patientOneParam.getIdentityCode());
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
-        List<String> imageList=payParam.getImagUrl();
-        String imageUrl=imageList.stream().collect(Collectors.joining(","));
+        List<ImageSimpleVo> imageList=payParam.getImageList();
+        String imageUrl=Util.toJson(imageList);
+//        String imageUrl=imageList.stream().collect(Collectors.joining(","));
         inquiryOrderDo.setImageUrl(imageUrl);
         inquiryOrderDo.setDescriptionDisease(payParam.getDescriptionDisease());
         inquiryOrderDao.save(inquiryOrderDo);
@@ -224,12 +232,12 @@ public class InquiryOrderService extends ShopBaseService {
      * @return
      */
     public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
-        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(inquiryOrderOnParam.getOrderId());
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         try {
             refundInquiryOrder(inquiryOrderDo);
         } catch (MpException e) {
             JsonResult jsonResult=new JsonResult();
-            jsonResult.result(null,JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER,null);
+            jsonResult.result(null,e.getErrorCode(),null);
             return  jsonResult;
         }
         return JsonResult.success();

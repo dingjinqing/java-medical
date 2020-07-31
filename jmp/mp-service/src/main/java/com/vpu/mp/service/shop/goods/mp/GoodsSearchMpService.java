@@ -225,8 +225,7 @@ public class GoodsSearchMpService extends ShopBaseService {
      * @return
      */
     private List<Integer> getMyPrescriptionMedical(GoodsSearchMpParam param) {
-        Integer patientId = patientService.defaultPatientId(param.getUserId());
-        return prescriptionService.getPrescriptionGoodsIdsByPatientId(patientId);
+        return prescriptionService.getPrescriptionGoodsIdsByUserId(param.getUserId());
     }
 
     /**

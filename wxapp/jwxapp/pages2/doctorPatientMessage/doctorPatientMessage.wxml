@@ -5,24 +5,18 @@
 		<view class="card-content has-padding p-left">
 			<view class="list-item">
 				<text class="default-text">姓名</text>
-				<input class="emphasis-text" placeholder="请输入姓名" placeholder-class="phClass" wx:if='{{edit == false}}' bindblur="realName"/>
-				<text class="emphasis-text" wx:else>{{name}}</text>
+			
+				<text class="emphasis-text" >{{name}}</text>
 			</view>
 			<view class="list-item">
 				<text class="default-text">年龄</text>
-				<input class="emphasis-text" placeholder="请输入年龄" placeholder-class="phClass" wx:if='{{edit == false}}' bindblur="realAge"/>
-				<text class="emphasis-text" wx:else>{{age}}</text>
+		
+				<text class="emphasis-text" >{{age}}</text>
 			</view>
 			<view class="list-item">
 				<text class="default-text">性别</text>
-				<view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;' wx:if='{{edit == false}}'>
-					<picker mode="selector" value="{{sex}}" range="{{array}}" bindchange="bindSexChange">
-						<view class="picker">
-							{{array[sex]}}
-						</view>
-					</picker>
-				</view>
-	      <text class="emphasis-text" wx:else>array{{sex}}</text>
+
+	      <text class="emphasis-text" >{{array[sex]}}</text>
 			</view>
 		</view>
 		<view class="title-module">病情描述</view>
@@ -33,7 +27,7 @@
 				<block wx:for="{{comm_img}}" wx:key="index" wx:for-item="imgitem" wx:for-index="imgindex">
 					<view class='shai_view'>
 						<image src='{{imageUrl}}image/wxapp/dele_service.png' class="shai_close" bindtap='customDelImage' data-imgindex="{{imgindex}}" data-idx='{{index}}'></image>
-						<image src="{{imgitem}}"></image>
+						<image src="{{imgitem.image}}"></image>
 					</view>
 				</block>
 				<view class="upload-image" bindtap="customUpImage" >
