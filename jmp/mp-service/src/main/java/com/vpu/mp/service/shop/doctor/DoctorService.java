@@ -219,7 +219,7 @@ public class DoctorService extends ShopBaseService {
      * @param doctorAuthParam 当前用户姓名、手机号、医师医院唯一编码
      * @return 验证信息
      */
-    public Byte doctorAuth(DoctorAuthParam doctorAuthParam){
+    public Integer doctorAuth(DoctorAuthParam doctorAuthParam){
         // 查询是否有当前医师信息
         DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
         // 如果医师存在
@@ -229,19 +229,9 @@ public class DoctorService extends ShopBaseService {
             // 修改doctor表中userId为当前用户
             doctorDo.setUserId(doctorAuthParam.getUserId());
             doctorDao.updateUserId(doctorDo);
-            // 更新缓存
-            Jedis jedis = new Jedis();
-            String json = jedis.get(doctorAuthParam.getToken());
-            if (!StringUtils.isBlank(json)) {
-                WxAppSessionUser wxAppSessionUser = Util.parseJson(json, WxAppSessionUser.class);
-                assert wxAppSessionUser != null;
-                wxAppSessionUser.setUserType((byte) 1);
-                wxAppSessionUser.setDoctorId(doctorDo.getId());
-                jedis.set(doctorAuthParam.getToken(), Util.toJson(wxAppSessionUser));
-            }
-            return DelFlag.NORMAL_VALUE;
+            return doctorDo.getId();
         } else {
-            return DelFlag.DISABLE_VALUE;
+            return Integer.valueOf(DelFlag.NORMAL_VALUE);
         }
     }
 
