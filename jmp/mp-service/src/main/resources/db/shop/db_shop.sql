@@ -5058,7 +5058,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
  `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
  `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
- `image_url` varchar(256) NOT NULL  DEFAULT '' COMMENT '病情描述image',
+ `image_url` text COLLATE utf8mb4_unicode_ci COMMENT '病情描述image信息',
  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
