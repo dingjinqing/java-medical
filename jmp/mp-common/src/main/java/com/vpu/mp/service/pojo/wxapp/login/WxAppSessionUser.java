@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Tolerate;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 /**
  * 
  * @author lixinguo
@@ -72,6 +75,9 @@ public class WxAppSessionUser {
      */
 	@JsonProperty(value = "pharmacist_id")
     Integer pharmacistId;
+
+	@JsonProperty(value = "doctor_main_date")
+    Timestamp doctorMainDate;
 
 	
 	/**
