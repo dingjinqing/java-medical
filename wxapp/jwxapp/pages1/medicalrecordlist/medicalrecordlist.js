@@ -18,7 +18,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    this.data.patientId = options.patientId || 1;
+    this.data.patientId = options.patientId;
     this.requestList();
   },
   to_detail (e) {

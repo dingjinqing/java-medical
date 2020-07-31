@@ -1092,6 +1092,10 @@ public class MiniShop_471752 extends SchemaImpl {
      * 用户消息表
      */
     public final UserMessage USER_MESSAGE = com.vpu.mp.db.shop.tables.UserMessage.USER_MESSAGE;
+    /**
+     * 短信充值记录表
+     */
+    public final SmsRecharge SMS_RECHARGE = com.vpu.mp.db.shop.tables.SmsRecharge.SMS_RECHARGE;
 
 
     /**

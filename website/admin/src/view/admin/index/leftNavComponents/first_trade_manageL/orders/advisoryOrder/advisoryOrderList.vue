@@ -122,7 +122,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination :page-params.sync="pageParams" />
+      <pagination :page-params.sync="pageParams" @pagination="initDataList"/>
     </div>
   </div>
 </template>

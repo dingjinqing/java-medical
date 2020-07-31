@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.recharge;
 
-import com.vpu.mp.common.pojo.shop.table.RechargeDo;
+import com.vpu.mp.common.pojo.shop.table.SmsRechargeDo;
 import lombok.Data;
 
 /**
@@ -10,5 +10,5 @@ import lombok.Data;
  **/
 
 @Data
-public class RechargeVo extends RechargeDo {
+public class SmsRechargeVo extends SmsRechargeDo {
 }

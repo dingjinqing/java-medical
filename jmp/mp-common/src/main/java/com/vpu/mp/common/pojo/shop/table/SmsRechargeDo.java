@@ -14,7 +14,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 充值记录表
+ * 短信充值记录表
  */
 @Generated(
     value = {
@@ -25,9 +25,9 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Data
-public class RechargeDo implements Serializable {
+public class SmsRechargeDo implements Serializable {
 
-    private static final long serialVersionUID = -725287463;
+    private static final long serialVersionUID = -1295864335;
 
     private Integer    rechargeId;
     private String     sid;

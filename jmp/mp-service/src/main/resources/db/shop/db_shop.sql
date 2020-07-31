@@ -5058,7 +5058,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
  `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
  `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
- `image_url` varchar(256) NOT NULL  DEFAULT '' COMMENT '病情描述image',
+ `image_url` text COLLATE utf8mb4_unicode_ci COMMENT '病情描述image信息',
  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -5100,7 +5100,7 @@ CREATE TABLE `b2c_user_message` (
     PRIMARY KEY (`message_id`)
 ) comment ='用户消息表';
 
-CREATE TABLE `b2c_recharge` (
+CREATE TABLE `b2c_sms_recharge` (
     `recharge_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '充值记录主键',
     `sid` varchar(255) NOT NULL DEFAULT '' COMMENT '充值账户id',
     `version` int(11) NOT NULL DEFAULT 4 COMMENT '充值版本，微铺宝默认4',
@@ -5114,7 +5114,7 @@ CREATE TABLE `b2c_recharge` (
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`recharge_id`)
-) comment ='充值记录表';
+) comment ='短信充值记录表';
 
 -- 订单历史病例
 CREATE TABLE `b2c_order_medical_history` (

@@ -292,7 +292,7 @@ public class Keys {
     public static final Identity<ImSessionItemRecord, Integer> IDENTITY_IM_SESSION_ITEM = Identities0.IDENTITY_IM_SESSION_ITEM;
     public static final Identity<InquiryOrderRefundListRecord, Integer> IDENTITY_INQUIRY_ORDER_REFUND_LIST = Identities0.IDENTITY_INQUIRY_ORDER_REFUND_LIST;
     public static final Identity<UserMessageRecord, Integer> IDENTITY_USER_MESSAGE = Identities0.IDENTITY_USER_MESSAGE;
-    public static final Identity<RechargeRecord, Integer> IDENTITY_RECHARGE = Identities0.IDENTITY_RECHARGE;
+    public static final Identity<SmsRechargeRecord, Integer> IDENTITY_SMS_RECHARGE = Identities0.IDENTITY_SMS_RECHARGE;
     public static final Identity<OrderMedicalHistoryRecord, Integer> IDENTITY_ORDER_MEDICAL_HISTORY = Identities0.IDENTITY_ORDER_MEDICAL_HISTORY;
 
     // -------------------------------------------------------------------------
@@ -576,7 +576,7 @@ public class Keys {
     public static final UniqueKey<ImSessionItemRecord> KEY_B2C_IM_SESSION_ITEM_PRIMARY = UniqueKeys0.KEY_B2C_IM_SESSION_ITEM_PRIMARY;
     public static final UniqueKey<InquiryOrderRefundListRecord> KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY = UniqueKeys0.KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY;
     public static final UniqueKey<UserMessageRecord> KEY_B2C_USER_MESSAGE_PRIMARY = UniqueKeys0.KEY_B2C_USER_MESSAGE_PRIMARY;
-    public static final UniqueKey<RechargeRecord> KEY_B2C_RECHARGE_PRIMARY = UniqueKeys0.KEY_B2C_RECHARGE_PRIMARY;
+    public static final UniqueKey<SmsRechargeRecord> KEY_B2C_SMS_RECHARGE_PRIMARY = UniqueKeys0.KEY_B2C_SMS_RECHARGE_PRIMARY;
     public static final UniqueKey<OrderMedicalHistoryRecord> KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY;
 
     // -------------------------------------------------------------------------
@@ -837,7 +837,7 @@ public class Keys {
         public static Identity<ImSessionItemRecord, Integer> IDENTITY_IM_SESSION_ITEM = Internal.createIdentity(ImSessionItem.IM_SESSION_ITEM, ImSessionItem.IM_SESSION_ITEM.ID);
         public static Identity<InquiryOrderRefundListRecord, Integer> IDENTITY_INQUIRY_ORDER_REFUND_LIST = Internal.createIdentity(InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ID);
         public static Identity<UserMessageRecord, Integer> IDENTITY_USER_MESSAGE = Internal.createIdentity(UserMessage.USER_MESSAGE, UserMessage.USER_MESSAGE.MESSAGE_ID);
-        public static Identity<RechargeRecord, Integer> IDENTITY_RECHARGE = Internal.createIdentity(Recharge.RECHARGE, Recharge.RECHARGE.RECHARGE_ID);
+        public static Identity<SmsRechargeRecord, Integer> IDENTITY_SMS_RECHARGE = Internal.createIdentity(SmsRecharge.SMS_RECHARGE, SmsRecharge.SMS_RECHARGE.RECHARGE_ID);
         public static Identity<OrderMedicalHistoryRecord, Integer> IDENTITY_ORDER_MEDICAL_HISTORY = Internal.createIdentity(OrderMedicalHistory.ORDER_MEDICAL_HISTORY, OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID);
     }
 
@@ -1124,7 +1124,7 @@ public class Keys {
         public static final UniqueKey<ImSessionItemRecord> KEY_B2C_IM_SESSION_ITEM_PRIMARY = Internal.createUniqueKey(ImSessionItem.IM_SESSION_ITEM, "KEY_b2c_im_session_item_PRIMARY", ImSessionItem.IM_SESSION_ITEM.ID);
         public static final UniqueKey<InquiryOrderRefundListRecord> KEY_B2C_INQUIRY_ORDER_REFUND_LIST_PRIMARY = Internal.createUniqueKey(InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, "KEY_b2c_inquiry_order_refund_list_PRIMARY", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ID);
         public static final UniqueKey<UserMessageRecord> KEY_B2C_USER_MESSAGE_PRIMARY = Internal.createUniqueKey(UserMessage.USER_MESSAGE, "KEY_b2c_user_message_PRIMARY", UserMessage.USER_MESSAGE.MESSAGE_ID);
-        public static final UniqueKey<RechargeRecord> KEY_B2C_RECHARGE_PRIMARY = Internal.createUniqueKey(Recharge.RECHARGE, "KEY_b2c_recharge_PRIMARY", Recharge.RECHARGE.RECHARGE_ID);
+        public static final UniqueKey<SmsRechargeRecord> KEY_B2C_SMS_RECHARGE_PRIMARY = Internal.createUniqueKey(SmsRecharge.SMS_RECHARGE, "KEY_b2c_sms_recharge_PRIMARY", SmsRecharge.SMS_RECHARGE.RECHARGE_ID);
         public static final UniqueKey<OrderMedicalHistoryRecord> KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY = Internal.createUniqueKey(OrderMedicalHistory.ORDER_MEDICAL_HISTORY, "KEY_b2c_order_medical_history_PRIMARY", OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID);
 
     }
