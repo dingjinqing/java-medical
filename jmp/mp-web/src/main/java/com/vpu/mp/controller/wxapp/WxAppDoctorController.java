@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorMainShowVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.doctor.DoctorService;
@@ -17,6 +18,7 @@ import com.vpu.mp.service.shop.message.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,15 +76,14 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/main")
-    public JsonResult doctorMainShow(){
+    public JsonResult doctorMainShow(@RequestParam DoctorMainShowParam doctorMainShowParam){
         // 获取缓存中当前用户信息
-        Integer doctorId = wxAppAuth.user().getDoctorId();
-        // 获取当前医师消息列表
-        String token = wxAppAuth.user().getToken();
         WxAppSessionUser user = wxAppAuth.user();
-        DoctorMessageCountVo doctorMessageCountVo = messageService.countDoctorMessage(doctorId, token);
+        // 获取页面消息统计信息
+        DoctorMessageCountVo doctorMessageCountVo =
+            messageService.countDoctorMessage(user.getDoctorId(), doctorMainShowParam);
         // 获取医师首页个人信息
-        DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
+        DoctorOneParam oneInfo = doctorService.getOneInfo(user.getDoctorId());
         DoctorMainShowVo doctorMainShowVo = new DoctorMainShowVo();
         //添加医师职称
         String duty = doctorService.selectDoctorTitle(oneInfo);
@@ -90,7 +91,8 @@ public class WxAppDoctorController extends WxAppBaseController {
         FieldsUtil.assign(oneInfo, doctorMainShowVo);
         doctorMainShowVo.setDoctorMessageCountVo(doctorMessageCountVo);
         // 获取医师所属科室列表
-        List<DepartmentListVo> departmentListVos = doctorService.selectDepartmentsByDoctorId(doctorId);
+        List<DepartmentListVo> departmentListVos =
+            doctorService.selectDepartmentsByDoctorId(user.getDoctorId());
         List<String> list = new ArrayList<>();
         for (DepartmentListVo departmentListVo : departmentListVos){
             list.add(departmentListVo.getName());

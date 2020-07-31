@@ -128,14 +128,15 @@ public class ImSessionDao extends ShopBaseDao {
      * @param timestamp 上次查看页面时间
      * @return Byte
      */
-    public Byte isExistChat(Timestamp timestamp){
+    public Byte isExistAlreadyReadImSession(Timestamp timestamp){
         List<Timestamp> timestamps = db().select(IM_SESSION.UPDATE_TIME)
             .from(IM_SESSION)
-            .where(IM_SESSION.UPDATE_TIME.gt(timestamp))
+            .where(IM_SESSION.UPDATE_TIME.gt(timestamp)
+            .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(Timestamp.class);
-        if (timestamps.isEmpty()) {
-            return DelFlag.DISABLE_VALUE;
+        if (!timestamps.isEmpty()) {
+            return DelFlag.NORMAL_VALUE;
         }
-        return DelFlag.NORMAL_VALUE;
+        return DelFlag.DISABLE_VALUE;
     }
 }

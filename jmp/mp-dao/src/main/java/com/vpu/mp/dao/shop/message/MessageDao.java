@@ -122,13 +122,12 @@ public class MessageDao extends ShopBaseDao {
     }
 
     /**
-     * 医师端显示开方数量
-     * @param status 开方状态
+     * 医师端显示待开方数量
      * @return Integer
      */
-    public Integer countDoctorOrderMessageMum(Byte status){
-        return db().selectCount().from(PRESCRIPTION).where(PRESCRIPTION.STATUS.eq(status)
-            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
+    public Integer countDoctorOrderMessageMum(){
+        return db().selectCount().from(ORDER_INFO).where(ORDER_INFO.ORDER_AUDIT_STATUS.eq(DelFlag.NORMAL_VALUE)
+            .and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
     }
 
     /**

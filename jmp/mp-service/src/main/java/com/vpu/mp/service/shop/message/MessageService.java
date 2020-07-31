@@ -1,27 +1,22 @@
 package com.vpu.mp.service.shop.message;
 
-import cn.hutool.json.JSON;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.message.MessageDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
-import com.vpu.mp.db.main.tables.OrderInfo;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountParam;
+import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 
@@ -41,13 +36,10 @@ public class MessageService extends ShopBaseService {
     private OrderGoodsDao orderGoodsDao;
 
     @Autowired
-    private OrderInfoDao orderInfoDao;
-
-    @Autowired
     private ImSessionDao imSessionDao;
 
     @Autowired
-    private JedisManager jedisManager;
+    private PrescriptionDao prescriptionDao;
 
 
     /**
@@ -94,35 +86,22 @@ public class MessageService extends ShopBaseService {
      * @param doctorId 医师id
      * @return DoctorMessageCountVo
      */
-    public DoctorMessageCountVo countDoctorMessage(Integer doctorId, String token) {
+    public DoctorMessageCountVo countDoctorMessage(Integer doctorId, DoctorMainShowParam doctorMainShowParam) {
         // 将访问当前页面时间置入缓存中，如果存在上次缓存
-        String json = jedisManager.get(token);
         DoctorMessageCountVo doctorMessageCountVo = new DoctorMessageCountVo();
-        WxAppSessionUser wxAppSessionUser = null;
-        Timestamp doctorMainDate;
         // 根据缓存时间判断数据库中是否有未读新增数据
-        if (!StringUtils.isBlank(json)) {
-            wxAppSessionUser = Util.parseJson(json, WxAppSessionUser.class);
-            assert wxAppSessionUser != null;
-            doctorMainDate = wxAppSessionUser.getDoctorMainDate();
-            // 根据时间判断是否有未读已续方消息
-            Byte existOrderGoods = orderGoodsDao.isExistOrderGoods(doctorMainDate);
-            doctorMessageCountVo.setAlreadyPrescription(existOrderGoods);
-            // 判断是否有未读已开具消息
-//            Byte existOrderInfo = orderInfoDao.isExistOrderInfo(doctorMainDate);
-//            doctorMessageCountVo.setAlreadyOrderInfoCount(existOrderInfo);
-            // 判断是否有未读我的问诊消息
-            Byte existChat = imSessionDao.isExistChat(doctorMainDate);
-            doctorMessageCountVo.setAlreadyImSessionCount(existChat);
-        }
-        // 储存当前时间至缓存中，用于下一次打开页面判断
-        doctorMainDate = new Timestamp(System.currentTimeMillis());
-        assert wxAppSessionUser != null;
-        wxAppSessionUser.setDoctorMainDate(doctorMainDate);
-        jedisManager.set(token, Util.toJson(wxAppSessionUser));
+        // 根据时间判断是否有未读已续方消息
+        Byte existOrderGoods = orderGoodsDao.isExistAlreadyReadOrderGoods(doctorMainShowParam.getLastReadOrderGoodsTime());
+        doctorMessageCountVo.setAlreadyPrescription(existOrderGoods);
+        // 判断是否有未读已开具消息
+        Byte existOrderInfo = prescriptionDao.isExistAlreadyReadPrescription(doctorMainShowParam.getLastReadPrescriptionTime());
+        doctorMessageCountVo.setAlreadyOrderInfoCount(existOrderInfo);
+        // 判断是否有未读我的问诊消息
+        Byte existChat = imSessionDao.isExistAlreadyReadImSession(doctorMainShowParam.getLastReadImSession());
+        doctorMessageCountVo.setAlreadyImSessionCount(existChat);
         // 查询未读消息
         doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorId, DelFlag.NORMAL_VALUE));
-        doctorMessageCountVo.setNotOrderInfoCount(messageDao.countDoctorOrderMessageMum(DelFlag.NORMAL_VALUE));
+        doctorMessageCountVo.setNotOrderInfoCount(messageDao.countDoctorOrderMessageMum());
         doctorMessageCountVo.setNotPrescription(messageDao.countOrderGoodsDoctorMessageMum(DelFlag.NORMAL_VALUE));
         return doctorMessageCountVo;
     }
