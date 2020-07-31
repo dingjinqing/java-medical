@@ -184,7 +184,7 @@ global.wxPage({
       }else {
         util.showModal("提示",res.message)
       }
-    }, {id:this.data.patient_id})
+    }, {patientId:this.data.patient_id,userId:util.getCache('user_id')})
   },
   nameInput (e) {
     this.data.pat_name = e.detail.value
