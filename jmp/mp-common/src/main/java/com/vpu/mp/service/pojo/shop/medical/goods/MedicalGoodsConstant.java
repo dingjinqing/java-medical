@@ -46,4 +46,7 @@ public class MedicalGoodsConstant {
     public static final Byte ON_SALE = 1;
     /**下架*/
     public static final Byte OFF_SALE = 0;
+
+    /**药品默认数量*/
+    public static final Integer MEDICAL_GOODS_DEFAULT_NUM = 1000;
 }
