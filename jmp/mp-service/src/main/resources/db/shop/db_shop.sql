@@ -5081,7 +5081,7 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   KEY `user_id` (`user_id`)
 ) COMMENT='问诊订单退款记录';
 
-CREATE TABLE `b2c_message` (
+CREATE TABLE `b2c_user_message` (
     `message_id` int(11) NOT NULL AUTO_INCREMENT,
     `message_name` varchar(255) NOT NULL DEFAULT '' COMMENT '消息名称，系统消息名称为日期',
     `message_essentials` varchar(255) NOT NULL DEFAULT '' COMMENT '消息摘要',

@@ -1,13 +1,10 @@
 package com.vpu.mp.service.shop.message;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
-import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.message.MessageDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
-import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
-import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
@@ -16,7 +13,6 @@ import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -27,7 +23,7 @@ import java.util.List;
  **/
 
 @Service
-public class MessageService extends ShopBaseService {
+public class UserMessageService extends ShopBaseService {
 
     @Autowired
     private MessageDao messageDao;
