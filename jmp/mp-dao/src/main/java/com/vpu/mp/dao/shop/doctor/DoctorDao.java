@@ -200,7 +200,7 @@ public class DoctorDao extends ShopBaseDao {
      * @param doctorId 医师id
      * @return List<Department>
      */
-    public List<DepartmentListVo> selectDepartmentsByDoctorId(Integer doctorId){
+    public List<DepartmentListVo>   selectDepartmentsByDoctorId(Integer doctorId){
         return db().select().from(DEPARTMENT)
             .join(DOCTOR_DEPARTMENT_COUPLE)
             .on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID)
