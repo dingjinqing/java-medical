@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.patient;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.UserPatientCoupleRecord;
@@ -82,6 +83,18 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
         return record.getId();
     }
 
+    /**
+     * 编辑保存
+     *
+     * @param param
+     * @return
+     */
+    public void updateUserPatient(UserPatientCoupleDo param) {
+        UserPatientCoupleRecord record = new UserPatientCoupleRecord();
+        FieldsUtil.assign(param, record);
+        db().executeUpdate(record);
+    }
+
     public boolean isExistUserPatient(UserPatientParam param) {
         Condition condition = USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId())).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0));
         int count = db().fetchCount(USER_PATIENT_COUPLE, condition);
@@ -107,5 +120,27 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
             .where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()))
             .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
             .fetchAnyInto(UserPatientParam.class);
+    }
+
+    /**
+     * 获取用户患者Id
+     * @param param
+     * @return
+     */
+    public Integer getUserPatientId(UserPatientParam param) {
+        Condition condition = USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId())).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0));
+        return db().select(USER_PATIENT_COUPLE.ID).from(USER_PATIENT_COUPLE).where(condition).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 根据用户患者Id获取用户患者
+     * @param param
+     * @return
+     */
+    public UserPatientCoupleDo getUserPatientInfo(UserPatientParam param) {
+        return db().select().from(USER_PATIENT_COUPLE)
+            .where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()))
+            .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
+            .fetchAnyInto(UserPatientCoupleDo.class);
     }
 }

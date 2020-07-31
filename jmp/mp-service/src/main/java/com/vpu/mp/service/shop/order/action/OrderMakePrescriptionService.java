@@ -22,6 +22,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -90,7 +92,10 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             OrderGoodsMedicalVo orderGoodsMedicalVo=new OrderGoodsMedicalVo();
             FieldsUtil.assign(orderInfo,orderGoodsMedicalVo);
             //患者信息
-            PatientOneParam patient=patientService.getOneDetail(orderInfo.getPatientId());
+            UserPatientParam userPatientParam = new UserPatientParam();
+            userPatientParam.setPatientId(orderInfo.getPatientId());
+            userPatientParam.setUserId(orderInfo.getUserId());
+            UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
             orderGoodsMedicalVo.setPatient(patient);
             //历史诊断
             OrderMedicalHistoryDo medicalHistoryDo= orderMedicalHistoryDao.getByOrderId(orderInfo.getOrderId());

@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.order.goods;
 import com.vpu.mp.common.pojo.shop.table.OrderMedicalHistoryDo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalOneInfoVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -17,7 +18,7 @@ public class OrderGoodsMedicalVo {
     private Integer orderId;
     private String orderSn;
     private Timestamp createTime;
-    private PatientOneParam patient;
+    private UserPatientDetailVo patient;
     private OrderMedicalHistoryDo medicalHistory;
     private List<GoodsMedicalOneInfoVo> goodsMedicalOneInfoVoList;
 }

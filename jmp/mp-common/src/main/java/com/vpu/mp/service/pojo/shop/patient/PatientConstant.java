@@ -6,4 +6,5 @@ package com.vpu.mp.service.pojo.shop.patient;
 public class PatientConstant {
     public static final Byte DEFAULT = 1;
     public static final Byte FETCH = 1;
+    public static final Byte UN_FETCH = 0;
 }
