@@ -13,7 +13,6 @@ global.wxPage({
   data: {
     imageUrl: imageUrl,
     time: '2020-07-23 13:35:01',
-    page_name: 'saoyang',
     chatContent: [],
     system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。'
   },
@@ -195,23 +194,26 @@ global.wxPage({
           }
         }
         that.sendMessage(patient_message, 3)
-        let imageUrl = con.imgUrlList;
-        imageUrl.forEach(function (val) {
-          let img = {
-            content: {
-              image: val.image,
-              imgWidth: val.imgWidth,
-              imgHeight: val.imgHeight
-            }
-          }
-          that.sendMessage(img, 1)
-        })
         that.setData({
           page_name: con.doctorName,
           doctorId: con.doctorId,
           departmentId: con.departmentId,
           patientId: con.patientId
         })
+        let imageUrl = con.imgUrlList;
+        if (imageUrl) {
+          imageUrl.forEach(function (val) {
+            let img = {
+              content: {
+                image: val.image,
+                imgWidth: val.imgWidth,
+                imgHeight: val.imgHeight
+              }
+            }
+            that.sendMessage(img, 1)
+          })
+        }
+
       }
     }, {
       orderSn: orderSn,

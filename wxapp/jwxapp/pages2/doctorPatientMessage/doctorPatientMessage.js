@@ -9,7 +9,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    array: ['请选择', '男', '女'],
+    array: ['男', '女','未知'],
     sex: 0,
     comm_img: [],
     name: '',
@@ -137,6 +137,10 @@ global.wxPage({
   },
   toOrder: function () {
     let that = this;
+    if(that.data.descriptionDisease == ''){
+      util.showModal('提示','请填写病情描述')
+      return
+    }
     let params = {
       doctorId:that.data.doctorId,
       departmentId:that.data.departmentId,
