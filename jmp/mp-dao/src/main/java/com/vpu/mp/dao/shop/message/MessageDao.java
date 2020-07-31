@@ -16,10 +16,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.im.ImSessionConstant.IM_SESSION_STATUS_NOT_USE;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_NOT_READ;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_TOP;
-import static com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant.EXPIRE_TYPE_INVALID;
 
 /**
  * @author 赵晓东
@@ -129,7 +127,7 @@ public class MessageDao extends ShopBaseDao {
      * @return Integer
      */
     public Integer countDoctorOrderMessageMum(Byte status){
-        return db().selectCount().from(ORDER_INFO).where(ORDER_INFO.ORDER_AUDIT_STATUS.eq(status)
+        return db().selectCount().from(PRESCRIPTION).where(PRESCRIPTION.STATUS.eq(status)
             .and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
     }
 
@@ -138,13 +136,12 @@ public class MessageDao extends ShopBaseDao {
      * @param status 续方状态
      * @return Integer
      */
-    public Integer countDoctorPrescriptionMessageMum(Byte status){
+    public Integer countOrderGoodsDoctorMessageMum(Byte status){
         Date a = new Date();
         Timestamp ts = new Timestamp(a.getTime());
-        return db().selectCount().from(PRESCRIPTION).where(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)
-            .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.ge(ts))
-            .and(PRESCRIPTION.IS_VALID.eq(status))
-            .and(PRESCRIPTION.STATUS.eq(status))).fetchInto(Integer.class).get(0);
+        return db().selectCount().from(ORDER_GOODS)
+            .where(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(DelFlag.NORMAL_VALUE))
+            .fetchInto(Integer.class).get(0);
     }
 
     /**

@@ -159,6 +159,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             logger().info("orderId:{}开方通过",orderInfoDo.getOrderId());
             PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
             FieldsUtil.assign(obj,prescriptionOneParam);
+            prescriptionOneParam.setUserId(orderInfoDo.getUserId());
             prescriptionOneParam.setIsUsed((byte)1);
             transaction(() -> {
                 //生成处方，处方明细

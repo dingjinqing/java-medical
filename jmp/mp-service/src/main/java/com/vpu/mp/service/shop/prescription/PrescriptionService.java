@@ -230,7 +230,6 @@ public class PrescriptionService extends ShopBaseService {
      * @param fetchPrescriptionParam 处方页面入参
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalAllPrescriptionInfo(FetchPrescriptionParam fetchPrescriptionParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
@@ -287,7 +286,6 @@ public class PrescriptionService extends ShopBaseService {
      * @param fetchPrescriptionOneParam 更新单个处方
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalOnePrescriptionInfo(FetchPrescriptionOneParam fetchPrescriptionOneParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
@@ -343,7 +341,6 @@ public class PrescriptionService extends ShopBaseService {
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
         return prescriptionParam;
-
     }
 
     /**
@@ -371,7 +368,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
         prescriptionParam.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
-        prescriptionParam.setStatus(PrescriptionConstant.STATUS__PASS);
+        prescriptionParam.setStatus(PrescriptionConstant.STATUS_PASS);
         List<PrescriptionDrugVo> goodsList=param.getGoodsList();
         List<Integer> goodsIdList=goodsList.stream().map(PrescriptionDrugVo::getGoodsId).collect(Collectors.toList());
         Map<Integer,PrescriptionDrugVo> goodsMap=goodsList.stream().collect(Collectors.toMap(PrescriptionDrugVo::getGoodsId, Function.identity(),(x1, x2) -> x1));

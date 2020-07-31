@@ -3,10 +3,7 @@ package com.vpu.mp.service.shop.order.inquiry;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
@@ -24,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
@@ -108,16 +106,10 @@ public class InquiryOrderService extends ShopBaseService {
      * @param orderSn
      * @return
      */
-    public InquiryOrderDetailVo getByOrderSn(String orderSn){
+    public InquiryOrderDetailVo getDetailByOrderSn(String orderSn){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(orderSn);
         InquiryOrderDetailVo inquiryOrderDetailVo=new InquiryOrderDetailVo();
         FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
-        List<String> imgUrlList=new ArrayList<>();
-        if(StringUtils.isNotBlank(inquiryOrderDo.getImageUrl())){
-            imgUrlList= Arrays.asList(inquiryOrderDo.getImageUrl().split(","));
-        }
-
-        inquiryOrderDetailVo.setImgUrlList(imgUrlList);
         inquiryOrderDetailVo.setPatientAge(DateUtils.getAgeByBirthDay(inquiryOrderDetailVo.getPatientBirthday()));
         return inquiryOrderDetailVo;
     }
@@ -225,8 +217,9 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientBirthday(patientOneParam.getBirthday());
         inquiryOrderDo.setPatientIdentityCode(patientOneParam.getIdentityCode());
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
-        List<String> imageList=payParam.getImagUrl();
-        String imageUrl=imageList.stream().collect(Collectors.joining(","));
+        List<ImageSimpleVo> imageList=payParam.getImageList();
+        String imageUrl=Util.toJson(imageList);
+//        String imageUrl=imageList.stream().collect(Collectors.joining(","));
         inquiryOrderDo.setImageUrl(imageUrl);
         inquiryOrderDo.setDescriptionDisease(payParam.getDescriptionDisease());
         inquiryOrderDao.save(inquiryOrderDo);
@@ -239,12 +232,12 @@ public class InquiryOrderService extends ShopBaseService {
      * @return
      */
     public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
-        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderId(inquiryOrderOnParam.getOrderId());
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         try {
             refundInquiryOrder(inquiryOrderDo);
         } catch (MpException e) {
             JsonResult jsonResult=new JsonResult();
-            jsonResult.result(null,JsonResultCode.CODE_ORDER_RETURN_EXIST_WX_REFUND_FAIL_ORDER,null);
+            jsonResult.result(null,e.getErrorCode(),null);
             return  jsonResult;
         }
         return JsonResult.success();

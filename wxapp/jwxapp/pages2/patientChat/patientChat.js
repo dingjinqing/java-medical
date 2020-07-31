@@ -116,9 +116,9 @@ global.wxPage({
         })
       }
     }, {
-      departmentId: 12,
-      patientId: 137,
-      pullFromId: 1, //doctor_id
+      departmentId: this.data.departmentId,
+      patientId: this.data.patientId,
+      pullFromId: this.data.doctorId, //doctor_id
       selfId: util.getCache('user_id')
     }, '', false);
   },
@@ -149,10 +149,10 @@ global.wxPage({
         this.pageScrollBottom()
       }
     }, {
-      departmentId: 12,
-      patientId: 137,
+      departmentId: this.data.departmentId,
+      patientId: this.data.patientId,
       fromId: util.getCache('user_id'), //user_id
-      toId: 1, //doctor_id
+      toId: this.data.doctorId, //doctor_id
       imSessionItem
     })
 
@@ -165,16 +165,18 @@ global.wxPage({
       });
     }).exec()
   },
-  handleShowPrescriptionDialog(e){
-    let {prescriptionCode} = e.currentTarget.dataset
-    util.api('/api/wxapp/prescription/details',res=>{
-      if(res.error === 0){
+  handleShowPrescriptionDialog(e) {
+    let {
+      prescriptionCode
+    } = e.currentTarget.dataset
+    util.api('/api/wxapp/prescription/details', res => {
+      if (res.error === 0) {
         this.setData({
-          showPrescription:true,
-          prescriptionData:res.content
+          showPrescription: true,
+          prescriptionData: res.content
         })
       }
-    },{
+    }, {
       prescriptionCode
     })
   },
@@ -183,26 +185,32 @@ global.wxPage({
     util.api('/api/wxapp/inquiry/order/detail', res => {
       console.log(res)
       if (res.error === 0) {
-        let {
-          con
-        } = res.content
+        let con = res.content;
         let patient_message = {
           content: {
             name: con.patientName,
-            sex: con.sex != 2 ? (con.sex == 0 ? '男' : '女') : '未知',
-            age: con.age,
+            sex: con.patientSex != 2 ? (con.patientSex == 0 ? '男' : '女') : '未知',
+            age: con.patientAge,
             mess: con.descriptionDisease
           }
         }
         that.sendMessage(patient_message, 3)
-        let imageUrl = con.imageUrl;
+        let imageUrl = con.imgUrlList;
         imageUrl.forEach(function (val) {
           let img = {
             content: {
-              img: val
+              image: val.image,
+              imgWidth: val.imgWidth,
+              imgHeight: val.imgHeight
             }
           }
           that.sendMessage(img, 1)
+        })
+        that.setData({
+          page_name: con.doctorName,
+          doctorId: con.doctorId,
+          departmentId: con.departmentId,
+          patientId: con.patientId
         })
       }
     }, {

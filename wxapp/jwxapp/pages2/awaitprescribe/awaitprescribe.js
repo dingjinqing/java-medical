@@ -26,8 +26,8 @@ global.wxPage({
           this.data.page_info[i].if_show_more = 0;
           this.data.page_info[i].patient.gestationName = this.getGesName(this.data.page_info[i].patient.gestationType);
           if(!!this.data.page_info[i].medicalHistory && !!this.data.page_info[i].medicalHistory.diseaseHistory){
-            this.data.page_info[i].medicalHistory.diseaseHistory =JSON.parse(JSON.stringify(this.data.page_info[i].medicalHistory.diseaseHistory));
-            console.log(this.data.page_info[i].medicalHistory.diseaseHistory)
+            this.data.page_info[i].medicalHistory.diseaseHistory =JSON.parse(this.data.page_info[i].medicalHistory.diseaseHistory);
+            // this.data.page_info[i].medicalHistory.diseaseHistory.selectedDiagnose = this.data.page_info[i].medicalHistory.diseaseHistory.selectedDiagnose.split(',')
           }
           if(!!this.data.page_info[i].medicalHistory && !!this.data.page_info[i].medicalHistory.imagesList){
             this.data.page_info[i].medicalHistory.imagesList = JSON.parse(this.data.page_info[i].medicalHistory.imagesList);
@@ -67,6 +67,9 @@ global.wxPage({
     this.setData({
       page_info: this.data.page_info
     })
+  },
+  to_pre (e) {
+    util.jumpLink('/pages2/prescribeinfo/prescribeinfo?orderId=' + e.currentTarget.dataset.order_id);
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

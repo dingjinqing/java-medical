@@ -22,11 +22,11 @@ public interface PrescriptionConstant {
     /**
      * 1审核通过
      */
-    public static final Byte STATUS__PASS=1;
+    public static final Byte STATUS_PASS=1;
     /**
      * 2审核未通过
      */
-    public static final Byte STATUS__NO_PASS=2;
+    public static final Byte STATUS_NO_PASS=2;
     //********有效期*******//
     /**
      * 失效
