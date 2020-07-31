@@ -31,10 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -69,10 +66,19 @@ public class ImSessionService extends ShopBaseService {
         List<Integer> departmentIds = new ArrayList<>(dataList.size() / 2);
         List<Integer> doctorIds = new ArrayList<>(dataList.size() / 2);
         List<Integer> patientIds = new ArrayList<>(dataList.size());
+
+        Integer shopId = getShopId();
+        Map<Integer, String> imSessionRedisKeyMap = new HashMap<>(dataList.size());
         for (ImSessionListVo imSession : dataList) {
             departmentIds.add(imSession.getDepartmentId());
             patientIds.add(imSession.getPatientId());
             doctorIds.add(imSession.getDoctorId());
+            // 准备处理未读消息，医师端展示对应会话信息
+            if (param.getDoctorId() != null) {
+                imSessionRedisKeyMap.put(imSession.getId(), getSessionRedisKey(shopId, imSession.getDepartmentId(), imSession.getPatientId(), imSession.getUserId(), imSession.getDoctorId()));
+            } else {
+                imSessionRedisKeyMap.put(imSession.getId(), getSessionRedisKey(shopId, imSession.getDepartmentId(), imSession.getPatientId(), imSession.getDoctorId(), imSession.getUserId()));
+            }
         }
 
         Map<Integer, String> departmentIdMap = departmentService.listDepartmentInfo(departmentIds).stream().collect(Collectors.toMap(DepartmentSimpleVo::getId, DepartmentSimpleVo::getName, (x1, x2) -> x2));
@@ -83,6 +89,13 @@ public class ImSessionService extends ShopBaseService {
             imSession.setDepartmentName(departmentIdMap.get(imSession.getDepartmentId()));
             imSession.setPatientName(patientIdMap.get(imSession.getPatientId()));
             imSession.setDoctorName(doctorIdMap.get(imSession.getDoctorId()));
+            String sessionKey = imSessionRedisKeyMap.get(imSession.getId());
+            Long listSize = jedisManager.getListSize(sessionKey);
+            if (listSize != null) {
+                imSession.setNewMsgNum(listSize);
+            } else {
+                imSession.setNewMsgNum(0L);
+            }
         }
 
         return pageResult;
@@ -117,7 +130,7 @@ public class ImSessionService extends ShopBaseService {
      * @param sessionId 会话id
      * @return 会话状态码
      */
-    public Byte getSessionStatus(Integer sessionId){
+    public Byte getSessionStatus(Integer sessionId) {
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
         return imSessionDo.getSessionStatus();
     }

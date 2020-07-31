@@ -1349,6 +1349,8 @@ public class JsonResultMessage {
 
     public static final String IM_SESSION_NOT_EXIST = "im.session.not.exist";
 
+    public static final String IM_SESSION_PARAM_LACK = "im.session.param.lack";
+
     /**
      * 问诊订单
      */

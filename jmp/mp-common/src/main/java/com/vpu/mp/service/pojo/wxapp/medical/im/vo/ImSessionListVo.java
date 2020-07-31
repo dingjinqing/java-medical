@@ -31,6 +31,8 @@ public class ImSessionListVo {
     private Integer userId;
     /**会话状态*/
     private Byte sessionStatus;
+    /**是否有新信息*/
+    private Long newMsgNum;
 
     private Timestamp createTime;
 }

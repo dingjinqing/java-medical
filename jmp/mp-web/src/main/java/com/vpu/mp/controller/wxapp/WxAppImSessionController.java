@@ -103,6 +103,9 @@ public class WxAppImSessionController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/im/session/send")
     public JsonResult sendMsg(@RequestBody ImSessionSendMsgParam param){
+        if (param.getDepartmentId() == null || param.getPatientId() == null || param.getFromId() == null || param.getToId() == null) {
+            return fail(JsonResultCode.IM_SESSION_PARAM_LACK);
+        }
         imSessionService.sendMsg(param);
         return success();
     }
@@ -114,6 +117,9 @@ public class WxAppImSessionController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/im/session/pull")
     public JsonResult pullMsg(@RequestBody  ImSessionPullMsgParam param){
+        if (param.getDepartmentId() == null || param.getPatientId() == null || param.getPullFromId() == null || param.getSelfId() == null) {
+            return fail(JsonResultCode.IM_SESSION_PARAM_LACK);
+        }
         List<ImSessionItemBase> imSessionItemPullVos = imSessionService.pullMsg(param);
         return success(imSessionItemPullVos);
     }
