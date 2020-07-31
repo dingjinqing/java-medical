@@ -96,9 +96,16 @@ public class UserMessageService extends ShopBaseService {
         Byte existChat = imSessionDao.isExistAlreadyReadImSession(doctorMainShowParam.getLastReadImSession());
         doctorMessageCountVo.setAlreadyImSessionCount(existChat);
         // 查询未读消息
+        // 待会话记录
         doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorId, DelFlag.NORMAL_VALUE));
+        // 待开方记录
         doctorMessageCountVo.setNotOrderInfoCount(messageDao.countDoctorOrderMessageMum());
-        doctorMessageCountVo.setNotPrescription(messageDao.countOrderGoodsDoctorMessageMum(DelFlag.NORMAL_VALUE));
+        // 待续方记录
+        Integer integer = orderGoodsDao.countAuditOrder();
+        if (integer == null) {
+            integer = 0;
+        }
+        doctorMessageCountVo.setNotOrderGoodsCount(integer);
         return doctorMessageCountVo;
     }
 

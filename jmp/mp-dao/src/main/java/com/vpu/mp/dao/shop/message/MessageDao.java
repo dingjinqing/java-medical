@@ -131,19 +131,6 @@ public class MessageDao extends ShopBaseDao {
     }
 
     /**
-     * 医师端显示续方数量
-     * @param status 续方状态
-     * @return Integer
-     */
-    public Integer countOrderGoodsDoctorMessageMum(Byte status){
-        Date a = new Date();
-        Timestamp ts = new Timestamp(a.getTime());
-        return db().selectCount().from(ORDER_GOODS)
-            .where(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(DelFlag.NORMAL_VALUE))
-            .fetchInto(Integer.class).get(0);
-    }
-
-    /**
      * 用户删除列表消息
      * @param messageId 消息id
      */
