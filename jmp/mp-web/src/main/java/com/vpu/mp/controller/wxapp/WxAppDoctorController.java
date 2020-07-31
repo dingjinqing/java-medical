@@ -77,6 +77,7 @@ public class WxAppDoctorController extends WxAppBaseController {
         Integer doctorId = wxAppAuth.user().getDoctorId();
         // 获取当前医师消息列表
         String token = wxAppAuth.user().getToken();
+        WxAppSessionUser user = wxAppAuth.user();
         DoctorMessageCountVo doctorMessageCountVo = messageService.countDoctorMessage(doctorId, token);
         // 获取医师首页个人信息
         DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);

@@ -5,7 +5,6 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
@@ -54,6 +53,19 @@ public class OrderGoodsDao extends ShopBaseDao {
         from.groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
         .orderBy(ORDER_GOODS.CREATE_TIME.desc());
         return getPageResult(from, param.getCurrentPage(), param.getPageRows(), OrderPrescriptionVo.class);
+    }
+
+    /**
+     * 待审核处方数量
+     * @return
+     */
+    public Integer countAuditOrder(){
+         return db().selectCount()
+                .from(ORDER_GOODS)
+                 .where(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT))
+                 .and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT))
+                 .groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
+                 .orderBy(ORDER_GOODS.CREATE_TIME.desc()).fetchAnyInto(Integer.class);
     }
 
     /**

@@ -56,6 +56,10 @@ public class OrderOperationJudgment {
             && OrderConstant.PAY_CODE_COD.equals(order.getPayCode())) {
             return true;
         }
+        //医师可以退审核状态的订单
+        if (OrderConstant.IS_AUDIT_ORDER.contains(order.getOrderStatus())&&isMp == OrderConstant.IS_MP_DOCTOR){
+            return true;
+        }
         return false;
     }
 

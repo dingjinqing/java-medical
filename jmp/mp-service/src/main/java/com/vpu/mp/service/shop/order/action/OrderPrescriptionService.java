@@ -239,7 +239,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             //审核不通过
             auditNotPass(param, orderInfoDo,unAuditGoodsId);
         });
-        logger().info("审核订单-审核-开始");
+        logger().info("审核订单-审核-结束");
         return null;
     }
 
