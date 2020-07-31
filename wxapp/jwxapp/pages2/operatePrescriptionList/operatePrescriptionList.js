@@ -70,7 +70,7 @@ global.wxPage({
         if(res.error === 0){
           dataListItem.splice(targetIndex,1)
           this.setData({
-            [`dataList[${parentIndex}]`]:dataListItems
+            [`dataList[${parentIndex}]`]:dataListItem
           })
         } else {
           util.showModal('提示',res.message)

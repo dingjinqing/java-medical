@@ -1,3 +1,4 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
@@ -17,8 +18,8 @@
             <text class="date">{{item.createTime}}</text>
           </view>
           <view class="button-content">
-            <text class="pass" wx:if="{{targetStatus === '1' || (targetStatus === '2' && item.sessionStatus === 3)}}">{{targetStatus === '1' ? '接诊' : '继续问诊'}}</text>
-            <text class="reject" wx:if="{{targetStatus === '2' && item.sessionStatus === 1}}">退款</text>
+            <text class="pass" data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" wx:if="{{targetStatus === '1' || (targetStatus === '2' && item.sessionStatus === 3)}}" catchtap="accept">{{targetStatus === '1' ? '接诊' : '继续问诊'}}</text>
+            <text class="reject"  data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" catchtap="returnOrder" wx:if="{{targetStatus === '2' && item.sessionStatus === 1}}">退款</text>
           </view>
         </view>
       </block>
