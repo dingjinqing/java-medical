@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.message;
 
-import com.vpu.mp.common.pojo.shop.table.MessageDo;
+import com.vpu.mp.common.pojo.shop.table.UserMessageDo;
 import lombok.Data;
 
 /**
@@ -10,6 +10,6 @@ import lombok.Data;
  **/
 
 @Data
-public class UserMessageVo extends MessageDo {
+public class UserMessageVo extends UserMessageDo {
 
 }

@@ -93,17 +93,19 @@ global.wxPage({
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
-      if (res.error === 0 && res.content[0]) {
-        let chat = {}
-        let chatContent = this.data.chatContent;
-        chat.messageInfo = {
-          message:JSON.parse(res.content[0].message),
-          type:res.content[0].type
-        };
-        chat.position = 0;
-        chatContent.push(chat)
+      if (res.error === 0 && res.content.length) {
+        let newChatContent = res.content.reduce((defaultValue,item)=>{
+          defaultValue.push({
+            position:0,
+            messageInfo:{
+              message:JSON.parse(item.message),
+              type:item.type
+            }
+          })
+          return defaultValue
+        },[])
         this.setData({
-          chatContent:chatContent
+          chatContent:[...this.data.chatContent,...newChatContent]
         })
     }
     }, {

@@ -133,11 +133,11 @@ public class OrderGoodsDao extends ShopBaseDao {
     }
 
     /**
-     * 判断是否有未读消息
-     * @param time 上次查看医师首页时间
+     * 判断是否有未读的已续方消息
+     * @param time 上次查看已续方时间
      * @return Byte
      */
-    public Byte isExistOrderGoods(Timestamp time){
+    public Byte isExistAlreadyReadOrderGoods(Timestamp time){
         List<Timestamp> timestamps = db().select(ORDER_GOODS.UPDATE_TIME)
             .from(ORDER_GOODS)
             .where(ORDER_GOODS.UPDATE_TIME.gt(time))
