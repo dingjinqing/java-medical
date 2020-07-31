@@ -5100,7 +5100,7 @@ CREATE TABLE `b2c_user_message` (
     PRIMARY KEY (`message_id`)
 ) comment ='用户消息表';
 
-CREATE TABLE `b2c_recharge` (
+CREATE TABLE `b2c_sms_recharge` (
     `recharge_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '充值记录主键',
     `sid` varchar(255) NOT NULL DEFAULT '' COMMENT '充值账户id',
     `version` int(11) NOT NULL DEFAULT 4 COMMENT '充值版本，微铺宝默认4',
@@ -5114,7 +5114,7 @@ CREATE TABLE `b2c_recharge` (
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`recharge_id`)
-) comment ='充值记录表';
+) comment ='短信充值记录表';
 
 -- 订单历史病例
 CREATE TABLE `b2c_order_medical_history` (
