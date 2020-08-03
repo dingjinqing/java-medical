@@ -84,5 +84,14 @@ public class AdminSummaryController extends AdminBaseController {
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIST_EXPORT_FILE_NAME, LANGUAGE_TYPE_EXCEL)+ DateUtils.getLocalDateTime().toString();
         export2Excel(workbook, fileName, response);
     }
+
+    /**
+     * 医药销售报表
+     */
+    @PostMapping("/api/admin/summary/medical/sell")
+    public  void getMedicalPortrait(){
+
+    }
+
 }
 

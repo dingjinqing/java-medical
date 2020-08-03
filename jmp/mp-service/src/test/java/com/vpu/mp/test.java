@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.io.FastByteArrayOutputStream;
 import cn.hutool.core.io.IoUtil;
@@ -25,7 +27,7 @@ public class test {
 		String subLimit = subLimit("name", value, indexOf);
 		System.out.println(subLimit);
 	}
-	
+
 	private static String subLimit(String name,String value,int num) {
 		if (value.length() > num) {
 			log.info("类型：{}，原来值：{}；长度要求:{}",name,value,num);
@@ -35,10 +37,6 @@ public class test {
 		return value;
 	}
 
-	@Test
-	private void test(){
-
-	}
 	public static <T> T cloneByStream(T obj) {
 		if (null != obj && obj instanceof Serializable) {
 			FastByteArrayOutputStream byteOut = new FastByteArrayOutputStream();
@@ -60,5 +58,14 @@ public class test {
 		} else {
 			return null;
 		}
+	}
+
+	@Test
+	public void testa(){
+		DateTime date = DateUtil.date();
+		System.out.println(DateUtil.beginOfMonth(date));
+		System.out.println(DateUtil.endOfDay(date));
+
+
 	}
 }
