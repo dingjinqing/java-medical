@@ -147,4 +147,11 @@ public class OrderGoodsDao extends ShopBaseDao {
         }
         return DelFlag.NORMAL_VALUE;
     }
+
+
+    public Integer medicalSalesReport(){
+        db().select().from(ORDER_GOODS).where().fetch();
+
+        return null;
+    }
 }

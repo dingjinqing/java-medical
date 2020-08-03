@@ -14,7 +14,36 @@ import lombok.Data;
 public class ActiveDiscountMoney {
 
     public static final String DISCOUNT_AMOUNT ="discountAmount";
+
     public static final String CREATE_TIME ="createTime";
+    /**
+     * 销售金额
+     */
+    public static final String ORDER_AMOUNT ="orderAmount";
+    /**
+     * 订单数量
+     */
+    public static final String ORDER_NUMBER ="orderNumber";
+    /**
+     * 客单价
+     */
+    public static final String ORDER_AVG ="orderAmountAvg";
+    /**
+     * 药品销售金额
+     */
+    public static final String ORDER_MEDICAL_AMOUNT ="orderMedicalAmount";
+    /**
+     * 药品订单数量
+     */
+    public static final String ORDER_MEDICAL_NUMBER ="orderMedicalNumber";
+    /**
+     * 退款数量
+     */
+    public static final String RETURN_NUMBER ="returnNumber";
+    /**
+     * 退款金额
+     */
+    public static final String RETURN_AMOUNT ="returnAmount";
     public static final String PAYMENT_AMOUNT ="paymentAmount";
     public static final String PAID_ORDER_NUMBER ="paidOrderNumber";
     public static final String PAID_GOODS_NUMBER ="paidGoodsNumber";
