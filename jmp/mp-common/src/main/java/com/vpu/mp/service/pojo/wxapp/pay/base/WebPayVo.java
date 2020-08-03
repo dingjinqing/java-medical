@@ -20,6 +20,4 @@ public class WebPayVo {
     private String orderSn;
     private String cardSn;
     private String orderType;
-    /**咨询会话id*/
-    private Integer sessionId;
 }

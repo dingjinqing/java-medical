@@ -173,7 +173,7 @@ public class InquiryOrderService extends ShopBaseService {
         order.setPayTime(DateUtils.getLocalDateTime());
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
-        //添加会话问诊
+        //修改会话问诊状态
         imSessionService.updateSessionStatus(order.getOrderSn(), ImSessionConstant.SESSION_READY_TO_START);
         logger().info("问诊订单-支付完成(回调)-结束");
 
@@ -214,10 +214,9 @@ public class InquiryOrderService extends ShopBaseService {
         //添加会话问诊
         ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
         FieldsUtil.assign(orderInfo,imSessionNewParam);
-        Integer sessionId = imSessionService.insertNewSession(imSessionNewParam);
+        imSessionService.insertNewSession(imSessionNewParam);
         // 临时添加，正式使用时候删除
         imSessionService.updateSessionStatus(orderSn,ImSessionConstant.SESSION_READY_TO_START);
-        vo.setSessionId(sessionId);
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){

@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
@@ -52,6 +53,11 @@ public class WxAppImSessionController extends WxAppBaseController {
         return success(imSessionItemRenderVoPageResult);
     }
 
+    /**
+     * 查询会话状态
+     * @param sessionId
+     * @return
+     */
     @PostMapping("/api/wxapp/im/session/status/{sessionId}")
     public JsonResult getSessionStatus(@PathVariable("sessionId") Integer sessionId) {
         if (sessionId == null) {
@@ -61,8 +67,19 @@ public class WxAppImSessionController extends WxAppBaseController {
         if (!imSessionService.sessionExist(sessionId)) {
             return fail(JsonResultCode.IM_SESSION_NOT_EXIST);
         }
+        ImSessionDo imSessionDo = imSessionService.getSessionInfoById(sessionId);
+        return success(imSessionDo.getSessionStatus());
+    }
 
-        return success(imSessionService.getSessionStatus(sessionId));
+    /**
+     * 根据订单号查询会话信息
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/im/session/get/orderSn")
+    public JsonResult getSessionIdByOrderSn(@RequestBody ImSessionQueryParam param){
+        ImSessionDo imSessionDo = imSessionService.getSessionInfoByOrderSn(param.getOrderSn());
+        return success(imSessionDo.getId());
     }
 
     /**
