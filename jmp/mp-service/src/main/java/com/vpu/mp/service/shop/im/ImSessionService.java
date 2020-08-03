@@ -20,7 +20,6 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
-import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionRenderVo;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.patient.PatientService;
@@ -104,7 +103,7 @@ public class ImSessionService extends ShopBaseService {
      * @param renderPageParam 会话内容请求参数
      * @return 会话聊天内容信息
      */
-    public ImSessionRenderVo renderSession(ImSessionRenderPageParam renderPageParam) {
+    public PageResult<ImSessionItemRenderVo> renderSession(ImSessionRenderPageParam renderPageParam) {
         Integer sessionId  = renderPageParam.getSessionId();
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
 
@@ -113,8 +112,6 @@ public class ImSessionService extends ShopBaseService {
         List<ImSessionItemDo> imSessionItemDos = pageResult.getDataList();
         Collections.reverse(imSessionItemDos);
 
-        ImSessionRenderVo imSessionRenderVo = new ImSessionRenderVo();
-        imSessionRenderVo.setLimitTime(imSessionDo.getLimitTime());
         // 此处需要进行倒序排序
         List<ImSessionItemRenderVo> sessionItemRenderVos = imSessionItemDos.stream().map(item -> {
             ImSessionItemRenderVo itemVo = new ImSessionItemRenderVo();
@@ -124,8 +121,10 @@ public class ImSessionService extends ShopBaseService {
             itemVo.setSendTime(item.getSendTime());
             return itemVo;
         }).collect(Collectors.toList());
-        imSessionRenderVo.setSessionItemRenderVos(sessionItemRenderVos);
-        return imSessionRenderVo;
+        PageResult<ImSessionItemRenderVo> retPageResult = new PageResult<>();
+        retPageResult.setPage(pageResult.getPage());
+        retPageResult.setDataList(sessionItemRenderVos);
+        return retPageResult;
     }
 
     /**

@@ -29,6 +29,7 @@ public class InquiryOrderScheduleTask {
         Result<ShopRecord> shops = saas.shop.getAll();
         shops.forEach((shop)->{
             saas.getShopApp(shop.getShopId()).inquiryOrderTaskService.closeToWaitingInquiryOrder();
+            saas.getShopApp(shop.getShopId()).inquiryOrderTaskService.close();
         });
     }
 }

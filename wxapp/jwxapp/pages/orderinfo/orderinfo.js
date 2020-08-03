@@ -236,10 +236,18 @@ global.wxPage({
       }
     },{goodsId})
   },
-  handleShowDialog(){
-    this.setData({
-      showPrescription:true
-    })
+  handleShowDialog(e){
+    let {prescriptionCode} = e.currentTarget.dataset
+      util.api('/api/wxapp/prescription/details',res=>{
+        if(res.error === 0){
+          this.setData({
+            showPrescription:true,
+            prescriptionData:res.content
+          })
+        }
+      },{
+        prescriptionCode
+      })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
