@@ -64,6 +64,7 @@ module.exports = {
 									<text class="goods-name">{{item.goodsName}}</text>
 									<view class="goods-price-content">
 										<text class="goods-price">￥{{item.prdPrice}}</text>
+										<text class="num">x{{item.cartNumber}}</text>
 									</view>
 								</view>
 								</view>

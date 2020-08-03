@@ -196,9 +196,14 @@
   color: #333;
   line-height: 42rpx;
 }
+.goods-price-content{
+  display: flex;
+  align-items: center;
+}
 .goods-price{
   font-weight: 600;
   color: #FF9F15;
+  margin-right: auto;
 }
 .del{
   width: 120rpx;

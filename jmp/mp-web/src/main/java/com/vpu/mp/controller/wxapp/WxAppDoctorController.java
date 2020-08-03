@@ -71,7 +71,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/main")
-    public JsonResult doctorMainShow(@RequestParam DoctorMainShowParam doctorMainShowParam){
+    public JsonResult doctorMainShow(@RequestBody DoctorMainShowParam doctorMainShowParam){
         // 获取缓存中当前用户信息
         WxAppSessionUser user = wxAppAuth.user();
         // 获取页面消息统计信息

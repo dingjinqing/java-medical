@@ -43,6 +43,11 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
             .fetchOptionalInto(UserPatientParam.class).orElse(null);
     }
 
+    /**
+     * 获取用户绑定患者Id集合
+     * @param userId
+     * @return
+     */
     public List<PatientOneParam> listPatientIdsByUser(Integer userId) {
         List<PatientOneParam> patientList = db().select(USER_PATIENT_COUPLE.IS_DEFAULT,PATIENT.asterisk()).from(USER_PATIENT_COUPLE)
             .leftJoin(PATIENT).on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
@@ -96,6 +101,11 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
         db().executeUpdate(record);
     }
 
+    /**
+     * 用户和患者是否绑定（用户患者是否存在）
+     * @param param
+     * @return
+     */
     public boolean isExistUserPatient(UserPatientParam param) {
         Condition condition = USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId())).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0));
         int count = db().fetchCount(USER_PATIENT_COUPLE, condition);
@@ -103,7 +113,7 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
     }
 
     /**
-     * 接触用户患者关联
+     * 解除用户患者关联
      * @param param
      */
     public void deleteUserPatient(UserPatientParam param) {
@@ -134,7 +144,7 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
     }
 
     /**
-     * 根据用户患者Id获取用户患者
+     * 根据用户患者Id获取用户患者详情
      * @param param
      * @return
      */
