@@ -36,7 +36,7 @@
 								<view>
 									<text>{{item.doctorName}}</text>
 									<text>{{item.departmentName}}</text>
-									<text class='fr {{item.sessionStatus == 0 ? "wait" : (item.sessionStatus == 1 ? "online" : " end")}}'>{{item.sessionStatus == 0 ? "待接诊" : (item.sessionStatus == 1 ? "会话中" : (item.sessionStatus == 2 ? "会话取消" : "会话结束"))}}</text>
+									<text class='fr {{(item.sessionStatus == 0 || item.sessionStatus == 1) ? "wait" : (item.sessionStatus == 2 || item.sessionStatus == 3 ? "online" : "end")}}'>{{item.sessionStatus == 0 ? "待支付" : (item.sessionStatus == 1 ? "待接诊" : (item.sessionStatus == 2 ? "会话中" : (item.sessionStatus == 3 ? "会话取消" : "会话结束")))}}</text>
 								</view>
 
 							</view>

@@ -158,8 +158,8 @@ global.wxPage({
               orderSn
             } = res.content
             console.log(orderSn)
-            util.navigateTo({
-              url: "/pages2/patientChat/patientChat?orderSn=" + orderSn
+            util.redirectTo({
+              url: "/pages2/patientChat/patientChat?orderSn=" + orderSn 
             })
             // if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
             //   wx.requestPayment({

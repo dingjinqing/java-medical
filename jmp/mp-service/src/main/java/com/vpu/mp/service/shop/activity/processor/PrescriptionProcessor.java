@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
@@ -73,6 +73,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         //处方状态,订单类型
         auditPrescriptionValid(param, prescriptionList);
         PatientOneParam oneInfo = patientService.getOneInfo(param.getPatientId());
+        oneInfo.setAge(DateUtil.ageOfNow(oneInfo.getBirthday()));
         param.setPatientInfo(oneInfo);
         log.info("药品处方检查-结束");
     }

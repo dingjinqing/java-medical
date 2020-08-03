@@ -104,7 +104,7 @@ public class ImSessionService extends ShopBaseService {
      * @return 会话聊天内容信息
      */
     public PageResult<ImSessionItemRenderVo> renderSession(ImSessionRenderPageParam renderPageParam) {
-        Integer sessionId  = renderPageParam.getSessionId();
+        Integer sessionId = renderPageParam.getSessionId();
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
 
         Integer doctorId = imSessionDo.getDoctorId();
@@ -132,9 +132,17 @@ public class ImSessionService extends ShopBaseService {
      * @param sessionId 会话id
      * @return 会话状态码
      */
-    public Byte getSessionStatus(Integer sessionId) {
-        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
-        return imSessionDo.getSessionStatus();
+    public ImSessionDo getSessionInfoById(Integer sessionId) {
+        return imSessionDao.getById(sessionId);
+    }
+
+    /**
+     * 查询会话状态
+     * @param orderSn
+     * @return
+     */
+    public ImSessionDo getSessionInfoByOrderSn(String orderSn) {
+        return imSessionDao.getByOrderSn(orderSn);
     }
 
     /**
@@ -153,7 +161,7 @@ public class ImSessionService extends ShopBaseService {
 
         imSessionDao.insert(imSessionDo);
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), imSessionDo.getId());
-        jedisManager.set(sessionRedisStatusKey,ImSessionConstant.SESSION_READY_TO_START.toString());
+        jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_READY_TO_START.toString());
         return imSessionDo.getId();
     }
 
@@ -167,8 +175,8 @@ public class ImSessionService extends ShopBaseService {
         imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
         imSessionDo.setLimitTime(DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS));
         imSessionDao.update(imSessionDo);
-        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(),sessionId);
-        jedisManager.set(sessionRedisStatusKey,ImSessionConstant.SESSION_ON.toString());
+        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
+        jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
     }
 
     /**
@@ -182,7 +190,7 @@ public class ImSessionService extends ShopBaseService {
         Integer shopId = getShopId();
 
         for (ImSessionDo imSessionDo : imSessionDos) {
-            clearSessionRedisInfoAndDumpToDb(shopId,imSessionDo.getId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
+            clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             sessionIds.add(imSessionDo.getId());
         }
 
@@ -199,10 +207,23 @@ public class ImSessionService extends ShopBaseService {
         Integer shopId = getShopId();
         List<Integer> sessionIds = new ArrayList<>(imSessionDos.size());
         for (ImSessionDo imSessionDo : imSessionDos) {
-            clearSessionRedisInfoAndDumpToDb(shopId,imSessionDo.getId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
+            clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             sessionIds.add(imSessionDo.getId());
         }
         imSessionDao.batchUpdateSessionStatus(sessionIds, ImSessionConstant.SESSION_END);
+    }
+
+    /**
+     * 关闭对话session
+     * @param sessionId 会话id
+     */
+    public void closeImSession(Integer sessionId) {
+        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
+        if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
+            return;
+        }
+        clearSessionRedisInfoAndDumpToDb(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
+        imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END);
     }
 
     /**
@@ -213,7 +234,7 @@ public class ImSessionService extends ShopBaseService {
         Integer shopId = getShopId();
         String sessionRedisStatusKey = getSessionRedisStatusKey(shopId, sendMsgParam.getSessionId());
         if (!jedisManager.exists(sessionRedisStatusKey)) {
-            deleteAllSessionKey(shopId,sendMsgParam.getSessionId(),sendMsgParam.getFromId(),sendMsgParam.getToId());
+            deleteAllSessionKey(shopId, sendMsgParam.getSessionId(), sendMsgParam.getFromId(), sendMsgParam.getToId());
             return ImSessionConstant.SESSION_CAN_NOT_USE;
         }
 
@@ -229,23 +250,10 @@ public class ImSessionService extends ShopBaseService {
      */
     public List<ImSessionItemBase> pullMsg(ImSessionPullMsgParam param) {
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), param.getSessionId());
-        if (!jedisManager.exists(sessionRedisStatusKey)){
+        if (!jedisManager.exists(sessionRedisStatusKey)) {
             return null;
         }
         return dumpSessionReadyToBak(getShopId(), param.getSessionId(), param.getPullFromId(), param.getSelfId());
-    }
-
-    /**
-     * 关闭对话session
-     * @param sessionId 会话id
-     */
-    public void closeImSession(Integer sessionId) {
-        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
-        if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
-            return;
-        }
-        clearSessionRedisInfoAndDumpToDb(getShopId(),imSessionDo.getId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
-        imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END);
     }
 
     /**
@@ -331,15 +339,16 @@ public class ImSessionService extends ShopBaseService {
      * 删除所有无用key,避免医师结束了会话而此刻用户又发了消息而产生的垃圾key
      * @param shopId    店铺id
      * @param sessionId 会话id
-     * @param id1 会话者的id
-     * @param id2 会话者的id
+     * @param id1       会话者的id
+     * @param id2       会话者的id
      */
     private void deleteAllSessionKey(Integer shopId, Integer sessionId, Integer id1, Integer id2) {
         String msgKey1 = getSessionRedisKey(shopId, sessionId, id1, id2);
         String msgKey2 = getSessionRedisKey(shopId, sessionId, id2, id1);
         String sessionRedisKeyBak = getSessionRedisKeyBak(shopId, sessionId);
-        jedisManager.delete(new String[]{msgKey1,msgKey2,sessionRedisKeyBak});
+        jedisManager.delete(new String[]{msgKey1, msgKey2, sessionRedisKeyBak});
     }
+
     /**
      * 判断信息
      * @param sessionId

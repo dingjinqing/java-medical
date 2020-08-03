@@ -67,7 +67,7 @@ public class SmsSendRecordDao extends ShopBaseDao {
         if (smsSendRecordAdminParam.getResponseCode() != null) {
             select.where(SMS_SEND_RECORD.RESPONSE_CODE.like(smsSendRecordAdminParam.getResponseCode()));
         }
-        if (smsSendRecordAdminParam.getExt() != null) {
+        if (smsSendRecordAdminParam.getExt() != null && !"".equals(smsSendRecordAdminParam.getExt())) {
             select.where(SMS_SEND_RECORD.EXT.like(smsSendRecordAdminParam.getExt()));
         }
         if (smsSendRecordAdminParam.getStartCreateTime() != null) {
@@ -76,7 +76,7 @@ public class SmsSendRecordDao extends ShopBaseDao {
         if (smsSendRecordAdminParam.getEndCreateTime() != null) {
             select.where(SMS_SEND_RECORD.CREATE_TIME.lt(smsSendRecordAdminParam.getEndCreateTime()));
         }
-        if (smsSendRecordAdminParam.getResponseMsgCode() != null) {
+        if (smsSendRecordAdminParam.getResponseMsgCode() != null && !"".equals(smsSendRecordAdminParam.getResponseMsgCode())) {
             select.where(SMS_SEND_RECORD.RESPONSE_MSG_CODE.eq(smsSendRecordAdminParam.getResponseMsgCode()));
         }
     }

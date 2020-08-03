@@ -7,24 +7,28 @@ package com.vpu.mp.common.foundation.data;
  */
 public class ImSessionConstant {
     /**
+     * 待支付
+     */
+    public static final Byte SESSION_READY_TO_PAY = 0;
+    /**
      * 医师待接诊
      */
-    public static final Byte SESSION_READY_TO_START = 0;
+    public static final Byte SESSION_READY_TO_START = 1;
 
     /**
      * 会话中
      */
-    public static final Byte SESSION_ON = 1;
+    public static final Byte SESSION_ON = 2;
 
     /**
      * 会话取消
      */
-    public static final Byte SESSION_CANCEL = 2;
+    public static final Byte SESSION_CANCEL = 3;
 
     /**
      * 会话正常结束
      */
-    public static final Byte SESSION_END = 3;
+    public static final Byte SESSION_END = 4;
 
     /**
      * 会话取消等待时间 24小时
