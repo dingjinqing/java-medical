@@ -1,7 +1,7 @@
 <wxs module="chatInput">
   var getPlaceholderSource = function (source) {
     var placeholderTxt = {
-      'doctor':'',
+      'doctor':'回复',
       'patient':'请仔细描述您的问题'
     }
     return placeholderTxt[source]

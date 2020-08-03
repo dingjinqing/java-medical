@@ -8,7 +8,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    time: '2020-07-23 13:35:01',
+    // time: '2020-07-23 13:35:01',
     page_name: '',
     prescriptionMessage:null,
     chatContent:[],
@@ -96,7 +96,7 @@ global.wxPage({
       console.log(res)
       if (res.error === 0 && res.content.length) {
         let newChatContent = res.content.reduce((defaultValue,item)=>{
-          defaultValue.push({
+          defaultValue.push({  
             position:0,
             messageInfo:{
               message:JSON.parse(item.message),
@@ -161,14 +161,14 @@ global.wxPage({
         if(res.error === 0){
           clearInterval(this.timer)
           this.setData({
-            'targetUserInfo.sessionStatus':3
+            'targetUserInfo.sessionStatus':4
           })
           if(this.data.source === 'inquiryList'){
             let pageList = getCurrentPages();
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:3
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:4
             })
             wx.navigateBack()
           }
@@ -185,7 +185,7 @@ global.wxPage({
       util.api('/api/wxapp/inquiry/order/status/update',res=>{
         if(res.error === 0){
           this.setData({
-            'targetUserInfo.sessionStatus':1
+            'targetUserInfo.sessionStatus':2
           })
           this.requsetMessage()
           if(this.data.source === 'inquiryList'){
@@ -193,7 +193,7 @@ global.wxPage({
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:1
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:2
             })
           }
         }

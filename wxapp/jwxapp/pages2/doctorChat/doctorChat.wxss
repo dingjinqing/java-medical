@@ -1,4 +1,8 @@
 @import '/pages2/patientChat/patientChat.wxss';
+.main-container{
+  padding-top: 20rpx;
+  padding-bottom: 220rpx;
+}
 .bottom-button-content{
   height: 110rpx;
   line-height: 80rpx;
