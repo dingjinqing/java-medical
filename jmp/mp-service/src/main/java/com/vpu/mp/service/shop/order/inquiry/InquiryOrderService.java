@@ -1,7 +1,11 @@
 package com.vpu.mp.service.shop.order.inquiry;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -26,6 +30,7 @@ import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -36,9 +41,11 @@ import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -149,7 +156,7 @@ public class InquiryOrderService extends ShopBaseService {
         List<InquiryOrderDo> list=inquiryOrderDao.getOrderByParams(param);
         List<InquiryOrderDo> retList=list.stream().filter(inquiryOrderDo -> {
             Byte orderStatus=inquiryOrderDo.getOrderStatus();
-                if(orderStatus.equals(InquiryOrderConstant.ORDER_TO_PAID)||orderStatus.equals(InquiryOrderConstant.ORDER_TO_RECEIVE)||orderStatus.equals(InquiryOrderConstant.ORDER_RECEIVING)) {
+                if(orderStatus.equals(InquiryOrderConstant.ORDER_TO_RECEIVE)||orderStatus.equals(InquiryOrderConstant.ORDER_RECEIVING)) {
                     return true;
                 }
                 return false;
@@ -206,6 +213,7 @@ public class InquiryOrderService extends ShopBaseService {
 //        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
         vo.setOrderSn(orderSn);
         InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
+        //临时添加支付回调，正式使用删除
         inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         logger().debug("微信支付创建订单结束");
         //添加会话问诊
@@ -302,5 +310,44 @@ public class InquiryOrderService extends ShopBaseService {
         tradesRecord.addRecord(order.getOrderAmount(),order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
     }
 
+    /**
+     * 问诊订单统计报表查询
+     * @param param
+     * @return
+     */
+    public PageResult<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate != null ) {
+            startDate = DateUtil.beginOfDay(startDate).toTimestamp();
+            param.setStartTime(startDate);
+        }if( endDate != null){
+            endDate = DateUtil.endOfDay(endDate).toTimestamp();
+            param.setEndTime(endDate);
+        }
+        PageResult<InquiryOrderStatisticsVo> result=inquiryOrderDao.orderStatistics(param);
+        List<InquiryOrderStatisticsVo> list=result.getDataList();
+        list.forEach(orderStatisticsVo->{
+            DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
+            DepartmentOneParam dept=departmentDao.getOneInfo(orderStatisticsVo.getDepartmentId());
+            orderStatisticsVo.setDoctorName(doctor.getName());
+            orderStatisticsVo.setDepartmentName(dept.getName());
+        });
+        return result;
+    }
 
+    /**
+     * 问诊订单统计报表导出
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook orderStatisticsExport(InquiryOrderStatisticsParam param, String lang){
+        PageResult<InquiryOrderStatisticsVo> result=orderStatistics(param);
+        List<InquiryOrderStatisticsVo> list=result.getDataList();
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);
+        return workbook;
+    }
 }
