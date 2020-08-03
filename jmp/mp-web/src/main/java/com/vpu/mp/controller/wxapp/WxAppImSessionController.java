@@ -9,8 +9,8 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPullMsgParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionRenderPageParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionSendMsgParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
-import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionRenderVo;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,8 +51,8 @@ public class WxAppImSessionController extends WxAppBaseController {
             return fail(JsonResultCode.IM_SESSION_NOT_EXIST);
         }
 
-        ImSessionRenderVo imSessionRenderVo = imSessionService.renderSession(param);
-        return success(imSessionRenderVo);
+        PageResult<ImSessionItemRenderVo> imSessionItemRenderVoPageResult = imSessionService.renderSession(param);
+        return success(imSessionItemRenderVoPageResult);
     }
 
     @PostMapping("/api/wxapp/im/session/status/{sessionId}")
