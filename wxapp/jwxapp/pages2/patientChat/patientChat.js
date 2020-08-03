@@ -3,8 +3,12 @@ var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
 var util = require('../../utils/util.js');
 const {
-  orderSn
+  orderSn,
+  orderDetail
 } = require('../../utils/i18n/pages/order.js');
+const {
+  theMaximumClaimLimit
+} = require('../../utils/i18n/components/decorate/decorate.js');
 global.wxPage({
 
   /**
@@ -15,7 +19,7 @@ global.wxPage({
     time: '2020-07-23 13:35:01',
     chatContent: [],
     system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。',
-    system_img:false
+    system_img: false
   },
 
   /**
@@ -23,7 +27,8 @@ global.wxPage({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
-    if (options.orderSn) this.requestDetail(options.orderSn)
+    //get sessionId
+    if (options.orderSn) this.requestSessionId(options.orderSn)
   },
   getInputMessage(e) {
     let that = this
@@ -104,23 +109,22 @@ global.wxPage({
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
       if (res.error === 0 && res.content[0]) {
-        let newChatContent = res.content.reduce((defaultValue,item)=>{
+        let newChatContent = res.content.reduce((defaultValue, item) => {
           defaultValue.push({
-            position:0,
-            messageInfo:{
-              message:JSON.parse(item.message),
-              type:item.type
+            position: 0,
+            messageInfo: {
+              message: JSON.parse(item.message),
+              type: item.type
             }
           })
           return defaultValue
-        },[])
+        }, [])
         this.setData({
-          chatContent:[...this.data.chatContent,...newChatContent]
+          chatContent: [...this.data.chatContent, ...newChatContent]
         })
       }
     }, {
-      departmentId: this.data.departmentId,
-      patientId: this.data.patientId,
+      sessionId: this.data.sessionId,
       pullFromId: this.data.doctorId, //doctor_id
       selfId: util.getCache('user_id')
     }, '', false);
@@ -152,8 +156,7 @@ global.wxPage({
         this.pageScrollBottom()
       }
     }, {
-      departmentId: this.data.departmentId,
-      patientId: this.data.patientId,
+      sessionId: this.data.sessionId,
       fromId: util.getCache('user_id'), //user_id
       toId: this.data.doctorId, //doctor_id
       imSessionItem
@@ -199,33 +202,46 @@ global.wxPage({
         }
         that.setData({
           page_name: con.doctorName,
-          doctorId: con.doctorId,
-          departmentId: con.departmentId,
-          patientId: con.patientId,
+          doctorId: con.doctorId
         })
         let imageUrl = JSON.parse(con.imageUrl);
         if (imageUrl != '') {
           that.setData({
-            system_img:true
+            system_img: true
           })
           that.sendMessage(patient_message, 3)
-          imageUrl.forEach(function (val,index) {
+          imageUrl.forEach(function (val, index) {
             let img = {
               content: val.imageUrl,
               imgWidth: val.imageWidth,
               imgHeight: val.imageHeight
             }
-            if(index == imageUrl.length - 1){
-               img.system = true;
+            if (index == imageUrl.length - 1) {
+              img.system = true;
             }
             that.sendMessage(img, 1)
           })
-        }else{
+        } else {
           that.sendMessage(patient_message, 3)
         }
       }
     }, {
       orderSn: orderSn,
     })
+  },
+  requestSessionId(orderSn) {
+    let that = this;
+    util.api('/api/wxapp/im/session/get/orderSn',
+      res => {
+        console.log(res)
+        if (res.error === 0) {
+          that.setData({
+            sessionId: res.content
+          })
+          that.requestDetail(orderSn)
+        }
+      }, {
+        orderSn: orderSn,
+      })
   }
 })
