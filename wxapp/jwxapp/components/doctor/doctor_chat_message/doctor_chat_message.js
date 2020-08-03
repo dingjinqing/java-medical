@@ -8,7 +8,8 @@ global.wxComponent({
    */
   properties: {
     chatContent: Object,
-    systemInfo: String
+    systemInfo: String,
+    systemImg:Boolean
   },
   options:{
     multipleSlots:true

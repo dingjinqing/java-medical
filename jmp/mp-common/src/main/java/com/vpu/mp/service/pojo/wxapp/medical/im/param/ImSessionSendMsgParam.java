@@ -11,13 +11,9 @@ import lombok.Data;
 @Data
 public class ImSessionSendMsgParam {
     /**
-     * 科室id
+     * 会话id
      */
-    private Integer departmentId;
-    /**
-     * 患者id
-     */
-    private Integer patientId;
+   private Integer sessionId;
     /**
      * 消息发送者
      */
@@ -28,6 +24,6 @@ public class ImSessionSendMsgParam {
     private Integer toId;
     /**
      * 消息内容
-     * */
+     */
     private ImSessionItemBase imSessionItem;
 }

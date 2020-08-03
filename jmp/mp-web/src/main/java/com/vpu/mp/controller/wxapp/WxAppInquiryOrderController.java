@@ -8,6 +8,7 @@ import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +70,15 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
         return success();
     }
 
+    /**
+     * 查询未完成的问诊
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/inquiry/order/undone/get")
+    public JsonResult getUndoneOrder(@RequestBody InquiryOrderParam param){
+        return success(shop().inquiryOrderService.getUndoneOrder(param));
+    }
     /**
      * 新增
      * @param inquiryOrderDo

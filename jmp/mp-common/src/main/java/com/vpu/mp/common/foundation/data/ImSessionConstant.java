@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.medical.im;
+package com.vpu.mp.common.foundation.data;
 
 /**
  * 会话常量
@@ -35,4 +35,9 @@ public class ImSessionConstant {
      * 会话关闭默认等待时间24小时
      */
     public static final Integer CLOSE_LIMIT_TIME = 24;
+
+    /**会话可用 可发消息*/
+    public static final Byte SESSION_CAN_USE = 1;
+    /**会话不可用 不可发消息*/
+    public static final Byte SESSION_CAN_NOT_USE = 0;
 }

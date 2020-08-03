@@ -14,7 +14,8 @@ global.wxPage({
     imageUrl: imageUrl,
     time: '2020-07-23 13:35:01',
     chatContent: [],
-    system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。'
+    system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。',
+    system_img:false
   },
 
   /**
@@ -200,21 +201,28 @@ global.wxPage({
           page_name: con.doctorName,
           doctorId: con.doctorId,
           departmentId: con.departmentId,
-          patientId: con.patientId
+          patientId: con.patientId,
         })
-        that.sendMessage(patient_message, 3)
         let imageUrl = JSON.parse(con.imageUrl);
-        if (imageUrl) {
-          imageUrl.forEach(function (val) {
+        if (imageUrl != '') {
+          that.setData({
+            system_img:true
+          })
+          that.sendMessage(patient_message, 3)
+          imageUrl.forEach(function (val,index) {
             let img = {
               content: val.imageUrl,
               imgWidth: val.imageWidth,
               imgHeight: val.imageHeight
             }
+            if(index == imageUrl.length - 1){
+               img.system = true;
+            }
             that.sendMessage(img, 1)
           })
+        }else{
+          that.sendMessage(patient_message, 3)
         }
-
       }
     }, {
       orderSn: orderSn,

@@ -29,6 +29,7 @@
 					<view class="chat_item">
 						<view class="chat_left">
 							<image src="https://bkimg.cdn.bcebos.com/pic/37d3d539b6003af3a09e2944372ac65c1038b6ea?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"></image>
+					    <view class="red_dot" wx:if='{{item.newMsgNum > 0}}'></view>
 						</view>
 						<view class="chat_right">
 							<view class="c_r_top clearfix">

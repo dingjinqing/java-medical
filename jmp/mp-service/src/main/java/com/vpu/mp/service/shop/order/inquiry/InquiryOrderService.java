@@ -23,10 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
@@ -145,6 +142,25 @@ public class InquiryOrderService extends ShopBaseService {
     }
 
     /**
+     * 未完成的问诊
+     * @param param
+     * @return
+     */
+    public String getUndoneOrder(InquiryOrderParam param){
+        List<InquiryOrderDo> list=inquiryOrderDao.getOrderByParams(param);
+        List<String> orderSnList=list.stream().filter(inquiryOrderDo -> {
+            Byte orderStatus=inquiryOrderDo.getOrderStatus();
+                if(orderStatus.equals(InquiryOrderConstant.ORDER_TO_PAID)||orderStatus.equals(InquiryOrderConstant.ORDER_TO_RECEIVE)||orderStatus.equals(InquiryOrderConstant.ORDER_RECEIVING)) {
+                    return true;
+                }
+                return false;
+        }).map(InquiryOrderDo::getOrderSn).collect(Collectors.toList());
+        if(orderSnList!=null&&orderSnList.size()>0){
+            return orderSnList.get(0);
+        }
+        return null;
+    }
+    /**
      * 问诊支付回调完成
      * @param order
      * @param paymentRecord
@@ -165,18 +181,7 @@ public class InquiryOrderService extends ShopBaseService {
 
     }
 
-    /**
-     * @param orderStatus
-     * @return
-     */
-    public boolean isSameInquiry(Byte orderStatus){
-        boolean flag=false;
-        //相同用户，相同患者发起的相同科室、医生的问诊订单的状态为待支付，待接诊，接诊中
-        if(orderStatus.equals(InquiryOrderConstant.ORDER_TO_PAID)||orderStatus.equals(InquiryOrderConstant.ORDER_TO_RECEIVE)||orderStatus.equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            flag=true;
-        }
-        return flag;
-    }
+
     /**
      * 支付微信接口
      * @param param
@@ -185,12 +190,6 @@ public class InquiryOrderService extends ShopBaseService {
     public WebPayVo payInquiryOrder(InquiryToPayParam param){
         logger().info("创建问诊订单-开始");
         WebPayVo vo = new WebPayVo();
-//        InquiryOrderDo orderDo=inquiryOrderDao.getOrderByParams(param);
-        //存在相同未完成的订单
-//        if(isSameInquiry(orderDo.getOrderStatus())){
-//            vo.setOrderSn(orderDo.getOrderSn());
-//            return vo;
-//        }
         //支付类型
         String payCode = InquiryOrderConstant.PAY_CODE_WX_PAY;
         InquiryOrderDo inquiryOrderDo=new InquiryOrderDo();
@@ -217,6 +216,9 @@ public class InquiryOrderService extends ShopBaseService {
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){
+        if(StringUtils.isNotBlank(payParam.getOrderSn())){
+            return payParam.getOrderSn();
+        }
         String orderSn = IncrSequenceUtil.generateOrderSn(InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX);
         PatientOneParam patientOneParam=patientService.getOneInfo(payParam.getPatientId());
         DepartmentOneParam department=departmentDao.getOneInfo(payParam.getDepartmentId());

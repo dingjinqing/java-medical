@@ -10,13 +10,9 @@ import lombok.Data;
 @Data
 public class ImSessionPullMsgParam {
     /**
-     * 科室id
+     *  会话id
      */
-    private Integer departmentId;
-    /**
-     * 患者id
-     */
-    private Integer patientId;
+    private Integer sessionId;
     /**
      * 要拉取的信息的对方 医生拉取的时候就是用户的id，如果是用户的话就是医师的id
      */
