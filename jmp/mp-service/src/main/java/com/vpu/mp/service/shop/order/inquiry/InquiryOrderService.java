@@ -146,17 +146,17 @@ public class InquiryOrderService extends ShopBaseService {
      * @param param
      * @return
      */
-    public String getUndoneOrder(InquiryOrderParam param){
+    public InquiryOrderDo getUndoneOrder(InquiryOrderParam param){
         List<InquiryOrderDo> list=inquiryOrderDao.getOrderByParams(param);
-        List<String> orderSnList=list.stream().filter(inquiryOrderDo -> {
+        List<InquiryOrderDo> retList=list.stream().filter(inquiryOrderDo -> {
             Byte orderStatus=inquiryOrderDo.getOrderStatus();
                 if(orderStatus.equals(InquiryOrderConstant.ORDER_TO_PAID)||orderStatus.equals(InquiryOrderConstant.ORDER_TO_RECEIVE)||orderStatus.equals(InquiryOrderConstant.ORDER_RECEIVING)) {
                     return true;
                 }
                 return false;
-        }).map(InquiryOrderDo::getOrderSn).collect(Collectors.toList());
-        if(orderSnList!=null&&orderSnList.size()>0){
-            return orderSnList.get(0);
+        }).collect(Collectors.toList());
+        if(retList!=null&&retList.size()>0){
+            return retList.get(0);
         }
         return null;
     }
