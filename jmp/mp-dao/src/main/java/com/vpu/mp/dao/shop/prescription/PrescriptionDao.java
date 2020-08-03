@@ -256,7 +256,7 @@ public class PrescriptionDao extends ShopBaseDao {
     public List<String> getValidPrescriptionByPatient(Integer patientId) {
         return db().select(PRESCRIPTION.PRESCRIPTION_CODE).from(PRESCRIPTION)
             .where(PRESCRIPTION.PATIENT_ID.eq(patientId))
-                .and(PRESCRIPTION.IS_VALID.gt(BaseConstant.YES)
+                .and(PRESCRIPTION.IS_VALID.eq(BaseConstant.YES)
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(String.class);
     }
@@ -271,7 +271,7 @@ public class PrescriptionDao extends ShopBaseDao {
         return db().select(PRESCRIPTION.PRESCRIPTION_CODE).from(PRESCRIPTION)
             .where(PRESCRIPTION.PATIENT_ID.eq(param.getPatientId()))
                 .and(PRESCRIPTION.USER_ID.eq(param.getUserId()))
-                    .and(PRESCRIPTION.IS_VALID.gt(BaseConstant.YES)
+                    .and(PRESCRIPTION.IS_VALID.eq(BaseConstant.YES)
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(String.class);
     }
