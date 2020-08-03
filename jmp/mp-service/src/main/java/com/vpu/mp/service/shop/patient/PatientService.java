@@ -221,6 +221,7 @@ public class PatientService extends BaseShopConfigService{
             userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(userPatientDetail.getFamilyDiseaseHistory()));
             userPatientDetail.setDiseaseHistoryStr(strDisease(userPatientDetail.getDiseaseHistory()));
             userPatientDetail.setFamilyDiseaseHistoryStr(strDisease(userPatientDetail.getFamilyDiseaseHistory()));
+            userPatientDetail.setId(userPatientDetail.getPatientId());
             return userPatientDetail;
         }
     }
