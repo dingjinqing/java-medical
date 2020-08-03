@@ -286,27 +286,27 @@
       </view>
     </view>
 
-    <view class="prescription-item" bindtap="handleShowDialog">
-			<view class="item-title" style="background: #DBEFEE url({{imageUrl}}image/wxapp/order-prescription-bg.png) no-repeat left top/100% 80rpx;">电子处方1</view>
+    <view class="prescription-item" bindtap="handleShowDialog" data-prescription-code="{{item.prescriptionCode}}" wx:if="{{orderInfo.prescriptionList.length}}" wx:for="{{orderInfo.prescriptionList}}">
+			<view class="item-title" style="background: #DBEFEE url({{imageUrl}}image/wxapp/order-prescription-bg.png) no-repeat left top/100% 80rpx;">电子处方</view>
 			<view class="item-list-content">
 				<view class="item-list">
 					<view class="list-item">
 						<text class="list-item-dot"></text>
 						<view class="list-item-content">
-							诊断：原发性高血压
+							诊断：{{item.diagnosisName}}
 						</view>
 					</view>
 					<view class="list-item">
 						<text class="list-item-dot"></text>
 						<view class="list-item-content">
-							科室：神经科
+							科室：{{item.departmentName}}
 						</view>
 					</view>
 				</view>
 			</view>
 			<view class="doctor-info">
-				<text class="doctor-name">医师：张三</text>
-				<text class="item-date">日期：2020.06.30</text>
+				<text class="doctor-name">医师：{{item.doctorName}}</text>
+				<text class="item-date">日期：{{filter.substring(item.prescriptionCreateTime,0,10)}}</text>
 			</view>
 		</view>
 
@@ -365,4 +365,4 @@
 
 <v-pre-sale-rule show="{{preSaleRuleShow}}" />
 <!-- 处方详情展示弹窗 -->
-<v-prescription-dialog show="{{showPrescription}}" />
+<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>
