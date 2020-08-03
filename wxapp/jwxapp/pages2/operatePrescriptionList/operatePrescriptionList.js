@@ -28,7 +28,7 @@ global.wxPage({
           })
         } else {
           this.setData({
-            ['dataList[' + (parseInt(currentPage) - 1) + ']']:res.content.dataList
+            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']:res.content.dataList
           })
         }
         this.setData({

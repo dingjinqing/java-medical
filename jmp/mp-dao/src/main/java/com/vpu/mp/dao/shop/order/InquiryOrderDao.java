@@ -9,6 +9,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -132,5 +133,18 @@ public class InquiryOrderDao extends ShopBaseDao {
     public List<InquiryOrderDo>  getCanceledToWaitingCloseOrder(){
         return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_RECEIVE))
             .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(0-InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetchInto(InquiryOrderDo.class);
+    }
+
+    /**
+     * @param param
+     * @return
+     */
+    public InquiryOrderDo getOrderByParams(InquiryToPayParam param){
+        InquiryOrderDo inquiryOrderDo= db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.USER_ID.eq(param.getUser().getUserId())
+            .and(INQUIRY_ORDER.PATIENT_ID.eq(param.getPatientId()))
+            .and(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId())
+        .and(INQUIRY_ORDER.DEPARTMENT_ID.eq(param.getDepartmentId()))
+        )).fetchOneInto(InquiryOrderDo.class);
+        return inquiryOrderDo;
     }
 }

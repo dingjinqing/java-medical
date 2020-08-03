@@ -34,7 +34,7 @@ public class DoctorMessageCountVo {
     /**
      * 待续方数量
      */
-    private Integer notPrescription;
+    private Integer notOrderGoodsCount;
 
     /**
      * 续方列表是否有未读

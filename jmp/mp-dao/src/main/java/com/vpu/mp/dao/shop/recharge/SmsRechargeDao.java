@@ -1,10 +1,10 @@
 package com.vpu.mp.dao.shop.recharge;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.pojo.shop.table.RechargeDo;
+import com.vpu.mp.common.pojo.shop.table.SmsRechargeDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.db.shop.tables.Recharge;
-import com.vpu.mp.db.shop.tables.records.RechargeRecord;
+import com.vpu.mp.db.shop.tables.SmsRecharge;
+import com.vpu.mp.db.shop.tables.records.SmsRechargeRecord;
 import com.vpu.mp.service.pojo.shop.sms.recharge.SmsAccountRechargeListVo;
 import com.vpu.mp.service.pojo.shop.sms.recharge.SmsRechargeRecordVo;
 import org.springframework.stereotype.Repository;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
  **/
 
 @Repository
-public class RechargeDao extends ShopBaseDao {
+public class SmsRechargeDao extends ShopBaseDao {
 
     /**
      * 插入拉取的充值记录
@@ -24,12 +24,12 @@ public class RechargeDao extends ShopBaseDao {
      */
     public void fetchRechargeList(SmsAccountRechargeListVo smsAccountRechargeListVo) {
         for (SmsRechargeRecordVo smsRechargeRecordVo : smsAccountRechargeListVo.getData()) {
-            RechargeDo rechargeDo = new RechargeDo();
+            SmsRechargeDo rechargeDo = new SmsRechargeDo();
             rechargeDo.setSid(smsAccountRechargeListVo.getSid());
             rechargeDo.setVersion(smsAccountRechargeListVo.getVersion());
             rechargeDo.setTotal(smsAccountRechargeListVo.getTotal());
             FieldsUtil.assign(smsRechargeRecordVo, rechargeDo);
-            RechargeRecord rechargeRecord = db().newRecord(Recharge.RECHARGE, rechargeDo);
+            SmsRechargeRecord rechargeRecord = db().newRecord(SmsRecharge.SMS_RECHARGE, rechargeDo);
             rechargeRecord.insert();
         }
     }

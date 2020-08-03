@@ -76,7 +76,7 @@ global.wxPage({
           })
         }
         util.jumpLink(`pages2/doctorChat/doctorChat${util.getUrlParams({
-          targetUserInfo:JSON.stringify({...target,parentIndex}),
+          targetUserInfo:JSON.stringify({...{...target,sessionStatus:1},parentIndex}),
           source:'inquiryList'
         })}`)
       }

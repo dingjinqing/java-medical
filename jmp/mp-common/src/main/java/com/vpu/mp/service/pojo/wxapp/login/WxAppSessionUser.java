@@ -76,10 +76,6 @@ public class WxAppSessionUser {
 	@JsonProperty(value = "pharmacist_id")
     Integer pharmacistId;
 
-	@JsonProperty(value = "doctor_main_date")
-    Timestamp doctorMainDate;
-
-	
 	/**
 	 * 用户登录session信息
 	 * @author lixinguo

@@ -5,7 +5,7 @@
 			<view>
 				<icon size="14" type="search" role="img"></icon>
 			</view>
-			<input placeholder='搜索医生、科室、疾病' ></input>
+			<input placeholder='搜索医生、科室、疾病'></input>
 		</view>
 	</view>
 
@@ -20,23 +20,36 @@
 			</block>
 			<view class="dep_item" catchtap="toAllDepartment">全部科室</view>
 		</view>
-		<doctor-list doctor-list='{{doctorList}}'/>
+		<doctor-list doctor-list='{{doctorList}}' />
 	</block>
 	<block wx:else>
 		<view class='chat_content'>
-			<view class="chat_item">
-				<view class="chat_left">
-					<image src="https://bkimg.cdn.bcebos.com/pic/37d3d539b6003af3a09e2944372ac65c1038b6ea?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"></image>
-				</view>
-				<view class="chat_right">
-					<view class="c_r_top clearfix">
-						<text>吴晓红</text>
-						<text>2020-07-14</text>
+			<block wx:for='{{dataList}}' wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+				<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+					<view class="chat_item">
+						<view class="chat_left">
+							<image src="https://bkimg.cdn.bcebos.com/pic/37d3d539b6003af3a09e2944372ac65c1038b6ea?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg"></image>
+						</view>
+						<view class="chat_right">
+							<view class="c_r_top clearfix">
+								<view>
+									<text>{{item.doctorName}}</text>
+									<text>{{item.departmentName}}</text>
+									<text class='fr {{item.sessionStatus == 0 ? "wait" : (item.sessionStatus == 1 ? "online" : " end")}}'>{{item.sessionStatus == 0 ? "待接诊" : (item.sessionStatus == 1 ? "会话中" : (item.sessionStatus == 2 ? "会话取消" : "会话结束"))}}</text>
+								</view>
+
+							</view>
+							<view class="c_r_bot">
+								<text>{{item.createTime}}</text>
+							</view>
+						</view>
 					</view>
-					<view class="c_r_bot">
-						<text>皮肤科</text>
-					</view>
-				</view>
+				</block>
+
+			</block>
+			<view class="is-null" wx:if="{{dataList[0].length <= 0}}">
+				<image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+				<text>您还没有相应记录</text>
 			</view>
 		</view>
 	</block>
