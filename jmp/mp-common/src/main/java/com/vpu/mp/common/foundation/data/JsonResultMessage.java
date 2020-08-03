@@ -1,7 +1,5 @@
 package com.vpu.mp.common.foundation.data;
 
-import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementVo;
-
 /**
  * @author 新国
  */
@@ -1350,6 +1348,8 @@ public class JsonResultMessage {
     public static final String IM_SESSION_NOT_EXIST = "im.session.not.exist";
 
     public static final String IM_SESSION_PARAM_LACK = "im.session.param.lack";
+
+    public static final String IM_SESSION_CAN_NOT_USE = "im.session.can.not.use";
 
     /**
      * 问诊订单
