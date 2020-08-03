@@ -57,11 +57,19 @@ global.wxComponent({
       util.api('/api/wxapp/inquiry/order/undone/get', function (res) {
         console.log(res)
         if (res.error == 0) {
-
-        } else {
-          util.navigateTo({
-            url: "/pages2/doctorPatientMessage/doctorPatientMessage?doctor_id=" + doctor_id + "&depar_id=" + depar_id + "&price=" + price
-          })
+          let {
+            orderSn,
+            orderStatus
+          } = res.content;
+          if (orderStatus == 1 || orderStatus == 2) {
+            util.navigateTo({
+              url: "/pages2/patientChat/patientChat?orderSn=" + orderSn
+            })
+          } else {
+            util.navigateTo({
+              url: "/pages2/doctorPatientMessage/doctorPatientMessage?doctor_id=" + doctor_id + "&depar_id=" + depar_id + "&price=" + price
+            })
+          }
         }
       }, {
         userId: util.getCache('user_id'),

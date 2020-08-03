@@ -172,5 +172,14 @@ global.wxPage({
     }, {
       ...this.data.pageParams
     })
+  },
+  toChat(e){
+    let status = e.currentTarget.dataset.status;
+    let orderSn = e.currentTarget.dataset.orderSn;
+    if(status == 1 || status == 2){
+      util.navigateTo({
+        url: "/pages2/patientChat/patientChat?orderSn=" + orderSn
+      })
+    }
   }
 })
