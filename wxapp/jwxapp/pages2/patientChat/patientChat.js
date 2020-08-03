@@ -51,7 +51,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.requsetMessage()
+    this.requestHistoryChat()
   },
 
   /**
@@ -243,5 +243,34 @@ global.wxPage({
       }, {
         orderSn: orderSn,
       })
+  },
+  async requestHistoryChat(){
+    let data = await this.historyChatApi()
+    if(data) this.requsetMessage()
+  },
+  historyChatApi(){
+    return new Promise((resolve,reject)=>{
+      util.api('/api/wxapp/im/session/render',res=>{
+        console.log(res)
+        if(res.error === 0 && res.content.dataList.length){
+          let newChatContent = res.content.dataList.reduce((defaultValue,item)=>{
+            defaultValue.push({  
+              position:item.doctor ? 0 : 1,
+              messageInfo:{
+                message:JSON.parse(item.message),
+                type:item.type
+              }
+            })
+            return defaultValue
+          },[])
+          this.setData({
+            chatContent:[...newChatContent]
+          })
+        }
+        resolve(res)
+      },{
+        sessionId:this.data.targetUserInfo.id
+      })
+    }) 
   }
 })
