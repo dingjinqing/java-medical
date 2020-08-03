@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.order.inquiry;
 
-import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
@@ -173,8 +172,6 @@ public class InquiryOrderService extends ShopBaseService {
         order.setPayTime(DateUtils.getLocalDateTime());
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
-        //修改会话问诊状态
-        imSessionService.updateSessionStatus(order.getOrderSn(), ImSessionConstant.SESSION_READY_TO_START);
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
@@ -215,8 +212,6 @@ public class InquiryOrderService extends ShopBaseService {
         ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
         FieldsUtil.assign(orderInfo,imSessionNewParam);
         imSessionService.insertNewSession(imSessionNewParam);
-        // 临时添加，正式使用时候删除
-        imSessionService.updateSessionStatus(orderSn,ImSessionConstant.SESSION_READY_TO_START);
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){

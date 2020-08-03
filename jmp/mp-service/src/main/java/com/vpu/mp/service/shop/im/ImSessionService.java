@@ -157,11 +157,11 @@ public class ImSessionService extends ShopBaseService {
         imSessionDo.setUserId(param.getUserId());
         imSessionDo.setPatientId(param.getPatientId());
         imSessionDo.setOrderSn(param.getOrderSn());
-        imSessionDo.setSessionStatus(ImSessionConstant.SESSION_READY_TO_PAY);
+        imSessionDo.setSessionStatus(ImSessionConstant.SESSION_READY_TO_START);
 
         imSessionDao.insert(imSessionDo);
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), imSessionDo.getId());
-        jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_READY_TO_PAY.toString());
+        jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_READY_TO_START.toString());
         return imSessionDo.getId();
     }
 
@@ -177,24 +177,6 @@ public class ImSessionService extends ShopBaseService {
         imSessionDao.update(imSessionDo);
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
         jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
-    }
-
-    /**
-     * 修改会话状态
-     * @param orderSn
-     * @param status
-     */
-    public void updateSessionStatus(String orderSn, Byte status) {
-        ImSessionDo imSessionDo = imSessionDao.getByOrderSn(orderSn);
-        if (imSessionDo == null) {
-            return;
-        }
-        imSessionDao.updateSessionStatus(imSessionDo.getId(), status);
-
-        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), imSessionDo.getId());
-        if (jedisManager.exists(sessionRedisStatusKey)) {
-            jedisManager.set(sessionRedisStatusKey, status.toString());
-        }
     }
 
     /**
@@ -232,6 +214,19 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
+     * 关闭对话session
+     * @param sessionId 会话id
+     */
+    public void closeImSession(Integer sessionId) {
+        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
+        if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
+            return;
+        }
+        clearSessionRedisInfoAndDumpToDb(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
+        imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END);
+    }
+
+    /**
      * 将消息发送，存储至redis
      * @param sendMsgParam 会话消息
      */
@@ -259,19 +254,6 @@ public class ImSessionService extends ShopBaseService {
             return null;
         }
         return dumpSessionReadyToBak(getShopId(), param.getSessionId(), param.getPullFromId(), param.getSelfId());
-    }
-
-    /**
-     * 关闭对话session
-     * @param sessionId 会话id
-     */
-    public void closeImSession(Integer sessionId) {
-        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
-        if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
-            return;
-        }
-        clearSessionRedisInfoAndDumpToDb(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
-        imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END);
     }
 
     /**

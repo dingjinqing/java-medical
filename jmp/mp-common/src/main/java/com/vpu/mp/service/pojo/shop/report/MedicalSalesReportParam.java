@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.report;
 
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -10,7 +11,7 @@ import java.sql.Timestamp;
  * @date 2020/7/31 14:59
  */
 @Data
-public class MedicalSalesReportParam {
+public class MedicalSalesReportParam extends BasePageParam {
 
     /**
      * 开始时间
@@ -20,4 +21,5 @@ public class MedicalSalesReportParam {
      * 结束时间
      */
     private Timestamp endTime;
+
 }
