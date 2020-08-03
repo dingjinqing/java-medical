@@ -149,11 +149,11 @@ public class ImSessionService extends ShopBaseService {
         imSessionDo.setUserId(param.getUserId());
         imSessionDo.setPatientId(param.getPatientId());
         imSessionDo.setOrderSn(param.getOrderSn());
-        imSessionDo.setSessionStatus(ImSessionConstant.SESSION_READY_TO_START);
+        imSessionDo.setSessionStatus(ImSessionConstant.SESSION_READY_TO_PAY);
 
         imSessionDao.insert(imSessionDo);
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), imSessionDo.getId());
-        jedisManager.set(sessionRedisStatusKey,ImSessionConstant.SESSION_READY_TO_START.toString());
+        jedisManager.set(sessionRedisStatusKey,ImSessionConstant.SESSION_READY_TO_PAY.toString());
         return imSessionDo.getId();
     }
 
@@ -169,6 +169,22 @@ public class ImSessionService extends ShopBaseService {
         imSessionDao.update(imSessionDo);
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(),sessionId);
         jedisManager.set(sessionRedisStatusKey,ImSessionConstant.SESSION_ON.toString());
+    }
+
+    /**
+     * 修改会话状态
+     * @param orderSn
+     * @param status
+     */
+    public void updateSessionStatus(String orderSn,Byte status){
+        ImSessionDo imSessionDo = imSessionDao.getByOrderSn(orderSn);
+        if (imSessionDo == null) {
+            return;
+        }
+        imSessionDao.updateSessionStatus(imSessionDo.getId(),status);
+
+        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(),imSessionDo.getId());
+        jedisManager.set(sessionRedisStatusKey,status.toString());
     }
 
     /**

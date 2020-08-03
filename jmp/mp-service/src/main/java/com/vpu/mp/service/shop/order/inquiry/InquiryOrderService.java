@@ -1,9 +1,12 @@
 package com.vpu.mp.service.shop.order.inquiry;
 
-import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
@@ -11,15 +14,14 @@ import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
-import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
@@ -38,9 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -174,9 +174,7 @@ public class InquiryOrderService extends ShopBaseService {
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
         //添加会话问诊
-        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
-        FieldsUtil.assign(order,imSessionNewParam);
-        imSessionService.insertNewSession(imSessionNewParam);
+        imSessionService.updateSessionStatus(order.getOrderSn(), ImSessionConstant.SESSION_READY_TO_START);
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
@@ -213,6 +211,13 @@ public class InquiryOrderService extends ShopBaseService {
         InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
         inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         logger().debug("微信支付创建订单结束");
+        //添加会话问诊
+        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
+        FieldsUtil.assign(orderInfo,imSessionNewParam);
+        Integer sessionId = imSessionService.insertNewSession(imSessionNewParam);
+        // 临时添加，正式使用时候删除
+        imSessionService.updateSessionStatus(orderSn,ImSessionConstant.SESSION_READY_TO_START);
+        vo.setSessionId(sessionId);
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){
