@@ -28,7 +28,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImSessionItemRecord extends UpdatableRecordImpl<ImSessionItemRecord> implements Record8<Integer, Integer, Integer, Integer, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1209941702;
+    private static final long serialVersionUID = -752850618;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_im_session_item.id</code>. 主键id
@@ -59,16 +59,16 @@ public class ImSessionItemRecord extends UpdatableRecordImpl<ImSessionItemRecord
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_im_session_item.form_id</code>. 本条消息发起者id 医师id或用户userId
+     * Setter for <code>mini_shop_471752.b2c_im_session_item.from_id</code>. 本条消息发起者id 医师id或用户userId
      */
-    public void setFormId(Integer value) {
+    public void setFromId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_im_session_item.form_id</code>. 本条消息发起者id 医师id或用户userId
+     * Getter for <code>mini_shop_471752.b2c_im_session_item.from_id</code>. 本条消息发起者id 医师id或用户userId
      */
-    public Integer getFormId() {
+    public Integer getFromId() {
         return (Integer) get(2);
     }
 
@@ -101,14 +101,14 @@ public class ImSessionItemRecord extends UpdatableRecordImpl<ImSessionItemRecord
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型
+     * Setter for <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型 0文本 1图片 2处方
      */
     public void setType(Byte value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型
+     * Getter for <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型 0文本 1图片 2处方
      */
     public Byte getType() {
         return (Byte) get(5);
@@ -195,7 +195,7 @@ public class ImSessionItemRecord extends UpdatableRecordImpl<ImSessionItemRecord
      */
     @Override
     public Field<Integer> field3() {
-        return ImSessionItem.IM_SESSION_ITEM.FORM_ID;
+        return ImSessionItem.IM_SESSION_ITEM.FROM_ID;
     }
 
     /**
@@ -259,7 +259,7 @@ public class ImSessionItemRecord extends UpdatableRecordImpl<ImSessionItemRecord
      */
     @Override
     public Integer component3() {
-        return getFormId();
+        return getFromId();
     }
 
     /**
@@ -323,7 +323,7 @@ public class ImSessionItemRecord extends UpdatableRecordImpl<ImSessionItemRecord
      */
     @Override
     public Integer value3() {
-        return getFormId();
+        return getFromId();
     }
 
     /**
@@ -389,7 +389,7 @@ public class ImSessionItemRecord extends UpdatableRecordImpl<ImSessionItemRecord
      */
     @Override
     public ImSessionItemRecord value3(Integer value) {
-        setFormId(value);
+        setFromId(value);
         return this;
     }
 
@@ -468,12 +468,12 @@ public class ImSessionItemRecord extends UpdatableRecordImpl<ImSessionItemRecord
     /**
      * Create a detached, initialised ImSessionItemRecord
      */
-    public ImSessionItemRecord(Integer id, Integer imSessionId, Integer formId, Integer toId, String message, Byte type, Timestamp sendTime, Timestamp createTime) {
+    public ImSessionItemRecord(Integer id, Integer imSessionId, Integer fromId, Integer toId, String message, Byte type, Timestamp sendTime, Timestamp createTime) {
         super(ImSessionItem.IM_SESSION_ITEM);
 
         set(0, id);
         set(1, imSessionId);
-        set(2, formId);
+        set(2, fromId);
         set(3, toId);
         set(4, message);
         set(5, type);
