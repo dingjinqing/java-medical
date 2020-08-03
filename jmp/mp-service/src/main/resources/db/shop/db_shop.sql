@@ -5023,7 +5023,7 @@ create TABLE `b2c_im_session`(
 create TABLE `b2c_im_session_item`(
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
     `im_session_id` int(11)  NOT NULL COMMENT '会话id',
-    `form_id` int(11) COMMENT '本条消息发起者id 医师id或用户userId',
+    `from_id` int(11) COMMENT '本条消息发起者id 医师id或用户userId',
     `to_id` int(11) COMMENT '本跳消息接收者id  医师id或用户userId',
     `message` varchar(2048) COMMENT '本条消息内容',
     `type` tinyint(1) COMMENT '消息类型 0文本 1图片 2处方 3患者病历简略信息',

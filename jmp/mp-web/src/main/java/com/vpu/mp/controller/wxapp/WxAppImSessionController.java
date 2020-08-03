@@ -1,15 +1,14 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.wxapp.medical.im.SessionTest;
+import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
-import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
-import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPullMsgParam;
-import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionSendMsgParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
-import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionRenderVo;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,7 @@ import java.util.List;
  * @date 2020年07月21日
  */
 @RestController
-public class WxAppImSessionController extends WxAppBaseController{
+public class WxAppImSessionController extends WxAppBaseController {
 
     @Autowired
     private ImSessionService imSessionService;
@@ -36,26 +35,31 @@ public class WxAppImSessionController extends WxAppBaseController{
     }
 
     /**
-     *  过往聊天内容初始化
-     * @param sessionId 会话id
+     * 过往聊天内容初始化
+     * @param param 会话详情查询分页信息
      * @return 过往会话内容
      */
-    @PostMapping("/api/wxapp/im/session/render/{sessionId}")
-    public JsonResult renderSession(@PathVariable("sessionId") Integer sessionId) {
-        if (sessionId == null) {
+    @PostMapping("/api/wxapp/im/session/render")
+    public JsonResult renderSession(@RequestBody ImSessionRenderPageParam param) {
+        if (param.getSessionId() == null) {
             return fail(JsonResultCode.IM_SESSION_ID_IS_NULL);
         }
 
-        if (!imSessionService.sessionExist(sessionId)) {
+        if (!imSessionService.sessionExist(param.getSessionId())) {
             return fail(JsonResultCode.IM_SESSION_NOT_EXIST);
         }
 
-        ImSessionRenderVo imSessionRenderVo = imSessionService.renderSession(sessionId);
-        return success(imSessionRenderVo);
+        PageResult<ImSessionItemRenderVo> imSessionItemRenderVoPageResult = imSessionService.renderSession(param);
+        return success(imSessionItemRenderVoPageResult);
     }
 
+    /**
+     * 查询会话状态
+     * @param sessionId
+     * @return
+     */
     @PostMapping("/api/wxapp/im/session/status/{sessionId}")
-    public JsonResult getSessionStatus(@PathVariable("sessionId") Integer sessionId){
+    public JsonResult getSessionStatus(@PathVariable("sessionId") Integer sessionId) {
         if (sessionId == null) {
             return fail(JsonResultCode.IM_SESSION_ID_IS_NULL);
         }
@@ -63,8 +67,19 @@ public class WxAppImSessionController extends WxAppBaseController{
         if (!imSessionService.sessionExist(sessionId)) {
             return fail(JsonResultCode.IM_SESSION_NOT_EXIST);
         }
+        ImSessionDo imSessionDo = imSessionService.getSessionInfoById(sessionId);
+        return success(imSessionDo.getSessionStatus());
+    }
 
-        return success(imSessionService.getSessionStatus(sessionId));
+    /**
+     * 根据订单号查询会话信息
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/im/session/get/orderSn")
+    public JsonResult getSessionIdByOrderSn(@RequestBody ImSessionQueryParam param){
+        ImSessionDo imSessionDo = imSessionService.getSessionInfoByOrderSn(param.getOrderSn());
+        return success(imSessionDo.getId());
     }
 
     /**
@@ -102,11 +117,15 @@ public class WxAppImSessionController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/api/wxapp/im/session/send")
-    public JsonResult sendMsg(@RequestBody ImSessionSendMsgParam param){
-        if (param.getDepartmentId() == null || param.getPatientId() == null || param.getFromId() == null || param.getToId() == null) {
+    public JsonResult sendMsg(@RequestBody ImSessionSendMsgParam param) {
+        if (param.getSessionId() == null || param.getFromId() == null || param.getToId() == null) {
             return fail(JsonResultCode.IM_SESSION_PARAM_LACK);
         }
-        imSessionService.sendMsg(param);
+        Byte status = imSessionService.sendMsg(param);
+        if (ImSessionConstant.SESSION_CAN_NOT_USE.equals(status)) {
+            return fail(JsonResultCode.IM_SESSION_CAN_NOT_USE);
+        }
+
         return success();
     }
 
@@ -116,24 +135,14 @@ public class WxAppImSessionController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/api/wxapp/im/session/pull")
-    public JsonResult pullMsg(@RequestBody  ImSessionPullMsgParam param){
-        if (param.getDepartmentId() == null || param.getPatientId() == null || param.getPullFromId() == null || param.getSelfId() == null) {
+    public JsonResult pullMsg(@RequestBody ImSessionPullMsgParam param) {
+        if (param.getSessionId() == null || param.getPullFromId() == null || param.getSelfId() == null) {
             return fail(JsonResultCode.IM_SESSION_PARAM_LACK);
         }
         List<ImSessionItemBase> imSessionItemPullVos = imSessionService.pullMsg(param);
+        if (imSessionItemPullVos == null) {
+            return fail(JsonResultCode.IM_SESSION_CAN_NOT_USE);
+        }
         return success(imSessionItemPullVos);
     }
-
-    @PostMapping("/api/wxapp/im/session/test")
-    public JsonResult test(@RequestBody SessionTest sessionTest) {
-        if (Integer.valueOf(1).equals(sessionTest.getType())) {
-            imSessionService.batchCancelSession(sessionTest.getOrderSns());
-        }
-
-        if (Integer.valueOf(1).equals(sessionTest.getType())) {
-            imSessionService.batchCloseSession(sessionTest.getOrderSns());
-        }
-        return success();
-    }
-
 }

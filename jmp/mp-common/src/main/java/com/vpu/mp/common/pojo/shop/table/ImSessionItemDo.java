@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 public class ImSessionItemDo {
     private Integer   id;
     private Integer   imSessionId;
-    private Integer   formId;
+    private Integer   fromId;
     private Integer   toId;
     private String    message;
     private Byte type;

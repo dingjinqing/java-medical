@@ -1,6 +1,7 @@
 package com.vpu.mp.dao.shop.prescription;
 
 import cn.hutool.core.date.DateUtil;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -254,8 +255,8 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public List<String> getValidPrescriptionByPatient(Integer patientId) {
         return db().select(PRESCRIPTION.PRESCRIPTION_CODE).from(PRESCRIPTION)
-            .where(PRESCRIPTION.PATIENT_ID.eq(patientId)
-                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
+            .where(PRESCRIPTION.PATIENT_ID.eq(patientId))
+                .and(PRESCRIPTION.IS_VALID.eq(BaseConstant.YES)
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(String.class);
     }
@@ -268,9 +269,9 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public List<String> getValidPrescriptionByUserPatient(UserPatientParam param) {
         return db().select(PRESCRIPTION.PRESCRIPTION_CODE).from(PRESCRIPTION)
-            .where(PRESCRIPTION.PATIENT_ID.eq(param.getPatientId())
+            .where(PRESCRIPTION.PATIENT_ID.eq(param.getPatientId()))
                 .and(PRESCRIPTION.USER_ID.eq(param.getUserId()))
-                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
+                    .and(PRESCRIPTION.IS_VALID.eq(BaseConstant.YES)
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(String.class);
     }

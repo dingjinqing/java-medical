@@ -110,8 +110,7 @@ global.wxPage({
         })
     }
     }, {
-      departmentId: this.data.targetUserInfo.departmentId,
-      patientId: this.data.targetUserInfo.patientId,
+      sessionId:this.data.targetUserInfo.id,
       pullFromId: this.data.targetUserInfo.userId,
       selfId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id
     }, '', false);
@@ -144,8 +143,7 @@ global.wxPage({
         this.pageScrollBottom()
       }
     },{
-      departmentId:this.data.targetUserInfo.departmentId,
-      patientId:this.data.targetUserInfo.patientId,
+      sessionId:this.data.targetUserInfo.id,
       fromId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       toId:this.data.targetUserInfo.userId,
       imSessionItem

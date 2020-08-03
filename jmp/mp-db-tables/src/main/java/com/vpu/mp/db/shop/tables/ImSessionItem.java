@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
 
-    private static final long serialVersionUID = 120253952;
+    private static final long serialVersionUID = 622861024;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_im_session_item</code>
@@ -57,9 +57,9 @@ public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
     public final TableField<ImSessionItemRecord, Integer> IM_SESSION_ID = createField("im_session_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "会话id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_im_session_item.form_id</code>. 本条消息发起者id 医师id或用户userId
+     * The column <code>mini_shop_471752.b2c_im_session_item.from_id</code>. 本条消息发起者id 医师id或用户userId
      */
-    public final TableField<ImSessionItemRecord, Integer> FORM_ID = createField("form_id", org.jooq.impl.SQLDataType.INTEGER, this, "本条消息发起者id 医师id或用户userId");
+    public final TableField<ImSessionItemRecord, Integer> FROM_ID = createField("from_id", org.jooq.impl.SQLDataType.INTEGER, this, "本条消息发起者id 医师id或用户userId");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session_item.to_id</code>. 本跳消息接收者id  医师id或用户userId
@@ -72,14 +72,14 @@ public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
     public final TableField<ImSessionItemRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(2048), this, "本条消息内容");
 
     /**
-     * The column <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型
+     * The column <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型 0文本 1图片 2处方
      */
-    public final TableField<ImSessionItemRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT, this, "消息类型");
+    public final TableField<ImSessionItemRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT, this, "消息类型 0文本 1图片 2处方");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session_item.send_time</code>. 用户消息发送时间
      */
-    public final TableField<ImSessionItemRecord, Timestamp> SEND_TIME = createField("send_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "用户消息发送时间");
+    public final TableField<ImSessionItemRecord, Timestamp> SEND_TIME = createField("send_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "用户消息发送时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session_item.create_time</code>. 生成时间

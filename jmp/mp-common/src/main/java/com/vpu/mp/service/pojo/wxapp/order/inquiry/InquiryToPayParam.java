@@ -22,6 +22,7 @@ public class InquiryToPayParam {
     private Integer patientId;
     private List<ImageSimpleVo> imageList=new ArrayList<>();
     private String descriptionDisease;
+    private String orderSn;
     /**支付金额*/
     private BigDecimal orderAmount =BigDecimal.ZERO;
 }
