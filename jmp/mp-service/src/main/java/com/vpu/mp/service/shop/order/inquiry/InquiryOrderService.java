@@ -185,12 +185,12 @@ public class InquiryOrderService extends ShopBaseService {
     public WebPayVo payInquiryOrder(InquiryToPayParam param){
         logger().info("创建问诊订单-开始");
         WebPayVo vo = new WebPayVo();
-        InquiryOrderDo orderDo=inquiryOrderDao.getOrderByParams(param);
+//        InquiryOrderDo orderDo=inquiryOrderDao.getOrderByParams(param);
         //存在相同未完成的订单
-        if(isSameInquiry(orderDo.getOrderStatus())){
-            vo.setOrderSn(orderDo.getOrderSn());
-            return vo;
-        }
+//        if(isSameInquiry(orderDo.getOrderStatus())){
+//            vo.setOrderSn(orderDo.getOrderSn());
+//            return vo;
+//        }
         //支付类型
         String payCode = InquiryOrderConstant.PAY_CODE_WX_PAY;
         InquiryOrderDo inquiryOrderDo=new InquiryOrderDo();
