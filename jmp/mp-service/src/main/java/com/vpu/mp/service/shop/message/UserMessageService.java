@@ -1,8 +1,12 @@
 package com.vpu.mp.service.shop.message;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.dao.shop.message.MessageDao;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
+import com.vpu.mp.dao.shop.session.ImSessionDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountParam;
+import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
@@ -11,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.vpu.mp.service.pojo.shop.im.ImSessionConstant.IM_SESSION_STATUS_NOT_USE;
 
 /**
  * @author 赵晓东
@@ -20,10 +23,19 @@ import static com.vpu.mp.service.pojo.shop.im.ImSessionConstant.IM_SESSION_STATU
  **/
 
 @Service
-public class MessageService extends ShopBaseService {
+public class UserMessageService extends ShopBaseService {
 
     @Autowired
     private MessageDao messageDao;
+
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
+
+    @Autowired
+    private ImSessionDao imSessionDao;
+
+    @Autowired
+    private PrescriptionDao prescriptionDao;
 
 
     /**
@@ -70,11 +82,30 @@ public class MessageService extends ShopBaseService {
      * @param doctorId 医师id
      * @return DoctorMessageCountVo
      */
-    public DoctorMessageCountVo countDoctorMessage(Integer doctorId) {
+    public DoctorMessageCountVo countDoctorMessage(Integer doctorId, DoctorMainShowParam doctorMainShowParam) {
+        // 将访问当前页面时间置入缓存中，如果存在上次缓存
         DoctorMessageCountVo doctorMessageCountVo = new DoctorMessageCountVo();
-        doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorId, IM_SESSION_STATUS_NOT_USE));
-        doctorMessageCountVo.setNotOrderInfoCount(messageDao.countDoctorOrderMessageMum(IM_SESSION_STATUS_NOT_USE));
-        doctorMessageCountVo.setNotPrescription(messageDao.countDoctorPrescriptionMessageMum(IM_SESSION_STATUS_NOT_USE));
+        // 根据缓存时间判断数据库中是否有未读新增数据
+        // 根据时间判断是否有未读已续方消息
+        Byte existOrderGoods = orderGoodsDao.isExistAlreadyReadOrderGoods(doctorMainShowParam.getLastReadOrderGoodsTime());
+        doctorMessageCountVo.setAlreadyPrescription(existOrderGoods);
+        // 判断是否有未读已开具消息
+        Byte existOrderInfo = prescriptionDao.isExistAlreadyReadPrescription(doctorMainShowParam.getLastReadPrescriptionTime());
+        doctorMessageCountVo.setAlreadyOrderInfoCount(existOrderInfo);
+        // 判断是否有未读我的问诊消息
+        Byte existChat = imSessionDao.isExistAlreadyReadImSession(doctorMainShowParam.getLastReadImSession());
+        doctorMessageCountVo.setAlreadyImSessionCount(existChat);
+        // 查询未读消息
+        // 待会话记录
+        doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorId, DelFlag.NORMAL_VALUE));
+        // 待开方记录
+        doctorMessageCountVo.setNotOrderInfoCount(messageDao.countDoctorOrderMessageMum());
+        // 待续方记录
+        Integer integer = orderGoodsDao.countAuditOrder();
+        if (integer == null) {
+            integer = 0;
+        }
+        doctorMessageCountVo.setNotOrderGoodsCount(integer);
         return doctorMessageCountVo;
     }
 

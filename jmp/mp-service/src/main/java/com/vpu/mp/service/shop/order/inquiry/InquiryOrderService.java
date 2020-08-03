@@ -23,10 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
@@ -145,6 +142,25 @@ public class InquiryOrderService extends ShopBaseService {
     }
 
     /**
+     * 未完成的问诊
+     * @param param
+     * @return
+     */
+    public String getUndoneOrder(InquiryOrderParam param){
+        List<InquiryOrderDo> list=inquiryOrderDao.getOrderByParams(param);
+        List<String> orderSnList=list.stream().filter(inquiryOrderDo -> {
+            Byte orderStatus=inquiryOrderDo.getOrderStatus();
+                if(orderStatus.equals(InquiryOrderConstant.ORDER_TO_PAID)||orderStatus.equals(InquiryOrderConstant.ORDER_TO_RECEIVE)||orderStatus.equals(InquiryOrderConstant.ORDER_RECEIVING)) {
+                    return true;
+                }
+                return false;
+        }).map(InquiryOrderDo::getOrderSn).collect(Collectors.toList());
+        if(orderSnList!=null&&orderSnList.size()>0){
+            return orderSnList.get(0);
+        }
+        return null;
+    }
+    /**
      * 问诊支付回调完成
      * @param order
      * @param paymentRecord
@@ -164,6 +180,8 @@ public class InquiryOrderService extends ShopBaseService {
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
+
+
     /**
      * 支付微信接口
      * @param param
@@ -171,12 +189,13 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public WebPayVo payInquiryOrder(InquiryToPayParam param){
         logger().info("创建问诊订单-开始");
+        WebPayVo vo = new WebPayVo();
         //支付类型
         String payCode = InquiryOrderConstant.PAY_CODE_WX_PAY;
         InquiryOrderDo inquiryOrderDo=new InquiryOrderDo();
         String orderSn=saveInquiryOrder(param,payCode,inquiryOrderDo);
         UserRecord userRecord=userService.getUserByUserId(param.getUser().getUserId());
-        WebPayVo vo = new WebPayVo();
+
         //微信支付接口
 //        try {
 //            vo = mpPaymentService.wxUnitOrder(param.getClientIp(), InquiryOrderConstant.GOODS_NAME, orderSn, param.getOrderAmount(), userRecord.getWxOpenid());
@@ -197,6 +216,9 @@ public class InquiryOrderService extends ShopBaseService {
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){
+        if(StringUtils.isNotBlank(payParam.getOrderSn())){
+            return payParam.getOrderSn();
+        }
         String orderSn = IncrSequenceUtil.generateOrderSn(InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX);
         PatientOneParam patientOneParam=patientService.getOneInfo(payParam.getPatientId());
         DepartmentOneParam department=departmentDao.getOneInfo(payParam.getDepartmentId());
@@ -260,7 +282,7 @@ public class InquiryOrderService extends ShopBaseService {
                 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
             }
             //微信金额单为为分需单位换算
-            returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(order.getOrderAmount(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
+//            returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(order.getOrderAmount(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
         }
         //退款记录
         InquiryOrderRefundListDo refundListDo=new InquiryOrderRefundListDo();

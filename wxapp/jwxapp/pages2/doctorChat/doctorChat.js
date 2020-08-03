@@ -12,17 +12,20 @@ global.wxPage({
     page_name: '',
     prescriptionMessage:null,
     chatContent:[],
-    targetUserInfo:{}
+    targetUserInfo:{},
+    source:null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {targetUserInfo} = options
+    wx.hideShareMenu()
+    let {targetUserInfo,source = null} = options
     this.setData({
-      targetUserInfo,
-      page_name:targetUserInfo.patientName
+      targetUserInfo:JSON.parse(targetUserInfo),
+      page_name:JSON.parse(targetUserInfo).patientName,
+      source
     })
   },
   getInputMessage(e) {
@@ -86,29 +89,31 @@ global.wxPage({
   },
   requsetMessage () {
     this.messageApi()
-    this.timer = setInterval(this.messageApi,2000)
+    if(this.data.targetUserInfo.sessionStatus === 1) this.timer = setInterval(this.messageApi,2000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
-      if (res.error === 0 && res.content[0]) {
-        let chat = {}
-        let chatContent = this.data.chatContent;
-        chat.messageInfo = {
-          message:JSON.parse(res.content[0].message),
-          type:res.content[0].type
-        };
-        chat.position = 0;
-        chatContent.push(chat)
+      if (res.error === 0 && res.content.length) {
+        let newChatContent = res.content.reduce((defaultValue,item)=>{
+          defaultValue.push({
+            position:0,
+            messageInfo:{
+              message:JSON.parse(item.message),
+              type:item.type
+            }
+          })
+          return defaultValue
+        },[])
         this.setData({
-          chatContent:chatContent
+          chatContent:[...this.data.chatContent,...newChatContent]
         })
     }
     }, {
       departmentId: this.data.targetUserInfo.departmentId,
       patientId: this.data.targetUserInfo.patientId,
       pullFromId: this.data.targetUserInfo.userId,
-      selfId: util.getCache('doctor_id')
+      selfId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id
     }, '', false);
   },
   hideMoreActions(){
@@ -141,15 +146,65 @@ global.wxPage({
     },{
       departmentId:this.data.targetUserInfo.departmentId,
       patientId:this.data.targetUserInfo.patientId,
-      fromId:util.getCache('doctor_id'),
+      fromId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       toId:this.data.targetUserInfo.userId,
       imSessionItem
     })
   },
   createPrescription(){
     util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
-      patientId:137
+      patientId:this.data.targetUserInfo.patientId,
+      userId:this.data.targetUserInfo.userId
     })}`)
+  },
+  chatEnd(){
+    util.showModal('提示','确定要结束本次问诊吗？',()=>{
+      util.api('/api/wxapp/inquiry/order/status/update',res=>{
+        if(res.error === 0){
+          clearInterval(this.timer)
+          this.setData({
+            'targetUserInfo.sessionStatus':3
+          })
+          if(this.data.source === 'inquiryList'){
+            let pageList = getCurrentPages();
+            let prevPage = pageList[pageList.length - 2];
+            let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
+            prevPage.setData({
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:3
+            })
+            wx.navigateBack()
+          }
+        }
+      },{
+        orderSn:this.data.targetUserInfo.orderSn,
+        orderStatus:3,
+        sessionId:this.data.targetUserInfo.id
+      })
+    },true,'再想想','确认结束')
+  },
+  chatContinue(){
+    util.showModal('提示','确定要继续问诊吗？',()=>{
+      util.api('/api/wxapp/inquiry/order/status/update',res=>{
+        if(res.error === 0){
+          this.setData({
+            'targetUserInfo.sessionStatus':1
+          })
+          this.requsetMessage()
+          if(this.data.source === 'inquiryList'){
+            let pageList = getCurrentPages();
+            let prevPage = pageList[pageList.length - 2];
+            let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
+            prevPage.setData({
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:1
+            })
+          }
+        }
+      },{
+        orderSn:this.data.targetUserInfo.orderSn,
+        orderStatus:2,
+        sessionId:this.data.targetUserInfo.id
+      })
+    },true,'再想想','继续')
   },
   pageScrollBottom() {
     wx.createSelectorQuery().select('.main-container').boundingClientRect(function (rect) {

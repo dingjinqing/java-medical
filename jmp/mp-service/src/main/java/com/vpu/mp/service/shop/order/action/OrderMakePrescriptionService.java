@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.action;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
@@ -22,6 +23,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -80,17 +83,19 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      */
     @Override
     public Object query(OrderToPrescribeQueryParam param) throws MpException {
-        Condition condition=orderInfoService.TABLE.ORDER_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE).and(orderInfoService.TABLE.ORDER_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT));
-        if(param.getOrderId()!=null){
-             condition=condition.and(orderInfoService.TABLE.ORDER_ID.eq(param.getOrderId()));
-        }
-        List<OrderInfoVo> orders = orderInfoService.getOrdersByCondition(condition, OrderInfoVo.class);
+        PageResult<OrderInfoVo> orderPageResult=orderInfoDao.listOrderInfo(param);
+        List<OrderInfoVo> orderList=orderPageResult.getDataList();
+        PageResult<OrderGoodsMedicalVo> pageResult=new PageResult<>();
+        pageResult.setPage(orderPageResult.getPage());
         List<OrderGoodsMedicalVo> orderGoodsMedicalVoList=new ArrayList<>();
-        for(OrderInfoVo orderInfo:orders){
+        for(OrderInfoVo orderInfo:orderList){
             OrderGoodsMedicalVo orderGoodsMedicalVo=new OrderGoodsMedicalVo();
             FieldsUtil.assign(orderInfo,orderGoodsMedicalVo);
             //患者信息
-            PatientOneParam patient=patientService.getOneDetail(orderInfo.getPatientId());
+            UserPatientParam userPatientParam = new UserPatientParam();
+            userPatientParam.setPatientId(orderInfo.getPatientId());
+            userPatientParam.setUserId(orderInfo.getUserId());
+            UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
             orderGoodsMedicalVo.setPatient(patient);
             //历史诊断
             OrderMedicalHistoryDo medicalHistoryDo= orderMedicalHistoryDao.getByOrderId(orderInfo.getOrderId());
@@ -119,7 +124,8 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             orderGoodsMedicalVo.setGoodsMedicalOneInfoVoList(goodsMedicalOneInfoVoList);
             orderGoodsMedicalVoList.add(orderGoodsMedicalVo);
         }
-        return orderGoodsMedicalVoList;
+        pageResult.setDataList(orderGoodsMedicalVoList);
+        return pageResult;
     }
 
     /**
@@ -146,7 +152,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         logger().info("医师开方-开始");
         OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
         if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
         }
         List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(obj.getOrderId()).into(OrderGoodsDo.class);
         List<Integer> recIds=getUnAuditAllRecIds(orderGoodsDoList);

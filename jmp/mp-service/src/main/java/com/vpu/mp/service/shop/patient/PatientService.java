@@ -10,6 +10,7 @@ import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
+import com.vpu.mp.db.shop.tables.UserPatientCouple;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.shop.patient.*;
@@ -66,6 +67,10 @@ public class PatientService extends BaseShopConfigService{
         return patientDao.getOneInfo(patientId);
     }
 
+    public UserPatientDetailVo getOneInfoForWx(UserPatientParam userPatientParam) {
+        return userPatientCoupleDao.getUserPatientInfo(userPatientParam);
+    }
+
     public List<PatientOneParam> listPatientByUserId (Integer userId) {
         List<PatientOneParam> patientList = userPatientCoupleDao.listPatientIdsByUser(userId);
         return patientList;
@@ -94,9 +99,9 @@ public class PatientService extends BaseShopConfigService{
      * @param userId
      * @return
      */
-    public PatientOneParam getDefaultPatient(Integer userId){
-        Integer patientId=userPatientCoupleDao.defaultPatientIdByUser(userId);
-        return getOneDetail(patientId);
+    public UserPatientDetailVo getDefaultPatient(Integer userId){
+        UserPatientParam param = userPatientCoupleDao.defaultPatientByUser(userId);
+        return getOneDetail(param);
     }
     /**
      * 拉取患者信息
@@ -125,12 +130,18 @@ public class PatientService extends BaseShopConfigService{
         FieldsUtil.assign(patientInfoVo, patientDo);
         PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);
         if (patientOneParam == null) {
-            int patientId=patientDao.insertPatient(patientDo);
-            addPatientUser(patientId,userPatientOneParam.getUserId());
+            patientDao.insertPatient(patientDo);
         } else {
             patientDo.setId(patientOneParam.getId());
             patientDao.updatePatient(patientDo);
         }
+        UserPatientCoupleDo userPatientCoupleDo = new UserPatientCoupleDo();
+        FieldsUtil.assign(patientDo,userPatientCoupleDo);
+        userPatientCoupleDo.setId(null);
+        userPatientCoupleDo.setPatientId(patientDo.getId());
+        userPatientCoupleDo.setUserId(userPatientOneParam.getUserId());
+        userPatientCoupleDo.setIsFetch(PatientConstant.FETCH);
+        addPatientUser(userPatientCoupleDo);
         return JsonResult.success();
     }
 
@@ -193,24 +204,25 @@ public class PatientService extends BaseShopConfigService{
     }
     /**
      * 获取患者详情信息(小程序前端)
-     * @param patientId
+     * @param userPatientParam
      * @return
      */
-    public PatientOneParam getOneDetail(Integer patientId) {
-        if (patientId == 0) {
-            PatientOneParam patientInfo = new PatientOneParam();
-            patientInfo.setDiseaseHistoryList(listDiseases(null));
-            patientInfo.setFamilyDiseaseHistoryList(listDiseases(null));
-            return patientInfo;
+    public UserPatientDetailVo getOneDetail(UserPatientParam userPatientParam) {
+        if (userPatientParam == null || userPatientParam.getPatientId() == 0) {
+            UserPatientDetailVo userPatientDetail = new UserPatientDetailVo();
+            userPatientDetail.setDiseaseHistoryList(listDiseases(null));
+            userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(null));
+            return userPatientDetail;
         } else {
-            PatientOneParam patientInfo = patientDao.getOneInfo(patientId);
+            UserPatientDetailVo userPatientDetail = getOneInfoForWx(userPatientParam);
             //根据出生日期获取年龄
-            patientInfo.setAge(DateUtils.getAgeByBirthDay(patientInfo.getBirthday()));
-            patientInfo.setDiseaseHistoryList(listDiseases(patientInfo.getDiseaseHistory()));
-            patientInfo.setFamilyDiseaseHistoryList(listDiseases(patientInfo.getFamilyDiseaseHistory()));
-            patientInfo.setDiseaseHistoryStr(strDisease(patientInfo.getDiseaseHistory()));
-            patientInfo.setFamilyDiseaseHistoryStr(strDisease(patientInfo.getFamilyDiseaseHistory()));
-            return patientInfo;
+            userPatientDetail.setAge(DateUtils.getAgeByBirthDay(userPatientDetail.getBirthday()));
+            userPatientDetail.setDiseaseHistoryList(listDiseases(userPatientDetail.getDiseaseHistory()));
+            userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(userPatientDetail.getFamilyDiseaseHistory()));
+            userPatientDetail.setDiseaseHistoryStr(strDisease(userPatientDetail.getDiseaseHistory()));
+            userPatientDetail.setFamilyDiseaseHistoryStr(strDisease(userPatientDetail.getFamilyDiseaseHistory()));
+            userPatientDetail.setId(userPatientDetail.getPatientId());
+            return userPatientDetail;
         }
     }
 
@@ -245,19 +257,29 @@ public class PatientService extends BaseShopConfigService{
         return patientDao.getPatientExist(param);
     }
 
-    public void addPatientUser(Integer patientId,Integer userId) {
-        UserPatientCoupleDo userPatientCoupleDo=new UserPatientCoupleDo();
-        userPatientCoupleDo.setPatientId(patientId);
-        userPatientCoupleDo.setUserId(userId);
-        List<PatientOneParam> patientList=userPatientCoupleDao.listPatientIdsByUser(userId);
+    public void addPatientUser(UserPatientCoupleDo userPatientCoupleDo) {
+        List<PatientOneParam> patientList=userPatientCoupleDao.listPatientIdsByUser(userPatientCoupleDo.getUserId());
         if(patientList.size()==0) {
             userPatientCoupleDo.setIsDefault((byte) 1);
         }
-        userPatientCoupleDao.save(userPatientCoupleDo);
+//        userPatientCoupleDao.save(userPatientCoupleDo);
+        saveUserPaitientCouple(userPatientCoupleDo);
     }
 
     public boolean isExistUserPatient(UserPatientParam param) {
         return userPatientCoupleDao.isExistUserPatient(param);
+    }
+
+    public void saveUserPaitientCouple(UserPatientCoupleDo userPatientCoupleDo) {
+        UserPatientParam param = new UserPatientParam();
+        FieldsUtil.assign(userPatientCoupleDo,param);
+        Integer userPatientId = userPatientCoupleDao.getUserPatientId(param);
+        if (userPatientId == null) {
+            userPatientCoupleDao.save(userPatientCoupleDo);
+        } else {
+            userPatientCoupleDo.setId(userPatientId);
+            userPatientCoupleDao.updateUserPatient(userPatientCoupleDo);
+        }
     }
 
     /**

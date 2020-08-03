@@ -8,7 +8,7 @@
 		</view>
      <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
       <block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
-        <view class="card-item">
+        <view class="card-item" data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}"  bindtap="viewChat">
           <view class="doctor-info">
             <view class="doctor-desc">
               <text class="doctor-name">{{item.patientName}}</text>

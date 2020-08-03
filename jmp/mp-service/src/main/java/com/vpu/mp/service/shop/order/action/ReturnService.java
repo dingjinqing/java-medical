@@ -206,7 +206,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             returnGoodsList.add(returnGoods);
         });
         param.setReturnGoods(returnGoodsList);
-        execute(param);
         return execute(param);
     }
 

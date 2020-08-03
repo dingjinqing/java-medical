@@ -21,13 +21,13 @@
 		</view>
 		<view class="title-module">病情描述</view>
 		<view class="card-content column has-padding p-top p-bottom">
-			<textarea placeholder="请在此填写病情描述" maxlength='300' bindblur='bindCheckInput'></textarea>
+			<textarea placeholder="请在此填写病情描述" maxlength='300' bindblur='bindCheckInput' bindinput='bindCheckInput'></textarea>
 			<view class="image-con">
 
 				<block wx:for="{{comm_img}}" wx:key="index" wx:for-item="imgitem" wx:for-index="imgindex">
 					<view class='shai_view'>
 						<image src='{{imageUrl}}image/wxapp/dele_service.png' class="shai_close" bindtap='customDelImage' data-imgindex="{{imgindex}}" data-idx='{{index}}'></image>
-						<image src="{{imgitem.image}}"></image>
+						<image src="{{imgitem.imageUrl}}"></image>
 					</view>
 				</block>
 				<view class="upload-image" bindtap="customUpImage" >

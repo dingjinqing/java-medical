@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = 941960611;
+    private static final long serialVersionUID = 188836864;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order</code>
@@ -182,7 +182,7 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.image_url</code>. 病情描述image
      */
-    public final TableField<InquiryOrderRecord, String> IMAGE_URL = createField("image_url", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "病情描述image");
+    public final TableField<InquiryOrderRecord, String> IMAGE_URL = createField("image_url", org.jooq.impl.SQLDataType.CLOB, this, "病情描述image");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除

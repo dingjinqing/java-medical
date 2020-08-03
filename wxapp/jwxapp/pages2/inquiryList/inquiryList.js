@@ -8,7 +8,7 @@ global.wxPage({
     targetStatus:'1',
     filterParams:{
       sessionStatus:[0],
-      doctorId:util.getCache('doctor_id'),
+      doctorId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       userId:null
     },
     pageParams:{
@@ -67,18 +67,18 @@ global.wxPage({
         if(target.sessionStatus === 0){
           let targetList = this.data.dataList[parentIndex]
           targetList.splice(targetList.findIndex(item=>item.id === sessionId),1)
-          console.log(targetList)
           this.setData({
             [`dataList[${parentIndex}]`]:targetList
           })
-          util.jumpLink(`pages2/doctorChat/doctorChat${util.getUrlParams({
-            targetUserInfo:JSON.stringify(target)
-          })}`)
         } else {
           this.setData({
             [`dataList[${parentIndex}][${targetIndex}].sessionStatus`]:1
           })
         }
+        util.jumpLink(`pages2/doctorChat/doctorChat${util.getUrlParams({
+          targetUserInfo:JSON.stringify({...{...target,sessionStatus:1},parentIndex}),
+          source:'inquiryList'
+        })}`)
       }
     },{
       orderSn:target.orderSn,
@@ -104,6 +104,16 @@ global.wxPage({
         orderSn:target.orderSn
       })
     },true,'取消','确认')
+  },
+  viewChat(e){
+    let {parentIndex,sessionId} = e.currentTarget.dataset
+    let targetIndex = this.data.dataList[parentIndex].findIndex(item=>item.id === sessionId)
+    let target = this.data.dataList[parentIndex][targetIndex]
+    if(![1,3].includes(target.sessionStatus)) return
+    util.jumpLink(`pages2/doctorChat/doctorChat${util.getUrlParams({
+      targetUserInfo:JSON.stringify({...target,parentIndex}),
+      source:'inquiryList'
+    })}`)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -8,7 +8,8 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    page_info: []
+    page_info: null,
+    pageParams: null,
   },
 
   /**
@@ -19,29 +20,30 @@ global.wxPage({
     this.requestInfo();
   },
   requestInfo () {
+    let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
     util.api('/api/wxapp/order/medical/get', res => {
       if(res.error == 0) {
-        this.data.page_info = res.content;
-        for (var i in this.data.page_info) {
-          this.data.page_info[i].if_show_more = 0;
-          this.data.page_info[i].patient.gestationName = this.getGesName(this.data.page_info[i].patient.gestationType);
-          if(!!this.data.page_info[i].medicalHistory && !!this.data.page_info[i].medicalHistory.diseaseHistory){
-            this.data.page_info[i].medicalHistory.diseaseHistory =JSON.parse(this.data.page_info[i].medicalHistory.diseaseHistory);
-            // this.data.page_info[i].medicalHistory.diseaseHistory.selectedDiagnose = this.data.page_info[i].medicalHistory.diseaseHistory.selectedDiagnose.split(',')
+        let page_info = JSON.parse(JSON.stringify(res.content.dataList));
+        for (var i in page_info) {
+          page_info[i].if_show_more = 0;
+          page_info[i].patient.gestationName = this.getGesName(page_info[i].patient.gestationType);
+          if(!!page_info[i].medicalHistory && !!page_info[i].medicalHistory.diseaseHistory){
+            page_info[i].medicalHistory.diseaseHistory =JSON.parse(page_info[i].medicalHistory.diseaseHistory);
           }
-          if(!!this.data.page_info[i].medicalHistory && !!this.data.page_info[i].medicalHistory.imagesList){
-            this.data.page_info[i].medicalHistory.imagesList = JSON.parse(this.data.page_info[i].medicalHistory.imagesList);
-            console.log(this.data.page_info[i].medicalHistory.imagesList)
+          if(!!page_info[i].medicalHistory && !!page_info[i].medicalHistory.imagesList){
+            page_info[i].medicalHistory.imagesList = JSON.parse(page_info[i].medicalHistory.imagesList);
+            console.log(page_info[i].medicalHistory.imagesList)
           }
         }
         this.setData({
-          page_info: this.data.page_info
+          pageParams: res.content.page,
+          ['page_info[' + (parseInt(currentPage) - 1) + ']']: page_info
         })
       } else {
         util.showModal('提示', res.message);
         return false
       }
-    },{})
+    },{currentPage: currentPage, pageRows: 20})
   },
   getGesName (data) {
     switch(data){
@@ -59,17 +61,30 @@ global.wxPage({
   },
   show_more (e) {
     var this_index = e.currentTarget.dataset.index;
-    if(this.data.page_info[this_index].if_show_more == 0) {
-      this.data.page_info[this_index].if_show_more = 1
+    var parent_index = e.currentTarget.dataset.parent_index;
+    var page_info_list = this.data.page_info[parent_index];
+    if(page_info_list[this_index].if_show_more == 0) {
+      page_info_list[this_index].if_show_more = 1
     } else {
-      this.data.page_info[this_index].if_show_more = 0
+      page_info_list[this_index].if_show_more = 0
     }
     this.setData({
-      page_info: this.data.page_info
+      [`page_info[${parent_index}]`]: page_info_list
     })
   },
   to_pre (e) {
     util.jumpLink('/pages2/prescribeinfo/prescribeinfo?orderId=' + e.currentTarget.dataset.order_id);
+  },
+  tp_reject (e) {
+    util.api('/api/wxapp/order/prescription/make', res => {
+      if(res.error == ''){
+        util.toast_success('驳回成功');
+        this.requestInfo();
+      }
+    },{
+      orderId: e.currentTarget.dataset.order_id,
+      auditStatus: 2
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -110,7 +125,12 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage )
+    return;
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestInfo();
   },
 
   /**

@@ -4776,6 +4776,17 @@ create table `b2c_user_patient_couple`(
     `patient_id` int(11) not null comment '患者id',
     `is_fetch`      tinyint(1)   not null default '0' comment '是否拉取',
     `is_default`    tinyint(1)   not null default '0',
+    `treatment_code` varchar(64) not null default '' comment '就诊卡号',
+    `insurance_card_code` varchar(64) not null default '' comment '医保卡号',
+    `sex` tinyint(1) not null default 0 comment '性别 0：男 1：女 2：未知',
+    `birthday` date null comment '出生年月',
+    `disease_history` varchar(64) default null comment '过往病史：null:未知，"":无，其他逗号隔开',
+    `allergy_history` varchar(64) default null comment '过敏史:null:未知，"":无',
+    `family_disease_history` varchar(64) default null comment '家族病史：null:未知，"":无，其他逗号隔开',
+    `gestation_type` tinyint(1) not null default 0 comment '妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳',
+    `kidney_function_ok` tinyint(1) not null default 0 comment '肾功能:0:未知，1：正常，2：异常',
+    `liver_function_ok` tinyint(1) not null default 0 comment '肝功能:0:未知，1：正常，2：异常',
+    `remarks` text comment '介绍',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
@@ -5047,7 +5058,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
  `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
  `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
- `image_url` varchar(256) NOT NULL  DEFAULT '' COMMENT '病情描述image',
+ `image_url` text COLLATE utf8mb4_unicode_ci COMMENT '病情描述image信息',
  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -5070,7 +5081,7 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   KEY `user_id` (`user_id`)
 ) COMMENT='问诊订单退款记录';
 
-CREATE TABLE `b2c_message` (
+CREATE TABLE `b2c_user_message` (
     `message_id` int(11) NOT NULL AUTO_INCREMENT,
     `message_name` varchar(255) NOT NULL DEFAULT '' COMMENT '消息名称，系统消息名称为日期',
     `message_essentials` varchar(255) NOT NULL DEFAULT '' COMMENT '消息摘要',
@@ -5089,7 +5100,7 @@ CREATE TABLE `b2c_message` (
     PRIMARY KEY (`message_id`)
 ) comment ='用户消息表';
 
-CREATE TABLE `b2c_recharge` (
+CREATE TABLE `b2c_sms_recharge` (
     `recharge_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '充值记录主键',
     `sid` varchar(255) NOT NULL DEFAULT '' COMMENT '充值账户id',
     `version` int(11) NOT NULL DEFAULT 4 COMMENT '充值版本，微铺宝默认4',
@@ -5103,7 +5114,7 @@ CREATE TABLE `b2c_recharge` (
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`recharge_id`)
-) comment ='充值记录表';
+) comment ='短信充值记录表';
 
 -- 订单历史病例
 CREATE TABLE `b2c_order_medical_history` (

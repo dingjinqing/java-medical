@@ -9,7 +9,6 @@ global.wxPage({
   data: {
     imageUrl: app.globalData.imageUrl,
     tabIndex: 'doctor',
-    pageParams: null,
     dataList: null,
     patientId: 1,
     can_show: false,
@@ -20,7 +19,11 @@ global.wxPage({
       '主治医生'
     ],
     departmentList: [],
-    doctorList: []
+    doctorList: [],
+    pageParams: {
+      currentPage: 1,
+      pageRows: 20
+    }
   },
 
   /**
@@ -54,11 +57,13 @@ global.wxPage({
     })
   },
   handleChangeNav(e) {
-
     let id = e.currentTarget.dataset.id
     this.setData({
       tabIndex: id
     })
+    if (id == 'myChat') {
+      this.requestSessionList()
+    }
   },
   toDoctorSearch() {
     util.navigateTo({
@@ -106,12 +111,14 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    // if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage)
-    //   return;
-    // this.setData({
-    //   'pageParams.currentPage': this.data.pageParams.currentPage + 1
-    // });
-    // this.requestList();
+    if (this.data.tabIndex == 'doctor' || (
+        this.data.pageParams &&
+        this.data.pageParams.currentPage === this.data.pageParams.lastPage)) return;
+
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestSessionList();
   },
 
   /**
@@ -128,7 +135,6 @@ global.wxPage({
 
   requestList: function () {
     let that = this;
-    // let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
     util.api('/api/wxapp/recommend/doctor/list', (res) => {
       console.log(res)
       if (res.error === 0) {
@@ -137,15 +143,34 @@ global.wxPage({
           departmentList: con.recommendDepartment,
           doctorList: con.doctorList
         })
-        // let dataList = this.formatData(res.content.dataList);
-        // this.setData({
-        //   pageParams: res.content.page,
-        //   ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
-        // })
       }
     }, {
       userId: util.getCache("user_id"),
       patierntId: 2
     });
+  },
+  requestSessionList() {
+    let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
+    util.api('/api/wxapp/im/session/page/list', res => {
+      console.log(res)
+      if (res.error === 0) {
+        if (this.data.pageParams.currentPage === 1) {
+          this.setData({
+            dataList: [
+              [...res.content.dataList]
+            ]
+          })
+        } else {
+          this.setData({
+            ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.dataList
+          })
+        }
+        this.setData({
+          pageParams: res.content.page
+        })
+      }
+    }, {
+      ...this.data.pageParams
+    })
   }
 })

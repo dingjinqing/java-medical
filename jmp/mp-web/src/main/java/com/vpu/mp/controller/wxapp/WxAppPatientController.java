@@ -1,21 +1,20 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
+import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
-import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
-import com.vpu.mp.service.shop.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -87,7 +86,7 @@ public class WxAppPatientController extends WxAppBaseController {
             FieldsUtil.assign(patientDo,param);
             Integer patientId = shop().patientService.getPatientExist(param);
             if (patientId == null) {
-                patientId = shop().patientService.insertPatient(patientDo);
+                shop().patientService.insertPatient(patientDo);
             } else {
                 patientDo.setId(patientId);
                 UserPatientParam userPatientParam = new UserPatientParam();
@@ -99,9 +98,14 @@ public class WxAppPatientController extends WxAppBaseController {
                 }
                 shop().patientService.updatePatient(patientDo);
             }
-            shop().patientService.addPatientUser(patientId,userId);
-
         }
+        UserPatientCoupleDo userPatientCoupleDo = new UserPatientCoupleDo();
+        FieldsUtil.assign(patientDo,userPatientCoupleDo);
+        userPatientCoupleDo.setId(null);
+        userPatientCoupleDo.setPatientId(patientDo.getId());
+        userPatientCoupleDo.setUserId(userId);
+        userPatientCoupleDo.setIsFetch(PatientConstant.FETCH);
+        shop().patientService.addPatientUser(userPatientCoupleDo);
         return success();
     }
 
@@ -109,8 +113,8 @@ public class WxAppPatientController extends WxAppBaseController {
      * 	患者详情
      */
     @PostMapping("/api/wxapp/user/patient/get/detail")
-    public JsonResult getPatientDetail(@RequestBody PatientOneParam patientOneParam) {
-        PatientOneParam patientDetail = shop().patientService.getOneDetail(patientOneParam.getId());
+    public JsonResult getPatientDetail(@RequestBody UserPatientParam param) {
+        UserPatientDetailVo patientDetail = shop().patientService.getOneDetail(param);
         return success(patientDetail);
     }
 

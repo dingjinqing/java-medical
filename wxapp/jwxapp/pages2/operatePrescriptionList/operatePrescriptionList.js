@@ -28,7 +28,7 @@ global.wxPage({
           })
         } else {
           this.setData({
-            ['dataList[' + (parseInt(currentPage) - 1) + ']']:res.content.dataList
+            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']:res.content.dataList
           })
         }
         this.setData({
@@ -78,7 +78,7 @@ global.wxPage({
       },{
         orderId,
         orderSn,
-        doctorId:util.getCache('doctor_id'),
+        doctorId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
         prescriptionOldCode,
         auditStatus:auditStatus[type],
         doctorAdvice

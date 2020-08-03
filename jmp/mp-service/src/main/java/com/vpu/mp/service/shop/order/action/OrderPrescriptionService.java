@@ -44,7 +44,7 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
-import com.vpu.mp.service.shop.message.MessageService;
+import com.vpu.mp.service.shop.message.UserMessageService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -85,7 +85,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
     @Autowired
     private ReturnService  returnService;
     @Autowired
-    private MessageService messageService;
+    private UserMessageService messageService;
     @Autowired
     private DoctorService doctorService;
     @Autowired
@@ -239,7 +239,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             //审核不通过
             auditNotPass(param, orderInfoDo,unAuditGoodsId);
         });
-        logger().info("审核订单-审核-开始");
+        logger().info("审核订单-审核-结束");
         return null;
     }
 

@@ -13,15 +13,16 @@ global.wxPage({
   data: {
     imageUrl: imageUrl,
     time: '2020-07-23 13:35:01',
-    page_name: 'saoyang',
     chatContent: [],
-    system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。'
+    system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。',
+    system_img:false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.hideShareMenu()
     if (options.orderSn) this.requestDetail(options.orderSn)
   },
   getInputMessage(e) {
@@ -59,7 +60,7 @@ global.wxPage({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    clearInterval(this.timer)
   },
 
   /**
@@ -103,16 +104,18 @@ global.wxPage({
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
       if (res.error === 0 && res.content[0]) {
-        let chat = {}
-        let chatContent = this.data.chatContent;
-        chat.messageInfo = {
-          message: JSON.parse(res.content[0].message),
-          type: res.content[0].type
-        };
-        chat.position = 0;
-        chatContent.push(chat)
+        let newChatContent = res.content.reduce((defaultValue,item)=>{
+          defaultValue.push({
+            position:0,
+            messageInfo:{
+              message:JSON.parse(item.message),
+              type:item.type
+            }
+          })
+          return defaultValue
+        },[])
         this.setData({
-          chatContent: chatContent
+          chatContent:[...this.data.chatContent,...newChatContent]
         })
       }
     }, {
@@ -194,24 +197,32 @@ global.wxPage({
             mess: con.descriptionDisease
           }
         }
-        that.sendMessage(patient_message, 3)
-        let imageUrl = con.imgUrlList;
-        imageUrl.forEach(function (val) {
-          let img = {
-            content: {
-              image: val.image,
-              imgWidth: val.imgWidth,
-              imgHeight: val.imgHeight
-            }
-          }
-          that.sendMessage(img, 1)
-        })
         that.setData({
           page_name: con.doctorName,
           doctorId: con.doctorId,
           departmentId: con.departmentId,
-          patientId: con.patientId
+          patientId: con.patientId,
         })
+        let imageUrl = JSON.parse(con.imageUrl);
+        if (imageUrl != '') {
+          that.setData({
+            system_img:true
+          })
+          that.sendMessage(patient_message, 3)
+          imageUrl.forEach(function (val,index) {
+            let img = {
+              content: val.imageUrl,
+              imgWidth: val.imageWidth,
+              imgHeight: val.imageHeight
+            }
+            if(index == imageUrl.length - 1){
+               img.system = true;
+            }
+            that.sendMessage(img, 1)
+          })
+        }else{
+          that.sendMessage(patient_message, 3)
+        }
       }
     }, {
       orderSn: orderSn,

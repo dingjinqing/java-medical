@@ -165,8 +165,8 @@ export default {
             flag: false
           },
           {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/new_analysis_portrait.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/new_analtsis_portrait_h.png',
+            imgUrl: this.$imageHost + '/image/admin/icon_left/sales_report.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/sale_report_h.png',
             span: '',
             name: 'sales_report',
             flag: true
@@ -423,8 +423,8 @@ export default {
             flag: true
           },
           {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/checkout.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/checkout_h.png',
+            imgUrl: this.$imageHost + '/image/admin/icon_left/advisory_order.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/advisory_order_h.png',
             span: '',
             name: 'advisory_order',
             flag: true

@@ -1,10 +1,12 @@
 package com.vpu.mp.dao.shop.patient;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.UserPatientCoupleRecord;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import org.jooq.Condition;
 import org.springframework.stereotype.Repository;
@@ -41,6 +43,11 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
             .fetchOptionalInto(UserPatientParam.class).orElse(null);
     }
 
+    /**
+     * 获取用户绑定患者Id集合
+     * @param userId
+     * @return
+     */
     public List<PatientOneParam> listPatientIdsByUser(Integer userId) {
         List<PatientOneParam> patientList = db().select(USER_PATIENT_COUPLE.IS_DEFAULT,PATIENT.asterisk()).from(USER_PATIENT_COUPLE)
             .leftJoin(PATIENT).on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
@@ -82,6 +89,23 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
         return record.getId();
     }
 
+    /**
+     * 编辑保存
+     *
+     * @param param
+     * @return
+     */
+    public void updateUserPatient(UserPatientCoupleDo param) {
+        UserPatientCoupleRecord record = new UserPatientCoupleRecord();
+        FieldsUtil.assign(param, record);
+        db().executeUpdate(record);
+    }
+
+    /**
+     * 用户和患者是否绑定（用户患者是否存在）
+     * @param param
+     * @return
+     */
     public boolean isExistUserPatient(UserPatientParam param) {
         Condition condition = USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId())).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0));
         int count = db().fetchCount(USER_PATIENT_COUPLE, condition);
@@ -89,7 +113,7 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
     }
 
     /**
-     * 接触用户患者关联
+     * 解除用户患者关联
      * @param param
      */
     public void deleteUserPatient(UserPatientParam param) {
@@ -107,5 +131,28 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
             .where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()))
             .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
             .fetchAnyInto(UserPatientParam.class);
+    }
+
+    /**
+     * 获取用户患者Id
+     * @param param
+     * @return
+     */
+    public Integer getUserPatientId(UserPatientParam param) {
+        Condition condition = USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()).and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId())).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0));
+        return db().select(USER_PATIENT_COUPLE.ID).from(USER_PATIENT_COUPLE).where(condition).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 根据用户患者Id获取用户患者详情
+     * @param param
+     * @return
+     */
+    public UserPatientDetailVo getUserPatientInfo(UserPatientParam param) {
+        return db().select(USER_PATIENT_COUPLE.asterisk(),PATIENT.NAME,PATIENT.MOBILE,PATIENT.IDENTITY_CODE,PATIENT.BIRTHDAY).from(USER_PATIENT_COUPLE)
+            .leftJoin(PATIENT).on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
+            .where(USER_PATIENT_COUPLE.USER_ID.eq(param.getUserId()))
+            .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
+            .fetchAnyInto(UserPatientDetailVo.class);
     }
 }

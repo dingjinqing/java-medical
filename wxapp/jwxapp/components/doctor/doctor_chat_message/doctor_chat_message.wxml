@@ -9,13 +9,15 @@
 	<slot name="doctor_pres_message" />
 	<slot name="system_info" />
 </view>
-<view wx:if='{{chatContent.position == 1 && chatContent.messageInfo.type === 3}}'>
-	<view class="system_info">
-		{{systemInfo}}
+<block wx:if='{{chatContent.position == 1}}'>
+	<view wx:if='{{(chatContent.messageInfo.type === 3 && !systemImg ) || chatContent.messageInfo.message.system }}'>
+		<view class="system_info">
+			{{systemInfo}}
+		</view>
+		<view class="medical-begin">
+			<view class="liner-left"></view>
+			<view class="begin">问诊已开始</view>
+			<view class="liner-right"></view>
+		</view>
 	</view>
-	<view class="medical-begin">
-		<view class="liner-left"></view>
-		<view class="begin">问诊已开始</view>
-		<view class="liner-right"></view>
-	</view>
-</view>
+</block>

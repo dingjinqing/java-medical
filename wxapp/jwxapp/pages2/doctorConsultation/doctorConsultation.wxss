@@ -1,6 +1,11 @@
 /* pages2/doctorConsultation/doctorConsultation.wxss */
 @import "../../css/iconfont.wxss";
 
+.fr {
+  float: right;
+  font-weight: bold;
+}
+
 .clearfix {
   overflow: hidden;
 }
@@ -117,6 +122,7 @@
 
 .chat_item .chat_left {
   margin-right: 20rpx;
+  position: relative;
 }
 
 .chat_item .chat_right {
@@ -127,19 +133,19 @@
   margin-top: 12rpx;
 }
 
-.chat_item .chat_right .c_r_top text:first-of-type {
+.chat_item .chat_right .c_r_top view text:first-of-type {
   color: #333;
   font-size: 32rpx;
   font-weight: bold;
+  margin-right: 20rpx;
 }
 
-.chat_item .chat_right .c_r_top text:last-of-type {
-  color: #999;
-  float: right;
+.chat_item .chat_right .c_r_top view text:last-of-type {
+  color: #333;
 }
 
 .chat_item .chat_right .c_r_bot {
-  color: #333;
+  color: #999;
   margin: 20rpx 0;
 }
 
@@ -166,7 +172,7 @@
   margin-left: 10rpx;
   bottom: 2rpx;
   position: relative;
-  transition:transform 0.3s;
+  transition: transform 0.3s;
   display: inline-block;
 }
 
@@ -205,16 +211,58 @@
   border-bottom: 2rpx solid #eee;
   text-align: center;
 }
-.rotate{
-  transform:rotate(180deg); 
+
+.rotate {
+  transform: rotate(180deg);
   color: #26C4BC !important;
 }
-.cover_all{
+
+.cover_all {
   width: 100%;
   height: 100%;
-  background:rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 2;
   position: fixed;
   top: 0;
   left: 0;
+}
+
+.wait {
+  color: #FF9F15 !important;
+}
+
+.online {
+  color: #26C4BC !important;
+}
+
+.end {
+  color: #999999 !important;
+}
+
+.is-null{	
+  display: flex;	
+  flex-direction: column;	
+  align-items: center;	
+  position: absolute;	
+  top: 50%;	
+  left: 50%;	
+  transform: translate(-50%,-50%);	
+}	
+.is-null image{	
+  width: 180rpx;	
+  height: 190rpx;	
+}	
+.is-null text{	
+  margin-top: 20rpx;	
+  color: #999;	
+}
+.red_dot{
+  width:20rpx;
+height:20rpx;
+background:rgba(246,73,74,1);
+border-radius:50%;
+position: absolute;
+top: 4rpx;
+right: 8rpx;
+
 }

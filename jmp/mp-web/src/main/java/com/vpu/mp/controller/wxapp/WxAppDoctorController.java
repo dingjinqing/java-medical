@@ -1,19 +1,16 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.controller.BaseController;
-import com.vpu.mp.db.shop.tables.Message;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorMainShowVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.doctor.DoctorService;
-import com.vpu.mp.service.shop.message.MessageService;
+import com.vpu.mp.service.shop.message.UserMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +34,7 @@ public class WxAppDoctorController extends WxAppBaseController {
     private DoctorService doctorService;
 
     @Autowired
-    private MessageService messageService;
+    private UserMessageService messageService;
 
     /**
      * 医师认证接口
@@ -48,8 +45,10 @@ public class WxAppDoctorController extends WxAppBaseController {
     public JsonResult doctorAuth(@RequestBody DoctorAuthParam doctorAuthParam) {
         doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
         doctorAuthParam.setToken(wxAppAuth.user().getToken());
-        Byte doctorAuth = doctorService.doctorAuth(doctorAuthParam);
-        if (DelFlag.NORMAL_VALUE.equals(doctorAuth)) {
+        Integer doctorId = doctorService.doctorAuth(doctorAuthParam);
+        // 如果医师id!=0 更新缓存
+        if (doctorId != 0) {
+            wxAppAuth.updateUserType(doctorId);
             return success();
         } else {
             return fail(DOCTOR_LOGIN_AUTH_ERROR);
@@ -72,13 +71,14 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/main")
-    public JsonResult doctorMainShow(){
+    public JsonResult doctorMainShow(@RequestBody DoctorMainShowParam doctorMainShowParam){
         // 获取缓存中当前用户信息
-        Integer doctorId = wxAppAuth.user().getDoctorId();
-        // 获取当前医师消息列表
-        DoctorMessageCountVo doctorMessageCountVo = messageService.countDoctorMessage(doctorId);
+        WxAppSessionUser user = wxAppAuth.user();
+        // 获取页面消息统计信息
+        DoctorMessageCountVo doctorMessageCountVo =
+            messageService.countDoctorMessage(user.getDoctorId(), doctorMainShowParam);
         // 获取医师首页个人信息
-        DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
+        DoctorOneParam oneInfo = doctorService.getOneInfo(user.getDoctorId());
         DoctorMainShowVo doctorMainShowVo = new DoctorMainShowVo();
         //添加医师职称
         String duty = doctorService.selectDoctorTitle(oneInfo);
@@ -86,7 +86,8 @@ public class WxAppDoctorController extends WxAppBaseController {
         FieldsUtil.assign(oneInfo, doctorMainShowVo);
         doctorMainShowVo.setDoctorMessageCountVo(doctorMessageCountVo);
         // 获取医师所属科室列表
-        List<DepartmentListVo> departmentListVos = doctorService.selectDepartmentsByDoctorId(doctorId);
+        List<DepartmentListVo> departmentListVos =
+            doctorService.selectDepartmentsByDoctorId(user.getDoctorId());
         List<String> list = new ArrayList<>();
         for (DepartmentListVo departmentListVo : departmentListVos){
             list.add(departmentListVo.getName());

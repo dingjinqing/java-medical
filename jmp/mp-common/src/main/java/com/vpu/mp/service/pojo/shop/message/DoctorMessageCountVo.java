@@ -17,9 +17,9 @@ public class DoctorMessageCountVo {
     private Integer notImSessionCount;
 
     /**
-     * 已问诊数量
+     * 问诊列表是否有未读
      */
-    private Integer alreadyImSessionCount;
+    private Byte alreadyImSessionCount;
 
     /**
      * 待开方数量
@@ -27,17 +27,17 @@ public class DoctorMessageCountVo {
     private Integer notOrderInfoCount;
 
     /**
-     * 已开方数量
+     * 开方列表是否有未读
      */
-    private Integer alreadyOrderInfoCount;
+    private Byte alreadyOrderInfoCount;
 
     /**
      * 待续方数量
      */
-    private Integer notPrescription;
+    private Integer notOrderGoodsCount;
 
     /**
-     * 已续方数量
+     * 续方列表是否有未读
      */
-    private Integer alreadyPrescription;
+    private Byte alreadyPrescription;
 }

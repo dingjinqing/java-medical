@@ -18,7 +18,7 @@ public class FetchPrescriptionParam {
      * 患者姓名
      */
     @NonNull
-    private String patientName;
+    private String name;
     /**
      * 患者电话
      */

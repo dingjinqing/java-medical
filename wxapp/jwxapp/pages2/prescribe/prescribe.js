@@ -30,10 +30,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {patientId} = options,doctorId = util.getCache('doctor_id')
+    let {patientId,userId:patientUserId} = options,doctorId = util.getCache('doctor_id') || util.getCache('bottom').doctor_id
     this.setData({
       patientId,
-      doctorId
+      doctorId,
+      patientUserId
     })
     this.getDoctorDetail()
     this.getPatientDetail()
@@ -55,9 +56,9 @@ global.wxPage({
   addGoods () {
     this.setData({
       showGoodsListDialog: true,
-      cacheGoodsIdList: this.data.goodsIdList,
-      cachePageGoodsList: this.data.pageGoodsList,
-      cacheGoodsIdNum: this.data.goodsIdNum,
+      cacheGoodsIdList: JSON.parse(JSON.stringify(this.data.goodsIdList)),
+      cachePageGoodsList: JSON.parse(JSON.stringify(this.data.pageGoodsList)),
+      cacheGoodsIdNum: JSON.parse(JSON.stringify(this.data.goodsIdNum)),
       'dialogPageParams.currentPage': 1
     })
     this.requestGoodsList()
@@ -68,11 +69,11 @@ global.wxPage({
       if (res.error === 0) {
         if (this.data.dialogPageParams.currentPage === 1) {
           this.setData({
-            dialogGoodsList: [[...this.resetDialogGoodsList(res.content.dataList)]]
+            dialogGoodsList: [[...this.resetDialogGoodsList(res.content.dataList,(parseInt(this.data.dialogPageParams.currentPage) - 1))]]
           })
         } else {
           this.setData({
-            ['dialogGoodsList[' + (parseInt(currentPage) - 1) + ']']: this.resetDialogGoodsList(res.content.dataList)
+            ['dialogGoodsList[' + (parseInt(this.data.dialogPageParams.currentPage) - 1) + ']']: this.resetDialogGoodsList(res.content.dataList,(parseInt(this.data.dialogPageParams.currentPage) - 1))
           })
         }
         this.setData({
@@ -85,15 +86,20 @@ global.wxPage({
       goodsName: this.data.goodsName
     })
   },
-  resetDialogGoodsList (dataList) {
+  resetDialogGoodsList (dataList,parentIndex) {
     return dataList.map(item => {
       item.goodsImg = this.data.imageUrl + item.goodsImg
       item.prdNumber = item.goodsNumber
-      item.cartNumber = 1
+      item.cartNumber = this.getDefaultGoodsNum(item.goodsId,this.data.goodsIdNum)
       item.prdPrice = item.shopPrice
+      item.parentIndex = parentIndex
       item.selected = this.data.cacheGoodsIdList.includes(item.goodsId)
       return item
     })
+  },
+  getDefaultGoodsNum(goodsId,cacheList){
+    if(!cacheList.map(item=>item.goodsId).includes(goodsId)) return 1
+    return cacheList.find(item=>item.goodsId === goodsId).dragSumNum
   },
   toggleSelect (e) {
     let { detail: { goodsId } } = e, targetIndex = null
@@ -137,9 +143,9 @@ global.wxPage({
   },
   confirmGoods () {
     this.setData({
-      goodsIdList: this.data.cacheGoodsIdList,
-      pageGoodsList: this.data.cachePageGoodsList,
-      goodsIdNum: this.data.cacheGoodsIdNum,
+      goodsIdList: JSON.parse(JSON.stringify(this.data.cacheGoodsIdList)),
+      pageGoodsList: JSON.parse(JSON.stringify(this.data.cachePageGoodsList)),
+      goodsIdNum: JSON.parse(JSON.stringify(this.data.cacheGoodsIdNum)),
       showGoodsListDialog: false,
     })
   },
@@ -168,12 +174,13 @@ global.wxPage({
   createPrescription () {
     let params = {
       patientId: 137,
-      doctorId: util.getCache('doctor_id'),
+      doctorId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       departmentCode: this.data.departmentCode,
       departmentName: this.data.departmentName,
       diagnosisName: this.data.diagnose.info,
       doctorAdvice: this.data.doctorAdvice,
-      goodsList: this.data.goodsIdNum
+      goodsList: this.data.goodsIdNum,
+      userId:this.data.patientUserId
     }
     util.api('/api/wxapp/prescription/add', res => {
       console.log(res)
@@ -221,8 +228,44 @@ global.wxPage({
         })
       }
     },{
-      id:this.data.patientId
+      patientId:this.data.patientId,
+      userId:this.data.patientUserId
     })
+  },
+  cartNumChange({detail:goodsInfo}){
+    console.log(goodsInfo)
+    let targetIndex = this.data.dialogGoodsList[goodsInfo.parentIndex].findIndex(item=> item.goodsId === goodsInfo.goodsId)
+    let cachePageGoodsList = this.data.cachePageGoodsList, cacheGoodsIdNum = this.data.cacheGoodsIdNum
+    let cacheGoodsListIndex = cachePageGoodsList.findIndex(item => item.goodsId === goodsInfo.goodsId)
+    let cacheGoodsIdNumIndex = cacheGoodsIdNum.findIndex(item=>item.goodsId === goodsInfo.goodsId)
+    this.setData({
+      [`dialogGoodsList[${goodsInfo.parentIndex}][${targetIndex}].cartNumber`]: goodsInfo.type === 'plus' ? goodsInfo.cartNumber + 1 : goodsInfo.cartNumber - 1,
+    })
+    if(cacheGoodsListIndex !== -1 && cacheGoodsIdNumIndex !== -1){
+      this.setData({
+        [`cachePageGoodsList[${cacheGoodsListIndex}].cartNumber`]:goodsInfo.type === 'plus' ? goodsInfo.cartNumber + 1 : goodsInfo.cartNumber - 1,
+        [`cacheGoodsIdNum[${cacheGoodsIdNumIndex}].dragSumNum`]:goodsInfo.type === 'plus' ? goodsInfo.cartNumber + 1 : goodsInfo.cartNumber - 1
+      })
+    }
+  },
+  customCartNum({detail:goodsInfo}){
+    console.log(goodsInfo)
+    let {goodsNumber,prdNumber} = goodsInfo
+    let targetIndex = this.data.dialogGoodsList[goodsInfo.parentIndex].findIndex(item=> item.goodsId === goodsInfo.goodsId)
+    let cachePageGoodsList = this.data.cachePageGoodsList, cacheGoodsIdNum = this.data.cacheGoodsIdNum
+    let cacheGoodsListIndex = cachePageGoodsList.findIndex(item => item.goodsId === goodsInfo.goodsId)
+    let cacheGoodsIdNumIndex = cacheGoodsIdNum.findIndex(item=>item.goodsId === goodsInfo.goodsId)
+    if(goodsNumber > prdNumber) goodsNumber = prdNumber
+    if(goodsNumber < 1)  goodsNumber = 1
+    this.setData({
+      [`dialogGoodsList[${goodsInfo.parentIndex}][${targetIndex}].cartNumber`]:goodsNumber
+    })
+    if(cacheGoodsListIndex !== -1 && cacheGoodsIdNumIndex !== -1){
+      this.setData({
+        [`cachePageGoodsList[${cacheGoodsListIndex}].cartNumber`]:goodsNumber,
+        [`cacheGoodsIdNum[${cacheGoodsIdNumIndex}].dragSumNum`]:goodsNumber
+      })
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

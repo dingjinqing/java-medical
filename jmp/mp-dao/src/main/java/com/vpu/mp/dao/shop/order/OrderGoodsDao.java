@@ -1,10 +1,10 @@
 package com.vpu.mp.dao.shop.order;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
@@ -12,6 +12,7 @@ import org.jooq.Record2;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,19 @@ public class OrderGoodsDao extends ShopBaseDao {
         from.groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
         .orderBy(ORDER_GOODS.CREATE_TIME.desc());
         return getPageResult(from, param.getCurrentPage(), param.getPageRows(), OrderPrescriptionVo.class);
+    }
+
+    /**
+     * 待审核处方数量
+     * @return
+     */
+    public Integer countAuditOrder(){
+         return db().selectCount()
+                .from(ORDER_GOODS)
+                 .where(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT))
+                 .and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT))
+                 .groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
+                 .orderBy(ORDER_GOODS.CREATE_TIME.desc()).fetchAnyInto(Integer.class);
     }
 
     /**
@@ -116,5 +130,21 @@ public class OrderGoodsDao extends ShopBaseDao {
                 .from(ORDER_GOODS)
                 .where(ORDER_GOODS.ORDER_ID.eq(orderId))
                 .fetchInto(OrderGoodsSimpleAuditVo.class);
+    }
+
+    /**
+     * 判断是否有未读的已续方消息
+     * @param time 上次查看已续方时间
+     * @return Byte
+     */
+    public Byte isExistAlreadyReadOrderGoods(Timestamp time){
+        List<Timestamp> timestamps = db().select(ORDER_GOODS.UPDATE_TIME)
+            .from(ORDER_GOODS)
+            .where(ORDER_GOODS.UPDATE_TIME.gt(time))
+            .fetchInto(Timestamp.class);
+        if (timestamps.isEmpty()) {
+            return DelFlag.DISABLE_VALUE;
+        }
+        return DelFlag.NORMAL_VALUE;
     }
 }
