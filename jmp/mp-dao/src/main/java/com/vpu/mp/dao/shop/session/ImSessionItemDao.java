@@ -38,7 +38,7 @@ public class ImSessionItemDao extends ShopBaseDao {
      * @param pageParam 分页信息
      * @return
      */
-    public PageResult<ImSessionItemDo> getBySessionItemPageList(ImSessionRenderPageParam pageParam){
+    public PageResult<ImSessionItemDo> getBySessionItemPgaeList(ImSessionRenderPageParam pageParam){
         Condition condition = IM_SESSION_ITEM.IM_SESSION_ID.eq(pageParam.getSessionId());
 
         SelectSeekStep1<ImSessionItemRecord, Timestamp> select =

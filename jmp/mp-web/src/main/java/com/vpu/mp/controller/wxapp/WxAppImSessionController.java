@@ -3,11 +3,12 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.wxapp.medical.im.SessionTest;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
-import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPullMsgParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionRenderPageParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionSendMsgParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionRenderVo;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -130,24 +131,4 @@ public class WxAppImSessionController extends WxAppBaseController {
         }
         return success(imSessionItemPullVos);
     }
-
-    @PostMapping("/api/wxapp/im/session/test")
-    public JsonResult test(@RequestBody SessionTest sessionTest) {
-        if (Integer.valueOf(1).equals(sessionTest.getType())) {
-            imSessionService.batchCancelSession(sessionTest.getOrderSns());
-        }
-
-        if (Integer.valueOf(2).equals(sessionTest.getType())) {
-            imSessionService.batchCloseSession(sessionTest.getOrderSns());
-        }
-
-        if (Integer.valueOf(3).equals(sessionTest.getType())) {
-            ImSessionNewParam param = new ImSessionNewParam();
-            FieldsUtil.assign(sessionTest,param);
-            imSessionService.insertNewSession(param);
-        }
-
-        return success();
-    }
-
 }

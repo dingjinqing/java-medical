@@ -109,7 +109,7 @@ public class ImSessionService extends ShopBaseService {
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
 
         Integer doctorId = imSessionDo.getDoctorId();
-        PageResult<ImSessionItemDo> pageResult = imSessionItemDao.getBySessionItemPageList(renderPageParam);
+        PageResult<ImSessionItemDo> pageResult = imSessionItemDao.getBySessionItemPgaeList(renderPageParam);
         List<ImSessionItemDo> imSessionItemDos = pageResult.getDataList();
         Collections.reverse(imSessionItemDos);
 
