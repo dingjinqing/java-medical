@@ -2,7 +2,7 @@ package com.vpu.mp.dao.shop.order;
 
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
-import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReport;
+import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +31,7 @@ public class ReturnOrderDao extends ShopBaseDao {
      * @param endTime
      * @return
      */
-    public Map<Date, MedicalOrderReport> medicalOrderSalesReport(Timestamp startTime, Timestamp  endTime){
+    public Map<Date, MedicalOrderReportVo> medicalOrderSalesReport(Timestamp startTime, Timestamp  endTime){
         return db().select(
                 //日期
                 date(RETURN_ORDER.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),
@@ -43,7 +43,7 @@ public class ReturnOrderDao extends ShopBaseDao {
                 .where(RETURN_ORDER.CREATE_TIME.between(startTime, endTime))
                 .groupBy(date(RETURN_ORDER.CREATE_TIME))
                 .orderBy(RETURN_ORDER.CREATE_TIME)
-                .fetchMap(date(RETURN_ORDER.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME), MedicalOrderReport.class);
+                .fetchMap(date(RETURN_ORDER.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME), MedicalOrderReportVo.class);
     }
 
 

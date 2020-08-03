@@ -1,17 +1,13 @@
 package com.vpu.mp.service.pojo.shop.order.report;
 
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
  * @author 孔德成
- * @date 2020/7/31 18:26
+ * @date 2020/8/3 17:17
  */
-@Data
-public class MedicalOrderReport {
-
+public class MedicalOrderReporte {
     private Timestamp createTime;
     private String time;
 
@@ -27,5 +23,4 @@ public class MedicalOrderReport {
     private Integer returnNumber;
 
     private BigDecimal returnAmount;
-
 }
