@@ -47,7 +47,7 @@
 					<view class="item-info">
 						<block wx:for="{{prescriptionData.itemList}}" wx:key="index">
 							<text class="title">{{item.goodsCommonName}}</text>
-							<text>用法用量：{{item.goodsUseMemo}}</text>
+							<text>用法用量：{{item.goodsQualityRatio }}</text>
 						</block>
 					</view>
 				</view>
