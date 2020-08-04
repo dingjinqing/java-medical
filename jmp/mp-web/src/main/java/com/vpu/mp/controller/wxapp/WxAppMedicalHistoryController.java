@@ -65,7 +65,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/fetch/external/medical/advice")
-    public JsonResult test1(@RequestBody FetchMedicalAdviceParam fetchMedicalAdviceParam){
+    public JsonResult pullMedicalAdvice(@RequestBody FetchMedicalAdviceParam fetchMedicalAdviceParam){
         return this.success(medicalAdviceService.pullExternalMedicalAdviceList(fetchMedicalAdviceParam));
     }
 
@@ -75,7 +75,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/fetch/prescription")
-    public JsonResult test2(@RequestBody FetchPrescriptionParam fetchPrescriptionParam){
+    public JsonResult pullPrescription(@RequestBody FetchPrescriptionParam fetchPrescriptionParam){
         return this.success(prescriptionService.pullExternalAllPrescriptionInfo(fetchPrescriptionParam));
     }
 
@@ -85,7 +85,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      * @return JsonResult
      */
     @RequestMapping("/fetch/prescription/item")
-    public JsonResult test3(@RequestBody FetchPrescriptionOneParam fetchPrescriptionParam){
+    public JsonResult pullPrescriptionItem(@RequestBody FetchPrescriptionOneParam fetchPrescriptionParam){
         return this.success(prescriptionService.pullExternalOnePrescriptionInfo(fetchPrescriptionParam));
     }
 }

@@ -263,20 +263,11 @@ public class PrescriptionService extends ShopBaseService {
             if (prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode()) == null) {
                 prescriptionDao.addHitsPrescription(prescriptionVo);
                 //遍历得到的处方表中的处方明细，如果没有就新增，有就更新
-                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
-                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
-                        prescriptionItemDao.save(fetchPrescriptionItemVo);
-                    }
+                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getDataList()) {
+                    prescriptionItemDao.save(fetchPrescriptionItemVo);
                 }
             } else {  //否则就修改
                 prescriptionDao.updateHitsPrescription(prescriptionVo);
-                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
-                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
-                        prescriptionItemDao.save(fetchPrescriptionItemVo);
-                    } else {
-                        prescriptionItemDao.updateHitsPrescriptionItem(fetchPrescriptionItemVo);
-                    }
-                }
             }
         }
         return JsonResult.success();
@@ -313,20 +304,11 @@ public class PrescriptionService extends ShopBaseService {
             if (doByPrescriptionNo == null) {
                 prescriptionDao.addHitsPrescription(prescriptionVo);
                 //遍历得到的处方表中的处方明细，如果没有就新增，有就更新
-                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
-                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
-                        prescriptionItemDao.save(fetchPrescriptionItemVo);
-                    }
+                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getDataList()) {
+                    prescriptionItemDao.save(fetchPrescriptionItemVo);
                 }
             } else {  //否则就修改
                 prescriptionDao.updateHitsPrescription(prescriptionVo);
-                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
-                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
-                        prescriptionItemDao.save(fetchPrescriptionItemVo);
-                    } else {
-                        prescriptionItemDao.updateHitsPrescriptionItem(fetchPrescriptionItemVo);
-                    }
-                }
             }
         }
         return JsonResult.success();
