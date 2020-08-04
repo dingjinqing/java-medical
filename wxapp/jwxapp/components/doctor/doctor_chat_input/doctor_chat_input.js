@@ -23,6 +23,19 @@ global.wxComponent({
     bottom: 0,
   },
 
+  lifetimes: {
+    ready() {
+      wx.onKeyboardHeightChange(res => {
+        console.log(res.height)
+
+           this.setData({
+            bottom:res.height
+           })
+
+      })
+    },
+
+  },
   /**
    * 组件的方法列表
    */
@@ -45,26 +58,18 @@ global.wxComponent({
         bottom:0
       })
     },
-    keybordDown(){
-      this.setData({
-        bottom:0
-      })
-    },
+    // keybordDown(){
+    //   this.setData({
+    //     bottom:0
+    //   })
+    // },
+    
     getFocus(e) {
       let that = this;
       that.hideMoreActions()
       that.triggerEvent('scrollBottom', {})
     },
-    keybord(e) {
-      let that = this;
-      let {
-        height
-      } = e.detail
-      console.log(height)
-      that.setData({
-        bottom: height
-      })
-    },
+
     hideMoreActions() {
       this.setData({
         moreActions: false
