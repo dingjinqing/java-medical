@@ -59,15 +59,16 @@ global.wxPage({
     }
     util.api('/api/wxapp/doctor/auth', res => {
       if(res.error == 0) {
-        if(res.content == '验证失败'){
-          util.toast_fail('认证失败');
-          util.jumpLink('/pages/usercenter/usercenter','reLaunch')
-        } else {
-          this.setData({
-            show_modal: 0
-          })
-          util.jumpLink('/pages2/doctorIndex/doctorIndex','reLaunch')
-        }
+        this.setData({
+          show_modal: 0
+        })
+        util.jumpLink('/pages2/doctorIndex/doctorIndex','reLaunch')
+      } else if (res.error == 400031) {
+        util.toast_fail('认证失败');
+        util.jumpLink('/pages/usercenter/usercenter','reLaunch')
+      } else{
+        util.showModal('提示',res.message);
+        util.jumpLink('/pages/usercenter/usercenter','reLaunch')
       }
     },{
       doctorName: this.data.name,

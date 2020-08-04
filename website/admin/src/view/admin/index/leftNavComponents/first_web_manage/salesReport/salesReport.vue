@@ -41,6 +41,7 @@
                 <el-button
                     type="primary"
                     size="small"
+                    @click='exportData'
                 >导出</el-button>
             </div>
         </div>
@@ -62,35 +63,35 @@
           }"
         >
             <el-table-column
-                prop=''
+                prop='time'
                 label='日期'
             ></el-table-column>
             <el-table-column
-                prop=''
+                prop='orderAmount'
                 label='销售金额'
             ></el-table-column>
             <el-table-column
-                prop=''
+                prop='orderNumber'
                 label='销售单数'
             ></el-table-column>
             <el-table-column
-                prop=''
+                prop='orderMedicalAmount'
                 label='处方药销售金额'
             ></el-table-column>
             <el-table-column
-                prop=''
+                prop='orderMedicalNumber'
                 label='处方药销售单数'
             ></el-table-column>
             <el-table-column
-                prop=''
+                prop='returnAmount'
                 label='退货金额'
             ></el-table-column>
             <el-table-column
-                prop=''
+                prop='returnNumber'
                 label='退货单数'
             ></el-table-column>
             <el-table-column
-                prop=''
+                prop='orderAvg'
                 label='笔单价'
             ></el-table-column>
         </el-table>
@@ -103,6 +104,9 @@
 </template>
 
 <script>
+import { getSalesReportList, getSalesReportExport } from '@/api/admin/basicConfiguration/salesreport.js'
+import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
+import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: {
@@ -113,13 +117,15 @@ export default {
       this.timeRange = this.$t('tradesStatistics.timeRange')
     }
   },
+  mounted () {
+    this.getDateValue(1)
+    this.initData()
+  },
   data () {
     return {
       loading: false,
-      isChange: true,
       timeValue: [],
       timeSelect: 1,
-      screeningTime: '1',
       pageParams: {},
       tableData: [],
       timeRange: this.$t('tradesStatistics.timeRange'),
@@ -134,37 +140,64 @@ export default {
         day: ''
       },
       param: {
-        type: 1,
-        startDate: '',
-        endDate: ''
+        startTime: '',
+        endTime: ''
       }
     }
   },
   methods: {
+    // 导出
+    exportData () {
+      getSalesReportExport(this.param).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '销售报表.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch(err => console.log(err))
+    },
     // 选择时间段
     dateChangeHandler (time) {
       if (time !== 0) {
-        this.screeningTime = time
-        this.isChange = true
+        this.getDateValue(time)
         this.initData()
       }
     },
     // 自定义时间
     changeDate () {
-      this.screeningTime = 0
-      this.param.startDate = this.timeValue[0].substring(0, 4) + this.timeValue[0].substring(4, 6) + this.timeValue[0].substring(6, 8)
-      this.param.endDate = this.timeValue[1].substring(0, 4) + this.timeValue[1].substring(4, 6) + this.timeValue[1].substring(6, 8)
-      this.isChange = true
+      this.param.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
+      this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
+      this.startDate.year = this.timeValue[0].substring(0, 4)
+      this.startDate.month = this.timeValue[0].substring(4, 6)
+      this.startDate.day = this.timeValue[0].substring(6, 8)
+
+      this.endDate.year = this.timeValue[1].substring(0, 4)
+      this.endDate.month = this.timeValue[1].substring(4, 6)
+      this.endDate.day = this.timeValue[1].substring(6, 8)
       this.initData()
     },
+    getDateValue (unit) {
+      getDate(unit).then(res => {
+        if (res.error === 0) {
+          this.startDate.year = res.content.startTime.split('-')[0]
+          this.startDate.month = res.content.startTime.split('-')[1]
+          this.startDate.day = res.content.startTime.split('-')[2]
+          this.endDate.year = res.content.endTime.split('-')[0]
+          this.endDate.month = res.content.endTime.split('-')[1]
+          this.endDate.day = res.content.endTime.split('-')[2]
+          this.param.startTime = res.content.startTime + ' 00:00:00'
+          this.param.endTime = res.content.endTime + ' 00:00:00'
+          this.initData()
+        }
+      }).catch(err => console.log(err))
+    },
     initData () {
-      this.param.type = this.screeningTime
-      this.startDate.year = this.param.startDate.substring(0, 4)
-      this.startDate.month = this.param.startDate.substring(4, 6)
-      this.startDate.day = this.param.startDate.substring(6, 8)
-      this.endDate.year = this.param.endDate.substring(0, 4)
-      this.endDate.month = this.param.endDate.substring(4, 6)
-      this.endDate.day = this.param.endDate.substring(6, 8)
+      let params = Object.assign({}, this.param, this.pageParams)
+      getSalesReportList(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      }).catch(err => console.log(err))
     }
   }
 }
@@ -177,7 +210,7 @@ export default {
         width: 100%;
         background-color: #fff;
         padding: 10px 15px;
-        margin-top: 10px;
+        margin: 10px 10px 0;
         .filters{
             flex: 2;
             display: flex;
@@ -209,6 +242,7 @@ export default {
     .table_box{
         padding: 10px;
         background: #fff;
+        margin: 0 10px 10px;
     }
 }
 </style>

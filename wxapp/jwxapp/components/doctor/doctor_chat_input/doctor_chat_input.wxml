@@ -12,7 +12,7 @@
 </wxs>
 <view class="input-content" style='bottom:{{bottom}}px'>
     <view class="message-input"  wx:if="{{hasInput}}">
-      <input type="text" cursor-spacing="8" placeholder="{{chatInput.getPlaceholderSource(source)}}" placeholder-style="color:#999;" bindfocus="getFocus" bindkeyboardheightchange="hideMoreActions" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}" adjust-position='{{false}}'></input>
+      <input type="text" cursor-spacing="8" placeholder="{{chatInput.getPlaceholderSource(source)}}" placeholder-style="color:#999;" bindfocus="getFocus" bindkeyboardheightchange="keybord" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}" adjust-position='{{false}}'></input>
       <text class="iconfont icontianjia" bindtap="showMoreActions"></text>
     </view>
     <view class="custom-footer" wx:if="{{moreActions}}">
