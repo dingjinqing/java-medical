@@ -112,4 +112,16 @@ public class OrderListInfoVo {
     private Timestamp returnTime;
     /**订单申请退款时间*/
     private Timestamp refundTime;
+	/**订单药品类型  0普通 1处方药'*/
+    private Byte orderMedicalType;
+	/**订单审核类型, 0不审核,1审核,2开方,3根据处方下单*/
+	private Byte orderAuditType;
+	/**订单审核状态 0未审核 1审核通过 2审核不通过*/
+	private Byte orderAuditStatus;
+	/**药品审核时间*/
+    private Timestamp auditTime;
+    /**患者id*/
+	private Integer patientId;
+
+
 }

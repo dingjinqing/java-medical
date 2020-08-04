@@ -155,4 +155,17 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
             .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(param.getPatientId()))
             .fetchAnyInto(UserPatientDetailVo.class);
     }
+    /**
+     * 根据用户患者Id获取用户患者详情
+     * @param userId
+     * @param patientId
+     * @return
+     */
+    public UserPatientDetailVo getUserPatientInfo(Integer userId, Integer patientId) {
+        return db().select(USER_PATIENT_COUPLE.asterisk(),PATIENT.NAME,PATIENT.MOBILE,PATIENT.IDENTITY_CODE,PATIENT.BIRTHDAY).from(USER_PATIENT_COUPLE)
+            .leftJoin(PATIENT).on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
+            .where(USER_PATIENT_COUPLE.USER_ID.eq(userId))
+            .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(patientId))
+            .fetchAnyInto(UserPatientDetailVo.class);
+    }
 }

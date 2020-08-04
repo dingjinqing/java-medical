@@ -14,7 +14,11 @@ import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.patient.PatientDao;
+import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -58,10 +62,13 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayOrderDetails;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFailModel;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
@@ -230,6 +237,11 @@ public class OrderReadService extends ShopBaseService {
     private OrderRefundRecordService orderRefundRecord;
     @Autowired
     private PrescriptionDao prescriptionDao;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private UserPatientCoupleDao userPatientCoupleDao;
+
 	/**
 	 * 订单查询
 	 * @param param
@@ -389,6 +401,19 @@ public class OrderReadService extends ShopBaseService {
         mainOrder.setAffirmTime(mainOrder.getConfirmTime());
         //设置代付明细
         mainOrder.setInsteadPayInfo(subOrderService.paymentDetails(mainOrder.getOrderSn()));
+        //处方药
+        if (mainOrder.getOrderMedicalType().equals(OrderConstant.MEDICAL_TYPE_RX)){
+			List<OrderGoodsSimpleAuditVo> allGoods = orderGoodsDao.listSimpleAuditByOrderId(mainOrder.getOrderId());
+			List<String> oldCodes = allGoods.stream().map(OrderGoodsSimpleAuditVo::getPrescriptionOldCode).collect(Collectors.toList());
+			List<String> codes = allGoods.stream().map(OrderGoodsSimpleAuditVo::getPrescriptionCode).collect(Collectors.toList());
+			List<PrescriptionDo> prescriptionOldDoList = prescriptionDao.listPrescriptionByCode(oldCodes, PrescriptionDo.class);
+			List<PrescriptionDo> prescriptionDoList = prescriptionDao.listPrescriptionByCode(codes, PrescriptionDo.class);
+			mainOrder.setPrescriptionDoList(prescriptionDoList);
+			mainOrder.setPrescriptionOldDoList(prescriptionOldDoList);
+			//患者
+			UserPatientDetailVo patientInfo = userPatientCoupleDao.getUserPatientInfo(mainOrder.getUserId(), mainOrder.getPatientId());
+			mainOrder.setPatientInfo(patientInfo);
+		}
 		return mainOrder;
 	}
 

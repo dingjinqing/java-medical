@@ -1,10 +1,13 @@
 package com.vpu.mp.service.pojo.shop.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +16,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * 
+ *
  * @author wangshuai
  */
 @Getter
@@ -94,8 +97,9 @@ public class OrderInfoVo extends OrderListInfoVo {
     private Timestamp refundFinishTime;
     /**代付明细*/
     private List<InsteadPayDetailsVo> insteadPayInfo;
-    /**
-     * 患者id
-     */
-    private Integer patientId;
+
+    private List<PrescriptionDo> prescriptionDoList;
+    private List<PrescriptionDo> prescriptionOldDoList;
+    private UserPatientDetailVo patientInfo;
+
 }
