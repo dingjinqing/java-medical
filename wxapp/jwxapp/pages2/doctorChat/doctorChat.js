@@ -124,10 +124,10 @@ global.wxPage({
   },
   hideMoreActions(){
     chatInput.hideMoreActions()
-    chatInput.keybordDown()
+
   },
   sendMessage(message,type){
-    chatInput.keybordDown()
+
     if(!message.content) return
     let imSessionItem = {
       message:JSON.stringify(message),
@@ -158,14 +158,14 @@ global.wxPage({
     })
   },
   createPrescription(){
-    chatInput.keybordDown()
+
     util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
       patientId:this.data.targetUserInfo.patientId,
       userId:this.data.targetUserInfo.userId
     })}`)
   },
   chatEnd(){
-    chatInput.keybordDown()
+
     util.showModal('提示','确定要结束本次问诊吗？',()=>{
       util.api('/api/wxapp/inquiry/order/status/update',res=>{
         if(res.error === 0){
@@ -191,7 +191,7 @@ global.wxPage({
     },true,'再想想','确认结束')
   },
   chatContinue(){
-    chatInput.keybordDown()
+
     util.showModal('提示','确定要继续问诊吗？',()=>{
       util.api('/api/wxapp/inquiry/order/status/update',res=>{
         if(res.error === 0){
@@ -267,7 +267,7 @@ global.wxPage({
     }) 
   },
   viewImage(e){
-    chatInput.keybordDown()
+  
     let urls = [e.currentTarget.dataset.urls]
     wx.previewImage({
       urls

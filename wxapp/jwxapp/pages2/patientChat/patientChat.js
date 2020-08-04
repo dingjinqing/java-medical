@@ -139,10 +139,8 @@ global.wxPage({
   },
   hideMoreActions() {
     chatInput.hideMoreActions()
-    chatInput.keybordDown()
   },
   sendMessage(message, type) {
-    chatInput.keybordDown()
     if (!message.content) return
     let imSessionItem = {
       message: JSON.stringify(message),
@@ -181,7 +179,6 @@ global.wxPage({
     }).exec()
   },
   handleShowPrescriptionDialog(e) {
-    chatInput.keybordDown()
     let {
       prescriptionCode
     } = e.currentTarget.dataset
@@ -295,7 +292,6 @@ global.wxPage({
     })
   },
   viewImage(e) {
-    chatInput.keybordDown()
     let urls = [e.currentTarget.dataset.urls]
     wx.previewImage({
       urls
