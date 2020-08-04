@@ -214,7 +214,7 @@ public class Util {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T> T parseJson(String json, TypeReference valueTypeRef) {
+	public static <T> T parseJson(String json, TypeReference<T> valueTypeRef) {
 		ObjectMapper mapper = new ObjectMapper();
 		// 如果json中有新增的字段并且是实体类类中不存在的，不报错
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -274,7 +274,7 @@ public class Util {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T> T parseResourceJson(String path, TypeReference valueTypeRef) {
+	public static <T> T parseResourceJson(String path, TypeReference<T> valueTypeRef) {
 		return parseJson(Util.loadResource(path), valueTypeRef);
 	}
 
