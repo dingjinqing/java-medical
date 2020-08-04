@@ -25,9 +25,9 @@ public class SmsAccountRechargeRecordParam {
      * 时间不传 默认三个月
      */
     @JsonProperty(value = "start_time")
-    private String startTime;
+    private String startCreateTime;
     @JsonProperty(value = "end_time")
-    private String endTime;
+    private String endCreateTime;
 
     private Integer page = Page.DEFAULT_CURRENT_PAGE;
     private Integer rows = Page.DEFAULT_PAGE_ROWS;

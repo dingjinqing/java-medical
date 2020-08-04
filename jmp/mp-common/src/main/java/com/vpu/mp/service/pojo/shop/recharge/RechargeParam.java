@@ -15,11 +15,11 @@ public class RechargeParam {
     /**
      * 充值日期开始时间
      */
-    private Timestamp startCreateTime;
+    private String startCreateTime;
     /**
      * 充值日期截止时间
      */
-    private Timestamp endCreateTime;
+    private String endCreateTime;
     /**
      * 分页
      */

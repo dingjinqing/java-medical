@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.medical.goods.convertor;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
@@ -60,5 +61,15 @@ public class GoodsConverter {
             goodsDo.setDelFlag(DelFlag.DISABLE_VALUE);
         }
         return goodsDo;
+    }
+
+    public static GoodsMedicalInfoDo convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(GoodsMedicalExternalRequestItemBo bo) {
+        GoodsMedicalInfoDo goodsMedicalInfoDo =new GoodsMedicalInfoDo();
+        FieldsUtil.assign(bo,goodsMedicalInfoDo);
+        if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
+            goodsMedicalInfoDo.setIsDelete(DelFlag.DISABLE_VALUE);
+        }
+
+        return goodsMedicalInfoDo;
     }
 }
