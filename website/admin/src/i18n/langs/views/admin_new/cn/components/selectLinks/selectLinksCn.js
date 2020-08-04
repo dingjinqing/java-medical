@@ -101,7 +101,7 @@ export const cn = {
       spanId: ''
     },
     {
-      title: '购物车页',
+      title: '清单页',
       path: 'pages/cart/cart',
       spanId: ''
     },
@@ -116,7 +116,7 @@ export const cn = {
       spanId: ''
     },
     {
-      title: '全部商品',
+      title: '全部药品',
       path: 'pages/search/search',
       spanId: ''
     },
@@ -128,6 +128,11 @@ export const cn = {
     {
       title: '分销返利中心',
       path: 'pages1/distribution/distribution',
+      spanId: ''
+    },
+    {
+      title: '医师咨询',
+      path: 'pages2/doctorConsultation/doctorConsultation',
       spanId: ''
     }
     // {
