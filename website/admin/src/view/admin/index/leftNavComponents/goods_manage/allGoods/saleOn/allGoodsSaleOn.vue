@@ -38,7 +38,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="addGoodsData">
+          @click="pullMedicalGoods">
           拉取商品数据
         </el-button>
       </div>
@@ -130,6 +130,7 @@ export default {
     addGoodsData () {
       this.$router.push({ name: 'goods_add' })
     },
+    /* 拉取药品信息 */
     pullMedicalGoods () {
       pullMedicalGoodsApi()
     }
