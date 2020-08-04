@@ -2,6 +2,7 @@
 var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
 var util = require('../../utils/util.js');
+var chatInput = null
 const {
   orderSn,
   orderDetail
@@ -26,6 +27,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    chatInput = this.selectComponent('#chatinput')
     wx.hideShareMenu()
     let {
       orderSn,
@@ -136,11 +138,11 @@ global.wxPage({
     }, '', false);
   },
   hideMoreActions() {
-    let chatInput = this.selectComponent('#chatinput')
     chatInput.hideMoreActions()
     chatInput.keybordDown()
   },
   sendMessage(message, type) {
+    chatInput.keybordDown()
     if (!message.content) return
     let imSessionItem = {
       message: JSON.stringify(message),
@@ -179,6 +181,7 @@ global.wxPage({
     }).exec()
   },
   handleShowPrescriptionDialog(e) {
+    chatInput.keybordDown()
     let {
       prescriptionCode
     } = e.currentTarget.dataset
@@ -292,6 +295,7 @@ global.wxPage({
     })
   },
   viewImage(e) {
+    chatInput.keybordDown()
     let urls = [e.currentTarget.dataset.urls]
     wx.previewImage({
       urls
