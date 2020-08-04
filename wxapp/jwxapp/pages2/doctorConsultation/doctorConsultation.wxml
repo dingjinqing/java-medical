@@ -16,7 +16,7 @@
 	<block wx:if='{{tabIndex == "doctor"}}'>
 		<view class="department">
 			<block wx:for='{{departmentList}}' wx:key='id'>
-				<view class="dep_item" data-id='{{item.id}}' catchtap="toDepartment">{{item.name}}</view>
+				<view class="dep_item" data-id='{{item.id}}' data-name="{{item.name}}" catchtap="toDepartment">{{item.name}}</view>
 			</block>
 			<view class="dep_item" catchtap="toAllDepartment">全部科室</view>
 		</view>
