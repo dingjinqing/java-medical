@@ -96,8 +96,14 @@ global.wxPage({
   to_awaitPre () {
     util.jumpLink('/pages2/awaitprescribe/awaitprescribe')
   },
-  viewInquiryList(){
-    util.jumpLink('/pages2/inquiryList/inquiryList')
+  viewInquiryList(e){
+    let {type} = e.currentTarget.dataset
+    util.jumpLink(`/pages2/inquiryList/inquiryList${util.getUrlParams({
+      type
+    })}`)
+  },
+  viewOperatePrescriptionList(){
+    util.jumpLink('/pages2/operatePrescriptionList/operatePrescriptionList')
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

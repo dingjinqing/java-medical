@@ -27,8 +27,11 @@ global.wxPage({
    */
   onLoad: function (options) {
     wx.hideShareMenu()
+    let {orderSn} = options
+    this.setData({
+      orderSn
+    })
     //get sessionId
-    if (options.orderSn) this.requestSessionId(options.orderSn)
   },
   getInputMessage(e) {
     let that = this
@@ -186,67 +189,74 @@ global.wxPage({
       prescriptionCode
     })
   },
-  requestDetail(orderSn) {
+  requestDetail() {
     let that = this;
-    util.api('/api/wxapp/inquiry/order/detail', res => {
-      console.log(res)
-      if (res.error === 0) {
-        let con = res.content;
-        let patient_message = {
-          content: {
-            name: con.patientName,
-            sex: con.patientSex != 2 ? (con.patientSex == 0 ? '男' : '女') : '未知',
-            age: con.patientAge,
-            mess: con.descriptionDisease
+    return new Promise((resolve,reject) => {
+      util.api('/api/wxapp/inquiry/order/detail', res => {
+        console.log(res)
+        if (res.error === 0) {
+          let con = res.content;
+          let patient_message = {
+            content: {
+              name: con.patientName,
+              sex: con.patientSex != 2 ? (con.patientSex == 0 ? '男' : '女') : '未知',
+              age: con.patientAge,
+              mess: con.descriptionDisease
+            }
+          }
+          that.setData({
+            page_name: con.doctorName,
+            doctorId: con.doctorId
+          })
+          let imageUrl = JSON.parse(con.imageUrl);
+          if (imageUrl != '') {
+            that.setData({
+              system_img: true
+            })
+            that.sendMessage(patient_message, 3)
+            imageUrl.forEach(function (val, index) {
+              let img = {
+                content: val.imageUrl,
+                imgWidth: val.imageWidth,
+                imgHeight: val.imageHeight
+              }
+              if (index == imageUrl.length - 1) {
+                img.system = true;
+              }
+              that.sendMessage(img, 1)
+            })
+          } else {
+            that.sendMessage(patient_message, 3)
           }
         }
-        that.setData({
-          page_name: con.doctorName,
-          doctorId: con.doctorId
-        })
-        let imageUrl = JSON.parse(con.imageUrl);
-        if (imageUrl != '') {
-          that.setData({
-            system_img: true
-          })
-          that.sendMessage(patient_message, 3)
-          imageUrl.forEach(function (val, index) {
-            let img = {
-              content: val.imageUrl,
-              imgWidth: val.imageWidth,
-              imgHeight: val.imageHeight
-            }
-            if (index == imageUrl.length - 1) {
-              img.system = true;
-            }
-            that.sendMessage(img, 1)
-          })
-        } else {
-          that.sendMessage(patient_message, 3)
-        }
-      }
-    }, {
-      orderSn: orderSn,
+        resolve(res)
+      }, {
+        orderSn: this.data.orderSn,
+      })
     })
   },
-  requestSessionId(orderSn) {
+  requestSessionId() {
     let that = this;
-    util.api('/api/wxapp/im/session/get/orderSn',
-      res => {
+    return new Promise((resolve,reject)=>{
+      util.api('/api/wxapp/im/session/get/orderSn',
+      async res => {
         console.log(res)
         if (res.error === 0) {
           that.setData({
             sessionId: res.content
           })
-          that.requestDetail(orderSn)
+         let resData = await that.requestDetail(orderSn)
+         if (resData) resolve(res)
         }
       }, {
-        orderSn: orderSn,
+        orderSn: this.data.orderSn,
       })
+    })
   },
   async requestHistoryChat(){
-    let data = await this.historyChatApi()
-    if(data) this.requsetMessage()
+    let resData = await this.requestSessionId()
+    if(resData) await this.historyChatApi()
+    this.requsetMessage()
   },
   historyChatApi(){
     return new Promise((resolve,reject)=>{
@@ -269,7 +279,7 @@ global.wxPage({
         }
         resolve(res)
       },{
-        sessionId:this.data.targetUserInfo.id
+        sessionId:this.data.sessionId
       })
     }) 
   },

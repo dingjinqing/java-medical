@@ -21,6 +21,19 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let {type} = options
+    if(type === 'wait'){
+        this.setData({
+          targetStatus:'1',
+          'filterParams.sessionStatus':[1],
+        })
+    }
+    if(type === 'my'){
+      this.setData({
+        targetStatus:'2',
+        'filterParams.sessionStatus':[2,4],
+      })
+    }
     this.requestSessionList()
   },
   requestSessionList(){
@@ -64,7 +77,7 @@ global.wxPage({
     }
     util.api('/api/wxapp/inquiry/order/status/update',res=>{
       if(res.error === 0){
-        if(target.sessionStatus === 0){
+        if(target.sessionStatus === 1){
           let targetList = this.data.dataList[parentIndex]
           targetList.splice(targetList.findIndex(item=>item.id === sessionId),1)
           this.setData({
