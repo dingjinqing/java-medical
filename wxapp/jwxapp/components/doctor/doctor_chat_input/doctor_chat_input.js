@@ -4,13 +4,13 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    source:{
-      type:String,
-      value:'patient' // patient | doctor
+    source: {
+      type: String,
+      value: 'patient' // patient | doctor
     },
-    hasInput:{
-      type:Boolean,
-      value:true
+    hasInput: {
+      type: Boolean,
+      value: true
     }
   },
 
@@ -20,7 +20,7 @@ global.wxComponent({
   data: {
     inputMessage: '',
     moreActions: false,
-    bottom:0,
+    bottom: 0,
   },
 
   /**
@@ -37,7 +37,6 @@ global.wxComponent({
       this.triggerEvent('getInputMessage', this.data.inputMessage)
       this.setData({
         inputMessage: '',
-        bottom:0
       })
     },
     showMoreActions() {
@@ -46,21 +45,29 @@ global.wxComponent({
         bottom:0
       })
     },
+    keybordDown(){
+      this.setData({
+        bottom:0
+      })
+    },
     getFocus(e) {
       let that = this;
       that.hideMoreActions()
       that.triggerEvent('scrollBottom', {})
-      let keybord_height = e.detail.height;
-      if(keybord_height){
-         that.setData({
-           bottom:keybord_height
-         })
-      }
+    },
+    keybord(e) {
+      let that = this;
+      let {
+        height
+      } = e.detail
+      console.log(height)
+      that.setData({
+        bottom: height
+      })
     },
     hideMoreActions() {
       this.setData({
-        moreActions: false,
-        bottom:0
+        moreActions: false
       })
     },
     sendImage() {

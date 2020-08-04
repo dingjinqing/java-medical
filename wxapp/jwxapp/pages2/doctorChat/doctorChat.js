@@ -122,6 +122,7 @@ global.wxPage({
   hideMoreActions(){
     let chatInput = this.selectComponent('#chatinput')
     chatInput.hideMoreActions()
+    chatInput.keybordDown()
   },
   sendMessage(message,type){
     if(!message.content) return
