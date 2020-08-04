@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
@@ -93,6 +94,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.distribution.OrderGoodsRebateService;
+import com.vpu.mp.service.shop.distribution.RebateStrategyService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
@@ -1662,7 +1664,7 @@ showManualReturn(vo);
         if(columns.contains(OrderExportVo.REBATE)) {
             //返利金额，最多有两级
             Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(), order.getRecId());
-            if (orderRebate.size() == 2) {
+            if (orderRebate.size() == DistributionConstant.REBATE_LEVEL_1) {
                 order.setRebateLevelOne(orderRebate.get(0).getRebateMoney());
                 order.setRebateLevelTwo(orderRebate.get(1).getRebateMoney());
             } else if (orderRebate.size() == 1) {
