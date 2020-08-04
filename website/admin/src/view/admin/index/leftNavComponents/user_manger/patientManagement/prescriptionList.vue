@@ -77,7 +77,7 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.prescriptionNo)'>查看详情</a>
+                  <a @click='handleSeeMessage(scope.row.prescriptionCode)'>查看详情</a>
                 </el-tooltip>
               </div>
             </template>
@@ -137,15 +137,13 @@ export default {
         console.log(error)
       })
     },
-    handleSeeMessage (userId) {
+    handleSeeMessage (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
-        name: 'prescription_message',
-        query: {
-          prescriptionCode: userId
-        }
+        name: 'prescription_message'
       })
-      console.log(newpage)
+      newpage.href = newpage.href + '?prescriptionCode=' + code
+      console.log(newpage.href)
       window.open(newpage.href, '_blank')
     },
     handleData (data) {
