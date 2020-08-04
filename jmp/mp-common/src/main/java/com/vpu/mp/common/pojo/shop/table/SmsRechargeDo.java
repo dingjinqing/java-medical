@@ -33,13 +33,15 @@ public class SmsRechargeDo implements Serializable {
     private String     sid;
     private Integer    version;
     private Integer    total;
-    private Timestamp  rechargeTime;
-    private String     payNo;
-    private BigDecimal price;
-    private String     remark;
-    private Integer    smsNum;
     private Byte       isDelete;
     private Timestamp  createTime;
     private Timestamp  updateTime;
+
+    private String rechargeTime;
+    private Integer rechargeType;
+    private String payNo;
+    private BigDecimal price;
+    private String remark;
+    private Integer smsNum;
 
 }
