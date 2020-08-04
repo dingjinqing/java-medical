@@ -40,7 +40,6 @@ public class AdminPrescriptionController extends AdminBaseController {
      */
     @GetMapping("/api/admin/prescription/get/{code}")
     public JsonResult getPrescriptionInfo(@PathVariable("code")String code){
-        prescriptionService.getInfoByPrescriptionNo(code);
-        return success();
+        return success(prescriptionService.getInfoByPrescriptionNo(code));
     }
 }
