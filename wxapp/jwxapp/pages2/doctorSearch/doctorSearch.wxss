@@ -221,3 +221,17 @@
 .choose_name{
   color: #26C4BC;
 }
+.is-null{	
+  display: flex;	
+  flex-direction: column;	
+  align-items: center;	
+  position: absolute;	
+  top: 50%;	
+  left: 50%;	
+  transform: translate(-50%,-50%);	
+}	
+
+.is-null text{	
+  margin-top: 20rpx;	
+  color: #999;	
+}

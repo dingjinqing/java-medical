@@ -269,7 +269,7 @@ global.wxPage({
         }
         resolve(res)
       },{
-        sessionId:this.data.targetUserInfo.id
+        sessionId:this.data.sessionId
       })
     }) 
   },
