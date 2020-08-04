@@ -28,11 +28,7 @@ public class SmsAccountRechargeRecordParam {
     private String startTime;
     @JsonProperty(value = "end_time")
     private String endTime;
-    /**
-     * 默认全部 0自助充值 1手动充值 2赠送
-     */
-    @JsonProperty(value = "recharge_type")
-    private String rechargeType;
+
     private Integer page = Page.DEFAULT_CURRENT_PAGE;
     private Integer rows = Page.DEFAULT_PAGE_ROWS;
 
