@@ -79,6 +79,7 @@ public class SmsSendRecordDao extends ShopBaseDao {
         if (smsSendRecordAdminParam.getResponseMsgCode() != null && !"".equals(smsSendRecordAdminParam.getResponseMsgCode())) {
             select.where(SMS_SEND_RECORD.RESPONSE_MSG_CODE.eq(smsSendRecordAdminParam.getResponseMsgCode()));
         }
+        select.orderBy(SMS_SEND_RECORD.RESPONSE_TIME.desc());
     }
 
 }
