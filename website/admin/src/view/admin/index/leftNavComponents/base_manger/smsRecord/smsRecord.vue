@@ -118,7 +118,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="responseMsg"
+            prop="requestMsg"
             label="发送内容"
             align="center"
             min-width="55%"
