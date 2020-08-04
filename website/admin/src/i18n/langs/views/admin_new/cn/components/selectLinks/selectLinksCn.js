@@ -134,6 +134,11 @@ export const cn = {
       title: '医师咨询',
       path: 'pages2/doctorConsultation/doctorConsultation',
       spanId: ''
+    },
+    {
+      title: '医生首页',
+      path: 'pages2/doctorIndex/doctorIndex',
+      spanId: ''
     }
     // {
     //   title: '授权手机号',
