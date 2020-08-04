@@ -18,6 +18,7 @@ public class SmsSendRecordParam {
     private String requestMsg;
     private String responseCode;
     private String responseMsg;
+    private String responseMsgCode;
     private String ext;
     private String sms;
     private Timestamp createTime;

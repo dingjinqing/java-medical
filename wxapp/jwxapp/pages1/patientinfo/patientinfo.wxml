@@ -53,7 +53,7 @@
         <view class="placeholder" wx:if='{{!his_summary}}'>请选择疾病史</view>
       </view>
     </view>
-    <view class="spcial_line">
+    <view class="spcial_line" wx:if='{{showModal == 0}}'>
       <view class="ape_title">备注</view>
       <textarea placeholder="其他病史或注意事项" bindblur="tipInpuit" placeholder-class="placeholder" value="{{patient_info.remarks}}"></textarea>
     </view>
