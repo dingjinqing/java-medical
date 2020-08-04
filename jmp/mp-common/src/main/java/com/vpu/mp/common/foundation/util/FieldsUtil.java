@@ -114,14 +114,14 @@ public class FieldsUtil {
                 PropertyDescriptor fromClazzPd = new PropertyDescriptor(fromFieldName, fromClazz);
                 fromClazzReaderMethod = fromClazzPd.getReadMethod();
             } catch (IntrospectionException e) {
-                log.debug(fromClazz.getName() + ": not has getter/setter method for field " + fromFieldName);
+//                log.debug(fromClazz.getName() + ": not has getter/setter method for field " + fromFieldName);
                 continue;
             }
             try {
                 PropertyDescriptor toClazzPd = new PropertyDescriptor(toFieldName, toClazz);
                 toClazzWriterMethod = toClazzPd.getWriteMethod();
             } catch (IntrospectionException e) {
-                log.debug(toClazz.getName() + ": not has  getter/setter method for field " + toFieldName);
+//                log.debug(toClazz.getName() + ": not has  getter/setter method for field " + toFieldName);
                 continue;
             }
             try {

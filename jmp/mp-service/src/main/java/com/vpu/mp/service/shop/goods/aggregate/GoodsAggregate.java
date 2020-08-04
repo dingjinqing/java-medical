@@ -87,6 +87,13 @@ public class GoodsAggregate {
             goodsDos.add(goodsDo);
             goodsMedicalInfoDos.add(goodsMedicalInfoDo);
         }
+
+        for (GoodsDo goodsDo : goodsDos) {
+            if (goodsDo.getGoodsSn().startsWith("488")||goodsDo.getGoodsSn().startsWith("0306")) {
+                System.out.println(goodsDo.toString());
+            }
+        }
+
         goodsDao.batchInsert(goodsDos);
 
         Map<String, GoodsDo> goodsSnMap = goodsDos.stream().collect(Collectors.toMap(GoodsDo::getGoodsSn, Function.identity()));
