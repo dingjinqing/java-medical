@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ExternalRequestHistory extends TableImpl<ExternalRequestHistoryRecord> {
 
-    private static final long serialVersionUID = -179670918;
+    private static final long serialVersionUID = 1690248580;
 
     /**
      * The reference instance of <code>mini_main.b2c_external_request_history</code>
@@ -77,9 +77,19 @@ public class ExternalRequestHistory extends TableImpl<ExternalRequestHistoryReco
     public final TableField<ExternalRequestHistoryRecord, String> REQUEST_PARAM = createField("request_param", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>mini_main.b2c_external_request_history.is_delete</code>. 删除标记
+     */
+    public final TableField<ExternalRequestHistoryRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标记");
+
+    /**
      * The column <code>mini_main.b2c_external_request_history.create_time</code>. 生成时间
      */
     public final TableField<ExternalRequestHistoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "生成时间");
+
+    /**
+     * The column <code>mini_main.b2c_external_request_history.update_time</code>. 最后修改时间
+     */
+    public final TableField<ExternalRequestHistoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_main.b2c_external_request_history</code> table reference

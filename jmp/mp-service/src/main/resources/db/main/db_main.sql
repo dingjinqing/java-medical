@@ -58,7 +58,9 @@ CREATE TABLE `b2c_external_request_history`(
     `service_name` varchar(128) COMMENT '请求服务方法',
     `error_code` int(11) DEFAULT '0' COMMENT '请求结果状态码',
     `request_param` text COMMENT '',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`id`)
 ) COMMENT='外部接口请求记录表';
 
