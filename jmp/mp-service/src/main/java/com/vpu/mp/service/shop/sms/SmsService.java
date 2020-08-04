@@ -3,7 +3,12 @@ package com.vpu.mp.service.shop.sms;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.FileUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.SmsApiConfig;
@@ -11,15 +16,13 @@ import com.vpu.mp.dao.shop.config.ShopCfgDao;
 import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.sms.SmsBaseParam;
-import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminParam;
-import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminVo;
-import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordParam;
+import com.vpu.mp.service.pojo.shop.sms.*;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
 import com.vpu.mp.service.shop.config.SmsAccountConfigService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +30,10 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+
+import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_FIND_FAIL;
+import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_FIND_SUCCESS;
 
 /**
  * 发送短信
@@ -214,8 +217,17 @@ public class SmsService {
      * @param smsSendRecordAdminParam 条件查询入参
      * @return PageResult<SmsSendRecordAdminVo>
      */
-    public PageResult<SmsSendRecordAdminVo> getAdminSmsSendRecordPageList(SmsSendRecordAdminParam smsSendRecordAdminParam){
-        return smsSendRecordDao.selectSmsSendRecordAdmin(smsSendRecordAdminParam);
+    public PageResult<SmsSendRecordAdminVo> getAdminSmsSendRecordPageList(SmsSendRecordAdminParam smsSendRecordAdminParam) {
+        PageResult<SmsSendRecordAdminVo> smsSendRecordAdminVoPageResult = smsSendRecordDao.selectSmsSendRecordAdmin(smsSendRecordAdminParam);
+        List<SmsSendRecordAdminVo> dataList = smsSendRecordAdminVoPageResult.dataList;
+        for (SmsSendRecordAdminVo smsSendRecordAdminVo : dataList) {
+            ResponseMsgVo parse = Util.json2Object(smsSendRecordAdminVo.getResponseMsg(), ResponseMsgVo.class, false);
+            assert parse != null;
+            if (!SMS_FIND_SUCCESS.equals(parse.getCode())) {
+                smsSendRecordAdminVo.setResponseMsgCode(SMS_FIND_FAIL);
+            }
+        }
+        return smsSendRecordAdminVoPageResult;
     }
 
 }
