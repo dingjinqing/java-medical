@@ -34,7 +34,6 @@ public class MedicalAdviceService extends ShopBaseService {
      * @param fetchMedicalAdviceParam 拉取医嘱信息
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalMedicalAdviceList(FetchMedicalAdviceParam fetchMedicalAdviceParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
@@ -66,10 +65,9 @@ public class MedicalAdviceService extends ShopBaseService {
         assert fetchMedicalAdviceVos != null;
         for (FetchMedicalAdviceVo fetchMedicalAdviceVo : fetchMedicalAdviceVos) {
             //如果没有当前医嘱就新增
-            if (medicalAdviceDao.getMedicalAdviceByCode(fetchMedicalAdviceVo.getPosCode()) == null
-                && medicalAdviceDao.getMedicalAdviceByCode(fetchMedicalAdviceVo.getPosCode()) == 0) {
+            Integer medicalAdviceByCode = medicalAdviceDao.getMedicalAdviceByCode(fetchMedicalAdviceVo.getPosCode());
+            if (medicalAdviceByCode == null || medicalAdviceByCode == 0) {
                 medicalAdviceDao.addHitsMedicalAdvice(fetchMedicalAdviceVo);
-
             } else {  //否则就修改
                 medicalAdviceDao.updateHitsMedicalAdvice(fetchMedicalAdviceVo);
             }

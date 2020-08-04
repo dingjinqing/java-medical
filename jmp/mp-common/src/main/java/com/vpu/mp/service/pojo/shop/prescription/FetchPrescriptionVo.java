@@ -13,5 +13,5 @@ import java.util.List;
 
 @Data
 public class FetchPrescriptionVo extends PrescriptionDo {
-    private List<FetchPrescriptionItemVo> list;
+    private List<FetchPrescriptionItemVo> dataList;
 }
