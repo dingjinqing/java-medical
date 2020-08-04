@@ -264,7 +264,7 @@ export default {
       return type[val]
     },
     getResponseMsgCodeState (val) {
-      let state = {'0': '成功'}
+      let state = {'0': '成功', '-1': '失败'}
       return state[val]
     }
   }
