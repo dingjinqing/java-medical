@@ -127,6 +127,13 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
+  toDepartment:function(e){
+    let id = e.currentTarget.dataset.id;
+    let name = e.currentTarget.dataset.name;
+    util.navigateTo({
+      url: "/pages2/doctorSearch/doctorSearch?id=" + id + '&name=' + name 
+    })
+  },
   toAllDepartment: function () {
     util.navigateTo({
       url: "/pages2/allDepartment/allDepartment"
