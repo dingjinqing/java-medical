@@ -344,7 +344,7 @@ public class MedicalGoodsService extends ShopBaseService {
         }
 
         for (Integer curPage = 1; curPage <= goodsMedicalExternalRequestBo.getPageSize(); curPage++) {
-
+            param.setCurrentPage(curPage);
             apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
             // 数据拉取错误
             if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
@@ -395,7 +395,7 @@ public class MedicalGoodsService extends ShopBaseService {
                     readyForUpdate.add(bo);
                 } else {
                     // 对于数据库不存在，而数据自身状态是删除状态则不入库
-                    if (BaseConstant.EXTERNAL_ITEM_STATE_DISABLE.equals(bo.getState())) {
+                    if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
                         continue;
                     }
                     readyForInsert.add(bo);

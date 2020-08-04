@@ -83,9 +83,7 @@ public class GoodsAggregate {
 
         for (GoodsMedicalExternalRequestItemBo bo : goodsMedicalExternalRequestItemBos) {
             GoodsDo goodsDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsDo(bo);
-
-            GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
-            FieldsUtil.assign(bo, goodsMedicalInfoDo);
+            GoodsMedicalInfoDo goodsMedicalInfoDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(bo);
             goodsDos.add(goodsDo);
             goodsMedicalInfoDos.add(goodsMedicalInfoDo);
         }
@@ -124,7 +122,6 @@ public class GoodsAggregate {
 
             if (DelFlag.DISABLE_VALUE.equals(goodsDo.getDelFlag())){
                 goodsDo.setGoodsSn(DelFlag.DEL_ITEM_PREFIX+goodsDo.getGoodsId()+DelFlag.DEL_ITEM_SPLITER+goodsDo.getGoodsSn());
-                goodsDo.setDelFlag(DelFlag.DISABLE_VALUE);
                 goodsMedicalInfoDo.setIsDelete(DelFlag.DISABLE_VALUE);
             }
             goodsDos.add(goodsDo);
