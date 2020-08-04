@@ -257,5 +257,11 @@ global.wxPage({
         sessionId:this.data.targetUserInfo.id
       })
     }) 
+  },
+  viewImage(e){
+    let urls = [e.currentTarget.dataset.urls]
+    wx.previewImage({
+      urls
+    })
   }
 })
