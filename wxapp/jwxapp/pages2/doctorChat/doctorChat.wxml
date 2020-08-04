@@ -4,7 +4,7 @@
 	<view class="main-container" bindtap="hideMoreActions">
 		<!-- <chat-date send-time='{{time}}' /> -->
 		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
-			<chat-message chat-content='{{item}}'>
+			<chat-message chat-content='{{item}}' is-doctor="{{true}}">
 				<view slot='origin_message' class="origin_message {{item.position == 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 0}}'>
 					{{item.messageInfo.message.content}}
 				</view>

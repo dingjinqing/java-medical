@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.im;
 
 import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
@@ -106,11 +107,19 @@ public class ImSessionService extends ShopBaseService {
     public PageResult<ImSessionItemRenderVo> renderSession(ImSessionRenderPageParam renderPageParam) {
         Integer sessionId = renderPageParam.getSessionId();
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
-
         Integer doctorId = imSessionDo.getDoctorId();
-        PageResult<ImSessionItemDo> pageResult = imSessionItemDao.getBySessionItemPgaeList(renderPageParam);
+
+        PageResult<ImSessionItemDo> pageResult = null;
+        // 从redis中获取数据
+        if (ImSessionConstant.SESSION_READY_TO_START.equals(imSessionDo.getSessionStatus()) || ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
+            pageResult = renderSessionFromRedis(renderPageParam);
+        } else {
+            // 从mysql中获取数据
+            pageResult = imSessionItemDao.getBySessionItemPgaeList(renderPageParam);
+            Collections.reverse(pageResult.getDataList());
+        }
+
         List<ImSessionItemDo> imSessionItemDos = pageResult.getDataList();
-        Collections.reverse(imSessionItemDos);
 
         // 此处需要进行倒序排序
         List<ImSessionItemRenderVo> sessionItemRenderVos = imSessionItemDos.stream().map(item -> {
@@ -125,6 +134,41 @@ public class ImSessionService extends ShopBaseService {
         retPageResult.setPage(pageResult.getPage());
         retPageResult.setDataList(sessionItemRenderVos);
         return retPageResult;
+    }
+
+    /**
+     * 从 redis中查询分页内容
+     * @param renderPageParam
+     * @return
+     */
+    private PageResult<ImSessionItemDo> renderSessionFromRedis(ImSessionRenderPageParam renderPageParam) {
+        Integer curPage = renderPageParam.getCurrentPage() - 1;
+        Integer pageRows = renderPageParam.getPageRows();
+        String sessionBakKey = getSessionRedisKeyBak(getShopId(), renderPageParam.getSessionId());
+
+        PageResult<ImSessionItemDo> pageResult = new PageResult<>();
+        Page page = new Page();
+        page.setPageRows(pageRows);
+        Long totalRows = jedisManager.getListSize(sessionBakKey);
+        Integer pageCount = (Integer) (int) Math.ceil(Double.valueOf(totalRows) / Double.valueOf(pageRows));
+        page.setPageCount(pageCount);
+        pageResult.setPage(page);
+        if (renderPageParam.getCurrentPage() > pageCount) {
+            pageResult.setDataList(new ArrayList<>());
+            return pageResult;
+        }
+        Integer endIndex = -curPage * pageRows - 1;
+        // redis list 包含两端，所以要去掉一个元素
+        Integer startIndex = endIndex - pageRows+1;
+        List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
+        List<ImSessionItemDo> imSessionItemDos = new ArrayList<>(jsonStrs.size());
+
+        for (String jsonStr : jsonStrs) {
+            ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
+            imSessionItemDos.add(imSessionItemDo);
+        }
+        pageResult.setDataList(imSessionItemDos);
+        return pageResult;
     }
 
     /**

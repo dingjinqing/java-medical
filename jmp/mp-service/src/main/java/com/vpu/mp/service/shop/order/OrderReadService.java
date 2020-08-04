@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
@@ -14,7 +15,11 @@ import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.patient.PatientDao;
+import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -58,10 +63,13 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayOrderDetails;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFailModel;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
@@ -86,6 +94,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.distribution.OrderGoodsRebateService;
+import com.vpu.mp.service.shop.distribution.RebateStrategyService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
@@ -230,6 +239,11 @@ public class OrderReadService extends ShopBaseService {
     private OrderRefundRecordService orderRefundRecord;
     @Autowired
     private PrescriptionDao prescriptionDao;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private UserPatientCoupleDao userPatientCoupleDao;
+
 	/**
 	 * 订单查询
 	 * @param param
@@ -389,6 +403,19 @@ public class OrderReadService extends ShopBaseService {
         mainOrder.setAffirmTime(mainOrder.getConfirmTime());
         //设置代付明细
         mainOrder.setInsteadPayInfo(subOrderService.paymentDetails(mainOrder.getOrderSn()));
+        //处方药
+        if (mainOrder.getOrderMedicalType().equals(OrderConstant.MEDICAL_TYPE_RX)){
+			List<OrderGoodsSimpleAuditVo> allGoods = orderGoodsDao.listSimpleAuditByOrderId(mainOrder.getOrderId());
+			List<String> oldCodes = allGoods.stream().map(OrderGoodsSimpleAuditVo::getPrescriptionOldCode).collect(Collectors.toList());
+			List<String> codes = allGoods.stream().map(OrderGoodsSimpleAuditVo::getPrescriptionCode).collect(Collectors.toList());
+			List<PrescriptionDo> prescriptionOldDoList = prescriptionDao.listPrescriptionByCode(oldCodes, PrescriptionDo.class);
+			List<PrescriptionDo> prescriptionDoList = prescriptionDao.listPrescriptionByCode(codes, PrescriptionDo.class);
+			mainOrder.setPrescriptionDoList(prescriptionDoList);
+			mainOrder.setPrescriptionOldDoList(prescriptionOldDoList);
+			//患者
+			UserPatientDetailVo patientInfo = userPatientCoupleDao.getUserPatientInfo(mainOrder.getUserId(), mainOrder.getPatientId());
+			mainOrder.setPatientInfo(patientInfo);
+		}
 		return mainOrder;
 	}
 
@@ -1637,7 +1664,7 @@ showManualReturn(vo);
         if(columns.contains(OrderExportVo.REBATE)) {
             //返利金额，最多有两级
             Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(), order.getRecId());
-            if (orderRebate.size() == 2) {
+            if (orderRebate.size() == DistributionConstant.REBATE_LEVEL_1) {
                 order.setRebateLevelOne(orderRebate.get(0).getRebateMoney());
                 order.setRebateLevelTwo(orderRebate.get(1).getRebateMoney());
             } else if (orderRebate.size() == 1) {

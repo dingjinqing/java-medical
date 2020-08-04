@@ -13,7 +13,11 @@ global.wxPage({
     prescriptionMessage:null,
     chatContent:[],
     targetUserInfo:{},
-    source:null
+    source:null,
+    historyPageParams:{
+      currentPage:1,
+      pageRows:20
+    }
   },
 
   /**
@@ -47,7 +51,7 @@ global.wxPage({
    */
   onShow: function () {
     if(this.data.prescriptionMessage) this.sendMessage({content:this.data.prescriptionMessage},2)
-    this.requsetMessage()
+    this.requestHistoryChat()
   },
 
   /**
@@ -89,7 +93,7 @@ global.wxPage({
   },
   requsetMessage () {
     this.messageApi()
-    if(this.data.targetUserInfo.sessionStatus === 1) this.timer = setInterval(this.messageApi,2000)
+    if(this.data.targetUserInfo.sessionStatus === 1) this.timer = setInterval(this.messageApi,5000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
@@ -224,5 +228,34 @@ global.wxPage({
     },{
       prescriptionCode
     })
+  },
+  async requestHistoryChat(){
+    let data = await this.historyChatApi()
+    if(data) this.requsetMessage()
+  },
+  historyChatApi(){
+    return new Promise((resolve,reject)=>{
+      util.api('/api/wxapp/im/session/render',res=>{
+        console.log(res)
+        if(res.error === 0 && res.content.dataList.length){
+          let newChatContent = res.content.dataList.reduce((defaultValue,item)=>{
+            defaultValue.push({  
+              position:item.doctor ? 1 : 0,
+              messageInfo:{
+                message:JSON.parse(item.message),
+                type:item.type
+              }
+            })
+            return defaultValue
+          },[])
+          this.setData({
+            chatContent:[...newChatContent]
+          })
+        }
+        resolve(res)
+      },{
+        sessionId:this.data.targetUserInfo.id
+      })
+    }) 
   }
 })

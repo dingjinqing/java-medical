@@ -9,21 +9,25 @@ global.wxComponent({
   properties: {
     chatContent: Object,
     systemInfo: String,
-    systemImg:Boolean
+    systemImg:Boolean,
+    isDoctor:{
+      type:Boolean,
+      value:false
+    }
   },
   options:{
     multipleSlots:true
   },
-
+  lifetimes:{
+    ready(){
+      this.initAvatar()
+    }
+  },
   /**
    * 组件的初始数据
    */
   data: {
-  
-  },
-
-  ready () {
-    console.log(this.data.chatContent)
+    userAvatar:util.getCache('avatarUrl')
   },
 
   /**
@@ -33,6 +37,18 @@ global.wxComponent({
     onLoad (op) {
       let that = this
     },
-
+    initAvatar(){
+      let avatar = ''
+      if(this.data.isDoctor){
+        if(this.data.chatContent.position === 0) avatar = util.getCache('avatarUrl') || null
+        if(this.data.chatContent.position === 1) avatar = this.data.imageUrl + 'image/wxapp/doctor_default_icon.png'
+      } else {
+        if(this.data.chatContent.position === 0) avatar = this.data.imageUrl + 'image/wxapp/doctor_default_icon.png'
+        if(this.data.chatContent.position === 1) avatar = util.getCache('avatarUrl') || null
+      }
+      this.setData({
+        avatar
+      })
+    }
   },
 })
