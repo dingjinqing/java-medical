@@ -15,7 +15,7 @@
     <view class="item">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
-        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notPrescription}}</view>
+        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount}}</view>
       </view>
       <view class="item_text">待续方</view>
     </view>
