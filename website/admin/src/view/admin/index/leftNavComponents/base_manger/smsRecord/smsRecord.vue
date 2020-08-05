@@ -11,7 +11,7 @@
           <el-form-item label="短信类型">
             <el-select
               v-model="ext"
-              placeholder="验证码"
+              placeholder="请选择类型"
               size="small"
               style="width:170px;"
               clearable
@@ -36,7 +36,7 @@
           <el-form-item label="发送状态">
             <el-select
               v-model="responseMsgCode"
-              placeholder="成功"
+              placeholder="请选择发送状态"
               size="small"
               style="width:170px;"
               clearable
