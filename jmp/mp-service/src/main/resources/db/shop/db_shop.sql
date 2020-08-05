@@ -4892,6 +4892,7 @@ create table `b2c_prescription`(
     `patient_complain` text comment '患者主诉',
     `patient_sign` text comment '患者体征',
     `source` tinyint(1) not null default 0 comment '处方来源 0系统内部创建 1医院拉取',
+    `auditType` tinyint(1) not null default 0 comment '处方审核类型 ''药品审核类型, 0不审核,1审核,2开方,3根据处方下单',
     `status` tinyint(1) not null default 0 comment '处方审核状态 0待审核 1审核通过 2审核未通过',
     `status_memo` text comment '处方审核医师评价',
     `expire_type`     tinyint(1)   not null default '0' comment '处方有效期类型 0:未知（默认过期），1:永久有效，2:时间段内有效',

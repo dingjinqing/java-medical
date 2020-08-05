@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.db.sql.Order;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
@@ -21,13 +20,9 @@ import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
-import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionOrderGoodsVo;
@@ -37,8 +32,6 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.Audit
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.AuditOrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
@@ -50,11 +43,9 @@ import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -62,7 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 订单处方处理类
@@ -257,7 +247,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         if (param.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
             logger().info("orderId:{}审核通过",orderInfoDo.getOrderId());
             //生成处方
-            PrescriptionVo prescriptionVo = savePrescription(param, orderInfoDo,allGoods,unAuditGoodsId);
+            PrescriptionVo prescriptionVo = savePrescriptionInfo(param, orderInfoDo,allGoods,unAuditGoodsId);
             //修改状态
             orderGoodsDao.updateAuditedToWaitDelivery(unAuditGoodsId,prescriptionVo.getPrescriptionCode());
             orderGoodsDao.updateAuditStatusByRecIds(unAuditGoodsId,OrderConstant.MEDICAL_AUDIT_PASS);
@@ -275,39 +265,11 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      * @param orderInfoDo
      * @return
      */
-    private PrescriptionVo savePrescription(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo,List<OrderGoodsSimpleAuditVo> allGoods,List<Integer> unAuditGoodsId) {
-        Timestamp time = DateUtil.date().toTimestamp();
-        DoctorOneParam doctor = doctorDao.getOneInfo(param.getDoctorId());
-        DepartmentCodeVo departmentOne = doctorDepartmentCoupleDao.getOneCodeByByDoctorId(param.getDoctorId());
-        PatientOneParam patient = patientDao.getOneInfo(orderInfoDo.getPatientId());
-        PrescriptionVo prescriptionVo = prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionOldCode());
-        List<PrescriptionItemInfoVo> itemInfoVoList = prescriptionItemDao.listByPrescriptionNo(prescriptionVo.getPrescriptionCode());
-        prescriptionVo.setId(null);
-        prescriptionVo.setPrescriptionCode(System.currentTimeMillis()+"");
-        prescriptionVo.setPosCode("");
-        prescriptionVo.setPatientId(orderInfoDo.getPatientId());
-        prescriptionVo.setUserId(orderInfoDo.getUserId());
-        prescriptionVo.setPatientAge(DateUtil.ageOfNow(patient.getBirthday()));
-        prescriptionVo.setDepartmentCode(departmentOne.getCode());
-        prescriptionVo.setDepartmentName(departmentOne.getName());
-        prescriptionVo.setDoctorCode(doctor.getHospitalCode());
-        prescriptionVo.setDoctorName(doctor.getName());
-        prescriptionVo.setDiagnoseTime(time);
-        prescriptionVo.setPharmacistCode("007");
-        prescriptionVo.setPharmacistName("张三");
-        prescriptionVo.setDoctorAdvice(param.getDoctorAdvice());
-        prescriptionVo.setPatientComplain("");
-        prescriptionVo.setPatientSign("");
-        prescriptionVo.setSource(PrescriptionConstant.SOURCE_MP_SYSTEM);
-        prescriptionVo.setStatus(PrescriptionConstant.STATUS_PASS);
-        prescriptionVo.setStatusMemo("");
-        prescriptionVo.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
-        prescriptionVo.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(time,PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
-        prescriptionVo.setIsValid(BaseConstant.YES);
-        prescriptionVo.setIsUsed(BaseConstant.YES);
-        prescriptionDao.save(prescriptionVo);
+    private PrescriptionVo savePrescriptionInfo(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo,List<OrderGoodsSimpleAuditVo> allGoods,List<Integer> unAuditGoodsId) {
+        PrescriptionVo prescriptionVo = savePrescription(param, orderInfoDo);
         List<PrescriptionItemDo> list =new ArrayList<>();
         allGoods.forEach(goods->{
+            //处方详情
             if (unAuditGoodsId.contains(goods.getRecId())){
                 GoodsMedicalInfoDo medicalInfoDo = medicalInfoDao.getByGoodsId(goods.getGoodsId());
                 PrescriptionItemDo itemDo =new PrescriptionItemDo();
@@ -328,6 +290,46 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             }
         });
         prescriptionItemDao.batchSave(list);
+        return prescriptionVo;
+    }
+
+    /**
+     * 保存处方
+     * @param param
+     * @param orderInfoDo
+     * @return
+     */
+    private PrescriptionVo savePrescription(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo) {
+        DoctorOneParam doctor = doctorDao.getOneInfo(param.getDoctorId());
+        DepartmentCodeVo departmentOne = doctorDepartmentCoupleDao.getOneCodeByByDoctorId(param.getDoctorId());
+        PatientOneParam patient = patientDao.getOneInfo(orderInfoDo.getPatientId());
+        PrescriptionVo prescriptionVo = prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionOldCode());
+        Timestamp time = DateUtil.date().toTimestamp();
+        prescriptionVo.setId(null);
+        prescriptionVo.setPrescriptionCode(System.currentTimeMillis()+"");
+        prescriptionVo.setPosCode("");
+        prescriptionVo.setPatientId(orderInfoDo.getPatientId());
+        prescriptionVo.setUserId(orderInfoDo.getUserId());
+        prescriptionVo.setPatientAge(DateUtil.ageOfNow(patient.getBirthday()));
+        prescriptionVo.setDepartmentCode(departmentOne.getCode());
+        prescriptionVo.setDepartmentName(departmentOne.getName());
+        prescriptionVo.setDoctorCode(doctor.getHospitalCode());
+        prescriptionVo.setDoctorName(doctor.getName());
+        prescriptionVo.setDiagnoseTime(time);
+        prescriptionVo.setPharmacistCode("007");
+        prescriptionVo.setPharmacistName("张三");
+        prescriptionVo.setDoctorAdvice(param.getDoctorAdvice());
+        prescriptionVo.setPatientComplain("");
+        prescriptionVo.setPatientSign("");
+        prescriptionVo.setSource(PrescriptionConstant.SOURCE_MP_SYSTEM);
+        prescriptionVo.setStatus(PrescriptionConstant.STATUS_PASS);
+        prescriptionVo.setStatusMemo("");
+        prescriptionVo.setAudittype(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
+        prescriptionVo.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
+        prescriptionVo.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(time,PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
+        prescriptionVo.setIsValid(BaseConstant.YES);
+        prescriptionVo.setIsUsed(BaseConstant.YES);
+        prescriptionDao.save(prescriptionVo);
         return prescriptionVo;
     }
 

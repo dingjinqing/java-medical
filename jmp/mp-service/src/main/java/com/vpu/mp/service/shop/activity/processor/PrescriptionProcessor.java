@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -42,6 +44,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     private MedicalGoodsService medicalGoodsService;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private OrderMedicalHistoryDao orderMedicalHistoryDao;
 
 
     @Override
@@ -174,7 +178,16 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
 
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        //开方保存患者信息
+        if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+            log.info("待开方订单保存患者信息");
+            if (param.getPatientDiagnose()!=null){
+                param.getPatientDiagnose().setOrderId(order.getOrderId());
+                orderMedicalHistoryDao.save(param.getPatientDiagnose());
+            }else {
+                throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+            }
+        }
     }
 
     @Override
