@@ -6,8 +6,8 @@
           <div class="top_info">
             <div class="item-title">电子处方</div>
             <div class="top_content">
-              <div>就诊卡号：{{originalData.prescriptionCode}}</div>
-              <div>编号：{{originalData.patientTreatmentCode}}</div>
+              <div>就诊卡号：{{originalData.patient_treatment_code}}</div>
+              <div>编号：{{originalData.prescriptionCode}}</div>
             </div>
           </div>
           <div class="item-list-content">
@@ -18,19 +18,19 @@
               </div>
               <div class="list_content list_patient_info">
                 <div class="each_patient_column">
-                  <div class="dark_one">张三</div>
+                  <div class="dark_one">{{originalData.patientName}}</div>
                   <div>姓名</div>
                 </div>
                 <div class="each_patient_column">
-                  <div class="dark_one">男</div>
+                  <div class="dark_one">{{originalData.patientSex}}</div>
                   <div>性别</div>
                 </div>
                 <div class="each_patient_column">
-                  <div class="dark_one">52岁</div>
+                  <div class="dark_one">{{originalData.patientAge}}岁</div>
                   <div>年龄</div>
                 </div>
                 <div class="each_patient_column">
-                  <div class="dark_one">外科外科外科外科外科外科</div>
+                  <div class="dark_one">{{originalData.departmentName}}</div>
                   <div>科室</div>
                 </div>
               </div>
@@ -38,27 +38,31 @@
                 <span class="list-item-dot"></span>
                 <div class="list-item-content">诊断</div>
               </div>
-              <div class="list_content">原发性高血压</div>
+              <div class="list_content">{{originalData.diagnosisDetail}}</div>
               <div class="list-item">
                 <span class="list-item-dot"></span>
                 <div class="list-item-content">治疗建议</div>
               </div>
-              <div class="list_content">
-                <div class="medicine_name">苯磺酸氨氯地平片</div>
-                <div class="medicine_spec">用法用量：清晨空腹口服，一次5mg，一日1次，用药84天</div>
+              <div
+                class="list_content"
+                v-for="(item,index) in originalData.itemList"
+                :key="index"
+              >
+                <div class="medicine_name">{{item.goodsCommonName}}</div>
+                <div class="medicine_spec">用法用量：{{item.goodsQualityRatio}},{{item.goodsUseMemo}}</div>
               </div>
             </div>
           </div>
           <div class="doctor-info">
             <div class="doctor-name">
-              <div>处方医师：
+              <div>处方医师：{{originalData.doctorName}}
               </div>
-              <div>审核医师：
+              <div>审核医师：{{originalData.pharmacistName}}
               </div>
-              <div>发药医师：
+              <div>发药医师：{{originalData.pharmacistName}}
               </div>
             </div>
-            <span class="item-date">日期</span>
+            <span class="item-date">日期：{{originalData.prescriptionCreateTime}}</span>
           </div>
         </div>
       </div>
@@ -76,7 +80,7 @@ export default {
   },
   methods: {
     initDataList () {
-      let prescriptionCode = this.$router.query.prescriptionCode
+      let prescriptionCode = this.$route.query.prescriptionCode
       getPrescriptionMessage(prescriptionCode).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
@@ -90,6 +94,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$route.query)
     this.initDataList()
   }
 }
@@ -105,6 +110,7 @@ export default {
   padding: 10px 15px;
   display: flex;
   flex-direction: column;
+  min-width: 450px;
 }
 .prescription-item {
   border-radius: 16px;

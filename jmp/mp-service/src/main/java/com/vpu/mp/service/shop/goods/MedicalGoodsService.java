@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -45,6 +46,7 @@ import com.vpu.mp.service.shop.goods.aggregate.GoodsAggregate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -327,7 +329,7 @@ public class MedicalGoodsService extends ShopBaseService {
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS);
         MedicalGoodsExternalRequestParam param = new MedicalGoodsExternalRequestParam();
         param.setStartTime(lastRequestTime);
-
+        Timestamp now = DateUtils.getLocalDateTime();
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
         // 数据拉取错误
         if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
@@ -335,6 +337,8 @@ public class MedicalGoodsService extends ShopBaseService {
             result.setError(apiExternalRequestResult.getError());
             result.setMessage(apiExternalRequestResult.getMsg());
             result.setContent(apiExternalRequestResult.getData());
+            logger().debug("拉取药品信息错误：error "+apiExternalRequestResult.getError()+",msg "+apiExternalRequestResult.getMsg());
+            saas().externalRequestHistoryService.eraseRequestHistory(appId,shopId,serviceName,now);
             return result;
         }
         String dataJson = apiExternalRequestResult.getData();
@@ -342,9 +346,10 @@ public class MedicalGoodsService extends ShopBaseService {
         if (goodsMedicalExternalRequestBo == null) {
             return JsonResult.success();
         }
-
+        Integer pullCount = 0;
         for (Integer curPage = 1; curPage <= goodsMedicalExternalRequestBo.getPageSize(); curPage++) {
-
+            logger().debug("拉取药品信息：共"+goodsMedicalExternalRequestBo.getTotalCount()+"条,共"+goodsMedicalExternalRequestBo.getPageSize()+"页,当前页："+param.getCurrentPage());
+            param.setCurrentPage(curPage);
             apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
             // 数据拉取错误
             if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
@@ -352,6 +357,8 @@ public class MedicalGoodsService extends ShopBaseService {
                 result.setError(apiExternalRequestResult.getError());
                 result.setMessage(apiExternalRequestResult.getMsg());
                 result.setContent(apiExternalRequestResult.getData());
+                logger().debug("拉取药品信息错误：error "+apiExternalRequestResult.getError()+",msg "+apiExternalRequestResult.getMsg());
+                saas().externalRequestHistoryService.eraseRequestHistory(appId,shopId,serviceName,now);
                 return result;
             }
             dataJson = apiExternalRequestResult.getData();
@@ -359,8 +366,14 @@ public class MedicalGoodsService extends ShopBaseService {
 
             List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalRequestBo.getDataList();
             // 药品数据入库操作
-            batchStoreGoodsMedicalExternalInfo(dataList);
+            try {
+                batchStoreGoodsMedicalExternalInfo(dataList);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            pullCount+=dataList.size();
         }
+        logger().debug("拉取药品信息结束：共处理"+pullCount+"条");
         return JsonResult.success();
     }
 
@@ -395,7 +408,7 @@ public class MedicalGoodsService extends ShopBaseService {
                     readyForUpdate.add(bo);
                 } else {
                     // 对于数据库不存在，而数据自身状态是删除状态则不入库
-                    if (BaseConstant.EXTERNAL_ITEM_STATE_DISABLE.equals(bo.getState())) {
+                    if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
                         continue;
                     }
                     readyForInsert.add(bo);

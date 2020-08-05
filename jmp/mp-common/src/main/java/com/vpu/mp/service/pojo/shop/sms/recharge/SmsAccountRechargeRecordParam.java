@@ -25,14 +25,10 @@ public class SmsAccountRechargeRecordParam {
      * 时间不传 默认三个月
      */
     @JsonProperty(value = "start_time")
-    private String startTime;
+    private String startCreateTime;
     @JsonProperty(value = "end_time")
-    private String endTime;
-    /**
-     * 默认全部 0自助充值 1手动充值 2赠送
-     */
-    @JsonProperty(value = "recharge_type")
-    private String rechargeType;
+    private String endCreateTime;
+
     private Integer page = Page.DEFAULT_CURRENT_PAGE;
     private Integer rows = Page.DEFAULT_PAGE_ROWS;
 

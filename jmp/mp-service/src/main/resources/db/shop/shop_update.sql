@@ -155,8 +155,8 @@ ALTER TABLE `b2c_user_card` ADD COLUMN `free_limit` tinyint(3) DEFAULT -1 COMMEN
 ALTER TABLE `b2c_user_card` ADD COLUMN `free_num` int(11) DEFAULT 0 COMMENT '周期内包邮次数';
 
 -- 2020-03-19 商品表添加统计字段
-ALTER TABLE `b2c_goods` ADD COLUMN `pv` int(11) DEFAULT '0' COMMENT '7天访问量';
-ALTER TABLE `b2c_goods` ADD COLUMN `comment_num` int(11) DEFAULT '0' COMMENT '评论数';
+-- ALTER TABLE `b2c_goods` ADD COLUMN `pv` int(11) DEFAULT '0' COMMENT '7天访问量';
+-- ALTER TABLE `b2c_goods` ADD COLUMN `comment_num` int(11) DEFAULT '0' COMMENT '评论数';
 
 -- 2020-03-20 商品导入信息结果详情表修改字段
 ALTER TABLE b2c_goods_import_detail CHANGE COLUMN error_msg error_code TINYINT(3) NOT NULL DEFAULT 0 COMMENT '导入数据错误码，0表示正确 非0对应错误码';
@@ -313,7 +313,7 @@ ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT not NULL default 0 COMMENT '
 ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是否不选择商品： 1：是  0： 否';
 
 -- 商品表添加直播间id字段
-ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
+-- ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
 -- 2020年04月10日 添加自定义激活配置
 ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
 

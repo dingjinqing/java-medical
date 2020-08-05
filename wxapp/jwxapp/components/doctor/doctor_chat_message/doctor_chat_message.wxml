@@ -1,7 +1,7 @@
 <!--components/doctor/doctor_chat_message/doctor_chat_message.wxml-->
 <view class="user_con {{chatContent.position == 0 ? 'con_left' : 'con_right'}}">
 	<view class="user_icon {{chatContent.position == 0 ? 'user_left' : 'user_right'}}">
-		<image src='https://bkimg.cdn.bcebos.com/pic/37d3d539b6003af3a09e2944372ac65c1038b6ea?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg'></image>
+		<image src='{{avatar}}'></image>
 	</view>
 	<slot name='origin_message' />
 	<slot name="origin_image" />
@@ -9,13 +9,15 @@
 	<slot name="doctor_pres_message" />
 	<slot name="system_info" />
 </view>
-<view wx:if='{{chatContent.position == 1 && chatContent.messageInfo.type === 3}}'>
-	<view class="system_info">
-		{{systemInfo}}
+<block wx:if='{{chatContent.position == 1}}'>
+	<view wx:if='{{(chatContent.messageInfo.type === 3 && !systemImg ) || chatContent.messageInfo.message.system }}'>
+		<view class="system_info">
+			{{systemInfo}}
+		</view>
+		<view class="medical-begin">
+			<view class="liner-left"></view>
+			<view class="begin">问诊已开始</view>
+			<view class="liner-right"></view>
+		</view>
 	</view>
-	<view class="medical-begin">
-		<view class="liner-left"></view>
-		<view class="begin">问诊已开始</view>
-		<view class="liner-right"></view>
-	</view>
-</view>
+</block>

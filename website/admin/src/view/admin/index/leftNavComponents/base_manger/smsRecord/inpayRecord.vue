@@ -46,26 +46,24 @@
           :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         >
           <el-table-column
-            prop="userName"
+            prop="rechargeTime"
             label="充值时间"
             align="center"
             min-width="20%"
           >
           </el-table-column>
           <el-table-column
-            prop="accountType"
+            prop="price"
             label="充值金额"
             align="center"
-            :formatter="bindFormatter"
             min-width="10%"
           >
           </el-table-column>
           <el-table-column
-            prop="actionType"
+            prop="smsNum"
             label="充值条数"
             align="center"
             min-width="10%"
-            :formatter="actionTypeFormatter"
           >
 
           </el-table-column>
@@ -140,7 +138,7 @@ export default {
         console.log('res-----------------------------------')
         console.log(res)
         if (res.error === 0) {
-          this.tableData = res.content.dataList
+          this.tableData = res.content.data
           this.page = res.content.page
           this.currentPage = res.content.page.currentPage
           this.pageRows = res.content.page.pageRows

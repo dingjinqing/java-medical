@@ -42,16 +42,42 @@ global.wxComponent({
       util.api('/api/wxapp/user/patient/get/default', function (res) {
         console.log(res)
         if (res.error == 0 && res.content.id) {
-          util.navigateTo({
-            url: "/pages2/doctorPatientMessage/doctorPatientMessage?doctor_id=" + doctor_id + "&depar_id=" + depar_id + "&price=" + price
-          })
-        }else{
+          let patientId = res.content.id;
+          that.requestOrderStatus(depar_id, patientId, doctor_id, price)
+        } else {
           util.navigateTo({
             url: "pages1/getprescription/getprescription?list=1"
           })
         }
 
       }, {})
-    }
+    },
+    requestOrderStatus(depar_id, patientId, doctor_id, price) {
+      let that = this;
+      util.api('/api/wxapp/inquiry/order/undone/get', function (res) {
+        console.log(res)
+        if (res.error == 0 && res.content) {
+          let {
+            orderSn,
+            orderStatus
+          } = res.content;
+          if (orderStatus == 1 || orderStatus == 2) {
+            util.navigateTo({
+              url: "/pages2/patientChat/patientChat?orderSn=" + orderSn
+            })
+          }
+        } else {
+          util.navigateTo({
+            url: "/pages2/doctorPatientMessage/doctorPatientMessage?doctor_id=" + doctor_id + "&depar_id=" + depar_id + "&price=" + price
+          })
+        }
+      }, {
+        userId: util.getCache('user_id'),
+        departmentId: depar_id,
+        patientId: patientId,
+        doctorId: doctor_id
+      })
+    },
   },
+
 })

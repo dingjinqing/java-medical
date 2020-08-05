@@ -2,13 +2,14 @@ package com.vpu.mp.service.shop.prescription;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
-import com.vpu.mp.dao.foundation.transactional.DbTransactional;
-import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
@@ -16,17 +17,28 @@ import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
-import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.*;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDrugVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.patient.PatientService;
@@ -34,9 +46,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HITS_NULL;
 
 /**
  * 处方
@@ -109,6 +128,9 @@ public class PrescriptionService extends ShopBaseService {
      */
     public PrescriptionVo getByGoodsInfo(Integer goodsId, UserPatientParam param, String goodsCommonName, String goodsQualityRatio, String productionEnterprise) {
         UserPatientParam userPatientParam = patientService.getUserPatient(param);
+        if (userPatientParam==null){
+            return null;
+        }
         List<String> prescriptionNos = getValidPrescriptionByUserPatient(userPatientParam);
         PrescriptionVo prescriptionItem = prescriptionDao.getValidByGoodsId(goodsId,prescriptionNos);
         if (prescriptionItem==null){
@@ -234,12 +256,10 @@ public class PrescriptionService extends ShopBaseService {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
-
         //增量
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS,
             shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS);
         fetchPrescriptionParam.setStartTime(lastRequestTime);
-
         //拉取数据
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
             .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchPrescriptionParam));
@@ -252,31 +272,27 @@ public class PrescriptionService extends ShopBaseService {
             result.setContent(apiExternalRequestResult.getData());
             return result;
         }
+
+        if (apiExternalRequestResult.getData() == null) {
+            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+        }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
         List<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
         });
 
         //数据库新增或更新
+        assert fetchPrescriptionVos != null;
         for (FetchPrescriptionVo prescriptionVo : fetchPrescriptionVos) {
             //如果没有当前处方就新增
             if (prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode()) == null) {
                 prescriptionDao.addHitsPrescription(prescriptionVo);
                 //遍历得到的处方表中的处方明细，如果没有就新增，有就更新
-                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
-                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
-                        prescriptionItemDao.save(fetchPrescriptionItemVo);
-                    }
+                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getDataList()) {
+                    prescriptionItemDao.save(fetchPrescriptionItemVo);
                 }
             } else {  //否则就修改
                 prescriptionDao.updateHitsPrescription(prescriptionVo);
-                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
-                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
-                        prescriptionItemDao.save(fetchPrescriptionItemVo);
-                    } else {
-                        prescriptionItemDao.updateHitsPrescriptionItem(fetchPrescriptionItemVo);
-                    }
-                }
             }
         }
         return JsonResult.success();
@@ -302,31 +318,26 @@ public class PrescriptionService extends ShopBaseService {
             result.setContent(apiExternalRequestResult.getData());
             return result;
         }
+        if (apiExternalRequestResult.getData() == null) {
+            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+        }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
         List<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
         });
         //数据库新增或更新
+        assert fetchPrescriptionVos != null;
         for (FetchPrescriptionVo prescriptionVo : fetchPrescriptionVos) {
             //如果没有当前处方就新增
             PrescriptionVo doByPrescriptionNo = prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode());
             if (doByPrescriptionNo == null) {
                 prescriptionDao.addHitsPrescription(prescriptionVo);
                 //遍历得到的处方表中的处方明细，如果没有就新增，有就更新
-                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
-                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
-                        prescriptionItemDao.save(fetchPrescriptionItemVo);
-                    }
+                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getDataList()) {
+                    prescriptionItemDao.save(fetchPrescriptionItemVo);
                 }
             } else {  //否则就修改
                 prescriptionDao.updateHitsPrescription(prescriptionVo);
-                for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getList()) {
-                    if (prescriptionItemDao.getPrescriptionById(fetchPrescriptionItemVo.getId()) != null) {
-                        prescriptionItemDao.save(fetchPrescriptionItemVo);
-                    } else {
-                        prescriptionItemDao.updateHitsPrescriptionItem(fetchPrescriptionItemVo);
-                    }
-                }
             }
         }
         return JsonResult.success();

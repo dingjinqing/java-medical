@@ -676,6 +676,13 @@ export default {
             span: '',
             name: 'officesList',
             flag: true
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/advisory_order.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/advisory_order_h.png',
+            span: '',
+            name: 'advisoryTotal',
+            flag: true
           }
         ],
         prescription_manger: [

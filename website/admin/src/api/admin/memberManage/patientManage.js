@@ -24,10 +24,9 @@ export function getPrescriptionList (data) {
   })
 }
 // 处方详情
-export function getPrescriptionMessage (data) {
+export function getPrescriptionMessage (code) {
   return service({
-    url: `/api/admin/prescription/details`,
-    method: 'post',
-    data: data
+    url: `/api/admin/prescription/get/${code}`,
+    method: 'get'
   })
 }

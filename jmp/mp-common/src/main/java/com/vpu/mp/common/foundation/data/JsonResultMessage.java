@@ -1,7 +1,5 @@
 package com.vpu.mp.common.foundation.data;
 
-import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementVo;
-
 /**
  * @author 新国
  */
@@ -1351,6 +1349,8 @@ public class JsonResultMessage {
 
     public static final String IM_SESSION_PARAM_LACK = "im.session.param.lack";
 
+    public static final String IM_SESSION_CAN_NOT_USE = "im.session.can.not.use";
+
     /**
      * 问诊订单
      */
@@ -1363,6 +1363,9 @@ public class JsonResultMessage {
 
     public static final String DOCTOR_LOGIN_AUTH_ERROR = "认证失败";
     public static final String DOCTOR_LOGIN_AUTH_ALREADY_LOGIN="医师信息已被认证";
+
+    public static final String FETCH_HITS_ERROR = "拉取信息时错误";
+    public static final String FETCH_HITS_NULL = "暂无信息";
 
 
 }

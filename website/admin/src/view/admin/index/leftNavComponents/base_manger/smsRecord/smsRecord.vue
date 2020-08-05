@@ -8,6 +8,51 @@
           :inline="true"
           class="demo-form-inline"
         >
+          <el-form-item label="短信类型">
+            <el-select
+              v-model="ext"
+              placeholder="验证码"
+              size="small"
+              style="width:170px;"
+              clearable
+            >
+              <el-option
+                key="checkCode"
+                label="验证码"
+                value="checkCode"
+              ></el-option>
+              <el-option
+                key="-3"
+                label="营销短信"
+                value="-3"
+              ></el-option>
+              <el-option
+                key="industry"
+                label="行业短信"
+                value="industry"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="发送状态">
+            <el-select
+              v-model="responseMsgCode"
+              placeholder="成功"
+              size="small"
+              style="width:170px;"
+              clearable
+            >
+              <el-option
+                key="0"
+                label="成功"
+                value="0"
+              ></el-option>
+              <el-option
+                key="-1"
+                label="失败"
+                value="-1"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item :label="$t('actionRecord.optionTime')+'：'">
             <div class="block">
               <el-date-picker
@@ -66,9 +111,14 @@
             align="center"
             min-width="12%"
           >
+            <template slot-scope="scope">
+              <span>
+                {{scope.row.ext | getExtType}}
+              </span>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="responseMsg"
+            prop="requestMsg"
             label="发送内容"
             align="center"
             min-width="55%"
@@ -88,6 +138,11 @@
             align="center"
             min-width="20%"
           >
+            <template slot-scope="scope">
+              <span>
+                {{scope.row.responseMsgCode | getResponseMsgCodeState}}
+              </span>
+            </template>
 
           </el-table-column>
 
@@ -115,6 +170,8 @@ export default {
   components: {},
   data () {
     return {
+      responseMsgCode: null,
+      ext: null,
       startCreateTime: null,
       endCreateTime: null,
       totalRows: null,
@@ -140,6 +197,8 @@ export default {
     search () {
       console.log(this.date)
       let params = {
+        'ext': this.ext,
+        'responseMsgCode': this.responseMsgCode,
         'currentPage': this.currentPage,
         'pageRows': this.pageRows,
         'startCreateTime': this.startCreateTime,
@@ -198,7 +257,18 @@ export default {
       }
       return row.actionTypeTran
     }
+  },
+  filters: {
+    getExtType (val) {
+      let type = {'checkcode': '验证码', '-3': '营销短信'}
+      return type[val]
+    },
+    getResponseMsgCodeState (val) {
+      let state = {'0': '成功', '-1': '失败'}
+      return state[val]
+    }
   }
+
 }
 
 </script>

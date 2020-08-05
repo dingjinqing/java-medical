@@ -12,10 +12,10 @@
     </view>
   </view>
   <view class="list">
-    <view class="item">
+    <view class="item" bindtap="viewOperatePrescriptionList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
-        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notPrescription}}</view>
+        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount}}</view>
       </view>
       <view class="item_text">待续方</view>
     </view>
@@ -26,7 +26,7 @@
       </view>
       <view class="item_text">待开方</view>
     </view>
-    <view class="item" bindtap="viewInquiryList">
+    <view class="item" data-type="wait" bindtap="viewInquiryList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
         <view class="item_num">{{doctorInfo.doctorMessageCountVo.notImSessionCount}}</view>
@@ -47,7 +47,7 @@
       </view>
       <view class="item_text">已开具</view>
     </view>
-    <view class="item">
+    <view class="item" data-type="my" bindtap="viewInquiryList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
         <view class="item_dot"></view>

@@ -187,6 +187,6 @@ global.wxPage({
       keyword: keyword,
       departmentId: departmentId,
       titleId: titleId
-    });
+    },'',true);
   }
 })

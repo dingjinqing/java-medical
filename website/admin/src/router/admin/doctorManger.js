@@ -126,6 +126,35 @@ const routes = [
           )
       }
     ]
+  },
+  // 咨询订单统计
+  {
+    path: '/admin/home/main/advisory/total',
+    name: 'advisoryTotal',
+    meta: {
+      crumbTitle: 'router.advisoryTotal',
+      meta: 'doctor_manger'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/doctor_manger/advisory/advisoryTotal'
+      )
+    // children: [
+    //   //  医师管理/科室管理/科室列表
+    //   {
+    //     path: '/admin/home/main/doctor/offices/list',
+    //     name: 'officesList',
+    //     meta: {
+    //       crumbTitle: 'router.officesList',
+    //       meta: 'doctor_manger',
+    //       category: 'offices'
+    //     },
+    //     component: () =>
+    //       import(
+    //         '@/view/admin/index/leftNavComponents/doctor_manger/offices/officesList'
+    //       )
+    //   }
+    // ]
   }
 ]
 

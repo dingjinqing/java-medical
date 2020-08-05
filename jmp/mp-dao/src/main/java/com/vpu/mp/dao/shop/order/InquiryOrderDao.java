@@ -7,9 +7,9 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.statistics.InquiryOrderStatistics;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -19,7 +19,10 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
+import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author yangpengcheng
@@ -121,7 +124,7 @@ public class InquiryOrderDao extends ShopBaseDao {
      * @return
      */
     public List<InquiryOrderDo> getCanceledToPaidCloseOrder(){
-        return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_PAID))
+        return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_PAID)).and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
             .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(0-InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetchInto(InquiryOrderDo.class);
     }
 
@@ -131,7 +134,7 @@ public class InquiryOrderDao extends ShopBaseDao {
      * @return
      */
     public List<InquiryOrderDo>  getCanceledToWaitingCloseOrder(){
-        return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_RECEIVE))
+        return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_RECEIVE)).and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
             .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(0-InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetchInto(InquiryOrderDo.class);
     }
 
@@ -139,12 +142,77 @@ public class InquiryOrderDao extends ShopBaseDao {
      * @param param
      * @return
      */
-    public InquiryOrderDo getOrderByParams(InquiryToPayParam param){
-        InquiryOrderDo inquiryOrderDo= db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.USER_ID.eq(param.getUser().getUserId())
+    public List<InquiryOrderDo> getOrderByParams(InquiryOrderParam param){
+        List<InquiryOrderDo> list= db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.USER_ID.eq(param.getUserId())
             .and(INQUIRY_ORDER.PATIENT_ID.eq(param.getPatientId()))
             .and(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId())
         .and(INQUIRY_ORDER.DEPARTMENT_ID.eq(param.getDepartmentId()))
-        )).fetchOneInto(InquiryOrderDo.class);
-        return inquiryOrderDo;
+        )).fetchInto(InquiryOrderDo.class);
+        return list;
+    }
+
+    /**
+     *问诊订单统计报表分页查询
+     * @param param
+     * @return
+     */
+    public PageResult<InquiryOrderStatisticsVo> orderStatisticsPage(InquiryOrderStatisticsParam param){
+        SelectJoinStep<? extends Record> select=db().select(
+            date((INQUIRY_ORDER.CREATE_TIME)).as(InquiryOrderStatistics.CREAT_TIME),
+            //咨询单数
+            count((INQUIRY_ORDER.ORDER_ID)).as(InquiryOrderStatistics.AMOUNT),
+            //咨询总金额
+            sum(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.AMOUNT_PRICE),
+            //咨询单次价格
+            avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
+            //医师id
+            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
+            //科室id
+            INQUIRY_ORDER.DEPARTMENT_ID.as(InquiryOrderStatistics.DEPARTMENT_ID)
+        ).from(INQUIRY_ORDER)
+            .leftJoin(DOCTOR).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID));
+        select=buildOptions(select,param);
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
+        PageResult<InquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderStatisticsVo.class);
+        return result;
+    }
+    public SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> selectJoinStep,InquiryOrderStatisticsParam param){
+        selectJoinStep.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
+        if(StringUtils.isNotBlank(param.getDoctorName())){
+            selectJoinStep.where(DOCTOR.NAME.like(this.likeValue(param.getDoctorName())));
+        }
+        if(param.getStartTime()!=null){
+            selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()));
+        }
+        if(param.getEndTime()!=null){
+            selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.le(param.getEndTime()));
+        }
+        return selectJoinStep;
+    }
+
+    /**
+     * 问诊订单统计报表查询
+     * @param param
+     * @return
+     */
+    public List<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
+        SelectJoinStep<? extends Record> select=db().select(
+            date((INQUIRY_ORDER.CREATE_TIME)).as(InquiryOrderStatistics.CREAT_TIME),
+            //咨询单数
+            count((INQUIRY_ORDER.ORDER_ID)).as(InquiryOrderStatistics.AMOUNT),
+            //咨询总金额
+            sum(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.AMOUNT_PRICE),
+            //咨询单次价格
+            avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
+            //医师id
+            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
+            //科室id
+            INQUIRY_ORDER.DEPARTMENT_ID.as(InquiryOrderStatistics.DEPARTMENT_ID)
+        ).from(INQUIRY_ORDER)
+            .leftJoin(DOCTOR).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID));
+        select=buildOptions(select,param);
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
+        List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
+        return list;
     }
 }

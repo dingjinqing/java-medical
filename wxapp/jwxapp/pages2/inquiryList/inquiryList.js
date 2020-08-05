@@ -7,7 +7,7 @@ global.wxPage({
   data: {
     targetStatus:'1',
     filterParams:{
-      sessionStatus:[0],
+      sessionStatus:[1],
       doctorId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       userId:null
     },
@@ -21,6 +21,19 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let {type} = options
+    if(type === 'wait'){
+        this.setData({
+          targetStatus:'1',
+          'filterParams.sessionStatus':[1],
+        })
+    }
+    if(type === 'my'){
+      this.setData({
+        targetStatus:'2',
+        'filterParams.sessionStatus':[2,4],
+      })
+    }
     this.requestSessionList()
   },
   requestSessionList(){
@@ -33,11 +46,11 @@ global.wxPage({
           })
         } else {
           this.setData({
-            ['dataList[' + (parseInt(currentPage) - 1) + ']']:res.content.dataList
+            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']:res.content.dataList
           })
         }
         this.setData({
-          targetStatus:this.data.filterParams.sessionStatus.includes(1||3) ? '2' : '1',
+          targetStatus:this.data.filterParams.sessionStatus.includes(2||4) ? '2' : '1',
           pageParams:res.content.page
         })
       }
@@ -50,7 +63,7 @@ global.wxPage({
     let {type} = e.currentTarget.dataset
     this.setData({
       'pageParams.currentPage':1,
-      'filterParams.sessionStatus':type === '1' ? [0] : [1,3]
+      'filterParams.sessionStatus':type === '1' ? [1] : [2,4]
     })
     this.requestSessionList()
   },
@@ -59,12 +72,12 @@ global.wxPage({
     let targetIndex = this.data.dataList[parentIndex].findIndex(item=>item.id === sessionId)
     let target = this.data.dataList[parentIndex][targetIndex]
     let changeOrderStatus = {
-      0:2, //待接诊-正在接诊状态,
-      3:2  //会话结束-正在接诊状态
+      1:2, //待接诊-正在接诊状态,
+      4:2  //会话结束-正在接诊状态
     }
     util.api('/api/wxapp/inquiry/order/status/update',res=>{
       if(res.error === 0){
-        if(target.sessionStatus === 0){
+        if(target.sessionStatus === 1){
           let targetList = this.data.dataList[parentIndex]
           targetList.splice(targetList.findIndex(item=>item.id === sessionId),1)
           this.setData({
@@ -72,11 +85,11 @@ global.wxPage({
           })
         } else {
           this.setData({
-            [`dataList[${parentIndex}][${targetIndex}].sessionStatus`]:1
+            [`dataList[${parentIndex}][${targetIndex}].sessionStatus`]:2
           })
         }
         util.jumpLink(`pages2/doctorChat/doctorChat${util.getUrlParams({
-          targetUserInfo:JSON.stringify({...{...target,sessionStatus:1},parentIndex}),
+          targetUserInfo:JSON.stringify({...{...target,sessionStatus:2},parentIndex}),
           source:'inquiryList'
         })}`)
       }
@@ -109,7 +122,7 @@ global.wxPage({
     let {parentIndex,sessionId} = e.currentTarget.dataset
     let targetIndex = this.data.dataList[parentIndex].findIndex(item=>item.id === sessionId)
     let target = this.data.dataList[parentIndex][targetIndex]
-    if(![1,3].includes(target.sessionStatus)) return
+    if(![2,4].includes(target.sessionStatus)) return
     util.jumpLink(`pages2/doctorChat/doctorChat${util.getUrlParams({
       targetUserInfo:JSON.stringify({...target,parentIndex}),
       source:'inquiryList'
@@ -147,7 +160,10 @@ global.wxPage({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.setData({
+      'pageParams.currentPage': 1
+    })
+    this.requestSessionList()
   },
 
   /**

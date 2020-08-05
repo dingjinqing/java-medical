@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
-import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -138,8 +138,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**
      * 患者信息
      */
-    private PatientOneParam patientInfo;
-
+    private UserPatientDetailVo patientInfo;
 
     /**
 	 * 商品参数

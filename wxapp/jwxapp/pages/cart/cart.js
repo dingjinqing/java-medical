@@ -355,7 +355,7 @@ global.wxPage({
       cartIds3 = data.map(item => { return item.cartId })
     }
     if ((checkFlag1 == 1 || checkFlag2 == 1 || checkFlag3 == 1) && this.data.isAllCheck == 0) {
-      util.showModal('提示', '当前购物车不可全选');
+      util.showModal('提示', '当前清单不可全选');
       return false
     }
     let isAllCheck = this.data.isAllCheck ? 0 : 1

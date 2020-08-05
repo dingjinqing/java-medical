@@ -1,16 +1,15 @@
-<!--pages2/patientChat/patientChat.wxml-->
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container" bindtap="hideMoreActions">
-		<chat-date send-time='{{time}}' />
-		<chat-system-info system-info='{{system_info}}' />
+		<!-- <chat-date send-time='{{time}}' /> -->
 		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
-			<chat-message chat-content='{{item}}'>
+			<chat-message chat-content='{{item}}' is-doctor="{{true}}">
 				<view slot='origin_message' class="origin_message {{item.position == 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 0}}'>
 					{{item.messageInfo.message.content}}
 				</view>
-				<view slot='origin_image' class="origin_message {{item.position === 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 1}}'>
-					<image class="image-message" style="width:{{item.messageInfo.message.imgWidth > 450 ? '450' : item.messageInfo.message.imgWidth}}rpx;{{item.messageInfo.message.imgWidth > 450 ? '' : 'height:'+item.messageInfo.message.imgHidth+'rpx;'}}" mode="widthFix" src="{{item.messageInfo.message.content}}"></image>
+				<view slot='origin_image' data-urls="{{item.messageInfo.message.content}}" class="origin_message {{item.position === 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 1}}' bindtap="viewImage">
+					<image class="image-message" style="{{item.messageInfo.message.imgWidth > 450 ? 'width:450rpx;' : 'width:'+item.messageInfo.message.imgWidth+'rpx;height:'+item.messageInfo.message.imgHeight+'rpx;' }};" mode="{{item.messageInfo.message.imgWidth > 450 ? 'widthFix' : ''}}" src="{{item.messageInfo.message.content}}"></image>
 				</view>
 
 				<view slot="patient_pres_message" class="patient_message {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 3}}'>
@@ -51,13 +50,13 @@
 			</chat-message>
 		</block>
 	</view>
-	<chat-input source="doctor" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom" has-input="{{targetUserInfo.sessionStatus !== 3}}">
-		<view class="bottom-button-content" slot="custom-bottom">
-			<block wx:if="{{targetUserInfo.sessionStatus === 1}}">
+	<chat-input source="doctor" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom" has-input="{{targetUserInfo.sessionStatus !== 4}}">
+		<view class="bottom-button-content" slot="custom-bottom" wx:if="{{filter.includes([2,4],targetUserInfo.sessionStatus)}}">
+			<block wx:if="{{targetUserInfo.sessionStatus === 2}}">
 				<view class="has-border" bindtap="chatEnd">结束问诊</view>
 				<view class="no-border" bindtap="createPrescription">去开方</view>
 			</block>
-			<view class="no-border" wx:if="{{targetUserInfo.sessionStatus === 3}}" bindtap="chatContinue">继续问诊</view>
+			<view class="no-border" wx:if="{{targetUserInfo.sessionStatus === 4}}" bindtap="chatContinue">继续问诊</view>
 		</view>
 	</chat-input>
 </view>

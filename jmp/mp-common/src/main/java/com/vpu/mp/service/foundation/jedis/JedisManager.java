@@ -95,6 +95,19 @@ public class JedisManager {
         }
     }
 
+    /**
+     * 根据范围获取list内容
+     * @param key
+     * @param startIndex
+     * @param endIndex
+     * @return
+     */
+    public List<String> lrange(String key, Integer startIndex, Integer endIndex) {
+        try (Jedis jedis = getJedisPool().getResource()){
+            return jedis.lrange(key,startIndex,endIndex);
+        }
+    }
+
 	/**
 	 *
 	 * @param key

@@ -22,12 +22,7 @@ public class FetchPrescriptionParam {
     /**
      * 患者电话
      */
-    @NonNull
     private String mobile;
-    /**
-     * 患者医院唯一编码
-     */
-    private String patientCode;
     /**
      * 患者身份证号
      */

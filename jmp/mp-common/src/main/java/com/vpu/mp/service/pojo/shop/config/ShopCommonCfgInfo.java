@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -74,7 +74,7 @@ public class ShopCommonCfgInfo {
     @NotNull
     @JsonProperty(value = "goods_record")
     public Byte goodsRecord;
-	
+
 	/**
 	 *客服入口开关-商品详情页是否展示
 	 */
@@ -102,7 +102,7 @@ public class ShopCommonCfgInfo {
     @NotNull
     @JsonProperty(value = "default_sort")
     public Integer defaultSort;
-	
+
 	/**
 	 *店铺分享配置
 	 */
@@ -152,4 +152,9 @@ public class ShopCommonCfgInfo {
     @NotNull
     @JsonProperty(value = "accurate_search")
     public Byte accurateSearch;
+    /**
+     * 短信账户信息
+     */
+    @JsonProperty(value = "sms_account")
+    private SmsAccountInfoVo smsAccount;
 }

@@ -1,22 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.jooq.Record;
-import org.jooq.Result;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -35,10 +18,26 @@ import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
+import com.vpu.mp.service.shop.sms.SmsAccountService;
 import com.vpu.mp.service.wechat.OpenPlatform;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author lixinguo
@@ -48,9 +47,11 @@ public class AdminWechatApiController extends AdminBaseController {
 
 	@Autowired
 	protected OpenPlatform open;
-	
+
 	@Value(value = "${official.appId}")
 	private String bindAppId;
+	@Autowired
+	private SmsAccountService smsAccountService;
 
 	/**
 	 * 开始小程序授权
@@ -145,7 +146,7 @@ public class AdminWechatApiController extends AdminBaseController {
 			logger().info("还没上传过代码，模板为0");
 			into.setBindUserVersion("0.0.0");
 		}else {
-			into.setBindUserVersion(row.getUserVersion());			
+			into.setBindUserVersion(row.getUserVersion());
 		}
 		if(officialAccount!=null) {
 			into.setOfficialAccount(officialAccount.into(MpOfficeAccountVo.class));
@@ -155,7 +156,7 @@ public class AdminWechatApiController extends AdminBaseController {
 
 	/**
 	 * 设置小程序好物圈
-	 * 
+	 *
 	 * @param config
 	 */
 	@PostMapping("/api/admin/wxshopping/update")
@@ -166,7 +167,7 @@ public class AdminWechatApiController extends AdminBaseController {
 
 	/**
 	 * 查看小程序好物圈情况
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping("/api/admin/wxshopping/list")
@@ -207,7 +208,7 @@ public class AdminWechatApiController extends AdminBaseController {
 
 	/**
 	 * 获取店铺相关联的小程序的审核信息
-	 * 
+	 *
 	 * @return 审核信息
 	 */
 	@GetMapping("/api/admin/mp/audit/get")
@@ -225,7 +226,7 @@ public class AdminWechatApiController extends AdminBaseController {
 
 	/**
 	 * 获取公众号列表
-	 * 
+	 *
 	 * @param oaListParam
 	 * @return
 	 */
@@ -237,7 +238,7 @@ public class AdminWechatApiController extends AdminBaseController {
 
 	/**
 	 * 获取单个公众号信息
-	 * 
+	 *
 	 * @param oaListParam
 	 * @return
 	 */
@@ -262,7 +263,7 @@ public class AdminWechatApiController extends AdminBaseController {
 
 	/**
 	 * 提现配置
-	 * 
+	 *
 	 * @param oaParam
 	 * @return
 	 */
@@ -276,7 +277,7 @@ public class AdminWechatApiController extends AdminBaseController {
 		return fail();
 
 	}
-	
+
 	/**
 	 * 获取绑定店铺的二维码
 	 * @return
@@ -293,9 +294,9 @@ public class AdminWechatApiController extends AdminBaseController {
 			logger().debug(e.getMessage(),e);
 		}
 		return fail();
-		
+
 	}
-	
+
 	/**
 	 * 公众号绑定小程序
 	 * @param appId 公众号的appid
@@ -341,11 +342,10 @@ public class AdminWechatApiController extends AdminBaseController {
 		saas.shop.mp.updateRow(authShopByShopId);
 		//跑个异步任务去 批量获取公众号用户信息
 		saas.shop.officeAccount.batchGetUsersByRabbitMq(appId, language, adminAuth.user().getSysId(), adminAuth.user().loginShopId);
-		//saas.shop.officeAccount.batchGetUsers(appId, language,adminAuth.user().getSysId());
 		return success();
 
 	}
-	
+
 	/**
 	 * 上传代码并提交 admin用
 	 * @param param
@@ -375,7 +375,7 @@ public class AdminWechatApiController extends AdminBaseController {
 			mp.erroInsert(param, result);
 		}
 		return result.isSuccess() ? success(result) : wxfail(result);
-		
+
 	}
 
 

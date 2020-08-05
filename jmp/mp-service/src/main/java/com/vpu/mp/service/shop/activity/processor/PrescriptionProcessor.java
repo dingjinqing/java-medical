@@ -1,17 +1,16 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -72,8 +71,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         List<PrescriptionVo> prescriptionList = medicalOrderInit(param);
         //处方状态,订单类型
         auditPrescriptionValid(param, prescriptionList);
-        PatientOneParam oneInfo = patientService.getOneInfo(param.getPatientId());
-        param.setPatientInfo(oneInfo);
+        UserPatientDetailVo oneInfoForWx = patientService.getOneInfoForWx(param.getWxUserInfo().getUserId(), param.getPatientId());
+        param.setPatientInfo(oneInfoForWx);
         log.info("药品处方检查-结束");
     }
 

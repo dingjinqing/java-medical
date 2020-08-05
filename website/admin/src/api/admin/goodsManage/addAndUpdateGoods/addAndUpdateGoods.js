@@ -55,6 +55,13 @@ export function selectGoodsApi (goodsId) {
     method: 'get'
   })
 }
+// 商品查询详细信息，
+export function pullMedicalGoodsApi () {
+  return service({
+    url: `/api/admin/medical/goods/pull`,
+    method: 'post'
+  })
+}
 // 商品名、商品编码、商品规格编码是否已存在
 export function isGoodsColumnValueExist (data) {
   return service({

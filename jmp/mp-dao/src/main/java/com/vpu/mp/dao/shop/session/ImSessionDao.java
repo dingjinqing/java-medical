@@ -10,7 +10,7 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
 import org.jooq.Condition;
-import org.jooq.SelectSeekStep1;
+import org.jooq.SelectSeekStep2;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -47,6 +47,7 @@ public class ImSessionDao extends ShopBaseDao {
         imSessionRecord.update();
     }
 
+
     /**
      * 根据id获取对应的会话信息
      * @param id
@@ -54,6 +55,16 @@ public class ImSessionDao extends ShopBaseDao {
      */
     public ImSessionDo getById(Integer id) {
         return db().selectFrom(IM_SESSION).where(IM_SESSION.ID.eq(id).and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchAnyInto(ImSessionDo.class);
+    }
+
+    /**
+     * 根据orderSn获取对应的会话信息
+     * @param orderSn
+     * @return
+     */
+    public ImSessionDo getByOrderSn(String orderSn) {
+        return db().selectFrom(IM_SESSION).where(IM_SESSION.ORDER_SN.eq(orderSn).and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchAnyInto(ImSessionDo.class);
     }
 
@@ -93,7 +104,7 @@ public class ImSessionDao extends ShopBaseDao {
             condition =condition.and(IM_SESSION.USER_ID.eq(pageListParam.getUserId()));
         }
 
-        SelectSeekStep1<ImSessionRecord, Timestamp> select = db().selectFrom(IM_SESSION).where(condition).orderBy(IM_SESSION.CREATE_TIME.asc());
+        SelectSeekStep2<ImSessionRecord, Byte, Timestamp> select = db().selectFrom(IM_SESSION).where(condition).orderBy(IM_SESSION.SESSION_STATUS.asc(), IM_SESSION.CREATE_TIME.asc());
         return getPageResult(select,pageListParam.getCurrentPage(),pageListParam.getPageRows(),ImSessionListVo.class);
     }
 

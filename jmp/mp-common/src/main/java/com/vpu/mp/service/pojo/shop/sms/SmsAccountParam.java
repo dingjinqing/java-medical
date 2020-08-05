@@ -1,7 +1,8 @@
 package com.vpu.mp.service.pojo.shop.sms;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 孔德成
@@ -12,6 +13,7 @@ public class SmsAccountParam {
     /**
      * 卖家账号
      */
+    @NotNull
     private String sid;
     /**
      * 开放平台对应小程序

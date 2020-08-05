@@ -4,14 +4,24 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
+import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import org.jooq.Record;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Map;
+
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static org.jooq.impl.DSL.avg;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
+import static org.jooq.impl.DSL.sum;
+import static org.jooq.impl.DSL.when;
 
 /**
  * @author yangpengcheng
@@ -54,4 +64,31 @@ public class OrderInfoDao extends ShopBaseDao {
                 .where(ORDER_INFO.ORDER_ID.eq(orderId))
                 .execute();
     }
+
+    /**
+     * 药品销售报表
+     * @return
+     */
+    public Map<Date, MedicalOrderReportVo> orderSalesReport(Timestamp startTime, Timestamp  endTime){
+        return db().select(
+                //日期
+                date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),
+                //销售金额
+                sum((ORDER_INFO.ORDER_AMOUNT)).as(ActiveDiscountMoney.ORDER_AMOUNT),
+                //销售单数
+                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
+                //平均数
+                avg(ORDER_INFO.ORDER_AMOUNT).as(ActiveDiscountMoney.ORDER_AVG),
+                //处方药销售金额
+                sum(when(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(OrderConstant.MEDICAL_TYPE_RX), ORDER_INFO.ORDER_AMOUNT).otherwise(BigDecimal.ZERO)).as(ActiveDiscountMoney.ORDER_MEDICAL_AMOUNT),
+                //处方药销售单数
+                sum(when(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(OrderConstant.MEDICAL_TYPE_RX), 1).otherwise(0)).as(ActiveDiscountMoney.ORDER_MEDICAL_NUMBER)
+        )
+                .from(ORDER_INFO)
+                .where(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
+                .groupBy(date(ORDER_INFO.CREATE_TIME))
+                .orderBy(ORDER_INFO.CANCELLED_TIME)
+                .fetchMap(date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME), MedicalOrderReportVo.class);
+    }
+
 }

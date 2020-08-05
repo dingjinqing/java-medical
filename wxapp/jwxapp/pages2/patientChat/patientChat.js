@@ -2,9 +2,14 @@
 var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
 var util = require('../../utils/util.js');
+var chatInput = null
 const {
-  orderSn
+  orderSn,
+  orderDetail
 } = require('../../utils/i18n/pages/order.js');
+const {
+  theMaximumClaimLimit
+} = require('../../utils/i18n/components/decorate/decorate.js');
 global.wxPage({
 
   /**
@@ -14,15 +19,24 @@ global.wxPage({
     imageUrl: imageUrl,
     time: '2020-07-23 13:35:01',
     chatContent: [],
-    system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。'
+    system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。',
+    system_img: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    chatInput = this.selectComponent('#chatinput')
     wx.hideShareMenu()
-    if (options.orderSn) this.requestDetail(options.orderSn)
+    let {
+      orderSn,
+      first
+    } = options
+    this.setData({
+      orderSn,
+      first
+    })
   },
   getInputMessage(e) {
     let that = this
@@ -45,7 +59,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.requsetMessage()
+    this.requestHistoryChat()
   },
 
   /**
@@ -103,29 +117,27 @@ global.wxPage({
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
       if (res.error === 0 && res.content[0]) {
-        let newChatContent = res.content.reduce((defaultValue,item)=>{
+        let newChatContent = res.content.reduce((defaultValue, item) => {
           defaultValue.push({
-            position:0,
-            messageInfo:{
-              message:JSON.parse(item.message),
-              type:item.type
+            position: 0,
+            messageInfo: {
+              message: JSON.parse(item.message),
+              type: item.type
             }
           })
           return defaultValue
-        },[])
+        }, [])
         this.setData({
-          chatContent:[...this.data.chatContent,...newChatContent]
+          chatContent: [...this.data.chatContent, ...newChatContent]
         })
       }
     }, {
-      departmentId: this.data.departmentId,
-      patientId: this.data.patientId,
+      sessionId: this.data.sessionId,
       pullFromId: this.data.doctorId, //doctor_id
       selfId: util.getCache('user_id')
     }, '', false);
   },
   hideMoreActions() {
-    let chatInput = this.selectComponent('#chatinput')
     chatInput.hideMoreActions()
   },
   sendMessage(message, type) {
@@ -151,8 +163,7 @@ global.wxPage({
         this.pageScrollBottom()
       }
     }, {
-      departmentId: this.data.departmentId,
-      patientId: this.data.patientId,
+      sessionId: this.data.sessionId,
       fromId: util.getCache('user_id'), //user_id
       toId: this.data.doctorId, //doctor_id
       imSessionItem
@@ -182,42 +193,108 @@ global.wxPage({
       prescriptionCode
     })
   },
-  requestDetail(orderSn) {
+  requestDetail() {
     let that = this;
-    util.api('/api/wxapp/inquiry/order/detail', res => {
-      console.log(res)
-      if (res.error === 0) {
-        let con = res.content;
-        let patient_message = {
-          content: {
-            name: con.patientName,
-            sex: con.patientSex != 2 ? (con.patientSex == 0 ? '男' : '女') : '未知',
-            age: con.patientAge,
-            mess: con.descriptionDisease
-          }
-        }
-        that.setData({
-          page_name: con.doctorName,
-          doctorId: con.doctorId,
-          departmentId: con.departmentId,
-          patientId: con.patientId
-        })
-        that.sendMessage(patient_message, 3)
-        let imageUrl = JSON.parse(con.imageUrl);
-        if (imageUrl) {
-          imageUrl.forEach(function (val) {
-            let img = {
-              content: val.imageUrl,
-              imgWidth: val.imageWidth,
-              imgHeight: val.imageHeight
+    return new Promise((resolve, reject) => {
+      util.api('/api/wxapp/inquiry/order/detail', res => {
+        console.log(res)
+        if (res.error === 0) {
+          let con = res.content;
+          let patient_message = {
+            content: {
+              name: con.patientName,
+              sex: con.patientSex != 2 ? (con.patientSex == 0 ? '男' : '女') : '未知',
+              age: con.patientAge,
+              mess: con.descriptionDisease
             }
-            that.sendMessage(img, 1)
+          }
+          that.setData({
+            page_name: con.doctorName,
+            doctorId: con.doctorId,
+            time: con.createTime
+          })
+          if (that.data.first) {
+            let imageUrl = JSON.parse(con.imageUrl);
+            if (imageUrl != '') {
+              that.setData({
+                system_img: true
+              })
+              that.sendMessage(patient_message, 3)
+              imageUrl.forEach(function (val, index) {
+                let img = {
+                  content: val.imageUrl,
+                  imgWidth: val.imageWidth,
+                  imgHeight: val.imageHeight
+                }
+                if (index == imageUrl.length - 1) {
+                  img.system = true;
+                }
+                that.sendMessage(img, 1)
+              })
+            } else {
+              that.sendMessage(patient_message, 3)
+            }
+          }
+
+        }
+        resolve(res)
+      }, {
+        orderSn: that.data.orderSn,
+      })
+    })
+  },
+  requestSessionId() {
+    let that = this;
+    return new Promise((resolve, reject) => {
+      util.api('/api/wxapp/im/session/get/orderSn',
+        async res => {
+          console.log(res)
+          if (res.error === 0) {
+            that.setData({
+              sessionId: res.content
+            })
+            let resData = await that.requestDetail(orderSn)
+            if (resData) resolve(res)
+          }
+        }, {
+          orderSn: this.data.orderSn,
+        })
+    })
+  },
+  async requestHistoryChat() {
+    let resData = await this.requestSessionId()
+    if (resData) await this.historyChatApi()
+    this.requsetMessage()
+  },
+  historyChatApi() {
+    return new Promise((resolve, reject) => {
+      util.api('/api/wxapp/im/session/render', res => {
+        console.log(res)
+        if (res.error === 0 && res.content.dataList.length) {
+          let newChatContent = res.content.dataList.reduce((defaultValue, item) => {
+            defaultValue.push({
+              position: item.doctor ? 0 : 1,
+              messageInfo: {
+                message: JSON.parse(item.message),
+                type: item.type
+              }
+            })
+            return defaultValue
+          }, [])
+          this.setData({
+            chatContent: [...newChatContent]
           })
         }
-
-      }
-    }, {
-      orderSn: orderSn,
+        resolve(res)
+      }, {
+        sessionId: this.data.sessionId
+      })
+    })
+  },
+  viewImage(e) {
+    let urls = [e.currentTarget.dataset.urls]
+    wx.previewImage({
+      urls
     })
   }
 })

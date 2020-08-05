@@ -1,8 +1,13 @@
 package com.vpu.mp.service.shop.patient;
 
+import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.RandomUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
@@ -10,10 +15,19 @@ import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
-import com.vpu.mp.db.shop.tables.UserPatientCouple;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientExternalVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientMoreInfoParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.sms.SmsService;
@@ -22,9 +36,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author chenjie
@@ -67,6 +79,14 @@ public class PatientService extends BaseShopConfigService{
         return patientDao.getOneInfo(patientId);
     }
 
+
+    public UserPatientDetailVo getOneInfoForWx(Integer userId, Integer patientId) {
+        UserPatientDetailVo patientInfo = userPatientCoupleDao.getUserPatientInfo(userId, patientId);
+        if (patientInfo!=null){
+            patientInfo.setAge(DateUtil.ageOfNow(patientInfo.getBirthday()));
+        }
+        return patientInfo;
+    }
     public UserPatientDetailVo getOneInfoForWx(UserPatientParam userPatientParam) {
         return userPatientCoupleDao.getUserPatientInfo(userPatientParam);
     }
@@ -125,9 +145,14 @@ public class PatientService extends BaseShopConfigService{
             result.setContent(apiExternalRequestResult.getData());
             return result;
         }
-        PatientExternalVo patientInfoVo = Util.parseJson(apiExternalRequestResult.getData(), PatientExternalVo.class);
+
+        ArrayList<PatientExternalVo> patientInfoVoList = Util.parseJson(apiExternalRequestResult.getData(), new TypeReference<List<PatientExternalVo>>(){});
+        PatientExternalVo patientInfoVo=new PatientExternalVo();
+        if(patientInfoVoList!=null&&patientInfoVoList.size()>0){
+            patientInfoVo=patientInfoVoList.get(0);
+        }
         PatientDo patientDo=new PatientDo();
-        FieldsUtil.assign(patientInfoVo, patientDo);
+        FieldsUtil.assignWithIgnoreField(patientInfoVo, patientDo,getPatientIgnoreFields());
         PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);
         if (patientOneParam == null) {
             patientDao.insertPatient(patientDo);
@@ -144,7 +169,16 @@ public class PatientService extends BaseShopConfigService{
         addPatientUser(userPatientCoupleDo);
         return JsonResult.success();
     }
-
+    /**
+     * 拷贝要忽略的字段
+     * @return
+     */
+    private Set<String> getPatientIgnoreFields(){
+        Set<String> ignoreField = new HashSet<>(2);
+        ignoreField.add("createTime");
+        ignoreField.add("lastUpdateTime");
+        return ignoreField;
+    }
     /**
      * 短信验证码校验
      * @param param param
@@ -176,7 +210,7 @@ public class PatientService extends BaseShopConfigService{
     public List<PatientMoreInfoParam> listDiseases(String diseaseStr) {
         List<PatientMoreInfoParam> diseaseList = Util.parseJson(get("diseases"), new TypeReference<List<PatientMoreInfoParam>>() {
         });
-        if (diseaseStr == null || diseaseStr.equals("")){
+        if (diseaseStr == null || "".equals(diseaseStr)){
             return diseaseList;
         }
         List<String> diseases = Arrays.asList(diseaseStr.split(","));
@@ -190,7 +224,7 @@ public class PatientService extends BaseShopConfigService{
     public String strDisease(String diseaseStr){
         List<PatientMoreInfoParam> diseaseList = Util.parseJson(get("diseases"), new TypeReference<List<PatientMoreInfoParam>>() {
         });
-        if (diseaseStr == null || diseaseStr.equals("")){
+        if (diseaseStr == null || "".equals(diseaseStr)){
             return "";
         }
         List<String> strList=new ArrayList<>();
@@ -208,22 +242,23 @@ public class PatientService extends BaseShopConfigService{
      * @return
      */
     public UserPatientDetailVo getOneDetail(UserPatientParam userPatientParam) {
-        if (userPatientParam == null || userPatientParam.getPatientId() == 0) {
-            UserPatientDetailVo userPatientDetail = new UserPatientDetailVo();
-            userPatientDetail.setDiseaseHistoryList(listDiseases(null));
-            userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(null));
-            return userPatientDetail;
-        } else {
+        if (userPatientParam != null && userPatientParam.getPatientId() != 0) {
             UserPatientDetailVo userPatientDetail = getOneInfoForWx(userPatientParam);
-            //根据出生日期获取年龄
-            userPatientDetail.setAge(DateUtils.getAgeByBirthDay(userPatientDetail.getBirthday()));
-            userPatientDetail.setDiseaseHistoryList(listDiseases(userPatientDetail.getDiseaseHistory()));
-            userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(userPatientDetail.getFamilyDiseaseHistory()));
-            userPatientDetail.setDiseaseHistoryStr(strDisease(userPatientDetail.getDiseaseHistory()));
-            userPatientDetail.setFamilyDiseaseHistoryStr(strDisease(userPatientDetail.getFamilyDiseaseHistory()));
-            userPatientDetail.setId(userPatientDetail.getPatientId());
-            return userPatientDetail;
+            if (userPatientDetail!=null){
+                //根据出生日期获取年龄
+                userPatientDetail.setAge(DateUtils.getAgeByBirthDay(userPatientDetail.getBirthday()));
+                userPatientDetail.setDiseaseHistoryList(listDiseases(userPatientDetail.getDiseaseHistory()));
+                userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(userPatientDetail.getFamilyDiseaseHistory()));
+                userPatientDetail.setDiseaseHistoryStr(strDisease(userPatientDetail.getDiseaseHistory()));
+                userPatientDetail.setFamilyDiseaseHistoryStr(strDisease(userPatientDetail.getFamilyDiseaseHistory()));
+                userPatientDetail.setId(userPatientDetail.getPatientId());
+                return userPatientDetail;
+            }
         }
+        UserPatientDetailVo userPatientDetail = new UserPatientDetailVo();
+        userPatientDetail.setDiseaseHistoryList(listDiseases(null));
+        userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(null));
+        return userPatientDetail;
     }
 
     /**

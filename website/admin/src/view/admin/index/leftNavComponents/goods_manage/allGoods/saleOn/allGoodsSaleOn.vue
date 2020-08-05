@@ -35,6 +35,12 @@
           size="small"
           @click="addGoodsData"
         >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="pullMedicalGoods">
+          拉取商品数据
+        </el-button>
       </div>
     </div>
 
@@ -52,6 +58,8 @@
 import allGoodsHeader from '../allGoodsHeader'
 import saleOnAndInStockContent from '../saleOnAndInStockContent'
 
+/* 导入js api */
+import { pullMedicalGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 export default {
   name: 'allGoodsSaleOn',
   components: {
@@ -121,6 +129,10 @@ export default {
     /* 添加商品跳转 */
     addGoodsData () {
       this.$router.push({ name: 'goods_add' })
+    },
+    /* 拉取药品信息 */
+    pullMedicalGoods () {
+      pullMedicalGoodsApi()
     }
   },
   mounted () {

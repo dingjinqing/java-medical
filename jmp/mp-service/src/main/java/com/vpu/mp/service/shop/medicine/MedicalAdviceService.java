@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HITS_NULL;
+
 /**
  * @author 赵晓东
  * @description 拉取医嘱列表
@@ -34,7 +36,6 @@ public class MedicalAdviceService extends ShopBaseService {
      * @param fetchMedicalAdviceParam 拉取医嘱信息
      * @return JsonResult
      */
-    @DbTransactional(type = DbType.SHOP_DB)
     public JsonResult pullExternalMedicalAdviceList(FetchMedicalAdviceParam fetchMedicalAdviceParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
@@ -44,7 +45,7 @@ public class MedicalAdviceService extends ShopBaseService {
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS,
             shopId, serviceName);
         fetchMedicalAdviceParam.setStartTime(lastRequestTime);
-
+        System.out.println(fetchMedicalAdviceParam.toString());
         //拉取数据
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
             .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchMedicalAdviceParam));
@@ -57,6 +58,9 @@ public class MedicalAdviceService extends ShopBaseService {
             result.setContent(apiExternalRequestResult.getData());
             return result;
         }
+        if (apiExternalRequestResult.getData() == null) {
+            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+        }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
         List<FetchMedicalAdviceVo> fetchMedicalAdviceVos = Util.parseJson(dataJson, new TypeReference<List<FetchMedicalAdviceVo>>() {
@@ -66,10 +70,9 @@ public class MedicalAdviceService extends ShopBaseService {
         assert fetchMedicalAdviceVos != null;
         for (FetchMedicalAdviceVo fetchMedicalAdviceVo : fetchMedicalAdviceVos) {
             //如果没有当前医嘱就新增
-            if (medicalAdviceDao.getMedicalAdviceByCode(fetchMedicalAdviceVo.getPosCode()) == null
-                && medicalAdviceDao.getMedicalAdviceByCode(fetchMedicalAdviceVo.getPosCode()) == 0) {
+            Integer medicalAdviceByCode = medicalAdviceDao.getMedicalAdviceByCode(fetchMedicalAdviceVo.getPosCode());
+            if (medicalAdviceByCode == null || medicalAdviceByCode == 0) {
                 medicalAdviceDao.addHitsMedicalAdvice(fetchMedicalAdviceVo);
-
             } else {  //否则就修改
                 medicalAdviceDao.updateHitsMedicalAdvice(fetchMedicalAdviceVo);
             }

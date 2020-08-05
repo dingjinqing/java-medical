@@ -1,9 +1,15 @@
 package com.vpu.mp.service.shop.order.inquiry;
 
-import com.github.binarywang.wxpay.exception.WxPayException;
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
@@ -11,23 +17,20 @@ import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
-import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -38,12 +41,12 @@ import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -145,6 +148,25 @@ public class InquiryOrderService extends ShopBaseService {
     }
 
     /**
+     * 未完成的问诊
+     * @param param
+     * @return
+     */
+    public InquiryOrderDo getUndoneOrder(InquiryOrderParam param){
+        List<InquiryOrderDo> list=inquiryOrderDao.getOrderByParams(param);
+        List<InquiryOrderDo> retList=list.stream().filter(inquiryOrderDo -> {
+            Byte orderStatus=inquiryOrderDo.getOrderStatus();
+                if(orderStatus.equals(InquiryOrderConstant.ORDER_TO_RECEIVE)||orderStatus.equals(InquiryOrderConstant.ORDER_RECEIVING)) {
+                    return true;
+                }
+                return false;
+        }).collect(Collectors.toList());
+        if(retList!=null&&retList.size()>0){
+            return retList.get(0);
+        }
+        return null;
+    }
+    /**
      * 问诊支付回调完成
      * @param order
      * @param paymentRecord
@@ -157,26 +179,11 @@ public class InquiryOrderService extends ShopBaseService {
         order.setPayTime(DateUtils.getLocalDateTime());
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
-        //添加会话问诊
-        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
-        FieldsUtil.assign(order,imSessionNewParam);
-        imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
 
-    /**
-     * @param orderStatus
-     * @return
-     */
-    public boolean isSameInquiry(Byte orderStatus){
-        boolean flag=false;
-        //相同用户，相同患者发起的相同科室、医生的问诊订单的状态为待支付，待接诊，接诊中
-        if(orderStatus.equals(InquiryOrderConstant.ORDER_TO_PAID)||orderStatus.equals(InquiryOrderConstant.ORDER_TO_RECEIVE)||orderStatus.equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            flag=true;
-        }
-        return flag;
-    }
+
     /**
      * 支付微信接口
      * @param param
@@ -185,12 +192,6 @@ public class InquiryOrderService extends ShopBaseService {
     public WebPayVo payInquiryOrder(InquiryToPayParam param){
         logger().info("创建问诊订单-开始");
         WebPayVo vo = new WebPayVo();
-//        InquiryOrderDo orderDo=inquiryOrderDao.getOrderByParams(param);
-        //存在相同未完成的订单
-//        if(isSameInquiry(orderDo.getOrderStatus())){
-//            vo.setOrderSn(orderDo.getOrderSn());
-//            return vo;
-//        }
         //支付类型
         String payCode = InquiryOrderConstant.PAY_CODE_WX_PAY;
         InquiryOrderDo inquiryOrderDo=new InquiryOrderDo();
@@ -212,11 +213,19 @@ public class InquiryOrderService extends ShopBaseService {
 //        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
         vo.setOrderSn(orderSn);
         InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
+        //临时添加支付回调，正式使用删除
         inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         logger().debug("微信支付创建订单结束");
+        //添加会话问诊
+        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
+        FieldsUtil.assign(orderInfo,imSessionNewParam);
+        imSessionService.insertNewSession(imSessionNewParam);
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){
+        if(StringUtils.isNotBlank(payParam.getOrderSn())){
+            return payParam.getOrderSn();
+        }
         String orderSn = IncrSequenceUtil.generateOrderSn(InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX);
         PatientOneParam patientOneParam=patientService.getOneInfo(payParam.getPatientId());
         DepartmentOneParam department=departmentDao.getOneInfo(payParam.getDepartmentId());
@@ -301,5 +310,43 @@ public class InquiryOrderService extends ShopBaseService {
         tradesRecord.addRecord(order.getOrderAmount(),order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
     }
 
+    /**
+     * 问诊订单统计报表查询
+     * @param param
+     * @return
+     */
+    public PageResult<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate != null ) {
+            startDate = DateUtil.beginOfDay(startDate).toTimestamp();
+            param.setStartTime(startDate);
+        }if( endDate != null){
+            endDate = DateUtil.endOfDay(endDate).toTimestamp();
+            param.setEndTime(endDate);
+        }
+        PageResult<InquiryOrderStatisticsVo> result=inquiryOrderDao.orderStatisticsPage(param);
+        List<InquiryOrderStatisticsVo> list=result.getDataList();
+        list.forEach(orderStatisticsVo->{
+            DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
+            DepartmentOneParam dept=departmentDao.getOneInfo(orderStatisticsVo.getDepartmentId());
+            orderStatisticsVo.setDoctorName(doctor.getName());
+            orderStatisticsVo.setDepartmentName(dept.getName());
+        });
+        return result;
+    }
 
+    /**
+     * 问诊订单统计报表导出
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook orderStatisticsExport(InquiryOrderStatisticsParam param, String lang){
+        List<InquiryOrderStatisticsVo> list=inquiryOrderDao.orderStatistics(param);
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);
+        return workbook;
+    }
 }

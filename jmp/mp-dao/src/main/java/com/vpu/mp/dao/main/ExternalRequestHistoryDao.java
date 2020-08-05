@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.main;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.dao.foundation.base.MainBaseDao;
 import com.vpu.mp.db.main.tables.records.ExternalRequestHistoryRecord;
 import org.jooq.impl.DSL;
@@ -28,7 +29,7 @@ public class ExternalRequestHistoryDao extends MainBaseDao {
         Timestamp timestamp = db().select(DSL.maxDistinct(EXTERNAL_REQUEST_HISTORY.CREATE_TIME).as(EXTERNAL_REQUEST_HISTORY.CREATE_TIME))
             .from(EXTERNAL_REQUEST_HISTORY)
             .where(EXTERNAL_REQUEST_HISTORY.APP_ID.eq(appId).and(EXTERNAL_REQUEST_HISTORY.SHOP_ID.eq(shopId))
-                .and(EXTERNAL_REQUEST_HISTORY.SERVICE_NAME.eq(serviceName).and(EXTERNAL_REQUEST_HISTORY.ERROR_CODE.eq(0))))
+                .and(EXTERNAL_REQUEST_HISTORY.SERVICE_NAME.eq(serviceName).and(EXTERNAL_REQUEST_HISTORY.ERROR_CODE.eq(0))).and(EXTERNAL_REQUEST_HISTORY.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
             .fetchAny(EXTERNAL_REQUEST_HISTORY.CREATE_TIME);
         return timestamp;
     }
@@ -48,6 +49,20 @@ public class ExternalRequestHistoryDao extends MainBaseDao {
         record.setRequestParam(requestParam);
         record.setErrorCode(errorCode);
         db().executeInsert(record);
+    }
+
+    /**
+     * 假删除过往错误数据
+     * @param appId
+     * @param shopId
+     * @param serviceName
+     * @param createTime
+     */
+    public void delete(String appId, Integer shopId, String serviceName, Timestamp createTime) {
+        db().update(EXTERNAL_REQUEST_HISTORY).set(EXTERNAL_REQUEST_HISTORY.IS_DELETE,DelFlag.DISABLE_VALUE)
+            .where(EXTERNAL_REQUEST_HISTORY.APP_ID.eq(appId).and(EXTERNAL_REQUEST_HISTORY.SHOP_ID.eq(shopId))
+                .and(EXTERNAL_REQUEST_HISTORY.SERVICE_NAME.eq(serviceName)).and(EXTERNAL_REQUEST_HISTORY.CREATE_TIME.ge(createTime)))
+            .execute();
     }
 
 }

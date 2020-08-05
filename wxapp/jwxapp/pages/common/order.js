@@ -86,7 +86,7 @@ var order = {
       res => {
         console.log(res)
         if (res.error == 0) {
-          util.toast_success("已加入购物车");
+          util.toast_success("已加入清单");
         } else {
           util.showModal("提示", res.message);
         }

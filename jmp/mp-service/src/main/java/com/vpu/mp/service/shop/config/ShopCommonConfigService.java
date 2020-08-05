@@ -1,9 +1,17 @@
 package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.pojo.shop.config.*;
+import com.vpu.mp.service.pojo.shop.config.GoodsCommonConfig;
+import com.vpu.mp.service.pojo.shop.config.GoodsShareConfig;
+import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
+import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
+import com.vpu.mp.service.shop.sms.SmsAccountService;
 import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +34,8 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     GoodsShareConfig defaultGoodsShareConfig;
     @Autowired
     JedisManager jedisManager;
+    @Autowired
+    private SmsAccountService smsAccountService;
 
 	/**
 	 * 是否显示前端店铺logo
@@ -800,6 +810,17 @@ public class ShopCommonConfigService extends BaseShopConfigService{
         return this.get(K_ACCURATE_SEARCH, Byte.class, (byte)0);
     }
 
+    public SmsAccountInfoVo getSmsAccountInfo(){
+		//短信账户信息
+		SmsAccountInfoVo smsAccountInfo = null;
+		try {
+			smsAccountInfo = smsAccountService.getSmsAccountInfo();
+		} catch (MpException e) {
+			e.printStackTrace();
+		}
+		return smsAccountInfo;
+	}
+
     /**
      * 设置后台商品搜索配置项
      * @param value 0 或者 1
@@ -845,6 +866,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             commonCfg.setNeedPrdCodes(this.getNeedPrdCodes());
             commonCfg.setGoodsShareCfg(this.getGoodsShareConfig());
             commonCfg.setAccurateSearch(this.getAccurateSearch());
+            commonCfg.setSmsAccount(getSmsAccountInfo());
 		});
 
         return commonCfg;

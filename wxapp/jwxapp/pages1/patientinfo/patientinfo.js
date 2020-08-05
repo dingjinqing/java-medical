@@ -57,7 +57,7 @@ global.wxPage({
     kidneyFunctionOk: 1,
     // 妊娠哺乳
     is_feed: 1,
-    gestationType: 2,
+    gestationType: '',
     feedText: '',
     // 是否编辑患者
     is_edit: 0,
@@ -111,7 +111,11 @@ global.wxPage({
         this.data.pat_name = this.data.patient_info.name;
         this.data.pat_mobile = this.data.patient_info.mobile;
         this.data.pat_id_num = this.data.patient_info.identityCode;
-        this.data.sex_index = this.data.patient_info.sex >= 0 ? this.data.patient_info.sex : -1;
+        if( this.data.patient_info.sex >= 0 && this.data.patient_info.sex != null){
+          this.data.sex_index = this.data.patient_info.sex 
+        } else{
+          this.data.sex_index = -1
+        }
         this.data.dates = !!this.data.patient_info.birthday ? this.data.patient_info.birthday:'';
         // 疾病史编辑
         // 过往病史

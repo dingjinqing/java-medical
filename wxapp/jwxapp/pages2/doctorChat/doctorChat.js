@@ -2,24 +2,31 @@
 var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
 var util = require('../../utils/util.js');
+var chatInput = null 
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-    time: '2020-07-23 13:35:01',
+    // time: '2020-07-23 13:35:01',
     page_name: '',
     prescriptionMessage:null,
     chatContent:[],
     targetUserInfo:{},
-    source:null
+    source:null,
+    historyPageParams:{
+      currentPage:1,
+      pageRows:20
+    },
+    firstLoad:true
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    chatInput = this.selectComponent('#chatinput')
     wx.hideShareMenu()
     let {targetUserInfo,source = null} = options
     this.setData({
@@ -47,7 +54,7 @@ global.wxPage({
    */
   onShow: function () {
     if(this.data.prescriptionMessage) this.sendMessage({content:this.data.prescriptionMessage},2)
-    this.requsetMessage()
+    this.requestHistoryChat()
   },
 
   /**
@@ -89,14 +96,14 @@ global.wxPage({
   },
   requsetMessage () {
     this.messageApi()
-    if(this.data.targetUserInfo.sessionStatus === 1) this.timer = setInterval(this.messageApi,2000)
+    if(this.data.targetUserInfo.sessionStatus === 2) this.timer = setInterval(this.messageApi,5000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
       if (res.error === 0 && res.content.length) {
         let newChatContent = res.content.reduce((defaultValue,item)=>{
-          defaultValue.push({
+          defaultValue.push({  
             position:0,
             messageInfo:{
               message:JSON.parse(item.message),
@@ -110,17 +117,17 @@ global.wxPage({
         })
     }
     }, {
-      departmentId: this.data.targetUserInfo.departmentId,
-      patientId: this.data.targetUserInfo.patientId,
+      sessionId:this.data.targetUserInfo.id,
       pullFromId: this.data.targetUserInfo.userId,
       selfId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id
     }, '', false);
   },
   hideMoreActions(){
-    let chatInput = this.selectComponent('#chatinput')
     chatInput.hideMoreActions()
+
   },
   sendMessage(message,type){
+
     if(!message.content) return
     let imSessionItem = {
       message:JSON.stringify(message),
@@ -144,33 +151,34 @@ global.wxPage({
         this.pageScrollBottom()
       }
     },{
-      departmentId:this.data.targetUserInfo.departmentId,
-      patientId:this.data.targetUserInfo.patientId,
+      sessionId:this.data.targetUserInfo.id,
       fromId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       toId:this.data.targetUserInfo.userId,
       imSessionItem
     })
   },
   createPrescription(){
+
     util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
       patientId:this.data.targetUserInfo.patientId,
       userId:this.data.targetUserInfo.userId
     })}`)
   },
   chatEnd(){
+
     util.showModal('提示','确定要结束本次问诊吗？',()=>{
       util.api('/api/wxapp/inquiry/order/status/update',res=>{
         if(res.error === 0){
           clearInterval(this.timer)
           this.setData({
-            'targetUserInfo.sessionStatus':3
+            'targetUserInfo.sessionStatus':4
           })
           if(this.data.source === 'inquiryList'){
             let pageList = getCurrentPages();
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:3
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:4
             })
             wx.navigateBack()
           }
@@ -183,11 +191,12 @@ global.wxPage({
     },true,'再想想','确认结束')
   },
   chatContinue(){
+
     util.showModal('提示','确定要继续问诊吗？',()=>{
       util.api('/api/wxapp/inquiry/order/status/update',res=>{
         if(res.error === 0){
           this.setData({
-            'targetUserInfo.sessionStatus':1
+            'targetUserInfo.sessionStatus':2
           })
           this.requsetMessage()
           if(this.data.source === 'inquiryList'){
@@ -195,7 +204,7 @@ global.wxPage({
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:1
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:2
             })
           }
         }
@@ -225,6 +234,43 @@ global.wxPage({
       }
     },{
       prescriptionCode
+    })
+  },
+  async requestHistoryChat(){
+    if(this.data.firstLoad) await this.historyChatApi()
+    this.requsetMessage()
+  },
+  historyChatApi(){
+    return new Promise((resolve,reject)=>{
+      util.api('/api/wxapp/im/session/render',res=>{
+        console.log(res)
+        if(res.error === 0 && res.content.dataList.length){
+          let newChatContent = res.content.dataList.reduce((defaultValue,item)=>{
+            defaultValue.push({  
+              position:item.doctor ? 1 : 0,
+              messageInfo:{
+                message:JSON.parse(item.message),
+                type:item.type
+              }
+            })
+            return defaultValue
+          },[])
+          this.setData({
+            chatContent:[...newChatContent],
+            firstLoad:false
+          })
+        }
+        resolve(res)
+      },{
+        sessionId:this.data.targetUserInfo.id
+      })
+    }) 
+  },
+  viewImage(e){
+  
+    let urls = [e.currentTarget.dataset.urls]
+    wx.previewImage({
+      urls
     })
   }
 })
