@@ -32,6 +32,10 @@ public class ExternalRequestHistoryService {
         return time/1000;
     }
 
+    public void eraseRequestHistory(String appId, Integer shopId, String serviceName, Timestamp createTime) {
+        externalRequestHistoryDao.delete(appId,shopId,serviceName,createTime);
+    }
+
     /**
      * 添加请求记录
      */

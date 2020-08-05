@@ -32,7 +32,7 @@ module.exports = {
   "cartInvalid5": "商品已下架",
   "cartInvalid6": "商品已删除",
 
-  "cartListTip1": "购物车竟然是空的",
+  "cartListTip1": "清单竟然是空的",
   "cartListTip2": "随便逛逛",
 
   "cartButton1": "全选",
@@ -53,7 +53,7 @@ module.exports = {
   "activeLabel3": "会员价",
 
   "activeFooter1": "已选",
-  "activeFooter2": "去购物车",
+  "activeFooter2": "去清单",
   "activeLoad": "加载中...",
   "activeSure": "确定",
 

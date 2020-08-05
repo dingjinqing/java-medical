@@ -147,7 +147,7 @@
     <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
     <view class="spec-footer" slot="footer">
       <view class="footer_flex_view"  bindtap="addCart" style='color:#fff;background:{{comColor}};'>
-        <text>加入购物车</text>
+        <text>加入清单</text>
       </view>
     </view>
   </v-spec-dialog>

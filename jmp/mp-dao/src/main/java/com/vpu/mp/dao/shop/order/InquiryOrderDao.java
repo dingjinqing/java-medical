@@ -152,11 +152,11 @@ public class InquiryOrderDao extends ShopBaseDao {
     }
 
     /**
-     *问诊订单统计报表查询
+     *问诊订单统计报表分页查询
      * @param param
      * @return
      */
-    public PageResult<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
+    public PageResult<InquiryOrderStatisticsVo> orderStatisticsPage(InquiryOrderStatisticsParam param){
         SelectJoinStep<? extends Record> select=db().select(
             date((INQUIRY_ORDER.CREATE_TIME)).as(InquiryOrderStatistics.CREAT_TIME),
             //咨询单数
@@ -188,5 +188,31 @@ public class InquiryOrderDao extends ShopBaseDao {
             selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.le(param.getEndTime()));
         }
         return selectJoinStep;
+    }
+
+    /**
+     * 问诊订单统计报表查询
+     * @param param
+     * @return
+     */
+    public List<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
+        SelectJoinStep<? extends Record> select=db().select(
+            date((INQUIRY_ORDER.CREATE_TIME)).as(InquiryOrderStatistics.CREAT_TIME),
+            //咨询单数
+            count((INQUIRY_ORDER.ORDER_ID)).as(InquiryOrderStatistics.AMOUNT),
+            //咨询总金额
+            sum(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.AMOUNT_PRICE),
+            //咨询单次价格
+            avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
+            //医师id
+            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
+            //科室id
+            INQUIRY_ORDER.DEPARTMENT_ID.as(InquiryOrderStatistics.DEPARTMENT_ID)
+        ).from(INQUIRY_ORDER)
+            .leftJoin(DOCTOR).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID));
+        select=buildOptions(select,param);
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
+        List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
+        return list;
     }
 }

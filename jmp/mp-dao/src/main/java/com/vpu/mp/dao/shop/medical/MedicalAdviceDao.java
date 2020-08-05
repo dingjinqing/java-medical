@@ -46,7 +46,7 @@ public class MedicalAdviceDao extends ShopBaseDao {
      */
     public void updateHitsMedicalAdvice(FetchMedicalAdviceVo fetchMedicalAdviceVo){
         MedicalAdviceRecord medicalAdviceRecord = db().select().from(MEDICAL_ADVICE)
-            .where(MEDICAL_ADVICE.ID.eq(fetchMedicalAdviceVo.getId()))
+            .where(MEDICAL_ADVICE.POS_CODE.eq(fetchMedicalAdviceVo.getPosCode()))
             .fetchOneInto(MedicalAdviceRecord.class);
         FieldsUtil.assign(fetchMedicalAdviceVo, medicalAdviceRecord);
         medicalAdviceRecord.update();

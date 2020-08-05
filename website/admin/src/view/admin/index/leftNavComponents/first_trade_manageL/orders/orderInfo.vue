@@ -262,89 +262,88 @@
         </table>
       </div>
     </div>
-    <div class="prescription-list">
+    <div
+      class="prescription-list"
+      v-if="order.prescriptionOldDoList.length"
+    >
       <div class="module-title">
-        处方信息
+        历史处方信息
       </div>
       <div class="prescription-content">
-        <div class="prescription-item">
+        <template v-for="item in order.prescriptionOldDoList">
           <div
-            class="item-title"
-            :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
-          >电子处方1</div>
-          <div class="item-list-content">
-            <div class="item-list">
-              <div class="list-item">
-                <span class="list-item-dot"></span>
-                <div class="list-item-content">
-                  诊断：原发性高血压
+            class="prescription-item"
+            :key="item.id"
+            @click="handlePrescriptionInfo(item.prescriptionCode)"
+          >
+            <div
+              class="item-title"
+              :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
+            >电子处方</div>
+            <div class="item-list-content">
+              <div class="item-list">
+                <div class="list-item">
+                  <span class="list-item-dot"></span>
+                  <div class="list-item-content">
+                    诊断：{{item.diagnosisName}}
+                  </div>
                 </div>
-              </div>
-              <div class="list-item">
-                <span class="list-item-dot"></span>
-                <div class="list-item-content">
-                  科室：神经科
+                <div class="list-item">
+                  <span class="list-item-dot"></span>
+                  <div class="list-item-content">
+                    科室：{{item.departmentName}}
+                  </div>
                 </div>
               </div>
             </div>
+            <div class="doctor-info">
+              <span class="doctor-name">医师：{{item.doctorName}}</span>
+              <span class="item-date">日期：{{item.prescriptionCreateTime}}</span>
+            </div>
           </div>
-          <div class="doctor-info">
-            <span class="doctor-name">医师：张三</span>
-            <span class="item-date">日期：2020.06.30</span>
-          </div>
-        </div>
-        <div class="prescription-item">
+        </template>
+      </div>
+    </div>
+    <div
+      class="prescription-list"
+      v-if="order.prescriptionDoList.length"
+    >
+      <div class="module-title">
+        新开处方信息
+      </div>
+      <div class="prescription-content">
+        <template v-for="item in order.prescriptionDoList">
           <div
-            class="item-title"
-            :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
-          >电子处方1</div>
-          <div class="item-list-content">
-            <div class="item-list">
-              <div class="list-item">
-                <span class="list-item-dot"></span>
-                <div class="list-item-content">
-                  诊断：原发性高血压
+            class="prescription-item"
+            :key="item.id"
+            @click="handlePrescriptionInfo(item.prescriptionCode)"
+          >
+            <div
+              class="item-title"
+              :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
+            >电子处方</div>
+            <div class="item-list-content">
+              <div class="item-list">
+                <div class="list-item">
+                  <span class="list-item-dot"></span>
+                  <div class="list-item-content">
+                    诊断：{{item.diagnosisName}}
+                  </div>
                 </div>
-              </div>
-              <div class="list-item">
-                <span class="list-item-dot"></span>
-                <div class="list-item-content">
-                  科室：神经科
+                <div class="list-item">
+                  <span class="list-item-dot"></span>
+                  <div class="list-item-content">
+                    科室：{{item.departmentName}}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="doctor-info">
-            <span class="doctor-name">医师：张三</span>
-            <span class="item-date">日期：2020.06.30</span>
-          </div>
-        </div>
-        <div class="prescription-item">
-          <div
-            class="item-title"
-            :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
-          >电子处方1</div>
-          <div class="item-list-content">
-            <div class="item-list">
-              <div class="list-item">
-                <span class="list-item-dot"></span>
-                <div class="list-item-content">
-                  诊断：原发性高血压
-                </div>
-              </div>
-              <div class="list-item">
-                <span class="list-item-dot"></span>
-                <div class="list-item-content">
-                  科室：神经科
-                </div>
-              </div>
+            <div class="doctor-info">
+              <span class="doctor-name">医师：{{item.doctorName}}</span>
+              <span class="item-date">日期：{{item.prescriptionCreateTime}}</span>
             </div>
           </div>
-          <div class="doctor-info">
-            <span class="doctor-name">医师：张三</span>
-            <span class="item-date">日期：2020.06.30</span>
-          </div>
-        </div>
+        </template>
       </div>
     </div>
     <div class="order-list-table">
@@ -1039,6 +1038,15 @@ export default {
           userId
         }
       })
+    },
+    handlePrescriptionInfo (prescriptionCode) {
+      let newpage = this.$router.resolve({
+        name: 'prescription_message',
+        query: {
+          prescriptionCode
+        }
+      })
+      window.open(newpage.href, '_blank')
     }
   },
   computed: {
@@ -1410,6 +1418,7 @@ export default {
       flex-wrap: wrap;
       margin-left: -10px;
       .prescription-item {
+        cursor: pointer;
         border-radius: 16px;
         margin: 20px 0 0 20px;
         box-shadow: 0 5px 15px rgba(13, 19, 24, 0.14),

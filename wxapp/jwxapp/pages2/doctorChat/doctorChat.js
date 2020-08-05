@@ -18,7 +18,8 @@ global.wxPage({
     historyPageParams:{
       currentPage:1,
       pageRows:20
-    }
+    },
+    firstLoad:true
   },
 
   /**
@@ -236,8 +237,8 @@ global.wxPage({
     })
   },
   async requestHistoryChat(){
-    let data = await this.historyChatApi()
-    if(data) this.requsetMessage()
+    if(this.data.firstLoad) await this.historyChatApi()
+    this.requsetMessage()
   },
   historyChatApi(){
     return new Promise((resolve,reject)=>{
@@ -255,7 +256,8 @@ global.wxPage({
             return defaultValue
           },[])
           this.setData({
-            chatContent:[...newChatContent]
+            chatContent:[...newChatContent],
+            firstLoad:false
           })
         }
         resolve(res)

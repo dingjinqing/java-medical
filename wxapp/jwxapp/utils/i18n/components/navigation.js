@@ -18,7 +18,7 @@ module.exports = {
     "brokeragerank": "佣金排行榜",
     "buycardlist": "会员卡列表",
     "virtualCheckout": "会员卡结算",
-    "cart": "购物车",
+    "cart": "清单",
     "cardpay": "会员卡充值",
     "collect": "我的收藏",
     "comment": "商品评价",
