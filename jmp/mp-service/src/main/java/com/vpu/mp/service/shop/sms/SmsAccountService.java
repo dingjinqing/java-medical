@@ -95,6 +95,7 @@ public class SmsAccountService extends ShopBaseService {
         HttpResponse response = smsService.requestApi(postBody);
         SmsAccountInfoVo smsAccountInfoVo = JSONUtil.toBean(response.body(), SmsAccountInfoVo.class);
         smsAccountInfoVo.setRechargeUrl(smsApiConfig.getChargeUrl());
+        smsAccountInfoVo.setSmsAccount(accountConfig);
         return smsAccountInfoVo;
     }
 

@@ -18,4 +18,5 @@ public class SmsAccountInfoVo {
     private String appId;
     private String smsNum;
     private String rechargeUrl;
+    private String smsAccount;
 }

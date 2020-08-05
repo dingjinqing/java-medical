@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -85,9 +84,5 @@ public class MpAuthShopToAdminVo {
      * 已绑定的公众号
      */
     private MpOfficeAccountVo officialAccount;
-    /**
-     * 短信账户
-     */
-    private SmsAccountInfoVo smsAccountInfo;
 
 }
