@@ -1,14 +1,14 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
+import lombok.Data;
+
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Data;
-
 /**
- * 
+ *
  * @author zhaojianqiang
  *
  * 2019年8月12日 下午5:45:41
@@ -44,7 +44,7 @@ public class MpAuthShopToAdminVo {
     @JsonIgnore
     private String    payKeyContent;
     private Byte      isModifyDomain;
-    
+
     private Integer   bindTemplateId;
 	/** 绑定的模板ID对应的版本号*/
     private String bindUserVersion;
@@ -52,7 +52,7 @@ public class MpAuthShopToAdminVo {
     private Integer currentTemplateId;
     /** 当前模板id对应的版本号*/
     private String currentUserVersion;
-    
+
     private Byte      uploadState;
     private Timestamp lastUploadTime;
     private Long   auditId;
@@ -80,10 +80,14 @@ public class MpAuthShopToAdminVo {
           * 需要绑定的公众号
      */
     private List<MpOfficeAccountVo>   officialList;
-    
+
     /**
      * 已绑定的公众号
      */
     private MpOfficeAccountVo officialAccount;
+    /**
+     * 短信账户
+     */
+    private SmsAccountInfoVo smsAccountInfo;
 
 }

@@ -6,8 +6,14 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.patient.*;
-import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientAddParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,22 +132,6 @@ public class WxAppPatientController extends WxAppBaseController {
     public JsonResult getDefaultPatient(){
         Integer userId=wxAppAuth.user().getUserId();
         return success(shop().patientService.getDefaultPatient(userId));
-    }
-    /**
-     * 测试
-     * @param param
-     * @return
-     */
-    @PostMapping("/api/wxapp/user/sms/add")
-    public JsonResult createSmsAccount(@RequestBody  SmsAccountParam param){
-        String smsAccount = null;
-        try {
-            smsAccount = smsAccountService.createSmsAccount(param);
-        } catch (MpException e) {
-            e.printStackTrace();
-            return fail();
-        }
-        return success(smsAccount);
     }
 
     /**
