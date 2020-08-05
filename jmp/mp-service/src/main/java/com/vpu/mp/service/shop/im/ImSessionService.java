@@ -169,9 +169,9 @@ public class ImSessionService extends ShopBaseService {
             imSessionItemDos.add(imSessionItemDo);
         }
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
-        if (renderPageParam.isFirstTime()) {
+        if (renderPageParam.getIsFirstTime()) {
             String redisKey = null;
-            if (renderPageParam.isDoctor()) {
+            if (renderPageParam.getIsDoctor()) {
                 redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
             } else {
                 redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
