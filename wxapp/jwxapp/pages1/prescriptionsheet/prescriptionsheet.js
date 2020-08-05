@@ -69,9 +69,9 @@ global.wxPage({
       patientName:this.data.patientInfo.name,
       patientId:this.data.patientInfo.id,
       sex:this.data.patientInfo.sex,
-      age:1,
+      age:this.data.patientInfo.age,
       imagesList:JSON.stringify(this.data.prescriptionImageList),
-      patientComplanin:JSON.stringify({
+      patientComplain:JSON.stringify({
         ...this.data.optionsList,
         selectedDiagnose:this.data.selectedDiagnose,
       })
