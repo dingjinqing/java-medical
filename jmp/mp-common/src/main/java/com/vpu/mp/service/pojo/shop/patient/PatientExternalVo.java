@@ -2,17 +2,16 @@ package com.vpu.mp.service.pojo.shop.patient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Timestamp;
 
 /**
  * @author yangpengcheng
  */
 @Data
-public class PatientExternalVo {
+public class PatientExternalVo{
     private Integer   id;
     private String    name;
     @JsonProperty("phone")
