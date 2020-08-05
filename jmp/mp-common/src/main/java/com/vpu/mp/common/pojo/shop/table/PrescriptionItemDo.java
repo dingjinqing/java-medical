@@ -6,11 +6,10 @@ package com.vpu.mp.common.pojo.shop.table;
 
 import lombok.Data;
 
+import javax.annotation.Generated;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import javax.annotation.Generated;
 
 
 /**
@@ -36,6 +35,7 @@ public class PrescriptionItemDo implements Serializable {
     private String     prescriptionDetailCode;
     private Integer    goodsId;
     private String     goodsCommonName;
+    private String     goodsImg;
     private String     goodsQualityRatio;
     private String     useMethod;
     private Double     perTimeNum;

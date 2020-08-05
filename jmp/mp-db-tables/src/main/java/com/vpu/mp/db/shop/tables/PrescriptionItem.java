@@ -4,6 +4,10 @@
 package com.vpu.mp.db.shop.tables;
 
 
+import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
+import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -12,10 +16,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_471752;
-import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = 2105969697;
+    private static final long serialVersionUID = 1934818609;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_item</code>
@@ -92,6 +92,11 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_item.goods_common_name</code>. 通用名
      */
     public final TableField<PrescriptionItemRecord, String> GOODS_COMMON_NAME = createField("goods_common_name", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "通用名");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.goods_img</code>.
+     */
+    public final TableField<PrescriptionItemRecord, String> GOODS_IMG = createField("goods_img", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(DSL.inline("商品图片", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_item.goods_quality_ratio</code>. 规格系数，通用名和规格系数确定一个药品
@@ -149,9 +154,9 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
     public final TableField<PrescriptionItemRecord, String> GOODS_PRODUCTION_ENTERPRISE = createField("goods_production_enterprise", org.jooq.impl.SQLDataType.VARCHAR(512), this, "生产企业");
 
     /**
-     * The column <code>mini_shop_471752.b2c_prescription_item.medicine_price</code>. 药品价格
+     * The column <code>mini_shop_471752.b2c_prescription_item.medicine_price</code>. 药品总价
      */
-    public final TableField<PrescriptionItemRecord, BigDecimal> MEDICINE_PRICE = createField("medicine_price", org.jooq.impl.SQLDataType.DECIMAL(18, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "药品价格");
+    public final TableField<PrescriptionItemRecord, BigDecimal> MEDICINE_PRICE = createField("medicine_price", org.jooq.impl.SQLDataType.DECIMAL(18, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "药品总价");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.

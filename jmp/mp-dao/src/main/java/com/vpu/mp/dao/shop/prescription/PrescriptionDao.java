@@ -5,14 +5,21 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
@@ -356,15 +363,13 @@ public class PrescriptionDao extends ShopBaseDao {
 
     /**
      * 医生获取处方
-     * @param type 0 全部 1审核 2开方 3
-     * @param doctorCode
      * @return
      */
-    public List<PrescriptionDo>  listAuditedByDoctor(Byte type, String doctorCode) {
+    public PageResult<PrescriptionParam> listAuditedByDoctor(DoctorAuditedPrescriptionParam param) {
         SelectConditionStep<Record> where = db().select()
                 .from(PRESCRIPTION)
-                .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorCode));
-        switch (type){
+                .where(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode()));
+        switch (param.getType()){
             case 0:
                 //全部
                 break;
@@ -382,6 +387,7 @@ public class PrescriptionDao extends ShopBaseDao {
                 break;
             default:
         }
-        return where.orderBy(PRESCRIPTION.CREATE_TIME.desc()).fetchInto(PrescriptionDo.class);
+         where.orderBy(PRESCRIPTION.CREATE_TIME.desc());
+        return getPageResult(where,param,PrescriptionParam.class);
     }
 }

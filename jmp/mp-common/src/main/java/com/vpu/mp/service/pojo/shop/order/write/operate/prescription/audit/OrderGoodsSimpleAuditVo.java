@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author 孔德成
  * @date 2020/7/29 13:56
@@ -36,4 +38,12 @@ public class OrderGoodsSimpleAuditVo {
      * 处方审核状态
      */
     private Byte medicalAuditStatus;
+    /**
+     * 商品图片
+     */
+    private String goodsImg;
+    /**
+     * 商品价格
+     */
+    private BigDecimal shopPrice;
 }
