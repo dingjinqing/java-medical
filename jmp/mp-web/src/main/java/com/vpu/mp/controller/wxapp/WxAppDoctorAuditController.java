@@ -2,10 +2,17 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.AuditOrderGoodsParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,12 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WxAppDoctorAuditController extends WxAppBaseController{
 
+    @Autowired
+    private PrescriptionService prescriptionService;
+    private DoctorService doctorService;
 
     /**
      * 获取待审核处方
      * @return
      */
-    @PostMapping("/api/wxapp/docker/audit/list")
+    @PostMapping("/api/wxapp/doctor/audit/list")
     public JsonResult listAuditPrescription(@RequestBody PrescriptionQueryParam param) {
         param.setAction((byte)OrderServiceCode.PRESCRIPTION.ordinal());
         try {
@@ -38,7 +48,7 @@ public class WxAppDoctorAuditController extends WxAppBaseController{
      * 获取待审核处方
      * @return
      */
-    @PostMapping("/api/wxapp/docker/audit/pass")
+    @PostMapping("/api/wxapp/doctor/audit/pass")
     public JsonResult orderAuditPass(@RequestBody AuditOrderGoodsParam param) {
         param.setAction((byte)OrderServiceCode.PRESCRIPTION.ordinal());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
@@ -48,4 +58,19 @@ public class WxAppDoctorAuditController extends WxAppBaseController{
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
     }
+
+    /**
+     * 医师端的处方列表
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/doctor/prescription/list")
+    public JsonResult auditedPrescriptionList(@RequestBody @Validated DoctorAuditedPrescriptionParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        if (user.getUserType().equals(AuthConstant.AUTH_TYPE_DOCTOR_USER)){
+            prescriptionService.auditedPrescriptionList(param);
+        }
+        return success();
+    }
+
 }

@@ -27,8 +27,8 @@ global.wxPage({
         for (var i in page_info) {
           page_info[i].if_show_more = 0;
           page_info[i].patient.gestationName = this.getGesName(page_info[i].patient.gestationType);
-          if(!!page_info[i].medicalHistory && !!page_info[i].medicalHistory.diseaseHistory){
-            page_info[i].medicalHistory.diseaseHistory =JSON.parse(page_info[i].medicalHistory.diseaseHistory);
+          if(!!page_info[i].medicalHistory && !!page_info[i].medicalHistory.patientComplain){
+            page_info[i].medicalHistory.patientComplain =JSON.parse(page_info[i].medicalHistory.patientComplain);
           }
           if(!!page_info[i].medicalHistory && !!page_info[i].medicalHistory.imagesList){
             page_info[i].medicalHistory.imagesList = JSON.parse(page_info[i].medicalHistory.imagesList);
