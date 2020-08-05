@@ -230,22 +230,23 @@ public class PatientService extends BaseShopConfigService{
      * @return
      */
     public UserPatientDetailVo getOneDetail(UserPatientParam userPatientParam) {
-        if (userPatientParam == null || userPatientParam.getPatientId() == 0) {
-            UserPatientDetailVo userPatientDetail = new UserPatientDetailVo();
-            userPatientDetail.setDiseaseHistoryList(listDiseases(null));
-            userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(null));
-            return userPatientDetail;
-        } else {
+        if (userPatientParam != null && userPatientParam.getPatientId() != 0) {
             UserPatientDetailVo userPatientDetail = getOneInfoForWx(userPatientParam);
-            //根据出生日期获取年龄
-            userPatientDetail.setAge(DateUtils.getAgeByBirthDay(userPatientDetail.getBirthday()));
-            userPatientDetail.setDiseaseHistoryList(listDiseases(userPatientDetail.getDiseaseHistory()));
-            userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(userPatientDetail.getFamilyDiseaseHistory()));
-            userPatientDetail.setDiseaseHistoryStr(strDisease(userPatientDetail.getDiseaseHistory()));
-            userPatientDetail.setFamilyDiseaseHistoryStr(strDisease(userPatientDetail.getFamilyDiseaseHistory()));
-            userPatientDetail.setId(userPatientDetail.getPatientId());
-            return userPatientDetail;
+            if (userPatientDetail!=null){
+                //根据出生日期获取年龄
+                userPatientDetail.setAge(DateUtils.getAgeByBirthDay(userPatientDetail.getBirthday()));
+                userPatientDetail.setDiseaseHistoryList(listDiseases(userPatientDetail.getDiseaseHistory()));
+                userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(userPatientDetail.getFamilyDiseaseHistory()));
+                userPatientDetail.setDiseaseHistoryStr(strDisease(userPatientDetail.getDiseaseHistory()));
+                userPatientDetail.setFamilyDiseaseHistoryStr(strDisease(userPatientDetail.getFamilyDiseaseHistory()));
+                userPatientDetail.setId(userPatientDetail.getPatientId());
+                return userPatientDetail;
+            }
         }
+        UserPatientDetailVo userPatientDetail = new UserPatientDetailVo();
+        userPatientDetail.setDiseaseHistoryList(listDiseases(null));
+        userPatientDetail.setFamilyDiseaseHistoryList(listDiseases(null));
+        return userPatientDetail;
     }
 
     /**
