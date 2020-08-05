@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 1370688385;
+    private static final long serialVersionUID = 1522126693;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.id</code>. 主键id
@@ -406,16 +406,16 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_prescription.auditType</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     * Setter for <code>mini_shop_471752.b2c_prescription.audit_Type</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
      */
-    public void setAudittype(Byte value) {
+    public void setAuditType(Byte value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_prescription.auditType</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     * Getter for <code>mini_shop_471752.b2c_prescription.audit_Type</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
      */
-    public Byte getAudittype() {
+    public Byte getAuditType() {
         return (Byte) get(27);
     }
 
@@ -585,7 +585,7 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     /**
      * Create a detached, initialised PrescriptionRecord
      */
-    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, Integer patientId, Integer userId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, Byte source, Byte audittype, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, Integer patientId, Integer userId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, Byte source, Byte auditType, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Timestamp createTime, Timestamp updateTime) {
         super(Prescription.PRESCRIPTION);
 
         set(0, id);
@@ -615,7 +615,7 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
         set(24, patientComplain);
         set(25, patientSign);
         set(26, source);
-        set(27, audittype);
+        set(27, auditType);
         set(28, status);
         set(29, statusMemo);
         set(30, expireType);

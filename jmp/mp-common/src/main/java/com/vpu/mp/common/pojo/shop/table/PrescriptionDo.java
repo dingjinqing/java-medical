@@ -54,7 +54,7 @@ public class PrescriptionDo implements Serializable {
     private String    patientComplain;
     private String    patientSign;
     private Byte      source;
-    private Byte      audittype;
+    private Byte      auditType;
     private Byte      status;
     private String    statusMemo;
     private Byte      expireType;
@@ -65,5 +65,6 @@ public class PrescriptionDo implements Serializable {
     private Byte      isValid;
     private Timestamp createTime;
     private Timestamp updateTime;
+
 
 }

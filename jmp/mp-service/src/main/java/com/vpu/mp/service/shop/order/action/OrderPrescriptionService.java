@@ -324,7 +324,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setSource(PrescriptionConstant.SOURCE_MP_SYSTEM);
         prescriptionVo.setStatus(PrescriptionConstant.STATUS_PASS);
         prescriptionVo.setStatusMemo("");
-        prescriptionVo.setAudittype(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
+        prescriptionVo.setAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
         prescriptionVo.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
         prescriptionVo.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(time,PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
         prescriptionVo.setIsValid(BaseConstant.YES);
