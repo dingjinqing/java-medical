@@ -28,7 +28,6 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
-import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -302,11 +301,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
-    private void addOrderMedicalHistory(CreateParam param, OrderInfoRecord order) {
+    private void addOrderMedicalHistory(CreateParam param, OrderInfoRecord order) throws MpException {
         if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
             logger().info("待开方订单保存患者信息");
-            param.getPatientDiagnose().setOrderId(order.getOrderId());
-            orderMedicalHistoryDao.save(param.getPatientDiagnose());
+            if (param.getPatientDiagnose()!=null){
+                param.getPatientDiagnose().setOrderId(order.getOrderId());
+                orderMedicalHistoryDao.save(param.getPatientDiagnose());
+            }else {
+                throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+            }
         }
     }
 
