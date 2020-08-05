@@ -40,4 +40,16 @@ public class InquiryOrderStatistics {
      *咨询总金额
      */
     public static  final String AMOUNT_PRICE="amountPrice";
+    /**
+     * 咨询单数
+     */
+    public static  final String AMOUNT_TOTAL="amountTotal";
+    /**
+     *咨询单次价格
+     */
+    public static  final String ONE_PRICE_TOTAL="oncePriceTotal";
+    /**
+     *咨询总金额
+     */
+    public static  final String AMOUNT_PRICE_TOTAL="amountPriceTotal";
 }

@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.statistics.InquiryOrderStatistics;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -213,5 +214,24 @@ public class InquiryOrderDao extends ShopBaseDao {
         select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
         List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
         return list;
+    }
+
+    /**
+     * 咨询报表总数total查询
+     * @param param
+     * @return
+     */
+    public InquiryOrderTotalVo orderStatisticsTotal(InquiryOrderStatisticsParam param){
+        SelectJoinStep<? extends Record> select=db().select(
+            //咨询单数
+            count((INQUIRY_ORDER.ORDER_ID)).as(InquiryOrderStatistics.AMOUNT_TOTAL),
+            //咨询总金额
+            sum(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.AMOUNT_PRICE_TOTAL),
+            //咨询单次价格
+            avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE_TOTAL)
+        ).from(INQUIRY_ORDER);
+        select=buildOptions(select,param);
+        InquiryOrderTotalVo inquiryOrderTotalVo=select.fetchOneInto(InquiryOrderTotalVo.class);
+        return inquiryOrderTotalVo;
     }
 }
