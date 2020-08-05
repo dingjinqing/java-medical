@@ -52,7 +52,7 @@ public class AdminInquiryOrderController extends AdminBaseController{
     }
 
     /**
-     * 咨询订单统计报表
+     * 咨询订单统计报表详情
      * @param param
      * @return
      */
@@ -62,7 +62,7 @@ public class AdminInquiryOrderController extends AdminBaseController{
     }
 
     /**
-     * 问诊订单统计报表导出
+     * 问诊订单统计报表详情导出
      * @param param
      * @param response
      */
