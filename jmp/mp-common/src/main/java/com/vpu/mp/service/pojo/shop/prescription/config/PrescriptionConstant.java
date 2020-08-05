@@ -50,5 +50,13 @@ public interface PrescriptionConstant {
      */
     public static final int PRESCRIPTION_EXPIRE_DAY=3;
 
+    /**
+     * 处方审核类型 药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     */
+    public static final Byte PRESCRIPTION_AUDIT_TYPE_NOT_AUDIT = 0;
+    public static final Byte PRESCRIPTION_AUDIT_TYPE_AUDIT = 1;
+    public static final Byte PRESCRIPTION_AUDIT_TYPE_PRESCRIBE = 2;
+    public static final Byte PRESCRIPTION_AUDIT_TYPE_ORDER = 3;
+
 
 }

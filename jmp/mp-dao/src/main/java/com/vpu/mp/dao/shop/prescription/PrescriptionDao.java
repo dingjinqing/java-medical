@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
@@ -310,7 +311,7 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public void updateHitsPrescription(FetchPrescriptionVo fetchPrescriptionVo){
         PrescriptionRecord prescriptionRecord = db().select().from(PRESCRIPTION)
-            .where(PRESCRIPTION.ID.eq(fetchPrescriptionVo.getId()))
+            .where(PRESCRIPTION.PRESCRIPTION_CODE.eq(fetchPrescriptionVo.getPrescriptionCode()))
             .fetchOneInto(PrescriptionRecord.class);
         FieldsUtil.assign(fetchPrescriptionVo, prescriptionRecord);
         prescriptionRecord.update();
@@ -322,16 +323,36 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param timestamp 上次打开已开具页面时间
      * @return Byte
      */
-    public Byte isExistAlreadyReadPrescription(Timestamp timestamp){
-        List<Timestamp> timestamps = db().select(PRESCRIPTION.UPDATE_TIME).from(PRESCRIPTION)
-            .where(PRESCRIPTION.UPDATE_TIME.gt(timestamp)
-                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
-                .and(PRESCRIPTION.IS_VALID.eq(DelFlag.NORMAL_VALUE))).fetchInto(Timestamp.class);
-        if (timestamps.isEmpty()) {
-            return DelFlag.DISABLE_VALUE;
-        }
-        return DelFlag.NORMAL_VALUE;
+    public Boolean isExistAlreadyReadPrescription(String hospitalCode, Timestamp timestamp){
+        Integer timestamps = db().selectCount().from(PRESCRIPTION)
+            .where(PRESCRIPTION.CREATE_TIME.gt(timestamp))
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.IS_VALID.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.SOURCE.eq(PrescriptionConstant.SOURCE_MP_SYSTEM))
+            .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_PRESCRIBE))
+            .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
+            .orderBy(PRESCRIPTION.CREATE_TIME.desc()).fetchAnyInto(Integer.class);
+        return timestamps == 0;
     }
+
+    /**
+     * 查询是否有医师未读已续方
+     * @param hospitalCode 医师院内编码
+     * @param timestamp 上次打开页面时间
+     * @return Byte
+     */
+    public Boolean isExistAlreadyReadContinuedPrescription(String hospitalCode, Timestamp timestamp){
+        Integer timestamps = db().selectCount().from(PRESCRIPTION)
+            .where(PRESCRIPTION.CREATE_TIME.gt(timestamp))
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.IS_VALID.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.SOURCE.eq(PrescriptionConstant.SOURCE_MP_SYSTEM))
+            .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_AUDIT))
+            .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
+            .orderBy(PRESCRIPTION.CREATE_TIME.desc()).fetchAnyInto(Integer.class);
+        return timestamps == 0;
+    }
+
 
     /**
      * 医生获取处方

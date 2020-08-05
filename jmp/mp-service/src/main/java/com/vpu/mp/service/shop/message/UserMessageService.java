@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.message;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.message.MessageDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
@@ -10,6 +12,9 @@ import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionUnReadMessageInfoParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
+import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +37,13 @@ public class UserMessageService extends ShopBaseService {
     private OrderGoodsDao orderGoodsDao;
 
     @Autowired
-    private ImSessionDao imSessionDao;
+    private ImSessionService imSessionService;
 
     @Autowired
     private PrescriptionDao prescriptionDao;
+
+    @Autowired
+    private DoctorDao doctorDao;
 
 
     /**
@@ -55,6 +63,10 @@ public class UserMessageService extends ShopBaseService {
      */
     public void addUserMessage(UserMessageParam userMessageParam) {
         messageDao.addMessage(userMessageParam);
+    }
+
+    public void addUserImSessionMessage(){
+
     }
 
     /**
@@ -87,17 +99,20 @@ public class UserMessageService extends ShopBaseService {
         DoctorMessageCountVo doctorMessageCountVo = new DoctorMessageCountVo();
         // 根据缓存时间判断数据库中是否有未读新增数据
         // 根据时间判断是否有未读已续方消息
-        Byte existOrderGoods = orderGoodsDao.isExistAlreadyReadOrderGoods(doctorMainShowParam.getLastReadOrderGoodsTime());
-        doctorMessageCountVo.setAlreadyPrescription(existOrderGoods);
+        String hospitalCode = doctorDao.selectDoctorCodeByDoctorId(doctorId);
+        Boolean existAlreadyReadContinuedPrescription = prescriptionDao.isExistAlreadyReadContinuedPrescription(hospitalCode, doctorMainShowParam.getLastReadOrderGoodsTime());
+        doctorMessageCountVo.setAlreadyPrescription(existAlreadyReadContinuedPrescription);
         // 判断是否有未读已开具消息
-        Byte existOrderInfo = prescriptionDao.isExistAlreadyReadPrescription(doctorMainShowParam.getLastReadPrescriptionTime());
-        doctorMessageCountVo.setAlreadyOrderInfoCount(existOrderInfo);
+        Boolean existAlreadyReadPrescription = prescriptionDao.isExistAlreadyReadPrescription(hospitalCode, doctorMainShowParam.getLastReadPrescriptionTime());
+        doctorMessageCountVo.setAlreadyOrderInfoCount(existAlreadyReadPrescription);
         // 判断是否有未读我的问诊消息
-        Byte existChat = imSessionDao.isExistAlreadyReadImSession(doctorMainShowParam.getLastReadImSession());
-        doctorMessageCountVo.setAlreadyImSessionCount(existChat);
-        // 查询未读消息
-        // 待会话记录
-        doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorId, DelFlag.NORMAL_VALUE));
+        ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
+        imSessionUnReadMessageInfoParam.setDoctorId(doctorId);
+        List<ImSessionUnReadInfoVo> unReadMessageInfo = imSessionService.getUnReadMessageInfo(imSessionUnReadMessageInfoParam);
+        Boolean existAlreadyReadImSession = unReadMessageInfo.isEmpty();
+        doctorMessageCountVo.setAlreadyImSessionCount(existAlreadyReadImSession);
+        // 待问诊记录
+        doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageMum(doctorId));
         // 待开方记录
         doctorMessageCountVo.setNotOrderInfoCount(messageDao.countDoctorOrderMessageMum());
         // 待续方记录
