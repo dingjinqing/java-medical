@@ -1,10 +1,8 @@
 package com.vpu.mp.service.shop.doctor;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -13,8 +11,6 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
-import com.vpu.mp.dao.foundation.transactional.DbTransactional;
-import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
@@ -23,13 +19,11 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -293,6 +287,10 @@ public class DoctorService extends ShopBaseService {
      */
     public String selectDoctorTitle(DoctorOneParam doctorOneParam){
         return doctorDao.selectDoctorTitle(doctorOneParam);
+    }
+
+    public List<DoctorOneParam> getSelectDoctorList(DoctorListParam param) {
+        return doctorDao.getSelectDoctorList(param);
     }
 
 }
