@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HITS_NULL;
+
 /**
  * @author 赵晓东
  * @description 拉取医嘱列表
@@ -43,7 +45,7 @@ public class MedicalAdviceService extends ShopBaseService {
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS,
             shopId, serviceName);
         fetchMedicalAdviceParam.setStartTime(lastRequestTime);
-
+        System.out.println(fetchMedicalAdviceParam.toString());
         //拉取数据
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
             .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchMedicalAdviceParam));
@@ -55,6 +57,9 @@ public class MedicalAdviceService extends ShopBaseService {
             result.setMessage(apiExternalRequestResult.getMsg());
             result.setContent(apiExternalRequestResult.getData());
             return result;
+        }
+        if (apiExternalRequestResult.getData() == null) {
+            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();

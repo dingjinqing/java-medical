@@ -55,6 +55,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HITS_NULL;
+
 /**
  * 处方
  * @author 孔德成
@@ -254,12 +256,10 @@ public class PrescriptionService extends ShopBaseService {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;
-
         //增量
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS,
             shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS);
         fetchPrescriptionParam.setStartTime(lastRequestTime);
-
         //拉取数据
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService
             .externalRequestGate(appId, shopId, serviceName, Util.toJson(fetchPrescriptionParam));
@@ -272,12 +272,17 @@ public class PrescriptionService extends ShopBaseService {
             result.setContent(apiExternalRequestResult.getData());
             return result;
         }
+
+        if (apiExternalRequestResult.getData() == null) {
+            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+        }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
         ArrayList<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
         });
 
         //数据库新增或更新
+        assert fetchPrescriptionVos != null;
         for (FetchPrescriptionVo prescriptionVo : fetchPrescriptionVos) {
             //如果没有当前处方就新增
             if (prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode()) == null) {
@@ -313,11 +318,15 @@ public class PrescriptionService extends ShopBaseService {
             result.setContent(apiExternalRequestResult.getData());
             return result;
         }
+        if (apiExternalRequestResult.getData() == null) {
+            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+        }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
         ArrayList<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
         });
         //数据库新增或更新
+        assert fetchPrescriptionVos != null;
         for (FetchPrescriptionVo prescriptionVo : fetchPrescriptionVos) {
             //如果没有当前处方就新增
             PrescriptionVo doByPrescriptionNo = prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode());
