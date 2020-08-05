@@ -152,7 +152,7 @@ public class InquiryOrderDao extends ShopBaseDao {
     }
 
     /**
-     *问诊订单统计报表分页查询
+     *问诊订单统计报表详情分页查询
      * @param param
      * @return
      */
@@ -191,7 +191,7 @@ public class InquiryOrderDao extends ShopBaseDao {
     }
 
     /**
-     * 问诊订单统计报表查询
+     * 问诊订单统计报表详情查询
      * @param param
      * @return
      */

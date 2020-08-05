@@ -22,6 +22,7 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
@@ -380,6 +381,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
         prescriptionParam.setStatus(PrescriptionConstant.STATUS_PASS);
+        prescriptionParam.setAudittype(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
         List<PrescriptionDrugVo> goodsList=param.getGoodsList();
         List<Integer> goodsIdList=goodsList.stream().map(PrescriptionDrugVo::getGoodsId).collect(Collectors.toList());
         Map<Integer,PrescriptionDrugVo> goodsMap=goodsList.stream().collect(Collectors.toMap(PrescriptionDrugVo::getGoodsId, Function.identity(),(x1, x2) -> x1));

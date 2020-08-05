@@ -5,13 +5,11 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Prescription;
-
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
 
 
 /**
@@ -27,7 +25,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 651051932;
+    private static final long serialVersionUID = 1370688385;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.id</code>. 主键id
@@ -408,143 +406,157 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_prescription.auditType</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     */
+    public void setAudittype(Byte value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription.auditType</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     */
+    public Byte getAudittype() {
+        return (Byte) get(27);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_prescription.status</code>. 处方审核状态 0待审核 1审核通过 2审核未通过
      */
     public void setStatus(Byte value) {
-        set(27, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.status</code>. 处方审核状态 0待审核 1审核通过 2审核未通过
      */
     public Byte getStatus() {
-        return (Byte) get(27);
+        return (Byte) get(28);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.status_memo</code>. 处方审核医师评价
      */
     public void setStatusMemo(String value) {
-        set(28, value);
+        set(29, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.status_memo</code>. 处方审核医师评价
      */
     public String getStatusMemo() {
-        return (String) get(28);
+        return (String) get(29);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.expire_type</code>. 处方有效期类型 0:未知（默认过期），1:永久有效，2:时间段内有效
      */
     public void setExpireType(Byte value) {
-        set(29, value);
+        set(30, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.expire_type</code>. 处方有效期类型 0:未知（默认过期），1:永久有效，2:时间段内有效
      */
     public Byte getExpireType() {
-        return (Byte) get(29);
+        return (Byte) get(30);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.prescription_create_time</code>. 开方时间
      */
     public void setPrescriptionCreateTime(Timestamp value) {
-        set(30, value);
+        set(31, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.prescription_create_time</code>. 开方时间
      */
     public Timestamp getPrescriptionCreateTime() {
-        return (Timestamp) get(30);
+        return (Timestamp) get(31);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.prescription_expire_time</code>. 处方过期时间
      */
     public void setPrescriptionExpireTime(Timestamp value) {
-        set(31, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.prescription_expire_time</code>. 处方过期时间
      */
     public Timestamp getPrescriptionExpireTime() {
-        return (Timestamp) get(31);
+        return (Timestamp) get(32);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.is_delete</code>.
      */
     public void setIsDelete(Byte value) {
-        set(32, value);
+        set(33, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.is_delete</code>.
      */
     public Byte getIsDelete() {
-        return (Byte) get(32);
+        return (Byte) get(33);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.is_used</code>. 是否使用过 0未使用  1已使用 ，默认0
      */
     public void setIsUsed(Byte value) {
-        set(33, value);
+        set(34, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.is_used</code>. 是否使用过 0未使用  1已使用 ，默认0
      */
     public Byte getIsUsed() {
-        return (Byte) get(33);
+        return (Byte) get(34);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效  0无效 1有效，默认1
      */
     public void setIsValid(Byte value) {
-        set(34, value);
+        set(35, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效  0无效 1有效，默认1
      */
     public Byte getIsValid() {
-        return (Byte) get(34);
+        return (Byte) get(35);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(35, value);
+        set(36, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(35);
+        return (Timestamp) get(36);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(36, value);
+        set(37, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(36);
+        return (Timestamp) get(37);
     }
 
     // -------------------------------------------------------------------------
@@ -573,7 +585,7 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     /**
      * Create a detached, initialised PrescriptionRecord
      */
-    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, Integer patientId, Integer userId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, Byte source, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, Integer patientId, Integer userId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, Byte source, Byte audittype, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Timestamp createTime, Timestamp updateTime) {
         super(Prescription.PRESCRIPTION);
 
         set(0, id);
@@ -603,15 +615,16 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
         set(24, patientComplain);
         set(25, patientSign);
         set(26, source);
-        set(27, status);
-        set(28, statusMemo);
-        set(29, expireType);
-        set(30, prescriptionCreateTime);
-        set(31, prescriptionExpireTime);
-        set(32, isDelete);
-        set(33, isUsed);
-        set(34, isValid);
-        set(35, createTime);
-        set(36, updateTime);
+        set(27, audittype);
+        set(28, status);
+        set(29, statusMemo);
+        set(30, expireType);
+        set(31, prescriptionCreateTime);
+        set(32, prescriptionExpireTime);
+        set(33, isDelete);
+        set(34, isUsed);
+        set(35, isValid);
+        set(36, createTime);
+        set(37, updateTime);
     }
 }

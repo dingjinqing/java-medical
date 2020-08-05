@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Prescription extends TableImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = -1401005040;
+    private static final long serialVersionUID = 105180396;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription</code>
@@ -150,7 +150,7 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_prescription.diagnose_time</code>. 诊断时间
      */
-    public final TableField<PrescriptionRecord, Timestamp> DIAGNOSE_TIME = createField("diagnose_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "诊断时间");
+    public final TableField<PrescriptionRecord, Timestamp> DIAGNOSE_TIME = createField("diagnose_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "诊断时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription.pharmacist_name</code>. 药师名称
@@ -193,6 +193,11 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
     public final TableField<PrescriptionRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处方来源 0系统内部创建 1医院拉取");
 
     /**
+     * The column <code>mini_shop_471752.b2c_prescription.auditType</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     */
+    public final TableField<PrescriptionRecord, Byte> AUDITTYPE = createField("auditType", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单");
+
+    /**
      * The column <code>mini_shop_471752.b2c_prescription.status</code>. 处方审核状态 0待审核 1审核通过 2审核未通过
      */
     public final TableField<PrescriptionRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处方审核状态 0待审核 1审核通过 2审核未通过");
@@ -230,7 +235,7 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效  0无效 1有效，默认1
      */
-    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效  0无效 1有效，默认1");
+    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效  0无效 1有效，默认1");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription.create_time</code>.

@@ -28,7 +28,6 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
-import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -253,7 +252,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
-                addOrderMedicalHistory(param,order);
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
@@ -299,14 +297,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
-        }
-    }
-
-    private void addOrderMedicalHistory(CreateParam param, OrderInfoRecord order) {
-        if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
-            logger().info("待开方订单保存患者信息");
-            param.getPatientDiagnose().setOrderId(order.getOrderId());
-            orderMedicalHistoryDao.save(param.getPatientDiagnose());
         }
     }
 

@@ -434,5 +434,5 @@ export const cn = {
   // 医师管理 添加医师
   addDoctor: ['医师管理', '添加医师'],
   // 咨询订单 订单统计
-  advisoryTotal: ['医师管理', '订单统计']
+  advisoryTotal: ['医师管理', '咨询订单统计']
 }

@@ -13,4 +13,6 @@ import lombok.Setter;
 @Setter
 public class ImSessionRenderPageParam extends BasePageParam {
     private Integer sessionId;
+    private boolean isDoctor = false;
+    private boolean isFirstTime = false;
 }
