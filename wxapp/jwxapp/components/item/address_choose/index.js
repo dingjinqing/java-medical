@@ -29,7 +29,7 @@ Component({
       let {addressId = -1, provinceName = '',cityName = '',districtName = '',address = ''} = this.data.addressInfo
       console.log(provinceName, cityName, districtName, address)
       this.setData({
-        addressText: `${provinceName}${cityName}${districtName}${address}`,
+        addressText: `${provinceName || ''}${cityName || ''}${districtName || ''}${address || ''}`,
         addressId: addressId
       })
     },

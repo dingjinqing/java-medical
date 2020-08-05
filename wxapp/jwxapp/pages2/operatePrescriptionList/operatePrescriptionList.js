@@ -20,7 +20,7 @@ global.wxPage({
     this.requestList()
   },
   requestList(){
-    util.api('/api/wxapp/docker/audit/list',res=>{
+    util.api('/api/wxapp/doctor/audit/list',res=>{
       if(res.error === 0){
         if(this.data.pageParams.currentPage === 1){
           this.setData({
