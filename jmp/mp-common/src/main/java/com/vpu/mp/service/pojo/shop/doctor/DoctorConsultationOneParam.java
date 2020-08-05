@@ -11,4 +11,5 @@ public class DoctorConsultationOneParam extends DoctorDo {
     private String departmentName;
     private String titleName;
     private Integer departmentId;
+    private String hospitalName;
 }

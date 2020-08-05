@@ -146,7 +146,7 @@ public class PatientService extends BaseShopConfigService{
             return result;
         }
 
-        ArrayList<PatientExternalVo> patientInfoVoList = Util.parseJson(apiExternalRequestResult.getData(), new TypeReference<List<PatientExternalVo>>(){});
+        List<PatientExternalVo> patientInfoVoList = Util.parseJson(apiExternalRequestResult.getData(), new TypeReference<List<PatientExternalVo>>(){});
         PatientExternalVo patientInfoVo=new PatientExternalVo();
         if(patientInfoVoList!=null&&patientInfoVoList.size()>0){
             patientInfoVo=patientInfoVoList.get(0);
@@ -323,6 +323,15 @@ public class PatientService extends BaseShopConfigService{
      */
     public void deleteUserPatient(UserPatientParam param) {
         userPatientCoupleDao.deleteUserPatient(param);
+        userPatientCoupleDao.defaultPatientIdByUser(param.getUserId());
+        if (userPatientCoupleDao.defaultPatientIdByUser(param.getUserId())==0) {
+            List<PatientOneParam> patients = listPatientByUserId(param.getUserId());
+            if (patients.size() > 0) {
+                UserPatientParam userPatient = new UserPatientParam();
+                FieldsUtil.assign(patients.get(0),userPatient);
+                userPatientCoupleDao.setDefaultPatient(userPatient);
+            }
+        }
     }
 
     /**

@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 public class DoctorService extends ShopBaseService {
     /**自动推荐最大数量*/
     public static final int RECOMMEND_MAX_NUM = 10;
+    public static final String HOSPITAL_NAME = "六盘水医院";
     @Autowired
     protected DoctorDao doctorDao;
     @Autowired
@@ -253,11 +254,18 @@ public class DoctorService extends ShopBaseService {
             List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorDepartments, 10 - historyDoctors.size());
             historyDoctors.addAll(historyDoctorMore);
         }
+        for (DoctorConsultationOneParam item:historyDoctors) {
+            item.setHospitalName(HOSPITAL_NAME);
+        }
         return historyDoctors;
     }
 
     public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
-        return doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
+        List<DoctorConsultationOneParam> list = doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
+        for (DoctorConsultationOneParam item:list) {
+            item.setHospitalName(HOSPITAL_NAME);
+        }
+        return list;
     }
 
     /**
