@@ -432,5 +432,7 @@ export const cn = {
   // 处方管理 处方列表
   prescriptionList: ['处方管理', '处方列表'],
   // 医师管理 添加医师
-  addDoctor: ['医师管理', '添加医师']
+  addDoctor: ['医师管理', '添加医师'],
+  // 咨询订单 订单统计
+  advisoryTotal: ['医师管理', '订单统计']
 }

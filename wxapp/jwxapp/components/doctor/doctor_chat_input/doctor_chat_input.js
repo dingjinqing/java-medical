@@ -51,6 +51,7 @@ global.wxComponent({
       this.setData({
         inputMessage: '',
       })
+      this.triggerEvent('scrollBottom', {})
     },
     showMoreActions() {
       this.setData({
@@ -67,7 +68,7 @@ global.wxComponent({
     getFocus(e) {
       let that = this;
       that.hideMoreActions()
-      that.triggerEvent('scrollBottom', {})
+      // that.triggerEvent('scrollBottom', {})
     },
 
     hideMoreActions() {
@@ -88,6 +89,7 @@ global.wxComponent({
           this.hideMoreActions()
         }
       });
+      this.triggerEvent('scrollBottom', {})
     }
   }
 })
