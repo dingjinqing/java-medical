@@ -84,7 +84,9 @@ public class PatientService extends BaseShopConfigService{
 
     public UserPatientDetailVo getOneInfoForWx(Integer userId, Integer patientId) {
         UserPatientDetailVo patientInfo = userPatientCoupleDao.getUserPatientInfo(userId, patientId);
-        patientInfo.setAge(DateUtil.ageOfNow(patientInfo.getBirthday()));
+        if (patientInfo!=null){
+            patientInfo.setAge(DateUtil.ageOfNow(patientInfo.getBirthday()));
+        }
         return patientInfo;
     }
     public UserPatientDetailVo getOneInfoForWx(UserPatientParam userPatientParam) {
