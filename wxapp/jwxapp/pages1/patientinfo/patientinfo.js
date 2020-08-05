@@ -262,7 +262,7 @@ global.wxPage({
     this.data.patient_info.mobile = this.data.pat_mobile;
     this.data.patient_info.identityCode = this.data.pat_id_num;
     this.data.patient_info.identityType = 1;
-    this.data.patient_info.sex = this.data.sex_index == 0 ? 1:2;
+    this.data.patient_info.sex = this.data.sex_index == 0 ? 0:1;
     this.data.patient_info.birthday = this.data.dates + " 00:00:00";
     this.data.patient_info.diseaseHistory = this.data.diseaseHistory.join(',');
     this.data.patient_info.allergyHistory = this.data.allergyHistory
