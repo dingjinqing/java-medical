@@ -3,13 +3,13 @@ package com.vpu.mp.service.pojo.wxapp.order;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
@@ -165,7 +165,7 @@ public class OrderBeforeVo {
     /**
      * 患者信息
      */
-    private PatientOneParam patientInfo;
+    private UserPatientDetailVo patientInfo;
 
 
     /**
@@ -213,9 +213,7 @@ public class OrderBeforeVo {
         orderRecord.setInsteadPayMoney(getInsteadPayMoney());
         orderRecord.setExchang(getExchang());
 
-        //orderRecord.setFreeShip(getFreeShip());
-        //orderRecord.setFreeDetail(getFreeDetail());
-        //orderRecord.setPosOrderAction(getPosOrderAction());
+
         if(getActivityId() != null && getActivityType() != null){
             //营销活动订单
             orderRecord.setActivityId(getActivityId());

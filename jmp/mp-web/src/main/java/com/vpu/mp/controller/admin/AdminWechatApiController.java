@@ -5,7 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
-import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopToAdminVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
@@ -17,12 +17,12 @@ import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
-import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,33 +132,25 @@ public class AdminWechatApiController extends AdminBaseController {
 		into.setOfficialList(officialList);
 		//查询已绑定的公众号信息
 		logger().info("开始查询已绑定的公众号信息");
-//		Record officialAccount = saas.shop.officeAccount.getOfficeAccountByAppIdRecord(record.getLinkOfficialAppId());
-//		//最新版本id
-//		logger().info("开始查询最新版本id");
-//		MpVersionRecord mpRecord = saas.shop.mpVersion.getCurrentUseVersion(record.getAppId(),(byte)1);
-//		into.setCurrentTemplateId(mpRecord == null ? 0 : mpRecord.getTemplateId());
-//		into.setCurrentUserVersion(mpRecord == null ? "0.0.0" : mpRecord.getUserVersion());
-//		//当前版本名字
-//		logger().info("开始查询当前版本名字，版本ID为"+record.getBindTemplateId());
-//		MpVersionRecord row = saas.shop.mpVersion.getRow(record.getBindTemplateId());
-//		if(null==row) {
-//			//没有上传过
-//			logger().info("还没上传过代码，模板为0");
-//			into.setBindUserVersion("0.0.0");
-//		}else {
-//			into.setBindUserVersion(row.getUserVersion());
-//		}
-//		if(officialAccount!=null) {
-//			into.setOfficialAccount(officialAccount.into(MpOfficeAccountVo.class));
-//		}
-		//短信账户信息
-		SmsAccountInfoVo smsAccountInfo = null;
-		try {
-			 smsAccountInfo = smsAccountService.getSmsAccountInfo();
-		} catch (MpException e) {
-			e.printStackTrace();
+		Record officialAccount = saas.shop.officeAccount.getOfficeAccountByAppIdRecord(record.getLinkOfficialAppId());
+		//最新版本id
+		logger().info("开始查询最新版本id");
+		MpVersionRecord mpRecord = saas.shop.mpVersion.getCurrentUseVersion(record.getAppId(),(byte)1);
+		into.setCurrentTemplateId(mpRecord == null ? 0 : mpRecord.getTemplateId());
+		into.setCurrentUserVersion(mpRecord == null ? "0.0.0" : mpRecord.getUserVersion());
+		//当前版本名字
+		logger().info("开始查询当前版本名字，版本ID为"+record.getBindTemplateId());
+		MpVersionRecord row = saas.shop.mpVersion.getRow(record.getBindTemplateId());
+		if(null==row) {
+			//没有上传过
+			logger().info("还没上传过代码，模板为0");
+			into.setBindUserVersion("0.0.0");
+		}else {
+			into.setBindUserVersion(row.getUserVersion());
 		}
-		into.setSmsAccountInfo(smsAccountInfo);
+		if(officialAccount!=null) {
+			into.setOfficialAccount(officialAccount.into(MpOfficeAccountVo.class));
+		}
 		return success(into);
 	}
 
@@ -350,7 +342,6 @@ public class AdminWechatApiController extends AdminBaseController {
 		saas.shop.mp.updateRow(authShopByShopId);
 		//跑个异步任务去 批量获取公众号用户信息
 		saas.shop.officeAccount.batchGetUsersByRabbitMq(appId, language, adminAuth.user().getSysId(), adminAuth.user().loginShopId);
-		//saas.shop.officeAccount.batchGetUsers(appId, language,adminAuth.user().getSysId());
 		return success();
 
 	}
