@@ -155,7 +155,7 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	protected <T> T getJsonObject(String key, TypeReference valueTypeRef) {
+	protected <T> T getJsonObject(String key, TypeReference<T> valueTypeRef) {
 		return Util.parseJson(get(key), valueTypeRef);
 	}
 

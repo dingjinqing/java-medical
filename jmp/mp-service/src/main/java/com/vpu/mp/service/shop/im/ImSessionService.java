@@ -112,7 +112,7 @@ public class ImSessionService extends ShopBaseService {
         PageResult<ImSessionItemDo> pageResult = null;
         // 从redis中获取数据
         if (ImSessionConstant.SESSION_READY_TO_START.equals(imSessionDo.getSessionStatus()) || ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
-            pageResult = renderSessionFromRedis(renderPageParam);
+            pageResult = renderSessionFromRedis(renderPageParam,imSessionDo);
         } else {
             // 从mysql中获取数据
             pageResult = imSessionItemDao.getBySessionItemPgaeList(renderPageParam);
@@ -141,7 +141,7 @@ public class ImSessionService extends ShopBaseService {
      * @param renderPageParam
      * @return
      */
-    private PageResult<ImSessionItemDo> renderSessionFromRedis(ImSessionRenderPageParam renderPageParam) {
+    private PageResult<ImSessionItemDo> renderSessionFromRedis(ImSessionRenderPageParam renderPageParam,ImSessionDo imSessionDo) {
         Integer curPage = renderPageParam.getCurrentPage() - 1;
         Integer pageRows = renderPageParam.getPageRows();
         String sessionBakKey = getSessionRedisKeyBak(getShopId(), renderPageParam.getSessionId());
@@ -167,6 +167,21 @@ public class ImSessionService extends ShopBaseService {
             ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
             imSessionItemDos.add(imSessionItemDo);
         }
+        // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
+        if (renderPageParam.isFirstTime()) {
+            String redisKey = null;
+            if (renderPageParam.isDoctor()) {
+                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
+            } else {
+                redisKey = getSessionRedisKey(getShopId(),imSessionDo.getId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
+            }
+            List<String> list = jedisManager.getList(redisKey);
+            for (String jsonStr : list) {
+                ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
+                imSessionItemDos.add(imSessionItemDo);
+            }
+        }
+
         pageResult.setDataList(imSessionItemDos);
         return pageResult;
     }

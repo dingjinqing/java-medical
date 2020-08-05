@@ -713,20 +713,22 @@
           </div>
         </li>
         <li>
-          <div class="text-prompt">
-            <span class="blue_border"></span>
-            <span>{{$t('storeCommonSettings.smsSettings')}}</span>
-          </div>
-          <div class="text-set">
-            <p>
-              {{$t('storeCommonSettings.currentRecharge')}}： <span class="bold">{{$t('storeCommonSettings.weipubao')}}</span>， {{$t('storeCommonSettings.balance')}}： <span class="bold">￥0.0000</span>， {{$t('storeCommonSettings.numMessages')}}： <span class="bold">0 </span>
-              <a
-                target="_blank"
-                href="http://101.200.202.174/sms/api/alipay/index.php?sms_account=微铺宝电商运营"
-                style="color: #5a8bff; cursor: pointer;"
-              >{{$t('storeCommonSettings.gotoRecharge')}}</a>
-            </p>
-          </div>
+          <template v-if="info.sms_account">
+            <div class="text-prompt">
+              <span class="blue_border"></span>
+              <span>{{$t('storeCommonSettings.smsSettings')}}</span>
+            </div>
+            <div class="text-set">
+              <p>
+                {{$t('storeCommonSettings.currentRecharge')}}： <span class="bold">{{info.sms_account.companyName}}</span>， {{$t('storeCommonSettings.balance')}}： <span class="bold">￥{{info.sms_account.balance}}</span>， {{$t('storeCommonSettings.numMessages')}}： <span class="bold">{{info.sms_account.smsNum}} </span>
+                <a
+                  target="_blank"
+                  :href="info.sms_account.rechargeUrl+ '?sms_account=' + info.sms_account.companyName"
+                  style="color: #5a8bff; cursor: pointer;"
+                >{{$t('storeCommonSettings.gotoRecharge')}}</a>
+              </p>
+            </div>
+          </template>
         </li>
       </ul>
     </div>
@@ -862,7 +864,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 .store_common_setting_page {
   a {
     text-decoration: none;

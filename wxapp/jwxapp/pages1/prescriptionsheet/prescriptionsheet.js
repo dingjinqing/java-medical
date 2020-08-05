@@ -62,7 +62,7 @@ global.wxPage({
   },
   confirm(){
     if(!this.data.selectedDiagnose.length)  {
-      this.showModal('提示','请选择历史诊断内容')
+      util.showModal('提示','请选择历史诊断内容')
       return
     }
     let params = {
