@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.prescription;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
@@ -382,6 +383,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
         prescriptionParam.setStatus(PrescriptionConstant.STATUS_PASS);
         prescriptionParam.setAudittype(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
+        prescriptionParam.setIsValid(BaseConstant.YES);
         List<PrescriptionDrugVo> goodsList=param.getGoodsList();
         List<Integer> goodsIdList=goodsList.stream().map(PrescriptionDrugVo::getGoodsId).collect(Collectors.toList());
         Map<Integer,PrescriptionDrugVo> goodsMap=goodsList.stream().collect(Collectors.toMap(PrescriptionDrugVo::getGoodsId, Function.identity(),(x1, x2) -> x1));

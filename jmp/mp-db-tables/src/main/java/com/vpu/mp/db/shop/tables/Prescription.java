@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Prescription extends TableImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 105180396;
+    private static final long serialVersionUID = 1800049675;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription</code>
@@ -235,7 +235,7 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效  0无效 1有效，默认1
      */
-    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效  0无效 1有效，默认1");
+    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效  0无效 1有效，默认1");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription.create_time</code>.
