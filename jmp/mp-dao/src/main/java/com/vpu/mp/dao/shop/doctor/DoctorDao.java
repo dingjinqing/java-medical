@@ -60,7 +60,7 @@ public class DoctorDao extends ShopBaseDao {
             select.where(DOCTOR.HOSPITAL_CODE.like(param.getDoctorNo()));
         }
         if (param.getDoctorIds() != null) {
-            select.where(DOCTOR.HOSPITAL_CODE.in(param.getDoctorIds()));
+            select.where(DOCTOR.ID.in(param.getDoctorIds()));
         }
     }
 
