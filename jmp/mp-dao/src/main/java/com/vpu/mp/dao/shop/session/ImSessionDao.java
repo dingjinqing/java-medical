@@ -131,6 +131,14 @@ public class ImSessionDao extends ShopBaseDao {
             condition = condition.and(IM_SESSION.ORDER_SN.in(imSessionCondition.getOrderSns()));
         }
 
+        if (imSessionCondition.getDoctorId() != null) {
+            condition = condition.and(IM_SESSION.DOCTOR_ID.eq(imSessionCondition.getDoctorId()));
+        }
+
+        if (imSessionCondition.getUserId() != null) {
+            condition = condition.and(IM_SESSION.USER_ID.eq(imSessionCondition.getUserId()));
+        }
+
         return db().selectFrom(IM_SESSION).where(condition).fetchInto(ImSessionDo.class);
     }
 
