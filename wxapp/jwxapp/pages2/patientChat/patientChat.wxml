@@ -5,7 +5,7 @@
 		<chat-date send-time='{{time}}' />
 		<!-- <chat-system-info system-info='{{system_info}}' slot='origin_message'/> -->
 		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
-			<chat-message chat-content='{{item}}' system-info='{{system_info}}' system-img='{{system_img}}'>
+			<chat-message chat-content='{{item}}' system-info='{{system_info}}' system-img='{{system_img}}' status='{{status}}'>
 				<view slot='origin_message' class="origin_message {{item.position == 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 0}}'>
 					{{item.messageInfo.message.content}}
 				</view>
@@ -51,7 +51,8 @@
 
 			</chat-message>
 		</block>
-		
+		<view class="">
+		</view>
 	</view>
 	<chat-input source="patient" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
   </chat-input>

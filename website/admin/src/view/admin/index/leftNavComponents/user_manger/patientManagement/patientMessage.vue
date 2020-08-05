@@ -24,19 +24,19 @@
         <li class="details_item">
           <span class="item_label">性别：</span>
           <div class="item_content">
-            <span>{{data.sex}}</span>
+            <span>{{data.sex == 0 ? '男' : (data.sex == 1 ? '女' : '未知')}}</span>
           </div>
         </li>
         <li class="details_item">
           <span class="item_label">证件类型：</span>
           <div class="item_content">
-            <span>{{data.identityType}}</span>
+            <span>{{data.identityType == 1 ? '身份证' : (data.identityType == 1 ? '军人证' : ( data.identityType == 3 ?  '护照' : '社保卡'))}}</span>
           </div>
         </li>
         <li class="details_item">
           <span class="item_label">证件号：</span>
           <div class="item_content">
-            <span>{{data.identityNo}}</span>
+            <span>{{data.identityCode}}</span>
           </div>
         </li>
         <li class="details_item">
@@ -48,7 +48,7 @@
         <li class="details_item">
           <span class="item_label">疾病史：</span>
           <div class="item_content">
-            <span>{{data.diseaseHistory}}</span>
+            <span>{{data.diseaseHistoryNameStr}}</span>
           </div>
         </li>
         <li class="details_item">
