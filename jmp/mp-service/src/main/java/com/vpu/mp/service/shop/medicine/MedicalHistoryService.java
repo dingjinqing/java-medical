@@ -90,7 +90,7 @@ public class MedicalHistoryService extends ShopBaseService {
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
-        ArrayList<FetchMedicalHistoryVo> fetchMedicalHistoryVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
+        List<FetchMedicalHistoryVo> fetchMedicalHistoryVos = Util.parseJson(dataJson, new TypeReference<List<FetchMedicalHistoryVo>>() {
         });
 
         // 数据库新增或更新

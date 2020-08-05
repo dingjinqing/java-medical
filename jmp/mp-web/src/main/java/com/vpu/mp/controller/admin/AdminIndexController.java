@@ -174,7 +174,7 @@ public class AdminIndexController extends AdminBaseController {
 		}
 		 
 		String json = Util.loadResource(versionJson);
-		ArrayList<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
+		List<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
 		});
 		
 		//enName校验在不在admin.versionNew.json中，不在返回成功

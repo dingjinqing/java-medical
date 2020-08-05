@@ -278,7 +278,7 @@ public class PrescriptionService extends ShopBaseService {
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
-        ArrayList<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
+        List<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
         });
 
         //数据库新增或更新
@@ -323,7 +323,7 @@ public class PrescriptionService extends ShopBaseService {
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
-        ArrayList<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
+        List<FetchPrescriptionVo> fetchPrescriptionVos = Util.parseJson(dataJson, new TypeReference<List<FetchPrescriptionVo>>() {
         });
         //数据库新增或更新
         assert fetchPrescriptionVos != null;
