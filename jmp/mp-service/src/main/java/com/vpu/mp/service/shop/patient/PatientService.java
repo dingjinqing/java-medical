@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.patient;
 
 import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
@@ -15,6 +16,7 @@ import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
+import com.vpu.mp.db.shop.tables.Patient;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
@@ -37,12 +39,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author chenjie
  */
 @Service
 public class PatientService extends BaseShopConfigService{
+    public static final String STRING_BLANK = "";
+    public static final String NOTHING = "无";
     @Autowired
     protected PatientDao patientDao;
     @Autowired
@@ -58,7 +63,10 @@ public class PatientService extends BaseShopConfigService{
 
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
         PageResult<PatientOneParam> patientList = patientDao.getPatientList(param);
-
+        Map<Integer, String> diseaseMap = getDiseaseMap();
+        for (PatientOneParam patient : patientList.dataList) {
+            getPatientDiseaseStr(patient,diseaseMap);
+        }
         return patientList;
     }
 
@@ -76,7 +84,10 @@ public class PatientService extends BaseShopConfigService{
     }
 
     public PatientOneParam getOneInfo(Integer patientId) {
-        return patientDao.getOneInfo(patientId);
+        PatientOneParam patient = patientDao.getOneInfo(patientId);
+        Map<Integer, String> diseaseMap = getDiseaseMap();
+        getPatientDiseaseStr(patient,diseaseMap);
+        return patient;
     }
 
 
@@ -341,5 +352,28 @@ public class PatientService extends BaseShopConfigService{
      */
     public UserPatientParam getUserPatient(UserPatientParam param) {
         return userPatientCoupleDao.getUserPatient(param);
+    }
+
+    public PatientOneParam getPatientDiseaseStr(PatientOneParam patient,Map<Integer,String> diseaseMap){
+        if (patient.getDiseaseHistory() == null) {
+            patient.setDiseaseHistoryNameStr(STRING_BLANK);
+        } else if (STRING_BLANK.equals(patient.getDiseaseHistory())) {
+            patient.setDiseaseHistoryNameStr(NOTHING);
+        } else {
+            List<String> diseaseIds = Arrays.asList(patient.getDiseaseHistory().split(","));
+            List<String> diseaseNameArr = new ArrayList<>();
+            for (String diseaseId :diseaseIds) {
+                diseaseNameArr.add(diseaseMap.get(Integer.parseInt(diseaseId)));
+            }
+            patient.setDiseaseHistoryNameStr(Joiner.on(",").join(diseaseNameArr));
+        }
+        return patient;
+    }
+
+    public Map<Integer,String> getDiseaseMap(){
+        List<PatientMoreInfoParam> diseaseList = Util.parseJson(get("diseases"), new TypeReference<List<PatientMoreInfoParam>>() {
+        });
+        Map<Integer, String> diseaseMap = diseaseList.stream().collect(Collectors.toMap(PatientMoreInfoParam::getId, PatientMoreInfoParam::getName));
+        return diseaseMap;
     }
 }
