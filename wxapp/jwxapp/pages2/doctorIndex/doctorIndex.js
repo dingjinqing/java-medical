@@ -59,10 +59,13 @@ global.wxPage({
     }
     util.api('/api/wxapp/doctor/auth', res => {
       if(res.error == 0) {
+        // this.data.bottom.user_type = 1;
+        // util.setCache('bottom',this.data.bottom)
         this.setData({
           show_modal: 0
         })
-        util.jumpLink('/pages2/doctorIndex/doctorIndex','reLaunch')
+        this.requestInfo();
+        // util.jumpLink('/pages2/doctorIndex/doctorIndex','reLaunch')
       } else if (res.error == 400031) {
         util.toast_fail('认证失败');
         util.jumpLink('/pages/usercenter/usercenter','reLaunch')
