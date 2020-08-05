@@ -36,9 +36,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author chenjie
@@ -147,9 +145,14 @@ public class PatientService extends BaseShopConfigService{
             result.setContent(apiExternalRequestResult.getData());
             return result;
         }
-        PatientExternalVo patientInfoVo = Util.parseJson(apiExternalRequestResult.getData(), PatientExternalVo.class);
+
+        ArrayList<PatientExternalVo> patientInfoVoList = Util.parseJson(apiExternalRequestResult.getData(), new TypeReference<List<PatientExternalVo>>(){});
+        PatientExternalVo patientInfoVo=new PatientExternalVo();
+        if(patientInfoVoList!=null&&patientInfoVoList.size()>0){
+            patientInfoVo=patientInfoVoList.get(0);
+        }
         PatientDo patientDo=new PatientDo();
-        FieldsUtil.assign(patientInfoVo, patientDo);
+        FieldsUtil.assignWithIgnoreField(patientInfoVo, patientDo,getPatientIgnoreFields());
         PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);
         if (patientOneParam == null) {
             patientDao.insertPatient(patientDo);
@@ -166,7 +169,16 @@ public class PatientService extends BaseShopConfigService{
         addPatientUser(userPatientCoupleDo);
         return JsonResult.success();
     }
-
+    /**
+     * 拷贝要忽略的字段
+     * @return
+     */
+    private Set<String> getPatientIgnoreFields(){
+        Set<String> ignoreField = new HashSet<>(2);
+        ignoreField.add("createTime");
+        ignoreField.add("lastUpdateTime");
+        return ignoreField;
+    }
     /**
      * 短信验证码校验
      * @param param param
