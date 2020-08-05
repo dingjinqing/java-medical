@@ -100,7 +100,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             //历史诊断
             OrderMedicalHistoryDo medicalHistoryDo= orderMedicalHistoryDao.getByOrderId(orderInfo.getOrderId());
             if(medicalHistoryDo!=null){
-                medicalHistoryDo.setDiseaseHistory(splitDiseaseHistory(medicalHistoryDo.getDiseaseHistory()));
+                medicalHistoryDo.setPatientComplain(medicalHistoryDo.getPatientComplain());
             }
             orderGoodsMedicalVo.setMedicalHistory(medicalHistoryDo);
             //药品数组
