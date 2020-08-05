@@ -31,6 +31,7 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -348,5 +349,15 @@ public class InquiryOrderService extends ShopBaseService {
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);
         return workbook;
+    }
+
+    /**
+     * 报表总数total查询
+     * @param param
+     * @return
+     */
+    public InquiryOrderTotalVo orderStatisticsTotal(InquiryOrderStatisticsParam param){
+        InquiryOrderTotalVo inquiryOrderTotalVo=inquiryOrderDao.orderStatisticsTotal(param);
+        return inquiryOrderTotalVo;
     }
 }

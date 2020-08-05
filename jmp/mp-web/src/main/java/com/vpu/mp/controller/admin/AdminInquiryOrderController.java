@@ -73,4 +73,13 @@ public class AdminInquiryOrderController extends AdminBaseController{
         export2Excel(workbook,fileName,response);
     }
 
+    /**
+     * 咨询报表总数total查询
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/inquiry/order/statistics/total")
+    public JsonResult orderStatisticsTotal(@RequestBody InquiryOrderStatisticsParam param){
+        return success(shop().inquiryOrderService.orderStatisticsTotal(param));
+    }
 }

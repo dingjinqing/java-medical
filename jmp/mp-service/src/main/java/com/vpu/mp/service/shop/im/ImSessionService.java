@@ -169,9 +169,9 @@ public class ImSessionService extends ShopBaseService {
             imSessionItemDos.add(imSessionItemDo);
         }
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
-        if (renderPageParam.isFirstTime()) {
+        if (renderPageParam.getIsFirstTime()) {
             String redisKey = null;
-            if (renderPageParam.isDoctor()) {
+            if (renderPageParam.getIsDoctor()) {
                 redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
             } else {
                 redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
@@ -179,6 +179,17 @@ public class ImSessionService extends ShopBaseService {
             List<String> list = jedisManager.getList(redisKey);
             for (String jsonStr : list) {
                 ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
+                if (imSessionItemDo == null) {
+                    continue;
+                }
+                imSessionItemDo.setImSessionId(imSessionDo.getId());
+                if (renderPageParam.getIsDoctor()) {
+                    imSessionItemDo.setFromId(imSessionDo.getDoctorId());
+                    imSessionItemDo.setToId(imSessionDo.getUserId());
+                } else {
+                    imSessionItemDo.setFromId(imSessionDo.getUserId());
+                    imSessionItemDo.setToId(imSessionDo.getDoctorId());
+                }
                 imSessionItemDos.add(imSessionItemDo);
             }
         }
