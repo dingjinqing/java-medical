@@ -252,7 +252,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
-                addOrderMedicalHistory(param,order);
+                //开方保存患者信息
+                addPatientDiagnose(param, order);
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
@@ -301,7 +302,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
-    private void addOrderMedicalHistory(CreateParam param, OrderInfoRecord order) throws MpException {
+    private void addPatientDiagnose(CreateParam param, OrderInfoRecord order) throws MpException {
         if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
             logger().info("待开方订单保存患者信息");
             if (param.getPatientDiagnose()!=null){

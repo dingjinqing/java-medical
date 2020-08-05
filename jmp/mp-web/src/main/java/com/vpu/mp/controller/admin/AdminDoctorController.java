@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 /**
  * @author chenjie
@@ -105,5 +106,16 @@ public class AdminDoctorController extends AdminBaseController {
     @PostMapping("/api/admin/doctors/fetch")
     public JsonResult fetchDoctors() {
         return shop().doctorService.fetchExternalDoctor();
+    }
+
+    /**
+     * 医师下拉列表
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/doctors/select/list")
+    public JsonResult doctorSelectList(@RequestBody DoctorListParam param) {
+        List<DoctorOneParam> doctorList = shop().doctorService.getSelectDoctorList(param);
+        return this.success(doctorList);
     }
 }
