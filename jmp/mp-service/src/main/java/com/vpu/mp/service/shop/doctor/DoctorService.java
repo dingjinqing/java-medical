@@ -80,9 +80,7 @@ public class DoctorService extends ShopBaseService {
 
     public Integer updateDoctor(DoctorOneParam param) {
         doctorDao.updateDoctor(param);
-        if(param.getDepartmentIdsStr() != null){
-            setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
-        }
+        setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
         return param.getId();
     }
     public Integer enableDoctor(DoctorOneParam param) {
@@ -99,13 +97,15 @@ public class DoctorService extends ShopBaseService {
 
     public void setDoctorDepartmentCouples (Integer doctorId, String departmentIdsStr) {
         doctorDepartmentCoupleDao.deleteDepartmentByDoctor(doctorId);
-        List<String> result = Arrays.asList(departmentIdsStr.split(","));
-        for (String departmentIdStr : result) {
-            Integer departmentId = Integer.parseInt(departmentIdStr);
-            DoctorDepartmentOneParam doctorDepartment = new DoctorDepartmentOneParam();
-            doctorDepartment.setDoctorId(doctorId);
-            doctorDepartment.setDepartmentId(departmentId);
-            doctorDepartmentCoupleDao.insertDoctorDepartment(doctorDepartment);
+        if(!StringUtils.isBlank(departmentIdsStr)) {
+            List<String> result = Arrays.asList(departmentIdsStr.split(","));
+            for (String departmentIdStr : result) {
+                Integer departmentId = Integer.parseInt(departmentIdStr);
+                DoctorDepartmentOneParam doctorDepartment = new DoctorDepartmentOneParam();
+                doctorDepartment.setDoctorId(doctorId);
+                doctorDepartment.setDepartmentId(departmentId);
+                doctorDepartmentCoupleDao.insertDoctorDepartment(doctorDepartment);
+            }
         }
     }
 
@@ -131,6 +131,7 @@ public class DoctorService extends ShopBaseService {
         List<DoctorFetchOneParam> doctorFetchList = Util.parseJson(json, new TypeReference<List<DoctorFetchOneParam>>() {
         });
         List<DoctorFetchOneParam> doctorFetchListNew = listDoctorFetch(doctorFetchList);
+        logger().debug(Util.toJson(doctorFetchListNew));
         for (DoctorFetchOneParam list : doctorFetchListNew) {
             DoctorOneParam doctor = new DoctorOneParam();
             doctor.setName(list.getDoctorName());
@@ -145,10 +146,16 @@ public class DoctorService extends ShopBaseService {
             List<String> result = Arrays.asList(list.getDepartCode().split(","));
             List<Integer> departmentIds = new ArrayList<>();
             for (String code : result) {
+                if (StringUtils.isBlank(code)) {
+                    continue;
+                }
                 departmentIds.add(departmentService.getDepartmentIdNew(code));
             }
             String departmentStr = Joiner.on(",").join(departmentIds);
             doctor.setDepartmentIdsStr(departmentStr);
+            if (StringUtils.isBlank(departmentStr)) {
+                doctor.setStatus((byte) 0);
+            }
             synchroDoctor(doctor);
         }
     }
@@ -160,7 +167,7 @@ public class DoctorService extends ShopBaseService {
         doctorCodeMap.forEach((k, v) -> {
             List<String> departmentCodes = new ArrayList<>();
             for (DoctorFetchOneParam doctor : v) {
-                if (doctor.getState() > 1) {
+                if (doctor.getState() > 1 || StringUtils.isBlank(doctor.getDepartCode())) {
                     continue;
                 }
                 departmentCodes.add(doctor.getDepartCode());
@@ -185,7 +192,7 @@ public class DoctorService extends ShopBaseService {
 
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_INFOS);
         DoctorExternalRequestParam param =new DoctorExternalRequestParam();
-        param.setStartTime(lastRequestTime);
+        param.setStartTime(null);
 
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
 

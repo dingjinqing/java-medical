@@ -168,10 +168,10 @@ public class DepartmentService extends BaseShopConfigService {
             DepartmentOneParam department = new DepartmentOneParam();
             department.setName(list.getDepartName());
             department.setCode(list.getDepartCode());
-            if(list.getPid() == "-1") {
+            if(DepartmentConstant.PID.equals(list.getpCode())) {
                 department.setParentId(0);
             } else {
-                department.setParentId(getDepartmentIdNew(list.getPid()));
+                department.setParentId(getDepartmentIdNew(list.getpCode()));
             }
             if (list.getState() > 1) {
                 department.setIsDelete((byte) 1);
@@ -203,7 +203,7 @@ public class DepartmentService extends BaseShopConfigService {
 
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_DEPARTMENT_INFOS);
         DepartmentExternalRequestParam param =new DepartmentExternalRequestParam();
-        param.setStartTime(lastRequestTime);
+        param.setStartTime(null);
 
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
 

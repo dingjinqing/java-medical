@@ -59,7 +59,7 @@ public class MedicalAdviceService extends ShopBaseService {
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
-        ArrayList<FetchMedicalAdviceVo> fetchMedicalAdviceVos = Util.parseJson(dataJson, new TypeReference<List<FetchMedicalAdviceVo>>() {
+        List<FetchMedicalAdviceVo> fetchMedicalAdviceVos = Util.parseJson(dataJson, new TypeReference<List<FetchMedicalAdviceVo>>() {
         });
 
         // 数据库新增或更新
