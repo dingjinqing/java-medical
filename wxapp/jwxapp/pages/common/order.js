@@ -98,7 +98,9 @@ var order = {
   // 删除订单
   delOrder({
     order_sn: orderSn,
-    order_id: orderId
+    order_id: orderId,
+    page = null,
+    self = null
   }) {
     util.showModal(
       "提示",
@@ -107,7 +109,9 @@ var order = {
         util.api(
           "/api/wxapp/order/operation",
           function (res) {
-            if (res.error == 0) {}
+            if (res.error == 0) {
+              if(page === 'orderList') self.requestList()
+            }
           }, {
             orderId: orderId,
             orderSn: orderSn,
@@ -141,7 +145,9 @@ var order = {
   // 取消订单
   cancelOrder({
     order_sn: orderSn,
-    order_id: orderId
+    order_id: orderId,
+    page = null,
+    self = null
   }) {
     util.showModal(
       "提示",
@@ -151,9 +157,7 @@ var order = {
           "/api/wxapp/order/operation",
           function (res) {
             if (res.error == 0) {
-              util.navigateTo({
-                url: "/pages/orderlist/orderlist"
-              });
+              if(page === 'orderList') self.requestList()
             }
           }, {
             orderId: orderId,
