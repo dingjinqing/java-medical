@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -219,4 +220,17 @@ public class DoctorDao extends ShopBaseDao {
             .where(DOCTOR_TITLE.ID.eq(Integer.valueOf(doctorOneParam.getDuty()))).fetchAnyInto(String.class);
     }
 
+    /**
+     * 医师下拉列表
+     *
+     * @param param
+     * @return
+     */
+    public List<DoctorOneParam> getSelectDoctorList(DoctorListParam param) {
+        Condition condition = DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1));
+        if (!StringUtils.isBlank(param.getName())) {
+            condition = condition.and(DOCTOR.NAME.like(likeValue(param.getName())));
+        }
+        return db().select().from(DOCTOR).where(condition).fetchInto(DoctorOneParam.class);
+    }
 }
