@@ -152,7 +152,7 @@ public class InquiryOrderDao extends ShopBaseDao {
     }
 
     /**
-     *问诊订单统计报表分页查询
+     *问诊订单统计报表详情分页查询
      * @param param
      * @return
      */
@@ -169,8 +169,7 @@ public class InquiryOrderDao extends ShopBaseDao {
             INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
             //科室id
             INQUIRY_ORDER.DEPARTMENT_ID.as(InquiryOrderStatistics.DEPARTMENT_ID)
-        ).from(INQUIRY_ORDER)
-            .leftJoin(DOCTOR).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID));
+        ).from(INQUIRY_ORDER);
         select=buildOptions(select,param);
         select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
         PageResult<InquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderStatisticsVo.class);
@@ -178,8 +177,9 @@ public class InquiryOrderDao extends ShopBaseDao {
     }
     public SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> selectJoinStep,InquiryOrderStatisticsParam param){
         selectJoinStep.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
-        if(StringUtils.isNotBlank(param.getDoctorName())){
-            selectJoinStep.where(DOCTOR.NAME.like(this.likeValue(param.getDoctorName())));
+        selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.gt(InquiryOrderConstant.ORDER_TO_PAID));
+        if(param.getDoctorId()!=null){
+            selectJoinStep.where(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId()));
         }
         if(param.getStartTime()!=null){
             selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()));
@@ -191,7 +191,7 @@ public class InquiryOrderDao extends ShopBaseDao {
     }
 
     /**
-     * 问诊订单统计报表查询
+     * 问诊订单统计报表详情查询
      * @param param
      * @return
      */
@@ -208,8 +208,7 @@ public class InquiryOrderDao extends ShopBaseDao {
             INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
             //科室id
             INQUIRY_ORDER.DEPARTMENT_ID.as(InquiryOrderStatistics.DEPARTMENT_ID)
-        ).from(INQUIRY_ORDER)
-            .leftJoin(DOCTOR).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID));
+        ).from(INQUIRY_ORDER);
         select=buildOptions(select,param);
         select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
         List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);

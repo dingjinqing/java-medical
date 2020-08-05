@@ -6,10 +6,9 @@ package com.vpu.mp.common.pojo.shop.table;
 
 import lombok.Data;
 
+import javax.annotation.Generated;
 import java.io.Serializable;
 import java.sql.Timestamp;
-
-import javax.annotation.Generated;
 
 
 /**
@@ -55,6 +54,7 @@ public class PrescriptionDo implements Serializable {
     private String    patientComplain;
     private String    patientSign;
     private Byte      source;
+    private Byte      auditType;
     private Byte      status;
     private String    statusMemo;
     private Byte      expireType;
@@ -65,5 +65,6 @@ public class PrescriptionDo implements Serializable {
     private Byte      isValid;
     private Timestamp createTime;
     private Timestamp updateTime;
+
 
 }

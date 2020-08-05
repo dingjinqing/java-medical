@@ -28,7 +28,7 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
      * @return
      */
     public Integer defaultPatientIdByUser(Integer userId) {
-        Integer patientId = db().select(USER_PATIENT_COUPLE.PATIENT_ID).from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.DEFAULT)))
+        Integer patientId = db().select(USER_PATIENT_COUPLE.PATIENT_ID).from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.DEFAULT)).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0)))
             .fetchOptional(USER_PATIENT_COUPLE.PATIENT_ID, int.class).orElse(0);
         return patientId;
     }
@@ -39,7 +39,7 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
      * @return
      */
     public UserPatientParam defaultPatientByUser(Integer userId) {
-        return db().select(USER_PATIENT_COUPLE.PATIENT_ID,USER_PATIENT_COUPLE.USER_ID,USER_PATIENT_COUPLE.IS_FETCH).from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.DEFAULT)))
+        return db().select(USER_PATIENT_COUPLE.PATIENT_ID,USER_PATIENT_COUPLE.USER_ID,USER_PATIENT_COUPLE.IS_FETCH).from(USER_PATIENT_COUPLE).where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DEFAULT.eq(PatientConstant.DEFAULT)).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0)))
             .fetchOptionalInto(UserPatientParam.class).orElse(null);
     }
 

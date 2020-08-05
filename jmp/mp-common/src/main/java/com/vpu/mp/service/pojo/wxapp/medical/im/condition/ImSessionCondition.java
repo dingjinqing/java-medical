@@ -18,4 +18,8 @@ public class ImSessionCondition {
     private Timestamp limitTime;
 
     private List<String> orderSns;
+
+    private Integer doctorId;
+
+    private Integer userId;
 }

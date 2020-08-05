@@ -58,6 +58,7 @@
   border-radius: 16rpx;
   margin-top: 40rpx;
   width: 610rpx;
+  font-weight: bold;
 }
 .doctor-info{
   padding: 0 30rpx 20rpx;
@@ -108,4 +109,7 @@
   font-size: 28rpx;
   background: #26C4BC;
   margin: 0 auto;
+}
+.picker{
+  font-weight: bold;
 }

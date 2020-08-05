@@ -100,7 +100,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             //历史诊断
             OrderMedicalHistoryDo medicalHistoryDo= orderMedicalHistoryDao.getByOrderId(orderInfo.getOrderId());
             if(medicalHistoryDo!=null){
-                medicalHistoryDo.setDiseaseHistory(splitDiseaseHistory(medicalHistoryDo.getDiseaseHistory()));
+                medicalHistoryDo.setPatientComplain(medicalHistoryDo.getPatientComplain());
             }
             orderGoodsMedicalVo.setMedicalHistory(medicalHistoryDo);
             //药品数组
@@ -161,7 +161,8 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
             FieldsUtil.assign(obj,prescriptionOneParam);
             prescriptionOneParam.setUserId(orderInfoDo.getUserId());
-            prescriptionOneParam.setIsUsed((byte)1);
+            prescriptionOneParam.setIsUsed(BaseConstant.YES);
+            prescriptionOneParam.setAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
             transaction(() -> {
                 //生成处方，处方明细
                 PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);

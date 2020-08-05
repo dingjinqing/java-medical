@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.patient.PatientService;
@@ -112,7 +113,7 @@ public class ImSessionService extends ShopBaseService {
         PageResult<ImSessionItemDo> pageResult = null;
         // 从redis中获取数据
         if (ImSessionConstant.SESSION_READY_TO_START.equals(imSessionDo.getSessionStatus()) || ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
-            pageResult = renderSessionFromRedis(renderPageParam,imSessionDo);
+            pageResult = renderSessionFromRedis(renderPageParam, imSessionDo);
         } else {
             // 从mysql中获取数据
             pageResult = imSessionItemDao.getBySessionItemPgaeList(renderPageParam);
@@ -141,7 +142,7 @@ public class ImSessionService extends ShopBaseService {
      * @param renderPageParam
      * @return
      */
-    private PageResult<ImSessionItemDo> renderSessionFromRedis(ImSessionRenderPageParam renderPageParam,ImSessionDo imSessionDo) {
+    private PageResult<ImSessionItemDo> renderSessionFromRedis(ImSessionRenderPageParam renderPageParam, ImSessionDo imSessionDo) {
         Integer curPage = renderPageParam.getCurrentPage() - 1;
         Integer pageRows = renderPageParam.getPageRows();
         String sessionBakKey = getSessionRedisKeyBak(getShopId(), renderPageParam.getSessionId());
@@ -159,7 +160,7 @@ public class ImSessionService extends ShopBaseService {
         }
         Integer endIndex = -curPage * pageRows - 1;
         // redis list 包含两端，所以要去掉一个元素
-        Integer startIndex = endIndex - pageRows+1;
+        Integer startIndex = endIndex - pageRows + 1;
         List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
         List<ImSessionItemDo> imSessionItemDos = new ArrayList<>(jsonStrs.size());
 
@@ -168,12 +169,12 @@ public class ImSessionService extends ShopBaseService {
             imSessionItemDos.add(imSessionItemDo);
         }
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
-        if (renderPageParam.isFirstTime()) {
+        if (renderPageParam.getIsFirstTime()) {
             String redisKey = null;
-            if (renderPageParam.isDoctor()) {
+            if (renderPageParam.getIsDoctor()) {
                 redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
             } else {
-                redisKey = getSessionRedisKey(getShopId(),imSessionDo.getId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
+                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             }
             List<String> list = jedisManager.getList(redisKey);
             for (String jsonStr : list) {
@@ -184,6 +185,56 @@ public class ImSessionService extends ShopBaseService {
 
         pageResult.setDataList(imSessionItemDos);
         return pageResult;
+    }
+
+    /**
+     * 查询用户或医师未读消息
+     * @return 未读消息 没有未读消息则返回空集合
+     */
+    public List<ImSessionUnReadInfoVo> getUnReadMessageInfo(ImSessionUnReadMessageInfoParam param) {
+        ImSessionCondition imSessionCondition = new ImSessionCondition();
+        imSessionCondition.setDoctorId(param.getDoctorId());
+        imSessionCondition.setUserId(param.getUserId());
+        imSessionCondition.setStatus(ImSessionConstant.SESSION_ON);
+        List<ImSessionDo> imSessionDos = imSessionDao.listImSession(imSessionCondition);
+        if (imSessionDos == null) {
+            return new ArrayList<>(0);
+        }
+        List<ImSessionUnReadInfoVo> retList =new ArrayList<>(imSessionDos.size());
+        String redisKey = null;
+        Integer shopId = getShopId();
+        List<Integer> doctorIds = new ArrayList<>(imSessionDos.size());
+        for (ImSessionDo imSessionDo : imSessionDos) {
+            if (param.getDoctorId() == null) {
+                // 用户查询自己未读信息
+                redisKey = getSessionRedisKey(shopId,imSessionDo.getId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+            } else {
+                // 医师查询自己未读信息
+                redisKey = getSessionRedisKey(shopId,imSessionDo.getId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
+            }
+            if (!jedisManager.exists(redisKey)) {
+                continue;
+            }
+            ImSessionUnReadInfoVo vo =new ImSessionUnReadInfoVo();
+            doctorIds.add(imSessionDo.getDoctorId());
+            vo.setSessionId(imSessionDo.getId());
+            vo.setDoctorId(imSessionDo.getDoctorId());
+            List<String> jsonStrs = jedisManager.getList(redisKey);
+            List<ImSessionItemBase> messageList = new ArrayList<>(jsonStrs.size());
+            for (String jsonStr : jsonStrs) {
+                ImSessionItemBase imSessionItemBase = Util.parseJson(jsonStr, ImSessionItemBase.class);
+                messageList.add(imSessionItemBase);
+            }
+            vo.setMessageInfos(messageList);
+            retList.add(vo);
+        }
+
+        // 处理医师名称和用户名称
+        Map<Integer, String> doctorIdMap = doctorService.listDoctorSimpleInfo(doctorIds).stream().collect(Collectors.toMap(DoctorSimpleVo::getId, DoctorSimpleVo::getName, (x1, x2) -> x2));
+        for (ImSessionUnReadInfoVo imSessionUnReadInfoVo : retList) {
+            imSessionUnReadInfoVo.setDoctorName(doctorIdMap.get(imSessionUnReadInfoVo.getDoctorId()));
+        }
+        return retList;
     }
 
     /**
@@ -448,4 +499,5 @@ public class ImSessionService extends ShopBaseService {
     private String getSessionRedisStatusKey(Integer shopId, Integer sessionId) {
         return String.format(JedisKeyConstant.IM_SESSION_STATUS, shopId, sessionId);
     }
+
 }

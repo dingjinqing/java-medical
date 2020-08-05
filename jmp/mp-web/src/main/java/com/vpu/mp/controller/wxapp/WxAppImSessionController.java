@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -144,5 +145,17 @@ public class WxAppImSessionController extends WxAppBaseController {
             return fail(JsonResultCode.IM_SESSION_CAN_NOT_USE);
         }
         return success(imSessionItemPullVos);
+    }
+
+    @PostMapping("/api/wxapp/im/session/new")
+    public JsonResult newSession(@RequestBody ImSessionNewParam param) {
+        Integer integer = imSessionService.insertNewSession(param);
+        return success(integer);
+    }
+
+    @PostMapping("/api/wxapp/im/test")
+    public JsonResult test(@RequestBody ImSessionUnReadMessageInfoParam param){
+        List<ImSessionUnReadInfoVo> unReadMessageInfo = imSessionService.getUnReadMessageInfo(param);
+        return success(unReadMessageInfo);
     }
 }

@@ -19,7 +19,7 @@
           </view>
           <view class="some_opea">
             <text bindtap="edit_patient" data-id='{{item.id}}'>编辑</text>
-            <text bindtap="del_patient" data-id='{{item.id}}'>删除</text>
+            <text bindtap="del_patient" data-id='{{item.id}}' class='del_patient' wx:if='{{item.isDefault == 0}}'>删除</text>
           </view>
         </view>
       </view>

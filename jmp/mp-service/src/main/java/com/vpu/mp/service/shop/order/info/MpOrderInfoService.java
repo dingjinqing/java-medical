@@ -130,8 +130,7 @@ public class MpOrderInfoService extends OrderInfoService{
             return select;
         }
         select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId())
-                .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .and(TABLE.ORDER_STATUS.ne(OrderConstant.ORDER_WAIT_PAY)), isContainSubOrder));
+                .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
         if(!StringUtils.isBlank(param.getSearch())) {
             select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).
                 where(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));

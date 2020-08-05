@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
@@ -330,5 +331,36 @@ public class PrescriptionDao extends ShopBaseDao {
             return DelFlag.DISABLE_VALUE;
         }
         return DelFlag.NORMAL_VALUE;
+    }
+
+    /**
+     * 医生获取处方
+     * @param type 0 全部 1审核 2开方 3
+     * @param doctorCode
+     * @return
+     */
+    public List<PrescriptionDo>  listAuditedByDoctor(Byte type, String doctorCode) {
+        SelectConditionStep<Record> where = db().select()
+                .from(PRESCRIPTION)
+                .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorCode));
+        switch (type){
+            case 0:
+                //全部
+                break;
+            case 1:
+                //审核
+                where.and(PRESCRIPTION.AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT));
+                break;
+            case 2:
+                //开方
+                where.and(PRESCRIPTION.AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE));
+                break;
+            case 3:
+                //开方
+                where.and(PRESCRIPTION.AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION));
+                break;
+            default:
+        }
+        return where.orderBy(PRESCRIPTION.CREATE_TIME.desc()).fetchInto(PrescriptionDo.class);
     }
 }

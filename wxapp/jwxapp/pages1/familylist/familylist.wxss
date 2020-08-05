@@ -98,9 +98,9 @@ page{
   align-items: center;
   color: #999;
 }
-.some_opea text:first-of-type{
-  padding-right: 40rpx;
-  margin-right: 40rpx;
+.some_opea .del_patient{
+  padding-left: 40rpx;
+  margin-left: 40rpx;
   border-right: 1rpx solid #999
 }
 

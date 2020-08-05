@@ -44,6 +44,7 @@ public class DepartmentService extends BaseShopConfigService {
     public Integer insertDepartment(DepartmentOneParam param) {
         int level = updateParentIsLeaf(param);
         param.setLevel(level);
+        param.setIsLeaf((byte) 1);
         departmentDao.insertDepartment(param);
         return param.getId();
     }
@@ -152,11 +153,12 @@ public class DepartmentService extends BaseShopConfigService {
      * @param department
      */
     public void synchroDepartment(DepartmentOneParam department) {
-        if(getDepartmentByCode(department.getCode()) == null) {
+        DepartmentOneParam oldDepartment = getDepartmentByCode(department.getCode());
+        if(oldDepartment == null) {
             insertDepartment(department);
         } else {
-            DepartmentOneParam oldDepartment = getDepartmentByCode(department.getCode());
             department.setId(oldDepartment.getId());
+            department.setIsLeaf(oldDepartment.getIsLeaf());
             updateDepartment(department,oldDepartment.getParentId());
         }
     }

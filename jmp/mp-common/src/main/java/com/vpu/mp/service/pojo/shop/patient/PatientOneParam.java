@@ -34,4 +34,5 @@ public class  PatientOneParam {
     private List<PatientMoreInfoParam> familyDiseaseHistoryList;
     private String diseaseHistoryStr;
     private String familyDiseaseHistoryStr;
+    private String diseaseHistoryNameStr;
 }
