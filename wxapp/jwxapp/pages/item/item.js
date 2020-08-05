@@ -392,7 +392,7 @@ global.wxPage({
             // [1,5,6,10] 会展示活动预告的活动
             if (res.content.activityAnnounceMpVo) this.getAnnounce(res.content.activityAnnounceMpVo, res.content.defaultPrd)
             this.getShareData() //获取分享内容
-            this.setShareButtonData() //获取好物推荐信息
+            if(res.content.showMall) this.setShareButtonData() //获取好物推荐信息
             resolve(res.content)
             // 购买记录
             this.setData({
