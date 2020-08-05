@@ -119,7 +119,6 @@ export default {
   },
   mounted () {
     this.getDateValue(1)
-    this.initData()
   },
   data () {
     return {

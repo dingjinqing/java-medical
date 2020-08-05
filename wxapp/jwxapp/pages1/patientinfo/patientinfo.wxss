@@ -2,6 +2,7 @@
 @import "../../css/iconfont.wxss";
 .mian-container{
   padding-top: 20rpx;
+  padding-bottom: 80rpx;
 }
 .patirnt_info{
   padding-left: 25rpx;

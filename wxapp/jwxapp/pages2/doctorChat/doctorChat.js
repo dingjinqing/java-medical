@@ -262,7 +262,9 @@ global.wxPage({
         }
         resolve(res)
       },{
-        sessionId:this.data.targetUserInfo.id
+        sessionId:this.data.targetUserInfo.id,
+        isDoctor:true,
+        isFirstTime:this.data.firstLoad
       })
     }) 
   },

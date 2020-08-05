@@ -20,7 +20,8 @@ global.wxPage({
     time: '2020-07-23 13:35:01',
     chatContent: [],
     system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。',
-    system_img: false
+    system_img: false,
+    firstLoad:true
   },
 
   /**
@@ -263,7 +264,7 @@ global.wxPage({
   },
   async requestHistoryChat() {
     let resData = await this.requestSessionId()
-    if (resData) await this.historyChatApi()
+    if (resData && this.data.firstLoad) await this.historyChatApi()
     this.requsetMessage()
   },
   historyChatApi() {
@@ -282,12 +283,15 @@ global.wxPage({
             return defaultValue
           }, [])
           this.setData({
-            chatContent: [...newChatContent]
+            chatContent: [...newChatContent],
+            firstLoad:false
           })
         }
         resolve(res)
       }, {
-        sessionId: this.data.sessionId
+        sessionId: this.data.sessionId,
+        isDoctor:false,
+        isFirstTime:this.data.firstLoad
       })
     })
   },

@@ -20,5 +20,6 @@ public class PrescriptionOneParam {
     private Timestamp diagnoseTime;
     private String doctorAdvice;
     private Byte isUsed;
+    private Byte auditType;
     private List<PrescriptionDrugVo> goodsList=new ArrayList<>();
 }

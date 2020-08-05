@@ -3,7 +3,7 @@
     <div class="since-info">
       <div class="since-info-top">
         <span>{{$t('order.orderSn')}}：{{searchParam.orderSn}}</span>
-        <span>{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus) || ([14,15].includes(order.orderStatus) && '待审核')}}</span>
+        <span>{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</span>
       </div>
       <div class="order-status-bar">
         <template v-for="(item,index) in timeFlowDiagramMapping[statusKey]">
@@ -20,7 +20,7 @@
         <div class="order_info">
           <div class="title">{{$t('order.orderInfo')}}</div>
           <div class="item_box">
-            <div class="item">{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus) || ([14,15].includes(order.orderStatus) && '待审核')}}</div>
+            <div class="item">{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</div>
             <div class="item">{{$t('order.orderAmount')}}：
               <template v-if="goodsTypeArray.indexOf($t('order.goodsTypeList')[5][0].toString()) > -1">
                 {{order.moneyPaid.toFixed(2)}}{{currencyPool[order.currency][lang][0]}} +

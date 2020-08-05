@@ -208,8 +208,7 @@ public class InquiryOrderDao extends ShopBaseDao {
             INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
             //科室id
             INQUIRY_ORDER.DEPARTMENT_ID.as(InquiryOrderStatistics.DEPARTMENT_ID)
-        ).from(INQUIRY_ORDER)
-            .leftJoin(DOCTOR).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID));
+        ).from(INQUIRY_ORDER);
         select=buildOptions(select,param);
         select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
         List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
