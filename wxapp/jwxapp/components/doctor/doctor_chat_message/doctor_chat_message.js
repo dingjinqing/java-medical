@@ -40,11 +40,11 @@ global.wxComponent({
     initAvatar(){
       let avatar = ''
       if(this.data.isDoctor){
-        if(this.data.chatContent.position === 0) avatar = util.getCache('avatarUrl') || null
+        if(this.data.chatContent.position === 0) avatar = this.data.imageUrl + 'image/wxapp/user_default_icon.png'
         if(this.data.chatContent.position === 1) avatar = this.data.imageUrl + 'image/wxapp/doctor_default_icon.png'
       } else {
         if(this.data.chatContent.position === 0) avatar = this.data.imageUrl + 'image/wxapp/doctor_default_icon.png'
-        if(this.data.chatContent.position === 1) avatar = util.getCache('avatarUrl') || null
+        if(this.data.chatContent.position === 1) avatar = this.data.imageUrl + 'image/wxapp/user_default_icon.png'
       }
       this.setData({
         avatar
