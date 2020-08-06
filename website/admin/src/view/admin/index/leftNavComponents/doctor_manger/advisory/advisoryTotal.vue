@@ -260,7 +260,6 @@ export default {
 .main {
   .nav_box {
     display: flex;
-    width: 100%;
     background-color: #fff;
     padding: 20px 15px 10px;
     margin: 10px 10px 0;
@@ -295,6 +294,9 @@ export default {
     padding: 10px;
     background: #fff;
     margin: 0 10px 10px;
+  }
+  .default_input{
+    width: 150px;
   }
   .doctor_input {
     width: 150px;
