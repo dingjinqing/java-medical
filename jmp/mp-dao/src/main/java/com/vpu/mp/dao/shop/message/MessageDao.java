@@ -117,7 +117,7 @@ public class MessageDao extends ShopBaseDao {
      * @param doctorId 医师id
      * @return Integer
      */
-    public Integer countDoctorImMessageMum(Integer doctorId){
+    public Integer countDoctorImMessageNum(Integer doctorId){
         return db().selectCount().from(INQUIRY_ORDER)
             .where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_RECEIVE)
             .and(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
@@ -129,7 +129,7 @@ public class MessageDao extends ShopBaseDao {
      * 医师端显示待开方数量
      * @return Integer
      */
-    public Integer countDoctorOrderMessageMum(){
+    public Integer countDoctorOrderMessageNum(){
         return db().selectCount().from(ORDER_INFO)
             .where(ORDER_INFO.ORDER_STATUS.eq(ORDER_TO_AUDIT_OPEN))
             .and(ORDER_INFO.ORDER_AUDIT_TYPE.eq(MEDICAL_ORDER_AUDIT_TYPE_CREATE))
