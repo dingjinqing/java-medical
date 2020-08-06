@@ -91,6 +91,12 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         for(OrderInfoVo orderInfo:orderList){
             OrderGoodsMedicalVo orderGoodsMedicalVo=new OrderGoodsMedicalVo();
             FieldsUtil.assign(orderInfo,orderGoodsMedicalVo);
+            //患者信息
+            UserPatientParam userPatientParam = new UserPatientParam();
+            userPatientParam.setPatientId(orderInfo.getPatientId());
+            userPatientParam.setUserId(orderInfo.getUserId());
+            UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
+            orderGoodsMedicalVo.setPatient(patient);
             //历史诊断
             OrderMedicalHistoryDo medicalHistoryDo= orderMedicalHistoryDao.getByOrderId(orderInfo.getOrderId());
             if(medicalHistoryDo!=null){
