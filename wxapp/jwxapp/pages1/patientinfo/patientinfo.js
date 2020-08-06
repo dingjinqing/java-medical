@@ -57,7 +57,7 @@ global.wxPage({
     kidneyFunctionOk: 1,
     // 妊娠哺乳
     is_feed: 1,
-    gestationType: '',
+    gestationType: 1,
     feedText: '',
     // 是否编辑患者
     is_edit: 0,
