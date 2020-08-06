@@ -1,22 +1,24 @@
 package com.vpu.mp.dao.shop.title;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR_TITLE;
-
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.db.shop.tables.DoctorTitle;
 import com.vpu.mp.db.shop.tables.records.DoctorTitleRecord;
 import com.vpu.mp.service.pojo.shop.title.TitleListParam;
 import com.vpu.mp.service.pojo.shop.title.TitleOneParam;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
-import org.jooq.Condition;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.DOCTOR_TITLE;
+
+/**
+ * @author chenjie
+ */
 @Repository
 public class TitleDao extends ShopBaseDao{
 
