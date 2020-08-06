@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit;
 
+
+import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -10,8 +12,11 @@ import javax.validation.constraints.NotNull;
  * @date 2020/8/5 16:27
  */
 @Data
-public class DoctorAuditedPrescriptionParam {
+public class DoctorAuditedPrescriptionParam extends BasePageParam {
 
+    /**
+     * 0 全部 1审核 2开方 3会话
+     */
     @NotNull
     private Byte type;
 

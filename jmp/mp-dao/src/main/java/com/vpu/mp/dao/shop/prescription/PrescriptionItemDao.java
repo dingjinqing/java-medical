@@ -5,10 +5,13 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION_ITEM;
@@ -57,6 +60,17 @@ public class PrescriptionItemDao extends ShopBaseDao {
         return db().select().from(PRESCRIPTION_ITEM)
                 .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionNo))
                 .fetchInto(PrescriptionItemInfoVo.class);
+    }
+
+    /**
+     * 处方明细
+     * @param codeList
+     * @return
+     */
+    public Map<String, List<PrescriptionItemParam>>  mapByPrescriptionCodeList(Collection<String> codeList){
+        return db().select().from(PRESCRIPTION_ITEM)
+                .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.in(codeList))
+                .fetchGroups(PRESCRIPTION_ITEM.PRESCRIPTION_CODE,PrescriptionItemParam.class);
     }
 
     /**

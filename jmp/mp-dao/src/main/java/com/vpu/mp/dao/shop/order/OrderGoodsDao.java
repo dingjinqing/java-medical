@@ -1,6 +1,5 @@
 package com.vpu.mp.dao.shop.order;
 
-import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
@@ -12,10 +11,10 @@ import org.jooq.Record2;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -126,26 +125,11 @@ public class OrderGoodsDao extends ShopBaseDao {
     public List<OrderGoodsSimpleAuditVo> listSimpleAuditByOrderId(Integer orderId) {
         return db().select(ORDER_GOODS.REC_ID,ORDER_GOODS.PRESCRIPTION_OLD_CODE,ORDER_GOODS.PRESCRIPTION_CODE,
                 ORDER_GOODS.MEDICAL_AUDIT_TYPE,ORDER_GOODS.MEDICAL_AUDIT_STATUS,ORDER_GOODS.GOODS_ID,
-                ORDER_GOODS.GOODS_NUMBER)
+                ORDER_GOODS.GOODS_NUMBER,GOODS.GOODS_IMG,GOODS.SHOP_PRICE)
                 .from(ORDER_GOODS)
+                .leftJoin(GOODS).on(ORDER_GOODS.GOODS_ID.eq(ORDER_GOODS.GOODS_ID))
                 .where(ORDER_GOODS.ORDER_ID.eq(orderId))
                 .fetchInto(OrderGoodsSimpleAuditVo.class);
-    }
-
-    /**
-     * 判断是否有未读的已续方消息
-     * @param time 上次查看已续方时间
-     * @return Byte
-     */
-    public Byte isExistAlreadyReadOrderGoods(Timestamp time){
-        List<Timestamp> timestamps = db().select(ORDER_GOODS.UPDATE_TIME)
-            .from(ORDER_GOODS)
-            .where(ORDER_GOODS.UPDATE_TIME.gt(time))
-            .fetchInto(Timestamp.class);
-        if (timestamps.isEmpty()) {
-            return DelFlag.DISABLE_VALUE;
-        }
-        return DelFlag.NORMAL_VALUE;
     }
 
 
