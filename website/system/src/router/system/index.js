@@ -173,6 +173,14 @@ const routes = [{
       meta: {
         title: '订单列表'
       }
+    },
+    {
+      path: 'advisory_total',
+      component: () => import('@/view/system/index/leftNavComponents/order_management/advisory/advisoryTotal'),
+      name: 'advisoryTotal',
+      meta: {
+        title: '咨询订单'
+      }
     }
   ]
 }
