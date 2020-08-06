@@ -67,21 +67,23 @@
             label='医师院内编号'
           ></el-table-column>
           <el-table-column
-            prop='url'
-            label='头像'
+            label='名称'
           >
             <template slot-scope="scope">
-              <img
-                class="doc_img"
-                v-if='scope.row.url'
-                :src="scope.row.url"
-              >
+              <div class="doc_name_url">
+                <img
+                  class="doc_img"
+                  v-if='scope.row.url'
+                  :src="scope.row.url"
+                >
+                <div>{{scope.row.name}}</div>
+              </div>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop='name'
             label='姓名'
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column
             prop='age'
             label='年龄'
@@ -317,9 +319,16 @@ export default {
         padding: 10px;
         background: #fff;
         margin-top: 10px;
-        .doc_img{
-          width: 45px;
-          height: 45px;
+        .doc_name_url{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          .doc_img{
+            width: 45px;
+            height: 45px;
+            margin-right: 10px;
+            border-radius: 100%;
+          }
         }
         .operation {
           display: flex;
