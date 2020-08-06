@@ -99,7 +99,7 @@
           <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_PAY" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_pay" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num || item2.num === 0}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
@@ -108,7 +108,7 @@
           <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_CONFIRM" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_confirm" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num || item2.num === 0}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
@@ -117,7 +117,7 @@
           <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_DELIVERY" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_delivery" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num || item2.num === 0}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
@@ -126,7 +126,7 @@
           <view class='ac_item' bindtap="bindOrderNav" data-type="SHIPPED" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "shipped" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num || item2.num === 0}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
@@ -135,7 +135,7 @@
           <view class='ac_item' bindtap="bindOrderNav" data-type="RETURNING" data-disabled_r="none" data-disabled_l="block" data-transform="-30" wx:if='{{item2.icon_name == "returning" && (item.module_style == 1 || (item.module_style == 2 && item2.is_show == 1))}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num || item2.num === 0}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
