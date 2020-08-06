@@ -523,7 +523,10 @@
                       >{{$t('order.applyRetrunView')}}</el-button>
                     </template>
                     <template v-else>
-                      <el-button type="text">{{$t('order.retrunView')}}</el-button>
+                      <el-button
+                        type="text"
+                        @click="goReturnView(oneOrder.orderSn)"
+                      >{{$t('order.retrunView')}}</el-button>
                     </template>
                   </template>
                   <template v-if="oneOrder.canClose == true">

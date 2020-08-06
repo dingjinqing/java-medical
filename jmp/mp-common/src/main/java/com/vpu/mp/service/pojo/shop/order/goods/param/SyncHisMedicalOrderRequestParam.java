@@ -8,8 +8,8 @@ import java.util.List;
  * @author yangpengcheng
  */
 @Data
-public class MedicalOrderExternalRequestParam {
-    private Integer status;
+public class SyncHisMedicalOrderRequestParam {
+    private Byte status;
     private String orderSn;
-    private List<GoodsItem> goodsItemList;
+    private List<SyncMedicalOrderGoodsItem> goodsItemList;
 }

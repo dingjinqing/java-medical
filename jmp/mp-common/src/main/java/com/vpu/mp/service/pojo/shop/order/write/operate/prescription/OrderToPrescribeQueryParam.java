@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class OrderToPrescribeQueryParam extends AbstractOrderOperateQueryParam {
     private Integer orderId;
+    private Byte orderStatus=OrderConstant.ORDER_TO_AUDIT_OPEN;
     private Byte auditType = OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE;
     private Byte auditStatus =OrderConstant.MEDICAL_AUDIT_DEFAULT;
 

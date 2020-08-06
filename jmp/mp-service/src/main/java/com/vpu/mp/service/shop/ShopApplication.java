@@ -87,6 +87,7 @@ import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.task.order.InquiryOrderTaskService;
+import com.vpu.mp.service.shop.task.prescription.PrescriptionTaskService;
 import com.vpu.mp.service.shop.title.TitleService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.shop.user.message.MessageRecordService;
@@ -627,4 +628,8 @@ public class ShopApplication {
      * 商品
      */
     public GoodsService goodsService;
+    /**
+     * 处方任务
+     */
+    public PrescriptionTaskService prescriptionTaskService;
 }

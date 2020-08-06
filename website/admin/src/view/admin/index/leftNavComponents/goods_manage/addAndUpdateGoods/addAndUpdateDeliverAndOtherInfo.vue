@@ -192,7 +192,7 @@
             type="datetime"
             @change="saleTimeChange"
             size="small"
-            :placeholder="$t('goodsAddEditInfo.deliverAndOtherInfo.chooseMemberCard')"
+            placeholder="选择时间"
             style="margin-left: 10px;"
           /><br />
           <el-radio :label="2">{{$t('goodsAddEditInfo.deliverAndOtherInfo.notSale')}}</el-radio>

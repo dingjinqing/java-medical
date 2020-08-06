@@ -12,25 +12,25 @@
         <view class="ef_bottom">
           <view class="ef_bott_left">
             <view class="iconfont_set_default">
-              <text class="iconfont icondanxuanbiankuang" wx:if='{{item.isDefault == 0}}' bindtap="changeDefault" data-id='{{item.id}}'></text>
+              <text class="iconfont icondanxuanbiankuang" wx:if='{{item.isDefault == 0}}' catchtap="changeDefault" data-id='{{item.id}}'></text>
               <text class="iconfont icondanxuan" style="color:#26c4bc" wx:if='{{item.isDefault == 1}}' catchtap="changeDefault" data-id='{{item.id}}'></text>
             </view>
             <view catchtap="changeDefault" data-id='{{item.id}}'>{{ item.isDefault == 1 ? "":"设为"}}默认</view>
           </view>
           <view class="some_opea">
-            <text bindtap="edit_patient" data-id='{{item.id}}'>编辑</text>
-            <text bindtap="del_patient" data-id='{{item.id}}' class='del_patient' wx:if='{{item.isDefault == 0}}'>删除</text>
+            <text catchtap="edit_patient" data-id='{{item.id}}'>编辑</text>
+            <text catchtap="del_patient" data-id='{{item.id}}' class='del_patient' wx:if='{{item.isDefault == 0}}'>删除</text>
           </view>
         </view>
       </view>
     </view>
     <view class="family_footer" style="padding-bottom:{{isIpx == 1 ? '60rpx':'0'}}">
-      <view class="btn_add_person" bindtap="to_pre">添加</view>
+      <view class="btn_add_person" catchtap="to_pre">添加</view>
     </view>
   </block>
   <view class="no_content" wx:else>
     <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
     <view class="no_word">暂无内容</view>
-    <view class="btn_get_pre" bindtap="to_pre">去添加</view>
+    <view class="btn_get_pre" catchtap="to_pre">去添加</view>
   </view>
 </view>

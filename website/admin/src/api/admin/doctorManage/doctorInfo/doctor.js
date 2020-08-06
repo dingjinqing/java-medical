@@ -61,3 +61,12 @@ export function enableDoctor (data) {
     data: data
   })
 }
+
+// 职称查询
+export function getProfessionTitle (data) {
+  return service({
+    url: '/api/admin/doctor/title/list',
+    method: 'post',
+    data
+  })
+}

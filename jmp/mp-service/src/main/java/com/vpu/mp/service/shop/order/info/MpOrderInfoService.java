@@ -65,7 +65,7 @@ public class MpOrderInfoService extends OrderInfoService{
                 (mapDefaultValue(countMap , OrderConstant.ORDER_FINISHED)) + mapDefaultValue(countMap , OrderConstant.ORDER_RECEIVED))
             .put(OrderConstant.REFUND, returnCount)
             .put(OrderConstant.AUDIT,
-                    mapDefaultValue(countMap,OrderConstant.ORDER_TO_AUDIT))
+                    mapDefaultValue(countMap,OrderConstant.ORDER_TO_AUDIT)+mapDefaultValue(countMap,OrderConstant.ORDER_TO_AUDIT_OPEN))
              .put(OrderConstant.RETURNING,
                      (mapDefaultValue(countMap,OrderConstant.ORDER_CANCELLED)+
                              mapDefaultValue(countMap,OrderConstant.ORDER_CLOSED)))
@@ -155,7 +155,8 @@ public class MpOrderInfoService extends OrderInfoService{
                 select.where(TABLE.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS));
                 break;
             case OrderConstant.AUDIT:
-                select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT));
+                //审核 包括续方和开方
+                select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT_OPEN)));
                 break;
             case OrderConstant.RETURNING:
                 select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED));

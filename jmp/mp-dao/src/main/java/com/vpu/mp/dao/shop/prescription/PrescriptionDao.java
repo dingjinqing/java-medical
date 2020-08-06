@@ -5,13 +5,21 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
@@ -310,7 +318,7 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public void updateHitsPrescription(FetchPrescriptionVo fetchPrescriptionVo){
         PrescriptionRecord prescriptionRecord = db().select().from(PRESCRIPTION)
-            .where(PRESCRIPTION.ID.eq(fetchPrescriptionVo.getId()))
+            .where(PRESCRIPTION.PRESCRIPTION_CODE.eq(fetchPrescriptionVo.getPrescriptionCode()))
             .fetchOneInto(PrescriptionRecord.class);
         FieldsUtil.assign(fetchPrescriptionVo, prescriptionRecord);
         prescriptionRecord.update();
@@ -320,30 +328,48 @@ public class PrescriptionDao extends ShopBaseDao {
     /**
      * 根据上次打开已开具页面查询是否有未读消息
      * @param timestamp 上次打开已开具页面时间
-     * @return Byte
+     * @return Boolean
      */
-    public Byte isExistAlreadyReadPrescription(Timestamp timestamp){
-        List<Timestamp> timestamps = db().select(PRESCRIPTION.UPDATE_TIME).from(PRESCRIPTION)
-            .where(PRESCRIPTION.UPDATE_TIME.gt(timestamp)
-                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
-                .and(PRESCRIPTION.IS_VALID.eq(DelFlag.NORMAL_VALUE))).fetchInto(Timestamp.class);
-        if (timestamps.isEmpty()) {
-            return DelFlag.DISABLE_VALUE;
-        }
-        return DelFlag.NORMAL_VALUE;
+    public Boolean isExistAlreadyReadPrescription(String hospitalCode, Timestamp timestamp){
+        Integer timestamps = db().selectCount().from(PRESCRIPTION)
+            .where(PRESCRIPTION.CREATE_TIME.gt(timestamp))
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.IS_VALID.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.SOURCE.eq(PrescriptionConstant.SOURCE_MP_SYSTEM))
+            .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_PRESCRIBE))
+            .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
+            .fetchAnyInto(Integer.class);
+        return timestamps != 0;
     }
 
     /**
+     * 查询是否有医师未读已续方
+     * @param hospitalCode 医师院内编码
+     * @param timestamp 上次打开页面时间
+     * @return Boolean
+     */
+    public Boolean isExistAlreadyReadContinuedPrescription(String hospitalCode, Timestamp timestamp){
+        Integer timestamps = db().selectCount().from(PRESCRIPTION)
+            .where(PRESCRIPTION.CREATE_TIME.gt(timestamp))
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.IS_VALID.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.SOURCE.eq(PrescriptionConstant.SOURCE_MP_SYSTEM))
+            .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_AUDIT))
+            .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
+            .fetchAnyInto(Integer.class);
+        return timestamps != 0;
+    }
+
+
+    /**
      * 医生获取处方
-     * @param type 0 全部 1审核 2开方 3
-     * @param doctorCode
      * @return
      */
-    public List<PrescriptionDo>  listAuditedByDoctor(Byte type, String doctorCode) {
+    public PageResult<PrescriptionParam> listAuditedByDoctor(DoctorAuditedPrescriptionParam param) {
         SelectConditionStep<Record> where = db().select()
                 .from(PRESCRIPTION)
-                .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorCode));
-        switch (type){
+                .where(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode()));
+        switch (param.getType()){
             case 0:
                 //全部
                 break;
@@ -361,6 +387,18 @@ public class PrescriptionDao extends ShopBaseDao {
                 break;
             default:
         }
-        return where.orderBy(PRESCRIPTION.CREATE_TIME.desc()).fetchInto(PrescriptionDo.class);
+         where.orderBy(PRESCRIPTION.CREATE_TIME.desc());
+        return getPageResult(where,param,PrescriptionParam.class);
+    }
+
+    /**
+     * 获取所有过期的处方
+     * @return
+     */
+    public List<PrescriptionDo> getAllExpiredPrescription(){
+        return db().select().from(PRESCRIPTION)
+            .where(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.lt(DateUtil.date().toTimestamp()))
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .fetchInto(PrescriptionDo.class);
     }
 }

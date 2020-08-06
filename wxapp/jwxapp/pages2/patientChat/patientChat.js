@@ -21,7 +21,8 @@ global.wxPage({
     chatContent: [],
     system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。',
     system_img: false,
-    firstLoad:true
+    firstLoad: true,
+    status: 0
   },
 
   /**
@@ -32,11 +33,13 @@ global.wxPage({
     wx.hideShareMenu()
     let {
       orderSn,
-      first
+      first,
+      sessionStatus
     } = options
     this.setData({
       orderSn,
-      first
+      first,
+      sessionStatus
     })
   },
   getInputMessage(e) {
@@ -68,6 +71,7 @@ global.wxPage({
    */
   onHide: function () {
     clearInterval(this.timer)
+    clearInterval(this.statusTimer)
   },
 
   /**
@@ -75,6 +79,7 @@ global.wxPage({
    */
   onUnload: function () {
     clearInterval(this.timer)
+    clearInterval(this.statusTimer)
   },
 
   /**
@@ -114,9 +119,14 @@ global.wxPage({
     this.messageApi()
     this.timer = setInterval(this.messageApi, 5000)
   },
+  requestStatus() {
+    this.statusApi()
+    this.statusTimer = setInterval(this.statusApi, 5000)
+  },
   messageApi() {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
+      let sessionStatus = this.data.sessionStatus
       if (res.error === 0 && res.content[0]) {
         let newChatContent = res.content.reduce((defaultValue, item) => {
           defaultValue.push({
@@ -131,12 +141,41 @@ global.wxPage({
         this.setData({
           chatContent: [...this.data.chatContent, ...newChatContent]
         })
+      } else if (res.error === 140004 && sessionStatus != 4) {
+        util.showModal('提示', '当前会话已结束', function () {
+          util.redirectTo({
+            url: 'pages2/doctorConsultation/doctorConsultation?tab=1'
+          })
+        });
       }
     }, {
       sessionId: this.data.sessionId,
       pullFromId: this.data.doctorId, //doctor_id
       selfId: util.getCache('user_id')
     }, '', false);
+  },
+  statusApi() {
+    let sessionId = this.data.sessionId;
+    let url = `/api/wxapp/im/session/status/${sessionId}`
+    util.api(url, res => {
+      console.log(res)
+      if (res.error === 0) {
+        if (this.data.status != res.content) {
+          let newChatContent = [];
+          newChatContent.push({
+            position: 1,
+            status: res.content
+          })
+          this.setData({
+            chatContent: [...this.data.chatContent, ...newChatContent],
+            status: res.content
+          })
+        }
+        if (res.content === 2 || res.content === 4) clearInterval(this.statusTimer)
+      }else{
+        clearInterval(this.statusTimer)
+      }
+    });
   },
   hideMoreActions() {
     chatInput.hideMoreActions()
@@ -207,7 +246,8 @@ global.wxPage({
               sex: con.patientSex != 2 ? (con.patientSex == 0 ? '男' : '女') : '未知',
               age: con.patientAge,
               mess: con.descriptionDisease
-            }
+            },
+            system:false
           }
           that.setData({
             page_name: con.doctorName,
@@ -217,9 +257,7 @@ global.wxPage({
           if (that.data.first) {
             let imageUrl = JSON.parse(con.imageUrl);
             if (imageUrl != '') {
-              that.setData({
-                system_img: true
-              })
+              patient_message.system = true
               that.sendMessage(patient_message, 3)
               imageUrl.forEach(function (val, index) {
                 let img = {
@@ -254,8 +292,8 @@ global.wxPage({
             that.setData({
               sessionId: res.content
             })
-            let resData = await that.requestDetail(orderSn)
-            if (resData) resolve(res)
+            if (that.data.firstLoad) await that.requestDetail(orderSn)
+            resolve(res)
           }
         }, {
           orderSn: this.data.orderSn,
@@ -266,6 +304,7 @@ global.wxPage({
     let resData = await this.requestSessionId()
     if (resData && this.data.firstLoad) await this.historyChatApi()
     this.requsetMessage()
+    this.requestStatus()
   },
   historyChatApi() {
     return new Promise((resolve, reject) => {
@@ -284,14 +323,14 @@ global.wxPage({
           }, [])
           this.setData({
             chatContent: [...newChatContent],
-            firstLoad:false
+            firstLoad: false
           })
         }
         resolve(res)
       }, {
         sessionId: this.data.sessionId,
-        isDoctor:false,
-        isFirstTime:this.data.firstLoad
+        isDoctor: false,
+        isFirstTime: this.data.firstLoad
       })
     })
   },

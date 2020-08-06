@@ -21,6 +21,7 @@ global.wxComponent({
     inputMessage: '',
     moreActions: false,
     bottom: 0,
+    showSendButton:false
   },
 
   lifetimes: {
@@ -68,7 +69,15 @@ global.wxComponent({
     getFocus(e) {
       let that = this;
       that.hideMoreActions()
+      this.setData({
+        showSendButton:true
+      })
       // that.triggerEvent('scrollBottom', {})
+    },
+    getBlur(){
+      this.setData({
+        showSendButton:false
+      })
     },
 
     hideMoreActions() {

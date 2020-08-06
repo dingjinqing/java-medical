@@ -19,7 +19,7 @@ public class DoctorMessageCountVo {
     /**
      * 问诊列表是否有未读
      */
-    private Byte alreadyImSessionCount;
+    private Boolean alreadyImSessionCount;
 
     /**
      * 待开方数量
@@ -29,7 +29,7 @@ public class DoctorMessageCountVo {
     /**
      * 开方列表是否有未读
      */
-    private Byte alreadyOrderInfoCount;
+    private Boolean alreadyOrderInfoCount;
 
     /**
      * 待续方数量
@@ -39,5 +39,5 @@ public class DoctorMessageCountVo {
     /**
      * 续方列表是否有未读
      */
-    private Byte alreadyPrescription;
+    private Boolean alreadyPrescription;
 }

@@ -36,21 +36,21 @@
     <view class="item">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
-        <view class="item_dot"></view>
+        <view class="item_dot"  wx:if='{{doctorInfo.doctorMessageCountVo.alreadyPrescription == true}}'></view>
       </view>
       <view class="item_text">已续方</view>
     </view>
     <view class="item">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon1.png"></image>
-        <view class="item_dot"></view>
+        <view class="item_dot" wx:if='{{doctorInfo.doctorMessageCountVo.alreadyOrderInfoCount == true}}'></view>
       </view>
       <view class="item_text">已开具</view>
     </view>
     <view class="item" data-type="my" bindtap="viewInquiryList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
-        <view class="item_dot"></view>
+        <view class="item_dot" wx:if='{{doctorInfo.doctorMessageCountVo.alreadyImSessionCount == true}}'></view>
       </view>
       <view class="item_text">我的问诊</view>
     </view>

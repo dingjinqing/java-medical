@@ -101,7 +101,7 @@ page{
 .some_opea .del_patient{
   padding-left: 40rpx;
   margin-left: 40rpx;
-  border-right: 1rpx solid #999
+  border-left: 1rpx solid #999
 }
 
 

@@ -19,6 +19,6 @@ public class AdminUserService extends ShopBaseService {
      * @return String
      */
     public Integer getDoctorId(Integer userId){
-        return db().select(DOCTOR.HOSPITAL_CODE).from(DOCTOR).where(DOCTOR.USER_ID.eq(userId)).fetchOneInto(Integer.class);
+        return db().select(DOCTOR.ID).from(DOCTOR).where(DOCTOR.USER_ID.eq(userId)).fetchOneInto(Integer.class);
     }
 }

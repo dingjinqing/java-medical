@@ -40,6 +40,9 @@ public class OrderInfoDao extends ShopBaseDao {
 
     public PageResult<OrderInfoVo>  listOrderInfo(OrderToPrescribeQueryParam param){
         SelectJoinStep<? extends Record> select = db().select().from(ORDER_INFO);
+        if(param.getOrderStatus()!=null){
+            select.where(ORDER_INFO.ORDER_STATUS.eq(param.getOrderStatus()));
+        }
         if (param.getAuditType() != null) {
             select.where(ORDER_INFO.ORDER_AUDIT_TYPE.eq(param.getAuditType()));
         }

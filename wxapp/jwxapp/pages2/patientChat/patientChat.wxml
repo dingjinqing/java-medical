@@ -5,7 +5,7 @@
 		<chat-date send-time='{{time}}' />
 		<!-- <chat-system-info system-info='{{system_info}}' slot='origin_message'/> -->
 		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
-			<chat-message chat-content='{{item}}' system-info='{{system_info}}' system-img='{{system_img}}'>
+			<chat-message chat-content='{{item}}' system-info='{{system_info}}' system-img='{{system_img}}' status='{{status}}'>
 				<view slot='origin_message' class="origin_message {{item.position == 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 0}}'>
 					{{item.messageInfo.message.content}}
 				</view>
@@ -25,8 +25,8 @@
 					</view>
 				</view>
 
-				<view slot='doctor_pres_message' class="prescription-item {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 2}}'>
-					<view class="item-title" bindtap="handleShowPrescriptionDialog" data-prescription-code="{{item.messageInfo.message.content.prescriptionCode}}" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方</view>
+				<view slot='doctor_pres_message' class="prescription-item {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 2}}' bindtap="handleShowPrescriptionDialog" data-prescription-code="{{item.messageInfo.message.content.prescriptionCode}}" >
+					<view class="item-title" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方</view>
 					<view class="item-list-content">
 						<view class="item-list">
 							<view class="list-item">
@@ -51,7 +51,6 @@
 
 			</chat-message>
 		</block>
-		
 	</view>
 	<chat-input source="patient" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
   </chat-input>

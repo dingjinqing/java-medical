@@ -30,7 +30,16 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let {
+      tab
+    } = options
     this.requestList()
+    if (tab) {
+      this.setData({
+        tabIndex: 'myChat'
+      })
+      this.requestSessionList()
+    }
   },
 
   choose_type(e) {
@@ -127,11 +136,11 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
-  toDepartment:function(e){
+  toDepartment: function (e) {
     let id = e.currentTarget.dataset.id;
     let name = e.currentTarget.dataset.name;
     util.navigateTo({
-      url: "/pages2/doctorSearch/doctorSearch?id=" + id + '&name=' + name 
+      url: "/pages2/doctorSearch/doctorSearch?id=" + id + '&name=' + name
     })
   },
   toAllDepartment: function () {
@@ -180,12 +189,12 @@ global.wxPage({
       ...this.data.pageParams
     })
   },
-  toChat(e){
+  toChat(e) {
     let status = e.currentTarget.dataset.status;
     let orderSn = e.currentTarget.dataset.orderSn;
-    if(status == 1 || status == 2){
+    if (status == 1 || status == 2 || status == 4) {
       util.navigateTo({
-        url: "/pages2/patientChat/patientChat?orderSn=" + orderSn
+        url: "/pages2/patientChat/patientChat?orderSn=" + orderSn + "&sessionStatus=" + status
       })
     }
   }

@@ -31,6 +31,7 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -316,15 +317,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @return
      */
     public PageResult<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
-        Timestamp startDate = param.getStartTime();
-        Timestamp endDate = param.getEndTime();
-        if (startDate != null ) {
-            startDate = DateUtil.beginOfDay(startDate).toTimestamp();
-            param.setStartTime(startDate);
-        }if( endDate != null){
-            endDate = DateUtil.endOfDay(endDate).toTimestamp();
-            param.setEndTime(endDate);
-        }
+        beginAndEndOfDay(param);
         PageResult<InquiryOrderStatisticsVo> result=inquiryOrderDao.orderStatisticsPage(param);
         List<InquiryOrderStatisticsVo> list=result.getDataList();
         list.forEach(orderStatisticsVo->{
@@ -343,10 +336,44 @@ public class InquiryOrderService extends ShopBaseService {
      * @return
      */
     public Workbook orderStatisticsExport(InquiryOrderStatisticsParam param, String lang){
+        beginAndEndOfDay(param);
         List<InquiryOrderStatisticsVo> list=inquiryOrderDao.orderStatistics(param);
+        list.forEach(orderStatisticsVo->{
+            DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
+            DepartmentOneParam dept=departmentDao.getOneInfo(orderStatisticsVo.getDepartmentId());
+            orderStatisticsVo.setDoctorName(doctor.getName());
+            orderStatisticsVo.setDepartmentName(dept.getName());
+        });
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);
         return workbook;
+    }
+
+    /**
+     * 报表总数total查询
+     * @param param
+     * @return
+     */
+    public InquiryOrderTotalVo orderStatisticsTotal(InquiryOrderStatisticsParam param){
+        beginAndEndOfDay(param);
+        InquiryOrderTotalVo inquiryOrderTotalVo=inquiryOrderDao.orderStatisticsTotal(param);
+        return inquiryOrderTotalVo;
+    }
+
+    /**
+     * 日期的时分秒开始和结束
+     * @param param
+     */
+    public void beginAndEndOfDay(InquiryOrderStatisticsParam param){
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate != null ) {
+            startDate = DateUtil.beginOfDay(startDate).toTimestamp();
+            param.setStartTime(startDate);
+        }if( endDate != null){
+            endDate = DateUtil.endOfDay(endDate).toTimestamp();
+            param.setEndTime(endDate);
+        }
     }
 }

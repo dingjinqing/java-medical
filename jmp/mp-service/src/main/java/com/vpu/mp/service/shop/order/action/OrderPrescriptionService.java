@@ -11,6 +11,7 @@ import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
+import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
@@ -94,6 +95,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
     private PatientDao patientDao;
     @Autowired
     private GoodsMedicalInfoDao medicalInfoDao;
+    @Autowired
+    private GoodsDao goodsDao;
 
 
     @Override
@@ -286,6 +289,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setFrequency(3.0);
                 itemDo.setDragSumNum((double)goods.getGoodsNumber());
                 itemDo.setDragSumUnit(medicalInfoDo.getGoodsPackageUnit());
+                itemDo.setGoodsImg(goods.getGoodsImg());
+                itemDo.setMedicinePrice(goods.getShopPrice());
                 list.add(itemDo);
             }
         });

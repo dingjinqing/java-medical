@@ -645,6 +645,17 @@ public class OrderConstant {
 	 */
 	public static final Byte MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION = 3;
 
+	//*************his 订单状态 **************//
+	/**
+	 * 下单
+	 */
+	public static final Byte EXTERNAL_HIS_ORDER_STATUS_ORDER =1;
+	/**
+	 * 退款
+	 */
+	public static final Byte EXTERNAL_HIS_ORDER_STATUS_REFUND =0;
+
+
 
 
     /**对外接口 start*/

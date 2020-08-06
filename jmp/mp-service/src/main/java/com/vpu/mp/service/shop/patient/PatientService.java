@@ -231,7 +231,7 @@ public class PatientService extends BaseShopConfigService{
         }
         List<String> diseases = Arrays.asList(diseaseStr.split(","));
         for (PatientMoreInfoParam disease : diseaseList) {
-            if (diseases.contains(disease.getId())) {
+            if (diseases.contains(String.valueOf(disease.getId()))) {
                 disease.setChecked((byte) 1);
             }
         }
@@ -246,7 +246,7 @@ public class PatientService extends BaseShopConfigService{
         List<String> strList=new ArrayList<>();
         List<String> diseases = Arrays.asList(diseaseStr.split(","));
         for (PatientMoreInfoParam disease : diseaseList) {
-            if (diseases.contains(disease.getId())) {
+            if (diseases.contains(String.valueOf(disease.getId()))) {
                 strList.add(disease.getName());
             }
         }

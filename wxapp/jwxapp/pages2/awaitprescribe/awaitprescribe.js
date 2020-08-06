@@ -80,6 +80,9 @@ global.wxPage({
       if(res.error == ''){
         util.toast_success('驳回成功');
         this.requestInfo();
+      } else {
+        util.showModal('提示', res.message)
+        return false
       }
     },{
       orderId: e.currentTarget.dataset.order_id,

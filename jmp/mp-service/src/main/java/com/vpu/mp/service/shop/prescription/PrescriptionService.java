@@ -24,7 +24,6 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
@@ -402,6 +401,7 @@ public class PrescriptionService extends ShopBaseService {
             item.setMedicinePrice(goods.getShopPrice());
             item.setDragSumNum(goodsMap.get(info.getGoodsId()).getDragSumNum());
             item.setDragSumUnit(info.getGoodsPackageUnit());
+            item.setGoodsImg(goods.getGoodsImg());
             itemList.add(item);
         }
         prescriptionParam.setList(itemList);
@@ -443,11 +443,15 @@ public class PrescriptionService extends ShopBaseService {
      * 医师获取处方列表
      * @param param
      */
-    public void auditedPrescriptionList(DoctorAuditedPrescriptionParam param) {
-        List<PrescriptionDo> prescriptionDoList = prescriptionDao.listAuditedByDoctor(param.getType(), param.getDoctorCode());
-
-
-
-
+    public PageResult<PrescriptionParam> auditedPrescriptionList(DoctorAuditedPrescriptionParam param) {
+        PageResult<PrescriptionParam> result = prescriptionDao.listAuditedByDoctor(param);
+        List<String> preCodeList = result.getDataList().stream().map(PrescriptionDo::getPrescriptionCode).collect(Collectors.toList());
+        Map<String, List<PrescriptionItemParam>> stringPrescriptionItemInfoVoMap = prescriptionItemDao.mapByPrescriptionCodeList(preCodeList);
+        result.getDataList().forEach(prescription -> {
+            if (stringPrescriptionItemInfoVoMap.containsKey(prescription.getPrescriptionCode())){
+                prescription.setList(stringPrescriptionItemInfoVoMap.get(prescription.getPrescriptionCode()));
+            }
+        });
+        return result;
     }
 }

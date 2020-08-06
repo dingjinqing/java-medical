@@ -22,7 +22,7 @@
                   <div>姓名</div>
                 </div>
                 <div class="each_patient_column">
-                  <div class="dark_one">{{originalData.patientSex}}</div>
+                  <div class="dark_one">{{originalData.patientSex  == 0 ? '男' : (originalData.patientSex  == 1 ? '女' : '未知')}}</div>
                   <div>性别</div>
                 </div>
                 <div class="each_patient_column">

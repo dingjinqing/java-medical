@@ -154,20 +154,23 @@ public class ImSessionService extends ShopBaseService {
         Integer pageCount = (Integer) (int) Math.ceil(Double.valueOf(totalRows) / Double.valueOf(pageRows));
         page.setPageCount(pageCount);
         pageResult.setPage(page);
-        if (renderPageParam.getCurrentPage() > pageCount) {
-            pageResult.setDataList(new ArrayList<>());
-            return pageResult;
-        }
-        Integer endIndex = -curPage * pageRows - 1;
-        // redis list 包含两端，所以要去掉一个元素
-        Integer startIndex = endIndex - pageRows + 1;
-        List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
-        List<ImSessionItemDo> imSessionItemDos = new ArrayList<>(jsonStrs.size());
+        List<ImSessionItemDo> imSessionItemDos = null;
 
-        for (String jsonStr : jsonStrs) {
-            ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
-            imSessionItemDos.add(imSessionItemDo);
+        if (renderPageParam.getCurrentPage() > pageCount) {
+            imSessionItemDos = new ArrayList<>();
+        }else {
+            Integer endIndex = -curPage * pageRows - 1;
+            // redis list 包含两端，所以要去掉一个元素
+            Integer startIndex = endIndex - pageRows + 1;
+            List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
+            imSessionItemDos = new ArrayList<>(jsonStrs.size());
+
+            for (String jsonStr : jsonStrs) {
+                ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
+                imSessionItemDos.add(imSessionItemDo);
+            }
         }
+
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
         if (renderPageParam.getIsFirstTime()) {
             String redisKey = null;
@@ -179,6 +182,17 @@ public class ImSessionService extends ShopBaseService {
             List<String> list = jedisManager.getList(redisKey);
             for (String jsonStr : list) {
                 ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
+                if (imSessionItemDo == null) {
+                    continue;
+                }
+                imSessionItemDo.setImSessionId(imSessionDo.getId());
+                if (renderPageParam.getIsDoctor()) {
+                    imSessionItemDo.setFromId(imSessionDo.getDoctorId());
+                    imSessionItemDo.setToId(imSessionDo.getUserId());
+                } else {
+                    imSessionItemDo.setFromId(imSessionDo.getUserId());
+                    imSessionItemDo.setToId(imSessionDo.getDoctorId());
+                }
                 imSessionItemDos.add(imSessionItemDo);
             }
         }
@@ -200,22 +214,22 @@ public class ImSessionService extends ShopBaseService {
         if (imSessionDos == null) {
             return new ArrayList<>(0);
         }
-        List<ImSessionUnReadInfoVo> retList =new ArrayList<>(imSessionDos.size());
+        List<ImSessionUnReadInfoVo> retList = new ArrayList<>(imSessionDos.size());
         String redisKey = null;
         Integer shopId = getShopId();
         List<Integer> doctorIds = new ArrayList<>(imSessionDos.size());
         for (ImSessionDo imSessionDo : imSessionDos) {
             if (param.getDoctorId() == null) {
                 // 用户查询自己未读信息
-                redisKey = getSessionRedisKey(shopId,imSessionDo.getId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+                redisKey = getSessionRedisKey(shopId, imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
             } else {
                 // 医师查询自己未读信息
-                redisKey = getSessionRedisKey(shopId,imSessionDo.getId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
+                redisKey = getSessionRedisKey(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             }
             if (!jedisManager.exists(redisKey)) {
                 continue;
             }
-            ImSessionUnReadInfoVo vo =new ImSessionUnReadInfoVo();
+            ImSessionUnReadInfoVo vo = new ImSessionUnReadInfoVo();
             doctorIds.add(imSessionDo.getDoctorId());
             vo.setSessionId(imSessionDo.getId());
             vo.setDoctorId(imSessionDo.getDoctorId());
@@ -238,12 +252,27 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
-     * 查询会话状态
+     * 查询会话记录
      * @param sessionId 会话id
-     * @return 会话状态码
+     * @return 会话记录
      */
     public ImSessionDo getSessionInfoById(Integer sessionId) {
         return imSessionDao.getById(sessionId);
+    }
+
+    /**
+     * 查询会话状态
+     * @param sessionId 会话id
+     * @return 会话状态
+     */
+    public Byte getSessionStatus(Integer sessionId) {
+        String statusKey = getSessionRedisStatusKey(getShopId(), sessionId);
+        String s = jedisManager.get(statusKey);
+        if (s == null) {
+            return null;
+        } else {
+            return Byte.valueOf(s);
+        }
     }
 
     /**

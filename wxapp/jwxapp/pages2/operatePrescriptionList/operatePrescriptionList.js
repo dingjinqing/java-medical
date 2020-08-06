@@ -20,7 +20,7 @@ global.wxPage({
     this.requestList()
   },
   requestList(){
-    util.api('/api/wxapp/docker/audit/list',res=>{
+    util.api('/api/wxapp/doctor/audit/list',res=>{
       if(res.error === 0){
         if(this.data.pageParams.currentPage === 1){
           this.setData({
@@ -65,7 +65,7 @@ global.wxPage({
       'pass':['确认通过患者处方申请吗？','通过']
     }
     util.showModal('提示',tipsInfo[type][0],()=>{
-      util.api('/api/wxapp/docker/audit/pass',res=>{
+      util.api('/api/wxapp/doctor/audit/pass',res=>{
         console.log(res)
         if(res.error === 0){
           dataListItem.splice(targetIndex,1)

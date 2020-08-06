@@ -128,19 +128,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         return pageResult;
     }
 
-    /**
-     * 截图json字符串
-     * @param diseaseHistory
-     * @return
-     */
-    public static String splitDiseaseHistory(String diseaseHistory){
-        if(StringUtils.isBlank(diseaseHistory)){
-            return null;
-        }
-        int index=diseaseHistory.indexOf("{");
-        return  diseaseHistory.substring(index,diseaseHistory.length()-1);
 
-    }
 
     /**
      * 生成处方

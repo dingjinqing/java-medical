@@ -10,6 +10,12 @@ global.wxComponent({
     chatContent: Object,
     systemInfo: String,
     systemImg:Boolean,
+    status:{
+      type:Number,
+      observer(newVal){
+        console.log(newVal)
+      }
+    },
     isDoctor:{
       type:Boolean,
       value:false

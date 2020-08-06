@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.UserMessage;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -18,6 +19,7 @@ import java.util.List;
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_NOT_READ;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_TOP;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
 
 /**
  * @author 赵晓东
@@ -112,22 +114,29 @@ public class MessageDao extends ShopBaseDao {
 
     /**
      * 医师端显示待问诊数量
-     * @param status 问诊状态
+     * @param doctorId 医师id
      * @return Integer
      */
-    public Integer countDoctorImMessageMum(Integer userId, Byte status){
-        return db().selectCount().from(IM_SESSION).where(IM_SESSION.SESSION_STATUS.eq(status)
-            .and(IM_SESSION.DOCTOR_ID.eq(userId))
-            .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
+    public Integer countDoctorImMessageNum(Integer doctorId){
+        return db().selectCount().from(INQUIRY_ORDER)
+            .where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_TO_RECEIVE)
+            .and(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
+            .and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchOneInto(Integer.class);
     }
 
     /**
      * 医师端显示待开方数量
      * @return Integer
      */
-    public Integer countDoctorOrderMessageMum(){
-        return db().selectCount().from(ORDER_INFO).where(ORDER_INFO.ORDER_AUDIT_STATUS.eq(DelFlag.NORMAL_VALUE)
-            .and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class).get(0);
+    public Integer countDoctorOrderMessageNum(){
+        return db().selectCount().from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.eq(ORDER_TO_AUDIT_OPEN))
+            .and(ORDER_INFO.ORDER_AUDIT_TYPE.eq(MEDICAL_ORDER_AUDIT_TYPE_CREATE))
+            .and(ORDER_INFO.ORDER_AUDIT_STATUS.eq(MEDICAL_AUDIT_DEFAULT))
+            .and(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(MEDICAL_TYPE_RX))
+            .and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .fetchOneInto(Integer.class);
     }
 
     /**
@@ -138,6 +147,10 @@ public class MessageDao extends ShopBaseDao {
         db().update(USER_MESSAGE)
             .set(USER_MESSAGE.IS_DELETE, DelFlag.DISABLE_VALUE)
             .where(USER_MESSAGE.MESSAGE_ID.eq(messageId)).execute();
+    }
+
+    public void saveUserImSessionItem(){
+
     }
 
 }

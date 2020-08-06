@@ -5,11 +5,13 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Prescription;
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
+
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
-import java.sql.Timestamp;
+
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -25,7 +27,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 1522126693;
+    private static final long serialVersionUID = 382973733;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.id</code>. 主键id
@@ -406,14 +408,14 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_prescription.audit_Type</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     * Setter for <code>mini_shop_471752.b2c_prescription.audit_type</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
      */
     public void setAuditType(Byte value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_prescription.audit_Type</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     * Getter for <code>mini_shop_471752.b2c_prescription.audit_type</code>. 处方审核类型 '药品审核类型, 0不审核,1审核,2开方,3根据处方下单
      */
     public Byte getAuditType() {
         return (Byte) get(27);

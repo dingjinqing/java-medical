@@ -118,7 +118,7 @@
         v-if='total.amountTotal > 0'
       >
         <div>
-         <span>总计:</span>咨询单数<span>{{total.amountTotal}}</span>咨询单次价格<span>{{total.oncePriceTotal}}</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
+          <span>总计:</span>咨询单数<span>{{total.amountTotal}}</span>咨询单次价格<span>{{total.oncePriceTotal}}</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
         </div>
       </div>
     </div>
@@ -127,18 +127,13 @@
 </template>
 
 <script>
-import { getAdvistoryReportList, getReportExport, getDoctorList, getDoctorTotal } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
+import { getAdvistoryReportList, getReportExport, getDoctorList, getDoctorTotal } from '@/api/admin/orderManage/advisory.js'
 import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { download } from '@/util/excelUtil.js'
-import pagination from '@/components/admin/pagination/pagination'
+import pagination from '@/components/system/pagination/pagination'
 export default {
   components: {
     pagination
-  },
-  watch: {
-    lang () {
-      this.timeRange = this.$t('tradesStatistics.timeRange')
-    }
   },
   mounted () {
     this.getDateValue(1)
@@ -152,7 +147,12 @@ export default {
       timeSelect: 1,
       pageParams: {},
       tableData: [],
-      timeRange: this.$t('tradesStatistics.timeRange'),
+      timeRange: [
+        { value: 1, label: '最新1天' },
+        { value: 7, label: '最新7天' },
+        { value: 30, label: '最新30天' },
+        { value: 0, label: '自定义' }
+      ],
       startDate: {
         year: '',
         month: '',
@@ -250,7 +250,6 @@ export default {
 .main {
   .nav_box {
     display: flex;
-    width: 100%;
     background-color: #fff;
     padding: 20px 15px 10px;
     margin: 10px 10px 0;
@@ -294,7 +293,7 @@ export default {
       text-align: center;
       font-size: 15px;
       color: #333;
-      span{
+      span {
         margin-right: 20px;
       }
     }

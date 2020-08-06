@@ -28,6 +28,14 @@
   font-size: 58rpx;
   font-weight: 600;
 }
+.message-input > .send{
+  color: #fff;
+  background-color:#26C4BC;
+  font-size: 28rpx;
+  line-height: 60rpx;
+  padding: 0 20rpx;
+  border-radius: 8rpx;
+}
 .custom-footer{
   border-top: 2rpx solid #eee;
   padding:0 40rpx 40rpx;

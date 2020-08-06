@@ -221,6 +221,16 @@ public class DoctorDao extends ShopBaseDao {
     }
 
     /**
+     * 根据医师id查询医师编码
+     * @param doctorId 医师id
+     * @return String
+     */
+    public String selectDoctorCodeByDoctorId(Integer doctorId) {
+        return db().select(DOCTOR.HOSPITAL_CODE).from(DOCTOR)
+            .where(DOCTOR.ID.eq(doctorId)).fetchAnyInto(String.class);
+    }
+
+    /**
      * 医师下拉列表
      *
      * @param param

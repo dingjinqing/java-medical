@@ -2,22 +2,32 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
+import com.vpu.mp.dao.shop.patient.PatientDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.goods.param.SyncHisMedicalOrderRequestParam;
+import com.vpu.mp.service.pojo.shop.order.goods.param.SyncMedicalOrderGoodsItem;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,8 +54,15 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     @Autowired
     private PatientService patientService;
     @Autowired
+    private OrderGoodsService orderGoodsService;
+    @Autowired
     private OrderMedicalHistoryDao orderMedicalHistoryDao;
-
+    @Autowired
+    private UploadPrescriptionService uploadPrescriptionService;
+    @Autowired
+    private PatientDao patientDao;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
 
     @Override
     public Byte getPriority() {
@@ -152,7 +169,9 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                     prescriptionList.add(prescriptionVo);
                     goods.setPrescriptionInfo(prescriptionVo);
                     goods.setPrescriptionCode(prescriptionVo.getPrescriptionCode());
-                    param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
+                    if (param.getCheckPrescriptionStatus().equals(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
+                        param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
+                    }
                     if (prescriptionVo.getIsValid().equals(BaseConstant.YES) && !PrescriptionConstant.EXPIRE_TYPE_INVALID.equals(prescriptionVo.getExpireType())) {
                         if (prescriptionVo.getSource().equals(PrescriptionConstant.SOURCE_MP_SYSTEM) && prescriptionVo.getIsUsed().equals(BaseConstant.NO)) {
                             goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
@@ -179,9 +198,19 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
     }
 
+    /**
+     * 支付成功
+     * @param param
+     * @param order
+     * @throws MpException
+     */
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        /**
+         * 订单同步到his
+         */
+        Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
+        uploadPrescriptionService.uploadPrescription(order.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
     }
 
     @Override
@@ -191,7 +220,20 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
 
     @Override
     public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
-
+        Result<OrderGoodsRecord> goodsList = orderGoodsService.getByOrderId(returnOrderRecord.getOrderId());
+        SyncHisMedicalOrderRequestParam param =new SyncHisMedicalOrderRequestParam();
+        param.setOrderSn(returnOrderRecord.getOrderSn());
+        param.setStatus(OrderConstant.EXTERNAL_HIS_ORDER_STATUS_REFUND);
+        List<SyncMedicalOrderGoodsItem> list =new ArrayList<>();
+        for (OrderGoodsRecord goods : goodsList) {
+            SyncMedicalOrderGoodsItem item = new SyncMedicalOrderGoodsItem();
+            GoodsMedicalInfoDo medicalInfoDo = medicalGoodsService.getByGoodsId(goods.getGoodsId());
+            item.setGoodsCode(medicalInfoDo.getGoodsCode());
+            item.setNumber(goods.getGoodsNumber());
+            list.add(item);
+        }
+        param.setGoodsItemList(list);
+        orderGoodsService.syncMedicalOrderStatus(param);
     }
 
 }

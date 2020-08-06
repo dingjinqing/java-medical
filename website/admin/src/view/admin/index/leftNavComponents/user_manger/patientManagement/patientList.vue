@@ -64,12 +64,13 @@
             prop='treatmentNo'
             label='就诊卡号'
           ></el-table-column>
+          <el-table-column label='性别'>
+            <template v-slot="scope">
+              <span>{{scope.row.sex == 0 ? '男' : (scope.row.sex == 1 ? '女' : '未知')}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop='sex'
-            label='性别'
-          ></el-table-column>
-          <el-table-column
-            prop='diseaseHistory'
+            prop='diseaseHistoryNameStr'
             label='疾病史'
           ></el-table-column>
           <el-table-column
@@ -77,7 +78,7 @@
             label='过敏史'
           ></el-table-column>
           <el-table-column label='操作'>
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <div class="operation">
                 <el-tooltip
                   class="item"
