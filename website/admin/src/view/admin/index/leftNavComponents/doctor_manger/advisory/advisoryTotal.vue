@@ -84,10 +84,13 @@
             'text-align':'center'
           }"
       >
-        <el-table-column
-          prop='createTime'
-          label='日期'
-        ></el-table-column>
+
+        <el-table-column label='日期'>
+          <template v-slot='scope'>
+            <span>{{scope.row.createTime | timeDate}}</span>
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop='doctorName'
           label='医生姓名'
@@ -118,7 +121,7 @@
         v-if='total.amountTotal > 0'
       >
         <div>
-         <span>总计:</span>咨询单数<span>{{total.amountTotal}}</span>咨询单次价格<span>{{total.oncePriceTotal}}</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
+          <span>总计:</span>咨询单数<span>{{total.amountTotal}}</span>咨询单次价格<span>{{total.oncePriceTotal}}</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
         </div>
       </div>
     </div>
@@ -242,6 +245,13 @@ export default {
         }
       })
     }
+  },
+  filters: {
+    timeDate: function (val) {
+      if (!val) return
+      val = val.split(' ')
+      return val[0]
+    }
   }
 }
 </script>
@@ -294,7 +304,7 @@ export default {
       text-align: center;
       font-size: 15px;
       color: #333;
-      span{
+      span {
         margin-right: 20px;
       }
     }
