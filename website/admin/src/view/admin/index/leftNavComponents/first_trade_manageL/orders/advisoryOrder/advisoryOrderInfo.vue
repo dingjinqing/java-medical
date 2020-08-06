@@ -65,7 +65,6 @@ export default {
     initOrderInfo (id) {
       advisoryOrderInfo({orderId: id}).then(res => {
         if (res.error === 0) {
-          res.content.createTime = res.content.createTime.substr(0, 10)
           res.content.orderStatusName = this.getStatusName(res.content.orderStatus)
           res.content.patientSexName = this.getPatientSex(res.content.patientSex)
           res.content.patientIdentityName = this.getIdentityName(res.content.patientIdentityType)

@@ -154,20 +154,23 @@ public class ImSessionService extends ShopBaseService {
         Integer pageCount = (Integer) (int) Math.ceil(Double.valueOf(totalRows) / Double.valueOf(pageRows));
         page.setPageCount(pageCount);
         pageResult.setPage(page);
-        if (renderPageParam.getCurrentPage() > pageCount) {
-            pageResult.setDataList(new ArrayList<>());
-            return pageResult;
-        }
-        Integer endIndex = -curPage * pageRows - 1;
-        // redis list 包含两端，所以要去掉一个元素
-        Integer startIndex = endIndex - pageRows + 1;
-        List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
-        List<ImSessionItemDo> imSessionItemDos = new ArrayList<>(jsonStrs.size());
+        List<ImSessionItemDo> imSessionItemDos = null;
 
-        for (String jsonStr : jsonStrs) {
-            ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
-            imSessionItemDos.add(imSessionItemDo);
+        if (renderPageParam.getCurrentPage() > pageCount) {
+            imSessionItemDos = new ArrayList<>();
+        }else {
+            Integer endIndex = -curPage * pageRows - 1;
+            // redis list 包含两端，所以要去掉一个元素
+            Integer startIndex = endIndex - pageRows + 1;
+            List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
+            imSessionItemDos = new ArrayList<>(jsonStrs.size());
+
+            for (String jsonStr : jsonStrs) {
+                ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
+                imSessionItemDos.add(imSessionItemDo);
+            }
         }
+
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
         if (renderPageParam.getIsFirstTime()) {
             String redisKey = null;
