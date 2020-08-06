@@ -35,4 +35,6 @@ public class  PatientOneParam {
     private String diseaseHistoryStr;
     private String familyDiseaseHistoryStr;
     private String diseaseHistoryNameStr;
+    private Integer patientId;
+    private Integer userId;
 }
