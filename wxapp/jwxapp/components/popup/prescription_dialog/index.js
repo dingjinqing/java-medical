@@ -21,6 +21,7 @@ global.wxComponent({
    */
   methods: {
     viewRxSearch(){
+      return
       util.jumpLink(`pages/search/search${util.getUrlParams({
         pageFrom:102,
         outerPageParam:JSON.stringify({

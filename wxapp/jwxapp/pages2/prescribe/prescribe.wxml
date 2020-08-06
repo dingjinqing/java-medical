@@ -80,7 +80,7 @@ module.exports = {
 			<view class="prescription-info-content">
 				<view class="prescription-item column">
 					<view class="line-title">医嘱：</view>
-					<textarea class="medical-advice" placeholder="默认显示药品用法用量，医生可手动更改" bindinput="getDoctorAdvice" value="{{doctorAdvice}}"></textarea>
+					<textarea class="medical-advice" placeholder="{{!showGoodsListDialog ? ''}}默认显示药品用法用量，医生可手动更改" bindinput="getDoctorAdvice" value="{{doctorAdvice}}"></textarea>
 				</view>
 			</view>
 			<view class="prescription-doctor-info">
