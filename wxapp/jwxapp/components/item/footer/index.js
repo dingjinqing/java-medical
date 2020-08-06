@@ -705,6 +705,9 @@ global.wxComponent({
     },
     toCartList () {
       util.jumpLink("pages/cart/cart", "navigateTo")
+    },
+    viewDoctorConsultation(){
+      util.jumpLink("pages2/doctorConsultation/doctorConsultation", "navigateTo")
     }
   }
 })

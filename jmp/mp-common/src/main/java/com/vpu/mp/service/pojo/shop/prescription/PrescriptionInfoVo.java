@@ -39,7 +39,7 @@ public class PrescriptionInfoVo {
     /**
      * 诊断名称
      */
-    private String    diagnosisDetail;
+    private String    diagnosisName;
     /**
      * 医师名称
      */

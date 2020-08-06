@@ -339,7 +339,7 @@ public class PrescriptionDao extends ShopBaseDao {
             .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_PRESCRIBE))
             .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
             .fetchAnyInto(Integer.class);
-        return timestamps == 0;
+        return timestamps != 0;
     }
 
     /**
@@ -357,7 +357,7 @@ public class PrescriptionDao extends ShopBaseDao {
             .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_AUDIT))
             .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
             .fetchAnyInto(Integer.class);
-        return timestamps == 0;
+        return timestamps != 0;
     }
 
 
@@ -389,5 +389,16 @@ public class PrescriptionDao extends ShopBaseDao {
         }
          where.orderBy(PRESCRIPTION.CREATE_TIME.desc());
         return getPageResult(where,param,PrescriptionParam.class);
+    }
+
+    /**
+     * 获取所有过期的处方
+     * @return
+     */
+    public List<PrescriptionDo> getAllExpiredPrescription(){
+        return db().select().from(PRESCRIPTION)
+            .where(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.lt(DateUtil.date().toTimestamp()))
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .fetchInto(PrescriptionDo.class);
     }
 }

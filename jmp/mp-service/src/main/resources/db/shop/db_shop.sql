@@ -5015,7 +5015,7 @@ create TABLE `b2c_im_session`(
     `department_id` int(11) NOT NULL COMMENT '科室id',
     `user_id` int(11) NOT NULL COMMENT '小程序发起会话用户id',
     `patient_id`  int(11) NOT NULL COMMENT '本次诊疗的患者id',
-    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0医师待接诊，1会话中，2会话取消，3会话结束',
+    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束',
     `order_sn` varchar(32)  NOT NULL COMMENT '会话关联的订单sn',
     `limit_time` timestamp  COMMENT '医生接诊后会话截止时间点',
     `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',

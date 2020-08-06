@@ -1,12 +1,10 @@
 package com.vpu.mp.service.shop.order.action;
 
-import cn.hutool.json.JSONUtil;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -46,7 +44,6 @@ import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
 import com.vpu.mp.service.shop.user.cart.CartService;
-import com.vpu.mp.service.wechat.WxPaymentAttachParam;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record2;
@@ -309,10 +306,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             //库存销量
             atomicOperation.updateStockAndSalesByLock(orderInfo, goods.into(OrderGoodsBo.class), false);
         }
-        /**
-         * 订单同步到his
-         */
-        uploadPrescriptionService.uploadPrescription(orderInfo.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
+
         //TODO 异常订单处理等等
         // 订单生效时营销活动后续处理
         processOrderEffective(orderInfo);
