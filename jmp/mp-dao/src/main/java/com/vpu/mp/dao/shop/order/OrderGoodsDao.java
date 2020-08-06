@@ -127,7 +127,7 @@ public class OrderGoodsDao extends ShopBaseDao {
                 ORDER_GOODS.MEDICAL_AUDIT_TYPE,ORDER_GOODS.MEDICAL_AUDIT_STATUS,ORDER_GOODS.GOODS_ID,
                 ORDER_GOODS.GOODS_NUMBER,GOODS.GOODS_IMG,GOODS.SHOP_PRICE)
                 .from(ORDER_GOODS)
-                .leftJoin(GOODS).on(ORDER_GOODS.GOODS_ID.eq(ORDER_GOODS.GOODS_ID))
+                .leftJoin(GOODS).on(ORDER_GOODS.GOODS_ID.eq(GOODS.GOODS_ID))
                 .where(ORDER_GOODS.ORDER_ID.eq(orderId))
                 .fetchInto(OrderGoodsSimpleAuditVo.class);
     }
