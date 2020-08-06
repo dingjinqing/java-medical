@@ -181,12 +181,13 @@ export default {
   },
   methods: {
     toDetail (id) {
-      this.$router.push({
+      const {href} = this.$router.resolve({
         path: '/admin/home/main/orders/advisoryOrder/info',
         query: {
           orderId: id
         }
       })
+      window.open(href, '_blank')
     },
     // 获取科室
     initDoctorPart () {
