@@ -317,15 +317,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @return
      */
     public PageResult<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
-        Timestamp startDate = param.getStartTime();
-        Timestamp endDate = param.getEndTime();
-        if (startDate != null ) {
-            startDate = DateUtil.beginOfDay(startDate).toTimestamp();
-            param.setStartTime(startDate);
-        }if( endDate != null){
-            endDate = DateUtil.endOfDay(endDate).toTimestamp();
-            param.setEndTime(endDate);
-        }
+        beginAndEndOfDay(param);
         PageResult<InquiryOrderStatisticsVo> result=inquiryOrderDao.orderStatisticsPage(param);
         List<InquiryOrderStatisticsVo> list=result.getDataList();
         list.forEach(orderStatisticsVo->{
@@ -344,6 +336,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @return
      */
     public Workbook orderStatisticsExport(InquiryOrderStatisticsParam param, String lang){
+        beginAndEndOfDay(param);
         List<InquiryOrderStatisticsVo> list=inquiryOrderDao.orderStatistics(param);
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
@@ -357,7 +350,24 @@ public class InquiryOrderService extends ShopBaseService {
      * @return
      */
     public InquiryOrderTotalVo orderStatisticsTotal(InquiryOrderStatisticsParam param){
+        beginAndEndOfDay(param);
         InquiryOrderTotalVo inquiryOrderTotalVo=inquiryOrderDao.orderStatisticsTotal(param);
         return inquiryOrderTotalVo;
+    }
+
+    /**
+     * 日期的时分秒开始和结束
+     * @param param
+     */
+    public void beginAndEndOfDay(InquiryOrderStatisticsParam param){
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate != null ) {
+            startDate = DateUtil.beginOfDay(startDate).toTimestamp();
+            param.setStartTime(startDate);
+        }if( endDate != null){
+            endDate = DateUtil.endOfDay(endDate).toTimestamp();
+            param.setEndTime(endDate);
+        }
     }
 }

@@ -211,22 +211,22 @@ public class ImSessionService extends ShopBaseService {
         if (imSessionDos == null) {
             return new ArrayList<>(0);
         }
-        List<ImSessionUnReadInfoVo> retList =new ArrayList<>(imSessionDos.size());
+        List<ImSessionUnReadInfoVo> retList = new ArrayList<>(imSessionDos.size());
         String redisKey = null;
         Integer shopId = getShopId();
         List<Integer> doctorIds = new ArrayList<>(imSessionDos.size());
         for (ImSessionDo imSessionDo : imSessionDos) {
             if (param.getDoctorId() == null) {
                 // 用户查询自己未读信息
-                redisKey = getSessionRedisKey(shopId,imSessionDo.getId(),imSessionDo.getDoctorId(),imSessionDo.getUserId());
+                redisKey = getSessionRedisKey(shopId, imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
             } else {
                 // 医师查询自己未读信息
-                redisKey = getSessionRedisKey(shopId,imSessionDo.getId(),imSessionDo.getUserId(),imSessionDo.getDoctorId());
+                redisKey = getSessionRedisKey(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             }
             if (!jedisManager.exists(redisKey)) {
                 continue;
             }
-            ImSessionUnReadInfoVo vo =new ImSessionUnReadInfoVo();
+            ImSessionUnReadInfoVo vo = new ImSessionUnReadInfoVo();
             doctorIds.add(imSessionDo.getDoctorId());
             vo.setSessionId(imSessionDo.getId());
             vo.setDoctorId(imSessionDo.getDoctorId());
@@ -249,12 +249,27 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
-     * 查询会话状态
+     * 查询会话记录
      * @param sessionId 会话id
-     * @return 会话状态码
+     * @return 会话记录
      */
     public ImSessionDo getSessionInfoById(Integer sessionId) {
         return imSessionDao.getById(sessionId);
+    }
+
+    /**
+     * 查询会话状态
+     * @param sessionId 会话id
+     * @return 会话状态
+     */
+    public Byte getSessionStatus(Integer sessionId) {
+        String statusKey = getSessionRedisStatusKey(getShopId(), sessionId);
+        String s = jedisManager.get(statusKey);
+        if (s == null) {
+            return null;
+        } else {
+            return Byte.valueOf(s);
+        }
     }
 
     /**
