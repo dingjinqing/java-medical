@@ -35,6 +35,7 @@ public class PatientDao extends ShopBaseDao{
             .from(PATIENT);
         select.where(PATIENT.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
+        select.orderBy(PATIENT.ID.desc());
         PageResult<PatientOneParam> patientList = this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), PatientOneParam.class);
         return patientList;
