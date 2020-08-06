@@ -19,6 +19,11 @@ global.wxComponent({
    * 组件的方法列表
    */
   methods: {
-
+    bindClose(){
+      this.setData({
+        show:false
+      })
+      this.triggerEvent('bindClose')
+    }
   }
 })

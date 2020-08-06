@@ -280,7 +280,7 @@
           <view class='each_service' wx:if='{{item3.is_show == 1}}' bindtap='bindJumpLink' data-url="{{item3.link}}">
             <view class='es_img'>
               <image src='{{item3.icon}}'></image>
-              <view class="item_mes_num" wx:if='{{item3.title == "我的消息"}}'>{{mes_count}}</view>
+              <view class="item_mes_num" wx:if='{{item3.title == "我的消息" && mes_count > 0}}'>{{mes_count}}</view>
             </view>
             <view class='es_word'>{{item3.title}}</view>
           </view>
