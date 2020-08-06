@@ -32,6 +32,7 @@ public class TitleDao extends ShopBaseDao{
             .from(DOCTOR_TITLE);
         select.where(DOCTOR_TITLE.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
+        select.orderBy(DOCTOR_TITLE.ID.desc());
         PageResult<TitleOneParam> titleList = this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), TitleOneParam.class);
         return titleList;

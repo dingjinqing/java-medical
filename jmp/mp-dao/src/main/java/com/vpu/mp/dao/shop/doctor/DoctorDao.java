@@ -42,6 +42,7 @@ public class DoctorDao extends ShopBaseDao {
             .from(DOCTOR).leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
         select.where(DOCTOR.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
+        select.orderBy(DOCTOR.ID.desc());
         PageResult<DoctorOneParam> doctorList = this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), DoctorOneParam.class);
         return doctorList;
