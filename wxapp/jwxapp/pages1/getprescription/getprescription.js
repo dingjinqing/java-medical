@@ -109,33 +109,7 @@ global.wxPage({
     })
   },
   addFamily() {
-    let prescription_info = {};
-    prescription_info.name = this.data.real_name;
-    prescription_info.mobile = this.data.mobile;
-    prescription_info.identityCode = this.data.card_id;
-    if (this.data.if_show_agree == 0 && this.data.if_agree == 0) {
-      this.setData({
-        if_show_agree: 1
-      });
-      return false;
-    }
-    if (!prescription_info.name) {
-      util.showModal("提示", "请输入姓名！");
-      return false;
-    }
-    if (!prescription_info.identityCode) {
-      util.showModal("提示", "请输入身份证号！");
-      return false;
-    }
-    if (!prescription_info.mobile) {
-      util.showModal("提示", "请输入手机号！");
-      return false;
-    }
-    if (!/^1[3456789]\d{9}$/.test(prescription_info.mobile)) {
-      util.showModal("提示", "请输入正确的手机号！");
-      return false;
-    }
-    util.jumpLink('/pages1/patientinfo/patientinfo?prescription_info=' + JSON.stringify(prescription_info) + '&list=' + this.data.list);
+    util.jumpLink('/pages1/patientinfo/patientinfo');
   },
   getVerificationCode() {
     if (this.data.countDown) return false

@@ -10,14 +10,21 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
-import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.*;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorFetchOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
@@ -229,7 +236,7 @@ public class DoctorService extends ShopBaseService {
         if (doctorDo != null && doctorDo.getUserId() == 0) {
             this.transaction(() -> {
                 // 修改user表中用户类型为医师
-                UserDo userDo = userDao.updateDoctorAuth(doctorAuthParam.getUserId());
+                userDao.updateDoctorAuth(doctorAuthParam.getUserId());
                 // 修改doctor表中userId为当前用户
                 doctorDo.setUserId(doctorAuthParam.getUserId());
                 doctorDao.updateUserId(doctorDo);
