@@ -4,13 +4,24 @@
       <div class="filters">
         <div class="filters_item ">
           <span class="fil_span">医师姓名：</span>
-          <el-input
-            v-model="param.doctorName"
-            class="doctor_input"
-            placeholder="请输入医师姓名"
+          <el-select
+            v-model="param.doctorId"
+            placeholder="请输入医生姓名"
             size="small"
-            clearable
-          ></el-input>
+            class="default_input"
+            filterable
+          >
+            <el-option
+              label="全部"
+              value=" "
+            ></el-option>
+            <el-option
+              v-for="item in doctorList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
 
         </div>
         <div class="filters_item">
@@ -102,12 +113,21 @@
         :page-params.sync="pageParams"
         @pagination="initData"
       />
+      <div
+        class="total_amount"
+        v-if='total.amountTotal > 0'
+      >
+        <div>
+         <span>总计:</span>咨询单数<span>{{total.amountTotal}}</span>咨询单次价格<span>{{total.oncePriceTotal}}</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
+        </div>
+      </div>
     </div>
+
   </div>
 </template>
 
 <script>
-import { getAdvistoryReportList, getReportExport } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
+import { getAdvistoryReportList, getReportExport, getDoctorList, getDoctorTotal } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
 import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination'
@@ -122,6 +142,7 @@ export default {
   },
   mounted () {
     this.getDateValue(1)
+    this.getDoctor({})
     this.initData()
   },
   data () {
@@ -145,8 +166,10 @@ export default {
       param: {
         startTime: '',
         endTime: '',
-        doctorName: ''
-      }
+        doctorId: ''
+      },
+      doctorList: [],
+      total: {}
     }
   },
   methods: {
@@ -201,6 +224,23 @@ export default {
           this.pageParams = res.content.page
         }
       }).catch(err => console.log(err))
+      this.getTotal({ doctorId: this.param.doctorId })
+    },
+    getDoctor (doctor) {
+      getDoctorList(doctor).then(res => {
+        if (res.error === 0) {
+          console.log(res)
+          this.doctorList = res.content
+        }
+      })
+    },
+    getTotal (doctor) {
+      getDoctorTotal(doctor).then(res => {
+        if (res.error === 0) {
+          console.log(res)
+          this.total = res.content
+        }
+      })
     }
   }
 }
@@ -248,6 +288,16 @@ export default {
   }
   .doctor_input {
     width: 150px;
+  }
+  .total_amount {
+    div {
+      text-align: center;
+      font-size: 15px;
+      color: #333;
+      span{
+        margin-right: 20px;
+      }
+    }
   }
 }
 </style>

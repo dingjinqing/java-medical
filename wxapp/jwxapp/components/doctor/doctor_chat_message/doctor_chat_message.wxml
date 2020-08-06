@@ -1,5 +1,5 @@
 <!--components/doctor/doctor_chat_message/doctor_chat_message.wxml-->
-<view class="user_con {{chatContent.position == 0 ? 'con_left' : 'con_right'}}">
+<view class="user_con {{chatContent.position == 0 ? 'con_left' : 'con_right'}}" wx:if='{{!chatContent.status}}'>
 	<view class="user_icon {{chatContent.position == 0 ? 'user_left' : 'user_right'}}">
 		<image src='{{avatar}}'></image>
 	</view>
@@ -14,10 +14,10 @@
 		<view class="system_info">
 			{{systemInfo}}
 		</view>
-		<view class="medical-begin">
-			<view class="liner-left"></view>
-			<view class="begin">问诊已开始</view>
-			<view class="liner-right"></view>
-		</view>
+	</view>
+	<view class="medical-begin" wx:if='{{chatContent.status}}'>
+		<view class="liner-left"></view>
+		<view class="begin">{{chatContent.status === 1 ? '待接诊' : ( chatContent.status === 2 ? '问诊已开始' : '问诊已结束')}}</view>
+		<view class="liner-right"></view>
 	</view>
 </block>

@@ -280,7 +280,7 @@
             label='性别'
           ></el-table-column>
           <el-table-column
-            prop='diseaseHistory'
+            prop='diseaseHistoryNameStr'
             label='疾病史'
           ></el-table-column>
           <el-table-column

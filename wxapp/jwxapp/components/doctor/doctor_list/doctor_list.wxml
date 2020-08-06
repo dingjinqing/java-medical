@@ -11,7 +11,7 @@
 				<text>{{item.titleName}}</text>
 			</view>
 			<view class="d_r_m_t">
-				<text>{{item.registerHospital}}</text>
+				<text>{{item.hospitalName}}</text>
 				<text style="margin-left:10rpx">{{item.departmentName}}</text>
 			</view>
 			<view class="d_r_m_b">
