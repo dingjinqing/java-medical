@@ -109,7 +109,8 @@
   padding-right: 60rpx;
 }
 .each_patient_column {
-  color: #999
+  color: #999;
+  text-align: center;
 } 
 .dark_one{
   margin-bottom: 10rpx;

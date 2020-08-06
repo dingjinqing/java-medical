@@ -4,7 +4,7 @@
   <view class="prescription-content">
     <view class="prescription-item">
       <view class="top_info">
-        <view class="item-title">电子处方1</view>
+        <view class="item-title">{{prescriptionInfo.prescriptionCode}}</view>
       </view>
       <view class="item-list-content">
         <view class="item-list">
@@ -41,15 +41,15 @@
           </view>
           <view class="list_content" wx:for='{{prescriptionInfo.itemList}}' wx:key='key'>
             <view class="medicine_name">{{item.goodsCommonName}}</view>
-            <view class="medicine_spec">用法用量：{{item.goodsQualityRatio}},{{item.goodsUseMemo}}</view>
+            <view class="medicine_spec">用法用量：</view>
           </view>
         </view>
       </view>
       <view class="doctor-info">
         <view class="doctor-name">
           <view>处方医师： {{prescriptionInfo.doctorName}}</view>
-          <view>审核医师： {{prescriptionInfo.pharmacistName}}</view>
-          <view>发药医师： {{prescriptionInfo.pharmacistName}}</view>
+          <!-- <view>审核医师： {{prescriptionInfo.pharmacistName}}</view>
+          <view>发药医师： {{prescriptionInfo.pharmacistName}}</view> -->
         </view>
         <text class="item-date">日期：{{prescriptionInfo.prescriptionCreateTime}}</text>
       </view>
