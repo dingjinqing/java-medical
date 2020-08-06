@@ -106,7 +106,7 @@ module.exports = {
 	</view>
 </view>
 
-<v-footer-dialog show="{{showGoodsListDialog}}" >
+<v-footer-dialog show="{{showGoodsListDialog}}" bindbindClose="bindClose">
 	<view slot="content" class="page-dialog-content">
 		<view class="search-content">
 			<view class="search-input-content">
