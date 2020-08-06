@@ -25,14 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
 
 import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -50,7 +49,7 @@ public class WxAppAuth {
 
 	@Autowired
 	protected JedisManager jedis;
-	
+
 	@Autowired
 	protected ImageService imageService;
 
@@ -66,7 +65,7 @@ public class WxAppAuth {
 	private final Logger log = LoggerFactory.getLogger(WxAppAuth.class);
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	protected String getToken() {
@@ -75,7 +74,7 @@ public class WxAppAuth {
 
 	/**
 	 * 得到当前小程序ID
-	 * 
+	 *
 	 * @return
 	 */
 	public Integer shopId() {
@@ -88,7 +87,7 @@ public class WxAppAuth {
 
 	/**
 	 * 是否有效system登录TOKEN
-	 * 
+	 *
 	 * @param token
 	 * @return
 	 */
@@ -98,7 +97,7 @@ public class WxAppAuth {
 
 	/**
 	 * 登录账户
-	 * 
+	 *
 	 * @param param
 	 * @param request
 	 * @return
@@ -156,7 +155,7 @@ public class WxAppAuth {
 
 		String token = TOKEN_PREFIX + Util.md5(shopId + "_" + user.getUserId());
 		//获取用户角色
-        Byte userType = shopApp.user.getUserType(user.getUserId());
+        Byte userType = user.getUserType();
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
 		sessionUser.setWxUser(wxUser);
 		sessionUser.setToken(token);
@@ -168,7 +167,7 @@ public class WxAppAuth {
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
 
 		//添加用户个人角色信息
-        sessionUser.setUserType(userType);
+        sessionUser.setUserType(user.getUserType());
         if (userType == 0){
             sessionUser.setDoctorId(0);
             sessionUser.setPharmacistId(0);
@@ -192,7 +191,7 @@ public class WxAppAuth {
 
 	/**
 	 * 得到当前登录用户
-	 * 
+	 *
 	 * @return
 	 */
 	public WxAppSessionUser user() {

@@ -6,7 +6,7 @@ import lombok.Data;
  * @author yangpengcheng
  */
 @Data
-public class GoodsItem {
+public class SyncMedicalOrderGoodsItem {
     private String goodsCode;
     private double number;
 }
