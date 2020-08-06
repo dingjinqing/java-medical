@@ -328,7 +328,7 @@ public class PrescriptionDao extends ShopBaseDao {
     /**
      * 根据上次打开已开具页面查询是否有未读消息
      * @param timestamp 上次打开已开具页面时间
-     * @return Byte
+     * @return Boolean
      */
     public Boolean isExistAlreadyReadPrescription(String hospitalCode, Timestamp timestamp){
         Integer timestamps = db().selectCount().from(PRESCRIPTION)
@@ -338,7 +338,7 @@ public class PrescriptionDao extends ShopBaseDao {
             .and(PRESCRIPTION.SOURCE.eq(PrescriptionConstant.SOURCE_MP_SYSTEM))
             .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_PRESCRIBE))
             .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
-            .orderBy(PRESCRIPTION.CREATE_TIME.desc()).fetchAnyInto(Integer.class);
+            .fetchAnyInto(Integer.class);
         return timestamps == 0;
     }
 
@@ -346,7 +346,7 @@ public class PrescriptionDao extends ShopBaseDao {
      * 查询是否有医师未读已续方
      * @param hospitalCode 医师院内编码
      * @param timestamp 上次打开页面时间
-     * @return Byte
+     * @return Boolean
      */
     public Boolean isExistAlreadyReadContinuedPrescription(String hospitalCode, Timestamp timestamp){
         Integer timestamps = db().selectCount().from(PRESCRIPTION)
@@ -356,7 +356,7 @@ public class PrescriptionDao extends ShopBaseDao {
             .and(PRESCRIPTION.SOURCE.eq(PrescriptionConstant.SOURCE_MP_SYSTEM))
             .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_AUDIT))
             .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
-            .orderBy(PRESCRIPTION.CREATE_TIME.desc()).fetchAnyInto(Integer.class);
+            .fetchAnyInto(Integer.class);
         return timestamps == 0;
     }
 
