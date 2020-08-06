@@ -116,7 +116,7 @@ public class TitleService extends ShopBaseService{
 
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_TITLE_INFOS);
         TitleExternalRequestParam param =new TitleExternalRequestParam();
-        param.setStartTime(lastRequestTime);
+        param.setStartTime(null);
 
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
 

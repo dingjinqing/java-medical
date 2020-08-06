@@ -206,6 +206,9 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public List<Integer> getPrescriptionGoodsIdsByUserId(Integer userId) {
+        if (userId == null) {
+            return new ArrayList<>();
+        }
         UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(userId);
         return getPrescriptionGoodsIdsByUserPatient(userPatientParam);
     }

@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.title;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author chenjie
  */
@@ -14,4 +16,5 @@ public class TitleOneParam {
     private String name;
     private String code;
     private Byte isDelete=0;
+    private Timestamp createTime;
 }
