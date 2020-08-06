@@ -7,21 +7,16 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
-import com.vpu.mp.dao.foundation.transactional.DbTransactional;
-import com.vpu.mp.dao.foundation.transactional.DbType;
 import com.vpu.mp.dao.shop.medical.MedicalHistoryDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-
 import com.vpu.mp.service.pojo.shop.medicalhistory.*;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
