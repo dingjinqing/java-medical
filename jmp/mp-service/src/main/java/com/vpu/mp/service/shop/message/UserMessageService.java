@@ -109,7 +109,7 @@ public class UserMessageService extends ShopBaseService {
         ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
         imSessionUnReadMessageInfoParam.setDoctorId(doctorId);
         List<ImSessionUnReadInfoVo> unReadMessageInfo = imSessionService.getUnReadMessageInfo(imSessionUnReadMessageInfoParam);
-        Boolean existAlreadyReadImSession = unReadMessageInfo.isEmpty();
+        Boolean existAlreadyReadImSession = !unReadMessageInfo.isEmpty();
         doctorMessageCountVo.setAlreadyImSessionCount(existAlreadyReadImSession);
         // 待问诊记录
         doctorMessageCountVo.setNotImSessionCount(messageDao.countDoctorImMessageNum(doctorId));

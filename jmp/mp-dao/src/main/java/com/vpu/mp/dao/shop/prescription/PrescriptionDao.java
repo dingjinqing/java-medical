@@ -339,7 +339,7 @@ public class PrescriptionDao extends ShopBaseDao {
             .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_PRESCRIBE))
             .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
             .fetchAnyInto(Integer.class);
-        return timestamps == 0;
+        return timestamps != 0;
     }
 
     /**
@@ -357,7 +357,7 @@ public class PrescriptionDao extends ShopBaseDao {
             .and(PRESCRIPTION.AUDIT_TYPE.eq(PrescriptionConstant.PRESCRIPTION_AUDIT_TYPE_AUDIT))
             .and(PRESCRIPTION.DOCTOR_CODE.eq(hospitalCode))
             .fetchAnyInto(Integer.class);
-        return timestamps == 0;
+        return timestamps != 0;
     }
 
 
