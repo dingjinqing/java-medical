@@ -246,7 +246,8 @@ global.wxPage({
               sex: con.patientSex != 2 ? (con.patientSex == 0 ? '男' : '女') : '未知',
               age: con.patientAge,
               mess: con.descriptionDisease
-            }
+            },
+            system:false
           }
           that.setData({
             page_name: con.doctorName,
@@ -256,9 +257,7 @@ global.wxPage({
           if (that.data.first) {
             let imageUrl = JSON.parse(con.imageUrl);
             if (imageUrl != '') {
-              that.setData({
-                system_img: true
-              })
+              patient_message.system = true
               that.sendMessage(patient_message, 3)
               imageUrl.forEach(function (val, index) {
                 let img = {
@@ -293,8 +292,8 @@ global.wxPage({
             that.setData({
               sessionId: res.content
             })
-            let resData = await that.requestDetail(orderSn)
-            if (resData) resolve(res)
+            if (that.data.firstLoad) await that.requestDetail(orderSn)
+            resolve(res)
           }
         }, {
           orderSn: this.data.orderSn,
