@@ -16,7 +16,7 @@
       <image class="image" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
       <text>首页</text>
     </view> -->
-    <view class="small_view" bindtap="backHome">
+    <view class="small_view" bindtap="viewDoctorConsultation">
       <image class="image" src="{{imageUrl}}image/wxapp/item-icon1.png"></image>
       <text>在线开方</text>
     </view>
