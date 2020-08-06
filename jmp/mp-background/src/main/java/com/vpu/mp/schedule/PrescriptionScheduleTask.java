@@ -12,25 +12,24 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author yangpengcheng
- * @date 2020/7/23
+ * @date 2020/8/6
  **/
 @Component
 @EnableScheduling
 @EnableAsync
 @ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
-public class InquiryOrderScheduleTask {
+public class PrescriptionScheduleTask {
     @Autowired
     private SaasApplication saas;
 
     /**
-     * 关闭超时待接诊订单
+     * 过期的处方
      */
     @Scheduled(cron = "0 */1 * * * ?")
-    public void closeToWaitingInquiryOrder(){
+    public void expirePrescription(){
         Result<ShopRecord> shops = saas.shop.getAll();
-        shops.forEach((shop)->{
-            saas.getShopApp(shop.getShopId()).inquiryOrderTaskService.closeToWaitingInquiryOrder();
-            saas.getShopApp(shop.getShopId()).inquiryOrderTaskService.close();
+        shops.forEach(shopRecord -> {
+            saas.getShopApp(shopRecord.getShopId()).prescriptionTaskService.expiredPrescription();
         });
     }
 }

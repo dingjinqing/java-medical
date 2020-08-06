@@ -390,4 +390,15 @@ public class PrescriptionDao extends ShopBaseDao {
          where.orderBy(PRESCRIPTION.CREATE_TIME.desc());
         return getPageResult(where,param,PrescriptionParam.class);
     }
+
+    /**
+     * 获取所有过期的处方
+     * @return
+     */
+    public List<PrescriptionDo> getAllExpiredPrescription(){
+        return db().select().from(PRESCRIPTION)
+            .where(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.lt(DateUtil.date().toTimestamp()))
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .fetchInto(PrescriptionDo.class);
+    }
 }
