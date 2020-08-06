@@ -53,7 +53,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('actionRecord.optionTime')+'：'">
+          <el-form-item label="发送时间:">
             <div class="block">
               <el-date-picker
                 v-model="startCreateTime"

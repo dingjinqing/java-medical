@@ -117,3 +117,12 @@ export function getSmsPayListPage (data) {
     method: 'post'
   })
 }
+
+// 创建短信账号
+export function setSmsAccount (data) {
+  return service({
+    url: '/api/admin/sms/account/create',
+    data,
+    method: 'post'
+  })
+}

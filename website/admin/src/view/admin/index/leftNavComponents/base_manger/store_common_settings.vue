@@ -713,20 +713,35 @@
           </div>
         </li>
         <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>{{$t('storeCommonSettings.smsSettings')}}</span>
+          </div>
           <template v-if="info.sms_account">
-            <div class="text-prompt">
-              <span class="blue_border"></span>
-              <span>{{$t('storeCommonSettings.smsSettings')}}</span>
-            </div>
+
             <div class="text-set">
               <p>
-                {{$t('storeCommonSettings.currentRecharge')}}： <span class="bold">{{info.sms_account.companyName}}</span>， {{$t('storeCommonSettings.balance')}}： <span class="bold">￥{{info.sms_account.balance}}</span>， {{$t('storeCommonSettings.numMessages')}}： <span class="bold">{{info.sms_account.smsNum}} </span>
+                {{$t('storeCommonSettings.currentRecharge')}}： <span class="bold">{{info.sms_account.smsAccount}}</span>， {{$t('storeCommonSettings.balance')}}： <span class="bold">￥{{info.sms_account.balance}}</span>， {{$t('storeCommonSettings.numMessages')}}： <span class="bold">{{info.sms_account.smsNum}} </span>
                 <a
                   target="_blank"
-                  :href="info.sms_account.rechargeUrl+ '?sms_account=' + info.sms_account.companyName"
+                  :href="info.sms_account.rechargeUrl+ '?sms_account=' + info.sms_account.smsAccount"
                   style="color: #5a8bff; cursor: pointer;"
                 >{{$t('storeCommonSettings.gotoRecharge')}}</a>
               </p>
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-set">
+              <el-input
+                size="small"
+                style="width: 150px;"
+                v-model="sid"
+                placeholder="请输入账号"
+              ></el-input>
+              <span
+                style="cursor:pointer;color:#66b1ff;"
+                @click="createSmsAccount"
+              >创建账号</span>
             </div>
           </template>
         </li>
@@ -751,7 +766,7 @@
 </template>
 
 <script>
-import { getCommonInfo, updateCommonInfo } from '@/api/admin/basicConfiguration/shopConfig'
+import { getCommonInfo, updateCommonInfo, setSmsAccount } from '@/api/admin/basicConfiguration/shopConfig'
 import { getCateList } from '@/api/admin/storeManage/storeGoods'
 
 export default {
@@ -794,7 +809,8 @@ export default {
         } // 店铺商品分享配置
       },
       catIds: [],
-      tuneUp: false
+      tuneUp: false,
+      sid: null
     }
   },
   computed: {
@@ -848,6 +864,27 @@ export default {
     shareImgSelectHandle (img) {
       console.log('img: ', img)
       this.$set(this.info.share_config, 'share_img', img.imgPath)
+    },
+    createSmsAccount () {
+      if (!this.sid) return false
+      setSmsAccount({ sid: this.sid }).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let data = JSON.parse(res.content)
+          console.log(data)
+          if (data.code === 0) {
+            this.$set(this.info, 'sms_account', {
+              smsAccount: this.sid,
+              balance: 0.000,
+              smsNumL: 0
+            })
+          } else {
+            this.$message.error({
+              message: data.msg
+            })
+          }
+        }
+      })
     },
     // 保存
     saveCommonInfoHandle () {
