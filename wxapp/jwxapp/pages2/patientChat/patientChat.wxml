@@ -51,8 +51,6 @@
 
 			</chat-message>
 		</block>
-		<view class="">
-		</view>
 	</view>
 	<chat-input source="patient" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
   </chat-input>

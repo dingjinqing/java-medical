@@ -1,7 +1,7 @@
 <template>
   <div class="pageClassification">
     <div class="pageClassificationContent">
-      <div class="main">
+      <!-- <div class="main">
         <el-row>
           <el-col :span='24'>
             <el-form label-width="100px">
@@ -32,7 +32,7 @@
                         type="primary"
                         size="small"
                         @click="handleQuery"
-                      >{{$t('pageClassification.query')}}
+                      >查询
                       </el-button>
                     </div>
                   </div>
@@ -58,7 +58,7 @@
             </el-form>
           </el-col>
         </el-row>
-      </div>
+      </div> -->
       <div class="table_list">
         <el-table
           class="version-manage-table"
@@ -75,8 +75,8 @@
           >
           </el-table-column>
           <el-table-column
-            prop="subPageCount"
-            label="包含职称人数"
+            prop="code"
+            label="职称代码"
             align="center"
           >
           </el-table-column>
@@ -86,26 +86,26 @@
             align="center"
           >
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="receiveNum"
             :label="$t('pageClassification.operate')"
             align="center"
-          >
-            <template slot-scope="scope">
-              <a
+          > -->
+            <!-- <template slot-scope="scope"> -->
+              <!-- <a
                 style="color: #5A8BFF;margin-right:10px;cursor: pointer;"
                 @click="handleEdit(scope.row)"
-              >{{$t('pageClassification.edit')}}</a>
-              <a
+              >编辑</a> -->
+              <!-- <a
                 style="color: #5A8BFF;margin-right:10px;cursor: pointer;"
                 @click="removeCatergory(scope.row)"
-              >{{$t('pageClassification.remove')}}</a>
+              >删除</a> -->
               <!-- <a
                 style="color: #5A8BFF;cursor: pointer;"
                 @click="jumpCatergory(scope.row, $event)"
               >查看详情</a> -->
-            </template>
-          </el-table-column>
+            <!-- </template> -->
+          <!-- </el-table-column> -->
 
         </el-table>
         <div class="footer">
@@ -139,11 +139,11 @@
               size="small"
               @click="dialogVisible = false"
             >{{$t('pageClassification.cancel')}}</el-button>
-            <el-button
+            <!-- <el-button
               type="primary"
               size="small"
               @click="addCatergory"
-            >{{$t('pageClassification.confirm')}}</el-button>
+            >{{$t('pageClassification.confirm')}}</el-button> -->
           </span>
         </el-dialog>
       </div>
@@ -152,11 +152,8 @@
 </template>
 <script>
 import {
-  getPageclassificationData,
-  addPageclassification,
-  updateCategoryName,
-  deleteCategoryById
-} from '@/api/admin/smallProgramManagement/pageClassification/pageClassification'
+  getProfessionTitle
+} from '@//api/admin/doctorManage/doctorInfo/doctor'
 import pagination from '@/components/admin/pagination/pagination.vue'
 
 export default {
@@ -168,11 +165,11 @@ export default {
     return {
       requestParams: {
         keywords: null,
-        pageRows: 3,
+        pageRows: 20,
         currentPage: 1
       },
       pageParams: {
-        pageRows: 3,
+        pageRows: 20,
         currentPage: 1
       },
       requestFrom: {
@@ -195,7 +192,7 @@ export default {
     handleQuery () {
       this.loading = true
       let params = Object.assign({}, this.requestParams, this.pageParams)
-      getPageclassificationData(params).then(res => {
+      getProfessionTitle(params).then(res => {
         this.loading = false
         console.log(res)
         this.pageParams = res.content.page
@@ -207,35 +204,35 @@ export default {
         console.log(err)
       })
     },
-    addCatergory () {
-      addPageclassification(this.requestFrom).then(res => {
-        console.log(res)
-        this.handleQuery()
-        this.requestParams.keywords = null
-      }).catch(err => console.log(err))
-      this.dialogVisible = false
-    },
-    editCatergory (row) {
-      console.log('editCatergory', row)
-      updateCategoryName({ pageId: row.id, pageName: row.name }).then(res => {
-        console.log(res)
-        this.handleQuery()
-        row.popover = false
-      }).catch(err => console.log(err))
-    },
-    removeCatergory (row) {
-      this.$confirm(this.$t('pageClassification.deleteConfirm'), {
-        confirmButtonText: this.$t('pageClassification.confirm'),
-        cancelButtonText: this.$t('pageClassification.cancel'),
-        type: 'warning'
-      }).then(() => {
-        deleteCategoryById({ pageId: row.id }).then(res => {
-          console.log(res)
-          this.handleQuery()
-        }).catch(err => console.log(err))
-      }).catch(() => {
-      })
-    },
+    // addCatergory () {
+    //   addPageclassification(this.requestFrom).then(res => {
+    //     console.log(res)
+    //     this.handleQuery()
+    //     this.requestParams.keywords = null
+    //   }).catch(err => console.log(err))
+    //   this.dialogVisible = false
+    // },
+    // editCatergory (row) {
+    //   console.log('editCatergory', row)
+    //   updateCategoryName({ pageId: row.id, pageName: row.name }).then(res => {
+    //     console.log(res)
+    //     this.handleQuery()
+    //     row.popover = false
+    //   }).catch(err => console.log(err))
+    // },
+    // removeCatergory (row) {
+    //   this.$confirm(this.$t('pageClassification.deleteConfirm'), {
+    //     confirmButtonText: this.$t('pageClassification.confirm'),
+    //     cancelButtonText: this.$t('pageClassification.cancel'),
+    //     type: 'warning'
+    //   }).then(() => {
+    //     deleteCategoryById({ pageId: row.id }).then(res => {
+    //       console.log(res)
+    //       this.handleQuery()
+    //     }).catch(err => console.log(err))
+    //   }).catch(() => {
+    //   })
+    // },
     jumpCatergory (row, e) {
       e.preventDefault()
       console.log(row)
