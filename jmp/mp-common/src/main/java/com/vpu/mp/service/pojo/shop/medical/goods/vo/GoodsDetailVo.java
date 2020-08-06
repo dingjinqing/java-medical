@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -34,6 +35,8 @@ public class GoodsDetailVo {
     private Integer limitMaxNum;
     private Byte isCardExclusive;
     private Byte isOnSale;
+    private Byte saleType;
+    private Timestamp saleTime;
     private String goodsImg;
     private String goodsAd;
     private String goodsDesc;

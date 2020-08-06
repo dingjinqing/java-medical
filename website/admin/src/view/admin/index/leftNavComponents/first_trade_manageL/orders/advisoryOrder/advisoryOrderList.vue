@@ -202,7 +202,6 @@ export default {
         console.log(res)
         let oriData = JSON.parse(JSON.stringify(res.content.dataList))
         for (let i in oriData) {
-          oriData[i].createTime = oriData[i].createTime.substr(0, 10)
           oriData[i].orderStatusName = this.getStatusName(oriData[i].orderStatus)
         }
         this.tableData = oriData

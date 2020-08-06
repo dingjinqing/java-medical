@@ -338,6 +338,12 @@ public class InquiryOrderService extends ShopBaseService {
     public Workbook orderStatisticsExport(InquiryOrderStatisticsParam param, String lang){
         beginAndEndOfDay(param);
         List<InquiryOrderStatisticsVo> list=inquiryOrderDao.orderStatistics(param);
+        list.forEach(orderStatisticsVo->{
+            DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
+            DepartmentOneParam dept=departmentDao.getOneInfo(orderStatisticsVo.getDepartmentId());
+            orderStatisticsVo.setDoctorName(doctor.getName());
+            orderStatisticsVo.setDepartmentName(dept.getName());
+        });
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);

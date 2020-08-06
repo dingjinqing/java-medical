@@ -50,8 +50,8 @@
                 <view class="line_content has_two">
                   <view class="">曾服用过本药品：</view>
                   <view class="has_iconfont">
-                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isUsed == true ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 是</view>
-                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isUsed == false ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 否</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isUsed == true ? 'icondanxuan':'iconjinyong'}}"></text> 是</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isUsed == false ? 'icondanxuan':'iconjinyong'}}"></text> 否</view>
                   </view>
                 </view>
               </view>
@@ -60,8 +60,8 @@
                 <view class="line_content has_two">
                   <view class="">有无不良反应：</view>
                   <view class="has_iconfont">
-                    <view><text class="iconfont {{item.medicalHistory.patientComplain.hasBadReaction == true ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 是</view>
-                    <view><text class="iconfont {{item.medicalHistory.patientComplain.hasBadReaction == false ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 否</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.hasBadReaction == true ? 'icondanxuan':'iconjinyong'}}"></text> 是</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.hasBadReaction == false ? 'icondanxuan':'iconjinyong'}}"></text> 否</view>
                   </view>
                 </view>
               </view>
@@ -70,8 +70,8 @@
                 <view class="line_content has_two">
                   <view class="">是否妊娠哺乳：</view>
                   <view class="has_iconfont">
-                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isGravida == true ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 是</view>
-                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isGravida == false ? 'icondanxuan':'icondanxuanbiankuang'}}"></text> 否</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isGravida == true ? 'icondanxuan':'iconjinyong'}}"></text> 是</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isGravida == false ? 'icondanxuan':'iconjinyong'}}"></text> 否</view>
                   </view>
                 </view>
               </view>

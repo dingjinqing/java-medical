@@ -10,7 +10,7 @@
 	<slot name="system_info" />
 </view>
 <block wx:if='{{chatContent.position == 1}}'>
-	<view wx:if='{{(chatContent.messageInfo.type === 3 && !systemImg ) || chatContent.messageInfo.message.system }}'>
+	<view wx:if='{{(chatContent.messageInfo.type === 3 && !chatContent.messageInfo.message.system ) || (chatContent.messageInfo.type === 1 && chatContent.messageInfo.message.system) }}'>
 		<view class="system_info">
 			{{systemInfo}}
 		</view>

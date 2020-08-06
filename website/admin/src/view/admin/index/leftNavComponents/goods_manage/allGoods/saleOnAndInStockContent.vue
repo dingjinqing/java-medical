@@ -47,6 +47,8 @@
                   <!--class="goodsSourceSpanWrap"-->
                 <!--&gt;{{scope.row.goodsTypeName}}</span>-->
                 <span v-html="scope.row.goodsName"></span>
+                <br/>
+                {{scope.row.goodsQualityRatio}}
               </div>
             </div>
           </template>
@@ -98,25 +100,17 @@
         />
         <el-table-column
           align="center"
-          label="是否药品">
+          label="药品/处方">
           <template slot-scope="{row}">
-            {{row.isMedical?'是':'否'}}
+            是否药品:{{row.isMedical?'是':'否'}}
+            <br/>
+            是否处方:{{row.isRx?'是':'否'}}
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           prop="goodsCommonName"
           label="药品通用名"
-        />
-        <el-table-column
-          align="center"
-          prop="goodsAliasName"
-          label="药品别名"
-        />
-        <el-table-column
-          align="center"
-          prop="goodsQualityRatio"
-          label="规格系数"
         />
         <!--商家分类-->
         <el-table-column
@@ -168,15 +162,6 @@
                       class="editInput"
               />
             </template>
-          </template>
-        </el-table-column>
-        <!--处方药-->
-        <el-table-column
-          align="center"
-          prop="goodsQualityRatio"
-          label="处方药">
-          <template slot-scope="{row}">
-            {{row.isRx?'是':'否'}}
           </template>
         </el-table-column>
         <!--销售数量-->
