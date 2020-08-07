@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.order.analysis;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * 拼团报表 计算销售额bo类
@@ -27,7 +27,7 @@ public class ActiveDiscountMoney {
     /**
      * 客单价
      */
-    public static final String ORDER_AVG ="orderAmountAvg";
+    public static final String ORDER_AVG ="orderAvg";
     /**
      * 药品销售金额
      */

@@ -1,9 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.report;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.common.foundation.excel.annotation.ExcelDynamicColumn;
 import com.vpu.mp.common.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
