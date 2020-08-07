@@ -186,7 +186,8 @@ global.wxPage({
         })
       }
     }, {
-      ...this.data.pageParams
+      ...this.data.pageParams,
+      userId:util.getCache('user_id')
     })
   },
   toChat(e) {
