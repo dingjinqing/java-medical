@@ -4,6 +4,9 @@
 	<view class="main-container" bindtap="hideMoreActions">
 		<!-- <chat-date send-time='{{time}}' /> -->
 		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
+			<view class="system_info" wx:if="{{idx === 0}}">
+				【系统提示】根据相关规定，不得对首诊患者开展互联网诊疗活动，请问询确定后再对患者进行开方。
+			</view>
 			<chat-message chat-content='{{item}}' is-doctor="{{true}}">
 				<view slot='origin_message' class="origin_message {{item.position == 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 0}}'>
 					{{item.messageInfo.message.content}}
