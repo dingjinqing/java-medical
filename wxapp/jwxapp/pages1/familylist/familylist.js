@@ -74,6 +74,9 @@ global.wxPage({
         if(res.error == 0){
           util.toast_success('删除成功!')
           this.requestList()
+        } else {
+          util.showModal('提示', res.message)
+          return false
         }
       },{
         userId: util.getCache('user_id'),

@@ -63,15 +63,21 @@ global.wxPage({
     util.jumpLink('/pages/orderinfo/orderinfo?orderSn=' + e.currentTarget.dataset.order)
   },
   delete_this (e) {
-    let from = e.currentTarget.dataset.form;
-    util.api('/api/wxapp/message/delete', res => {
-      if(res.error == 0) {
-        this.data.system_notice = [];
-        this.data.order_message = [];
-        this.data.advisory_list = [];
-        this.requestList()
-      }
-    },{messageId: e.currentTarget.dataset.mes_id})
+    util.showModal('提示', '确定要删除此消息吗？', () => {
+      util.api('/api/wxapp/message/delete', res => {
+        if(res.error == 0) {
+          util.toast_success('删除成功')
+          this.data.system_notice = [];
+          this.data.order_message = [];
+          this.data.advisory_list = [];
+          this.requestList()
+        }else {
+          util.showModal('提示', res.message)
+          return false
+        }
+      },{messageId: e.currentTarget.dataset.mes_id})
+    }, true, '取消', '删除')
+    
   },
   requestList () {
     util.api('/api/wxapp/message/list', res => {
