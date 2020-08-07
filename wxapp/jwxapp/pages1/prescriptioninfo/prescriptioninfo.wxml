@@ -34,7 +34,7 @@
             <text class="list-item-dot"></text>
             <view class="list-item-content">诊断</view>
           </view>
-          <view class="list_content">{{prescriptionInfo.diagnosisDetail}}</view>
+          <view class="list_content">{{prescriptionInfo.diagnosisName}}</view>
           <view class="list-item">
             <text class="list-item-dot"></text>
             <view class="list-item-content">治疗建议</view>

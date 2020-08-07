@@ -8,9 +8,9 @@
       </view>
       <view class="item-list-content">
         <view class="each_line has_three">
-          <view>姓名：<text class="bold">{{page_info.patient.name}}</text></view>
-          <view>年龄：<text class="bold">{{page_info.patient.age}}岁</text></view>
-          <view>性别：<text class="bold">{{page_info.patient.sex == 1 ? '女':'男'}}</text></view>
+          <view>姓名：<text class="bold">{{page_info.medicalHistory.patientName}}</text></view>
+          <view>年龄：<text class="bold">{{page_info.medicalHistory.age}}岁</text></view>
+          <view>性别：<text class="bold">{{page_info.medicalHistory.sex == 1 ? '女':'男'}}</text></view>
         </view>
         <view class="each_line">
           <view class="line_tit">科室：</view>
@@ -32,7 +32,7 @@
         <view class="each_line">治疗建议：<text class="bold">{{page_info.advice}}</text></view>
         <view class="special_one">
           <view class="spe_tit">医嘱：</view>
-          <textarea placeholder="默认显示药品用法用量，医生手动修改" placeholder-class="place" value='{{doctorAdvice}}' bindblur="adviInput"></textarea>
+          <textarea placeholder="默认显示药品用法用量，医生手动修改" placeholder-class="place" value='{{doctorAdvice}}' bindblur="adviInput" bindinput="adviInput"></textarea>
         </view>
       </view>
       <view class="doctor-info">

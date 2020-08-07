@@ -40,7 +40,7 @@ page{
   text-align: center;
   line-height: 80rpx;
   font-size: 28rpx;
-  margin: 40rpx auto 0;
+  margin: 10rpx auto 0;
 }
 .modal_bg{
   position: fixed;
@@ -65,6 +65,7 @@ page{
 .modal_info .modal_text{
   max-height: 600rpx;
   overflow-y: scroll;
+  padding: 30rpx 0;
 }
 .modal_btn_group{
   display: flex;
@@ -109,4 +110,15 @@ page{
 }
 .mobile-input{
   width: 270rpx;
+}
+.add_tips{
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40rpx;
+}
+.add_tips image{
+  width: 30rpx;
+  height: 30rpx;
 }
