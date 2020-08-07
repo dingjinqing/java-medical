@@ -141,7 +141,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80rpx;
+  height: 90rpx;
 }
 .pay_type_item:last-of-type{
   justify-content: flex-end;
@@ -172,7 +172,7 @@
 }
 .pay_content > .pay_list_item{
   display: flex;
-  height: 80rpx;
+  height: 90rpx;
   align-items: center;
   font-size: 26rpx;
   justify-content: space-between;
@@ -208,7 +208,7 @@
   border-radius: 16rpx;
   position: relative;
   z-index: 2;
-  line-height: 80rpx;
+  line-height: 90rpx;
 }
 .checkout_detail > .detail_item{
   display: flex;
@@ -249,7 +249,7 @@
 }
 .shipping_method_content{
   display: flex;
-  line-height: 80rpx;
+  line-height: 90rpx;
   height: 82rpx;
   background-color: #fff;
   margin: 0 auto;
@@ -355,8 +355,8 @@
   color: #ff6660;
   font-size: 24rpx;
   padding-left: 30rpx;
-  height: 80rpx;
-  line-height: 80rpx;
+  height: 90rpx;
+  line-height: 90rpx;
 }	
 .top-bg-style{
   position: absolute;
@@ -385,7 +385,7 @@
   border-radius: 16rpx;
   display: flex;
   background-color: #FFF4E3;
-  height: 80rpx;
+  height: 90rpx;
   align-items: center;
   position: relative;
   z-index: 2;
