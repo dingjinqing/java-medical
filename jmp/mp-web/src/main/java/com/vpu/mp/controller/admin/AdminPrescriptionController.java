@@ -1,8 +1,8 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,8 +28,17 @@ public class AdminPrescriptionController extends AdminBaseController {
      * @param param
      */
     @PostMapping(value = "/api/admin/prescription/list")
-    public JsonResult listPageResult(@RequestBody @Validated PrescriptionListParam param){
+    public JsonResult listPageResult(@RequestBody  PrescriptionListParam param){
         return success(prescriptionService.listPageResult(param));
+    }
+
+    /**
+     * 处方分页
+     * @param param
+     */
+    @PostMapping(value = "/api/admin/prescription/patient/list")
+    public JsonResult listPatientPageResult(@RequestBody @Validated PrescriptionPatientListParam param){
+        return success(prescriptionService.listPatientPageResult(param));
     }
 
     /**

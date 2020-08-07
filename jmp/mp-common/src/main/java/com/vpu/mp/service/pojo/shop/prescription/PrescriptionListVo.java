@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 
 public class PrescriptionListVo {
 
+    private String name;
+
     /**
      * 处方号
      */
