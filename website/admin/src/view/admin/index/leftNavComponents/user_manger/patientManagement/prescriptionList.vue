@@ -49,7 +49,7 @@
             }"
         >
           <el-table-column
-            prop='prescriptionNo'
+            prop='prescriptionCode'
             label='处方号'
           ></el-table-column>
           <el-table-column

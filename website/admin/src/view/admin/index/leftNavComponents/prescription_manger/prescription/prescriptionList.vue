@@ -18,8 +18,12 @@
             }"
         >
           <el-table-column
-            prop='prescriptionNo'
-            label='处方号'
+            prop='name'
+            label='患者姓名'
+          ></el-table-column>
+          <el-table-column
+                  prop='prescriptionCode'
+                  label='处方号'
           ></el-table-column>
           <el-table-column
             prop='departmentName'

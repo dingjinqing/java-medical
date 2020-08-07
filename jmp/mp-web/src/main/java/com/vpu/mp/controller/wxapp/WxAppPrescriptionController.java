@@ -4,11 +4,10 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppBatchAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartGoodsResultVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -18,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -39,7 +37,7 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      * 获取处方类表
      */
     @PostMapping("/list")
-    public JsonResult listPageResultWx(@RequestBody @Validated PrescriptionListParam param){
+    public JsonResult listPageResultWx(@RequestBody @Validated PrescriptionPatientListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
         return success(prescriptionService.listPageResultWx(param));

@@ -334,6 +334,10 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(time,PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
         prescriptionVo.setIsValid(BaseConstant.YES);
         prescriptionVo.setIsUsed(BaseConstant.YES);
+        prescriptionVo.setDiagnoseTime(null);
+        prescriptionVo.setPrescriptionCreateTime(null);
+        prescriptionVo.setCreateTime(null);
+        prescriptionVo.setUpdateTime(null);
         prescriptionDao.save(prescriptionVo);
         return prescriptionVo;
     }

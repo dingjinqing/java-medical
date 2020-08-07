@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.report;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
-import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
@@ -13,10 +12,6 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import com.vpu.mp.service.pojo.shop.market.presale.OrderExcelVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import com.vpu.mp.service.pojo.shop.report.MedicalSalesReportParam;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -31,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 药品销售报表
@@ -59,6 +53,9 @@ public class MedicalSalesReportService extends ShopBaseService {
              DateTime date = DateUtil.date();
              endDate = DateUtil.endOfDay(date).toTimestamp();
              startDate = DateUtil.beginOfMonth(date).toTimestamp();
+         }else {
+             startDate = DateUtil.beginOfDay(startDate).toTimestamp();
+             endDate = DateUtil.endOfDay(endDate).toTimestamp();
          }
          long totalRows = DateUtil.between(startDate, endDate, DateUnit.DAY)+1;
          startDate = DateUtils.getTimeStampPlus(startDate, (param.getCurrentPage() - 1) * param.getPageRows(), ChronoUnit.DAYS);

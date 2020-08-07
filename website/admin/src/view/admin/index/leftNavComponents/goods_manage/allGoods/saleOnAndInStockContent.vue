@@ -32,22 +32,22 @@
             <div class="nameImgWrap">
               <img
                 class="imgItem"
-                :src="$imageHost+'/'+scope.row.goodsImg"
+                :src="$imageHost+'/'+(scope.row.goodsImg||goodDefaultImgUrl)"
               >
               <div
                 class="nameItem"
                 :title="scope.row.goodsName"
               >
                 <!--<span-->
-                  <!--v-if="scope.row.sourceName !== null"-->
-                  <!--class="goodsTypeSpanWrap"-->
+                <!--v-if="scope.row.sourceName !== null"-->
+                <!--class="goodsTypeSpanWrap"-->
                 <!--&gt;{{scope.row.sourceName}}</span>-->
                 <!--<span-->
-                  <!--v-if="scope.row.goodsTypeName !== null"-->
-                  <!--class="goodsSourceSpanWrap"-->
+                <!--v-if="scope.row.goodsTypeName !== null"-->
+                <!--class="goodsSourceSpanWrap"-->
                 <!--&gt;{{scope.row.goodsTypeName}}</span>-->
                 <span v-html="scope.row.goodsName"></span>
-                <br/>
+                <br />
                 {{scope.row.goodsQualityRatio}}
               </div>
             </div>
@@ -100,110 +100,34 @@
         />
         <el-table-column
           align="center"
-          label="药品/处方">
+          label="药品/处方"
+          width="110"
+        >
           <template slot-scope="{row}">
-            是否药品:{{row.isMedical?'是':'否'}}
-            <br/>
-            是否处方:{{row.isRx?'是':'否'}}
+            {{row.isMedical?'是':'否'}}/{{row.isRx?'是':'否'}}
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           prop="goodsCommonName"
           label="药品通用名"
+          width="120"
         />
         <!--商家分类-->
         <el-table-column
-                align="center"
-                prop="sortName"
-                :label="$t('allGoods.allGoodsData.sort')"
-                width="120"
+          align="center"
+          prop="sortName"
+          :label="$t('allGoods.allGoodsData.sort')"
+          width="120"
         />
         <!--商品品牌-->
         <el-table-column
-                align="center"
-                prop="brandName"
-                :label="$t('allGoods.allGoodsData.goodsBrand')"
-                width="120"
-        >
-        </el-table-column>
-        <!--商品库存-->
-        <el-table-column
-                prop="goodsNumber"
-                sortable="custom"
-                align="center"
-                :label="$t('allGoods.allGoodsData.goodsNumber')"
-                width="130"
-        >
-          <template slot-scope="{row,$index}">
-            <span v-if="row.isDefaultProduct === 0">
-              {{row.goodsNumber}}
-              <span
-                      class="iconfont iconbianji"
-                      style="margin-left: 10px;font-size:20px"
-                      @click="goodsNumEditClick(row)"
-              ></span>
-            </span>
-            <template v-else>
-              <span v-if="!row.goodsNumberEdit">
-                {{row.goodsNumber}}
-                <span
-                        class="iconfont iconbianji"
-                        style="margin-left: 10px; font-size:20px"
-                        @click="shopPriceAndGoodsNumberEditClick(row,'number')"
-                ></span>
-              </span>
-              <input
-                      v-else
-                      :id="'goodsNumber_'+row.goodsId"
-                      v-model.number="row.goodsNumberOld"
-                      @change="goodsNumberChange(row,$index)"
-                      @blur="row.goodsNumberEdit = false"
-                      class="editInput"
-              />
-            </template>
-          </template>
-        </el-table-column>
-        <!--销售数量-->
-        <el-table-column
-          prop="goodsSaleNum"
-          sortable="custom"
           align="center"
-          width="100"
-          :label="$t('allGoods.allGoodsData.saleNumber')"
-        />
-        <!--标签-->
-        <el-table-column
-          align="center"
-          :label="$t('allGoods.allGoodsData.goodsLabel')"
+          prop="brandName"
+          :label="$t('allGoods.allGoodsData.goodsBrand')"
           width="120"
         >
-          <template slot-scope="{row}">
-            <div
-              v-if="row.goodsNormalLabels.length + row.goodsPointLabels.length > 0"
-              class="goodsLabelSpanWrap"
-            >
-              <div v-if="row.goodsPointLabels.length > 0">
-                {{row.goodsPointLabels[0].name}}
-              </div>
-              <div v-if="row.goodsPointLabels.length === 0 && row.goodsNormalLabels.length > 0">
-                {{row.goodsNormalLabels[0].name}}
-              </div>
-              <div style="text-align: center;">
-                共{{row.goodsNormalLabels.length + row.goodsPointLabels.length }}个
-              </div>
-            </div>
-            <div
-              style="cursor: pointer;text-align: center;margin-top: 2px;color: #5a8bff;"
-              @click="tdLabelSetClick(row)"
-            >
-              {{$t('allGoods.allGoodsData.setting')}}
-            </div>
-          </template>
         </el-table-column>
-        <!--供应商-->
-        <el-table-column align="center" label="供应商" prop="goodsProductionEnterprise"/>
-
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.operate')"
@@ -265,6 +189,87 @@
                 @click="deleteIconClick(row,$index)"
               ></span>
             </el-tooltip>
+          </template>
+        </el-table-column>
+        <!--销售数量-->
+        <el-table-column
+          prop="goodsSaleNum"
+          sortable="custom"
+          align="center"
+          width="100"
+          :label="$t('allGoods.allGoodsData.saleNumber')"
+        />
+        <!--标签-->
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.goodsLabel')"
+          width="120"
+        >
+          <template slot-scope="{row}">
+            <div
+              v-if="row.goodsNormalLabels.length + row.goodsPointLabels.length > 0"
+              class="goodsLabelSpanWrap"
+            >
+              <div v-if="row.goodsPointLabels.length > 0">
+                {{row.goodsPointLabels[0].name}}
+              </div>
+              <div v-if="row.goodsPointLabels.length === 0 && row.goodsNormalLabels.length > 0">
+                {{row.goodsNormalLabels[0].name}}
+              </div>
+              <div style="text-align: center;">
+                共{{row.goodsNormalLabels.length + row.goodsPointLabels.length }}个
+              </div>
+            </div>
+            <div
+              style="cursor: pointer;text-align: center;margin-top: 2px;color: #5a8bff;"
+              @click="tdLabelSetClick(row)"
+            >
+              {{$t('allGoods.allGoodsData.setting')}}
+            </div>
+          </template>
+        </el-table-column>
+        <!--供应商-->
+        <el-table-column
+          align="center"
+          label="供应商"
+          prop="goodsProductionEnterprise"
+        />
+
+        <!--商品库存-->
+        <el-table-column
+          prop="goodsNumber"
+          sortable="custom"
+          align="center"
+          :label="$t('allGoods.allGoodsData.goodsNumber')"
+          width="130"
+        >
+          <template slot-scope="{row,$index}">
+            <span v-if="row.isDefaultProduct === 0">
+              {{row.goodsNumber}}
+              <span
+                class="iconfont iconbianji"
+                style="margin-left: 10px;font-size:20px"
+                @click="goodsNumEditClick(row)"
+              ></span>
+            </span>
+            <template v-else>
+              <span v-if="!row.goodsNumberEdit">
+                {{row.goodsNumber}}
+                <span
+                  class="iconfont iconbianji"
+                  style="margin-left: 10px; font-size:20px"
+                  @click="shopPriceAndGoodsNumberEditClick(row,'number')"
+                ></span>
+              </span>
+              <input
+                v-else
+                :id="'goodsNumber_'+row.goodsId"
+                v-model.number="row.goodsNumberOld"
+                @change="goodsNumberChange(row,$index)"
+                @blur="row.goodsNumberEdit = false"
+                class="editInput"
+              />
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -535,6 +540,7 @@ export default {
   },
   data () {
     return {
+      goodDefaultImgUrl: 'image/admin/medicalGodsDefault.jpg',
       setupCondition: {}, // 批量处理筛选条件
       filterData: {},
       filterDataString: {}, // 用于导出时展示已选条件
@@ -1090,7 +1096,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 /deep/.tableClass th {
   background-color: #f5f5f5;
   border: none;
@@ -1104,7 +1110,7 @@ export default {
   text-align: left;
 }
 .nameImgWrap::after {
-  content: "";
+  content: '';
   display: block;
   clear: both;
 }

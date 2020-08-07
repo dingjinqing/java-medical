@@ -5131,9 +5131,14 @@ CREATE TABLE `b2c_order_medical_history` (
     `age` int(11) NOT NULL DEFAULT '0' COMMENT '年龄',
     `patient_complain` varchar(512) NOT NULL DEFAULT '' COMMENT '患者主诉',
     `disease_history` varchar(1000) NOT NULL DEFAULT '' COMMENT '历史诊断',
+    `allergy_history` varchar(64) NOT NULL DEFAULT '' COMMENT '过敏史',
+    `family_disease_history` varchar(64) NOT NULL DEFAULT '' COMMENT '家族病史',
+    `gestation_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳',
+    `kidney_function_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '肾功能:0:未知，1：正常，2：异常',
+    `liver_function_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '肝功能:0:未知，1：正常，2：异常',
     `images_list` varchar(512) NOT NULL DEFAULT '' COMMENT '图片地址',
     `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`id`)
-) comment ='充值记录表';
+) comment ='患者订单历史病例表';

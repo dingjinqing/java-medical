@@ -49,4 +49,7 @@ public class MedicalGoodsConstant {
 
     /**药品默认数量*/
     public static final Integer MEDICAL_GOODS_DEFAULT_NUM = 1000;
+
+    /**药品默认图片*/
+    public static final String MEDICAL_GOODS_WXAPP_DEFAULT_IMG = "image/wxapp/medicalGodsDefault.jpg";
 }

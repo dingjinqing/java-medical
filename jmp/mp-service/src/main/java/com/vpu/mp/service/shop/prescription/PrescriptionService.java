@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
@@ -112,11 +113,19 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionListVo> listPageResult(PrescriptionListParam param){
+        return prescriptionDao.listPageResult(param);
+    }
+
+    /**
+     * 分页
+     * @return
+     */
+    public PageResult<PrescriptionListVo> listPatientPageResult(PrescriptionPatientListParam param){
         if (param.getUserId() != null) {
             List<String> prescriptionNos = getPrescriptionNosByUserId(param.getUserId());
             param.setPrescriptionNos(prescriptionNos);
         }
-        return prescriptionDao.listPageResult(param);
+        return prescriptionDao.listPatientPageResult(param);
     }
 
     /**
@@ -155,7 +164,7 @@ public class PrescriptionService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionListParam param) {
+    public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionPatientListParam param) {
         UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(param.getUserId());
         param.setUserPatientParam(userPatientParam);
         return prescriptionDao.listPageResultWx(param);
@@ -206,6 +215,9 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public List<Integer> getPrescriptionGoodsIdsByUserId(Integer userId) {
+        if (userId == null) {
+            return new ArrayList<>();
+        }
         UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(userId);
         return getPrescriptionGoodsIdsByUserPatient(userPatientParam);
     }

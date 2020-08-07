@@ -84,7 +84,7 @@ global.wxPage({
       ...this.data.dialogPageParams,
       isMedical:1,
       goodsName: this.data.goodsName
-    })
+    },'',true)
   },
   resetDialogGoodsList (dataList,parentIndex) {
     return dataList.map(item => {

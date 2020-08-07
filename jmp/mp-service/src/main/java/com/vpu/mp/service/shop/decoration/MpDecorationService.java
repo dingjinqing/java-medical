@@ -9,16 +9,12 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryPageInfoParam;
-import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryPageInfoVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
@@ -26,9 +22,35 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.SuspendWindowConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.pojo.shop.decoration.module.*;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleBargain;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCard;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCaseHistory;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCoupon;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoods;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoodsGroup;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupDraw;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleHotArea;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleImageAdver;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleImageGuide;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleIntegral;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleMagicCube;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleMap;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModulePrescription;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleScrollImage;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleSeckill;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleShop;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleTextImage;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleTitle;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleVideo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
+import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryPageInfoParam;
+import com.vpu.mp.service.pojo.shop.medicalhistory.MedicalHistoryPageInfoVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.ShopCollectInfo;
@@ -44,7 +66,6 @@ import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.SuspendWindowConfigService;
-import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -60,7 +81,13 @@ import org.springframework.util.CollectionUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -335,7 +362,7 @@ public class MpDecorationService extends ShopBaseService {
                 if (keyIdx == null || key.equals(keyIdx)) {
                     Object element = this.convertModule(objectMapper, node, user, patientId);
                     if(element!=null) {
-                    	result.put(key, element);                    	
+                    	result.put(key, element);
                     }
                 }
             }
@@ -1022,11 +1049,11 @@ public class MpDecorationService extends ShopBaseService {
      */
     private ModulePrescription convertPrescriptionForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user, Integer patientId) throws IOException {
         ModulePrescription moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModulePrescription.class);
-        PrescriptionListParam prescriptionListParam = new PrescriptionListParam();
+        PrescriptionPatientListParam prescriptionListParam = new PrescriptionPatientListParam();
         prescriptionListParam.setPageRows((Integer) 3);
         prescriptionListParam.setPatientId(patientId);
         prescriptionListParam.setUserId(user.getUserId());
-        PageResult<PrescriptionListVo> prescriptionListData = prescriptionService.listPageResult(prescriptionListParam);
+        PageResult<PrescriptionListVo> prescriptionListData = prescriptionService.listPatientPageResult(prescriptionListParam);
         moduleIntegral.setPrescriptionListData(prescriptionListData.getDataList());
         moduleIntegral.setHasMore(prescriptionListData.getPage().getLastPage() > 1);
         return moduleIntegral;
@@ -1056,7 +1083,7 @@ public class MpDecorationService extends ShopBaseService {
         // 转换实时信息
 //        return saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
     }
-    
+
     /**
      * 店招模块
      * @param objectMapper

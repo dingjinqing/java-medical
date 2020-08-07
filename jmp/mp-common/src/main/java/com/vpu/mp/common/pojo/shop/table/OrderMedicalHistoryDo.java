@@ -10,7 +10,6 @@ import java.sql.Timestamp;
  */
 @Data
 public class OrderMedicalHistoryDo {
-
     private Integer   id;
     private Integer   orderId;
     private Integer   patientId;
@@ -19,6 +18,11 @@ public class OrderMedicalHistoryDo {
     private Integer   age;
     private String    patientComplain;
     private String    diseaseHistory;
+    private String    allergyHistory;
+    private String    familyDiseaseHistory;
+    private Byte      gestationType;
+    private Byte      kidneyFunctionOk;
+    private Byte      liverFunctionOk;
     private String    imagesList;
     private Byte      isDelete;
     private Timestamp createTime;

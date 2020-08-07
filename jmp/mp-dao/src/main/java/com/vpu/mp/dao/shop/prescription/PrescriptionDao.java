@@ -8,7 +8,6 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
-import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
@@ -18,10 +17,13 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
+import static com.vpu.mp.db.shop.Tables.PATIENT;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION_ITEM;
 
@@ -115,19 +118,32 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
-     * *****
      * 分页
-     *
      * @param param
      * @return
      */
     public PageResult<PrescriptionListVo> listPageResult(PrescriptionListParam param) {
+        SelectSeekStep1<? extends Record, Timestamp> records = db().select(PRESCRIPTION.PRESCRIPTION_CODE,PRESCRIPTION.DOCTOR_NAME,
+                PRESCRIPTION.DIAGNOSIS_NAME,PRESCRIPTION.DEPARTMENT_NAME,PRESCRIPTION.DIAGNOSE_TIME,
+                PATIENT.NAME).from(PRESCRIPTION)
+                .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID))
+                .where(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+                .orderBy(PRESCRIPTION.CREATE_TIME.desc());
+        return getPageResult(records, param, PrescriptionListVo.class);
+    }
+    /**
+     * 分页
+      @param param
+     * @return
+     */
+    public PageResult<PrescriptionListVo> listPatientPageResult(PrescriptionPatientListParam param) {
         SelectConditionStep<Record> and = db().select().from(PRESCRIPTION)
                 .where(PRESCRIPTION.PATIENT_ID.eq(param.getPatientId()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         if (param.getPrescriptionNos() != null) {
             and.and(PRESCRIPTION.PRESCRIPTION_CODE.in(param.getPrescriptionNos()));
         }
+        and.orderBy(PRESCRIPTION.CREATE_TIME.desc());
         return getPageResult(and, param, PrescriptionListVo.class);
     }
 
@@ -137,13 +153,14 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param param
      * @return
      */
-    public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionListParam param) {
+    public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionPatientListParam param) {
         SelectConditionStep<Record> and = db().select().from(PRESCRIPTION)
                 .where(PRESCRIPTION.PATIENT_ID.eq(param.getUserPatientParam().getPatientId()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         if (PatientConstant.FETCH.equals(param.getUserPatientParam().getIsFetch())) {
             and.and(PRESCRIPTION.USER_ID.eq(param.getUserPatientParam().getUserId()));
         }
+        and.orderBy(PRESCRIPTION.CREATE_TIME.desc());
         return getPageResult(and, param, PrescriptionSimpleVo.class);
     }
 
