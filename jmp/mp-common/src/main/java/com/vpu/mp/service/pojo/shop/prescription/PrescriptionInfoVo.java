@@ -55,7 +55,7 @@ public class PrescriptionInfoVo {
     /**
      * 是否有效
      */
-    private Byte IsValid;
+    private Byte isValid;
     /**
      * 过期类型 0过期 1永久 2时间段有效
      */
