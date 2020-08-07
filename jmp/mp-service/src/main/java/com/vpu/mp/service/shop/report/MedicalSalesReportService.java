@@ -8,12 +8,12 @@ import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Page;
-import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import com.vpu.mp.service.pojo.shop.report.MedicalSalesReportParam;
+import com.vpu.mp.service.pojo.shop.report.MedicalSalesReportVo;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,16 +46,22 @@ public class MedicalSalesReportService extends ShopBaseService {
      * @param param
      * @return
      */
-     public PageResult medicalSalesReport(MedicalSalesReportParam param){
-         Timestamp startDate = param.getStartTime();
-         Timestamp endDate = param.getEndTime();
+     public MedicalSalesReportVo medicalSalesReport(MedicalSalesReportParam param){
+         Timestamp endDate;
+         Timestamp startDate;
+         if (param.getDay()!=null&&param.getDay()>0){
+             startDate = DateUtils.getTimeStampPlus(-param.getDay(), ChronoUnit.DAYS);
+             startDate= DateUtil.beginOfDay(startDate).toTimestamp();
+             endDate = DateUtil.endOfDay(startDate).toTimestamp();
+             endDate=  DateUtils.getTimeStampPlus(-1, ChronoUnit.DAYS);
+         }else {
+             startDate = DateUtil.beginOfDay(param.getStartTime()).toTimestamp();
+             endDate = DateUtil.endOfDay(param.getEndTime()).toTimestamp();
+         }
          if (startDate == null || endDate == null) {
              DateTime date = DateUtil.date();
              endDate = DateUtil.endOfDay(date).toTimestamp();
              startDate = DateUtil.beginOfMonth(date).toTimestamp();
-         }else {
-             startDate = DateUtil.beginOfDay(startDate).toTimestamp();
-             endDate = DateUtil.endOfDay(endDate).toTimestamp();
          }
          long totalRows = DateUtil.between(startDate, endDate, DateUnit.DAY)+1;
          startDate = DateUtils.getTimeStampPlus(startDate, (param.getCurrentPage() - 1) * param.getPageRows(), ChronoUnit.DAYS);
@@ -72,10 +78,12 @@ public class MedicalSalesReportService extends ShopBaseService {
              list.add(report);
              startDate = DateUtils.getTimeStampPlus(startDate,1, ChronoUnit.DAYS);
          }
-         PageResult<MedicalOrderReportVo> pageResult =new PageResult();
-         pageResult.setDataList(list);
-         pageResult.setPage(page);
-         return pageResult;
+         MedicalSalesReportVo vo =new MedicalSalesReportVo();
+         vo.setDataList(list);
+         vo.setPage(page);
+         vo.setStartTime(startDate);
+         vo.setEndTime(endDate);
+         return vo;
      }
 
     private Page getPage(MedicalSalesReportParam param, long totalRows) {

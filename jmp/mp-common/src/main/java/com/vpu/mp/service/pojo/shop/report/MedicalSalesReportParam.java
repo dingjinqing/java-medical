@@ -21,5 +21,9 @@ public class MedicalSalesReportParam extends BasePageParam {
      * 结束时间
      */
     private Timestamp endTime;
+    /**
+     * 时间
+     */
+    private Integer day;
 
 }
