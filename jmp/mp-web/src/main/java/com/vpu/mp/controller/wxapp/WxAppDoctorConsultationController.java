@@ -26,7 +26,7 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/department/list")
     public JsonResult getDoctorDepartmentList(@RequestBody DepartmentListParam departmentListParam) {
-        List<DepartmentOneParam> departmentList = shop().departmentService.listDepartmentsByName(departmentListParam.getKeyword());
+        List<DepartmentOneParam> departmentList = shop().departmentService.listDepartmentsByOptions(departmentListParam);
         return success(departmentList);
     }
 
