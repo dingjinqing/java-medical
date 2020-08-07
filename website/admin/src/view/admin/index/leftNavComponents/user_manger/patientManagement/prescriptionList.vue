@@ -94,7 +94,7 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getPatientPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
+import { getPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
 export default {
   components: { pagination },
   data () {
@@ -122,7 +122,7 @@ export default {
       this.queryParams.patientId = this.id
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
-      getPatientPrescriptionList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+      getPrescriptionList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
