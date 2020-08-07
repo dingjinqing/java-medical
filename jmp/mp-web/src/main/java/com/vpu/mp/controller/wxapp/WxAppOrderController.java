@@ -348,7 +348,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * @param param
      * @return
      */
-    @PostMapping("/medical/get")
+    @PostMapping("/prescribe/medical/get")
     public JsonResult getMakePrescriptionOrder(@RequestBody OrderToPrescribeQueryParam param){
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setAction((byte)OrderServiceCode.MAKE_PRESCRIPTION.ordinal());

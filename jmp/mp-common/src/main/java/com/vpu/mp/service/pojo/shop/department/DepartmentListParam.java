@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.department;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 科室列表入参
  *
@@ -14,6 +16,8 @@ public class DepartmentListParam {
     private Integer currentPage;
     private Integer pageRows;
     private String keyword;
+    private Integer doctorId;
+    private List<Integer> departmentIds;
 
     @Override
     public String toString() {
@@ -22,6 +26,8 @@ public class DepartmentListParam {
             ", currentPage=" + currentPage +
             ", pageRows=" + pageRows +
             ", keyword='" + keyword + '\'' +
+            ", doctorId=" + doctorId +
+            ", departmentIds=" + departmentIds +
             '}';
     }
 }

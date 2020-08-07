@@ -32,7 +32,7 @@
             <div class="nameImgWrap">
               <img
                 class="imgItem"
-                :src="$imageHost+'/'+scope.row.goodsImg"
+                :src="$imageHost+'/'+(scope.row.goodsImg||goodDefaultImgUrl)"
               >
               <div
                 class="nameItem"
@@ -540,6 +540,7 @@ export default {
   },
   data () {
     return {
+      goodDefaultImgUrl: 'image/admin/medicalGodsDefault.jpg',
       setupCondition: {}, // 批量处理筛选条件
       filterData: {},
       filterDataString: {}, // 用于导出时展示已选条件

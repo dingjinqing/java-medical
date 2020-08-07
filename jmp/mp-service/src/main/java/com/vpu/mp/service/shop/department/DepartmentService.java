@@ -7,6 +7,7 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
+import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.*;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
@@ -24,6 +25,8 @@ import java.util.List;
 public class DepartmentService extends BaseShopConfigService {
     @Autowired
     protected DepartmentDao departmentDao;
+    @Autowired
+    protected DoctorDepartmentCoupleDao doctorDepartmentCoupleDao;
     public static final int ZERO = 0;
 
     public PageResult<DepartmentListVo> getDepartmentList(DepartmentListParam param) {
@@ -262,5 +265,18 @@ public class DepartmentService extends BaseShopConfigService {
         allItem.setName("全部科室");
         departmentList.add(0,allItem);
         return departmentList;
+    }
+
+    /**
+     * 根据条件查找
+     * @param param
+     * @return
+     */
+    public List<DepartmentOneParam> listDepartmentsByOptions(DepartmentListParam param) {
+        if (param.getDoctorId() != null && param.getDoctorId() > 0) {
+            List<Integer> departmentIds = doctorDepartmentCoupleDao.getDepartmentIdsByDoctorId(param.getDoctorId());
+            param.setDepartmentIds(departmentIds);
+        }
+        return departmentDao.listDepartmentsByOptions(param);
     }
 }
