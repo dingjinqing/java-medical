@@ -123,7 +123,9 @@ public class PrescriptionDao extends ShopBaseDao {
      * @return
      */
     public PageResult<PrescriptionListVo> listPageResult(PrescriptionListParam param) {
-        SelectSeekStep1<Record, Timestamp> records = db().select().from(PRESCRIPTION)
+        SelectSeekStep1<? extends Record, Timestamp> records = db().select(PRESCRIPTION.PRESCRIPTION_CODE,PRESCRIPTION.DOCTOR_NAME,
+                PRESCRIPTION.DIAGNOSIS_NAME,PRESCRIPTION.DEPARTMENT_NAME,PRESCRIPTION.DIAGNOSE_TIME,
+                PATIENT.NAME).from(PRESCRIPTION)
                 .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID))
                 .where(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.CREATE_TIME.desc());
