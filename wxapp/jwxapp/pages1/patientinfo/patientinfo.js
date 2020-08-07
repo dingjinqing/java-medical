@@ -155,13 +155,20 @@ global.wxPage({
           }
         }
         // 肝肾功能
-        this.data.liverFunctionOk = !!this.data.patient_info.liverFunctionOk ? this.data.patient_info.liverFunctionOk : 1;
-        this.data.kidneyFunctionOk = !!this.data.patient_info.kidneyFunctionOk ? this.data.patient_info.liverFunctionOk : 1;
+        this.data.liverFunctionOk = this.data.patient_info.liverFunctionOk == 0 ? this.data.patient_info.liverFunctionOk : 1;
+        if(this.data.liverFunctionOk == 0) {
+          this.data.edit_his_summary.push('肝功能异常')
+        }
+        this.data.kidneyFunctionOk = this.data.patient_info.kidneyFunctionOk == 0 ? this.data.patient_info.liverFunctionOk : 1;
+        if(this.data.kidneyFunctionOk == 0) {
+          this.data.edit_his_summary.push('肾功能异常')
+        }
         // 妊娠哺乳
         if(this.data.patient_info.gestationType > 1) {
           this.data.is_feed = 0;
+          this.data.gestationType = this.data.patient_info.gestationType || 0;
           for (var i in this.data.feedStatus ){
-            if(this.data.feedStatus[i].id == this.data.gestationType){
+            if(this.data.feedStatus[i].id == this.data.patient_info.gestationType){
               this.data.feedStatus[i].is_checked = 1;
               this.data.edit_his_summary.push(this.data.feedStatus[i].text)
             }
@@ -444,10 +451,10 @@ global.wxPage({
     }
     var disText = this.data.disText != "" ? this.data.disText.join(',') + ',' : ''
     var familyText = this.data.familyText != "" ? this.data.familyText.join(',') + ',' : '' 
-    var gan_ok = this.data.liverFunctionOk == 1 ? "正常,":"异常," 
-    var shen_ok =  this.data.kidneyFunctionOk == 1 ? "正常,":"异常,"
+    var gan_ok = this.data.liverFunctionOk == 1 ? "":"肝功能异常," 
+    var shen_ok =  this.data.kidneyFunctionOk == 1 ? "":"肾功能异常,"
     var allergyHi = this.data.allergyHistory == "" ? '' : this.data.allergyHistory + ','
-    this.data.his_summary = disText + allergyHi + familyText + "肝功能" + gan_ok +  "肾功能" + shen_ok + this.data.feedText
+    this.data.his_summary = disText + allergyHi + familyText + gan_ok + shen_ok + this.data.feedText
     this.setData({
       showModal: 0,
       his_summary: this.data.his_summary

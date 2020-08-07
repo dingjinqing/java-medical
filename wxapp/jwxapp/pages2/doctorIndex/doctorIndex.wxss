@@ -127,7 +127,7 @@
 .for_bg{
   height: 100rpx;
   width: 100%;
-  line-height: 100rpx;
+  line-height: 120rpx;
   background:-webkit-linear-gradient(top,#d0edeb,#fff); 
   margin-bottom: 26rpx;
   position: relative;
@@ -142,10 +142,10 @@
   text-align: center;
   background: url(http://medicaldevimg.weipubao.cn/image/wxapp/medical_history_bg2.png) no-repeat center 68%/120rpx 14rpx;
   font-weight: bold;
-  font-size: 28rpx;
+  font-size: 36rpx;
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: -20rpx;
   left: 0;
   right: 0;
   z-index: 9;

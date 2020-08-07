@@ -40,7 +40,7 @@ global.wxPage({
     this.requestInfo();
   },
   requestPatient () {
-    util.api('/api/wxapp/order/medical/get', res => {
+    util.api('/api/wxapp/order/prescribe/medical/get', res => {
       if(res.error == 0){
         this.data.page_info = res.content.dataList[0];
         let advice_arr = [];
@@ -69,19 +69,19 @@ global.wxPage({
         this.setData({
           doc_name: this.data.doc_name
         })
+        util.api('/api/wxapp/department/list', res => {
+          if(res.error == 0){
+            this.data.depart_all = res.content
+            for (let i in res.content){
+              this.data.depart_arr.push(res.content[i].name)
+            }
+            this.setData({
+              depart_arr: this.data.depart_arr
+            })
+          }
+        },{keyword:'',doctorId:this.data.doctorId})
       }
     },{})
-    util.api('/api/wxapp/department/list', res => {
-      if(res.error == 0){
-        this.data.depart_all = res.content
-        for (let i in res.content){
-          this.data.depart_arr.push(res.content[i].name)
-        }
-        this.setData({
-          depart_arr: this.data.depart_arr
-        })
-      }
-    },{keyword:''})
   },
   bindClear () {
     this.setData({diagnosis: ''})
