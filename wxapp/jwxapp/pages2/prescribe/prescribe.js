@@ -173,7 +173,7 @@ global.wxPage({
   },
   createPrescription () {
     let params = {
-      patientId: 137,
+      patientId: this.data.patientId,
       doctorId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       departmentCode: this.data.departmentCode,
       departmentName: this.data.departmentName,

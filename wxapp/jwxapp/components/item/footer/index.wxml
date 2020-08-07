@@ -18,7 +18,7 @@
     </view> -->
     <view class="small_view" bindtap="viewDoctorConsultation">
       <image class="image" src="{{imageUrl}}image/wxapp/item-icon1.png"></image>
-      <text>在线开方</text>
+      <text>在线问诊</text>
     </view>
     <view class="small_view" bindtap="toCartList">
       <image class="image"  src="{{imageUrl}}image/wxapp/item-icon2.png"></image>
