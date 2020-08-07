@@ -85,6 +85,12 @@ global.wxPage({
       })
     },true,'取消',tipsInfo[type][1])
   },
+  viewGoodsInfo(e){
+    let {gid} = e.currentTarget.dataset
+    util.jumpLink(`pages/item/item${util.getUrlParams({
+      gid
+    })}`)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

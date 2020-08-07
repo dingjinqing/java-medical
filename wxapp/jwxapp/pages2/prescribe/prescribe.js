@@ -151,7 +151,8 @@ global.wxPage({
   },
   selectDepartment () {
     util.jumpLink(`pages2/allDepartment/allDepartment${util.getUrlParams({
-      source: 'prescribe'
+      source: 'prescribe',
+      doctorId: this.data.doctorId
     })}`)
   },
   getDoctorAdvice ({ detail: { value } }) {
