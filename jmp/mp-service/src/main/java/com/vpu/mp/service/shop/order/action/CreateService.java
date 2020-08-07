@@ -27,6 +27,8 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
@@ -67,6 +69,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.must.OrderMustService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -182,7 +185,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private WxCardExchangeService  cardExchange;
     @Autowired
     private UploadPrescriptionService uploadPrescriptionService;
-
+    @Autowired
+    private PatientService patientService;
     /**
      * 营销活动processorFactory
      */
@@ -307,6 +311,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("待开方订单保存患者信息");
             if (param.getPatientDiagnose()!=null){
                 param.getPatientDiagnose().setOrderId(order.getOrderId());
+                UserPatientParam userPatientParam = new UserPatientParam();
+                userPatientParam.setPatientId(param.getPatientId());
+                userPatientParam.setUserId(param.getWxUserInfo().getUserId());
+                UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
+                param.getPatientDiagnose().setDiseaseHistory(patient.getDiseaseHistoryStr());
+                param.getPatientDiagnose().setFamilyDiseaseHistory(patient.getFamilyDiseaseHistoryStr());
+                param.getPatientDiagnose().setAllergyHistory(patient.getAllergyHistory());
+                param.getPatientDiagnose().setGestationType(patient.getGestationType());
+                param.getPatientDiagnose().setLiverFunctionOk(patient.getLiverFunctionOk());
+                param.getPatientDiagnose().setKidneyFunctionOk(patient.getKidneyFunctionOk());
                 orderMedicalHistoryDao.save(param.getPatientDiagnose());
             }else {
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);

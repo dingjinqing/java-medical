@@ -18,7 +18,6 @@ public class OrderGoodsMedicalVo {
     private Integer orderId;
     private String orderSn;
     private Timestamp createTime;
-    private UserPatientDetailVo patient;
     private OrderMedicalHistoryDo medicalHistory;
     private List<GoodsMedicalOneInfoVo> goodsMedicalOneInfoVoList;
 }

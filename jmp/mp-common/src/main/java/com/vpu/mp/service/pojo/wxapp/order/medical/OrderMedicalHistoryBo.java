@@ -33,6 +33,26 @@ public class OrderMedicalHistoryBo {
      */
     private String diseaseHistory;
     /**
+     * 过敏史
+     */
+    private String    allergyHistory;
+    /**
+     * 家族病史
+     */
+    private String    familyDiseaseHistory;
+    /**
+     * 妊娠哺乳状态
+     */
+    private Byte      gestationType;
+    /**
+     * 肾功能
+     */
+    private Byte      kidneyFunctionOk;
+    /**
+     * 肝功能
+     */
+    private Byte      liverFunctionOk;
+    /**
      * 图片地址
      */
     private String imagesList;
