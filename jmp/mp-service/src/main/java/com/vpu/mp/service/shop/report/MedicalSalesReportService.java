@@ -50,10 +50,10 @@ public class MedicalSalesReportService extends ShopBaseService {
          Timestamp endDate;
          Timestamp startDate;
          if (param.getDay()!=null&&param.getDay()>0){
+             endDate=  DateUtils.getTimeStampPlus(-1, ChronoUnit.DAYS);
+             endDate = DateUtil.endOfDay(endDate).toTimestamp();
              startDate = DateUtils.getTimeStampPlus(-param.getDay(), ChronoUnit.DAYS);
              startDate= DateUtil.beginOfDay(startDate).toTimestamp();
-             endDate = DateUtil.endOfDay(startDate).toTimestamp();
-             endDate=  DateUtils.getTimeStampPlus(-1, ChronoUnit.DAYS);
          }else {
              startDate = DateUtil.beginOfDay(param.getStartTime()).toTimestamp();
              endDate = DateUtil.endOfDay(param.getEndTime()).toTimestamp();
@@ -64,19 +64,19 @@ public class MedicalSalesReportService extends ShopBaseService {
              startDate = DateUtil.beginOfMonth(date).toTimestamp();
          }
          long totalRows = DateUtil.between(startDate, endDate, DateUnit.DAY)+1;
-         startDate = DateUtils.getTimeStampPlus(startDate, (param.getCurrentPage() - 1) * param.getPageRows(), ChronoUnit.DAYS);
-         Timestamp endDate2 = DateUtils.getTimeStampPlus(startDate, (param.getCurrentPage()) * param.getPageRows(), ChronoUnit.DAYS);
-         if (endDate2.before(endDate)) {
-             endDate = endDate2;
+         Timestamp startDate2 = DateUtils.getTimeStampPlus(startDate, (param.getCurrentPage() - 1) * param.getPageRows(), ChronoUnit.DAYS);
+         Timestamp endDate2 = DateUtils.getTimeStampPlus(startDate2,  param.getPageRows()-1, ChronoUnit.DAYS);
+         if (endDate2.after(endDate)) {
+             endDate2 = endDate;
          }
          Page page = getPage(param, totalRows);
-         Map<Date, MedicalOrderReportVo> orderMap = orderInfoDao.orderSalesReport(startDate, endDate);
-         Map<Date, MedicalOrderReportVo> returnOrderMap = returnOrderDao.medicalOrderSalesReport(startDate, endDate);
+         Map<Date, MedicalOrderReportVo> orderMap = orderInfoDao.orderSalesReport(startDate2, endDate2);
+         Map<Date, MedicalOrderReportVo> returnOrderMap = returnOrderDao.medicalOrderSalesReport(startDate2, endDate2);
          List<MedicalOrderReportVo> list  =new ArrayList<>();
-         while (startDate.compareTo(endDate) <= 0) {
-             MedicalOrderReportVo report = getMedicalOrderReportVo(startDate, orderMap, returnOrderMap);
+         while (startDate2.compareTo(endDate2) <= 0) {
+             MedicalOrderReportVo report = getMedicalOrderReportVo(startDate2, orderMap, returnOrderMap);
              list.add(report);
-             startDate = DateUtils.getTimeStampPlus(startDate,1, ChronoUnit.DAYS);
+             startDate2 = DateUtils.getTimeStampPlus(startDate2,1, ChronoUnit.DAYS);
          }
          MedicalSalesReportVo vo =new MedicalSalesReportVo();
          vo.setDataList(list);
