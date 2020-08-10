@@ -16,6 +16,14 @@ export function getPatientMessage (patientId) {
   })
 }
 // 处方列表
+export function getAllPrescriptionList (data) {
+  return service({
+    url: `/api/admin/prescription/list`,
+    method: 'post',
+    data: data
+  })
+}
+// 患者详情-处方列表
 export function getPrescriptionList (data) {
   return service({
     url: `/api/admin/prescription/patient/list`,

@@ -38,7 +38,7 @@
                 <span class="list-item-dot"></span>
                 <div class="list-item-content">诊断</div>
               </div>
-              <div class="list_content">{{originalData.diagnosisDetail}}</div>
+              <div class="list_content">{{originalData.diagnosisName}}</div>
               <div class="list-item">
                 <span class="list-item-dot"></span>
                 <div class="list-item-content">治疗建议</div>
