@@ -44,7 +44,7 @@ public class OrderGoodsDao extends ShopBaseDao {
         SelectConditionStep<Record2<Integer, String>> where = db()
                 .select(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
                 .from(ORDER_GOODS)
-                .rightJoin(ORDER_INFO).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.GOODS_ID))
+                .leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.GOODS_ID))
                 .where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT));
         if (param.getAuditType() != null) {
             where.and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(param.getAuditType()));
