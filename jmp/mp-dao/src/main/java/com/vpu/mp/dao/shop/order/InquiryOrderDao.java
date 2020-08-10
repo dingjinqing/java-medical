@@ -147,7 +147,6 @@ public class InquiryOrderDao extends ShopBaseDao {
         List<InquiryOrderDo> list= db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.USER_ID.eq(param.getUserId())
             .and(INQUIRY_ORDER.PATIENT_ID.eq(param.getPatientId()))
             .and(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId())
-        .and(INQUIRY_ORDER.DEPARTMENT_ID.eq(param.getDepartmentId()))
         )).fetchInto(InquiryOrderDo.class);
         return list;
     }
@@ -167,12 +166,10 @@ public class InquiryOrderDao extends ShopBaseDao {
             //咨询单次价格
             avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
             //医师id
-            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
-            //科室id
-            INQUIRY_ORDER.DEPARTMENT_ID.as(InquiryOrderStatistics.DEPARTMENT_ID)
+            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID)
         ).from(INQUIRY_ORDER);
         select=buildOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,date(INQUIRY_ORDER.CREATE_TIME));
         PageResult<InquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderStatisticsVo.class);
         return result;
     }
@@ -206,12 +203,10 @@ public class InquiryOrderDao extends ShopBaseDao {
             //咨询单次价格
             avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
             //医师id
-            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
-            //科室id
-            INQUIRY_ORDER.DEPARTMENT_ID.as(InquiryOrderStatistics.DEPARTMENT_ID)
+            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID)
         ).from(INQUIRY_ORDER);
         select=buildOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DEPARTMENT_ID,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,date(INQUIRY_ORDER.CREATE_TIME));
         List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
         return list;
     }

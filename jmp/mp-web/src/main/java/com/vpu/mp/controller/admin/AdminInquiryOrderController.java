@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
@@ -47,8 +48,12 @@ public class AdminInquiryOrderController extends AdminBaseController{
      */
     @PostMapping("/api/admin/inquiry/order/refund")
     public JsonResult refund(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
-        JsonResult result= shop().inquiryOrderService.refund(inquiryOrderOnParam);
-        return result;
+        try {
+            shop().inquiryOrderService.refund(inquiryOrderOnParam);
+        } catch (MpException e) {
+            return fail(e.getErrorCode());
+        }
+        return success();
     }
 
     /**

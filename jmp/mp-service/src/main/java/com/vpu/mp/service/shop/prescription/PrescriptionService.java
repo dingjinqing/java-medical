@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.prescription;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -10,15 +11,18 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.OrderMedicalHistoryDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
+import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
@@ -87,7 +91,8 @@ public class PrescriptionService extends ShopBaseService {
     public MedicalGoodsService medicalGoodsService;
     @Autowired
     public PatientService patientService;
-
+    @Autowired
+    public OrderMedicalHistoryDao orderMedicalHistoryDao;
     /**
      * 保存处方
      */
@@ -366,7 +371,7 @@ public class PrescriptionService extends ShopBaseService {
      * 上传保存处方
      * @param param
      */
-    public PrescriptionParam insertPrescription(PrescriptionOneParam param){
+    public PrescriptionParam insertPrescription(PrescriptionOneParam param)throws MpException{
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
         return prescriptionParam;
@@ -377,10 +382,14 @@ public class PrescriptionService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PrescriptionParam buildPrescription(PrescriptionOneParam param){
+    public PrescriptionParam buildPrescription(PrescriptionOneParam param) throws MpException {
 
         DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
         PatientOneParam patient = patientDao.getOneInfo(param.getPatientId());
+        if(patient==null){
+            throw new MpException(JsonResultCode.PATIENT_IS_NOT_EXIST);
+        }
+        OrderMedicalHistoryDo orderMedicalHistoryDo= orderMedicalHistoryDao.getByOrderId(param.getOrderId());
         //生成处方
         PrescriptionParam prescriptionParam=new PrescriptionParam();
         FieldsUtil.assign(param,prescriptionParam);
@@ -389,8 +398,8 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setPatientName(patient.getName());
         prescriptionParam.setPatientSex(patient.getSex());
         prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
-        prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistory());
-        prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
+        prescriptionParam.setPatientDiseaseHistory(orderMedicalHistoryDo.getDiseaseHistory());
+        prescriptionParam.setPatientAllergyHistory(orderMedicalHistoryDo.getAllergyHistory());
         prescriptionParam.setIdentityType(patient.getIdentityType());
         prescriptionParam.setIdentityCode(patient.getIdentityCode());
         prescriptionParam.setPatientTreatmentCode(patient.getTreatmentCode());
