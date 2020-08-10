@@ -99,15 +99,15 @@ public class WxAppImSessionController extends WxAppBaseController {
 
     /**
      * 会话变为进行中
-     * @param sessionId 会话id
+     * @param param 会话信息
      * @return jsonResult
      */
-    @PostMapping("/api/wxapp/im/session/going/{sessionId}")
-    public JsonResult goingSession(@PathVariable("sessionId") Integer sessionId) {
-        if (sessionId == null) {
+    @PostMapping("/api/wxapp/im/session/going")
+    public JsonResult goingSession(@RequestBody ImSessionStatusToGoingOnParam param) {
+        if (param.getSessionId() == null) {
             return fail(JsonResultCode.IM_SESSION_ID_IS_NULL);
         }
-        imSessionService.updateSessionToGoingOn(sessionId);
+        imSessionService.updateSessionToGoingOn(param);
         return success();
     }
 

@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 public class ImSessionNewParam {
     private Integer doctorId;
-    private Integer departmentId;
     private Integer userId;
     private Integer patientId;
     private String orderSn;

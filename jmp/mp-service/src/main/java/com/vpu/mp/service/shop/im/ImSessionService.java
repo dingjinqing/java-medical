@@ -292,7 +292,6 @@ public class ImSessionService extends ShopBaseService {
     public Integer insertNewSession(ImSessionNewParam param) {
         ImSessionDo imSessionDo = new ImSessionDo();
         imSessionDo.setDoctorId(param.getDoctorId());
-        imSessionDo.setDepartmentId(param.getDepartmentId());
         imSessionDo.setUserId(param.getUserId());
         imSessionDo.setPatientId(param.getPatientId());
         imSessionDo.setOrderSn(param.getOrderSn());
