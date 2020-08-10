@@ -249,22 +249,31 @@ public class DoctorService extends ShopBaseService {
 
 
     public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
-        List<Integer> doctorDepartments = doctorDepartmentCoupleDao.listHistoryDoctorDepartment(doctorParam);
-        List<DoctorConsultationOneParam> historyDoctors = doctorDepartmentCoupleDao.listHistoryDoctor(doctorDepartments);
+        List<Integer> doctorIds = doctorDepartmentCoupleDao.listHistoryDoctor(doctorParam);
+        List<DoctorConsultationOneParam> historyDoctors = doctorDepartmentCoupleDao.listHistoryDoctor(doctorIds);
         if (historyDoctors.size() < RECOMMEND_MAX_NUM) {
-            List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorDepartments, 10 - historyDoctors.size());
+            List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorIds, 10 - historyDoctors.size());
             historyDoctors.addAll(historyDoctorMore);
         }
         for (DoctorConsultationOneParam item:historyDoctors) {
             item.setHospitalName(HOSPITAL_NAME);
+            List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(item.getId());
+            item.setDepartmentName(Joiner.on(",").join(departmentList));
         }
         return historyDoctors;
     }
 
     public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
+        if (doctorParam.getKeyword() != null && doctorParam.getKeyword() != "") {
+            List<Integer> departmentIds = departmentDao.getDepartmentIdsByName(doctorParam.getKeyword());
+            List<Integer> doctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIds);
+            doctorParam.setDoctorIds(doctorIds);
+        }
         List<DoctorConsultationOneParam> list = doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
         for (DoctorConsultationOneParam item:list) {
             item.setHospitalName(HOSPITAL_NAME);
+            List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(item.getId());
+            item.setDepartmentName(Joiner.on(",").join(departmentList));
         }
         return list;
     }
