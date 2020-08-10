@@ -69,7 +69,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 10rpx;
+  bottom: 14rpx;
   height: 4rpx;
   width: 60rpx;
   margin: 0 auto;
