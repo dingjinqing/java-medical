@@ -99,7 +99,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             orderGoodsMedicalVo.setMedicalHistory(medicalHistoryDo);
             //药品数组
             List<GoodsMedicalOneInfoVo> goodsMedicalOneInfoVoList=new ArrayList<>();
-            //根据goodsId查出orderGoods列表
+            //根据orderId查出orderGoods列表
             List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsDo.class);
             for(OrderGoodsDo orderGoodsDo:orderGoodsDoList ){
                 //只需要开方的药品
@@ -155,6 +155,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
                 //更新处方号
                 orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
             });
+
         }else if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_NOT_PASS)){
             //审核未通过 驳回
             logger().info("orderId:{}开方驳回",orderInfoDo.getOrderId());
@@ -162,7 +163,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             orderInfoDao.updateAuditStatus(orderInfoDo.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
             orderGoodsDao.updateAuditStatusByRecIds(recIds, OrderConstant.MEDICAL_AUDIT_NOT_PASS);
             //退款
-            returnService.auditNotPassRefund(orderInfoDo.getOrderSn());
+            returnService.auditNotPassRefund(orderInfoDo.getOrderSn(),obj.getReasonType(),obj.getReasonDesc());
         }
         logger().info("医师开方-结束");
 

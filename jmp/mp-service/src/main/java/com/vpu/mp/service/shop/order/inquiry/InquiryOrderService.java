@@ -234,7 +234,6 @@ public class InquiryOrderService extends ShopBaseService {
         }
         String orderSn = IncrSequenceUtil.generateOrderSn(InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX);
         PatientOneParam patientOneParam=patientService.getOneInfo(payParam.getPatientId());
-        DepartmentOneParam department=departmentDao.getOneInfo(payParam.getDepartmentId());
         DoctorOneParam doctor = doctorService.getOneInfo(payParam.getDoctorId());
         inquiryOrderDo.setOrderSn(orderSn);
         inquiryOrderDo.setOrderAmount(payParam.getOrderAmount());
@@ -242,8 +241,6 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientId(payParam.getPatientId());
         inquiryOrderDo.setDoctorId(payParam.getDoctorId());
         inquiryOrderDo.setDoctorName(doctor.getName());
-        inquiryOrderDo.setDepartmentId(department.getId());
-        inquiryOrderDo.setDepartmentName(department.getName());
         inquiryOrderDo.setOrderStatus(InquiryOrderConstant.ORDER_TO_PAID);
         inquiryOrderDo.setPayCode(payCode);
         inquiryOrderDo.setPatientName(patientOneParam.getName());
@@ -266,16 +263,9 @@ public class InquiryOrderService extends ShopBaseService {
      * @param inquiryOrderOnParam
      * @return
      */
-    public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
+    public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        try {
-            refundInquiryOrder(inquiryOrderDo);
-        } catch (MpException e) {
-            JsonResult jsonResult=new JsonResult();
-            jsonResult.result(null,e.getErrorCode(),null);
-            return  jsonResult;
-        }
-        return JsonResult.success();
+        refundInquiryOrder(inquiryOrderDo);
     }
 
     /**
@@ -327,9 +317,7 @@ public class InquiryOrderService extends ShopBaseService {
         List<InquiryOrderStatisticsVo> list=result.getDataList();
         list.forEach(orderStatisticsVo->{
             DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
-            DepartmentOneParam dept=departmentDao.getOneInfo(orderStatisticsVo.getDepartmentId());
             orderStatisticsVo.setDoctorName(doctor.getName());
-            orderStatisticsVo.setDepartmentName(dept.getName());
         });
         return result;
     }
@@ -345,9 +333,7 @@ public class InquiryOrderService extends ShopBaseService {
         List<InquiryOrderStatisticsVo> list=inquiryOrderDao.orderStatistics(param);
         list.forEach(orderStatisticsVo->{
             DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
-            DepartmentOneParam dept=departmentDao.getOneInfo(orderStatisticsVo.getDepartmentId());
             orderStatisticsVo.setDoctorName(doctor.getName());
-            orderStatisticsVo.setDepartmentName(dept.getName());
         });
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
