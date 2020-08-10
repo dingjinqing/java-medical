@@ -166,6 +166,9 @@ public class PrescriptionService extends ShopBaseService {
      */
     public PageResult<PrescriptionSimpleVo> listPageResultWx(PrescriptionPatientListParam param) {
         UserPatientParam userPatientParam = userPatientCoupleDao.defaultPatientByUser(param.getUserId());
+        if (userPatientParam==null){
+            return null;
+        }
         param.setUserPatientParam(userPatientParam);
         return prescriptionDao.listPageResultWx(param);
     }
