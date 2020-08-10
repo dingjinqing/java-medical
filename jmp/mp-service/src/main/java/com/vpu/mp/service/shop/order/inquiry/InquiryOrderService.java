@@ -129,10 +129,7 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            ImSessionStatusToGoingOnParam sessionStatusToGoingOnParam = new ImSessionStatusToGoingOnParam();
-            sessionStatusToGoingOnParam.setSessionId(param.getSessionId());
-            sessionStatusToGoingOnParam.setSessionPrevStatus(prevStatus);
-            imSessionService.updateSessionToGoingOn(sessionStatusToGoingOnParam);
+            imSessionService.updateSessionToGoingOn(param.getSessionId());
         }
         //更新会话状态为关闭
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
