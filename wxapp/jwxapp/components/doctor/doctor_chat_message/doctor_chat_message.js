@@ -1,4 +1,3 @@
-
 import util from '../../../utils/util'
 var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
@@ -9,48 +8,59 @@ global.wxComponent({
   properties: {
     chatContent: Object,
     systemInfo: String,
-    systemImg:Boolean,
-    status:{
-      type:Number,
-      observer(newVal){
+    systemImg: Boolean,
+    idx: Number,
+    status: {
+      type: Number,
+      observer(newVal) {
         console.log(newVal)
       }
     },
-    isDoctor:{
-      type:Boolean,
-      value:false
+    isDoctor: {
+      type: Boolean,
+      value: false
     }
   },
-  options:{
-    multipleSlots:true
+  options: {
+    multipleSlots: true
   },
-  lifetimes:{
-    ready(){
-      this.initAvatar()
+  lifetimes: {
+    ready() {
+      let that = this;
+      that.initAvatar()
+      let query = wx.createSelectorQuery().in(that)
+      let windowHeight = wx.getSystemInfoSync().windowHeight;
+      query.select('#con_'+that.data.idx).boundingClientRect(function (rect) {
+        console.log(rect);
+        if(rect && rect.top <  windowHeight){
+          that.triggerEvent('pageScrollBottom')
+        }
+      }).exec()
     }
   },
   /**
    * 组件的初始数据
    */
   data: {
-    userAvatar:util.getCache('avatarUrl')
+    userAvatar: util.getCache('avatarUrl')
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
-    onLoad (op) {
+    onLoad(op) {
       let that = this
+
     },
-    initAvatar(){
+    initAvatar() {
       let avatar = ''
-      if(this.data.isDoctor){
-        if(this.data.chatContent.position === 0) avatar = this.data.imageUrl + 'image/wxapp/user_default_icon.png'
-        if(this.data.chatContent.position === 1) avatar = this.data.imageUrl + 'image/wxapp/doctor_default_icon.png'
+      if (this.data.isDoctor) {
+        if (this.data.chatContent.position === 0) avatar = this.data.imageUrl + 'image/wxapp/user_default_icon.png'
+        if (this.data.chatContent.position === 1) avatar = this.data.imageUrl + 'image/wxapp/doctor_default_icon.png'
       } else {
-        if(this.data.chatContent.position === 0) avatar = this.data.imageUrl + 'image/wxapp/doctor_default_icon.png'
-        if(this.data.chatContent.position === 1) avatar = this.data.imageUrl + 'image/wxapp/user_default_icon.png'
+        if (this.data.chatContent.position === 0) avatar = this.data.imageUrl + 'image/wxapp/doctor_default_icon.png'
+        if (this.data.chatContent.position === 1) avatar = this.data.imageUrl + 'image/wxapp/user_default_icon.png'
       }
       this.setData({
         avatar
