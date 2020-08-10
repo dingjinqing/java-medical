@@ -9,7 +9,7 @@ global.wxPage({
     diagnose:['心绞痛','高血压','心肌炎','肺炎','咳嗽','感冒'],
     selectedDiagnose:[],
     optionsList:{
-      isUsed:false,
+      isUsed:true,
       hasBadReaction:false,
       isGravida:false 
     },
