@@ -5133,6 +5133,7 @@ CREATE TABLE `b2c_order_medical_history` (
     `disease_history` varchar(1000) NOT NULL DEFAULT '' COMMENT '历史诊断',
     `allergy_history` varchar(64) NOT NULL DEFAULT '' COMMENT '过敏史',
     `family_disease_history` varchar(64) NOT NULL DEFAULT '' COMMENT '家族病史',
+    `describe` varchar(512) NOT NULL DEFAULT '' COMMENT '自我描述',
     `gestation_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳',
     `kidney_function_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '肾功能:0:未知，1：正常，2：异常',
     `liver_function_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '肝功能:0:未知，1：正常，2：异常',

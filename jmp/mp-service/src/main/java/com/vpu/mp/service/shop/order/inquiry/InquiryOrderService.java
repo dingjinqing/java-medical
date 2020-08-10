@@ -28,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionStatusToGoingOnParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
@@ -125,11 +126,15 @@ public class InquiryOrderService extends ShopBaseService {
     public void updateOrder(InquiryOrderOnParam param){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(param.getOrderSn());
         FieldsUtil.assign(param,inquiryOrderDo);
+        Byte prevStatus = inquiryOrderDo.getOrderStatus();
         inquiryOrderDo.setOrderStatus(param.getOrderStatus());
         inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            imSessionService.updateSessionToGoingOn(param.getSessionId());
+            ImSessionStatusToGoingOnParam sessionStatusToGoingOnParam = new ImSessionStatusToGoingOnParam();
+            sessionStatusToGoingOnParam.setSessionId(param.getSessionId());
+            sessionStatusToGoingOnParam.setSessionPrevStatus(prevStatus);
+            imSessionService.updateSessionToGoingOn(sessionStatusToGoingOnParam);
         }
         //更新会话状态为关闭
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){

@@ -20,6 +20,7 @@ public class OrderMedicalHistoryDo {
     private String    diseaseHistory;
     private String    allergyHistory;
     private String    familyDiseaseHistory;
+    private String    describe;
     private Byte      gestationType;
     private Byte      kidneyFunctionOk;
     private Byte      liverFunctionOk;
