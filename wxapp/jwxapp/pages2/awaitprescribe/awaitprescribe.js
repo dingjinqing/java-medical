@@ -10,6 +10,9 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     page_info: null,
     pageParams: null,
+    show_modal: 0,
+    taped_order_id: '',
+    rejectReason: ''
   },
 
   /**
@@ -76,6 +79,30 @@ global.wxPage({
     util.jumpLink('/pages2/prescribeinfo/prescribeinfo?orderId=' + e.currentTarget.dataset.order_id);
   },
   tp_reject (e) {
+    this.data.taped_order_id = e.currentTarget.dataset.order_id;
+    this.setData({
+      show_modal: 1,
+      taped_order_id: this.data.taped_order_id
+    })
+    
+  },
+  close_modal () {
+    this.data.taped_order_id = '';
+    this.data.rejectReason = '';
+    this.setData({
+      show_modal: 0,
+      taped_order_id: '',
+      rejectReason: ''
+    })
+  },
+  rejectReason (e) {
+    this.data.rejectReason = e.detail.value
+  },
+  to_reject (e) {
+    if(this.data.rejectReason == ""){
+      util.showModal('提示', "请输入驳回原因")
+      return false
+    }
     util.api('/api/wxapp/order/prescription/make', res => {
       if(res.error == ''){
         util.toast_success('驳回成功');
@@ -85,8 +112,15 @@ global.wxPage({
         return false
       }
     },{
-      orderId: e.currentTarget.dataset.order_id,
+      orderId: e.currentTarget.dataset.taped_order_id,
       auditStatus: 2
+    })
+    this.data.taped_order_id = '';
+    this.data.rejectReason = '';
+    this.setData({
+      show_modal: 0,
+      taped_order_id: '',
+      rejectReason: ''
     })
   },
   viewGoodsInfo(e){
