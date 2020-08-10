@@ -55,9 +55,14 @@
         >
           <template slot-scope="{row}">
             <div style="text-align:center;line-height:1;">
-              <p>{{row.startDate}}</p>
-              <p>{{$t('openScreen.to')}}</p>
-              <p>{{row.endDate}}</p>
+              <template v-if="!row.isForever">
+                <p>{{row.startDate}}</p>
+                <p>{{$t('openScreen.to')}}</p>
+                <p>{{row.endDate}}</p>
+              </template>
+              <template v-else>
+                <p>永久有效</p>
+              </template>
             </div>
           </template>
         </el-table-column>
@@ -367,7 +372,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 .container {
   padding: 10px;
   width: 100%;
@@ -388,7 +393,7 @@ export default {
     background-color: #fff;
     .clearfix {
       &::after {
-        content: "";
+        content: '';
         clear: both;
         zoom: 1;
       }
