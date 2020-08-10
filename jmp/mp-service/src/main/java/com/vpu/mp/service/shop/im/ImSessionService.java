@@ -306,16 +306,43 @@ public class ImSessionService extends ShopBaseService {
 
     /**
      * 会话状态修改为进行中
-     * @param sessionId 会话id
+     * @param param 会话上一次状态
      * @return
      */
-    public void updateSessionToGoingOn(Integer sessionId) {
-        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
+    public void updateSessionToGoingOn(ImSessionStatusToGoingOnParam param) {
+        ImSessionDo imSessionDo = imSessionDao.getById(param.getSessionId());
+        if (ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
+            return;
+        }
         imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
         imSessionDo.setLimitTime(DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS));
         imSessionDao.update(imSessionDo);
-        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
+        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), param.getSessionId());
         jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
+        // 回复会话消息
+        if (!ImSessionConstant.SESSION_READY_TO_START.equals(param.getSessionPrevStatus())){
+            extractSessionFromDb(param.getSessionId());
+        }
+    }
+
+    /**
+     * 从数据库将会话信息回复至redis
+     * @param sessionId
+     */
+    private void extractSessionFromDb(Integer sessionId){
+        List<ImSessionItemDo> imSessionItemDos = imSessionItemDao.getBySessionId(sessionId);
+        
+        List<String> sessionBakJsons = new ArrayList<>(imSessionItemDos.size());
+        for (ImSessionItemDo imSessionItemDo : imSessionItemDos) {
+            ImSessionItemBo bo = new ImSessionItemBo();
+            bo.setFromId(imSessionItemDo.getFromId());
+            bo.setToId(imSessionItemDo.getToId());
+            bo.setMessage(imSessionItemDo.getMessage());
+            bo.setType(imSessionItemDo.getType());
+            bo.setSendTime(imSessionItemDo.getSendTime());
+            sessionBakJsons.add(Util.toJson(bo));
+        }
+        jedisManager.lpush(getSessionRedisKeyBak(getShopId(),sessionId),sessionBakJsons);
     }
 
     /**

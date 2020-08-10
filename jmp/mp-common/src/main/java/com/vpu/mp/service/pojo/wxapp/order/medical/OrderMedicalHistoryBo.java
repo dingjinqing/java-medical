@@ -33,6 +33,10 @@ public class OrderMedicalHistoryBo {
      */
     private String diseaseHistory;
     /**
+     * 自我描述
+     */
+    private String describe;
+    /**
      * 过敏史
      */
     private String    allergyHistory;
