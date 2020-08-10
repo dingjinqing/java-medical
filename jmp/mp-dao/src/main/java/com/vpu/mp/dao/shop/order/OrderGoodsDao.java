@@ -8,12 +8,13 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescr
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import org.jooq.Record2;
-import org.jooq.SelectJoinStep;
+import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
@@ -40,18 +41,20 @@ public class OrderGoodsDao extends ShopBaseDao {
      * @return
      */
     public PageResult<OrderPrescriptionVo> listGoodsOldPrescription(PrescriptionQueryParam param) {
-        SelectJoinStep<Record2<Integer, String>> from = db()
+        SelectConditionStep<Record2<Integer, String>> where = db()
                 .select(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
-                .from(ORDER_GOODS);
+                .from(ORDER_GOODS)
+                .rightJoin(ORDER_INFO).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.GOODS_ID))
+                .where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT));
         if (param.getAuditType() != null) {
-            from.where(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(param.getAuditType()));
+            where.and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(param.getAuditType()));
         }
         if (param.getAuditStatus() != null) {
-            from.where(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(param.getAuditStatus()));
+            where.and(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(param.getAuditStatus()));
         }
-        from.groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
+        where.groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
         .orderBy(ORDER_GOODS.CREATE_TIME.desc());
-        return getPageResult(from, param.getCurrentPage(), param.getPageRows(), OrderPrescriptionVo.class);
+        return getPageResult(where, param.getCurrentPage(), param.getPageRows(), OrderPrescriptionVo.class);
     }
 
     /**

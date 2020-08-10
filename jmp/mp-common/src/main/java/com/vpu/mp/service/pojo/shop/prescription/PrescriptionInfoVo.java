@@ -48,6 +48,22 @@ public class PrescriptionInfoVo {
      * 开方时间
      */
     private Timestamp prescriptionCreateTime;
+    /**
+     * 是否用过
+     */
+    private Byte isUsed;
+    /**
+     * 是否有效
+     */
+    private Byte isValid;
+    /**
+     * 过期类型 0过期 1永久 2时间段有效
+     */
+    private Byte expireType;
+    /**
+     * 处方过期时间
+     */
+    private Timestamp prescriptionExpireTime;
 
     /**
      * 处方明细

@@ -21,12 +21,12 @@ global.wxPage({
   },
   requestInfo () {
     let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
-    util.api('/api/wxapp/order/medical/get', res => {
+    util.api('/api/wxapp/order/prescribe/medical/get', res => {
       if(res.error == 0) {
         let page_info = JSON.parse(JSON.stringify(res.content.dataList));
         for (var i in page_info) {
           page_info[i].if_show_more = 0;
-          page_info[i].patient.gestationName = this.getGesName(page_info[i].patient.gestationType);
+          page_info[i].medicalHistory.gestationName = this.getGesName(page_info[i].medicalHistory.gestationType);
           if(!!page_info[i].medicalHistory && !!page_info[i].medicalHistory.patientComplain){
             page_info[i].medicalHistory.patientComplain =JSON.parse(page_info[i].medicalHistory.patientComplain);
           }
@@ -88,6 +88,12 @@ global.wxPage({
       orderId: e.currentTarget.dataset.order_id,
       auditStatus: 2
     })
+  },
+  viewGoodsInfo(e){
+    let {gid} = e.currentTarget.dataset
+    util.jumpLink(`pages/item/item${util.getUrlParams({
+      gid
+    })}`)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

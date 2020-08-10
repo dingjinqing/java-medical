@@ -56,7 +56,7 @@
   margin-left: 20rpx;
   width: 152rpx;
   height: 152rpx;
-  border: 2rpx solid #ccc;
+  border: 2rpx solid #eee;
   box-sizing: border-box;
   border-radius: 8rpx;
 }

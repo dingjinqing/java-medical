@@ -32,7 +32,7 @@
 						</view>
 					</view>
 					<view class="goods-content" wx:if="{{item.goodsList.length}}">
-						<view class="goods-item" wx:for="{{item.goodsList}}" wx:key="goodsId" wx:for-item="goodsItem" wx:for-index="goodsIndex">
+						<view class="goods-item" bindtap="viewGoodsInfo" data-gid="{{goodsItem.goodsId}}" wx:for="{{item.goodsList}}" wx:key="goodsId" wx:for-item="goodsItem" wx:for-index="goodsIndex">
 							<image src="{{imageUrl + goodsItem.goodsImg}}"></image>
 							<view class="goods-desc">
 								<text class="goods-name">{{goodsItem.goodsName}}</text>

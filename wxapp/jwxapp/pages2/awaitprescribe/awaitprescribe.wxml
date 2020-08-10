@@ -15,26 +15,26 @@
               <view class="each_line">
                 <view class="line_dot"></view>
                 <view class="line_content has_three">
-                  <view>姓名：{{item.patient.name}}</view>
-                  <view>年龄：{{item.patient.age}}岁</view>
-                  <view>性别：{{item.patient.sex == 0 ? '男' : '女'}}</view>
+                  <view>姓名：{{item.medicalHistory.patientName}}</view>
+                  <view>年龄：{{item.medicalHistory.age}}岁</view>
+                  <view>性别：{{item.medicalHistory.sex == 0 ? '男' : '女'}}</view>
                 </view>
               </view>
-              <view class="each_line" wx:if='{{!!item.patient.diseaseHistoryStr}}'>
+              <view class="each_line" wx:if='{{!!item.medicalHistory.diseaseHistory}}'>
                 <view class="line_dot"></view>
-                <view class="line_content">疾病史：{{item.patient.diseaseHistoryStr}}</view>
+                <view class="line_content">疾病史：{{item.medicalHistory.diseaseHistory}}</view>
               </view>
-              <view class="each_line" wx:if='{{item.if_show_more == 1 && !!item.patient.familyDiseaseHistoryStr}}'>
+              <view class="each_line" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.familyDiseaseHistory}}'>
                 <view class="line_dot"></view>
-                <view class="line_content">家族病史：{{item.patient.familyDiseaseHistoryStr}}</view>
+                <view class="line_content">家族病史：{{item.medicalHistory.familyDiseaseHistory}}</view>
               </view>
-              <view class="each_line" wx:if='{{item.if_show_more == 1 && !!item.patient.allergyHistory}}'>
+              <view class="each_line" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.allergyHistory}}'>
                 <view class="line_dot"></view>
-                <view class="line_content">过敏史：{{item.patient.allergyHistory}}</view>
+                <view class="line_content">过敏史：{{item.medicalHistory.allergyHistory}}</view>
               </view>
-              <view class="each_line has_bottom" wx:if='{{item.if_show_more == 1 && !!item.patient.gestationName}}'>
+              <view class="each_line has_bottom" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.gestationName}}'>
                 <view class="line_dot"></view>
-                <view class="line_content">妊娠状态：{{item.patient.gestationName}}</view>
+                <view class="line_content">妊娠状态：{{item.medicalHistory.gestationName}}</view>
               </view>
             </view>
           </view>
@@ -89,7 +89,7 @@
           </view>
         </view>
         <view class="medicine_info" wx:if='{{!!item.goodsMedicalOneInfoVoList}}'>
-          <view class="each_medicine clearfix" wx:for='{{item.goodsMedicalOneInfoVoList}}' wx:key='key' wx:for-item='item1' wx:for-index='index1'>
+          <view class="each_medicine clearfix" wx:for='{{item.goodsMedicalOneInfoVoList}}' wx:key='key' wx:for-item='item1' wx:for-index='index1' bindtap="viewGoodsInfo" data-gid="{{item1.goodsId}}">
             <view class="medi_img"><image src="{{imageUrl}}{{item1.goodsImg}}"></image></view>
             <view class="medi_content">
               <view class="medi_name">{{item1.goodsCommonName}}</view>

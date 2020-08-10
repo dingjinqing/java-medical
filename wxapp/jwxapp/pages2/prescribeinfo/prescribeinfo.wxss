@@ -109,6 +109,7 @@
   font-size: 28rpx;
   background: #26C4BC;
   margin: 0 auto;
+  z-index: 9999;
 }
 .picker{
   font-weight: bold;

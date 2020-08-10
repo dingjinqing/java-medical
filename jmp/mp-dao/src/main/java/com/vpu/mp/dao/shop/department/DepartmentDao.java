@@ -223,4 +223,20 @@ public class DepartmentDao extends ShopBaseDao {
             .fetchInto(DepartmentSimpleVo.class);
     }
 
+    /**
+     * 获取子节点科室信息
+     * @param param
+     * @return
+     */
+    public List<DepartmentOneParam> listDepartmentsByOptions(DepartmentListParam param) {
+        Condition condition = DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF));
+        if (param.getKeyword() != null && param.getKeyword() != "") {
+            condition = condition.and(DEPARTMENT.NAME.like(likeValue(param.getKeyword())));
+        }
+        if (param.getDepartmentIds() != null) {
+            condition = condition.and(DEPARTMENT.ID.in(param.getDepartmentIds()));
+        }
+        return db().select().from(DEPARTMENT).where(condition).fetchInto(DepartmentOneParam.class);
+    }
+
 }

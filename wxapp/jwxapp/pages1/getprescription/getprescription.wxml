@@ -21,16 +21,17 @@
       <view class="each_line">
         <view class="el_left">手机号 <text>*</text></view>
         <view class="el_right">
-          <input type="text" class="mobile-input" placeholder="请输入手机号" bindblur="mobileInput"></input>
+          <input type="text" class="mobile-input" placeholder="手机号需与病历一致" bindchange="mobileInput"></input>
         </view>
         <view class="button mobile {{countDown ? 'gray' : ''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
       </view>
       <view class="each_line">
         <view class="el_left">验证码 <text>*</text></view>
         <view class="el_right">
-          <input type="text"  placeholder="请输入验证码" bindblur="verificationInput"></input>
+          <input type="text"  placeholder="请输入验证码" bindblur="verificationInput" bindinput="verificationInput"></input>
         </view>
       </view>
+      <view class="add_tips"> <image src="{{imageUrl}}image/wxapp/pre_add_tip_icon.png"></image> 若您有本院的就诊记录，可填写以上信息获取</view>
       <view class="btn_add" bindtap="getPrescription">获取病历</view>
       <view class="btn_get" bindtap="addFamily">手动添加就诊人</view>
     </view>

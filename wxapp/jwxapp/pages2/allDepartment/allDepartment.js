@@ -16,9 +16,10 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-     let {source = null} = options
+     let {source = null,doctorId = null} = options
      this.setData({
-      source
+      source,
+      doctorId
      })
      this.requestList()
   },
@@ -103,6 +104,7 @@ global.wxPage({
       }
     }, {
       keyword: keyword,
+      doctorId: this.data.doctorId
       });
   }
 })

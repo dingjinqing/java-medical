@@ -20,13 +20,13 @@
 .tabs > view > text.active::after{
   content: '';
   width: 80%;
-  height:4rpx;
-  border-radius: 2rpx;
+  height:6rpx;
+  border-radius: 3rpx;
   background-color: #26C4BC;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: -12rpx;
+  bottom: -8rpx;
 }
 .tabs > view + view{
   border-left: 2rpx solid #eee;

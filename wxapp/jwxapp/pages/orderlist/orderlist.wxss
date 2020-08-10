@@ -38,18 +38,34 @@
   background-color: #fff;
   display: flex;
   white-space: nowrap;
-  height: 84rpx;
+  height: 90rpx;
+  align-items: center;
 }
 .top_nav view {
-  border-bottom: 4rpx solid transparent;
   padding: 0 40rpx;
+  margin-top: 26rpx;
   color: #7f7d7a;
-  line-height: 80rpx;
+  display: flex;
+  align-items: center;
+}
+.top_nav view > text{
+  position: relative;
+}
+.top_nav view > text.active::after{
+  content: '';
+  width: 80%;
+  height:6rpx;
+  border-radius: 3rpx;
+  background-color: #26C4BC;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -14rpx;
 }
 .order_list {
   display: flex;
   flex-direction: column;
-  padding-top: 200rpx;
+  padding-top: 210rpx;
 }
 .order_item {
   color: #333;

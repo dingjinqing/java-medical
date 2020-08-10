@@ -3,14 +3,14 @@
 <view class="mian-container">
   <view class="patirnt_info">
     <view class="each_p_line">
-      <view class="el_left">姓名</view>
+      <view class="el_left">姓名 <text>*</text></view>
       <view class="el_right">
         <input type="text" value="{{patient_info.name}}" wx:if='{{is_edit == 0}}' placeholder="请输入真实姓名" placeholder-class="placeholder" bindblur="nameInput"></input>
-        <view wx:else>{{patient_info.name}}</view>
+        <view wx:else class="can_not_edit">{{patient_info.name}}</view>
       </view>
     </view>
     <view class="each_p_line">
-      <view class="el_left">出生日期</view>
+      <view class="el_left">出生日期 <text>*</text></view>
       <view class='el_right' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;' wx:if='{{is_edit == 0}}'>
         <picker mode="date" value="{{date}}" start="1900-01-01" end="2080-1-23" bindchange="bindDateChange">  
           <view class='placeholder' wx:if="{{dates == ''}}">选择您的生日</view>
@@ -19,10 +19,10 @@
           </view>   
         </picker>  
       </view>
-      <view class="el_right" wx:if='{{is_edit == 1}}'>{{dates}}</view>
+      <view class="el_right can_not_edit" wx:if='{{is_edit == 1}}'>{{dates}}</view>
     </view>
     <view class="each_p_line">
-      <view class="el_left">性别</view>
+      <view class="el_left">性别 <text>*</text></view>
       <view class="el_right" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;' wx:if='{{is_edit == 0}}'>
         <picker mode="selector" value="{{sex_index}}" range="{{gender}}" bindchange="bindSexChange">
           <view class="picker" wx:if='{{sex_index != -1}}'>
@@ -31,19 +31,20 @@
           <view wx:else class='placeholder'>请选择</view>
 				</picker>
       </view>
-      <view class="el_right" wx:if='{{is_edit == 1}}'>{{gender[sex_index]}}</view>
+      <view class="el_right can_not_edit" wx:if='{{is_edit == 1}}'>{{gender[sex_index]}}</view>
     </view>
     <view class="each_p_line">
-      <view class="el_left">身份证号码</view>
+      <view class="el_left">身份证号码 <text>*</text></view>
       <view class="el_right">
         <input type="text" value="{{patient_info.identityCode}}" wx:if='{{is_edit == 0}}' placeholder="请输入身份证号码" placeholder-class="placeholder" bindblur="idInput"></input>
-        <view wx:else>{{patient_info.identityCode}}</view>
+        <view wx:else class="can_not_edit">{{patient_info.identityCode}}</view>
       </view>
     </view>
     <view class="each_p_line">
-      <view class="el_left">手机号码</view>
+      <view class="el_left">手机号码 <text>*</text></view>
       <view class="el_right">
-        <input type="text" value="{{patient_info.mobile}}" placeholder="请输入手机号码" placeholder-class="placeholder" bindblur="mobileInput"></input>
+        <input type="text" value="{{patient_info.mobile}}" wx:if='{{is_edit == 0}}' placeholder="请输入手机号码" placeholder-class="placeholder" bindblur="mobileInput"></input>
+        <view wx:else class="can_not_edit">{{patient_info.mobile}}</view>
       </view>
     </view>
     <view class="each_p_line">
@@ -54,8 +55,8 @@
       </view>
     </view>
     <view class="spcial_line" style='display:{{showModal == 0 ? "block":"none "}}'>
-      <view class="ape_title">备注</view>
-      <textarea placeholder="其他病史或注意事项" bindblur="tipInpuit" placeholder-class="placeholder" value="{{patient_info.remarks}}"></textarea>
+      <view class="ape_title">备注 <text>*</text></view>
+      <textarea placeholder="其他病史或注意事项" bindblur="tipInpuit" bindinput="tipInpuit" placeholder-class="placeholder" value="{{patient_info.remarks}}"></textarea>
     </view>
   </view>
   <view class="btn_submit"  bindtap="bindSubmit" style="padding-bottom:{{isIpx == 1 ? '60rpx':'0'}}">
@@ -89,7 +90,7 @@
         </view>
       </view>
       <view class="guomin_his" wx:if='{{has_all_his == 1}}'>
-        <textarea placeholder="请输入过敏原" value="{{allergyHistory}}" bindblur="saveAllHis"></textarea>
+        <textarea placeholder="请输入过敏原" value="{{allergyHistory}}" bindblur="saveAllHis" bindinput="saveAllHis"></textarea>
         <!-- <view class="btn_save_guomin">保存</view> -->
       </view>
       <view class="each_pain_line">

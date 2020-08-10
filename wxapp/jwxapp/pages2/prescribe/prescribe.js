@@ -84,7 +84,7 @@ global.wxPage({
       ...this.data.dialogPageParams,
       isMedical:1,
       goodsName: this.data.goodsName
-    })
+    },'',true)
   },
   resetDialogGoodsList (dataList,parentIndex) {
     return dataList.map(item => {
@@ -151,7 +151,8 @@ global.wxPage({
   },
   selectDepartment () {
     util.jumpLink(`pages2/allDepartment/allDepartment${util.getUrlParams({
-      source: 'prescribe'
+      source: 'prescribe',
+      doctorId: this.data.doctorId
     })}`)
   },
   getDoctorAdvice ({ detail: { value } }) {
@@ -173,7 +174,7 @@ global.wxPage({
   },
   createPrescription () {
     let params = {
-      patientId: 137,
+      patientId: this.data.patientId,
       doctorId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
       departmentCode: this.data.departmentCode,
       departmentName: this.data.departmentName,

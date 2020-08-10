@@ -69,15 +69,20 @@ global.wxPage({
     util.jumpLink('/pages1/patientinfo/patientinfo?is_edit=1&patient_id=' + e.currentTarget.dataset.id)
   },
   del_patient (e) {
-    util.api('/api/wxapp/user/patient/delete', res => {
-      if(res.error == 0){
-        util.toast_success('删除成功!')
-        this.requestList()
-      }
-    },{
-      userId: util.getCache('user_id'),
-      patientId: e.currentTarget.dataset.id
-    })
+    util.showModal('提示', '确定要删除该患者吗？', () => {
+      util.api('/api/wxapp/user/patient/delete', res => {
+        if(res.error == 0){
+          util.toast_success('删除成功!')
+          this.requestList()
+        } else {
+          util.showModal('提示', res.message)
+          return false
+        }
+      },{
+        userId: util.getCache('user_id'),
+        patientId: e.currentTarget.dataset.id
+      })
+    }, true, '取消', '去添加')
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
