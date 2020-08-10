@@ -19,6 +19,7 @@
 .doctor_item .d_right{
   margin-left: 20rpx;
   color: #333;
+  width: 80%;
 }
 .doctor_item .d_right .d_r_top text:first-of-type{
  font-size: 32rpx;
@@ -27,7 +28,11 @@
 }
 .doctor_item .d_right .d_r_m_t{
   font-weight:400;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
+
 .doctor_item .d_right .d_r_m_b view{
 color: #999;
 font-weight: 400;
