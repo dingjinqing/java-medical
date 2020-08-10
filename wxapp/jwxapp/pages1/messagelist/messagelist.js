@@ -8,9 +8,12 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    is_system: 1,
+    is_all: 1,
+    is_system: 0,
     is_order: 0,
     is_advisory: 0,
+    // 全部列表
+    all_notice: [],
     // 系统公告列表
     system_notice: [],
     // 订单动态列表
@@ -32,32 +35,35 @@ global.wxPage({
       this.setData({
         is_system: 1,
         is_order: 0,
-        is_advisory: 0
+        is_advisory: 0,
+        is_all: 0
       })
     } else if(nav_index == 1){
       this.setData({
         is_system: 0,
         is_order: 1,
-        is_advisory: 0
+        is_advisory: 0,
+        is_all: 0
+      })
+    } else if(nav_index == 2){
+      this.setData({
+        is_system: 0,
+        is_order: 0,
+        is_advisory: 1,
+        is_all: 0
       })
     } else{
       this.setData({
         is_system: 0,
         is_order: 0,
-        is_advisory: 1
+        is_advisory: 0,
+        is_all: 1
       })
     }
   },
-  bindChangeStyle (e) {
-    var this_index = e.currentTarget.dataset.index;
-    if(this.data.system_notice[this_index].if_show_all == 0) {
-      this.data.system_notice[this_index].if_show_all == 1
-    } else{
-      this.data.system_notice[this_index].if_show_all == 0
-    }
-    this.setData({
-      system_notice: this.data.system_notice
-    })
+  show_mes (e) {
+    util.showModal('消息详情', e.currentTarget.dataset.index);
+    return false
   },
   to_order (e) {
     util.jumpLink('/pages/orderinfo/orderinfo?orderSn=' + e.currentTarget.dataset.order)
@@ -83,6 +89,7 @@ global.wxPage({
     util.api('/api/wxapp/message/list', res => {
       if (res.error === 0) {
         if(res.content != "") {
+          this.data.all_notice = [];
           this.data.system_notice = [];
           this.data.order_message = [];
           this.data.advisory_list = [];
@@ -95,22 +102,14 @@ global.wxPage({
             }else{
               this.data.advisory_list.push(res.content[i])
             }
-          }
-          if(this.data.system_notice != ""){
-            for (let i in this.data.system_notice) {
-              this.data.system_notice[i].if_show_all = 0;
-              if(this.data.system_notice[i].messageContent.length > 26) {
-                this.data.system_notice[i].messageContent1 = this.data.system_notice[i].messageContent.substr(0, 25) + "...";
-              } else {
-                this.data.system_notice[i].messageContent1 = this.data.system_notice[i].messageContent;
-              }
-            }
+            this.data.all_notice.push(res.content[i])
           }
         }
         this.setData({
           system_notice: this.data.system_notice,
           advisory_list: this.data.advisory_list,
-          order_message: this.data.order_message
+          order_message: this.data.order_message,
+          all_notice: this.data.all_notice
         })
       } else {
         util.showModal('提示', res.message)

@@ -133,7 +133,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
     public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
         Condition condition = DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1));
         if (doctorParam.getKeyword() != null && doctorParam.getKeyword() != "") {
-            condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DEPARTMENT.NAME.like(likeValue(doctorParam.getKeyword()))));
+            condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DOCTOR.ID.in(doctorParam.getDoctorIds())));
         }
         if (doctorParam.getDepartmentId() != null && doctorParam.getDepartmentId() > 0) {
             condition = condition.and(DEPARTMENT.ID.eq(doctorParam.getDepartmentId()));
@@ -141,9 +141,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         if (doctorParam.getTitleId() != null && doctorParam.getTitleId() > 0) {
             condition = condition.and(DOCTOR_TITLE.ID.eq(doctorParam.getTitleId()));
         }
-        return db().select(DOCTOR.asterisk(),DEPARTMENT.ID.as("departmentId"),DEPARTMENT.NAME.as("departmentName"),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR_DEPARTMENT_COUPLE)
-            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
-            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+        return db().select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
             .where(condition)
             .fetchInto(DoctorConsultationOneParam.class);
@@ -151,37 +149,35 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
     }
 
     /**
-     * 供咨询的医师科室列表
+     * 已咨询的医师列表
      *
      * @param doctorParam
      * @return
      */
-    public List<Integer> listHistoryDoctorDepartment(UserPatientParam doctorParam) {
-        return db().selectDistinct(DOCTOR_DEPARTMENT_COUPLE.ID).from(IM_SESSION)
-            .leftJoin(DOCTOR_DEPARTMENT_COUPLE).on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(IM_SESSION.DOCTOR_ID))
+    public List<Integer> listHistoryDoctorIds(UserPatientParam doctorParam) {
+        return db().selectDistinct(DOCTOR.ID).from(IM_SESSION)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
             .where(IM_SESSION.USER_ID.eq(doctorParam.getUserId()))
             .and(IM_SESSION.PATIENT_ID.eq(doctorParam.getPatientId()))
-            .and(DOCTOR_DEPARTMENT_COUPLE.ID.gt(0))
+            .and(DOCTOR.ID.gt(0))
             .fetchInto(Integer.class);
     }
 
     /**
      * 供咨询的医师科室列表
      *
-     * @param doctorDepartments
+     * @param doctorIds
      * @return
      */
-    public List<DoctorConsultationOneParam> listHistoryDoctor(List<Integer> doctorDepartments) {
-        SelectHavingStep<Record2<Integer, Integer>> table = db().select(DOCTOR_DEPARTMENT_COUPLE.ID, DSL.count(IM_SESSION.ID).as("number"))
+    public List<DoctorConsultationOneParam> listHistoryDoctor(List<Integer> doctorIds) {
+        SelectHavingStep<Record2<Integer, Integer>> table = db().select(DOCTOR.ID, DSL.count(IM_SESSION.ID).as("number"))
             .from(IM_SESSION)
-            .leftJoin(DOCTOR_DEPARTMENT_COUPLE).on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(IM_SESSION.DOCTOR_ID))
-            .and(DOCTOR_DEPARTMENT_COUPLE.ID.gt(0)).groupBy(DOCTOR_DEPARTMENT_COUPLE.ID);
-        return db().select(DOCTOR.asterisk(),DEPARTMENT.ID.as("departmentId"),DEPARTMENT.NAME.as("departmentName"),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR_DEPARTMENT_COUPLE)
-            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
-            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
+            .and(DOCTOR.ID.gt(0)).groupBy(DOCTOR.ID);
+        return db().select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
-            .leftJoin(table).on(table.field(DOCTOR_DEPARTMENT_COUPLE.ID).eq(DOCTOR_DEPARTMENT_COUPLE.ID))
-            .where(DOCTOR_DEPARTMENT_COUPLE.ID.in(doctorDepartments))
+            .leftJoin(table).on(table.field(DOCTOR.ID).eq(DOCTOR.ID))
+            .where(DOCTOR.ID.in(doctorIds))
             .and(DOCTOR.IS_DELETE.eq((byte) 0))
             .and(DOCTOR.STATUS.eq((byte) 1))
             .orderBy(table.field("number"))
@@ -196,16 +192,14 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
      * @return
      */
     public List<DoctorConsultationOneParam> listDoctorMore(List<Integer> doctorDepartments, Integer limit) {
-        SelectHavingStep<Record2<Integer, Integer>> table = db().select(DOCTOR_DEPARTMENT_COUPLE.ID, DSL.count(IM_SESSION.ID).as("number"))
+        SelectHavingStep<Record2<Integer, Integer>> table = db().select(DOCTOR.ID, DSL.count(IM_SESSION.ID).as("number"))
             .from(IM_SESSION)
-            .leftJoin(DOCTOR_DEPARTMENT_COUPLE).on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(IM_SESSION.DOCTOR_ID))
-            .and(DOCTOR_DEPARTMENT_COUPLE.ID.gt(0)).groupBy(DOCTOR_DEPARTMENT_COUPLE.ID);
-        return db().select(DOCTOR.asterisk(),DEPARTMENT.ID.as("departmentId"),DEPARTMENT.NAME.as("departmentName"),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR_DEPARTMENT_COUPLE)
-            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
-            .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
+            .and(DOCTOR.ID.gt(0)).groupBy(DOCTOR.ID);
+        return db().select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
-            .leftJoin(table).on(table.field(DOCTOR_DEPARTMENT_COUPLE.ID).eq(DOCTOR_DEPARTMENT_COUPLE.ID))
-            .where(DOCTOR_DEPARTMENT_COUPLE.ID.notIn(doctorDepartments))
+            .leftJoin(table).on(table.field(DOCTOR.ID).eq(DOCTOR.ID))
+            .where(DOCTOR.ID.notIn(doctorDepartments))
             .and(DOCTOR.IS_DELETE.eq((byte) 0))
             .and(DOCTOR.STATUS.eq((byte) 1))
             .orderBy(table.field("number"))
