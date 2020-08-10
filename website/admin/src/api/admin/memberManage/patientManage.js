@@ -18,7 +18,7 @@ export function getPatientMessage (patientId) {
 // 处方列表
 export function getPrescriptionList (data) {
   return service({
-    url: `/api/admin/prescription/list`,
+    url: `/api/admin/prescription/patient/list`,
     method: 'post',
     data: data
   })
