@@ -185,7 +185,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
      * @param orderSn
      * @return
      */
-    public ExecuteResult auditNotPassRefund(String orderSn){
+    public ExecuteResult auditNotPassRefund(String orderSn,Byte reasonType,String reasonDesc){
         OrderInfoRecord orderRecord = orderInfo.getOrderByOrderSn(orderSn);
         Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(orderRecord.getOrderId());
         //组装退款param
@@ -197,6 +197,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         param.setReturnType(OrderConstant.RT_ONLY_MONEY);
         param.setReturnMoney(orderRecord.getMoneyPaid().add(orderRecord.getScoreDiscount()).add(orderRecord.getUseAccount()).add(orderRecord.getMemberCardBalance()).subtract(orderRecord.getShippingFee()));
         param.setShippingFee(orderRecord.getShippingFee());
+        param.setReasonType(reasonType);
+        param.setReasonDesc(reasonDesc);
         List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
         oGoods.forEach(orderGoods -> {
             RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();

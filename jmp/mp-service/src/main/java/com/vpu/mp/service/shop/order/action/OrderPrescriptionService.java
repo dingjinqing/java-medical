@@ -242,7 +242,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             orderGoodsDao.updateAuditStatusByRecIds(unAuditGoodsId,OrderConstant.MEDICAL_AUDIT_NOT_PASS);
             orderInfoDao.updateAuditStatus(orderInfoDo.getOrderId(),OrderConstant.MEDICAL_AUDIT_NOT_PASS);
             //退款
-            returnService.auditNotPassRefund(orderInfoDo.getOrderSn());
+            returnService.auditNotPassRefund(orderInfoDo.getOrderSn(),param.getReasonType(),param.getReasonDesc());
         }
     }
 

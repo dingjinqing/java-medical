@@ -84,9 +84,9 @@ public class InquiryOrderRefundList extends TableImpl<InquiryOrderRefundListReco
     public final TableField<InquiryOrderRefundListRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单退款时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.is_success</code>. 处理状态，1：退款失败，2：退款成功
+     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.is_success</code>. 处理状态，1：退款成功，2：退款失败
      */
-    public final TableField<InquiryOrderRefundListRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处理状态，1：退款失败，2：退款成功");
+    public final TableField<InquiryOrderRefundListRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处理状态，1：退款成功，2：退款失败");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.is_delete</code>. 删除

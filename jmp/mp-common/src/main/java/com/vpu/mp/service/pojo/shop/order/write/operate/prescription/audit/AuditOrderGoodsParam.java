@@ -40,5 +40,13 @@ public class AuditOrderGoodsParam extends AbstractOrderOperateQueryParam {
      * 医嘱信息
      */
     private String doctorAdvice;
+    /**
+     * 驳回类型
+     */
+    private Byte reasonType;
+    /**
+     * 驳回原因
+     */
+    private String reasonDesc;
 
 }

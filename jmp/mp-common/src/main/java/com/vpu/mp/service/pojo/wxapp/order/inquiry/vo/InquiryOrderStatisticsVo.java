@@ -26,22 +26,22 @@ public class InquiryOrderStatisticsVo {
     private Integer departmentId;
     @ExcelColumn(columnName = "医生姓名", columnIndex = 1)
     private String doctorName;
-    @ExcelColumn(columnName = "科室", columnIndex = 2)
+    @ExcelIgnore
     private String departmentName;
     /**
      * 咨询单数
      */
-    @ExcelColumn(columnName = "咨询单数", columnIndex = 3)
+    @ExcelColumn(columnName = "咨询单数", columnIndex = 2)
     private String amount;
     /**
      * 咨询单次价格
      */
-    @ExcelColumn(columnName = "咨询单次价格", columnIndex = 4)
+    @ExcelColumn(columnName = "咨询单次价格", columnIndex = 3)
     private BigDecimal oncePrice;
     /**
      * 咨询总金额
      */
-    @ExcelColumn(columnName = "咨询总金额", columnIndex = 5)
+    @ExcelColumn(columnName = "咨询总金额", columnIndex = 4)
     private BigDecimal amountPrice;
 
 }

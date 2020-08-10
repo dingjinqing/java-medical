@@ -20,6 +20,17 @@ public class PrescriptionMakeParam extends AbstractOrderOperateQueryParam {
     private String departmentName;
     private String diagnosisName;
     private String doctorAdvice;
+    /**
+     * 审核状态 2失败 1成功
+     */
     private Byte auditStatus;
+    /**
+     * 驳回类型
+     */
+    private Byte reasonType;
+    /**
+     * 驳回原因
+     */
+    private String reasonDesc;
     private List<PrescriptionDrugVo> goodsList=new ArrayList<>();
 }

@@ -5077,7 +5077,7 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
   `money_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款金额',
   `refund_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单退款时间',
-  `is_success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '处理状态，1：退款失败，2：退款成功',
+  `is_success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '处理状态，1：退款成功，2：退款失败',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',

@@ -56,6 +56,6 @@ public class InquiryOrderConstant {
     /**
      * 退款状态
      */
-    public final static Byte REFUND_FAILED=1;
-    public final static Byte REFUND_SUCCESS=2;
+    public final static Byte REFUND_SUCCESS=1;
+    public final static Byte REFUND_FAILED=2;
 }
