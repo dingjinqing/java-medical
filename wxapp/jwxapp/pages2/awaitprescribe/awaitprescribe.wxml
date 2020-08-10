@@ -106,6 +106,20 @@
         </view>
       </view>
     </block>
+    <view class="modal_bg" wx:if='{{show_modal == 1}}'></view>
+    <view class="modal_content" wx:if='{{show_modal == 1}}'>
+      <view class="modal_title">
+        驳回原因
+        <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="close_modal"></image>
+      </view>
+      <view class="modal_info">
+        <textarea placeholder="请您输入驳回原因" value="{{rejectReason}}" bindtap="rejectReason" bindinput="rejectReason"></textarea>
+      </view>
+      <view class="modal_fotter">
+        <view class="modal_btn btn_cancel" bindtap="close_modal">取消</view>
+        <view class="modal_btn btn_ok" bindtap="to_reject" data-taped_order_id='{{taped_order_id}}'>确定</view>
+      </view>
+    </view>
   </block>
   <block wx:else>
     <view class="no_content" >
