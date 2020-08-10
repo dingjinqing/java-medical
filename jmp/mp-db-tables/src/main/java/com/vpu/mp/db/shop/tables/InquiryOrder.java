@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = 188836864;
+    private static final long serialVersionUID = 503143234;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order</code>
@@ -75,9 +75,9 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
     public final TableField<InquiryOrderRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消
+     * The column <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7部分退款
      */
-    public final TableField<InquiryOrderRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消");
+    public final TableField<InquiryOrderRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7部分退款");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.doctor_id</code>. 医师id
@@ -162,7 +162,12 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.pay_time</code>. 支付时间
      */
-    public final TableField<InquiryOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
+    public final TableField<InquiryOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.refund_money</code>. 已退款金额
+     */
+    public final TableField<InquiryOrderRecord, BigDecimal> REFUND_MONEY = createField("refund_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "已退款金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.cancelled_time</code>. 取消时间
