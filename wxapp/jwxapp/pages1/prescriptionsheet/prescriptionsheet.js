@@ -65,6 +65,10 @@ global.wxPage({
       util.showModal('提示','请选择历史诊断内容')
       return
     }
+    if(!this.data.describe){
+      util.showModal('提示','请详细输入病情描述')
+      return
+    }
     let params = {
       patientName:this.data.patientInfo.name,
       patientId:this.data.patientInfo.patientId,
@@ -74,7 +78,8 @@ global.wxPage({
       patientComplain:JSON.stringify({
         ...this.data.optionsList,
         selectedDiagnose:this.data.selectedDiagnose,
-      })
+      }),
+      describe:this.data.describe
     }
     let pageList = getCurrentPages();
     let prevPage = pageList[pageList.length - 2];
@@ -82,6 +87,12 @@ global.wxPage({
       patientDiagnose:params
     })
     wx.navigateBack()
+  },
+  getDescribe(e){
+    let {value} = e.detail
+    this.setData({
+      describe:value
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -38,6 +38,12 @@
         </view>
       </view>
     </view>
+
+    <view class="title-module">病情描述</view>
+    <view class="card-content has-padding p-left p-top p-bottom p-right">
+      <textarea placeholder="请详细输入您的病情描述" bindinput="getDescribe" class="describe" ></textarea>
+    </view>
+
     <view class="card-content center column has-padding p-top p-bottom">
       <view class="image-content center column" wx:if="{{prescriptionImageList.length}}">
         <image mode='widthFix' src="{{item}}" wx:for="{{prescriptionImageList}}" wx:key="index"></image>
