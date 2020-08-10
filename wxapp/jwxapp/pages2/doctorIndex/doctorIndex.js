@@ -141,7 +141,13 @@ global.wxPage({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    // 显示导航栏loading
+    wx.showNavigationBarLoading();
+    // 调用接口加载数据
+    this.requestInfo();
+    wx.hideNavigationBarLoading();
+    // 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
+    wx.stopPullDownRefresh();
   },
 
   /**
