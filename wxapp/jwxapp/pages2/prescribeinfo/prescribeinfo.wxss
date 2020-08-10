@@ -114,3 +114,7 @@
 .picker{
   font-weight: bold;
 }
+.line_tit text{
+  color: red;
+  margin-left: 5rpx;
+}
