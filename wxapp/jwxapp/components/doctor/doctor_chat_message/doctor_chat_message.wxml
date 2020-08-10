@@ -1,5 +1,5 @@
 <!--components/doctor/doctor_chat_message/doctor_chat_message.wxml-->
-<view class="user_con {{chatContent.position == 0 ? 'con_left' : 'con_right'}}" wx:if='{{!chatContent.status}}'>
+<view class="user_con {{chatContent.position == 0 ? 'con_left' : 'con_right'}}" wx:if='{{!chatContent.status}}' id='con_{{idx}}'>
 	<view class="user_icon {{chatContent.position == 0 ? 'user_left' : 'user_right'}}">
 		<image src='{{avatar}}'></image>
 	</view>
