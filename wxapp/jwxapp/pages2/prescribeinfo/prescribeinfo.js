@@ -101,10 +101,18 @@ global.wxPage({
     })
   },
   btn_check () {
+    if(this.data.depart_id == '') {
+      util.showModal('提示', '请选择医生所属科室')
+      return false
+    }
+    if(this.data.diagnosis == '') {
+      util.showModal('提示', '请填写诊断内容')
+      return false
+    }
     util.api('/api/wxapp/order/prescription/make', res => {
       if(res.error == 0){
         util.toast_success('成功')
-        util.jumpLink('/pages2/awaitprescribe/awaitprescribe')
+        util.jumpLink('/pages2/awaitprescribe/awaitprescribe', 'redirectTo')
       } else {
         util.showModal('提示',res.message);
         return false
