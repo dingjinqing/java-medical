@@ -5,9 +5,12 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 
 import com.vpu.mp.db.shop.tables.UserMessage;
+import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
+import com.vpu.mp.db.shop.tables.records.UserAnnouncementRecord;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.springframework.stereotype.Repository;
 
@@ -17,8 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_NOT_READ;
-import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_TOP;
+import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.*;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
 
 /**
@@ -55,59 +57,14 @@ public class MessageDao extends ShopBaseDao {
     }
 
     /**
-     * 消息展示列表
-     * @param userId 接收用户id
-     * @return List<UserMessageVo>
-     */
-    public List<UserMessageVo> showMessage(int userId){
-        List<UserMessageVo> list = new ArrayList<>();
-        //置顶消息
-        List<UserMessageVo> userMessageVos = db().selectFrom(USER_MESSAGE)
-            .where(USER_MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_TOP)
-                .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
-                .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
-            .fetchInto(UserMessageVo.class);
-        //未读消息
-        List<UserMessageVo> willMessages = db().selectFrom(USER_MESSAGE)
-            .where(USER_MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_NOT_READ)
-                .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
-                .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
-            .fetchInto(UserMessageVo.class);
-        //已读消息
-        List<UserMessageVo> alreadyMessages = db().selectFrom(USER_MESSAGE)
-            .where(USER_MESSAGE.MESSAGE_STATUS.ne(USER_MESSAGE_STATUS_NOT_READ)
-                .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
-                .and(USER_MESSAGE.MESSAGE_STATUS.ne(USER_MESSAGE_STATUS_TOP))
-                .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
-            .fetchInto(UserMessageVo.class);
-        list.addAll(userMessageVos);
-        list.addAll(willMessages);
-        list.addAll(alreadyMessages);
-        return list;
-    }
-
-    /**
-     * 查询该用户未读消息总数
-     * @param receiveId 用户id
-     * @return Integer
-     */
-    public Integer countMessageNum(Integer receiveId){
-        List<Integer> integers = db().selectCount().from(USER_MESSAGE)
-            .where(USER_MESSAGE.RECEIVER_ID.eq(receiveId)
-                .and(USER_MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_NOT_READ))
-                .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE))).fetchInto(Integer.class);
-        return integers.get(0);
-    }
-
-    /**
      * 消息已读状态变更
      * @param messageId 消息id
      */
-    public void changeMessageStatus(Integer messageId, Byte status){
+    public void changeMessageStatus(Integer messageId){
         UserMessageRecord messageRecord = db().select().from(USER_MESSAGE)
             .where(USER_MESSAGE.MESSAGE_ID.eq(messageId))
             .fetchOneInto(UserMessageRecord.class);
-        messageRecord.setMessageStatus(status);
+        messageRecord.setMessageStatus(USER_MESSAGE_STATUS_ALREADY_READ);
         messageRecord.update();
     }
 
@@ -149,8 +106,162 @@ public class MessageDao extends ShopBaseDao {
             .where(USER_MESSAGE.MESSAGE_ID.eq(messageId)).execute();
     }
 
-    public void saveUserImSessionItem(){
+    /**
+     * 查询订单消息
+     * @param userId 接收消息用户id
+     * @return List<UserMessageVo>
+     */
+    public List<UserMessageVo> selectOrderUserMessage(Integer userId){
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_ORDER))
+            .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
+            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchInto(UserMessageVo.class);
+    }
 
+    /**
+     * 查询会话消息
+     * @param userId 接收消息用户ID
+     * @return List<UserMessageVo>
+     */
+    public List<UserMessageVo> selectImSessionUserMessage(Integer userId){
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_CHAT))
+            .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
+            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchInto(UserMessageVo.class);
+    }
+
+    /**
+     * 查询用户是否有历史会话记录
+     * @param sessionId 会话id
+     * @param userId 当前用户id
+     * @return UserMessageVo
+     */
+    public UserMessageVo getImSessionBySessionId(Integer sessionId, Integer userId) {
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ID.eq(sessionId))
+            .and(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_CHAT))
+            .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
+            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(UserMessageVo.class);
+    }
+
+    /**
+     * 储存会话消息
+     * @param userMessageParam 消息入参
+     */
+    public void saveMessage(UserMessageParam userMessageParam) {
+        UserMessageRecord messageRecord = db().newRecord(USER_MESSAGE);
+        FieldsUtil.assign(userMessageParam, messageRecord);
+        messageRecord.insert();
+    }
+
+    /**
+     * 更新会话消息
+     * @param userMessageParam 消息入参
+     */
+    public void updateMessage(UserMessageParam userMessageParam) {
+        UserMessageRecord messageRecord = db().newRecord(USER_MESSAGE);
+        FieldsUtil.assign(userMessageParam, messageRecord);
+        messageRecord.update();
+    }
+
+    /**
+     * 查询用户订单消息
+     * @param orderId
+     * @return
+     */
+    public UserMessageVo selectOrderMessageByOrderId(Integer orderId, Integer userId) {
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ID.eq(orderId))
+            .and(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_ORDER))
+            .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
+            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(UserMessageVo.class);
+    }
+
+    /**
+     * 增量获取未读的公告消息
+     * @param timestamp 上次打开公告消息时间戳
+     * @return List<UserMessageVo>
+     */
+    public List<UserMessageVo> selectLastAnnouncement(Timestamp timestamp){
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_TIME.gt(timestamp))
+            .and(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_SYSTEM))
+            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchInto(UserMessageVo.class);
+    }
+
+    /**
+     * 拉取该用户所有信息
+     * @param userId 用户id
+     * @return List<UserMessageVo>
+     */
+    public List<UserMessageVo> selectMainMessage(Integer userId) {
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.RECEIVER_ID.eq(userId))
+            .or(USER_MESSAGE.RECEIVER_ID.eq(USER_MESSAGE_RECEIVE_ANN))
+            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .orderBy(USER_MESSAGE.CREATE_TIME.desc()).fetchInto(UserMessageVo.class);
+    }
+
+    /**
+     * 查询用户未读公告数
+     * @param userId 用户id
+     * @return Integer
+     */
+    public Integer selectAnnouncementCount(Integer userId) {
+        return db().selectCount().from(USER_ANNOUNCEMENT)
+            .join(USER_MESSAGE).on(USER_ANNOUNCEMENT.MESSAGE_ID.eq(USER_MESSAGE.MESSAGE_ID))
+            .and(USER_ANNOUNCEMENT.USER_ID.eq(userId))
+            .and(USER_ANNOUNCEMENT.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_NOT_READ))
+            .where(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 查询用户未读订单消息数
+     * @param userId 用户id
+     * @return Integer
+     */
+    public Integer selectOrderCount(Integer userId) {
+        return db().selectCount().from(USER_MESSAGE)
+            .where(USER_MESSAGE.RECEIVER_ID.eq(userId))
+            .and(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_ORDER))
+            .and(USER_MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_NOT_READ))
+            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 查询未读会话消息数
+     * @param userId 用户id
+     * @return Integer
+     */
+    public Integer selectChatCount(Integer userId) {
+        return db().selectCount().from(USER_MESSAGE)
+            .where(USER_MESSAGE.RECEIVER_ID.eq(userId))
+            .and(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_CHAT))
+            .and(USER_MESSAGE.MESSAGE_STATUS.eq(USER_MESSAGE_STATUS_NOT_READ))
+            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 根据消息id查询消息内容
+     * @param messageId 消息id
+     * @return UserMessageVo
+     */
+    public UserMessageVo selectMessageByMessageId(Integer messageId) {
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_ID.eq(messageId)).fetchAnyInto(UserMessageVo.class);
+    }
+
+    /**
+     * 更改系统消息读取状态
+     * @param userMessageVo 用户消息
+     */
+    public void changeAnnStatus(UserMessageVo userMessageVo) {
+        UserAnnouncementRecord announcementRecord = db().select().from(USER_ANNOUNCEMENT)
+            .where(USER_ANNOUNCEMENT.MESSAGE_ID.eq(userMessageVo.getMessageId()))
+            .and(USER_ANNOUNCEMENT.USER_ID.eq(userMessageVo.getReceiverId()))
+            .fetchOneInto(UserAnnouncementRecord.class);
+        announcementRecord.setMessageStatus(USER_MESSAGE_STATUS_ALREADY_READ);
+        announcementRecord.update();
     }
 
 }

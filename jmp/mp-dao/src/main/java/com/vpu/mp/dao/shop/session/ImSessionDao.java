@@ -142,5 +142,14 @@ public class ImSessionDao extends ShopBaseDao {
         return db().selectFrom(IM_SESSION).where(condition).fetchInto(ImSessionDo.class);
     }
 
+    /**
+     * 根据会话id查询会话状态，订单号
+     * @param sessionId
+     * @return
+     */
+    public ImSessionDo getImSession(Integer sessionId) {
+        return db().select().from(IM_SESSION)
+            .where(IM_SESSION.ID.eq(sessionId)).fetchAnyInto(ImSessionDo.class);
+    }
 
 }

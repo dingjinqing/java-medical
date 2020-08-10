@@ -1180,5 +1180,9 @@ public class Tables {
      * 短信充值记录表
      */
     public static final SmsRecharge SMS_RECHARGE = com.vpu.mp.db.shop.tables.SmsRecharge.SMS_RECHARGE;
+    /**
+     * 用户公告关联表
+     */
+    public static final UserAnnouncement USER_ANNOUNCEMENT = com.vpu.mp.db.shop.tables.UserAnnouncement.USER_ANNOUNCEMENT;
 
 }

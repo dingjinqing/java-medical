@@ -5086,19 +5086,21 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   KEY `user_id` (`user_id`)
 ) COMMENT='问诊订单退款记录';
 
+-- 用户消息表
 CREATE TABLE `b2c_user_message` (
     `message_id` int(11) NOT NULL AUTO_INCREMENT,
     `message_name` varchar(255) NOT NULL DEFAULT '' COMMENT '消息名称，系统消息名称为日期',
-    `message_essentials` varchar(255) NOT NULL DEFAULT '' COMMENT '消息摘要',
     `message_content` text COMMENT '消息内容',
     `message_type` tinyint(1) not null default 0 comment '消息类型 0：系统消息、1：订单消息、2：会话消息 默认0',
-    `receiver_id` int(11) not null comment '接收者id',
+    `receiver_id` int(11) not null default 0 comment '接收者id',
     `receiver_name` varchar(100) not null default '' comment '接收者姓名',
     `sender_id` int(11) not null default 0 comment '发送者id',
     `sender_name` varchar(100) not null default '' comment '发送者姓名',
     `message_status` tinyint(1) not null default 0 comment '消息状态 0：未读、1：已读、3：置顶消息 默认0',
     `message_time` timestamp not null default CURRENT_TIMESTAMP comment '消息创建时间',
-    `message_relevance_id` int(11) not null default 0 comment '消息关联id 关联会话和订单id，关联系统消息、会话问诊、问诊订单主键',
+    `message_relevance_id` int(11) not null default 0 comment '消息关联订单，会话id',
+    `message_relevance_order_sn` varchar(20) not null default 0 comment '消息关联会话订单sn',
+    `message_chat_status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '会话消息状态',
     `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -5142,3 +5144,15 @@ CREATE TABLE `b2c_order_medical_history` (
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`id`)
 ) comment ='患者订单历史病例表';
+
+-- 用户公告关联表
+CREATE TABLE `b2c_user_announcement` (
+    `announcement_id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL DEFAULT 0 COMMENT '用户id',
+    `message_id` int(11) NOT NULL DEFAULT 0 COMMENT '公告id',
+    `message_status` tinyint NOT NULL DEFAULT 0 COMMENT '消息状态 0：未读、1：已读、3：置顶消息 默认0',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`announcement_id`)
+) COMMENT = '用户公告关联表';

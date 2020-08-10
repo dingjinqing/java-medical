@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.message.MessageParam;
 import com.vpu.mp.service.shop.message.UserMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,40 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 
 @RestController
-@RequestMapping("/api/wxapp/message")
 public class WxAppUserMessageController extends WxAppBaseController{
 
     @Autowired
     private UserMessageService messageService;
 
     /**
-     * 用户消息列表展示
-     * @param messageParam 接收消息用户id
-     * @return JsonResult
-     */
-    @RequestMapping("/list")
-    public JsonResult showMessageList(@RequestBody MessageParam messageParam){
-        return this.success(messageService.showUserMessage(messageParam.getUserId()));
-    }
-
-    /**
-     * 用户未读消息统计
-     * @param messageParam 接收消息用户id
-     * @return JsonResult
-     */
-    @RequestMapping("/count")
-    public JsonResult countMessage(@RequestBody MessageParam messageParam){
-        return this.success(messageService.countMessage(messageParam.getUserId()));
-    }
-
-    /**
      * 消息读取状态变更
      * @param messageParam 消息id
      * @return JsonResult
      */
-    @RequestMapping("/change")
+    @RequestMapping("/api/wxapp/message/change")
     public JsonResult changeMessageStatus(@RequestBody MessageParam messageParam) {
-        messageService.changeMessageStatus(messageParam.getMessageId(), messageParam.getStatus());
+        messageService.changeMessageStatus(messageParam.getMessageId(), wxAppAuth.user().getUserId());
         return this.success();
     }
 
@@ -57,9 +37,45 @@ public class WxAppUserMessageController extends WxAppBaseController{
      * @param messageParam 用户消息入参
      * @return JsonResult
      */
-    @RequestMapping("/delete")
+    @RequestMapping("/api/wxapp/message/delete")
     public JsonResult deleteUserMessage(@RequestBody MessageParam messageParam){
         messageService.deleteUserMessage(messageParam.getMessageId());
         return this.success();
+    }
+
+    /**
+     * 查询订单消息
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/message/Order/list")
+    public JsonResult orderUserMessage() {
+        return this.success(messageService.selectOrderUserMessage(wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 查询会话消息
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/message/chat/list")
+    public JsonResult selectImSessionUserMessage() {
+        return this.success(messageService.selectImSessionUserMessage(wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 用户消息首页信息展示
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/message/list")
+    public JsonResult selectUserMessage() {
+        return this.success(messageService.selectUserMessage(wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 用户个人中心消息计数
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/message/count")
+    public JsonResult selectUserMessageCount() {
+        return this.success(messageService.selectUserMessageCount(wxAppAuth.user().getUserId()));
     }
 }
