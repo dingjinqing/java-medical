@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 public class DoctorConsultationOneParam extends DoctorDo {
-    private String departmentName;
+    private String departmentName="";
     private String titleName;
     private Integer departmentId=0;
     private String hospitalName;

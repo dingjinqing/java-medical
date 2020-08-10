@@ -255,11 +255,7 @@ public class DoctorService extends ShopBaseService {
             List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorIds, 10 - historyDoctors.size());
             historyDoctors.addAll(historyDoctorMore);
         }
-        for (DoctorConsultationOneParam item:historyDoctors) {
-            item.setHospitalName(HOSPITAL_NAME);
-            List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(item.getId());
-            item.setDepartmentName(Joiner.on(",").join(departmentList));
-        }
+        setDoctorDepartmentNames(historyDoctors);
         return historyDoctors;
     }
 
@@ -270,11 +266,7 @@ public class DoctorService extends ShopBaseService {
             doctorParam.setDoctorIds(doctorIds);
         }
         List<DoctorConsultationOneParam> list = doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
-        for (DoctorConsultationOneParam item:list) {
-            item.setHospitalName(HOSPITAL_NAME);
-            List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(item.getId());
-            item.setDepartmentName(Joiner.on(",").join(departmentList));
-        }
+        setDoctorDepartmentNames(list);
         return list;
     }
 
@@ -309,4 +301,17 @@ public class DoctorService extends ShopBaseService {
         return doctorDao.getSelectDoctorList(param);
     }
 
+    /**
+     * 设置医师科室信息，医院信息
+     * @param list
+     */
+    public void setDoctorDepartmentNames(List<DoctorConsultationOneParam> list) {
+        for (DoctorConsultationOneParam item:list) {
+            item.setHospitalName(HOSPITAL_NAME);
+            List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(item.getId());
+            if (departmentList.size() > 0) {
+                item.setDepartmentName(Joiner.on(",").join(departmentList));
+            }
+        }
+    }
 }
