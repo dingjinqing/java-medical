@@ -64,7 +64,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .select(DEPARTMENT.NAME)
             .from(DOCTOR_DEPARTMENT_COUPLE)
             .leftJoin(DEPARTMENT).on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
-            .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0))
+            .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).and(DOCTOR_DEPARTMENT_COUPLE.IS_DELETE.eq((byte) 0)).and(DEPARTMENT.ID.gt(0))
             .fetchInto(String.class);
         return departmentNameList;
     }
