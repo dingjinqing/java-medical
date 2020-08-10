@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class DoctorOneParam {
     private Integer   id;
-    private Integer   accountId;
+    private Integer   accountId=0;
     private Integer   age;
     private Integer   workTime;
     private Byte      sex;
