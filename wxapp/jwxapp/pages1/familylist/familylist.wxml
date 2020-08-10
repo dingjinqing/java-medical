@@ -1,7 +1,7 @@
 <!--pages1/familylist/familylist.wxml-->
 <include src="/pages/common/header.wxml"/>
 <view class="mian-container">
-  <block wx:if='{{patientList}}'>
+  <block wx:if='{{patientList!= ""}}'>
     <view class="family_content">
       <view class="each_family" data-patient-id="{{item.id}}" 
             bindtap="{{source ? 'toggleFamily' : ''}}" wx:for='{{patientList}}' wx:key='key'> 
@@ -28,7 +28,7 @@
       <view class="btn_add_person" catchtap="to_pre">添加</view>
     </view>
   </block>
-  <view class="no_content" wx:else>
+  <view class="no_content" wx:if='{{patientList == ""}}'>
     <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
     <view class="no_word">暂无内容</view>
     <view class="btn_get_pre" catchtap="to_pre">去添加</view>

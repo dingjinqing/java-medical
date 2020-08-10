@@ -9,7 +9,7 @@ global.wxPage({
     diagnose:['心绞痛','高血压','心肌炎','肺炎','咳嗽','感冒'],
     selectedDiagnose:[],
     optionsList:{
-      isUsed:false,
+      isUsed:true,
       hasBadReaction:false,
       isGravida:false 
     },
@@ -67,7 +67,7 @@ global.wxPage({
     }
     let params = {
       patientName:this.data.patientInfo.name,
-      patientId:this.data.patientInfo.id,
+      patientId:this.data.patientInfo.patientId,
       sex:this.data.patientInfo.sex,
       age:this.data.patientInfo.age,
       imagesList:JSON.stringify(this.data.prescriptionImageList),

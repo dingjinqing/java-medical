@@ -105,11 +105,14 @@ global.wxPage({
       if(res.error == 0){
         util.toast_success('成功')
         util.jumpLink('/pages2/awaitprescribe/awaitprescribe')
+      } else {
+        util.showModal('提示',res.message);
+        return false
       }
     },{
       orderId: this.data.orderId,
       auditStatus: 1,
-      patientId: this.data.page_info.patient.patientId,
+      patientId: this.data.page_info.medicalHistory.patientId,
       doctorId: this.data.doctorId,
       departmentCode: this.data.depart_id,
       departmentName: this.data.depart_name,
