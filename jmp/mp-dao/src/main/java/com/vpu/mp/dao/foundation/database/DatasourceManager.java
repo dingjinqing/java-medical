@@ -80,6 +80,7 @@ public class DatasourceManager {
         map.put("username",username);
         map.put("password",password);
         map.put("driverClassName",databaseConfig.getDriver());
+        map.put("timeBetweenLogStatsMillis","111");
         if (databaseConfig.getMaxPoolSize() > 0) {
             map.put("maxActive",databaseConfig.getMaxPoolSize()+"");
         }

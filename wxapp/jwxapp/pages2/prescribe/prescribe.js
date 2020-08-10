@@ -41,8 +41,8 @@ global.wxPage({
   },
   clearInput () {
     this.setData({
-      'prescriptionInfo.diagnose.canClear': false,
-      'prescriptionInfo.diagnose.info': ''
+      'diagnose.canClear': false,
+      'diagnose.info': ''
     })
   },
   getDiagnose ({ detail: { value } }) {

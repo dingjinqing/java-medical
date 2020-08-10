@@ -35,8 +35,8 @@ global.wxComponent({
           prescriptionCode:this.data.prescriptionData.prescriptionCode
         })}`)
       // } else {
-      //   let goodsList = this.data.goodsList.filter(item=>item.selected).map(item=>{
-      //     let {goodsId,shopPrice:prdRealPrice,cartNumber:goodsNum,prdId} = item
+      //   let goodsList = this.data.prescriptionData.itemList.map(item=>{
+      //     let {goodsId,medicinePrice:prdRealPrice,dragSumNum:goodsNum,prdId} = item
       //     return {goodsId,prdRealPrice,goodsNum,prdId}
       //   })
       //   util.jumpLink(`pages/checkout/checkout${util.getUrlParams({
