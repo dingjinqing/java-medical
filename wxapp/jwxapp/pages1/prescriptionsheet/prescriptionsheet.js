@@ -67,7 +67,7 @@ global.wxPage({
     }
     let params = {
       patientName:this.data.patientInfo.name,
-      patientId:this.data.patientInfo.id,
+      patientId:this.data.patientInfo.patientId,
       sex:this.data.patientInfo.sex,
       age:this.data.patientInfo.age,
       imagesList:JSON.stringify(this.data.prescriptionImageList),
