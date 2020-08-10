@@ -249,7 +249,7 @@ public class DoctorService extends ShopBaseService {
 
 
     public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
-        List<Integer> doctorIds = doctorDepartmentCoupleDao.listHistoryDoctor(doctorParam);
+        List<Integer> doctorIds = doctorDepartmentCoupleDao.listHistoryDoctorIds(doctorParam);
         List<DoctorConsultationOneParam> historyDoctors = doctorDepartmentCoupleDao.listHistoryDoctor(doctorIds);
         if (historyDoctors.size() < RECOMMEND_MAX_NUM) {
             List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorIds, 10 - historyDoctors.size());

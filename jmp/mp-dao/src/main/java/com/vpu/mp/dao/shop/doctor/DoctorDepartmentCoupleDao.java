@@ -154,7 +154,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
      * @param doctorParam
      * @return
      */
-    public List<Integer> listHistoryDoctor(UserPatientParam doctorParam) {
+    public List<Integer> listHistoryDoctorIds(UserPatientParam doctorParam) {
         return db().selectDistinct(DOCTOR.ID).from(IM_SESSION)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
             .where(IM_SESSION.USER_ID.eq(doctorParam.getUserId()))
