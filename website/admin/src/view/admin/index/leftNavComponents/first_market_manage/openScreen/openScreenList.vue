@@ -197,7 +197,7 @@ export default {
       let text = ''
       switch (val) {
         case 1:
-          text = vm.$t('openScreen.newUser')
+          text = '初次访问店铺的用户'
           break
         case 2:
           text = vm.$t('openScreen.allUser')
