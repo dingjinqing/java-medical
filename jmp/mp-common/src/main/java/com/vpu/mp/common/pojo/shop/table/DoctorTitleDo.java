@@ -28,6 +28,7 @@ public class DoctorTitleDo implements Serializable {
     private Integer   id;
     private String    name;
     private String    code;
+    private Integer   first;
     private Byte      isDelete;
     private Timestamp createTime;
     private Timestamp updateTime;

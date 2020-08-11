@@ -2,6 +2,7 @@ package com.vpu.mp.dao.shop.doctor;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorDepartmentCoupleRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
@@ -130,7 +131,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
      * @param doctorParam
      * @return
      */
-    public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
+    public PageResult<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
         Condition condition = DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1));
         if (doctorParam.getKeyword() != null && doctorParam.getKeyword() != "") {
             condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DOCTOR.ID.in(doctorParam.getDoctorIds())));
@@ -141,11 +142,12 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         if (doctorParam.getTitleId() != null && doctorParam.getTitleId() > 0) {
             condition = condition.and(DOCTOR_TITLE.ID.eq(doctorParam.getTitleId()));
         }
-        return db().select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
-            .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
-            .where(condition)
-            .fetchInto(DoctorConsultationOneParam.class);
-
+        SelectJoinStep<? extends Record> select = db().select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
+            .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
+        select.where(condition);
+        PageResult<DoctorConsultationOneParam> doctorList = this.getPageResult(select, doctorParam.getCurrentPage(),
+            doctorParam.getPageRows(), DoctorConsultationOneParam.class);
+        return doctorList;
     }
 
     /**

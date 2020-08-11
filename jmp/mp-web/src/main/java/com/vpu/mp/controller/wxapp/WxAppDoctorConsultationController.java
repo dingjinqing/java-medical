@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.department.DepartmentIdNameVo;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListParam;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
@@ -35,7 +36,7 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/doctor/list")
     public JsonResult getDoctorList(@RequestBody DoctorConsultationParam doctorParam) {
-        List<DoctorConsultationOneParam> doctorList = shop().doctorService.listDoctorForConsultation(doctorParam);
+        PageResult<DoctorConsultationOneParam> doctorList = shop().doctorService.listDoctorForConsultation(doctorParam);
         List<DepartmentOneParam> departmentList = shop().departmentService.listDepartmentsSelect();
         List<TitleOneParam> titleList = shop().titleService.listTitlesSelect();
         DoctorConsultationVo data = new DoctorConsultationVo();

@@ -4816,6 +4816,7 @@ create table b2c_doctor_title(
     `id`   int(11)  not null auto_increment,
     `name` varchar(32) not null comment '职称名称',
     `code` varchar(32) not null comment '职称代码',
+    `first` int(11) not null default 0 comment '优先级（越大越优先）',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',

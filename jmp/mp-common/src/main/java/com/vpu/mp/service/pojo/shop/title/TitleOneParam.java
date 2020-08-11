@@ -17,4 +17,5 @@ public class TitleOneParam {
     private String code;
     private Byte isDelete=0;
     private Timestamp createTime;
+    private Integer first=0;
 }

@@ -30,7 +30,7 @@ public class TitleDao extends ShopBaseDao{
      */
     public PageResult<TitleOneParam> getTitleList(TitleListParam param) {
         SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR_TITLE.ID, DOCTOR_TITLE.NAME, DOCTOR_TITLE.CREATE_TIME)
+            .select(DOCTOR_TITLE.asterisk())
             .from(DOCTOR_TITLE);
         select.where(DOCTOR_TITLE.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
