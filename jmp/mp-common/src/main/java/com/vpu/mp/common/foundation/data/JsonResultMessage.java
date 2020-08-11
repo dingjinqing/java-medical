@@ -1339,6 +1339,7 @@ public class JsonResultMessage {
     public static final String DOCTOR_ID_IS_NULL = "doctor.id.is.null";
     public static final String DOCTOR_CODE_IS_EXIST = "doctor.code.is.exist";
     public static final String PATIENT_IS_EXIST = "patient.is.exist";
+    public static final String PATIENT_IS_NOT_EXIST = "patient.is.not.exist";
 
     /**
      * 会话
@@ -1356,6 +1357,7 @@ public class JsonResultMessage {
      */
     public static final String INQUIRY_ORDER_SN_IS_NULL="inquiry.order.sn.is.null";
     public static final String INQUIRY_ORDER_ID_IS_NULL="inquiry.order.id.is.null";
+    public static final String INQUIRY_ORDER_REFUND_MONEY_EXCESS="inquiry.order.refund.money.excess";
     /**
      * 验证码错误
      */

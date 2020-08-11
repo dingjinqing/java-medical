@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
@@ -39,8 +40,12 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/inquiry/order/refund")
     public JsonResult refund(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
-        JsonResult result= shop().inquiryOrderService.refund(inquiryOrderOnParam);
-        return result;
+        try {
+             shop().inquiryOrderService.refund(inquiryOrderOnParam);
+        } catch (MpException e) {
+            fail(e.getErrorCode());
+        }
+        return success();
     }
     /**
      * 查询问诊订单

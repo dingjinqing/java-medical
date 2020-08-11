@@ -371,7 +371,7 @@ public class PrescriptionService extends ShopBaseService {
      * 上传保存处方
      * @param param
      */
-    public PrescriptionParam insertPrescription(PrescriptionOneParam param)throws MpException{
+    public PrescriptionParam insertPrescription(PrescriptionOneParam param){
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
         return prescriptionParam;
@@ -382,7 +382,7 @@ public class PrescriptionService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PrescriptionParam buildPrescription(PrescriptionOneParam param) throws MpException {
+    public PrescriptionParam buildPrescription(PrescriptionOneParam param){
 
         DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
         OrderMedicalHistoryDo orderMedicalHistoryDo= orderMedicalHistoryDao.getByOrderId(param.getOrderId());
