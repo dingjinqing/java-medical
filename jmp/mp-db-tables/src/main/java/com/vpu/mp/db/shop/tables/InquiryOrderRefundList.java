@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrderRefundList extends TableImpl<InquiryOrderRefundListRecord> {
 
-    private static final long serialVersionUID = -1762584845;
+    private static final long serialVersionUID = 706313369;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order_refund_list</code>
@@ -77,6 +77,11 @@ public class InquiryOrderRefundList extends TableImpl<InquiryOrderRefundListReco
      * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.money_amount</code>. 退款金额
      */
     public final TableField<InquiryOrderRefundListRecord, BigDecimal> MONEY_AMOUNT = createField("money_amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.refund_reason</code>. 退款原因
+     */
+    public final TableField<InquiryOrderRefundListRecord, String> REFUND_REASON = createField("refund_reason", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "退款原因");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_refund_list.refund_time</code>. 订单退款时间

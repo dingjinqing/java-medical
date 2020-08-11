@@ -17,4 +17,8 @@ public class InquiryOrderOnParam {
      *退款金额
      */
     private BigDecimal refundMoney;
+    /**
+     * 退款原因
+     */
+    private String refundReason;
 }

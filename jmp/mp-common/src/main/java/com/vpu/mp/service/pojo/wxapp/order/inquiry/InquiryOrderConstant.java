@@ -37,7 +37,7 @@ public class InquiryOrderConstant {
     /**
      * 部分退款
      */
-    public final static Byte ORDER_REFUNDING=7;
+    public final static Byte ORDER_PART_REFUND=7;
 
     /**
      *  超时时间
@@ -61,7 +61,7 @@ public class InquiryOrderConstant {
     public final static String GOODS_NAME="问诊咨询";
 
     /**
-     * 退款状态
+     * 退款状态 1成功 2失败
      */
     public final static Byte REFUND_SUCCESS=1;
     public final static Byte REFUND_FAILED=2;

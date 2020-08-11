@@ -15,7 +15,8 @@ public class InquiryOrderRefundListDo {
     private Integer    id;
     private String     orderSn;
     private Integer    userId;
-    private BigDecimal moneyAmout;
+    private BigDecimal moneyAmount;
+    private String     refundReason;
     private Timestamp refundTime;
     private Byte       isSuccess;
     private Byte       isDelete;

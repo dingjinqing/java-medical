@@ -5082,6 +5082,7 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   `order_sn` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单号',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
   `money_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款金额',
+  `refund_reason` varchar(512)  NOT NULL DEFAULT '' COMMENT '退款原因',
   `refund_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单退款时间',
   `is_success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '处理状态，1：退款成功，2：退款失败',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
