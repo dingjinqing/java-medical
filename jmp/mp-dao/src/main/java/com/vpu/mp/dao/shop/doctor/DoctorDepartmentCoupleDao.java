@@ -137,7 +137,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DOCTOR.ID.in(doctorParam.getDoctorIds())));
         }
         if (doctorParam.getDepartmentId() != null && doctorParam.getDepartmentId() > 0) {
-            condition = condition.and(DEPARTMENT.ID.eq(doctorParam.getDepartmentId()));
+            condition = condition.and(DOCTOR.ID.in(doctorParam.getDepartmentDoctorIds()));
         }
         if (doctorParam.getTitleId() != null && doctorParam.getTitleId() > 0) {
             condition = condition.and(DOCTOR_TITLE.ID.eq(doctorParam.getTitleId()));

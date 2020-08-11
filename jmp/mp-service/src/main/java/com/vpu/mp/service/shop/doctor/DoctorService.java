@@ -265,6 +265,12 @@ public class DoctorService extends ShopBaseService {
             List<Integer> doctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIds);
             doctorParam.setDoctorIds(doctorIds);
         }
+        if (doctorParam.getDepartmentId() != null && doctorParam.getDepartmentId() > 0) {
+            List<Integer> departmentIdsNew = new ArrayList<>();
+            departmentIdsNew.add(doctorParam.getDepartmentId());
+            List<Integer> departmentDoctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIdsNew);
+            doctorParam.setDepartmentDoctorIds(departmentDoctorIds);
+        }
         PageResult<DoctorConsultationOneParam> list = doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
         setDoctorDepartmentNames(list.getDataList());
         return list;
