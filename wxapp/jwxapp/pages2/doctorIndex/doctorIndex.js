@@ -67,8 +67,9 @@ global.wxPage({
         this.requestInfo();
         // util.jumpLink('/pages2/doctorIndex/doctorIndex','reLaunch')
       } else if (res.error == 400031) {
-        util.toast_fail('认证失败');
-        util.jumpLink('/pages/usercenter/usercenter','reLaunch')
+        util.showModal('提示','认证失败',function(){
+          util.jumpLink('/pages/usercenter/usercenter','reLaunch')
+        });
       } else{
         util.showModal('提示',res.message);
         util.jumpLink('/pages/usercenter/usercenter','reLaunch')
@@ -120,7 +121,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.requestInfo();
   },
 
   /**
@@ -141,7 +142,13 @@ global.wxPage({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    // 显示导航栏loading
+    wx.showNavigationBarLoading();
+    // 调用接口加载数据
+    this.requestInfo();
+    wx.hideNavigationBarLoading();
+    // 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
+    wx.stopPullDownRefresh();
   },
 
   /**

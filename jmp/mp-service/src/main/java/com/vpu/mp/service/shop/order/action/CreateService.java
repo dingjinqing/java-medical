@@ -315,6 +315,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 userPatientParam.setPatientId(param.getPatientId());
                 userPatientParam.setUserId(param.getWxUserInfo().getUserId());
                 UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
+                param.getPatientDiagnose().setPatientId(param.getPatientId());
                 param.getPatientDiagnose().setDiseaseHistory(patient.getDiseaseHistoryStr());
                 param.getPatientDiagnose().setFamilyDiseaseHistory(patient.getFamilyDiseaseHistoryStr());
                 param.getPatientDiagnose().setAllergyHistory(patient.getAllergyHistory());
@@ -1391,7 +1392,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @return
      */
     private boolean processEffective(CreateParam param, CreateOrderBo orderBo, OrderInfoRecord order) throws MpException {
-        if (!order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)) {
+        if (!order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)&&!order.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)) {
             if (!order.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING)) {
                 if (!BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) || order.getBkOrderPaid() <= OrderConstant.BK_PAY_NO) {
                     if (order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {

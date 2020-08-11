@@ -82,7 +82,7 @@ global.wxPage({
         userId: util.getCache('user_id'),
         patientId: e.currentTarget.dataset.id
       })
-    }, true, '取消', '去添加')
+    }, true, '取消', '确定')
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

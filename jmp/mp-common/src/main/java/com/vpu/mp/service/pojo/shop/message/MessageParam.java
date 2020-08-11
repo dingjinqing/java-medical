@@ -11,8 +11,6 @@ import lombok.Data;
 @Data
 public class MessageParam {
 
-    private Integer userId;
-
     private Integer messageId;
 
     private Byte status;

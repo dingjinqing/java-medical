@@ -11,7 +11,6 @@ const {
   theMaximumClaimLimit
 } = require('../../utils/i18n/components/decorate/decorate.js');
 global.wxPage({
-
   /**
    * 页面的初始数据
    */
@@ -125,7 +124,7 @@ global.wxPage({
   },
   messageApi() {
     util.api('/api/wxapp/im/session/pull', res => {
-      console.log(res)
+      // console.log(res)
       let sessionStatus = this.data.sessionStatus
       if (res.error === 0 && res.content[0]) {
         let newChatContent = res.content.reduce((defaultValue, item) => {
@@ -158,7 +157,7 @@ global.wxPage({
     let sessionId = this.data.sessionId;
     let url = `/api/wxapp/im/session/status/${sessionId}`
     util.api(url, res => {
-      console.log(res)
+      // console.log(res)
       if (res.error === 0) {
         if (this.data.status != res.content) {
           let newChatContent = [];
@@ -172,7 +171,7 @@ global.wxPage({
           })
         }
         if (res.content === 2 || res.content === 4) clearInterval(this.statusTimer)
-      }else{
+      } else {
         clearInterval(this.statusTimer)
       }
     });
@@ -198,8 +197,8 @@ global.wxPage({
         chat.position = 1;
         chatContent.push(chat)
         this.setData({
-          chatContent: chatContent
-        })
+            chatContent: chatContent
+          })
         this.pageScrollBottom()
       }
     }, {
@@ -247,7 +246,7 @@ global.wxPage({
               age: con.patientAge,
               mess: con.descriptionDisease
             },
-            system:false
+            system: false
           }
           that.setData({
             page_name: con.doctorName,
@@ -339,5 +338,5 @@ global.wxPage({
     wx.previewImage({
       urls
     })
-  }
+  },
 })

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = 1934818609;
+    private static final long serialVersionUID = -2073748685;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_item</code>
@@ -102,6 +102,11 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_item.goods_quality_ratio</code>. 规格系数，通用名和规格系数确定一个药品
      */
     public final TableField<PrescriptionItemRecord, String> GOODS_QUALITY_RATIO = createField("goods_quality_ratio", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "规格系数，通用名和规格系数确定一个药品");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.prd_id</code>. 产品id
+     */
+    public final TableField<PrescriptionItemRecord, Integer> PRD_ID = createField("prd_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "产品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_item.use_method</code>. 用法

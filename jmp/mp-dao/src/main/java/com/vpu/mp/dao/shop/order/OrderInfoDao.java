@@ -1,6 +1,8 @@
 package com.vpu.mp.dao.shop.order;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
@@ -92,6 +95,28 @@ public class OrderInfoDao extends ShopBaseDao {
                 .groupBy(date(ORDER_INFO.CREATE_TIME))
                 .orderBy(ORDER_INFO.CANCELLED_TIME)
                 .fetchMap(date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME), MedicalOrderReportVo.class);
+    }
+
+    /**
+     * 根据用户id查询订单
+     * @param userId 用户id
+     * @return List<OrderInfoDo>
+     */
+    public List<OrderInfoDo> selectOrderInfoByUserId(Integer userId) {
+        return db().select().from(ORDER_INFO)
+            .where(ORDER_INFO.USER_ID.eq(userId))
+            .and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchInto(OrderInfoDo.class);
+    }
+
+    /**
+     * 根据订单id查询订单sn号
+     * @param orderId 订单id
+     * @return String
+     */
+    public String selectOrderSnByOrderId(Integer orderId) {
+        return db().select(ORDER_INFO.ORDER_SN)
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_ID.eq(orderId)).fetchAnyInto(String.class);
     }
 
 }
