@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.doctor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
-import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -230,7 +229,7 @@ public class DoctorService extends ShopBaseService {
         // 查询是否有当前医师信息
         DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
         // 如果医师存在且没有被认证过
-        if (doctorDo != null && doctorDo.getUserId() == 0) {
+        if (doctorDo != null && doctorDo.getUserId() == null) {
             this.transaction(() -> {
                 // 修改user表中用户类型为医师
                 userDao.updateDoctorAuth(doctorAuthParam.getUserId());
@@ -240,7 +239,7 @@ public class DoctorService extends ShopBaseService {
             });
             return doctorDo.getId();
         } else {
-            return Integer.valueOf(BaseConstant.NO);
+            return  null;
         }
     }
 
