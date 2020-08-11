@@ -30,7 +30,14 @@ public class InquiryOrderConstant {
      * 已取消
      */
     public final static Byte ORDER_CANCELED=5;
-
+    /**
+     * 待退款
+     */
+    public final static Byte ORDER_TO_REFUND=6;
+    /**
+     * 部分退款
+     */
+    public final static Byte ORDER_REFUNDING=7;
 
     /**
      *  超时时间

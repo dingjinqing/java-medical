@@ -10,7 +10,13 @@ global.wxPage({
     pageParams:{
       currentPage:1,
       pageRows:20
-    }
+    },
+    show_modal: 0,
+    taped_order_id: '',
+    taped_order_sn: '',
+    taped_par_index: '',
+    taped_old_code: '',
+    rejectReason: '',
   },
 
   /**
@@ -64,13 +70,28 @@ global.wxPage({
       'reject':['确认驳回患者处方申请并退款吗？','驳回'],
       'pass':['确认通过患者处方申请吗？','通过']
     }
+    if(auditStatus[type] == 2 && this.data.rejectReason == ''){
+      util.showModal('提示', "请输入驳回原因")
+      return false
+    }
     util.showModal('提示',tipsInfo[type][0],()=>{
       util.api('/api/wxapp/doctor/audit/pass',res=>{
         console.log(res)
         if(res.error === 0){
+          this.data.taped_order_id = '';
+          this.data.taped_order_sn = '';
+          this.data.taped_par_index = '';
+          this.data.taped_old_code = '';
+          this.data.rejectReason = '';
           dataListItem.splice(targetIndex,1)
           this.setData({
-            [`dataList[${parentIndex}]`]:dataListItem
+            [`dataList[${parentIndex}]`]:dataListItem,
+            show_modal: 0,
+            taped_order_id: '',
+            taped_order_sn: '',
+            taped_par_index: '',
+            taped_old_code: '',
+            rejectReason: ''
           })
         } else {
           util.showModal('提示',res.message)
@@ -90,6 +111,37 @@ global.wxPage({
     util.jumpLink(`pages/item/item${util.getUrlParams({
       gid
     })}`)
+  },
+  showRejectModal (e) {
+    this.data.taped_order_id = e.currentTarget.dataset.order_id;
+    this.data.taped_order_sn = e.currentTarget.dataset.order_sn;
+    this.data.taped_par_index = e.currentTarget.dataset.parent_index;
+    this.data.taped_old_code = e.currentTarget.dataset.prescription_old_code;
+    this.setData({
+      show_modal: 1,
+      taped_order_id: this.data.taped_order_id,
+      taped_order_sn: this.data.taped_order_sn,
+      taped_par_index: this.data.taped_par_index,
+      taped_old_code: this.data.taped_old_code
+    })
+  },
+  close_modal () {
+    this.data.taped_order_id = '';
+    this.data.taped_order_sn = '';
+    this.data.taped_par_index = '';
+    this.data.taped_old_code = '';
+    this.data.rejectReason = '';
+    this.setData({
+      show_modal: 0,
+      taped_order_id: '',
+      taped_order_sn: '',
+      taped_par_index: '',
+      taped_old_code: '',
+      rejectReason: ''
+    })
+  },
+  rejectReason (e) {
+    this.data.rejectReason = e.detail.value
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

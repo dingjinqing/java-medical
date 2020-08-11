@@ -305,22 +305,23 @@ public class ImSessionService extends ShopBaseService {
 
     /**
      * 会话状态修改为进行中
-     * @param param 会话上一次状态
+     * @param sessionId 会话ID
      * @return
      */
-    public void updateSessionToGoingOn(ImSessionStatusToGoingOnParam param) {
-        ImSessionDo imSessionDo = imSessionDao.getById(param.getSessionId());
+    public void updateSessionToGoingOn(Integer sessionId) {
+        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
         if (ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
             return;
         }
+        Byte prevStatus = imSessionDo.getSessionStatus();
         imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
         imSessionDo.setLimitTime(DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS));
         imSessionDao.update(imSessionDo);
-        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), param.getSessionId());
+        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
         jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
         // 回复会话消息
-        if (!ImSessionConstant.SESSION_READY_TO_START.equals(param.getSessionPrevStatus())){
-            extractSessionFromDb(param.getSessionId());
+        if (!ImSessionConstant.SESSION_READY_TO_START.equals(prevStatus)){
+            extractSessionFromDb(sessionId);
         }
     }
 

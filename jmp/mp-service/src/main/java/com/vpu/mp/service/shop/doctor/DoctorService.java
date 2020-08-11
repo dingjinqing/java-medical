@@ -259,14 +259,20 @@ public class DoctorService extends ShopBaseService {
         return historyDoctors;
     }
 
-    public List<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
+    public PageResult<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
         if (doctorParam.getKeyword() != null && doctorParam.getKeyword() != "") {
             List<Integer> departmentIds = departmentDao.getDepartmentIdsByName(doctorParam.getKeyword());
             List<Integer> doctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIds);
             doctorParam.setDoctorIds(doctorIds);
         }
-        List<DoctorConsultationOneParam> list = doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
-        setDoctorDepartmentNames(list);
+        if (doctorParam.getDepartmentId() != null && doctorParam.getDepartmentId() > 0) {
+            List<Integer> departmentIdsNew = new ArrayList<>();
+            departmentIdsNew.add(doctorParam.getDepartmentId());
+            List<Integer> departmentDoctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIdsNew);
+            doctorParam.setDepartmentDoctorIds(departmentDoctorIds);
+        }
+        PageResult<DoctorConsultationOneParam> list = doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
+        setDoctorDepartmentNames(list.getDataList());
         return list;
     }
 

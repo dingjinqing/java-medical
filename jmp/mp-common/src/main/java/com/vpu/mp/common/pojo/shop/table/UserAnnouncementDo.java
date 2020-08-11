@@ -13,7 +13,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 用户消息表
+ * 用户公告关联表
  */
 @Generated(
     value = {
@@ -24,23 +24,14 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Data
-public class UserMessageDo implements Serializable {
+public class UserAnnouncementDo implements Serializable {
 
-    private static final long serialVersionUID = 997430140;
+    private static final long serialVersionUID = 812577016;
 
+    private Integer   announcementId;
+    private Integer   userId;
     private Integer   messageId;
-    private String    messageName;
-    private String    messageContent;
-    private Byte      messageType;
-    private Integer   receiverId;
-    private String    receiverName;
-    private Integer   senderId;
-    private String    senderName;
     private Byte      messageStatus;
-    private Timestamp messageTime;
-    private Integer   messageRelevanceId;
-    private String    messageRelevanceOrderSn;
-    private Byte      messageChatStatus;
     private Byte      isDelete;
     private Timestamp createTime;
     private Timestamp updateTime;

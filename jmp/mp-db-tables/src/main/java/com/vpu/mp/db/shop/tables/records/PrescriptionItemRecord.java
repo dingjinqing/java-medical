@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = -1742662391;
+    private static final long serialVersionUID = -1063939987;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.id</code>.
@@ -155,199 +155,213 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.prd_id</code>. 产品id
+     */
+    public void setPrdId(Integer value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.prd_id</code>. 产品id
+     */
+    public Integer getPrdId() {
+        return (Integer) get(9);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.use_method</code>. 用法
      */
     public void setUseMethod(String value) {
-        set(9, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.use_method</code>. 用法
      */
     public String getUseMethod() {
-        return (String) get(9);
+        return (String) get(10);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.per_time_num</code>. 单次数量
      */
     public void setPerTimeNum(Double value) {
-        set(10, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.per_time_num</code>. 单次数量
      */
     public Double getPerTimeNum() {
-        return (Double) get(10);
+        return (Double) get(11);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.per_time_unit</code>. 数量单位
      */
     public void setPerTimeUnit(String value) {
-        set(11, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.per_time_unit</code>. 数量单位
      */
     public String getPerTimeUnit() {
-        return (String) get(11);
+        return (String) get(12);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.per_time_dosage</code>. 单次剂量
      */
     public void setPerTimeDosage(Double value) {
-        set(12, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.per_time_dosage</code>. 单次剂量
      */
     public Double getPerTimeDosage() {
-        return (Double) get(12);
+        return (Double) get(13);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.per_time_dosage_unit</code>. 剂量单位
      */
     public void setPerTimeDosageUnit(String value) {
-        set(13, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.per_time_dosage_unit</code>. 剂量单位
      */
     public String getPerTimeDosageUnit() {
-        return (String) get(13);
+        return (String) get(14);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.frequency</code>. 频次
      */
     public void setFrequency(Double value) {
-        set(14, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.frequency</code>. 频次
      */
     public Double getFrequency() {
-        return (Double) get(14);
+        return (Double) get(15);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.drag_sum_num</code>. 总取药数量
      */
     public void setDragSumNum(Double value) {
-        set(15, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.drag_sum_num</code>. 总取药数量
      */
     public Double getDragSumNum() {
-        return (Double) get(15);
+        return (Double) get(16);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.drag_sum_unit</code>. 总取药的单位
      */
     public void setDragSumUnit(String value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.drag_sum_unit</code>. 总取药的单位
      */
     public String getDragSumUnit() {
-        return (String) get(16);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.goods_use_memo</code>. 药品使用方式说明
      */
     public void setGoodsUseMemo(String value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.goods_use_memo</code>. 药品使用方式说明
      */
     public String getGoodsUseMemo() {
-        return (String) get(17);
+        return (String) get(18);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.goods_production_enterprise</code>. 生产企业
      */
     public void setGoodsProductionEnterprise(String value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.goods_production_enterprise</code>. 生产企业
      */
     public String getGoodsProductionEnterprise() {
-        return (String) get(18);
+        return (String) get(19);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.medicine_price</code>. 药品总价
      */
     public void setMedicinePrice(BigDecimal value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.medicine_price</code>. 药品总价
      */
     public BigDecimal getMedicinePrice() {
-        return (BigDecimal) get(19);
+        return (BigDecimal) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.
      */
     public void setIsDelete(Byte value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.
      */
     public Byte getIsDelete() {
-        return (Byte) get(20);
+        return (Byte) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(21);
+        return (Timestamp) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(22);
+        return (Timestamp) get(23);
     }
 
     // -------------------------------------------------------------------------
@@ -376,7 +390,7 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
     /**
      * Create a detached, initialised PrescriptionItemRecord
      */
-    public PrescriptionItemRecord(Integer id, String posCode, String posDetailCode, String prescriptionCode, String prescriptionDetailCode, Integer goodsId, String goodsCommonName, String goodsImg, String goodsQualityRatio, String useMethod, Double perTimeNum, String perTimeUnit, Double perTimeDosage, String perTimeDosageUnit, Double frequency, Double dragSumNum, String dragSumUnit, String goodsUseMemo, String goodsProductionEnterprise, BigDecimal medicinePrice, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionItemRecord(Integer id, String posCode, String posDetailCode, String prescriptionCode, String prescriptionDetailCode, Integer goodsId, String goodsCommonName, String goodsImg, String goodsQualityRatio, Integer prdId, String useMethod, Double perTimeNum, String perTimeUnit, Double perTimeDosage, String perTimeDosageUnit, Double frequency, Double dragSumNum, String dragSumUnit, String goodsUseMemo, String goodsProductionEnterprise, BigDecimal medicinePrice, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
         super(PrescriptionItem.PRESCRIPTION_ITEM);
 
         set(0, id);
@@ -388,19 +402,20 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
         set(6, goodsCommonName);
         set(7, goodsImg);
         set(8, goodsQualityRatio);
-        set(9, useMethod);
-        set(10, perTimeNum);
-        set(11, perTimeUnit);
-        set(12, perTimeDosage);
-        set(13, perTimeDosageUnit);
-        set(14, frequency);
-        set(15, dragSumNum);
-        set(16, dragSumUnit);
-        set(17, goodsUseMemo);
-        set(18, goodsProductionEnterprise);
-        set(19, medicinePrice);
-        set(20, isDelete);
-        set(21, createTime);
-        set(22, updateTime);
+        set(9, prdId);
+        set(10, useMethod);
+        set(11, perTimeNum);
+        set(12, perTimeUnit);
+        set(13, perTimeDosage);
+        set(14, perTimeDosageUnit);
+        set(15, frequency);
+        set(16, dragSumNum);
+        set(17, dragSumUnit);
+        set(18, goodsUseMemo);
+        set(19, goodsProductionEnterprise);
+        set(20, medicinePrice);
+        set(21, isDelete);
+        set(22, createTime);
+        set(23, updateTime);
     }
 }

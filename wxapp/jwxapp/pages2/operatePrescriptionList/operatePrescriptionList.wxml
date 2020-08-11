@@ -44,11 +44,25 @@
 						</view>
 					</view>
 					<view class="button-content">
-						<text class="reject" data-type="reject" data-order-id="{{item.orderId}}" data-order-sn="{{item.orderSn}}" data-prescription-old-code="{{item.prescription.prescriptionCode}}" data-parent-index="{{pageIndex}}"  bindtap="changeStatus">驳回</text>
+						<text class="reject" data-type="reject" data-order_id="{{item.orderId}}" data-order_sn="{{item.orderSn}}" data-prescription_old_code="{{item.prescription.prescriptionCode}}" data-parent_index="{{pageIndex}}"  bindtap="showRejectModal">驳回</text>
 						<text class="pass" data-type="pass" data-order-id="{{item.orderId}}" data-order-sn="{{item.orderSn}}" data-prescription-old-code="{{item.prescription.prescriptionCode}}" data-parent-index="{{pageIndex}}" bindtap="changeStatus">通过</text>
 					</view>
 				</view>
 			</block>
+			<view class="modal_bg" wx:if='{{show_modal == 1}}'></view>
+			<view class="modal_content" wx:if='{{show_modal == 1}}'>
+				<view class="modal_title">
+					驳回原因
+					<image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="close_modal"></image>
+				</view>
+				<view class="modal_info">
+					<textarea placeholder="请您输入驳回原因" value="{{rejectReason}}" bindtap="rejectReason" bindinput="rejectReason"></textarea>
+				</view>
+				<view class="modal_fotter">
+					<view class="modal_btn btn_cancel" bindtap="close_modal">取消</view>
+					<view class="modal_btn btn_ok" data-type="reject" data-order-id="{{taped_order_id}}" data-order-sn="{{taped_order_sn}}" data-prescription-old-code="{{taped_old_code}}" data-parent-index="{{taped_par_index}}" bindtap="changeStatus">确定</view>
+				</view>
+			</view>
 		</block>
 		<view class="is-null" wx:if="{{dataList[0].length <= 0}}">
         <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
