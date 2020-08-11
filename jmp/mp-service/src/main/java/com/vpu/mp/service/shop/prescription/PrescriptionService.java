@@ -371,7 +371,7 @@ public class PrescriptionService extends ShopBaseService {
      * 上传保存处方
      * @param param
      */
-    public PrescriptionParam insertPrescription(PrescriptionOneParam param)throws MpException{
+    public PrescriptionParam insertPrescription(PrescriptionOneParam param){
         PrescriptionParam prescriptionParam=buildPrescription(param);
         this.addPrescription(prescriptionParam);
         return prescriptionParam;
@@ -382,27 +382,23 @@ public class PrescriptionService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PrescriptionParam buildPrescription(PrescriptionOneParam param) throws MpException {
+    public PrescriptionParam buildPrescription(PrescriptionOneParam param){
 
         DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
-        PatientOneParam patient = patientDao.getOneInfo(param.getPatientId());
-        if(patient==null){
-            throw new MpException(JsonResultCode.PATIENT_IS_NOT_EXIST);
-        }
         OrderMedicalHistoryDo orderMedicalHistoryDo= orderMedicalHistoryDao.getByOrderId(param.getOrderId());
         //生成处方
         PrescriptionParam prescriptionParam=new PrescriptionParam();
         FieldsUtil.assign(param,prescriptionParam);
         prescriptionParam.setDoctorCode(doctor.getHospitalCode());
         prescriptionParam.setDoctorName(doctor.getName());
-        prescriptionParam.setPatientName(patient.getName());
-        prescriptionParam.setPatientSex(patient.getSex());
-        prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
+        prescriptionParam.setPatientName(orderMedicalHistoryDo.getPatientName());
+        prescriptionParam.setPatientSex(orderMedicalHistoryDo.getSex());
+        prescriptionParam.setPatientAge(orderMedicalHistoryDo.getAge());
         prescriptionParam.setPatientDiseaseHistory(orderMedicalHistoryDo.getDiseaseHistory());
         prescriptionParam.setPatientAllergyHistory(orderMedicalHistoryDo.getAllergyHistory());
-        prescriptionParam.setIdentityType(patient.getIdentityType());
-        prescriptionParam.setIdentityCode(patient.getIdentityCode());
-        prescriptionParam.setPatientTreatmentCode(patient.getTreatmentCode());
+        prescriptionParam.setIdentityType(orderMedicalHistoryDo.getIdentityType());
+        prescriptionParam.setIdentityCode(orderMedicalHistoryDo.getIdentityCode());
+        prescriptionParam.setPatientTreatmentCode(orderMedicalHistoryDo.getPatientTreatmentCode());
         prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
         prescriptionParam.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));

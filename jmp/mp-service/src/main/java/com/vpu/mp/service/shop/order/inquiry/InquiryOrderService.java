@@ -297,12 +297,12 @@ public class InquiryOrderService extends ShopBaseService {
         //更新状态
         BigDecimal newRefundMoney=order.getRefundMoney().add(refundMoney);
         order.setRefundMoney(newRefundMoney);
-        if(BigDecimalUtil.compareTo(order.getOrderAmount(),newRefundMoney)>0){
-            //退款中
-            order.setOrderStatus(InquiryOrderConstant.ORDER_REFUNDING);
-        }else {
+        if(BigDecimalUtil.compareTo(order.getOrderAmount(),newRefundMoney)==0){
             //已退款
             order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
+        }else {
+            //部分退款
+            order.setOrderStatus(InquiryOrderConstant.ORDER_REFUNDING);
 
         }
         inquiryOrderDao.update(order);
