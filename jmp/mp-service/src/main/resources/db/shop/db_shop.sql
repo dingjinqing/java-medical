@@ -4918,6 +4918,7 @@ create table `b2c_prescription_item`(
     `goods_common_name` varchar(512) not null default '' comment '通用名',
     `goods_img` varchar(500)  not null default '商品图片',
     `goods_quality_ratio` varchar(512) not null default '' comment '规格系数，通用名和规格系数确定一个药品',
+    `prd_id` int(11)  DEFAULT '0' COMMENT '产品id',
     `use_method` varchar(512) not null default '' comment '用法',
     `per_time_num` double not null default 0 comment '单次数量',
     `per_time_unit` varchar(32) not null default '' comment '数量单位',
