@@ -6,10 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
@@ -28,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionStatusToGoingOnParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
@@ -46,6 +44,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +124,7 @@ public class InquiryOrderService extends ShopBaseService {
     public void updateOrder(InquiryOrderOnParam param){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(param.getOrderSn());
         FieldsUtil.assign(param,inquiryOrderDo);
+        Byte prevStatus = inquiryOrderDo.getOrderStatus();
         inquiryOrderDo.setOrderStatus(param.getOrderStatus());
         inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
@@ -229,7 +229,6 @@ public class InquiryOrderService extends ShopBaseService {
         }
         String orderSn = IncrSequenceUtil.generateOrderSn(InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX);
         PatientOneParam patientOneParam=patientService.getOneInfo(payParam.getPatientId());
-        DepartmentOneParam department=departmentDao.getOneInfo(payParam.getDepartmentId());
         DoctorOneParam doctor = doctorService.getOneInfo(payParam.getDoctorId());
         inquiryOrderDo.setOrderSn(orderSn);
         inquiryOrderDo.setOrderAmount(payParam.getOrderAmount());
@@ -237,8 +236,6 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientId(payParam.getPatientId());
         inquiryOrderDo.setDoctorId(payParam.getDoctorId());
         inquiryOrderDo.setDoctorName(doctor.getName());
-        inquiryOrderDo.setDepartmentId(department.getId());
-        inquiryOrderDo.setDepartmentName(department.getName());
         inquiryOrderDo.setOrderStatus(InquiryOrderConstant.ORDER_TO_PAID);
         inquiryOrderDo.setPayCode(payCode);
         inquiryOrderDo.setPatientName(patientOneParam.getName());
@@ -261,16 +258,9 @@ public class InquiryOrderService extends ShopBaseService {
      * @param inquiryOrderOnParam
      * @return
      */
-    public JsonResult refund( InquiryOrderOnParam inquiryOrderOnParam) {
+    public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        try {
-            refundInquiryOrder(inquiryOrderDo);
-        } catch (MpException e) {
-            JsonResult jsonResult=new JsonResult();
-            jsonResult.result(null,e.getErrorCode(),null);
-            return  jsonResult;
-        }
-        return JsonResult.success();
+        refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney());
     }
 
     /**
@@ -278,7 +268,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param order
      * @throws MpException
      */
-    public void refundInquiryOrder(InquiryOrderDo order)throws MpException{
+    public void refundInquiryOrder(InquiryOrderDo order,BigDecimal refundMoney)throws MpException{
         boolean successFlag=true;
         if(InquiryOrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())){
             //退款流水号
@@ -289,6 +279,11 @@ public class InquiryOrderService extends ShopBaseService {
                 logger().error("wxPayRefund 微信支付记录未找到 order_sn={}",order.getOrderSn());
                 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
             }
+            BigDecimal refundable=BigDecimalUtil.subtrac(order.getOrderAmount(),order.getRefundMoney());
+            if(BigDecimalUtil.compareTo(refundMoney,refundable)>0){
+                logger().error("orderSn:{},退款金额超出可退金额",order.getOrderSn());
+                throw new MpException(JsonResultCode.INQUIRY_ORDER_REFUND_MONEY_EXCESS);
+            }
             //微信金额单为为分需单位换算
 //            returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(order.getOrderAmount(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
         }
@@ -297,11 +292,19 @@ public class InquiryOrderService extends ShopBaseService {
         refundListDo.setOrderSn(order.getOrderSn());
         refundListDo.setMoneyAmout(order.getOrderAmount());
         refundListDo.setUserId(order.getUserId());
-        refundListDo.setIsSuccess(successFlag?InquiryOrderConstant.REFUND_SUCCESS:InquiryOrderConstant.ORDER_TO_PAID);
+        refundListDo.setIsSuccess(successFlag?InquiryOrderConstant.REFUND_SUCCESS:InquiryOrderConstant.REFUND_FAILED);
         inquiryOrderRefundListDao.save(refundListDo);
         //更新状态
-        order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
-        order.setCancelledTime(DateUtils.getLocalDateTime());
+        BigDecimal newRefundMoney=order.getRefundMoney().add(refundMoney);
+        order.setRefundMoney(newRefundMoney);
+        if(BigDecimalUtil.compareTo(order.getOrderAmount(),newRefundMoney)==0){
+            //已退款
+            order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
+        }else {
+            //部分退款
+            order.setOrderStatus(InquiryOrderConstant.ORDER_REFUNDING);
+
+        }
         inquiryOrderDao.update(order);
         //取消未接诊过期的会话
         List<String> orderSnList=new ArrayList<>();
@@ -322,9 +325,7 @@ public class InquiryOrderService extends ShopBaseService {
         List<InquiryOrderStatisticsVo> list=result.getDataList();
         list.forEach(orderStatisticsVo->{
             DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
-            DepartmentOneParam dept=departmentDao.getOneInfo(orderStatisticsVo.getDepartmentId());
             orderStatisticsVo.setDoctorName(doctor.getName());
-            orderStatisticsVo.setDepartmentName(dept.getName());
         });
         return result;
     }
@@ -340,9 +341,7 @@ public class InquiryOrderService extends ShopBaseService {
         List<InquiryOrderStatisticsVo> list=inquiryOrderDao.orderStatistics(param);
         list.forEach(orderStatisticsVo->{
             DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
-            DepartmentOneParam dept=departmentDao.getOneInfo(orderStatisticsVo.getDepartmentId());
             orderStatisticsVo.setDoctorName(doctor.getName());
-            orderStatisticsVo.setDepartmentName(dept.getName());
         });
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
