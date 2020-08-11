@@ -9,6 +9,7 @@
         <view class="doc_hos">{{doctorInfo.registerHospital}} {{doctorInfo.departArr}}</view>
         <view class="doc_depart">擅长：{{doctorInfo.treatDisease}}</view>
       </view>
+      <view class="if_work {{work_status == 1 ? 'stop_work':'begin_work'}}" bindtap="showChangeModal">{{work_status == 1 ? '暂停接诊':'开始接诊'}}</view>
     </view>
   </view>
   <view class="list">
@@ -87,5 +88,24 @@
     </view>
     <view class="btn_close" bindtap="close"><image src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_close.png"></image></view>
   </view>
-  
+  <!-- 上下班 -->
+  <view class="modal_bg" wx:if='{{show_work_modal == 1}}'></view>
+  <view class="work_modal" wx:if='{{show_work_modal == 1}}'>
+    <view class="work_content">
+      <view class="dm_line" bindtap="bindChangeWork" data-type='stop'>
+        <image src="{{imageUrl}}image/wxapp/doc_no_work.png"></image>
+        <view class="dm_word">
+          <view class="bold_word">暂停接诊</view>
+          <view>24小时内不再接受问诊</view>
+        </view>
+      </view>
+      <view class="dm_line" bindtap="bindChangeWork" data-type='begin'>
+        <image src="{{imageUrl}}image/wxapp/doc_now_work.png"></image>
+        <view class="dm_word">
+          <view class="bold_word">开始接诊</view>
+          <view>开始接受问诊</view>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>
