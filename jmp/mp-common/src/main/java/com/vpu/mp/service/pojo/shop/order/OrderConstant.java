@@ -522,6 +522,10 @@ public class OrderConstant {
      * 是否是购物车
      */
     public static final Byte CART_Y = 1;
+	/**
+	 * 是处方订单
+	 */
+	public static final Byte PRESCRIPTION_ORDER_Y = 1;
 
     /**
      * admin订单搜索导航
