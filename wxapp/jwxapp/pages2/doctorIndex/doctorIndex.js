@@ -14,6 +14,9 @@ global.wxPage({
     mobileCheckCode: '',
     hosCode: '',
     doctorInfo: [],
+    // 工作状态
+    work_status: 1,
+    show_work_modal: 0
   },
   /**
    * 生命周期函数--监听页面加载
@@ -150,6 +153,25 @@ global.wxPage({
     }, {
       mobile: this.data.mobile
     })
+  },
+  showChangeModal () {
+    this.setData({
+      show_work_modal: 1
+    })
+  },
+  bindChangeWork (e) {
+    let to_status = e.currentTarget.dataset.type;
+    if(to_status == 'stop'){
+      this.setData({
+        show_work_modal:0,
+        work_status: 0
+      })
+    }else{
+      this.setData({
+        show_work_modal:0,
+        work_status: 1
+      })
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
