@@ -4847,8 +4847,9 @@ create table b2c_doctor(
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
-    `on_duty_time`   timestamp    not null default current_timestamp,
-    `is_on_duty`     tinyint(1)   not null default '0',
+    `on_duty_time`   timestamp    not null default current_timestamp comment '上班时间',
+    `is_on_duty`     tinyint(1)   not null default '1' comment '是否上班',
+    `can_consultation` tinyint(1)   not null default '1' comment '是否接诊',
     primary key (`id`)
 )comment ='医师表';
 
