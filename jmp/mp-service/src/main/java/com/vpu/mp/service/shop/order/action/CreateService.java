@@ -315,6 +315,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 userPatientParam.setPatientId(param.getPatientId());
                 userPatientParam.setUserId(param.getWxUserInfo().getUserId());
                 UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
+                param.getPatientDiagnose().setPatientId(param.getPatientId());
                 param.getPatientDiagnose().setDiseaseHistory(patient.getDiseaseHistoryStr());
                 param.getPatientDiagnose().setFamilyDiseaseHistory(patient.getFamilyDiseaseHistoryStr());
                 param.getPatientDiagnose().setAllergyHistory(patient.getAllergyHistory());
