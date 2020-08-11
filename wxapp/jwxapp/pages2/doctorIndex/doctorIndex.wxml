@@ -71,11 +71,16 @@
         </view>
         <view class="each_line">
           <view class="left_text">手机号<text>*</text></view>
-          <input type="text" placeholder="请输入手机号" bindblur="docMobile"></input>
+          <input type="text" placeholder="请输入手机号" bindblur="docMobile" style="width:200rpx"></input>
+          <view class="button_get_verify {{countDown ? 'gray':''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
+        </view>
+        <view class="each_line">
+          <view class="left_text">验证码<text>*</text></view>
+          <input type="text" placeholder="请输入验证码" bindblur="verificationInput" bindinput='verificationInput'></input>
         </view>
         <view class="each_line">
           <view class="left_text">院内编号<text>*</text></view>
-          <input type="text" placeholder="请输入院内编号" bindblur="docCode"></input>
+          <input type="text" placeholder="请输入院内编号" bindblur="docCode" bindinput="docCode"></input>
         </view>
       </view>
       <view class="modal_fotter" bindtap="to_verify">确定</view>
