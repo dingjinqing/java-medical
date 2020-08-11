@@ -7,10 +7,13 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +47,7 @@ public class OrderGoodsDao extends ShopBaseDao {
         SelectConditionStep<Record2<Integer, String>> where = db()
                 .select(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
                 .from(ORDER_GOODS)
-                .rightJoin(ORDER_INFO).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.GOODS_ID))
+                .leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID))
                 .where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT));
         if (param.getAuditType() != null) {
             where.and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(param.getAuditType()));
@@ -62,12 +65,15 @@ public class OrderGoodsDao extends ShopBaseDao {
      * @return
      */
     public Integer countAuditOrder(){
-         return db().selectCount()
+        SelectSeekStep1<Record1<Integer>, Timestamp> record1s = db().selectCount()
                 .from(ORDER_GOODS)
-                 .where(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT))
-                 .and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT))
-                 .groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
-                 .orderBy(ORDER_GOODS.CREATE_TIME.desc()).fetchAnyInto(Integer.class);
+                .leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID))
+                .where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT))
+                .and(ORDER_GOODS.MEDICAL_AUDIT_STATUS.eq(OrderConstant.MEDICAL_AUDIT_DEFAULT))
+                .and(ORDER_GOODS.MEDICAL_AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT))
+                .groupBy(ORDER_GOODS.ORDER_ID, ORDER_GOODS.PRESCRIPTION_OLD_CODE)
+                .orderBy(ORDER_GOODS.CREATE_TIME.desc());
+        return db().fetchCount(record1s);
     }
 
     /**
