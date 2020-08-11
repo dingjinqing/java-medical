@@ -263,3 +263,11 @@ top: 4rpx;
 right: 8rpx;
 
 }
+.depart{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 300rpx;
+display: inline-block;
+
+}

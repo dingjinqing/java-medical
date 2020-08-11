@@ -30,7 +30,7 @@
 	</view>
 
 	<doctor-list doctor-list='{{doctorList}}' />
-	<view class="is-null" wx:if="{{doctorList.length <= 0}}">
+	<view class="is-null" wx:if="{{doctorList[0].length <= 0}}">
 		<image src="{{imageUrl}}image/wxapp/no-order.png"></image>
 		<text>暂无搜索结果</text>
 	</view>
