@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderMedicalHistory extends TableImpl<OrderMedicalHistoryRecord> {
 
-    private static final long serialVersionUID = -1139368520;
+    private static final long serialVersionUID = 408224189;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_medical_history</code>
@@ -75,77 +75,91 @@ public class OrderMedicalHistory extends TableImpl<OrderMedicalHistoryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.patient_name</code>. 患者姓名
      */
-    public final TableField<OrderMedicalHistoryRecord, String> PATIENT_NAME = createField("patient_name", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者姓名");
+    public final TableField<OrderMedicalHistoryRecord, String> PATIENT_NAME = createField("patient_name", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者姓名");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.sex</code>. 0男1女
      */
-    public final TableField<OrderMedicalHistoryRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0男1女");
+    public final TableField<OrderMedicalHistoryRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0男1女");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.age</code>. 年龄
      */
-    public final TableField<OrderMedicalHistoryRecord, Integer> AGE = createField("age", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "年龄");
+    public final TableField<OrderMedicalHistoryRecord, Integer> AGE = createField("age", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "年龄");
 
+    /**
+     * The column <code>mini_shop_471752.b2c_order_medical_history.identity_code</code>. 证件号
+     */
+    public final TableField<OrderMedicalHistoryRecord, String> IDENTITY_CODE = createField("identity_code", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "证件号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_medical_history.identity_type</code>. 证件类型: 1：身份证 2：军人证 3：护照 4：社保卡
+     */
+    public final TableField<OrderMedicalHistoryRecord, Byte> IDENTITY_TYPE = createField("identity_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "证件类型: 1：身份证 2：军人证 3：护照 4：社保卡");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_medical_history.patient_treatment_code</code>. 患者就诊卡号
+     */
+    public final TableField<OrderMedicalHistoryRecord, String> PATIENT_TREATMENT_CODE = createField("patient_treatment_code", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者就诊卡号");
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.patient_complain</code>. 患者主诉
      */
-    public final TableField<OrderMedicalHistoryRecord, String> PATIENT_COMPLAIN = createField("patient_complain", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者主诉");
+    public final TableField<OrderMedicalHistoryRecord, String> PATIENT_COMPLAIN = createField("patient_complain", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者主诉");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.disease_history</code>. 历史诊断
      */
-    public final TableField<OrderMedicalHistoryRecord, String> DISEASE_HISTORY = createField("disease_history", org.jooq.impl.SQLDataType.VARCHAR(1000).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "历史诊断");
+    public final TableField<OrderMedicalHistoryRecord, String> DISEASE_HISTORY = createField("disease_history", org.jooq.impl.SQLDataType.VARCHAR(1000).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "历史诊断");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.allergy_history</code>. 过敏史
      */
-    public final TableField<OrderMedicalHistoryRecord, String> ALLERGY_HISTORY = createField("allergy_history", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "过敏史");
+    public final TableField<OrderMedicalHistoryRecord, String> ALLERGY_HISTORY = createField("allergy_history", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "过敏史");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.family_disease_history</code>. 家族病史
      */
-    public final TableField<OrderMedicalHistoryRecord, String> FAMILY_DISEASE_HISTORY = createField("family_disease_history", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "家族病史");
+    public final TableField<OrderMedicalHistoryRecord, String> FAMILY_DISEASE_HISTORY = createField("family_disease_history", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "家族病史");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.describe</code>. 自我描述
      */
-    public final TableField<OrderMedicalHistoryRecord, String> DESCRIBE = createField("describe", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "自我描述");
+    public final TableField<OrderMedicalHistoryRecord, String> DESCRIBE = createField("describe", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "自我描述");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.gestation_type</code>. 妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳
      */
-    public final TableField<OrderMedicalHistoryRecord, Byte> GESTATION_TYPE = createField("gestation_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳");
+    public final TableField<OrderMedicalHistoryRecord, Byte> GESTATION_TYPE = createField("gestation_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.kidney_function_ok</code>. 肾功能:0:未知，1：正常，2：异常
      */
-    public final TableField<OrderMedicalHistoryRecord, Byte> KIDNEY_FUNCTION_OK = createField("kidney_function_ok", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "肾功能:0:未知，1：正常，2：异常");
+    public final TableField<OrderMedicalHistoryRecord, Byte> KIDNEY_FUNCTION_OK = createField("kidney_function_ok", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "肾功能:0:未知，1：正常，2：异常");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.liver_function_ok</code>. 肝功能:0:未知，1：正常，2：异常
      */
-    public final TableField<OrderMedicalHistoryRecord, Byte> LIVER_FUNCTION_OK = createField("liver_function_ok", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "肝功能:0:未知，1：正常，2：异常");
+    public final TableField<OrderMedicalHistoryRecord, Byte> LIVER_FUNCTION_OK = createField("liver_function_ok", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "肝功能:0:未知，1：正常，2：异常");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.images_list</code>. 图片地址
      */
-    public final TableField<OrderMedicalHistoryRecord, String> IMAGES_LIST = createField("images_list", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "图片地址");
+    public final TableField<OrderMedicalHistoryRecord, String> IMAGES_LIST = createField("images_list", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "图片地址");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.is_delete</code>. 删除
      */
-    public final TableField<OrderMedicalHistoryRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+    public final TableField<OrderMedicalHistoryRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.create_time</code>.
      */
-    public final TableField<OrderMedicalHistoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<OrderMedicalHistoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.update_time</code>. 最后修改时间
      */
-    public final TableField<OrderMedicalHistoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<OrderMedicalHistoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_medical_history</code> table reference

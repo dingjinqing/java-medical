@@ -19,6 +19,20 @@
   line-height: 90rpx;
   border-bottom: 4rpx solid transparent;
   box-sizing: border-box;
+  position: relative;
+}
+.each_nav text{
+  position: absolute;
+  top: 20rpx;
+  right: -10rpx;
+  padding: 0 10rpx;
+  background: #fff;
+  border: 1px solid #f66;
+  color: #f66;
+  border-radius: 200rpx;
+  height: 20rpx;
+  line-height: 20rpx;
+  font-size: 22rpx;
 }
 .top_nav .active{
   border-bottom: 4rpx solid #26C4BC;
@@ -52,6 +66,9 @@
 .lt_text{
   width: 610rpx;
   color: #999;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
 }
 .line_bottom image{
   width: 14rpx;

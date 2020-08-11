@@ -35,7 +35,7 @@
 							<view class="c_r_top clearfix">
 								<view>
 									<text>{{item.doctorName}}</text>
-									<text>{{item.departmentName}}</text>
+									<text class="depart" wx:if='{{item.departmentName}}'>{{item.departmentName}}</text>
 									<text class='fr {{item.sessionStatus == 1 ? "wait" : (item.sessionStatus == 2 || item.sessionStatus == 3 ? "online" : "end")}}'>{{item.sessionStatus == 1 ? "待接诊" : (item.sessionStatus == 2 ? "会话中" : (item.sessionStatus == 3 ? "会话取消" : "会话结束"))}}</text>
 								</view>
 

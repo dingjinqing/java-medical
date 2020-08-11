@@ -271,6 +271,7 @@ public enum JsonResultCode {
      */
     //药品校验
     MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK(123001, JsonResultMessage.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK),
+    MSG_ORDER_MEDICAL_HISTORY_CHECK(123002, JsonResultMessage.MSG_ORDER_MEDICAL_HISTORY_CHECK),
 
     /**
      * 订单状态

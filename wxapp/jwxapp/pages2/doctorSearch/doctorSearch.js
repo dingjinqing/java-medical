@@ -8,7 +8,6 @@ global.wxPage({
   data: {
     imageUrl: app.globalData.imageUrl,
     tabIndex: 'doctor',
-    pageParams: null,
     dataList: null,
     patientId: 1,
     can_show: false,
@@ -21,7 +20,11 @@ global.wxPage({
     doctorName: '职称',
     deparId: 0,
     doctorId: 0,
-    keyword: ''
+    keyword: '',
+    pageParams: {
+      currentPage: 1,
+      pageRows: 20
+    }
   },
 
   /**
@@ -143,12 +146,12 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    // if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage)
-    //   return;
-    // this.setData({
-    //   'pageParams.currentPage': this.data.pageParams.currentPage + 1
-    // });
-    // this.requestList();
+    if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage)
+      return;
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestList();
   },
 
   /**
@@ -171,22 +174,36 @@ global.wxPage({
 
   requestList: function (keyword = '', departmentId = 0, titleId = 0) {
     let that = this;
-    // let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
+    if (departmentId !== 0 || titleId !== 0 || keyword !== '') that.setData({
+      'pageParams.currentPage': 1
+    })
+    let currentPage = that.data.pageParams ? that.data.pageParams.currentPage : 1;
     util.api('/api/wxapp/doctor/list', (res) => {
       console.log(res)
       if (res.error === 0) {
-        let con = res.content;
+        let con = res.content
+        if (that.data.pageParams.currentPage === 1) {
+          that.setData({
+            doctorList: [
+              [...con.doctorList.dataList]
+            ],
+            departmentList: con.departmentList,
+            titleList: con.titleList
+          })
+        } else {
+          that.setData({
+            ['doctorList[' + (parseInt(currentPage) - 1) + ']']: con.doctorList.dataList
+          })
+        }
         that.setData({
-          departmentList: con.departmentList,
-          doctorList: con.doctorList,
-          titleList: con.titleList
+          pageParams: con.doctorList.page
         })
-
       }
     }, {
+      ...that.data.pageParams,
       keyword: keyword,
       departmentId: departmentId,
       titleId: titleId
-    },'',true);
+    }, '', true);
   }
 })

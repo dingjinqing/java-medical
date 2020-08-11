@@ -157,7 +157,7 @@ global.wxPage({
         let con = res.content;
         that.setData({
           departmentList: con.recommendDepartment,
-          doctorList: con.doctorList
+          ['doctorList[0]']: con.doctorList
         })
       }
     }, {

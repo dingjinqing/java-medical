@@ -141,11 +141,12 @@ global.wxPage({
           chatContent: [...this.data.chatContent, ...newChatContent]
         })
       } else if (res.error === 140004 && sessionStatus != 4) {
-        util.showModal('提示', '当前会话已结束', function () {
-          util.redirectTo({
-            url: 'pages2/doctorConsultation/doctorConsultation?tab=1'
-          })
-        });
+        
+        // util.showModal('提示', '当前会话已结束', function () {
+        //   util.redirectTo({
+        //     url: 'pages2/doctorConsultation/doctorConsultation?tab=1'
+        //   })
+        // });
       }
     }, {
       sessionId: this.data.sessionId,

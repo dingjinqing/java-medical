@@ -63,12 +63,7 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
         prescriptionParam.setUserId(userId);
         prescriptionParam.setIsUsed(BaseConstant.NO);
         prescriptionParam.setAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
-        PrescriptionParam result= null;
-        try {
-            result = prescriptionService.insertPrescription(prescriptionParam);
-        } catch (MpException e) {
-            return fail(e.getErrorCode());
-        }
+        PrescriptionParam  result = prescriptionService.insertPrescription(prescriptionParam);
         return success(result);
     }
 
