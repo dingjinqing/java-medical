@@ -42,6 +42,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
+import com.vpu.mp.service.pojo.wxapp.order.medical.OrderMedicalHistoryBo;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
@@ -79,6 +80,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.elasticsearch.common.Strings;
 import org.jooq.Record3;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1096,17 +1098,38 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     /**
      * 校验药品
-     * -审核订单得处方药品必须关联处方
+     * -审核(续方)订单得处方药品必须关联处方
+     * -线上开方订单,必须有患者主诉
      * @param param
      * @param bo
      */
     private void checkMedcail(CreateParam param, CreateOrderBo bo) throws MpException {
         //校验审核通过后处方药的关联处方
-        if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
-            for (OrderGoodsBo goods : bo.getOrderGoodsBo()) {
-                if (goods.getIsRx().equals(BaseConstant.YES) && goods.getPrescriptionInfo() == null) {
-                    throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+        if (OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT.equals(param.getOrderAuditType())){
+            if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
+                for (OrderGoodsBo goods : bo.getOrderGoodsBo()) {
+                    if (goods.getIsRx().equals(BaseConstant.YES) && goods.getPrescriptionInfo() == null) {
+                        throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
+                    }
                 }
+            }
+        }else if (OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE.equals(param.getOrderAuditType())){
+            OrderMedicalHistoryBo patientDiagnose = param.getPatientDiagnose();
+            //患者病情
+            if (patientDiagnose==null){
+                throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_HISTORY_CHECK);
+            }
+            //患者id
+            if (patientDiagnose.getPatientId()==null||patientDiagnose.getPatientId()>0){
+                throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_HISTORY_CHECK);
+            }
+            //患者名字
+            if (Strings.isEmpty(patientDiagnose.getPatientName())){
+                throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_HISTORY_CHECK);
+            }
+            //患者主诉
+            if (Strings.isEmpty(patientDiagnose.getPatientComplain())){
+                throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_HISTORY_CHECK);
             }
         }
     }
