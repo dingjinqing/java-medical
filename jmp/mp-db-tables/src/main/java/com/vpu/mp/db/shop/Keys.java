@@ -295,6 +295,7 @@ public class Keys {
     public static final Identity<SmsRechargeRecord, Integer> IDENTITY_SMS_RECHARGE = Identities0.IDENTITY_SMS_RECHARGE;
     public static final Identity<OrderMedicalHistoryRecord, Integer> IDENTITY_ORDER_MEDICAL_HISTORY = Identities0.IDENTITY_ORDER_MEDICAL_HISTORY;
     public static final Identity<UserAnnouncementRecord, Integer> IDENTITY_USER_ANNOUNCEMENT = Identities0.IDENTITY_USER_ANNOUNCEMENT;
+    public static final Identity<UserDoctorAttentionRecord, Integer> IDENTITY_USER_DOCTOR_ATTENTION = Identities0.IDENTITY_USER_DOCTOR_ATTENTION;
 
 
     // -------------------------------------------------------------------------
@@ -581,7 +582,7 @@ public class Keys {
     public static final UniqueKey<SmsRechargeRecord> KEY_B2C_SMS_RECHARGE_PRIMARY = UniqueKeys0.KEY_B2C_SMS_RECHARGE_PRIMARY;
     public static final UniqueKey<OrderMedicalHistoryRecord> KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY;
     public static final UniqueKey<UserAnnouncementRecord> KEY_B2C_USER_ANNOUNCEMENT_PRIMARY = UniqueKeys0.KEY_B2C_USER_ANNOUNCEMENT_PRIMARY;
-
+    public static final UniqueKey<UserDoctorAttentionRecord> KEY_B2C_USER_DOCTOR_ATTENTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_DOCTOR_ATTENTION_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -844,6 +845,7 @@ public class Keys {
         public static Identity<SmsRechargeRecord, Integer> IDENTITY_SMS_RECHARGE = Internal.createIdentity(SmsRecharge.SMS_RECHARGE, SmsRecharge.SMS_RECHARGE.RECHARGE_ID);
         public static Identity<OrderMedicalHistoryRecord, Integer> IDENTITY_ORDER_MEDICAL_HISTORY = Internal.createIdentity(OrderMedicalHistory.ORDER_MEDICAL_HISTORY, OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID);
         public static Identity<UserAnnouncementRecord, Integer> IDENTITY_USER_ANNOUNCEMENT = Internal.createIdentity(UserAnnouncement.USER_ANNOUNCEMENT, UserAnnouncement.USER_ANNOUNCEMENT.ANNOUNCEMENT_ID);
+        public static Identity<UserDoctorAttentionRecord, Integer> IDENTITY_USER_DOCTOR_ATTENTION = Internal.createIdentity(UserDoctorAttention.USER_DOCTOR_ATTENTION, UserDoctorAttention.USER_DOCTOR_ATTENTION.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1132,5 +1134,6 @@ public class Keys {
         public static final UniqueKey<SmsRechargeRecord> KEY_B2C_SMS_RECHARGE_PRIMARY = Internal.createUniqueKey(SmsRecharge.SMS_RECHARGE, "KEY_b2c_sms_recharge_PRIMARY", SmsRecharge.SMS_RECHARGE.RECHARGE_ID);
         public static final UniqueKey<OrderMedicalHistoryRecord> KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY = Internal.createUniqueKey(OrderMedicalHistory.ORDER_MEDICAL_HISTORY, "KEY_b2c_order_medical_history_PRIMARY", OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID);
         public static final UniqueKey<UserAnnouncementRecord> KEY_B2C_USER_ANNOUNCEMENT_PRIMARY = Internal.createUniqueKey(UserAnnouncement.USER_ANNOUNCEMENT, "KEY_b2c_user_announcement_PRIMARY", UserAnnouncement.USER_ANNOUNCEMENT.ANNOUNCEMENT_ID);
+        public static final UniqueKey<UserDoctorAttentionRecord> KEY_B2C_USER_DOCTOR_ATTENTION_PRIMARY = Internal.createUniqueKey(UserDoctorAttention.USER_DOCTOR_ATTENTION, "KEY_b2c_user_doctor_attention_PRIMARY", UserDoctorAttention.USER_DOCTOR_ATTENTION.ID);
     }
 }

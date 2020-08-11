@@ -7,6 +7,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorDepartmentCoupleRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
@@ -141,6 +142,9 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         }
         if (doctorParam.getTitleId() != null && doctorParam.getTitleId() > 0) {
             condition = condition.and(DOCTOR_TITLE.ID.eq(doctorParam.getTitleId()));
+        }
+        if (DoctorConstant.ATTENTIONTYPE.equals(doctorParam.getType()) && doctorParam.getUserId() > 0) {
+            condition = condition.and(DOCTOR.ID.in(doctorParam.getUserDoctorIds()));
         }
         SelectJoinStep<? extends Record> select = db().select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));

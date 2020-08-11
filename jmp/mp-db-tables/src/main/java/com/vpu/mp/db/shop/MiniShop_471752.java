@@ -1344,7 +1344,8 @@ public class MiniShop_471752 extends SchemaImpl {
             MedicalHistory.MEDICAL_HISTORY,
             OrderMedicalHistory.ORDER_MEDICAL_HISTORY,
             DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE,
-            UserAnnouncement.USER_ANNOUNCEMENT);
+            UserAnnouncement.USER_ANNOUNCEMENT,
+            UserDoctorAttention.USER_DOCTOR_ATTENTION);
 
 
     }

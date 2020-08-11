@@ -4847,6 +4847,8 @@ create table b2c_doctor(
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    `on_duty_time`   timestamp    not null default current_timestamp,
+    `is_on_duty`     tinyint(1)   not null default '0',
     primary key (`id`)
 )comment ='医师表';
 
@@ -5160,3 +5162,14 @@ CREATE TABLE `b2c_user_announcement` (
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`announcement_id`)
 ) COMMENT = '用户公告关联表';
+
+-- 用户关注医师表
+create table `b2c_user_doctor_attention`(
+    `id`   int(11)      not null auto_increment,
+    `user_id` int(11) not null comment '用户ID',
+    `doctor_id` int(11) not null comment '医师ID',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key(`id`)
+)comment ='用户关注医师';
