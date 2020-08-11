@@ -44,6 +44,9 @@ global.wxPage({
       }
     },{currentPage: currentPage, pageRows: 20, patientId: this.data.patientId })
   },
+  to_pre() {
+    util.jumpLink('/pages1/getprescription/getprescription')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
