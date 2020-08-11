@@ -19,7 +19,7 @@ global.wxPage({
     // 订单动态列表
     order_message: [],
     // 我的咨询列表
-    advisory_list: []
+    advisory_list: [],
   },
 
   /**
@@ -93,23 +93,30 @@ global.wxPage({
           this.data.system_notice = [];
           this.data.order_message = [];
           this.data.advisory_list = [];
-          for (let i in res.content) {
-            res.content[i].messageTime = res.content[i].messageTime.substr(0, 10);
-            if(res.content[i].messageType == 0){
-              this.data.system_notice.push(res.content[i])
-            } else if(res.content[i].messageType == 1) {
-              this.data.order_message.push(res.content[i])
+          for (let i in res.content.userMessages) {
+            res.content.userMessages[i].bindName = '';
+            res.content.userMessages[i].messageTime = res.content.userMessages[i].messageTime.substr(0, 10);
+            if(res.content.userMessages[i].messageType == 0){
+              this.data.system_notice.push(res.content.userMessages[i])
+              res.content.userMessages[i].bindName = 'show_mes'
+            } else if(res.content.userMessages[i].messageType == 1) {
+              this.data.order_message.push(res.content.userMessages[i])
+              res.content.userMessages[i].bindName = 'to_order'
             }else{
-              this.data.advisory_list.push(res.content[i])
+              this.data.advisory_list.push(res.content.userMessages[i])
+              res.content.userMessages[i].bindName = 'to_query'
             }
-            this.data.all_notice.push(res.content[i])
+            this.data.all_notice.push(res.content.userMessages[i])
           }
         }
         this.setData({
           system_notice: this.data.system_notice,
           advisory_list: this.data.advisory_list,
           order_message: this.data.order_message,
-          all_notice: this.data.all_notice
+          all_notice: this.data.all_notice,
+          system_num: res.content.announcementMessageCount,
+          order_num: res.content.orderMessageCount,
+          query_num: res.content.imSessionMessageCount,
         })
       } else {
         util.showModal('提示', res.message)
