@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderMedicalHistory extends TableImpl<OrderMedicalHistoryRecord> {
 
-    private static final long serialVersionUID = -979943129;
+    private static final long serialVersionUID = 408224189;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_medical_history</code>
@@ -88,6 +88,20 @@ public class OrderMedicalHistory extends TableImpl<OrderMedicalHistoryRecord> {
     public final TableField<OrderMedicalHistoryRecord, Integer> AGE = createField("age", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "年龄");
 
     /**
+     * The column <code>mini_shop_471752.b2c_order_medical_history.identity_code</code>. 证件号
+     */
+    public final TableField<OrderMedicalHistoryRecord, String> IDENTITY_CODE = createField("identity_code", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "证件号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_medical_history.identity_type</code>. 证件类型: 1：身份证 2：军人证 3：护照 4：社保卡
+     */
+    public final TableField<OrderMedicalHistoryRecord, Byte> IDENTITY_TYPE = createField("identity_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "证件类型: 1：身份证 2：军人证 3：护照 4：社保卡");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_medical_history.patient_treatment_code</code>. 患者就诊卡号
+     */
+    public final TableField<OrderMedicalHistoryRecord, String> PATIENT_TREATMENT_CODE = createField("patient_treatment_code", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者就诊卡号");
+    /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.patient_complain</code>. 患者主诉
      */
     public final TableField<OrderMedicalHistoryRecord, String> PATIENT_COMPLAIN = createField("patient_complain", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者主诉");
@@ -100,12 +114,17 @@ public class OrderMedicalHistory extends TableImpl<OrderMedicalHistoryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.allergy_history</code>. 过敏史
      */
-    public final TableField<OrderMedicalHistoryRecord, String> ALLERGY_HISTORY = createField("allergy_history", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "过敏史");
+    public final TableField<OrderMedicalHistoryRecord, String> ALLERGY_HISTORY = createField("allergy_history", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "过敏史");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.family_disease_history</code>. 家族病史
      */
-    public final TableField<OrderMedicalHistoryRecord, String> FAMILY_DISEASE_HISTORY = createField("family_disease_history", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "家族病史");
+    public final TableField<OrderMedicalHistoryRecord, String> FAMILY_DISEASE_HISTORY = createField("family_disease_history", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "家族病史");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_medical_history.describe</code>. 自我描述
+     */
+    public final TableField<OrderMedicalHistoryRecord, String> DESCRIBE = createField("describe", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "自我描述");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.gestation_type</code>. 妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳

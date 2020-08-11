@@ -11,6 +11,7 @@ import java.util.List;
  */
 @Data
 public class PrescriptionOneParam {
+    private Integer orderId;
     private Integer patientId;
     private Integer doctorId;
     private Integer userId;
