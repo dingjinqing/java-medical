@@ -16,6 +16,9 @@ public class OrderMedicalHistoryDo {
     private String    patientName;
     private Byte      sex;
     private Integer   age;
+    private String    identityCode;
+    private Byte      identityType;
+    private String    patientTreatmentCode;
     private String    patientComplain;
     private String    diseaseHistory;
     private String    allergyHistory;

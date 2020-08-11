@@ -281,6 +281,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setGoodsId(goods.getGoodsId());
                 itemDo.setGoodsCommonName(medicalInfoDo.getGoodsCommonName());
                 itemDo.setGoodsQualityRatio(medicalInfoDo.getGoodsQualityRatio());
+                itemDo.setPrdId(goods.getProductId());
                 itemDo.setUseMethod(medicalInfoDo.getGoodsUseMethod());
                 itemDo.setPerTimeNum(1.0);
                 itemDo.setPerTimeUnit(medicalInfoDo.getGoodsBasicUnit());

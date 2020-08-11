@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
@@ -62,7 +63,7 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
         prescriptionParam.setUserId(userId);
         prescriptionParam.setIsUsed(BaseConstant.NO);
         prescriptionParam.setAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
-        PrescriptionParam result=prescriptionService.insertPrescription(prescriptionParam);
+        PrescriptionParam  result = prescriptionService.insertPrescription(prescriptionParam);
         return success(result);
     }
 

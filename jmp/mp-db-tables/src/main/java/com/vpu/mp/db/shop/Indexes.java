@@ -535,7 +535,7 @@ public class Indexes {
     public static final Index USER_MESSAGE_PRIMARY = Indexes0.USER_MESSAGE_PRIMARY;
     public static final Index SMS_RECHARGE_PRIMARY = Indexes0.SMS_RECHARGE_PRIMARY;
     public static final Index ORDER_MEDICAL_HISTORY_PRIMARY = Indexes0.ORDER_MEDICAL_HISTORY_PRIMARY;
-
+    public static final Index USER_ANNOUNCEMENT_PRIMARY = Indexes0.USER_ANNOUNCEMENT_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1047,5 +1047,7 @@ public class Indexes {
         public static Index USER_MESSAGE_PRIMARY = Internal.createIndex("PRIMARY", UserMessage.USER_MESSAGE, new OrderField[] { UserMessage.USER_MESSAGE.MESSAGE_ID }, true);
         public static Index SMS_RECHARGE_PRIMARY = Internal.createIndex("PRIMARY", SmsRecharge.SMS_RECHARGE, new OrderField[] { SmsRecharge.SMS_RECHARGE.RECHARGE_ID }, true);
         public static Index ORDER_MEDICAL_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", OrderMedicalHistory.ORDER_MEDICAL_HISTORY, new OrderField[] { OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID }, true);
+        public static Index USER_ANNOUNCEMENT_PRIMARY = Internal.createIndex("PRIMARY", UserAnnouncement.USER_ANNOUNCEMENT, new OrderField[] { UserAnnouncement.USER_ANNOUNCEMENT.ANNOUNCEMENT_ID }, true);
+
     }
 }

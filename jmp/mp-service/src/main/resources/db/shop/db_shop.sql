@@ -4816,6 +4816,7 @@ create table b2c_doctor_title(
     `id`   int(11)  not null auto_increment,
     `name` varchar(32) not null comment '职称名称',
     `code` varchar(32) not null comment '职称代码',
+    `first` int(11) not null default 0 comment '优先级（越大越优先）',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
@@ -4917,6 +4918,7 @@ create table `b2c_prescription_item`(
     `goods_common_name` varchar(512) not null default '' comment '通用名',
     `goods_img` varchar(500)  not null default '商品图片',
     `goods_quality_ratio` varchar(512) not null default '' comment '规格系数，通用名和规格系数确定一个药品',
+    `prd_id` int(11)  DEFAULT '0' COMMENT '产品id',
     `use_method` varchar(512) not null default '' comment '用法',
     `per_time_num` double not null default 0 comment '单次数量',
     `per_time_unit` varchar(32) not null default '' comment '数量单位',
@@ -5012,7 +5014,7 @@ CREATE TABLE `b2c_medical_advice` (
 create TABLE `b2c_im_session`(
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
     `doctor_id` int(11) NOT NULL COMMENT '医师在我方库内id值',
-    `department_id` int(11) NOT NULL COMMENT '科室id',
+    `department_id` int(11) NOT NULL DEFAULT 0 COMMENT '科室id',
     `user_id` int(11) NOT NULL COMMENT '小程序发起会话用户id',
     `patient_id`  int(11) NOT NULL COMMENT '本次诊疗的患者id',
     `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束',
@@ -5042,7 +5044,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
  `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
- `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消',
+ `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7退款中',
  `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
  `doctor_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师名称',
  `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '科室id',
@@ -5060,6 +5062,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `prepay_id` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
  `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
  `pay_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '支付时间',
+ `refund_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款金额',
  `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
  `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
  `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
@@ -5077,7 +5080,7 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
   `money_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款金额',
   `refund_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单退款时间',
-  `is_success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '处理状态，1：退款失败，2：退款成功',
+  `is_success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '处理状态，1：退款成功，2：退款失败',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -5086,19 +5089,21 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   KEY `user_id` (`user_id`)
 ) COMMENT='问诊订单退款记录';
 
+-- 用户消息表
 CREATE TABLE `b2c_user_message` (
     `message_id` int(11) NOT NULL AUTO_INCREMENT,
     `message_name` varchar(255) NOT NULL DEFAULT '' COMMENT '消息名称，系统消息名称为日期',
-    `message_essentials` varchar(255) NOT NULL DEFAULT '' COMMENT '消息摘要',
     `message_content` text COMMENT '消息内容',
     `message_type` tinyint(1) not null default 0 comment '消息类型 0：系统消息、1：订单消息、2：会话消息 默认0',
-    `receiver_id` int(11) not null comment '接收者id',
+    `receiver_id` int(11) not null default 0 comment '接收者id',
     `receiver_name` varchar(100) not null default '' comment '接收者姓名',
     `sender_id` int(11) not null default 0 comment '发送者id',
     `sender_name` varchar(100) not null default '' comment '发送者姓名',
     `message_status` tinyint(1) not null default 0 comment '消息状态 0：未读、1：已读、3：置顶消息 默认0',
     `message_time` timestamp not null default CURRENT_TIMESTAMP comment '消息创建时间',
-    `message_relevance_id` int(11) not null default 0 comment '消息关联id 关联会话和订单id，关联系统消息、会话问诊、问诊订单主键',
+    `message_relevance_id` int(11) not null default 0 comment '消息关联订单，会话id',
+    `message_relevance_order_sn` varchar(20) not null default 0 comment '消息关联会话订单sn',
+    `message_chat_status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '会话消息状态',
     `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -5129,10 +5134,14 @@ CREATE TABLE `b2c_order_medical_history` (
     `patient_name` varchar(255) NOT NULL DEFAULT '' COMMENT '患者姓名',
     `sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0男1女',
     `age` int(11) NOT NULL DEFAULT '0' COMMENT '年龄',
+    `identity_code` varchar(255) NOT NULL DEFAULT '' COMMENT '证件号',
+    `identity_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
+    `patient_treatment_code` varchar(255) NOT NULL DEFAULT '' COMMENT '患者就诊卡号',
     `patient_complain` varchar(512) NOT NULL DEFAULT '' COMMENT '患者主诉',
     `disease_history` varchar(1000) NOT NULL DEFAULT '' COMMENT '历史诊断',
-    `allergy_history` varchar(64) NOT NULL DEFAULT '' COMMENT '过敏史',
-    `family_disease_history` varchar(64) NOT NULL DEFAULT '' COMMENT '家族病史',
+    `allergy_history` varchar(512) NOT NULL DEFAULT '' COMMENT '过敏史',
+    `family_disease_history` varchar(512) NOT NULL DEFAULT '' COMMENT '家族病史',
+    `describe` varchar(512) NOT NULL DEFAULT '' COMMENT '自我描述',
     `gestation_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳',
     `kidney_function_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '肾功能:0:未知，1：正常，2：异常',
     `liver_function_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '肝功能:0:未知，1：正常，2：异常',
@@ -5142,3 +5151,15 @@ CREATE TABLE `b2c_order_medical_history` (
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`id`)
 ) comment ='患者订单历史病例表';
+
+-- 用户公告关联表
+CREATE TABLE `b2c_user_announcement` (
+    `announcement_id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL DEFAULT 0 COMMENT '用户id',
+    `message_id` int(11) NOT NULL DEFAULT 0 COMMENT '公告id',
+    `message_status` tinyint NOT NULL DEFAULT 0 COMMENT '消息状态 0：未读、1：已读、3：置顶消息 默认0',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`announcement_id`)
+) COMMENT = '用户公告关联表';

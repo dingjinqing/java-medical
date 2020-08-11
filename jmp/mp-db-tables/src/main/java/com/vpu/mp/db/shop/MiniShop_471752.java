@@ -1096,6 +1096,11 @@ public class MiniShop_471752 extends SchemaImpl {
      * 短信充值记录表
      */
     public final SmsRecharge SMS_RECHARGE = com.vpu.mp.db.shop.tables.SmsRecharge.SMS_RECHARGE;
+    /**
+     * 用户公告关联表
+     */
+    public final UserAnnouncement USER_ANNOUNCEMENT = com.vpu.mp.db.shop.tables.UserAnnouncement.USER_ANNOUNCEMENT;
+
 
 
     /**
@@ -1338,7 +1343,9 @@ public class MiniShop_471752 extends SchemaImpl {
             UserPatientCouple.USER_PATIENT_COUPLE,
             MedicalHistory.MEDICAL_HISTORY,
             OrderMedicalHistory.ORDER_MEDICAL_HISTORY,
-        DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE);
+            DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE,
+            UserAnnouncement.USER_ANNOUNCEMENT);
+
 
     }
 }

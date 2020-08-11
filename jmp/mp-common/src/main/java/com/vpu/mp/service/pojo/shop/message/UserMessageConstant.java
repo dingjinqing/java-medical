@@ -22,6 +22,15 @@ public class UserMessageConstant {
     public static final Byte USER_MESSAGE_STATUS_ALREADY_READ = 1;
     public static final Byte USER_MESSAGE_STATUS_TOP = 3;
 
+    /**
+     * 订单状态
+     * 订单生成成功
+     */
+    public static final Byte ORDER_INFO_STATUS_START = 0;
 
+    /**
+     * 系统公告收件人
+     */
+    public static final Integer USER_MESSAGE_RECEIVE_ANN = 0;
 
 }
