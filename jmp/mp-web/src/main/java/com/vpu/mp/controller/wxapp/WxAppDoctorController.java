@@ -45,8 +45,8 @@ public class WxAppDoctorController extends WxAppBaseController {
     public JsonResult doctorAuth(@RequestBody DoctorAuthParam doctorAuthParam) {
         doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
         Integer doctorId = doctorService.doctorAuth(doctorAuthParam);
-        // 如果医师id!=0 更新缓存
-        if (doctorId != 0) {
+        // 如果医师id!=null 更新缓存
+        if (doctorId != null) {
             wxAppAuth.updateUserType(doctorId);
             return success();
         } else {
