@@ -46,14 +46,23 @@ public class UserAnnouncementDao extends ShopBaseDao {
         userAnnouncementRecord.insert();
     }
 
+
     /**
-     * 更改该用户读取系统消息未读状态
+     * 修改系统消息读取状态
      * @param userId 用户id
+     * @param messageId 消息id
      */
-    public void updateUserAnnouncement(Integer userId) {
-        db().update(USER_ANNOUNCEMENT)
-            .set(USER_ANNOUNCEMENT.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
-            .where(USER_ANNOUNCEMENT.USER_ID.eq(userId)).execute();
+    public void updateUserAnnouncement(Integer userId, Integer messageId) {
+        if (messageId == 0) {
+            db().update(USER_ANNOUNCEMENT)
+                .set(USER_ANNOUNCEMENT.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+                .where(USER_ANNOUNCEMENT.USER_ID.eq(userId)).execute();
+        } else {
+            db().update(USER_ANNOUNCEMENT)
+                .set(USER_ANNOUNCEMENT.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+                .where(USER_ANNOUNCEMENT.USER_ID.eq(userId))
+                .and(USER_ANNOUNCEMENT.MESSAGE_ID.eq(messageId)).execute();
+        }
     }
 
 }

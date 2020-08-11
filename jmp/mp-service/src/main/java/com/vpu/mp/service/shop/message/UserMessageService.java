@@ -63,16 +63,27 @@ public class UserMessageService extends ShopBaseService {
 
     /**
      * 更改消息已读状态
-     * @param type 会话类型
+     * @param messageParam 会话类型
      * @param userId 用户id
+     * @return UserMessageCountVo
      */
-    public void changeMessageStatus(Byte type, Integer userId) {
+    public UserMessageCountVo changeMessageStatus(MessageParam messageParam, Integer userId) {
         // 去除系统公告未读
-        if (USER_MESSAGE_SYSTEM.equals(type)) {
-            userAnnouncementDao.updateUserAnnouncement(userId);
+        if (USER_MESSAGE_SYSTEM.equals(messageParam.getMessageType())) {
+            userAnnouncementDao.updateUserAnnouncement(userId, messageParam.getMessageId());
         } else { // 去除订单消息和会话消息未读
-            messageDao.updateMessageStatus(userId, type);
+            messageDao.updateMessageStatus(userId, messageParam);
         }
+        fetchUserMessage(userId);
+        Integer announcementCount = messageDao.selectAnnouncementCount(userId);
+        Integer orderCount = messageDao.selectOrderCount(userId);
+        Integer chatCount = messageDao.selectChatCount(userId);
+        UserMessageCountVo userMessageCountVo = new UserMessageCountVo();
+        userMessageCountVo.setAnnouncementCount(announcementCount);
+        userMessageCountVo.setChatCount(chatCount);
+        userMessageCountVo.setOrderCount(orderCount);
+        return userMessageCountVo;
+
     }
 
     /**

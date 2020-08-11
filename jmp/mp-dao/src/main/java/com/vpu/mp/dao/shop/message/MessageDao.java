@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.UserMessage;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserAnnouncementRecord;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
+import com.vpu.mp.service.pojo.shop.message.MessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
@@ -241,11 +242,23 @@ public class MessageDao extends ShopBaseDao {
             .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(Integer.class);
     }
 
-    public void updateMessageStatus(Integer userId, Byte messageType) {
-        db().update(USER_MESSAGE)
-            .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
-            .where(USER_MESSAGE.MESSAGE_TYPE.eq(messageType))
-            .and(USER_MESSAGE.RECEIVER_ID.eq(userId)).execute();
+    /**
+     * 更新消息表消息状态
+     * @param userId 用户id
+     * @param messageParam 消息类型，消息id
+     */
+    public void updateMessageStatus(Integer userId, MessageParam messageParam) {
+        if (messageParam.getMessageId() == 0) {
+            db().update(USER_MESSAGE)
+                .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+                .where(USER_MESSAGE.MESSAGE_TYPE.eq(messageParam.getMessageType()))
+                .and(USER_MESSAGE.RECEIVER_ID.eq(userId)).execute();
+        } else {
+            db().update(USER_MESSAGE)
+                .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+                .where(USER_MESSAGE.MESSAGE_TYPE.eq(messageParam.getMessageType()))
+                .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
+                .and(USER_MESSAGE.MESSAGE_ID.eq(messageParam.getMessageId())).execute();
+        }
     }
-
 }
