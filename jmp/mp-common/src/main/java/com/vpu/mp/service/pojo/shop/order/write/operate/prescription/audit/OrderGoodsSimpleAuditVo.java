@@ -19,6 +19,10 @@ public class OrderGoodsSimpleAuditVo {
      */
     private Integer goodsId;
     /**
+     * 商品规格id
+     */
+    private Integer productId;
+    /**
      * 商品数量
      */
     private Integer goodsNumber;
