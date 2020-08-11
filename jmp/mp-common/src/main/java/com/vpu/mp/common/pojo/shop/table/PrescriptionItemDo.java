@@ -37,6 +37,7 @@ public class PrescriptionItemDo implements Serializable {
     private String     goodsCommonName;
     private String     goodsImg;
     private String     goodsQualityRatio;
+    private Integer    prdId;
     private String     useMethod;
     private Double     perTimeNum;
     private String     perTimeUnit;
