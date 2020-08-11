@@ -101,7 +101,6 @@ public class OrderMedicalHistory extends TableImpl<OrderMedicalHistoryRecord> {
      * The column <code>mini_shop_471752.b2c_order_medical_history.patient_treatment_code</code>. 患者就诊卡号
      */
     public final TableField<OrderMedicalHistoryRecord, String> PATIENT_TREATMENT_CODE = createField("patient_treatment_code", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "患者就诊卡号");
-
     /**
      * The column <code>mini_shop_471752.b2c_order_medical_history.patient_complain</code>. 患者主诉
      */
