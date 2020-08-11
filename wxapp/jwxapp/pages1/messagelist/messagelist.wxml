@@ -3,9 +3,9 @@
 <view class="mian-container">
   <view class="top_nav" style="top:{{margin_top_nav + 8}}px;">
     <view class="each_nav {{ is_all == 1 ? 'active':''}}" bindtap="change_square" data-nav_index='{{3}}'>全部</view>
-    <view class="each_nav {{ is_system == 1 ? 'active':''}}" bindtap="change_square" data-nav_index='{{0}}'>系统公告</view>
-    <view class="each_nav {{ is_order == 1 ? 'active':''}}"  bindtap="change_square" data-nav_index='{{1}}'>订单动态</view>
-    <view class="each_nav {{ is_advisory == 1 ? 'active':''}}"  bindtap="change_square" data-nav_index='{{2}}'>我的咨询</view>
+    <view class="each_nav {{ is_system == 1 ? 'active':''}}" bindtap="change_square" data-nav_index='{{0}}'>系统公告<text>{{system_num}}</text></view>
+    <view class="each_nav {{ is_order == 1 ? 'active':''}}"  bindtap="change_square" data-nav_index='{{1}}'>订单动态<text>{{order_num}}</text></view>
+    <view class="each_nav {{ is_advisory == 1 ? 'active':''}}"  bindtap="change_square" data-nav_index='{{2}}'>我的咨询<text>{{query_num}}</text></view>
   </view>
   <view class="list_content">
     <view class="each_square" wx:if='{{ is_all == 1 && !!all_notice }}'>
@@ -18,7 +18,7 @@
           </view>
           <view>{{item.messageTime}}<text class="iconfont iconshanchu2" bindtap="delete_this" data-mes_id='{{item.messageId}}' data-form='sys'></text></view>
         </view>
-        <view class="line_bottom" bindtap="{{item.messageType == 0 ? 'show_mes':''}}" data-index='{{item.messageContent}}'>
+        <view class="line_bottom" bindtap="{{item.bindName}}" data-index='{{item.messageContent}}' data-order='{{item.messageRelevanceId}}'>
           <view class="lt_text">{{item.messageContent}}</view>
           <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
         </view>
@@ -54,7 +54,7 @@
           <view class="lt_bold">我的咨询</view>
           <view>{{item.messageTime}}<text class="iconfont iconshanchu2" bindtap="delete_this" data-mes_id='{{item.messageId}}' data-form='advi'></text></view>
         </view>
-        <view class="line_bottom">
+        <view class="line_bottom" bindtap="to_query">
           <view class="lt_text">{{item.messageContent}}</view>
           <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
         </view>
