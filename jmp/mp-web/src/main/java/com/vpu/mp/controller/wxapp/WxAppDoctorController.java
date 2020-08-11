@@ -41,7 +41,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @param doctorAuthParam 认证医师姓名，手机号，医师医院唯一编码
      * @return JsonResult
      */
-    @RequestMapping("/auth")
+    @PostMapping("/auth")
     public JsonResult doctorAuth(@RequestBody DoctorAuthParam doctorAuthParam) {
         doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
         Integer doctorId = doctorService.doctorAuth(doctorAuthParam);
@@ -69,7 +69,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      * 医师端首页信息展示 消息统计和医师个人信息
      * @return JsonResult
      */
-    @RequestMapping("/main")
+    @PostMapping("/main")
     public JsonResult doctorMainShow(@RequestBody DoctorMainShowParam doctorMainShowParam){
         // 获取缓存中当前用户信息
         WxAppSessionUser user = wxAppAuth.user();
