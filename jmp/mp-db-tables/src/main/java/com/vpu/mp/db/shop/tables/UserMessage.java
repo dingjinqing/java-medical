@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserMessage extends TableImpl<UserMessageRecord> {
 
-    private static final long serialVersionUID = 1018279445;
+    private static final long serialVersionUID = 1867076946;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_message</code>
@@ -68,11 +68,6 @@ public class UserMessage extends TableImpl<UserMessageRecord> {
     public final TableField<UserMessageRecord, String> MESSAGE_NAME = createField("message_name", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "消息名称，系统消息名称为日期");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_message.message_essentials</code>. 消息摘要
-     */
-    public final TableField<UserMessageRecord, String> MESSAGE_ESSENTIALS = createField("message_essentials", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "消息摘要");
-
-    /**
      * The column <code>mini_shop_471752.b2c_user_message.message_content</code>. 消息内容
      */
     public final TableField<UserMessageRecord, String> MESSAGE_CONTENT = createField("message_content", org.jooq.impl.SQLDataType.CLOB, this, "消息内容");
@@ -85,7 +80,7 @@ public class UserMessage extends TableImpl<UserMessageRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_message.receiver_id</code>. 接收者id
      */
-    public final TableField<UserMessageRecord, Integer> RECEIVER_ID = createField("receiver_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "接收者id");
+    public final TableField<UserMessageRecord, Integer> RECEIVER_ID = createField("receiver_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "接收者id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_message.receiver_name</code>. 接收者姓名
@@ -113,9 +108,19 @@ public class UserMessage extends TableImpl<UserMessageRecord> {
     public final TableField<UserMessageRecord, Timestamp> MESSAGE_TIME = createField("message_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "消息创建时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_message.message_relevance_id</code>. 消息关联id 关联会话和订单id，关联系统消息、会话问诊、问诊订单主键
+     * The column <code>mini_shop_471752.b2c_user_message.message_relevance_id</code>. 消息关联订单，会话id
      */
-    public final TableField<UserMessageRecord, Integer> MESSAGE_RELEVANCE_ID = createField("message_relevance_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "消息关联id 关联会话和订单id，关联系统消息、会话问诊、问诊订单主键");
+    public final TableField<UserMessageRecord, Integer> MESSAGE_RELEVANCE_ID = createField("message_relevance_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "消息关联订单，会话id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_message.message_relevance_order_sn</code>. 消息关联会话订单sn
+     */
+    public final TableField<UserMessageRecord, String> MESSAGE_RELEVANCE_ORDER_SN = createField("message_relevance_order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "消息关联会话订单sn");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_message.message_chat_status</code>. 会话消息状态
+     */
+    public final TableField<UserMessageRecord, Byte> MESSAGE_CHAT_STATUS = createField("message_chat_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "会话消息状态");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_message.is_delete</code>. 删除

@@ -276,9 +276,12 @@
             label='就诊卡号'
           ></el-table-column>
           <el-table-column
-            prop='sex'
             label='性别'
-          ></el-table-column>
+          >
+            <template v-slot="scope">
+              <span>{{scope.row.sex == 0 ? '男' : (scope.row.sex == 1 ? '女' : '未知')}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop='diseaseHistoryNameStr'
             label='疾病史'

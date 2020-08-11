@@ -6,10 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
@@ -47,6 +44,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,10 +129,7 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            ImSessionStatusToGoingOnParam sessionStatusToGoingOnParam = new ImSessionStatusToGoingOnParam();
-            sessionStatusToGoingOnParam.setSessionId(param.getSessionId());
-            sessionStatusToGoingOnParam.setSessionPrevStatus(prevStatus);
-            imSessionService.updateSessionToGoingOn(sessionStatusToGoingOnParam);
+            imSessionService.updateSessionToGoingOn(param.getSessionId());
         }
         //更新会话状态为关闭
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
@@ -265,7 +260,7 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        refundInquiryOrder(inquiryOrderDo);
+        refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney());
     }
 
     /**
@@ -273,7 +268,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param order
      * @throws MpException
      */
-    public void refundInquiryOrder(InquiryOrderDo order)throws MpException{
+    public void refundInquiryOrder(InquiryOrderDo order,BigDecimal refundMoney)throws MpException{
         boolean successFlag=true;
         if(InquiryOrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())){
             //退款流水号
@@ -284,6 +279,11 @@ public class InquiryOrderService extends ShopBaseService {
                 logger().error("wxPayRefund 微信支付记录未找到 order_sn={}",order.getOrderSn());
                 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
             }
+            BigDecimal refundable=BigDecimalUtil.subtrac(order.getOrderAmount(),order.getRefundMoney());
+            if(BigDecimalUtil.compareTo(refundMoney,refundable)>0){
+                logger().error("orderSn:{},退款金额超出可退金额",order.getOrderSn());
+                throw new MpException(JsonResultCode.INQUIRY_ORDER_REFUND_MONEY_EXCESS);
+            }
             //微信金额单为为分需单位换算
 //            returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(order.getOrderAmount(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
         }
@@ -292,11 +292,19 @@ public class InquiryOrderService extends ShopBaseService {
         refundListDo.setOrderSn(order.getOrderSn());
         refundListDo.setMoneyAmout(order.getOrderAmount());
         refundListDo.setUserId(order.getUserId());
-        refundListDo.setIsSuccess(successFlag?InquiryOrderConstant.REFUND_SUCCESS:InquiryOrderConstant.ORDER_TO_PAID);
+        refundListDo.setIsSuccess(successFlag?InquiryOrderConstant.REFUND_SUCCESS:InquiryOrderConstant.REFUND_FAILED);
         inquiryOrderRefundListDao.save(refundListDo);
         //更新状态
-        order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
-        order.setCancelledTime(DateUtils.getLocalDateTime());
+        BigDecimal newRefundMoney=order.getRefundMoney().add(refundMoney);
+        order.setRefundMoney(newRefundMoney);
+        if(BigDecimalUtil.compareTo(order.getOrderAmount(),newRefundMoney)>0){
+            //退款中
+            order.setOrderStatus(InquiryOrderConstant.ORDER_REFUNDING);
+        }else {
+            //已退款
+            order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
+
+        }
         inquiryOrderDao.update(order);
         //取消未接诊过期的会话
         List<String> orderSnList=new ArrayList<>();
