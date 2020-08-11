@@ -4843,7 +4843,7 @@ create table b2c_doctor(
     `consultation_price` decimal not null  default 0 comment '问诊费用',
     `treat_disease` varchar(256) not null default '' comment '主治疾病',
     `status` tinyint(1) not null default 1 comment '是否启用 1启用 0禁用',
-    `user_id` int(11) NOT NULL COMMENT '用户id，当前用户是否为医师',
+    `user_id` int(11) NOT NULL default 0 COMMENT '用户id，当前用户是否为医师',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',

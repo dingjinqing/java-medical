@@ -241,27 +241,11 @@ public class MessageDao extends ShopBaseDao {
             .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(Integer.class);
     }
 
-    /**
-     * 根据消息id查询消息内容
-     * @param messageId 消息id
-     * @return UserMessageVo
-     */
-    public UserMessageVo selectMessageByMessageId(Integer messageId) {
-        return db().select().from(USER_MESSAGE)
-            .where(USER_MESSAGE.MESSAGE_ID.eq(messageId)).fetchAnyInto(UserMessageVo.class);
-    }
-
-    /**
-     * 更改系统消息读取状态
-     * @param userMessageVo 用户消息
-     */
-    public void changeAnnStatus(UserMessageVo userMessageVo) {
-        UserAnnouncementRecord announcementRecord = db().select().from(USER_ANNOUNCEMENT)
-            .where(USER_ANNOUNCEMENT.MESSAGE_ID.eq(userMessageVo.getMessageId()))
-            .and(USER_ANNOUNCEMENT.USER_ID.eq(userMessageVo.getReceiverId()))
-            .fetchOneInto(UserAnnouncementRecord.class);
-        announcementRecord.setMessageStatus(USER_MESSAGE_STATUS_ALREADY_READ);
-        announcementRecord.update();
+    public void updateMessageStatus(Integer userId, Byte messageType) {
+        db().update(USER_MESSAGE)
+            .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+            .where(USER_MESSAGE.MESSAGE_TYPE.eq(messageType))
+            .and(USER_MESSAGE.RECEIVER_ID.eq(userId)).execute();
     }
 
 }
