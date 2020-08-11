@@ -10,22 +10,17 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
+import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
+import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorFetchOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +53,8 @@ public class DoctorService extends ShopBaseService {
     public TitleService titleService;
     @Autowired
     public UserDao userDao;
+    @Autowired
+    public UserDoctorAttentionDao userDoctorAttentionDao;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -271,6 +268,10 @@ public class DoctorService extends ShopBaseService {
             List<Integer> departmentDoctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIdsNew);
             doctorParam.setDepartmentDoctorIds(departmentDoctorIds);
         }
+        if (DoctorConstant.ATTENTIONTYPE.equals(doctorParam.getType()) && doctorParam.getUserId() > 0) {
+            List<Integer> userDoctorIds = userDoctorAttentionDao.listDoctorIdsByUser(doctorParam.getUserId());
+            doctorParam.setUserDoctorIds(userDoctorIds);
+        }
         PageResult<DoctorConsultationOneParam> list = doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
         setDoctorDepartmentNames(list.getDataList());
         return list;
@@ -319,5 +320,24 @@ public class DoctorService extends ShopBaseService {
                 item.setDepartmentName(Joiner.on(",").join(departmentList));
             }
         }
+    }
+
+    /**
+     * 新增用户医师关注
+     * @param
+     * @return
+     */
+    public void insertUserDoctor(UserDoctorParam param){
+        UserDoctorAttentionDo userDoctorAttentionDo = new UserDoctorAttentionDo();
+        FieldsUtil.assign(param,userDoctorAttentionDo);
+        userDoctorAttentionDao.insertUserDoctor(userDoctorAttentionDo);
+    }
+
+    /**
+     * 解除用户医师关注
+     * @param param
+     */
+    public void deleteUserDoctor(UserDoctorParam param) {
+        userDoctorAttentionDao.deleteUserDoctor(param);
     }
 }

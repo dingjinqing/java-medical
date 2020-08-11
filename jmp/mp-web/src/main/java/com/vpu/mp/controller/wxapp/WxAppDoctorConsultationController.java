@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorRecommendVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.title.TitleOneParam;
+import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,5 +59,23 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
         data.setDoctorList(doctorList);
         data.setRecommendDepartment(recommendDepartment);
         return success(data);
+    }
+
+    /**
+     * 	取消关注
+     */
+    @PostMapping("/api/wxapp/user/doctor/delete")
+    public JsonResult deleteAttention(@RequestBody UserDoctorParam param) {
+        shop().doctorService.deleteUserDoctor(param);
+        return success();
+    }
+
+    /**
+     * 	添加关注
+     */
+    @PostMapping("/api/wxapp/user/doctor/add")
+    public JsonResult addAttention(@RequestBody UserDoctorParam param) {
+        shop().doctorService.insertUserDoctor(param);
+        return success();
     }
 }
