@@ -12,6 +12,7 @@
           <view class="doctor-info">
             <view class="doctor-desc">
               <text class="doctor-name">{{item.patientName}}</text>
+              <!-- <text class="office" wx:if="{{targetStatus === '1'}}">{{item.departmentName}}</text> -->
               <text class="status {{item.sessionStatus === 2 ? 'ongoing' : 'end'}}" wx:if="{{targetStatus === '2'}}">{{item.sessionStatus === 2 ? '已接诊':'问诊结束'}}</text>
             </view>
             <text class="date">{{item.createTime}}</text>
