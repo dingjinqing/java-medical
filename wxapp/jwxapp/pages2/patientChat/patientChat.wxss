@@ -1,6 +1,7 @@
 /* pages2/patientChat/patientChat.wxss */
 .main-container{
   padding-bottom: 110rpx;
+  min-height: inherit;
 }
 .origin_message {
   max-width: 450rpx;
