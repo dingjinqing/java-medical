@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.records;
 
 import com.vpu.mp.db.shop.tables.Doctor;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -28,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = 361205310;
+    private static final long serialVersionUID = -1608230769;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.id</code>.
@@ -243,15 +244,15 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.consultation_price</code>. 问诊费用
      */
-    public void setConsultationPrice(Long value) {
+    public void setConsultationPrice(BigDecimal value) {
         set(15, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.consultation_price</code>. 问诊费用
      */
-    public Long getConsultationPrice() {
-        return (Long) get(15);
+    public BigDecimal getConsultationPrice() {
+        return (BigDecimal) get(15);
     }
 
     /**
@@ -406,7 +407,7 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
     /**
      * Create a detached, initialised DoctorRecord
      */
-    public DoctorRecord(Integer id, Integer accountId, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, Long consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation) {
+    public DoctorRecord(Integer id, Integer accountId, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation) {
         super(Doctor.DOCTOR);
 
         set(0, id);

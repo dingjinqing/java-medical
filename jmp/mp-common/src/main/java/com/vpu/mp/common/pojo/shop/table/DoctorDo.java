@@ -7,6 +7,7 @@ package com.vpu.mp.common.pojo.shop.table;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -43,7 +44,7 @@ public class DoctorDo   {
     private String    registerHospital;
     private String    mobile;
     private Integer   titleId;
-    private Long      consultationPrice;
+    private BigDecimal consultationPrice;
     private String    treatDisease;
     private Byte      status;
     private Integer   userId;
