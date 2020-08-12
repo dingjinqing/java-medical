@@ -330,6 +330,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 param.getPatientDiagnose().setGestationType(patient.getGestationType());
                 param.getPatientDiagnose().setLiverFunctionOk(patient.getLiverFunctionOk());
                 param.getPatientDiagnose().setKidneyFunctionOk(patient.getKidneyFunctionOk());
+                param.getPatientDiagnose().setIdentityCode(patient.getIdentityCode());
+                param.getPatientDiagnose().setIdentityType(patient.getTreatmentCode());
                 orderMedicalHistoryDao.save(param.getPatientDiagnose());
             }else {
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);

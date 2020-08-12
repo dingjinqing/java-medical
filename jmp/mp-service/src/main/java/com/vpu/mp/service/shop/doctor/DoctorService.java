@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.doctor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
@@ -26,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -338,5 +340,22 @@ public class DoctorService extends ShopBaseService {
      */
     public void deleteUserDoctor(UserDoctorParam param) {
         userDoctorAttentionDao.deleteUserDoctor(param);
+    }
+
+    /**
+     * 更新医师上班状态
+     * @param param
+     * @return int
+     */
+    public void updateOnDuty(DoctorDutyParam param){
+        doctorDao.updateOnDuty(param);
+        if (DoctorConstant.NOTONDUTY.equals(param.getOnDutyStatus())) {
+            param.setOnDutyTime(DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS));
+            doctorDao.updateOnDutyTime(param);
+        }
+    }
+
+    public void onDutyDoctorTask (){
+
     }
 }

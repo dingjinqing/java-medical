@@ -9,10 +9,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
@@ -243,5 +240,27 @@ public class DoctorDao extends ShopBaseDao {
             condition = condition.and(DOCTOR.NAME.like(likeValue(param.getName())));
         }
         return db().select().from(DOCTOR).where(condition).fetchInto(DoctorOneParam.class);
+    }
+
+    /**
+     * 更新医师上班状态
+     * @param param
+     * @return int
+     */
+    public int updateOnDuty(DoctorDutyParam param){
+        return db().update(DOCTOR).set(DOCTOR.IS_ON_DUTY, param.getOnDutyStatus())
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+            .execute();
+    }
+
+    /**
+     * 更新医师上班状态
+     * @param param
+     * @return int
+     */
+    public int updateOnDutyTime(DoctorDutyParam param){
+        return db().update(DOCTOR).set(DOCTOR.ON_DUTY_TIME, param.getOnDutyTime())
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+            .execute();
     }
 }

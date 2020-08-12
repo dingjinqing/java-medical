@@ -102,7 +102,9 @@ global.wxPage({
         doctorId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
         prescriptionOldCode,
         auditStatus:auditStatus[type],
-        doctorAdvice
+        doctorAdvice,
+        reasonDesc: this.data.rejectReason,
+        reasonType: 5
       })
     },true,'取消',tipsInfo[type][1])
   },

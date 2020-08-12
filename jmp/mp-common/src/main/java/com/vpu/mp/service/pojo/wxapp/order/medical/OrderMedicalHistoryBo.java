@@ -25,6 +25,18 @@ public class OrderMedicalHistoryBo {
      */
     private Integer age;
     /**
+     *证件号
+     */
+    private String identityCode;
+    /**
+     *证件类型
+     */
+    private String identityType;
+    /**
+     *就诊卡号
+     */
+    private String patientTreatmentCode;
+    /**
      * 患者主诉
      */
     private String patientComplain;
