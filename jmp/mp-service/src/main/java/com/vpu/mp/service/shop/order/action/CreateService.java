@@ -8,6 +8,8 @@ import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -189,6 +191,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private UploadPrescriptionService uploadPrescriptionService;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
+    @Autowired
+    private PrescriptionItemDao prescriptionItemDao;
     /**
      * 营销活动processorFactory
      */
@@ -324,6 +330,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 param.getPatientDiagnose().setGestationType(patient.getGestationType());
                 param.getPatientDiagnose().setLiverFunctionOk(patient.getLiverFunctionOk());
                 param.getPatientDiagnose().setKidneyFunctionOk(patient.getKidneyFunctionOk());
+                param.getPatientDiagnose().setIdentityCode(patient.getIdentityCode());
+                param.getPatientDiagnose().setIdentityType(patient.getTreatmentCode());
                 orderMedicalHistoryDao.save(param.getPatientDiagnose());
             }else {
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
@@ -537,6 +545,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(OrderConstant.CART_Y.equals(param.getIsCart())) {
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
+        }else if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param.getIsPrescription())){
+            //初始化处方商品
+            param.setGoods(prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode()));
         }
     }
 

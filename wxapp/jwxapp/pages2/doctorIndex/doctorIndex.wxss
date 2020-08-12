@@ -13,7 +13,7 @@
   padding: 36rpx 24rpx;
   box-sizing: border-box;
   border-radius: 16rpx 16rpx 0 0;
-  /* background: #fff; */
+ position: relative;
   background: #fff url(http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_bg.png) no-repeat right top/ 60% 100% ;
 }
 .doc_img{
@@ -199,7 +199,64 @@
 .gray{
   color: #999;
 }
-
-
-
+.if_work{
+  background: #fff;
+  position: absolute;
+  border: 1rpx solid;
+  border-radius: 25rpx;
+  width: 150rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  font-size: 24rpx;
+  text-align: center;
+  right: 25rpx;
+  top: 20rpx;
+}
+.begin_work{
+  color: #26C4BC;
+  border-color: #26C4BC;
+}
+.stop_work{
+  color: #999;
+  border-color: #ccc;
+}
+.work_modal{
+  position: absolute;
+  top: 500rpx;
+  width: 630rpx;
+  left: 60rpx;
+  z-index: 11;
+}
+.work_content{
+  width: 600rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding-left: 30rpx;
+}
+.dm_line{
+  padding: 50rpx 30rpx 50rpx 0;
+  display: flex;
+  justify-content:flex-start;
+}
+.dm_line:first-of-type{
+  border-bottom: 1rpx solid #eee;
+}
+.dm_line image{
+  width: 100rpx;
+  height: 100rpx;
+  margin-right: 55rpx;
+}
+.dm_word{
+  font-size: 30rpx;
+  color: #999;
+  height: 100rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.bold_word{
+  font-weight: bold;
+  font-size: 36rpx;
+  color: #333;
+}
 
