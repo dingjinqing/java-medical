@@ -154,7 +154,7 @@ public class PatientService extends BaseShopConfigService{
         requestParam.setMobile(userPatientOneParam.getMobile());
         String requestJson=Util.toJson(requestParam);
         ApiExternalRequestResult apiExternalRequestResult=saas().apiExternalRequestService.externalRequestGate(ApiExternalRequestConstant.APP_ID_HIS,shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_PATIENT_INFO,requestJson);
-        if(ApiExternalRequestConstant.ERROR_CODE.equals(apiExternalRequestResult.getError())) {
+        if(!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
             JsonResult result = new JsonResult();
             result.setError(apiExternalRequestResult.getError());
             result.setMessage(apiExternalRequestResult.getMsg());

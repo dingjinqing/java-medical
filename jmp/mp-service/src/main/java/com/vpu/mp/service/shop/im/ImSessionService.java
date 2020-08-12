@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.im;
 
 import com.vpu.mp.common.foundation.data.ImSessionConstant;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.Page;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.ImSessionItemDo;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
@@ -552,6 +549,20 @@ public class ImSessionService extends ShopBaseService {
      */
     private String getSessionRedisStatusKey(Integer shopId, Integer sessionId) {
         return String.format(JedisKeyConstant.IM_SESSION_STATUS, shopId, sessionId);
+    }
+
+    /**
+     * 获取历史聊天记录
+     * @param param
+     * @return
+     */
+    public PageResult<ImSessionItemRenderVo> getSessionHistory( ImSessionQueryPageListParam param){
+        ImSessionDo imSessionDo=imSessionDao.getByOrderSn(param.getOrderSn());
+        ImSessionRenderPageParam renderPageParam=new ImSessionRenderPageParam();
+        FieldsUtil.assign(param,renderPageParam);
+        renderPageParam.setSessionId(imSessionDo.getId());
+        PageResult<ImSessionItemRenderVo>  pageResult = renderSession(renderPageParam);
+        return pageResult;
     }
 
 }
