@@ -37,17 +37,10 @@
           v-else
         >
           <img :src="listItem.imgUrl">
-          <span slot="title">{{listItem.name | getNavName}}</span>
-          <el-menu-item-group
-            v-if="listItem.children && listItem.children.length"
-            title="分组2"
-          >
-            <el-menu-item
-              :index="listIndex + '-' + childrenIndex"
-              v-for="(childrenItem,childrenIndex) in listItem.children"
-              :key="childrenIndex"
-            >{{listItem.name | getNavName}}</el-menu-item>
-          </el-menu-item-group>
+          <span
+            slot="title"
+            v-if="!listItem.onlyPic"
+          >{{listItem.name | getNavName}}</span>
         </el-menu-item>
       </template>
 
@@ -56,6 +49,7 @@
 </template>
 
 <script>
+import { jurisdictionQueryRequest } from '@/api/admin/jurisdiction'
 import vm from '@/main'
 export default {
   data () {
@@ -394,6 +388,7 @@ export default {
           imgUrl: this.$imageHost + '/image/admin/new_market/tj.png',
           imgUrl_h: this.$imageHost + '/image/admin/new_market/tj.png',
           path: '/admin/home/main/first_market_manage',
+          onlyPic: true,
           span: '',
           name: 'first_market_manage',
           flag: true
@@ -688,7 +683,8 @@ export default {
           name: 'prescriptionList',
           flag: true
         }
-      ]
+      ],
+      menuParam: null
     }
   },
   watch: {
@@ -699,12 +695,37 @@ export default {
       immediate: true
     }
   },
+  created () {
+    this.filterNavShow()
+  },
   mounted () {
   },
   methods: {
-    initLeftNav (meta) {
+    async initLeftNav (meta) {
+      if (!this.menuParam) await this.filterNavShow()
       if (!this.hasOwnProperty(meta)) return
       this.defaultList = this[meta]
+    },
+    filterNavShow () {
+      return new Promise((resolve, reject) => {
+        jurisdictionQueryRequest().then(({ content: { menuParam } }) => {
+          this.menuParam = menuParam
+          Object.keys(menuParam).forEach(keyItem => {
+            if (!this.hasOwnProperty(keyItem)) return
+            this[keyItem] = this[keyItem].reduce((defaultData, item) => {
+              if (item.children && item.children.length) {
+                item.children = item.children.reduce((childrenDefault, childrenItem) => {
+                  if (menuParam[keyItem].includes(childrenItem.name)) childrenDefault.push(childrenItem)
+                  return childrenDefault
+                }, [])
+              }
+              if (menuParam[keyItem].includes(item.name)) defaultData.push(item)
+              return defaultData
+            }, [])
+          })
+          resolve()
+        })
+      })
     },
     handleOpen (key, keyPath) {
 

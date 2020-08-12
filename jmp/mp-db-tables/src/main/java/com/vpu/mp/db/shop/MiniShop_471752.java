@@ -1100,6 +1100,14 @@ public class MiniShop_471752 extends SchemaImpl {
      * 用户公告关联表
      */
     public final UserAnnouncement USER_ANNOUNCEMENT = com.vpu.mp.db.shop.tables.UserAnnouncement.USER_ANNOUNCEMENT;
+    /**
+     * 用户关注医师
+     */
+    public final UserDoctorAttention USER_DOCTOR_ATTENTION = UserDoctorAttention.USER_DOCTOR_ATTENTION;
+    /**
+     * 医师上下班记录表
+     */
+    public final DoctorDutyRecord DOCTOR_DUTY_RECORD = com.vpu.mp.db.shop.tables.DoctorDutyRecord.DOCTOR_DUTY_RECORD;
 
 
 
@@ -1345,7 +1353,8 @@ public class MiniShop_471752 extends SchemaImpl {
             OrderMedicalHistory.ORDER_MEDICAL_HISTORY,
             DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE,
             UserAnnouncement.USER_ANNOUNCEMENT,
-            UserDoctorAttention.USER_DOCTOR_ATTENTION);
+            UserDoctorAttention.USER_DOCTOR_ATTENTION,
+            DoctorDutyRecord.DOCTOR_DUTY_RECORD);
 
 
     }

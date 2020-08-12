@@ -1,5 +1,10 @@
 package com.vpu.mp.common.pojo.shop.table;
 
+/**
+ * @author chenjie
+ * @date 2020年08月12日
+ */
+
 import lombok.Data;
 
 import javax.annotation.Generated;
@@ -7,11 +12,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
- * @author chenjie
- * @date 2020年08月11日
- */
-/**
- * 医师关注表
+ * 医师上下班记录表
  */
 @Generated(
     value = {
@@ -22,13 +23,13 @@ import java.sql.Timestamp;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Data
-public class UserDoctorAttentionDo implements Serializable {
-    private static final long serialVersionUID = 1028816799;
+public class DoctorDutyRecordDo implements Serializable {
+    private static final long serialVersionUID = -1384343343;
 
     private Integer   id;
-    private Integer   userId;
     private Integer   doctorId;
-    private Byte      isDelete;
+    private Byte      dutyStatus;
+    private Byte      type;
     private Timestamp createTime;
     private Timestamp updateTime;
 }

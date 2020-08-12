@@ -1188,5 +1188,9 @@ public class Tables {
      * 用户关注医师
      */
     public static final UserDoctorAttention USER_DOCTOR_ATTENTION = com.vpu.mp.db.shop.tables.UserDoctorAttention.USER_DOCTOR_ATTENTION;
+    /**
+     * 医师上下班记录表
+     */
+    public static final DoctorDutyRecord DOCTOR_DUTY_RECORD = com.vpu.mp.db.shop.tables.DoctorDutyRecord.DOCTOR_DUTY_RECORD;
 
 }
