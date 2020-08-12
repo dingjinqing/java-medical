@@ -592,6 +592,11 @@ public class OrderConstant {
         return RETRURN_REASON_TYPE_DESC[index];
     }
 
+	/**
+	 * 退款原因类型 医师审核未通过
+	 */
+	public static final Byte RETRURN_REASON_TYPE_DOCTOR_AUDIT = 6;
+
     /**
      * 订单综合查询排序规则ORDER_QUERY_SORT_RULE
      */
