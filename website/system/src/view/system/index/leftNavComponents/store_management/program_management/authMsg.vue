@@ -255,8 +255,8 @@
                             {{$t('programVersion.PaymentMethod')}}:
                           </td>
                           <td>
-                            <span v-if="dataList.isSubMerchant===0">{{$t('programVersion.SubMerchantModel')}}</span>
-                            <span v-if="dataList.isSubMerchant===1">{{$t('programVersion.NonSubMerchants')}}</span>
+                            <span v-if="dataList.isSubMerchant===0">{{$t('programVersion.NonSubMerchants')}}</span>
+                            <span v-if="dataList.isSubMerchant===1">{{$t('programVersion.SubMerchantModel')}}</span>
                             <span v-if="dataList.isSubMerchant===2">{{$t('programVersion.WeipuBaoziMerchants')}}</span>
                             <span v-if="dataList.isSubMerchant===3">{{$t('programVersion.UnicomPaymentSubmerchants')}}</span>
                           </td>

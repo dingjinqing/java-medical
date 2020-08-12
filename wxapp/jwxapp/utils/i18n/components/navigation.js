@@ -141,5 +141,6 @@ module.exports = {
     "prescribe":"待开方",
     "addPatientMessage":"患者信息",
     "doctorSearch":"医师咨询",
+    "doctorComment":"医师评价",
   }
 }

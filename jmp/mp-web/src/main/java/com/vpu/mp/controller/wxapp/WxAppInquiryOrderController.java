@@ -33,7 +33,11 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
         WxAppSessionUser user = wxAppAuth.user();
         payParam.setUser(user);
         payParam.setClientIp(RequestUtil.getIp(request));
-        return success(shop().inquiryOrderService.payInquiryOrder(payParam));
+        try {
+            return success(shop().inquiryOrderService.payInquiryOrder(payParam));
+        } catch (MpException e) {
+            return fail(e.getErrorCode());
+        }
     }
     /**
      * 问诊订单退款

@@ -19,7 +19,10 @@ global.wxPage({
       currentPage:1,
       pageRows:20
     },
-    firstLoad:true
+    firstLoad:true,
+    scrollTop: 0,
+    arrive_bottom: true,
+    allHeight: 0
   },
 
   /**
@@ -34,6 +37,7 @@ global.wxPage({
       page_name:JSON.parse(targetUserInfo).patientName,
       source
     })
+    this.setViewHeight()
   },
   getInputMessage(e) {
     let {
@@ -115,6 +119,10 @@ global.wxPage({
         this.setData({
           chatContent:[...this.data.chatContent,...newChatContent]
         })
+        if(this.data.arrive_bottom == true){
+          this.pageScrollBottom()
+       }
+       this.getScrollHeight()
     }
     }, {
       sessionId:this.data.targetUserInfo.id,
@@ -216,13 +224,29 @@ global.wxPage({
     },true,'再想想','继续')
   },
   pageScrollBottom() {
-    wx.createSelectorQuery().select('.main-container').boundingClientRect(function (rect) {
-      console.log(rect);
-      wx.pageScrollTo({
-        scrollTop: rect.height,
-      });
-    }).exec()
+    let that = this;
+    that.getRectHeight()
   },
+
+  startScroll(e) {
+    let that = this;
+    let scrollHeight = e.detail.scrollTop + that.data.scrollViewHeight - 10; //20是margin的大概差值
+    let allHeight = that.data.scrollHeight;
+    let arrive_bottom = that.data.arrive_bottom;
+    console.log(scrollHeight, allHeight)
+    if (scrollHeight >= allHeight) {
+      if (arrive_bottom == true) return
+      that.setData({
+        arrive_bottom: true
+      })
+    } else {
+      if (arrive_bottom == false) return
+      that.setData({
+        arrive_bottom: false
+      })
+    }
+  },
+
   handleShowPrescriptionDialog(e){
     let {prescriptionCode} = e.currentTarget.dataset
     util.api('/api/wxapp/prescription/details',res=>{
@@ -239,6 +263,7 @@ global.wxPage({
   async requestHistoryChat(){
     if(this.data.firstLoad) await this.historyChatApi()
     this.requsetMessage()
+    this.pageScrollBottom()
   },
   historyChatApi(){
     return new Promise((resolve,reject)=>{
@@ -274,5 +299,38 @@ global.wxPage({
     wx.previewImage({
       urls
     })
+  },
+  setViewHeight() {
+    let win_h = wx.getSystemInfoSync().windowHeight;
+    let navigation_h;
+    if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
+      navigation_h = wx.getMenuButtonBoundingClientRect().bottom + 8
+    } else {
+      wx.getSystemInfo({
+        success: (res) => {
+          navigation_h = res.statusBarHeight * 3 + 8
+        }
+      })
+    }
+    this.setData({
+      scrollViewHeight: win_h - navigation_h - 110,
+    });
+  },
+  getRectHeight() {
+    let that = this
+      wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
+        that.setData({
+          allHeight: reda[0].height,
+          scrollHeight:reda[0].height
+        })
+      })
+  },
+  getScrollHeight(){
+    let that = this
+      wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
+        that.setData({
+          scrollHeight:reda[0].height
+        })
+      })
   }
 })

@@ -28,14 +28,6 @@ global.wxComponent({
     ready() {
       let that = this;
       that.initAvatar()
-      let query = wx.createSelectorQuery().in(that)
-      let windowHeight = wx.getSystemInfoSync().windowHeight;
-      query.select('#con_'+that.data.idx).boundingClientRect(function (rect) {
-        console.log(rect);
-        if(rect && rect.top <  windowHeight){
-          that.triggerEvent('pageScrollBottom')
-        }
-      }).exec()
     }
   },
   /**
