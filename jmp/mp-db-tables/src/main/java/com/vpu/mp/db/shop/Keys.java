@@ -585,6 +585,7 @@ public class Keys {
     public static final UniqueKey<OrderMedicalHistoryRecord> KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_MEDICAL_HISTORY_PRIMARY;
     public static final UniqueKey<UserAnnouncementRecord> KEY_B2C_USER_ANNOUNCEMENT_PRIMARY = UniqueKeys0.KEY_B2C_USER_ANNOUNCEMENT_PRIMARY;
     public static final UniqueKey<UserDoctorAttentionRecord> KEY_B2C_USER_DOCTOR_ATTENTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_DOCTOR_ATTENTION_PRIMARY;
+    public static final UniqueKey<DoctorDutyRecordRecord> KEY_B2C_DOCTOR_DUTY_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_DUTY_RECORD_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
