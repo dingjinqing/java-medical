@@ -224,7 +224,7 @@ public class DoctorService extends ShopBaseService {
         // 查询是否有当前医师信息
         DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
         // 如果医师存在且没有被认证过
-        if (doctorDo != null && doctorDo.getUserId() == null) {
+        if (doctorDo != null && doctorDo.getUserId() == null && doctorDo.getUserId() == 0) {
             this.transaction(() -> {
                 // 修改user表中用户类型为医师
                 userDao.updateDoctorAuth(doctorAuthParam.getUserId());
