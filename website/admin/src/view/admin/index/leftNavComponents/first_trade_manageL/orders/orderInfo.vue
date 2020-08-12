@@ -138,7 +138,7 @@
                   <td
                     v-if="index === 0"
                     :rowspan="item.goods.length"
-                  >{{item.confirmTime}}</td>
+                  >{{order.confirmTime}}</td>
                 </template>
                 <template v-else>
                   <th width="100px">{{order.storeId}}</th>

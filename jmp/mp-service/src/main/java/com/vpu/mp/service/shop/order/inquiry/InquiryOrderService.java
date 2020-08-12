@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.inquiry;
 
 import cn.hutool.core.date.DateUtil;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
@@ -16,6 +17,7 @@ import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
@@ -191,7 +193,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param param
      * @return
      */
-    public WebPayVo payInquiryOrder(InquiryToPayParam param){
+    public WebPayVo payInquiryOrder(InquiryToPayParam param) throws MpException{
         logger().info("创建问诊订单-开始");
         WebPayVo vo = new WebPayVo();
         //支付类型
@@ -201,22 +203,22 @@ public class InquiryOrderService extends ShopBaseService {
         UserRecord userRecord=userService.getUserByUserId(param.getUser().getUserId());
 
         //微信支付接口
-//        try {
-//            vo = mpPaymentService.wxUnitOrder(param.getClientIp(), InquiryOrderConstant.GOODS_NAME, orderSn, param.getOrderAmount(), userRecord.getWxOpenid());
-//        } catch (WxPayException e) {
-//            logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderSn, e);
-//            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-//        }catch (Exception e) {
-//            logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderSn, e.getMessage());
-//            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-//        }
+        try {
+            vo = mpPaymentService.wxUnitOrder(param.getClientIp(), InquiryOrderConstant.GOODS_NAME, orderSn, param.getOrderAmount(), userRecord.getWxOpenid());
+        } catch (WxPayException e) {
+            logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderSn, e);
+            throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+        }catch (MpException e) {
+            logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderSn, e.getMessage());
+            throw new MpException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+        }
         logger().debug("微信支付接口调用结果：{}", vo);
         // 更新记录微信预支付id：prepayid
-//        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
+        inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
         vo.setOrderSn(orderSn);
         InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
         //临时添加支付回调，正式使用删除
-        inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
+//        inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         logger().debug("微信支付创建订单结束");
         //添加会话问诊
         ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
