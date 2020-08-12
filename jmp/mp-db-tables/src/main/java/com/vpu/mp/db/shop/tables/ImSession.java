@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImSession extends TableImpl<ImSessionRecord> {
 
-    private static final long serialVersionUID = -742213039;
+    private static final long serialVersionUID = -286659879;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_im_session</code>
@@ -59,7 +59,7 @@ public class ImSession extends TableImpl<ImSessionRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_im_session.department_id</code>. 科室id
      */
-    public final TableField<ImSessionRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "科室id");
+    public final TableField<ImSessionRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "科室id");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session.user_id</code>. 小程序发起会话用户id
@@ -72,9 +72,14 @@ public class ImSession extends TableImpl<ImSessionRecord> {
     public final TableField<ImSessionRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "本次诊疗的患者id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_im_session.session_status</code>. 会话状态 0医师待接诊，1会话中，2会话取消，3会话结束
+     * The column <code>mini_shop_471752.b2c_im_session.session_status</code>. 会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束，5续诊，6会话终止
      */
-    public final TableField<ImSessionRecord, Byte> SESSION_STATUS = createField("session_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "会话状态 0医师待接诊，1会话中，2会话取消，3会话结束");
+    public final TableField<ImSessionRecord, Byte> SESSION_STATUS = createField("session_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束，5续诊，6会话终止");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_im_session.continue_session_count</code>. 可继续问诊次数
+     */
+    public final TableField<ImSessionRecord, Integer> CONTINUE_SESSION_COUNT = createField("continue_session_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "可继续问诊次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session.order_sn</code>. 会话关联的订单sn
@@ -84,7 +89,12 @@ public class ImSession extends TableImpl<ImSessionRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_im_session.limit_time</code>. 医生接诊后会话截止时间点
      */
-    public final TableField<ImSessionRecord, Timestamp> LIMIT_TIME = createField("limit_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "医生接诊后会话截止时间点");
+    public final TableField<ImSessionRecord, Timestamp> LIMIT_TIME = createField("limit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "医生接诊后会话截止时间点");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_im_session.weight_factor</code>. 权重因子,用于不同状态排序使用
+     */
+    public final TableField<ImSessionRecord, Byte> WEIGHT_FACTOR = createField("weight_factor", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "权重因子,用于不同状态排序使用");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session.is_delete</code>. 删除标记

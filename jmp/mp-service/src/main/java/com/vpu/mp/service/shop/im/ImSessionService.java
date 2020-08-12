@@ -12,7 +12,6 @@ import com.vpu.mp.dao.shop.session.ImSessionItemDao;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.department.DepartmentSimpleVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
@@ -62,14 +61,12 @@ public class ImSessionService extends ShopBaseService {
     public PageResult<ImSessionListVo> pageList(ImSessionPageListParam param) {
         PageResult<ImSessionListVo> pageResult = imSessionDao.pageList(param);
         List<ImSessionListVo> dataList = pageResult.getDataList();
-        List<Integer> departmentIds = new ArrayList<>(dataList.size() / 2);
         List<Integer> doctorIds = new ArrayList<>(dataList.size() / 2);
         List<Integer> patientIds = new ArrayList<>(dataList.size());
 
         Integer shopId = getShopId();
         Map<Integer, String> imSessionRedisKeyMap = new HashMap<>(dataList.size());
         for (ImSessionListVo imSession : dataList) {
-            departmentIds.add(imSession.getDepartmentId());
             patientIds.add(imSession.getPatientId());
             doctorIds.add(imSession.getDoctorId());
             // 准备处理未读消息，医师端展示对应会话信息
@@ -80,12 +77,10 @@ public class ImSessionService extends ShopBaseService {
             }
         }
 
-        Map<Integer, String> departmentIdMap = departmentService.listDepartmentInfo(departmentIds).stream().collect(Collectors.toMap(DepartmentSimpleVo::getId, DepartmentSimpleVo::getName, (x1, x2) -> x2));
         Map<Integer, String> patientIdMap = patientService.listPatientInfo(patientIds).stream().collect(Collectors.toMap(PatientSimpleInfoVo::getId, PatientSimpleInfoVo::getName, (x1, x2) -> x2));
         Map<Integer, String> doctorIdMap = doctorService.listDoctorSimpleInfo(doctorIds).stream().collect(Collectors.toMap(DoctorSimpleVo::getId, DoctorSimpleVo::getName, (x1, x2) -> x2));
 
         for (ImSessionListVo imSession : dataList) {
-            imSession.setDepartmentName(departmentIdMap.get(imSession.getDepartmentId()));
             imSession.setPatientName(patientIdMap.get(imSession.getPatientId()));
             imSession.setDoctorName(doctorIdMap.get(imSession.getDoctorId()));
             String sessionKey = imSessionRedisKeyMap.get(imSession.getId());
@@ -296,8 +291,11 @@ public class ImSessionService extends ShopBaseService {
         imSessionDo.setPatientId(param.getPatientId());
         imSessionDo.setOrderSn(param.getOrderSn());
         imSessionDo.setSessionStatus(ImSessionConstant.SESSION_READY_TO_START);
-
+        imSessionDo.setWeightFactor(ImSessionConstant.SESSION_READY_TO_START_WEIGHT);
+        // 可从结束状态转变为继续问诊次数
+        imSessionDo.setContinueSessionCount(ImSessionConstant.CONTINUE_SESSION_TIME);
         imSessionDao.insert(imSessionDo);
+
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), imSessionDo.getId());
         jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_READY_TO_START.toString());
         return imSessionDo.getId();
@@ -314,36 +312,24 @@ public class ImSessionService extends ShopBaseService {
             return;
         }
         Byte prevStatus = imSessionDo.getSessionStatus();
-        imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
         imSessionDo.setLimitTime(DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS));
-        imSessionDao.update(imSessionDo);
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
-        jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
-        // 回复会话消息
-        if (!ImSessionConstant.SESSION_READY_TO_START.equals(prevStatus)){
-            extractSessionFromDb(sessionId);
+
+        if (ImSessionConstant.SESSION_READY_TO_START.equals(prevStatus)) {
+            // 状态从1->2
+            jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
+            imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
+            imSessionDo.setWeightFactor(ImSessionConstant.SESSION_ON_WEIGHT);
+        } else {
+            // 从结束状态变为继续问诊状态 4->5
+            jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_CONTINUE_ON.toString());
+            imSessionDo.setSessionStatus(ImSessionConstant.SESSION_CONTINUE_ON);
+            imSessionDo.setWeightFactor(ImSessionConstant.SESSION_CONTINUE_ON_WEIGHT);
+            imSessionDo.setContinueSessionCount(imSessionDo.getContinueSessionCount()-1);
         }
+        imSessionDao.update(imSessionDo);
     }
 
-    /**
-     * 从数据库将会话信息回复至redis
-     * @param sessionId
-     */
-    private void extractSessionFromDb(Integer sessionId){
-        List<ImSessionItemDo> imSessionItemDos = imSessionItemDao.getBySessionId(sessionId);
-        
-        List<String> sessionBakJsons = new ArrayList<>(imSessionItemDos.size());
-        for (ImSessionItemDo imSessionItemDo : imSessionItemDos) {
-            ImSessionItemBo bo = new ImSessionItemBo();
-            bo.setFromId(imSessionItemDo.getFromId());
-            bo.setToId(imSessionItemDo.getToId());
-            bo.setMessage(imSessionItemDo.getMessage());
-            bo.setType(imSessionItemDo.getType());
-            bo.setSendTime(imSessionItemDo.getSendTime());
-            sessionBakJsons.add(Util.toJson(bo));
-        }
-        jedisManager.lpush(getSessionRedisKeyBak(getShopId(),sessionId),sessionBakJsons);
-    }
 
     /**
      * 批量取消未接诊过期的会话
@@ -360,7 +346,7 @@ public class ImSessionService extends ShopBaseService {
             sessionIds.add(imSessionDo.getId());
         }
 
-        imSessionDao.batchUpdateSessionStatus(sessionIds, ImSessionConstant.SESSION_CANCEL);
+        imSessionDao.batchUpdateSessionStatus(sessionIds, ImSessionConstant.SESSION_CANCEL,ImSessionConstant.SESSION_CANCEL_WEIGHT);
     }
 
     /**
@@ -371,12 +357,19 @@ public class ImSessionService extends ShopBaseService {
         cancelCondition.setOrderSns(orderSns);
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(cancelCondition);
         Integer shopId = getShopId();
-        List<Integer> sessionIds = new ArrayList<>(imSessionDos.size());
+        List<Integer> sessionDeadIds = new ArrayList<>(imSessionDos.size());
+        List<Integer> sessionCloseIds = new ArrayList<>(imSessionDos.size());
+
         for (ImSessionDo imSessionDo : imSessionDos) {
-            clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
-            sessionIds.add(imSessionDo.getId());
+            if (imSessionDo.getContinueSessionCount() == 0) {
+                sessionDeadIds.add(imSessionDo.getId());
+                clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
+            } else {
+                sessionCloseIds.add(imSessionDo.getId());
+            }
         }
-        imSessionDao.batchUpdateSessionStatus(sessionIds, ImSessionConstant.SESSION_END);
+        imSessionDao.batchUpdateSessionStatus(sessionDeadIds, ImSessionConstant.SESSION_DEAD,ImSessionConstant.SESSION_DEAD_WEIGHT);
+        imSessionDao.batchUpdateSessionStatus(sessionCloseIds, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGTH);
     }
 
     /**
@@ -388,8 +381,13 @@ public class ImSessionService extends ShopBaseService {
         if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
             return;
         }
-        clearSessionRedisInfoAndDumpToDb(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
-        imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END);
+        if (imSessionDo.getContinueSessionCount() == 0) {
+            clearSessionRedisInfoAndDumpToDb(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
+            imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_DEAD,ImSessionConstant.SESSION_DEAD_WEIGHT);
+        } else {
+            imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGTH);
+        }
+
     }
 
     /**

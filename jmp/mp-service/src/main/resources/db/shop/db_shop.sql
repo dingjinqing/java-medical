@@ -5020,10 +5020,12 @@ create TABLE `b2c_im_session`(
     `department_id` int(11) NOT NULL DEFAULT 0 COMMENT '科室id',
     `user_id` int(11) NOT NULL COMMENT '小程序发起会话用户id',
     `patient_id`  int(11) NOT NULL COMMENT '本次诊疗的患者id',
-    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束',
+    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束，5续诊，6会话终止',
+    `continue_session_count` int(11) NOT NULL DEFAULT 0 COMMENT '可继续问诊次数',
     `order_sn` varchar(32)  NOT NULL COMMENT '会话关联的订单sn',
     `limit_time` timestamp  COMMENT '医生接诊后会话截止时间点',
-    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+    `weight_factor` tinyint(1) NOT NULL DEFAULT 0 COMMENT '权重因子,用于不同状态排序使用',
+    `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标记',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     primary key (`id`)
@@ -5037,6 +5039,7 @@ create TABLE `b2c_im_session_item`(
     `to_id` int(11) COMMENT '本跳消息接收者id  医师id或用户userId',
     `message` varchar(2048) COMMENT '本条消息内容',
     `type` tinyint(1) COMMENT '消息类型 0文本 1图片 2处方 3患者病历简略信息',
+    `is_leaving_message` tinyint(1) COMMENT '是否是留言信息 0否 1是',
     `send_time` timestamp COMMENT '用户消息发送时间',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     primary key (`id`)

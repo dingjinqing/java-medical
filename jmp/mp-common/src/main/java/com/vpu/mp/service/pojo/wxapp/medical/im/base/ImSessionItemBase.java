@@ -17,4 +17,7 @@ public class ImSessionItemBase {
     private Byte type;
 
     private Timestamp sendTime;
+
+    /**是否是留言信息*/
+    private Byte isleavingMessage;
 }
