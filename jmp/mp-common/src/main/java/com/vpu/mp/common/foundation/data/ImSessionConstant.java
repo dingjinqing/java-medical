@@ -70,5 +70,16 @@ public class ImSessionConstant {
     /**会话不可用 不可发消息*/
     public static final Byte SESSION_CAN_NOT_USE = 0;
 
-
+    /**
+     * 文本
+     */
+    public static final Byte SESSION_ITEM_TYPE_TEXT = 0;
+    /**
+     * 图片
+     */
+    public static final Byte SESSION_ITEM_TYPE_PICTURE = 1;
+    /**
+     * 处方
+     */
+    public static final Byte SESSION_ITEM_TYPE_PRESCRIPTION = 2;
 }
