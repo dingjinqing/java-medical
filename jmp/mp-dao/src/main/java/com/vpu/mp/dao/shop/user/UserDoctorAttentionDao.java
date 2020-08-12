@@ -3,6 +3,7 @@ package com.vpu.mp.dao.shop.user;
 import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.UserDoctorAttentionRecord;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorDutyParam;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import org.springframework.stereotype.Repository;
 
