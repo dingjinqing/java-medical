@@ -113,7 +113,7 @@ global.wxPage({
     if (selected) {
       cacheGoodsIdList.push(Target.goodsId)
       cachePageGoodsList.push(Target)
-      cacheGoodsIdNum.push({ goodsId: Target.goodsId, dragSumNum: Target.cartNumber })
+      cacheGoodsIdNum.push({ goodsId: Target.goodsId, dragSumNum: Target.cartNumber, prdId:Target.goodsSpecProducts[0].prdId })
       this.setData({
         cacheGoodsIdList,
         cachePageGoodsList,
