@@ -3,7 +3,7 @@
     <div class="since-info">
       <div class="since-info-top">
         <span>{{$t('order.orderSn')}}：{{searchParam.orderSn}}</span>
-        <span>{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</span>
+        <span>{{$t('order.orderStatusText')}}：{{showOrderStatusMap.get(order.orderStatus)}}</span>
       </div>
       <div class="order-status-bar">
         <template v-for="(item,index) in timeFlowDiagramMapping[statusKey]">
@@ -20,7 +20,7 @@
         <div class="order_info">
           <div class="title">{{$t('order.orderInfo')}}</div>
           <div class="item_box">
-            <div class="item">{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</div>
+            <div class="item">{{$t('order.orderStatusText')}}：{{showOrderStatusMap.get(order.orderStatus)}}</div>
             <div class="item">{{$t('order.orderAmount')}}：
               <template v-if="goodsTypeArray.indexOf($t('order.goodsTypeList')[5][0].toString()) > -1">
                 {{order.moneyPaid.toFixed(2)}}{{currencyPool[order.currency][lang][0]}} +
@@ -465,7 +465,7 @@
                         </template>
                       </template>
                       <template v-else>
-                        {{orderStatusMap.get(order.orderStatus)}}
+                        {{showOrderStatusMap.get(order.orderStatus)}}
                       </template>
                     </template>
                     <template v-else>
@@ -847,6 +847,7 @@ export default {
         orderSn: null
       },
       orderStatusMap: {},
+      showOrderStatusMap: {},
       goodsTypeMap: {},
       deliverTypeMap: {},
       paymentTypeMap: {},
@@ -921,6 +922,7 @@ export default {
     arrayToMap () {
       this.returnTypeMap = new Map(this.$t('order.returnTypeList'))
       this.orderStatusMap = new Map(this.$t('order.orderStatusFilterList'))
+      this.showOrderStatusMap = new Map(this.$t('order.showOrderStatus'))
       this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
       this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
       this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))

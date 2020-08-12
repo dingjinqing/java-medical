@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.message;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.UserAnnouncementDo;
@@ -164,8 +165,12 @@ public class UserMessageService extends ShopBaseService {
                 if (imSessionBySessionId == null) {
                     UserMessageParam userMessageParam = new UserMessageParam();
                     userMessageParam.setMessageType(USER_MESSAGE_CHAT);
-                    userMessageParam.setMessageContent(imSessionUnReadInfoVo.getMessageInfos()
-                        .get(imSessionUnReadInfoVo.getMessageInfos().size() - 1).getMessage());
+
+                    String message = imSessionUnReadInfoVo.getMessageInfos().get(0).getMessage();
+                    MessageContent messageContent = Util.json2Object(message, MessageContent.class, false);
+                    assert messageContent != null;
+                    userMessageParam.setMessageContent(messageContent.getContent());
+
                     userMessageParam.setMessageRelevanceId(imSessionUnReadInfoVo.getSessionId());
                     userMessageParam.setSenderId(imSessionUnReadInfoVo.getDoctorId());
                     userMessageParam.setReceiverId(imSessionUnReadMessageInfoParam.getUserId());

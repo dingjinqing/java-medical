@@ -111,6 +111,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
                     goodsMedicalOneInfoVo.setShopPrice(goodsDo.getShopPrice());
                     goodsMedicalOneInfoVo.setGoodsImg(goodsDo.getGoodsImg());
                     goodsMedicalOneInfoVo.setGoodsNumber(orderGoodsDo.getGoodsNumber());
+                    goodsMedicalOneInfoVo.setPrdId(orderGoodsDo.getProductId());
                     goodsMedicalOneInfoVoList.add(goodsMedicalOneInfoVo);
                 }
 
