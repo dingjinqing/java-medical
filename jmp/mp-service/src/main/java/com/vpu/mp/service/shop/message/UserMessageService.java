@@ -196,7 +196,7 @@ public class UserMessageService extends ShopBaseService {
      */
     private String addImMessageContent(ImSessionUnReadInfoVo imSessionUnReadInfoVo) {
         int size = imSessionUnReadInfoVo.getMessageInfos().size();
-        ImSessionItemBase imSessionItemBase = imSessionUnReadInfoVo.getMessageInfos().get(size - 1);
+        ImSessionItemBase imSessionItemBase = imSessionUnReadInfoVo.getMessageInfos().get(0);
         // 文本消息
         if (SESSION_ITEM_TYPE_TEXT.equals(imSessionItemBase.getType())) {
             return String.format(Objects.requireNonNull(UserMessageTemplate.USER_MESSAGE_IM_SESSION_ADD.getMessage()),
