@@ -168,6 +168,7 @@ button::after {
 .coupon-vw-int {
   width: 60%;
   margin:0 auto;
+  margin-bottom: 20rpx;
 }
 
 .coupon-input {
