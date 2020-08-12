@@ -57,4 +57,4 @@
 	</view>
 	<include src="../../pages/common/footer.wxml" />
 </view>
-<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>
+<v-prescription-dialog show="{{showPrescription}}" is-doctor="{{true}}" prescription-data="{{prescriptionData}}"/>
