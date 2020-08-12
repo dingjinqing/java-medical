@@ -160,9 +160,10 @@ public class MessageDao extends ShopBaseDao {
      * @param userMessageParam 消息入参
      */
     public void updateMessage(UserMessageParam userMessageParam) {
-        UserMessageRecord messageRecord = db().newRecord(USER_MESSAGE);
-        FieldsUtil.assign(userMessageParam, messageRecord);
-        messageRecord.update();
+        db().update(USER_MESSAGE)
+            .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
+            .set(USER_MESSAGE.MESSAGE_STATUS, userMessageParam.getMessageStatus())
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn())).execute();
     }
 
     /**
