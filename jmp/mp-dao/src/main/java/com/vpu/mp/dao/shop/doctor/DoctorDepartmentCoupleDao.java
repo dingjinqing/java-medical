@@ -149,6 +149,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         SelectJoinStep<? extends Record> select = db().select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
         select.where(condition);
+        select.orderBy(DOCTOR.IS_ON_DUTY.desc());
         PageResult<DoctorConsultationOneParam> doctorList = this.getPageResult(select, doctorParam.getCurrentPage(),
             doctorParam.getPageRows(), DoctorConsultationOneParam.class);
         return doctorList;

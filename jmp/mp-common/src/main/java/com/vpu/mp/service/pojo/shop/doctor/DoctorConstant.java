@@ -6,4 +6,6 @@ package com.vpu.mp.service.pojo.shop.doctor;
  */
 public class DoctorConstant {
     public static final Byte ATTENTIONTYPE = 1;
+    public static final Byte ONDUTY = 1;
+    public static final Byte NOTONDUTY = 0;
 }

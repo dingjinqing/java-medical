@@ -50,5 +50,7 @@ public class DoctorDo   {
     private Byte      isDelete;
     private Timestamp createTime;
     private Timestamp updateTime;
-
+    private Timestamp onDutyTime;
+    private Byte      isOnDuty;
+    private Byte      canConsultation;
 }
