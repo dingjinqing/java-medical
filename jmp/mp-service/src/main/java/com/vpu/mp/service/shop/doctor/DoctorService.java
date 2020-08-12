@@ -72,6 +72,8 @@ public class DoctorService extends ShopBaseService {
         for (DoctorOneParam list : doctorList.dataList) {
             List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(list.getId());
             list.setDepartmentNames(departmentList);
+            String titleName = titleService.getTitleName(list.getTitleId());
+            list.setTitleName(titleName);
         }
 
         return doctorList;

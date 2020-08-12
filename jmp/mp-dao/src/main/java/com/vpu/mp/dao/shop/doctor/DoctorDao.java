@@ -35,8 +35,8 @@ public class DoctorDao extends ShopBaseDao {
      */
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
         SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName"))
-            .from(DOCTOR).leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
+            .select(DOCTOR.asterisk())
+            .from(DOCTOR);
         select.where(DOCTOR.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
         select.orderBy(DOCTOR.ID.desc());
