@@ -26,7 +26,8 @@ public class  GoodsBaseMp {
     /**商品数量*/
     protected Integer goodsNumber;
     //************ElasticSearch中的数据**************end
-
+    private Byte isMedical;
+    private Byte isRx;
 
     @Override
     public String toString() {
