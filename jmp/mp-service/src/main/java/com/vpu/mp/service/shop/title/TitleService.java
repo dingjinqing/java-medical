@@ -146,4 +146,14 @@ public class TitleService extends ShopBaseService{
         titleList.add(0,allItem);
         return titleList;
     }
+
+    /**
+     * 获取职称名称
+     * @param titleId
+     * @return
+     */
+    public String getTitleName(Integer titleId){
+        TitleOneParam titleInfo = titleDao.getOneInfo(titleId);
+        return titleInfo==null ? null:titleInfo.getName();
+    }
 }
