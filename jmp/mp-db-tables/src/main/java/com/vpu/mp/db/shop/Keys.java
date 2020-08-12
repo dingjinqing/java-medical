@@ -297,11 +297,12 @@ public class Keys {
     public static final Identity<UserAnnouncementRecord, Integer> IDENTITY_USER_ANNOUNCEMENT = Identities0.IDENTITY_USER_ANNOUNCEMENT;
     public static final Identity<UserDoctorAttentionRecord, Integer> IDENTITY_USER_DOCTOR_ATTENTION = Identities0.IDENTITY_USER_DOCTOR_ATTENTION;
     public static final Identity<DoctorDutyRecordRecord, Integer> IDENTITY_DOCTOR_DUTY_RECORD = Identities0.IDENTITY_DOCTOR_DUTY_RECORD;
-
+    public static final Identity<DoctorCommentRecord, Integer> IDENTITY_DOCTOR_COMMENT = Identities0.IDENTITY_DOCTOR_COMMENT;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<DoctorCommentRecord> KEY_B2C_DOCTOR_COMMENT_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_COMMENT_PRIMARY;
     public static final UniqueKey<DivisionReceiveRecordRecord> KEY_B2C_DIVISION_RECEIVE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_DIVISION_RECEIVE_RECORD_PRIMARY;
     public static final UniqueKey<UserCardRecord> KEY_B2C_USER_CARD_PRIMARY = UniqueKeys0.KEY_B2C_USER_CARD_PRIMARY;
     public static final UniqueKey<PrizeRecordRecord> KEY_B2C_PRIZE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PRIZE_RECORD_PRIMARY;
@@ -849,6 +850,7 @@ public class Keys {
         public static Identity<UserAnnouncementRecord, Integer> IDENTITY_USER_ANNOUNCEMENT = Internal.createIdentity(UserAnnouncement.USER_ANNOUNCEMENT, UserAnnouncement.USER_ANNOUNCEMENT.ANNOUNCEMENT_ID);
         public static Identity<UserDoctorAttentionRecord, Integer> IDENTITY_USER_DOCTOR_ATTENTION = Internal.createIdentity(UserDoctorAttention.USER_DOCTOR_ATTENTION, UserDoctorAttention.USER_DOCTOR_ATTENTION.ID);
         public static Identity<DoctorDutyRecordRecord, Integer> IDENTITY_DOCTOR_DUTY_RECORD = Internal.createIdentity(DoctorDutyRecord.DOCTOR_DUTY_RECORD, DoctorDutyRecord.DOCTOR_DUTY_RECORD.ID);
+        public static Identity<DoctorCommentRecord, Integer> IDENTITY_DOCTOR_COMMENT = Internal.createIdentity(DoctorComment.DOCTOR_COMMENT, DoctorComment.DOCTOR_COMMENT.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1139,5 +1141,6 @@ public class Keys {
         public static final UniqueKey<UserAnnouncementRecord> KEY_B2C_USER_ANNOUNCEMENT_PRIMARY = Internal.createUniqueKey(UserAnnouncement.USER_ANNOUNCEMENT, "KEY_b2c_user_announcement_PRIMARY", UserAnnouncement.USER_ANNOUNCEMENT.ANNOUNCEMENT_ID);
         public static final UniqueKey<UserDoctorAttentionRecord> KEY_B2C_USER_DOCTOR_ATTENTION_PRIMARY = Internal.createUniqueKey(UserDoctorAttention.USER_DOCTOR_ATTENTION, "KEY_b2c_user_doctor_attention_PRIMARY", UserDoctorAttention.USER_DOCTOR_ATTENTION.ID);
         public static final UniqueKey<DoctorDutyRecordRecord> KEY_B2C_DOCTOR_DUTY_RECORD_PRIMARY = Internal.createUniqueKey(DoctorDutyRecord.DOCTOR_DUTY_RECORD, "KEY_b2c_doctor_duty_record_PRIMARY", DoctorDutyRecord.DOCTOR_DUTY_RECORD.ID);
+        public static final UniqueKey<DoctorCommentRecord> KEY_B2C_DOCTOR_COMMENT_PRIMARY = Internal.createUniqueKey(DoctorComment.DOCTOR_COMMENT, "KEY_b2c_doctor_comment_PRIMARY", DoctorComment.DOCTOR_COMMENT.ID);
     }
 }

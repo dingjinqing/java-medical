@@ -1109,6 +1109,10 @@ public class MiniShop_471752 extends SchemaImpl {
      */
     public final DoctorDutyRecord DOCTOR_DUTY_RECORD = com.vpu.mp.db.shop.tables.DoctorDutyRecord.DOCTOR_DUTY_RECORD;
 
+    /**
+     * 医师评价和打分
+     */
+    public final DoctorComment DOCTOR_COMMENT = com.vpu.mp.db.shop.tables.DoctorComment.DOCTOR_COMMENT;
 
 
     /**
@@ -1354,7 +1358,8 @@ public class MiniShop_471752 extends SchemaImpl {
             DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE,
             UserAnnouncement.USER_ANNOUNCEMENT,
             UserDoctorAttention.USER_DOCTOR_ATTENTION,
-            DoctorDutyRecord.DOCTOR_DUTY_RECORD);
+            DoctorDutyRecord.DOCTOR_DUTY_RECORD,
+            DoctorComment.DOCTOR_COMMENT);
 
 
     }

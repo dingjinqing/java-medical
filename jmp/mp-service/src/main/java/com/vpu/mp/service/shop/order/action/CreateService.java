@@ -1131,7 +1131,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_HISTORY_CHECK);
             }
             //患者id
-            if (patientDiagnose.getPatientId()==null||patientDiagnose.getPatientId()>0){
+            if (patientDiagnose.getPatientId()==null||patientDiagnose.getPatientId()<=0){
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_HISTORY_CHECK);
             }
             //患者名字

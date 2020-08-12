@@ -372,6 +372,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setDoctorName(doctor.getName());
         //映射patient信息
         buildPrescriptionPatientInfo(prescriptionParam,param);
+        prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
         prescriptionParam.setExpireType(PrescriptionConstant.EXPIRE_TYPE_TIME);
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
         prescriptionParam.setStatus(PrescriptionConstant.STATUS_PASS);
@@ -438,7 +439,7 @@ public class PrescriptionService extends ShopBaseService {
             prescriptionParam.setPatientName(patient.getName());
             prescriptionParam.setPatientSex(patient.getSex());
             prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
-            prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistory());
+            prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistoryStr());
             prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
             prescriptionParam.setIdentityCode(patient.getIdentityCode());
             prescriptionParam.setPatientTreatmentCode(patient.getTreatmentCode());

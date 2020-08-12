@@ -5020,10 +5020,12 @@ create TABLE `b2c_im_session`(
     `department_id` int(11) NOT NULL DEFAULT 0 COMMENT '科室id',
     `user_id` int(11) NOT NULL COMMENT '小程序发起会话用户id',
     `patient_id`  int(11) NOT NULL COMMENT '本次诊疗的患者id',
-    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束',
+    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束，5续诊，6会话终止',
+    `continue_session_count` int(11) NOT NULL DEFAULT 0 COMMENT '可继续问诊次数',
     `order_sn` varchar(32)  NOT NULL COMMENT '会话关联的订单sn',
     `limit_time` timestamp  COMMENT '医生接诊后会话截止时间点',
-    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+    `weight_factor` tinyint(1) NOT NULL DEFAULT 0 COMMENT '权重因子,用于不同状态排序使用',
+    `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标记',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     primary key (`id`)
@@ -5037,6 +5039,7 @@ create TABLE `b2c_im_session_item`(
     `to_id` int(11) COMMENT '本跳消息接收者id  医师id或用户userId',
     `message` varchar(2048) COMMENT '本条消息内容',
     `type` tinyint(1) COMMENT '消息类型 0文本 1图片 2处方 3患者病历简略信息',
+    `is_leaving_message` tinyint(1) COMMENT '是否是留言信息 0否 1是',
     `send_time` timestamp COMMENT '用户消息发送时间',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     primary key (`id`)
@@ -5178,6 +5181,25 @@ create table `b2c_user_doctor_attention`(
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key(`id`)
 )comment ='用户关注医师';
+
+-- 医师评价和打分
+create table `b2c_doctor_comment`(
+    `id`   int(11)      not null auto_increment,
+    `user_id` int(11) not null comment '用户ID',
+    `user_name` varchar(60) NOT NULL COMMENT '用户昵称',
+    `patient_id` int(11) not null comment '患者id',
+    `doctor_id` int(11) not null comment '医师id',
+    `stars` tinyint(1) NOT NULL DEFAULT 5 COMMENT '评价星级1~5',
+    `is_anonymou` tinyint(1) NOT NULL DEFAULT 0 COMMENT '匿名状态 0.未匿名；1.匿名',
+    `tag` varchar(100) DEFAULT '' COMMENT '评价标签',
+    `order_sn` varchar(20) NOT NULL COMMENT '订单编号',
+    `comm_note` varchar(1000) DEFAULT NULL COMMENT '评论内容',
+    `audit_status` tinyint(1) not null DEFAULT 0 COMMENT '0:未审批,1:审批通过,2:审批未通过',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key(`id`)
+)comment ='医师评价和打分';
 
 -- 医师上下班记录表
 create table `b2c_doctor_duty_record`(

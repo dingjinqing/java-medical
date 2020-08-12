@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
 
-    private static final long serialVersionUID = 622861024;
+    private static final long serialVersionUID = -30833531;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_im_session_item</code>
@@ -72,9 +72,14 @@ public class ImSessionItem extends TableImpl<ImSessionItemRecord> {
     public final TableField<ImSessionItemRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(2048), this, "本条消息内容");
 
     /**
-     * The column <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型 0文本 1图片 2处方
+     * The column <code>mini_shop_471752.b2c_im_session_item.type</code>. 消息类型 0文本 1图片 2处方 3患者病历简略信息
      */
-    public final TableField<ImSessionItemRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT, this, "消息类型 0文本 1图片 2处方");
+    public final TableField<ImSessionItemRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT, this, "消息类型 0文本 1图片 2处方 3患者病历简略信息");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_im_session_item.is_leaving_message</code>. 是否是留言信息
+     */
+    public final TableField<ImSessionItemRecord, Byte> IS_LEAVING_MESSAGE = createField("is_leaving_message", org.jooq.impl.SQLDataType.TINYINT, this, "是否是留言信息");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session_item.send_time</code>. 用户消息发送时间
