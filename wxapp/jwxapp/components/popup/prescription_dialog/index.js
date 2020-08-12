@@ -7,7 +7,11 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    prescriptionData:Object
+    prescriptionData:Object,
+    isDoctor:{
+      type:Boolean,
+      value:false
+    }
   },
 
   /**

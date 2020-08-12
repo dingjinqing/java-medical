@@ -174,15 +174,15 @@ global.wxPage({
   },
   createPrescription () {
     if(!this.data.departmentCode){
-      util.wx.showModal('提示','请选择开方科室')
+      util.showModal('提示','请选择开方科室')
       return
     }
     if(!this.data.diagnose.info){
-      util.wx.showModal('提示','请输入您的诊断')
+      util.showModal('提示','请输入您的诊断')
       return
     }
     if(!this.data.doctorAdvice){
-      util.wx.showModal('提示','请输入医嘱')
+      util.showModal('提示','请输入医嘱')
       return
     }
     let params = {

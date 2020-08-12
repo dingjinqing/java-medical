@@ -581,7 +581,7 @@
                           </template>
                         </template>
                         <template v-else>
-                          {{orderStatusMap.get(orderItem.orderStatus)}}
+                          {{showOrderStatusMap.get(orderItem.orderStatus)}}
                         </template>
                       </template>
                       <template v-else>
@@ -769,7 +769,7 @@
                     >
                       <template>
                         <template v-if="childOrder.orderStatus != 3 && childOrder.orderStatus != 5">
-                          {{orderStatusMap.get(childOrder.orderStatus)}}
+                          {{showOrderStatusMap.get(childOrder.orderStatus)}}
                         </template>
                         <template v-else>
                           <template v-if="childOrder.deliverType == 1 && childOrder.orderStatus == 3">
@@ -917,6 +917,7 @@ export default {
   data () {
     return {
       orderStatusMap: {},
+      showOrderStatusMap: {},
       goodsTypeMap: {},
       deliverTypeMap: {},
       paymentTypeMap: {},
@@ -1077,6 +1078,7 @@ export default {
     },
     arrayToMap () {
       this.orderStatusMap = new Map(this.$t('order.orderStatusFilterList'))
+      this.showOrderStatusMap = new Map(this.$t('order.showOrderStatus'))
       console.log(this.orderStatusMap)
       this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
       this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
