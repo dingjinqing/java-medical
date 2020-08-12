@@ -25,7 +25,7 @@ public class DoctorOnDutyTask {
      * 过期的处方
      */
     @Scheduled(cron = "0 */1 * * * ?")
-    public void expirePrescription(){
+    public void onDutyDoctor(){
         Result<ShopRecord> shops = saas.shop.getAll();
         shops.forEach(shopRecord -> {
             saas.getShopApp(shopRecord.getShopId()).doctorService.onDutyDoctorTask();

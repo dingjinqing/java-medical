@@ -115,6 +115,9 @@ public class MedicalSalesReportService extends ShopBaseService {
             DateTime date = DateUtil.date();
             endDate = DateUtil.endOfDay(date).toTimestamp();
             startDate = DateUtil.beginOfMonth(date).toTimestamp();
+        }else {
+            startDate = DateUtil.beginOfDay(param.getStartTime()).toTimestamp();
+            endDate = DateUtil.endOfDay(param.getEndTime()).toTimestamp();
         }
         Map<Date, MedicalOrderReportVo> orderMap = orderInfoDao.orderSalesReport(startDate, endDate);
         Map<Date, MedicalOrderReportVo> returnOrderMap = returnOrderDao.medicalOrderSalesReport(startDate, endDate);

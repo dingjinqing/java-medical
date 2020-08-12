@@ -10,11 +10,13 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
+import com.vpu.mp.common.pojo.shop.table.DoctorDutyRecordDo;
 import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
+import com.vpu.mp.dao.shop.doctor.DoctorDutyRecordDao;
 import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
@@ -56,6 +58,8 @@ public class DoctorService extends ShopBaseService {
     public UserDao userDao;
     @Autowired
     public UserDoctorAttentionDao userDoctorAttentionDao;
+    @Autowired
+    public DoctorDutyRecordDao doctorDutyRecordDao;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -231,7 +235,7 @@ public class DoctorService extends ShopBaseService {
         // 查询是否有当前医师信息
         DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
         // 如果医师存在且没有被认证过
-        if (doctorDo != null && doctorDo.getUserId() == null && doctorDo.getUserId() == 0) {
+        if (doctorDo != null && doctorDo.getUserId() == 0) {
             this.transaction(() -> {
                 // 修改user表中用户类型为医师
                 userDao.updateDoctorAuth(doctorAuthParam.getUserId());
@@ -269,7 +273,7 @@ public class DoctorService extends ShopBaseService {
             List<Integer> departmentDoctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIdsNew);
             doctorParam.setDepartmentDoctorIds(departmentDoctorIds);
         }
-        if (DoctorConstant.ATTENTIONTYPE.equals(doctorParam.getType()) && doctorParam.getUserId() > 0) {
+        if (DoctorConstant.ATTENTION_TYPE.equals(doctorParam.getType()) && doctorParam.getUserId() > 0) {
             List<Integer> userDoctorIds = userDoctorAttentionDao.listDoctorIdsByUser(doctorParam.getUserId());
             doctorParam.setUserDoctorIds(userDoctorIds);
         }
@@ -349,13 +353,39 @@ public class DoctorService extends ShopBaseService {
      */
     public void updateOnDuty(DoctorDutyParam param){
         doctorDao.updateOnDuty(param);
-        if (DoctorConstant.NOTONDUTY.equals(param.getOnDutyStatus())) {
+        DoctorDutyRecordParam doctorDutyRecordParam = new DoctorDutyRecordParam();
+        doctorDutyRecordParam.setDoctorId(param.getDoctorId());
+        doctorDutyRecordParam.setDutyStatus(param.getOnDutyStatus());
+        doctorDutyRecordParam.setType(param.getType());
+        insertDoctorDutyRecord(doctorDutyRecordParam);
+        if (DoctorConstant.NOT_ON_DUTY.equals(param.getOnDutyStatus())) {
             param.setOnDutyTime(DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS));
             doctorDao.updateOnDutyTime(param);
         }
     }
 
+    /**
+     * 医师自动上班
+     */
     public void onDutyDoctorTask (){
+        List<Integer> doctorIds=doctorDao.listNotOnDutyDoctorIds();
+        doctorIds.forEach(doctorId -> {
+            DoctorDutyParam doctorDuty = new DoctorDutyParam();
+            doctorDuty.setDoctorId(doctorId);
+            doctorDuty.setOnDutyStatus(DoctorConstant.ON_DUTY);
+            doctorDuty.setType(DoctorConstant.DOCTOC_DUTY_AUTOMATIC);
+            updateOnDuty(doctorDuty);
+        });
+    }
 
+    /**
+     * 新增医师上下班记录
+     * @param
+     * @return
+     */
+    public void insertDoctorDutyRecord(DoctorDutyRecordParam param){
+        DoctorDutyRecordDo doctorDutyRecordDo = new DoctorDutyRecordDo();
+        FieldsUtil.assign(param,doctorDutyRecordDo);
+        doctorDutyRecordDao.insertDoctorDutyRecord(doctorDutyRecordDo);
     }
 }

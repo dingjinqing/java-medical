@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.doctor;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -25,7 +26,6 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Repository
 public class DoctorDao extends ShopBaseDao {
-    public static final Integer ROOT_ID = 0;
 
     /**
      * 医师列表
@@ -247,10 +247,11 @@ public class DoctorDao extends ShopBaseDao {
      * @param param
      * @return int
      */
-    public int updateOnDuty(DoctorDutyParam param){
-        return db().update(DOCTOR).set(DOCTOR.IS_ON_DUTY, param.getOnDutyStatus())
+    public void updateOnDuty(DoctorDutyParam param){
+        db().update(DOCTOR).set(DOCTOR.IS_ON_DUTY, param.getOnDutyStatus())
             .where(DOCTOR.ID.eq(param.getDoctorId()))
             .execute();
+
     }
 
     /**
@@ -262,5 +263,13 @@ public class DoctorDao extends ShopBaseDao {
         return db().update(DOCTOR).set(DOCTOR.ON_DUTY_TIME, param.getOnDutyTime())
             .where(DOCTOR.ID.eq(param.getDoctorId()))
             .execute();
+    }
+
+    public List<Integer> listNotOnDutyDoctorIds (){
+        return db().select(DOCTOR.ID).from(DOCTOR)
+            .where(DOCTOR.IS_ON_DUTY.eq(DoctorConstant.NOT_ON_DUTY)
+            .and(DOCTOR.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .and(DOCTOR.ON_DUTY_TIME.lt(DateUtil.date().toTimestamp()))
+            .fetchInto(Integer.class);
     }
 }
