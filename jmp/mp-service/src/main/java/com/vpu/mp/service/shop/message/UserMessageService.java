@@ -14,6 +14,7 @@ import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.message.*;
+import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionUnReadMessageInfoParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -22,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
+import static com.vpu.mp.common.foundation.data.ImSessionConstant.*;
 import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.*;
 
 
@@ -162,15 +165,11 @@ public class UserMessageService extends ShopBaseService {
             for (ImSessionUnReadInfoVo imSessionUnReadInfoVo : unReadMessageInfo) {
                 UserMessageVo imSessionBySessionId = messageDao.getImSessionBySessionId(imSessionUnReadInfoVo.getSessionId(), imSessionUnReadMessageInfoParam.getUserId());
                 // 新增
+                UserMessageParam userMessageParam = new UserMessageParam();
                 if (imSessionBySessionId == null) {
-                    UserMessageParam userMessageParam = new UserMessageParam();
                     userMessageParam.setMessageType(USER_MESSAGE_CHAT);
-
-                    String message = imSessionUnReadInfoVo.getMessageInfos().get(0).getMessage();
-                    MessageContent messageContent = Util.json2Object(message, MessageContent.class, false);
-                    assert messageContent != null;
-                    userMessageParam.setMessageContent(messageContent.getContent());
-
+                    String content = addImMessageContent(imSessionUnReadInfoVo);
+                    userMessageParam.setMessageContent(content);
                     userMessageParam.setMessageRelevanceId(imSessionUnReadInfoVo.getSessionId());
                     userMessageParam.setSenderId(imSessionUnReadInfoVo.getDoctorId());
                     userMessageParam.setReceiverId(imSessionUnReadMessageInfoParam.getUserId());
@@ -181,14 +180,40 @@ public class UserMessageService extends ShopBaseService {
                     userMessageParam.setMessageChatStatus(imSession.getSessionStatus());
                     messageDao.saveMessage(userMessageParam);
                 } else { // 更新
-                    UserMessageParam userMessageParam = new UserMessageParam();
                     userMessageParam.setMessageStatus(USER_MESSAGE_STATUS_NOT_READ);
-                    userMessageParam.setMessageContent(imSessionUnReadInfoVo.getMessageInfos()
-                        .get(imSessionUnReadInfoVo.getMessageInfos().size() - 1).getMessage());
+                    String content = addImMessageContent(imSessionUnReadInfoVo);
+                    userMessageParam.setMessageContent(content);
                     messageDao.updateMessage(userMessageParam);
                 }
             }
         }
+    }
+
+    /**
+     * 修改会话消息内容格式
+     * @param imSessionUnReadInfoVo 会话消息内容
+     * @return String
+     */
+    private String addImMessageContent(ImSessionUnReadInfoVo imSessionUnReadInfoVo) {
+        int size = imSessionUnReadInfoVo.getMessageInfos().size();
+        ImSessionItemBase imSessionItemBase = imSessionUnReadInfoVo.getMessageInfos().get(size - 1);
+        // 文本消息
+        if (SESSION_ITEM_TYPE_TEXT.equals(imSessionItemBase.getType())) {
+            return String.format(Objects.requireNonNull(UserMessageTemplate.USER_MESSAGE_IM_SESSION_ADD.getMessage()),
+                imSessionUnReadInfoVo.getDoctorName(),
+                Util.json2Object(imSessionItemBase.getMessage(), MessageContent.class, false).getContent());
+        }
+        // 图片消息
+        if (SESSION_ITEM_TYPE_PICTURE.equals(imSessionItemBase.getType())) {
+            return String.format(Objects.requireNonNull(UserMessageTemplate.USER_MESSAGE_IM_SESSION_PICTURE_ADD.getMessage()),
+                imSessionUnReadInfoVo.getDoctorName());
+        }
+        // 处方消息
+        if (SESSION_ITEM_TYPE_PRESCRIPTION.equals(imSessionItemBase.getType())) {
+            return String.format(Objects.requireNonNull(UserMessageTemplate.USER_MESSAGE_IM_SESSION_PRESCRIPTION_ADD.getMessage()),
+                imSessionUnReadInfoVo.getDoctorName());
+        }
+        return "";
     }
 
     /**

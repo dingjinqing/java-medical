@@ -72,15 +72,15 @@ public enum UserMessageTemplate {
     /**
      * 用户文本会话消息新增
      */
-    USER_MESSAGE_IM_SESSION_ADD(3001, (byte) 3001, "%s医师给你发送了新的会话消息。"),
+    USER_MESSAGE_IM_SESSION_ADD(3001, (byte) 3001, "%s医师:%s"),
     /**
      * 用户图片会话消息新增
      */
-    USER_MESSAGE_IM_SESSION_PICTURE_ADD(3002, (byte) 3002, "[图片]"),
+    USER_MESSAGE_IM_SESSION_PICTURE_ADD(3002, (byte) 3002, "%s医师:[图片]"),
     /**
      * 用户处方会话消息新增
      */
-    USER_MESSAGE_IM_SESSION_PRESCRIPTION_ADD(3003, (byte) 3003, "[处方]");
+    USER_MESSAGE_IM_SESSION_PRESCRIPTION_ADD(3003, (byte) 3003, "%s医师根据您的病情描述，为您开具以下处方");
 
     private Integer code;
 
