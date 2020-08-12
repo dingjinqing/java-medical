@@ -33,6 +33,8 @@ public class ImSessionListVo {
     private Byte sessionStatus;
     /**是否有新信息*/
     private Long newMsgNum;
+    /**是否可以进行留言*/
+    private Byte canEvaluate;
 
     private Timestamp createTime;
 }

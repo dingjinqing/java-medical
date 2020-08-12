@@ -17,6 +17,8 @@ public class ImSessionDo {
     private Integer   userId;
     private Integer   patientId;
     private Byte      sessionStatus;
+    private Integer continueSessionCount;
+    private Byte weightFactor;
     private String    orderSn;
     private Timestamp limitTime;
     private Byte      isDelete;

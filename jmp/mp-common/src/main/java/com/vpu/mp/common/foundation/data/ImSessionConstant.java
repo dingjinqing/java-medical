@@ -14,26 +14,51 @@ public class ImSessionConstant {
      * 医师待接诊
      */
     public static final Byte SESSION_READY_TO_START = 1;
+    /**待接诊权重*/
+    public static final Byte SESSION_READY_TO_START_WEIGHT = 4;
 
     /**
      * 会话中
      */
     public static final Byte SESSION_ON = 2;
-
+    /**会话中权重*/
+    public static final Byte SESSION_ON_WEIGHT = 5;
     /**
      * 会话取消
      */
     public static final Byte SESSION_CANCEL = 3;
-
+    /**会话取消权重*/
+    public static final Byte SESSION_CANCEL_WEIGHT = 1;
     /**
      * 会话正常结束
      */
     public static final Byte SESSION_END = 4;
+    /**会话结束权重*/
+    public static final Byte SESSION_END_WEIGTH = 1;
+
+    /**
+     * 继续问诊
+     */
+    public static final Byte SESSION_CONTINUE_ON = 5;
+    /**继续问诊权重*/
+    public static final Byte SESSION_CONTINUE_ON_WEIGHT =5;
+
+    /**
+     * 会话终止
+     */
+    public static final Byte SESSION_DEAD = 6;
+    /**会话终止权重*/
+    public static final Byte SESSION_DEAD_WEIGHT = 1;
 
     /**
      * 会话取消等待时间 24小时
      */
     public static final Integer CANCEL_LIMIT_TIME = 24;
+
+    /**
+     * 可以继续问诊次数
+     */
+    public static final Integer CONTINUE_SESSION_TIME = 1;
 
     /**
      * 会话关闭默认等待时间24小时
