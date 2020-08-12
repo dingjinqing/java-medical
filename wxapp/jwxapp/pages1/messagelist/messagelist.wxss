@@ -38,6 +38,9 @@
   border-bottom: 4rpx solid #26C4BC;
   font-weight: bold;
 }
+.active text{
+  font-weight: normal;
+}
 .list_content{
   padding-top: 80rpx;
 }

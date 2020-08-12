@@ -28,8 +28,7 @@ public class WxAppUserMessageController extends WxAppBaseController{
      */
     @RequestMapping("/api/wxapp/message/change")
     public JsonResult changeMessageStatus(@RequestBody MessageParam messageParam) {
-        messageService.changeMessageStatus(messageParam.getMessageId(), wxAppAuth.user().getUserId());
-        return this.success();
+        return this.success(messageService.changeMessageStatus(messageParam, wxAppAuth.user().getUserId()));
     }
 
     /**

@@ -522,6 +522,10 @@ public class OrderConstant {
      * 是否是购物车
      */
     public static final Byte CART_Y = 1;
+	/**
+	 * 是处方订单
+	 */
+	public static final Byte PRESCRIPTION_ORDER_Y = 1;
 
     /**
      * admin订单搜索导航
@@ -578,7 +582,8 @@ public class OrderConstant {
         "未按约定时间发货",
         "缺货",
         "拍错/多拍/不想要",
-        "其他"
+        "其他",
+        "医师审核未通过",
     };
     public static String getReturnReasonDesc(Integer index) {
         if(index == null || index < 0 || index > RETRURN_REASON_TYPE_DESC.length - 1) {

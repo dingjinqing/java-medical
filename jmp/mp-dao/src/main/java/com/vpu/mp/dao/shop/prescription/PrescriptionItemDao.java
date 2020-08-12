@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -82,6 +83,19 @@ public class PrescriptionItemDao extends ShopBaseDao {
         return db().selectDistinct(GOODS_MEDICAL_INFO.GOODS_ID).from(PRESCRIPTION_ITEM)
             .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(PRESCRIPTION_ITEM.GOODS_COMMON_NAME))
             .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.in(prescriptionNos).and(GOODS_MEDICAL_INFO.GOODS_ID.gt(0))).fetchInto(Integer.class);
+    }
+
+    /**
+     * 处方下单的商品信息
+     * @param prescriptionCode 处方号
+     * @return
+     */
+    public List<OrderBeforeParam.Goods>  listOrderGoodsByPrescriptionCode(String prescriptionCode){
+        return db().select(PRESCRIPTION_ITEM.GOODS_ID,PRESCRIPTION_ITEM.PRD_ID.as("product_id"),PRESCRIPTION_ITEM.DRAG_SUM_NUM,
+                PRESCRIPTION_ITEM.DRAG_SUM_NUM)
+                .from(PRESCRIPTION_ITEM)
+                .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionCode))
+                .fetchInto(OrderBeforeParam.Goods.class);
     }
 
     /**

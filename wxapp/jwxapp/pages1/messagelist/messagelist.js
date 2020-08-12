@@ -60,12 +60,16 @@ global.wxPage({
         is_all: 1
       })
     }
+    this.changeReadNum (nav_index, 0)
   },
   show_mes (e) {
-    util.showModal('消息详情', e.currentTarget.dataset.index);
-    return false
+    var that = this;
+    util.showModal('消息详情', e.currentTarget.dataset.index, function(){
+      that.changeReadNum (e.currentTarget.dataset.mes_type,e.currentTarget.dataset.mes_id)
+    },false);
   },
   to_order (e) {
+    this.changeReadNum (e.currentTarget.dataset.mes_type,e.currentTarget.dataset.mes_id)
     util.jumpLink('/pages/orderinfo/orderinfo?orderSn=' + e.currentTarget.dataset.order)
   },
   delete_this (e) {
@@ -77,6 +81,7 @@ global.wxPage({
           this.data.order_message = [];
           this.data.advisory_list = [];
           this.requestList()
+          this.changeReadNum (e.currentTarget.dataset.mes_type,e.currentTarget.dataset.mes_id)
         }else {
           util.showModal('提示', res.message)
           return false
@@ -123,6 +128,24 @@ global.wxPage({
         return false
       }
     },{ userId: util.getCache('user_id'),})
+  },
+  changeReadNum (mesType,mesId) {
+    util.api('/api/wxapp/message/change', res => {
+      if(res.error == 0){
+        this.requestList()
+        this.setData({
+          system_num: res.content.announcementMessageCount,
+          order_num: res.content.orderMessageCount,
+          query_num: res.content.imSessionMessageCount,
+        })
+      }
+    },{
+      messageType: mesType,
+      messageId: mesId
+    })
+  },
+  setReadStatus (e) {
+    this.changeReadNum (e.currentTarget.dataset.mes_type,e.currentTarget.dataset.mes_id)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

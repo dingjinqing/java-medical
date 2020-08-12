@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.USER_ANNOUNCEMENT;
+import static com.vpu.mp.service.pojo.shop.message.UserMessageConstant.USER_MESSAGE_STATUS_ALREADY_READ;
 
 /**
  * @author 赵晓东
@@ -45,5 +46,23 @@ public class UserAnnouncementDao extends ShopBaseDao {
         userAnnouncementRecord.insert();
     }
 
+
+    /**
+     * 修改系统消息读取状态
+     * @param userId 用户id
+     * @param messageId 消息id
+     */
+    public void updateUserAnnouncement(Integer userId, Integer messageId) {
+        if (messageId == 0) {
+            db().update(USER_ANNOUNCEMENT)
+                .set(USER_ANNOUNCEMENT.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+                .where(USER_ANNOUNCEMENT.USER_ID.eq(userId)).execute();
+        } else {
+            db().update(USER_ANNOUNCEMENT)
+                .set(USER_ANNOUNCEMENT.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+                .where(USER_ANNOUNCEMENT.USER_ID.eq(userId))
+                .and(USER_ANNOUNCEMENT.MESSAGE_ID.eq(messageId)).execute();
+        }
+    }
 
 }

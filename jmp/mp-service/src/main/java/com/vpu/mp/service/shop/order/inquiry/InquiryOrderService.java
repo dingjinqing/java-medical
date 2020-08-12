@@ -22,6 +22,7 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
@@ -260,7 +261,7 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney());
+        refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
     }
 
     /**
@@ -268,7 +269,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param order
      * @throws MpException
      */
-    public void refundInquiryOrder(InquiryOrderDo order,BigDecimal refundMoney)throws MpException{
+    public void refundInquiryOrder(InquiryOrderDo order,BigDecimal refundMoney,String refundReason)throws MpException{
         boolean successFlag=true;
         if(InquiryOrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())){
             //退款流水号
@@ -285,12 +286,13 @@ public class InquiryOrderService extends ShopBaseService {
                 throw new MpException(JsonResultCode.INQUIRY_ORDER_REFUND_MONEY_EXCESS);
             }
             //微信金额单为为分需单位换算
-//            returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(order.getOrderAmount(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
+            returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(refundMoney, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
         }
         //退款记录
         InquiryOrderRefundListDo refundListDo=new InquiryOrderRefundListDo();
         refundListDo.setOrderSn(order.getOrderSn());
-        refundListDo.setMoneyAmout(order.getOrderAmount());
+        refundListDo.setMoneyAmount(refundMoney);
+        refundListDo.setRefundReason(refundReason);
         refundListDo.setUserId(order.getUserId());
         refundListDo.setIsSuccess(successFlag?InquiryOrderConstant.REFUND_SUCCESS:InquiryOrderConstant.REFUND_FAILED);
         inquiryOrderRefundListDao.save(refundListDo);
@@ -302,7 +304,7 @@ public class InquiryOrderService extends ShopBaseService {
             order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
         }else {
             //部分退款
-            order.setOrderStatus(InquiryOrderConstant.ORDER_REFUNDING);
+            order.setOrderStatus(InquiryOrderConstant.ORDER_PART_REFUND);
 
         }
         inquiryOrderDao.update(order);
