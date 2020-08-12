@@ -65,7 +65,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId, preSaleInfo = null, roomId = null, inviteId = null, memberCardNo = 0, addressId } = options
+    let { goodsList, activityType, activityId, recordId, preSaleInfo = null, roomId = null, inviteId = null, memberCardNo = 0, addressId, isPrescription = null, prescriptionCode = null } = options
     console.log(options)
     wx.setStorage({
       data: options,
@@ -104,8 +104,11 @@ global.wxPage({
       'params.recordId': recordId,
       'params.roomId':roomId,
       'params.memberCardNo':memberCardNo,
+      'params.prescriptionCode':prescriptionCode,
       preSaleInfo,
-      inviteId
+      inviteId,
+      isPrescription,
+      prescriptionCode
     })
     if (options.groupid) {
       this.setData({
@@ -918,6 +921,7 @@ global.wxPage({
     return true
   },
   togglePatient(){
+    if(this.data.isPrescription) return
     util.jumpLink('pages1/familylist/familylist?source=checkout')
   },
   /**
