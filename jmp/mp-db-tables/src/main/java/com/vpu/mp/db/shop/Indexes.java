@@ -536,6 +536,10 @@ public class Indexes {
     public static final Index SMS_RECHARGE_PRIMARY = Indexes0.SMS_RECHARGE_PRIMARY;
     public static final Index ORDER_MEDICAL_HISTORY_PRIMARY = Indexes0.ORDER_MEDICAL_HISTORY_PRIMARY;
     public static final Index USER_ANNOUNCEMENT_PRIMARY = Indexes0.USER_ANNOUNCEMENT_PRIMARY;
+    public static final Index USER_DOCTOR_ATTENTION_PRIMARY = Indexes0.USER_DOCTOR_ATTENTION_PRIMARY;
+    public static final Index DOCTOR_DUTY_RECORD_PRIMARY = Indexes0.DOCTOR_DUTY_RECORD_PRIMARY;
+    public static final Index DOCTOR_COMMENT_PRIMARY = Indexes0.DOCTOR_COMMENT_PRIMARY;
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1048,6 +1052,9 @@ public class Indexes {
         public static Index SMS_RECHARGE_PRIMARY = Internal.createIndex("PRIMARY", SmsRecharge.SMS_RECHARGE, new OrderField[] { SmsRecharge.SMS_RECHARGE.RECHARGE_ID }, true);
         public static Index ORDER_MEDICAL_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", OrderMedicalHistory.ORDER_MEDICAL_HISTORY, new OrderField[] { OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID }, true);
         public static Index USER_ANNOUNCEMENT_PRIMARY = Internal.createIndex("PRIMARY", UserAnnouncement.USER_ANNOUNCEMENT, new OrderField[] { UserAnnouncement.USER_ANNOUNCEMENT.ANNOUNCEMENT_ID }, true);
-
+        public static Index USER_DOCTOR_ATTENTION_PRIMARY = Internal.createIndex("PRIMARY", UserDoctorAttention.USER_DOCTOR_ATTENTION, new OrderField[] { UserDoctorAttention.USER_DOCTOR_ATTENTION.ID }, true);
+        public static Index DOCTOR_DUTY_RECORD_PRIMARY = Internal.createIndex("PRIMARY", DoctorDutyRecord.DOCTOR_DUTY_RECORD, new OrderField[] { DoctorDutyRecord.DOCTOR_DUTY_RECORD.ID }, true);
+        public static Index DOCTOR_COMMENT_PRIMARY = Internal.createIndex("PRIMARY", DoctorComment.DOCTOR_COMMENT, new OrderField[] { DoctorComment.DOCTOR_COMMENT.ID }, true);
     }
+
 }

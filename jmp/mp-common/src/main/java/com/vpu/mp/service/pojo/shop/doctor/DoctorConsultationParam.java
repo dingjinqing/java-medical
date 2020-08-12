@@ -16,4 +16,7 @@ public class DoctorConsultationParam{
     private List departmentDoctorIds;
     private Integer currentPage=1;
     private Integer pageRows=20;
+    private Integer userId;
+    private Byte type=0;
+    private List userDoctorIds;
 }

@@ -10,4 +10,5 @@ import lombok.Data;
 public class PrescriptionDrugVo {
     private Integer goodsId;
     private Double dragSumNum;
+    private Integer prdId;
 }

@@ -72,8 +72,10 @@ public class ImSessionDao extends ShopBaseDao {
      * 关闭会话session
      * @param imSessionId
      */
-    public void updateSessionStatus(Integer imSessionId,Byte status) {
-        db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS, status).where(IM_SESSION.ID.eq(imSessionId))
+    public void updateSessionStatus(Integer imSessionId,Byte status,Byte weightFactor) {
+        db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS, status)
+            .set(IM_SESSION.WEIGHT_FACTOR,weightFactor)
+            .where(IM_SESSION.ID.eq(imSessionId))
             .execute();
     }
 
@@ -82,8 +84,10 @@ public class ImSessionDao extends ShopBaseDao {
      * @param imSessionIds 会话ids
      * @param status 状态
      */
-    public void batchUpdateSessionStatus(List<Integer> imSessionIds, Byte status) {
-        db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS,status).where(IM_SESSION.ID.in(imSessionIds))
+    public void batchUpdateSessionStatus(List<Integer> imSessionIds, Byte status,Byte weightFactor) {
+        db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS,status)
+            .set(IM_SESSION.WEIGHT_FACTOR,weightFactor)
+            .where(IM_SESSION.ID.in(imSessionIds))
             .execute();
     }
 
@@ -104,7 +108,8 @@ public class ImSessionDao extends ShopBaseDao {
             condition =condition.and(IM_SESSION.USER_ID.eq(pageListParam.getUserId()));
         }
 
-        SelectSeekStep2<ImSessionRecord, Byte, Timestamp> select = db().selectFrom(IM_SESSION).where(condition).orderBy(IM_SESSION.SESSION_STATUS.asc(), IM_SESSION.CREATE_TIME.asc());
+        SelectSeekStep2<ImSessionRecord, Byte, Timestamp> select = db().selectFrom(IM_SESSION).where(condition)
+            .orderBy(IM_SESSION.WEIGHT_FACTOR.desc(), IM_SESSION.UPDATE_TIME.asc());
         return getPageResult(select,pageListParam.getCurrentPage(),pageListParam.getPageRows(),ImSessionListVo.class);
     }
 

@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.UserMessage;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserAnnouncementRecord;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
+import com.vpu.mp.service.pojo.shop.message.MessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
@@ -242,26 +243,22 @@ public class MessageDao extends ShopBaseDao {
     }
 
     /**
-     * 根据消息id查询消息内容
-     * @param messageId 消息id
-     * @return UserMessageVo
+     * 更新消息表消息状态
+     * @param userId 用户id
+     * @param messageParam 消息类型，消息id
      */
-    public UserMessageVo selectMessageByMessageId(Integer messageId) {
-        return db().select().from(USER_MESSAGE)
-            .where(USER_MESSAGE.MESSAGE_ID.eq(messageId)).fetchAnyInto(UserMessageVo.class);
+    public void updateMessageStatus(Integer userId, MessageParam messageParam) {
+        if (messageParam.getMessageId() == 0) {
+            db().update(USER_MESSAGE)
+                .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+                .where(USER_MESSAGE.MESSAGE_TYPE.eq(messageParam.getMessageType()))
+                .and(USER_MESSAGE.RECEIVER_ID.eq(userId)).execute();
+        } else {
+            db().update(USER_MESSAGE)
+                .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+                .where(USER_MESSAGE.MESSAGE_TYPE.eq(messageParam.getMessageType()))
+                .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
+                .and(USER_MESSAGE.MESSAGE_ID.eq(messageParam.getMessageId())).execute();
+        }
     }
-
-    /**
-     * 更改系统消息读取状态
-     * @param userMessageVo 用户消息
-     */
-    public void changeAnnStatus(UserMessageVo userMessageVo) {
-        UserAnnouncementRecord announcementRecord = db().select().from(USER_ANNOUNCEMENT)
-            .where(USER_ANNOUNCEMENT.MESSAGE_ID.eq(userMessageVo.getMessageId()))
-            .and(USER_ANNOUNCEMENT.USER_ID.eq(userMessageVo.getReceiverId()))
-            .fetchOneInto(UserAnnouncementRecord.class);
-        announcementRecord.setMessageStatus(USER_MESSAGE_STATUS_ALREADY_READ);
-        announcementRecord.update();
-    }
-
 }

@@ -282,12 +282,12 @@ public class MpPaymentService extends ShopBaseService {
 	 * @return
 	 * @throws WxPayException
 	 */
-	public WxPayRefundResult refundByTransactionId(String transactionId, String outRefundNo, Integer refundFee, Integer totalFee) throws WxPayException {
+	public WxPayRefundResult refundByTransactionId(String transactionId, String outRefundNo, Integer totalFee, Integer refundFee) throws WxPayException {
         if(Boolean.FALSE) {
             //TODO 扩展微信支付类型（国际、通联、子商账户）
             return null;
         }else {
-            return refund(null, transactionId, outRefundNo, refundFee, totalFee);
+            return refund(null, transactionId, outRefundNo, totalFee, refundFee);
         }
 
 	}
@@ -318,8 +318,8 @@ public class MpPaymentService extends ShopBaseService {
 	 * @return WxPayRefundResult
 	 * @throws WxPayException
 	 */
-	public WxPayRefundResult refund(String outTradeNo, String transactionId, String outRefundNo, Integer refundFee,
-			Integer totalFee)
+	public WxPayRefundResult refund(String outTradeNo, String transactionId, String outRefundNo, Integer totalFee,
+			Integer refundFee)
 			throws WxPayException {
 		WxPayment wxPayment = this.getMpPay();
 		WxPayRefundRequest request = WxPayRefundRequest.newBuilder()

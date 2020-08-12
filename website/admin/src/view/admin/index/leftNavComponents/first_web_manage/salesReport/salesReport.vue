@@ -105,7 +105,7 @@
 
 <script>
 import { getSalesReportList, getSalesReportExport } from '@/api/admin/basicConfiguration/salesreport.js'
-import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
+// import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -118,7 +118,7 @@ export default {
     }
   },
   mounted () {
-    this.getDateValue(1)
+    this.initData()
   },
   data () {
     return {
@@ -140,7 +140,8 @@ export default {
       },
       param: {
         startTime: '',
-        endTime: ''
+        endTime: '',
+        day: 1
       }
     }
   },
@@ -156,14 +157,15 @@ export default {
     // 选择时间段
     dateChangeHandler (time) {
       if (time !== 0) {
-        this.getDateValue(time)
+        this.param.day = time
         this.initData()
       }
     },
     // 自定义时间
     changeDate () {
+      this.param.day = ''
       this.param.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
-      this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
+      this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 23:59:59'
       this.startDate.year = this.timeValue[0].substring(0, 4)
       this.startDate.month = this.timeValue[0].substring(4, 6)
       this.startDate.day = this.timeValue[0].substring(6, 8)
@@ -173,26 +175,19 @@ export default {
       this.endDate.day = this.timeValue[1].substring(6, 8)
       this.initData()
     },
-    getDateValue (unit) {
-      getDate(unit).then(res => {
-        if (res.error === 0) {
-          this.startDate.year = res.content.startTime.split('-')[0]
-          this.startDate.month = res.content.startTime.split('-')[1]
-          this.startDate.day = res.content.startTime.split('-')[2]
-          this.endDate.year = res.content.endTime.split('-')[0]
-          this.endDate.month = res.content.endTime.split('-')[1]
-          this.endDate.day = res.content.endTime.split('-')[2]
-          this.param.startTime = res.content.startTime + ' 00:00:00'
-          this.param.endTime = res.content.endTime + ' 00:00:00'
-          this.initData()
-        }
-      }).catch(err => console.log(err))
-    },
     initData () {
       let params = Object.assign({}, this.param, this.pageParams)
       getSalesReportList(params).then(res => {
         console.log(res)
         if (res.error === 0) {
+          this.startDate.year = res.content.startTime.substr(0, 10).split('-')[0]
+          this.startDate.month = res.content.startTime.substr(0, 10).split('-')[1]
+          this.startDate.day = res.content.startTime.substr(0, 10).split('-')[2]
+          this.endDate.year = res.content.endTime.substr(0, 10).split('-')[0]
+          this.endDate.month = res.content.endTime.substr(0, 10).split('-')[1]
+          this.endDate.day = res.content.endTime.substr(0, 10).split('-')[2]
+          this.param.startTime = res.content.startTime
+          this.param.endTime = res.content.endTime
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
         }

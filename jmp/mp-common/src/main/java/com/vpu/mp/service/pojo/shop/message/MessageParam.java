@@ -13,5 +13,5 @@ public class MessageParam {
 
     private Integer messageId;
 
-    private Byte status;
+    private Byte messageType;
 }

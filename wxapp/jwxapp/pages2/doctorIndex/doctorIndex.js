@@ -11,8 +11,12 @@ global.wxPage({
     show_modal: 0,
     name: '',
     mobile: '',
+    mobileCheckCode: '',
     hosCode: '',
-    doctorInfo: []
+    doctorInfo: [],
+    // 工作状态
+    work_status: 1,
+    show_work_modal: 0
   },
   /**
    * 生命周期函数--监听页面加载
@@ -44,6 +48,9 @@ global.wxPage({
   docCode (e) {
     this.data.hosCode = e.detail.value
   },
+  verificationInput(e) {
+    this.data.mobileCheckCode = e.detail.value
+  },
   to_verify () {
     if(!this.data.name){
       util.showModal('提示','请输入医生姓名');
@@ -51,6 +58,10 @@ global.wxPage({
     }
     if(!this.data.mobile){
       util.showModal('提示','请输入医生手机号');
+      return false
+    }
+    if(!this.data.mobileCheckCode){
+      util.showModal('提示','请输入验证码');
       return false
     }
     if(!this.data.hosCode){
@@ -109,6 +120,58 @@ global.wxPage({
   },
   viewOperatePrescriptionList(){
     util.jumpLink('/pages2/operatePrescriptionList/operatePrescriptionList')
+  },
+  getVerificationCode() {
+    if (this.data.countDown) return false
+    if (!this.data.mobile) {
+      util.showModal("提示", "请输入手机号！");
+      return false;
+    }
+    if (!/^1[3456789]\d{9}$/.test(this.data.mobile)) {
+      util.showModal("提示", "请输入正确的手机号！");
+      return false;
+    }
+    util.api('/api/wxapp/user/patient/send/sms', res => {
+      if (res.error === 0) {
+        const TIME_COUNT = 60;
+        this.setData({
+          countDown: TIME_COUNT
+        })
+        if (!this.timer) {
+          this.timer = setInterval(() => {
+            if (this.data.countDown > 0 && this.data.countDown <= TIME_COUNT) {
+              this.setData({
+                countDown: --this.data.countDown
+              })
+            } else {
+              clearInterval(this.timer)
+              this.timer = null
+            }
+          }, 1000)
+        }
+      }
+    }, {
+      mobile: this.data.mobile
+    })
+  },
+  showChangeModal () {
+    this.setData({
+      show_work_modal: 1
+    })
+  },
+  bindChangeWork (e) {
+    let to_status = e.currentTarget.dataset.type;
+    if(to_status == 'stop'){
+      this.setData({
+        show_work_modal:0,
+        work_status: 0
+      })
+    }else{
+      this.setData({
+        show_work_modal:0,
+        work_status: 1
+      })
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

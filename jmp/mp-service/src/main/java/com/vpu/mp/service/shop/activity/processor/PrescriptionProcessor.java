@@ -32,10 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 
 /**
@@ -104,30 +101,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     private void auditPrescriptionValid(OrderBeforeParam param, List<PrescriptionVo> prescriptionList) {
         if (OrderConstant.MEDICAL_TYPE_RX.equals(param.getOrderMedicalType())){
             if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
-                log.info("处方药订单,药品与处方匹配通过--审核/直接通过");
+                log.info("处方药订单,药品与处方匹配通过--审核");
                 param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
-                //处方单号去重
-                prescriptionList = prescriptionList.stream()
-                        .collect(Collectors.collectingAndThen
-                                (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionCode))), ArrayList::new));
-                param.setPrescriptionList(prescriptionList);
-                //处方是否过期/是否使用
-                long size = prescriptionList.stream().filter(prescriptionVo -> {
-                    if (prescriptionVo.getSource().equals(PrescriptionConstant.SOURCE_MP_SYSTEM)) {
-                        if (!PrescriptionConstant.EXPIRE_TYPE_INVALID.equals(prescriptionVo.getExpireType())) {
-                            //系统内
-                            if (BaseConstant.YES.equals(prescriptionVo.getIsValid())) {
-                                //处方有效期内,没有被使用
-                                return prescriptionVo.getIsUsed().equals(BaseConstant.NO);
-                            }
-                        }
-                    }
-                    return false;
-                }).count();
-                if (prescriptionList.size()==size){
-                    log.info("所有处方都在有效-直接通过");
-                    param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
-                }
             }else {
                 log.info("处方药订单,存在没有匹配到订单得药品--线上开方");
                 param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);

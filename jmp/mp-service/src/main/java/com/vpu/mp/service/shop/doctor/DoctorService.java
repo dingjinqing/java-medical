@@ -2,36 +2,34 @@ package com.vpu.mp.service.shop.doctor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
-import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
+import com.vpu.mp.common.pojo.shop.table.DoctorDutyRecordDo;
+import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
+import com.vpu.mp.dao.shop.doctor.DoctorDutyRecordDao;
+import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorFetchOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +56,10 @@ public class DoctorService extends ShopBaseService {
     public TitleService titleService;
     @Autowired
     public UserDao userDao;
+    @Autowired
+    public UserDoctorAttentionDao userDoctorAttentionDao;
+    @Autowired
+    public DoctorDutyRecordDao doctorDutyRecordDao;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -70,6 +72,8 @@ public class DoctorService extends ShopBaseService {
         for (DoctorOneParam list : doctorList.dataList) {
             List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(list.getId());
             list.setDepartmentNames(departmentList);
+            String titleName = titleService.getTitleName(list.getTitleId());
+            list.setTitleName(titleName);
         }
 
         return doctorList;
@@ -243,7 +247,7 @@ public class DoctorService extends ShopBaseService {
             });
             return doctorDo.getId();
         } else {
-            return Integer.valueOf(BaseConstant.NO);
+            return  null;
         }
     }
 
@@ -270,6 +274,10 @@ public class DoctorService extends ShopBaseService {
             departmentIdsNew.add(doctorParam.getDepartmentId());
             List<Integer> departmentDoctorIds = doctorDepartmentCoupleDao.getDoctorIdsByDepartmentIds(departmentIdsNew);
             doctorParam.setDepartmentDoctorIds(departmentDoctorIds);
+        }
+        if (DoctorConstant.ATTENTION_TYPE.equals(doctorParam.getType()) && doctorParam.getUserId() > 0) {
+            List<Integer> userDoctorIds = userDoctorAttentionDao.listDoctorIdsByUser(doctorParam.getUserId());
+            doctorParam.setUserDoctorIds(userDoctorIds);
         }
         PageResult<DoctorConsultationOneParam> list = doctorDepartmentCoupleDao.listDoctorForConsultation(doctorParam);
         setDoctorDepartmentNames(list.getDataList());
@@ -319,5 +327,67 @@ public class DoctorService extends ShopBaseService {
                 item.setDepartmentName(Joiner.on(",").join(departmentList));
             }
         }
+    }
+
+    /**
+     * 新增用户医师关注
+     * @param
+     * @return
+     */
+    public void insertUserDoctor(UserDoctorParam param){
+        UserDoctorAttentionDo userDoctorAttentionDo = new UserDoctorAttentionDo();
+        FieldsUtil.assign(param,userDoctorAttentionDo);
+        userDoctorAttentionDao.insertUserDoctor(userDoctorAttentionDo);
+    }
+
+    /**
+     * 解除用户医师关注
+     * @param param
+     */
+    public void deleteUserDoctor(UserDoctorParam param) {
+        userDoctorAttentionDao.deleteUserDoctor(param);
+    }
+
+    /**
+     * 更新医师上班状态
+     * @param param
+     * @return int
+     */
+    public void updateOnDuty(DoctorDutyParam param){
+        doctorDao.updateOnDuty(param);
+        DoctorDutyRecordParam doctorDutyRecordParam = new DoctorDutyRecordParam();
+        doctorDutyRecordParam.setDoctorId(param.getDoctorId());
+        doctorDutyRecordParam.setDutyStatus(param.getOnDutyStatus());
+        doctorDutyRecordParam.setType(param.getType());
+        insertDoctorDutyRecord(doctorDutyRecordParam);
+        if (DoctorConstant.NOT_ON_DUTY.equals(param.getOnDutyStatus())) {
+            param.setOnDutyTime(DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS));
+            doctorDao.updateOnDutyTime(param);
+        }
+    }
+
+    /**
+     * 医师自动上班
+     */
+    public void onDutyDoctorTask (){
+        List<Integer> doctorIds=doctorDao.listNotOnDutyDoctorIds();
+        doctorIds.forEach(doctorId -> {
+            DoctorDutyParam doctorDuty = new DoctorDutyParam();
+            doctorDuty.setDoctorId(doctorId);
+            doctorDuty.setOnDutyStatus(DoctorConstant.ON_DUTY);
+            doctorDuty.setType(DoctorConstant.DOCTOC_DUTY_AUTOMATIC);
+            updateOnDuty(doctorDuty);
+        });
+    }
+
+    /**
+     * 新增医师上下班记录
+     * @param
+     * @return
+     */
+    public void insertDoctorDutyRecord(DoctorDutyRecordParam param){
+        DoctorDutyRecordDo doctorDutyRecordDo = new DoctorDutyRecordDo();
+        FieldsUtil.assign(param,doctorDutyRecordDo);
+        doctorDutyRecordDao.insertDoctorDutyRecord(doctorDutyRecordDo);
     }
 }

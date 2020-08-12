@@ -651,7 +651,7 @@ public class CartService extends ShopBaseService {
      * @return
      */
     public WxAppCartGoodsResultVo addBatchGoodsToCart(WxAppBatchAddGoodsToCartParam param, Integer userId) {
-        ResultMessage s = addGoodsToCart(param.getWxAppAddGoodsToCartParams().get(0));
+        ResultMessage s = ResultMessage.builder().build();
         WxAppCartGoodsResultVo cartGoodsResultVo = new WxAppCartGoodsResultVo();
         for (WxAppAddGoodsToCartParam addGoodsToCartParam : param.getWxAppAddGoodsToCartParams()) {
             s = addGoodsToCart(addGoodsToCartParam);

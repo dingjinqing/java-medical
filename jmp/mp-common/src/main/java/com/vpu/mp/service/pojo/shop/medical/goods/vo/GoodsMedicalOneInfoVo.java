@@ -14,4 +14,5 @@ public class GoodsMedicalOneInfoVo extends GoodsMedicalInfoEntity {
     private BigDecimal shopPrice;
     private String goodsImg;
     private Integer goodsNumber;
+    private Integer prdId;
 }

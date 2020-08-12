@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.doctor;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -9,10 +10,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
@@ -28,7 +26,6 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Repository
 public class DoctorDao extends ShopBaseDao {
-    public static final Integer ROOT_ID = 0;
 
     /**
      * 医师列表
@@ -38,8 +35,8 @@ public class DoctorDao extends ShopBaseDao {
      */
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
         SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName"))
-            .from(DOCTOR).leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
+            .select(DOCTOR.asterisk())
+            .from(DOCTOR);
         select.where(DOCTOR.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
         select.orderBy(DOCTOR.ID.desc());
@@ -243,5 +240,36 @@ public class DoctorDao extends ShopBaseDao {
             condition = condition.and(DOCTOR.NAME.like(likeValue(param.getName())));
         }
         return db().select().from(DOCTOR).where(condition).fetchInto(DoctorOneParam.class);
+    }
+
+    /**
+     * 更新医师上班状态
+     * @param param
+     * @return int
+     */
+    public void updateOnDuty(DoctorDutyParam param){
+        db().update(DOCTOR).set(DOCTOR.IS_ON_DUTY, param.getOnDutyStatus())
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+            .execute();
+
+    }
+
+    /**
+     * 更新医师上班状态
+     * @param param
+     * @return int
+     */
+    public int updateOnDutyTime(DoctorDutyParam param){
+        return db().update(DOCTOR).set(DOCTOR.ON_DUTY_TIME, param.getOnDutyTime())
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+            .execute();
+    }
+
+    public List<Integer> listNotOnDutyDoctorIds (){
+        return db().select(DOCTOR.ID).from(DOCTOR)
+            .where(DOCTOR.IS_ON_DUTY.eq(DoctorConstant.NOT_ON_DUTY)
+            .and(DOCTOR.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .and(DOCTOR.ON_DUTY_TIME.lt(DateUtil.date().toTimestamp()))
+            .fetchInto(Integer.class);
     }
 }

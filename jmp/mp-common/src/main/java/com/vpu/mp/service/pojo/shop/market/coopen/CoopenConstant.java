@@ -16,13 +16,13 @@ public class CoopenConstant {
     /**
      * 积分
      */
-    public static final byte SCORE = 3;
+    public static final byte SCORE = 4;
     /**
      * 余额
      */
-    public static final byte ACCOUNT = 3;
+    public static final byte ACCOUNT = 5;
     /**
      * 分裂优惠卷
      */
-    public static final byte SPLIT_COUPON = 3;
+    public static final byte SPLIT_COUPON = 6;
 }

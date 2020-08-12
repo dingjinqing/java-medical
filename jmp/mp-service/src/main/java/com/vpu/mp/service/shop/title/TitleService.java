@@ -100,6 +100,9 @@ public class TitleService extends ShopBaseService{
     }
 
     public Integer getTitleIdNew(String code) {
+        if (StringUtil.isBlank(code)){
+            return 0;
+        } 
         Integer titleId = getTitleByCode(code);
         if(titleId == null) {
             TitleOneParam titleTemp = new TitleOneParam();
@@ -151,5 +154,15 @@ public class TitleService extends ShopBaseService{
         allItem.setName("全部职称");
         titleList.add(0,allItem);
         return titleList;
+    }
+
+    /**
+     * 获取职称名称
+     * @param titleId
+     * @return
+     */
+    public String getTitleName(Integer titleId){
+        TitleOneParam titleInfo = titleDao.getOneInfo(titleId);
+        return titleInfo==null ? null:titleInfo.getName();
     }
 }

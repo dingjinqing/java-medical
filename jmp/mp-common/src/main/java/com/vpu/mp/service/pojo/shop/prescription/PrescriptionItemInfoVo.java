@@ -69,4 +69,8 @@ public class PrescriptionItemInfoVo {
      * 药品Id
      */
     private Integer goodsId;
+    /**
+     * 规格id
+     */
+    private Integer prdId;
 }

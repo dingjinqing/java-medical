@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = 1710388707;
+    private static final long serialVersionUID = -1083292995;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
@@ -167,6 +167,21 @@ public class Doctor extends TableImpl<DoctorRecord> {
      * The column <code>mini_shop_471752.b2c_doctor.update_time</code>. 最后修改时间
      */
     public final TableField<DoctorRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.on_duty_time</code>. 上班时间
+     */
+    public final TableField<DoctorRecord, Timestamp> ON_DUTY_TIME = createField("on_duty_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "上班时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.is_on_duty</code>. 是否上班
+     */
+    public final TableField<DoctorRecord, Byte> IS_ON_DUTY = createField("is_on_duty", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否上班");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.can_consultation</code>. 是否接诊
+     */
+    public final TableField<DoctorRecord, Byte> CAN_CONSULTATION = createField("can_consultation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否接诊");
 
     /**
      * Create a <code>mini_shop_471752.b2c_doctor</code> table reference

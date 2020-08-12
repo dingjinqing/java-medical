@@ -58,7 +58,7 @@ public class TitleDao extends ShopBaseDao{
      */
     public TitleOneParam getOneInfo(Integer titleId) {
         TitleOneParam info = db().select().from(DOCTOR_TITLE).where(DOCTOR_TITLE.ID.eq(titleId))
-            .fetchOneInto(TitleOneParam.class);
+            .fetchAnyInto(TitleOneParam.class);
         return info;
     }
 

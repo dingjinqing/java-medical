@@ -4843,10 +4843,13 @@ create table b2c_doctor(
     `consultation_price` decimal not null  default 0 comment '问诊费用',
     `treat_disease` varchar(256) not null default '' comment '主治疾病',
     `status` tinyint(1) not null default 1 comment '是否启用 1启用 0禁用',
-    `user_id` int(11) NOT NULL COMMENT '用户id，当前用户是否为医师',
+    `user_id` int(11) NOT NULL default 0 COMMENT '用户id，当前用户是否为医师',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    `on_duty_time`   timestamp    not null default current_timestamp comment '上班时间',
+    `is_on_duty`     tinyint(1)   not null default '1' comment '是否上班',
+    `can_consultation` tinyint(1)   not null default '1' comment '是否接诊',
     primary key (`id`)
 )comment ='医师表';
 
@@ -5017,10 +5020,12 @@ create TABLE `b2c_im_session`(
     `department_id` int(11) NOT NULL DEFAULT 0 COMMENT '科室id',
     `user_id` int(11) NOT NULL COMMENT '小程序发起会话用户id',
     `patient_id`  int(11) NOT NULL COMMENT '本次诊疗的患者id',
-    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束',
+    `session_status` tinyint NOT NULL DEFAULT 0 COMMENT '会话状态 0待支付，1医师待接诊，2会话中，3会话取消，4会话结束，5续诊，6会话终止',
+    `continue_session_count` int(11) NOT NULL DEFAULT 0 COMMENT '可继续问诊次数',
     `order_sn` varchar(32)  NOT NULL COMMENT '会话关联的订单sn',
     `limit_time` timestamp  COMMENT '医生接诊后会话截止时间点',
-    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+    `weight_factor` tinyint(1) NOT NULL DEFAULT 0 COMMENT '权重因子,用于不同状态排序使用',
+    `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标记',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     primary key (`id`)
@@ -5034,6 +5039,7 @@ create TABLE `b2c_im_session_item`(
     `to_id` int(11) COMMENT '本跳消息接收者id  医师id或用户userId',
     `message` varchar(2048) COMMENT '本条消息内容',
     `type` tinyint(1) COMMENT '消息类型 0文本 1图片 2处方 3患者病历简略信息',
+    `is_leaving_message` tinyint(1) COMMENT '是否是留言信息 0否 1是',
     `send_time` timestamp COMMENT '用户消息发送时间',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     primary key (`id`)
@@ -5079,6 +5085,7 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   `order_sn` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单号',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
   `money_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款金额',
+  `refund_reason` varchar(512)  NOT NULL DEFAULT '' COMMENT '退款原因',
   `refund_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单退款时间',
   `is_success` tinyint(1) NOT NULL DEFAULT '0' COMMENT '处理状态，1：退款成功，2：退款失败',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
@@ -5134,10 +5141,13 @@ CREATE TABLE `b2c_order_medical_history` (
     `patient_name` varchar(255) NOT NULL DEFAULT '' COMMENT '患者姓名',
     `sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0男1女',
     `age` int(11) NOT NULL DEFAULT '0' COMMENT '年龄',
+    `identity_code` varchar(255) NOT NULL DEFAULT '' COMMENT '证件号',
+    `identity_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
+    `patient_treatment_code` varchar(255) NOT NULL DEFAULT '' COMMENT '患者就诊卡号',
     `patient_complain` varchar(512) NOT NULL DEFAULT '' COMMENT '患者主诉',
     `disease_history` varchar(1000) NOT NULL DEFAULT '' COMMENT '历史诊断',
-    `allergy_history` varchar(64) NOT NULL DEFAULT '' COMMENT '过敏史',
-    `family_disease_history` varchar(64) NOT NULL DEFAULT '' COMMENT '家族病史',
+    `allergy_history` varchar(512) NOT NULL DEFAULT '' COMMENT '过敏史',
+    `family_disease_history` varchar(512) NOT NULL DEFAULT '' COMMENT '家族病史',
     `describe` varchar(512) NOT NULL DEFAULT '' COMMENT '自我描述',
     `gestation_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '妊娠哺乳状态:0:未知，1：无，2：备孕中，3：怀孕中，4：正在哺乳',
     `kidney_function_ok` tinyint(1) NOT NULL DEFAULT '0' COMMENT '肾功能:0:未知，1：正常，2：异常',
@@ -5160,3 +5170,45 @@ CREATE TABLE `b2c_user_announcement` (
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`announcement_id`)
 ) COMMENT = '用户公告关联表';
+
+-- 用户关注医师表
+create table `b2c_user_doctor_attention`(
+    `id`   int(11)      not null auto_increment,
+    `user_id` int(11) not null comment '用户ID',
+    `doctor_id` int(11) not null comment '医师ID',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key(`id`)
+)comment ='用户关注医师';
+
+-- 医师评价和打分
+create table `b2c_doctor_comment`(
+    `id`   int(11)      not null auto_increment,
+    `user_id` int(11) not null comment '用户ID',
+    `user_name` varchar(60) NOT NULL COMMENT '用户昵称',
+    `patient_id` int(11) not null comment '患者id',
+    `doctor_id` int(11) not null comment '医师id',
+    `stars` tinyint(1) NOT NULL DEFAULT 5 COMMENT '评价星级1~5',
+    `is_anonymou` tinyint(1) NOT NULL DEFAULT 0 COMMENT '匿名状态 0.未匿名；1.匿名',
+    `tag` varchar(100) DEFAULT '' COMMENT '评价标签',
+    `order_sn` varchar(20) NOT NULL COMMENT '订单编号',
+    `comm_note` varchar(1000) DEFAULT NULL COMMENT '评论内容',
+    `audit_status` tinyint(1) not null DEFAULT 0 COMMENT '0:未审批,1:审批通过,2:审批未通过',
+    `is_delete`     tinyint(1)   not null default '0',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key(`id`)
+)comment ='医师评价和打分';
+
+-- 医师上下班记录表
+create table `b2c_doctor_duty_record`(
+    `id`   int(11)      not null auto_increment,
+    `doctor_id` int(11) not null comment '医师ID',
+    `duty_status`   tinyint(1)   not null default '0' comment '上下班状态：0下班，1上班',
+    `type`          tinyint(1)   not null default '0' comment '自动手动：0自动，1手动',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key(`id`)
+)comment ='医师上下班记录表';
+

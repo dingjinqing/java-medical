@@ -2,7 +2,6 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -28,7 +26,6 @@ import javax.validation.Valid;
  * @date 2020/7/7 15:32
  */
 @RestController
-@RequestMapping("/api/wxapp/prescription")
 public class WxAppPrescriptionController extends WxAppBaseController  {
 
     @Autowired
@@ -37,7 +34,7 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
     /**
      * 获取处方类表
      */
-    @PostMapping("/list")
+    @PostMapping("/api/wxapp/prescription/list")
     public JsonResult listPageResultWx(@RequestBody @Validated PrescriptionPatientListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
@@ -48,7 +45,7 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      * 处方详情
      * @return
      */
-    @PostMapping("/details")
+    @PostMapping("/api/wxapp/prescription/details")
     public JsonResult getPrescriptionDetails(@RequestBody @Validated PrescriptionNoParam param){
         return success(prescriptionService.getInfoByPrescriptionNo(param.getPrescriptionCode()));
     }
@@ -57,18 +54,13 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      * 生成处方
      * @return
      */
-    @PostMapping("/add")
+    @PostMapping("/api/wxapp/prescription/add")
     public JsonResult insertPrescription(@RequestBody PrescriptionOneParam prescriptionParam){
         Integer userId = wxAppAuth.user().getUserId();
         prescriptionParam.setUserId(userId);
         prescriptionParam.setIsUsed(BaseConstant.NO);
         prescriptionParam.setAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
-        PrescriptionParam result= null;
-        try {
-            result = prescriptionService.insertPrescription(prescriptionParam);
-        } catch (MpException e) {
-            return fail(e.getErrorCode());
-        }
+        PrescriptionParam  result = prescriptionService.insertPrescription(prescriptionParam);
         return success(result);
     }
 
@@ -76,7 +68,7 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      * 处方药列表
      * @return
      */
-    @PostMapping("/goods/list")
+    @PostMapping("/api/wxapp/prescription/goods/list")
     public JsonResult listPrescriptionGoodsList(@RequestBody @Validated PrescriptionNoParam param){
         return success(shop().prescriptionService.listGoodsByPrescriptionCode(param.getPrescriptionCode()));
     }
@@ -86,7 +78,7 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      * @param param
      * @return
      */
-    @PostMapping("/cart/batch/add")
+    @PostMapping("/api/wxapp/prescription/cart/batch/add")
     public JsonResult addGoodsToCart(@RequestBody @Valid WxAppBatchAddGoodsToCartParam param){
         WxAppSessionUser user = wxAppAuth.user();
         WxAppCartGoodsResultVo cgr = shop().cart.addBatchGoodsToCart(param,user.getUserId());
