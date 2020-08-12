@@ -5178,3 +5178,15 @@ create table `b2c_user_doctor_attention`(
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key(`id`)
 )comment ='用户关注医师';
+
+-- 医师上下班记录表
+create table `b2c_doctor_duty_record`(
+    `id`   int(11)      not null auto_increment,
+    `doctor_id` int(11) not null comment '医师ID',
+    `duty_status`   tinyint(1)   not null default '0' comment '上下班状态：0下班，1上班',
+    `type`          tinyint(1)   not null default '0' comment '自动手动：0自动，1手动',
+    `create_time`   timestamp    not null default current_timestamp,
+    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key(`id`)
+)comment ='医师上下班记录表';
+
