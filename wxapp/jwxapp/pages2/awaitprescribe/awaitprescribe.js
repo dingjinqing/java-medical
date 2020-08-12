@@ -103,18 +103,22 @@ global.wxPage({
       util.showModal('提示', "请输入驳回原因")
       return false
     }
-    util.api('/api/wxapp/order/prescription/make', res => {
-      if(res.error == ''){
-        util.toast_success('驳回成功');
-        this.requestInfo();
-      } else {
-        util.showModal('提示', res.message)
-        return false
-      }
-    },{
-      orderId: e.currentTarget.dataset.taped_order_id,
-      auditStatus: 2
-    })
+    util.showModal('提示', "确定要驳回患者处方申请并退款吗？", () => {
+      util.api('/api/wxapp/order/prescription/make', res => {
+        if(res.error == ''){
+          util.toast_success('驳回成功');
+          this.requestInfo();
+        } else {
+          util.showModal('提示', res.message)
+          return false
+        }
+      },{
+        orderId: e.currentTarget.dataset.taped_order_id,
+        auditStatus: 2,
+        reasonDesc: this.data.rejectReason,
+        reasonType: 5
+      })
+    },true,'取消','驳回') 
     this.data.taped_order_id = '';
     this.data.rejectReason = '';
     this.setData({
