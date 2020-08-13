@@ -132,11 +132,10 @@ global.wxPage({
   changeReadNum (mesType,mesId) {
     util.api('/api/wxapp/message/change', res => {
       if(res.error == 0){
-        this.requestList()
         this.setData({
-          system_num: res.content.announcementMessageCount,
-          order_num: res.content.orderMessageCount,
-          query_num: res.content.imSessionMessageCount,
+          system_num: res.content.announcementCount,
+          order_num: res.content.orderCount,
+          query_num: res.content.chatCount,
         })
       }
     },{

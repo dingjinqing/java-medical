@@ -46,4 +46,13 @@ public class DoctorConstant {
      * 关注数排序
      */
     public static final Byte ATTENTION_SORT_TYPE = 5;
+    /**
+     * 启用
+     */
+    public static final Byte ABLE = 1;
+    /**
+     * 禁用
+     */
+    public static final Byte DISABLE = 0;
+
 }
