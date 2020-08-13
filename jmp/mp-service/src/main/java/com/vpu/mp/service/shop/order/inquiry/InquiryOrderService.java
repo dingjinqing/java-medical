@@ -278,6 +278,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @throws MpException
      */
     public void refundInquiryOrder(InquiryOrderDo order,BigDecimal refundMoney,String refundReason)throws MpException{
+        logger().info("问诊订单退款-开始start,orderSn:{}"+order.getOrderSn());
         boolean successFlag=true;
         if(InquiryOrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())){
             //退款流水号
@@ -315,13 +316,15 @@ public class InquiryOrderService extends ShopBaseService {
             order.setOrderStatus(InquiryOrderConstant.ORDER_PART_REFUND);
 
         }
+        order.setUpdateTime(DateUtils.getLocalDateTime());
         inquiryOrderDao.update(order);
         //取消未接诊过期的会话
         List<String> orderSnList=new ArrayList<>();
         orderSnList.add(order.getOrderSn());
         imSessionService.batchCancelSession(orderSnList);
         //交易记录
-        tradesRecord.addRecord(order.getOrderAmount(),order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
+        tradesRecord.addRecord(refundMoney,order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
+        logger().info("问诊订单退款-结束end,orderSn:{}"+order.getOrderSn());
     }
 
     /**

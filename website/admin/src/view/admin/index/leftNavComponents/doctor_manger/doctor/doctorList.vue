@@ -108,43 +108,33 @@
             label='操作'
           >
             <template slot-scope="scope">
-                <div class="operation">
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="编辑"
-                      placement="top"
-                    >
-                      <i
-                        class="iconfont iconbianji"
-                        @click="editDoctor(scope.row.id)"
-                      ></i>
-                    </el-tooltip>
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="停用"
-                      placement="top"
-                      v-if="scope.row.status == 1"
-                    >
-                      <i
-                        class="iconfont icontingyong"
-                        @click="puaseDoctor(scope.row)"
-                      ></i>
-                    </el-tooltip>
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="启用"
-                      placement="top"
-                      v-if="scope.row.status == 0"
-                    >
-                      <i
-                        class="iconfont iconqiyong"
-                        @click="beginDoctor(scope.row)"
-                      ></i>
-                    </el-tooltip>
-                </div>
+              <div class="operation">
+                <a
+                  href="javaScript:void(0);"
+                  class="same_btn"
+                  @click="editDoctor(scope.row.id)"
+                >编辑</a>
+                <a
+                  href="javaScript:void(0);"
+                  class="same_btn"
+                  v-if="scope.row.status == 1"
+                  @click="puaseDoctor(scope.row)"
+                >停用</a>
+                <a
+                  href="javaScript:void(0);"
+                  class="same_btn"
+                  v-if="scope.row.status == 0"
+                  @click="beginDoctor(scope.row)"
+                >启用</a>
+                <a
+                  href="javaScript:void(0);"
+                  class="same_btn"
+                >解除绑定</a>
+                <a
+                  href="javaScript:void(0);"
+                  class="same_btn"
+                >停止问诊</a>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -162,7 +152,6 @@ import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
   data () {
-    // let that = this
     return {
       loading: false,
       langDefaultFlag: false,
@@ -173,7 +162,8 @@ export default {
         departmentName: null
       },
       // 表格原始数据
-      originalData: []
+      originalData: [],
+      imgHost: `${this.$imageHost}`
     }
   },
   methods: {
@@ -196,6 +186,11 @@ export default {
           }
           if (originalData[i].workTime !== null && originalData[i].workTime !== 0) {
             originalData[i].workTime = originalData[i].workTime.substr(0, 10)
+          }
+          if (originalData[i].url === '') {
+            originalData[i].url = this.imgHost + '/image/admin/doc_url_default.png'
+          } else {
+            originalData[i].url = this.imgHost + '/' + originalData[i].url
           }
         }
         console.log(originalData)
@@ -327,18 +322,20 @@ export default {
             width: 45px;
             height: 45px;
             margin-right: 10px;
-            border-radius: 100%;
+            border-radius: 100px;
+            border: 1px solid #eee;
           }
         }
         .operation {
           display: flex;
           justify-content: center;
-          > .item {
-            font-size: 22px;
-            color: #66b1ff;
-            cursor: pointer;
-            margin-right: 8px;
-          }
+          > .same_btn{
+              font-size: 12px;
+              text-decoration: none;
+              cursor: pointer;
+              margin-right: 8px;
+              color: #5a8bff;
+            }
         }
     }
 }

@@ -54,9 +54,11 @@ public class RechargeService extends ShopBaseService {
             //从二方库拉取数据
             smsAccountRechargeListVo = smsAccountService.listSmsAccountRechargeRecord(smsAccountRechargeRecordParam);
             //向本地库同步
-            addRechargeList(smsAccountRechargeListVo);
         } catch (MpException e) {
             e.printStackTrace();
+        }
+        if (!smsAccountRechargeListVo.getData().isEmpty()) {
+            addRechargeList(smsAccountRechargeListVo);
         }
         //向前端返回回参
         return smsAccountRechargeListVo;

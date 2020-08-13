@@ -632,8 +632,8 @@ export default {
           flag: false
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/icon_left/pledge_config.png',
-          imgUrl_h: this.$imageHost + '/image/admin/icon_left/pledge_config_h.png',
+          imgUrl: this.$imageHost + '/image/admin/icon_left/smsConfig.png',
+          imgUrl_h: this.$imageHost + '/image/admin/icon_left/smsConfig_h.png',
           path: '/admin/home/main/basicConfig/smsConfig',
           span: '',
           name: 'smsConfig',

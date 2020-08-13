@@ -21,8 +21,10 @@ import com.vpu.mp.dao.shop.doctor.DoctorDutyRecordDao;
 import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
+import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
@@ -66,6 +68,8 @@ public class DoctorService extends ShopBaseService {
     protected UserDoctorAttentionDao userDoctorAttentionDao;
     @Autowired
     protected DoctorDutyRecordDao doctorDutyRecordDao;
+    @Autowired
+    public DoctorCommentService doctorCommentService;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -92,12 +96,17 @@ public class DoctorService extends ShopBaseService {
     }
 
     public Integer updateDoctor(DoctorOneParam param) {
+        DoctorOneParam doctorInfo = getOneInfo(param.getId());
+        if (!doctorInfo.getStatus().equals(param.getStatus())) {
+            dealDoctorWx(param.getId(),param.getStatus());
+        }
         doctorDao.updateDoctor(param);
         setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
         return param.getId();
     }
     public Integer enableDoctor(DoctorOneParam param) {
         doctorDao.updateDoctor(param);
+        dealDoctorWx(param.getId(),param.getStatus());
         return param.getId();
     }
 
@@ -457,5 +466,73 @@ public class DoctorService extends ShopBaseService {
         doctorSortParam.setDoctorId(doctorId);
         doctorSortParam.setAttentionNumber(attentionNumber);
         updateAttentionNumber(doctorSortParam);
+    }
+
+    /**
+     * 更新医师登录token
+     * @param doctorId
+     * @param userToken
+     */
+    public void updateUserToken(Integer doctorId, String userToken){
+        doctorDao.updateUserToken(doctorId,userToken);
+    }
+
+    /**
+     * 处理医师wx账号
+     * @param doctorId
+     * @param status
+     */
+    public void dealDoctorWx (Integer doctorId,Byte status){
+        DoctorOneParam doctorInfo = getOneInfo(doctorId);
+        if (doctorInfo.getUserId() > 0) {
+            jedisManager.delete(doctorInfo.getUserToken());
+            Byte userType = DoctorConstant.ABLE.equals(status) ? AuthConstant.AUTH_TYPE_DOCTOR_USER:AuthConstant.AUTH_TYPE_NORMAL_USER;
+            userDao.updateUserDoctorAuth(doctorInfo.getUserId(),userType);
+        }
+    }
+
+    /**
+     * 根userId更新医师token
+     * @param userId
+     * @param userToken
+     */
+    public void updateUserTokenByUserId(Integer userId,String userToken) {
+        doctorDao.updateUserTokenByUserId(userId,userToken);
+    }
+
+    /**
+     * 删除医师登录token
+     * @param doctorId
+     */
+    public void deleteUserToken(Integer doctorId){
+        jedisManager.delete(getOneInfo(doctorId).getUserToken());
+    }
+
+    /**
+     * 咨询医师详情
+     * @param doctorId
+     * @return
+     */
+    public DoctorOneParam getWxDoctorInfo(Integer doctorId){
+        DoctorOneParam doctorInfo = getOneInfo(doctorId);
+        setDoctorDepartmentTitle(doctorInfo);
+        DoctorCommentListParam doctorCommentListParam = new DoctorCommentListParam();
+        doctorCommentListParam.setDoctorId(doctorId);
+        doctorInfo.setCommentList(doctorCommentService.listDoctorComment(doctorCommentListParam));
+        return doctorInfo;
+    }
+
+    /**
+     * 设置医师科室信息，医院信息
+     * @param param
+     */
+    public void setDoctorDepartmentTitle(DoctorOneParam param) {
+        param.setHospitalName(HOSPITAL_NAME);
+        List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(param.getId());
+        if (departmentList.size() > 0) {
+            param.setDepartmentName(Joiner.on(",").join(departmentList));
+        }
+        String titleName = titleService.getTitleName(param.getTitleId());
+        param.setTitleName(titleName);
     }
 }

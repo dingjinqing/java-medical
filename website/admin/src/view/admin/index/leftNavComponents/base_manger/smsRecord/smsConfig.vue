@@ -15,7 +15,7 @@
           <inpayRecord />
         </el-tab-pane>
         <el-tab-pane
-          label="充值记录"
+          label="短信设置"
           name="third"
         >
           <smsSetting />

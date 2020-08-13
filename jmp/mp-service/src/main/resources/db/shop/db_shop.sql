@@ -4854,6 +4854,7 @@ create table b2c_doctor(
     `consultation_number` int(11) not null default 0 comment '接诊数',
     `avg_comment_star` decimal(10,2) not null default 0 comment '平均评分',
     `attention_number` int(11) not null default 0 comment '关注数',
+    `user_token` varchar(256) not null default '' comment '医师关联用户token',
     primary key (`id`)
 )comment ='医师表';
 
@@ -5055,7 +5056,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
  `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
- `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7退款中',
+ `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7部分退款',
  `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
  `doctor_name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '医师名称',
  `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '科室id',
@@ -5123,6 +5124,7 @@ CREATE TABLE `b2c_user_message` (
     PRIMARY KEY (`message_id`)
 ) comment ='用户消息表';
 
+-- 短信充值记录表
 CREATE TABLE `b2c_sms_recharge` (
     `recharge_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '充值记录主键',
     `sid` varchar(255) NOT NULL DEFAULT '' COMMENT '充值账户id',
