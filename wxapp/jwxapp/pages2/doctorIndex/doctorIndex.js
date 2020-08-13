@@ -89,6 +89,7 @@ global.wxPage({
       doctorName: this.data.name,
       mobile: this.data.mobile,
       hospitalCode: this.data.hosCode,
+      mobileCheckCode: this.data.mobileCheckCode,
       userId: util.getCache('user_id')
     })
   },
@@ -131,7 +132,7 @@ global.wxPage({
       util.showModal("提示", "请输入正确的手机号！");
       return false;
     }
-    util.api('/api/wxapp/user/patient/send/sms', res => {
+    util.api('/api/wxapp/doctor/send/check/code', res => {
       if (res.error === 0) {
         const TIME_COUNT = 60;
         this.setData({
