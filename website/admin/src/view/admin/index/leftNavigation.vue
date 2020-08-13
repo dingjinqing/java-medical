@@ -19,17 +19,17 @@
           :key="listIndex"
           v-if="listItem.children && listItem.children.length"
         >
-          <span slot="title">{{listItem.name | getNavName}}</span>
-          <el-menu-item-group>
-            <el-menu-item
-              :index="childrenItem.path"
-              v-for="(childrenItem,childrenIndex) in listItem.children"
-              :key="childrenIndex"
-            >
-              <img :src="childrenItem.imgUrl">
-              <span slot="title">{{childrenItem.name | getNavName}}</span>
-            </el-menu-item>
-          </el-menu-item-group>
+          <template slot="title">
+            <img :src="listItem.imgUrl">
+            <span>{{listItem.name | getNavName}}</span>
+          </template>
+          <el-menu-item
+            :index="childrenItem.path"
+            v-for="(childrenItem,childrenIndex) in listItem.children"
+            :key="childrenIndex"
+          >
+            <span slot="title">{{childrenItem.name | getNavName}}</span>
+          </el-menu-item>
         </el-submenu>
         <el-menu-item
           :index="listItem.path"
@@ -752,6 +752,20 @@ export default {
     .el-submenu .el-menu-item {
       width: 100%;
       min-width: 0;
+    }
+    .el-submenu {
+      .el-menu-item {
+        background-color: #1f2d3d !important;
+        padding-left: 44px !important;
+        &:hover {
+          background-color: #13202e !important;
+        }
+      }
+    }
+    .el-submenu__title {
+      &:hover {
+        background-color: #13202e !important;
+      }
     }
   }
 }
