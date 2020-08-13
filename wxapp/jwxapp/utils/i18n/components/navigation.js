@@ -142,5 +142,6 @@ module.exports = {
     "addPatientMessage":"患者信息",
     "doctorSearch":"医师咨询",
     "doctorComment":"医师评价",
+    "doctorIntroduce":"医师简介"
   }
 }

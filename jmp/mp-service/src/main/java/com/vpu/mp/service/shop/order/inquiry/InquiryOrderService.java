@@ -315,13 +315,14 @@ public class InquiryOrderService extends ShopBaseService {
             order.setOrderStatus(InquiryOrderConstant.ORDER_PART_REFUND);
 
         }
+        order.setUpdateTime(DateUtils.getLocalDateTime());
         inquiryOrderDao.update(order);
         //取消未接诊过期的会话
         List<String> orderSnList=new ArrayList<>();
         orderSnList.add(order.getOrderSn());
         imSessionService.batchCancelSession(orderSnList);
         //交易记录
-        tradesRecord.addRecord(order.getOrderAmount(),order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
+        tradesRecord.addRecord(refundMoney,order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
     }
 
     /**

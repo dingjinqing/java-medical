@@ -1,6 +1,7 @@
 package com.vpu.mp.dao.shop.session;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
@@ -10,9 +11,12 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
 import org.jooq.Condition;
+import org.jooq.Record1;
 import org.jooq.SelectSeekStep2;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -185,4 +189,24 @@ public class ImSessionDao extends ShopBaseDao {
             .where(IM_SESSION.ID.eq(sessionId)).fetchAnyInto(ImSessionDo.class);
     }
 
+    /**
+     * 获取医师接诊平均响应时间
+     * @param doctorId 医师id
+     * @return 平均响应时间 秒
+     */
+    public Integer getSessionReadyToOnAckAvgTime(Integer doctorId){
+        Record1<BigDecimal> bigDecimalRecord1 = db().select(DSL.avg(IM_SESSION.READY_TO_ON_AKC_TIME)).from(IM_SESSION)
+            .where(IM_SESSION.DOCTOR_ID.eq(doctorId)
+                .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_READY_TO_START, ImSessionConstant.SESSION_CANCEL)))
+            .fetchAny();
+        if (bigDecimalRecord1 == null) {
+            return null;
+        }
+        BigDecimal bigDecimal = bigDecimalRecord1.get(0, BigDecimal.class);
+        return  bigDecimal.intValue();
+    }
+
+    public Integer getSessionCount(Integer doctorId) {
+        return db().fetchCount(IM_SESSION, IM_SESSION.DOCTOR_ID.eq(doctorId).and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
+    }
 }

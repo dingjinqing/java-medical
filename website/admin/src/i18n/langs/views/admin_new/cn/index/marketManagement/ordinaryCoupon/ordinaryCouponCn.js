@@ -119,7 +119,7 @@ export const cn = {
   validatesuitGoods3: '请选择指定平台分类!',
   validateType: '请选择优惠券类型',
   validateactName1: '请输入优惠券名称',
-  validateactName2: '长度在不能超过10个字符',
+  validateactName2: '名称不能超过10个字符',
   validatereceivePerPerson: '请选择每人限领张数',
   validateNum: '请输入正数, 可以保留两位小数',
   validateNum1: '请输入正整数!',
