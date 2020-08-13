@@ -130,7 +130,7 @@ public class PrescriptionDao extends ShopBaseDao {
                 PATIENT.NAME).from(PRESCRIPTION)
                 .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID));
         if (!Strings.isEmpty(param.getPatientName())){
-            record.where(PRESCRIPTION.PATIENT_NAME.eq(param.getPatientName()));
+            record.where(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName())));
         }
         if (!Strings.isEmpty(param.getPatientMobile())){
             record.leftJoin(PATIENT).on(PATIENT.MOBILE.eq(param.getPatientMobile()));
@@ -143,7 +143,7 @@ public class PrescriptionDao extends ShopBaseDao {
             record.where(PRESCRIPTION.DEPARTMENT_NAME.eq(param.getDepartmentName()));
         }
         if (!Strings.isEmpty(param.getDoctorName())){
-            record.where(PRESCRIPTION.DOCTOR_NAME.eq(param.getDoctorName()));
+            record.where(PRESCRIPTION.DOCTOR_NAME.eq(likeValue(param.getDoctorName())));
         }
         if (!Strings.isEmpty(param.getDiagnosisName())){
             record.where(PRESCRIPTION.DIAGNOSIS_NAME.eq(param.getDiagnosisName()));
@@ -167,12 +167,24 @@ public class PrescriptionDao extends ShopBaseDao {
         if (param.getPrescriptionNos() != null) {
             and.and(PRESCRIPTION.PRESCRIPTION_CODE.in(param.getPrescriptionNos()));
         }
+        if (!Strings.isEmpty(param.getPatientName())){
+            and.and(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName())));
+        }
+        if (!Strings.isEmpty(param.getDoctorName())){
+            and.and(PRESCRIPTION.DOCTOR_NAME.eq(likeValue(param.getDoctorName())));
+        }
+        if (param.getDiagnoseEndTime()!=null&&param.getDiagnoseStartTime()!=null){
+            and.and(PRESCRIPTION.DIAGNOSE_TIME.ge(param.getDiagnoseStartTime()))
+                    .and(PRESCRIPTION.DIAGNOSE_TIME.le(param.getDiagnoseEndTime()));
+        }
+        if (param.getAuditType()!=null){
+            and.and(PRESCRIPTION.AUDIT_TYPE.eq(param.getAuditType()));
+        }
         and.orderBy(PRESCRIPTION.CREATE_TIME.desc());
         return getPageResult(and, param, PrescriptionListVo.class);
     }
 
     /**
-     * *****
      * 小程序分页
      * @param param
      * @return
@@ -181,7 +193,7 @@ public class PrescriptionDao extends ShopBaseDao {
         SelectConditionStep<Record> and = db().select().from(PRESCRIPTION)
                 .where(PRESCRIPTION.PATIENT_ID.eq(param.getUserPatientParam().getPatientId()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
-        if (PatientConstant.FETCH.equals(param.getUserPatientParam().getIsFetch())) {
+        if (PatientConstant.UN_FETCH.equals(param.getUserPatientParam().getIsFetch())) {
             and.and(PRESCRIPTION.USER_ID.eq(param.getUserPatientParam().getUserId()));
         }
         and.orderBy(PRESCRIPTION.CREATE_TIME.desc());
