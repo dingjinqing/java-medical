@@ -202,7 +202,7 @@ public class InquiryOrderService extends ShopBaseService {
         InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
         //临时添加支付回调，正式使用删除
         String test = "test";
-        if (param.getDescriptionDisease().contains(test)) {
+        if (param.getDescriptionDisease().contains(test)||param.getOrderAmount().compareTo(BigDecimal.ZERO)<=0) {
             inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         } else {
             //微信支付接口
@@ -218,11 +218,11 @@ public class InquiryOrderService extends ShopBaseService {
             logger().debug("微信支付接口调用结果：{}", vo);
             // 更新记录微信预支付id：prepayid
             inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
-            vo.setOrderSn(orderSn);
+
 
             logger().debug("微信支付创建订单结束");
         }
-
+        vo.setOrderSn(orderSn);
         //添加会话问诊
         ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
         FieldsUtil.assign(orderInfo,imSessionNewParam);
