@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.doctor;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @Description
  * @Author 赵晓东
@@ -13,21 +15,26 @@ public class DoctorAuthParam {
     /**
      * 医师姓名
      */
+    @NotNull
     private String doctorName;
     /**
      * 医师电话
      */
+    @NotNull
     private String mobile;
     /**
      * 医师医院唯一编码
      */
+    @NotNull
     private String hospitalCode;
     /**
      * 当前用户id
      */
     private Integer userId;
     /**
-     * 用户缓存信息
+     * 验证码
      */
-    private String token;
+    @NotNull
+    private String mobileCheckCode;
+
 }

@@ -15,6 +15,8 @@ public class SmsTemplate {
      */
     public static final String PATIENT_CHECK_MOBILE = "【%s】验证码%s，10分钟内有效。验证码提供给他人可能导致账号被盗，请勿泄漏，谨防被骗";
 
+    public static final String DOCTOR_CHECK_MOBILE = "【%s】医师认证验证码%s，10分钟内有效。验证码提供给他人可能导致账号被盗，请勿泄漏，谨防被骗";
+
     /**
      * 测试
      */
