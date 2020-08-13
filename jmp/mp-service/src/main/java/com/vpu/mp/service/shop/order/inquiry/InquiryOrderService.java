@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,15 +127,17 @@ public class InquiryOrderService extends ShopBaseService {
         FieldsUtil.assign(param,inquiryOrderDo);
         Byte prevStatus = inquiryOrderDo.getOrderStatus();
         inquiryOrderDo.setOrderStatus(param.getOrderStatus());
-        inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
+            inquiryOrderDo.setLimitTime(DateUtils.getTimeStampPlus(InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS));
             imSessionService.updateSessionToGoingOn(param.getSessionId());
         }
         //更新会话状态为关闭
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
+            inquiryOrderDo.setFinishedTime(DateUtils.getLocalDateTime());
             imSessionService.closeImSession(param.getSessionId());
         }
+        inquiryOrderDao.update(inquiryOrderDo);
     }
     public void insert(InquiryOrderDo inquiryOrderDo){
         int orderId=inquiryOrderDao.save(inquiryOrderDo);

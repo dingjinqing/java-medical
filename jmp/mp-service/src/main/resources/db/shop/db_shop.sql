@@ -5073,6 +5073,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
  `pay_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '支付时间',
  `refund_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款金额',
+ `limit_time` timestamp  NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '医生接诊后会话截止时间点',
  `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
  `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
  `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',

@@ -91,4 +91,16 @@ public class InquiryOrderTaskService extends ShopBaseService {
     public void refundExecute(InquiryOrderDo order) throws MpException {
         inquiryOrderService.refundInquiryOrder(order,order.getRefundMoney(),"");
     }
+
+    /**
+     * 接诊中超时自动结束的问诊订单
+     */
+    public void finishedCloseOrder(){
+        List<InquiryOrderDo> list=inquiryOrderDao.getFinishedCloseOrder();
+        list.forEach(order -> {
+            order.setOrderStatus(InquiryOrderConstant.ORDER_FINISHED);
+            order.setFinishedTime(DateUtils.getLocalDateTime());
+            inquiryOrderDao.update(order);
+        });
+    }
 }
