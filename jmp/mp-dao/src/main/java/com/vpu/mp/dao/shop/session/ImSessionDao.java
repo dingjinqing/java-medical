@@ -14,6 +14,7 @@ import org.jooq.SelectSeekStep2;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.IM_SESSION;
@@ -47,6 +48,19 @@ public class ImSessionDao extends ShopBaseDao {
         imSessionRecord.update();
     }
 
+    /**
+     * 批量修改会话
+     * @param imSessionDos
+     */
+    public void batchUpdate(List<ImSessionDo> imSessionDos) {
+        List<ImSessionRecord> imSessionRecords = new ArrayList<>();
+        for (ImSessionDo imSessionDo : imSessionDos) {
+            ImSessionRecord imSessionRecord = new ImSessionRecord();
+            FieldsUtil.assign(imSessionDo,imSessionRecord);
+            imSessionRecords.add(imSessionRecord);
+        }
+        db().batchUpdate(imSessionRecords).execute();
+    }
 
     /**
      * 根据id获取对应的会话信息
@@ -76,6 +90,20 @@ public class ImSessionDao extends ShopBaseDao {
         db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS, status)
             .set(IM_SESSION.WEIGHT_FACTOR,weightFactor)
             .where(IM_SESSION.ID.eq(imSessionId))
+            .execute();
+    }
+
+
+    public void batchUpdateSessionEvaluateStatus(List<Integer> imSessionIds, Byte status) {
+        db().update(IM_SESSION).set(IM_SESSION.EVALUATE_STATUS,status)
+            .where(IM_SESSION.ID.in(imSessionIds))
+            .execute();
+    }
+
+    public void batchUpdateSessionEvaluateStatus(List<Integer> imSessionIds, Byte newStatus,Byte oldStatus) {
+        db().update(IM_SESSION)
+            .set(IM_SESSION.EVALUATE_STATUS,newStatus)
+            .where(IM_SESSION.ID.in(imSessionIds).and(IM_SESSION.EVALUATE_STATUS.eq(oldStatus)))
             .execute();
     }
 

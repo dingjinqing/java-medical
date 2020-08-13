@@ -19,6 +19,7 @@ public class ImSessionDo {
     private Byte      sessionStatus;
     private Integer continueSessionCount;
     private Byte weightFactor;
+    private Byte evaluateStatus;
     private String    orderSn;
     private Timestamp limitTime;
     private Byte      isDelete;

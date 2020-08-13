@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = -536661259;
+    private static final long serialVersionUID = 325813783;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.order_id</code>. 订单id
@@ -74,14 +74,14 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7退款中
+     * Setter for <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7部分退款
      */
     public void setOrderStatus(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7退款中
+     * Getter for <code>mini_shop_471752.b2c_inquiry_order.order_status</code>. 订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7部分退款
      */
     public Byte getOrderStatus() {
         return (Byte) get(3);
@@ -340,101 +340,115 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_inquiry_order.limit_time</code>. 医生接诊后会话截止时间点
+     */
+    public void setLimitTime(Timestamp value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_inquiry_order.limit_time</code>. 医生接诊后会话截止时间点
+     */
+    public Timestamp getLimitTime() {
+        return (Timestamp) get(22);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.cancelled_time</code>. 取消时间
      */
     public void setCancelledTime(Timestamp value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.cancelled_time</code>. 取消时间
      */
     public Timestamp getCancelledTime() {
-        return (Timestamp) get(22);
+        return (Timestamp) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.finished_time</code>. 订单完成时间
      */
     public void setFinishedTime(Timestamp value) {
-        set(23, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.finished_time</code>. 订单完成时间
      */
     public Timestamp getFinishedTime() {
-        return (Timestamp) get(23);
+        return (Timestamp) get(24);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.description_disease</code>. 病情描述
      */
     public void setDescriptionDisease(String value) {
-        set(24, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.description_disease</code>. 病情描述
      */
     public String getDescriptionDisease() {
-        return (String) get(24);
+        return (String) get(25);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.image_url</code>. 病情描述image
      */
     public void setImageUrl(String value) {
-        set(25, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.image_url</code>. 病情描述image
      */
     public String getImageUrl() {
-        return (String) get(25);
+        return (String) get(26);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除
      */
     public void setIsDelete(Byte value) {
-        set(26, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除
      */
     public Byte getIsDelete() {
-        return (Byte) get(26);
+        return (Byte) get(27);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(27, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(27);
+        return (Timestamp) get(28);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(28, value);
+        set(29, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(28);
+        return (Timestamp) get(29);
     }
 
     // -------------------------------------------------------------------------
@@ -463,7 +477,7 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
     /**
      * Create a detached, initialised InquiryOrderRecord
      */
-    public InquiryOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, Integer doctorId, String doctorName, Integer departmentId, String departmentName, Integer patientId, String patientMobile, String patientName, Byte patientSex, Date patientBirthday, String patientIdentityCode, Byte patientIdentityType, String payCode, String payName, String paySn, String prepayId, BigDecimal orderAmount, Timestamp payTime, BigDecimal refundMoney, Timestamp cancelledTime, Timestamp finishedTime, String descriptionDisease, String imageUrl, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
+    public InquiryOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, Integer doctorId, String doctorName, Integer departmentId, String departmentName, Integer patientId, String patientMobile, String patientName, Byte patientSex, Date patientBirthday, String patientIdentityCode, Byte patientIdentityType, String payCode, String payName, String paySn, String prepayId, BigDecimal orderAmount, Timestamp payTime, BigDecimal refundMoney, Timestamp limitTime, Timestamp cancelledTime, Timestamp finishedTime, String descriptionDisease, String imageUrl, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
         super(InquiryOrder.INQUIRY_ORDER);
 
         set(0, orderId);
@@ -488,12 +502,13 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
         set(19, orderAmount);
         set(20, payTime);
         set(21, refundMoney);
-        set(22, cancelledTime);
-        set(23, finishedTime);
-        set(24, descriptionDisease);
-        set(25, imageUrl);
-        set(26, isDelete);
-        set(27, createTime);
-        set(28, updateTime);
+        set(22, limitTime);
+        set(23, cancelledTime);
+        set(24, finishedTime);
+        set(25, descriptionDisease);
+        set(26, imageUrl);
+        set(27, isDelete);
+        set(28, createTime);
+        set(29, updateTime);
     }
 }
