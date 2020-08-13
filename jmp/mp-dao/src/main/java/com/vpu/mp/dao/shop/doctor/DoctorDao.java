@@ -184,6 +184,17 @@ public class DoctorDao extends ShopBaseDao {
     }
 
     /**
+     * 更新医师登录token
+     * @param doctorId
+     * @param userToken
+     */
+    public void updateUserToken(Integer doctorId, String userToken){
+        db().update(DOCTOR).set(DOCTOR.USER_TOKEN, userToken)
+            .where(DOCTOR.ID.eq(doctorId))
+                .execute();
+    }
+
+    /**
      * 查询医师信息集合
      * @param doctorIds 医师id集合
      * @return

@@ -4854,6 +4854,7 @@ create table b2c_doctor(
     `consultation_number` int(11) not null default 0 comment '接诊数',
     `avg_comment_star` decimal(10,2) not null default 0 comment '平均评分',
     `attention_number` int(11) not null default 0 comment '关注数',
+    `user_token` varchar(256) not null default '' comment '医师关联用户token',
     primary key (`id`)
 )comment ='医师表';
 

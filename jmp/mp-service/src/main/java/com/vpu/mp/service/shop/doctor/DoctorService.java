@@ -458,4 +458,13 @@ public class DoctorService extends ShopBaseService {
         doctorSortParam.setAttentionNumber(attentionNumber);
         updateAttentionNumber(doctorSortParam);
     }
+
+    /**
+     * 更新医师登录token
+     * @param doctorId
+     * @param userToken
+     */
+    public void updateUserToken(Integer doctorId, String userToken){
+        doctorDao.updateUserToken(doctorId,userToken);
+    }
 }
