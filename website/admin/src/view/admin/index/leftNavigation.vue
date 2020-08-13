@@ -751,28 +751,28 @@ export default {
     height: 100%;
     .el-menu-item {
       &:hover {
-        background-color: #13202e !important;
+        background-color: #181e2e !important;
       }
     }
     .el-submenu {
       .el-menu-item {
         width: 100%;
         min-width: 0;
-        background-color: #1f2d3d !important;
+        background-color: #242a3a !important;
         padding-left: 44px !important;
         &:hover {
-          background-color: #13202e !important;
+          background-color: #181e2e !important;
         }
       }
     }
     .el-submenu__title {
       &:hover {
-        background-color: #13202e !important;
+        background-color: #181e2e !important;
       }
     }
     .el-menu-item {
       &.is-active {
-        background-color: #13202e !important;
+        background-color: #181e2e !important;
       }
     }
   }
