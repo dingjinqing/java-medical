@@ -32,6 +32,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -410,5 +411,29 @@ public class DoctorService extends ShopBaseService {
         DoctorDutyRecordDo doctorDutyRecordDo = new DoctorDutyRecordDo();
         FieldsUtil.assign(param,doctorDutyRecordDo);
         doctorDutyRecordDao.insertDoctorDutyRecord(doctorDutyRecordDo);
+    }
+
+    /**
+     * 更新医师平均响应时间
+     * @param param
+     */
+    public void updateAvgAnswerTime(DoctorSortParam param){
+        doctorDao.updateAvgAnswerTime(param);
+    }
+
+    /**
+     * 更新医师接诊数
+     * @param param
+     */
+    public void updateConsultationNumber(DoctorSortParam param){
+        doctorDao.updateConsultationNumber(param);
+    }
+
+    /**
+     * 更新医师平均评分
+     * @param param
+     */
+    public void updateAvgCommentStar(DoctorSortParam param){
+        doctorDao.updateAvgCommentStar(param);
     }
 }

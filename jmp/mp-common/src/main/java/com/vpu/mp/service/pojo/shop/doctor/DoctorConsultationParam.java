@@ -19,4 +19,5 @@ public class DoctorConsultationParam{
     private Integer userId;
     private Byte type=0;
     private List userDoctorIds;
+    private Byte sortType=0;
 }
