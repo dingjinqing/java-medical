@@ -207,4 +207,10 @@ global.wxPage({
       }
     }, {})
   },
+  getUrlParams (obj) {
+    return Object.keys(obj).reduce((UrlStr, item, index) => {
+      if (index !== 0) UrlStr += `&`
+      return UrlStr += `${item}=${obj[item]}`
+    }, '?')
+  },
 })
