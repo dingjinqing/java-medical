@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @create 2020-07-27 14:00
  **/
 @RestController
-@RequestMapping("/api/admin/sms")
 public class AdminSmsController extends AdminBaseController {
 
     @Autowired
@@ -28,7 +26,7 @@ public class AdminSmsController extends AdminBaseController {
     @Autowired
     private SmsAccountService smsAccountService;
 
-    @PostMapping("/list")
+    @PostMapping("/api/admin/sms/list")
     public JsonResult getAdminSmsSendRecord(@RequestBody SmsSendRecordAdminParam smsSendRecordAdminParam){
         return super.success(smsService.getAdminSmsSendRecordPageList(smsSendRecordAdminParam));
     }
@@ -38,7 +36,7 @@ public class AdminSmsController extends AdminBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/account/create")
+    @PostMapping("/api/admin/sms/account/create")
     public JsonResult createSmsAccount(@RequestBody @Validated SmsAccountParam param){
         try {
             return success(smsAccountService.createSmsAccount(param));
