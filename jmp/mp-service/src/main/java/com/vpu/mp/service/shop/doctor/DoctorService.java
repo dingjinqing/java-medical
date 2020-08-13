@@ -12,12 +12,14 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorDutyRecordDo;
 import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
+import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDutyRecordDao;
 import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
@@ -26,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +59,8 @@ public class DoctorService extends ShopBaseService {
     public TitleService titleService;
     @Autowired
     public UserDao userDao;
+    @Autowired
+    public JedisManager jedisManager;
     @Autowired
     public UserDoctorAttentionDao userDoctorAttentionDao;
     @Autowired
@@ -230,10 +235,14 @@ public class DoctorService extends ShopBaseService {
      */
     /**
      * 医师认证
-     * @param doctorAuthParam 当前用户姓名、手机号、医师医院唯一编码
+     * @param doctorAuthParam 当前用户姓名、手机号、医师医院唯一编码, 验证码
      * @return 验证信息
      */
     public Integer doctorAuth(DoctorAuthParam doctorAuthParam){
+        boolean b = checkMobileCode(doctorAuthParam);
+        if (!b) {
+            return null;
+        }
         // 查询是否有当前医师信息
         DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
         // 如果医师存在且没有被认证过
@@ -251,6 +260,18 @@ public class DoctorService extends ShopBaseService {
         }
     }
 
+    /**
+     * 短信验证码校验
+     * @return
+     */
+    private boolean checkMobileCode(DoctorAuthParam doctorAuthParam) {
+        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_DOCTOR_MOBILE, getShopId(), doctorAuthParam.getUserId(), doctorAuthParam.getMobile());
+        String s = jedisManager.get(key);
+        if (!Strings.isBlank(s) && !Strings.isBlank(doctorAuthParam.getMobileCheckCode())) {
+            return s.equals(doctorAuthParam.getMobileCheckCode());
+        }
+        return false;
+    }
 
     public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
         List<Integer> doctorIds = doctorDepartmentCoupleDao.listHistoryDoctorIds(doctorParam);
