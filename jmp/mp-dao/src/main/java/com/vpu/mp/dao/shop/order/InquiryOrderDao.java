@@ -140,6 +140,14 @@ public class InquiryOrderDao extends ShopBaseDao {
     }
 
     /**
+     *获取接诊中超时自动结束的问诊订单
+     * @return
+     */
+    public List<InquiryOrderDo> getFinishCloseOrder(){
+        return db().selectFrom(INQUIRY_ORDER).where(INQUIRY_ORDER.ORDER_STATUS.eq(InquiryOrderConstant.ORDER_RECEIVING)).and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(INQUIRY_ORDER.CREATE_TIME.le(DateUtils.getTimeStampPlus(0-InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS))).fetchInto(InquiryOrderDo.class);
+    }
+    /**
      * @param param
      * @return
      */
