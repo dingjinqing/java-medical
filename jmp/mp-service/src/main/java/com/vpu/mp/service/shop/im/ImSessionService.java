@@ -298,6 +298,10 @@ public class ImSessionService extends ShopBaseService {
         return imSessionDo.getId();
     }
 
+    /**
+     * 会话评价状态由可评价修改为已评价
+     * @param sessionId
+     */
     public void updateSessionEvaluateStatusToAlready(Integer sessionId){
         imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_ALREADY_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
     }
