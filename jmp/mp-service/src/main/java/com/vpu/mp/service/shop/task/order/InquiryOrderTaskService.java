@@ -10,6 +10,8 @@ import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -72,6 +74,9 @@ public class InquiryOrderTaskService extends ShopBaseService {
     public void autoCloseToWaitingInquiryOrder()  {
         List<InquiryOrderDo> orderList = inquiryOrderService.getCanceledToWaitingCloseOrder();
         orderList.forEach(order -> {
+            if(order.getOrderAmount().compareTo(BigDecimal.ZERO)<=0){
+                return;
+            }
             try {
                 refundExecute(order);
                 logger().info("问诊订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
