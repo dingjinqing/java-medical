@@ -152,7 +152,7 @@ global.wxPage({
           this.pageScrollBottom()
         }
         this.getScrollHeight()
-      } else if (res.error === 140004 && sessionStatus != 4) {
+      } else if (res.error === 140004 &&sessionStatus != 4 && sessionStatus != 6) {
         util.showModal('提示', '当前会话已结束', function () {
           util.redirectTo({
             url: 'pages2/doctorConsultation/doctorConsultation?tab=1'
@@ -182,7 +182,7 @@ global.wxPage({
             status: res.content
           })
         }
-        if (res.content === 2 || res.content === 4) clearInterval(this.statusTimer)
+        if (res.content === 2 || res.content === 4 || res.content == 6) clearInterval(this.statusTimer)
       } else {
         clearInterval(this.statusTimer)
       }

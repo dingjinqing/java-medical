@@ -17,7 +17,7 @@
 	</view>
 	<view class="medical-begin" wx:if='{{chatContent.status}}'>
 		<view class="liner-left"></view>
-		<view class="begin">{{chatContent.status === 1 ? '待接诊' : ( chatContent.status === 2 ? '问诊已开始' : '问诊已结束')}}</view>
+		<view class="begin">{{chatContent.status === 1 ? '待接诊' : ( chatContent.status === 2 || chatContent.status === 5 ? '问诊进行中' : (chatContent.status == 6 ? '会话终止' : '会话结束-留言'))}}</view>
 		<view class="liner-right"></view>
 	</view>
 </block>

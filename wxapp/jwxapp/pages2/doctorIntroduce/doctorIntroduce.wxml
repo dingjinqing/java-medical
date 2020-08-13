@@ -42,27 +42,100 @@
 					<view>平均响应时间</view>
 				</view>
 			</view>
-      <image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>
+			<image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>
 		</view>
 	</view>
 
 	<view class="mid_con">
-       <view class="comment_title">患者评价（234）</view>
-       <view class="commentList">
-            <view class="comment_item">
-                <view class="c_top">
-                     <view class="c_t_name">用户2312312</view>
-                     <view class="c_t_star">
-                       	<text class='iconfont iconshoucang star'></text>
-                     </view>
-                </view>
-                <view class="c_mid">
-                
-                </view>
-            </view>
-       </view>
+		<view class="comment_title">患者评价（234）</view>
+		<view class="commentList">
+			<view class="comment_item">
+				<view class="c_top">
+					<view class="c_t_name">用户2312312</view>
+					<view class="c_t_star">
+						<text class='iconfont iconshoucang star'></text>
+					</view>
+				</view>
+				<view class="c_mid">
+					<view class="c_m_text">
+						之前就找吴主任看病，现在身体越来越好了，生活质量也 提高了，总是利用休息时间解答问题，十分感谢。
+					</view>
+          <view class="expand">
+          展开
+          </view>
+				</view>
+				<view class="c_bot">
+					<text>2020-07-24 12:45:00</text>
+				</view>
+			</view>
+      		<view class="comment_item">
+				<view class="c_top">
+					<view class="c_t_name">用户2312312</view>
+					<view class="c_t_star">
+						<text class='iconfont iconshoucang star'></text>
+					</view>
+				</view>
+				<view class="c_mid">
+					<view class="c_m_text">
+						之前就找吴主任看病，现在身体越来越好了，生活质量也 提高了，总是利用休息时间解答问题，十分感谢。
+					</view>
+          <view class="expand">
+          展开
+          </view>
+				</view>
+				<view class="c_bot">
+					<text>2020-07-24 12:45:00</text>
+				</view>
+			</view>
+      		<view class="comment_item">
+				<view class="c_top">
+					<view class="c_t_name">用户2312312</view>
+					<view class="c_t_star">
+						<text class='iconfont iconshoucang star'></text>
+					</view>
+				</view>
+				<view class="c_mid">
+					<view class="c_m_text">
+						之前就找吴主任看病，现在身体越来越好了，生活质量也 提高了，总是利用休息时间解答问题，十分感谢。
+					</view>
+          <view class="expand">
+          展开
+          </view>
+				</view>
+				<view class="c_bot">
+					<text>2020-07-24 12:45:00</text>
+				</view>
+			</view>
+      		<view class="comment_item">
+				<view class="c_top">
+					<view class="c_t_name">用户2312312</view>
+					<view class="c_t_star">
+						<text class='iconfont iconshoucang star'></text>
+					</view>
+				</view>
+				<view class="c_mid">
+					<view class="c_m_text">
+						之前就找吴主任看病，现在身体越来越好了，生活质量也 提高了，总是利用休息时间解答问题，十分感谢。
+					</view>
+          <view class="expand">
+          展开
+          </view>
+				</view>
+				<view class="c_bot">
+					<text>2020-07-24 12:45:00</text>
+				</view>
+			</view>
+		</view>
 	</view>
 	<view class="bot_footer">
-		<view>发布</view>
+		<view class="to_chat">在线咨询￥0/次</view>
+		<view class="tell_patient" catchtap="patient_announce">患者须知 ></view>
 	</view>
+	<pop-announce show='{{show_announce}}' title='问诊须知'>
+		<view>1.在线问诊暂不支持医保报销，产生的一切费用全部为自费。</view>
+		<view>2.请您详细描述病情并上传既往处方、最新化验结果、舌像等，以便医生诊断。</view>
+		<view>3.下单24小时后如果医生未接诊，系统将自动退款。</view>
+		<view>4.医生接诊后，24小时后系统将自动结束服务，请尽快提问。</view>
+		<view>5.线上诊断仅供参考，若病情严重请至线下医院问诊。</view>
+	</pop-announce>
 </view>
