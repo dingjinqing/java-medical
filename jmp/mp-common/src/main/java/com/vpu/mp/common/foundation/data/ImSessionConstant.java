@@ -60,6 +60,13 @@ public class ImSessionConstant {
      */
     public static final Integer CONTINUE_SESSION_TIME = 3;
 
+    /**不可评价*/
+    public static final Byte SESSION_EVALUATE_CAN_NOT_STATUS = 0;
+    /**可评价*/
+    public static final Byte SESSION_EVALUATE_CAN_STATUS = 1;
+    /**已评价*/
+    public static final Byte SESSION_EVALUATE_ALREADY_STATUS = 2;
+
     /**
      * 会话关闭默认等待时间24小时
      */

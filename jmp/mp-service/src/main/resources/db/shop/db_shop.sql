@@ -5025,6 +5025,7 @@ create TABLE `b2c_im_session`(
     `order_sn` varchar(32)  NOT NULL COMMENT '会话关联的订单sn',
     `limit_time` timestamp  COMMENT '医生接诊后会话截止时间点',
     `weight_factor` tinyint(1) NOT NULL DEFAULT 0 COMMENT '权重因子,用于不同状态排序使用',
+    `evaluate_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '评价状态 0 不可评价 1可评价 2已评价',
     `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标记',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
