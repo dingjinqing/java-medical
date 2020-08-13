@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.sms;
 
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.config.ShopCfgDao;
@@ -9,6 +10,7 @@ import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsResult;
 import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoParam;
 import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
@@ -55,6 +57,10 @@ public class SmsAccountService extends ShopBaseService {
         Map<String, Object> postBody = Util.transBeanToMap(request);
         postBody.put("sign", smsService.generateSing(postBody));
         HttpResponse response = smsService.requestApi(postBody);
+        SmsResult smsResult = JSONUtil.toBean(response.body(), SmsResult.class);
+        if (smsResult.getCode().equals(JsonResultCode.CODE_SUCCESS+"")){
+            smsAccountConfigService.setShopSmsAccountConfig(param.getSid());
+        }
         return response.body();
     }
 

@@ -21,7 +21,7 @@
       <view class="each_line">
         <view class="el_left">手机号 <text>*</text></view>
         <view class="el_right">
-          <input type="text" class="mobile-input" placeholder="手机号需与病历一致" bindchange="mobileInput"></input>
+          <input type="text" class="mobile-input" placeholder="手机号需与病历一致" bindinput="mobileInput"></input>
         </view>
         <view class="button mobile {{countDown ? 'gray' : ''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
       </view>
