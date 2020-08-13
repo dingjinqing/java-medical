@@ -32,6 +32,11 @@ public class DoctorCommentAddParam {
     @NotNull
     private Integer doctorId;
     /**
+     * 会话id
+     */
+    @NotNull
+    private Integer imSessionId;
+    /**
      * 患者id
      */
     @NotNull
@@ -43,5 +48,7 @@ public class DoctorCommentAddParam {
     private String orderSn;
 
     private Integer userId;
+
+    private Byte auditStatus;
 
 }
