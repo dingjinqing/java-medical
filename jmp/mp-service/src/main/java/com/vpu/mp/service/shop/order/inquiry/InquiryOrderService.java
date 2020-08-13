@@ -180,6 +180,10 @@ public class InquiryOrderService extends ShopBaseService {
         order.setPayTime(DateUtils.getLocalDateTime());
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
+        //添加会话问诊
+        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
+        FieldsUtil.assign(order,imSessionNewParam);
+        imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
@@ -202,7 +206,7 @@ public class InquiryOrderService extends ShopBaseService {
         InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
         //临时添加支付回调，正式使用删除
         String test = "test";
-        if (param.getDescriptionDisease().contains(test)) {
+        if (param.getDescriptionDisease().contains(test)||param.getOrderAmount().compareTo(BigDecimal.ZERO)<=0) {
             inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         } else {
             //微信支付接口
@@ -218,15 +222,11 @@ public class InquiryOrderService extends ShopBaseService {
             logger().debug("微信支付接口调用结果：{}", vo);
             // 更新记录微信预支付id：prepayid
             inquiryOrderDao.updatePrepayId(orderSn,vo.getResult().getPrepayId());
-            vo.setOrderSn(orderSn);
+
 
             logger().debug("微信支付创建订单结束");
         }
-
-        //添加会话问诊
-        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
-        FieldsUtil.assign(orderInfo,imSessionNewParam);
-        imSessionService.insertNewSession(imSessionNewParam);
+        vo.setOrderSn(orderSn);
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){

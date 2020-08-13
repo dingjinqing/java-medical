@@ -47,6 +47,10 @@ public class SmsApiConfig {
      * 短信验证码
      */
     public static final String REDIS_KEY_SMS_CHECK_PATIENT_MOBILE="sms:%s:check_patient_mobile:%s:%s";
+    /**
+     * 医师短信验证码
+     */
+    public static final String REDIS_KEY_SMS_CHECK_DOCTOR_MOBILE = "sms:%s:check_doctor_mobile:%s:%s";
 
     /**
      * 通道默认""

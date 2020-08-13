@@ -131,7 +131,8 @@ public class EnterPolitelyService extends ShopBaseService {
             logger().info("缓存key【{}】已失效！", cacheKey);
             // 用户是否已领取/奖品是否已发放完
             CoopenActivityRecordsRecord receiveRecord = getReceiveRecords(userId, activityId);
-            if (Objects.nonNull(receiveRecord) || activityReceiveNum(activityId) >= record.getAwardNum()) {
+            boolean stockFlag = record.getAwardNum() >0 && activityReceiveNum(activityId) >= record.getAwardNum();
+            if (Objects.nonNull(receiveRecord) || stockFlag) {
                 logger().debug("用户已领取/奖品已发放完");
                 return noAward;
             }
@@ -256,9 +257,9 @@ public class EnterPolitelyService extends ShopBaseService {
                 break;
             case 3:
                 logger().info("自定义");
-                String imgPath = this.imageUrl(bo.getCustomizeImgPath());
+//                String imgPath = this.imageUrl(bo.getCustomizeImgPath());
                 award.setExtContent(new HashMap<String, String>(INTEGER_ONE) {{
-                    put("customize_img_path", imgPath);
+                    put("customize_img_path", bo.getCustomizeImgPath());
                 }});
                 break;
             default:

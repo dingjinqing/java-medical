@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = -1608230769;
+    private static final long serialVersionUID = 1028865212;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.id</code>.
@@ -381,6 +381,48 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
         return (Byte) get(24);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_doctor.avg_answer_time</code>. 接诊时间
+     */
+    public void setAvgAnswerTime(Integer value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_doctor.avg_answer_time</code>. 接诊时间
+     */
+    public Integer getAvgAnswerTime() {
+        return (Integer) get(25);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_doctor.consultation_number</code>. 接诊数
+     */
+    public void setConsultationNumber(Integer value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_doctor.consultation_number</code>. 接诊数
+     */
+    public Integer getConsultationNumber() {
+        return (Integer) get(26);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_doctor.avg_comment_star</code>. 平均评分
+     */
+    public void setAvgCommentStar(BigDecimal value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_doctor.avg_comment_star</code>. 平均评分
+     */
+    public BigDecimal getAvgCommentStar() {
+        return (BigDecimal) get(27);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -407,7 +449,7 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
     /**
      * Create a detached, initialised DoctorRecord
      */
-    public DoctorRecord(Integer id, Integer accountId, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation) {
+    public DoctorRecord(Integer id, Integer accountId, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation, Integer avgAnswerTime, Integer consultationNumber, BigDecimal avgCommentStar) {
         super(Doctor.DOCTOR);
 
         set(0, id);
@@ -435,5 +477,8 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
         set(22, onDutyTime);
         set(23, isOnDuty);
         set(24, canConsultation);
+        set(25, avgAnswerTime);
+        set(26, consultationNumber);
+        set(27, avgCommentStar);
     }
 }

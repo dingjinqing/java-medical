@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorComment extends TableImpl<DoctorCommentRecord> {
 
-    private static final long serialVersionUID = -1691286761;
+    private static final long serialVersionUID = 486666517;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor_comment</code>
@@ -63,14 +63,14 @@ public class DoctorComment extends TableImpl<DoctorCommentRecord> {
     public final TableField<DoctorCommentRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_doctor_comment.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_doctor_comment.user_id</code>. 用户id
      */
-    public final TableField<DoctorCommentRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户ID");
+    public final TableField<DoctorCommentRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor_comment.user_name</code>. 用户昵称
      */
-    public final TableField<DoctorCommentRecord, String> USER_NAME = createField("user_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false), this, "用户昵称");
+    public final TableField<DoctorCommentRecord, String> USER_NAME = createField("user_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户昵称");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor_comment.patient_id</code>. 患者id
@@ -81,6 +81,16 @@ public class DoctorComment extends TableImpl<DoctorCommentRecord> {
      * The column <code>mini_shop_471752.b2c_doctor_comment.doctor_id</code>. 医师id
      */
     public final TableField<DoctorCommentRecord, Integer> DOCTOR_ID = createField("doctor_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "医师id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor_comment.order_sn</code>. 订单编号
+     */
+    public final TableField<DoctorCommentRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单编号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor_comment.im_session_id</code>. 会话id
+     */
+    public final TableField<DoctorCommentRecord, Integer> IM_SESSION_ID = createField("im_session_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "会话id");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor_comment.stars</code>. 评价星级1~5
@@ -98,14 +108,9 @@ public class DoctorComment extends TableImpl<DoctorCommentRecord> {
     public final TableField<DoctorCommentRecord, String> TAG = createField("tag", org.jooq.impl.SQLDataType.VARCHAR(100).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "评价标签");
 
     /**
-     * The column <code>mini_shop_471752.b2c_doctor_comment.order_sn</code>. 订单编号
-     */
-    public final TableField<DoctorCommentRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "订单编号");
-
-    /**
      * The column <code>mini_shop_471752.b2c_doctor_comment.comm_note</code>. 评论内容
      */
-    public final TableField<DoctorCommentRecord, String> COMM_NOTE = createField("comm_note", org.jooq.impl.SQLDataType.VARCHAR(1000), this, "评论内容");
+    public final TableField<DoctorCommentRecord, String> COMM_NOTE = createField("comm_note", org.jooq.impl.SQLDataType.VARCHAR(1000).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "评论内容");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor_comment.audit_status</code>. 0:未审批,1:审批通过,2:审批未通过

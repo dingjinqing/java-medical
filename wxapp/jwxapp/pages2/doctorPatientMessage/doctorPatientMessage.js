@@ -158,26 +158,31 @@ global.wxPage({
               orderSn
             } = res.content
             console.log(orderSn)
-            util.redirectTo({
-              url: "/pages2/patientChat/patientChat?orderSn=" + orderSn + "&first=1" 
-            })
-            // if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
-            //   wx.requestPayment({
-            //     timeStamp: res.content.webPayVo.timeStamp,
-            //     nonceStr: res.content.webPayVo.nonceStr,
-            //     package: res.content.webPayVo.package,
-            //     signType: 'MD5',
-            //     paySign: res.content.webPayVo.paySign,
-            //     success: async res => {
-            //       util.toast_success('支付成功')
-            //       console.log(res)
-            //     },
-            //     fail: res => {
-            //       console.log(res)
-            //     },
-            //     complete: res => {}
-            //   })
-            // }
+         
+              wx.requestPayment({
+                timeStamp: res.content.timeStamp,
+                nonceStr: res.content.nonceStr,
+                package: res.content.package,
+                signType: 'MD5',
+                paySign: res.content.paySign,
+                success: async res => {
+                  util.toast_success('支付成功',()=>{
+                    util.jumpLink(
+                      `/pages2/patientChat/patientChat${this.getUrlParams({
+                        orderSn:orderSn,
+                        first: 1,
+                      })}`,
+                      'redirectTo'
+                    )
+                  })
+                  console.log(res)
+                },
+                fail: res => {
+                  console.log(res)
+                },
+                complete: res => {}
+              })
+            
           } else {
             // util.showModal('提示', res.message, function () {
             //   util.jumpLink('/pages/index/index', 'redirectTo')
@@ -201,5 +206,11 @@ global.wxPage({
         })
       }
     }, {})
+  },
+  getUrlParams (obj) {
+    return Object.keys(obj).reduce((UrlStr, item, index) => {
+      if (index !== 0) UrlStr += `&`
+      return UrlStr += `${item}=${obj[item]}`
+    }, '?')
   },
 })
