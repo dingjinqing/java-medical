@@ -21,6 +21,26 @@
             <span>医院名称</span>
           </el-form-item>
           <el-form-item
+            label='头像'
+            prop='url'
+          >
+            <el-radio-group
+              v-model='urlType'
+              class="radio_url"
+            >
+              <el-radio :label='0' style="margin-right:10px">自定义</el-radio>
+              <div class="choose_url_img">
+                <el-image
+                  fit="scale-down"
+                  :src="imgHost+'/'+showedPic"
+                  style="width: 78px; height: 78px;cursor: pointer;"
+                  @click='addImage()'
+                />
+              </div>
+              <el-radio :label='1'>默认</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item
             label='医生姓名'
             prop='name'
           >
@@ -152,12 +172,22 @@
           @click="handleSubmit"
         >保存</el-button>
       </div>
+      <!--图片dialog-->
+      <ImageDalog
+        :tuneUp="imgDialogShow"
+        pageIndex='pictureSpace'
+        :imageSize="[800,800]"
+        @handleSelectImg='handleSelectImg'
+      />
     </div>
 </template>
 
 <script>
 import { addDoctor, getDoctorTitle, getBelongParts, getDoctor, updateDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
 export default {
+  components: {
+    ImageDalog: () => import('@/components/admin/imageDalog')
+  },
   data () {
     var validatePartId = (rule, value, callback) => {
       console.log(value)
@@ -167,10 +197,19 @@ export default {
         callback()
       }
     }
+    var validUrl = (rule, value, callback) => {
+      console.log(value)
+      if (!value && this.urlType === 0) {
+        callback(new Error('请选择医生头像'))
+      } else {
+        callback()
+      }
+    }
     return {
       reload: true,
       doctorFormInfo: {
         registerHospital: '医院名称',
+        url: '',
         name: '',
         hospitalCode: '',
         certificateCode: '',
@@ -185,6 +224,7 @@ export default {
         treatDisease: ''
       },
       doctorFormRules: {
+        url: [{required: true, validator: validUrl, trigger: 'change'}],
         name: [{required: true, message: '请输入医生姓名', trigger: 'blur'}],
         hospitalCode: [{required: true, message: '请输入医生院内编号', trigger: 'blur'}],
         certificateCode: [{required: true, message: '请输入医生资格编码', trigger: 'blur'}],
@@ -220,7 +260,11 @@ export default {
           name: '无'
         }
       ],
-      belongParts: {}
+      belongParts: {},
+      urlType: 0,
+      imgHost: `${this.$imageHost}`,
+      imgDialogShow: false,
+      showedPic: '/image/admin/add_img.png'
     }
   },
   mounted () {
@@ -246,6 +290,7 @@ export default {
     initData () {
       this.doctorFormInfo = {
         registerHospital: '医院名称',
+        url: '',
         name: '',
         hospitalCode: '',
         certificateCode: '',
@@ -268,6 +313,12 @@ export default {
           let doctorFormInfo = Object.assign({}, this.doctorFormInfo, res.content)
           doctorFormInfo.mobile = Number(doctorFormInfo.mobile)
           doctorFormInfo.departmentIdsStr = doctorFormInfo.departmentIds
+          if (doctorFormInfo.url === '') {
+            this.urlType = 1
+          } else {
+            this.urlType = 0
+            this.showedPic = doctorFormInfo.url
+          }
           this.doctorFormInfo = doctorFormInfo
         } else {
           this.$message.error({
@@ -276,6 +327,16 @@ export default {
           })
         }
       })
+    },
+    // 用户头像
+    addImage () {
+      this.imgDialogShow = !this.imgDialogShow
+      this.$http.$emit('dtVisible')
+    },
+    handleSelectImg (res) {
+      this.doctorFormInfo.url = res.imgPath
+      this.showedPic = res.imgPath
+      console.log(res.imgPath)
     },
     // 职称查询
     initDoctorTitle () {
@@ -301,6 +362,9 @@ export default {
           params.departmentIdsStr = params.departmentIdsStr.join(',')
           // 费用写成浮点型
           params.consultationPrice = parseFloat(params.consultationPrice)
+          if (this.urlType === 1) {
+            params.url = ''
+          }
           console.log(params)
           if (!this.id) {
             addDoctor(params).then(res => {
@@ -355,6 +419,18 @@ export default {
     }
     .el-input{
       width: 300px;
+    }
+    .radio_url{
+      display: flex;
+      .el-radio{
+        padding-top: 10px;
+      }
+      .choose_url_img{
+        width: 80px;
+        height: 80px;
+        border: 1px solid #ccc;
+        margin-right: 10px;
+      }
     }
   }
   .addDoctorFooter{
