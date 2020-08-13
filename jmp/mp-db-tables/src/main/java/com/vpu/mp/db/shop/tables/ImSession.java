@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ImSession extends TableImpl<ImSessionRecord> {
 
-    private static final long serialVersionUID = 442789722;
+    private static final long serialVersionUID = -1040783846;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_im_session</code>
@@ -100,6 +100,11 @@ public class ImSession extends TableImpl<ImSessionRecord> {
      * The column <code>mini_shop_471752.b2c_im_session.evaluate_status</code>. 评价状态 0 不可评价 1可评价 2已评价
      */
     public final TableField<ImSessionRecord, Byte> EVALUATE_STATUS = createField("evaluate_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "评价状态 0 不可评价 1可评价 2已评价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_im_session.ready_to_on_akc_time</code>. 接诊响应时间
+     */
+    public final TableField<ImSessionRecord, Integer> READY_TO_ON_AKC_TIME = createField("ready_to_on_akc_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "接诊响应时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_im_session.is_delete</code>. 删除标记

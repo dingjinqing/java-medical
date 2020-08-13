@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = 757391901;
+    private static final long serialVersionUID = -373137131;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
@@ -185,9 +185,9 @@ public class Doctor extends TableImpl<DoctorRecord> {
     public final TableField<DoctorRecord, Byte> CAN_CONSULTATION = createField("can_consultation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否接诊");
 
     /**
-     * The column <code>mini_shop_471752.b2c_doctor.avg_answer_time</code>. 接诊时间
+     * The column <code>mini_shop_471752.b2c_doctor.avg_answer_time</code>. 平均接诊时间
      */
-    public final TableField<DoctorRecord, Integer> AVG_ANSWER_TIME = createField("avg_answer_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "接诊时间");
+    public final TableField<DoctorRecord, Integer> AVG_ANSWER_TIME = createField("avg_answer_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "平均接诊时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor.consultation_number</code>. 接诊数
@@ -198,6 +198,11 @@ public class Doctor extends TableImpl<DoctorRecord> {
      * The column <code>mini_shop_471752.b2c_doctor.avg_comment_star</code>. 平均评分
      */
     public final TableField<DoctorRecord, BigDecimal> AVG_COMMENT_STAR = createField("avg_comment_star", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "平均评分");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.attention_number</code>. 关注数
+     */
+    public final TableField<DoctorRecord, Integer> ATTENTION_NUMBER = createField("attention_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "关注数");
 
     /**
      * Create a <code>mini_shop_471752.b2c_doctor</code> table reference

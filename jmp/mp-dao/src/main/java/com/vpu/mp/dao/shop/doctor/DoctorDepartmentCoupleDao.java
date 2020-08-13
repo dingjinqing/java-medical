@@ -159,6 +159,8 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             select.orderBy(DOCTOR.AVG_ANSWER_TIME.desc());
         } else if (DoctorConstant.CONSULTATION_SORT_TYPE.equals(doctorParam.getSortType())){
             select.orderBy(DOCTOR.CONSULTATION_NUMBER.desc());
+        } else if (DoctorConstant.ATTENTION_SORT_TYPE.equals(doctorParam.getSortType())){
+            select.orderBy(DOCTOR.ATTENTION_NUMBER.desc());
         }
         PageResult<DoctorConsultationOneParam> doctorList = this.getPageResult(select, doctorParam.getCurrentPage(),
             doctorParam.getPageRows(), DoctorConsultationOneParam.class);

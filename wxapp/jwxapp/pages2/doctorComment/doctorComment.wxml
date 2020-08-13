@@ -32,16 +32,19 @@
 		</view>
 	</view>
 	<view class="mid_con">
-     <view class="tit service_comment">
-         <view>服务评价</view>
-          <block wx:for='{{star}}'>
-            <text class='iconfont iconshoucang star {{item.show == false ? "no_choose" : ""}}' catchtap="choose_star" data-idx='{{index}}'></text>
-          </block>
-     </view>
-     <view class="tit service_text">
-         <view>服务描述</view>
-         <textarea placeholder="请您对医生的服务进行描述" maxlength='-1'></textarea>
-     </view>
+		<view class="tit service_comment">
+			<view>服务评价</view>
+			<block wx:for='{{star}}'>
+				<text class='iconfont iconshoucang star {{item.show == false ? "no_choose" : ""}}' catchtap="choose_star" data-idx='{{index}}'></text>
+			</block>
+		</view>
+		<view class="tit service_text">
+			<view>服务描述</view>
+			<textarea placeholder="请您对医生的服务进行描述" maxlength='-1'></textarea>
+		</view>
+		<label>
+			<radio value="r1" checked="true" class="radio" color="#26c4bc"/>匿名
+		</label>
 	</view>
 	<view class="bot_footer">
 		<view>发布</view>

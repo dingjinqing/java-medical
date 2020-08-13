@@ -360,6 +360,7 @@ public class DoctorService extends ShopBaseService {
         UserDoctorAttentionDo userDoctorAttentionDo = new UserDoctorAttentionDo();
         FieldsUtil.assign(param,userDoctorAttentionDo);
         userDoctorAttentionDao.insertUserDoctor(userDoctorAttentionDo);
+        updateAttentionNumberByDoctorId(param.getDoctorId());
     }
 
     /**
@@ -368,6 +369,7 @@ public class DoctorService extends ShopBaseService {
      */
     public void deleteUserDoctor(UserDoctorParam param) {
         userDoctorAttentionDao.deleteUserDoctor(param);
+        updateAttentionNumberByDoctorId(param.getDoctorId());
     }
 
     /**
@@ -435,5 +437,25 @@ public class DoctorService extends ShopBaseService {
      */
     public void updateAvgCommentStar(DoctorSortParam param){
         doctorDao.updateAvgCommentStar(param);
+    }
+
+    /**
+     * 更新医师关注数
+     * @param param
+     */
+    public void updateAttentionNumber(DoctorSortParam param){
+        doctorDao.updateAttentionNumber(param);
+    }
+
+    /**
+     * 更新医师关注数(根据医师Id)
+     * @param doctorId
+     */
+    public void updateAttentionNumberByDoctorId(Integer doctorId){
+        Integer attentionNumber = userDoctorAttentionDao.getAttentionNumber(doctorId);
+        DoctorSortParam doctorSortParam = new DoctorSortParam();
+        doctorSortParam.setDoctorId(doctorId);
+        doctorSortParam.setAttentionNumber(attentionNumber);
+        updateAttentionNumber(doctorSortParam);
     }
 }
