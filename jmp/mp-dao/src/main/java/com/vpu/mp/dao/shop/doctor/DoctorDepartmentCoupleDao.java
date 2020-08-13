@@ -146,7 +146,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         if (DoctorConstant.ATTENTION_TYPE.equals(doctorParam.getType()) && doctorParam.getUserId() > 0) {
             condition = condition.and(DOCTOR.ID.in(doctorParam.getUserDoctorIds()));
         }
-        SelectJoinStep<? extends Record> select = db().select(DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
+        SelectJoinStep<? extends Record> select = db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
             ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
         select.where(condition);
@@ -193,7 +193,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .from(IM_SESSION)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
             .and(DOCTOR.ID.gt(0)).groupBy(DOCTOR.ID);
-        return db().select(DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
+        return db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
             ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
             .leftJoin(table).on(table.field(DOCTOR.ID).eq(DOCTOR.ID))
@@ -216,7 +216,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .from(IM_SESSION)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
             .and(DOCTOR.ID.gt(0)).groupBy(DOCTOR.ID);
-        return db().select(DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
+        return db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
             ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
             .leftJoin(table).on(table.field(DOCTOR.ID).eq(DOCTOR.ID))
