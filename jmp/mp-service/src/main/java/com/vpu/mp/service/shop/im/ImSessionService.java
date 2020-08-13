@@ -406,7 +406,7 @@ public class ImSessionService extends ShopBaseService {
      */
     public void closeImSession(Integer sessionId) {
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
-        if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
+        if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())&&!ImSessionConstant.SESSION_CONTINUE_ON.equals(imSessionDo.getSessionStatus())) {
             return;
         }
         if (imSessionDo.getContinueSessionCount() == 0) {
