@@ -42,4 +42,8 @@ public class DoctorConstant {
      * 接诊数排序
      */
     public static final Byte CONSULTATION_SORT_TYPE = 4;
+    /**
+     * 关注数排序
+     */
+    public static final Byte ATTENTION_SORT_TYPE = 5;
 }

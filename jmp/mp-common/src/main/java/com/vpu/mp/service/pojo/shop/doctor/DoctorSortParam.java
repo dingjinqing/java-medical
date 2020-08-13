@@ -26,4 +26,8 @@ public class DoctorSortParam {
      * 平均评分
      */
     private BigDecimal avgCommentStar;
+    /**
+     * 关注数
+     */
+    private Integer attentionNumber;
 }

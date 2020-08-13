@@ -302,4 +302,14 @@ public class DoctorDao extends ShopBaseDao {
             .where(DOCTOR.ID.eq(param.getDoctorId()))
             .execute();
     }
+
+    /**
+     * 更新医师关注数
+     * @param param
+     */
+    public void updateAttentionNumber(DoctorSortParam param){
+        db().update(DOCTOR).set(DOCTOR.ATTENTION_NUMBER, param.getAttentionNumber())
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+            .execute();
+    }
 }
