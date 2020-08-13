@@ -5124,6 +5124,7 @@ CREATE TABLE `b2c_user_message` (
     PRIMARY KEY (`message_id`)
 ) comment ='用户消息表';
 
+-- 短信充值记录表
 CREATE TABLE `b2c_sms_recharge` (
     `recharge_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '充值记录主键',
     `sid` varchar(255) NOT NULL DEFAULT '' COMMENT '充值账户id',

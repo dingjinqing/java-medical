@@ -15,7 +15,8 @@ global.wxPage({
     collect_coupon_display: 0, // 显示收藏送优惠券积分的弹窗
     collect_score: null,
     collect_coupons: null,
-    page_id: null
+    page_id: null,
+    noPatient: 0
   },
 
   /**
@@ -37,6 +38,8 @@ global.wxPage({
     this.renderCollectData()
     // 初始化开屏有礼clearInterval
     this.openGiftRequest()
+    // 获取病历有弹窗
+    this.getPatientNum()
     let flag = false
     let timer = setInterval(() => {
       if (flag) clearInterval(timer)
@@ -167,6 +170,25 @@ global.wxPage({
       userId: util.getCache('user_id')
     })
   },
+  getPatientNum() {
+    util.api('/api/wxapp/user/patient/list', res => {
+      if (res.error == 0) {
+        if(res.content.length > 0){
+          this.data.noPatient = 0
+        }else{
+          this.data.noPatient = 1
+        }
+        this.setData({
+          noPatient: this.data.noPatient
+        })
+      }else{
+        util.showModal('提示',res.message)
+        return false
+      }
+    },{
+      userId: util.getCache('user_id')
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -197,6 +219,8 @@ global.wxPage({
     this.renderCollectData()
     // 初始化开屏有礼clearInterval
     this.openGiftRequest()
+    // 获取病历有弹窗
+    this.getPatientNum()
     wx.stopPullDownRefresh();
   },
 

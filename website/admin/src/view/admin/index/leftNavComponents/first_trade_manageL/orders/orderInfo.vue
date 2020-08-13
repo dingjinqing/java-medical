@@ -264,7 +264,7 @@
     </div>
     <div
       class="prescription-list"
-      v-if="order.prescriptionOldDoList.length"
+      v-if="order.prescriptionOldDoList && order.prescriptionOldDoList.length"
     >
       <div class="module-title">
         历史处方信息
@@ -306,7 +306,7 @@
     </div>
     <div
       class="prescription-list"
-      v-if="order.prescriptionDoList.length"
+      v-if="order.prescriptionDoList && order.prescriptionDoList.length"
     >
       <div class="module-title">
         新开处方信息

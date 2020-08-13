@@ -146,6 +146,9 @@ global.wxPage({
   setReadStatus (e) {
     this.changeReadNum (e.currentTarget.dataset.mes_type,e.currentTarget.dataset.mes_id)
   },
+  to_query (e) {
+    util.jumpLink("/pages2/patientChat/patientChat?orderSn=" + e.currentTarget.dataset.order_sn + "&sessionStatus=" + e.currentTarget.dataset.status)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

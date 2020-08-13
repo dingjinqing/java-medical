@@ -49,15 +49,6 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
         return success(shop().medicalHistoryService.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam));
     }
 
-    /**
-     * 拉取病历处方
-     * @param param 病历列表入参
-     * @return JsonResult
-     */
-    @RequestMapping("/get/external/list")
-    public JsonResult pullHistoryPrescription(@RequestBody FetchMedicalHistoryParam param) {
-        return success(shop().pullHitsHistoryPrescriptionService.pullExternalHistoryPrescription(param));
-    }
 
     /**
      * 拉取hits系统医嘱明细信息
