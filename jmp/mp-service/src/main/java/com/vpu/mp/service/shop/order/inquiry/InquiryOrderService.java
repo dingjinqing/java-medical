@@ -180,6 +180,10 @@ public class InquiryOrderService extends ShopBaseService {
         order.setPayTime(DateUtils.getLocalDateTime());
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
+        //添加会话问诊
+        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
+        FieldsUtil.assign(order,imSessionNewParam);
+        imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
@@ -223,10 +227,6 @@ public class InquiryOrderService extends ShopBaseService {
             logger().debug("微信支付创建订单结束");
         }
         vo.setOrderSn(orderSn);
-        //添加会话问诊
-        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
-        FieldsUtil.assign(orderInfo,imSessionNewParam);
-        imSessionService.insertNewSession(imSessionNewParam);
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){
