@@ -131,7 +131,8 @@ public class EnterPolitelyService extends ShopBaseService {
             logger().info("缓存key【{}】已失效！", cacheKey);
             // 用户是否已领取/奖品是否已发放完
             CoopenActivityRecordsRecord receiveRecord = getReceiveRecords(userId, activityId);
-            if (Objects.nonNull(receiveRecord) || (record.getAwardNum() >0 && activityReceiveNum(activityId) >= record.getAwardNum())) {
+            boolean stockFlag = record.getAwardNum() >0 && activityReceiveNum(activityId) >= record.getAwardNum();
+            if (Objects.nonNull(receiveRecord) || stockFlag) {
                 logger().debug("用户已领取/奖品已发放完");
                 return noAward;
             }
