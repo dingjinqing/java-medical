@@ -1,19 +1,27 @@
 @import "/css/iconfont.wxss";
 
-.container {
+page {
   background: #fff;
 }
-.doctor_content{
-  padding: 20rpx;
-  background:linear-gradient(0deg,rgba(255,255,255,1),rgba(38,196,188,1),rgba(38,196,188,1));
+
+.container {
+  background: #fff;
+  padding-bottom: 180rpx;
 }
-.doctor_content>view{
-  box-shadow:0rpx 6rpx 10rpx 0rpx rgba(238,238,238,0.3);
+
+.doctor_content {
+  padding: 20rpx;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(38, 196, 188, 0.3), rgba(38, 196, 188, 1));
+}
+
+.doctor_content>view {
+  box-shadow: 0rpx 6rpx 10rpx 0rpx rgba(238, 238, 238, 0.3);
   border-radius: 16rpx;
   overflow: hidden;
   position: relative;
 }
-.doctor_content>view>image{
+
+.doctor_content>view>image {
   height: 100%;
   position: absolute;
   width: 300rpx;
@@ -108,9 +116,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  border-top: 2rpx solid #eee;
+  height: 180rpx;
 }
 
-.bot_footer view {
+.bot_footer .to_chat {
   width: 700rpx;
   height: 80rpx;
   line-height: 80rpx;
@@ -118,10 +129,11 @@
   color: #fff;
   background: #26C4BC;
   border-radius: 40rpx;
+  margin-bottom: 10rpx;
 }
 
 .star {
-  font-size: 40rpx;
+  font-size: 26rpx;
   color: #FF9F15;
   margin-right: 10rpx;
 }
@@ -151,7 +163,8 @@ label {
 .radio {
   transform: scale(0.7);
 }
-.doctor_introduce{
+
+.doctor_introduce {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -159,18 +172,68 @@ label {
   padding-bottom: 30rpx;
   height: 120rpx;
 }
-.doctor_introduce>view{
+
+.doctor_introduce>view {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-.doctor_introduce>view>view:first-of-type{
+
+.doctor_introduce>view>view:first-of-type {
   color: #333;
   font-size: 32rpx;
   margin-bottom: 10rpx;
   font-weight: bold;
 }
-.doctor_introduce>view>view:last-of-type{
+
+.doctor_introduce>view>view:last-of-type {
   color: #333;
+}
+
+.comment_title {
+  color: #333;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.comment_item {
+  padding: 30rpx 0;
+  border-bottom: 2rpx solid #eee;
+
+}
+
+.c_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.c_t_name {
+  color: #333;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+.c_mid{
+  position: relative;
+}
+.expand{
+  position: absolute;
+  right: 20rpx;
+  bottom: 2rpx;
+}
+
+.c_m_text {
+  color: #333;
+  font-size: 28rpx;
+  margin-bottom: 10rpx;
+}
+
+.c_bot text {
+  color: #999;
+}
+
+.tell_patient {
+  color: #999;
 }

@@ -1,0 +1,39 @@
+.announce_content{
+  background: #fff;
+  width: 640rpx;
+  border-radius:16rpx;
+}
+.a_title{
+  padding: 20rpx 20rpx 0;
+  position: relative;
+  text-align: center;
+}
+.a_title image{
+  width: 38rpx;
+  height: 38rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 22rpx;
+}
+.a_title view{
+  color: #333;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+.a_con{
+  padding: 20rpx 30rpx;
+}
+.a_con view{
+  color: #333;
+  line-height: 50rpx;
+}
+.a_bot{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  color: #26C4BC;
+  font-size: 32rpx;
+  font-weight: bold;
+  border-top: 2rpx solid #eee;
+}
