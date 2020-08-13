@@ -57,17 +57,17 @@
 					<text class="doctor-name">处方医师：</text>
 					<!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
 					<text>{{prescriptionData.doctorName}}</text>
+					<text class="item-date">日期：{{filter.substring(prescriptionData.prescriptionCreateTime,0,10)}}</text>
 				</view>
 				<!-- <view class="doctor-info">
           <text class="doctor-name">审核药师：</text>
           <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
         </view> -->
-				<view class="doctor-info" wx:if="{{prescriptionData.pharmacistName}}">
+				<!-- <view class="doctor-info" wx:if="{{prescriptionData.pharmacistName}}">
 					<text class="doctor-name">发药药师：</text>
-					<!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
 					<text>{{prescriptionData.pharmacistName}}</text>
 					<text class="item-date">日期：{{filter.substring(prescriptionData.prescriptionCreateTime,0,10)}}</text>
-				</view>
+				</view> -->
 			</view>
 		</view>
 		<view class="warn-tips">本处方内容仅供参考，自行下载配药不具有处方效力</view>
