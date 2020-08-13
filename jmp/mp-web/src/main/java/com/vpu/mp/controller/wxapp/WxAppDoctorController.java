@@ -2,16 +2,20 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorMainShowVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.message.UserMessageService;
+import com.vpu.mp.service.shop.sms.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -36,6 +40,9 @@ public class WxAppDoctorController extends WxAppBaseController {
     @Autowired
     private UserMessageService messageService;
 
+    @Autowired
+    private SmsService smsService;
+
     /**
      * 医师认证接口
      * @param doctorAuthParam 认证医师姓名，手机号，医师医院唯一编码
@@ -52,6 +59,22 @@ public class WxAppDoctorController extends WxAppBaseController {
         } else {
             return fail(DOCTOR_LOGIN_AUTH_ERROR);
         }
+    }
+
+    /**
+     * 发送验证码
+     * @param param 电话号
+     * @return JsonResult
+     */
+    @PostMapping("/send/check/code")
+    public JsonResult sendCheckSms(@RequestBody @Validated PatientSmsCheckParam param){
+        param.setUserId(wxAppAuth.user().getUserId());
+        try {
+            smsService.sendCheckSms(param);
+        } catch (MpException e) {
+            return fail();
+        }
+        return success();
     }
 
     /**

@@ -3,34 +3,29 @@ package com.vpu.mp.service.shop.sms;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSONUtil;
-import com.alibaba.druid.support.json.JSONUtils;
-import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.FileUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.RandomUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.config.ShopCfgDao;
 import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
-import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
 import com.vpu.mp.service.pojo.shop.sms.*;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
+import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
+import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.config.SmsAccountConfigService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_FIND_FAIL;
 import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_FIND_SUCCESS;
@@ -42,7 +37,7 @@ import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_FIND_SU
  */
 @Service
 @Slf4j
-public class SmsService {
+public class SmsService extends BaseShopConfigService {
 
 
     @Autowired
@@ -53,6 +48,8 @@ public class SmsService {
     private ShopCfgDao shopCfgDao;
     @Autowired
     private SmsAccountConfigService smsAccountConfigService;
+    @Autowired
+    private JedisManager jedisManager;
 
     /**
      * 发送短信
@@ -228,6 +225,19 @@ public class SmsService {
             }
         }
         return smsSendRecordAdminVoPageResult;
+    }
+
+    /**
+     * 发送短信校验码
+     * @param param
+     */
+    public void sendCheckSms(PatientSmsCheckParam param) throws MpException {
+        //0000-9999
+        int intRandom = RandomUtil.getIntRandom();
+        String smsContent = String.format(SmsTemplate.DOCTOR_CHECK_MOBILE, "XX医院", intRandom);
+        sendSms(param.getUserId(), param.getMobile(), smsContent);
+        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_DOCTOR_MOBILE, getShopId(), param.getUserId(), param.getMobile());
+        jedisManager.set(key, intRandom + "", 600);
     }
 
 }
