@@ -4,5 +4,6 @@
     "chat-message": "/components/doctor/doctor_chat_message/doctor_chat_message",
     "chat-input":"/components/doctor/doctor_chat_input/doctor_chat_input",
     "v-prescription-dialog": "/components/popup/prescription_dialog/index"
-  }
+  },
+  "disableScroll": true
 }

@@ -1,58 +1,61 @@
 <!--pages2/patientChat/patientChat.wxml-->
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
-	<view class="main-container" bindtap="hideMoreActions">
-		<chat-date send-time='{{time}}' />
-		<!-- <chat-system-info system-info='{{system_info}}' slot='origin_message'/> -->
-		<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
-			<chat-message chat-content='{{item}}' system-info='{{system_info}}' system-img='{{system_img}}' status='{{status}}' idx='{{idx}}' bindpageScrollBottom="pageScrollBottom">
-				<view slot='origin_message' class="origin_message {{item.position == 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 0}}'>
-					{{item.messageInfo.message.content}}
-				</view>
-				<view slot='origin_image' data-urls="{{item.messageInfo.message.content}}" class="origin_message {{item.position === 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 1}}' bindtap="viewImage">
-					<image class="image-message" style="{{item.messageInfo.message.imgWidth > 450 ? 'width:450rpx;' : 'width:'+item.messageInfo.message.imgWidth+'rpx;height:'+item.messageInfo.message.imgHeight+'rpx;' }};" mode="{{item.messageInfo.message.imgWidth > 450 ? 'widthFix' : ''}}" src="{{item.messageInfo.message.content}}"></image>
-				</view>
+	<scroll-view class="main-container" bindtap="hideMoreActions" scroll-y='true' style='height:{{scrollViewHeight}}px'  scroll-top='{{allHeight}}'  bindscroll='startScroll' >
+		<view id='all_content'>
+			<chat-date send-time='{{time}}' />
+			<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
+				<view id='con_{{idx}}'>
+					<chat-message chat-content='{{item}}' system-info='{{system_info}}' system-img='{{system_img}}' status='{{status}}' idx='{{idx}}'>
+						<view slot='origin_message' class="origin_message {{item.position == 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 0}}'>
+							{{item.messageInfo.message.content}}
+						</view>
+						<view slot='origin_image' data-urls="{{item.messageInfo.message.content}}" class="origin_message {{item.position === 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 1}}' bindtap="viewImage">
+							<image class="image-message" style="{{item.messageInfo.message.imgWidth > 450 ? 'width:450rpx;' : 'width:'+item.messageInfo.message.imgWidth+'rpx;height:'+item.messageInfo.message.imgHeight+'rpx;' }};" mode="{{item.messageInfo.message.imgWidth > 450 ? 'widthFix' : ''}}" src="{{item.messageInfo.message.content}}"></image>
+						</view>
 
-				<view slot="patient_pres_message" class="patient_message {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 3}}'>
-					<view class="p_m_top">
-						<text>患者: {{item.messageInfo.message.content.name}}</text>
-						<text>{{item.messageInfo.message.content.sex}}</text>
-						<text>{{item.messageInfo.message.content.age}}岁</text>
-					</view>
-					<view class="p_m_bot">
-						<text>病情描述：</text>
-						<text>{{item.messageInfo.message.content.mess}}</text>
-					</view>
-				</view>
-
-				<view slot='doctor_pres_message' class="prescription-item {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 2}}' bindtap="handleShowPrescriptionDialog" data-prescription-code="{{item.messageInfo.message.content.prescriptionCode}}" >
-					<view class="item-title" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方</view>
-					<view class="item-list-content">
-						<view class="item-list">
-							<view class="list-item">
-								<view class="list-item-content">
-									<text class="list-item-dot"></text>
-									<text>诊断：{{item.messageInfo.message.content.diagnosisName}}</text>
-								</view>
+						<view slot="patient_pres_message" class="patient_message {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 3}}'>
+							<view class="p_m_top">
+								<text>患者: {{item.messageInfo.message.content.name}}</text>
+								<text>{{item.messageInfo.message.content.sex}}</text>
+								<text>{{item.messageInfo.message.content.age}}岁</text>
 							</view>
-							<view class="list-item">
-								<view class="list-item-content">
-									<text class="list-item-dot"></text>
-									<text>科室：{{item.messageInfo.message.content.departmentName}}</text>
-								</view>
+							<view class="p_m_bot">
+								<text>病情描述：</text>
+								<text>{{item.messageInfo.message.content.mess}}</text>
 							</view>
 						</view>
-					</view>
-					<view class="doctor-info">
-						<text class="doctor-name">医师：{{item.messageInfo.message.content.doctorName}}</text>
-						<text class="item-date">日期：{{item.messageInfo.message.content.time}}</text>
-					</view>
-				</view>
 
-			</chat-message>
-		</block>
-	</view>
+						<view slot='doctor_pres_message' class="prescription-item {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 2}}' bindtap="handleShowPrescriptionDialog" data-prescription-code="{{item.messageInfo.message.content.prescriptionCode}}">
+							<view class="item-title" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方</view>
+							<view class="item-list-content">
+								<view class="item-list">
+									<view class="list-item">
+										<view class="list-item-content">
+											<text class="list-item-dot"></text>
+											<text>诊断：{{item.messageInfo.message.content.diagnosisName}}</text>
+										</view>
+									</view>
+									<view class="list-item">
+										<view class="list-item-content">
+											<text class="list-item-dot"></text>
+											<text>科室：{{item.messageInfo.message.content.departmentName}}</text>
+										</view>
+									</view>
+								</view>
+							</view>
+							<view class="doctor-info">
+								<text class="doctor-name">医师：{{item.messageInfo.message.content.doctorName}}</text>
+								<text class="item-date">日期：{{item.messageInfo.message.content.time}}</text>
+							</view>
+						</view>
+
+					</chat-message>
+				</view>
+			</block>
+		</view>
+	</scroll-view>
 	<chat-input source="patient" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
-  </chat-input>
+	</chat-input>
 </view>
 <v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}" />

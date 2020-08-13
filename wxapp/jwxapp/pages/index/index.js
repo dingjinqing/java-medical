@@ -1,6 +1,7 @@
 // pages/index/index.js
 var util = require('../../utils/util.js');
 var decorate = require('../common/decorate.js');
+var getAwardInfo = require('../common/get_award_info')
 var app = getApp()
 var imageUrl = app.globalData.imageUrl;
 global.wxPage({
@@ -22,23 +23,6 @@ global.wxPage({
    */
   onLoad (options) {
     console.log(options, this.data);
-    this.setData({}, () => {
-      var pageCfg = this.data.pageContent.page_info.page_cfg;
-      var color = "#f5f5f5";
-      if (pageCfg) {
-        if (pageCfg.bg_types == 0) {
-          color = "background:" + pageCfg.page_bg_color;
-        } else if (pageCfg.bg_types == 1) {
-          color = "background:url(" + pageCfg.page_bg_image + ") repeat;background-size:100% auto";
-        }
-      }
-      console.log(pageCfg, color, this.data.pageContent.page_id, '主页')
-      this.setData({
-        color: color,
-        page_id: this.data.pageContent.page_id
-      })
-
-    })
     this._options = options;
     this._options.first_onload = 1;
     this.requestDecoratePageData(
@@ -47,19 +31,40 @@ global.wxPage({
       this.renderData.bind(this),
       true
     );
+    
+    
     // 初始化收藏有礼
     this.renderCollectData()
     // 初始化开屏有礼clearInterval
     this.openGiftRequest()
-
+    let flag = false
+    let timer = setInterval(() => {
+      if (flag) clearInterval(timer)
+      if (this.data.pageContent && !flag) {
+        flag = true
+        var pageCfg = this.data.pageContent.page_info.page_cfg;
+        var color = "#f5f5f5";
+        if (pageCfg) {
+          if (pageCfg.bg_types == 0) {
+            color = "background:" + pageCfg.page_bg_color;
+          } else if (pageCfg.bg_types == 1) {
+            color = "background:url(" + pageCfg.page_bg_image + ") repeat;background-size:100% auto";
+          }
+        }
+        console.log(color)
+        this.setData({
+          color: color
+        })
+      }
+    }, 200)
   },
 
   //  渲染装修模块
   renderData (pageContent) {
-    console.log(pageContent);
-
     this.setData({
-      pageContent: pageContent
+      page_id: pageContent.page_id,
+      pageContent: pageContent,
+      page_name: pageContent.page_name
     });
   },
 
@@ -145,11 +150,14 @@ global.wxPage({
         console.log(res, 'openGift')
         let { show } = res.content
         console.log(res.content, 'res.content')
-        let awardInfo = this.getAwardInfo(res.content)
+        let awardInfo = getAwardInfo(res.content)
         console.log(awardInfo, '---')
         this.setData({
           openGiftDialog: true,
-          awardInfo
+          awardInfo: {
+            action: 'index',
+            ...awardInfo
+          }
         })
         console.log(this.data.awardInfo, 'this.data.awardInfo')
       } else {
@@ -158,90 +166,6 @@ global.wxPage({
     }, {
       userId: util.getCache('user_id')
     })
-  },
-  getAwardInfo (awardInfo) {
-    const needParams = {
-      0: null,
-      1: ['couponView'],
-      2: ['couponView'],
-      3: ['lotteryId'],
-      4: ['account'],
-      5: ['product'],
-      6: ['scoreNumber'],
-      7: ['customImage', 'customLink'],
-    }
-    let formatObj = {
-      1: (() => {
-        return {
-          couponView: awardInfo.extContent && JSON.parse(awardInfo.extContent.coupon_detail)
-        }
-      })(),
-      2: (() => {
-        return {
-          couponView: awardInfo.extContent && JSON.parse(awardInfo.extContent.coupon_detail)
-        }
-      })(),
-      3: (() => {
-        return {
-          lotteryId: awardInfo.awardContent
-        }
-      })(),
-      4: (() => {
-        return {
-          account: awardInfo.awardContent
-        }
-      })(),
-      5: (() => {
-        return {
-          product: awardInfo.awardContent
-        }
-      })(),
-      6: (() => {
-        return {
-          scoreNumber: awardInfo.awardContent
-        }
-      })(),
-      7: (() => {
-        return {
-          customLink: awardInfo.awardContent,
-          customImage: awardInfo.extContent && awardInfo.extContent.customize_img_path || null
-        }
-      })()
-    }
-    const Type = {
-      1: 1,
-      2: 3,
-      3: 7,
-      4: 6,
-      5: 4,
-      6: 2
-    }
-    console.log(Type[awardInfo.awardType])
-    console.log(formatObj[Type[awardInfo.awardType]])
-    return {
-      giftInfo: {
-        giftType: Type[awardInfo.awardType],
-        awardInfo: {
-          ...this.filterObj(formatObj[Type[awardInfo.awardType]], needParams[Type[awardInfo.awardType]])
-        }
-      }
-    }
-  },
-
-  // 过滤需要的参数
-  filterObj (obj, arr) {
-    console.log(obj, 'obj--arr', arr, 'arr')
-
-    if (typeof obj !== "object" || !Array.isArray(arr)) {
-      throw new Error("参数格式不正确");
-    }
-    const result = {};
-    Object.keys(obj)
-      .filter(key => arr.includes(key))
-      .forEach(key => {
-        result[key] = obj[key];
-      });
-    return result;
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -284,5 +208,13 @@ global.wxPage({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () { }
+  onShareAppMessage: function () { 
+    let page_id = this.data.page_id || 0;
+    let nickName = util.getCache('nickName');
+    var share = {
+      path: '/pages/index/index?inviteId=' + util.getCache('user_id') + (page_id > 0 ? "&page=" + page_id : ""),
+      title: this.data.pageContent.share_info.share_title ? this.data.pageContent.share_info.share_title : nickName + '分享给你一个好物店铺，快来查看吧!'
+    };
+    return share
+   }
 });

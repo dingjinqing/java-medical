@@ -10,6 +10,10 @@ const {
 const {
   theMaximumClaimLimit
 } = require('../../utils/i18n/components/decorate/decorate.js');
+const {
+  all
+} = require('../../utils/i18n/page1/search.js');
+
 global.wxPage({
   /**
    * 页面的初始数据
@@ -21,7 +25,10 @@ global.wxPage({
     system_info: '【系统提示】您向医生发起了在线咨询，医生会在24h内按候诊顺序依次接诊，若超过24h未接诊，将为您全额退款，请耐心等待。',
     system_img: false,
     firstLoad: true,
-    status: 0
+    status: 0,
+    scrollTop: 0,
+    arrive_bottom: true,
+    allHeight: 0
   },
 
   /**
@@ -40,6 +47,7 @@ global.wxPage({
       first,
       sessionStatus
     })
+    this.setViewHeight()
   },
   getInputMessage(e) {
     let that = this
@@ -140,13 +148,16 @@ global.wxPage({
         this.setData({
           chatContent: [...this.data.chatContent, ...newChatContent]
         })
+        if (this.data.arrive_bottom == true) {
+          this.pageScrollBottom()
+        }
+        this.getScrollHeight()
       } else if (res.error === 140004 && sessionStatus != 4) {
-        
-        // util.showModal('提示', '当前会话已结束', function () {
-        //   util.redirectTo({
-        //     url: 'pages2/doctorConsultation/doctorConsultation?tab=1'
-        //   })
-        // });
+        util.showModal('提示', '当前会话已结束', function () {
+          util.redirectTo({
+            url: 'pages2/doctorConsultation/doctorConsultation?tab=1'
+          })
+        });
       }
     }, {
       sessionId: this.data.sessionId,
@@ -198,8 +209,8 @@ global.wxPage({
         chat.position = 1;
         chatContent.push(chat)
         this.setData({
-            chatContent: chatContent
-          })
+          chatContent: chatContent
+        })
         this.pageScrollBottom()
       }
     }, {
@@ -208,16 +219,31 @@ global.wxPage({
       toId: this.data.doctorId, //doctor_id
       imSessionItem
     })
+  },
+   pageScrollBottom() {
+    let that = this;
+    that.getRectHeight()
+  },
 
+  startScroll(e) {
+    let that = this;
+    let scrollHeight = e.detail.scrollTop + that.data.scrollViewHeight - 10; //20是margin的大概差值
+    let allHeight = that.data.scrollHeight;
+    let arrive_bottom = that.data.arrive_bottom;
+    console.log(scrollHeight, allHeight)
+    if (scrollHeight >= allHeight) {
+      if (arrive_bottom == true) return
+      that.setData({
+        arrive_bottom: true
+      })
+    } else {
+      if (arrive_bottom == false) return
+      that.setData({
+        arrive_bottom: false
+      })
+    }
   },
-  pageScrollBottom() {
-    wx.createSelectorQuery().select('.main-container').boundingClientRect(function (rect) {
-      console.log(rect);
-      wx.pageScrollTo({
-        scrollTop: rect.height,
-      });
-    }).exec()
-  },
+
   handleShowPrescriptionDialog(e) {
     let {
       prescriptionCode
@@ -305,6 +331,7 @@ global.wxPage({
     if (resData && this.data.firstLoad) await this.historyChatApi()
     this.requsetMessage()
     this.requestStatus()
+    this.pageScrollBottom()
   },
   historyChatApi() {
     return new Promise((resolve, reject) => {
@@ -340,4 +367,37 @@ global.wxPage({
       urls
     })
   },
+  setViewHeight() {
+    let win_h = wx.getSystemInfoSync().windowHeight;
+    let navigation_h;
+    if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
+      navigation_h = wx.getMenuButtonBoundingClientRect().bottom + 8
+    } else {
+      wx.getSystemInfo({
+        success: (res) => {
+          navigation_h = res.statusBarHeight * 3 + 8
+        }
+      })
+    }
+    this.setData({
+      scrollViewHeight: win_h - navigation_h - 55,
+    });
+  },
+  getRectHeight() {
+    let that = this
+      wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
+        that.setData({
+          allHeight: reda[0].height,
+          scrollHeight:reda[0].height
+        })
+      })
+  },
+  getScrollHeight(){
+    let that = this
+      wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
+        that.setData({
+          scrollHeight:reda[0].height
+        })
+      })
+  }
 })

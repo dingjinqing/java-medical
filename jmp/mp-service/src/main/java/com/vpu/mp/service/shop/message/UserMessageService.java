@@ -166,6 +166,7 @@ public class UserMessageService extends ShopBaseService {
                 UserMessageVo imSessionBySessionId = messageDao.getImSessionBySessionId(imSessionUnReadInfoVo.getSessionId(), imSessionUnReadMessageInfoParam.getUserId());
                 // 新增
                 UserMessageParam userMessageParam = new UserMessageParam();
+                ImSessionDo imSession = imSessionDao.getImSession(imSessionUnReadInfoVo.getSessionId());
                 if (imSessionBySessionId == null) {
                     userMessageParam.setMessageType(USER_MESSAGE_CHAT);
                     String content = addImMessageContent(imSessionUnReadInfoVo);
@@ -175,11 +176,11 @@ public class UserMessageService extends ShopBaseService {
                     userMessageParam.setReceiverId(imSessionUnReadMessageInfoParam.getUserId());
                     userMessageParam.setReceiverName(userDao.getUserById(imSessionUnReadMessageInfoParam.getUserId()).getUsername());
                     userMessageParam.setSenderName(doctorDao.getOneInfo(imSessionUnReadInfoVo.getDoctorId()).getName());
-                    ImSessionDo imSession = imSessionDao.getImSession(imSessionUnReadInfoVo.getSessionId());
                     userMessageParam.setMessageRelevanceOrderSn(imSession.getOrderSn());
                     userMessageParam.setMessageChatStatus(imSession.getSessionStatus());
                     messageDao.saveMessage(userMessageParam);
                 } else { // 更新
+                    userMessageParam.setMessageRelevanceOrderSn(imSession.getOrderSn());
                     userMessageParam.setMessageStatus(USER_MESSAGE_STATUS_NOT_READ);
                     String content = addImMessageContent(imSessionUnReadInfoVo);
                     userMessageParam.setMessageContent(content);
@@ -196,7 +197,7 @@ public class UserMessageService extends ShopBaseService {
      */
     private String addImMessageContent(ImSessionUnReadInfoVo imSessionUnReadInfoVo) {
         int size = imSessionUnReadInfoVo.getMessageInfos().size();
-        ImSessionItemBase imSessionItemBase = imSessionUnReadInfoVo.getMessageInfos().get(0);
+        ImSessionItemBase imSessionItemBase = imSessionUnReadInfoVo.getMessageInfos().get(size - 1);
         // 文本消息
         if (SESSION_ITEM_TYPE_TEXT.equals(imSessionItemBase.getType())) {
             return String.format(Objects.requireNonNull(UserMessageTemplate.USER_MESSAGE_IM_SESSION_ADD.getMessage()),
@@ -311,14 +312,14 @@ public class UserMessageService extends ShopBaseService {
      * @param userId 用户id
      */
     public void fetchUserMessage(Integer userId) {
-        this.transaction(() -> {
+//        this.transaction(() -> {
             // 拉取用户新信息
             ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
             imSessionUnReadMessageInfoParam.setUserId(userId);
             setImSessionMessage(imSessionUnReadMessageInfoParam);
             setOrderMessage(userId);
             setAnnouncementMessage(userId);
-        });
+//        });
     }
 
 }

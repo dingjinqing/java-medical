@@ -25,8 +25,9 @@ public class  GoodsBaseMp {
     protected Boolean defaultPrd;
     /**商品数量*/
     protected Integer goodsNumber;
+    private Byte isMedical;
+    private Byte isRx;
     //************ElasticSearch中的数据**************end
-
 
     @Override
     public String toString() {
