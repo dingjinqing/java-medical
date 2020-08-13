@@ -58,7 +58,7 @@ public class ImSessionConstant {
     /**
      * 可以继续问诊次数
      */
-    public static final Integer CONTINUE_SESSION_TIME = 1;
+    public static final Integer CONTINUE_SESSION_TIME = 3;
 
     /**
      * 会话关闭默认等待时间24小时
