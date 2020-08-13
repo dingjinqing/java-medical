@@ -1,5 +1,6 @@
 package com.vpu.mp.common.pojo.shop.table;
 
+import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -22,7 +23,17 @@ public class ImSessionDo {
     private Byte evaluateStatus;
     private String    orderSn;
     private Timestamp limitTime;
+    private Integer readyToOnAkcTime;
     private Byte      isDelete;
     private Timestamp createTime;
     private Timestamp updateTime;
+
+    public void calculateReadyToOnAckTime(){
+        if (!ImSessionConstant.SESSION_READY_TO_START.equals(sessionStatus)) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        long readyTime = createTime.getTime();
+        readyToOnAkcTime = Math.toIntExact((now - readyTime) / 1000);
+    }
 }
