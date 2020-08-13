@@ -4853,6 +4853,7 @@ create table b2c_doctor(
     `avg_answer_time` int(11) not null default 0 comment '平均接诊时间',
     `consultation_number` int(11) not null default 0 comment '接诊数',
     `avg_comment_star` decimal(10,2) not null default 0 comment '平均评分',
+    `attention_number` int(11) not null default 0 comment '关注数',
     primary key (`id`)
 )comment ='医师表';
 

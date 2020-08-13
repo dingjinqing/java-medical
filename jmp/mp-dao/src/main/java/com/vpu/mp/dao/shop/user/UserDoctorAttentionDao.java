@@ -49,4 +49,15 @@ public class UserDoctorAttentionDao extends ShopBaseDao {
             .fetchInto(Integer.class);
         return doctorIds;
     }
+
+    /**
+     * 获取医师关注数
+     * @param doctorId
+     * @return
+     */
+    public Integer getAttentionNumber(Integer doctorId) {
+        return db().selectCount().from(USER_DOCTOR_ATTENTION)
+            .where(USER_DOCTOR_ATTENTION.DOCTOR_ID.eq(doctorId))
+            .fetchAnyInto(Integer.class);
+    }
 }

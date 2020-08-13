@@ -57,4 +57,5 @@ public class DoctorDo   {
     private Integer    avgAnswerTime;
     private Integer    consultationNumber;
     private BigDecimal avgCommentStar;
+    private Integer    attentionNumber;
 }

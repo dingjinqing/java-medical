@@ -133,7 +133,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
      * @return
      */
     public PageResult<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
-        Condition condition = DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1));
+        Condition condition = DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1)).and(DOCTOR.CAN_CONSULTATION.eq((byte) 1));
         if (doctorParam.getKeyword() != null && doctorParam.getKeyword() != "") {
             condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DOCTOR.ID.in(doctorParam.getDoctorIds())));
         }
@@ -146,10 +146,22 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         if (DoctorConstant.ATTENTION_TYPE.equals(doctorParam.getType()) && doctorParam.getUserId() > 0) {
             condition = condition.and(DOCTOR.ID.in(doctorParam.getUserDoctorIds()));
         }
-        SelectJoinStep<? extends Record> select = db().select(DOCTOR.asterisk(),DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
+        SelectJoinStep<? extends Record> select = db().select(DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
+            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
         select.where(condition);
         select.orderBy(DOCTOR.IS_ON_DUTY.desc());
+        if (DoctorConstant.TITLE_SORT_TYPE.equals(doctorParam.getSortType())){
+            select.orderBy(DOCTOR_TITLE.FIRST.desc());
+        } else if (DoctorConstant.COMMENT_SORT_TYPE.equals(doctorParam.getSortType())){
+            select.orderBy(DOCTOR.AVG_COMMENT_STAR.desc());
+        } else if (DoctorConstant.ANSWER_SORT_TYPE.equals(doctorParam.getSortType())){
+            select.orderBy(DOCTOR.AVG_ANSWER_TIME.desc());
+        } else if (DoctorConstant.CONSULTATION_SORT_TYPE.equals(doctorParam.getSortType())){
+            select.orderBy(DOCTOR.CONSULTATION_NUMBER.desc());
+        } else if (DoctorConstant.ATTENTION_SORT_TYPE.equals(doctorParam.getSortType())){
+            select.orderBy(DOCTOR.ATTENTION_NUMBER.desc());
+        }
         PageResult<DoctorConsultationOneParam> doctorList = this.getPageResult(select, doctorParam.getCurrentPage(),
             doctorParam.getPageRows(), DoctorConsultationOneParam.class);
         return doctorList;
