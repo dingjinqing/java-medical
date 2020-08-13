@@ -201,7 +201,8 @@ public class InquiryOrderService extends ShopBaseService {
 
         InquiryOrderDo orderInfo=inquiryOrderDao.getByOrderSn(orderSn);
         //临时添加支付回调，正式使用删除
-        if (param.getDescriptionDisease().contains("test")) {
+        String test = "test";
+        if (param.getDescriptionDisease().contains(test)) {
             inquiryOrderFinish(orderInfo,new PaymentRecordRecord());
         } else {
             //微信支付接口
