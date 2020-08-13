@@ -10,6 +10,9 @@ import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,33 +31,22 @@ public class InquiryOrderTaskService extends ShopBaseService {
     private ImSessionService imSessionService;
 
     /**
-     * 订单自动关闭
+     * 自动任务关闭待支付的问诊订单
      */
     public void close() {
         logger().info("问诊订单关闭定时任务start,shop:{}", getShopId());
-        autoCloseInquiryOrder();
-        logger().info("问诊订单关闭定时任务end");
-    }
-
-    /**
-     * 自动任务关闭待支付的问诊订单
-     */
-    public void autoCloseInquiryOrder() {
         List<InquiryOrderDo> orderList = inquiryOrderService.getCanceledToPaidCloseOrder();
         orderList.forEach(order -> {
-            closeExecute(order);
-        });
-    }
-
-    public void closeExecute(InquiryOrderDo order) {
-        boolean successFlag=true;
-        transaction(() -> {
             order.setOrderStatus(InquiryOrderConstant.ORDER_CANCELED);
             order.setCancelledTime(DateUtils.getLocalDateTime());
             inquiryOrderDao.update(order);
         });
-
+        logger().info("问诊订单关闭定时任务end");
     }
+
+
+
+
 
 
     /**
@@ -72,12 +64,15 @@ public class InquiryOrderTaskService extends ShopBaseService {
     public void autoCloseToWaitingInquiryOrder()  {
         List<InquiryOrderDo> orderList = inquiryOrderService.getCanceledToWaitingCloseOrder();
         orderList.forEach(order -> {
+            if(order.getOrderAmount().compareTo(BigDecimal.ZERO)<=0){
+                return;
+            }
             try {
                 refundExecute(order);
                 logger().info("问诊订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
             } catch (MpException e) {
                 e.printStackTrace();
-                logger().error("问诊订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage().toString());
+                logger().error("问诊订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage());
             }
         });
     }
@@ -96,11 +91,17 @@ public class InquiryOrderTaskService extends ShopBaseService {
      * 接诊中超时自动结束的问诊订单
      */
     public void finishedCloseOrder(){
+        logger().info("接诊中问诊订单超时自动结束定时任务start,shop:{}", getShopId());
         List<InquiryOrderDo> list=inquiryOrderDao.getFinishedCloseOrder();
         list.forEach(order -> {
             order.setOrderStatus(InquiryOrderConstant.ORDER_FINISHED);
             order.setFinishedTime(DateUtils.getLocalDateTime());
             inquiryOrderDao.update(order);
+            List<String> orderSnList=new ArrayList<>();
+            orderSnList.add(order.getOrderSn());
+            imSessionService.batchCloseSession(orderSnList);
+            logger().info("接诊中问诊订单超时自动结束,成功,orderSn:{}", order.getOrderSn());
         });
+        logger().info("接诊中问诊订单超时自动结束定时任务end");
     }
 }

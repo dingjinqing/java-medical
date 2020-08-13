@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.user.AdminUserService;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -55,6 +56,9 @@ public class WxAppAuth {
 
 	@Autowired
 	protected AdminUserService adminUserService;
+
+	@Autowired
+	protected DoctorService doctorService;
 
 	public static final String TOKEN = "V-Token";
 
@@ -216,6 +220,7 @@ public class WxAppAuth {
             wxAppSessionUser.setUserType(AUTH_TYPE_DOCTOR_USER);
             wxAppSessionUser.setDoctorId(doctorId);
             jedis.set(getToken(), Util.toJson(wxAppSessionUser));
+            doctorService.updateUserToken(doctorId,getToken());
         }
     }
 }

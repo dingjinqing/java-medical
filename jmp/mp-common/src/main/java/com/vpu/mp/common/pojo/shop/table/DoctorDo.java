@@ -58,4 +58,5 @@ public class DoctorDo   {
     private Integer    consultationNumber;
     private BigDecimal avgCommentStar;
     private Integer    attentionNumber;
+    private String     userToken;
 }

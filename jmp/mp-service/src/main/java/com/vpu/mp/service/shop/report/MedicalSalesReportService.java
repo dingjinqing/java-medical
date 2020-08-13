@@ -155,7 +155,7 @@ public class MedicalSalesReportService extends ShopBaseService {
         report.setTime(parse.toDateStr());
         report.setOrderAmount(goodsPrice);
         report.setOrderNumber(orderNumber);
-        report.setOrderAvg(orderAvg);
+        report.setOrderAvg(orderAvg.setScale(2,BigDecimal.ROUND_HALF_UP));
         report.setOrderMedicalAmount(medicalAmount);
         report.setOrderMedicalNumber(medicalNumber);
         report.setReturnAmount(returnAmount);

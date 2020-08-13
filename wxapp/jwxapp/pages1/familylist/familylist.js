@@ -9,7 +9,9 @@ global.wxPage({
   data: {
     imageUrl: app.globalData.imageUrl,
     if_checked: 0,
-    patientList: []
+    patientList: [],
+    fresh_ok: 0,
+    need_get_pre: 0
   },
 
   /**
@@ -83,6 +85,16 @@ global.wxPage({
         patientId: e.currentTarget.dataset.id
       })
     }, true, '取消', '确定')
+  },
+  closeModal () {
+    this.setData({
+      fresh_ok: 0
+    })
+  },
+  closeModal1 () {
+    this.setData({
+      need_get_pre: 0
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

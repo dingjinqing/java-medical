@@ -30,4 +30,14 @@ public class UserDao extends ShopBaseDao {
         return userDo;
     }
 
+    /**
+     * 根据用户名和手机查询用户id，再讲该用户权限设置为医师
+     * @return UserDo
+     */
+    public Integer updateUserDoctorAuth(Integer userId,Byte type) {
+        return db().update(USER).set(USER.USER_TYPE, type)
+            .where(USER.USER_ID.eq(userId))
+            .execute();
+    }
+
 }

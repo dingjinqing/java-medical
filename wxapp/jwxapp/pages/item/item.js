@@ -1330,7 +1330,7 @@ global.wxPage({
       deliverTemplateId: that.data.deliverTemplateId,
       goodsNum: this.data.productInfo.goodsNum,
       goodsPrice: this.data.productInfo.prdRealPrice,
-      goodsWeight: this.data.productInfo.prdWeight || ''
+      goodsWeight: this.data.productInfo.prdWeight || 1
     })
   },
 

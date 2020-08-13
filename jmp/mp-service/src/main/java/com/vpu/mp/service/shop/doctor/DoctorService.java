@@ -21,6 +21,7 @@ import com.vpu.mp.dao.shop.doctor.DoctorDutyRecordDao;
 import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
@@ -92,12 +93,17 @@ public class DoctorService extends ShopBaseService {
     }
 
     public Integer updateDoctor(DoctorOneParam param) {
+        DoctorOneParam doctorInfo = getOneInfo(param.getId());
+        if (!doctorInfo.getStatus().equals(param.getStatus())) {
+            dealDoctorWx(param.getId(),param.getStatus());
+        }
         doctorDao.updateDoctor(param);
         setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
         return param.getId();
     }
     public Integer enableDoctor(DoctorOneParam param) {
         doctorDao.updateDoctor(param);
+        dealDoctorWx(param.getId(),param.getStatus());
         return param.getId();
     }
 
@@ -457,5 +463,45 @@ public class DoctorService extends ShopBaseService {
         doctorSortParam.setDoctorId(doctorId);
         doctorSortParam.setAttentionNumber(attentionNumber);
         updateAttentionNumber(doctorSortParam);
+    }
+
+    /**
+     * 更新医师登录token
+     * @param doctorId
+     * @param userToken
+     */
+    public void updateUserToken(Integer doctorId, String userToken){
+        doctorDao.updateUserToken(doctorId,userToken);
+    }
+
+    /**
+     * 处理医师wx账号
+     * @param doctorId
+     * @param status
+     */
+    public void dealDoctorWx (Integer doctorId,Byte status){
+        DoctorOneParam doctorInfo = getOneInfo(doctorId);
+        if (doctorInfo.getUserId() > 0) {
+            jedisManager.delete(doctorInfo.getUserToken());
+            Byte userType = DoctorConstant.ABLE.equals(status) ? AuthConstant.AUTH_TYPE_DOCTOR_USER:AuthConstant.AUTH_TYPE_NORMAL_USER;
+            userDao.updateUserDoctorAuth(doctorInfo.getUserId(),userType);
+        }
+    }
+
+    /**
+     * 根userId更新医师token
+     * @param userId
+     * @param userToken
+     */
+    public void updateUserTokenByUserId(Integer userId,String userToken) {
+        doctorDao.updateUserTokenByUserId(userId,userToken);
+    }
+
+    /**
+     * 删除医师登录token
+     * @param doctorId
+     */
+    public void deleteUserToken(Integer doctorId){
+        jedisManager.delete(getOneInfo(doctorId).getUserToken());
     }
 }
