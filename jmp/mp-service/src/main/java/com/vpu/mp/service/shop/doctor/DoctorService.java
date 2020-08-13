@@ -55,17 +55,17 @@ public class DoctorService extends ShopBaseService {
     @Autowired
     protected DepartmentDao departmentDao;
     @Autowired
-    public DepartmentService departmentService;
+    protected DepartmentService departmentService;
     @Autowired
-    public TitleService titleService;
+    protected TitleService titleService;
     @Autowired
-    public UserDao userDao;
+    protected UserDao userDao;
     @Autowired
-    public JedisManager jedisManager;
+    protected JedisManager jedisManager;
     @Autowired
-    public UserDoctorAttentionDao userDoctorAttentionDao;
+    protected UserDoctorAttentionDao userDoctorAttentionDao;
     @Autowired
-    public DoctorDutyRecordDao doctorDutyRecordDao;
+    protected DoctorDutyRecordDao doctorDutyRecordDao;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
