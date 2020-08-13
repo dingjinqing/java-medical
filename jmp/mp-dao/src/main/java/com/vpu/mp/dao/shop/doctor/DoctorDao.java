@@ -323,4 +323,15 @@ public class DoctorDao extends ShopBaseDao {
             .where(DOCTOR.ID.eq(param.getDoctorId()))
             .execute();
     }
+
+    /**
+     * 更新医师userToken
+     * @param userId
+     * @param userToken
+     */
+    public void updateUserTokenByUserId(Integer userId,String userToken){
+        db().update(DOCTOR).set(DOCTOR.USER_TOKEN, userToken)
+            .where(DOCTOR.USER_ID.eq(userId))
+            .execute();
+    }
 }
