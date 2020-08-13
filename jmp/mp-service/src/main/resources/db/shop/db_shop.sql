@@ -4826,7 +4826,7 @@ create table b2c_doctor_title(
 -- 医师
 create table b2c_doctor(
     `id`   int(11)      not null auto_increment,
-    `account_id` int(11) not null comment '医师子账号id',
+    `account_id` int(11) not null default 0 comment '医师子账号id',
     `age` int(11) not null default 0 comment '年龄',
     `work_time` int(11) not null default 0 comment '从业时间',
     `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
@@ -4850,6 +4850,9 @@ create table b2c_doctor(
     `on_duty_time`   timestamp    not null default current_timestamp comment '上班时间',
     `is_on_duty`     tinyint(1)   not null default '1' comment '是否上班',
     `can_consultation` tinyint(1)   not null default '1' comment '是否接诊',
+    `avg_answer_time` int(11) not null default 0 comment '平均接诊时间',
+    `consultation_number` int(11) not null default 0 comment '接诊数',
+    `avg_comment_star` decimal(10,2) not null default 0 comment '平均评分',
     primary key (`id`)
 )comment ='医师表';
 
