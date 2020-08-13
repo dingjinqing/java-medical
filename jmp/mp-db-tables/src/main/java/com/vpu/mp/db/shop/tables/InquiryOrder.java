@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = 503143234;
+    private static final long serialVersionUID = -248378020;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order</code>
@@ -168,6 +168,11 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
      * The column <code>mini_shop_471752.b2c_inquiry_order.refund_money</code>. 已退款金额
      */
     public final TableField<InquiryOrderRecord, BigDecimal> REFUND_MONEY = createField("refund_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "已退款金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.limit_time</code>. 医生接诊后会话截止时间点
+     */
+    public final TableField<InquiryOrderRecord, Timestamp> LIMIT_TIME = createField("limit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "医生接诊后会话截止时间点");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.cancelled_time</code>. 取消时间
