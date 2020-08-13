@@ -1,0 +1,68 @@
+<include src="/pages/common/header.wxml" />
+<view class="container">
+	<view class="doctor_content">
+		<view>
+			<view class="doctor_item">
+				<view class="d_left">
+					<!-- <image src="{{item.url}}" wx:if='{{item.url != ""}}'></image> -->
+					<!-- <image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image> -->
+					<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png'></image>
+				</view>
+				<view class="d_right">
+					<view class="d_r_top">
+						<text>{{item.name}}吴晓红</text>
+						<text wx:if='{{item.titleName}}'>{{item.titleName}}</text>
+						<text>主任医师</text>
+					</view>
+					<view class="d_r_m_t">
+						<text>{{item.hospitalName}}军工医院</text>
+						<text style="margin-left:10rpx" wx:if='{{item.departmentName}}'>{{item.departmentName}}</text>
+						<text style="margin-left:10rpx">皮肤科</text>
+					</view>
+					<!-- <view class="d_r_m_b" wx:if='{{item.treatDisease}}'> -->
+					<view class="d_r_m_b">
+						<view>擅长：{{item.treatDisease}}你猜</view>
+					</view>
+					<view class="focus {{if_focus == true ? 'have_focus' :''}}" catchtap="choose_focus">
+						{{if_focus == 0 ? '关注' : '已关注'}}
+					</view>
+				</view>
+			</view>
+			<view class="doctor_introduce">
+				<view>
+					<view>100</view>
+					<view>关注量</view>
+				</view>
+				<view>
+					<view>700</view>
+					<view>接诊量</view>
+				</view>
+				<view>
+					<view>1小时</view>
+					<view>平均响应时间</view>
+				</view>
+			</view>
+      <image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>
+		</view>
+	</view>
+
+	<view class="mid_con">
+       <view class="comment_title">患者评价（234）</view>
+       <view class="commentList">
+            <view class="comment_item">
+                <view class="c_top">
+                     <view class="c_t_name">用户2312312</view>
+                     <view class="c_t_star">
+                       	<text class='iconfont iconshoucang star'></text>
+                     </view>
+                </view>
+                <view class="c_mid">
+                
+                </view>
+            </view>
+       </view>
+	</view>
+	<view class="bot_footer">
+		<view>发布</view>
+	</view>
+</view>

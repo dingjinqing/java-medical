@@ -23,6 +23,9 @@
 						<view>￥{{item.consultationPrice}}<text>/次</text></view>
 					</view>
 				</view>
+				<view class="consule">
+				    在线咨询
+				</view>
 			</view>
 		</block>
 	</block>

@@ -2,20 +2,22 @@
 var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
 var util = require('../../utils/util.js');
-const { theMaximumClaimLimit } = require('../../utils/i18n/components/decorate/decorate.js');
+const {
+  theMaximumClaimLimit
+} = require('../../utils/i18n/components/decorate/decorate.js');
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-    array: ['男', '女','未知'],
+    array: ['男', '女', '未知'],
     sex: 0,
     comm_img: [],
     name: '',
     age: '',
-    orderAmount:0,
-    descriptionDisease:''
+    orderAmount: 0,
+    descriptionDisease: ''
   },
 
   /**
@@ -28,9 +30,9 @@ global.wxPage({
     let orderAmount = options.price;
     this.requestDefault()
     this.setData({
-      doctorId:doctorId,
-      departmentId:departmentId,
-      orderAmount:orderAmount
+      doctorId: doctorId,
+      departmentId: departmentId,
+      orderAmount: orderAmount
     })
   },
   bindSexChange: function (e) {
@@ -129,36 +131,44 @@ global.wxPage({
       age: age,
     })
   },
-  bindCheckInput: function(e) {
+  bindCheckInput: function (e) {
     let descriptionDisease = e.detail.value;
     this.setData({
-      descriptionDisease:descriptionDisease
-    }) 
+      descriptionDisease: descriptionDisease
+    })
   },
   toOrder: function () {
     let that = this;
-    if(that.data.descriptionDisease == ''){
-      util.showModal('提示','请填写病情描述')
+    if (that.data.descriptionDisease == '') {
+      util.showModal('提示', '请填写病情描述')
       return
     }
     let params = {
-      doctorId:that.data.doctorId,
-      departmentId:that.data.departmentId,
-      patientId:that.data.patientId,
-      descriptionDisease:that.data.descriptionDisease,
-      imageList:that.data.comm_img,
-      orderAmount:that.data.orderAmount
+      doctorId: that.data.doctorId,
+      departmentId: that.data.departmentId,
+      patientId: that.data.patientId,
+      descriptionDisease: that.data.descriptionDisease,
+      imageList: that.data.comm_img,
+      orderAmount: that.data.orderAmount
     }
     util.api(
       '/api/wxapp/inquiry/order/pay',
       async res => {
-        console.log(res)
+          console.log(res)
           if (res.error === 0) {
             let {
               orderSn
             } = res.content
             console.log(orderSn)
-         
+            if (params.orderAmount == 0) {
+              util.jumpLink(
+                `/pages2/patientChat/patientChat${this.getUrlParams({
+                orderSn:orderSn,
+                first: 1,
+              })}`,
+                'redirectTo'
+              )
+            } else {
               wx.requestPayment({
                 timeStamp: res.content.timeStamp,
                 nonceStr: res.content.nonceStr,
@@ -166,12 +176,12 @@ global.wxPage({
                 signType: 'MD5',
                 paySign: res.content.paySign,
                 success: async res => {
-                  util.toast_success('支付成功',()=>{
+                  util.toast_success('支付成功', () => {
                     util.jumpLink(
                       `/pages2/patientChat/patientChat${this.getUrlParams({
-                        orderSn:orderSn,
-                        first: 1,
-                      })}`,
+                      orderSn:orderSn,
+                      first: 1,
+                    })}`,
                       'redirectTo'
                     )
                   })
@@ -182,7 +192,9 @@ global.wxPage({
                 },
                 complete: res => {}
               })
-            
+            }
+
+
           } else {
             // util.showModal('提示', res.message, function () {
             //   util.jumpLink('/pages/index/index', 'redirectTo')
@@ -207,7 +219,7 @@ global.wxPage({
       }
     }, {})
   },
-  getUrlParams (obj) {
+  getUrlParams(obj) {
     return Object.keys(obj).reduce((UrlStr, item, index) => {
       if (index !== 0) UrlStr += `&`
       return UrlStr += `${item}=${obj[item]}`
