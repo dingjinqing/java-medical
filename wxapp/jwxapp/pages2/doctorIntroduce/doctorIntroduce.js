@@ -8,22 +8,7 @@ global.wxPage({
   data: {
     imageUrl: app.globalData.imageUrl,
     if_focus: false,
-    star: [{
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      }
-    ],
+    show_announce:false
   },
 
   /**
@@ -89,18 +74,9 @@ global.wxPage({
       if_focus:!this.data.if_focus
     })
   },
-  choose_star(e) {
-    let idx = e.currentTarget.dataset.idx;
-    let star = this.data.star;
-    star.forEach((item, index) => {
-      if (index <= idx) {
-        item.show = true
-      } else {
-        item.show = false
-      }
-    })
+  patient_announce(){
     this.setData({
-      star: star
+      show_announce:true
     })
   }
 

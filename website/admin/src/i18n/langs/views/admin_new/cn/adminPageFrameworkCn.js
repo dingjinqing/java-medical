@@ -168,7 +168,7 @@ export const cn = {
     third_auth: '第三方对接',
     action_record: '操作记录',
     pledge: '服务承诺',
-    smsConfig: '短信记录',
+    smsConfig: '短信中心',
     doctorList: '医师列表',
     doctorProfessionalTitle: '医师职称',
     officesList: '科室管理',

@@ -7,7 +7,7 @@
     </view>
     <view class="custom-footer" wx:if="{{moreActions}}">
       <view class="custom-content">
-        <view class="item" bindtap="sendImage">
+        <view class="item" bindtap="sendImage"> 
           <view class="item-image">
             <image mode="widthFix" src="http://medicaldevimg.weipubao.cn/image/wxapp/upload_prescription-icon.png"></image>
           </view>

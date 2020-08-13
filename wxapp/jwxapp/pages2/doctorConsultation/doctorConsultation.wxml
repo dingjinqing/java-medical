@@ -26,7 +26,7 @@
 		<view class='chat_content'>
 			<block wx:for='{{dataList}}' wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
 				<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
-					<view>
+					<view wx:if='{{item.sessionStatus != 3}}'>
 						<view class="chat_top">
 							<view class="chat_item" data-status='{{item.sessionStatus}}' data-order-sn='{{item.orderSn}}' catchtap="toChat">
 								<view class="chat_left">
@@ -38,7 +38,7 @@
 										<view>
 											<text>{{item.doctorName}}</text>
 											<text class="depart" wx:if='{{item.departmentName}}'>{{item.departmentName}}</text>
-											<text class='fr {{item.sessionStatus == 1 ? "wait" : (item.sessionStatus == 2 || item.sessionStatus == 3 ? "online" : "end")}}'>{{item.sessionStatus == 1 ? "待接诊" : (item.sessionStatus == 2 ? "会话中" : (item.sessionStatus == 3 ? "会话取消" : "会话结束"))}}</text>
+											<text class='fr {{item.sessionStatus == 1 ? "wait" : (item.sessionStatus == 2 || item.sessionStatus == 5 ? "online" : "end")}}'>{{item.sessionStatus == 1 ? "待接诊" : (item.sessionStatus == 2 || item.sessionStatus == 5 ? "会话中" : (item.sessionStatus == 4 ? "会员结束" : "会话终止"))}}</text>
 										</view>
 									</view>
 									<view class="c_r_bot">
@@ -48,7 +48,7 @@
 							</view>
 						</view>
 						<view class="chat_bot" wx:if='{{item.sessionStatus == 4}}'>
-							<view class="to_comment">去评价</view>
+							<view class="to_comment" wx:if='{{item.evaluateStatus == 1}}'>去评价</view>
 							<view class="to_leave_message" data-status='{{item.sessionStatus}}' data-order-sn='{{item.orderSn}}' catchtap="toChat">去留言</view>
 						</view>
 					</view>

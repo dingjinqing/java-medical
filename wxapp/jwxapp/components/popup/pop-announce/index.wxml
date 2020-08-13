@@ -1,0 +1,14 @@
+<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="center" bindtap='bindClose'>
+	<view class="announce_content">
+		<view class="a_title">
+			<view>{{title}}</view>
+			<image src='{{imageUrl}}image/wxapp/close_icon.png' catchtap="close"></image>
+		</view>
+		<view class="a_con">
+		  <slot />
+		</view>
+    <view class="a_bot" catchtap="close">
+         <view class='determine' >确定</view>
+    </view>
+	</view>
+</v-popup>

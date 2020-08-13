@@ -1,5 +1,5 @@
 <!--components/popup/get-prescription/index.wxml-->
-<v-popup show="{{show}}" bind:close="bindClose" hide-close='{{true}}'>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{true}}" horizon="center" vertical="center" bindtap='bindClose'>
   <view>
     <view class="pre_content">
       <image src="{{hospital_img}}" class="hospital_img"></image>
