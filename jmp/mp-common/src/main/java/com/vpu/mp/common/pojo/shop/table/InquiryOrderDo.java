@@ -38,6 +38,7 @@ public class InquiryOrderDo {
     private BigDecimal orderAmount;
     private Timestamp  payTime;
     private BigDecimal refundMoney;
+    private Timestamp  limitTime;
     private Timestamp  cancelledTime;
     private Timestamp  finishedTime;
     private String     descriptionDisease;

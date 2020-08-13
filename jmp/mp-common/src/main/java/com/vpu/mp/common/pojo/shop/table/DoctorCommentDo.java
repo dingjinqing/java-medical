@@ -18,10 +18,11 @@ public class DoctorCommentDo {
     private String    userName;
     private Integer   patientId;
     private Integer   doctorId;
+    private String    orderSn;
+    private Integer   imSessionId;
     private Byte      stars;
     private Byte      isAnonymou;
     private String    tag;
-    private String    orderSn;
     private String    commNote;
     private Byte      auditStatus;
     private Byte      isDelete;

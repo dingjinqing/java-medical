@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,15 +127,17 @@ public class InquiryOrderService extends ShopBaseService {
         FieldsUtil.assign(param,inquiryOrderDo);
         Byte prevStatus = inquiryOrderDo.getOrderStatus();
         inquiryOrderDo.setOrderStatus(param.getOrderStatus());
-        inquiryOrderDao.update(inquiryOrderDo);
         //更新会话状态修改为进行中
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
+            inquiryOrderDo.setLimitTime(DateUtils.getTimeStampPlus(InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS));
             imSessionService.updateSessionToGoingOn(param.getSessionId());
         }
         //更新会话状态为关闭
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
+            inquiryOrderDo.setFinishedTime(DateUtils.getLocalDateTime());
             imSessionService.closeImSession(param.getSessionId());
         }
+        inquiryOrderDao.update(inquiryOrderDo);
     }
     public void insert(InquiryOrderDo inquiryOrderDo){
         int orderId=inquiryOrderDao.save(inquiryOrderDo);
@@ -180,6 +183,10 @@ public class InquiryOrderService extends ShopBaseService {
         order.setPayTime(DateUtils.getLocalDateTime());
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
+        //添加会话问诊
+        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
+        FieldsUtil.assign(order,imSessionNewParam);
+        imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
@@ -223,10 +230,6 @@ public class InquiryOrderService extends ShopBaseService {
             logger().debug("微信支付创建订单结束");
         }
         vo.setOrderSn(orderSn);
-        //添加会话问诊
-        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
-        FieldsUtil.assign(orderInfo,imSessionNewParam);
-        imSessionService.insertNewSession(imSessionNewParam);
         return vo;
     }
     private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){

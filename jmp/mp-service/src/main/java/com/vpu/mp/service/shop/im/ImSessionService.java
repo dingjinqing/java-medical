@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import com.vpu.mp.service.pojo.wxapp.medical.im.bo.ImSessionItemBo;
@@ -299,6 +300,13 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
+     * 会话评价状态由可评价修改为已评价
+     * @param sessionId
+     */
+    public void updateSessionEvaluateStatusToAlready(Integer sessionId){
+        imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_ALREADY_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
+    }
+    /**
      * 会话状态修改为进行中
      * @param sessionId 会话ID
      * @return
@@ -315,19 +323,39 @@ public class ImSessionService extends ShopBaseService {
         if (ImSessionConstant.SESSION_READY_TO_START.equals(prevStatus)) {
             // 状态从1->2
             jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
+            imSessionDo.calculateReadyToOnAckTime();
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_ON_WEIGHT);
+            imSessionDao.update(imSessionDo);
+            statisticDoctorSessionState(imSessionDo.getDoctorId());
         } else {
             // 从结束状态变为继续问诊状态 4->5
             jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_CONTINUE_ON.toString());
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_CONTINUE_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_CONTINUE_ON_WEIGHT);
             imSessionDo.setContinueSessionCount(imSessionDo.getContinueSessionCount()-1);
+            if (ImSessionConstant.SESSION_EVALUATE_CAN_STATUS.equals(imSessionDo.getEvaluateStatus())) {
+                imSessionDo.setEvaluateStatus(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
+            }
+            imSessionDao.update(imSessionDo);
         }
-        imSessionDao.update(imSessionDo);
+
     }
 
-
+    /**
+     * 统计医师会话相关信息
+     */
+    private void statisticDoctorSessionState(Integer doctorId){
+        Integer sessionReadyToOnAckAvgTime = imSessionDao.getSessionReadyToOnAckAvgTime(doctorId);
+        Integer sessionCount = imSessionDao.getSessionCount(doctorId);
+        DoctorSortParam sortParam = new DoctorSortParam();
+        if (sessionReadyToOnAckAvgTime != null) {
+            sortParam.setAvgAnswerTime(sessionReadyToOnAckAvgTime);
+            doctorService.updateAvgAnswerTime(sortParam);
+        }
+        sortParam.setConsultationNumber(sessionCount);
+        doctorService.updateConsultationNumber(sortParam);
+    }
     /**
      * 批量取消未接诊过期的会话
      */
@@ -367,6 +395,9 @@ public class ImSessionService extends ShopBaseService {
         }
         imSessionDao.batchUpdateSessionStatus(sessionDeadIds, ImSessionConstant.SESSION_DEAD,ImSessionConstant.SESSION_DEAD_WEIGHT);
         imSessionDao.batchUpdateSessionStatus(sessionCloseIds, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGTH);
+        // 修改评价状态
+        imSessionDao.batchUpdateSessionEvaluateStatus(sessionDeadIds,ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
+        imSessionDao.batchUpdateSessionEvaluateStatus(sessionCloseIds,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
     }
 
     /**
@@ -381,8 +412,10 @@ public class ImSessionService extends ShopBaseService {
         if (imSessionDo.getContinueSessionCount() == 0) {
             clearSessionRedisInfoAndDumpToDb(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_DEAD,ImSessionConstant.SESSION_DEAD_WEIGHT);
+            imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
         } else {
             imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGTH);
+            imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
         }
 
     }

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,17 +55,17 @@ public class DoctorService extends ShopBaseService {
     @Autowired
     protected DepartmentDao departmentDao;
     @Autowired
-    public DepartmentService departmentService;
+    protected DepartmentService departmentService;
     @Autowired
-    public TitleService titleService;
+    protected TitleService titleService;
     @Autowired
-    public UserDao userDao;
+    protected UserDao userDao;
     @Autowired
-    public JedisManager jedisManager;
+    protected JedisManager jedisManager;
     @Autowired
-    public UserDoctorAttentionDao userDoctorAttentionDao;
+    protected UserDoctorAttentionDao userDoctorAttentionDao;
     @Autowired
-    public DoctorDutyRecordDao doctorDutyRecordDao;
+    protected DoctorDutyRecordDao doctorDutyRecordDao;
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -359,6 +360,7 @@ public class DoctorService extends ShopBaseService {
         UserDoctorAttentionDo userDoctorAttentionDo = new UserDoctorAttentionDo();
         FieldsUtil.assign(param,userDoctorAttentionDo);
         userDoctorAttentionDao.insertUserDoctor(userDoctorAttentionDo);
+        updateAttentionNumberByDoctorId(param.getDoctorId());
     }
 
     /**
@@ -367,6 +369,7 @@ public class DoctorService extends ShopBaseService {
      */
     public void deleteUserDoctor(UserDoctorParam param) {
         userDoctorAttentionDao.deleteUserDoctor(param);
+        updateAttentionNumberByDoctorId(param.getDoctorId());
     }
 
     /**
@@ -410,5 +413,49 @@ public class DoctorService extends ShopBaseService {
         DoctorDutyRecordDo doctorDutyRecordDo = new DoctorDutyRecordDo();
         FieldsUtil.assign(param,doctorDutyRecordDo);
         doctorDutyRecordDao.insertDoctorDutyRecord(doctorDutyRecordDo);
+    }
+
+    /**
+     * 更新医师平均响应时间
+     * @param param
+     */
+    public void updateAvgAnswerTime(DoctorSortParam param){
+        doctorDao.updateAvgAnswerTime(param);
+    }
+
+    /**
+     * 更新医师接诊数
+     * @param param
+     */
+    public void updateConsultationNumber(DoctorSortParam param){
+        doctorDao.updateConsultationNumber(param);
+    }
+
+    /**
+     * 更新医师平均评分
+     * @param param
+     */
+    public void updateAvgCommentStar(DoctorSortParam param){
+        doctorDao.updateAvgCommentStar(param);
+    }
+
+    /**
+     * 更新医师关注数
+     * @param param
+     */
+    public void updateAttentionNumber(DoctorSortParam param){
+        doctorDao.updateAttentionNumber(param);
+    }
+
+    /**
+     * 更新医师关注数(根据医师Id)
+     * @param doctorId
+     */
+    public void updateAttentionNumberByDoctorId(Integer doctorId){
+        Integer attentionNumber = userDoctorAttentionDao.getAttentionNumber(doctorId);
+        DoctorSortParam doctorSortParam = new DoctorSortParam();
+        doctorSortParam.setDoctorId(doctorId);
+        doctorSortParam.setAttentionNumber(attentionNumber);
+        updateAttentionNumber(doctorSortParam);
     }
 }

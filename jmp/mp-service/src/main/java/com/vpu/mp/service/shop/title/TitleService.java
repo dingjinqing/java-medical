@@ -102,7 +102,7 @@ public class TitleService extends ShopBaseService{
     public Integer getTitleIdNew(String code) {
         if (StringUtil.isBlank(code)){
             return 0;
-        } 
+        }
         Integer titleId = getTitleByCode(code);
         if(titleId == null) {
             TitleOneParam titleTemp = new TitleOneParam();

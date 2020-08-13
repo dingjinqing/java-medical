@@ -4826,7 +4826,7 @@ create table b2c_doctor_title(
 -- 医师
 create table b2c_doctor(
     `id`   int(11)      not null auto_increment,
-    `account_id` int(11) not null comment '医师子账号id',
+    `account_id` int(11) not null default 0 comment '医师子账号id',
     `age` int(11) not null default 0 comment '年龄',
     `work_time` int(11) not null default 0 comment '从业时间',
     `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
@@ -4850,6 +4850,10 @@ create table b2c_doctor(
     `on_duty_time`   timestamp    not null default current_timestamp comment '上班时间',
     `is_on_duty`     tinyint(1)   not null default '1' comment '是否上班',
     `can_consultation` tinyint(1)   not null default '1' comment '是否接诊',
+    `avg_answer_time` int(11) not null default 0 comment '平均接诊时间',
+    `consultation_number` int(11) not null default 0 comment '接诊数',
+    `avg_comment_star` decimal(10,2) not null default 0 comment '平均评分',
+    `attention_number` int(11) not null default 0 comment '关注数',
     primary key (`id`)
 )comment ='医师表';
 
@@ -5025,6 +5029,7 @@ create TABLE `b2c_im_session`(
     `order_sn` varchar(32)  NOT NULL COMMENT '会话关联的订单sn',
     `limit_time` timestamp  COMMENT '医生接诊后会话截止时间点',
     `weight_factor` tinyint(1) NOT NULL DEFAULT 0 COMMENT '权重因子,用于不同状态排序使用',
+    `evaluate_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '评价状态 0 不可评价 1可评价 2已评价',
     `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标记',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -5069,6 +5074,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
  `pay_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '支付时间',
  `refund_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款金额',
+ `limit_time` timestamp  NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '医生接诊后会话截止时间点',
  `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
  `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
  `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
@@ -5185,16 +5191,17 @@ create table `b2c_user_doctor_attention`(
 -- 医师评价和打分
 create table `b2c_doctor_comment`(
     `id`   int(11)      not null auto_increment,
-    `user_id` int(11) not null comment '用户ID',
-    `user_name` varchar(60) NOT NULL COMMENT '用户昵称',
+    `user_id` int(11) not null comment '用户id',
+    `user_name` varchar(60) not null default "" comment '用户昵称',
     `patient_id` int(11) not null comment '患者id',
     `doctor_id` int(11) not null comment '医师id',
-    `stars` tinyint(1) NOT NULL DEFAULT 5 COMMENT '评价星级1~5',
-    `is_anonymou` tinyint(1) NOT NULL DEFAULT 0 COMMENT '匿名状态 0.未匿名；1.匿名',
-    `tag` varchar(100) DEFAULT '' COMMENT '评价标签',
-    `order_sn` varchar(20) NOT NULL COMMENT '订单编号',
-    `comm_note` varchar(1000) DEFAULT NULL COMMENT '评论内容',
-    `audit_status` tinyint(1) not null DEFAULT 0 COMMENT '0:未审批,1:审批通过,2:审批未通过',
+    `order_sn` varchar(20) not null default "" comment '订单编号',
+    `im_session_id` int(11)  not null comment '会话id',
+    `stars` tinyint(1) not null default 5 comment '评价星级1~5',
+    `is_anonymou` tinyint(1) not null default 0 comment '匿名状态 0.未匿名；1.匿名',
+    `tag` varchar(100) default '' comment '评价标签',
+    `comm_note` varchar(1000) not null default "" comment '评论内容',
+    `audit_status` tinyint(1) not null default 0 comment '0:未审批,1:审批通过,2:审批未通过',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
