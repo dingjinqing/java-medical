@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionPullMsgVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
@@ -437,7 +438,8 @@ public class ImSessionService extends ShopBaseService {
     public Byte sendMsg(ImSessionSendMsgParam sendMsgParam) {
         Integer shopId = getShopId();
         String sessionRedisStatusKey = getSessionRedisStatusKey(shopId, sendMsgParam.getSessionId());
-        if (!jedisManager.exists(sessionRedisStatusKey)) {
+        String statusVal = jedisManager.get(sessionRedisStatusKey);
+        if (statusVal == null) {
             deleteAllSessionKey(shopId, sendMsgParam.getSessionId(), sendMsgParam.getFromId(), sendMsgParam.getToId());
             return ImSessionConstant.SESSION_CAN_NOT_USE;
         }
@@ -452,12 +454,25 @@ public class ImSessionService extends ShopBaseService {
      * 拉取对方发送的消息内
      * @return
      */
-    public List<ImSessionItemBase> pullMsg(ImSessionPullMsgParam param) {
+    public ImSessionPullMsgVo pullMsg(ImSessionPullMsgParam param) {
+        ImSessionPullMsgVo vo = new ImSessionPullMsgVo();
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), param.getSessionId());
-        if (!jedisManager.exists(sessionRedisStatusKey)) {
-            return null;
+        String statusVal = jedisManager.get(sessionRedisStatusKey);
+        if (statusVal == null) {
+            vo.setStatus(ImSessionConstant.SESSION_DEAD);
+            return vo;
         }
-        return dumpSessionReadyToBak(getShopId(), param.getSessionId(), param.getPullFromId(), param.getSelfId());
+        Byte status =Byte.valueOf(statusVal);
+        vo.setStatus(status);
+
+        // 会话已经停止就不可以拉取消息
+        if (ImSessionConstant.SESSION_END.equals(status)) {
+            return vo;
+        }
+
+        List<ImSessionItemBase> imSessionItemBases = dumpSessionReadyToBak(getShopId(), param.getSessionId(), param.getPullFromId(), param.getSelfId());
+        vo.setMessages(imSessionItemBases);
+        return vo;
     }
 
     /**

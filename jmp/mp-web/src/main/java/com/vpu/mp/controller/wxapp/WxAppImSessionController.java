@@ -5,10 +5,10 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
-import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionPullMsgVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,11 +140,9 @@ public class WxAppImSessionController extends WxAppBaseController {
         if (param.getSessionId() == null || param.getPullFromId() == null || param.getSelfId() == null) {
             return fail(JsonResultCode.IM_SESSION_PARAM_LACK);
         }
-        List<ImSessionItemBase> imSessionItemPullVos = imSessionService.pullMsg(param);
-        if (imSessionItemPullVos == null) {
-            return fail(JsonResultCode.IM_SESSION_CAN_NOT_USE);
-        }
-        return success(imSessionItemPullVos);
+        ImSessionPullMsgVo imSessionPullMsgVo = imSessionService.pullMsg(param);
+
+        return success(imSessionPullMsgVo);
     }
 
     @PostMapping("/api/wxapp/im/session/new")
