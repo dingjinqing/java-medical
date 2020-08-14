@@ -96,6 +96,22 @@ global.wxPage({
       need_get_pre: 0
     })
   },
+  freshPatient (e) {
+    util.api('/api/wxapp/user/patient/get/id', res => {
+      if(res.error == 0) {
+        this.setData({
+          fresh_ok: 1
+        })
+      } else if(res.error == 402003) {
+
+      } else {
+        util.showModal('提示', res.message)
+        return false
+      }
+    },{
+      identityCode: e.currentTarget.dataset.identityCode
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
