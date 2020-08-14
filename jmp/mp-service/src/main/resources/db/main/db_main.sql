@@ -1094,7 +1094,7 @@ CREATE TABLE `b2c_order_info` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='订单';
 
-CREATE TABLE IF NOT EXISTS `b2c_order_info_new` (
+CREATE TABLE  `b2c_order_info_new` (
     `order_id` mediumint(8) NOT NULL AUTO_INCREMENT COMMENT '订单id',
     `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
     `order_sn` varchar(20)   NOT NULL DEFAULT '' COMMENT '订单编号',
