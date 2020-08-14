@@ -79,6 +79,7 @@ public class TableTaskService extends ShopBaseService {
      * 同步问诊订单
      */
     public void inquiryOrderSynchronize(Integer shopId){
+        log.info("【同步任务】---问诊订单数据同步到主库shopId:{}",shopId);
         //更新
         List<InquiryOrderDo> inquiryOrderDoList= inquiryOrderDao.getListByUpdateTime(DateUtils.getTimestampForStartTime(-1),DateUtils.getTimestampForEndTime(-1));
         saas().mainInquiryOrderService.inquiryOrderSynchronizeUpdate(inquiryOrderDoList,shopId);
