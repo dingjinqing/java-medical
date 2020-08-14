@@ -60,12 +60,13 @@ public class DoctorCommentService extends ShopBaseService {
     /**
      * 添加评价
      */
-    public void addDefaultComment(Integer doctorId,Integer userId,String orderSn,Integer imSessionId) {
+    public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId) {
         //保存
         DoctorCommentAddParam param =new DoctorCommentAddParam();
         param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_NOT_CHECK);
         param.setDoctorId(doctorId);
         param.setUserId(userId);
+        param.setPatientId(patientId);
         param.setIsAnonymou(BaseConstant.YES);
         param.setOrderSn(orderSn);
         param.setCommNote(DoctorCommentConstant.DOCTOR_DEFAULT_COMMENT);
