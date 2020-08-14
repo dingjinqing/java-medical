@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.medicalhistory;
 
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -11,29 +12,6 @@ import lombok.NonNull;
  */
 @Data
 @NoArgsConstructor
-public class FetchMedicalHistoryParam {
-
-    /**
-     * 患者姓名
-     */
-    @NonNull
-    private String patientName;
-    /**
-     * 患者电话
-     */
-    private String mobile;
-    /**
-     * 患者医院唯一编码
-     */
-    private String patientCode;
-    /**
-     * 患者身份证号
-     */
-    private String identityCode;
-
-    /**
-     * 增量查询时间
-     */
-    private Long startTime;
+public class FetchMedicalHistoryParam extends UserPatientOneParam {
 
 }

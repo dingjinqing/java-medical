@@ -236,10 +236,12 @@ public class InquiryOrderService extends ShopBaseService {
         if(StringUtils.isNotBlank(payParam.getOrderSn())){
             return payParam.getOrderSn();
         }
+        Integer shopId=getShopId();
         String orderSn = IncrSequenceUtil.generateOrderSn(InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX);
         PatientOneParam patientOneParam=patientService.getOneInfo(payParam.getPatientId());
         DoctorOneParam doctor = doctorService.getOneInfo(payParam.getDoctorId());
         inquiryOrderDo.setOrderSn(orderSn);
+        inquiryOrderDo.setShopId(shopId);
         inquiryOrderDo.setOrderAmount(payParam.getOrderAmount());
         inquiryOrderDo.setUserId(payParam.getUser().getUserId());
         inquiryOrderDo.setPatientId(payParam.getPatientId());

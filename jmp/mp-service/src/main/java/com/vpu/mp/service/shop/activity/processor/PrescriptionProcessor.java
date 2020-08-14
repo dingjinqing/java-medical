@@ -32,7 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 
 /**
@@ -103,6 +106,11 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
                 log.info("处方药订单,药品与处方匹配通过--审核");
                 param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
+                //处方单号去重
+                prescriptionList = prescriptionList.stream()
+                        .collect(Collectors.collectingAndThen
+                                (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionCode))), ArrayList::new));
+                param.setPrescriptionList(prescriptionList);
             }else {
                 log.info("处方药订单,存在没有匹配到订单得药品--线上开方");
                 param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
