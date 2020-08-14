@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.title.TitleExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.title.TitleFetchOneParam;
 import com.vpu.mp.service.pojo.shop.title.TitleListParam;
 import com.vpu.mp.service.pojo.shop.title.TitleOneParam;
+import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -94,6 +95,9 @@ public class TitleService extends ShopBaseService{
     }
 
     public Integer getTitleIdNew(String code) {
+        if (StringUtil.isBlank(code)){
+            return 0;
+        }
         Integer titleId = getTitleByCode(code);
         if(titleId == null) {
             TitleOneParam titleTemp = new TitleOneParam();
