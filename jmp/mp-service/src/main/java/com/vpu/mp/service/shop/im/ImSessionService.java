@@ -330,7 +330,7 @@ public class ImSessionService extends ShopBaseService {
 
         if (ImSessionConstant.SESSION_READY_TO_START.equals(prevStatus)) {
             // 状态从1->2
-            updateSessionRedisStatusValue(getShopId(),ImSessionConstant.SESSION_ON);
+            updateSessionRedisStatusValue(sessionId,ImSessionConstant.SESSION_ON);
             imSessionDo.calculateReadyToOnAckTime();
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_ON_WEIGHT);
@@ -338,7 +338,7 @@ public class ImSessionService extends ShopBaseService {
             statisticDoctorSessionState(imSessionDo.getDoctorId());
         } else {
             // 从结束状态变为继续问诊状态 4->5
-            updateSessionRedisStatusValue(getShopId(),ImSessionConstant.SESSION_CONTINUE_ON);
+            updateSessionRedisStatusValue(sessionId,ImSessionConstant.SESSION_CONTINUE_ON);
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_CONTINUE_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_CONTINUE_ON_WEIGHT);
             imSessionDo.setContinueSessionCount(imSessionDo.getContinueSessionCount()-1);
