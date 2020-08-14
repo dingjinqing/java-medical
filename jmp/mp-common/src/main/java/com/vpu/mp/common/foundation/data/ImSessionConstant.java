@@ -58,7 +58,7 @@ public class ImSessionConstant {
     /**
      * 可以继续问诊次数
      */
-    public static final Integer CONTINUE_SESSION_TIME = 3;
+    public static final Integer CONTINUE_SESSION_TIME = 2;
 
     /**不可评价*/
     public static final Byte SESSION_EVALUATE_CAN_NOT_STATUS = 0;
