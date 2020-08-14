@@ -91,7 +91,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
      * @return
      */
     public void refundExecute(InquiryOrderDo order) throws MpException {
-        inquiryOrderService.refundInquiryOrder(order,order.getRefundMoney(),InquiryOrderConstant.REFUND_REASON);
+        inquiryOrderService.refundInquiryOrder(order,order.getRefundMoney(),InquiryOrderConstant.REFUND_REASON_OVERTIME);
     }
 
     /**

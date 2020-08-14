@@ -59,4 +59,11 @@ public class TableSynchronizeTask {
 
     }
 
+    /**
+     * 问诊订单同步主库
+     */
+    public void inquiryOrderSynchronize(){
+
+    }
+
 }
