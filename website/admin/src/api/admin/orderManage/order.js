@@ -185,3 +185,11 @@ export function advisoryOrderInfo (data) {
     data: data
   })
 }
+// 咨询订单退款
+export function returnAdvisoryOrder (data) {
+  return service({
+    url: '/api/admin/inquiry/order/refund',
+    method: 'post',
+    data: data
+  })
+}

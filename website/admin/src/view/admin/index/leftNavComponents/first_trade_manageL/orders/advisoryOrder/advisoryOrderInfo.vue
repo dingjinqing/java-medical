@@ -1,47 +1,58 @@
 <template>
-   <div class="main1">
-      <div class="since-info">
-         <div class="since-info-top">
-            <div class="order_mes">
-               <span>订单号：{{orderContent.orderSn}}</span>
-               <span>订单状态：{{orderContent.orderStatusName}}</span>
-            </div>
-            <el-button
-               type='primary'
-               size='small'
-            >手动退款</el-button>
-         </div>
-         <div class="since-info-detail">
-            <div class="order_info">
-               <div class="title">订单信息</div>
-               <div class="item_box">
-                  <div class="item">订单状态：{{orderContent.orderStatusName}}</div>
-                  <div class="item">订单金额：{{orderContent.orderAmount}}</div>
-                  <div class="item">下单时间：{{orderContent.createTime}}</div>
-                  <div class="item">用户：{{orderContent.userName}}</div>
-                  <div class="item">订单号：{{orderContent.orderSn}}</div>
-                  <div class="item">下单人手机：{{orderContent.userMobile}}</div>
-               </div>
-            </div>
-            <div class="user_info">
-               <div class="title">患者信息</div>
-               <div class="item_box">
-                  <div class="item">姓名：{{orderContent.patientName}}</div>
-                  <div class="item">性别：{{orderContent.patientSexName}}</div>
-                  <div class="item">生日：{{orderContent.patientBirthday}}</div>
-                  <div class="item">证件类型：{{orderContent.patientIdentityName}}</div>
-                  <div class="item">证件号码：{{orderContent.patientIdentityCode}}</div>
-                  <div class="item">手机号：{{orderContent.patientMobile}}</div>
-               </div>
-            </div>
-         </div>
+  <div class="main1">
+    <div class="since-info">
+      <div class="since-info-top">
+        <div class="order_mes">
+          <span>订单号：{{orderContent.orderSn}}</span>
+          <span>订单状态：{{orderContent.orderStatusName}}</span>
+        </div>
+        <el-button
+          type='primary'
+          size='small'
+          v-if="orderContent.orderAmount - orderContent.refundMoney > 0"
+          @click="returnOrder"
+        >手动退款</el-button>
       </div>
-   </div>
+      <div class="since-info-detail">
+        <div class="order_info">
+          <div class="title">订单信息</div>
+          <div class="item_box">
+            <div class="item">订单状态：{{orderContent.orderStatusName}}</div>
+            <div class="item">订单金额：{{orderContent.orderAmount}}</div>
+            <div class="item">下单时间：{{orderContent.createTime}}</div>
+            <div class="item">用户：{{orderContent.userName}}</div>
+            <div class="item">订单号：{{orderContent.orderSn}}</div>
+            <div class="item">下单人手机：{{orderContent.userMobile}}</div>
+          </div>
+        </div>
+        <div class="user_info">
+          <div class="title">患者信息</div>
+          <div class="item_box">
+            <div class="item">姓名：{{orderContent.patientName}}</div>
+            <div class="item">性别：{{orderContent.patientSexName}}</div>
+            <div class="item">生日：{{orderContent.patientBirthday}}</div>
+            <div class="item">证件类型：{{orderContent.patientIdentityName}}</div>
+            <div class="item">证件号码：{{orderContent.patientIdentityCode}}</div>
+            <div class="item">手机号：{{orderContent.patientMobile}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ManualRefund
+      :dataInfo="refundInfo"
+      :show.sync="showRefund"
+      @complete="initOrderInfo(id)"
+    />
+  </div>
 </template>
 
 <script>
 import { advisoryOrderInfo } from '@/api/admin/orderManage/order.js'
+import ManualRefund from './returnAdvisoryDialog'
 export default {
+  components: {
+    ManualRefund
+  },
   mounted () {
     if (this.$route.query.orderId) {
       this.id = this.$route.query.orderId
@@ -58,12 +69,14 @@ export default {
   },
   data () {
     return {
-      orderContent: {}
+      orderContent: {},
+      showRefund: false,
+      refundInfo: null
     }
   },
   methods: {
     initOrderInfo (id) {
-      advisoryOrderInfo({orderId: id}).then(res => {
+      advisoryOrderInfo({ orderId: id }).then(res => {
         if (res.error === 0) {
           res.content.orderStatusName = this.getStatusName(res.content.orderStatus)
           res.content.patientSexName = this.getPatientSex(res.content.patientSex)
@@ -92,6 +105,10 @@ export default {
           return '已退款'
         case 5:
           return '已取消'
+        case 6:
+          return '待退款'
+        case 7:
+          return '部分退款'
       }
     },
     getPatientSex (data) {
@@ -115,58 +132,63 @@ export default {
         case 4:
           return '社保卡'
       }
+    },
+    returnOrder () {
+      let { orderAmount, refundMoney, orderSn } = this.orderContent
+      this.refundInfo = { orderAmount, refundMoney, orderSn }
+      this.showRefund = true
     }
   }
 }
 </script>
 
 <style lang='scss'>
-.main1{
-   margin: 10px;
-   min-width: auto !important;
-   .since-info {
+.main1 {
+  margin: 10px;
+  min-width: auto !important;
+  .since-info {
     background-color: #fff;
     padding: 0 25px;
     font-size: 14px;
     overflow: hidden;
-      .since-info-top {
-         display: flex;
-         align-items: center;
-         justify-content: space-between;
-         height: 60px;
-         color: #333;
-         .order_mes span {
-            margin-right: 60px;
-         }
+    .since-info-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      color: #333;
+      .order_mes span {
+        margin-right: 60px;
       }
-      .since-info-detail {
-         display: flex;
-         margin-left: -30px;
-         margin-bottom: 10px;
-         > div {
-            margin-left: 30px;
-            border: 1px solid #cfd6ff;
-            flex: 1;
-            padding: 0 30px;
-            > .title {
-               margin-top: 10px;
-               font-weight: 600;
-               color: #333;
-               font-size: 14px;
-               margin-bottom: 10px;
-            }
-            > .item_box {
-               display: flex;
-               justify-content: space-between;
-               flex-wrap: wrap;
-               line-height: 30px;
-               color: #666;
-               > .item {
-                  min-width: 210px;
-               }
-            }
-         }
+    }
+    .since-info-detail {
+      display: flex;
+      margin-left: -30px;
+      margin-bottom: 10px;
+      > div {
+        margin-left: 30px;
+        border: 1px solid #cfd6ff;
+        flex: 1;
+        padding: 0 30px;
+        > .title {
+          margin-top: 10px;
+          font-weight: 600;
+          color: #333;
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+        > .item_box {
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          line-height: 30px;
+          color: #666;
+          > .item {
+            min-width: 210px;
+          }
+        }
       }
-   }
+    }
+  }
 }
 </style>
