@@ -8,6 +8,9 @@ import com.vpu.mp.dao.shop.config.ShopCfgDao;
 import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsResult;
+import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant;
 import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoParam;
 import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
@@ -41,21 +44,24 @@ public class SmsAccountService extends ShopBaseService {
 
     /**
      * 创建短信账户
-     * @param aa
+     * @param param
      * @return
      */
-    public String createSmsAccount(String aa) throws MpException {
-        return "Ok";
-//        long time = System.currentTimeMillis()/1000;
-//        SmsBaseRequest request  =new SmsBaseRequest();
-//        request.setSms(Util.toJson(param));
-//        request.setApiMethod(SmsApiConfig.METHOD_CREATE_ACCOUNT);
-//        request.setAppKey(smsApiConfig.getAppKey());
-//        request.setTimestamp(time);
-//        Map<String, Object> postBody = Util.transBeanToMap(request);
-//        postBody.put("sign", smsService.generateSing(postBody));
-//        HttpResponse response = smsService.requestApi(postBody);
-//        return response.body();
+    public SmsAccountInfoVo createSmsAccount(SmsAccountParam param) throws MpException {
+        long time = System.currentTimeMillis()/1000;
+        SmsBaseRequest request  =new SmsBaseRequest();
+        request.setSms(Util.toJson(param));
+        request.setApiMethod(SmsApiConfig.METHOD_CREATE_ACCOUNT);
+        request.setAppKey(smsApiConfig.getAppKey());
+        request.setTimestamp(time);
+        Map<String, Object> postBody = Util.transBeanToMap(request);
+        postBody.put("sign", smsService.generateSing(postBody));
+        HttpResponse response = smsService.requestApi(postBody);
+        SmsResult smsResult = JSONUtil.toBean(response.body(), SmsResult.class);
+        if (smsResult.getCode().equals(SmsSendRecordConstant.SMS_SEND_STATUS_SUCCESS)){
+            smsAccountConfigService.setShopSmsAccountConfig(param.getSid());
+        }
+        return getSmsAccountInfo();
     }
 
     /**
