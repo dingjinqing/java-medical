@@ -14,7 +14,7 @@ import static com.vpu.mp.db.main.Tables.INQUIRY_ORDER;
  * @date 2020/8/14
  **/
 @Repository
-public class InquiryOrderDao extends MainBaseDao {
+public class MainInquiryOrderDao extends MainBaseDao {
 
     /**
      * 同步新订单

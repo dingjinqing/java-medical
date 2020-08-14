@@ -1,8 +1,7 @@
 package com.vpu.mp.service.saas.order;
 
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
-import com.vpu.mp.dao.main.order.InquiryOrderDao;
-import com.vpu.mp.db.main.tables.records.InquiryOrderRecord;
+import com.vpu.mp.dao.main.order.MainInquiryOrderDao;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +15,16 @@ import java.util.List;
  **/
 @Service
 @Slf4j
-public class InquiryOrderService extends MainBaseService {
+public class MainInquiryOrderService extends MainBaseService {
     @Autowired
-    private InquiryOrderDao inquiryOrderDao;
+    private MainInquiryOrderDao mainInquiryOrderDao;
 
     /**
      * 同步新增
      * @param list
      */
     public void inquiryOrderSynchronizeInsert(List<InquiryOrderDo> list){
-        inquiryOrderDao.inquiryOrderSynchronizeInsert(list);
+        mainInquiryOrderDao.inquiryOrderSynchronizeInsert(list);
     }
 
     /**
@@ -35,7 +34,7 @@ public class InquiryOrderService extends MainBaseService {
      */
     public void inquiryOrderSynchronizeUpdate(List<InquiryOrderDo> list,Integer shopId){
 
-        inquiryOrderDao.inquiryOrderSynchronizeUpdate(list,shopId);
+        mainInquiryOrderDao.inquiryOrderSynchronizeUpdate(list,shopId);
     }
 
 
