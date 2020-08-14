@@ -892,7 +892,7 @@
     <!-- 订单导出确认弹窗 -->
     <orderExportConfirmDialog
       :show.sync="showExportConfirm"
-      :param="this.searchParams"
+      :param="this.exportCopySearchParams"
     />
     <!-- 发货 -->
     <prescriptionCheck :show.sync="showPrescriptionCheck" />
@@ -1012,7 +1012,8 @@ export default {
           return time.getTime() < new Date(this.completeTime.startTime).getTime()
         }
       },
-      showPrescriptionCheck: false
+      showPrescriptionCheck: false,
+      exportCopySearchParams: {}
     }
   },
   inject: ['adminReload'],
@@ -1107,6 +1108,7 @@ export default {
         this.pageParams = res.content.list.page
         this.orderList = res.content.list.dataList
         this.count = res.content.count
+        this.exportCopySearchParams = Object.assign({}, this.searchParams)
       }).catch(() => {
       })
     },
