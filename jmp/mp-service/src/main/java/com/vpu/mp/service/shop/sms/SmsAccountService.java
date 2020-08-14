@@ -57,7 +57,8 @@ public class SmsAccountService extends ShopBaseService {
         Map<String, Object> postBody = Util.transBeanToMap(request);
         postBody.put("sign", smsService.generateSing(postBody));
         HttpResponse response = smsService.requestApi(postBody);
-        SmsResult smsResult = Util.parseJson(response.body(), SmsResult.class);
+//        SmsResult smsResult = Util.parseJson(response.body(), SmsResult.class);
+        SmsResult smsResult = JSONUtil.toBean(response.body(), SmsResult.class);
         if (SmsSendRecordConstant.SMS_SEND_STATUS_SUCCESS.equals(smsResult.getCode())){
             smsAccountConfigService.setShopSmsAccountConfig(param.getSid());
         }
