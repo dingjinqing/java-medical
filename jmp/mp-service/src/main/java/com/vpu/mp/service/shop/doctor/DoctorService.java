@@ -510,15 +510,17 @@ public class DoctorService extends ShopBaseService {
 
     /**
      * 咨询医师详情
-     * @param doctorId
+     * @param param
      * @return
      */
-    public DoctorOneParam getWxDoctorInfo(Integer doctorId){
-        DoctorOneParam doctorInfo = getOneInfo(doctorId);
+    public DoctorOneParam getWxDoctorInfo(UserDoctorParam param){
+        DoctorOneParam doctorInfo = getOneInfo(param.getDoctorId());
         setDoctorDepartmentTitle(doctorInfo);
-        DoctorCommentListParam doctorCommentListParam = new DoctorCommentListParam();
-        doctorCommentListParam.setDoctorId(doctorId);
-        doctorInfo.setCommentList(doctorCommentService.listDoctorComment(doctorCommentListParam));
+        doctorInfo.setIsAttention(userDoctorAttentionDao.isAttention(param));
+        doctorInfo.setHospitalName(HOSPITAL_NAME);
+//        DoctorCommentListParam doctorCommentListParam = new DoctorCommentListParam();
+//        doctorCommentListParam.setDoctorId(param.getDoctorId());
+//        doctorInfo.setCommentList(doctorCommentService.listDoctorComment(doctorCommentListParam));
         return doctorInfo;
     }
 

@@ -22,4 +22,5 @@ public class DoctorOneParam extends DoctorDo {
     private PageResult<DoctorCommentListVo> commentList;
     private String hospitalName;
     private String departmentName;
+    private Boolean isAttention=false;
 }

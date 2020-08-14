@@ -84,8 +84,8 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
      * 	获取咨询医师
      */
     @PostMapping("/api/wxapp/consultation/doctor/info")
-    public JsonResult getConsultationDoctorInfo(@RequestBody DoctorDutyParam param) {
-        DoctorOneParam doctorInfo = shop().doctorService.getWxDoctorInfo(param.getDoctorId());
+    public JsonResult getConsultationDoctorInfo(@RequestBody UserDoctorParam param) {
+        DoctorOneParam doctorInfo = shop().doctorService.getWxDoctorInfo(param);
         return success(doctorInfo);
     }
 }
