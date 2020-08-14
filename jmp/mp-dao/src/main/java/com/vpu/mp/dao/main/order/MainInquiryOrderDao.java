@@ -1,14 +1,26 @@
 package com.vpu.mp.dao.main.order;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.MainBaseDao;
 import com.vpu.mp.db.main.tables.records.InquiryOrderRecord;
+import com.vpu.mp.service.pojo.saas.order.MainInquiryOrderStatisticsParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.statistics.InquiryOrderStatistics;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import static com.vpu.mp.db.main.Tables.INQUIRY_ORDER;
+import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.avg;
+
 /**
  * @author yangpengcheng
  * @date 2020/8/14
@@ -53,6 +65,42 @@ public class MainInquiryOrderDao extends MainBaseDao {
     public InquiryOrderRecord getListByShopIdAndOrderSn(Integer shopId,String orderSn){
         return db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.SHOP_ID.eq(shopId)
              .and(INQUIRY_ORDER.ORDER_SN.eq(orderSn))).fetchAnyInto(InquiryOrderRecord.class);
+    }
+    /**
+     *问诊订单统计报表详情分页查询
+     * @param param
+     * @return
+     */
+    public PageResult<InquiryOrderStatisticsVo> orderStatisticsPage(MainInquiryOrderStatisticsParam param){
+        SelectJoinStep<? extends Record> select=db().select(
+            date((INQUIRY_ORDER.CREATE_TIME)).as(InquiryOrderStatistics.CREAT_TIME),
+            //咨询单数
+            count((INQUIRY_ORDER.ORDER_ID)).as(InquiryOrderStatistics.AMOUNT),
+            //咨询总金额
+            sum(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.AMOUNT_PRICE),
+            //咨询单次价格
+            avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
+            //医师id
+            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
+            //医师名称
+            INQUIRY_ORDER.DOCTOR_NAME.as(InquiryOrderStatistics.DOCTOR_NAME)
+        ).from(INQUIRY_ORDER);
+        select=buildOptions(select,param);
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        PageResult<InquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderStatisticsVo.class);
+        return result;
+    }
+    public SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> selectJoinStep, MainInquiryOrderStatisticsParam param){
+        selectJoinStep.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
+        selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.gt(InquiryOrderConstant.ORDER_TO_PAID));
+        selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.ne(InquiryOrderConstant.ORDER_CANCELED));
+        if(param.getStartTime()!=null){
+            selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()));
+        }
+        if(param.getEndTime()!=null){
+            selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.le(param.getEndTime()));
+        }
+        return selectJoinStep;
     }
 
 }
