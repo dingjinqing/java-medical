@@ -64,6 +64,10 @@ public class SmsAccountService extends ShopBaseService {
         return getSmsAccountInfo();
     }
 
+    public String test(){
+        return "test";
+    }
+
     /**
      * 短信账户的充值记录
      * @return
