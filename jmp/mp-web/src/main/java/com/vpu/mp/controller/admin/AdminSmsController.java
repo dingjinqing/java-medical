@@ -38,6 +38,7 @@ public class AdminSmsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/sms/account/create")
     public JsonResult createSmsAccount(@RequestBody @Validated SmsAccountParam param){
+
         try {
             return success(smsAccountService.createSmsAccount(param));
         } catch (MpException e) {
