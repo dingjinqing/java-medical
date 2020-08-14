@@ -47,7 +47,7 @@ public class SmsAccountService extends ShopBaseService {
      * @param param
      * @return
      */
-    public String createSmsAccount(SmsAccountParam param) throws MpException {
+    public SmsAccountInfoVo createSmsAccount(SmsAccountParam param) throws MpException {
         long time = System.currentTimeMillis()/1000;
         SmsBaseRequest request  =new SmsBaseRequest();
         request.setSms(Util.toJson(param));
@@ -58,10 +58,10 @@ public class SmsAccountService extends ShopBaseService {
         postBody.put("sign", smsService.generateSing(postBody));
         HttpResponse response = smsService.requestApi(postBody);
         SmsResult smsResult = JSONUtil.toBean(response.body(), SmsResult.class);
-        if (smsResult.getCode().equals(JsonResultCode.CODE_SUCCESS+"")){
+        if (smsResult.getCode().equals(JsonResultCode.CODE_SUCCESS.getCode()+"")){
             smsAccountConfigService.setShopSmsAccountConfig(param.getSid());
         }
-        return response.body();
+        return getSmsAccountInfo();
     }
 
     /**
