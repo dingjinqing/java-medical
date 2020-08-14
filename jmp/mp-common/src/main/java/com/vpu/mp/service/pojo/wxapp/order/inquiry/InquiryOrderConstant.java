@@ -68,5 +68,6 @@ public class InquiryOrderConstant {
     /**
      *
      */
-    public final static String REFUND_REASON="超时自动退款";
+    public final static String REFUND_REASON_OVERTIME="超时自动退款";
+    public final static String REFUND_REASON_DOCTOR="医师退款";
 }

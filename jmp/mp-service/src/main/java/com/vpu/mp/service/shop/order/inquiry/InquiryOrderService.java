@@ -265,13 +265,24 @@ public class InquiryOrderService extends ShopBaseService {
     }
 
     /**
-     * 退款
+     * 退款调用,可多次退
      * @param inquiryOrderOnParam
      * @return
      */
     public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
+    }
+
+    /**
+     * 医师退款调用
+     * @param inquiryOrderOnParam
+     * @throws MpException
+     */
+    public void doctorRefund(InquiryOrderOnParam inquiryOrderOnParam)throws MpException{
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
+        refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),InquiryOrderConstant.REFUND_REASON_DOCTOR);
+
     }
 
     /**

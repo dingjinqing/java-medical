@@ -570,6 +570,7 @@ public class MiniMain extends SchemaImpl {
             TaskJobMain.TASK_JOB_MAIN,
             CronDefine.CRON_DEFINE,
             CronRecord.CRON_RECORD,
-            OrderInfoNew.ORDER_INFO_NEW);
+            OrderInfoNew.ORDER_INFO_NEW,
+            InquiryOrder.INQUIRY_ORDER);
     }
 }
