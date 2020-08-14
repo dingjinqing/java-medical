@@ -537,7 +537,7 @@ CREATE TABLE `b2c_log_manage` (
 )COMMENT='日志管理表';
 
 -- 营销日历表
-CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
+CREATE TABLE `b2c_market_calendar` (
     `id` INT ( 8 ) NOT NULL AUTO_INCREMENT,
     `event_name` VARCHAR ( 64 ) NOT NULL DEFAULT '' COMMENT '事件名称',
     `event_time` date DEFAULT NULL COMMENT '事件时间',
@@ -551,7 +551,7 @@ CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
 
 
 -- 营销日历表对应活动
-CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
+CREATE TABLE `b2c_market_calendar_activity` (
     `id` INT ( 8 ) NOT NULL AUTO_INCREMENT,
     `calendar_id` INT ( 8 ) NOT NULL DEFAULT '0' COMMENT '营销日历Id',
     `activity_type` VARCHAR ( 16 ) NOT NULL DEFAULT '0' COMMENT '具体营销活动类型',
@@ -1660,7 +1660,7 @@ CREATE TABLE `b2c_statistics_shop` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='店铺数据统计';
 
-CREATE TABLE IF NOT EXISTS `b2c_store_account` (
+CREATE TABLE  `b2c_store_account` (
     `account_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '门店账号ID',
     `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属店铺id',
     `sys_id` int(10) NOT NULL DEFAULT '0' COMMENT '所属账户id',
