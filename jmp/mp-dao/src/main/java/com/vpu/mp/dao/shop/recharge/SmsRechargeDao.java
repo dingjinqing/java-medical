@@ -22,15 +22,20 @@ public class SmsRechargeDao extends ShopBaseDao {
      * 插入拉取的充值记录
      * @param smsAccountRechargeListVo 二方库拉取充值记录回参
      */
-    public void fetchRechargeList(SmsAccountRechargeListVo smsAccountRechargeListVo) {
+    public void  fetchRechargeList(SmsAccountRechargeListVo smsAccountRechargeListVo) {
         for (SmsRechargeRecordVo smsRechargeRecordVo : smsAccountRechargeListVo.getData()) {
-            SmsRechargeDo rechargeDo = new SmsRechargeDo();
-            rechargeDo.setSid(smsAccountRechargeListVo.getSid());
-            rechargeDo.setVersion(smsAccountRechargeListVo.getVersion());
-            rechargeDo.setTotal(smsAccountRechargeListVo.getTotal());
-            FieldsUtil.assign(smsRechargeRecordVo, rechargeDo);
-            SmsRechargeRecord rechargeRecord = db().newRecord(SmsRecharge.SMS_RECHARGE, rechargeDo);
-            rechargeRecord.insert();
+            SmsRecharge smsRecharge = db().select().from(SmsRecharge.SMS_RECHARGE)
+                .where(SmsRecharge.SMS_RECHARGE.PAY_NO.eq(smsRechargeRecordVo.getPayNo()))
+                .fetchAnyInto(SmsRecharge.class);
+            if (smsRecharge == null) {
+                SmsRechargeDo rechargeDo = new SmsRechargeDo();
+                rechargeDo.setSid(smsAccountRechargeListVo.getSid());
+                rechargeDo.setVersion(smsAccountRechargeListVo.getVersion());
+                rechargeDo.setTotal(smsAccountRechargeListVo.getTotal());
+                FieldsUtil.assign(smsRechargeRecordVo, rechargeDo);
+                SmsRechargeRecord rechargeRecord = db().newRecord(SmsRecharge.SMS_RECHARGE, rechargeDo);
+                rechargeRecord.insert();
+            }
         }
     }
 

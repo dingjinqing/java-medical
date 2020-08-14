@@ -264,7 +264,7 @@
     </div>
     <div
       class="prescription-list"
-      v-if="order.prescriptionOldDoList.length"
+      v-if="order.prescriptionOldDoList && order.prescriptionOldDoList.length"
     >
       <div class="module-title">
         历史处方信息
@@ -298,7 +298,7 @@
             </div>
             <div class="doctor-info">
               <span class="doctor-name">医师：{{item.doctorName}}</span>
-              <span class="item-date">日期：{{item.prescriptionCreateTime}}</span>
+              <span class="item-date">日期：{{item.prescriptionCreateTime.substring(0,10)}}</span>
             </div>
           </div>
         </template>
@@ -306,7 +306,7 @@
     </div>
     <div
       class="prescription-list"
-      v-if="order.prescriptionDoList.length"
+      v-if="order.prescriptionDoList && order.prescriptionDoList.length"
     >
       <div class="module-title">
         新开处方信息
@@ -340,7 +340,7 @@
             </div>
             <div class="doctor-info">
               <span class="doctor-name">医师：{{item.doctorName}}</span>
-              <span class="item-date">日期：{{item.prescriptionCreateTime}}</span>
+              <span class="item-date">日期：{{item.prescriptionCreateTime.substring(0,10)}}</span>
             </div>
           </div>
         </template>
