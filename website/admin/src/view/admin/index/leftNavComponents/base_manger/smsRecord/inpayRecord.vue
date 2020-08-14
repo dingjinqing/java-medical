@@ -138,7 +138,7 @@ export default {
         console.log('res-----------------------------------')
         console.log(res)
         if (res.error === 0) {
-          this.tableData = res.content.data
+          this.tableData = res.content.dataList
           this.page = res.content.page
           this.currentPage = res.content.page.currentPage
           this.pageRows = res.content.page.pageRows
