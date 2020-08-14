@@ -17,6 +17,7 @@ public class InquiryOrderDo {
     private static final long serialVersionUID = 883131361;
 
     private Integer    orderId;
+    private Integer    shopId;
     private String     orderSn;
     private Integer    userId;
     private Byte       orderStatus;

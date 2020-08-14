@@ -13,6 +13,8 @@ import com.vpu.mp.service.shop.sms.SmsAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 /**
  * @author 赵晓东
  * @description 短信平台充值
@@ -54,7 +56,7 @@ public class RechargeService extends ShopBaseService {
             //从二方库拉取数据
             smsAccountRechargeListVo = smsAccountService.listSmsAccountRechargeRecord(smsAccountRechargeRecordParam);
             //向本地库同步
-            if (smsAccountRechargeListVo != null && smsAccountRechargeListVo.getData() == null) {
+            if (smsAccountRechargeListVo != null && smsAccountRechargeListVo.getData() != null) {
                 addRechargeList(smsAccountRechargeListVo);
             }
         } catch (MpException e) {
