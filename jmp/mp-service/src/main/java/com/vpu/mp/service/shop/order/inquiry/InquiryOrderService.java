@@ -330,7 +330,7 @@ public class InquiryOrderService extends ShopBaseService {
 
         }
         inquiryOrderDao.update(order);
-        //取消未接诊过期的会话
+        //取消会话
         List<String> orderSnList=new ArrayList<>();
         orderSnList.add(order.getOrderSn());
         imSessionService.batchCancelSession(orderSnList);
@@ -348,10 +348,6 @@ public class InquiryOrderService extends ShopBaseService {
         beginAndEndOfDay(param);
         PageResult<InquiryOrderStatisticsVo> result=inquiryOrderDao.orderStatisticsPage(param);
         List<InquiryOrderStatisticsVo> list=result.getDataList();
-        list.forEach(orderStatisticsVo->{
-            DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
-            orderStatisticsVo.setDoctorName(doctor.getName());
-        });
         return result;
     }
 
@@ -364,10 +360,6 @@ public class InquiryOrderService extends ShopBaseService {
     public Workbook orderStatisticsExport(InquiryOrderStatisticsParam param, String lang){
         beginAndEndOfDay(param);
         List<InquiryOrderStatisticsVo> list=inquiryOrderDao.orderStatistics(param);
-        list.forEach(orderStatisticsVo->{
-            DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
-            orderStatisticsVo.setDoctorName(doctor.getName());
-        });
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);
