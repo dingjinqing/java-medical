@@ -1720,7 +1720,7 @@ CREATE TABLE `b2c_user_summary_trend` (
   PRIMARY KEY (`id`),
   KEY `ref_type` (`ref_date`,`type`)
 );
--- 问诊订单表
+
 CREATE TABLE `b2c_inquiry_order` (
  `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
