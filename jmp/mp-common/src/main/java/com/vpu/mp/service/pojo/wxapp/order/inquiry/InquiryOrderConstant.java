@@ -65,4 +65,8 @@ public class InquiryOrderConstant {
      */
     public final static Byte REFUND_SUCCESS=1;
     public final static Byte REFUND_FAILED=2;
+    /**
+     *
+     */
+    public final static String REFUND_REASON="超时自动退款";
 }
