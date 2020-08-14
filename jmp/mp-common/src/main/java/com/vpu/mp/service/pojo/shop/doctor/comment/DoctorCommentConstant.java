@@ -20,4 +20,6 @@ public class DoctorCommentConstant {
      */
     public static final Byte CHECK_COMMENT_NO_PASS=2;
 
+    public static final String  DOCTOR_DEFAULT_COMMENT="系统默认好评";
+
 }
