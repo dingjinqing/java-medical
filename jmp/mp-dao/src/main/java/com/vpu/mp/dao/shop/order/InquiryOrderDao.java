@@ -117,6 +117,7 @@ public class InquiryOrderDao extends ShopBaseDao {
     public void update(InquiryOrderDo inquiryOrderDo){
         InquiryOrderRecord record=new InquiryOrderRecord();
         FieldsUtil.assign(inquiryOrderDo,record);
+        record.setUpdateTime(DateUtils.getLocalDateTime());
         db().executeUpdate(record);
     }
 
@@ -159,6 +160,27 @@ public class InquiryOrderDao extends ShopBaseDao {
         return list;
     }
 
+    /**
+     * 创建时间起止时间查询
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public List<InquiryOrderDo> getListByCreateTime(Timestamp startTime,Timestamp endTime){
+        return db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.CREATE_TIME.ge(startTime))
+            .and(INQUIRY_ORDER.CREATE_TIME.le(endTime)).fetchInto(InquiryOrderDo.class);
+    }
+
+    /**
+     * 增量查询
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public List<InquiryOrderDo> getListByUpdateTime(Timestamp startTime,Timestamp endTime){
+        return db().select().from(INQUIRY_ORDER).where(INQUIRY_ORDER.UPDATE_TIME.ge(startTime))
+            .and(INQUIRY_ORDER.UPDATE_TIME.le(endTime)).fetchInto(InquiryOrderDo.class);
+    }
     /**
      *问诊订单统计报表详情分页查询
      * @param param

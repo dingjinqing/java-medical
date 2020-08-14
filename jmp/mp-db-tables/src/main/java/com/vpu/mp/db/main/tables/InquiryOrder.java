@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = -1094914468;
+    private static final long serialVersionUID = 1428070385;
 
     /**
      * The reference instance of <code>jmini_main.b2c_inquiry_order</code>
@@ -60,9 +60,14 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
     }
 
     /**
+     * The column <code>jmini_main.b2c_inquiry_order.id</code>.
+     */
+    public final TableField<InquiryOrderRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
      * The column <code>jmini_main.b2c_inquiry_order.order_id</code>. 订单id
      */
-    public final TableField<InquiryOrderRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "订单id");
+    public final TableField<InquiryOrderRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "订单id");
 
     /**
      * The column <code>jmini_main.b2c_inquiry_order.shop_id</code>. 店铺id
@@ -260,14 +265,14 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.INQUIRY_ORDER_PRIMARY);
+        return Arrays.<Index>asList(Indexes.INQUIRY_ORDER_ORDER_SN, Indexes.INQUIRY_ORDER_PRIMARY, Indexes.INQUIRY_ORDER_SHOP_ID);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Identity<InquiryOrderRecord, Integer> getIdentity() {
+    public Identity<InquiryOrderRecord, Long> getIdentity() {
         return Keys.IDENTITY_INQUIRY_ORDER;
     }
 

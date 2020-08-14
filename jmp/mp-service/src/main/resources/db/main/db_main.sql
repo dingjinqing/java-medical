@@ -1722,7 +1722,8 @@ CREATE TABLE `b2c_user_summary_trend` (
 );
 
 CREATE TABLE `b2c_inquiry_order` (
- `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
+ `id` bigint(20) NOT NULL AUTO_INCREMENT,
+ `order_id` int(11) NOT NULL COMMENT '订单id',
  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
  `order_sn` varchar(20)  NOT NULL DEFAULT '' COMMENT '订单编号',
  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
@@ -1753,6 +1754,8 @@ CREATE TABLE `b2c_inquiry_order` (
  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
-PRIMARY KEY (`order_id`)
+PRIMARY KEY (`id`),
+KEY `shop_id` (`shop_id`),
+KEY `order_sn` (`order_sn`)
 ) COMMENT='问诊订单表';
 

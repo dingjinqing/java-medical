@@ -63,7 +63,10 @@ public class TableSynchronizeTask {
      * 问诊订单同步主库
      */
     public void inquiryOrderSynchronize(){
-
+        Result<ShopRecord> shopRecords =saas.shop.getAll();
+        shopRecords.forEach(shopRecord -> {
+            saas.getShopApp(shopRecord.getShopId()).shopTaskService.tableTaskService.inquiryOrderSynchronize(shopRecord.getShopId());
+        });
     }
 
 }

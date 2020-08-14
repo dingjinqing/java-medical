@@ -329,7 +329,6 @@ public class InquiryOrderService extends ShopBaseService {
             order.setOrderStatus(InquiryOrderConstant.ORDER_PART_REFUND);
 
         }
-        order.setUpdateTime(DateUtils.getLocalDateTime());
         inquiryOrderDao.update(order);
         //取消未接诊过期的会话
         List<String> orderSnList=new ArrayList<>();
