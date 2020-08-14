@@ -41,6 +41,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.ALREADY_FETCH;
+
 /**
  * @author chenjie
  */
@@ -164,6 +166,7 @@ public class PatientService extends BaseShopConfigService{
             patientInfoVo=patientInfoVoList.get(0);
         }
         PatientDo patientDo=new PatientDo();
+        patientDo.setIsFetch(ALREADY_FETCH);
         FieldsUtil.assignWithIgnoreField(patientInfoVo, patientDo,getPatientIgnoreFields());
         PatientOneParam patientOneParam = patientDao.getPatientByNameAndMobile(userPatientOneParam);
         if (patientOneParam == null) {

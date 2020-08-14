@@ -107,21 +107,6 @@ public class PatientDao extends ShopBaseDao{
         return res;
     }
 
-//    /**
-//     * 医师是否存在，用来新增检查
-//     * @param departmentId 科室ID
-//     * @param name 科室名称
-//     * @return true 存在 false 不存在
-//     */
-//    public boolean isNameExist(Integer departmentId,String name) {
-//        Condition condition = DEPARTMENT.NAME.eq(name);
-//        if (departmentId != null) {
-//            condition = condition.and(DEPARTMENT.ID.ne(departmentId));
-//        }
-//        int count = db().fetchCount(DEPARTMENT, condition);
-//        return count>0;
-//    }
-
     public List<PatientOneParam> listPatientByIds (List<Integer> patientIds) {
         List<PatientOneParam> patientList = db().select().from(PATIENT).where(PATIENT.ID.in(patientIds))
             .fetch().into(PatientOneParam.class);
@@ -140,6 +125,32 @@ public class PatientDao extends ShopBaseDao{
             .and(PATIENT.MOBILE.eq(patientInfoParam.getMobile())).and(PATIENT.IDENTITY_CODE.eq(patientInfoParam.getIdentityCode()));
         return select.fetchOneInto(PatientOneParam.class);
     }
+
+    /**
+     * 根据患者姓名，手机号查询当前患者
+     * @param userPatientOneParam 患者入参
+     * @return PatientOneParam
+     */
+    public PatientOneParam getPatientByName(UserPatientOneParam userPatientOneParam) {
+        return  db().select().from(PATIENT)
+            .where(PATIENT.NAME.eq(userPatientOneParam.getName()))
+            .and(PATIENT.MOBILE.eq(userPatientOneParam.getMobile()))
+            .fetchOneInto(PatientOneParam.class);
+    }
+
+    /**
+     * 根据患者姓名，手机号查询当前患者
+     * @param userPatientOneParam 患者入参
+     * @return PatientOneParam
+     */
+    public PatientOneParam getPatientByName(UserPatientFetchParam userPatientOneParam) {
+        return  db().select().from(PATIENT)
+            .where(PATIENT.NAME.eq(userPatientOneParam.getName()))
+            .and(PATIENT.MOBILE.eq(userPatientOneParam.getMobile()))
+            .fetchOneInto(PatientOneParam.class);
+    }
+
+
 
     /**
      * 获取患者信息

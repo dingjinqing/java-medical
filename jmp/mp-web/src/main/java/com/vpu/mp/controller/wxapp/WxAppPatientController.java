@@ -6,14 +6,8 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.patient.PatientAddParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.FetchPrescriptionService;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.FETCH_HITS_CHECK_CODE_ERROR;
-import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.FETCH_HITS_NO_PATIENT;
+import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.*;
 
 /**
  * @author chenjie
@@ -39,6 +32,9 @@ public class WxAppPatientController extends WxAppBaseController {
 
     @Autowired
     private FetchPrescriptionService fetchPrescriptionService;
+
+    @Autowired
+    private PatientService patientService;
 
     /**
      * 	获取用户的患者列表
@@ -70,7 +66,20 @@ public class WxAppPatientController extends WxAppBaseController {
         if (FETCH_HITS_NO_PATIENT.equals(info)) {
             return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
         }
+        if (START_TO_COMMIT.equals(info)) {{
+            return fail(JsonResultCode.TO_FETCH_PATIENT);
+        }}
         return success();
+    }
+
+    /**
+     * 根据姓名手机号获取身份证号
+     * @param userPatientFetchParam 用户信息入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/user/patient/get/id")
+    public JsonResult getPatientByNameAndMobile(@RequestBody UserPatientFetchParam userPatientFetchParam) {
+        return success(fetchPrescriptionService.getPatientName(userPatientFetchParam));
     }
 
     /**

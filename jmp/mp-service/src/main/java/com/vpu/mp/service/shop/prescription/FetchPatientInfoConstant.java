@@ -21,6 +21,15 @@ public class FetchPatientInfoConstant {
     public static final Integer FETCH_HITS_NO_PATIENT = 2;
 
     public static final Integer FETCH_HITS_SUCCESS = 0;
+    /**
+     * 如果没有拉取过，跳转至拉取页面
+     */
+    public static final Integer START_TO_COMMIT = 3;
+
+    public static final Byte ALREADY_FETCH = 1;
+
+    public static final Byte NO_FETCH = 0;
+
 
 
 }

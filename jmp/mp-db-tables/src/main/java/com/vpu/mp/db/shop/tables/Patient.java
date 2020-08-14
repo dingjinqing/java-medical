@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Patient extends TableImpl<PatientRecord> {
 
-    private static final long serialVersionUID = -1766576809;
+    private static final long serialVersionUID = 464881554;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_patient</code>
@@ -137,6 +137,11 @@ public class Patient extends TableImpl<PatientRecord> {
      * The column <code>mini_shop_471752.b2c_patient.liver_function_ok</code>. 肝功能:0:未知，1：正常，2：异常
      */
     public final TableField<PatientRecord, Byte> LIVER_FUNCTION_OK = createField("liver_function_ok", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "肝功能:0:未知，1：正常，2：异常");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_patient.is_fetch</code>. 该患者是否拉取过个人信息
+     */
+    public final TableField<PatientRecord, Byte> IS_FETCH = createField("is_fetch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "该患者是否拉取过个人信息");
 
     /**
      * The column <code>mini_shop_471752.b2c_patient.remarks</code>. 介绍

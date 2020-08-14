@@ -2,8 +2,12 @@ package com.vpu.mp.service.shop.prescription;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.config.SmsApiConfig;
+import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientFetchParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientFetchVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.shop.medicine.MedicalAdviceService;
 import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
@@ -42,6 +46,9 @@ public class FetchPrescriptionService extends ShopBaseService {
     @Autowired
     private JedisManager jedisManager;
 
+    @Autowired
+    private PatientDao patientDao;
+
     /**
      * 拉取用户病历，医嘱，处方，患者信息
      *
@@ -49,10 +56,20 @@ public class FetchPrescriptionService extends ShopBaseService {
      * @return Boolean
      */
     public Integer fetchPatientInfo(UserPatientOneParam userPatientOneParam) {
-        // 验证码
-        boolean b = this.checkMobileCode(userPatientOneParam);
-        if (!b) {
-            return FETCH_HITS_CHECK_CODE_ERROR;
+        // 判断是否是拉取过来的患者
+        PatientOneParam patientByName = patientDao.getPatientByName(userPatientOneParam);
+        if (patientByName == null) {
+            return FETCH_HITS_NO_PATIENT;
+        }
+        if (NO_FETCH.equals(patientByName.getIsFetch())) {
+            return START_TO_COMMIT;
+        }
+        if (ALREADY_FETCH.equals(patientByName.getIsFetch())) {
+            // 验证码
+            boolean b = this.checkMobileCode(userPatientOneParam);
+            if (!b) {
+                return FETCH_HITS_CHECK_CODE_ERROR;
+            }
         }
         JsonResult externalPatientInfo = patientService.getExternalPatientInfo(userPatientOneParam);
         JsonResult medicalAdviceList = medicalAdviceService.pullExternalMedicalAdviceList(userPatientOneParam);
@@ -77,5 +94,19 @@ public class FetchPrescriptionService extends ShopBaseService {
             return s.equals(param.getMobileCheckCode());
         }
         return false;
+    }
+
+    /**
+     * 根据姓名手机号获取身份证号
+     * @param userPatientOneParam 患者入参
+     * @return PatientOneParam
+     */
+    public UserPatientFetchVo getPatientName(UserPatientFetchParam userPatientOneParam) {
+        PatientOneParam patientByName = patientDao.getPatientByName(userPatientOneParam);
+        UserPatientFetchVo userPatientFetchVo = new UserPatientFetchVo();
+        userPatientFetchVo.setName(patientByName.getName());
+        userPatientFetchVo.setMobile(patientByName.getMobile());
+        userPatientFetchVo.setIdentityCode(patientByName.getIdentityCode());
+        return userPatientFetchVo;
     }
 }
