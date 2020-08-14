@@ -51,20 +51,6 @@ CREATE TABLE `b2c_app_auth` (
     UNIQUE KEY `session_key` (`session_key`)
 ) COMMENT='应用授权表';
 
-CREATE TABLE `b2c_external_request_history`(
-    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-    `app_id` varchar(20) NOT NULL COMMENT '对接类型',
-    `shop_id` int(11) NOT NULL COMMENT '店铺id',
-    `service_name` varchar(128) COMMENT '请求服务方法',
-    `error_code` int(11) DEFAULT '0' COMMENT '请求结果状态码',
-    `request_param` text COMMENT '',
-    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
-    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
-    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
-    PRIMARY KEY (`id`)
-) COMMENT='外部接口请求记录表';
-
-
 CREATE TABLE `b2c_article` (
   `article_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_id` int(11) NOT NULL DEFAULT '1' COMMENT '文章分类',
@@ -291,7 +277,18 @@ CREATE TABLE `b2c_dict_province` (
   KEY `country_id` (`country_id`)
 );
 
-
+CREATE TABLE `b2c_external_request_history`(
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `app_id` varchar(20) NOT NULL COMMENT '对接类型',
+    `shop_id` int(11) NOT NULL COMMENT '店铺id',
+    `service_name` varchar(128) COMMENT '请求服务方法',
+    `error_code` int(11) DEFAULT '0' COMMENT '请求结果状态码',
+    `request_param` text COMMENT '',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`)
+) COMMENT='外部接口请求记录表';
 
 CREATE TABLE `b2c_failed_jobs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -463,7 +460,43 @@ CREATE TABLE `b2c_grasp_goods` (
   KEY `cat_id` (`cat_id`)
 )COMMENT='第三方抓取商品表 `b2c_grasp_goods`';
 
-
+CREATE TABLE `b2c_inquiry_order` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `order_id` int(11) NOT NULL COMMENT '订单id',
+    `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
+    `order_sn` varchar(20)  NOT NULL DEFAULT '' COMMENT '订单编号',
+    `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+    `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7部分退款',
+    `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
+    `doctor_name` varchar(32)  NOT NULL DEFAULT '' COMMENT '医师名称',
+    `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '科室id',
+    `department_name` varchar(32)  NOT NULL DEFAULT '' COMMENT '医师科室',
+    `patient_id` int(11) NOT NULL DEFAULT '0' COMMENT '患者id',
+    `patient_mobile` varchar(32) NOT NULL DEFAULT '' COMMENT '患者手机号码',
+    `patient_name` varchar(32)  NOT NULL DEFAULT '' COMMENT '患者名称',
+    `patient_sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 0：未知 1：男 2：女',
+    `patient_birthday` date DEFAULT NULL COMMENT '出生年月',
+    `patient_identity_code` varchar(64)  NOT NULL DEFAULT '' COMMENT '证件号码',
+    `patient_identity_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
+    `pay_code` varchar(30)  NOT NULL DEFAULT '' COMMENT '支付代号',
+    `pay_name` varchar(128)  NOT NULL DEFAULT '' COMMENT '支付名称',
+    `pay_sn` varchar(32)  NOT NULL DEFAULT '' COMMENT '支付流水号',
+    `prepay_id` varchar(128)  DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
+    `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
+    `pay_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '支付时间',
+    `refund_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款金额',
+    `limit_time` timestamp  NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '医生接诊后会话截止时间点',
+    `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
+    `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
+    `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
+    `image_url` text  COMMENT '病情描述image信息',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`),
+    KEY `shop_id` (`shop_id`),
+    KEY `order_sn` (`order_sn`)
+) COMMENT='问诊订单表';
 
 CREATE TABLE `b2c_jobs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -503,7 +536,36 @@ CREATE TABLE `b2c_log_manage` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='日志管理表';
 
+-- 营销日历表
+CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
+    `id` INT ( 8 ) NOT NULL AUTO_INCREMENT,
+    `event_name` VARCHAR ( 64 ) NOT NULL DEFAULT '' COMMENT '事件名称',
+    `event_time` date DEFAULT NULL COMMENT '事件时间',
+    `event_desc` text COMMENT '事件说明',
+    `pub_flag` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '发布状态：0未发布，1已发布',
+    `del_flag` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
+    `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY ( `id` )
+)COMMENT='营销日历表';
 
+
+-- 营销日历表对应活动
+CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
+    `id` INT ( 8 ) NOT NULL AUTO_INCREMENT,
+    `calendar_id` INT ( 8 ) NOT NULL DEFAULT '0' COMMENT '营销日历Id',
+    `activity_type` VARCHAR ( 16 ) NOT NULL DEFAULT '0' COMMENT '具体营销活动类型',
+    `shop_use_num` INT ( 8 ) NOT NULL DEFAULT '0' COMMENT '店铺使用累计数量',
+    `recommend_type` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '推荐类型：0站内文本，1外部链接',
+    `recommend_link` VARCHAR ( 100 ) NOT NULL DEFAULT '' COMMENT '推荐链接',
+    `del_flag` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
+    `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `shop_ids` VARCHAR ( 500 ) NOT NULL DEFAULT '' COMMENT '使用该推荐活动的店铺id，逗号隔开',
+    `recommend_title` VARCHAR ( 32 ) NOT NULL DEFAULT '' COMMENT '推荐标题',
+    PRIMARY KEY ( `id` ),
+    KEY `calendar_id` ( `calendar_id` )
+)COMMENT='营销日历表对应活动';
 
 CREATE TABLE `b2c_mp_auth_shop` (
   `app_id` varchar(191) NOT NULL COMMENT '授权小程序appId',
@@ -544,13 +606,14 @@ CREATE TABLE `b2c_mp_auth_shop` (
   `page_cfg` text COMMENT '小程序页面配置,json存储',
   `principal_name` varchar(191) NOT NULL DEFAULT '' COMMENT '小程序的主体名称',
   `bind_open_app_id` varchar(191) NOT NULL COMMENT '绑定开放平台appId',
-  `link_official_app_id` varchar(191) NOT NULL COMMENT '关联公众号appId，用于发送模板消息',
+  `link_official_app_id` VARCHAR(191) DEFAULT NULL COMMENT '关联公众号appId，用于发送模板消息',
   `is_sub_merchant` tinyint(1) NOT NULL DEFAULT '0' COMMENT '子商户模式,0：非子商户 1：微铺宝子商户 2：通联支付子商户',
   `union_pay_app_id` varchar(191) NOT NULL DEFAULT '' COMMENT '通联支付子商户appId',
   `union_pay_cus_id` varchar(191) NOT NULL DEFAULT '' COMMENT '通联支付子商户商户号',
   `union_pay_app_key` varchar(191) NOT NULL DEFAULT '' COMMENT '通联支付子商户密钥',
   `fee_type` varchar(191) DEFAULT 'CNY' COMMENT '标价币种，国际支付字段',
   `merchant_category_code` varchar(191) NOT NULL DEFAULT '' COMMENT 'MCC码，国际支付字段',
+  `live_pack_status` TINYINT(1) NULL DEFAULT 0 COMMENT '直播包状态 1：通过 2：打包审核中',
   PRIMARY KEY (`app_id`),
   UNIQUE KEY `shop_id` (`shop_id`),
   KEY `principal_name` (`principal_name`),
@@ -1031,7 +1094,157 @@ CREATE TABLE `b2c_order_info` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='订单';
 
-
+CREATE TABLE IF NOT EXISTS `b2c_order_info_new` (
+    `order_id` mediumint(8) NOT NULL AUTO_INCREMENT COMMENT '订单id',
+    `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
+    `order_sn` varchar(20)   NOT NULL DEFAULT '' COMMENT '订单编号',
+    `main_order_sn` varchar(20)   NOT NULL DEFAULT '' COMMENT '主订单编号(拆单时用)',
+    `user_id` mediumint(8) NOT NULL DEFAULT '0' COMMENT '用户id',
+    `user_openid` varchar(191)   NOT NULL DEFAULT '' COMMENT '用户openid',
+    `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态',
+    `order_status_name` varchar(32)   NOT NULL DEFAULT '' COMMENT '订单状态名称',
+    `consignee` varchar(60)   NOT NULL DEFAULT '' COMMENT '收件人姓名',
+    `address_id` int(11) NOT NULL DEFAULT '0' COMMENT '地址id',
+    `country_code` mediumint(10) NOT NULL DEFAULT '0' COMMENT '国家编号',
+    `country_name` varchar(50)   NOT NULL DEFAULT '' COMMENT '国家名称',
+    `province_code` mediumint(10) NOT NULL DEFAULT '0' COMMENT '省份编号',
+    `province_name` varchar(50)   NOT NULL DEFAULT '' COMMENT '省份名称',
+    `city_code` mediumint(10) NOT NULL DEFAULT '0' COMMENT '城市编号',
+    `city_name` varchar(120)   NOT NULL DEFAULT '' COMMENT '城市名称',
+    `district_code` mediumint(10) NOT NULL DEFAULT '0' COMMENT '区县编号',
+    `district_name` varchar(120)   NOT NULL DEFAULT '' COMMENT '区县名称',
+    `address` varchar(191)   NOT NULL DEFAULT '' COMMENT '更多详细地址',
+    `complete_address` varchar(512)   NOT NULL DEFAULT '' COMMENT '完整收件地址',
+    `zipcode` varchar(60)   NOT NULL DEFAULT '' COMMENT '邮编',
+    `mobile` varchar(60)   NOT NULL DEFAULT '' COMMENT '手机号',
+    `add_message` varchar(191)   NOT NULL DEFAULT '' COMMENT '客户留言',
+    `shipping_id` tinyint(3) NOT NULL DEFAULT '0' COMMENT '快递id',
+    `shipping_name` varchar(120)   NOT NULL DEFAULT '' COMMENT '快递名称',
+    `pay_code` varchar(30)   NOT NULL DEFAULT '' COMMENT '支付代号',
+    `pay_name` varchar(120)   NOT NULL DEFAULT '' COMMENT '支付名称',
+    `pay_sn` varchar(32)   NOT NULL DEFAULT '' COMMENT '支付流水号',
+    `goods_amount` smallint(6) NOT NULL DEFAULT '0' COMMENT '订单商品数量',
+    `shipping_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '快递费金额',
+    `money_paid` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单应付金额',
+    `shoper_reduce_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商家减价金额',
+    `sub_order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '子订单总金额',
+    `discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '券折扣金额',
+    `score_discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '积分抵扣金额',
+    `use_account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户消费余额',
+    `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
+    `grade_percent` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '购买会员等级的折扣%',
+    `discount_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '购买会员等级的折扣金额',
+    `dapei_reduce_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '搭配减价',
+    `package_discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '一口价抵扣金额',
+    `dapei_id` int(8) NOT NULL DEFAULT '0' COMMENT '搭配id来源',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    `confirm_time` timestamp NULL DEFAULT NULL COMMENT '订单确收收货时间',
+    `pay_time` timestamp NULL DEFAULT NULL COMMENT '支付时间',
+    `shipping_time` timestamp NULL DEFAULT NULL COMMENT '发货时间',
+    `closed_time` timestamp NULL DEFAULT NULL COMMENT '关闭时间',
+    `cancelled_time` timestamp NULL DEFAULT NULL COMMENT '取消时间',
+    `finished_time` timestamp NULL DEFAULT NULL COMMENT '订单完成时间',
+    `return_time` timestamp NULL DEFAULT NULL COMMENT '订单申请退货时间',
+    `return_finish_time` timestamp NULL DEFAULT NULL COMMENT '订单退货完成时间',
+    `refund_time` timestamp NULL DEFAULT NULL COMMENT '订单申请退款时间',
+    `refund_finish_time` timestamp NULL DEFAULT NULL COMMENT '订单退款完成时间',
+    `shipping_no` varchar(191)   NOT NULL DEFAULT '' COMMENT '快递单号',
+    `shipping_type` varchar(60)   NOT NULL DEFAULT '' COMMENT '快递类型',
+    `is_cod` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否货到付款',
+    `return_type_cfg` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否支持退换货：1支持 2不支持',
+    `return_days_cfg` tinyint(1) NOT NULL DEFAULT '7' COMMENT '发货后自动确认收货时间,单位天',
+    `order_timeout_days` smallint(3) NOT NULL DEFAULT '3' COMMENT '确认收货后自动订单完成时间,单位天',
+    `seller_remark` varchar(512)   NOT NULL DEFAULT '' COMMENT '卖家备注',
+    `erpordercode` varchar(32)   NOT NULL DEFAULT '' COMMENT 'erp中订单代码',
+    `comment_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未评论，1:已评论，2：已晒单',
+    `fanli_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '返利会员id',
+    `fanli_grade` varchar(64)   NOT NULL DEFAULT '' COMMENT '返利等级',
+    `fanli_percent` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '返利百分比',
+    `settlement_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '结算标志：0：未结算，1：已结算',
+    `invoice_id` int(11) NOT NULL DEFAULT '0' COMMENT '发票id',
+    `invoice_content` int(11) NOT NULL DEFAULT '0' COMMENT '发票类型：0普通发票；1增值税专票',
+    `invoice_title` text   COMMENT '发票内容：json存储',
+    `refund_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货',
+    `pay_order_sn` varchar(30)   NOT NULL DEFAULT '' COMMENT '对账单号',
+    `goods_type` varchar(50)   NOT NULL DEFAULT '0' COMMENT '商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购',
+    `order_source` tinyint(2) NOT NULL DEFAULT '0' COMMENT '订单来源，0：小程序，1wap，2app',
+    `fanli_type` tinyint(2) NOT NULL DEFAULT '0' COMMENT '返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单',
+    `manual_refund` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1代表手动退款，0代表非手动',
+    `order_pay_way` tinyint(2) NOT NULL DEFAULT '0' COMMENT '订单付款方式，0全款 1定金 2好友代付',
+    `bk_order_sn` varchar(32)   NOT NULL DEFAULT '' COMMENT '补款订单号 order_pay_way=1时有效',
+    `bk_order_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '补款金额 order_pay_way=1时有效',
+    `bk_order_paid` tinyint(1) NOT NULL DEFAULT '0' COMMENT '补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付',
+    `pin_goods_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '当前拼团商品金额，阶梯团根据人数时会变化，补款也随之变化',
+    `pin_yj_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '拼团支付佣金金额',
+    `activity_id` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id',
+    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未删除，1:已删除',
+    `source` varchar(30)   NOT NULL DEFAULT '' COMMENT '订单来源，记录app，wap，pc来源',
+    `part_ship_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:，1:部分发货',
+    `promotion_id` int(11) NOT NULL DEFAULT '0' COMMENT '促销活动id',
+    `promotion_reduce` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '促销活动折扣金额,满折满减',
+    `push_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'yadu推送状态：0-暂无推送，1-推送失败，2-推送成功',
+    `push_desc` varchar(100)   NOT NULL DEFAULT '' COMMENT 'yadu推送失败原因',
+    `pos_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '门店订单标志：0：商城，1：门店同步订单',
+    `pos_shop_name` varchar(191)   NOT NULL DEFAULT '' COMMENT 'pos店铺名称',
+    `store_id` int(11) DEFAULT '0' COMMENT '门店id',
+    `store_name` varchar(191)   NOT NULL DEFAULT '' COMMENT '门店名称',
+    `member_card_id` int(11) NOT NULL DEFAULT '0' COMMENT '会员卡id',
+    `member_card_reduce` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员卡优惠金额',
+    `member_card_balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员卡消费金额',
+    `expire_time` timestamp NULL DEFAULT NULL COMMENT '订单支付过期时间',
+    `del_time` timestamp NULL DEFAULT NULL COMMENT '删除时间',
+    `prepay_id` varchar(191)   DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
+    `deliver_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '配送类型：0 快递 1 自提',
+    `deliver_type_name` varchar(191)   DEFAULT NULL COMMENT '配送类型名称',
+    `pickupdate_time` varchar(30)   DEFAULT NULL COMMENT '自提时间',
+    `star_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '标星订单：0 未标星 1 标星',
+    `verify_code` varchar(191)   NOT NULL DEFAULT '' COMMENT '核销自提码',
+    `split` int(11) NOT NULL DEFAULT '0' COMMENT '分裂优惠券id',
+    `card_no` varchar(32)   NOT NULL DEFAULT '' COMMENT '会员卡号',
+    `fanli_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '单品返利金额',
+    `true_name` varchar(32)   NOT NULL DEFAULT '' COMMENT '真实姓名',
+    `id_card` varchar(32)   NOT NULL DEFAULT '' COMMENT '身份证号',
+    `ali_trade_no` varchar(60)   NOT NULL DEFAULT '' COMMENT '支付宝交易单号',
+    `grouper_cheap_reduce` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '团长优惠金额',
+    `bk_shipping_time` timestamp NULL DEFAULT NULL COMMENT '定金预计发货时间',
+    `bk_return_type` tinyint(2) DEFAULT NULL COMMENT '定金退款状态',
+    `bk_prepay_id` varchar(191)   DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
+    `pre_sale_discount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '定金膨胀优惠金额',
+    `instead_pay_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '代付金额',
+    `order_user_message` varchar(50)   DEFAULT NULL COMMENT '发起人留言',
+    `instead_pay` text   COMMENT '好友代付规则',
+    `instead_pay_num` smallint(6) NOT NULL DEFAULT '0' COMMENT '代付人数',
+    `is_promote` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否是推广单',
+    `verifier_id` int(11) NOT NULL DEFAULT '0' COMMENT '核销员id',
+    `exchang` tinyint(2) NOT NULL DEFAULT '0' COMMENT '1 兑换 0否',
+    `currency` varchar(10)   NOT NULL DEFAULT 'CNY' COMMENT '币种',
+    `free_ship` decimal(10,2) DEFAULT '0.00' COMMENT '运费抵扣',
+    `free_detail` text   COMMENT '运费抵扣规则',
+    `sub_goods_price` decimal(10,2) DEFAULT '0.00' COMMENT '子单金额',
+    `is_refund_coupon` tinyint(1) DEFAULT '0' COMMENT '是否退优惠券',
+    `is_finish_refund` tinyint(1) DEFAULT '0' COMMENT '子订单是否已处理退款',
+    `is_view_comment` tinyint(1) DEFAULT '1' COMMENT '是否已查看评价',
+    `pos_order_action` tinyint(1) DEFAULT '1' COMMENT '1:扫码购 2：仅自提',
+    `order_remind` tinyint(1) DEFAULT '0' COMMENT '发货提醒次数',
+    `order_remind_time` timestamp NULL DEFAULT NULL COMMENT '发货提醒时间',
+    `extend_receive_action` tinyint(1) DEFAULT '0' COMMENT '延长收货操作人：1:商家 2:用户',
+    `extend_receive_time` timestamp NULL DEFAULT NULL COMMENT '收货延长时间',
+    `tk_order_type` tinyint(2) DEFAULT '0' COMMENT '淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单',
+    `pay_award_id` int(9) DEFAULT NULL COMMENT '支付有礼id',
+    `is_lock` tinyint(1) DEFAULT '0' COMMENT '是否锁库存，0否，1是',
+    `score_proportion` int(9) DEFAULT '100' COMMENT '积分比例',
+    `is_freeship_card` tinyint(1) DEFAULT '0' COMMENT '0否，1是',
+    `room_id` int(11) DEFAULT '0' COMMENT '直播间ID',
+    PRIMARY KEY (`order_id`),
+    UNIQUE KEY `order_sn` (`order_sn`),
+    KEY `boin_main_order_sn` (`main_order_sn`),
+    KEY `boin_user_id` (`user_id`),
+    KEY `boin_user_openid` (`user_openid`),
+    KEY `boin_order_status` (`order_status`),
+    KEY `boin_shipping_id` (`shipping_id`),
+    KEY `boin_shop_id` (`shop_id`)
+);
 
 CREATE TABLE `b2c_qf_img` (
   `img_id` int(8) NOT NULL AUTO_INCREMENT,
@@ -1089,6 +1302,7 @@ CREATE TABLE `b2c_shop` (
   `currency` varchar(45) NOT NULL DEFAULT 'CNY' COMMENT '币种',
   `shop_language` varchar(45) NOT NULL DEFAULT 'zh-CN' COMMENT '语言',
   `expire_time` timestamp null DEFAULT NULL COMMENT '到期时间',
+  `store_clerk_privilege_list` TEXT NULL DEFAULT NULL COMMENT '门店店员权限列表',
   PRIMARY KEY (`shop_id`),
   KEY `mobile` (`mobile`)
 )COMMENT='店铺';
@@ -1241,6 +1455,9 @@ CREATE TABLE `b2c_shop_question_feedback` (
   `is_look` tinyint(1) DEFAULT '0' COMMENT '1:已查看',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '反馈时间',
   `qf_img` varchar(191) NOT NULL DEFAULT '' COMMENT '图片',
+  `version` varchar(50) not NULL default '' COMMENT '使用系统版本',
+  `submit_user` varchar(128) not NULL default '' COMMENT '提交账号',
+  `submit_user_phone` varchar(32) not NULL default '' COMMENT '提交账号绑定的手机号',
   PRIMARY KEY (`question_feedback_id`),
   KEY `is_look` (`is_look`)
 )COMMENT='admin用户问题反馈记录';
@@ -1443,6 +1660,23 @@ CREATE TABLE `b2c_statistics_shop` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='店铺数据统计';
 
+CREATE TABLE IF NOT EXISTS `b2c_store_account` (
+    `account_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '门店账号ID',
+    `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属店铺id',
+    `sys_id` int(10) NOT NULL DEFAULT '0' COMMENT '所属账户id',
+    `mobile` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号',
+    `account_name` varchar(50) DEFAULT '' COMMENT '账户名称',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `account_type` tinyint(1) DEFAULT '1' COMMENT '账户类型1:店员，2：店长',
+    `status` tinyint(1) DEFAULT '0' COMMENT '账户状态0:禁用，1：启用',
+    `del_flag` tinyint(1) DEFAULT '0' COMMENT '是否已删除0:否，1：是',
+    `account_passwd` varchar(64)  DEFAULT NULL COMMENT '账号密码',
+    `store_list` varchar(191)  DEFAULT NULL COMMENT '可用门店id,逗号隔开',
+    `update_time`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY (`account_id`),
+    KEY `mobile` (`mobile`),
+    KEY `account_name` (`account_name`)
+);
 
 
 CREATE TABLE `b2c_system_cfg` (
@@ -1499,7 +1733,7 @@ CREATE TABLE `b2c_system_user` (
 
 CREATE TABLE `b2c_task_job_content` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `content` text COMMENT '消息内容',
+  `content` MEDIUMTEXT COMMENT '消息内容',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `del_flag` tinyint(1) DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
@@ -1721,41 +1955,4 @@ CREATE TABLE `b2c_user_summary_trend` (
   KEY `ref_type` (`ref_date`,`type`)
 );
 
-CREATE TABLE `b2c_inquiry_order` (
- `id` bigint(20) NOT NULL AUTO_INCREMENT,
- `order_id` int(11) NOT NULL COMMENT '订单id',
- `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
- `order_sn` varchar(20)  NOT NULL DEFAULT '' COMMENT '订单编号',
- `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
- `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7部分退款',
- `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
- `doctor_name` varchar(32)  NOT NULL DEFAULT '' COMMENT '医师名称',
- `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '科室id',
- `department_name` varchar(32)  NOT NULL DEFAULT '' COMMENT '医师科室',
- `patient_id` int(11) NOT NULL DEFAULT '0' COMMENT '患者id',
- `patient_mobile` varchar(32) NOT NULL DEFAULT '' COMMENT '患者手机号码',
- `patient_name` varchar(32)  NOT NULL DEFAULT '' COMMENT '患者名称',
- `patient_sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 0：未知 1：男 2：女',
- `patient_birthday` date DEFAULT NULL COMMENT '出生年月',
- `patient_identity_code` varchar(64)  NOT NULL DEFAULT '' COMMENT '证件号码',
- `patient_identity_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '证件类型: 1：身份证 2：军人证 3：护照 4：社保卡',
- `pay_code` varchar(30)  NOT NULL DEFAULT '' COMMENT '支付代号',
- `pay_name` varchar(128)  NOT NULL DEFAULT '' COMMENT '支付名称',
- `pay_sn` varchar(32)  NOT NULL DEFAULT '' COMMENT '支付流水号',
- `prepay_id` varchar(128)  DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
- `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
- `pay_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '支付时间',
- `refund_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款金额',
- `limit_time` timestamp  NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '医生接诊后会话截止时间点',
- `cancelled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '取消时间',
- `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
- `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
- `image_url` text  COMMENT '病情描述image信息',
- `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
- `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
- `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
-PRIMARY KEY (`id`),
-KEY `shop_id` (`shop_id`),
-KEY `order_sn` (`order_sn`)
-) COMMENT='问诊订单表';
 

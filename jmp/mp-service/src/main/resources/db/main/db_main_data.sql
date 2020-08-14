@@ -1,5 +1,5 @@
 
---password是md5后的admin!@#123
+-- password是md5后的admin!@#123
 insert into `b2c_system_user` (`user_name`, `password`) values ('system', '20abd48aba9deafd44a823021f43e5fd');
 
 
