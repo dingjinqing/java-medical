@@ -1,8 +1,10 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.recharge.RechargeParam;
 import com.vpu.mp.service.pojo.shop.sms.recharge.SmsAccountRechargeListVo;
+import com.vpu.mp.service.pojo.shop.sms.recharge.SmsRechargeRecordVo;
 import com.vpu.mp.service.shop.recharge.RechargeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +27,7 @@ public class AdminRechargeController extends AdminBaseController{
 
     @RequestMapping("/list")
     public JsonResult rechargeList(@RequestBody RechargeParam rechargeParam){
-        SmsAccountRechargeListVo rechargeList = rechargeService.getRechargeList(rechargeParam);
+        PageResult<SmsRechargeRecordVo> rechargeList = rechargeService.getRechargeList(rechargeParam);
         return super.success(rechargeList);
     }
 
