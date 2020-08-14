@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
 import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminParam;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
@@ -37,13 +38,13 @@ public class AdminSmsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/sms/account/create")
     public JsonResult createSmsAccount(@RequestBody @Validated SmsAccountParam param){
-        return success(smsAccountService.test());
-//        try {
-//            return success(smsAccountService.createSmsAccount(param));
-//        } catch (MpException e) {
-//            e.printStackTrace();
-//        }
-//        return fail();
+
+        try {
+            return success(smsAccountService.createSmsAccount(param));
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
+        return fail();
     }
 
 }
