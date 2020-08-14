@@ -8,7 +8,6 @@ import com.vpu.mp.dao.shop.config.ShopCfgDao;
 import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
 import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoParam;
 import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
@@ -42,20 +41,21 @@ public class SmsAccountService extends ShopBaseService {
 
     /**
      * 创建短信账户
-     * @param param
+     * @param aa
      * @return
      */
-    public String createSmsAccount(SmsAccountParam param) throws MpException {
-        long time = System.currentTimeMillis()/1000;
-        SmsBaseRequest request  =new SmsBaseRequest();
-        request.setSms(Util.toJson(param));
-        request.setApiMethod(SmsApiConfig.METHOD_CREATE_ACCOUNT);
-        request.setAppKey(smsApiConfig.getAppKey());
-        request.setTimestamp(time);
-        Map<String, Object> postBody = Util.transBeanToMap(request);
-        postBody.put("sign", smsService.generateSing(postBody));
-        HttpResponse response = smsService.requestApi(postBody);
-        return response.body();
+    public String createSmsAccount(String aa) throws MpException {
+        return "Ok";
+//        long time = System.currentTimeMillis()/1000;
+//        SmsBaseRequest request  =new SmsBaseRequest();
+//        request.setSms(Util.toJson(param));
+//        request.setApiMethod(SmsApiConfig.METHOD_CREATE_ACCOUNT);
+//        request.setAppKey(smsApiConfig.getAppKey());
+//        request.setTimestamp(time);
+//        Map<String, Object> postBody = Util.transBeanToMap(request);
+//        postBody.put("sign", smsService.generateSing(postBody));
+//        HttpResponse response = smsService.requestApi(postBody);
+//        return response.body();
     }
 
     /**
