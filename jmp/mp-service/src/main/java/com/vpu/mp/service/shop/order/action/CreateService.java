@@ -7,6 +7,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
@@ -545,9 +546,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(OrderConstant.CART_Y.equals(param.getIsCart())) {
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
-        }else if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param.getIsPrescription())){
+        }else if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
             //初始化处方商品
-            param.setGoods(prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode()));
+            List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
+            List<Goods> list = new ArrayList<>();
+            for (PrescriptionItemDo prescriptionItemDo : prescriptionItemDos) {
+                list.add(Goods.init(prescriptionItemDo.getGoodsId(),  prescriptionItemDo.getDragSumNum().intValue(),prescriptionItemDo.getPrdId()));
+            }
+            param.setGoods(list);
         }
     }
 
@@ -787,13 +793,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().error("checkGoodsAndProduct,商品不存在");
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, Util.toJson(goods));
         }
-        if (goods.getGoodsNumber() > goods.getProductInfo().getPrdNumber()) {
-            logger().error("checkGoodsAndProduct,库存不足,id:" + goods.getProductId());
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, null, goods.getGoodsInfo().getGoodsName());
-        }
         if (goods.getGoodsNumber() == null || goods.getGoodsNumber() <= 0) {
             logger().error("checkGoodsAndProduct,商品数量不能为0,id:" + goods.getProductId());
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_ZERO, null, goods.getGoodsInfo().getGoodsName());
+        }
+        if (goods.getGoodsNumber() > goods.getProductInfo().getPrdNumber()) {
+            logger().error("checkGoodsAndProduct,库存不足,id:" + goods.getProductId());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, null, goods.getGoodsInfo().getGoodsName());
         }
     }
 
