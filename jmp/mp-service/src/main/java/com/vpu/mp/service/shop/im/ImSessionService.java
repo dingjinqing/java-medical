@@ -269,6 +269,15 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
+     * 修改session在redis中保存的会话状态
+     * @param sessionId 会话id
+     * @param status 状态
+     */
+    private void updateSessionRedisStatusValue(Integer sessionId, Byte status) {
+        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
+        jedisManager.set(sessionRedisStatusKey,status.toString());
+    }
+    /**
      * 查询会话状态
      * @param orderSn
      * @return
@@ -318,11 +327,10 @@ public class ImSessionService extends ShopBaseService {
         }
         Byte prevStatus = imSessionDo.getSessionStatus();
         imSessionDo.setLimitTime(DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS));
-        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
 
         if (ImSessionConstant.SESSION_READY_TO_START.equals(prevStatus)) {
             // 状态从1->2
-            jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
+            updateSessionRedisStatusValue(sessionId,ImSessionConstant.SESSION_ON);
             imSessionDo.calculateReadyToOnAckTime();
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_ON_WEIGHT);
@@ -330,7 +338,7 @@ public class ImSessionService extends ShopBaseService {
             statisticDoctorSessionState(imSessionDo.getDoctorId());
         } else {
             // 从结束状态变为继续问诊状态 4->5
-            jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_CONTINUE_ON.toString());
+            updateSessionRedisStatusValue(sessionId,ImSessionConstant.SESSION_CONTINUE_ON);
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_CONTINUE_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_CONTINUE_ON_WEIGHT);
             imSessionDo.setContinueSessionCount(imSessionDo.getContinueSessionCount()-1);
@@ -391,6 +399,7 @@ public class ImSessionService extends ShopBaseService {
                 clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             } else {
                 sessionCloseIds.add(imSessionDo.getId());
+                updateSessionRedisStatusValue(imSessionDo.getId(),ImSessionConstant.SESSION_END);
             }
         }
         imSessionDao.batchUpdateSessionStatus(sessionDeadIds, ImSessionConstant.SESSION_DEAD,ImSessionConstant.SESSION_DEAD_WEIGHT);
@@ -415,6 +424,7 @@ public class ImSessionService extends ShopBaseService {
             imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
         } else {
             imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGTH);
+            updateSessionRedisStatusValue(sessionId, ImSessionConstant.SESSION_END);
             imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
         }
 
