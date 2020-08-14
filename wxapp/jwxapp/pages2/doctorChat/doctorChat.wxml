@@ -59,9 +59,9 @@
 		</view>
 
 	</scroll-view>
-	<chat-input source="doctor" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom" has-input="{{targetUserInfo.sessionStatus !== 4}}">
-		<view class="bottom-button-content" slot="custom-bottom" wx:if="{{filter.includes([2,4],targetUserInfo.sessionStatus)}}">
-			<block wx:if="{{targetUserInfo.sessionStatus === 2}}">
+	<chat-input source="doctor" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom" has-input="{{targetUserInfo.sessionStatus !== 4 || targetUserInfo.sessionStatus !== 6}}">
+		<view class="bottom-button-content" slot="custom-bottom" wx:if="{{filter.includes([2,4,5],targetUserInfo.sessionStatus)}}">
+			<block wx:if="{{targetUserInfo.sessionStatus === 2 || targetUserInfo.sessionStatus === 5}}">
 				<view class="has-border" bindtap="chatEnd">结束问诊</view>
 				<view class="no-border" bindtap="createPrescription">去开方</view>
 			</block>

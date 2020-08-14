@@ -100,7 +100,7 @@ global.wxPage({
   },
   requsetMessage () {
     this.messageApi()
-    if(this.data.targetUserInfo.sessionStatus === 2) this.timer = setInterval(this.messageApi,5000)
+    if(this.data.targetUserInfo.sessionStatus === 2 || this.data.targetUserInfo.sessionStatus === 5) this.timer = setInterval(this.messageApi,5000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
@@ -204,7 +204,7 @@ global.wxPage({
       util.api('/api/wxapp/inquiry/order/status/update',res=>{
         if(res.error === 0){
           this.setData({
-            'targetUserInfo.sessionStatus':2
+            'targetUserInfo.sessionStatus': 5
           })
           this.requsetMessage()
           if(this.data.source === 'inquiryList'){
@@ -212,7 +212,7 @@ global.wxPage({
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:2
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:5
             })
           }
         }
