@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.prescription;
 
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -12,24 +13,7 @@ import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
-public class FetchPrescriptionParam {
+public class FetchPrescriptionParam extends UserPatientOneParam {
 
-    /**
-     * 患者姓名
-     */
-    @NonNull
-    private String name;
-    /**
-     * 患者电话
-     */
-    private String mobile;
-    /**
-     * 患者身份证号
-     */
-    private String identityCode;
 
-    /**
-     * 增量查询时间
-     */
-    private Long startTime;
 }

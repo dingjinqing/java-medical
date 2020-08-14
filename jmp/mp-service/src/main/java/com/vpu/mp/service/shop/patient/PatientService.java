@@ -143,10 +143,6 @@ public class PatientService extends BaseShopConfigService{
      * 拉取患者信息
      */
     public JsonResult getExternalPatientInfo(UserPatientOneParam userPatientOneParam){
-        boolean b = checkMobileCode(userPatientOneParam);
-        if (!b){
-            return null;
-        }
         Integer shopId =getShopId();
         PatientExternalRequestParam requestParam=new PatientExternalRequestParam();
         requestParam.setName(userPatientOneParam.getName());
@@ -194,19 +190,6 @@ public class PatientService extends BaseShopConfigService{
         ignoreField.add("createTime");
         ignoreField.add("lastUpdateTime");
         return ignoreField;
-    }
-    /**
-     * 短信验证码校验
-     * @param param param
-     * @return
-     */
-    private boolean checkMobileCode(UserPatientOneParam param) {
-        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_PATIENT_MOBILE,getShopId(), param.getUserId(), param.getMobile());
-        String s = jedisManager.get(key);
-        if (!Strings.isBlank(s)&&!Strings.isBlank(param.getMobileCheckCode())){
-            return s.equals(param.getMobileCheckCode());
-        }
-        return false;
     }
 
     /**

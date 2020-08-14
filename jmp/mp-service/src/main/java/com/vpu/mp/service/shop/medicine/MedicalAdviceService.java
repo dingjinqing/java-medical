@@ -11,6 +11,7 @@ import com.vpu.mp.dao.shop.medical.MedicalAdviceDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.medical.FetchMedicalAdviceParam;
 import com.vpu.mp.service.pojo.shop.medical.FetchMedicalAdviceVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class MedicalAdviceService extends ShopBaseService {
      * @param fetchMedicalAdviceParam 拉取医嘱信息
      * @return JsonResult
      */
-    public JsonResult pullExternalMedicalAdviceList(FetchMedicalAdviceParam fetchMedicalAdviceParam) {
+    public JsonResult pullExternalMedicalAdviceList(UserPatientOneParam fetchMedicalAdviceParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_ADVICE_INFOS;

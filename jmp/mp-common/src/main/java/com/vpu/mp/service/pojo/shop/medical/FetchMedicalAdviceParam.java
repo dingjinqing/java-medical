@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.medical;
 
 import com.vpu.mp.service.pojo.shop.medicalhistory.FetchMedicalHistoryParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -12,13 +13,7 @@ import lombok.NonNull;
 
 
 @Data
-public class FetchMedicalAdviceParam {
+public class FetchMedicalAdviceParam extends UserPatientOneParam {
 
-    private String name;
 
-    private String mobile;
-
-    private String identityCode;
-
-    private Long startTime;
 }

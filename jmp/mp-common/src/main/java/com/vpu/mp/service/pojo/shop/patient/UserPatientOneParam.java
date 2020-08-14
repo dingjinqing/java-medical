@@ -16,6 +16,10 @@ public class UserPatientOneParam extends UserPatientParam{
     @NotNull
     private String identityCode;
     /**
+     * 增量查询时间
+     */
+    private Long startTime;
+    /**
      * 短信验证码
      */
     @NotNull

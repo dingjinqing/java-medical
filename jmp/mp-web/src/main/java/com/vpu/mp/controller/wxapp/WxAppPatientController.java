@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.shop.prescription.FetchPrescriptionService;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.FETCH_HITS_CHECK_CODE_ERROR;
+import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.FETCH_HITS_NO_PATIENT;
+
 /**
  * @author chenjie
  */
@@ -32,6 +36,9 @@ import java.util.List;
 public class WxAppPatientController extends WxAppBaseController {
     @Autowired
     private SmsAccountService smsAccountService;
+
+    @Autowired
+    private FetchPrescriptionService fetchPrescriptionService;
 
     /**
      * 	获取用户的患者列表
@@ -50,16 +57,20 @@ public class WxAppPatientController extends WxAppBaseController {
         shop().patientService.setDefaultPatient(userPatient);
         return success();
     }
+
     /**
      * 	拉取患者信息
      */
     @PostMapping("/api/wxapp/user/patient/get/info")
-    public JsonResult getPatientInfo(@RequestBody @Validated UserPatientOneParam userPatientOneParam){
-        JsonResult result= shop().patientService.getExternalPatientInfo(userPatientOneParam);
-        if (result==null){
+    public JsonResult getPatientInfo(@RequestBody @Validated UserPatientOneParam userPatientOneParam) {
+        Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
+        if (FETCH_HITS_CHECK_CODE_ERROR.equals(info)) {
             return fail(JsonResultCode.PATIENT_MOBILE_CHECK_CODE_ERROR);
         }
-        return result;
+        if (FETCH_HITS_NO_PATIENT.equals(info)) {
+            return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
+        }
+        return success();
     }
 
     /**

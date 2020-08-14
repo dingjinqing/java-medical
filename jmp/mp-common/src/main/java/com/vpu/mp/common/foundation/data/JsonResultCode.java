@@ -672,6 +672,7 @@ public enum JsonResultCode {
 
     //患者手机号验证码
     PATIENT_MOBILE_CHECK_CODE_ERROR(402001,JsonResultMessage.PATIENT_MOBILE_CHECK_CODE_ERROR),
+    FETCH_HITS_NO_PATIENT(402002, JsonResultMessage.FETCH_HITS_NO_PATIENT),
 
 
     /**微信支付错误信息
