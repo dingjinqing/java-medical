@@ -43,7 +43,7 @@ export const cn = {
   pleaseInputPV: '请输入访问量！',
   PVMsutBeNumber: '访问量必须为数字值！',
   pleaseInputActivityName: '请输入活动名称',
-  lengthLimit: '长度在 1 到 10 个字符',
+  lengthLimit: '限制 1 到 10 个字符',
   priorityNotNull: '优先级不能为空',
   priorityMushBeNumber: '优先级必须为数字值',
   scoreNotNull: '积分不能为空',

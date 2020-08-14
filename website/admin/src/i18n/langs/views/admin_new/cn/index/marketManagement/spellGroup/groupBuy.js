@@ -7,7 +7,7 @@ export const cn = {
   limitAmountRequireRules: '请填写成团人数',
   joinLimitRequireRules: '请填写参团限制',
   openLimitRequireRules: '请填写开团限制',
-  lengthMax20: '长度在 1 到 20 个字符',
+  lengthMax20: '限制 1 到 20 个字符',
   // 新用户明细
   invitePeople: '邀请人',
   newUserId: '新用户id',
