@@ -298,7 +298,7 @@
             </div>
             <div class="doctor-info">
               <span class="doctor-name">医师：{{item.doctorName}}</span>
-              <span class="item-date">日期：{{item.prescriptionCreateTime}}</span>
+              <span class="item-date">日期：{{item.prescriptionCreateTime.substring(0,10)}}</span>
             </div>
           </div>
         </template>
@@ -340,7 +340,7 @@
             </div>
             <div class="doctor-info">
               <span class="doctor-name">医师：{{item.doctorName}}</span>
-              <span class="item-date">日期：{{item.prescriptionCreateTime}}</span>
+              <span class="item-date">日期：{{item.prescriptionCreateTime.substring(0,10)}}</span>
             </div>
           </div>
         </template>
