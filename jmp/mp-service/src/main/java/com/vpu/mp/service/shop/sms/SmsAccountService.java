@@ -46,14 +46,14 @@ public class SmsAccountService extends ShopBaseService {
      * @return
      */
     public SmsAccountInfoVo createSmsAccount(SmsAccountParam param) throws MpException {
-//        long time = System.currentTimeMillis()/1000;
-//        SmsBaseRequest request  =new SmsBaseRequest();
-//        request.setSms(Util.toJson(param));
-//        request.setApiMethod(SmsApiConfig.METHOD_CREATE_ACCOUNT);
-//        request.setAppKey(smsApiConfig.getAppKey());
-//        request.setTimestamp(time);
-//        Map<String, Object> postBody = Util.transBeanToMap(request);
-//        postBody.put("sign", smsService.generateSing(postBody));
+        long time = System.currentTimeMillis()/1000;
+        SmsBaseRequest request  =new SmsBaseRequest();
+        request.setSms(Util.toJson(param));
+        request.setApiMethod(SmsApiConfig.METHOD_CREATE_ACCOUNT);
+        request.setAppKey(smsApiConfig.getAppKey());
+        request.setTimestamp(time);
+        Map<String, Object> postBody = Util.transBeanToMap(request);
+        postBody.put("sign", smsService.generateSing(postBody));
 //        HttpResponse response = smsService.requestApi(postBody);
 //        SmsResult smsResult = JSONUtil.toBean(response.body(), SmsResult.class);
 //        if (smsResult.getCode().equals(SmsSendRecordConstant.SMS_SEND_STATUS_SUCCESS)){
@@ -61,10 +61,6 @@ public class SmsAccountService extends ShopBaseService {
 //        }
 //        return getSmsAccountInfo();
         return new SmsAccountInfoVo();
-    }
-
-    public String test(){
-        return "test";
     }
 
     /**
