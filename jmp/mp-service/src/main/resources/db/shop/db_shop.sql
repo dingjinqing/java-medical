@@ -5055,6 +5055,7 @@ create TABLE `b2c_im_session_item`(
 -- 问诊订单表
 CREATE TABLE `b2c_inquiry_order` (
  `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
+ `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
  `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编号',
  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
  `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态0待付款 1待接诊 2接诊中 3已完成 4已退款 5已取消 6待退款 7部分退款',
