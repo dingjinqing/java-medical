@@ -90,12 +90,13 @@ public class PrescriptionItemDao extends ShopBaseDao {
      * @param prescriptionCode 处方号
      * @return
      */
-    public List<OrderBeforeParam.Goods>  listOrderGoodsByPrescriptionCode(String prescriptionCode){
-        return db().select(PRESCRIPTION_ITEM.GOODS_ID,PRESCRIPTION_ITEM.PRD_ID.as("product_id"),PRESCRIPTION_ITEM.DRAG_SUM_NUM,
+    public List<PrescriptionItemDo>  listOrderGoodsByPrescriptionCode(String prescriptionCode){
+        return db().select(PRESCRIPTION_ITEM.GOODS_ID,PRESCRIPTION_ITEM.PRD_ID,
+                PRESCRIPTION_ITEM.MEDICINE_PRICE,
                 PRESCRIPTION_ITEM.DRAG_SUM_NUM)
                 .from(PRESCRIPTION_ITEM)
                 .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionCode))
-                .fetchInto(OrderBeforeParam.Goods.class);
+                .fetchInto(PrescriptionItemDo.class);
     }
 
     /**

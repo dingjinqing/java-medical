@@ -2,12 +2,14 @@ package com.vpu.mp.service.shop.recharge;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.shop.recharge.SmsRechargeDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.recharge.RechargeParam;
 import com.vpu.mp.service.pojo.shop.sms.recharge.SmsAccountRechargeListVo;
 import com.vpu.mp.service.pojo.shop.sms.recharge.SmsAccountRechargeRecordParam;
+import com.vpu.mp.service.pojo.shop.sms.recharge.SmsRechargeRecordVo;
 import com.vpu.mp.service.shop.config.SmsAccountConfigService;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,7 @@ public class RechargeService extends ShopBaseService {
      * @param rechargeParam 前端调取入参
      * @return RechargeVo
      */
-    public SmsAccountRechargeListVo getRechargeList(RechargeParam rechargeParam) {
+    public PageResult<SmsRechargeRecordVo> getRechargeList(RechargeParam rechargeParam) {
         //查询当前账户id
         SmsAccountRechargeRecordParam smsAccountRechargeRecordParam = new SmsAccountRechargeRecordParam();
         smsAccountRechargeRecordParam.setSid(smsAccountConfigService.getShopSmsAccountConfig());
@@ -63,7 +65,8 @@ public class RechargeService extends ShopBaseService {
             e.printStackTrace();
         }
         //向前端返回回参
-        return smsAccountRechargeListVo;
+        PageResult<SmsRechargeRecordVo> rechargePage = rechargeDao.getRechargePage(rechargeParam);
+        return rechargePage;
     }
 
 }

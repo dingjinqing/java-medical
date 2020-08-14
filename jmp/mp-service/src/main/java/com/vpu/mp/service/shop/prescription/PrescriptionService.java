@@ -112,7 +112,7 @@ public class PrescriptionService extends ShopBaseService {
 
     /**
      * *****
-     *  获取处方关联商品
+     *  获取未失效处方关联商品
      *  1商品id 2通用名+系数 3系数
      * @param goodsId 商品id
      * @param param
