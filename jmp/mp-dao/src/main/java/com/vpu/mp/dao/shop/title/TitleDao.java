@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.title.TitleListParam;
 import com.vpu.mp.service.pojo.shop.title.TitleOneParam;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
@@ -29,13 +30,9 @@ public class TitleDao extends ShopBaseDao{
      * @return
      */
     public PageResult<TitleOneParam> getTitleList(TitleListParam param) {
-        SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR_TITLE.asterisk())
-            .from(DOCTOR_TITLE);
-        select.where(DOCTOR_TITLE.IS_DELETE.eq((byte) 0));
-        buildOptions(select, param);
-        select.orderBy(DOCTOR_TITLE.ID.desc());
-        PageResult<TitleOneParam> titleList = this.getPageResult(select, param.getCurrentPage(),
+        SelectConditionStep<DoctorTitleRecord> where = db().selectFrom(DOCTOR_TITLE).where(DOCTOR_TITLE.IS_DELETE.eq((byte) 0));
+        where.orderBy(DOCTOR_TITLE.ID.desc());
+        PageResult<TitleOneParam> titleList = this.getPageResult(where, param.getCurrentPage(),
             param.getPageRows(), TitleOneParam.class);
         return titleList;
     }
