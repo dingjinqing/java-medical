@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit;
 
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class AuditOrderGoodsParam extends AbstractOrderOperateQueryParam {
      * 订单id
      */
     @NotNull
+    @RedisLockField
     private Integer orderId;
     /**
      * 订单号
