@@ -135,7 +135,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
     public PageResult<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
         Condition condition = DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1)).and(DOCTOR.CAN_CONSULTATION.eq((byte) 1));
         if (doctorParam.getKeyword() != null && doctorParam.getKeyword() != "") {
-            condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DOCTOR.ID.in(doctorParam.getDoctorIds())));
+            condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DOCTOR.ID.in(doctorParam.getDoctorIds())).or(DOCTOR.TREAT_DISEASE.like(likeValue(doctorParam.getKeyword()))));
         }
         if (doctorParam.getDepartmentId() != null && doctorParam.getDepartmentId() > 0) {
             condition = condition.and(DOCTOR.ID.in(doctorParam.getDepartmentDoctorIds()));
