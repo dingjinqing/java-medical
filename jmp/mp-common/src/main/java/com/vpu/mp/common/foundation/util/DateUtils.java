@@ -417,16 +417,16 @@ public final class DateUtils {
         Calendar todayStart = Calendar.getInstance();
 
         if( hourOfDay != null){
-            todayStart.set(Calendar.HOUR_OF_DAY, 0);
+            todayStart.set(Calendar.HOUR_OF_DAY, hourOfDay);
         }
         if( minute != null){
-            todayStart.set(Calendar.MINUTE, 0);
+            todayStart.set(Calendar.MINUTE, minute);
         }
         if( second != null){
-            todayStart.set(Calendar.SECOND, 0);
+            todayStart.set(Calendar.SECOND, second);
         }
         if( milliSecond != null){
-            todayStart.set(Calendar.MILLISECOND, 0);
+            todayStart.set(Calendar.MILLISECOND, milliSecond);
         }
         if( dayOfMonth != null ){
             todayStart.add(Calendar.DAY_OF_MONTH,dayOfMonth);

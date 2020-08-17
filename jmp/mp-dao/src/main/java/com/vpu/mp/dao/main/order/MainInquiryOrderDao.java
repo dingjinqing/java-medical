@@ -11,6 +11,8 @@ import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.statistics.InquiryOrderStatistics;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
@@ -94,6 +96,9 @@ public class MainInquiryOrderDao extends MainBaseDao {
         selectJoinStep.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.gt(InquiryOrderConstant.ORDER_TO_PAID));
         selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.ne(InquiryOrderConstant.ORDER_CANCELED));
+        if(StringUtils.isNotBlank(param.getDoctorName())){
+            selectJoinStep.where(INQUIRY_ORDER.DOCTOR_NAME.like(likeValue(param.getDoctorName())));
+        }
         if(param.getStartTime()!=null){
             selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()));
         }
@@ -103,4 +108,46 @@ public class MainInquiryOrderDao extends MainBaseDao {
         return selectJoinStep;
     }
 
+    /**
+     * 问诊订单统计报表详情查询
+     * @param param
+     * @return
+     */
+    public List<InquiryOrderStatisticsVo> orderStatistics(MainInquiryOrderStatisticsParam param){
+        SelectJoinStep<? extends Record> select=db().select(
+            date((INQUIRY_ORDER.CREATE_TIME)).as(InquiryOrderStatistics.CREAT_TIME),
+            //咨询单数
+            count((INQUIRY_ORDER.ORDER_ID)).as(InquiryOrderStatistics.AMOUNT),
+            //咨询总金额
+            sum(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.AMOUNT_PRICE),
+            //咨询单次价格
+            avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
+            //医师id
+            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
+            //医师名称
+            INQUIRY_ORDER.DOCTOR_NAME.as(InquiryOrderStatistics.DOCTOR_NAME)
+        ).from(INQUIRY_ORDER);
+        select=buildOptions(select,param);
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
+        return list;
+    }
+    /**
+     * 咨询报表总数total查询
+     * @param param
+     * @return
+     */
+    public InquiryOrderTotalVo orderStatisticsTotal(MainInquiryOrderStatisticsParam param){
+        SelectJoinStep<? extends Record> select=db().select(
+            //咨询单数
+            count((INQUIRY_ORDER.ORDER_ID)).as(InquiryOrderStatistics.AMOUNT_TOTAL),
+            //咨询总金额
+            sum(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.AMOUNT_PRICE_TOTAL),
+            //咨询单次价格
+            avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE_TOTAL)
+        ).from(INQUIRY_ORDER);
+        select=buildOptions(select,param);
+        InquiryOrderTotalVo inquiryOrderTotalVo=select.fetchOneInto(InquiryOrderTotalVo.class);
+        return inquiryOrderTotalVo;
+    }
 }

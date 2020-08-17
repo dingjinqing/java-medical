@@ -1,14 +1,18 @@
 package com.vpu.mp.service.saas.order;
 
 import cn.hutool.core.date.DateUtil;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.main.order.MainInquiryOrderDao;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.order.MainInquiryOrderStatisticsParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +58,31 @@ public class MainInquiryOrderService extends MainBaseService {
         return result;
     }
 
+    /**
+     * 报表导出
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook orderStatisticsExport(MainInquiryOrderStatisticsParam param, String lang){
+        beginAndEndOfDay(param);
+        List<InquiryOrderStatisticsVo> list=mainInquiryOrderDao.orderStatistics(param);
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);
+        return workbook;
+    }
+
+    /**
+     * 报表总数total查询
+     * @param param
+     * @return
+     */
+    public InquiryOrderTotalVo orderStatisticsTotal(MainInquiryOrderStatisticsParam param){
+        beginAndEndOfDay(param);
+        InquiryOrderTotalVo inquiryOrderTotalVo=mainInquiryOrderDao.orderStatisticsTotal(param);
+        return inquiryOrderTotalVo;
+    }
     /**
      * 日期的时分秒开始和结束
      * @param param

@@ -236,10 +236,12 @@ public class InquiryOrderDao extends ShopBaseDao {
             //咨询单次价格
             avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
             //医师id
-            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID)
+            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
+            //医师name
+            INQUIRY_ORDER.DOCTOR_NAME.as(InquiryOrderStatistics.DOCTOR_NAME)
         ).from(INQUIRY_ORDER);
         select=buildOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
         List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
         return list;
     }
