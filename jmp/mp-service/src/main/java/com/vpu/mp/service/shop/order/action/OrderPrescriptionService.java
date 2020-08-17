@@ -19,7 +19,10 @@ import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -215,7 +218,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      * @return
      */
     @Override
-    public ExecuteResult execute(AuditOrderGoodsParam param)  {
+    @RedisLock(prefix = JedisKeyConstant.PRESCRIPTION_LOCK)
+    public ExecuteResult execute(@RedisLockKeys AuditOrderGoodsParam param)  {
         logger().info("审核订单-审核-开始");
         //检查
         OrderInfoDo orderInfoDo = orderInfo.getByOrderId(param.getOrderId(), OrderInfoDo.class);
