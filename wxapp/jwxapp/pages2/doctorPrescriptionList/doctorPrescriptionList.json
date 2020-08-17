@@ -1,3 +1,5 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "v-prescription-dialog": "/components/popup/prescription_dialog/index"
+  }
 }
