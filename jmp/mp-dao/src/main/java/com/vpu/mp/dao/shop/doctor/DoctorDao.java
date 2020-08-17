@@ -114,21 +114,6 @@ public class DoctorDao extends ShopBaseDao {
         return res;
     }
 
-//    /**
-//     * 医师是否存在，用来新增检查
-//     * @param departmentId 科室ID
-//     * @param name 科室名称
-//     * @return true 存在 false 不存在
-//     */
-//    public boolean isNameExist(Integer departmentId,String name) {
-//        Condition condition = DEPARTMENT.NAME.eq(name);
-//        if (departmentId != null) {
-//            condition = condition.and(DEPARTMENT.ID.ne(departmentId));
-//        }
-//        int count = db().fetchCount(DEPARTMENT, condition);
-//        return count>0;
-//    }
-
     /**
      * 获取一条医师的信息(根据hospitalCode)
      *
@@ -333,5 +318,40 @@ public class DoctorDao extends ShopBaseDao {
         db().update(DOCTOR).set(DOCTOR.USER_TOKEN, userToken)
             .where(DOCTOR.USER_ID.eq(userId))
             .execute();
+    }
+
+    /**
+     * 医师解绑 删除医师绑定用户信息
+     * @param doctorId 医师id
+     */
+    public void unbundlingDoctorAuth(Integer doctorId) {
+        db().update(DOCTOR)
+            .set(DOCTOR.USER_ID, 0)
+            .where(DOCTOR.ID.eq(doctorId)).execute();
+    }
+
+    /**
+     * 医师解绑删除用户token
+     * @param doctorId 医师id
+     */
+    public void unbundlingDoctorToken(Integer doctorId) {
+        db().update(DOCTOR).set(DOCTOR.USER_TOKEN, "")
+            .where(DOCTOR.ID.eq(doctorId)).execute();
+    }
+
+    /**
+     * 医师是否接诊
+     * @param doctorId
+     */
+    public void canConsultation(Integer doctorId) {
+        DoctorOneParam oneInfo = this.getOneInfo(doctorId);
+        // 如果启用
+        if (oneInfo.getCanConsultation().equals((byte)1)) {
+            db().update(DOCTOR).set(DOCTOR.CAN_CONSULTATION, (byte)0)
+                .where(DOCTOR.ID.eq(doctorId)).execute();
+        } else { // 如果禁用
+            db().update(DOCTOR).set(DOCTOR.CAN_CONSULTATION, (byte)1)
+                .where(DOCTOR.ID.eq(doctorId)).execute();
+        }
     }
 }

@@ -40,4 +40,13 @@ public class UserDao extends ShopBaseDao {
             .execute();
     }
 
+    /**
+     * 医师解绑将用户类型设置为患者
+     * @param userId
+     */
+    public void unbundlingUserType(Integer userId) {
+        db().update(USER).set(USER.USER_TYPE, (byte)0)
+            .where(USER.USER_ID.eq(userId)).execute();
+    }
+
 }
