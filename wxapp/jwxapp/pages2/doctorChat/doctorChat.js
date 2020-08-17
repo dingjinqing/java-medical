@@ -105,8 +105,8 @@ global.wxPage({
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
-      if (res.error === 0 && res.content.length) {
-        let newChatContent = res.content.reduce((defaultValue,item)=>{
+      if (res.error === 0 && res.content.messages.length) {
+        let newChatContent = res.content.messages.reduce((defaultValue,item)=>{
           defaultValue.push({  
             position:0,
             messageInfo:{

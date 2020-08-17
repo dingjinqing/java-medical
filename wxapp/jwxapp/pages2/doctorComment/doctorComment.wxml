@@ -3,30 +3,26 @@
 	<view class="doctor_content">
 		<view class="doctor_item">
 			<view class="d_left">
-				<!-- <image src="{{item.url}}" wx:if='{{item.url != ""}}'></image> -->
-				<!-- <image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image> -->
-				<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png'></image>
+				<image src="{{con.url}}" wx:if='{{con.url != ""}}'></image>
+				<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>
 			</view>
 			<view class="d_right">
 				<view class="d_r_top">
-					<text>{{item.name}}吴晓红</text>
-					<text wx:if='{{item.titleName}}'>{{item.titleName}}</text>
-					<text>主任医师</text>
+					<text>{{con.name}}</text>
+					<text wx:if='{{con.titleName}}'>{{con.titleName}}</text>
 				</view>
 				<view class="d_r_m_t">
-					<text>{{item.hospitalName}}军工医院</text>
-					<text style="margin-left:10rpx" wx:if='{{item.departmentName}}'>{{item.departmentName}}</text>
-					<text style="margin-left:10rpx">皮肤科</text>
+					<text>{{con.hospitalName}}</text>
+					<text style="margin-left:10rpx" wx:if='{{con.departmentName}}'>{{con.departmentName}}</text>
 				</view>
-				<!-- <view class="d_r_m_b" wx:if='{{item.treatDisease}}'> -->
-				<view class="d_r_m_b">
-					<view>擅长：{{item.treatDisease}}你猜</view>
+				<view class="d_r_m_b" wx:if='{{item.treatDisease}}'>
+					<view>擅长：{{con.treatDisease}}</view>
 				</view>
 				<view class="d_r_bot">
-					<view>￥{{item.consultationPrice}}12<text>/次</text></view>
+					<view>￥{{con.consultationPrice}}<text>/次</text></view>
 				</view>
-				<view class="focus {{if_focus == true ? 'have_focus' :''}}" catchtap="choose_focus">
-					{{if_focus == 0 ? '关注' : '已关注'}}
+				<view class="focus {{isAttention == true ? 'have_focus' :''}}" catchtap="choose_focus">
+					{{isAttention == 0 ? '关注' : '已关注'}}
 				</view>
 			</view>
 		</view>
@@ -40,13 +36,13 @@
 		</view>
 		<view class="tit service_text">
 			<view>服务描述</view>
-			<textarea placeholder="请您对医生的服务进行描述" maxlength='-1'></textarea>
+			<textarea placeholder="请您对医生的服务进行描述" maxlength='-1' bindblur='bindCheckInput' bindinput='bindCheckInput'></textarea>
 		</view>
 		<label>
-			<radio value="r1" checked="true" class="radio" color="#26c4bc"/>匿名
+			<radio value="r1" checked="{{isAnonymou}}" class="radio" color="#26c4bc" bindtap="radioChange"/>匿名
 		</label>
 	</view>
 	<view class="bot_footer">
-		<view>发布</view>
+		<view bindtap='submit'>发布</view>
 	</view>
 </view>

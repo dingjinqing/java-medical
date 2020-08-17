@@ -4,42 +4,42 @@
 		<view>
 			<view class="doctor_item">
 				<view class="d_left">
-					<!-- <image src="{{item.url}}" wx:if='{{item.url != ""}}'></image> -->
-					<!-- <image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image> -->
-					<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png'></image>
+					<image src="{{con.url}}" wx:if='{{con.url != ""}}'></image>
+					<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>
 				</view>
 				<view class="d_right">
 					<view class="d_r_top">
-						<text>{{item.name}}吴晓红</text>
-						<text wx:if='{{item.titleName}}'>{{item.titleName}}</text>
-						<text>主任医师</text>
+						<text>{{con.name}}</text>
+						<text wx:if='{{con.titleName}}'>{{con.titleName}}</text>
 					</view>
 					<view class="d_r_m_t">
-						<text>{{item.hospitalName}}军工医院</text>
-						<text style="margin-left:10rpx" wx:if='{{item.departmentName}}'>{{item.departmentName}}</text>
-						<text style="margin-left:10rpx">皮肤科</text>
+						<text>{{con.hospitalName}}</text>
+						<text style="margin-left:10rpx" wx:if='{{con.departmentName}}'>{{con.departmentName}}</text>
 					</view>
-					<!-- <view class="d_r_m_b" wx:if='{{item.treatDisease}}'> -->
-					<view class="d_r_m_b">
-						<view>擅长：{{item.treatDisease}}你猜</view>
+					<view class="d_r_m_b" wx:if='{{con.treatDisease}}'>
+						<view>擅长：{{con.treatDisease}}</view>
 					</view>
-					<view class="focus {{if_focus == true ? 'have_focus' :''}}" catchtap="choose_focus">
-						{{if_focus == 0 ? '关注' : '已关注'}}
-					</view>
+				<view class="focus {{isAttention == true ? 'have_focus' :''}}" catchtap="choose_focus">
+					{{isAttention == 0 ? '关注' : '已关注'}}
+				</view>
 				</view>
 			</view>
 			<view class="doctor_introduce">
 				<view>
-					<view>100</view>
+					<view>{{con.attentionNumber}}</view>
 					<view>关注量</view>
 				</view>
 				<view>
-					<view>700</view>
+					<view>{{con.consultationNumber}}</view>
 					<view>接诊量</view>
 				</view>
 				<view>
-					<view>1小时</view>
+					<view>{{con.avgAnswerTime}}小时</view>
 					<view>平均响应时间</view>
+				</view>
+				<view>
+					<view>{{con.avgCommentStar}}</view>
+					<view>患者评价</view>
 				</view>
 			</view>
 			<image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>
@@ -47,89 +47,48 @@
 	</view>
 
 	<view class="mid_con">
-		<view class="comment_title">患者评价（234）</view>
+		<view class="comment_title">患者评价（{{pageParams.totalRows}}）</view>
 		<view class="commentList">
-			<view class="comment_item">
-				<view class="c_top">
-					<view class="c_t_name">用户2312312</view>
-					<view class="c_t_star">
-						<text class='iconfont iconshoucang star'></text>
+			<block wx:for='{{dataList}}' wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+				<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+					<view class="comment_item">
+						<view class="c_top">
+							<view class="c_t_name">{{item.userName}}</view>
+							<view class="c_t_star">
+							   <block wx:for='{{item.stars - 0}}' wx:key=''>
+								 		<text class='iconfont iconshoucang star'></text>
+								 </block>
+							</view>
+						</view>
+						<view class="c_mid">
+							<view class="c_m_text">
+							 {{  item.need_expand  ? ( item.zk ? item.new_comm_note : item.commNote) : item.commNote}}
+							</view>
+							<view class="expand" wx:if='{{item.need_expand == true}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' catchtap="zk_sq">
+								{{item.zk ? '展开' : '收起'}}
+							</view>
+						</view>
+						<view class="c_bot">
+							<text>{{item.createTime}}</text>
+						</view>
 					</view>
-				</view>
-				<view class="c_mid">
-					<view class="c_m_text">
-						之前就找吴主任看病，现在身体越来越好了，生活质量也 提高了，总是利用休息时间解答问题，十分感谢。
-					</view>
-          <view class="expand">
-          展开
-          </view>
-				</view>
-				<view class="c_bot">
-					<text>2020-07-24 12:45:00</text>
-				</view>
-			</view>
-      		<view class="comment_item">
-				<view class="c_top">
-					<view class="c_t_name">用户2312312</view>
-					<view class="c_t_star">
-						<text class='iconfont iconshoucang star'></text>
-					</view>
-				</view>
-				<view class="c_mid">
-					<view class="c_m_text">
-						之前就找吴主任看病，现在身体越来越好了，生活质量也 提高了，总是利用休息时间解答问题，十分感谢。
-					</view>
-          <view class="expand">
-          展开
-          </view>
-				</view>
-				<view class="c_bot">
-					<text>2020-07-24 12:45:00</text>
-				</view>
-			</view>
-      		<view class="comment_item">
-				<view class="c_top">
-					<view class="c_t_name">用户2312312</view>
-					<view class="c_t_star">
-						<text class='iconfont iconshoucang star'></text>
-					</view>
-				</view>
-				<view class="c_mid">
-					<view class="c_m_text">
-						之前就找吴主任看病，现在身体越来越好了，生活质量也 提高了，总是利用休息时间解答问题，十分感谢。
-					</view>
-          <view class="expand">
-          展开
-          </view>
-				</view>
-				<view class="c_bot">
-					<text>2020-07-24 12:45:00</text>
-				</view>
-			</view>
-      		<view class="comment_item">
-				<view class="c_top">
-					<view class="c_t_name">用户2312312</view>
-					<view class="c_t_star">
-						<text class='iconfont iconshoucang star'></text>
-					</view>
-				</view>
-				<view class="c_mid">
-					<view class="c_m_text">
-						之前就找吴主任看病，现在身体越来越好了，生活质量也 提高了，总是利用休息时间解答问题，十分感谢。
-					</view>
-          <view class="expand">
-          展开
-          </view>
-				</view>
-				<view class="c_bot">
-					<text>2020-07-24 12:45:00</text>
-				</view>
-			</view>
+				</block>
+			</block>
+	    <view class="is-null" wx:if='{{dataList[0].length <= 0}}'>	
+      <image src="{{imageUrl}}/image/wxapp/no_focus_doctor.png"></image>	
+      <text>暂无评价记录</text>	
+    </view>
 		</view>
 	</view>
 	<view class="bot_footer">
-		<view class="to_chat">在线咨询￥0/次</view>
+	  <block wx:if='{{con.isOnDuty == 1}}'>
+			<view class="to_chat" data-doctor_id='{{con.id}}'  data-price='{{con.consultationPrice}}' catchtap="toChat">在线咨询￥{{con.consultationPrice}}/次</view>
 		<view class="tell_patient" catchtap="patient_announce">患者须知 ></view>
+		</block>
+		<block wx:else>
+			<view class="to_chat no_chat">暂不接诊</view>
+		</block>
+	
 	</view>
 	<pop-announce show='{{show_announce}}' title='问诊须知'>
 		<view>1.在线问诊暂不支持医保报销，产生的一切费用全部为自费。</view>

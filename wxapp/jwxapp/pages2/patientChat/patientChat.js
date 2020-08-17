@@ -28,7 +28,7 @@ global.wxPage({
     status: 0,
     scrollTop: 0,
     arrive_bottom: true,
-    allHeight: 0
+    allHeight: 0,
   },
 
   /**
@@ -134,8 +134,11 @@ global.wxPage({
     util.api('/api/wxapp/im/session/pull', res => {
       // console.log(res)
       let sessionStatus = this.data.sessionStatus
-      if (res.error === 0 && res.content[0]) {
-        let newChatContent = res.content.reduce((defaultValue, item) => {
+      let {status} = res.content
+      if( status != 5 && sessionStatus == 4) status = 5
+      if (res.error === 0 && status != 4 && status != 6) {
+        if(!res.content.messages) return
+        let newChatContent = res.content.messages.reduce((defaultValue, item) => {
           defaultValue.push({
             position: 0,
             messageInfo: {
@@ -152,7 +155,7 @@ global.wxPage({
           this.pageScrollBottom()
         }
         this.getScrollHeight()
-      } else if (res.error === 140004 &&sessionStatus != 4 && sessionStatus != 6) {
+      } else {
         util.showModal('提示', '当前会话已结束', function () {
           util.redirectTo({
             url: 'pages2/doctorConsultation/doctorConsultation?tab=1'
