@@ -194,7 +194,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 if (prescriptionVo != null) {
                     prescriptionList.add(prescriptionVo);
                     goods.setPrescriptionInfo(prescriptionVo);
-                    goods.setPrescriptionCode(prescriptionVo.getPrescriptionCode());
+                    goods.setPrescriptionOldCode(prescriptionVo.getPrescriptionCode());
                     if (param.getCheckPrescriptionStatus().equals(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
                         param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
                     }
@@ -215,6 +215,10 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
 
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        //更新处方状态
+        if (OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION.equals(order.getOrderAuditType())){
+            prescriptionDao.updatePrescriprionIsUsered(param.getPrescriptionCode());
+        }
     }
 
     /**

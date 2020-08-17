@@ -449,4 +449,13 @@ public class PrescriptionDao extends ShopBaseDao {
             .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
             .fetchInto(PrescriptionDo.class);
     }
+
+    /**
+     * 更新处方为已使用状态
+     * @param prescriptionCode
+     * @return
+     */
+    public int updatePrescriprionIsUsered(String prescriptionCode) {
+      return  db().update(PRESCRIPTION).set(PRESCRIPTION.IS_USED,BaseConstant.YES).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
+    }
 }
