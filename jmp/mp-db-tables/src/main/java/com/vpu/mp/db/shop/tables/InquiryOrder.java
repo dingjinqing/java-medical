@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = -248378020;
+    private static final long serialVersionUID = 1391118023;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order</code>
@@ -63,6 +63,11 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
      * The column <code>mini_shop_471752.b2c_inquiry_order.order_id</code>. 订单id
      */
     public final TableField<InquiryOrderRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "订单id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.shop_id</code>. 店铺id
+     */
+    public final TableField<InquiryOrderRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.order_sn</code>. 订单编号

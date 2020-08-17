@@ -363,7 +363,8 @@ public class OrderGoodsService extends ShopBaseService {
             promoteInfo(null).
 			//处方信息
 			prescriptionInfo(goods.getPrescriptionInfo()).
-			prescriptionOldCode(goods.getPrescriptionCode()).
+			prescriptionOldCode(goods.getPrescriptionOldCode()).
+			prescriptionCode(goods.getPrescriptionCode()).
 			medicalAuditStatus(goods.getMedicalAuditStatus()).
 			medicalAuditType(goods.getMedicalAuditType()).
             build();

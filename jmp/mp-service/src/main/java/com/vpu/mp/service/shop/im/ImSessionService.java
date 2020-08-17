@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionPullMsgVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
@@ -269,6 +270,15 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
+     * 修改session在redis中保存的会话状态
+     * @param sessionId 会话id
+     * @param status 状态
+     */
+    private void updateSessionRedisStatusValue(Integer sessionId, Byte status) {
+        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
+        jedisManager.set(sessionRedisStatusKey,status.toString());
+    }
+    /**
      * 查询会话状态
      * @param orderSn
      * @return
@@ -318,11 +328,10 @@ public class ImSessionService extends ShopBaseService {
         }
         Byte prevStatus = imSessionDo.getSessionStatus();
         imSessionDo.setLimitTime(DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS));
-        String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), sessionId);
 
         if (ImSessionConstant.SESSION_READY_TO_START.equals(prevStatus)) {
             // 状态从1->2
-            jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_ON.toString());
+            updateSessionRedisStatusValue(sessionId,ImSessionConstant.SESSION_ON);
             imSessionDo.calculateReadyToOnAckTime();
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_ON_WEIGHT);
@@ -330,7 +339,7 @@ public class ImSessionService extends ShopBaseService {
             statisticDoctorSessionState(imSessionDo.getDoctorId());
         } else {
             // 从结束状态变为继续问诊状态 4->5
-            jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_CONTINUE_ON.toString());
+            updateSessionRedisStatusValue(sessionId,ImSessionConstant.SESSION_CONTINUE_ON);
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_CONTINUE_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_CONTINUE_ON_WEIGHT);
             imSessionDo.setContinueSessionCount(imSessionDo.getContinueSessionCount()-1);
@@ -391,6 +400,7 @@ public class ImSessionService extends ShopBaseService {
                 clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             } else {
                 sessionCloseIds.add(imSessionDo.getId());
+                updateSessionRedisStatusValue(imSessionDo.getId(),ImSessionConstant.SESSION_END);
             }
         }
         imSessionDao.batchUpdateSessionStatus(sessionDeadIds, ImSessionConstant.SESSION_DEAD,ImSessionConstant.SESSION_DEAD_WEIGHT);
@@ -415,6 +425,7 @@ public class ImSessionService extends ShopBaseService {
             imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
         } else {
             imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGTH);
+            updateSessionRedisStatusValue(sessionId, ImSessionConstant.SESSION_END);
             imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
         }
 
@@ -427,7 +438,8 @@ public class ImSessionService extends ShopBaseService {
     public Byte sendMsg(ImSessionSendMsgParam sendMsgParam) {
         Integer shopId = getShopId();
         String sessionRedisStatusKey = getSessionRedisStatusKey(shopId, sendMsgParam.getSessionId());
-        if (!jedisManager.exists(sessionRedisStatusKey)) {
+        String statusVal = jedisManager.get(sessionRedisStatusKey);
+        if (statusVal == null) {
             deleteAllSessionKey(shopId, sendMsgParam.getSessionId(), sendMsgParam.getFromId(), sendMsgParam.getToId());
             return ImSessionConstant.SESSION_CAN_NOT_USE;
         }
@@ -442,12 +454,25 @@ public class ImSessionService extends ShopBaseService {
      * 拉取对方发送的消息内
      * @return
      */
-    public List<ImSessionItemBase> pullMsg(ImSessionPullMsgParam param) {
+    public ImSessionPullMsgVo pullMsg(ImSessionPullMsgParam param) {
+        ImSessionPullMsgVo vo = new ImSessionPullMsgVo();
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), param.getSessionId());
-        if (!jedisManager.exists(sessionRedisStatusKey)) {
-            return null;
+        String statusVal = jedisManager.get(sessionRedisStatusKey);
+        if (statusVal == null) {
+            vo.setStatus(ImSessionConstant.SESSION_DEAD);
+            return vo;
         }
-        return dumpSessionReadyToBak(getShopId(), param.getSessionId(), param.getPullFromId(), param.getSelfId());
+        Byte status =Byte.valueOf(statusVal);
+        vo.setStatus(status);
+
+        // 会话已经停止就不可以拉取消息
+        if (ImSessionConstant.SESSION_END.equals(status)) {
+            return vo;
+        }
+
+        List<ImSessionItemBase> imSessionItemBases = dumpSessionReadyToBak(getShopId(), param.getSessionId(), param.getPullFromId(), param.getSelfId());
+        vo.setMessages(imSessionItemBases);
+        return vo;
     }
 
     /**

@@ -151,6 +151,7 @@
           >
             <el-input
               v-model="doctorFormInfo.consultationPrice"
+              ref='conPriceInput'
               placeholder="请填写问诊费用"
             ></el-input>
           </el-form-item>
@@ -190,7 +191,6 @@ export default {
   },
   data () {
     var validatePartId = (rule, value, callback) => {
-      console.log(value)
       if (!value.length) {
         callback(new Error('请选择医生所属科室'))
       } else {
@@ -198,7 +198,6 @@ export default {
       }
     }
     var validUrl = (rule, value, callback) => {
-      console.log(value)
       if (!value && this.urlType === 0) {
         callback(new Error('请选择医生头像'))
       } else {
@@ -358,10 +357,16 @@ export default {
       that.$refs.doctorForm.validate((valid) => {
         if (valid) {
           let params = this.doctorFormInfo
+          // 费用写成浮点型
+          if (params.consultationPrice !== '' && isNaN(Number(params.consultationPrice))) {
+            this.$message.warning({ message: '请输入正确的数字', type: 'warning' })
+            params.consultationPrice = '0.00'
+            params.consultationPrice = parseFloat(params.consultationPrice)
+            this.$refs.conPriceInput.focus()
+            return false
+          }
           // 科室需要字符串
           params.departmentIdsStr = params.departmentIdsStr.join(',')
-          // 费用写成浮点型
-          params.consultationPrice = parseFloat(params.consultationPrice)
           if (this.urlType === 1) {
             params.url = ''
           }

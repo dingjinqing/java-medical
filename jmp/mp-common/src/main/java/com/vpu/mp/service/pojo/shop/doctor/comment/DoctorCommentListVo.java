@@ -16,6 +16,7 @@ public class DoctorCommentListVo {
     private Byte stars;
     private Byte isAnonymou;
     private String commNote;
+    private Integer commNoteLength;
     private String orderSn;
     private Timestamp createTime;
 }

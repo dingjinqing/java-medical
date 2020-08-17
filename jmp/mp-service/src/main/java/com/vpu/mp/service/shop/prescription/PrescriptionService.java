@@ -27,10 +27,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -115,7 +112,7 @@ public class PrescriptionService extends ShopBaseService {
 
     /**
      * *****
-     *  获取处方关联商品
+     *  获取未失效处方关联商品
      *  1商品id 2通用名+系数 3系数
      * @param goodsId 商品id
      * @param param
@@ -255,7 +252,7 @@ public class PrescriptionService extends ShopBaseService {
      * @param fetchPrescriptionParam 处方页面入参
      * @return JsonResult
      */
-    public JsonResult pullExternalAllPrescriptionInfo(FetchPrescriptionParam fetchPrescriptionParam) {
+    public JsonResult pullExternalAllPrescriptionInfo(UserPatientOneParam fetchPrescriptionParam) {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_PRESCRIPTION_INFOS;

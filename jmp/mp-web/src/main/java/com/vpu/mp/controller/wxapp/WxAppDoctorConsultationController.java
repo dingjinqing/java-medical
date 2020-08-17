@@ -59,20 +59,15 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
     }
 
     /**
-     * 	取消关注
+     * 	添加/取消关注
      */
-    @PostMapping("/api/wxapp/user/doctor/delete")
-    public JsonResult deleteAttention(@RequestBody UserDoctorParam param) {
-        shop().doctorService.deleteUserDoctor(param);
-        return success();
-    }
-
-    /**
-     * 	添加关注
-     */
-    @PostMapping("/api/wxapp/user/doctor/add")
+    @PostMapping("/api/wxapp/user/doctor/attention/update")
     public JsonResult addAttention(@RequestBody UserDoctorParam param) {
-        shop().doctorService.insertUserDoctor(param);
+        if (DoctorConstant.ATTENTION.equals(param.getStatus())){
+            shop().doctorService.insertUserDoctor(param);
+        } else {
+            shop().doctorService.deleteUserDoctor(param);
+        }
         return success();
     }
 
@@ -89,8 +84,8 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
      * 	获取咨询医师
      */
     @PostMapping("/api/wxapp/consultation/doctor/info")
-    public JsonResult getConsultationDoctorInfo(@RequestBody DoctorDutyParam param) {
-        DoctorOneParam doctorInfo = shop().doctorService.getWxDoctorInfo(param.getDoctorId());
+    public JsonResult getConsultationDoctorInfo(@RequestBody UserDoctorParam param) {
+        DoctorOneParam doctorInfo = shop().doctorService.getWxDoctorInfo(param);
         return success(doctorInfo);
     }
 }

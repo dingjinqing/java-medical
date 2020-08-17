@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
 import static com.vpu.mp.db.shop.Tables.PATIENT;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION_ITEM;
@@ -236,11 +235,10 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public PrescriptionVo getValidByGoodsId(Integer goodsId, List<String> prescriptionNos) {
         return db().select(PRESCRIPTION.asterisk())
-                .from(PRESCRIPTION_ITEM)
-                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
+                .from(PRESCRIPTION)
+                .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_ID.eq(goodsId))
                 .and(PRESCRIPTION.PRESCRIPTION_CODE.in(prescriptionNos))
-                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
                 .fetchAnyInto(PrescriptionVo.class);
@@ -258,11 +256,10 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public PrescriptionVo getValidByCommonName( List<String> prescriptionNos, String goodsCommonName){
         return db().select(PRESCRIPTION.asterisk())
-                .from(PRESCRIPTION_ITEM)
-                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
+                .from(PRESCRIPTION)
+                .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
                 .and(PRESCRIPTION.PRESCRIPTION_CODE.in(prescriptionNos))
-                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
                 .fetchAnyInto(PrescriptionVo.class);
@@ -277,12 +274,11 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public PrescriptionVo getValidByCommonNameAndQualityRatio( List<String> prescriptionNos , String goodsCommonName, String goodsQualityRatio) {
         return db().select(PRESCRIPTION.asterisk())
-                .from(PRESCRIPTION_ITEM)
-                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
+                .from(PRESCRIPTION)
+                .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
                 .and(PRESCRIPTION.PRESCRIPTION_CODE.in(prescriptionNos))
                 .and(PRESCRIPTION_ITEM.GOODS_QUALITY_RATIO.eq(goodsQualityRatio))
-                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
                 .fetchAnyInto(PrescriptionVo.class);
@@ -296,13 +292,12 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public PrescriptionVo getValidByCommonNameAndQualityRatio(List<String> prescriptionNos,String goodsCommonName, String goodsQualityRatio,String productionEnterprise) {
         return db().select(PRESCRIPTION.asterisk())
-                .from(PRESCRIPTION_ITEM)
-                .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
-                .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.eq(productionEnterprise))
+                .from(PRESCRIPTION)
+                .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
                 .and(PRESCRIPTION.PRESCRIPTION_CODE.in(prescriptionNos))
+                .and(PRESCRIPTION_ITEM.GOODS_PRODUCTION_ENTERPRISE.eq(productionEnterprise))
                 .and(PRESCRIPTION_ITEM.GOODS_QUALITY_RATIO.eq(goodsQualityRatio))
-                .and(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.gt(DateUtil.date().toTimestamp()))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
                 .fetchAnyInto(PrescriptionVo.class);
@@ -311,7 +306,7 @@ public class PrescriptionDao extends ShopBaseDao {
 
     /**
      * *****
-     * 患者未过期的历史处方no(所有)
+     * 患者失效的历史处方no(所有)
      * @param patientId
      * @return
      */
@@ -325,7 +320,7 @@ public class PrescriptionDao extends ShopBaseDao {
 
     /**
      * *****
-     * 患者未过期的历史处方no（仅用户自己）
+     * 患者失效的历史处方no（仅用户自己）
      * @param param
      * @return
      */
@@ -453,5 +448,14 @@ public class PrescriptionDao extends ShopBaseDao {
             .where(PRESCRIPTION.PRESCRIPTION_EXPIRE_TIME.lt(DateUtil.date().toTimestamp()))
             .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
             .fetchInto(PrescriptionDo.class);
+    }
+
+    /**
+     * 更新处方为已使用状态
+     * @param prescriptionCode
+     * @return
+     */
+    public int updatePrescriprionIsUsered(String prescriptionCode) {
+      return  db().update(PRESCRIPTION).set(PRESCRIPTION.IS_USED,BaseConstant.YES).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
     }
 }

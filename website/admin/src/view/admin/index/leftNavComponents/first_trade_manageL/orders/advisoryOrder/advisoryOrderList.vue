@@ -113,7 +113,11 @@
         <el-table-column label='操作'>
           <template slot-scope="scope">
             <div class="operation">
-              <a href="javaScript:void(0);">退款</a>
+              <a
+                v-if="scope.row.orderAmount - scope.row.refundMoney > 0"
+                href="javaScript:void(0);"
+                @click="returnOrder(scope.row)"
+              >退款</a>
               <a
                 href="javaScript:void(0);"
                 @click='toDetail(scope.row.orderId)'
@@ -122,18 +126,28 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination :page-params.sync="pageParams" @pagination="initDataList"/>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
     </div>
+    <ManualRefund
+      :dataInfo="refundInfo"
+      :show.sync="showRefund"
+      @complete="initDataList"
+    />
   </div>
 </template>
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
+import ManualRefund from './returnAdvisoryDialog'
 import { getBelongParts } from '@/api/admin/doctorManage/doctorInfo/doctor'
 import { advisoryOrderList } from '@/api/admin/orderManage/order.js'
 export default {
   components: {
-    pagination
+    pagination,
+    ManualRefund
   },
   mounted () {
     this.initDoctorPart()
@@ -176,12 +190,14 @@ export default {
           id: 5,
           text: '已取消'
         }
-      ]
+      ],
+      showRefund: false,
+      refundInfo: null
     }
   },
   methods: {
     toDetail (id) {
-      const {href} = this.$router.resolve({
+      const { href } = this.$router.resolve({
         path: '/admin/home/main/orders/advisoryOrder/info',
         query: {
           orderId: id
@@ -225,7 +241,15 @@ export default {
           return '已退款'
         case 5:
           return '已取消'
+        case 6:
+          return '待退款'
+        case 7:
+          return '部分退款'
       }
+    },
+    returnOrder ({ refundMoney, orderAmount, orderSn }) {
+      this.refundInfo = { orderAmount, refundMoney, orderSn }
+      this.showRefund = true
     }
   }
 }

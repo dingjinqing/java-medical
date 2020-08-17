@@ -11,6 +11,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorDutyRecordDo;
+import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.UserDao;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
@@ -510,15 +512,17 @@ public class DoctorService extends ShopBaseService {
 
     /**
      * 咨询医师详情
-     * @param doctorId
+     * @param param
      * @return
      */
-    public DoctorOneParam getWxDoctorInfo(Integer doctorId){
-        DoctorOneParam doctorInfo = getOneInfo(doctorId);
+    public DoctorOneParam getWxDoctorInfo(UserDoctorParam param){
+        DoctorOneParam doctorInfo = getOneInfo(param.getDoctorId());
         setDoctorDepartmentTitle(doctorInfo);
-        DoctorCommentListParam doctorCommentListParam = new DoctorCommentListParam();
-        doctorCommentListParam.setDoctorId(doctorId);
-        doctorInfo.setCommentList(doctorCommentService.listDoctorComment(doctorCommentListParam));
+        doctorInfo.setIsAttention(userDoctorAttentionDao.isAttention(param));
+        doctorInfo.setHospitalName(HOSPITAL_NAME);
+//        DoctorCommentListParam doctorCommentListParam = new DoctorCommentListParam();
+//        doctorCommentListParam.setDoctorId(param.getDoctorId());
+//        doctorInfo.setCommentList(doctorCommentService.listDoctorComment(doctorCommentListParam));
         return doctorInfo;
     }
 
@@ -535,4 +539,29 @@ public class DoctorService extends ShopBaseService {
         String titleName = titleService.getTitleName(param.getTitleId());
         param.setTitleName(titleName);
     }
+
+    /**
+     * 医师解绑
+     * @param doctorUnbundlingParam doctorId
+     */
+    public void doctorUnbundling(DoctorUnbundlingParam doctorUnbundlingParam) {
+        DoctorOneParam oneInfo = doctorDao.getOneInfo(doctorUnbundlingParam.getDoctorId());
+        this.transaction(() -> {
+            // 修改数据库表中信息
+            userDao.unbundlingUserType(oneInfo.getUserId());
+            doctorDao.unbundlingDoctorAuth(doctorUnbundlingParam.getDoctorId());
+            this.deleteUserToken(doctorUnbundlingParam.getDoctorId());
+            doctorDao.unbundlingDoctorToken(doctorUnbundlingParam.getDoctorId());
+        });
+        // 删除医师token，让用户重新登录
+    }
+
+    /**
+     * admin医师是否接诊
+     * @param doctorUnbundlingParam doctorId
+     */
+    public void doctorCanConsultation(DoctorUnbundlingParam doctorUnbundlingParam) {
+        doctorDao.canConsultation(doctorUnbundlingParam.getDoctorId());
+    }
+
 }

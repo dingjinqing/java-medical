@@ -27,6 +27,7 @@ public class WxAppDoctorAuditController extends WxAppBaseController{
 
     @Autowired
     private PrescriptionService prescriptionService;
+    @Autowired
     private DoctorService doctorService;
 
     /**

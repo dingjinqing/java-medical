@@ -13,13 +13,13 @@
             <view class="doctor-desc">
               <text class="doctor-name">{{item.patientName}}</text>
               <!-- <text class="office" wx:if="{{targetStatus === '1'}}">{{item.departmentName}}</text> -->
-              <text class="status {{item.sessionStatus === 2 ? 'ongoing' : 'end'}}" wx:if="{{targetStatus === '2'}}">{{item.sessionStatus === 2 ? '已接诊':'问诊结束'}}</text>
+              <text class="status {{item.sessionStatus === 2 || item.sessionStatus === 5 ? 'ongoing' : 'end'}}" wx:if="{{targetStatus === '2'}}">{{item.sessionStatus === 2 || item.sessionStatus === 5 ?  '已接诊':'问诊结束'}}</text>
             </view>
             <text class="date">{{item.createTime}}</text>
           </view>
           <view class="button-content">
             <text class="pass" data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" wx:if="{{targetStatus === '1' || (targetStatus === '2' && item.sessionStatus === 4)}}" catchtap="accept">{{targetStatus === '1' ? '接诊' : '继续问诊'}}</text>
-            <text class="reject"  data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" catchtap="returnOrder" wx:if="{{targetStatus === '2' && item.sessionStatus === 2}}">退款</text>
+            <text class="reject"  data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" catchtap="returnOrder" wx:if="{{targetStatus === '2' && (item.sessionStatus === 2 || item.sessionStatus === 5)}}">退款</text>
           </view>
         </view>
       </block>

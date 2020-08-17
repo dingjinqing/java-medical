@@ -65,14 +65,21 @@ public class InquiryOrderTaskService extends ShopBaseService {
         List<InquiryOrderDo> orderList = inquiryOrderService.getCanceledToWaitingCloseOrder();
         orderList.forEach(order -> {
             if(order.getOrderAmount().compareTo(BigDecimal.ZERO)<=0){
+                order.setOrderStatus(InquiryOrderConstant.ORDER_CANCELED);
+                order.setCancelledTime(DateUtils.getLocalDateTime());
+                inquiryOrderDao.update(order);
+                List<String> orderSns=new ArrayList<>();
+                orderSns.add(order.getOrderSn());
+                imSessionService.batchCancelSession(orderSns);
+                logger().info("问诊订单自动任务,待接诊0元订单取消,orderSn:{}", order.getOrderSn());
                 return;
             }
             try {
                 refundExecute(order);
-                logger().info("问诊订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
+                logger().info("问诊订单自动任务,待接诊订单退款成功,orderSn:{}", order.getOrderSn());
             } catch (MpException e) {
                 e.printStackTrace();
-                logger().error("问诊订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage());
+                logger().error("问诊订单自动任务,待接诊订单退款失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage());
             }
         });
     }
@@ -84,7 +91,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
      * @return
      */
     public void refundExecute(InquiryOrderDo order) throws MpException {
-        inquiryOrderService.refundInquiryOrder(order,order.getRefundMoney(),"");
+        inquiryOrderService.refundInquiryOrder(order,order.getRefundMoney(),InquiryOrderConstant.REFUND_REASON_OVERTIME);
     }
 
     /**

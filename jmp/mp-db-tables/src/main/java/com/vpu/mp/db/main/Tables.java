@@ -451,4 +451,14 @@ public class Tables {
      * 外部接口请求记录表
      */
     public static final ExternalRequestHistory EXTERNAL_REQUEST_HISTORY = com.vpu.mp.db.main.tables.ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY;
+    /**
+     * 问诊订单表
+     */
+    public static final InquiryOrder INQUIRY_ORDER = com.vpu.mp.db.main.tables.InquiryOrder.INQUIRY_ORDER;
+    /**
+     * 店铺短信配置表
+     */
+    public static final ShopSmsConfig SHOP_SMS_CONFIG = com.vpu.mp.db.main.tables.ShopSmsConfig.SHOP_SMS_CONFIG;
+
+
 }

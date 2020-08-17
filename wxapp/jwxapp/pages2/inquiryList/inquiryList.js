@@ -50,7 +50,6 @@ global.wxPage({
           })
         }
         this.setData({
-          targetStatus:this.data.filterParams.sessionStatus.includes(2||4) ? '2' : '1',
           pageParams:res.content.page
         })
       }
@@ -85,11 +84,11 @@ global.wxPage({
           })
         } else {
           this.setData({
-            [`dataList[${parentIndex}][${targetIndex}].sessionStatus`]:2
+            [`dataList[${parentIndex}][${targetIndex}].sessionStatus`]:5
           })
         }
         util.jumpLink(`pages2/doctorChat/doctorChat${util.getUrlParams({
-          targetUserInfo:JSON.stringify({...{...target,sessionStatus:2},parentIndex}),
+          targetUserInfo:JSON.stringify({...{...target,sessionStatus:target.sessionStatus === 1 ? 2 : 5},parentIndex}),
           source:'inquiryList'
         })}`)
       }
@@ -122,7 +121,7 @@ global.wxPage({
     let {parentIndex,sessionId} = e.currentTarget.dataset
     let targetIndex = this.data.dataList[parentIndex].findIndex(item=>item.id === sessionId)
     let target = this.data.dataList[parentIndex][targetIndex]
-    if(![2,4].includes(target.sessionStatus)) return
+    if(![2,4,5,6].includes(target.sessionStatus)) return
     util.jumpLink(`pages2/doctorChat/doctorChat${util.getUrlParams({
       targetUserInfo:JSON.stringify({...target,parentIndex}),
       source:'inquiryList'
@@ -181,7 +180,6 @@ global.wxPage({
     });
     this.requestSessionList();
   },
-
   /**
    * 用户点击右上角分享
    */

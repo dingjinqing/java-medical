@@ -160,18 +160,32 @@ global.wxPage({
       show_work_modal: 1
     })
   },
+  changeStatus(status){
+    util.api('/api/wxapp/doctor/on/duty/update', res => {
+      if(res.error == 0){
+        this.setData({
+          work_status: status
+        })
+      }else{
+        util.showModal('提示',res.message)
+        return false
+      }
+    },{
+      doctorId: util.getCache('doctor_id'),
+      onDutyStatus: status
+    })
+  },
   bindChangeWork (e) {
     let to_status = e.currentTarget.dataset.type;
-    if(to_status == 'stop'){
-      this.setData({
-        show_work_modal:0,
-        work_status: 0
-      })
+    let that = this;
+    if(to_status == 1){
+      util.showModal('提示', '暂停接诊24小时后将重新开始接诊，确定暂停吗？',function(){
+        that.changeStatus(0)
+      },true,'取消','确认')
     }else{
-      this.setData({
-        show_work_modal:0,
-        work_status: 1
-      })
+      util.showModal('提示', '确定开始接诊吗？',function(){
+        that.changeStatus(1)
+      },true,'取消','确认')
     }
   },
   /**

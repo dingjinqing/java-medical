@@ -9,7 +9,7 @@
         <view class="doc_hos">{{doctorInfo.registerHospital}} {{doctorInfo.departArr}}</view>
         <view class="doc_depart">擅长：{{doctorInfo.treatDisease}}</view>
       </view>
-      <view class="if_work {{work_status == 1 ? 'stop_work':'begin_work'}}" bindtap="showChangeModal">{{work_status == 1 ? '暂停接诊':'开始接诊'}}</view>
+      <view class="if_work {{work_status == 1 ? 'stop_work':'begin_work'}}" bindtap="bindChangeWork" data-type='{{work_status}}'>{{work_status == 1 ? '暂停接诊':'开始接诊'}}</view>
     </view>
   </view>
   <view class="list">

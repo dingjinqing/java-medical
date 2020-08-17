@@ -124,6 +124,10 @@ public class OrderGoodsBo {
 	 */
 	private String prescriptionOldCode;
 	/**
+	 * 处方号
+	 */
+	private String prescriptionCode;
+	/**
 	 * 订单审核类型 0不审核 1审核 2开方 3有效处方
 	 */
 	private Byte medicalAuditType;

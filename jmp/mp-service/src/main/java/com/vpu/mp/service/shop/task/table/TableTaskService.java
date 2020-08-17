@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.task.table;
 
 import com.google.common.collect.Sets;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.db.main.Tables;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -29,6 +31,9 @@ public class TableTaskService extends ShopBaseService {
 
 	@Autowired
     private OrderInfoService orderInfoService;
+	@Autowired
+    private InquiryOrderDao inquiryOrderDao;
+
 
 	private static com.vpu.mp.db.shop.Tables SHOP_TABLES;
 
@@ -70,4 +75,21 @@ public class TableTaskService extends ShopBaseService {
         saas().orderService.updateOldData(newRecords);
     }
 
+    /**
+     * 同步问诊订单
+     */
+    public void inquiryOrderSynchronize(Integer shopId){
+        log.info("【同步任务】---问诊订单数据同步到主库shopId:{}",shopId);
+        //新增
+        List<InquiryOrderDo> newInquiryOrderDoList= inquiryOrderDao.getListByCreateTime(DateUtils.getTimestampForStartTime(-1),DateUtils.getTimestampForEndTime(-1));
+        saas().mainInquiryOrderService.inquiryOrderSynchronizeInsert(newInquiryOrderDoList);
+
+        //更新
+        List<InquiryOrderDo> inquiryOrderDoList= inquiryOrderDao.getListByUpdateTime(DateUtils.getTimestampForStartTime(-1),DateUtils.getTimestampForEndTime(-1));
+        saas().mainInquiryOrderService.inquiryOrderSynchronizeUpdate(inquiryOrderDoList,shopId);
+
+
+
+
+	}
 }

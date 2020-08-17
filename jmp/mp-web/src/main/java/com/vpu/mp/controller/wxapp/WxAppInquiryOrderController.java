@@ -45,7 +45,7 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
     @PostMapping("/api/wxapp/inquiry/order/refund")
     public JsonResult refund(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
         try {
-             shop().inquiryOrderService.refund(inquiryOrderOnParam);
+             shop().inquiryOrderService.doctorRefund(inquiryOrderOnParam);
         } catch (MpException e) {
             fail(e.getErrorCode());
         }

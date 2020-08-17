@@ -54,5 +54,8 @@ public class DoctorConstant {
      * 禁用
      */
     public static final Byte DISABLE = 0;
-
+    /**
+     * 关注
+     */
+    public static final Byte ATTENTION = 1;
 }

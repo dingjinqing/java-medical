@@ -2,6 +2,7 @@ package com.vpu.mp.dao.shop.doctor;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.DoctorCommentDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorCommentRecord;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentAddParam;
@@ -32,6 +33,26 @@ public class DoctorCommentDao extends ShopBaseDao {
     public Integer save(DoctorCommentAddParam param) {
         DoctorCommentRecord record = db().newRecord(DOCTOR_COMMENT, param);
         return record.insert();
+    }
+
+    /**
+     * 更新
+     * @param commentDo
+     */
+    public void  update(DoctorCommentDo commentDo){
+        DoctorCommentRecord record = db().newRecord(DOCTOR_COMMENT, commentDo);
+        record.update();
+    }
+
+    /**
+     * 医师评价
+     * @param imSessionId
+     * @return
+     */
+    public DoctorCommentDo getByImSessionId(Integer imSessionId){
+      return  db().selectFrom(DOCTOR_COMMENT)
+                .where(DOCTOR_COMMENT.IM_SESSION_ID.eq(imSessionId))
+                .fetchAnyInto(DoctorCommentDo.class);
     }
 
     /**

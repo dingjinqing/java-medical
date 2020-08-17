@@ -6,14 +6,9 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.patient.PatientAddParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.shop.patient.PatientService;
+import com.vpu.mp.service.shop.prescription.FetchPrescriptionService;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.*;
+
 /**
  * @author chenjie
  */
@@ -32,6 +29,12 @@ import java.util.List;
 public class WxAppPatientController extends WxAppBaseController {
     @Autowired
     private SmsAccountService smsAccountService;
+
+    @Autowired
+    private FetchPrescriptionService fetchPrescriptionService;
+
+    @Autowired
+    private PatientService patientService;
 
     /**
      * 	获取用户的患者列表
@@ -50,16 +53,55 @@ public class WxAppPatientController extends WxAppBaseController {
         shop().patientService.setDefaultPatient(userPatient);
         return success();
     }
+
     /**
      * 	拉取患者信息
      */
     @PostMapping("/api/wxapp/user/patient/get/info")
-    public JsonResult getPatientInfo(@RequestBody @Validated UserPatientOneParam userPatientOneParam){
-        JsonResult result= shop().patientService.getExternalPatientInfo(userPatientOneParam);
-        if (result==null){
+    public JsonResult getPatientInfo(@RequestBody @Validated UserPatientOneParam userPatientOneParam) {
+        // 校验验证码
+        boolean b = fetchPrescriptionService.checkMobileCode(userPatientOneParam);
+        if (!b) {
             return fail(JsonResultCode.PATIENT_MOBILE_CHECK_CODE_ERROR);
         }
-        return result;
+        // 拉取患者信息
+        Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
+        if (FETCH_HITS_NO_PATIENT.equals(info)) {
+            return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
+        }
+        return success();
+    }
+
+    /**
+     * 刷新患者信息
+     * @param userPatientWithoutCheckCodeParam 患者信息
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/user/patient/fetch/info")
+    public JsonResult getPatientWithoutCheckCode(@RequestBody @Validated UserPatientWithoutCheckCodeParam userPatientWithoutCheckCodeParam) {
+        boolean fetchPatient = fetchPrescriptionService.isFetchPatient(userPatientWithoutCheckCodeParam);
+        // 如果没拉取过提示跳转至输入验证码界面
+        if (fetchPatient) {
+            return fail(JsonResultCode.TO_FETCH_PATIENT);
+        } else { // 如果拉取过
+            UserPatientOneParam userPatientOneParam = new UserPatientOneParam();
+            FieldsUtil.assign(userPatientWithoutCheckCodeParam, userPatientOneParam);
+            Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
+            if (FETCH_HITS_NO_PATIENT.equals(info)) {
+                return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
+            }
+            return success();
+        }
+    }
+
+    /**
+     * 根据姓名手机号获取身份证号
+     * @param userPatientFetchParam 用户信息入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/user/patient/get/id")
+    public JsonResult getPatientByNameAndMobile(@RequestBody UserPatientFetchParam userPatientFetchParam) {
+        return success(fetchPrescriptionService.getPatientName(userPatientFetchParam));
     }
 
     /**

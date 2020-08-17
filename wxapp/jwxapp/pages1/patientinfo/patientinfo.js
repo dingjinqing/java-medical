@@ -315,6 +315,7 @@ global.wxPage({
         has_dis_his: 0
       })
       this.data.diseaseHistory = []
+      this.data.disText = ''
     }else{
       this.setData({
         has_dis_his: 1
@@ -359,7 +360,8 @@ global.wxPage({
       this.setData({
         has_fam_his: 0
       })
-      this.data.familyDiseaseHistory = []
+      this.data.familyDiseaseHistory = [];
+      this.data.familyText = ''
     }else{
       this.setData({
         has_fam_his: 1
@@ -375,7 +377,7 @@ global.wxPage({
     } else {
       this.data.patient_info.familyDiseaseHistoryList[this_target.index].checked = 0;
       this.data.familyDiseaseHistory.splice(this.data.diseaseHistory.indexOf(this.data.patient_info.familyDiseaseHistoryList[this_target.index].id), 1)
-      this.data.familyText.splice(this.data.disText.indexOf(this.data.patient_info.familyDiseaseHistoryList[this_target.index].name), 1)
+      this.data.familyText.splice(this.data.familyText.indexOf(this.data.patient_info.familyDiseaseHistoryList[this_target.index].name), 1)
     }
     console.log(this.data.familyText)
     this.setData({

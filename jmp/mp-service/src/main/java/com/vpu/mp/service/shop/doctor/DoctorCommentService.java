@@ -1,6 +1,9 @@
 package com.vpu.mp.service.shop.doctor;
 
+import cn.hutool.core.date.DateUtil;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.DoctorCommentDo;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
@@ -36,10 +39,39 @@ public class DoctorCommentService extends ShopBaseService {
      */
     public void addComment(DoctorCommentAddParam param) {
         //保存
+        DoctorCommentDo doctorCommentDo = doctorCommentDao.getByImSessionId(param.getImSessionId());
+        if (doctorCommentDo!=null){
+            doctorCommentDo.setCreateTime(DateUtil.date().toTimestamp());
+            doctorCommentDao.update(doctorCommentDo);
+            //更新会话
+            imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
+        }else {
+            param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_NOT_CHECK);
+            doctorCommentDao.save(param);
+        }
+        //更新医师评价
+        BigDecimal avgCommentStar = doctorCommentDao.getAvgCommentStar(param.getDoctorId());
+        DoctorSortParam param1 =new DoctorSortParam();
+        param1.setAvgCommentStar(avgCommentStar);
+        param1.setDoctorId(param.getDoctorId());
+        doctorService.updateAvgCommentStar(param1);
+    }
+
+    /**
+     * 添加评价
+     */
+    public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId) {
+        //保存
+        DoctorCommentAddParam param =new DoctorCommentAddParam();
         param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_NOT_CHECK);
+        param.setDoctorId(doctorId);
+        param.setUserId(userId);
+        param.setPatientId(patientId);
+        param.setIsAnonymou(BaseConstant.YES);
+        param.setOrderSn(orderSn);
+        param.setCommNote(DoctorCommentConstant.DOCTOR_DEFAULT_COMMENT);
+        param.setImSessionId(imSessionId);
         doctorCommentDao.save(param);
-        //更新会话
-        imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
         //更新医师评价
         BigDecimal avgCommentStar = doctorCommentDao.getAvgCommentStar(param.getDoctorId());
         DoctorSortParam param1 =new DoctorSortParam();
@@ -54,6 +86,11 @@ public class DoctorCommentService extends ShopBaseService {
      * @return
      */
     public PageResult<DoctorCommentListVo> listDoctorComment(DoctorCommentListParam param) {
-        return doctorCommentDao.listDoctorComment(param);
+        PageResult<DoctorCommentListVo> pageResult = doctorCommentDao.listDoctorComment(param);
+        pageResult.getDataList().forEach(page->{
+            page.setCommNoteLength(page.getCommNote().length());
+        });
+
+        return pageResult;
     }
 }

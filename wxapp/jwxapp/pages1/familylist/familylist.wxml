@@ -10,7 +10,7 @@
             <view>{{item.name}}</view>
             <view>{{item.mobile}}</view>
           </view>
-          <image src="{{imageUrl}}image/wxapp/icon_refresh_patient.png" class="ef_top_img"></image>
+          <image src="{{imageUrl}}image/wxapp/icon_refresh_patient.png" class="ef_top_img" catchtap="freshPatient" data-identityCode='{{item.identityCode}}'></image>
         </view>
         <view class="ef_bottom">
           <view class="ef_bott_left">

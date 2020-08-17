@@ -10,4 +10,8 @@ import lombok.Data;
 public class UserDoctorParam {
     private Integer userId;
     private Integer doctorId;
+    /**
+     * 取消/关注
+     */
+    private Byte status;
 }

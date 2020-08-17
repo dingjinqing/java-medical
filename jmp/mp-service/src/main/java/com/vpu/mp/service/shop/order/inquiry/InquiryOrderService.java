@@ -236,10 +236,12 @@ public class InquiryOrderService extends ShopBaseService {
         if(StringUtils.isNotBlank(payParam.getOrderSn())){
             return payParam.getOrderSn();
         }
+        Integer shopId=getShopId();
         String orderSn = IncrSequenceUtil.generateOrderSn(InquiryOrderConstant.INQUIRY_ORDER_SN_PREFIX);
         PatientOneParam patientOneParam=patientService.getOneInfo(payParam.getPatientId());
         DoctorOneParam doctor = doctorService.getOneInfo(payParam.getDoctorId());
         inquiryOrderDo.setOrderSn(orderSn);
+        inquiryOrderDo.setShopId(shopId);
         inquiryOrderDo.setOrderAmount(payParam.getOrderAmount());
         inquiryOrderDo.setUserId(payParam.getUser().getUserId());
         inquiryOrderDo.setPatientId(payParam.getPatientId());
@@ -263,13 +265,24 @@ public class InquiryOrderService extends ShopBaseService {
     }
 
     /**
-     * 退款
+     * 退款调用,可多次退
      * @param inquiryOrderOnParam
      * @return
      */
     public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
+    }
+
+    /**
+     * 医师退款调用
+     * @param inquiryOrderOnParam
+     * @throws MpException
+     */
+    public void doctorRefund(InquiryOrderOnParam inquiryOrderOnParam)throws MpException{
+        InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
+        refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),InquiryOrderConstant.REFUND_REASON_DOCTOR);
+
     }
 
     /**
@@ -316,9 +329,8 @@ public class InquiryOrderService extends ShopBaseService {
             order.setOrderStatus(InquiryOrderConstant.ORDER_PART_REFUND);
 
         }
-        order.setUpdateTime(DateUtils.getLocalDateTime());
         inquiryOrderDao.update(order);
-        //取消未接诊过期的会话
+        //取消会话
         List<String> orderSnList=new ArrayList<>();
         orderSnList.add(order.getOrderSn());
         imSessionService.batchCancelSession(orderSnList);
@@ -335,11 +347,6 @@ public class InquiryOrderService extends ShopBaseService {
     public PageResult<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
         beginAndEndOfDay(param);
         PageResult<InquiryOrderStatisticsVo> result=inquiryOrderDao.orderStatisticsPage(param);
-        List<InquiryOrderStatisticsVo> list=result.getDataList();
-        list.forEach(orderStatisticsVo->{
-            DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
-            orderStatisticsVo.setDoctorName(doctor.getName());
-        });
         return result;
     }
 
@@ -352,10 +359,6 @@ public class InquiryOrderService extends ShopBaseService {
     public Workbook orderStatisticsExport(InquiryOrderStatisticsParam param, String lang){
         beginAndEndOfDay(param);
         List<InquiryOrderStatisticsVo> list=inquiryOrderDao.orderStatistics(param);
-        list.forEach(orderStatisticsVo->{
-            DoctorOneParam doctor=doctorService.getOneInfo(orderStatisticsVo.getDoctorId());
-            orderStatisticsVo.setDoctorName(doctor.getName());
-        });
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);

@@ -460,6 +460,10 @@ public class MiniMain extends SchemaImpl {
     public final TaskJobMain TASK_JOB_MAIN = com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
     public final TaskJobContent TASK_JOB_CONTENT = com.vpu.mp.db.main.tables.TaskJobContent.TASK_JOB_CONTENT;
     /**
+     * 店铺短信配置表
+     */
+    public final ShopSmsConfig SHOP_SMS_CONFIG = com.vpu.mp.db.main.tables.ShopSmsConfig.SHOP_SMS_CONFIG;
+    /**
      * No further instances allowed
      */
     private MiniMain() {
@@ -570,6 +574,8 @@ public class MiniMain extends SchemaImpl {
             TaskJobMain.TASK_JOB_MAIN,
             CronDefine.CRON_DEFINE,
             CronRecord.CRON_RECORD,
-            OrderInfoNew.ORDER_INFO_NEW);
+            OrderInfoNew.ORDER_INFO_NEW,
+            InquiryOrder.INQUIRY_ORDER,
+            ShopSmsConfig.SHOP_SMS_CONFIG);
     }
 }

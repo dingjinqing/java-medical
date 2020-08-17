@@ -37,6 +37,7 @@ public class WxAppDoctorCommentController extends WxAppBaseController {
     @PostMapping("/api/wxapp/patient/doctor/comment/add")
     public JsonResult addComment(@RequestBody @Validated DoctorCommentAddParam param){
         param.setUserId(wxAppAuth.user().getUserId());
+        param.setUserName(wxAppAuth.user().getUsername());
         doctorCommentService.addComment(param);
         return success();
     }

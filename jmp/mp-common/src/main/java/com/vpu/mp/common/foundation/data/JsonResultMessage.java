@@ -1368,7 +1368,8 @@ public class JsonResultMessage {
     public static final String DOCTOR_LOGIN_AUTH_ALREADY_LOGIN="医师信息已被认证";
 
     public static final String FETCH_HITS_ERROR = "拉取信息时错误";
+    public static final String FETCH_HITS_NO_PATIENT = "无此患者信息";
     public static final String FETCH_HITS_NULL = "暂无信息";
-
+    public static final String TO_FETCH_PATIENT = "请跳转至输入验证码拉取信息界面";
 
 }

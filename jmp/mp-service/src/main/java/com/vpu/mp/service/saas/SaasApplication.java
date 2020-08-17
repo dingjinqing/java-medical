@@ -15,6 +15,7 @@ import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.saas.index.ShopViewOrderService;
 import com.vpu.mp.service.saas.index.ShopViewService;
 import com.vpu.mp.service.saas.official.OfficialService;
+import com.vpu.mp.service.saas.order.MainInquiryOrderService;
 import com.vpu.mp.service.saas.order.OrderService;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
@@ -125,6 +126,8 @@ public class SaasApplication {
 
     @Autowired
     public ApiExternalRequestService apiExternalRequestService;
+    @Autowired
+    public MainInquiryOrderService mainInquiryOrderService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);

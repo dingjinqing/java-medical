@@ -5,6 +5,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.UserDoctorAttentionRecord;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorDutyParam;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
+import org.jooq.Condition;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -59,5 +60,16 @@ public class UserDoctorAttentionDao extends ShopBaseDao {
         return db().selectCount().from(USER_DOCTOR_ATTENTION)
             .where(USER_DOCTOR_ATTENTION.DOCTOR_ID.eq(doctorId))
             .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 用户是否关注患者
+     * @param param
+     * @return
+     */
+    public Boolean isAttention(UserDoctorParam param) {
+        Condition condition = USER_DOCTOR_ATTENTION.USER_ID.eq(param.getUserId()).and(USER_DOCTOR_ATTENTION.DOCTOR_ID.eq(param.getDoctorId())).and(USER_DOCTOR_ATTENTION.IS_DELETE.eq((byte) 0));
+        int count = db().fetchCount(USER_DOCTOR_ATTENTION, condition);
+        return count>0;
     }
 }

@@ -156,14 +156,7 @@
         <text class="goods-tag" wx:if="{{goodsItem.isGift}}" style="color:{{comColor}};border-color:{{comColor}}">赠品</text>
         <text class="goods-tag" wx:elif="{{isAward}}" style="color:{{comColor}};border-color:{{comColor}}">奖品</text>
         {{goodsItem.goodsName}}</view>
-        <view class="goods_spec"><text>{{goodsItem.goodsAttr}}</text><share-button
-					 wx:if="{{orderInfo.showMall}}"
-					 btn-class="share-button"
-					 product="{{goodsItem.shareButtonData}}"
-					 bind:error="on_error"
-					 type="3"
-					>推荐好物
-					</share-button></view>
+        <view class="goods_spec"><text>{{goodsItem.goodsAttr}}</text></view>
         <view class="goods_price_num">
           <view class="goods_price" style="color:{{comColor}}" wx:if="{{!filter.includes(orderInfo.orderType,4)}}">
             ￥{{goodsItem.goodsPrice}}
@@ -286,7 +279,7 @@
       </view>
     </view>
 
-    <view class="prescription-item" bindtap="handleShowDialog" data-prescription-code="{{item.prescriptionCode}}" wx:if="{{orderInfo.prescriptionList.length}}" wx:for="{{orderInfo.prescriptionList}}">
+    <view class="prescription-item" bindtap="handleShowDialog" data-prescription-code="{{item.prescriptionCode}}" wx:if="{{orderInfo.prescriptionList.length}}" wx:for="{{orderInfo.prescriptionList}}" wx:key="prescriptionCode">
 			<view class="item-title" style="background: #DBEFEE url({{imageUrl}}image/wxapp/order-prescription-bg.png) no-repeat left top/100% 80rpx;">电子处方</view>
 			<view class="item-list-content">
 				<view class="item-list">

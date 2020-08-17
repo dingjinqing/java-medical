@@ -105,10 +105,10 @@ global.wxPage({
       'params.roomId':roomId,
       'params.memberCardNo':memberCardNo,
       'params.prescriptionCode':prescriptionCode,
+      'params.isPrescription':Number(isPrescription),
       preSaleInfo,
       inviteId,
-      isPrescription,
-      prescriptionCode
+      isPrescription:Number(isPrescription)
     })
     if (options.groupid) {
       this.setData({
@@ -739,6 +739,10 @@ global.wxPage({
       if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
       if (this.data.inviteId) addParams.inviteId = Number(this.data.inviteId)
       if (this.data.orderInfo.patientInfo && this.data.orderInfo.patientInfo.patientId) addParams.patientId = Number(this.data.orderInfo.patientInfo.patientId)
+      if (this.data.isPrescription && this.data.orderInfo.prescriptionList.length){
+        addParams.isPrescription = 1
+        addParams.prescriptionCode = this.data.orderInfo.prescriptionList[0].prescriptionCode
+      }
       if (this.data.patientDiagnose) addParams.patientDiagnose = this.data.patientDiagnose
       let params = {
         goods,

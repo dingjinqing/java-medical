@@ -5,7 +5,17 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import org.springframework.web.bind.annotation.*;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorUnbundlingParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 /**
@@ -13,10 +23,8 @@ import java.util.List;
  */
 @RestController
 public class AdminDoctorController extends AdminBaseController {
-//    @Override
-//    protected ShopApplication shop() {
-//        return saas.getShopApp(471752);
-//    }
+    @Autowired
+    private PrescriptionService prescriptionService;
     /**
      * 医师列表
      * @param param
@@ -81,22 +89,16 @@ public class AdminDoctorController extends AdminBaseController {
     }
 
     /**
-     *  医生停用启用
+     * 医生停用启用
+     *
      * @param param {@link DoctorOneParam}
      */
     @PostMapping("/api/admin/doctors/enable")
     public JsonResult enableDoctor(@RequestBody DoctorOneParam param) {
-        if (param.getId()==null) {
+        if (param.getId() == null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
-
-//        boolean isExist = shop().departmentService.isNameExist(null,param.getName());
-//        if (isExist) {
-//            return fail(JsonResultCode.DOCTOR_DEPARTMENT_NAME_EXIST);
-//        }
-
         shop().doctorService.enableDoctor(param);
-
         return success();
     }
 
@@ -117,5 +119,36 @@ public class AdminDoctorController extends AdminBaseController {
     public JsonResult doctorSelectList(@RequestBody DoctorListParam param) {
         List<DoctorOneParam> doctorList = shop().doctorService.getSelectDoctorList(param);
         return this.success(doctorList);
+    }
+
+    /**
+     * 医师解绑
+     * @param doctorUnbundlingParam doctorId
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/doctor/unbundling")
+    public JsonResult doctorUnbundling (@RequestBody DoctorUnbundlingParam doctorUnbundlingParam) {
+        shop().doctorService.doctorUnbundling(doctorUnbundlingParam);
+        return success();
+    }
+
+    /**
+     * 医师停止接诊
+     * @param doctorUnbundlingParam 医师id
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/doctor/consultation")
+    public JsonResult doctorCanConsultation(@RequestBody DoctorUnbundlingParam doctorUnbundlingParam) {
+        shop().doctorService.doctorCanConsultation(doctorUnbundlingParam);
+        return success();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @PostMapping("/api/admin/doctor/")
+    public JsonResult listDoctorComment(@RequestBody @Validated DoctorAuditedPrescriptionParam param){
+        return success(prescriptionService.auditedPrescriptionList(param));
     }
 }

@@ -1,17 +1,14 @@
 <template>
-  <div
-    class="container"
-    :class="leftMenuEn"
-  >
+  <div class="container">
     <el-menu
       class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose"
       background-color="#323a4d"
       text-color="#ccc"
       active-text-color="#fff"
       :unique-opened="true"
       :router="true"
+      :default-active="$route.path"
+      v-if="isRouterAlive"
     >
       <template v-for="(listItem,listIndex) in defaultList">
         <el-submenu
@@ -684,13 +681,18 @@ export default {
           flag: true
         }
       ],
-      menuParam: null
+      menuParam: null,
+      activeIndex: null,
+      isRouterAlive: false
     }
   },
   watch: {
     $route: {
-      handler: function ({ meta: { meta = null } }) {
+      handler: function (router) {
+        let { meta: { meta = null }, path } = router
         this.initLeftNav(meta)
+        this.activeIndex = path
+        this.reload()
       },
       immediate: true
     }
@@ -727,12 +729,43 @@ export default {
         })
       })
     },
-    handleOpen (key, keyPath) {
-
-    },
-    handleClose (key, keyPath) {
-
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+      })
     }
+  },
+  computed: {
+    // activeIndex () {
+    //   if (!this.$route.meta.category) return this.$route.path
+    //   let topNavList = ['first_web_manage', 'first_web_decoration', 'goods_manage', 'first_trade_manage', 'first_market_manage', 'user_manger', 'store_manage', 'base_manger', 'doctor_manger', 'prescription_manger']
+    //   let activePath = null
+    //   try {
+    //     topNavList.forEach(item => {
+    //       let newList = this[item].reduce((defaultList, listItem) => {
+    //         let routerItem = []
+    //         if (listItem.children && listItem.children.length) {
+    //           routerItem = JSON.parse(JSON.stringify(listItem.children))
+    //           delete listItem.children
+    //         }
+    //         defaultList.push(listItem)
+    //         if (routerItem.length) {
+    //           defaultList = [...defaultList, ...routerItem]
+    //         }
+    //         return defaultList
+    //       }, [])
+    //       let target = newList.find(item => item.name === this.$route.meta.category)
+    //       if (target) {
+    //         activePath = target.path
+    //         throw Error()
+    //       }
+    //     })
+    //   } catch (error) {
+    //   }
+    //   return activePath
+    //   return this.$route.path
+    // }
   },
   filters: {
     getNavName (name) {
