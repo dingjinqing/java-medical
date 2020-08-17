@@ -790,8 +790,8 @@ showManualReturn(vo);
 		getPrescriptionInfo(order, goodsList);
 		//退款订单增加详情
 		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)){
-			ReturnOrderRecord rOrder = returnOrder.getByReturnOrderSn(param.getOrderSn());
-			returnOrderDao.listByOrderSn(order.getOrderSn());
+			List<ReturnOrderListMp> returnOrderListMps = returnOrderDao.listByOrderSn(order.getOrderSn());
+			order.setReturnOrderList(returnOrderListMps);
 		}
 		return order;
 	}
