@@ -51,4 +51,6 @@ public class DoctorCommentAddParam {
 
     private Byte auditStatus;
 
+    private String    userName;
+
 }

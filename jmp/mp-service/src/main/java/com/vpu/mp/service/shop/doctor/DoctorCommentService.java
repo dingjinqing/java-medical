@@ -43,12 +43,12 @@ public class DoctorCommentService extends ShopBaseService {
         if (doctorCommentDo!=null){
             doctorCommentDo.setCreateTime(DateUtil.date().toTimestamp());
             doctorCommentDao.update(doctorCommentDo);
+            //更新会话
+            imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
         }else {
             param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_NOT_CHECK);
             doctorCommentDao.save(param);
         }
-        //更新会话
-        imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
         //更新医师评价
         BigDecimal avgCommentStar = doctorCommentDao.getAvgCommentStar(param.getDoctorId());
         DoctorSortParam param1 =new DoctorSortParam();
@@ -86,6 +86,11 @@ public class DoctorCommentService extends ShopBaseService {
      * @return
      */
     public PageResult<DoctorCommentListVo> listDoctorComment(DoctorCommentListParam param) {
-        return doctorCommentDao.listDoctorComment(param);
+        PageResult<DoctorCommentListVo> pageResult = doctorCommentDao.listDoctorComment(param);
+        pageResult.getDataList().forEach(page->{
+            page.setCommNoteLength(page.getCommNote().length());
+        });
+
+        return pageResult;
     }
 }
