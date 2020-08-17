@@ -41,4 +41,14 @@ public class SmsConfigDao extends MainBaseDao {
             .fetchAnyInto(SmsConfigVo.class);
     }
 
+    /**
+     * 创建店铺时初始化短信配置``
+     * @param shopId 店铺id
+     * @return Integer
+     */
+    public Integer initSmsConfig(Integer shopId) {
+        return db().insertInto(SHOP_SMS_CONFIG)
+            .set(SHOP_SMS_CONFIG.SHOP_ID, shopId).execute();
+    }
+
 }
