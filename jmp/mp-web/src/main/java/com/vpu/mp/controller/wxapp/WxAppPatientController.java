@@ -77,7 +77,7 @@ public class WxAppPatientController extends WxAppBaseController {
      * @param userPatientWithoutCheckCodeParam 患者信息
      * @return JsonResult
      */
-    @PostMapping("/api/wxapp/user/patient/fetch/info/")
+    @PostMapping("/api/wxapp/user/patient/fetch/info")
     public JsonResult getPatientWithoutCheckCode(@RequestBody @Validated UserPatientWithoutCheckCodeParam userPatientWithoutCheckCodeParam) {
         boolean fetchPatient = fetchPrescriptionService.isFetchPatient(userPatientWithoutCheckCodeParam);
         // 如果没拉取过提示跳转至输入验证码界面
