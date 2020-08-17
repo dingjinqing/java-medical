@@ -37,9 +37,13 @@ public class MainInquiryOrderDao extends MainBaseDao {
     public void inquiryOrderSynchronizeInsert(List<InquiryOrderDo> list){
         List<InquiryOrderRecord> recordList=new ArrayList<>();
         for(InquiryOrderDo inquiryOrderDo:list){
-            InquiryOrderRecord record=db().newRecord(INQUIRY_ORDER);
-            FieldsUtil.assign(inquiryOrderDo,record);
-            recordList.add(record);
+            InquiryOrderRecord record=getListByShopIdAndOrderSn(inquiryOrderDo.getShopId(),inquiryOrderDo.getOrderSn());
+            if(record!=null){
+                continue;
+            }
+            InquiryOrderRecord recordNew=db().newRecord(INQUIRY_ORDER);
+            FieldsUtil.assign(inquiryOrderDo,recordNew);
+            recordList.add(recordNew);
         }
         db().batchInsert(recordList).execute();
     }
