@@ -258,25 +258,25 @@
               <td style="width:10%">{{$t('membershipIntroduction.nickname')}}</td>
               <td style="width:8%">{{$t('membershipIntroduction.phoneNum')}}</td>
               <td style="width:8%">{{$t('membershipIntroduction.inviter')}}</td>
-              <td style="width:7%">{{$t('membershipIntroduction.Balance')}}</td>
-              <td style="width:7%">
-                <span
-                  @click="getScoreOrder"
-                  class="score-order"
-                >
-                  {{$t('membershipIntroduction.integral')}}
-                  <span v-if="scoreArrow">
-                    <span
-                      class="score-order"
-                      v-if="!scoreDesc"
-                    >↑</span>
-                    <span
-                      class="score-order"
-                      v-if="scoreDesc"
-                    >↓</span>
-                  </span>
-                </span>
-              </td>
+              <!--<td style="width:7%">{{$t('membershipIntroduction.Balance')}}</td>-->
+              <!--<td style="width:7%">-->
+                <!--<span-->
+                  <!--@click="getScoreOrder"-->
+                  <!--class="score-order"-->
+                <!--&gt;-->
+                  <!--{{$t('membershipIntroduction.integral')}}-->
+                  <!--<span v-if="scoreArrow">-->
+                    <!--<span-->
+                      <!--class="score-order"-->
+                      <!--v-if="!scoreDesc"-->
+                    <!--&gt;↑</span>-->
+                    <!--<span-->
+                      <!--class="score-order"-->
+                      <!--v-if="scoreDesc"-->
+                    <!--&gt;↓</span>-->
+                  <!--</span>-->
+                <!--</span>-->
+              <!--</td>-->
               <td style="width:8%">{{$t('membershipIntroduction.membershipCard')}}</td>
               <td style="width:7%">{{$t('membershipIntroduction.source')}}</td>
               <td style="width:10%">
@@ -332,24 +332,24 @@
               <td class="tb_decorate_a">
                 {{item.inviteUserName}}
               </td>
-              <td class="tb_decorate_a">
-                <div class="mAccountDiv">
-                  <span class="plusSpan">{{item.account}}</span>
-                  <img
-                    @click="handlebalanceDialog(0,item.account,item.userId)"
-                    :src="plusImg"
-                  >
-                </div>
-              </td>
-              <td class="tb_decorate_a">
-                <div class="mScoreDiv">
-                  <span class="plusSpan">{{item.score}}</span>
-                  <img
-                    @click="handlebalanceDialog(1,item.score,item.userId)"
-                    :src="plusImg"
-                  >
-                </div>
-              </td>
+              <!--<td class="tb_decorate_a">-->
+                <!--<div class="mAccountDiv">-->
+                  <!--<span class="plusSpan">{{item.account}}</span>-->
+                  <!--<img-->
+                    <!--@click="handlebalanceDialog(0,item.account,item.userId)"-->
+                    <!--:src="plusImg"-->
+                  <!--&gt;-->
+                <!--</div>-->
+              <!--</td>-->
+              <!--<td class="tb_decorate_a">-->
+                <!--<div class="mScoreDiv">-->
+                  <!--<span class="plusSpan">{{item.score}}</span>-->
+                  <!--<img-->
+                    <!--@click="handlebalanceDialog(1,item.score,item.userId)"-->
+                    <!--:src="plusImg"-->
+                  <!--&gt;-->
+                <!--</div>-->
+              <!--</td>-->
               <td class="tb_decorate_a">
                 <div class="member">
                   <span style="text-align: left;line-height: 20px; margin-right: 5px;">{{item.cardName}}</span>
