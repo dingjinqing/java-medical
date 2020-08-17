@@ -100,7 +100,7 @@ global.wxPage({
   },
   requsetMessage () {
     this.messageApi()
-    if(this.data.targetUserInfo.sessionStatus === 2 || this.data.targetUserInfo.sessionStatus === 5) this.timer = setInterval(this.messageApi,5000)
+    if(this.data.targetUserInfo.sessionStatus === 2 || this.data.targetUserInfo.sessionStatus === 5 || this.data.targetUserInfo.sessionStatus === 4 ) this.timer = setInterval(this.messageApi,5000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {

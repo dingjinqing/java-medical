@@ -11,22 +11,22 @@
       <div class="item-setting-content">
         <div class="item-title">验证码短信</div>
         <div class="item">
-          <el-form-item prop="setting1">
-            每位用户每位患者每天最多发送<el-input-number
-              controls-position="right"
-              :min="0"
-              size="small"
-              v-model="formData.setting1"
-            ></el-input-number>条
-          </el-form-item>
-        </div>
-        <div class="item">
-          <el-form-item prop="setting2">
+          <el-form-item prop="userCheckCodeNum">
             每位用户每天最多发送<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting2"
+              v-model="formData.userCheckCodeNum"
+            ></el-input-number>条
+          </el-form-item>
+        </div>
+        <div class="item">
+          <el-form-item prop="patientCheckCodeNum">
+            每位患者每天最多发送<el-input-number
+              controls-position="right"
+              :min="0"
+              size="small"
+              v-model="formData.patientCheckCodeNum"
             ></el-input-number>条
           </el-form-item>
         </div>
@@ -34,22 +34,12 @@
       <div class="item-setting-content">
         <div class="item-title">营销短信</div>
         <div class="item">
-          <el-form-item prop="setting3">
-            每位用户每位患者每天最多发送<el-input-number
+          <el-form-item prop="marketingNum">
+            每天最多发送<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting3"
-            ></el-input-number>条
-          </el-form-item>
-        </div>
-        <div class="item">
-          <el-form-item prop="setting4">
-            每位用户每天最多发送<el-input-number
-              controls-position="right"
-              :min="0"
-              size="small"
-              v-model="formData.setting4"
+              v-model="formData.marketingNum"
             ></el-input-number>条
           </el-form-item>
         </div>
@@ -57,22 +47,12 @@
       <div class="item-setting-content">
         <div class="item-title">行业短信</div>
         <div class="item">
-          <el-form-item prop="setting5">
-            每位用户每位患者每天最多发送<el-input-number
+          <el-form-item prop="industryNum">
+            每天最多发送<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting5"
-            ></el-input-number>条
-          </el-form-item>
-        </div>
-        <div class="item">
-          <el-form-item prop="setting6">
-            每位用户每天最多发送<el-input-number
-              controls-position="right"
-              :min="0"
-              size="small"
-              v-model="formData.setting6"
+              v-model="formData.industryNum"
             ></el-input-number>条
           </el-form-item>
         </div>
@@ -82,23 +62,46 @@
       type="flex"
       justify="center"
     >
-      <el-button type="primary">保存</el-button>
+      <el-button
+        type="primary"
+        @click="setSetting"
+      >保存</el-button>
     </el-row>
   </div>
 </template>
 
 <script>
+import { getSmsSetting, setSmsSetting } from '@/api/admin/basicConfiguration/shopConfig.js'
 export default {
   data () {
     return {
       formData: {
-        setting1: null,
-        setting2: null,
-        setting3: null,
-        setting4: null,
-        setting5: null,
-        setting6: null
+        industryNum: null,
+        marketingNum: null,
+        patientCheckCodeNum: null,
+        userCheckCodeNum: null,
+        smsAccountInfo: null
       }
+    }
+  },
+  mounted () {
+    this.getSetting()
+  },
+  methods: {
+    getSetting () {
+      getSmsSetting().then(res => {
+        if (res.error === 0) {
+          this.formData = res.content
+        }
+      })
+    },
+    setSetting () {
+      let { industryNum, marketingNum, patientCheckCodeNum, userCheckCodeNum } = this.formData
+      setSmsSetting({ industryNum, marketingNum, patientCheckCodeNum, userCheckCodeNum }).then(res => {
+        if (res.error === 0) {
+          this.getSetting()
+        }
+      })
     }
   }
 }

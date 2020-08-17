@@ -1,0 +1,75 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
+<wxs module="tools">
+	var getStatus = function(status){
+		var statusName = {
+		  '1':'已审核',
+			'2':'已开具',
+			'3':'问诊开方'
+		}
+		return statusName[''+status]
+	}
+	module.exports = {
+		getStatus:getStatus
+	}
+</wxs>
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main-container">
+		<view class="tabs" >
+			<view data-type="0" bindtap="toggleStatus"><text class="{{targetStatus === 0 ? 'active' : ''}}">全部</text></view>
+			<view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === 1 ? 'active' : ''}}">已审核</text></view>
+			<view data-type="2" bindtap="toggleStatus"><text class="{{targetStatus === 2 ? 'active' : ''}}">已开具</text></view>
+			<view data-type="3" bindtap="toggleStatus"><text class="{{targetStatus === 3 ? 'active' : ''}}">问诊开方</text></view>
+		</view>
+		<block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+				<view class="card-item">
+					<view class="status-title">
+						<text>提交时间：{{item.prescriptionCreateTime}}</text>
+						<text>{{tools.getStatus(item.auditType)}}</text>
+					</view>
+					<view class="prescription-item" data-prescription-code="{{item.prescriptionCode}}" bindtap="handleShowDialog">
+						<view class="item-list-content">
+							<view class="item-list">
+								<view class="list-item">
+									<text class="list-item-dot"></text>
+									<view class="list-item-content">
+										诊断：{{item.diagnosisName}}
+									</view>
+								</view>
+								<view class="list-item">
+									<text class="list-item-dot"></text>
+									<view class="list-item-content">
+										科室：{{item.departmentName}}
+									</view>
+								</view>
+							</view>
+						</view>
+						<view class="doctor-info">
+							<text class="doctor-name">医师：{{item.doctorName}}</text>
+							<text class="item-date">日期：{{filter.substring(item.prescriptionCreateTime,0,10)}}</text>
+						</view>
+					</view>
+					<view class="goods-content" wx:if="{{item.list.length}}">
+						<view class="goods-item" bindtap="viewGoodsInfo" data-gid="{{goodsItem.goodsId}}" wx:for="{{item.list}}" wx:key="goodsId" wx:for-item="goodsItem" wx:for-index="goodsIndex">
+							<image src="{{imageUrl + goodsItem.goodsImg}}"></image>
+							<view class="goods-desc">
+								<text class="goods-name">{{goodsItem.goodsCommonName}}</text>
+								<view class="price-content">
+									<text class="goods-price">￥{{goodsItem.medicinePrice}}</text>
+									<text class="num">x{{goodsItem.dragSumNum}}</text>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</block>
+		</block>
+		<view class="is-null" wx:if="{{dataList[0].length <= 0}}">
+        <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+        <text>您还没有相应记录</text>
+      </view>
+	</view>
+	<include src="../../pages/common/footer.wxml" />
+</view>
+<v-prescription-dialog show="{{showPrescription}}" is-doctor="{{true}}" prescription-data="{{prescriptionData}}"/>
