@@ -11,6 +11,7 @@ import java.sql.Timestamp;
  **/
 @Data
 public class MainInquiryOrderStatisticsParam extends BasePageParam {
+    private String doctorName;
     private Timestamp startTime;
     private Timestamp endTime;
 }
