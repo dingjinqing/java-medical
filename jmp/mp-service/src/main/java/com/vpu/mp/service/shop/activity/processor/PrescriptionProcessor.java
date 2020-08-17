@@ -199,11 +199,9 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                         param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
                     }
                     goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
-                    goods.setMedicalAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
                 } else {
                     log.info("{}处方药品没有找到对应的处方信息", goodsInfo.getGoodsName());
                     goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
-                    goods.setMedicalAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
                     param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_PASS);
                 }
             }else {

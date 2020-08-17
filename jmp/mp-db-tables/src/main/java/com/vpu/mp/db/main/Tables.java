@@ -455,5 +455,10 @@ public class Tables {
      * 问诊订单表
      */
     public static final InquiryOrder INQUIRY_ORDER = com.vpu.mp.db.main.tables.InquiryOrder.INQUIRY_ORDER;
+    /**
+     * 店铺短信配置表
+     */
+    public static final ShopSmsConfig SHOP_SMS_CONFIG = com.vpu.mp.db.main.tables.ShopSmsConfig.SHOP_SMS_CONFIG;
+
 
 }

@@ -2,9 +2,9 @@
 <view class="doctor_content">
 	<block wx:for='{{doctorList}}' wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
 		<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
-			<view class="doctor_item" catchtap="toChat" data-doctor_id='{{item.id}}' data-depar_id='{{item.departmentId}}' data-price='{{item.consultationPrice}}'>
+			<view class="doctor_item" catchtap="toDetail" data-doctor_id='{{item.id}}' data-depar_id='{{item.departmentId}}' data-price='{{item.consultationPrice}}'>
 				<view class="d_left">
-					<image src="{{item.url}}" wx:if='{{item.url != ""}}'></image>
+					<image src="{{item.url}}" wx:if='{{item.url}}'></image>
 					<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>
 				</view>
 				<view class="d_right">
@@ -23,8 +23,8 @@
 						<view>￥{{item.consultationPrice}}<text>/次</text></view>
 					</view>
 				</view>
-				<view class="consule">
-				    在线咨询
+				<view class="consule {{item.isOnDuty == 0 ? 'no_consule' : ''}}">
+				    {{item.isOnDuty == 1 ? '在线咨询' : '暂不接诊'}}
 				</view>
 			</view>
 		</block>

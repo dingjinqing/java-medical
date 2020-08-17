@@ -187,6 +187,13 @@ public class InquiryOrderDao extends ShopBaseDao {
      * @return
      */
     public PageResult<InquiryOrderStatisticsVo> orderStatisticsPage(InquiryOrderStatisticsParam param){
+        SelectJoinStep<? extends Record> select=selectOptions(param);
+        select=buildOptions(select,param);
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        PageResult<InquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderStatisticsVo.class);
+        return result;
+    }
+    public SelectJoinStep<? extends Record> selectOptions(InquiryOrderStatisticsParam param){
         SelectJoinStep<? extends Record> select=db().select(
             date((INQUIRY_ORDER.CREATE_TIME)).as(InquiryOrderStatistics.CREAT_TIME),
             //咨询单数
@@ -200,10 +207,7 @@ public class InquiryOrderDao extends ShopBaseDao {
             //医师name
             INQUIRY_ORDER.DOCTOR_NAME.as(InquiryOrderStatistics.DOCTOR_NAME)
         ).from(INQUIRY_ORDER);
-        select=buildOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
-        PageResult<InquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderStatisticsVo.class);
-        return result;
+        return select;
     }
     public SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> selectJoinStep,InquiryOrderStatisticsParam param){
         selectJoinStep.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
@@ -227,19 +231,7 @@ public class InquiryOrderDao extends ShopBaseDao {
      * @return
      */
     public List<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
-        SelectJoinStep<? extends Record> select=db().select(
-            date((INQUIRY_ORDER.CREATE_TIME)).as(InquiryOrderStatistics.CREAT_TIME),
-            //咨询单数
-            count((INQUIRY_ORDER.ORDER_ID)).as(InquiryOrderStatistics.AMOUNT),
-            //咨询总金额
-            sum(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.AMOUNT_PRICE),
-            //咨询单次价格
-            avg(INQUIRY_ORDER.ORDER_AMOUNT).as(InquiryOrderStatistics.ONE_PRICE),
-            //医师id
-            INQUIRY_ORDER.DOCTOR_ID.as(InquiryOrderStatistics.DOCTOR_ID),
-            //医师name
-            INQUIRY_ORDER.DOCTOR_NAME.as(InquiryOrderStatistics.DOCTOR_NAME)
-        ).from(INQUIRY_ORDER);
+        SelectJoinStep<? extends Record> select=selectOptions(param);
         select=buildOptions(select,param);
         select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
         List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);

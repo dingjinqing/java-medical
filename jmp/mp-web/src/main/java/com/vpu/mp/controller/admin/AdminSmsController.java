@@ -3,8 +3,10 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.sms.SmsAccountParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsConfigParam;
 import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminParam;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
+import com.vpu.mp.service.shop.sms.SmsConfigService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +27,8 @@ public class AdminSmsController extends AdminBaseController {
     private SmsService smsService;
     @Autowired
     private SmsAccountService smsAccountService;
+    @Autowired
+    private SmsConfigService smsConfigService;
 
     @PostMapping("/api/admin/sms/list")
     public JsonResult getAdminSmsSendRecord(@RequestBody SmsSendRecordAdminParam smsSendRecordAdminParam){
@@ -45,6 +49,27 @@ public class AdminSmsController extends AdminBaseController {
             e.printStackTrace();
         }
         return fail();
+    }
+
+    /**
+     * 店铺短信配置
+     * @param smsConfigParam 短信配置内容
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/sms/config")
+    public JsonResult smsConfig(@RequestBody SmsConfigParam smsConfigParam) {
+        smsConfigParam.setShopId(shopId());
+        smsConfigService.updateSmsConfig(smsConfigParam);
+        return success();
+    }
+
+    /**
+     * 展示当前短信配置信息
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/sms/show")
+    public JsonResult showSmsConfig() {
+        return this.success(smsConfigService.selectSmsConfig(shopId()));
     }
 
 }

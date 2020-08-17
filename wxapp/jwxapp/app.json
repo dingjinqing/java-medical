@@ -151,7 +151,8 @@
         "doctorSearch/doctorSearch",
         "doctorComment/doctorComment",
         "doctorIntroduce/doctorIntroduce",
-        "doctorPrescriptionList/doctorPrescriptionList"
+        "doctorPrescriptionList/doctorPrescriptionList",
+        "doctorFocus/doctorFocus"
       ]
     }
   ],

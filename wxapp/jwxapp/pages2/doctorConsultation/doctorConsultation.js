@@ -198,5 +198,20 @@ global.wxPage({
         url: "/pages2/patientChat/patientChat?orderSn=" + orderSn + "&sessionStatus=" + status
       })
     }
+  },
+  toComment(e){
+    let orderSn = e.currentTarget.dataset.orderSn;
+    let patientId = e.currentTarget.dataset.patientId;
+    let doctorId = e.currentTarget.dataset.doctorId;
+    let imSessionId = e.currentTarget.dataset.sessionId;
+    util.jumpLink(
+      `pages2/doctorComment/doctorComment${util.getUrlParams({
+      orderSn:orderSn,
+      patientId: patientId,
+      doctorId:doctorId,
+      imSessionId:imSessionId
+    })}`,
+      'navigateTo'
+    )
   }
 })

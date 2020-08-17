@@ -106,7 +106,7 @@ public class ImSessionService extends ShopBaseService {
 
         PageResult<ImSessionItemDo> pageResult = null;
         // 从redis中获取数据
-        if (ImSessionConstant.SESSION_READY_TO_START.equals(imSessionDo.getSessionStatus()) || ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
+        if (!ImSessionConstant.SESSION_DEAD.equals(imSessionDo.getSessionStatus())) {
             pageResult = renderSessionFromRedis(renderPageParam, imSessionDo);
         } else {
             // 从mysql中获取数据

@@ -347,7 +347,6 @@ public class InquiryOrderService extends ShopBaseService {
     public PageResult<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
         beginAndEndOfDay(param);
         PageResult<InquiryOrderStatisticsVo> result=inquiryOrderDao.orderStatisticsPage(param);
-        List<InquiryOrderStatisticsVo> list=result.getDataList();
         return result;
     }
 

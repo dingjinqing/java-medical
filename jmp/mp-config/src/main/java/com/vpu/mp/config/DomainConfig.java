@@ -1,6 +1,7 @@
 package com.vpu.mp.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.common.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -105,7 +106,7 @@ public class DomainConfig {
 	 */
 	private String pathJudge(String relativePath) {
         char c = '/';
-        if(relativePath.charAt(0)== c) {
+        if(!Strings.isEmpty(relativePath)&&relativePath.charAt(0)== c) {
 			relativePath=relativePath.replaceFirst("/", "");
 		}
 		return relativePath;
