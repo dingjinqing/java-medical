@@ -6,7 +6,16 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorUnbundlingParam;
-import org.springframework.web.bind.annotation.*;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 /**
@@ -14,7 +23,8 @@ import java.util.List;
  */
 @RestController
 public class AdminDoctorController extends AdminBaseController {
-
+    @Autowired
+    private PrescriptionService prescriptionService;
     /**
      * 医师列表
      * @param param
@@ -131,5 +141,14 @@ public class AdminDoctorController extends AdminBaseController {
     public JsonResult doctorCanConsultation(@RequestBody DoctorUnbundlingParam doctorUnbundlingParam) {
         shop().doctorService.doctorCanConsultation(doctorUnbundlingParam);
         return success();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @PostMapping("/api/admin/doctor/")
+    public JsonResult listDoctorComment(@RequestBody @Validated DoctorAuditedPrescriptionParam param){
+        return success(prescriptionService.auditedPrescriptionList(param));
     }
 }
