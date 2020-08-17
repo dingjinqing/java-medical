@@ -96,7 +96,8 @@ export default {
         },
         {
           title: '会员管理',
-          img: this.$imageHost + '/image/system/get_user.png'
+          img: this.$imageHost + '/image/system/get_user.png',
+          routeName: 'member_statistics'
         },
         {
           title: '订单管理',
