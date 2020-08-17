@@ -52,4 +52,12 @@ public class InquiryOrderStatistics {
      *咨询总金额
      */
     public static  final String AMOUNT_PRICE_TOTAL="amountPriceTotal";
+    /**
+     * 店铺id
+     */
+    public static final String SHOP_ID="shopId";
+    /**
+     * 店铺名称
+     */
+    public static final String SHOP_NAME="shopName";
 }

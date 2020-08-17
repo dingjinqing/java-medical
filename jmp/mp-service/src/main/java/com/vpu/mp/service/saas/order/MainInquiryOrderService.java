@@ -9,7 +9,7 @@ import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.main.order.MainInquiryOrderDao;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.order.MainInquiryOrderStatisticsParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
+import com.vpu.mp.service.pojo.saas.order.MainInquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -52,9 +52,9 @@ public class MainInquiryOrderService extends MainBaseService {
      * @param param
      * @return
      */
-    public PageResult<InquiryOrderStatisticsVo> orderStatistics(MainInquiryOrderStatisticsParam param){
+    public PageResult<MainInquiryOrderStatisticsVo> orderStatistics(MainInquiryOrderStatisticsParam param){
         beginAndEndOfDay(param);
-        PageResult<InquiryOrderStatisticsVo> result=mainInquiryOrderDao.orderStatisticsPage(param);
+        PageResult<MainInquiryOrderStatisticsVo> result=mainInquiryOrderDao.orderStatisticsPage(param);
         return result;
     }
 
@@ -66,10 +66,10 @@ public class MainInquiryOrderService extends MainBaseService {
      */
     public Workbook orderStatisticsExport(MainInquiryOrderStatisticsParam param, String lang){
         beginAndEndOfDay(param);
-        List<InquiryOrderStatisticsVo> list=mainInquiryOrderDao.orderStatistics(param);
+        List<MainInquiryOrderStatisticsVo> list=mainInquiryOrderDao.orderStatistics(param);
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
-        excelWriter.writeModelList(list,InquiryOrderStatisticsVo.class);
+        excelWriter.writeModelList(list,MainInquiryOrderStatisticsVo.class);
         return workbook;
     }
 

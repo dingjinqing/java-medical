@@ -14,4 +14,5 @@ public class MainInquiryOrderStatisticsParam extends BasePageParam {
     private String doctorName;
     private Timestamp startTime;
     private Timestamp endTime;
+    private Integer shopId;
 }
