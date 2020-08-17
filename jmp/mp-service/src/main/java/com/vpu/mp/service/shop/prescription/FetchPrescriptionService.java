@@ -1,21 +1,22 @@
 package com.vpu.mp.service.shop.prescription;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.FileUtil;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientFetchParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientFetchVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.shop.medicine.MedicalAdviceService;
 import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.patient.PatientService;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,21 +57,6 @@ public class FetchPrescriptionService extends ShopBaseService {
      * @return Boolean
      */
     public Integer fetchPatientInfo(UserPatientOneParam userPatientOneParam) {
-        // 判断是否是拉取过来的患者
-        PatientOneParam patientByName = patientDao.getPatientByName(userPatientOneParam);
-        if (patientByName == null) {
-            return FETCH_HITS_NO_PATIENT;
-        }
-        if (NO_FETCH.equals(patientByName.getIsFetch())) {
-            return START_TO_COMMIT;
-        }
-        if (ALREADY_FETCH.equals(patientByName.getIsFetch())) {
-            // 验证码
-            boolean b = this.checkMobileCode(userPatientOneParam);
-            if (!b) {
-                return FETCH_HITS_CHECK_CODE_ERROR;
-            }
-        }
         JsonResult externalPatientInfo = patientService.getExternalPatientInfo(userPatientOneParam);
         JsonResult medicalAdviceList = medicalAdviceService.pullExternalMedicalAdviceList(userPatientOneParam);
         JsonResult medicalHistoryList = medicalHistoryService.pullExternalMedicalHistoryList(userPatientOneParam);
@@ -82,12 +68,23 @@ public class FetchPrescriptionService extends ShopBaseService {
     }
 
     /**
+     * 查询是否曾拉取过该患者病历
+     * @param userPatientWithoutCheckCodeParam 患者入参
+     * @return boolean
+     */
+    public boolean isFetchPatient(UserPatientWithoutCheckCodeParam userPatientWithoutCheckCodeParam) {
+        UserPatientOneParam userPatientOneParam = new UserPatientOneParam();
+        FieldsUtil.assign(userPatientWithoutCheckCodeParam, userPatientOneParam);
+        PatientOneParam patientByName = patientDao.getPatientByName(userPatientOneParam);
+        return NO_FETCH.equals(patientByName.getIsFetch());
+    }
+    /**
      * 短信验证码校验
      *
      * @param param param
      * @return
      */
-    private boolean checkMobileCode(UserPatientOneParam param) {
+    public boolean checkMobileCode(UserPatientOneParam param) {
         String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_PATIENT_MOBILE, getShopId(), param.getUserId(), param.getMobile());
         String s = jedisManager.get(key);
         if (!Strings.isBlank(s) && !Strings.isBlank(param.getMobileCheckCode())) {

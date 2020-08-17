@@ -59,17 +59,39 @@ public class WxAppPatientController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/user/patient/get/info")
     public JsonResult getPatientInfo(@RequestBody @Validated UserPatientOneParam userPatientOneParam) {
-        Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
-        if (FETCH_HITS_CHECK_CODE_ERROR.equals(info)) {
+        // 校验验证码
+        boolean b = fetchPrescriptionService.checkMobileCode(userPatientOneParam);
+        if (!b) {
             return fail(JsonResultCode.PATIENT_MOBILE_CHECK_CODE_ERROR);
         }
+        // 拉取患者信息
+        Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
         if (FETCH_HITS_NO_PATIENT.equals(info)) {
             return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
         }
-        if (START_TO_COMMIT.equals(info)) {{
-            return fail(JsonResultCode.TO_FETCH_PATIENT);
-        }}
         return success();
+    }
+
+    /**
+     * 判断是否拉取过该患者的信息
+     * @param userPatientWithoutCheckCodeParam 患者信息
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/user/patient/fetch/info/")
+    public JsonResult getPatientWithoutCheckCode(@RequestBody @Validated UserPatientWithoutCheckCodeParam userPatientWithoutCheckCodeParam) {
+        boolean fetchPatient = fetchPrescriptionService.isFetchPatient(userPatientWithoutCheckCodeParam);
+        // 如果没拉取过提示跳转至输入验证码界面
+        if (fetchPatient) {
+            return fail(JsonResultCode.TO_FETCH_PATIENT);
+        } else { // 如果拉取过
+            UserPatientOneParam userPatientOneParam = new UserPatientOneParam();
+            FieldsUtil.assign(userPatientWithoutCheckCodeParam, userPatientOneParam);
+            Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
+            if (FETCH_HITS_NO_PATIENT.equals(info)) {
+                return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
+            }
+            return success();
+        }
     }
 
     /**
