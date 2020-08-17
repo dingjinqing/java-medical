@@ -100,12 +100,12 @@ global.wxPage({
   },
   requsetMessage () {
     this.messageApi()
-    if(this.data.targetUserInfo.sessionStatus === 2 || this.data.targetUserInfo.sessionStatus === 5) this.timer = setInterval(this.messageApi,5000)
+    if(this.data.targetUserInfo.sessionStatus === 2 || this.data.targetUserInfo.sessionStatus === 5  || this.data.targetUserInfo.sessionStatus === 4) this.timer = setInterval(this.messageApi,5000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
-      if (res.error === 0 && res.content.messages.length) {
+      if (res.error === 0 && res.content.messages) {
         let newChatContent = res.content.messages.reduce((defaultValue,item)=>{
           defaultValue.push({  
             position:0,

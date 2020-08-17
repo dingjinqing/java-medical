@@ -16,21 +16,21 @@
     <view class="item" bindtap="viewOperatePrescriptionList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
-        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount}}</view>
+        <view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount > 0}}'>{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount}}</view>
       </view>
       <view class="item_text">待续方</view>
     </view>
     <view class="item" bindtap="to_awaitPre">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon1.png"></image>
-        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notOrderInfoCount}}</view>
+        <view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notOrderInfoCount > 0 }}'>{{doctorInfo.doctorMessageCountVo.notOrderInfoCount}}</view>
       </view>
       <view class="item_text">待开方</view>
     </view>
     <view class="item" data-type="wait" bindtap="viewInquiryList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
-        <view class="item_num">{{doctorInfo.doctorMessageCountVo.notImSessionCount}}</view>
+        <view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notImSessionCount > 0}}'>{{doctorInfo.doctorMessageCountVo.notImSessionCount}}</view>
       </view>
       <view class="item_text">待问诊</view>
     </view>
