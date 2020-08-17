@@ -80,13 +80,15 @@ public class TableTaskService extends ShopBaseService {
      */
     public void inquiryOrderSynchronize(Integer shopId){
         log.info("【同步任务】---问诊订单数据同步到主库shopId:{}",shopId);
+        //新增
+        List<InquiryOrderDo> newInquiryOrderDoList= inquiryOrderDao.getListByCreateTime(DateUtils.getTimestampForStartTime(-1),DateUtils.getTimestampForEndTime(-1));
+        saas().mainInquiryOrderService.inquiryOrderSynchronizeInsert(newInquiryOrderDoList);
+
         //更新
         List<InquiryOrderDo> inquiryOrderDoList= inquiryOrderDao.getListByUpdateTime(DateUtils.getTimestampForStartTime(-1),DateUtils.getTimestampForEndTime(-1));
         saas().mainInquiryOrderService.inquiryOrderSynchronizeUpdate(inquiryOrderDoList,shopId);
 
-        //新增
-        List<InquiryOrderDo> newInquiryOrderDoList= inquiryOrderDao.getListByCreateTime(DateUtils.getTimestampForStartTime(-1),DateUtils.getTimestampForEndTime(-1));
-        saas().mainInquiryOrderService.inquiryOrderSynchronizeInsert(newInquiryOrderDoList);
+
 
 
 	}
