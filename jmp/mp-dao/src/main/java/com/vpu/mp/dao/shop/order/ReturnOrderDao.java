@@ -1,14 +1,15 @@
 package com.vpu.mp.dao.shop.order;
 
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
+import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.RETURN_ORDER;
@@ -29,8 +30,8 @@ public class ReturnOrderDao extends ShopBaseDao {
      * @param orderSn
      * @return Result<?>
      */
-    public ReturnOrderRecord listByOrderSn(String orderSn) {
-        return db().selectFrom(RETURN_ORDER).where(RETURN_ORDER.RETURN_ORDER_SN.eq(orderSn)).fetchOne();
+    public List<ReturnOrderListMp> listByOrderSn(String orderSn) {
+       return db().selectFrom(RETURN_ORDER).where(RETURN_ORDER.RETURN_ORDER_SN.eq(orderSn)).fetchInto(ReturnOrderListMp.class);
     }
 
 
