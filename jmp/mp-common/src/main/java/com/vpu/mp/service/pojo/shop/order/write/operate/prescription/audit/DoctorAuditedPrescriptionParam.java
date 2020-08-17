@@ -20,5 +20,7 @@ public class DoctorAuditedPrescriptionParam extends BasePageParam {
     @NotNull
     private Byte type;
     @NotNull
+    private Integer doctorId;
+
     private String doctorCode;
 }

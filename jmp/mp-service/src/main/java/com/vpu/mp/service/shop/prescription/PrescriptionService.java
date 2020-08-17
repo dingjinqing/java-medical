@@ -468,14 +468,19 @@ public class PrescriptionService extends ShopBaseService {
      * @param param
      */
     public PageResult<PrescriptionParam> auditedPrescriptionList(DoctorAuditedPrescriptionParam param) {
-        PageResult<PrescriptionParam> result = prescriptionDao.listAuditedByDoctor(param);
-        List<String> preCodeList = result.getDataList().stream().map(PrescriptionDo::getPrescriptionCode).collect(Collectors.toList());
-        Map<String, List<PrescriptionItemParam>> stringPrescriptionItemInfoVoMap = prescriptionItemDao.mapByPrescriptionCodeList(preCodeList);
-        result.getDataList().forEach(prescription -> {
-            if (stringPrescriptionItemInfoVoMap.containsKey(prescription.getPrescriptionCode())){
-                prescription.setList(stringPrescriptionItemInfoVoMap.get(prescription.getPrescriptionCode()));
-            }
-        });
-        return result;
+        DoctorOneParam oneInfo = doctorDao.getOneInfo(param.getDoctorId());
+        if (oneInfo!=null) {
+            param.setDoctorCode(oneInfo.getHospitalCode());
+            PageResult<PrescriptionParam> result = prescriptionDao.listAuditedByDoctor(param);
+            List<String> preCodeList = result.getDataList().stream().map(PrescriptionDo::getPrescriptionCode).collect(Collectors.toList());
+            Map<String, List<PrescriptionItemParam>> stringPrescriptionItemInfoVoMap = prescriptionItemDao.mapByPrescriptionCodeList(preCodeList);
+            result.getDataList().forEach(prescription -> {
+                if (stringPrescriptionItemInfoVoMap.containsKey(prescription.getPrescriptionCode())){
+                    prescription.setList(stringPrescriptionItemInfoVoMap.get(prescription.getPrescriptionCode()));
+                }
+            });
+            return result;
+        }
+        return null;
     }
 }
