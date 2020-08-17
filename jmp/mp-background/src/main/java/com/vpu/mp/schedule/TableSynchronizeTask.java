@@ -61,8 +61,9 @@ public class TableSynchronizeTask {
 
     /**
      * 问诊订单同步主库
-     * //    @Scheduled(cron = "0 0 0,3 * * ?")
+     *
      */
+    @Scheduled(cron = "0 0 0,3 * * ?")
     public void inquiryOrderSynchronize(){
         log.info("【同步任务】---问诊订单数据同步到主库start");
         Result<ShopRecord> shopRecords =saas.shop.getAll();
