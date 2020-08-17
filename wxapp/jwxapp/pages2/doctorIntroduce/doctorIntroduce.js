@@ -116,7 +116,7 @@ global.wxPage({
       }
     }, {
       doctorId: this.data.doctorId,
-      useId: util.getCache('user_id'),
+      userId: util.getCache('user_id'),
       status: status
     })
   },
@@ -132,7 +132,7 @@ global.wxPage({
       }
     }, {
       doctorId: that.data.doctorId,
-      useId: util.getCache('user_id'),
+      userId: util.getCache('user_id'),
     })
   },
 
@@ -156,7 +156,7 @@ global.wxPage({
       }
     }, {
       doctorId: this.data.doctorId,
-      useId: util.getCache('user_id'),
+      userId: util.getCache('user_id'),
       status: status
     })
   },
