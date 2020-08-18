@@ -113,6 +113,10 @@ global.wxPage({
   },
   getVerificationCode() {
     if (this.data.countDown) return false
+    if (!this.data.card_id) {
+      util.showModal("提示", "请输入身份证号！");
+      return false;
+    }
     if (!this.data.mobile) {
       util.showModal("提示", "请输入手机号！");
       return false;
@@ -141,7 +145,8 @@ global.wxPage({
         }
       }
     }, {
-      mobile: this.data.mobile
+      mobile: this.data.mobile,
+      identityCode:this.data.card_id
     })
   },
   getPreInfo (prescription_info) {
