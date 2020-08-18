@@ -614,13 +614,19 @@ public class ImSessionService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<ImSessionItemRenderVo> getSessionHistory( ImSessionQueryPageListParam param){
+    public List<ImSessionItemRenderVo> getSessionHistory( ImSessionQueryPageListParam param){
         ImSessionDo imSessionDo=imSessionDao.getByOrderSn(param.getOrderSn());
-        ImSessionRenderPageParam renderPageParam=new ImSessionRenderPageParam();
-        FieldsUtil.assign(param,renderPageParam);
-        renderPageParam.setSessionId(imSessionDo.getId());
-        PageResult<ImSessionItemRenderVo>  pageResult = renderSession(renderPageParam);
-        return pageResult;
+        Integer doctorId = imSessionDo.getDoctorId();
+        List<ImSessionItemDo> list=imSessionItemDao.getBySessionId(imSessionDo.getId());
+        List<ImSessionItemRenderVo> sessionItemRenderVos = list.stream().map(item -> {
+            ImSessionItemRenderVo itemVo = new ImSessionItemRenderVo();
+            itemVo.setDoctor(doctorId.equals(item.getFromId()));
+            itemVo.setMessage(item.getMessage());
+            itemVo.setType(item.getType());
+            itemVo.setSendTime(item.getSendTime());
+            return itemVo;
+        }).collect(Collectors.toList());
+        return sessionItemRenderVos;
     }
 
 }
