@@ -139,6 +139,11 @@ export const cn = {
       title: '医生首页',
       path: 'pages2/doctorIndex/doctorIndex',
       spanId: ''
+    },
+    {
+      title: '关注医师',
+      path: 'pages2/doctorFocus/doctorFocus',
+      spanId: ''
     }
     // {
     //   title: '授权手机号',

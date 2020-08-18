@@ -227,7 +227,7 @@ export default {
           this.pageParams = res.content.page
         }
       }).catch(err => console.log(err))
-      this.getTotal({ doctorId: this.param.doctorId })
+      this.getTotal({ doctorId: this.param.doctorId, startTime: this.param.startTime, endTime: this.param.endTime })
     },
     getDoctor (doctor) {
       getDoctorList(doctor).then(res => {
@@ -295,7 +295,7 @@ export default {
     background: #fff;
     margin: 0 10px 10px;
   }
-  .default_input{
+  .default_input {
     width: 150px;
   }
   .doctor_input {

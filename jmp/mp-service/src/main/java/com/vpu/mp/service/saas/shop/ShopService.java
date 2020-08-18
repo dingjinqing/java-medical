@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DatasourceManager;
 import com.vpu.mp.dao.foundation.database.DbConfig;
+import com.vpu.mp.dao.main.SmsConfigDao;
 import com.vpu.mp.db.main.tables.records.*;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
@@ -116,6 +117,9 @@ public class ShopService extends MainBaseService {
 
     @Autowired
     public ShopApplyService shopApply;
+
+    @Autowired
+    private SmsConfigDao smsConfigDao;
 
     public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
         SelectWhereStep<?> select = db()
@@ -281,6 +285,8 @@ public class ShopService extends MainBaseService {
 		if (updateOperation(record, user, request,new ShopRecord()) == 1) {			
 			logger().info("更新ShopOperation记录表成功");
 		}
+		// 初始化店铺配置
+		initShopConfig(shopReq.getShopId());
 		return true;
 	}
 
@@ -699,5 +705,14 @@ public class ShopService extends MainBaseService {
             .where(MP_AUTH_SHOP.SHOP_ID.eq(shopId))
             .limit(1)
             .fetchOneInto(String.class);
+    }
+
+    /**
+     * 初始化店铺配置
+     * @param shopId 店铺id
+     */
+    public Integer initShopConfig(Integer shopId) {
+        // 初始化短信配置
+        return smsConfigDao.initSmsConfig(shopId);
     }
 }

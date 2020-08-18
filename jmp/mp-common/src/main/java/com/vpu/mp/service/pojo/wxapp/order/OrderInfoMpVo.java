@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupdraw.GroupDrawInfoByOrderVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -100,5 +101,7 @@ public class OrderInfoMpVo extends OrderListMpVo{
     private Integer goodsAmount;
     private BigDecimal packageDiscount;
     private BigDecimal grouperCheapReduce;
+
+    private List<ReturnOrderListMp> returnOrderList;
 
 }

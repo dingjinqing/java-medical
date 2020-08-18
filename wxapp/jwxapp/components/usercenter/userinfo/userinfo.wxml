@@ -71,7 +71,7 @@
         </view>
       </view>
       <view bindtap="to_doc_index">
-        <view class="main_tetx">医生认证</view>
+        <view class="main_txt">医生认证</view>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'></view>
       </view>
     </view>

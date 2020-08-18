@@ -2,7 +2,7 @@
 var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
 var util = require('../../utils/util.js');
-var chatInput = null 
+var chatInput = null
 global.wxPage({
 
   /**
@@ -11,15 +11,15 @@ global.wxPage({
   data: {
     // time: '2020-07-23 13:35:01',
     page_name: '',
-    prescriptionMessage:null,
-    chatContent:[],
-    targetUserInfo:{},
-    source:null,
-    historyPageParams:{
-      currentPage:1,
-      pageRows:20
+    prescriptionMessage: null,
+    chatContent: [],
+    targetUserInfo: {},
+    source: null,
+    historyPageParams: {
+      currentPage: 1,
+      pageRows: 20
     },
-    firstLoad:true,
+    firstLoad: true,
     scrollTop: 0,
     arrive_bottom: true,
     allHeight: 0
@@ -31,19 +31,19 @@ global.wxPage({
   onLoad: function (options) {
     chatInput = this.selectComponent('#chatinput')
     wx.hideShareMenu()
-    let {targetUserInfo,source = null} = options
+    let { targetUserInfo, source = null } = options
     this.setData({
-      targetUserInfo:JSON.parse(targetUserInfo),
-      page_name:JSON.parse(targetUserInfo).patientName,
+      targetUserInfo: JSON.parse(targetUserInfo),
+      page_name: JSON.parse(targetUserInfo).patientName,
       source
     })
     this.setViewHeight()
   },
-  getInputMessage(e) {
+  getInputMessage (e) {
     let {
       detail: message
     } = e
-    this.sendMessage({content:message},0)
+    this.sendMessage({ content: message }, 0)
   },
 
   /**
@@ -57,7 +57,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if(this.data.prescriptionMessage) this.sendMessage({content:this.data.prescriptionMessage},2)
+    if (this.data.prescriptionMessage) this.sendMessage({ content: this.data.prescriptionMessage }, 2)
     this.requestHistoryChat()
   },
 
@@ -95,140 +95,140 @@ global.wxPage({
   onShareAppMessage: function () {
 
   },
-  sendImage({detail:{image,imgWidth,imgHeight}}){
-    this.sendMessage({content:image,imgWidth,imgHeight},1)
+  sendImage ({ detail: { image, imgWidth, imgHeight } }) {
+    this.sendMessage({ content: image, imgWidth, imgHeight }, 1)
   },
   requsetMessage () {
     this.messageApi()
-    if(this.data.targetUserInfo.sessionStatus === 2 || this.data.targetUserInfo.sessionStatus === 5) this.timer = setInterval(this.messageApi,5000)
+    if (this.data.targetUserInfo.sessionStatus === 2 || this.data.targetUserInfo.sessionStatus === 5 || this.data.targetUserInfo.sessionStatus === 4) this.timer = setInterval(this.messageApi, 5000)
   },
   messageApi () {
     util.api('/api/wxapp/im/session/pull', res => {
       console.log(res)
-      if (res.error === 0 && res.content.length) {
-        let newChatContent = res.content.reduce((defaultValue,item)=>{
-          defaultValue.push({  
-            position:0,
-            messageInfo:{
-              message:JSON.parse(item.message),
-              type:item.type
+      if (res.error === 0 && res.content.messages) {
+        let newChatContent = res.content.messages.reduce((defaultValue, item) => {
+          defaultValue.push({
+            position: 0,
+            messageInfo: {
+              message: JSON.parse(item.message),
+              type: item.type
             }
           })
           return defaultValue
-        },[])
+        }, [])
         this.setData({
-          chatContent:[...this.data.chatContent,...newChatContent]
+          chatContent: [...this.data.chatContent, ...newChatContent]
         })
-        if(this.data.arrive_bottom == true){
+        if (this.data.arrive_bottom == true) {
           this.pageScrollBottom()
-       }
-       this.getScrollHeight()
-    }
+        }
+        this.getScrollHeight()
+      }
     }, {
-      sessionId:this.data.targetUserInfo.id,
+      sessionId: this.data.targetUserInfo.id,
       pullFromId: this.data.targetUserInfo.userId,
       selfId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id
     }, '', false);
   },
-  hideMoreActions(){
+  hideMoreActions () {
     chatInput.hideMoreActions()
 
   },
-  sendMessage(message,type){
+  sendMessage (message, type) {
 
-    if(!message.content) return
+    if (!message.content) return
     let imSessionItem = {
-      message:JSON.stringify(message),
+      message: JSON.stringify(message),
       type
     }
-    util.api('/api/wxapp/im/session/send',res => {
+    util.api('/api/wxapp/im/session/send', res => {
       console.log(res)
-      if (res.error === 0 ) {
+      if (res.error === 0) {
         let chat = {}
         let chatContent = this.data.chatContent;
         chat.messageInfo = {
           ...imSessionItem,
-          message:JSON.parse(imSessionItem.message)
+          message: JSON.parse(imSessionItem.message)
         };
         chat.position = 1;
         chatContent.push(chat)
         this.setData({
-          chatContent:chatContent,
-          prescriptionMessage:null
+          chatContent: chatContent,
+          prescriptionMessage: null
         })
         this.pageScrollBottom()
       }
-    },{
-      sessionId:this.data.targetUserInfo.id,
-      fromId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
-      toId:this.data.targetUserInfo.userId,
+    }, {
+      sessionId: this.data.targetUserInfo.id,
+      fromId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
+      toId: this.data.targetUserInfo.userId,
       imSessionItem
     })
   },
-  createPrescription(){
+  createPrescription () {
 
     util.jumpLink(`pages2/prescribe/prescribe${util.getUrlParams({
-      patientId:this.data.targetUserInfo.patientId,
-      userId:this.data.targetUserInfo.userId
+      patientId: this.data.targetUserInfo.patientId,
+      userId: this.data.targetUserInfo.userId
     })}`)
   },
-  chatEnd(){
+  chatEnd () {
 
-    util.showModal('提示','确定要结束本次问诊吗？',()=>{
-      util.api('/api/wxapp/inquiry/order/status/update',res=>{
-        if(res.error === 0){
+    util.showModal('提示', '确定要结束本次问诊吗？', () => {
+      util.api('/api/wxapp/inquiry/order/status/update', res => {
+        if (res.error === 0) {
           clearInterval(this.timer)
           this.setData({
-            'targetUserInfo.sessionStatus':4
+            'targetUserInfo.sessionStatus': 4
           })
-          if(this.data.source === 'inquiryList'){
+          if (this.data.source === 'inquiryList') {
             let pageList = getCurrentPages();
             let prevPage = pageList[pageList.length - 2];
-            let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
+            let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item => item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:4
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: 4
             })
             wx.navigateBack()
           }
         }
-      },{
-        orderSn:this.data.targetUserInfo.orderSn,
-        orderStatus:3,
-        sessionId:this.data.targetUserInfo.id
+      }, {
+        orderSn: this.data.targetUserInfo.orderSn,
+        orderStatus: 3,
+        sessionId: this.data.targetUserInfo.id
       })
-    },true,'再想想','确认结束')
+    }, true, '再想想', '确认结束')
   },
-  chatContinue(){
+  chatContinue () {
 
-    util.showModal('提示','确定要继续问诊吗？',()=>{
-      util.api('/api/wxapp/inquiry/order/status/update',res=>{
-        if(res.error === 0){
+    util.showModal('提示', '确定要继续问诊吗？', () => {
+      util.api('/api/wxapp/inquiry/order/status/update', res => {
+        if (res.error === 0) {
           this.setData({
             'targetUserInfo.sessionStatus': 5
           })
           this.requsetMessage()
-          if(this.data.source === 'inquiryList'){
+          if (this.data.source === 'inquiryList') {
             let pageList = getCurrentPages();
             let prevPage = pageList[pageList.length - 2];
-            let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item=>item.id === this.data.targetUserInfo.id)
+            let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item => item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]:5
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: 5
             })
           }
         }
-      },{
-        orderSn:this.data.targetUserInfo.orderSn,
-        orderStatus:2,
-        sessionId:this.data.targetUserInfo.id
+      }, {
+        orderSn: this.data.targetUserInfo.orderSn,
+        orderStatus: 2,
+        sessionId: this.data.targetUserInfo.id
       })
-    },true,'再想想','继续')
+    }, true, '再想想', '继续')
   },
-  pageScrollBottom() {
+  pageScrollBottom () {
     let that = this;
     that.getRectHeight()
   },
 
-  startScroll(e) {
+  startScroll (e) {
     let that = this;
     let scrollHeight = e.detail.scrollTop + that.data.scrollViewHeight - 10; //20是margin的大概差值
     let allHeight = that.data.scrollHeight;
@@ -247,60 +247,60 @@ global.wxPage({
     }
   },
 
-  handleShowPrescriptionDialog(e){
-    let {prescriptionCode} = e.currentTarget.dataset
-    util.api('/api/wxapp/prescription/details',res=>{
-      if(res.error === 0){
+  handleShowPrescriptionDialog (e) {
+    let { prescriptionCode } = e.currentTarget.dataset
+    util.api('/api/wxapp/prescription/details', res => {
+      if (res.error === 0) {
         this.setData({
-          showPrescription:true,
-          prescriptionData:res.content
+          showPrescription: true,
+          prescriptionData: res.content
         })
       }
-    },{
+    }, {
       prescriptionCode
     })
   },
-  async requestHistoryChat(){
-    if(this.data.firstLoad) await this.historyChatApi()
+  async requestHistoryChat () {
+    if (this.data.firstLoad) await this.historyChatApi()
     this.requsetMessage()
     this.pageScrollBottom()
   },
-  historyChatApi(){
-    return new Promise((resolve,reject)=>{
-      util.api('/api/wxapp/im/session/render',res=>{
+  historyChatApi () {
+    return new Promise((resolve, reject) => {
+      util.api('/api/wxapp/im/session/render', res => {
         console.log(res)
-        if(res.error === 0 && res.content.dataList.length){
-          let newChatContent = res.content.dataList.reduce((defaultValue,item)=>{
-            defaultValue.push({  
-              position:item.doctor ? 1 : 0,
-              messageInfo:{
-                message:JSON.parse(item.message),
-                type:item.type
+        if (res.error === 0 && res.content.dataList.length) {
+          let newChatContent = res.content.dataList.reduce((defaultValue, item) => {
+            defaultValue.push({
+              position: item.doctor ? 1 : 0,
+              messageInfo: {
+                message: JSON.parse(item.message),
+                type: item.type
               }
             })
             return defaultValue
-          },[])
+          }, [])
           this.setData({
-            chatContent:[...newChatContent],
-            firstLoad:false
+            chatContent: [...newChatContent],
+            firstLoad: false
           })
         }
         resolve(res)
-      },{
-        sessionId:this.data.targetUserInfo.id,
-        isDoctor:true,
-        isFirstTime:this.data.firstLoad
+      }, {
+        sessionId: this.data.targetUserInfo.id,
+        isDoctor: true,
+        isFirstTime: this.data.firstLoad
       })
-    }) 
+    })
   },
-  viewImage(e){
-  
+  viewImage (e) {
+
     let urls = [e.currentTarget.dataset.urls]
     wx.previewImage({
       urls
     })
   },
-  setViewHeight() {
+  setViewHeight () {
     let win_h = wx.getSystemInfoSync().windowHeight;
     let navigation_h;
     if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
@@ -316,21 +316,21 @@ global.wxPage({
       scrollViewHeight: win_h - navigation_h - 110,
     });
   },
-  getRectHeight() {
+  getRectHeight () {
     let that = this
-      wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
-        that.setData({
-          allHeight: reda[0].height,
-          scrollHeight:reda[0].height
-        })
+    wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
+      that.setData({
+        allHeight: reda[0].height,
+        scrollHeight: reda[0].height
       })
+    })
   },
-  getScrollHeight(){
+  getScrollHeight () {
     let that = this
-      wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
-        that.setData({
-          scrollHeight:reda[0].height
-        })
+    wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
+      that.setData({
+        scrollHeight: reda[0].height
       })
+    })
   }
 })
