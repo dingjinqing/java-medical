@@ -31,7 +31,7 @@
 							<view class="chat_item" data-status='{{item.sessionStatus}}' data-order-sn='{{item.orderSn}}' catchtap="toChat">
 								<view class="chat_left">
 									<image src="{{imageUrl}}image/wxapp/doctor_default_icon.png"></image>
-									<view class="red_dot" wx:if='{{item.newMsgNum > 0}}'></view>
+									<view class="red_dot" wx:if='{{item.newMsgNum > 0}}'>{{item.newMsgNum > 99 ? '99+' : item.newMsgNum}}</view>
 								</view>
 								<view class="chat_right">
 									<view class="c_r_top clearfix">
