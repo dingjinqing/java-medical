@@ -30,6 +30,8 @@ public class SubcribeTemplateCategory {
 	/** 邀请成功通知 */
 	public static final String INVITE_SUCCESS = "invite_success";
 	/** 余额变动 */
-	public static final String BALANCE_CHANGE = "balance_change"; 
+	public static final String BALANCE_CHANGE = "balance_change";
+	/** 新问诊订单 */
+	public static final String CONSULTATION_ORDER_PAY = "consultation_order_pay";
 
 }
