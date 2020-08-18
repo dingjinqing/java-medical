@@ -184,7 +184,7 @@ export default {
           imgUrl_h: this.$imageHost + '/image/system/icon_left/order_admin_h.png',
           span: '订单列表'
         },
-          {
+        {
           imgUrl: this.$imageHost + '/image/system/icon_left/order_admin.png',
           imgUrl_h: this.$imageHost + '/image/system/icon_left/order_admin_h.png',
           span: '咨询订单'

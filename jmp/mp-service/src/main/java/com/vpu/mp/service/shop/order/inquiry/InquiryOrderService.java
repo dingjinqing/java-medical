@@ -20,10 +20,18 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
@@ -48,6 +56,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -188,7 +197,33 @@ public class InquiryOrderService extends ShopBaseService {
         FieldsUtil.assign(order,imSessionNewParam);
         imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
+        // 订阅消息
+        String[][] maData = new String[][] {
+            {"患者信息"},
+            {"病情描述"},
+            {Util.getdate("yyyy-MM-dd HH:mm:ss")},
+            {"温馨提示"}
+        };
 
+        List<Integer> arrayList = Collections.<Integer>singletonList(order.getUserId());
+        MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
+
+        // 公众号消息
+        String[][] mpData = new String[][] {
+            {"患者信息"},
+            {"病情描述"},
+            {Util.getdate("yyyy-MM-dd HH:mm:ss")},
+            {"温馨提示"}
+        };
+        RabbitMessageParam param2 = RabbitMessageParam.builder()
+            .maTemplateData(
+                MaTemplateData.builder().config(SubcribeTemplateCategory.CONSULTATION_ORDER_PAY).data(data).build())
+//            .mpTemplateData(
+//                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
+            .page("pages/account/account").shopId(getShopId())
+            .userIdList(arrayList)
+            .type(MessageTemplateConfigConstant.NEW_CONSULTATION).build();
+        saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
 
 

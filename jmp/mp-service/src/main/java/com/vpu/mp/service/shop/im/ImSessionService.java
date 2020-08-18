@@ -169,9 +169,9 @@ public class ImSessionService extends ShopBaseService {
         if (renderPageParam.getIsFirstTime()) {
             String redisKey = null;
             if (renderPageParam.getIsDoctor()) {
-                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
-            } else {
                 redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
+            } else {
+                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
             }
             List<String> list = jedisManager.getList(redisKey);
             for (String jsonStr : list) {
@@ -181,11 +181,11 @@ public class ImSessionService extends ShopBaseService {
                 }
                 imSessionItemDo.setImSessionId(imSessionDo.getId());
                 if (renderPageParam.getIsDoctor()) {
-                    imSessionItemDo.setFromId(imSessionDo.getDoctorId());
-                    imSessionItemDo.setToId(imSessionDo.getUserId());
-                } else {
                     imSessionItemDo.setFromId(imSessionDo.getUserId());
                     imSessionItemDo.setToId(imSessionDo.getDoctorId());
+                } else {
+                    imSessionItemDo.setFromId(imSessionDo.getDoctorId());
+                    imSessionItemDo.setToId(imSessionDo.getUserId());
                 }
                 imSessionItemDos.add(imSessionItemDo);
             }

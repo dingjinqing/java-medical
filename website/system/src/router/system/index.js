@@ -183,6 +183,26 @@ const routes = [{
       }
     }
   ]
+},
+{
+  path: '/system/member_management',
+  name: 'member_statistics',
+  meta: {
+    title: '会员管理'
+  },
+  component: () => import('@/view/system/layout/index'),
+  redirect: '/system/member_management/account_list',
+  children: [
+    // 会员管理子路由
+    {
+      path: 'account_list',
+      component: () => import('@/view/system/index/leftNavComponents/member_manage/member_statistics'),
+      name: 'member_statistics',
+      meta: {
+        title: '会员列表'
+      }
+    }
+  ]
 }
 ]
 export default routes

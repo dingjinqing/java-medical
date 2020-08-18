@@ -61,6 +61,7 @@ global.wxPage({
   toggleStatus(e){
     let {type} = e.currentTarget.dataset
     this.setData({
+      targetStatus:type,
       'pageParams.currentPage':1,
       'filterParams.sessionStatus':type === '1' ? [1] : [2,4,5,6]
     })

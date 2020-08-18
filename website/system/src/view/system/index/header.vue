@@ -13,6 +13,7 @@
         @mouseleave="header_nav_leave(index)"
         class="wrapper"
       >
+        <div>asdfadfdasdfas</div>
         <img
           :src="item.img"
           alt=""

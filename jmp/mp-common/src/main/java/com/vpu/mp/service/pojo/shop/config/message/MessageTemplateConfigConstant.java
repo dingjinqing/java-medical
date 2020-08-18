@@ -69,6 +69,9 @@ public class MessageTemplateConfigConstant {
     /** 审核通过提醒 */
     public static final Integer AUDIT_SUCCESS = 3015;
 
+    /** 新问诊单提醒 */
+    public static final Integer NEW_CONSULTATION = 4001;
+
     public static final ShopMsgTempConfig MSG_TEMP_CONFIG = new ShopMsgTempConfig() {{
         setA(new String[]{"eZRlu9Y3zSkEi5dSgnVHij2zF-JxwADkXV9Ni_MOB0E",
             "suK4T3YT6p14sKCrR46MxpkImPfXyqkGCVDFtIFgofc",

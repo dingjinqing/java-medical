@@ -63,8 +63,13 @@ public enum SubscribeMessageConfig {
 	
 	/** 美妆/洗护 786开始 */
 	order_deliver_786(com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory.ORDER_DELIVER, 786, 1856, "订单发货通知",
-			"商品名称{{thing5.DATA}}快递单号{{character_string3.DATA}}", new int[] { 5, 3 });
+			"商品名称{{thing5.DATA}}快递单号{{character_string3.DATA}}", new int[] { 5, 3 }),
 	/** 美妆/洗护 786结束 */
+
+    /** 私立医疗机构 47开始 */
+    consultation_order_pay_47(com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory.CONSULTATION_ORDER_PAY, 47, 3199, "新问诊单通知",
+        "患者信息{{thing1.DATA}}病情描述{{thing2.DATA}}填写时间{{date3.DATA}}温馨提示{{thing4.DATA}}", new int[] { 1, 2, 3, 4 });
+    /** 私立医疗机构 47结束 */
 
 	/** 模板名称，小程序端发送名称找对应要用那个 */
 	private String templeName;

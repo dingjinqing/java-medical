@@ -876,7 +876,7 @@ export default {
             this.$set(this.info, 'sms_account', {
               smsAccount: this.sid,
               balance: 0.000,
-              smsNumL: 0
+              smsNum: 0
             })
           } else {
             this.$message.error({
