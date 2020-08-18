@@ -65,7 +65,6 @@ public class TableSynchronizeTask {
      */
     @Scheduled(cron = "0 0 0,3 * * ?")
     public void inquiryOrderSynchronize(){
-        log.info("【同步任务】---问诊订单数据同步到主库start");
         Result<ShopRecord> shopRecords =saas.shop.getAll();
         shopRecords.forEach(shopRecord -> {
             saas.getShopApp(shopRecord.getShopId()).shopTaskService.tableTaskService.inquiryOrderSynchronize(shopRecord.getShopId());
