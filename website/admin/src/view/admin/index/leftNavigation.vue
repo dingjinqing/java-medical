@@ -10,7 +10,7 @@
       :default-active="$route.path"
       v-if="isRouterAlive"
     >
-      <template v-for="(listItem,listIndex) in defaultList">
+      <template v-for="(listItem,listIndex) in defaultList.list">
         <el-submenu
           :index="listItem.path"
           :key="listIndex"
@@ -51,7 +51,7 @@ import vm from '@/main'
 export default {
   data () {
     return {
-      defaultList: [],
+      defaultList: {},
       first_web_manage: [
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/shop_look.png',
@@ -692,7 +692,6 @@ export default {
         let { meta: { meta = null }, path } = router
         this.initLeftNav(meta)
         this.activeIndex = path
-        this.reload()
       },
       immediate: true
     }
@@ -705,8 +704,15 @@ export default {
   methods: {
     async initLeftNav (meta) {
       if (!this.menuParam) await this.filterNavShow()
-      if (!this.hasOwnProperty(meta)) return
-      this.defaultList = this[meta]
+      if (!this.hasOwnProperty(meta) || this.defaultList.meta === meta) return
+      this.isRouterAlive = false
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+      })
+      this.defaultList = {
+        meta: meta,
+        list: this[meta]
+      }
     },
     filterNavShow () {
       return new Promise((resolve, reject) => {
@@ -727,12 +733,6 @@ export default {
           })
           resolve()
         })
-      })
-    },
-    reload () {
-      this.isRouterAlive = false
-      this.$nextTick(function () {
-        this.isRouterAlive = true
       })
     }
   },
