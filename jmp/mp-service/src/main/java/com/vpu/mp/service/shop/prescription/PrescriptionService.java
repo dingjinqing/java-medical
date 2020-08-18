@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HITS_NULL;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HIS_NULL;
 
 /**
  * 处方
@@ -242,7 +242,7 @@ public class PrescriptionService extends ShopBaseService {
     }
 
     /**
-     * @description hits系统拉取处方信息，处方详情
+     * @description his系统拉取处方信息，处方详情
      * @author zhaoxiaodong
      * @create 2020-7-16 10:36
      */
@@ -274,7 +274,7 @@ public class PrescriptionService extends ShopBaseService {
         }
 
         if (apiExternalRequestResult.getData() == null) {
-            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+            return new JsonResult().fail("zh_CN", FETCH_HIS_NULL);
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
@@ -286,13 +286,13 @@ public class PrescriptionService extends ShopBaseService {
         for (FetchPrescriptionVo prescriptionVo : fetchPrescriptionVos) {
             //如果没有当前处方就新增
             if (prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode()) == null) {
-                prescriptionDao.addHitsPrescription(prescriptionVo);
+                prescriptionDao.addHisPrescription(prescriptionVo);
                 //遍历得到的处方表中的处方明细，如果没有就新增，有就更新
                 for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getDataList()) {
                     prescriptionItemDao.save(fetchPrescriptionItemVo);
                 }
             } else {  //否则就修改
-                prescriptionDao.updateHitsPrescription(prescriptionVo);
+                prescriptionDao.updateHisPrescription(prescriptionVo);
             }
         }
         return JsonResult.success();
@@ -319,7 +319,7 @@ public class PrescriptionService extends ShopBaseService {
             return result;
         }
         if (apiExternalRequestResult.getData() == null) {
-            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+            return new JsonResult().fail("zh_CN", FETCH_HIS_NULL);
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
@@ -331,13 +331,13 @@ public class PrescriptionService extends ShopBaseService {
             //如果没有当前处方就新增
             PrescriptionVo doByPrescriptionNo = prescriptionDao.getDoByPrescriptionNo(prescriptionVo.getPrescriptionCode());
             if (doByPrescriptionNo == null) {
-                prescriptionDao.addHitsPrescription(prescriptionVo);
+                prescriptionDao.addHisPrescription(prescriptionVo);
                 //遍历得到的处方表中的处方明细，如果没有就新增，有就更新
                 for (FetchPrescriptionItemVo fetchPrescriptionItemVo : prescriptionVo.getDataList()) {
                     prescriptionItemDao.save(fetchPrescriptionItemVo);
                 }
             } else {  //否则就修改
-                prescriptionDao.updateHitsPrescription(prescriptionVo);
+                prescriptionDao.updateHisPrescription(prescriptionVo);
             }
         }
         return JsonResult.success();

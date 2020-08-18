@@ -100,7 +100,7 @@ public class PrescriptionItemDao extends ShopBaseDao {
     }
 
     /**
-     * @description 从hits系统拉取处方详情
+     * @description 从his系统拉取处方详情
      * @create 2020-7-16 15:06
      * @Author zhaoxiaodong
      */
@@ -119,7 +119,7 @@ public class PrescriptionItemDao extends ShopBaseDao {
      * 更新处方详情
      * @param fetchPrescriptionItemVo 处方详情入参
      */
-    public void updateHitsPrescriptionItem(FetchPrescriptionItemVo fetchPrescriptionItemVo){
+    public void updateHisPrescriptionItem(FetchPrescriptionItemVo fetchPrescriptionItemVo){
         PrescriptionItemRecord prescriptionItemRecord = db().select().from(PRESCRIPTION_ITEM)
             .where(PRESCRIPTION_ITEM.ID.eq(fetchPrescriptionItemVo.getId()))
             .fetchOneInto(PrescriptionItemRecord.class);

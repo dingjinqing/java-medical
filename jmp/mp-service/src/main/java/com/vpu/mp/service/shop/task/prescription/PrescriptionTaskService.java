@@ -33,7 +33,7 @@ public class PrescriptionTaskService  extends ShopBaseService {
             fetchPrescriptionVo.setPrescriptionCode(prescriptionDo.getPrescriptionCode());
             //设为过期
             fetchPrescriptionVo.setExpireType(PrescriptionConstant.EXPIRE_TYPE_INVALID);
-            prescriptionDao.updateHitsPrescription(fetchPrescriptionVo);
+            prescriptionDao.updateHisPrescription(fetchPrescriptionVo);
         });
         logger().info("过期处方定时任务结束,shopId{}",getShopId());
     }

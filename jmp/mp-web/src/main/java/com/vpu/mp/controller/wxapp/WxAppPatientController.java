@@ -71,8 +71,8 @@ public class WxAppPatientController extends WxAppBaseController {
         }
         // 拉取患者信息
         Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
-        if (FETCH_HITS_NO_PATIENT.equals(info)) {
-            return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
+        if (FETCH_HIS_NO_PATIENT.equals(info)) {
+            return fail(JsonResultCode.FETCH_HIS_NO_PATIENT);
         }
         return success();
     }
@@ -92,8 +92,8 @@ public class WxAppPatientController extends WxAppBaseController {
             UserPatientOneParam userPatientOneParam = new UserPatientOneParam();
             FieldsUtil.assign(userPatientWithoutCheckCodeParam, userPatientOneParam);
             Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
-            if (FETCH_HITS_NO_PATIENT.equals(info)) {
-                return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
+            if (FETCH_HIS_NO_PATIENT.equals(info)) {
+                return fail(JsonResultCode.FETCH_HIS_NO_PATIENT);
             }
             return success();
         }
