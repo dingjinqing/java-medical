@@ -56,9 +56,9 @@ import static java.lang.String.format;
 public class AddressService extends ShopBaseService {
     private static final String QQ_MAP_GEOCODER_URL = "https://apis.map.qq.com/ws/geocoder/v1";
     public static final Integer USER_ADDRESS_MAX_COUNT=50;
-
+    private static final Integer FILE_NUM =6;
     @Autowired
-    private TxMapLbsConfig txMapLBSConfig;
+    private TxMapLbsConfig txMapLbsConfig;
     @Autowired
     private GoodsDeliverTemplateService shippingFeeTemplate;
     @Autowired
@@ -105,7 +105,10 @@ public class AddressService extends ShopBaseService {
         if (userId == null) {
             return null;
         }
-        return db().select().from(USER_ADDRESS).where(USER_ADDRESS.USER_ID.eq(userId).and(USER_ADDRESS.IS_DEFAULT.eq(OrderConstant.YES))).fetchAnyInto(UserAddressVo.class);
+        return db().select().from(USER_ADDRESS)
+                .where(USER_ADDRESS.USER_ID.eq(userId).and(USER_ADDRESS.IS_DEFAULT.eq(OrderConstant.YES)))
+                .and(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .fetchAnyInto(UserAddressVo.class);
     }
 
 
@@ -249,7 +252,7 @@ public class AddressService extends ShopBaseService {
     public AddressLocation getGeocoderAddressLocation(String address) {
         Map<String, Object> param = new HashMap<>(2);
         param.put("address", address);
-        param.put("key", txMapLBSConfig.getKey());
+        param.put("key", txMapLbsConfig.getKey());
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressLocation.class, true);
     }
 
@@ -263,7 +266,7 @@ public class AddressService extends ShopBaseService {
     public AddressInfo getGeocoderAddressInfo(String lat, String lng) {
         Map<String, Object> param = new HashMap<>(2);
         param.put("location", lat + "," + lng);
-        param.put("key", txMapLBSConfig.getKey());
+        param.put("key", txMapLbsConfig.getKey());
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressInfo.class, true);
     }
 
@@ -495,7 +498,7 @@ public class AddressService extends ShopBaseService {
      */
     public List<String> getBaseJsonPath(AddressDataParam param) {
         List<String> pathList =new ArrayList<>();
-        for (int i = 0; i <=6 ; i++) {
+        for (int i = 0; i <=FILE_NUM ; i++) {
             String relativePath = format("upload/static/address/addressData%s.json", i);
             try {
                 Map<String, String> fileInfo = upYunManager.getFileInfo(relativePath);
