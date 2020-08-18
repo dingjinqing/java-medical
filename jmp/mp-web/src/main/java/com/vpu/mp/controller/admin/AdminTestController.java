@@ -1,10 +1,31 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.ArrayList;
-
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.department.StringParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
+import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
-
+import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
+import com.vpu.mp.service.wechat.OpenPlatform;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateTitleResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,29 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
-import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
-import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
-import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
-import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
-import com.vpu.mp.service.wechat.OpenPlatform;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateTitleResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import java.util.ArrayList;
 
 /**
  *
@@ -42,6 +41,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
  *
  */
 @RestController
+@Slf4j
 public class AdminTestController extends AdminBaseController {
 
     @Autowired
@@ -54,6 +54,19 @@ public class AdminTestController extends AdminBaseController {
 
 	@Autowired
 	private ThirdPartyMsgServices thirdPartyMsgServices;
+
+
+    @RequestMapping(value = "/api/admin/test/updateOrder")
+	public JsonResult updateOrder(){
+        log.info("【同步任务】---订单数据同步到主库");
+        Result<ShopRecord> result = saas.shop.getAll();
+        //同步最近一天的订单
+        result.parallelStream().forEach(shopRecord -> {
+            saas.getShopApp(shopRecord.getShopId()).shopTaskService.tableTaskService.orderDeltaUpdates();
+        });
+        return success();
+    }
+
 
     @RequestMapping(value = "/api/admin/test/addtemplate")
     public JsonResult addtemplate() throws Exception {
@@ -252,12 +265,12 @@ public class AdminTestController extends AdminBaseController {
     	saas.getShopApp(shopId()).shopTaskService.maMpScheduleTaskService.expiringCouponNotify();
 		return success();
     }
-    
+
     @RequestMapping(value = "/api/admin/test/testTask")
     public JsonResult testTask() {
     	saas.getShopApp(shopId()).shopTaskService.wechatTaskService.beginDailyTask();
 		return success();
-    	
+
     }
 
     @RequestMapping(value = "/api/admin/test/fetch/title")
