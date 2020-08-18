@@ -307,6 +307,11 @@
     "includeApi": []
   },
   {
+    "enName": "patient_list",
+    "name": "患者管理",
+    "topIndex": 7
+  },
+  {
     "enName": "pin_group",
     "linkUrl": "/admin/market/pingroup",
     "name": "多人拼团",
@@ -642,7 +647,7 @@
   },
   {
     "enName": "smsConfig",
-    "name": "服务承诺",
+    "name": "短信中心",
     "topIndex": 7
   },
   {

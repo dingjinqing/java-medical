@@ -9,10 +9,21 @@
     if (arr.length === 0) return false
     return arr.indexOf(target) === -1 ? false : true
   }
+  getReturnName = function(type){
+    var returnName = {
+      '0':'仅退款',
+      '1':'退货/退款',
+      '2':'仅退运费',
+      '3':'手动退款',
+      '4':'换货'
+    }
+    return returnName[''+type]
+  }
   module.exports = {
     substring:substring,
     includes:includes,
-    isEmptyObj:isEmptyObj
+    isEmptyObj:isEmptyObj,
+    getReturnName:getReturnName
   }
 </wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
@@ -302,6 +313,24 @@
 				<text class="item-date">日期：{{filter.substring(item.prescriptionCreateTime,0,10)}}</text>
 			</view>
 		</view>
+
+    <block wx:if="{{orderInfo.returnOrderList.length}}">
+      <view class="order_info" wx:for="{{orderInfo.returnOrderList}}">
+        <view class="title">售后详情</view>
+        <view class="order_item">
+          售后类型：{{filter.getReturnName(item.returnType)}}
+        </view>
+        <view class="order_item">
+          退款金额：{{item.money}}元
+        </view>
+        <view class="order_item" wx:if="{{item.shippingFee}}">
+          参考运费：{{item.shippingFee}}元
+        </view>
+        <view class="order_item">
+          退款原因：{{item.reasonTypeDesc}}
+        </view>
+      </view>
+    </block>
 
     <view class="checkout_detail presale-info" wx:if="{{isPreSaleOrder}}">
         <view class="detail_item">

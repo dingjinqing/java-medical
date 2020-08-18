@@ -68,6 +68,14 @@
         </div>
       </div>
     </div>
+    <div
+      class="total_amount"
+      v-if='total.amountTotal > 0'
+    >
+      <div>
+        <span>总计:</span>咨询单数<span>{{total.amountTotal}};</span>咨询单次价格<span>{{total.oncePriceTotal}};</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
+      </div>
+    </div>
     <div class="table_box">
       <el-table
         v-loading='loading'
@@ -116,14 +124,7 @@
         :page-params.sync="pageParams"
         @pagination="initData"
       />
-      <div
-        class="total_amount"
-        v-if='total.amountTotal > 0'
-      >
-        <div>
-          <span>总计:</span>咨询单数<span>{{total.amountTotal}}</span>咨询单次价格<span>{{total.oncePriceTotal}}</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
-        </div>
-      </div>
+
     </div>
 
   </div>
@@ -302,6 +303,8 @@ export default {
     width: 150px;
   }
   .total_amount {
+    background: #fff;
+    padding: 10px 0;
     div {
       text-align: center;
       font-size: 15px;

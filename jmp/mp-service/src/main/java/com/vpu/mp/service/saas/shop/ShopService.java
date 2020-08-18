@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DatasourceManager;
 import com.vpu.mp.dao.foundation.database.DbConfig;
+import com.vpu.mp.dao.main.ShopDao;
 import com.vpu.mp.dao.main.SmsConfigDao;
 import com.vpu.mp.db.main.tables.records.*;
 import com.google.common.collect.Lists;
@@ -16,10 +17,7 @@ import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.saas.marketcalendar.SysCalendarActVo;
-import com.vpu.mp.service.pojo.saas.shop.ShopConst;
-import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
-import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;
-import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
+import com.vpu.mp.service.pojo.saas.shop.*;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumberConfig;
@@ -120,6 +118,9 @@ public class ShopService extends MainBaseService {
 
     @Autowired
     private SmsConfigDao smsConfigDao;
+
+    @Autowired
+    private ShopDao shopDao;
 
     public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
         SelectWhereStep<?> select = db()
@@ -714,5 +715,9 @@ public class ShopService extends MainBaseService {
     public Integer initShopConfig(Integer shopId) {
         // 初始化短信配置
         return smsConfigDao.initSmsConfig(shopId);
+    }
+
+    public List<ShopListInfoVo> getShopListInfo(){
+        return shopDao.getShopListInfo();
     }
 }

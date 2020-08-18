@@ -29,6 +29,7 @@ public class ReturnOrderListMp {
     private Timestamp finishTime;
     private Byte returnType;
     private Byte reasonType;
+    private String reasonTypeDesc;
     private String reasonDesc;
     private BigDecimal money;
     private BigDecimal shippingFee;
