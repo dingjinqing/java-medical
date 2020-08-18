@@ -515,7 +515,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             defaultAddress = address.getefaultAddress(userId);
             if(defaultAddress == null) {
                 //上次下单地址
-                defaultAddress = orderInfo.getLastOrderAddress(userId);
+//                defaultAddress = orderInfo.getLastOrderAddress(userId);
             }
         }
         return defaultAddress;
