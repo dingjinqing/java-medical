@@ -63,6 +63,10 @@ public class BrokerageListParam {
 	 * 返利关系 0：自购返利；1：直接返利；2：间接返利；
 	 */
 	private Byte rebateLevel;
+    /** 导出开始数*/
+    private Integer startNum;
+    /** 导出结束数*/
+    private Integer endNum;
 
 	private Integer currentPage;
 	private Integer pageRows;

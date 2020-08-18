@@ -1,29 +1,28 @@
 package com.vpu.mp.service.shop.distribution;
 
 import static com.vpu.mp.common.foundation.data.DistributionConstant.*;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_GROUP;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
-import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
-import static com.vpu.mp.db.shop.Tables.USER_REMARK;
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserRemarkRecord;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import jodd.util.StringUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -256,6 +255,158 @@ public class DistributorListService extends ShopBaseService{
             }
             where.and(a.USER_ID.in(inviteIds));
         }
+    }
+
+    /**
+     * 导出分销员列表数据
+     * @param param
+     * @param lang
+     */
+    public Workbook exportDistributorList(DistributorListParam param, String lang){
+        SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME.as("distributor_name"),
+            USER.INVITATION_CODE,USER.MOBILE.as("distributor_mobile"),USER.CREATE_TIME,USER_DETAIL.REAL_NAME.as("distributor_real_name"),
+            DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_LEVEL.LEVEL_NAME,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.INVITE_ID)
+            .from(USER.leftJoin(USER_TOTAL_FANLI).on(USER.USER_ID.eq(USER_TOTAL_FANLI.USER_ID))
+                .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID))
+                .leftJoin(DISTRIBUTOR_GROUP).on(DISTRIBUTOR_GROUP.ID.eq(USER.INVITE_GROUP))
+                .leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)));
+        SelectConditionStep<? extends Record> sql = buildOptions(select,param);
+        sql.limit(param.getStartNum(),param.getEndNum());
+        List<DistributorListExportVo> distributorListExportVos = sql.fetchInto(DistributorListExportVo.class);
+
+        for(DistributorListExportVo distributor : distributorListExportVos) {
+            //邀请人
+            Record3<String, String, String> record = db().select(USER.USERNAME.as("invite_name"), USER.MOBILE.as("invite_mobile"), USER_DETAIL.REAL_NAME.as("invite_real_name")).from(USER)
+                .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID))
+                .where(USER.USER_ID.eq(distributor.getInviteId())).fetchOne();
+            if(record != null){
+                DistributorListExportVo info = record.into(DistributorListExportVo.class);
+                distributor.setInviteName(info.getInviteName());
+                distributor.setInviteMobile(info.getInviteMobile());
+                distributor.setInviteRealName(info.getInviteRealName());
+            }
+
+            //分销员标签
+            Result<Record1<String>> fetch = db().select(TAG.TAG_NAME).from(USER_TAG).leftJoin(TAG).on(TAG.TAG_ID.eq(USER_TAG.TAG_ID)).where(USER_TAG.USER_ID.eq(distributor.getUserId())).fetch();
+            if(fetch != null){
+                List<String> info = fetch.into(String.class);
+                String userTags = Util.listToString(info);
+                distributor.setDistributorTags(userTags);
+            }
+
+            //用户备注
+            Result<Record1<String>> fetch1 = db().select(USER_REMARK.REMARK).from(USER_REMARK).where(USER_REMARK.USER_ID.eq(distributor.getUserId())).and(USER_REMARK.IS_DELETE.eq((byte) 0)).fetch();
+            if(fetch1 != null){
+                List<String> remark = fetch1.into(String.class);
+                distributor.setRemark(Util.listToString(remark));
+            }
+
+            //审核通过时间
+            Record1<Timestamp> timestampRecord1 = db().select(DISTRIBUTOR_APPLY.UPDATE_TIME).from(DISTRIBUTOR_APPLY)
+                .where(DISTRIBUTOR_APPLY.USER_ID.eq(distributor.getUserId())).and(DISTRIBUTOR_APPLY.STATUS.eq((byte) 1))
+                .orderBy(DISTRIBUTOR_APPLY.ID.desc()).limit(1).fetchOne();
+            if(timestampRecord1 != null){
+                Timestamp checkTime = timestampRecord1.into(Timestamp.class);
+                distributor.setCheckTime(checkTime);
+            }
+
+            //间接邀请用户数
+            Integer nextNum = db().select(sum(USER_TOTAL_FANLI.SUBLAYER_NUMBER).as("next_num")).from(USER_TOTAL_FANLI).where(USER_TOTAL_FANLI.USER_ID.in(
+                db().select(USER.USER_ID).from(USER).where(USER.INVITE_ID.eq(distributor.getUserId())).fetch().into(Integer.class)))
+                .fetchOne().into(Integer.class);
+            if(nextNum == null) {
+                nextNum = 0;
+            }
+            distributor.setNextNumber(nextNum);
+
+            //累积获得佣金金额
+            BigDecimal totalFanliMoney = db().select(sum(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY).as("can_fanli_goods_money"))
+                .from(USER_FANLI_STATISTICS).where(USER_FANLI_STATISTICS.FANLI_USER_ID.eq(distributor.getUserId()))
+                .fetchOne().into(BigDecimal.class);
+            distributor.setTotalFanliMoney(totalFanliMoney);
+
+            //待返利佣金金额
+            BigDecimal waitFanliMoney = db().select(sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("wait_fanli_money")).from(ORDER_GOODS_REBATE
+                .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN)))
+                .where(ORDER_INFO.SETTLEMENT_FLAG.eq((byte)0))
+                .and(ORDER_INFO.ORDER_STATUS.ge((byte)3))
+                .and(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(distributor.getUserId()))
+                .fetchOne().into(BigDecimal.class);
+            distributor.setWaitFanliMoney(waitFanliMoney);
+        }
+        System.out.println(distributorListExportVos);
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(distributorListExportVos, DistributorListExportVo.class);
+        return workbook;
+    }
+
+    /**
+     * 导出分销员列表条件查询
+     * @param select
+     * @param param
+     * @return
+     */
+    public  SelectConditionStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select,DistributorListParam param) {
+        SelectConditionStep<? extends Record> sql = select.where(USER.IS_DISTRIBUTOR.eq((byte) 1));
+        System.out.println(param);
+        //微信昵称
+        if(param.getUsername() != null) {
+            sql = sql.and(USER.USERNAME.eq(param.getUsername()));
+        }
+        //手机号
+        if(param.getMobile() != null) {
+            sql = sql.and(USER.MOBILE.contains(param.getMobile()));
+        }
+        //真实姓名
+        if(param.getRealName() != null) {
+            sql = sql.and(USER_DETAIL.REAL_NAME.contains(param.getRealName()));
+        }
+        //创建时间
+        if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
+            sql = sql.and(USER.CREATE_TIME.ge(param.getStartCreateTime())).and(USER.CREATE_TIME.le(param.getStartCreateTime()));
+        }
+        //被邀请人昵称 || 手机号
+        if(param.getInvitedMobile() != null || param.getInvitedUserName() != null) {
+            SelectConditionStep<Record1<Integer>> selectInvites = db().select(USER.INVITE_ID)
+                .from(USER).where(USER.INVITE_ID.ge(0));
+            if(param.getInvitedUserName() != null) {
+                selectInvites.and(USER.USERNAME.contains(param.getInvitedUserName()));
+            }
+            if(param.getInvitedMobile() != null) {
+                selectInvites.and(USER.MOBILE.contains(param.getInvitedMobile()));
+            }
+            ArrayList<Integer> inviteIds = new ArrayList<Integer>();
+            List<Integer> invites = selectInvites.fetch().into(Integer.class);
+            for(int invite : invites) {
+                inviteIds.add(invite);
+            }
+            sql = sql.and(USER.USER_ID.in(inviteIds));
+        }
+        //分销分组
+        if(param.getDistributorGroup() != null) {
+            sql = sql.and(USER.INVITE_GROUP.eq(param.getDistributorGroup()));
+        }
+        //分销等级
+        if(param.getDistributorLevel() != null) {
+            sql = sql.and(USER.DISTRIBUTOR_LEVEL.eq(param.getDistributorLevel()));
+        }
+        //有下级用户
+        if(param.getHaveNextUser() !=null &&  param.getHaveNextUser()== 1){
+            sql = sql.and(USER.USER_ID.in(db().select(USER.INVITE_ID).from(USER).fetch()));
+        }
+        //有手机号
+        if(param.getHaveMobile() != null &&  param.getHaveMobile() == 1){
+            sql = sql.and(USER.MOBILE.ne("null"));
+        }
+        //有真是姓名
+        if(param.getHaveRealName() != null && param.getHaveRealName() == 1){
+            sql = sql.and(USER_DETAIL.REAL_NAME.ne("null"));
+        }
+        if(param.getOptGroupId() != null){
+            sql = sql.and(USER.INVITE_GROUP.ne(param.getOptGroupId()));
+        }
+        return sql;
     }
 
     /**

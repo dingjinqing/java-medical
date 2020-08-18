@@ -1323,6 +1323,45 @@ public class JsonResultMessage {
     public static final String USER_CARD_CHARGE_FILE_NAME = "user.card.charge.file_name";
 
     /**
+     * 分销-分销员列表导出
+     */
+    public static final String DISTRIBUTOR_LIST_NAME = "distributor.list.name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_NAME = "distributor.list.distributor_name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_MOBILE = "distributor.list.distributor_mobile";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_REAL_NAME = "distributor.list.distributor_real_name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_TAGS = "distributor.list.distributor_tags";
+    public static final String DISTRIBUTOR_LIST_CREATE_TIME = "distributor.list.create_time";
+    public static final String DISTRIBUTOR_LIST_CHECK_TIME = "distributor.list.check_time";
+    public static final String DISTRIBUTOR_LIST_INVITE_NAME = "distributor.list.invite_name";
+    public static final String DISTRIBUTOR_LIST_INVITE_REAL_NAME = "distributor.list.invite_real_name";
+    public static final String DISTRIBUTOR_LIST_INVITE_MOBILE = "distributor.list.invite_mobile";
+    public static final String DISTRIBUTOR_LIST_GROUP_NAME = "distributor.list.group_name";
+    public static final String DISTRIBUTOR_LIST_LEVEL_NAME = "distributor.list.level_name";
+    public static final String DISTRIBUTOR_LIST_SUBLAYER_NUMBER = "distributor.list.sublayer_number";
+    public static final String DISTRIBUTOR_LIST_NEXT_NUMBER = "distributor.list.next_number";
+    public static final String DISTRIBUTOR_LIST_TOTAL_FANLI_MONEY = "distributor.list.total_fanli_money";
+    public static final String DISTRIBUTOR_LIST_WAIT_FANLI_MONEY = "distributor.list.wait_fanli_money";
+    public static final String DISTRIBUTOR_LIST_INVITATION_CODE = "distributor.list.invitation_code";
+    public static final String DISTRIBUTOR_LIST_REMARK = "distributor.list.remark";
+
+    /** 分销-佣金统计导出*/
+    public static final String BROKERAGE_LIST_NAME = "brokerage.list.brokerage_name";
+    public static final String BROKERAGE_LIST_DISTRIBUTOR_NAME = "brokerage.list.distributor_name";
+    public static final String BROKERAGE_LIST_DISTRIBUTOR_MOBILE = "brokerage.list.distributor_mobile";
+    public static final String BROKERAGE_LIST_REAL_NAME = "brokerage.list.real_name";
+    public static final String BROKERAGE_LIST_GROUP_NAME = "brokerage.list.group_name";
+    public static final String BROKERAGE_LIST_ORDER_SN = "brokerage.list.order_sn";
+    public static final String BROKERAGE_LIST_ORDER_AMOUNT = "brokerage.list.order_amount";
+    public static final String BROKERAGE_LIST_USER_MOBILE = "brokerage.list.user_mobile";
+    public static final String BROKERAGE_LIST_USER_NAME = "brokerage.list.user_name";
+    public static final String BROKERAGE_LIST_REBATE_LEVEL = "brokerage.list.rebate_level";
+    public static final String BROKERAGE_LIST_TOTAL_REBATE_MONRY = "brokerage.list.total_rebate_money";
+    public static final String BROKERAGE_LIST_REAL_REBATE_MONRY = "brokerage.list.real_rebate_money";
+    public static final String BROKERAGE_LIST_CREATE_TIME = "brokerage.list.create_time";
+    public static final String BROKERAGE_LIST_SETTLEMENT_FLAG = "brokerage.list.settlement_flag";
+    public static final String BROKERAGE_LIST_REBATE_TIME = "brokerage.list.rebate_time";
+
+    /**
      * 科室
      */
     public static final String DOCTOR_DEPARTMENT_NAME_EXIST = "doctor.department.name.exist";
