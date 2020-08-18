@@ -51,6 +51,10 @@ public class SmsApiConfig {
      * 医师短信验证码
      */
     public static final String REDIS_KEY_SMS_CHECK_DOCTOR_MOBILE = "sms:%s:check_doctor_mobile:%s:%s";
+    /**
+     * 患者每天发送短信数量校验
+     */
+    public static final String REDIS_KEY_SMS_USER_CHECK_NUM = "sms:shopId_%s:patientId_%s:sms_num";
 
     /**
      * 通道默认""

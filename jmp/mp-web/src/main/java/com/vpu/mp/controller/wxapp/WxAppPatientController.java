@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.FetchPrescriptionService;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
+import com.vpu.mp.service.shop.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
 import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.*;
 
 /**
@@ -35,6 +37,9 @@ public class WxAppPatientController extends WxAppBaseController {
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    private SmsService smsService;
 
     /**
      * 	获取用户的患者列表
@@ -66,8 +71,8 @@ public class WxAppPatientController extends WxAppBaseController {
         }
         // 拉取患者信息
         Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
-        if (FETCH_HITS_NO_PATIENT.equals(info)) {
-            return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
+        if (FETCH_HIS_NO_PATIENT.equals(info)) {
+            return fail(JsonResultCode.FETCH_HIS_NO_PATIENT);
         }
         return success();
     }
@@ -87,8 +92,8 @@ public class WxAppPatientController extends WxAppBaseController {
             UserPatientOneParam userPatientOneParam = new UserPatientOneParam();
             FieldsUtil.assign(userPatientWithoutCheckCodeParam, userPatientOneParam);
             Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
-            if (FETCH_HITS_NO_PATIENT.equals(info)) {
-                return fail(JsonResultCode.FETCH_HITS_NO_PATIENT);
+            if (FETCH_HIS_NO_PATIENT.equals(info)) {
+                return fail(JsonResultCode.FETCH_HIS_NO_PATIENT);
             }
             return success();
         }
@@ -109,7 +114,17 @@ public class WxAppPatientController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/api/wxapp/user/patient/send/sms")
-    public JsonResult sendCheckSms(@RequestBody @Validated PatientSmsCheckParam param){
+    public JsonResult sendCheckSms(@RequestBody @Validated PatientSmsCheckNumParam param){
+        // 判断该用户今日验证码发送是否超额
+        JsonResultCode jsonResultCode = smsService.checkIsOutOfSmsNum(wxAppAuth.user().getUserId(), "");
+        if (!jsonResultCode.equals(CODE_SUCCESS)) {
+            return fail(jsonResultCode);
+        }
+        // 判断该患者今日验证码是否超额
+        jsonResultCode = smsService.checkUserSmsNum(param);
+        if (!jsonResultCode.equals(CODE_SUCCESS)) {
+            return fail(jsonResultCode);
+        }
         param.setUserId(wxAppAuth.user().getUserId());
         try {
             shop().patientService.sendCheckSms(param);

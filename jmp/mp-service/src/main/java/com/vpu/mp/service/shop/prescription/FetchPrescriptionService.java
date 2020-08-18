@@ -62,9 +62,9 @@ public class FetchPrescriptionService extends ShopBaseService {
         JsonResult medicalHistoryList = medicalHistoryService.pullExternalMedicalHistoryList(userPatientOneParam);
         JsonResult prescriptionInfo = prescriptionService.pullExternalAllPrescriptionInfo(userPatientOneParam);
         if (externalPatientInfo.getError() == 0) {
-            return FETCH_HITS_SUCCESS;
+            return FETCH_HIS_SUCCESS;
         }
-        return FETCH_HITS_NO_PATIENT;
+        return FETCH_HIS_NO_PATIENT;
     }
 
     /**

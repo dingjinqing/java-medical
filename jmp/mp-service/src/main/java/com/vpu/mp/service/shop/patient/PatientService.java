@@ -19,17 +19,8 @@ import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.db.shop.tables.Patient;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalVo;
-import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientMoreInfoParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
-import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.pojo.shop.sms.SmsCheckParam;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.sms.SmsService;
@@ -41,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.config.SmsApiConfig.REDIS_KEY_SMS_USER_CHECK_NUM;
 import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.ALREADY_FETCH;
 
 /**
@@ -276,13 +268,22 @@ public class PatientService extends BaseShopConfigService{
      * 发送短信校验码
      * @param param
      */
-    public void sendCheckSms(PatientSmsCheckParam param) throws MpException {
+    public void sendCheckSms(PatientSmsCheckNumParam param) throws MpException {
         //0000-9999
         int intRandom = RandomUtil.getIntRandom();
         String smsContent = String.format(SmsTemplate.PATIENT_CHECK_MOBILE, "XX医院", intRandom);
         smsService.sendSms(param.getUserId(), param.getMobile(), smsContent);
+        Integer patientId = patientDao.getPatientIdByIdentityCode(param.getIdentityCode());
+        String checkKey = String.format(REDIS_KEY_SMS_USER_CHECK_NUM, getShopId(), patientId);
+        String s = jedisManager.get(checkKey);
+        SmsCheckParam smsCheckParam = Util.json2Object(s, SmsCheckParam.class, false);
+        if (smsCheckParam != null) {
+            smsCheckParam.setCheckNum(smsCheckParam.getCheckNum() - 1);
+        }
+        jedisManager.set(checkKey, Util.toJson(smsCheckParam), smsService.getSecondsToMorning().intValue());
         String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_PATIENT_MOBILE, getShopId(), param.getUserId(), param.getMobile());
         jedisManager.set(key, intRandom + "", 600);
+
     }
 
     /**

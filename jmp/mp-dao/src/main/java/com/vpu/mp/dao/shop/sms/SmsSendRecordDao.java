@@ -15,11 +15,15 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
-import static com.vpu.mp.db.shop.Tables.SMS_SEND_RECORD;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_SEND_STATUS_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_SEND_TYPE_INDUSTRY;
 
 /**
  * @author 孔德成
@@ -96,4 +100,33 @@ public class SmsSendRecordDao extends ShopBaseDao {
         select.orderBy(SMS_SEND_RECORD.RESPONSE_TIME.desc());
     }
 
+
+    /**
+     * 获取该用户今天接收短信数量
+     * @param userId 用户id
+     * @param ext 短信类型
+     * @return Integer
+     */
+    public Integer selectTodaySms(Integer userId, String ext) {
+        // 获取当前时间
+        long current = System.currentTimeMillis();
+        //今天零点零分零秒的秒数
+        // 获取当天凌晨0点0分0秒Date
+        Calendar todayZero = Calendar.getInstance();
+        todayZero.set(todayZero.get(Calendar.YEAR), todayZero.get(Calendar.MONTH), todayZero.get(Calendar.DAY_OF_MONTH),
+            0, 0, 0);
+        Date beginOfDate = todayZero.getTime();
+        // 获取当天23点59分59秒Date
+        Calendar todayTwelve = Calendar.getInstance();
+        todayTwelve.set(todayTwelve.get(Calendar.YEAR), todayTwelve.get(Calendar.MONTH), todayTwelve.get(Calendar.DAY_OF_MONTH),
+            23, 59, 59);
+        Date endOfDate = todayTwelve.getTime();
+        // 获取当前的接收信息数
+        return db().selectCount().from(SMS_SEND_RECORD)
+            .where(SMS_SEND_RECORD.USER_ID.eq(userId))
+            .and(SMS_SEND_RECORD.EXT.eq(ext))
+            .and((SMS_SEND_RECORD.RESPONSE_TIME.gt(new Timestamp(beginOfDate.getTime()))))
+            .and(SMS_SEND_RECORD.RESPONSE_TIME.lt(new Timestamp(endOfDate.getTime())))
+            .fetchAnyInto(Integer.class);
+    }
 }

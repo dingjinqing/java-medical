@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
 import static com.vpu.mp.common.foundation.data.JsonResultCode.DOCTOR_LOGIN_AUTH_ERROR;
 
 /**
@@ -30,7 +32,6 @@ import static com.vpu.mp.common.foundation.data.JsonResultCode.DOCTOR_LOGIN_AUTH
  **/
 
 @RestController
-@RequestMapping("/api/wxapp/doctor")
 public class WxAppDoctorController extends WxAppBaseController {
 
 
@@ -48,7 +49,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @param doctorAuthParam 认证医师姓名，手机号，医师医院唯一编码
      * @return JsonResult
      */
-    @PostMapping("/auth")
+    @PostMapping("/api/wxapp/doctor/auth")
     public JsonResult doctorAuth(@RequestBody DoctorAuthParam doctorAuthParam) {
         doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
         Integer doctorId = doctorService.doctorAuth(doctorAuthParam);
@@ -66,10 +67,14 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @param param 电话号
      * @return JsonResult
      */
-    @PostMapping("/send/check/code")
+    @PostMapping("/api/wxapp/doctor/send/check/code")
     public JsonResult sendCheckSms(@RequestBody @Validated PatientSmsCheckParam param){
         param.setUserId(wxAppAuth.user().getUserId());
         try {
+            JsonResultCode jsonResultCode = smsService.checkIsOutOfSmsNum(wxAppAuth.user().getUserId(), "");
+            if (!jsonResultCode.equals(CODE_SUCCESS)){
+                return fail(jsonResultCode);
+            }
             smsService.sendCheckSms(param);
         } catch (MpException e) {
             return fail();
@@ -81,7 +86,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      * 获取当前医师登录的信息
      * @return JsonResult
      */
-    @PostMapping("/auth/info")
+    @PostMapping("/api/wxapp/doctor/auth/info")
     public JsonResult getDoctorAuthInfo(){
         WxAppSessionUser user=wxAppAuth.user();
         DoctorOneParam doctor= doctorService.getOneInfo(user.getDoctorId());
@@ -92,7 +97,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      * 医师端首页信息展示 消息统计和医师个人信息
      * @return JsonResult
      */
-    @PostMapping("/main")
+    @PostMapping("/api/wxapp/doctor/main")
     public JsonResult doctorMainShow(@RequestBody DoctorMainShowParam doctorMainShowParam){
         // 获取缓存中当前用户信息
         WxAppSessionUser user = wxAppAuth.user();
