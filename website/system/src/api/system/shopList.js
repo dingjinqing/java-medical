@@ -78,3 +78,11 @@ export function renewShopListRequest (data) {
     data: data
   })
 }
+
+// 查询所有可用店铺列表
+export function loadAllShopInfoApi () {
+  return service({
+    url: '/api/system/shop/getList',
+    method: 'get'
+  })
+}
