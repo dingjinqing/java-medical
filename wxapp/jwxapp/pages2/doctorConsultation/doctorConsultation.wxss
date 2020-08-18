@@ -260,13 +260,18 @@
 }
 
 .red_dot {
-  width: 20rpx;
-  height: 20rpx;
+  width: 36rpx;
+  height: 36rpx;
   background: rgba(246, 73, 74, 1);
   border-radius: 50%;
   position: absolute;
-  top: 4rpx;
-  right: 8rpx;
+  top: -2rpx;
+  right: -6rpx;
+  text-align: center;
+  line-height: 36rpx;
+  font-size: 18rpx;
+  color: #fff;
+  
 }
 
 .depart {
