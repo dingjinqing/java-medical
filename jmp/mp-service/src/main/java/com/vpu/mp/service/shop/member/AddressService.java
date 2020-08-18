@@ -105,7 +105,10 @@ public class AddressService extends ShopBaseService {
         if (userId == null) {
             return null;
         }
-        return db().select().from(USER_ADDRESS).where(USER_ADDRESS.USER_ID.eq(userId).and(USER_ADDRESS.IS_DEFAULT.eq(OrderConstant.YES))).fetchAnyInto(UserAddressVo.class);
+        return db().select().from(USER_ADDRESS)
+                .where(USER_ADDRESS.USER_ID.eq(userId).and(USER_ADDRESS.IS_DEFAULT.eq(OrderConstant.YES)))
+                .and(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .fetchAnyInto(UserAddressVo.class);
     }
 
 
