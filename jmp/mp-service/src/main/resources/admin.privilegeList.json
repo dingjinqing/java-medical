@@ -71,7 +71,14 @@
     "coupon_package",
     "comment_gift"
   ],
-  "user_manger": ["user_list", "user_import", "user_card", "user_tag", "score"],
+  "user_manger": [
+    "user_list",
+    "user_import",
+    "user_card",
+    "user_tag",
+    "score",
+    "patient_list"
+  ],
   "store_manage": [
     "store_list",
     "store_verify",

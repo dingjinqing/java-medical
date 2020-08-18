@@ -303,6 +303,24 @@
 			</view>
 		</view>
 
+    <block wx:if="{{orderInfo.returnOrderList.length}}">
+      <view class="order_info">
+        <view class="title">售后详情</view>
+        <view class="order_item">
+          售后类型：仅退款
+        </view>
+        <view class="order_item">
+          退款金额：0.00元
+        </view>
+        <view class="order_item">
+          参考运费：0.00元
+        </view>
+        <view class="order_item">
+          退款原因：处方审核未通过
+        </view>
+      </view>
+    </block>
+
     <view class="checkout_detail presale-info" wx:if="{{isPreSaleOrder}}">
         <view class="detail_item">
           <text class="dotted" style="background-color:{{comColor}}"></text>

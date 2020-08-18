@@ -313,8 +313,12 @@ global.wxPage({
       })
     }
     this.setData({
-      scrollViewHeight: win_h - navigation_h - 110,
+      scrollViewHeight: win_h - navigation_h - this.getBottomHeight(),
     });
+  },
+  getBottomHeight(){
+    if(this.data.targetUserInfo.sessionStatus === 6) return 0;
+    return 110
   },
   getRectHeight () {
     let that = this
