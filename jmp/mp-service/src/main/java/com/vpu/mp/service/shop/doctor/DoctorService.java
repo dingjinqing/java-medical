@@ -22,11 +22,17 @@ import com.vpu.mp.dao.shop.doctor.DoctorDutyRecordDao;
 import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.department.DepartmentService;
@@ -38,10 +44,7 @@ import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -564,4 +567,33 @@ public class DoctorService extends ShopBaseService {
         doctorDao.canConsultation(doctorUnbundlingParam.getDoctorId());
     }
 
+    public void testTemplateMessage(){
+        // 订阅消息
+        String[][] maData = new String[][] {
+            {"患者信息"},
+            {"病情描述"},
+            {Util.getdate("yyyy-MM-dd HH:mm:ss")},
+            {"温馨提示"}
+        };
+
+        List<Integer> arrayList = Collections.<Integer>singletonList(24);
+        MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
+
+        // 公众号消息
+        String[][] mpData = new String[][] {
+            {"患者信息"},
+            {"病情描述"},
+            {Util.getdate("yyyy-MM-dd HH:mm:ss")},
+            {"温馨提示"}
+        };
+        RabbitMessageParam param2 = RabbitMessageParam.builder()
+            .maTemplateData(
+                MaTemplateData.builder().config(SubcribeTemplateCategory.CONSULTATION_ORDER_PAY).data(data).build())
+//            .mpTemplateData(
+//                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
+            .page("pages/account/account").shopId(getShopId())
+            .userIdList(arrayList)
+            .type(MessageTemplateConfigConstant.NEW_CONSULTATION).build();
+        saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+    }
 }

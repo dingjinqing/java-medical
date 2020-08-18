@@ -62,6 +62,9 @@ public class WxAppSubscribeMessageController extends WxAppBaseController {
 		case TypesNames.WITH_DRAW:
 			data= new String[]{SubcribeTemplateCategory.AUDIT};
 			break;
+        case TypesNames.NEW_CONSULTATION:
+                data= new String[]{SubcribeTemplateCategory.CONSULTATION_ORDER_PAY};
+                break;
 		default:
 			logger().info(param.getTyps()+"没有匹配");
 			break;

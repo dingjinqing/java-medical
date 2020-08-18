@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.db.main.Tables;
+import com.vpu.mp.db.main.tables.records.OrderInfoNewRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.account.UserSysVo;
@@ -79,7 +80,7 @@ public class TableTaskService extends ShopBaseService {
      * 同步问诊订单
      */
     public void inquiryOrderSynchronize(Integer shopId){
-        log.info("【同步任务】---问诊订单数据同步到主库shopId:{}",shopId);
+        logger().info("【同步任务】---问诊订单数据同步到主库shopId:{}",shopId);
         //新增
         List<InquiryOrderDo> newInquiryOrderDoList= inquiryOrderDao.getListByCreateTime(DateUtils.getTimestampForStartTime(-1),DateUtils.getTimestampForEndTime(-1));
         saas().mainInquiryOrderService.inquiryOrderSynchronizeInsert(newInquiryOrderDoList);
@@ -91,5 +92,15 @@ public class TableTaskService extends ShopBaseService {
 
 
 
+	}
+	/**
+	 * 增量更新最近一天的数据
+	 */
+	public void orderDeltaUpdates() {
+		List<OrderInfoNewRecord> updateOrderByYesterday = orderInfoService.listUpdateOrderByYesterday();
+		List<OrderInfoNewRecord> createOrderByYesterday = orderInfoService.listCreateOrderByYesterday();
+
+		databaseManager.mainDb().batchUpdate(updateOrderByYesterday).execute();
+		databaseManager.mainDb().batchInsert(createOrderByYesterday).execute();
 	}
 }

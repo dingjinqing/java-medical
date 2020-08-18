@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HITS_NULL;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HIS_NULL;
 
 /**
  * @author 赵晓东
@@ -60,7 +60,7 @@ public class MedicalAdviceService extends ShopBaseService {
             return result;
         }
         if (apiExternalRequestResult.getData() == null) {
-            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+            return new JsonResult().fail("zh_CN", FETCH_HIS_NULL);
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
@@ -73,9 +73,9 @@ public class MedicalAdviceService extends ShopBaseService {
             //如果没有当前医嘱就新增
             Integer medicalAdviceByCode = medicalAdviceDao.getMedicalAdviceByCode(fetchMedicalAdviceVo.getPosCode());
             if (medicalAdviceByCode == null || medicalAdviceByCode == 0) {
-                medicalAdviceDao.addHitsMedicalAdvice(fetchMedicalAdviceVo);
+                medicalAdviceDao.addHisMedicalAdvice(fetchMedicalAdviceVo);
             } else {  //否则就修改
-                medicalAdviceDao.updateHitsMedicalAdvice(fetchMedicalAdviceVo);
+                medicalAdviceDao.updateHisMedicalAdvice(fetchMedicalAdviceVo);
             }
         }
         return JsonResult.success();

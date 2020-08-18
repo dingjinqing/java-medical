@@ -47,107 +47,106 @@
       </div>
     </div>
     <div class="table_box">
-        <el-table
-          v-loading='loading'
-          :data='tableData'
-          style="width:100%"
-          border
-          :header-cell-style="{
+      <el-table
+        v-loading='loading'
+        :data='tableData'
+        style="width:100%"
+        border
+        :header-cell-style="{
             'background-color':'#f5f5f5',
             'text-align':'center',
             'border':'none',
             'color': '#000'
           }"
-          :cell-style="{
+        :cell-style="{
             'text-align':'center'
           }"
-        >
-          <el-table-column
-            prop='hospitalCode'
-            label='医师院内编号'
-          ></el-table-column>
-          <el-table-column
-            label='名称'
-          >
-            <template slot-scope="scope">
-              <div class="doc_name_url">
-                <img
-                  class="doc_img"
-                  v-if='scope.row.url'
-                  :src="scope.row.url"
-                >
-                <div>{{scope.row.name}}</div>
-              </div>
-            </template>
-          </el-table-column>
-          <!-- <el-table-column
+      >
+        <el-table-column
+          prop='hospitalCode'
+          label='医师院内编号'
+        ></el-table-column>
+        <el-table-column label='名称'>
+          <template slot-scope="scope">
+            <div class="doc_name_url">
+              <img
+                class="doc_img"
+                v-if='scope.row.url'
+                :src="scope.row.url"
+              >
+              <div>{{scope.row.name}}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column
             prop='name'
             label='姓名'
           ></el-table-column> -->
-          <el-table-column
-            prop='age'
-            label='年龄'
-          ></el-table-column>
-          <el-table-column
-            prop='departmentNames'
-            label='科室'
-          ></el-table-column>
-          <el-table-column
-            prop='titleName'
-            label='职称'
-          ></el-table-column>
-          <el-table-column
-            prop='mobile'
-            label='手机号'
-          ></el-table-column>
-          <el-table-column
-            prop='workTime'
-            label='从业时间'
-          ></el-table-column>
-          <el-table-column
-            label='操作'
-          >
-            <template slot-scope="scope">
-              <div class="operation">
-                <a
-                  href="javaScript:void(0);"
-                  class="same_btn"
-                  @click="editDoctor(scope.row.id)"
-                >编辑</a>
-                <a
-                  href="javaScript:void(0);"
-                  class="same_btn"
-                  v-if="scope.row.status == 1"
-                  @click="puaseDoctor(scope.row)"
-                >停用</a>
-                <a
-                  href="javaScript:void(0);"
-                  class="same_btn"
-                  v-if="scope.row.status == 0"
-                  @click="beginDoctor(scope.row)"
-                >启用</a>
-                <a
-                  href="javaScript:void(0);"
-                  class="same_btn"
-                >解除绑定</a>
-                <a
-                  href="javaScript:void(0);"
-                  class="same_btn"
-                >停止问诊</a>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
+        <el-table-column
+          prop='age'
+          label='年龄'
+        ></el-table-column>
+        <el-table-column
+          prop='departmentNames'
+          label='科室'
+        ></el-table-column>
+        <el-table-column
+          prop='titleName'
+          label='职称'
+        ></el-table-column>
+        <el-table-column
+          prop='mobile'
+          label='手机号'
+        ></el-table-column>
+        <el-table-column
+          prop='workTime'
+          label='从业时间'
+        ></el-table-column>
+        <el-table-column label='操作'>
+          <template slot-scope="scope">
+            <div class="operation">
+              <a
+                href="javaScript:void(0);"
+                class="same_btn"
+                @click="editDoctor(scope.row.id)"
+              >编辑</a>
+              <a
+                href="javaScript:void(0);"
+                class="same_btn"
+                v-if="scope.row.status == 1"
+                @click="puaseDoctor(scope.row)"
+              >停用</a>
+              <a
+                href="javaScript:void(0);"
+                class="same_btn"
+                v-if="scope.row.status == 0"
+                @click="beginDoctor(scope.row)"
+              >启用</a>
+              <a
+                href="javaScript:void(0);"
+                class="same_btn"
+                v-if="scope.row.userId !== 0"
+                @click="setBundling(scope.row.id)"
+              >解除绑定</a>
+              <a
+                href="javaScript:void(0);"
+                class="same_btn"
+                @click="setConsultation(scope.row)"
+              >{{scope.row.canConsultation ? '禁止问诊' : '允许问诊'}}</a>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { doctorList, enableDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
+import { doctorList, enableDoctor, unBundling, updateConsultation } from '@/api/admin/doctorManage/doctorInfo/doctor'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
@@ -206,7 +205,7 @@ export default {
     },
     // 添加医师
     handleAddDoctor () {
-      this.$router.push({name: 'addDoctor'})
+      this.$router.push({ name: 'addDoctor' })
       console.log(this.$router)
     },
     // 停用
@@ -263,6 +262,37 @@ export default {
           id: id
         }
       })
+    },
+    // 解除绑定
+    setBundling (id) {
+      this.$confirm('此操作将解除该医生与小程序绑定, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        unBundling({ doctorId: id }).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: '已解除绑定' })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+      })
+    },
+    // 切换问诊状态
+    setConsultation ({ id: doctorId, canConsultation }) {
+      this.$confirm(canConsultation ? '是否禁止该医生接诊' : '是否允许该医生接诊', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateConsultation({ doctorId }).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: canConsultation ? '已禁止' : '已允许' })
+            this.initDataList()
+          }
+        })
+      })
     }
   },
   watch: {
@@ -281,62 +311,63 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-@import "@/assets/aliIcon/iconfont.scss";
-.main{
-    .navBox{
+@import '@/assets/aliIcon/iconfont.scss';
+.main {
+  .navBox {
+    display: flex;
+    width: 100%;
+    background-color: #fff;
+    padding: 15px;
+    .filters {
+      flex: 2;
+      display: flex;
+      flex-wrap: wrap;
+      line-height: 32px;
+      margin-left: -15px;
+      .filters_item {
+        width: 270px;
         display: flex;
-        width: 100%;
-        background-color: #fff;
-        padding: 15px;
-        .filters{
-            flex: 2;
-            display: flex;
-            flex-wrap: wrap;
-            line-height: 32px;
-            margin-left: -15px;
-            .filters_item {
-                width: 270px;
-                display: flex;
-                justify-content: flex-end;
-                margin-left: 15px;
-                > span {
-                    width: 140px;
-                    font-size: 14px;
-                    text-align: right;
-                }
-            }
-            .btn_wrap{
-                margin-left: 20px;
-            }
+        justify-content: flex-end;
+        margin-left: 15px;
+        > span {
+          width: 140px;
+          font-size: 14px;
+          text-align: right;
         }
+      }
+      .btn_wrap {
+        margin-left: 20px;
+      }
     }
-    .table_box{
-        padding: 10px;
-        background: #fff;
-        margin-top: 10px;
-        .doc_name_url{
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          .doc_img{
-            width: 45px;
-            height: 45px;
-            margin-right: 10px;
-            border-radius: 100px;
-            border: 1px solid #eee;
-          }
-        }
-        .operation {
-          display: flex;
-          justify-content: center;
-          > .same_btn{
-              font-size: 12px;
-              text-decoration: none;
-              cursor: pointer;
-              margin-right: 8px;
-              color: #5a8bff;
-            }
-        }
+  }
+  .table_box {
+    padding: 10px;
+    background: #fff;
+    margin-top: 10px;
+    .doc_name_url {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .doc_img {
+        width: 45px;
+        height: 45px;
+        margin-right: 10px;
+        border-radius: 100px;
+        border: 1px solid #eee;
+      }
     }
+    .operation {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      > .same_btn {
+        font-size: 12px;
+        text-decoration: none;
+        cursor: pointer;
+        margin-right: 8px;
+        color: #5a8bff;
+      }
+    }
+  }
 }
 </style>

@@ -3,16 +3,24 @@ package com.vpu.mp.service.shop.sms;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSON;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RandomUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.SmsApiConfig;
+import com.vpu.mp.dao.main.SmsConfigDao;
 import com.vpu.mp.dao.shop.config.ShopCfgDao;
+import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckNumParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.pojo.shop.sms.*;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
@@ -23,10 +31,11 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.SMS_OUT_OF_LIMITS;
+import static com.vpu.mp.config.SmsApiConfig.REDIS_KEY_SMS_USER_CHECK_NUM;
 import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_FIND_FAIL;
 import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_FIND_SUCCESS;
 
@@ -50,6 +59,10 @@ public class SmsService extends BaseShopConfigService {
     private SmsAccountConfigService smsAccountConfigService;
     @Autowired
     private JedisManager jedisManager;
+    @Autowired
+    private SmsConfigDao smsConfigDao;
+    @Autowired
+    private PatientDao patientDao;
 
     /**
      * 发送短信
@@ -240,4 +253,69 @@ public class SmsService extends BaseShopConfigService {
         jedisManager.set(key, intRandom + "", 600);
     }
 
+    /**
+     * 校验当前患者验证码发送数量
+     */
+    public JsonResultCode checkUserSmsNum(PatientSmsCheckNumParam patientSmsCheckNumParam) {
+        Integer patientId = patientDao.getPatientIdByIdentityCode(patientSmsCheckNumParam.getIdentityCode());
+        String key = String.format(REDIS_KEY_SMS_USER_CHECK_NUM, getShopId(), patientId);
+        String s = jedisManager.get(key);
+        SmsConfigVo smsConfigVo = smsConfigDao.selectSmsConfig(getShopId());
+        // 如果之前不存在缓存
+        if (s == null || "".equals(s)) {
+            SmsCheckParam smsCheckParam = new SmsCheckParam();
+            smsCheckParam.setCheckNum(smsConfigVo.getUserCheckCodeNum());
+            jedisManager.set(key, Util.toJson(smsCheckParam), this.getSecondsToMorning().intValue());
+        }
+        s = jedisManager.get(key);
+        SmsCheckParam smsCheckParam = Util.json2Object(s, SmsCheckParam.class, false);
+        assert smsCheckParam != null;
+        if (smsCheckParam.getCheckNum() <= 0) {
+            return SMS_OUT_OF_LIMITS;
+        }
+        return CODE_SUCCESS;
+    }
+
+    /**
+     * 计算当前时间至凌晨的时间差
+     * @return Long
+     */
+    public Long getSecondsToMorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+    }
+
+    /**
+     * 获取今天该用户已发送消息数
+     * @param userId 用户id
+     * @return Integer
+     */
+    public Integer getTodaySms(Integer userId, String ext) {
+        ext = "checkcode";
+        return smsSendRecordDao.selectTodaySms(userId,ext);
+    }
+
+    /**
+     * 检查行业短信。营销短信，用户接收验证码是否超额
+     * @param userId 用户id
+     * @param ext 短信类型
+     * @return JsonResultCode
+     */
+    public JsonResultCode checkIsOutOfSmsNum(Integer userId, String ext) {
+        // TODO: 添加行业短信、营销短信
+        ext = "checkcode";
+        SmsConfigVo smsConfigVo = smsConfigDao.selectSmsConfig(getShopId());
+        Integer smsNum = smsSendRecordDao.selectTodaySms(userId, ext);
+        if (smsNum>=smsConfigVo.getUserCheckCodeNum()) {
+            return SMS_OUT_OF_LIMITS;
+        }
+        else {
+            return CODE_SUCCESS;
+        }
+    }
 }

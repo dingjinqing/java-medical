@@ -15,11 +15,18 @@ global.wxPage({
     search_data: [],
     departmentList: [],
     doctorList: [],
-    titleList: [],
+    titleList: [
+      {id:0,name:'综合'},
+      {id:1,name:'医师级别'},
+      {id:2,name:'评价'},
+      {id:3,name:'响应时间'},
+      {id:4,name:'接诊量'},
+      {id:5,name:'关注数'},
+    ],
     deparName: '科室',
-    doctorName: '职称',
+    composName: '综合',
     deparId: 0,
-    doctorId: 0,
+    sortType: 0,
     keyword: '',
     pageParams: {
       currentPage: 1,
@@ -77,22 +84,22 @@ global.wxPage({
     let name = e.currentTarget.dataset.name;
     let choose_type = that.data.choose_type;
     let deparName = that.data.deparName;
-    let doctorName = that.data.doctorName;
+    let composName = that.data.composName;
     let deparId = that.data.deparId;
-    let doctorId = that.data.doctorId;
+    let sortType = that.data.sortType;
     let keyword = that.data.keyword;
     if (choose_type == 'doctor') {
-      doctorName = name;
-      doctorId = id;
+      composName = name;
+      sortType = id;
     } else {
       deparName = name;
       deparId = id;
     }
-    this.requestList(keyword, deparId, doctorId)
+    this.requestList(keyword, deparId, sortType)
     that.setData({
-      doctorName: doctorName,
+      composName: composName,
       deparName: deparName,
-      doctorId: doctorId,
+      sortType: sortType,
       deparId: deparId,
       can_show: false,
       choose_type: ''
@@ -151,7 +158,7 @@ global.wxPage({
     this.setData({
       'pageParams.currentPage': this.data.pageParams.currentPage + 1
     });
-    this.requestList();
+    this.inputSearch();
   },
 
   /**
@@ -168,13 +175,13 @@ global.wxPage({
   inputSearch() {
     let keyword = this.data.keyword;
     let deparId = this.data.deparId;
-    let doctorId = this.data.doctorId;
-    this.requestList(keyword, deparId, doctorId)
+    let sortType = this.data.sortType;
+    this.requestList(keyword, deparId, sortType)
   },
 
-  requestList: function (keyword = '', departmentId = 0, titleId = 0) {
+  requestList: function (keyword = '', departmentId = 0, sortType = 0) {
     let that = this;
-    if (departmentId !== 0 || titleId !== 0 || keyword !== '') that.setData({
+    if (departmentId !== 0 || sortType !== 0 || keyword !== '') that.setData({
       'pageParams.currentPage': 1
     })
     let currentPage = that.data.pageParams ? that.data.pageParams.currentPage : 1;
@@ -188,7 +195,6 @@ global.wxPage({
               [...con.doctorList.dataList]
             ],
             departmentList: con.departmentList,
-            titleList: con.titleList
           })
         } else {
           that.setData({
@@ -203,7 +209,7 @@ global.wxPage({
       ...that.data.pageParams,
       keyword: keyword,
       departmentId: departmentId,
-      titleId: titleId
+      sortType:sortType
     }, '', true);
   }
 })

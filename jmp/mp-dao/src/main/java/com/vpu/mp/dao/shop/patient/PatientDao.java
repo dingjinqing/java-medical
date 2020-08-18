@@ -173,4 +173,15 @@ public class PatientDao extends ShopBaseDao{
         Integer patientId = db().select(PATIENT.ID).from(PATIENT).where(condition).fetchAnyInto(Integer.class);
         return patientId;
     }
+
+    /**
+     * 根据身份证查询患者id
+     * @param identityCode 身份证
+     * @return Integer
+     */
+    public Integer getPatientIdByIdentityCode(String identityCode) {
+        return db().select(PATIENT.ID)
+            .from(PATIENT)
+            .where(PATIENT.IDENTITY_CODE.eq(identityCode)).fetchAnyInto(Integer.class);
+    }
 }

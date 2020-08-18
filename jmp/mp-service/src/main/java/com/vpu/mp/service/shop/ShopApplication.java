@@ -621,9 +621,11 @@ public class ShopApplication {
     /**
      * 商品
      */
+    @Autowired
     public GoodsService goodsService;
     /**
      * 处方任务
      */
+    @Autowired
     public PrescriptionTaskService prescriptionTaskService;
 }

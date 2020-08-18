@@ -19,4 +19,10 @@ public class SmsSendRecordConstant {
     public static final String SMS_SEND_STATUS_FAIL = "-1";
     public static final Integer SMS_FIND_FAIL = -1;
 
+    public static final String SMS_SEND_TYPE_INDUSTRY = "-3";
+
+    public static final String SMS_SEND_TYPE_MARKETING = "-1";
+
+    public static final String SMS_SEND_TYPE_CHECK_CODE = "checkcode";
+
 }

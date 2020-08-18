@@ -65,7 +65,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId, preSaleInfo = null, roomId = null, inviteId = null, memberCardNo = 0, addressId, isPrescription = null, prescriptionCode = null } = options
+    let { goodsList, activityType=null, activityId=null, recordId=null, preSaleInfo = null, roomId = null, inviteId = null, memberCardNo = 0, addressId, isPrescription = null, prescriptionCode = null } = options
     console.log(options)
     wx.setStorage({
       data: options,

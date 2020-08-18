@@ -23,7 +23,7 @@ public class MedicalAdviceDao extends ShopBaseDao {
      * 新增医嘱
      * @param fetchMedicalAdviceVo 医嘱入参
      */
-    public void addHitsMedicalAdvice(FetchMedicalAdviceVo fetchMedicalAdviceVo){
+    public void addHisMedicalAdvice(FetchMedicalAdviceVo fetchMedicalAdviceVo){
         MedicalAdviceRecord medicalAdviceRecord = db().newRecord(MEDICAL_ADVICE, fetchMedicalAdviceVo);
         medicalAdviceRecord.insert();
     }
@@ -44,7 +44,7 @@ public class MedicalAdviceDao extends ShopBaseDao {
      * 更新医嘱
      * @param fetchMedicalAdviceVo 处方入参
      */
-    public void updateHitsMedicalAdvice(FetchMedicalAdviceVo fetchMedicalAdviceVo){
+    public void updateHisMedicalAdvice(FetchMedicalAdviceVo fetchMedicalAdviceVo){
         MedicalAdviceRecord medicalAdviceRecord = db().select().from(MEDICAL_ADVICE)
             .where(MEDICAL_ADVICE.POS_CODE.eq(fetchMedicalAdviceVo.getPosCode()))
             .fetchOneInto(MedicalAdviceRecord.class);
