@@ -14,7 +14,9 @@ import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalOneInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -131,6 +133,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      * @return
      */
     @Override
+    @RedisLock(prefix = JedisKeyConstant.PRESCRIPTION_LOCK)
     public ExecuteResult execute(PrescriptionMakeParam obj) {
         logger().info("医师开方-开始");
         OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
