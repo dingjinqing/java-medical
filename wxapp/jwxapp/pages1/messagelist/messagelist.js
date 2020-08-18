@@ -147,6 +147,7 @@ global.wxPage({
     this.changeReadNum (e.currentTarget.dataset.mes_type,e.currentTarget.dataset.mes_id)
   },
   to_query (e) {
+    console.log(e.currentTarget.dataset.order_sn,e.currentTarget.dataset.status )
     util.jumpLink("/pages2/patientChat/patientChat?orderSn=" + e.currentTarget.dataset.order_sn + "&sessionStatus=" + e.currentTarget.dataset.status)
   },
   /**

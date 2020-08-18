@@ -32,6 +32,18 @@ public class MainUserDao extends MainBaseDao {
         if (pageListParam.getShopId() != null) {
             condition = condition.and(USER.SHOP_ID.eq(pageListParam.getShopId()));
         }
+        if (pageListParam.getMobile() != null) {
+            condition = condition.and(USER.MOBILE.eq(pageListParam.getMobile()));
+        }
+        if (pageListParam.getUsername() != null) {
+            condition = condition.and(USER.USERNAME.like(likeValue(pageListParam.getUsername())));
+        }
+        if (pageListParam.getStartTime() != null) {
+            condition = condition.and(USER.CREATE_TIME.ge(pageListParam.getStartTime()));
+        }
+        if (pageListParam.getEndTime() != null) {
+            condition = condition.and(USER.CREATE_TIME.le(pageListParam.getEndTime()));
+        }
         return condition;
     }
 }

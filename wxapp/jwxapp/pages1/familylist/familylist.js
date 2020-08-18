@@ -97,19 +97,23 @@ global.wxPage({
     })
   },
   freshPatient (e) {
-    util.api('/api/wxapp/user/patient/get/id', res => {
+    util.api('/api/wxapp/user/patient/refresh/info', res => {
       if(res.error == 0) {
         this.setData({
           fresh_ok: 1
         })
       } else if(res.error == 402003) {
-
+        util.navigateTo({
+          url: "pages1/getprescription/getprescription"
+        })
       } else {
         util.showModal('提示', res.message)
         return false
       }
     },{
-      identityCode: e.currentTarget.dataset.identityCode
+      identityCode: e.currentTarget.dataset.identityCode,
+      name:e.currentTarget.dataset.name,
+      mobile:e.currentTarget.dataset.mobile
     })
   },
   /**
