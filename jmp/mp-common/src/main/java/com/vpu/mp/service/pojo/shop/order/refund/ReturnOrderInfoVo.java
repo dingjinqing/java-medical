@@ -39,6 +39,7 @@ public class ReturnOrderInfoVo {
 	private BigDecimal shippingFee;
 	private Byte returnType;
 	private Byte reasonType;
+	private String reasonTypeDesc;
 	private String reasonDesc;
 	private String shippingType;
     private String shippingName;

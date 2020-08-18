@@ -31,7 +31,7 @@ public class ReturnOrderDao extends ShopBaseDao {
      * @return Result<?>
      */
     public List<ReturnOrderListMp> listByOrderSn(String orderSn) {
-       return db().selectFrom(RETURN_ORDER).where(RETURN_ORDER.RETURN_ORDER_SN.eq(orderSn)).fetchInto(ReturnOrderListMp.class);
+       return db().selectFrom(RETURN_ORDER).where(RETURN_ORDER.ORDER_SN.eq(orderSn)).fetchInto(ReturnOrderListMp.class);
     }
 
 

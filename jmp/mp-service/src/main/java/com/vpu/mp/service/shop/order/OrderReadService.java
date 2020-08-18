@@ -576,6 +576,7 @@ showManualReturn(vo);
         UserInfo userInfo = user.getUserInfo(rOrder.getUserId());
         vo.setUsername(userInfo.getUsername());
         vo.setMobile(userInfo.getMobile());
+        vo.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(vo.getReasonType().intValue()));
         //退款失败处理展示数据
         showRefundFailInfo(vo);
 		return vo;
@@ -791,6 +792,9 @@ showManualReturn(vo);
 		//退款订单增加详情
 		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)){
 			List<ReturnOrderListMp> returnOrderListMps = returnOrderDao.listByOrderSn(order.getOrderSn());
+			returnOrderListMps.forEach(itme->{
+				itme.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(itme.getReasonType().intValue()));
+			});
 			order.setReturnOrderList(returnOrderListMps);
 		}
 		return order;
