@@ -37,6 +37,8 @@ public class MessageTemplateConfigConstant {
     public static final Integer GET_MONEY = 2014;
     /** 会员升级通知 */
     public static final Integer MEMBER_LEVEL_UP = 2015;
+    /** 退款成功通知 */
+    public static final Integer SUCCESS_RETURN_MONEY= 2016;
 
     /** 会员卡余额变动提醒 */
     public static final Integer CHANGE_MEMBER_CARD_MONEY = 3001;
@@ -71,6 +73,12 @@ public class MessageTemplateConfigConstant {
 
     /** 新问诊单提醒 */
     public static final Integer NEW_CONSULTATION = 4001;
+    /** 用户咨询订单超时 */
+    public static final Integer CONSULTATION_EXPIRE = 4002;
+    /** 咨询回复通知 */
+    public static final Integer CONSULTATION_ANSWER= 4003;
+    /** 医生已接诊提醒*/
+    public static final Integer CONSULTATION_SUCCESS= 4004;
 
     public static final ShopMsgTempConfig MSG_TEMP_CONFIG = new ShopMsgTempConfig() {{
         setA(new String[]{"eZRlu9Y3zSkEi5dSgnVHij2zF-JxwADkXV9Ni_MOB0E",

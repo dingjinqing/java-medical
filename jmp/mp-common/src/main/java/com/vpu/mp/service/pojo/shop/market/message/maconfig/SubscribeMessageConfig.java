@@ -68,7 +68,22 @@ public enum SubscribeMessageConfig {
 
     /** 私立医疗机构 47开始 */
     consultation_order_pay_47(com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory.CONSULTATION_ORDER_PAY, 47, 3199, "新问诊单通知",
-        "患者信息{{thing1.DATA}}病情描述{{thing2.DATA}}填写时间{{date3.DATA}}温馨提示{{thing4.DATA}}", new int[] { 1, 2, 3, 4 });
+        "患者信息{{thing1.DATA}}病情描述{{thing2.DATA}}填写时间{{date3.DATA}}温馨提示{{thing4.DATA}}", new int[] { 1, 2, 3, 4 }),
+
+    consultation_order_expire_47(com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory.CONSULTATION_ORDER_EXPIRE, 47, 4137, "咨询已超时通知",
+        "咨询状态{{thing1.DATA}}温馨提示{{thing2.DATA}}", new int[] { 1, 2 }),
+
+    consultation_answer_47(SubcribeTemplateCategory.CONSULTATION_ANSWER, 47, 3608, "咨询回复通知",
+        "温馨提示{{thing2.DATA}}医生姓名{{name3.DATA}}居民姓名{{thing9.DATA}}咨询内容{{thing1.DATA}}", new int[] { 2, 3, 9, 1}),
+
+    consultation_success_47(SubcribeTemplateCategory.CONSULTATION_SUCCESS, 47, 7233, "医生已接诊提醒",
+        "患者姓名{{name1.DATA}}病情描述{{thing3.DATA}}接诊医生{{name2.DATA}}备注说明{{thing5.DATA}}科室{{thing7.DATA}}", new int[] { 1, 3, 2, 5, 7}),
+
+    order_deliver_47(SubcribeTemplateCategory.ORDER_DELIVER, 47, 10127, "医生已接诊提醒",
+        "订单编号{{character_string1.DATA}}发货状态{{phrase2.DATA}}发货日期{{time3.DATA}}", new int[] { 1, 2, 3 }),
+
+    order_refund_success_47(SubcribeTemplateCategory.ORDER_DELIVER, 47, 4728, "退款成功通知",
+        "订单号{{character_string1.DATA}}退款时间{{date2.DATA}}退款金额{{amount3.DATA}退款理由{{phrase4.DATA}}", new int[] { 1, 2, 3, 4 });
     /** 私立医疗机构 47结束 */
 
 	/** 模板名称，小程序端发送名称找对应要用那个 */

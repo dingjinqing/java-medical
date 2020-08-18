@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.inquiry;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.db.sql.Order;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.maptemplate.*;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
@@ -41,6 +43,7 @@ import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
+import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.patient.PatientService;
@@ -48,6 +51,7 @@ import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.eval.BlankEval;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,6 +69,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class InquiryOrderService extends ShopBaseService {
+    public static final String BLANK = "";
     @Autowired
     private InquiryOrderDao inquiryOrderDao;
     @Autowired
@@ -89,6 +94,8 @@ public class InquiryOrderService extends ShopBaseService {
     private ImSessionService imSessionService;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private MapTemplateSendService mapTemplateSendService;
 
     /**
      * 问询订单列表
@@ -197,33 +204,18 @@ public class InquiryOrderService extends ShopBaseService {
         FieldsUtil.assign(order,imSessionNewParam);
         imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
-        // 订阅消息
-        String[][] maData = new String[][] {
-            {"患者信息"},
-            {"病情描述"},
-            {Util.getdate("yyyy-MM-dd HH:mm:ss")},
-            {"温馨提示"}
-        };
 
-        List<Integer> arrayList = Collections.<Integer>singletonList(order.getUserId());
-        MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
+        //订阅消息/公众号消息
+        List<Integer> userIds = new ArrayList<>();
+        userIds.add(24);
+        ConsultationAnswerParam consultationAnswerParam = ConsultationAnswerParam.builder().consultationContent(BLANK).doctorName(BLANK).patientName(BLANK).remark(BLANK).userIds(userIds).build();
+        ConsultationSuccessParam consultationSuccessParam = ConsultationSuccessParam.builder().departmentName(BLANK).diseaseDetail(BLANK).doctorName(BLANK).patientName(BLANK).remark(BLANK).userIds(userIds).build();
+        ConsultationOrderExpireParam consultationOrderExpireParam =ConsultationOrderExpireParam.builder().consultationStatus(BLANK).remark(BLANK).userIds(userIds).build();
 
-        // 公众号消息
-        String[][] mpData = new String[][] {
-            {"患者信息"},
-            {"病情描述"},
-            {Util.getdate("yyyy-MM-dd HH:mm:ss")},
-            {"温馨提示"}
-        };
-        RabbitMessageParam param2 = RabbitMessageParam.builder()
-            .maTemplateData(
-                MaTemplateData.builder().config(SubcribeTemplateCategory.CONSULTATION_ORDER_PAY).data(data).build())
-//            .mpTemplateData(
-//                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
-            .page("pages/account/account").shopId(getShopId())
-            .userIdList(arrayList)
-            .type(MessageTemplateConfigConstant.NEW_CONSULTATION).build();
-        saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        mapTemplateSendService.sendConsultationAnswerMessage(consultationAnswerParam);
+        mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
+        mapTemplateSendService.sendConsultationExprieMessage(consultationOrderExpireParam);
+
     }
 
 
