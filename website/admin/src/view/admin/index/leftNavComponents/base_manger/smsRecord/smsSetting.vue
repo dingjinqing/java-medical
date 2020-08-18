@@ -67,11 +67,36 @@
         @click="setSetting"
       >保存</el-button>
     </el-row>
+    <div class="main-title">
+      <span>短信充值</span>
+    </div>
+    <div class="item-setting-content">
+      <p v-if="formData.smsAccountInfo">
+        {{$t('storeCommonSettings.currentRecharge')}}： <span class="bold">{{formData.smsAccountInfo.smsAccount}}</span>， {{$t('storeCommonSettings.balance')}}： <span class="bold">￥{{formData.smsAccountInfo.balance}}</span>， {{$t('storeCommonSettings.numMessages')}}： <span class="bold">{{formData.smsAccountInfo.smsNum}} </span>
+        <a
+          target="_blank"
+          :href="formData.smsAccountInfo.rechargeUrl+ '?sms_account=' + formData.smsAccountInfo.smsAccount"
+          style="color: #5a8bff; cursor: pointer;"
+        >{{$t('storeCommonSettings.gotoRecharge')}}</a>
+      </p>
+      <p v-else>
+        <el-input
+          size="small"
+          style="width: 150px;"
+          v-model="sid"
+          placeholder="请输入账号"
+        ></el-input>
+        <span
+          style="cursor:pointer;color:#66b1ff;"
+          @click="createSmsAccount"
+        >创建账号</span>
+      </p>
+    </div>
   </div>
 </template>
 
 <script>
-import { getSmsSetting, setSmsSetting } from '@/api/admin/basicConfiguration/shopConfig.js'
+import { getSmsSetting, setSmsSetting, setSmsAccount } from '@/api/admin/basicConfiguration/shopConfig.js'
 export default {
   data () {
     return {
@@ -81,7 +106,8 @@ export default {
         patientCheckCodeNum: null,
         userCheckCodeNum: null,
         smsAccountInfo: null
-      }
+      },
+      sid: null
     }
   },
   mounted () {
@@ -99,7 +125,29 @@ export default {
       let { industryNum, marketingNum, patientCheckCodeNum, userCheckCodeNum } = this.formData
       setSmsSetting({ industryNum, marketingNum, patientCheckCodeNum, userCheckCodeNum }).then(res => {
         if (res.error === 0) {
+          this.$message.success('保存成功')
           this.getSetting()
+        }
+      })
+    },
+    createSmsAccount () {
+      if (!this.sid) return false
+      setSmsAccount({ sid: this.sid }).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let data = JSON.parse(res.content)
+          console.log(data)
+          if (data.code === 0) {
+            this.$set(this.info, 'sms_account', {
+              smsAccount: this.sid,
+              balance: 0.000,
+              smsNum: 0
+            })
+          } else {
+            this.$message.error({
+              message: data.msg
+            })
+          }
         }
       })
     }
@@ -111,11 +159,13 @@ export default {
 .container {
   background-color: #fff;
   margin: 0 10px;
-  padding: 20px 16px;
+  overflow: hidden;
+  padding: 0 16px 20px;
   .main-title {
     height: 40px;
     background-color: #eef1f6;
     line-height: 40px;
+    margin-top: 20px;
     span {
       color: #333;
       font-size: 14px;
@@ -150,6 +200,13 @@ export default {
       );
       background-size: 100px;
       background-repeat: no-repeat;
+    }
+    p {
+      font-size: 14px;
+      color: #333;
+      .bold {
+        font-weight: 600;
+      }
     }
     /deep/ .item {
       .el-form-item {
