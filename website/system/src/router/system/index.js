@@ -191,13 +191,13 @@ const routes = [{
     title: '会员管理'
   },
   component: () => import('@/view/system/layout/index'),
-  redirect: '/system/member_management/account_list',
+  redirect: '/system/member_management/member_list',
   children: [
     // 会员管理子路由
     {
-      path: 'account_list',
-      component: () => import('@/view/system/index/leftNavComponents/member_manage/member_statistics'),
-      name: 'member_statistics',
+      path: 'member_list',
+      component: () => import('@/view/system/index/leftNavComponents/member_manage/member_list'),
+      name: 'member_list',
       meta: {
         title: '会员列表'
       }
