@@ -125,7 +125,7 @@ export default {
       let { industryNum, marketingNum, patientCheckCodeNum, userCheckCodeNum } = this.formData
       setSmsSetting({ industryNum, marketingNum, patientCheckCodeNum, userCheckCodeNum }).then(res => {
         if (res.error === 0) {
-          this.$message.success('保存成功')
+          this.$message.success({ message: '保存成功' })
           this.getSetting()
         }
       })

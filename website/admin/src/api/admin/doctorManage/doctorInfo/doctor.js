@@ -70,3 +70,21 @@ export function getProfessionTitle (data) {
     data
   })
 }
+
+// 解除绑定
+export function unBundling (data) {
+  return service({
+    url: '/api/admin/doctor/unbundling',
+    method: 'post',
+    data
+  })
+}
+
+// 切换问诊状态
+export function updateConsultation (data) {
+  return service({
+    url: '/api/admin/doctor/consultation',
+    method: 'post',
+    data
+  })
+}
