@@ -50,7 +50,7 @@ public class MedicalHistoryDao extends ShopBaseDao {
      * 新增病历
      * @param fetchMedicalHistoryVo 病历入参
      */
-    public void addHitsMedicalHistory(FetchMedicalHistoryVo fetchMedicalHistoryVo){
+    public void addHisMedicalHistory(FetchMedicalHistoryVo fetchMedicalHistoryVo){
         MedicalHistoryRecord medicalHistoryRecord = db().newRecord(MEDICAL_HISTORY, fetchMedicalHistoryVo);
         medicalHistoryRecord.insert();
     }
@@ -59,7 +59,7 @@ public class MedicalHistoryDao extends ShopBaseDao {
      * 更新处方
      * @param fetchMedicalHistoryVo 处方入参
      */
-    public void updateHitsMedicalHistory(FetchMedicalHistoryVo fetchMedicalHistoryVo){
+    public void updateHisMedicalHistory(FetchMedicalHistoryVo fetchMedicalHistoryVo){
         MedicalHistoryRecord medicalHistoryRecord = db().select().from(MEDICAL_HISTORY)
             .where(MEDICAL_HISTORY.ID.eq(fetchMedicalHistoryVo.getId()))
             .fetchOneInto(MedicalHistoryRecord.class);

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HITS_NULL;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HIS_NULL;
 
 /**
  * @author 赵晓东
@@ -86,7 +86,7 @@ public class MedicalHistoryService extends ShopBaseService {
             return result;
         }
         if (apiExternalRequestResult.getData() == null) {
-            return new JsonResult().fail("zh_CN", FETCH_HITS_NULL);
+            return new JsonResult().fail("zh_CN", FETCH_HIS_NULL);
         }
         //得到Data
         String dataJson = apiExternalRequestResult.getData();
@@ -105,10 +105,10 @@ public class MedicalHistoryService extends ShopBaseService {
             fetchMedicalHistoryVo.setPatientId(patientInfo.getId());
             fetchMedicalHistoryVo.setPatientName(patientInfo.getName());
             if (medicalHistoryDao.getMedicalHistoryDetailByCode(fetchMedicalHistoryVo.getPosCode()) == null) {
-                medicalHistoryDao.addHitsMedicalHistory(fetchMedicalHistoryVo);
+                medicalHistoryDao.addHisMedicalHistory(fetchMedicalHistoryVo);
 
             } else {  //否则就修改
-                medicalHistoryDao.updateHitsMedicalHistory(fetchMedicalHistoryVo);
+                medicalHistoryDao.updateHisMedicalHistory(fetchMedicalHistoryVo);
             }
         }
         return JsonResult.success();

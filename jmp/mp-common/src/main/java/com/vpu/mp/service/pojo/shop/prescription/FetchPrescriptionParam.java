@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
- * @Description 从hits系统同步处方信息
+ * @Description 从his系统同步处方信息
  * @Author zhaoxiaodong
  * @create 2020-07-16 09:00
  */

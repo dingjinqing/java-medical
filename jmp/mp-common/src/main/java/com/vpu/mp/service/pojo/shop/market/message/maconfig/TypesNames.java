@@ -28,4 +28,7 @@ public class TypesNames {
 	
 	/** 余额提现那用的*/
 	public static final String WITH_DRAW = "with_draw";
+
+    /** 新的问诊单*/
+    public static final String NEW_CONSULTATION = "new_consultation";
 }

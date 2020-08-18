@@ -672,8 +672,9 @@ public enum JsonResultCode {
 
     //患者手机号验证码
     PATIENT_MOBILE_CHECK_CODE_ERROR(402001,JsonResultMessage.PATIENT_MOBILE_CHECK_CODE_ERROR),
-    FETCH_HITS_NO_PATIENT(402002, JsonResultMessage.FETCH_HITS_NO_PATIENT),
+    FETCH_HIS_NO_PATIENT(402002, JsonResultMessage.FETCH_HIS_NO_PATIENT),
     TO_FETCH_PATIENT(402003, JsonResultMessage.TO_FETCH_PATIENT),
+    SMS_OUT_OF_LIMITS(402004, JsonResultMessage.SMS_OUT_OF_LIMITS),
 
 
     /**微信支付错误信息
@@ -735,9 +736,9 @@ public enum JsonResultCode {
     DOCTOR_LOGIN_AUTH_ERROR(400031,JsonResultMessage.DOCTOR_LOGIN_AUTH_ERROR),
     DOCTOR_LOGIN_AUTH_ALREADY_LOGIN(400032,JsonResultMessage.DOCTOR_LOGIN_AUTH_ALREADY_LOGIN),
 
-    // 拉取hits信息
-    FETCH_HITS_ERROR(400052, JsonResultMessage.FETCH_HITS_ERROR),
-    FETCH_HITS_NULL(400053, JsonResultMessage.FETCH_HITS_NULL);
+    // 拉取his信息
+    FETCH_HIS_ERROR(400052, JsonResultMessage.FETCH_HIS_ERROR),
+    FETCH_HIS_NULL(400053, JsonResultMessage.FETCH_HIS_NULL);
 
     /**
      * 得到返回码

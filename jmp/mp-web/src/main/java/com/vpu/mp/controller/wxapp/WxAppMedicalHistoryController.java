@@ -51,7 +51,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
 
 
     /**
-     * 拉取hits系统医嘱明细信息
+     * 拉取his系统医嘱明细信息
      * @param fetchMedicalAdviceParam 拉取医嘱明细
      * @return JsonResult
      */
@@ -61,7 +61,7 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
     }
 
     /**
-     * 拉取hits系统处方列表信息
+     * 拉取his系统处方列表信息
      * @param fetchPrescriptionParam 拉取处方列表
      * @return JsonResult
      */

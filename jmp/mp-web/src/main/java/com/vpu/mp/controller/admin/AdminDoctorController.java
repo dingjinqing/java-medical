@@ -151,4 +151,14 @@ public class AdminDoctorController extends AdminBaseController {
     public JsonResult listDoctorComment(@RequestBody @Validated DoctorAuditedPrescriptionParam param){
         return success(prescriptionService.auditedPrescriptionList(param));
     }
+
+    /**
+     *
+     * @return
+     */
+    @PostMapping("/api/admin/doctor/test")
+    public JsonResult testDoctor(@RequestBody @Validated DoctorAuditedPrescriptionParam param){
+        shop().doctorService.testTemplateMessage();
+        return success();
+    }
 }
