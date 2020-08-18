@@ -294,4 +294,9 @@ public class SystemShopController extends SystemBaseController {
 	public JsonResult getVersionOne(@PathVariable String level) {
 		return success(saas.shop.version.getOneVersion(level));
 	}
+
+	@GetMapping("/system/shop/getList")
+	public JsonResult getAllShopList(){
+        return success(saas.shop.getShopListInfo());
+    }
 }
