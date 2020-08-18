@@ -69,7 +69,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class InquiryOrderService extends ShopBaseService {
-    public static final String BLANK = "";
+    public static final String BLANK = "测试";
     @Autowired
     private InquiryOrderDao inquiryOrderDao;
     @Autowired
