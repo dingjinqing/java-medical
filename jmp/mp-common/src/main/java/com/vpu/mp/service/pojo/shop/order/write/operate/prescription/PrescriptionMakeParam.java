@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.prescription;
 
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDrugVo;
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import java.util.List;
  **/
 @Data
 public class PrescriptionMakeParam extends AbstractOrderOperateQueryParam {
+    @RedisLockField
     private Integer orderId;
     private Integer patientId;
     private Integer doctorId;
