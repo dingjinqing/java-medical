@@ -169,9 +169,9 @@ public class ImSessionService extends ShopBaseService {
         if (renderPageParam.getIsFirstTime()) {
             String redisKey = null;
             if (renderPageParam.getIsDoctor()) {
-                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
-            } else {
                 redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
+            } else {
+                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             }
             List<String> list = jedisManager.getList(redisKey);
             for (String jsonStr : list) {
