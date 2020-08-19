@@ -47,7 +47,7 @@
 	</view>
 
 	<view class="mid_con">
-		<view class="comment_title">患者评价（{{pageParams.totalRows}}）</view>
+		<view class="comment_title">用户评价（{{pageParams.totalRows}}）</view>
 		<view class="commentList">
 			<block wx:for='{{dataList}}' wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
 				<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">

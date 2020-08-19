@@ -4,13 +4,24 @@
       <div class="filters">
         <div class="filters_item ">
           <span class="fil_span">医师姓名：</span>
-                       <el-input
-              v-model="param.doctorName"
-              size="small"
-              style="width:190px;"
-              placeholder="请输入医师姓名"
-            >
-            </el-input>
+          <el-select
+            v-model="param.doctorId"
+            placeholder="请输入医生姓名"
+            size="small"
+            class="default_input"
+            filterable
+          >
+            <el-option
+              label="全部"
+              value=" "
+            ></el-option>
+            <el-option
+              v-for="item in doctorList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
 
         </div>
         <div class="filters_item">
@@ -93,8 +104,8 @@
           label='医生姓名'
         ></el-table-column>
         <el-table-column
-          prop='shopName'
-          label='医院'
+          prop='departmentName'
+          label='科室'
         ></el-table-column>
         <el-table-column
           prop='amount'
@@ -120,22 +131,17 @@
 </template>
 
 <script>
-import { getAdvistoryReportList, getReportExport, getDoctorList, getDoctorTotal } from '@/api/admin/orderManage/advisory.js'
+import { getAdvistoryReportList, getReportExport, getDoctorList, getDoctorTotal } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
 import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { download } from '@/util/excelUtil.js'
-import pagination from '@/components/system/pagination/pagination'
+import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: {
     pagination
   },
   watch: {
     lang () {
-      this.timeRange = [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' },
-        { value: 0, label: '自定义' }
-      ]
+      this.timeRange = this.$t('tradesStatistics.timeRange')
     }
   },
   mounted () {
@@ -150,12 +156,7 @@ export default {
       timeSelect: 1,
       pageParams: {},
       tableData: [],
-      timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' },
-        { value: 0, label: '自定义' }
-      ],
+      timeRange: this.$t('tradesStatistics.timeRange'),
       startDate: {
         year: '',
         month: '',
@@ -169,7 +170,7 @@ export default {
       param: {
         startTime: '',
         endTime: '',
-        doctorName: ''
+        doctorId: ''
       },
       doctorList: [],
       total: {}
@@ -227,7 +228,7 @@ export default {
           this.pageParams = res.content.page
         }
       }).catch(err => console.log(err))
-      this.getTotal({ doctorName: this.param.doctorName, startTime: this.param.startTime, endTime: this.param.endTime })
+      this.getTotal({ doctorId: this.param.doctorId, startTime: this.param.startTime, endTime: this.param.endTime })
     },
     getDoctor (doctor) {
       getDoctorList(doctor).then(res => {

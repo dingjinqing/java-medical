@@ -305,6 +305,7 @@ export default {
   .total_amount {
     background: #fff;
     padding: 10px 0;
+    margin:0 10px;
     div {
       text-align: center;
       font-size: 15px;
