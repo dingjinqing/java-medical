@@ -205,17 +205,6 @@ public class InquiryOrderService extends ShopBaseService {
         imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
 
-        //订阅消息/公众号消息
-        List<Integer> userIds = new ArrayList<>();
-        userIds.add(24);
-        ConsultationAnswerParam consultationAnswerParam = ConsultationAnswerParam.builder().consultationContent(BLANK).doctorName(BLANK).patientName(BLANK).remark(BLANK).userIds(userIds).build();
-        ConsultationSuccessParam consultationSuccessParam = ConsultationSuccessParam.builder().departmentName(BLANK).diseaseDetail(BLANK).doctorName(BLANK).patientName(BLANK).remark(BLANK).userIds(userIds).build();
-        ConsultationOrderExpireParam consultationOrderExpireParam =ConsultationOrderExpireParam.builder().consultationStatus(BLANK).remark(BLANK).userIds(userIds).build();
-
-        mapTemplateSendService.sendConsultationAnswerMessage(consultationAnswerParam);
-        mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
-        mapTemplateSendService.sendConsultationExprieMessage(consultationOrderExpireParam);
-
     }
 
 
