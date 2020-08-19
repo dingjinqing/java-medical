@@ -114,7 +114,7 @@
           <template slot-scope="scope">
             <div class="operation">
               <a
-                v-if="scope.row.orderAmount - scope.row.refundMoney > 0"
+                v-if="scope.row.orderAmount - scope.row.refundMoney > 0 && scope.row.orderStatus !== 0"
                 href="javaScript:void(0);"
                 @click="returnOrder(scope.row)"
               >退款</a>
