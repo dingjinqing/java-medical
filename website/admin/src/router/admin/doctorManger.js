@@ -133,7 +133,7 @@ const routes = [
     name: 'advisoryTotal',
     meta: {
       crumbTitle: 'router.advisoryTotal',
-      meta: 'doctor_manger'
+      meta: 'first_web_manage'
     },
     component: () =>
       import(

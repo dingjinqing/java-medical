@@ -317,6 +317,7 @@ global.wxPage({
     });
   },
   getBottomHeight(){
+    if(this.data.targetUserInfo.sessionStatus === 4) return 55
     if(this.data.targetUserInfo.sessionStatus === 6) return 0;
     return 110
   },

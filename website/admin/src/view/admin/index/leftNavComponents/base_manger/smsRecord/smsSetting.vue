@@ -131,7 +131,10 @@ export default {
       })
     },
     createSmsAccount () {
-      if (!this.sid) return false
+      if (!this.sid) {
+        this.$message.error({ message: '请填写短信账号' })
+        return false
+      }
       setSmsAccount({ sid: this.sid }).then(res => {
         console.log(res)
         if (res.error === 0) {

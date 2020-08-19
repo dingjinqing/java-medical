@@ -712,39 +712,6 @@
             </div>
           </div>
         </li>
-        <li>
-          <div class="text-prompt">
-            <span class="blue_border"></span>
-            <span>{{$t('storeCommonSettings.smsSettings')}}</span>
-          </div>
-          <template v-if="info.sms_account">
-
-            <div class="text-set">
-              <p>
-                {{$t('storeCommonSettings.currentRecharge')}}： <span class="bold">{{info.sms_account.smsAccount}}</span>， {{$t('storeCommonSettings.balance')}}： <span class="bold">￥{{info.sms_account.balance}}</span>， {{$t('storeCommonSettings.numMessages')}}： <span class="bold">{{info.sms_account.smsNum}} </span>
-                <a
-                  target="_blank"
-                  :href="info.sms_account.rechargeUrl+ '?sms_account=' + info.sms_account.smsAccount"
-                  style="color: #5a8bff; cursor: pointer;"
-                >{{$t('storeCommonSettings.gotoRecharge')}}</a>
-              </p>
-            </div>
-          </template>
-          <template v-else>
-            <div class="text-set">
-              <el-input
-                size="small"
-                style="width: 150px;"
-                v-model="sid"
-                placeholder="请输入账号"
-              ></el-input>
-              <span
-                style="cursor:pointer;color:#66b1ff;"
-                @click="createSmsAccount"
-              >创建账号</span>
-            </div>
-          </template>
-        </li>
       </ul>
     </div>
     <div class="basic-page-footer">
