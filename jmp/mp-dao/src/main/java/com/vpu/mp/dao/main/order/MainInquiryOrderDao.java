@@ -109,6 +109,9 @@ public class MainInquiryOrderDao extends MainBaseDao {
         selectJoinStep.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.gt(InquiryOrderConstant.ORDER_TO_PAID));
         selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.ne(InquiryOrderConstant.ORDER_CANCELED));
+        if(param.getShopId()!=null){
+            selectJoinStep.where(INQUIRY_ORDER.SHOP_ID.eq(param.getShopId()));
+        }
         if(StringUtils.isNotBlank(param.getDoctorName())){
             selectJoinStep.where(INQUIRY_ORDER.DOCTOR_NAME.like(likeValue(param.getDoctorName())));
         }
@@ -118,9 +121,7 @@ public class MainInquiryOrderDao extends MainBaseDao {
         if(param.getEndTime()!=null){
             selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.le(param.getEndTime()));
         }
-        if(param.getShopId()!=null){
-            selectJoinStep.where(INQUIRY_ORDER.SHOP_ID.eq(param.getShopId()));
-        }
+
         return selectJoinStep;
     }
 

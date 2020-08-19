@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  **/
 @Data
 public class InquiryOrderStatisticsParam extends BasePageParam {
-    private Integer doctorId;
+    private String doctorName;
     private Timestamp startTime;
     private Timestamp endTime;
 }
