@@ -343,7 +343,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         return result.toString();
     }
 
-    private boolean isSendMp(Integer id) {
+    public boolean isSendMp(Integer id) {
         MessageConfigVo messageConfig = this.messageConfig.getMessageConfig(id);
         if(messageConfig != null && messageConfig.getOpenMp().equals(OrderConstant.YES)) {
             return true;

@@ -171,6 +171,16 @@ public class JsonResultMessage {
      * 营销
      */
     public static final String DISTRIBUTOR_GROUP_NAME_EXIST = "distributor.group.name.exist";
+    public static final String DISTRIBUTOR_WITHDRAW_MONEY_NOT_NULL = "distributor.withdraw.money.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_REALNAME_NOT_NULL = "distributor.withdraw.realname.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_MINIMUM_LIMIT_MONEY  = "distributor.withdraw.minimum.limit.money";
+    public static final String DISTRIBUTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY  = "distributor.withdraw.maximum.limit.money";
+    public static final String DISTRIBUTOR_WITHDRAW_ISPASS_NOT_NULL = "distributor.withdraw.ispass.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_ORDER_SN_NOT_NULL = "distributor.withdraw.order.sn.not.null";
+    public static final String  DISTRIBUTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "distributor.withdraw.no.focus.wechat.official.accounts";
+    public static final String  DISTRIBUTOR_WITHDRAW_WX_ERROR = "distributor.withdraw.wx.error";
+    public static final String  WITHDRAW_OPERATE_ACTION_ERROR = "withdraw.operate.action.error";
+    public static final String  WITHDRAW_AUDIT_STATUS_NOT_ALLOW = "withdraw.audit.status.not.allow";
 
     /**
      * 营销-砍价excel导出-发起砍价

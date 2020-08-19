@@ -242,6 +242,12 @@ public class ShopApplication {
      */
     @Autowired
 	public DistributorWithdrawService withdraw;
+
+    /**
+     * 分销提现
+     */
+    @Autowired
+    public WithdrawService withdrawService;
     /**
      * mp分销service
      */
