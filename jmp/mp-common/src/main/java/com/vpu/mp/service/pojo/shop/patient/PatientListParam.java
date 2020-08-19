@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.patient;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author chenjie
  */
@@ -12,6 +14,8 @@ public class PatientListParam {
     private Integer pageRows;
     private String name;
     private String mobile;
+    private Integer userId=0;
+    private List<Integer> patientIds;
 
     @Override
     public String toString() {
@@ -21,6 +25,8 @@ public class PatientListParam {
             ", pageRows=" + pageRows +
             ", name='" + name + '\'' +
             ", mobile='" + mobile + '\'' +
+            ", userId=" + userId +
+            ", patientIds=" + patientIds +
             '}';
     }
 }

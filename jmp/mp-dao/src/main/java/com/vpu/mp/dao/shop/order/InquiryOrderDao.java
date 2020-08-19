@@ -213,8 +213,8 @@ public class InquiryOrderDao extends ShopBaseDao {
         selectJoinStep.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.gt(InquiryOrderConstant.ORDER_TO_PAID));
         selectJoinStep.where(INQUIRY_ORDER.ORDER_STATUS.ne(InquiryOrderConstant.ORDER_CANCELED));
-        if(param.getDoctorId()!=null){
-            selectJoinStep.where(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId()));
+        if(StringUtils.isNotBlank(param.getDoctorName())){
+            selectJoinStep.where(INQUIRY_ORDER.DOCTOR_NAME.like(likeValue(param.getDoctorName())));
         }
         if(param.getStartTime()!=null){
             selectJoinStep.where(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()));
