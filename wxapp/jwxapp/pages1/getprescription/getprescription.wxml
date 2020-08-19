@@ -9,19 +9,19 @@
       <view class="each_line">
         <view class="el_left">姓名 <text>*</text></view>
         <view class="el_right">
-          <input type="text" placeholder="请输入姓名" bindblur="realName"></input>
+          <input type="text" placeholder="请输入姓名" bindblur="realName" value='{{real_name}}'></input>
         </view>
       </view>
       <view class="each_line">
         <view class="el_left">身份证号码 <text>*</text></view>
         <view class="el_right">
-          <input type="text"  placeholder="请输入身份证号码" bindblur="cardIdInput"></input>
+          <input type="text"  placeholder="请输入身份证号码" bindblur="cardIdInput" value='{{card_id}}'></input>
         </view>
       </view>
       <view class="each_line">
         <view class="el_left">手机号 <text>*</text></view>
         <view class="el_right">
-          <input type="text" class="mobile-input" placeholder="手机号需与病历一致" bindinput="mobileInput"></input>
+          <input type="text" class="mobile-input" placeholder="手机号需与病历一致" bindinput="mobileInput" value='{{mobile}}'></input>
         </view>
         <view class="button mobile {{countDown ? 'gray' : ''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
       </view>

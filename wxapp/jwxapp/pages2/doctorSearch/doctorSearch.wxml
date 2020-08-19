@@ -22,7 +22,7 @@
 				<text class="iconfont iconjiantou2 {{choose_type == 'doctor' ? 'rotate' : ''}}"></text>
 			</view>
 		</view>
-		<scroll-view class="search_result" scroll-y="true" style="height:{{can_show ? (search_data.length >= 6 ? 540:search_data.length * 92):0}}rpx;">
+		<scroll-view class="search_result" scroll-y="true" style="height:{{can_show ? (search_data.length >= 6 ? 552:search_data.length * 92):0}}rpx;">
 			<block wx:for='{{search_data}}' wx:key='id'>
 				<view data-id='{{item.id}}' data-name='{{item.name}}' class="result_item {{item.name == deparName || item.name == composName ? 'choose_name' : ''}}" catchtap="choose_item">{{item.name}}</view>
 			</block>

@@ -26,6 +26,14 @@ global.wxPage({
     if(options.list && options.list == 1){
       this.data.list = 1
     }
+    let {
+      identityCode,name,mobile
+    } = options
+    this.setData({
+      card_id:identityCode,
+      real_name:name,
+      mobile:mobile
+    })
   },
   realName(e) {
     this.data.real_name = e.detail.value;
