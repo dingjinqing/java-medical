@@ -184,6 +184,16 @@ const routes = [
       category: 'advisory_order'
     },
     component: () => import('@/view/admin/index/leftNavComponents/first_trade_manageL/orders/advisoryOrder/advisoryOrderInfo')
+  },
+  {
+    path: '/admin/home/main/orders/advisoryOrder/record',
+    name: 'advisoryRecord',
+    meta: {
+      crumbTitle: 'router.advisoryRecord',
+      meta: 'first_trade_manage',
+      category: 'advisory_order'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_trade_manageL/orders/advisoryOrder/advisoryRecord')
   }
 ]
 

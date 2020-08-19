@@ -193,3 +193,11 @@ export function returnAdvisoryOrder (data) {
     data: data
   })
 }
+// 咨询记录
+export function getRecordList (data) {
+  return service({
+    url: '/api/admin/im/session/history',
+    method: 'post',
+    data: data
+  })
+}

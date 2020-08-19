@@ -9,6 +9,11 @@
         <el-button
           type='primary'
           size='small'
+          @click="viewRecord"
+        >咨询详情</el-button>
+        <el-button
+          type='primary'
+          size='small'
           v-if="orderContent.orderAmount - orderContent.refundMoney > 0"
           @click="returnOrder"
         >手动退款</el-button>
@@ -137,6 +142,15 @@ export default {
       let { orderAmount, refundMoney, orderSn } = this.orderContent
       this.refundInfo = { orderAmount, refundMoney, orderSn }
       this.showRefund = true
+    },
+    viewRecord () {
+      const { href } = this.$router.resolve({
+        name: 'advisoryRecord',
+        query: {
+          orderSn: this.orderContent.orderSn
+        }
+      })
+      window.open(href, '_blank')
     }
   }
 }
@@ -154,11 +168,13 @@ export default {
     .since-info-top {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       height: 60px;
       color: #333;
-      .order_mes span {
-        margin-right: 60px;
+      .order_mes {
+        margin-right: auto;
+        span {
+          margin-right: 60px;
+        }
       }
     }
     .since-info-detail {
