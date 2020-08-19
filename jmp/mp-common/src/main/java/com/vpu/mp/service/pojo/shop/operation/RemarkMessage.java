@@ -69,6 +69,8 @@ public class RemarkMessage {
     /**
      * 营销
 	 */
+    public static final String MSG_DISTRIBUTION_WITHDRAW = "distribution.withdraw";
+    public static final String MSG_DISTRIBUTION_THAW = "distribution.thaw";
 	/** 支付有礼 */
 	public static final String MSG_PAY_HAS_GIFT = "pay.has.gift";
 	/**幸运大抽奖*/

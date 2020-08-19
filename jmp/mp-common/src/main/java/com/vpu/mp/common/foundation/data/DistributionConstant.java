@@ -80,4 +80,27 @@ public class DistributionConstant {
      */
     public final static Byte JUDGE_STATUS_CLOSE = 0;
     public final static Byte JUDGE_STATUS_OPEN = 1;
+
+    /**
+     * 返利方式：小程序wx_mini、公众号wx_open、子商户sub_mch
+     */
+    public static Byte RT_WX_OPEN = 1;
+    public static Byte RT_WX_MINI = 2;
+    public static Byte RT_SUB_MCH = 3;
+
+    public static String[] RT_DES = {"wx_open", "wx_mini", "sub_mch"};
+
+    public static byte getWithdrawType(String type) {
+        for (int i = 0, size = RT_DES.length; i < size; i++) {
+            if(RT_DES[i].equals(type)) {
+                return (byte)++i;
+            }
+        }
+        return (byte)0;
+    }
+
+    /**
+     * 提现订单前缀
+     */
+    public static String ORDER_SN_PREFIX = "T";
 }

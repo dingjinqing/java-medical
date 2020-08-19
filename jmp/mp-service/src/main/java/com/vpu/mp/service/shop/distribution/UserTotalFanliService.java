@@ -66,4 +66,8 @@ public class UserTotalFanliService extends ShopBaseService {
             record.update();
         }
     }
+
+    public void blockedOrThawAmount(Integer userId, BigDecimal money) {
+        db().update(TABLE).set(TABLE.TOTAL_MONEY, money).where(TABLE.USER_ID.eq(userId)).execute();
+    }
 }
