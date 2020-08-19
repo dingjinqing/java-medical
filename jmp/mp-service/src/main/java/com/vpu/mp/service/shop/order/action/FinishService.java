@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
@@ -250,7 +250,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         if(CollectionUtils.isEmpty(updateLevel)) {
             return;
         }
-        mpDistributionGoods.distributorLevel.updateUserLevel(Lists.newArrayList(updateLevel), "自动升级");
+        mpDistributionGoods.distributorLevel.updateUserLevel(Lists.newArrayList(updateLevel), "自动升级",0);
     }
 
     /**

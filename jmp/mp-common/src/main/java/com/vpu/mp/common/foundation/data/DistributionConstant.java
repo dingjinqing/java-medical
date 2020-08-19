@@ -74,4 +74,10 @@ public class DistributionConstant {
     public static final Byte WAIT_SETTLEMENT_FLAG = 0;
     public static final Byte HAS_SETTLEMENT_FLAG = 1;
     public static final Byte NO_SETTLEMENT_FLAG = 2;
+
+    /**
+     * 分销配置-审核开关 0：关闭；1：开启
+     */
+    public final static Byte JUDGE_STATUS_CLOSE = 0;
+    public final static Byte JUDGE_STATUS_OPEN = 1;
 }

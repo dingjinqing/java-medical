@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -14,24 +15,21 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.distribution.UpdateUserLevel;
 import com.vpu.mp.service.pojo.shop.distribution.UserRebateLevelDetail;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.config.DistributionConfigService;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.user.user.UserService;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectHavingStep;
-import org.jooq.SelectWhereStep;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static com.vpu.mp.common.foundation.data.DistributionConstant.JUDGE_STATUS_OPEN;
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL_RECORD;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
@@ -59,6 +57,12 @@ public class DistributorLevelService extends ShopBaseService{
 
     @Autowired
     OrderOperateSendMessage sendMessage;
+
+    @Autowired
+    public DistributionConfigService dcs;
+
+    @Autowired
+    public RecordAdminActionService record;
 
 	/**
 	 * 分销员等级配置
@@ -93,66 +97,57 @@ public class DistributorLevelService extends ShopBaseService{
 		return distributorLevelCfg;
 	}
 
-	public void saveDistributorLevel(DistributorLevelParam[] levelData){
+    /**
+     * 设置分销员等级信息
+     * @param levelData
+     */
+    public void saveDistributorLevel(DistributorLevelParam[] levelData){
         BigDecimal baseMoney = new BigDecimal("0.00");
+        int resetLevel = 0; //是否重新定级标记 0：否；1：是；
+        //定义需要重新定等级的用户
+        List<Integer> upUserIds = new ArrayList<Integer>();
+        List<Integer> notAutoUpUser = new ArrayList<Integer>();//手动升级用户
+        List<String> changeLevels = new ArrayList<>();
+
+        //遍历各等级提交数据
         for(DistributorLevelParam level : levelData) {
-            //各等级信息
+            //现在表中各等级配置信息
             DistributorLevelVo levelInfo = getOneLevelInfo(level.getLevelId());
-            //定义需要重新定等级的用户
-            List<Integer> upUserIds = new ArrayList<Integer>();
-
             if(levelInfo != null) {
-                if(levelInfo.getLevelStatus() == 1) { //等级启用中
-                    if(level.getLevelUpRoute() == 0 && level.getInviteNumber() == 0 && level.getTotalDistributionMoney().compareTo(baseMoney) == 0  && level.getTotalBuyMoney().compareTo(baseMoney) == 0) {
-                       //已启用等级设置不能为空
-                    }
-
-                    //配置是否有更新
-                    boolean noChange = levelInfo.getInviteNumber().equals(level.getInviteNumber())
-                        && levelInfo.getTotalBuyMoney().equals(level.getTotalBuyMoney())
-                        && levelInfo.getTotalDistributionMoney().equals(level.getTotalDistributionMoney());
-
-                    //编辑配置保存
-                    level.setId(levelInfo.getId());
-                    boolean res = updateLevel(level);
-                    logger().info("noChange:"+noChange);
-                    //自动升级更改
-                    if(res && level.getLevelUpRoute() == 0 && !noChange) {
-                        //可自动升级等级
-                        List<Byte> canUpLevels = getLowerCanUpLevels(level.getLevelId());
-                        for(Byte canUpLevel : canUpLevels) {
-                            //该等级下用户ID
-                            List<Integer> userIds = getLevelUser(canUpLevel);
-                            upUserIds.addAll(userIds);
-                        }
-                        //原来为手动升级，更新为自动升级，该级别的分销员回到第一级重新定级
-                        if(levelInfo.getLevelUpRoute() == 1) {
-                            List<Integer> updateUserIds = getLevelUser(levelInfo.getLevelId());
-                            updateLevelToOne(updateUserIds);
-                            upUserIds.addAll(updateUserIds);
-                        }
-                    }
-
-                    //自动升级改为手动升级
-                    if(res && level.getLevelUpRoute() == 1 && levelInfo.getLevelUpRoute() != 1) {
-                        List<Integer> updateUserIds = getLevelUser(levelInfo.getLevelId());
-                        updateLevelToOne(updateUserIds);
-                        upUserIds.addAll(updateUserIds);
-                    }
-                }else { //未启用，直接更新数据
-                    level.setId(levelInfo.getId());
-                    updateLevel(level);
+                //等级信息配置是否有更新 （累积用户数、累积推广金、累积消费总额、升级类型、状态）
+                boolean noChange = levelInfo.getInviteNumber().equals(level.getInviteNumber())
+                    && (levelInfo.getTotalBuyMoney().compareTo(level.getTotalBuyMoney()) == 0)
+                    && (levelInfo.getTotalDistributionMoney().compareTo(level.getTotalDistributionMoney()) == 0)
+                    && levelInfo.getLevelUpRoute().equals(level.getLevelUpRoute())
+                    && levelInfo.getLevelStatus().equals(level.getLevelStatus());
+                boolean a = levelInfo.getTotalBuyMoney().equals(level.getTotalBuyMoney());
+                //编辑配置保存
+                level.setId(levelInfo.getId());
+                boolean res = updateLevel(level);
+                //自动升级更改
+                if (res && !noChange) {
+                    changeLevels.add('“' + level.getLevelName() + '”');
+                    resetLevel = 1;
                 }
-            }else {//没有数据，插入数据
-                System.out.println(level);
-               saveLevel(level);
+            }else {//没有当前等级信息，插入数据
+                changeLevels.add('“' + level.getLevelName() + '”');
+                saveLevel(level);
             }
-            //受影响的等级用户重新定级
-            if(upUserIds.size() > 0) {
-//                updateUserLevel(upUserIds,"保存更改等级配置");
+            if(level.getLevelUpRoute() == 1 && level.getLevelStatus() == 1){
+                notAutoUpUser.addAll(Util.stringToList(level.getLevelUserIds()));
             }
         }
-
+        if (changeLevels.size() > 0) {
+            record.insertRecord(Collections.singletonList(RecordContentTemplate.DISTRIBUTION_UPDATE_LEVEL.code), StringUtils.join(changeLevels,""));
+        }
+        if(resetLevel == 1){
+            upUserIds = distributorIds(notAutoUpUser);
+            logger().info("重新计算等级用户ids"+upUserIds);
+            if(upUserIds.size() > 0) {
+                logger().info("开始重新计算用户等级...");
+                updateUserLevel(upUserIds,"保存更改等级配置",1);
+            }
+        }
     }
 	
 	/**
@@ -320,60 +315,81 @@ public class DistributorLevelService extends ShopBaseService{
      *
      * @param upUserIds
      * @param updateNote
+     * @param upType 等级升级类型 0：只升级；1：升级&降级
      * @return
      */
-	public boolean updateUserLevel(List<Integer> upUserIds, String updateNote) {
-	    //auto_levels order by LEVEL(asc)
-		Result<DistributorLevelRecord> autoLevels = this.getAutoUpdateLevels();
-		if(autoLevels.size() <= 0) {
-			return true;
-		}
-		//获取分销员分销信息（分销金额）USER.USER_ID,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.DISTRIBUTOR_LEVEL,DISTRIBUTOR_LEVEL.LEVEL_NAME
-		List<UserRebateLevelDetail> distributorInfo = this.getUserRebateLevelDetail(upUserIds);
-		//获取邀请人的推广金额
+    public boolean updateUserLevel(List<Integer> upUserIds, String updateNote ,Integer upType) {
+        logger().info("需要重新定级用户"+upUserIds);
+        //auto_levels order by LEVEL(asc)
+        Result<DistributorLevelRecord> autoLevels = this.getAutoUpdateLevels();
+        if(autoLevels.size() <= 0) {
+            return true;
+        }
+        //获取分销员分销信息（分销金额）USER.USER_ID,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.DISTRIBUTOR_LEVEL,DISTRIBUTOR_LEVEL.LEVEL_NAME
+        List<UserRebateLevelDetail> distributorInfo = this.getUserRebateLevelDetail(upUserIds);
+        //获取邀请人的推广金额
         Map<Integer, BigDecimal> distributorRebate = this.getDistributorRebate(upUserIds);
         //更新用户信息
         ArrayList<UserRecord> updateUser = new ArrayList<>();
         //消息推送
         Map<Integer,UpdateUserLevel> updateUserLevelMsg = new HashMap<>();
         //根据配置条件给分销员定等级
-		for(UserRebateLevelDetail upUser : distributorInfo) {
-			//获取用户的订单和门店买单消费总额
-			DistributorSpendVo userSpend = this.getTotalSpend(upUser.getUserId());
-			for(DistributorLevelRecord level : autoLevels) {
-				//不用升级
-				if(upUser.getDistributorLevel() >= level.getLevelId() || level.getLevelStatus().equals(OrderConstant.NO)){
-					continue;
-				}
-				//累计邀请用户数
-				boolean compareInviteNumber = level.getInviteNumber() > 0 && upUser.getSublayerNumber() > level.getInviteNumber();
-				//累计推广金
-				boolean compareDistributionMoney = BigDecimalUtil.compareTo(level.getTotalDistributionMoney(), null) > 0 && BigDecimalUtil.compareTo(distributorRebate.get(upUser.getUserId()), level.getTotalDistributionMoney()) >= 0;
-				//累积推广金与消费金总和
-				boolean compareFanliMoney = BigDecimalUtil.compareTo(level.getTotalBuyMoney(), null) > 0 && BigDecimalUtil.compareTo(BigDecimalUtil.add(distributorRebate.get(upUser.getUserId()), userSpend.getTotal()), level.getTotalBuyMoney()) >= 0;
-				if(compareInviteNumber || compareDistributionMoney || compareFanliMoney) {
+        for(UserRebateLevelDetail upUser : distributorInfo) {
+            //当前用户是否进行过重新定级 0：否；1：是；
+            int hasResetLevel = 0;
+            //获取用户的订单和门店买单消费总额
+            DistributorSpendVo userSpend = this.getTotalSpend(upUser.getUserId());
+            for(DistributorLevelRecord level : autoLevels) {
+                if(upType == 0){
+                    //不用升级
+                    if(upUser.getDistributorLevel() >= level.getLevelId() || level.getLevelStatus().equals(OrderConstant.NO)){
+                        continue;
+                    }
+                }
+                //累计邀请用户数
+                logger().info("重新定级用户id--invite:"+level.getInviteNumber()+"--SublayerNumber:"+upUser.getSublayerNumber());
+                boolean compareInviteNumber = false;
+                if(upUser.getSublayerNumber() != null) {
+                    compareInviteNumber = level.getInviteNumber() > 0 && (upUser.getSublayerNumber() >= level.getInviteNumber());
+                }
+                //累计推广金
+                boolean compareDistributionMoney = BigDecimalUtil.compareTo(level.getTotalDistributionMoney(), null) > 0 && BigDecimalUtil.compareTo(distributorRebate.get(upUser.getUserId()), level.getTotalDistributionMoney()) >= 0;
+                //累积推广金与消费金总和
+                boolean compareFanliMoney = BigDecimalUtil.compareTo(level.getTotalBuyMoney(), null) > 0 && BigDecimalUtil.compareTo(
+                    BigDecimalUtil.add(distributorRebate.get(upUser.getUserId()), userSpend.getTotal()),
+                    level.getTotalBuyMoney()) >= 0;
+                logger().info("重新定级用户id" + upUser.getUserId()+"----"+compareInviteNumber+"----"+compareDistributionMoney+"---"+compareFanliMoney);
+                if(compareInviteNumber || compareDistributionMoney || compareFanliMoney) {
+                    hasResetLevel = 1;
+                    logger().info("正重新定级用户" + upUser.getUserId());
                     UserRecord userInfo = user.getUserByUserId(upUser.getUserId());
                     UpdateUserLevel updateUserLevel = updateUserLevelMsg.get(userInfo.getUserId());
-                    if(updateUserLevel == null) {
-                        updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, upUser.getDistributorLevel(), upUser.getLevelName(), level.getLevelId(), level.getLevelName(), updateNote));
-                    }else {
-                        updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, updateUserLevel.getOldLevel(), updateUserLevel.getOldLevelName(), level.getLevelId(), level.getLevelName(), updateNote));
+                    if(upUser.getDistributorLevel().compareTo(level.getLevelId()) < 0){
+                        if(updateUserLevel == null) {
+                            updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, upUser.getDistributorLevel(),level.getLevelName() ,level.getLevelId(),upUser.getLevelName() , updateNote));
+                        }else {
+                            updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, updateUserLevel.getOldLevel(), updateUserLevel.getOldLevelName(), level.getLevelId(), level.getLevelName(), updateNote));
+                        }
                     }
                     userInfo.setDistributorLevel(level.getLevelId());
                     updateUser.add(userInfo);
-                }else {
-				    break;
                 }
-			}
-		}
-		//更新
-		db().batchUpdate(updateUser).execute();
-		//等级变化记录
+            }
+            if(hasResetLevel == 0){
+                logger().info("降级到最低等级"+upUser.getUserId());
+                UserRecord userInfo = user.getUserByUserId(upUser.getUserId());
+                userInfo.setDistributorLevel((byte)1);
+                updateUser.add(userInfo);
+            }
+        }
+        //更新
+        db().batchUpdate(updateUser).execute();
+        //等级变化记录
         distributorLevelRecord.add(updateUserLevelMsg.values());
         //消息推送
         sendMessage.rebateUpdateUserLevel(updateUserLevelMsg.values());
-		return true;
-	}
+        return true;
+    }
 	
 	/**
 	 * 自动升级的等级
@@ -496,6 +512,27 @@ public class DistributorLevelService extends ShopBaseService{
             .where(USER.USER_ID.eq(userId)).fetchOne();
         if(record != null){
             return record.into(DistributorLevelVo.class);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 全部分销员用户ID
+     * @return
+     */
+    public List<Integer> distributorIds(List<Integer> notAutoUpUser){
+        SelectConditionStep<Record1<Integer>> sql = db().select(USER.USER_ID).from(USER).where(USER.USER_ID.notIn(notAutoUpUser));
+
+        //是否全民分销，看是分销审核是否开启
+        DistributionParam cfg = dcs.getDistributionCfg();
+        if(cfg != null && cfg.getJudgeStatus().equals(JUDGE_STATUS_OPEN)){
+            sql.and(USER.IS_DISTRIBUTOR.eq((byte) 1));
+        }
+
+        Result<Record1<Integer>> record = sql.fetch();
+        if(record != null){
+            return record.into(Integer.class);
         }else{
             return null;
         }

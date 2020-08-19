@@ -67,12 +67,12 @@ import static com.vpu.mp.common.foundation.excel.AbstractExcelDisposer.LANGUAGE_
 @RestController
 @RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
-    /**
+/**
 	@Override
     protected ShopApplication shop() {
         return saas.getShopApp(471752);
     }
-    */
+*/
 
 	//分销配置
 	/**
