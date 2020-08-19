@@ -311,6 +311,9 @@ export default {
       }
     }
   }
+  .operation a{
+    color:#5a8bff;
+  }
   .table_box {
     padding: 10px;
     background: #fff;

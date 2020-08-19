@@ -103,10 +103,7 @@
           prop='doctorName'
           label='医生姓名'
         ></el-table-column>
-        <el-table-column
-          prop='departmentName'
-          label='科室'
-        ></el-table-column>
+
         <el-table-column
           prop='amount'
           label='咨询单数'
