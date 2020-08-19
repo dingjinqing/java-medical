@@ -57,18 +57,19 @@
             <div class="block">
               <el-date-picker
                 v-model="startCreateTime"
-                type="date"
-                style="width:170px;"
-                value-format="yyyy-MM-dd 00:00:00"
+                type="datetime"
+                style="width:200px;"
+                value-format="yyyy-MM-dd HH:mm:ss"
                 placeholder="开始时间"
               >
               </el-date-picker>
               <span>至</span>
               <el-date-picker
                 v-model="endCreateTime"
-                type="date"
-                style="width:170px;"
-                value-format="yyyy-MM-dd 00:00:00"
+                type="datetime"
+                style="width:200px;"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                default-time="23:59:59"
                 placeholder="结束时间"
               >
               </el-date-picker>
@@ -164,7 +165,7 @@
 </template>
 
 <script>
-import {getSmsListPage} from '@/api/admin/basicConfiguration/shopConfig.js'
+import { getSmsListPage } from '@/api/admin/basicConfiguration/shopConfig.js'
 
 export default {
   components: {},
@@ -260,11 +261,11 @@ export default {
   },
   filters: {
     getExtType (val) {
-      let type = {'checkcode': '验证码', '-3': '营销短信'}
+      let type = { 'checkcode': '验证码', '-3': '营销短信' }
       return type[val]
     },
     getResponseMsgCodeState (val) {
-      let state = {'0': '成功', '-1': '失败'}
+      let state = { '0': '成功', '-1': '失败' }
       return state[val]
     }
   }
@@ -273,43 +274,41 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+.payContent {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  padding-top: 0;
+}
 
-  .payContent {
-    padding: 10px;
-    min-width: 100%;
-    font-size: 14px;
-    height: 100%;
-    padding-top: 0;
-  }
+// .payContent_main {
+//   background-color: #fff;
+//   padding: 10px 20px;
+// }
+.search_list {
+  padding: 15px;
+  background: #fff;
+}
 
-  // .payContent_main {
-  //   background-color: #fff;
-  //   padding: 10px 20px;
-  // }
-  .search_list {
-    padding: 15px;
-    background: #fff;
-  }
+.table_box {
+  background: #fff;
+  margin-top: 10px;
+  padding: 15px;
+}
 
-  .table_box {
-    background: #fff;
-    margin-top: 10px;
-    padding: 15px;
-  }
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 
-  .footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
+.footer > span {
+  font-size: 14px;
+}
 
-  .footer > span {
-    font-size: 14px;
-  }
-
-  .block /deep/ .el-date-editor.el-input,
-  .el-date-editor.el-input__inner {
-    width: 150px;
-  }
-
+.block /deep/ .el-date-editor.el-input,
+.el-date-editor.el-input__inner {
+  width: 150px;
+}
 </style>
