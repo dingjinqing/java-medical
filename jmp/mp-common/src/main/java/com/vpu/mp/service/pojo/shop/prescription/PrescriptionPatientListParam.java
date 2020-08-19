@@ -25,6 +25,10 @@ public class PrescriptionPatientListParam  extends BasePageParam {
      */
     private String doctorName;
     /**
+     * 医师id
+     */
+    private String doctorCode;
+    /**
      * 患者id
      */
     private String patientName;

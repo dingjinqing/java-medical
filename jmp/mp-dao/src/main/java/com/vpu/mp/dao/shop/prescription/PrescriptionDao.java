@@ -131,11 +131,15 @@ public class PrescriptionDao extends ShopBaseDao {
         if (!Strings.isEmpty(param.getPatientName())){
             record.where(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName())));
         }
+        if (!Strings.isEmpty(param.getDoctorCode())){
+            record.where(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode()));
+        }
         if (!Strings.isEmpty(param.getPatientMobile())){
             record.leftJoin(PATIENT).on(PATIENT.MOBILE.eq(param.getPatientMobile()));
             record.where(PATIENT.MOBILE.eq(param.getPatientMobile()));
         }
         if (!Strings.isEmpty(param.getPrescriptionCode())){
+
             record.where(PRESCRIPTION.PRESCRIPTION_CODE.eq(param.getPrescriptionCode()));
         }
         if (!Strings.isEmpty(param.getDepartmentName())){
@@ -168,6 +172,9 @@ public class PrescriptionDao extends ShopBaseDao {
         }
         if (!Strings.isEmpty(param.getPatientName())){
             and.and(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName())));
+        }
+        if (!Strings.isEmpty(param.getDoctorCode())){
+            and.and(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode()));
         }
         if (!Strings.isEmpty(param.getDoctorName())){
             and.and(PRESCRIPTION.DOCTOR_NAME.eq(likeValue(param.getDoctorName())));
