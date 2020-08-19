@@ -73,7 +73,7 @@
       v-if='total.amountTotal > 0'
     >
       <div>
-        <span>总计:</span>咨询单数<span>{{total.amountTotal}};</span>咨询单次价格<span>{{total.oncePriceTotal}};</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
+        <span>总计:</span>咨询单数:<span>{{total.amountTotal}};</span>咨询单次价格:<span>{{total.oncePriceTotal}};</span>咨询总金额:<span>{{total.amountPriceTotal}}</span>
       </div>
     </div>
     <div class="table_box">
