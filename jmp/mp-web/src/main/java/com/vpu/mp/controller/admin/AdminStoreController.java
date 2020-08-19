@@ -755,4 +755,25 @@ public class AdminStoreController extends AdminBaseController{
             return fail();
         }
     }
+
+    /**
+     * 获取自提和门店开关信息系
+     */
+    @GetMapping(value = "/api/admin/store/get/config")
+    public JsonResult getStoreConfig(){
+        return success(shop().store.getStoreBtnConfig());
+    }
+
+//    /**
+//     * 同城配送账号列表
+//     */
+//    @GetMapping(value = "/api/admin/store/account/get")
+//    public JsonResult getAccountList(){
+//        List<CityServiceAccountDO> accountList = shop().store.getAccountList();
+//        if (!accountList.isEmpty()){
+//            return success(accountList);
+//        }
+//        return fail();
+//
+//    }
 }
