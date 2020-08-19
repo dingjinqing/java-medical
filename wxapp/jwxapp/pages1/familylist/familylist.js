@@ -19,101 +19,111 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    if(options.source){
+    if (options.source) {
       this.setData({
-        source:options.source
+        source: options.source
       })
     }
     console.log(this.data.source)
     this.requestList();
   },
-  changeDefault(e){
+  changeDefault(e) {
     util.api('/api/wxapp/user/patient/set/default', res => {
-      if(res.error == 0){
+      if (res.error == 0) {
         this.requestList();
-      }else{
-        util.showModal('提示',res.message)
+      } else {
+        util.showModal('提示', res.message)
         return false
       }
-    },{
+    }, {
       userId: util.getCache('user_id'),
       patientId: e.currentTarget.dataset.id
     })
   },
-  to_pre () {
+  to_pre() {
     util.jumpLink('/pages1/getprescription/getprescription')
   },
-  toggleFamily(e){
-    let {patientId} = e.currentTarget.dataset
+  toggleFamily(e) {
+    let {
+      patientId
+    } = e.currentTarget.dataset
     let pageList = getCurrentPages();
     let prevPage = pageList[pageList.length - 2];
     prevPage.setData({
-      'params.patientId':patientId
+      'params.patientId': patientId
     })
     wx.navigateBack()
   },
-  requestList () {
+  requestList() {
     util.api('/api/wxapp/user/patient/list', res => {
       if (res.error == 0) {
         this.data.patientList = res.content
         this.setData({
           patientList: this.data.patientList
         })
-      }else{
-        util.showModal('提示',res.message)
+      } else {
+        util.showModal('提示', res.message)
         return false
       }
-    },{
+    }, {
       userId: util.getCache('user_id')
     })
   },
-  edit_patient (e) {
+  edit_patient(e) {
     util.jumpLink('/pages1/patientinfo/patientinfo?is_edit=1&patient_id=' + e.currentTarget.dataset.id)
   },
-  del_patient (e) {
+  del_patient(e) {
     util.showModal('提示', '确定要删除该患者吗？', () => {
       util.api('/api/wxapp/user/patient/delete', res => {
-        if(res.error == 0){
+        if (res.error == 0) {
           util.toast_success('删除成功!')
           this.requestList()
         } else {
           util.showModal('提示', res.message)
           return false
         }
-      },{
+      }, {
         userId: util.getCache('user_id'),
         patientId: e.currentTarget.dataset.id
       })
     }, true, '取消', '确定')
   },
-  closeModal () {
+  closeModal() {
     this.setData({
       fresh_ok: 0
     })
   },
-  closeModal1 () {
+  closeModal1() {
     this.setData({
       need_get_pre: 0
     })
   },
-  freshPatient (e) {
+  freshPatient(e) {
+    let identityCode = e.currentTarget.dataset.identityCode;
+    let name = e.currentTarget.dataset.name;
+    let mobile = e.currentTarget.dataset.mobile;
     util.api('/api/wxapp/user/patient/refresh/info', res => {
-      if(res.error == 0) {
+      if (res.error == 0) {
         this.setData({
           fresh_ok: 1
         })
-      } else if(res.error == 402003) {
-        util.navigateTo({
-          url: "pages1/getprescription/getprescription"
-        })
+      } else if (res.error == 402003) {
+        util.jumpLink(
+          `pages1/getprescription/getprescription${util.getUrlParams({
+            identityCode:identityCode,
+            name: name,
+            mobile:mobile,
+        })}`,
+          'navigateTo'
+        )
       } else {
         util.showModal('提示', res.message)
         return false
       }
-    },{
-      identityCode: e.currentTarget.dataset.identityCode,
-      name:e.currentTarget.dataset.name,
-      mobile:e.currentTarget.dataset.mobile
+    }, {
+      identityCode: identityCode,
+      name: name,
+      mobile: mobile
     })
   },
   /**

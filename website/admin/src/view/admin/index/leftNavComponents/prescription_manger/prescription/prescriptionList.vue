@@ -6,7 +6,7 @@
           <div class="filters_item ">
             <span class="fil_span">医师姓名：</span>
             <el-select
-              v-model="pageParams.diagnosisName"
+              v-model="pageParams.doctorCode"
               placeholder="请输入医生姓名"
               size="small"
               class="default_input"
@@ -18,9 +18,9 @@
               ></el-option>
               <el-option
                 v-for="item in doctorList"
-                :key="item.id"
+                :key="item.hospitalCode"
                 :label="item.name"
-                :value="item.id"
+                :value="item.hospitalCode"
               ></el-option>
             </el-select>
 
@@ -177,7 +177,7 @@ export default {
         patientName: '',
         diagnoseStartTime: '',
         diagnoseEndTime: '',
-        diagnosisName: ''
+        doctorCode: ''
       },
       // 表格原始数据
       originalData: [],
