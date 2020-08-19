@@ -23,4 +23,5 @@ public class DoctorOneParam extends DoctorDo {
     private String hospitalName;
     private String departmentName;
     private Boolean isAttention=false;
+    private String answerHour;
 }

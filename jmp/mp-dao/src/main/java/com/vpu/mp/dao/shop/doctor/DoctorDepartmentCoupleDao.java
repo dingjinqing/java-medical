@@ -16,6 +16,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -147,7 +148,8 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             condition = condition.and(DOCTOR.ID.in(doctorParam.getUserDoctorIds()));
         }
         SelectJoinStep<? extends Record> select = db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
-            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
+            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")
+        ,DSL.when(DOCTOR.CONSULTATION_NUMBER.gt(0), 1).otherwise(0).as("consultationFlag")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
         select.where(condition);
         select.orderBy(DOCTOR.IS_ON_DUTY.desc());
@@ -156,7 +158,8 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         } else if (DoctorConstant.COMMENT_SORT_TYPE.equals(doctorParam.getSortType())){
             select.orderBy(DOCTOR.AVG_COMMENT_STAR.desc());
         } else if (DoctorConstant.ANSWER_SORT_TYPE.equals(doctorParam.getSortType())){
-            select.orderBy(DOCTOR.AVG_ANSWER_TIME.desc());
+            select.orderBy(DSL.field("consultationFlag").desc());
+            select.orderBy(DOCTOR.AVG_ANSWER_TIME.asc());
         } else if (DoctorConstant.CONSULTATION_SORT_TYPE.equals(doctorParam.getSortType())){
             select.orderBy(DOCTOR.CONSULTATION_NUMBER.desc());
         } else if (DoctorConstant.ATTENTION_SORT_TYPE.equals(doctorParam.getSortType())){

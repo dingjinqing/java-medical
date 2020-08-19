@@ -223,6 +223,7 @@ public class MemberService extends ShopBaseService {
 
 			logger().info(sourceName);
 			member.setSourceName(sourceName);
+			member.setPatientNum(patientService.countPatientByUser(userId));
 		}
 		logger().info("获取会员成功");
 
@@ -459,7 +460,7 @@ public class MemberService extends ShopBaseService {
 
 	/**
 	 * 	通过筛选条件获得用户Id列表
-	 * @param param
+	 * @param searchParam
 	 * @return List<Integer>用户ID列表
 	 */
 	private List<Integer> getAllUserIdBySeachCond(MemberPageListParam searchParam) {

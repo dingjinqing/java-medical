@@ -137,7 +137,16 @@ global.wxPage({
       descriptionDisease: descriptionDisease
     })
   },
-  toOrder: function () {
+  toOrder: function (e) {
+    util.getNeedTemplateId('new_consultation', () => {
+      var that = this;
+      setTimeout(function () {
+        that.toOrderDeal()
+      }, 100);
+    })
+
+  },
+  toOrderDeal: function () {
     let that = this;
     if (that.data.descriptionDisease == '') {
       util.showModal('提示', '请填写病情描述')
