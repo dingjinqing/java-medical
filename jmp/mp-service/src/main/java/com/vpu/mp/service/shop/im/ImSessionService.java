@@ -181,11 +181,11 @@ public class ImSessionService extends ShopBaseService {
                 }
                 imSessionItemDo.setImSessionId(imSessionDo.getId());
                 if (renderPageParam.getIsDoctor()) {
-                    imSessionItemDo.setFromId(imSessionDo.getUserId());
-                    imSessionItemDo.setToId(imSessionDo.getDoctorId());
-                } else {
                     imSessionItemDo.setFromId(imSessionDo.getDoctorId());
                     imSessionItemDo.setToId(imSessionDo.getUserId());
+                } else {
+                    imSessionItemDo.setFromId(imSessionDo.getUserId());
+                    imSessionItemDo.setToId(imSessionDo.getDoctorId());
                 }
                 imSessionItemDos.add(imSessionItemDo);
             }
