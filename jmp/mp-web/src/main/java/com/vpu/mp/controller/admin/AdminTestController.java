@@ -62,7 +62,7 @@ public class AdminTestController extends AdminBaseController {
         Result<ShopRecord> result = saas.shop.getAll();
         //同步最近一天的订单
         result.parallelStream().forEach(shopRecord -> {
-            saas.getShopApp(shopRecord.getShopId()).shopTaskService.tableTaskService.orderDeltaUpdates();
+            saas.getShopApp(shopRecord.getShopId()).shopTaskService.tableTaskService.orderDeltaUpdates(shopRecord.getShopId());
         });
         return success();
     }

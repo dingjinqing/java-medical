@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.goods;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
@@ -11,6 +12,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.db.main.tables.records.OrderInfoBakRecord;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
@@ -60,6 +62,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.main.Tables.ORDER_INFO_BAK;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
@@ -637,5 +640,7 @@ public class OrderGoodsService extends ShopBaseService {
     public void updatePrescriptionCode(Integer orderId,String prescriptionCode){
         orderGoodsDao.updatePrescriptionCode(orderId,prescriptionCode);
     }
+
+
 
 }

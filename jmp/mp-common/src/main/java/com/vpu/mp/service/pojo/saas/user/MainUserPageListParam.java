@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.saas.user;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * 主库用户查询分页表
  * @author 李晓冰
@@ -11,4 +13,8 @@ import lombok.Data;
 @Data
 public class MainUserPageListParam extends BasePageParam {
     private Integer shopId;
+    private String mobile;
+    private String username;
+    private Timestamp startTime;
+    private Timestamp endTime;
 }

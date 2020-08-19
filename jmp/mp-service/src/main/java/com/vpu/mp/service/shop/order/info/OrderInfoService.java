@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.order.info;
 
-import cn.hutool.core.date.DateUtil;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
@@ -13,7 +12,6 @@ import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
-import com.vpu.mp.db.main.tables.records.OrderInfoNewRecord;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -69,7 +67,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.main.Tables.ORDER_INFO_NEW;
 import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
@@ -1696,45 +1693,4 @@ public class OrderInfoService extends ShopBaseService {
             .fetch(x -> x.into(String.class));
     }
 
-    /**
-     * 获取昨天的订单数据
-     * @return
-     */
-    public List<OrderInfoNewRecord> listUpdateOrderByYesterday() {
-        Timestamp beginTime = DateUtil.beginOfDay(DateUtil.yesterday()).toTimestamp();
-        Timestamp endTime = DateUtil.endOfDay(DateUtil.yesterday()).toTimestamp();
-        Result<OrderInfoRecord> updateRecords = db().selectFrom(TABLE)
-                .where(TABLE.UPDATE_TIME.ge(beginTime)).and(TABLE.UPDATE_TIME.le(endTime))
-                .and(TABLE.CREATE_TIME.le(beginTime))
-                .fetch();
-        List<OrderInfoNewRecord> list  =new ArrayList<>();
-        logger().info("店铺:{},更新数据{}",getShopId(),updateRecords.size());
-        updateRecords.forEach(record->{
-            OrderInfoNewRecord newRecord = db().newRecord(ORDER_INFO_NEW,record);
-            newRecord.setShopId(getShopId());
-            list.add(newRecord);
-        });
-        return list;
-
-    }
-    /**
-     * 获取昨天的订单数据
-     * @return
-     */
-    public List<OrderInfoNewRecord> listCreateOrderByYesterday() {
-        Timestamp beginTime = DateUtil.beginOfDay(DateUtil.yesterday()).toTimestamp();
-        Timestamp endTime = DateUtil.endOfDay(DateUtil.yesterday()).toTimestamp();
-        Result<OrderInfoRecord> records = db().selectFrom(TABLE)
-                .where(TABLE.CREATE_TIME.ge(beginTime)).and(TABLE.CREATE_TIME.le(endTime))
-                .fetch();
-        List<OrderInfoNewRecord> list  =new ArrayList<>();
-        logger().info("店铺:{},新增数据{}",getShopId(),records.size());
-        records.forEach(record->{
-            OrderInfoNewRecord newRecord = db().newRecord(ORDER_INFO_NEW,record);
-            newRecord.setShopId(getShopId());
-            list.add(newRecord);
-        });
-        return list;
-
-    }
 }

@@ -33,5 +33,11 @@ public class SubcribeTemplateCategory {
 	public static final String BALANCE_CHANGE = "balance_change";
 	/** 新问诊订单 */
 	public static final String CONSULTATION_ORDER_PAY = "consultation_order_pay";
+    /** 用户咨询订单超时*/
+    public static final String CONSULTATION_ORDER_EXPIRE = "consultation_order_expire";
+    /** 咨询回复通知*/
+    public static final String CONSULTATION_ANSWER = "consultation_answer";
+    /** 医生已接诊提醒*/
+    public static final String CONSULTATION_SUCCESS = "consultation_success";
 
 }

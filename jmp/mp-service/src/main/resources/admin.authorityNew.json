@@ -158,6 +158,11 @@
     "topIndex": 0,
     "includeApi": []
   },
+  {
+    "enName": "advisoryTotal",
+    "name": "咨询统计",
+    "topIndex": 0
+  },
   // {
   // 	"enName": "asset_summary",
   // 	"name": "资产管理",
@@ -602,6 +607,16 @@
     "linkUrl": "/admin/store/config",
     "topIndex": 6,
     "includeApi": ["/api/admin/store/config/*"]
+  },
+  {
+    "enName": "store_permission",
+    "name": "门店权限",
+    "topIndex": 6
+  },
+  {
+    "enName": "store_announcement",
+    "name": "门店公告",
+    "topIndex": 6
   },
   {
     "enName": "config_list",

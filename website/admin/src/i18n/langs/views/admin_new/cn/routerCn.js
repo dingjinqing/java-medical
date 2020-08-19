@@ -392,6 +392,8 @@ export const cn = {
   bulk_shipment: ['订单管理', '批量发货'],
   // 订单管理 咨询订单
   advisory_order: ['订单管理', '咨询订单'],
+  // 订单管理 咨询订单 查看记录
+  advisoryRecord: ['订单管理', '咨询订单', '查看记录'],
   // 门店管理 门店列表
   store_list: ['门店管理', '门店列表'],
   storeGoodsList: ['门店管理', '商品管理'],

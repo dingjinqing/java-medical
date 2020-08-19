@@ -10,7 +10,8 @@
     "user_summary",
     "goods_summary",
     "trades_summary",
-    "search_summary"
+    "search_summary",
+    "advisoryTotal"
   ],
   "first_web_decoration": [
     "picture_setting",
@@ -84,7 +85,9 @@
     "store_verify",
     "add_store",
     "group_manage",
-    "store_service_config"
+    "store_service_config",
+    "store_permission",
+    "store_announcement"
   ],
   "base_manger": [
     "user_center_config",

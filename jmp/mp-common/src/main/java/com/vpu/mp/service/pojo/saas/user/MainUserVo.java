@@ -46,4 +46,5 @@ public class MainUserVo {
     private Integer    inviteActId;
     private Byte       distributorLevel;
     private String     aliUserId;
+    private String shopName;
 }
