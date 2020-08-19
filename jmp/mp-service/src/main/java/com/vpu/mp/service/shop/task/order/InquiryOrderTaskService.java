@@ -65,7 +65,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
         List<InquiryOrderDo> orderList = inquiryOrderService.getCanceledToWaitingCloseOrder();
         orderList.forEach(order -> {
             if(order.getOrderAmount().compareTo(BigDecimal.ZERO)<=0){
-                order.setOrderStatus(InquiryOrderConstant.ORDER_CANCELED);
+                order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
                 order.setCancelledTime(DateUtils.getLocalDateTime());
                 inquiryOrderDao.update(order);
                 List<String> orderSns=new ArrayList<>();
