@@ -4,24 +4,13 @@
       <div class="filters">
         <div class="filters_item ">
           <span class="fil_span">医师姓名：</span>
-          <el-select
-            v-model="param.doctorId"
-            placeholder="请输入医生姓名"
-            size="small"
-            class="default_input"
-            filterable
-          >
-            <el-option
-              label="全部"
-              value=" "
-            ></el-option>
-            <el-option
-              v-for="item in doctorList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+                       <el-input
+              v-model="param.doctorName"
+              size="small"
+              style="width:190px;"
+              placeholder="请输入医师姓名"
+            >
+            </el-input>
 
         </div>
         <div class="filters_item">
@@ -68,6 +57,14 @@
         </div>
       </div>
     </div>
+    <div
+      class="total_amount"
+      v-if='total.amountTotal > 0'
+    >
+      <div>
+        <span>总计:</span>咨询单数:<span>{{total.amountTotal}};</span>咨询单次价格:<span>{{total.oncePriceTotal}};</span>咨询总金额:<span>{{total.amountPriceTotal}}</span>
+      </div>
+    </div>
     <div class="table_box">
       <el-table
         v-loading='loading'
@@ -84,17 +81,20 @@
             'text-align':'center'
           }"
       >
-        <el-table-column
-          prop='createTime'
-          label='日期'
-        ></el-table-column>
+
+        <el-table-column label='日期'>
+          <template v-slot='scope'>
+            <span>{{scope.row.createTime | timeDate}}</span>
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop='doctorName'
           label='医生姓名'
         ></el-table-column>
         <el-table-column
-          prop='departmentName'
-          label='科室'
+          prop='shopName'
+          label='医院'
         ></el-table-column>
         <el-table-column
           prop='amount'
@@ -113,14 +113,7 @@
         :page-params.sync="pageParams"
         @pagination="initData"
       />
-      <div
-        class="total_amount"
-        v-if='total.amountTotal > 0'
-      >
-        <div>
-          <span>总计:</span>咨询单数<span>{{total.amountTotal}}</span>咨询单次价格<span>{{total.oncePriceTotal}}</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
-        </div>
-      </div>
+
     </div>
 
   </div>
@@ -134,6 +127,16 @@ import pagination from '@/components/system/pagination/pagination'
 export default {
   components: {
     pagination
+  },
+  watch: {
+    lang () {
+      this.timeRange = [
+        { value: 1, label: '最新1天' },
+        { value: 7, label: '最新7天' },
+        { value: 30, label: '最新30天' },
+        { value: 0, label: '自定义' }
+      ]
+    }
   },
   mounted () {
     this.getDateValue(1)
@@ -166,7 +169,7 @@ export default {
       param: {
         startTime: '',
         endTime: '',
-        doctorId: ''
+        doctorName: ''
       },
       doctorList: [],
       total: {}
@@ -224,7 +227,7 @@ export default {
           this.pageParams = res.content.page
         }
       }).catch(err => console.log(err))
-      this.getTotal({ doctorId: this.param.doctorId })
+      this.getTotal({ doctorName: this.param.doctorName, startTime: this.param.startTime, endTime: this.param.endTime })
     },
     getDoctor (doctor) {
       getDoctorList(doctor).then(res => {
@@ -241,6 +244,13 @@ export default {
           this.total = res.content
         }
       })
+    }
+  },
+  filters: {
+    timeDate: function (val) {
+      if (!val) return
+      val = val.split(' ')
+      return val[0]
     }
   }
 }
@@ -285,10 +295,16 @@ export default {
     background: #fff;
     margin: 0 10px 10px;
   }
+  .default_input {
+    width: 150px;
+  }
   .doctor_input {
     width: 150px;
   }
   .total_amount {
+    background: #fff;
+    padding: 10px 0;
+    margin: 0 10px;
     div {
       text-align: center;
       font-size: 15px;

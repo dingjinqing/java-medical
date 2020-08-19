@@ -172,6 +172,7 @@ export const cn = {
     doctorList: '医师列表',
     doctorProfessionalTitle: '医师职称',
     officesList: '科室管理',
+    commentList: '评价列表',
     advisoryTotal: '咨询统计',
     prescriptionList: '处方列表'
   }

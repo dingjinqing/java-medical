@@ -28,7 +28,7 @@ export const cn = {
   // 概况 实时概况
   situation: ['概况', '实时概况'],
   // 概况 销售报表
-  sales_report: ['概况', '销售报表'],
+  sales_report: ['销售统计', '销售报表'],
   // 小程序管理 页面分类
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间
@@ -431,10 +431,12 @@ export const cn = {
   doctorProfessionalTitle: ['医师管理', '医师职称'],
   // 医师管理 科室管理
   officesList: ['医师管理', '科室管理'],
+  // 医师管理 评价列表
+  commentList: ['医师管理', '医师评价'],
   // 处方管理 处方列表
   prescriptionList: ['处方管理', '处方列表'],
   // 医师管理 添加医师
   addDoctor: ['医师管理', '添加医师'],
   // 咨询订单 订单统计
-  advisoryTotal: ['医师管理', '咨询订单统计']
+  advisoryTotal: ['销售统计', '咨询订单统计']
 }

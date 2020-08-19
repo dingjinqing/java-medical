@@ -155,6 +155,19 @@ const routes = [
     //       )
     //   }
     // ]
+  },
+  //   评价列表
+  {
+    path: '/admin/home/main/doctor/comment/list',
+    name: 'commentList',
+    meta: {
+      crumbTitle: 'router.commentList',
+      meta: 'doctor_manger'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/doctor_manger/comment/commentList'
+      )
   }
 ]
 

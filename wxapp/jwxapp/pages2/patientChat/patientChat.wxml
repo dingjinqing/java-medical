@@ -11,7 +11,7 @@
 							{{item.messageInfo.message.content}}
 						</view>
 						<view slot='origin_image' data-urls="{{item.messageInfo.message.content}}" class="origin_message {{item.position === 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 1}}' bindtap="viewImage">
-							<image class="image-message" style="{{item.messageInfo.message.imgWidth > 450 ? 'width:450rpx;' : 'width:'+item.messageInfo.message.imgWidth+'rpx;height:'+item.messageInfo.message.imgHeight+'rpx;' }};" mode="{{item.messageInfo.message.imgWidth > 450 ? 'widthFix' : ''}}" src="{{item.messageInfo.message.content}}"></image>
+							<image class="image-message" style="{{item.messageInfo.message.imgHeight > 250 ? 'height:250rpx;' : 'height:'+item.messageInfo.message.imgWidth+'rpx;width:'+item.messageInfo.message.imgWidth+'rpx;' }};" mode="{{item.messageInfo.message.imgHeight > 250 ? 'heightFix' : ''}}" src="{{item.messageInfo.message.content}}"></image>
 						</view>
 
 						<view slot="patient_pres_message" class="patient_message {{item.position === 0  ? 'p_d_left' : 'p_d_right'}}" wx:if='{{item.messageInfo.type === 3}}'>
@@ -55,7 +55,7 @@
 			</block>
 		</view>
 	</scroll-view>
-	<chat-input source="patient" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom">
+	<chat-input source="patient" bindgetInputMessage="getInputMessage" bindsendImage="sendImage" id="chatinput" bindscrollBottom="pageScrollBottom" has-input='{{sessionStatus != 6 || sessionStatus != 3}}'>
 	</chat-input>
 </view>
 <v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}" />

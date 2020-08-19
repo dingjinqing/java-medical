@@ -73,7 +73,7 @@
       v-if='total.amountTotal > 0'
     >
       <div>
-        <span>总计:</span>咨询单数:<span>{{total.amountTotal}};</span>咨询单次价格:<span>{{total.oncePriceTotal}};</span>咨询总金额:<span>{{total.amountPriceTotal}}</span>
+        <span>总计:</span>咨询单数<span>{{total.amountTotal}};</span>咨询单次价格<span>{{total.oncePriceTotal}};</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
       </div>
     </div>
     <div class="table_box">
@@ -103,7 +103,10 @@
           prop='doctorName'
           label='医生姓名'
         ></el-table-column>
-
+        <el-table-column
+          prop='departmentName'
+          label='科室'
+        ></el-table-column>
         <el-table-column
           prop='amount'
           label='咨询单数'
@@ -302,7 +305,7 @@ export default {
   .total_amount {
     background: #fff;
     padding: 10px 0;
-    margin:0 10px;
+    margin: 0 10px;
     div {
       text-align: center;
       font-size: 15px;

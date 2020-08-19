@@ -1,19 +1,24 @@
-
 <view class="input-content" style='bottom:{{bottom}}px'>
-    <view class="message-input"  wx:if="{{hasInput}}">
-      <input type="text"  bindfocus="getFocus" bindblur="getBlur" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}" adjust-position='{{false}}'></input>
-      <text class="send" wx:if="{{showSendButton}}" bindtap="sendMessage">发送</text>
-      <text class="iconfont icontianjia" wx:else bindtap="showMoreActions"></text>
-    </view>
-    <view class="custom-footer" wx:if="{{moreActions}}">
-      <view class="custom-content">
-        <view class="item" bindtap="sendImage"> 
-          <view class="item-image">
-            <image mode="widthFix" src="http://medicaldevimg.weipubao.cn/image/wxapp/upload_prescription-icon.png"></image>
-          </view>
-          <view class="item-text">发送图片</view>
-        </view>
-      </view>
-    </view>
-    <slot name="custom-bottom" />
+	<block wx:if='{{ !hasInput && source == "patient"}}'>
+  <view class="message-input">
+  	<input type="text" disabled="true"></input>
+		<text class="iconfont icontianjia" ></text>
+  </view>
+	</block>
+	<view class="message-input" wx:if="{{hasInput}}">
+		<input type="text" bindfocus="getFocus" bindblur="getBlur" bindinput="messageInput" confirm-type="send" bindconfirm="sendMessage" value="{{inputMessage}}" adjust-position='{{false}}'></input>
+		<text class="send" wx:if="{{showSendButton}}" bindtap="sendMessage">发送</text>
+		<text class="iconfont icontianjia" wx:else bindtap="showMoreActions"></text>
+	</view>
+	<view class="custom-footer" wx:if="{{moreActions}}">
+		<view class="custom-content">
+			<view class="item" bindtap="sendImage">
+				<view class="item-image">
+					<image mode="widthFix" src="http://medicaldevimg.weipubao.cn/image/wxapp/upload_prescription-icon.png"></image>
+				</view>
+				<view class="item-text">发送图片</view>
+			</view>
+		</view>
+	</view>
+	<slot name="custom-bottom" />
 </view>

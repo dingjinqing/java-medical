@@ -134,10 +134,24 @@ global.wxPage({
     util.api('/api/wxapp/im/session/pull', res => {
       // console.log(res)
       let sessionStatus = this.data.sessionStatus
-      let {status} = res.content
-      if( status != 5 && sessionStatus == 4) status = 5
-      if (res.error === 0 && status != 4 && status != 6) {
-        if(!res.content.messages) return
+      let {
+        status
+      } = res.content
+      let newStatus
+      if (sessionStatus == 4) {
+        if (status == 6) {
+          newStatus = status
+        } else {
+          newStatus = 5
+        }
+      }else if(sessionStatus == 6){
+          newStatus = 5
+      } else{
+        newStatus = status
+      }
+
+      if (res.error === 0 && newStatus != 4 && newStatus != 6) {
+        if (!res.content.messages) return
         let newChatContent = res.content.messages.reduce((defaultValue, item) => {
           defaultValue.push({
             position: 0,
@@ -223,7 +237,7 @@ global.wxPage({
       imSessionItem
     })
   },
-   pageScrollBottom() {
+  pageScrollBottom() {
     let that = this;
     that.getRectHeight()
   },
@@ -388,19 +402,19 @@ global.wxPage({
   },
   getRectHeight() {
     let that = this
-      wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
-        that.setData({
-          allHeight: reda[0].height,
-          scrollHeight:reda[0].height
-        })
+    wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
+      that.setData({
+        allHeight: reda[0].height,
+        scrollHeight: reda[0].height
       })
+    })
   },
-  getScrollHeight(){
+  getScrollHeight() {
     let that = this
-      wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
-        that.setData({
-          scrollHeight:reda[0].height
-        })
+    wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
+      that.setData({
+        scrollHeight: reda[0].height
       })
+    })
   }
 })

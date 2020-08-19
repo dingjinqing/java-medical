@@ -1,11 +1,10 @@
 <template>
   <div class="patientContent">
     <div class="patientContent_main">
-      <el-tabs
+      <!-- <el-tabs
         v-model="acitveName"
         @tab-click="handleClick"
       >
-        <!--店铺子账户管理 -->
         <el-tab-pane
           label="基础信息"
           name="first"
@@ -15,7 +14,6 @@
             @patientConfig="show"
           />
         </el-tab-pane>
-        <!--权限组管理 -->
         <el-tab-pane
           label="处方列表"
           name="second"
@@ -25,7 +23,9 @@
             @patientConfig="show"
           />
         </el-tab-pane>
-      </el-tabs>
+      </el-tabs> -->
+      <patientMessage />
+      <prescriptionList />
     </div>
   </div>
 </template>

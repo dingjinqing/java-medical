@@ -61,6 +61,8 @@ export default {
       returnAdvisoryOrder({ orderSn, ...this.returnInfo }).then(res => {
         if (res.error === 0) {
           this.$emit('complete')
+        } else {
+          this.$message.error({ message: res.message })
         }
         this.dialogShow = false
       })

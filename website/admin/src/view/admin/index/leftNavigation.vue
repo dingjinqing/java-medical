@@ -679,6 +679,14 @@ export default {
           span: '',
           name: 'officesList',
           flag: true
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/icon_left/comment_man.png',
+          imgUrl_h: this.$imageHost + '/image/admin/icon_left/comment_man_h.png',
+          path: '/admin/home/main/doctor/comment/list',
+          span: '',
+          name: 'commentList',
+          flag: true
         }
       ],
       prescription_manger: [
