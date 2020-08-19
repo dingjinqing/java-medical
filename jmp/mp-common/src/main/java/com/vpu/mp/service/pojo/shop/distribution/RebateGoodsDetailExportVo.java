@@ -9,6 +9,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import static com.vpu.mp.common.foundation.data.DistributionConstant.*;
+
 /**
  * @author panjing
  * @date 2020/7/14 15:41
@@ -89,21 +91,21 @@ public class RebateGoodsDetailExportVo {
     private BigDecimal canCalculateMoney;
 
     public void setRebateLevel(String rebateLevel) {
-        if ("0".equals(this.rebateLevel)) {
+        if (REBATE_TYPE_SELF.equals(this.rebateLevel)) {
             this.rebateLevel = "自购返利";
-        } else if ("1".equals(this.rebateLevel)) {
+        } else if (REBATE_TYPE_DIRECT.equals(this.rebateLevel)) {
             this.rebateLevel = "直接返利";
-        } else if ("2".equals(this.rebateLevel)) {
+        } else if (REBATE_TYPE_INDIRECT.equals(this.rebateLevel)) {
             this.rebateLevel = "间接返利";
         }
     }
 
     public void setSettlementFlag(String settlementFlag) {
-        if ("0".equals(this.settlementFlag)) {
+        if (WAIT_SETTLEMENT_FLAG.equals(this.settlementFlag)) {
             this.settlementFlag = "待返利";
-        } else if ("1".equals(this.settlementFlag)) {
+        } else if (HAS_SETTLEMENT_FLAG.equals(this.settlementFlag)) {
             this.settlementFlag = "已返利";
-        } else if ("2".equals(this.settlementFlag)) {
+        } else if (NO_SETTLEMENT_FLAG.equals(this.settlementFlag)) {
             this.settlementFlag = "不返利";
         }
     }

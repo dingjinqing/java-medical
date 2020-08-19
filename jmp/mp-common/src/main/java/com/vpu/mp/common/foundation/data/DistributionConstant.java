@@ -67,4 +67,11 @@ public class DistributionConstant {
      * 永久返利有效期永久有效：1970-01-13
      */
     public static Date NO_INVITE_EXPIRY = Date.valueOf("1970-01-13");
+
+    /**
+     * 订单返利状态 0：待返利；1：已返利；2：不返利
+     */
+    public static final Byte WAIT_SETTLEMENT_FLAG = 0;
+    public static final Byte HAS_SETTLEMENT_FLAG = 1;
+    public static final Byte NO_SETTLEMENT_FLAG = 2;
 }
