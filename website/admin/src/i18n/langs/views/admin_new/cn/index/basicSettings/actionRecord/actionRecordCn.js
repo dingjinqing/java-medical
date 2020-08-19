@@ -33,6 +33,7 @@ export const cn = {
   userName: '操作人',
   actionType: '操作模块',
   optionTime: '操作时间',
+  rechargeTime: '充值时间',
   startTime: '开始日期',
   endTime: '结束日期',
   search: '查询',
