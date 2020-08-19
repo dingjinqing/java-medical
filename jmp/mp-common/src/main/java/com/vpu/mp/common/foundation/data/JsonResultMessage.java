@@ -1344,6 +1344,32 @@ public class JsonResultMessage {
     public static final String DISTRIBUTOR_LIST_INVITATION_CODE = "distributor.list.invitation_code";
     public static final String DISTRIBUTOR_LIST_REMARK = "distributor.list.remark";
 
+    /** 分销-商品返利统计导出*/
+    public static final String REBATE_GOODS_NAME = "rebate.goods.name";
+    public static final String REBATE_GOODS_GOODS_NAME = "rebate.goods.goods_name";
+    public static final String REBATE_GOODS_GOODS_PRICE = "rebate.goods.goods_price";
+    public static final String REBATE_GOODS_GOODS_CATE = "rebate.goods.goods_cate";
+    public static final String REBATE_GOODS_GOODS_SALE_NUM = "rebate.goods.goods_sale_num";
+    public static final String REBATE_GOODS_SALE_NUM = "rebate.goods.sale_num";
+    public static final String REBATE_GOODS_TOTAL_FANLI = "rebate.goods.total_fanli";
+
+    /**分销-商品返利详情统计导出*/
+    public static final String REBATE_GOODS_DETAIL_NAME = "rebate.goods_detail.name";
+    public static final String REBATE_GOODS_DETAIL_GOODS_NAME = "rebate.goods_detail.goods_name";
+    public static final String REBATE_GOODS_DETAIL_GOODS_NUMBER = "rebate.goods_detail.goods_number";
+    public static final String REBATE_GOODS_DETAIL_ORDER_SN = "rebate.goods_detail.order_sn";
+    public static final String REBATE_GOODS_DETAIL_CAN_CALCULATE_MONEY = "rebate.goods_detail.can_calculate_money";
+    public static final String REBATE_GOODS_DETAIL_USERNAME = "rebate.goods_detail.username";
+    public static final String REBATE_GOODS_DETAIL_MOBILE = "rebate.goods_detail.mobile";
+    public static final String REBATE_GOODS_DETAIL_REBATE_LEVEL = "rebate.goods_detail.rebate_level";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_NAME = "rebate.goods_detail.distributor_name";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_REAL_NAME = "rebate.goods_detail.distributor_real_name";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_MOBILE = "rebate.goods_detail.distributor_mobile";
+    public static final String REBATE_GOODS_DETAIL_REBATE_PERCENT = "rebate.goods_detail.rebate_percent";
+    public static final String REBATE_GOODS_DETAIL_REAL_REBATE_MONEY = "rebate.goods_detail.real_rebate_money";
+    public static final String REBATE_GOODS_DETAIL_REBATE_STATUS = "rebate.goods_detail.rebate_status";
+    public static final String REBATE_GOODS_DETAIL_FINISHED_TIME = "rebate.goods_detail.finished_time";
+
     /** 分销-佣金统计导出*/
     public static final String BROKERAGE_LIST_NAME = "brokerage.list.brokerage_name";
     public static final String BROKERAGE_LIST_DISTRIBUTOR_NAME = "brokerage.list.distributor_name";

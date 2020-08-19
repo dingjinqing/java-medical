@@ -73,6 +73,7 @@ public class AdminDistributionController extends AdminBaseController{
         return saas.getShopApp(471752);
     }
     */
+
 	//分销配置
 	/**
 	 * 获取分销配置
@@ -587,6 +588,19 @@ public class AdminDistributionController extends AdminBaseController{
 		return this.success(rebateGoodsList);
 	}
 
+    /**
+     * 商品返利统计导出Excel
+     * @param param
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/admin/distribution/rebate/goods/list/export")
+    public void exportRebateGoodsList(@RequestBody RebateGoodsParam param, HttpServletResponse response) throws IOException {
+        Workbook workbook = shop().rebateGoods.exportRebateGoodsList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.REBATE_GOODS_NAME,LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
+    }
+
 	/**
 	 * 商品返利明细
 	 * @param param
@@ -597,6 +611,19 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<RebateGoodsDetailVo> detail = shop().rebateGoods.getRebateGoodsDetail(param);
 		return this.success(detail);
 	}
+
+    /**
+     * 商品返利明细导出Excel
+     * @param param
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/admin/distribution/rebate/goods/detail/export")
+    public void exportRebateGoodsDetail(@RequestBody RebateGoodsDetailParam param, HttpServletResponse response) throws IOException {
+        Workbook workbook = shop().rebateGoods.exportRebateGoodsDetail(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.REBATE_GOODS_DETAIL_NAME, LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
+    }
 
 	//分销推广语
 	/**
