@@ -308,6 +308,15 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void refundInquiryOrder(InquiryOrderDo order,BigDecimal refundMoney,String refundReason)throws MpException{
         logger().info("问诊订单退款-开始start,orderSn:{}"+order.getOrderSn());
+        //0元订单
+        if(order.getOrderAmount().compareTo(BigDecimal.ZERO)==0){
+            order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
+            inquiryOrderDao.update(order);
+            List<String> orderSnList=new ArrayList<>();
+            orderSnList.add(order.getOrderSn());
+            imSessionService.batchCancelSession(orderSnList);
+            return;
+        }
         boolean successFlag=true;
         if(InquiryOrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())){
             //退款流水号
