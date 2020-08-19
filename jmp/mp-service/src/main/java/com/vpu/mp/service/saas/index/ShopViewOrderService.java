@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.vpu.mp.db.main.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.main.tables.OrderInfoBak.ORDER_INFO_BAK;
 import static com.vpu.mp.db.main.tables.UserSummaryTrend.USER_SUMMARY_TREND;
 
 /**
@@ -125,7 +125,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenRefuseRefundNum() {
-        Condition condition = ORDER_INFO.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
+        Condition condition = ORDER_INFO_BAK.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
             OrderConstant.REFUND_STATUS_REFUSE);
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
@@ -135,7 +135,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenRefundedNum() {
-        Condition condition = ORDER_INFO.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH);
+        Condition condition = ORDER_INFO_BAK.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH);
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
     /**
@@ -143,7 +143,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenNotRefundedNum() {
-        Condition condition = ORDER_INFO.REFUND_STATUS.
+        Condition condition = ORDER_INFO_BAK.REFUND_STATUS.
             in(OrderConstant.REFUND_STATUS_AUDITING,
                 OrderConstant.REFUND_STATUS_AUDIT_PASS,
                 OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
@@ -154,7 +154,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getRefuseRefundNum() {
-        Condition condition = ORDER_INFO.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
+        Condition condition = ORDER_INFO_BAK.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
             OrderConstant.REFUND_STATUS_REFUSE);
         return getOrderNumByCondition(condition);
     }
@@ -164,7 +164,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getRefundedNum() {
-        Condition condition = ORDER_INFO.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH);
+        Condition condition = ORDER_INFO_BAK.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH);
         return getOrderNumByCondition(condition);
     }
     /**
@@ -172,7 +172,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getNotRefundNum() {
-        Condition condition = ORDER_INFO.REFUND_STATUS.
+        Condition condition = ORDER_INFO_BAK.REFUND_STATUS.
             in(OrderConstant.REFUND_STATUS_AUDITING,
                 OrderConstant.REFUND_STATUS_AUDIT_PASS,
                 OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
@@ -183,7 +183,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getTotalRefundNum() {
-        Condition condition = ORDER_INFO.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS);
+        Condition condition = ORDER_INFO_BAK.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS);
         return getOrderNumByCondition(condition);
     }
 
@@ -192,8 +192,8 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenBeShippedNum() {
-        Condition condition = ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).
-            and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER));
+        Condition condition = ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).
+            and(ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER));
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
     /**
@@ -201,9 +201,9 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenShippedNum() {
-        Condition condition = ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER).
-            and(ORDER_INFO.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
-            and(ORDER_INFO.SHIPPING_ID.ne((byte)0));
+        Condition condition = ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER).
+            and(ORDER_INFO_BAK.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
+            and(ORDER_INFO_BAK.SHIPPING_ID.ne((byte)0));
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
 
@@ -212,8 +212,8 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenPickUpNum() {
-        Condition condition = ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF).
-            and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY));
+        Condition condition = ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF).
+            and(ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY));
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
 
@@ -224,7 +224,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenPickedUpNum() {
-        Condition condition = ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF);
+        Condition condition = ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF);
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
     /**
@@ -232,9 +232,9 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getTotalShippedNum() {
-        Condition condition = ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER).
-            and(ORDER_INFO.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
-            and(ORDER_INFO.SHIPPING_ID.ne((byte)0));
+        Condition condition = ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER).
+            and(ORDER_INFO_BAK.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
+            and(ORDER_INFO_BAK.SHIPPING_ID.ne((byte)0));
         return getOrderNumByCondition(condition);
     }
 
@@ -243,8 +243,8 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getTotalPickUpNum() {
-        Condition condition = ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF).
-            and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY));
+        Condition condition = ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF).
+            and(ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY));
         return getOrderNumByCondition(condition);
     }
 
@@ -255,7 +255,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getTotalPickedUpNum() {
-        Condition condition = ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF);
+        Condition condition = ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF);
         return getOrderNumByCondition(condition);
     }
 
@@ -264,8 +264,8 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getTotalBeShippedNum() {
-        Condition condition = ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).
-            and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER));
+        Condition condition = ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).
+            and(ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER));
         return getOrderNumByCondition(condition);
     }
 
@@ -274,7 +274,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenRefundNum() {
-        Condition condition = ORDER_INFO.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS);
+        Condition condition = ORDER_INFO_BAK.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS);
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
 
@@ -283,8 +283,8 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenNoPayNum() {
-        Condition condition = ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
-            and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF));
+        Condition condition = ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
+            and(ORDER_INFO_BAK.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF));
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
 
@@ -293,7 +293,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenClosedNum() {
-        Condition condition = ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_CLOSED);
+        Condition condition = ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_CLOSED);
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
 
@@ -302,7 +302,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenCancelledNum(){
-        Condition condition = ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_CANCELLED);
+        Condition condition = ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_CANCELLED);
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
 
@@ -320,7 +320,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getSevenFinishedNum(){
-        Condition condition = ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_FINISHED);
+        Condition condition = ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_FINISHED);
         return getOrderNumByCondition(buildSevenDayCondition(condition));
     }
     /**
@@ -328,7 +328,7 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 订单数量
      */
     private Integer getFinishedNum(){
-        Condition condition = ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_FINISHED);
+        Condition condition = ORDER_INFO_BAK.ORDER_STATUS.eq(OrderConstant.ORDER_FINISHED);
         return getOrderNumByCondition(condition);
     }
 
@@ -338,11 +338,11 @@ public class ShopViewOrderService extends MainBaseService {
      * @return 统计数量
      */
     private Integer getOrderNumByCondition(Condition condition){
-        return db().selectCount().from(ORDER_INFO).where(condition).fetchOne(0,Integer.class);
+        return db().selectCount().from(ORDER_INFO_BAK).where(condition).fetchOne(0,Integer.class);
     }
 
     private Condition buildSevenDayCondition(Condition condition){
-        return condition.and(ORDER_INFO.ADD_TIME.greaterOrEqual(ThreadLocalCache.sevenDayTimestamp.get()));
+        return condition.and(ORDER_INFO_BAK.CREATE_TIME.greaterOrEqual(ThreadLocalCache.sevenDayTimestamp.get()));
     }
 
 }

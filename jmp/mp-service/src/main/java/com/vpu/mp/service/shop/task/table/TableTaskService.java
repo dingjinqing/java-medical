@@ -1,22 +1,19 @@
 package com.vpu.mp.service.shop.task.table;
 
-import com.google.common.collect.Sets;
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
-import com.vpu.mp.db.main.Tables;
-import com.vpu.mp.db.main.tables.records.OrderInfoNewRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.account.UserSysVo;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.saas.order.SaasOrderService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 同步表的操作
@@ -29,9 +26,8 @@ import java.util.Set;
 public class TableTaskService extends ShopBaseService {
 	@Autowired
 	private UserService userService;
-
 	@Autowired
-    private OrderInfoService orderInfoService;
+	private SaasOrderService saasOrderService;
 	@Autowired
     private InquiryOrderDao inquiryOrderDao;
 
@@ -55,26 +51,7 @@ public class TableTaskService extends ShopBaseService {
 	}
 
 
-	public  void orderSynchronize(){
-	    db().insertInto(Tables.ORDER_INFO_NEW)
-            .select(
-                db().selectFrom(com.vpu.mp.db.shop.Tables.ORDER_INFO).
-                    where(
-                        com.vpu.mp.db.shop.Tables.ORDER_INFO.CREATE_TIME.greaterOrEqual(DateUtils.getTimestampForStartTime(-1))
-                        .and(com.vpu.mp.db.shop.Tables.ORDER_INFO.CREATE_TIME.le(DateUtils.getTimestampForEndTime(-1)))
-                    )
-            );
-    }
-    public void oldOrderSynchronize(List<String> orderSns){
-	    List<String> returnedOrderIds = orderInfoService.getReturnedOnTheDay();
-        Set<String> result = Sets.newHashSet();
-        result.addAll(orderSns);
-        result.addAll(returnedOrderIds);
-        List<OrderInfoRecord> newRecords =  db().selectFrom(com.vpu.mp.db.shop.Tables.ORDER_INFO)
-            .where(com.vpu.mp.db.shop.Tables.ORDER_INFO.ORDER_SN.in(result))
-            .fetch(x->x.into(OrderInfoRecord.class));
-        saas().orderService.updateOldData(newRecords);
-    }
+
 
     /**
      * 同步问诊订单
@@ -96,11 +73,20 @@ public class TableTaskService extends ShopBaseService {
 	/**
 	 * 增量更新最近一天的数据
 	 */
-	public void orderDeltaUpdates() {
-		List<OrderInfoNewRecord> updateOrderByYesterday = orderInfoService.listUpdateOrderByYesterday();
-		List<OrderInfoNewRecord> createOrderByYesterday = orderInfoService.listCreateOrderByYesterday();
+	public void orderDeltaUpdates(Integer shopId) {
+		log.info("#####################开始同步店：" + getShopId() + "的order_Info#####################");
+		Timestamp beginTime = DateUtil.beginOfDay(DateUtil.yesterday()).toTimestamp();
+		Timestamp endTime = DateUtil.endOfDay(DateUtil.yesterday()).toTimestamp();
+		//同步新增order_info
+		saasOrderService.synOrderCreate(beginTime, endTime,shopId);
+		//同步订单更新
+		saasOrderService.synOrderUpdate(beginTime, endTime,shopId);
+		//同步新增订单商品
+		saasOrderService.synOrderGoodsCreate(beginTime, endTime,shopId);
+		//同步订单商品更新
+		saasOrderService.synOrderGoodsUpdate(beginTime, endTime,shopId);
 
-		databaseManager.mainDb().batchUpdate(updateOrderByYesterday).execute();
-		databaseManager.mainDb().batchInsert(createOrderByYesterday).execute();
 	}
+
+
 }
