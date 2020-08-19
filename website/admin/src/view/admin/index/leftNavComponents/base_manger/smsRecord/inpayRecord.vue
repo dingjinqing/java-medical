@@ -8,7 +8,7 @@
           :inline="true"
           class="demo-form-inline"
         >
-          <el-form-item :label="$t('actionRecord.optionTime')+'：'">
+          <el-form-item :label="$t('actionRecord.rechargeTime')+'：'">
             <div class="block">
               <el-date-picker
                 v-model="startCreateTime"
@@ -51,6 +51,9 @@
             align="center"
             min-width="20%"
           >
+            <template v-slot='scope'>
+              <span>{{scope.row.rechargeTime | timeDate}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="price"
@@ -186,6 +189,13 @@ export default {
           break
       }
       return row.actionTypeTran
+    }
+  },
+  filters: {
+    timeDate: function (val) {
+      if (!val) return
+      val = val.split('.')
+      return val[0]
     }
   }
 }
