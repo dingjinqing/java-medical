@@ -604,6 +604,16 @@
     "includeApi": ["/api/admin/store/config/*"]
   },
   {
+    "enName": "store_permission",
+    "name": "门店权限",
+    "topIndex": 6
+  },
+  {
+    "enName": "store_announcement",
+    "name": "门店公告",
+    "topIndex": 6
+  },
+  {
     "enName": "config_list",
     "name": "店铺基础配置",
     "linkUrl": "/admin/config/shop",
