@@ -119,4 +119,16 @@ public class OrderInfoDao extends ShopBaseDao {
             .where(ORDER_INFO.ORDER_ID.eq(orderId)).fetchAnyInto(String.class);
     }
 
+    public List<OrderInfoDo> listUpdateOrderByYesterday(Timestamp beginTime, Timestamp endTime) {
+      return  db().selectFrom(ORDER_INFO)
+                .where(ORDER_INFO.UPDATE_TIME.ge(beginTime)).and(ORDER_INFO.UPDATE_TIME.le(endTime))
+                .and(ORDER_INFO.CREATE_TIME.le(beginTime))
+                .fetchInto(OrderInfoDo.class);
+    }
+
+    public List<OrderInfoDo> listCreateOrderByYesterday(Timestamp beginTime, Timestamp endTime) {
+        return  db().selectFrom(ORDER_INFO)
+                .where(ORDER_INFO.CREATE_TIME.ge(beginTime)).and(ORDER_INFO.CREATE_TIME.le(endTime))
+                .fetchInto(OrderInfoDo.class);
+    }
 }

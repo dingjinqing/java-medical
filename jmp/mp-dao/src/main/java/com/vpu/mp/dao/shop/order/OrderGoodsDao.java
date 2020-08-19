@@ -147,4 +147,18 @@ public class OrderGoodsDao extends ShopBaseDao {
 
         return null;
     }
+
+
+    public List<OrderGoodsDo> listUpdateOrderGoodsByYesterday(Timestamp beginTime, Timestamp endTime) {
+        return  db().selectFrom(ORDER_GOODS)
+                .where(ORDER_GOODS.UPDATE_TIME.ge(beginTime)).and(ORDER_GOODS.UPDATE_TIME.le(endTime))
+                .and(ORDER_GOODS.CREATE_TIME.le(beginTime))
+                .fetchInto(OrderGoodsDo.class);
+    }
+
+    public List<OrderGoodsDo> listCreateOrderGoodsByYesterday(Timestamp beginTime, Timestamp endTime) {
+        return  db().selectFrom(ORDER_GOODS)
+                .where(ORDER_GOODS.CREATE_TIME.ge(beginTime)).and(ORDER_GOODS.CREATE_TIME.le(endTime))
+                .fetchInto(OrderGoodsDo.class);
+    }
 }
