@@ -170,8 +170,12 @@
             :label="$t('storeList.storeName')"
           ></el-table-column>
           <el-table-column
-            prop="posShopId"
+            prop="storeNumber"
             :label="$t('storeList.posShopId')"
+          ></el-table-column>
+          <el-table-column
+            prop="posShopId"
+            label="POS门店编号"
           ></el-table-column>
           <el-table-column
             prop="groupName"
@@ -217,13 +221,14 @@
             :label="$t('storeList.storePickup')"
             prop="autoPick"
           >
-            <template slot-scope="{row}">
+            <template slot-scope="{row, $index}">
               <div>
                 <el-checkbox
                   v-model="row.autoPick"
-                  @change="changeState(row)"
+                  @change="changeState(row, 'autoPick', $index)"
                   :true-label="1"
                   :false-label="0"
+                  :disabled="Boolean(deliveryConfig && deliveryConfig.fetch === 0 && row.autoPick === 0)"
                 ></el-checkbox>
               </div>
             </template>
@@ -232,13 +237,14 @@
             :label="$t('storeList.sameCityDelivery')"
             prop="cityService"
           >
-            <template slot-scope="{row}">
+            <template slot-scope="{row, $index}">
               <div>
                 <el-checkbox
                   v-model="row.cityService"
-                  @change="changeState(row)"
+                  @change="changeState(row, 'cityService', $index)"
                   :true-label="1"
                   :false-label="0"
+                  :disabled="row.cityService === 0"
                 ></el-checkbox>
               </div>
             </template>
@@ -247,11 +253,11 @@
             :label="$t('storeList.businessState')"
             prop="businessState"
           >
-            <template slot-scope="{row}">
+            <template slot-scope="{row, $index}">
               <div>
                 <el-checkbox
                   v-model="row.businessState"
-                  @change="changeState(row)"
+                  @change="changeState(row, 'businessState', $index)"
                   :true-label="1"
                   :false-label="0"
                 ></el-checkbox>
@@ -341,7 +347,7 @@
 </template>
 
 <script>
-import { storeList, allStoreGroup, updateStore, delStore, shareStore } from '@/api/admin/storeManage/store'
+import { storeList, allStoreGroup, updateStore, delStore, shareStore, getDeliveryConfig } from '@/api/admin/storeManage/store'
 import pagination from '@/components/admin/pagination/pagination'
 // 地区编码
 import chinaData from '@/assets/china-data'
@@ -372,7 +378,8 @@ export default {
       sharePath: '',
       shareDialog: false, // 分享弹窗
       canCreateNum: 0, // 可以创建门店数
-      shopVersionText: that.$t('storeList.ultimate') // 店铺版本
+      shopVersionText: that.$t('storeList.ultimate'), // 店铺版本
+      deliveryConfig: null
     }
   },
   methods: {
@@ -407,7 +414,7 @@ export default {
     handleData (data) {
       data.map((item, index) => {
         item.address = this.getFullAddress(item)
-        item.businessHours = item.openingTime + ' - ' + item.closeTime
+        item.businessHours = (item.openingTime && item.closeTime) ? item.openingTime + ' - ' + item.closeTime : ''
         item.businessStateName = item.businessState === 1 ? this.$t('storeList.open') : this.$t('storeList.notOpen')
       })
       this.tableData = data
@@ -417,6 +424,13 @@ export default {
       allStoreGroup().then((res) => {
         if (res.error === 0) {
           this.storeGroup = res.content
+        }
+      })
+      getDeliveryConfig().then(res => {
+        if (res.error === 0) {
+          this.deliveryConfig = res.content
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -469,12 +483,28 @@ export default {
     //     }
     //   })
     // },
-    changeState (row) {
+    changeState (row, operate, index) {
+      // 根据限制
+      console.log(row.autoPick, this.tableData[index].autoPick)
+      if (this.deliveryConfig) {
+        if (operate === 'autoPick' && this.deliveryConfig.fetch === 0 && row.autoPick === 1) {
+          this.$message.warning('基础配置中自提功能未开启，门店不能开启自提功能')
+          this.$set(this.tableData[index], 'autoPick', 0)
+          this.$set(row, 'autoPick', 0)
+          return false
+        }
+        if (operate === 'cityService' && this.deliveryConfig.cityService === 0 && row.cityService === 1) {
+          this.$message.warning('基础配置中同城配送功能未开启，门店不能开启同城配送功能')
+          this.$set(this.tableData[index], 'cityService', 0)
+          return false
+        }
+      }
       let params = {
         storeId: row.storeId,
         businessState: row.businessState,
         autoPick: row.autoPick,
-        cityService: row.cityService
+        cityService: row.cityService,
+        cityAccountIds: []
       }
       updateStore(params).then((res) => {
         if (res.error === 0) {
@@ -482,6 +512,8 @@ export default {
             message: this.$t('marketCommon.successfulOperation')
           })
           this.initDataList()
+        } else {
+          this.$message.error('修改失败')
         }
       })
     },

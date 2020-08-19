@@ -28,6 +28,7 @@
 
 <script>
 import utils from '@/util/public.js'
+import { delayJudgment } from '@/util/pageName'
 export default {
   data () {
     return {
@@ -50,6 +51,7 @@ export default {
         this.addTechnician = this.$t('technicianManage.addTechnicianL') + res
       }
     })
+    delayJudgment(this, -1, null, this.$t('pageName.technicianList'))
   },
   watch: {
     $route: function (val) {
@@ -71,6 +73,7 @@ export default {
       console.log(222, this.$route)
       switch (tabName) {
         case 'first':
+          delayJudgment(this, -1, null, this.$t('pageName.technicianList'))
           this.$router.push({
             name: 'store_storemanage_technician_list',
             query: {
@@ -81,6 +84,7 @@ export default {
           })
           break
         case 'second':
+          delayJudgment(this, -1, null, this.$t('pageName.technicianGroup'))
           this.$router.push({
             name: 'store_storemanage_technician_classify',
             query: {
@@ -91,6 +95,7 @@ export default {
           })
           break
         case 'third':
+          delayJudgment(this, this.id, this.$t('pageName.addTechnician'))
           this.$router.push({
             name: 'store_storemanage_technician_add',
             query: {

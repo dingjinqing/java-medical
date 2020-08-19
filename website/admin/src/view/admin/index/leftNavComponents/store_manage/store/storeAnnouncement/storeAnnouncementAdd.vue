@@ -71,6 +71,7 @@
 
 <script>
 import { announcementAddApi, announcementDetailApi, announcementUpdateApi } from '@/api/admin/storeManage/storeAnnouncement.js'
+import { delayJudgment } from '@/util/pageName'
 export default {
   components: {
     tinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
@@ -94,6 +95,7 @@ export default {
     if (this.$route.query.articleId) {
       this.initData()
     }
+    delayJudgment(this, this.$route.query.articleId, this.$t('pageName.editorialAnnouncement'))
   },
   methods: {
     initData () {
