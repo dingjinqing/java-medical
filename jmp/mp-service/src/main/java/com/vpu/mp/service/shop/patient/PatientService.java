@@ -16,6 +16,7 @@ import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.shop.tables.Patient;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -52,14 +53,24 @@ public class PatientService extends BaseShopConfigService{
     protected SmsService smsService;
     @Autowired
     protected JedisManager jedisManager;
+    @Autowired
+    protected PrescriptionDao prescriptionDao;
 
     public static final int ZERO = 0;
 
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
+        if (param.getUserId()>0) {
+            List<Integer> patientIds = userPatientCoupleDao.listPatientIdsByUserId(param.getUserId());
+            if (patientIds.size()>0) {
+                param.setPatientIds(patientIds);
+            }
+        }
         PageResult<PatientOneParam> patientList = patientDao.getPatientList(param);
         Map<Integer, String> diseaseMap = getDiseaseMap();
         for (PatientOneParam patient : patientList.dataList) {
             getPatientDiseaseStr(patient,diseaseMap);
+            patient.setAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
+            prescriptionDao.countPrescriptionByPatient(patient.getId());
         }
         return patientList;
     }
@@ -368,5 +379,14 @@ public class PatientService extends BaseShopConfigService{
         });
         Map<Integer, String> diseaseMap = diseaseList.stream().collect(Collectors.toMap(PatientMoreInfoParam::getId, PatientMoreInfoParam::getName));
         return diseaseMap;
+    }
+
+    /**
+     * 用户绑定的患者数
+     * @param userId
+     * @return
+     */
+    public Integer countPatientByUser(Integer userId) {
+        return patientDao.countPatientByUser(userId);
     }
 }

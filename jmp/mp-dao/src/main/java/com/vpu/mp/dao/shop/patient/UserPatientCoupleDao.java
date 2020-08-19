@@ -46,7 +46,7 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
     }
 
     /**
-     * 获取用户绑定患者Id集合
+     * 获取用户绑定患者信息集合
      * @param userId
      * @return
      */
@@ -169,5 +169,17 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
             .where(USER_PATIENT_COUPLE.USER_ID.eq(userId))
             .and(USER_PATIENT_COUPLE.PATIENT_ID.eq(patientId))
             .fetchAnyInto(UserPatientDetailVo.class);
+    }
+
+    /**
+     * 获取用户绑定患者Id集合
+     * @param userId
+     * @return
+     */
+    public List<Integer> listPatientIdsByUserId(Integer userId) {
+        List<Integer> patientList = db().select(USER_PATIENT_COUPLE.PATIENT_ID).from(USER_PATIENT_COUPLE)
+            .where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(PATIENT.IS_DELETE.eq((byte) 0)))
+            .fetchInto(Integer.class);
+        return patientList;
     }
 }

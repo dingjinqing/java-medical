@@ -358,6 +358,7 @@ public class ImSessionService extends ShopBaseService {
         Integer sessionReadyToOnAckAvgTime = imSessionDao.getSessionReadyToOnAckAvgTime(doctorId);
         Integer sessionCount = imSessionDao.getSessionCount(doctorId);
         DoctorSortParam sortParam = new DoctorSortParam();
+        sortParam.setDoctorId(doctorId);
         if (sessionReadyToOnAckAvgTime != null) {
             sortParam.setAvgAnswerTime(sessionReadyToOnAckAvgTime);
             doctorService.updateAvgAnswerTime(sortParam);
@@ -464,11 +465,6 @@ public class ImSessionService extends ShopBaseService {
         }
         Byte status =Byte.valueOf(statusVal);
         vo.setStatus(status);
-
-        // 会话已经停止就不可以拉取消息
-        if (ImSessionConstant.SESSION_END.equals(status)) {
-            return vo;
-        }
 
         List<ImSessionItemBase> imSessionItemBases = dumpSessionReadyToBak(getShopId(), param.getSessionId(), param.getPullFromId(), param.getSelfId());
         vo.setMessages(imSessionItemBases);

@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
+import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,6 +56,7 @@ public class DoctorService extends ShopBaseService {
     /**自动推荐最大数量*/
     public static final int RECOMMEND_MAX_NUM = 10;
     public static final String HOSPITAL_NAME = "六盘水医院";
+    public static final String STRINGBLANK = "";
     @Autowired
     protected DoctorDao doctorDao;
     @Autowired
@@ -523,10 +525,20 @@ public class DoctorService extends ShopBaseService {
         setDoctorDepartmentTitle(doctorInfo);
         doctorInfo.setIsAttention(userDoctorAttentionDao.isAttention(param));
         doctorInfo.setHospitalName(HOSPITAL_NAME);
-//        DoctorCommentListParam doctorCommentListParam = new DoctorCommentListParam();
-//        doctorCommentListParam.setDoctorId(param.getDoctorId());
-//        doctorInfo.setCommentList(doctorCommentService.listDoctorComment(doctorCommentListParam));
+        doctorInfo.setAnswerHour(getAnswerHour(doctorInfo.getAvgAnswerTime()));
         return doctorInfo;
+    }
+
+    public static String getAnswerHour(Integer seconds){
+        String result = STRINGBLANK;
+        float num =(float)seconds/3600;
+
+        DecimalFormat df = new DecimalFormat("0.0");
+
+        result = df.format(num);
+
+        return result;
+
     }
 
     /**

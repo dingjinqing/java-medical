@@ -465,4 +465,13 @@ public class PrescriptionDao extends ShopBaseDao {
     public int updatePrescriprionIsUsered(String prescriptionCode) {
       return  db().update(PRESCRIPTION).set(PRESCRIPTION.IS_USED,BaseConstant.YES).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
     }
+
+    /**
+     * 患者关联的处方数
+     * @param patientId
+     * @return
+     */
+    public Integer countPrescriptionByPatient(Integer patientId) {
+        return db().fetchCount(PRESCRIPTION, PRESCRIPTION.PATIENT_ID.eq(patientId));
+    }
 }

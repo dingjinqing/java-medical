@@ -193,11 +193,9 @@ global.wxPage({
   toChat(e) {
     let status = e.currentTarget.dataset.status;
     let orderSn = e.currentTarget.dataset.orderSn;
-    if (status !== 3) {
       util.navigateTo({
         url: "/pages2/patientChat/patientChat?orderSn=" + orderSn + "&sessionStatus=" + status
       })
-    }
   },
   toComment(e){
     let orderSn = e.currentTarget.dataset.orderSn;

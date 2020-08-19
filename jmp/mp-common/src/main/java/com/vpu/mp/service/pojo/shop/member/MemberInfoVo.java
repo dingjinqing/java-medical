@@ -55,6 +55,8 @@ public class MemberInfoVo {
 	
 	/** 真实姓名 */
 	private String realName;
-	
+
+	/** 患者数 */
+	private Integer patientNum;
 	
 }

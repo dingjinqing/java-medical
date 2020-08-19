@@ -38,7 +38,7 @@
 										<view>
 											<text>{{item.doctorName}}</text>
 											<text class="depart" wx:if='{{item.departmentName}}'>{{item.departmentName}}</text>
-											<text class='fr {{item.sessionStatus == 1 ? "wait" : (item.sessionStatus == 2 || item.sessionStatus == 5 ? "online" : "end")}}'>{{item.sessionStatus == 1 ? "待接诊" : (item.sessionStatus == 2 || item.sessionStatus == 5 ? "会话中" : (item.sessionStatus == 4 ? "会话结束" : "会话终止"))}}</text>
+											<text class='fr {{item.sessionStatus == 1 ? "wait" : (item.sessionStatus == 2 || item.sessionStatus == 5 ? "online" : "end")}}'>{{item.sessionStatus == 1 ? "待接诊" : (item.sessionStatus == 2 || item.sessionStatus == 5 ? "会话中" : (item.sessionStatus == 4 ? "会话结束" :( item.sessionStatus == 3 ? "已退款" :"会话终止")))}}</text>
 										</view>
 									</view>
 									<view class="c_r_bot">

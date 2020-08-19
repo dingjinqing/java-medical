@@ -5,7 +5,7 @@
         <div class="filters_item ">
           <span class="fil_span">医师姓名：</span>
           <el-select
-            v-model="param.doctorId"
+            v-model="param.doctorName"
             placeholder="请输入医生姓名"
             size="small"
             class="default_input"
@@ -17,9 +17,9 @@
             ></el-option>
             <el-option
               v-for="item in doctorList"
-              :key="item.id"
+              :key="item.name"
               :label="item.name"
-              :value="item.id"
+              :value="item.name"
             ></el-option>
           </el-select>
 
@@ -103,10 +103,7 @@
           prop='doctorName'
           label='医生姓名'
         ></el-table-column>
-        <el-table-column
-          prop='departmentName'
-          label='科室'
-        ></el-table-column>
+
         <el-table-column
           prop='amount'
           label='咨询单数'
@@ -170,7 +167,7 @@ export default {
       param: {
         startTime: '',
         endTime: '',
-        doctorId: ''
+        doctorName: ''
       },
       doctorList: [],
       total: {}
@@ -228,7 +225,7 @@ export default {
           this.pageParams = res.content.page
         }
       }).catch(err => console.log(err))
-      this.getTotal({ doctorId: this.param.doctorId, startTime: this.param.startTime, endTime: this.param.endTime })
+      this.getTotal({ doctorName: this.param.doctorName, startTime: this.param.startTime, endTime: this.param.endTime })
     },
     getDoctor (doctor) {
       getDoctorList(doctor).then(res => {

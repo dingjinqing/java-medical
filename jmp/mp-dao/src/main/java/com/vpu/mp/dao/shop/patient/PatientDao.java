@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PATIENT;
+import static com.vpu.mp.db.shop.Tables.USER_PATIENT_COUPLE;
 
 /**
  * @author chenjie
@@ -53,6 +54,9 @@ public class PatientDao extends ShopBaseDao{
         }
         if (param.getMobile() != null) {
             select.where(PATIENT.MOBILE.like(likeValue(param.getMobile())));
+        }
+        if (param.getUserId()>0) {
+            select.where(PATIENT.ID.in(param.getPatientIds()));
         }
     }
 
@@ -183,5 +187,14 @@ public class PatientDao extends ShopBaseDao{
         return db().select(PATIENT.ID)
             .from(PATIENT)
             .where(PATIENT.IDENTITY_CODE.eq(identityCode)).fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 用户绑定的患者数
+     * @param userId
+     * @return
+     */
+    public Integer countPatientByUser(Integer userId) {
+        return db().fetchCount(USER_PATIENT_COUPLE, USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0)));
     }
 }
