@@ -1,5 +1,5 @@
 <template>
-<!--  充值记录列表-->
+  <!--  充值记录列表-->
   <div class="inPayList">
     <div class="inPayConfig">
       <div class="search_list">
@@ -8,22 +8,23 @@
           :inline="true"
           class="demo-form-inline"
         >
-          <el-form-item :label="$t('actionRecord.optionTime')+'：'">
+          <el-form-item :label="$t('actionRecord.rechargeTime')+'：'">
             <div class="block">
               <el-date-picker
                 v-model="startCreateTime"
-                type="date"
-                style="width:170px;"
-                value-format="yyyy-MM-dd 00:00:00"
+                type="datetime"
+                style="width:200px;"
+                value-format="yyyy-MM-dd HH:mm:ss"
                 placeholder="开始时间"
               >
               </el-date-picker>
               <span>至</span>
               <el-date-picker
                 v-model="endCreateTime"
-                type="date"
-                style="width:170px;"
-                value-format="yyyy-MM-dd 00:00:00"
+                type="datetime"
+                style="width:200px;"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                default-time="23:59:59"
                 placeholder="结束时间"
               >
               </el-date-picker>
@@ -51,6 +52,9 @@
             align="center"
             min-width="20%"
           >
+            <template v-slot='scope'>
+              <span>{{scope.row.rechargeTime | timeDate}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="price"
@@ -187,40 +191,47 @@ export default {
       }
       return row.actionTypeTran
     }
+  },
+  filters: {
+    timeDate: function (val) {
+      if (!val) return
+      val = val.split('.')
+      return val[0]
+    }
   }
 }
 
 </script>
 <style lang="scss" scoped>
-  .payContent {
-    padding: 10px;
-    min-width: 100%;
-    font-size: 14px;
-    height: 100%;
-  }
-  // .payContent_main {
-  //   background-color: #fff;
-  //   padding: 10px 20px;
-  // }
-  .search_list {
-    padding: 15px;
-    background: #fff;
-  }
-  .table_box {
-    background: #fff;
-    margin-top: 10px;
-    padding: 15px;
-  }
-  .footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  .footer > span {
-    font-size: 14px;
-  }
-  .block /deep/ .el-date-editor.el-input,
-  .el-date-editor.el-input__inner {
-    width: 150px;
-  }
+.payContent {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+}
+// .payContent_main {
+//   background-color: #fff;
+//   padding: 10px 20px;
+// }
+.search_list {
+  padding: 15px;
+  background: #fff;
+}
+.table_box {
+  background: #fff;
+  margin-top: 10px;
+  padding: 15px;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.footer > span {
+  font-size: 14px;
+}
+.block /deep/ .el-date-editor.el-input,
+.el-date-editor.el-input__inner {
+  width: 150px;
+}
 </style>

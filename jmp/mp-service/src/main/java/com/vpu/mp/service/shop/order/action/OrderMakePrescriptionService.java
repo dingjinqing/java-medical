@@ -17,6 +17,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalOneInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -24,9 +25,6 @@ import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsMedicalVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -36,8 +34,6 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -134,7 +130,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      */
     @Override
     @RedisLock(prefix = JedisKeyConstant.PRESCRIPTION_LOCK)
-    public ExecuteResult execute(PrescriptionMakeParam obj) {
+    public ExecuteResult execute(@RedisLockKeys PrescriptionMakeParam obj) {
         logger().info("医师开方-开始");
         OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
         if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){

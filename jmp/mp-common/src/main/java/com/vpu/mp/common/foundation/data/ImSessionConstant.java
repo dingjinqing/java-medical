@@ -22,7 +22,7 @@ public class ImSessionConstant {
      */
     public static final Byte SESSION_ON = 2;
     /**会话中权重*/
-    public static final Byte SESSION_ON_WEIGHT = 5;
+    public static final Byte SESSION_ON_WEIGHT = 6;
     /**
      * 会话取消
      */
@@ -34,7 +34,7 @@ public class ImSessionConstant {
      */
     public static final Byte SESSION_END = 4;
     /**会话结束权重*/
-    public static final Byte SESSION_END_WEIGTH = 1;
+    public static final Byte SESSION_END_WEIGHT = 2;
 
     /**
      * 继续问诊

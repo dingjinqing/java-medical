@@ -15,7 +15,7 @@ create table if not exists `b2c_shop_sms_config` (
 
 
 -- 订单商品备份
-CREATE TABLE `b2c_order_goods_bak` (
+CREATE TABLE if not exists `b2c_order_goods_bak` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `rec_id` mediumint(8) NOT NULL ,
   `main_rec_id` mediumint(8) NOT NULL DEFAULT '0' COMMENT '主订单rec_id',
@@ -79,7 +79,7 @@ CREATE TABLE `b2c_order_goods_bak` (
 )COMMENT='订单商品表  b2c_order_goods';
 
 -- 订单详情备份
-CREATE TABLE `b2c_order_info_bak` (
+CREATE TABLE  if not exists  `b2c_order_info_bak` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `order_id` mediumint(8) NOT NULL COMMENT '订单ID',
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',

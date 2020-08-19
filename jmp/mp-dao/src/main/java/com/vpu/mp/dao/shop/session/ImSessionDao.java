@@ -141,7 +141,7 @@ public class ImSessionDao extends ShopBaseDao {
         }
 
         SelectSeekStep2<ImSessionRecord, Byte, Timestamp> select = db().selectFrom(IM_SESSION).where(condition)
-            .orderBy(IM_SESSION.WEIGHT_FACTOR.desc(), IM_SESSION.UPDATE_TIME.asc());
+            .orderBy(IM_SESSION.WEIGHT_FACTOR.desc(), IM_SESSION.UPDATE_TIME.desc());
         return getPageResult(select,pageListParam.getCurrentPage(),pageListParam.getPageRows(),ImSessionListVo.class);
     }
 

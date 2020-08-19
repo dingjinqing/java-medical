@@ -33,6 +33,7 @@ export const en = {
   userName: 'operator',
   actionType: 'operation module',
   optionTime: 'operation time',
+  rechargeTime: 'recharge time',
   startTime: 'start date',
   endTime: 'end date',
   search: 'Query',

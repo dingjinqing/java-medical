@@ -169,9 +169,9 @@ public class ImSessionService extends ShopBaseService {
         if (renderPageParam.getIsFirstTime()) {
             String redisKey = null;
             if (renderPageParam.getIsDoctor()) {
-                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
-            } else {
                 redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
+            } else {
+                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             }
             List<String> list = jedisManager.getList(redisKey);
             for (String jsonStr : list) {
@@ -181,11 +181,11 @@ public class ImSessionService extends ShopBaseService {
                 }
                 imSessionItemDo.setImSessionId(imSessionDo.getId());
                 if (renderPageParam.getIsDoctor()) {
-                    imSessionItemDo.setFromId(imSessionDo.getUserId());
-                    imSessionItemDo.setToId(imSessionDo.getDoctorId());
-                } else {
                     imSessionItemDo.setFromId(imSessionDo.getDoctorId());
                     imSessionItemDo.setToId(imSessionDo.getUserId());
+                } else {
+                    imSessionItemDo.setFromId(imSessionDo.getUserId());
+                    imSessionItemDo.setToId(imSessionDo.getDoctorId());
                 }
                 imSessionItemDos.add(imSessionItemDo);
             }
@@ -404,7 +404,7 @@ public class ImSessionService extends ShopBaseService {
             }
         }
         imSessionDao.batchUpdateSessionStatus(sessionDeadIds, ImSessionConstant.SESSION_DEAD,ImSessionConstant.SESSION_DEAD_WEIGHT);
-        imSessionDao.batchUpdateSessionStatus(sessionCloseIds, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGTH);
+        imSessionDao.batchUpdateSessionStatus(sessionCloseIds, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGHT);
         // 修改评价状态
         imSessionDao.batchUpdateSessionEvaluateStatus(sessionDeadIds,ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
         imSessionDao.batchUpdateSessionEvaluateStatus(sessionCloseIds,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
@@ -424,7 +424,7 @@ public class ImSessionService extends ShopBaseService {
             imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_DEAD,ImSessionConstant.SESSION_DEAD_WEIGHT);
             imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
         } else {
-            imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGTH);
+            imSessionDao.updateSessionStatus(sessionId, ImSessionConstant.SESSION_END,ImSessionConstant.SESSION_END_WEIGHT);
             updateSessionRedisStatusValue(sessionId, ImSessionConstant.SESSION_END);
             imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId),ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
         }
