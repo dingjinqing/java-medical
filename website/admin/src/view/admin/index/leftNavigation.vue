@@ -149,7 +149,25 @@ export default {
           path: '/admin/home/main/salesreport',
           span: '',
           name: 'sales_report',
-          flag: true
+          flag: true,
+          children: [
+            {
+              imgUrl: this.$imageHost + '/image/admin/icon_left/sales_report.png',
+              imgUrl_h: this.$imageHost + '/image/admin/icon_left/sale_report_h.png',
+              path: '/admin/home/main/salesreport',
+              span: '',
+              name: 'sales_report',
+              flag: true
+            },
+            {
+              imgUrl: this.$imageHost + '/image/admin/icon_left/advisory_order.png',
+              imgUrl_h: this.$imageHost + '/image/admin/icon_left/advisory_order_h.png',
+              path: '/admin/home/main/advisory/total',
+              span: '',
+              name: 'advisoryTotal',
+              flag: true
+            }
+          ]
         }
       ],
       first_web_decoration: [
@@ -660,14 +678,6 @@ export default {
           path: '/admin/home/main/doctor/offices/list',
           span: '',
           name: 'officesList',
-          flag: true
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/icon_left/advisory_order.png',
-          imgUrl_h: this.$imageHost + '/image/admin/icon_left/advisory_order_h.png',
-          path: '/admin/home/main/advisory/total',
-          span: '',
-          name: 'advisoryTotal',
           flag: true
         }
       ],
