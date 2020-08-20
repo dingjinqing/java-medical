@@ -42,6 +42,7 @@ import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
 import com.vpu.mp.service.pojo.shop.distribution.SetInviteCodeParam;
 import com.vpu.mp.service.pojo.shop.distribution.ShowDistributionGroupParam;
 import com.vpu.mp.service.pojo.shop.distribution.UserRemarkListVo;
+import com.vpu.mp.service.pojo.shop.distribution.withdraw.WithdrawRemarkParam;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
@@ -99,6 +100,16 @@ public class AdminDistributionController extends AdminBaseController{
         }
 		return this.success(result);
 	}
+
+    /**
+     * 子商户类型
+     * @return
+     */
+    @PostMapping("/admin/distribution/mpPayType")
+    public JsonResult serviceProviderType(){
+        Byte mpPay = shop().config.distributionCfg.getMpPay();
+        return this.success(mpPay);
+    }
 
     /**
      * 获取推广文案二维码
@@ -793,6 +804,17 @@ public class AdminDistributionController extends AdminBaseController{
     @PostMapping("/admin/distribution/distributor/check/refuse")
     public JsonResult applyRefuse(@RequestBody DistributionApplyOptParam param){
         boolean res = shop().distributorCheck.applyRefuse(param);
+        return this.success(res);
+    }
+
+    /**
+     * 提现详情添加备注
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/withdraw/withdrawRemark/add")
+    public JsonResult addWithdrawRemark(@RequestBody WithdrawRemarkParam param){
+        int res = shop().withdrawService.addWithdrawRemark(param);
         return this.success(res);
     }
 }
