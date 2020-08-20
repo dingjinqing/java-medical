@@ -57,6 +57,7 @@ public class DoctorService extends ShopBaseService {
     public static final int RECOMMEND_MAX_NUM = 10;
     public static final String HOSPITAL_NAME = "六盘水医院";
     public static final String STRINGBLANK = "";
+    public static final double MIN_ANSWER_TIME = 0.1;
     @Autowired
     protected DoctorDao doctorDao;
     @Autowired
@@ -532,8 +533,8 @@ public class DoctorService extends ShopBaseService {
     public static String getAnswerHour(Integer seconds){
         String result = STRINGBLANK;
         float num =(float)seconds/3600;
-        if (num<(float)0.1) {
-            num = (float)0.1;
+        if (num < (float)MIN_ANSWER_TIME) {
+            num = (float)MIN_ANSWER_TIME;
         }
         DecimalFormat df = new DecimalFormat("0.0");
 
