@@ -50,7 +50,6 @@ public class StorePojo implements Comparable<StorePojo> {
     private Integer   group;
     private String    service;
     private String    content;
-//    @NotNull(groups = {StoreCodingCheckValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
     private Integer   posShopId;
     private Timestamp createTime;
     private Timestamp updateTime;
