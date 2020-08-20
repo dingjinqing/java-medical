@@ -6,6 +6,8 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRefundListRecord;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import static com.vpu.mp.db.shop.Tables.INQUIRY_ORDER_REFUND_LIST;
 
 /**
@@ -21,5 +23,14 @@ public class InquiryOrderRefundListDao extends ShopBaseDao {
         record.insert();
         param.setId(record.getId());
         return record.getId();
+    }
+
+    /**
+     * 获取退款记录
+     * @param orderSn
+     * @return
+     */
+    public List<InquiryOrderRefundListDo> getListByOrderSn(String orderSn){
+        return db().select().from(INQUIRY_ORDER_REFUND_LIST).where(INQUIRY_ORDER_REFUND_LIST.ORDER_SN.eq(orderSn)).fetchInto(InquiryOrderRefundListDo.class);
     }
 }

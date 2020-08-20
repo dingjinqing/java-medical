@@ -27,6 +27,7 @@
   border: 1rpx solid #ddd;
   box-sizing: border-box;
   border-radius: 100%;
+  align-self: flex-start;
 }
 .doc_name{
   margin-bottom: 24rpx;

@@ -114,7 +114,7 @@
           <template slot-scope="scope">
             <div class="operation">
               <a
-                v-if="scope.row.orderAmount - scope.row.refundMoney > 0 && scope.row.orderStatus !== 0"
+                v-if="scope.row.orderAmount - scope.row.refundMoney > 0 && scope.row.orderStatus !== 0 && scope.row.orderStatus !== 5"
                 href="javaScript:void(0);"
                 @click="returnOrder(scope.row)"
               >退款</a>
@@ -189,6 +189,14 @@ export default {
         {
           id: 5,
           text: '已取消'
+        },
+        {
+          id: 6,
+          text: '待退款'
+        },
+        {
+          id: 7,
+          text: '部分退款'
         }
       ],
       showRefund: false,

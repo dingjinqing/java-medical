@@ -1,7 +1,10 @@
 package com.vpu.mp.service.shop.im;
 
 import com.vpu.mp.common.foundation.data.ImSessionConstant;
-import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.ImSessionItemDo;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
@@ -26,7 +29,6 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -449,10 +451,7 @@ public class ImSessionService extends ShopBaseService {
         }
 
         String sessionKey = getSessionRedisKey(getShopId(), sendMsgParam.getSessionId(), sendMsgParam.getFromId(), sendMsgParam.getToId());
-        Timestamp curTime = DateUtils.getLocalDateTime();
-        if (sendMsgParam.getImSessionItem() != null) {
-            sendMsgParam.getImSessionItem().setSendTime(curTime);
-        }
+
         jedisManager.rpush(sessionKey, Util.toJson(sendMsgParam.getImSessionItem()));
 
         return ImSessionConstant.SESSION_CAN_USE;

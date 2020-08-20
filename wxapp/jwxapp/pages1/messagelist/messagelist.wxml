@@ -42,7 +42,7 @@
           <view class="lt_bold">订单动态</view>
           <view>{{item.messageTime}}<text class="iconfont iconshanchu2" bindtap="delete_this" data-mes_id='{{item.messageId}}' data-form='order'></text></view>
         </view>
-        <view class="line_bottom" bindtap="to_order" data-order='{{item.messageRelevanceId}}'>
+        <view class="line_bottom" bindtap="to_order" data-order='{{item.messageRelevanceOrderSn}}'>
           <view class="lt_text">{{item.messageContent}}</view>
           <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
         </view>
