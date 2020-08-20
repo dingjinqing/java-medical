@@ -56,8 +56,6 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/prescription/add")
     public JsonResult insertPrescription(@RequestBody PrescriptionOneParam prescriptionParam){
-        Integer userId = wxAppAuth.user().getUserId();
-        prescriptionParam.setUserId(userId);
         prescriptionParam.setIsUsed(BaseConstant.NO);
         prescriptionParam.setAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
         PrescriptionParam  result = prescriptionService.insertPrescription(prescriptionParam);
