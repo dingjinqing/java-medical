@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
 import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateTimeParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
@@ -290,13 +291,24 @@ public class AdminStoreController extends AdminBaseController{
         return success();
     }
 
-    @GetMapping("/api/admin/store/goods/updateFromShop/{storeId}")
-    public JsonResult updateGoodsDataFromShop(@PathVariable("storeId") Integer storeId){
-        if (storeId == null) {
-            return fail();
-        }
-        shop().store.storeGoods.updateGoodsDataFromShop(storeId);
+    /**
+     * 更新门店商品信息
+     */
+    @PostMapping("/api/admin/store/goods/updateFromShop")
+    public JsonResult updateGoodsDataFromShop(@RequestBody @Valid StoreGoodsUpdateTimeParam param){
+        shop().store.storeGoods.addUpdateGoodsTaskFromShop(param);
         return success();
+    }
+
+    /**
+     * 判断更新商品队列是否完成
+     */
+    @PostMapping("/api/admin/store/goods/judge/compile/{storeId}")
+    public JsonResult updateJudgeCompile(@PathVariable("storeId") Integer storeId){
+        if (shop().store.storeGoods.judgeQueueIsCompile(storeId)) {
+            return success();
+        }
+        return fail();
     }
 
     /**

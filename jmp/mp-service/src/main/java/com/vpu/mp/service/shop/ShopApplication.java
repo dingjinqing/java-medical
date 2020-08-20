@@ -78,6 +78,7 @@ import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.question.FeedbackService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
+import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -183,6 +184,11 @@ public class ShopApplication {
 	public AppletsJumpService appletsJump;
 	@Autowired
 	public MallOverviewService mallOverview;
+    /**
+     * 门店商品
+     */
+    @Autowired
+    public StoreGoodsService storeGoodsService;
     /**
      * 优惠券管理
      */
