@@ -1,11 +1,11 @@
 <!--pages2/patientChat/patientChat.wxml-->
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
-	<scroll-view class="main-container" bindtap="hideMoreActions" scroll-y='true' style='height:{{scrollViewHeight}}px'  scroll-top='{{allHeight}}'  bindscroll='startScroll' >
+	<scroll-view class="main-container" bindtap="hideMoreActions" scroll-y='true' style='height:{{scrollViewHeight}}px' scroll-top='{{allHeight}}' bindscroll='startScroll'>
 		<view id='all_content'>
-			<chat-date send-time='{{time}}' />
 			<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
 				<view id='con_{{idx}}'>
+					<chat-date chat-content='{{item}}' />
 					<chat-message chat-content='{{item}}' system-info='{{system_info}}' system-img='{{system_img}}' status='{{status}}' idx='{{idx}}'>
 						<view slot='origin_message' class="origin_message {{item.position == 0  ? 'origin_left' : 'origin_right'}}" wx:if='{{item.messageInfo.type === 0}}'>
 							{{item.messageInfo.message.content}}
