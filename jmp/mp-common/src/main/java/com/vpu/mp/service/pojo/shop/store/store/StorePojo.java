@@ -19,6 +19,8 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 public class StorePojo implements Comparable<StorePojo> {
+    @NotNull(groups = {StoreUpdateValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
+    private Integer   storeId;
     @NotNull(groups = {StoreAddValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
     private String    storeName;
     @NotNull(groups = {StoreAddValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
@@ -48,6 +50,7 @@ public class StorePojo implements Comparable<StorePojo> {
     private Integer   group;
     private String    service;
     private String    content;
+    private Integer   posShopId;
     private Timestamp createTime;
     private Timestamp updateTime;
     private Short     autoPick;
