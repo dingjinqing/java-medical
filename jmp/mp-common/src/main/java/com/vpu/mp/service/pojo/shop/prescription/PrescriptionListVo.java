@@ -32,6 +32,10 @@ public class PrescriptionListVo {
      */
     private String    doctorName;
     /**
+     * 医师编码
+     */
+    private String    doctorCode;
+    /**
      * 就诊时间
      */
     private Timestamp diagnoseTime;
