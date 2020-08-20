@@ -121,16 +121,10 @@
             @click="addGroups"
           >{{$t('addStore.addNewGroup')}}</el-button>
         </el-form-item>
-        <el-form-item
+        <!-- <el-form-item
           :label="$t('addStore.storeNum') "
           prop="storeNumber"
         >
-          <!-- <el-input
-            v-model.number="storeFormInfo.storeNumber"
-            :placeholder="$t('addStore.storeNumTip')"
-            maxlength="9"
-            show-word-limit
-          ></el-input> -->
           <hc-input-number
             type="integer"
             inline
@@ -139,7 +133,7 @@
             :maxlength="9"
             show-word-limit
           ></hc-input-number>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item
           :label="$t('addStore.location') "
           prop="provinceCode"
@@ -636,7 +630,8 @@ export default {
         openingTime: '',
         closeTime: '',
         group: '',
-        storeNumber: '',
+        storeId: null,
+        // storeNumber: '',
         address: '',// 地图定位详细地址
         service: '', // 填写的服务
         storeImgs: [],
@@ -660,7 +655,7 @@ export default {
         manager: [{ required: true, message: this.$t('addStore.enterPersoninCharge'), trigger: 'blur' }],
         mobile: [{ required: true, message: this.$t('addStore.enterphone'), trigger: 'blur' }],
         businessType: [{ required: true, validator: validBusinessTime, trigger: 'change' }],
-        storeNumber: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { validator: validNum }],
+        // storeNumber: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { validator: validNum }],
         provinceCode: [{ required: true, message: this.$t('addStore.selectArea') }, { validator: validateArea, trigger: 'blur' }],
         address: [{ required: true, message: this.$t('addStore.enterArea'), trigger: 'blur' }, { validator: validateAddress, trigger: 'change' }],
         storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto'), trigger: ['blur', 'change'] }],
@@ -862,7 +857,8 @@ export default {
       let that = this
       allStoreGroup().then(res => {
         if (res.error === 0) {
-          that.storeGroups = res.content
+          that.storeGroups = res.content.storeGroups
+          that.storeForm.storeId = res.content.storeId
         }
       })
     },
