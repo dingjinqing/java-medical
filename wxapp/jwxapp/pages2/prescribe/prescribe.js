@@ -24,7 +24,10 @@ global.wxPage({
     },
     departmentCode: null,
     departmentName: null,
-    doctorAdvice: null
+    doctorAdvice: null,
+    depart_arr:[],
+    depart_all:[],
+    depart_index:-1
   },
   /**
    * 生命周期函数--监听页面加载
@@ -38,6 +41,7 @@ global.wxPage({
     })
     this.getDoctorDetail()
     this.getPatientDetail()
+    this.getDepartmentList()
   },
   clearInput () {
     this.setData({
@@ -149,12 +153,12 @@ global.wxPage({
       showGoodsListDialog: false,
     })
   },
-  selectDepartment () {
-    util.jumpLink(`pages2/allDepartment/allDepartment${util.getUrlParams({
-      source: 'prescribe',
-      doctorId: this.data.doctorId
-    })}`)
-  },
+  // selectDepartment () {
+  //   util.jumpLink(`pages2/allDepartment/allDepartment${util.getUrlParams({
+  //     source: 'prescribe',
+  //     doctorId: this.data.doctorId
+  //   })}`)
+  // },
   getDoctorAdvice ({ detail: { value } }) {
     this.setData({
       doctorAdvice: value
@@ -283,6 +287,27 @@ global.wxPage({
   bindClose(){
     this.setData({
       showGoodsListDialog:false
+    })
+  },
+  getDepartmentList(){
+    util.api('/api/wxapp/department/list', res => {
+      if(res.error == 0){
+        this.data.depart_all = res.content
+        for (let i in res.content){
+          this.data.depart_arr.push(res.content[i].name)
+        }
+        this.setData({
+          depart_arr: this.data.depart_arr
+        })
+      }
+    },{keyword:'',doctorId:this.data.doctorId})
+  },
+  changeDepart (e) {
+    this.data.depart_index = e.detail.value;
+    this.data.departmentCode = this.data.depart_all[e.detail.value].code;
+    this.data.departmentName = this.data.depart_all[e.detail.value].name
+    this.setData({
+      depart_index: this.data.depart_index
     })
   },
   /**

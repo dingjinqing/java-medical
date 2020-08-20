@@ -108,7 +108,7 @@ global.wxPage({
         console.log(res)
         if(res.error === 0){
           let targetList = this.data.dataList[parentIndex]
-            targetList.splice(targetList.findIndex(item=>item === sessionId),1)
+            targetList.splice(targetList.findIndex(item=>item.id === sessionId),1)
             this.setData({
               [`dataList[${parentIndex}]`]:targetList
             })
