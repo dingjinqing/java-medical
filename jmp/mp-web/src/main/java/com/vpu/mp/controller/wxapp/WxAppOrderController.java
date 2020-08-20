@@ -369,7 +369,6 @@ public class WxAppOrderController extends WxAppBaseController{
     public JsonResult makePrescription(@RequestBody PrescriptionMakeParam param){
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setAction((byte)OrderServiceCode.MAKE_PRESCRIPTION.ordinal());
-        param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult=shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
             return success();

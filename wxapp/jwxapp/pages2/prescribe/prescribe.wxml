@@ -25,10 +25,14 @@ module.exports = {
 					<view>年龄：<text>{{patientInfo.age}}岁</text></view>
 					<view>性别：<text>{{filter.getSex(patientInfo.sex)}}</text></view>
 				</view>
-				<view class="prescription-item" bindtap="selectDepartment">
+				<view class="prescription-item">
 					<view class="item-left">科室：</view>
 					<view class="item-center">
-						{{departmentName ? departmentName : '请选择'}}
+						<picker mode="selector" value="{{depart_index}}" range="{{depart_arr}}" 
+										bindchange="changeDepart">
+							<view class="picker" wx:if='{{depart_index != -1}}'>{{depart_arr[depart_index]}}</view>
+							<view class='place' wx:else>请选择</view>
+						</picker>
 					</view>
 					<view class="item-right">
 						<text class="iconfont iconjiantou"></text>

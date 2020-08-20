@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * 添加医师评价
@@ -42,17 +43,18 @@ public class DoctorCommentService extends ShopBaseService {
         DoctorCommentDo doctorCommentDo = doctorCommentDao.getByImSessionId(param.getImSessionId());
         if (doctorCommentDo!=null){
             doctorCommentDo.setCreateTime(DateUtil.date().toTimestamp());
+            doctorCommentDo.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
             doctorCommentDao.update(doctorCommentDo);
             //更新会话
             imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
         }else {
-            param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_NOT_CHECK);
+            param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
             doctorCommentDao.save(param);
         }
         //更新医师评价
         BigDecimal avgCommentStar = doctorCommentDao.getAvgCommentStar(param.getDoctorId());
         DoctorSortParam param1 =new DoctorSortParam();
-        param1.setAvgCommentStar(avgCommentStar);
+        param1.setAvgCommentStar(Optional.ofNullable(avgCommentStar).orElse(BigDecimal.ZERO));
         param1.setDoctorId(param.getDoctorId());
         doctorService.updateAvgCommentStar(param1);
     }

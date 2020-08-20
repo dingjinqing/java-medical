@@ -4,6 +4,7 @@ import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 /**
  * 销售报表
@@ -14,6 +15,27 @@ import java.sql.Timestamp;
 public class MedicalSalesReportParam extends BasePageParam {
 
     /**
+     * 天
+     */
+    public final static byte ANALYZE_TYPE_DAY=1;
+    /**
+     * 星期
+     */
+    public final static byte ANALYZE_TYPE_WEEK=2;
+    /**
+     * 月
+     */
+    public final static byte ANALYZE_TYPE_MONTH=3;
+    /**
+     * 季度
+     */
+    public final static byte ANALYZE_TYPE_QUARTER=4;
+    /**
+     * 年
+     */
+    public final static byte ANALYZE_TYPE_YEAR=5;
+
+    /**
      * 开始时间
      */
     private Timestamp startTime;
@@ -22,8 +44,16 @@ public class MedicalSalesReportParam extends BasePageParam {
      */
     private Timestamp endTime;
     /**
-     * 时间
+     * 分析时段 1 天 默认 2 周 3月 4 季度 5年
      */
-    private Integer day;
+    private Byte analyzeType;
+
+
+    //*****计算用
+
+    private Map<Timestamp,Timestamp> map;
+
+    private long totalRows;
+
 
 }

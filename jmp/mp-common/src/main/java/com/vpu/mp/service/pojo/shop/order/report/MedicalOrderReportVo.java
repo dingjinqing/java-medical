@@ -39,28 +39,38 @@ public class MedicalOrderReportVo {
     @ExcelColumn(columnName = "销售单数", columnIndex = 2)
     private Integer orderNumber;
     /**
-     * 处方金额
+     * 邮费
      */
-    @ExcelColumn(columnName = "处方药销售金额", columnIndex = 3)
-    private BigDecimal orderMedicalAmount;
+    @ExcelColumn(columnName = "邮费", columnIndex = 3)
+    private BigDecimal shippingFee;
     /**
-     * 处方订单数
+     * 用户余额
      */
-    @ExcelColumn(columnName = "处方药销售单数", columnIndex = 4)
-    private Integer orderMedicalNumber;
+    @ExcelColumn(columnName = "用户余额", columnIndex = 4)
+    private BigDecimal useAccount;
+    /**
+     * 微信支付
+     */
+    @ExcelColumn(columnName = "微信支付", columnIndex = 5)
+    private BigDecimal moneyPaid;
     /**
      * 退款金额
      */
-    @ExcelColumn(columnName = "退款金额", columnIndex = 5)
+    @ExcelColumn(columnName = "退款金额", columnIndex = 6)
     private BigDecimal returnAmount;
     /**
      * 退款订单数
      */
-    @ExcelColumn(columnName = "退款单数", columnIndex = 6)
+    @ExcelColumn(columnName = "退款单数", columnIndex = 7)
     private Integer returnNumber;
+    /**
+     * 净销售额
+     */
+    @ExcelColumn(columnName = "净销售额", columnIndex = 9)
+    private BigDecimal netSales;
     /**
      * 订单平均价
      */
-    @ExcelColumn(columnName = "笔单价", columnIndex = 7)
+    @ExcelColumn(columnName = "笔单价", columnIndex = 9)
     private BigDecimal orderAvg;
 }
