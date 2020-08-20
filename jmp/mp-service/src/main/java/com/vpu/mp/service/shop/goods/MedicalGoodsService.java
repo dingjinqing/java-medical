@@ -383,16 +383,27 @@ public class MedicalGoodsService extends ShopBaseService {
      */
     private void batchStoreGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
         transaction(()->{
-
             List<String> goodsCodes = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
             // 剔除没有药品编码的数据
             List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemReadyToStore = goodsMedicalExternalRequestItemBos.stream().filter(x -> {
                 if (x.getGoodsCode() == null) {
+                    logger().info("同步药品信息错误："+getShopId()+":缺少药品编码-"+x.getGoodsCode());
                     return false;
-                } else {
-                    goodsCodes.add(x.getGoodsCode());
-                    return true;
                 }
+                if (x.getGoodsCommonName() == null){
+                    logger().info("同步药品信息错误："+getShopId()+":缺少药品名称-"+x.getGoodsCommonName());
+                    return false;
+                }
+                if (x.getGoodsQualityRatio() == null) {
+                    logger().info("同步药品信息错误："+getShopId()+":缺少药品规格系数-"+x.getGoodsQualityRatio());
+                    return false;
+                }
+
+                x.setGoodsCommonName(x.getGoodsCommonName().replaceAll("\\*","").trim());
+                x.setGoodsQualityRatio(x.getGoodsQualityRatio().trim());
+                goodsCodes.add(x.getGoodsCode());
+                return true;
+
             }).collect(Collectors.toList());
             // 获取已存在的goodsSn到goodsId映射
             Map<String, Integer> existGoodsCodes = goodsAggregate.mapGoodsCodeToGoodsId(goodsCodes);

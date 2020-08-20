@@ -86,7 +86,7 @@ public class ApiExternalRequestService extends MainBaseService {
             if (response.getStatus()== successStatus){
                 post =response.body();
             }else {
-                log.warn("请求外部服务-放回码{}：" , response.getStatus());
+                log.warn("请求外部服务-返回码{}：" , response.getStatus());
                 vo = new ApiExternalRequestResult();
                 vo.setError(ApiExternalRequestConstant.ERROR_CODE_NET_ILLEGAL);
                 vo.setMsg("返回码"+response.getStatus());
