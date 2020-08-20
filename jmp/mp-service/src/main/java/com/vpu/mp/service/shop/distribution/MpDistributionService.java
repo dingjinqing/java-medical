@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.distribution;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
@@ -11,35 +12,22 @@ import com.vpu.mp.db.shop.tables.records.UserTotalFanliRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
-import com.vpu.mp.service.pojo.shop.distribution.RebateCenterVo;
-import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
+import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
-import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderListVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateOrderVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateRankingTopVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.UserRebateVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.withdraw.*;
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record4;
-import org.jooq.Record5;
-import org.jooq.Result;
-import org.jooq.SelectOnConditionStep;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.user.user.UserService;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,15 +37,7 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
-import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
+import static com.vpu.mp.db.shop.Tables.*;
 import static org.jooq.impl.DSL.recordType;
 import static org.jooq.impl.DSL.sum;
 
@@ -88,7 +68,13 @@ public class MpDistributionService extends ShopBaseService{
 
     @Autowired
     public DistributionConfigService disCfg;
-
+    @Autowired
+    public ShopCommonConfigService scs;
+    @Autowired
+    private UserService us;
+    @Autowired
+    public MpAuthShopService mss;
+    private final static String DEFAULT_USER_AVATAR = "/image/admin/head_icon.png";
     /**
      * 申请分销员页面信息
      * @param lang
@@ -246,7 +232,8 @@ public class MpDistributionService extends ShopBaseService{
 	public String generateInvitationCode(){
         String inviteCode = "";
         char[] str = "0123456789abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-        for (int i = 0; i < 6; i++) {
+        int len=6;
+        for (int i = 0; i < len; i++) {
             int index = (int) (Math.random() * str.length);
             inviteCode += str[index];
         }
@@ -796,4 +783,204 @@ public class MpDistributionService extends ShopBaseService{
          Integer sublayerNumber = db().selectCount().from(USER).where(USER.INVITE_ID.eq(userId)).fetchOne().into(Integer.class);
          db().update(USER_TOTAL_FANLI).set(USER_TOTAL_FANLI.SUBLAYER_NUMBER,sublayerNumber).where(USER_TOTAL_FANLI.USER_ID.eq(userId)).execute();
      }
+
+
+    public WithdrawDetailVo withdrawDetail(Integer userId, Integer shopId){
+        WithdrawDetailVo withdrawDetailVo = new WithdrawDetailVo();
+        int isBindMobile = scs.getBindMobile();
+        //用户信息
+        UserInfo userInfo = us.getUserInfo(userId);
+        //分销配置
+        DistributionParam cfg = distributionCfg.getDistributionCfg();
+        BigDecimal canWithdraw = canWithdraw(userId);
+        //是否绑定公众号
+        MpAuthShopRecord authShopInfo = mss.getAuthShopByShopId(shopId);
+        System.out.println(authShopInfo);
+        //已绑定公众号
+        if(authShopInfo.getLinkOfficialAppId() != null){
+            String isPublicUser = getOpenIdFromMpOpenId(authShopInfo.getLinkOfficialAppId(), authShopInfo.getAppId(), userInfo.getWxOpenid());
+            if(isPublicUser != null){
+                //判断关注状态 0：取关；1：关注
+                com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord mp = saas().shop.mpOfficialAccountUserService.getUser(authShopInfo.getAppId(), userInfo.getWxOpenid());
+                withdrawDetailVo.setIsPublicUser(mp.getSubscribe());
+            }
+        }else{
+            withdrawDetailVo.setNickName(null);
+            withdrawDetailVo.setIsPublicUser((byte)0);
+        }
+        withdrawDetailVo.setIsBindMobile(isBindMobile);
+        withdrawDetailVo.setRealName(userInfo.getRealName());
+        withdrawDetailVo.setWithdrawCash(cfg.getWithdrawCash());
+        withdrawDetailVo.setWithdrawStatus(cfg.getWithdrawStatus());
+        withdrawDetailVo.setCanWithdraw(canWithdraw);
+        withdrawDetailVo.setWithdrawSource(cfg.getWithdrawSource());
+        return withdrawDetailVo;
+
+    }
+
+    /**
+     * 分销中心-提现记录
+     * @param param
+     * @return
+     */
+    public WithdrawRecordVo withdrawRecord(WithdrawRecordParam param) {
+        WithdrawRecordVo withdrawRecordVo = new WithdrawRecordVo();
+        //提现金额
+        BigDecimal totalWithdraw = BigDecimal.ZERO;
+
+        Record1<BigDecimal> bigDecimalRecord1 = db().select(sum(DISTRIBUTION_WITHDRAW.WITHDRAW_CASH))
+            .from(DISTRIBUTION_WITHDRAW)
+            //状态：出账成功
+            .where(DISTRIBUTION_WITHDRAW.STATUS.eq(WithdrawStatusEnum.SUCCESS.getStatus()))
+            .and(DISTRIBUTION_WITHDRAW.USER_ID.eq(param.getUserId())).fetchOne();
+
+        if (bigDecimalRecord1.value1() != null) {
+            totalWithdraw = bigDecimalRecord1.value1();
+        }
+        withdrawRecordVo.setTotalWithdraw(totalWithdraw);
+
+        SelectSeekStep1<Record9<Byte, BigDecimal, String, Timestamp, Timestamp, Timestamp, Timestamp, Timestamp, Timestamp>, Timestamp> selectSeekStep1 =
+            db().select(DISTRIBUTION_WITHDRAW.STATUS, DISTRIBUTION_WITHDRAW.WITHDRAW_CASH, DISTRIBUTION_WITHDRAW.REFUSE_DESC,
+                        DISTRIBUTION_WITHDRAW.CHECK_TIME, DISTRIBUTION_WITHDRAW.REFUSE_TIME, DISTRIBUTION_WITHDRAW.BILLING_TIME,
+                        DISTRIBUTION_WITHDRAW.FAIL_TIME, DISTRIBUTION_WITHDRAW.CREATE_TIME, DISTRIBUTION_WITHDRAW.DESC_TIME)
+            .from(DISTRIBUTION_WITHDRAW)
+            .where(DISTRIBUTION_WITHDRAW.USER_ID.eq(param.getUserId()))
+            .orderBy(DISTRIBUTION_WITHDRAW.CREATE_TIME.desc());
+        //提现记录分页展示
+        PageResult<SingleWithdrawRecordVo> pageResult =
+            this.getPageResult(selectSeekStep1, param.getCurrentPage(), param.getPageRows(), SingleWithdrawRecordVo.class);
+
+        pageResult.dataList.stream().forEach(e -> {
+            //处理状态 1待审核 2拒绝 3已审核待出账 4出账成功 5失败
+            if (WithdrawStatusEnum.PENDING.getStatus().equals(e.getStatus())) {
+                e.setCheckTime(e.getCreateTime());
+            } else if (WithdrawStatusEnum.REFUSE.getStatus().equals(e.getStatus())) {
+                e.setCheckTime(e.getRefuseTime());
+            } else if (WithdrawStatusEnum.SUCCESS.getStatus().equals(e.getStatus())) {
+                e.setCheckTime(e.getBillingTime());
+            } else if (WithdrawStatusEnum.FAILURE.getStatus().equals(e.getStatus())) {
+                e.setCheckTime(e.getFailTime());
+            }
+        });
+        withdrawRecordVo.setWithdrawRecords(pageResult);
+        return withdrawRecordVo;
+    }
+
+    /**
+     * 用户真实姓名
+     * @param userId
+     * @return
+     */
+    public String getUserRealName(Integer userId){
+        Record1<String> record = db().select(USER_DETAIL.REAL_NAME).from(USER_DETAIL).where(USER_DETAIL.USER_ID.eq(userId)).fetchOne();
+        if(record != null){
+            return record.into(String.class);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 分销员可提现金额
+     * @param userId
+     * @return
+     */
+    public BigDecimal canWithdraw(Integer userId){
+        //用户余额
+        BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
+        //返利金额
+        BigDecimal totalMoney = BigDecimal.ZERO;
+        Record1<BigDecimal> record = db().select(USER_TOTAL_FANLI.TOTAL_MONEY).from(USER_TOTAL_FANLI).where(USER_TOTAL_FANLI.USER_ID.eq(userId)).fetchOne();
+        if(record != null){
+            totalMoney = record.into(BigDecimal.class);
+        }
+        if(account.compareTo(totalMoney)>0){
+            return totalMoney;
+        }else{
+            return account;
+        }
+    }
+
+    public String getOpenIdFromMpOpenId(String linkOfficialAppId,String appId,String wxOpenid){
+        com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord mp = saas().shop.mpOfficialAccountUserService.getUser(appId, wxOpenid);
+        if(mp != null){
+            Record record = db().select().from(USER).where(USER.WX_OPENID.eq(wxOpenid)).fetchOne();
+            if(record != null){
+                UserRecord user = record.into(UserRecord.class);
+                if(user.getWxUnionId() != null){
+                    com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord userByUnionId = saas().shop.mpOfficialAccountUserService.getUserByUnionId(appId, wxOpenid);
+                    if(userByUnionId != null){
+                        return userByUnionId.getOpenid();
+                    }else{
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 查看开启中的分销员等级
+     * @return
+     */
+    public List<DistributorLevelInfoVo> distributorLevelList() {
+        Result<Record2<String, Byte>> fetch = db().select(DISTRIBUTOR_LEVEL.LEVEL_NAME, DISTRIBUTOR_LEVEL.LEVEL_ID).from(DISTRIBUTOR_LEVEL).where(DISTRIBUTOR_LEVEL.LEVEL_STATUS.eq((byte) 1)).fetch();
+        if(fetch != null){
+            return fetch.into(DistributorLevelInfoVo.class);
+        }
+        return null;
+    }
+
+
+
+
+
+    /**
+     * 分销员佣金排行榜
+     * @param param
+     * @return
+     */
+    public RebateRankingListVo getRebateRankingList(RebateRankingParam param){
+        RebateRankingListVo rebateRankingListVo = new RebateRankingListVo();
+        //当前分销员排名
+        Integer rebateRanking = this.getRebateRanking(param.getUserId());
+        rebateRankingListVo.setRanking(rebateRanking);
+        //当前分销员返利信息
+        UserRebateVo userRebate = getUserRebate(param.getUserId());
+        rebateRankingListVo.setDistributorLevel(userRebate.getLevelName());
+        if(DEFAULT_USER_AVATAR.equals(userRebate.getUserAvatar())){
+            rebateRankingListVo.setUserAvatar(imageUrl(userRebate.getUserAvatar()));
+        }else{
+            rebateRankingListVo.setUserAvatar(userRebate.getUserAvatar());
+        }
+        rebateRankingListVo.setTotalRebateMoney(userRebate.getFinalMoney());
+        rebateRankingListVo.setUsername(userRebate.getUsername());
+
+        BigDecimal finalMoney = BigDecimal.ZERO;
+        SelectConditionStep<? extends Record> fetch = db().select(USER.USER_ID, USER_TOTAL_FANLI.USER_ID, USER_TOTAL_FANLI.FINAL_MONEY, USER.USERNAME, USER_DETAIL.USER_AVATAR)
+            .from(USER_TOTAL_FANLI)
+            .leftJoin(USER).on(USER_TOTAL_FANLI.USER_ID.eq(USER.USER_ID))
+            .leftJoin(USER_DETAIL).on(USER_TOTAL_FANLI.USER_ID.eq(USER_DETAIL.USER_ID))
+            .where(USER_TOTAL_FANLI.FINAL_MONEY.gt(finalMoney));
+
+        if(param.getNav() == 1){
+            fetch.and(USER.DISTRIBUTOR_LEVEL.eq(userRebate.getLevelId()));
+        }
+        Result<? extends Record> record = fetch.orderBy(USER_TOTAL_FANLI.FINAL_MONEY.desc()).fetch();
+        if(record != null){
+            List<RebateRankingListVo.RebateList> into = record.into(RebateRankingListVo.RebateList.class);
+            rebateRankingListVo.setRebateList(into);
+            for (RebateRankingListVo.RebateList item : into){
+                Integer ranking = this.getRebateRanking(item.getUserId());
+                item.setRanking(ranking);
+                if(item.getUserAvatar() != null && item.getUserAvatar().equals(DEFAULT_USER_AVATAR)) {
+                    item.setUserAvatar(imageUrl(item.getUserAvatar()));
+                }
+            }
+        }
+        return rebateRankingListVo;
+    }
+
+
 }
