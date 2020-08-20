@@ -54,6 +54,9 @@
           height="300px"
           style="width: 100%;"
         >
+          <template slot="empty">
+            <tableEmpty />
+          </template>
           <el-table-column
             prop="pageName"
             label="页面名称"

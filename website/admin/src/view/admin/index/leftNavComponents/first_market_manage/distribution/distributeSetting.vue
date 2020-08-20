@@ -3,6 +3,7 @@
     <el-form
       ref="form"
       :model="form"
+      :rules="distributionRules"
       label-width="140px"
     >
       <el-form-item :label="$t('distribution.switch')">
@@ -114,6 +115,7 @@
                 size="small"
                 plain
                 @click="customHandler"
+                v-if="customList.length < 5"
               >自定义激活项</el-button>
               <div
                 v-if="customList.length > 0"
@@ -163,39 +165,78 @@
         ></el-switch>
         <span v-if="form.rank_status === 1">已开启</span>
         <span v-if="form.rank_status === 0">已关闭</span>
-        <el-popover
-          placement="right-start"
-          width="220"
-          trigger="hover"
-          style="margin-left: 30px;"
-        >
-          <el-image :src="$imageHost + '/image/admin/share/dis_rank_example_img.jpg'"></el-image>
-          <el-button
-            slot="reference"
-            type="text"
-          >查看示例</el-button>
-        </el-popover>
+        <imageView
+          :src="$imageHost + '/image/admin/share/dis_rank_example_img.jpg'"
+          :text="'查看示例'"
+        />
         <div class="text">开关开启，且拥有返利数据的分销员数量不小于3位时,分销员中心页显示分销员佣金排名，关闭则不显示。</div>
         <div class="text">开关开启，会在分销员中心页滚动展示最近的5条返佣记录，关闭则不展示。</div>
       </el-form-item>
 
-      <!-- <el-form-item
-        :label="$t('distribution.ranking')"
+      <el-form-item
+        label="分销员独立商品推广页："
         v-show="form.status === 1"
+        prop="goods_promote_scope"
       >
         <el-switch
-          v-model="form.rank_status"
+          v-model="form.goods_promote_status"
           active-color="#F7931E"
           inactive-color="#ccc"
           :active-value='1'
           :inactive-value='0'
+          @change="promoteStatusChange"
         ></el-switch>
-        <span v-if="form.rank_status === 1">已开启</span>
-        <span v-if="form.rank_status === 0">已关闭</span>
-        <div class="text">
-          {{ $t('distribution.rankingTip') }}
+        <span v-if="form.goods_promote_status === 1">已开启</span>
+        <span v-if="form.goods_promote_status === 0">已关闭</span>
+        <span class="text">开启后，分销员可以自行选择参与分销的商品，一键分享给好友</span>
+
+        <div v-if="form.goods_promote_status === 1">
+          <div>
+            <el-radio-group
+              v-model="form.goods_promote_scope"
+              @change="promoteScopeChange"
+            >
+              <el-radio :label="0">全部分销员可使用</el-radio>
+              <el-radio :label="1">部分分销员可使用</el-radio>
+            </el-radio-group>
+            <div v-if="form.goods_promote_scope === 1">
+              <div>
+                <el-button
+                  size="small"
+                  @click="hanldeToAddDistribution()"
+                ><i class="el-icon-plus"></i> 添加分销员</el-button>
+                <span
+                  v-if="selectDistributorIds && selectDistributorIds.length > 0"
+                  style="margin-left: 10px;"
+                >已选{{selectDistributorIds.length}}人</span>
+              </div>
+              <div>
+                <el-button
+                  size="small"
+                  @click="hanldeToAddLevel()"
+                ><i class="el-icon-plus"></i> 添加分销员等级</el-button>
+                <div
+                  style="margin-left: 10px;display: inline-block;"
+                  v-if="selectLevelName && selectLevelName.length > 0"
+                >已选:
+                  <span
+                    v-for="(item, index) in selectLevelName"
+                    :key="index"
+                  >{{item.levelName}}<i v-if="index !== selectLevelName.length - 1">，</i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <el-checkbox
+              v-model="form.directly_bind"
+              :true-label='1'
+              :false-label='0'
+            >直接绑定</el-checkbox>
+            <span class="text">若用户A的邀请人是【没有独立商品推广页权限的分销员】，则分销员B将独立商品推广页分享给用户A，A点击链接后自动成为B的直接下级，并重新计算B与A之间邀请关系的保护期</span>
+          </div>
         </div>
-      </el-form-item> -->
+      </el-form-item>
 
       <el-form-item
         :label="$t('distribution.validity')"
@@ -203,12 +244,21 @@
       >
         <el-radio-group v-model="form.vaild">
           <el-radio :label="1">
-            <el-input
+            <hcInputNumber
+              type="priority"
               size="small"
               style="width: 100px;"
               v-model.number="vaildDate"
               :disabled="form.vaild === 0"
-            ></el-input> {{ $t('distribution.validityDay') }}
+              inline
+            />
+            <!-- <el-input
+              size="small"
+              style="width: 100px;"
+              v-model.number="vaildDate"
+              :disabled="form.vaild === 0"
+            ></el-input>  -->
+            {{ $t('distribution.validityDay') }}
           </el-radio>
           <el-radio :label="0">{{ $t('distribution.validityForever') }}</el-radio>
         </el-radio-group>
@@ -221,14 +271,23 @@
       >
         <el-radio-group v-model="form.protect_date">
           <el-radio :label="1">
-            <el-input
+            <hcInputNumber
+              type="priority"
               size="small"
               style="width: 100px;"
               v-model.number="protectDate"
-              :disabled="form.protect_date === 0"
-            ></el-input> {{ $t('distribution.validityDay') }}
+              :disabled="form.protect_date === -1"
+              inline
+            />
+            <!-- <el-input
+              size="small"
+              style="width: 100px;"
+              v-model.number="protectDate"
+              :disabled="form.protect_date === -1"
+            ></el-input>  -->
+            {{ $t('distribution.validityDay') }}
           </el-radio>
-          <el-radio :label="0">{{ $t('distribution.validityForever') }}</el-radio>
+          <el-radio :label="-1">{{ $t('distribution.validityForever') }}</el-radio>
         </el-radio-group>
         <div class="text">{{ $t('distribution.protectionTip') }}</div>
       </el-form-item>
@@ -244,6 +303,17 @@
         ></el-input>
       </el-form-item>
 
+      <!-- <el-form-item
+        label="分销员统称："
+        v-show="form.status === 1"
+      >
+        <el-input
+          size="small"
+          style="width: 200px"
+          v-model="form.distribution_name"
+        ></el-input>
+      </el-form-item> -->
+
       <el-form-item
         :label="$t('distribution.recommendShop')"
         v-show="form.status === 1"
@@ -253,6 +323,10 @@
           <el-radio :label="1">{{ $t('distribution.recommendRadio2') }}</el-radio>
           <el-radio :label="2">{{ $t('distribution.recommendRadio3') }}</el-radio>
         </el-radio-group>
+
+        <div v-if="form.distribution_goods_type === 1">
+          <p class="text">默认显示销量最高的3件分销商品</p>
+        </div>
 
         <div v-if="form.distribution_goods_type === 2">
           <p class="text">{{ $t('distribution.recommendTip') }}</p>
@@ -265,6 +339,9 @@
             border
             style="width: 500px;margin-top: 20px;"
           >
+            <template slot="empty">
+              <tableEmpty />
+            </template>
             <el-table-column
               :label="$t('distribution.commodityName')"
               prop="goodsName"
@@ -293,6 +370,14 @@
               </template>
             </el-table-column>
           </el-table>
+          <!-- 推荐商品分页 -->
+          <div class="pageContent">
+            <pagination
+              :page-params.sync="pageParams"
+              @pagination="getPageData"
+            />
+          </div>
+
         </div>
       </el-form-item>
 
@@ -327,6 +412,17 @@
         >{{ $t('distribution.addTemplate') }}</a>
       </el-form-item>
 
+      <el-form-item
+        label="返利规则说明："
+        v-show="form.status === 1"
+      >
+        <el-button
+          size="small"
+          plain
+          @click="rebateRuleHandler()"
+        >返利规则配置</el-button>
+      </el-form-item>
+
       <!-- 展开更多配置 -->
       <div
         v-show="form.status === 1"
@@ -357,6 +453,7 @@
             :active-value='1'
             :inactive-value='0'
             style="width: 60px;"
+            @change="withdrawStatusChange()"
           ></el-switch>
           <span v-if="form.withdraw_status === 1">已开启</span>
           <span v-if="form.withdraw_status === 0">已关闭</span>
@@ -367,7 +464,7 @@
           <div class="text">
             {{ $t('distribution.rebateSettingsTip3') }}
           </div>
-          <div v-if="form.withdraw_status === 1">
+          <div v-if="payType !== 1 && form.withdraw_status === 1">
             <el-radio
               v-model="form.withdraw_source"
               label="wx_mini"
@@ -401,12 +498,23 @@
           <span class="text">{{ $t('distribution.withdrawConfigTip') }}</span>
         </el-form-item>
 
-        <el-form-item :label="$t('distribution.minRebate')">
-          <el-input
+        <el-form-item
+          :label="$t('distribution.minRebate')"
+          prop="withdraw_cash"
+        >
+          <hcInputNumber
+            type="integer"
             size="small"
             style="width: 100px;"
             v-model="form.withdraw_cash"
-          ></el-input> {{ $t('distribution.minUnit') }}
+            inline
+          />
+          <!-- <el-input
+            size="small"
+            style="width: 100px;"
+            v-model="form.withdraw_cash"
+          ></el-input>  -->
+          {{ $t('distribution.minUnit') }}
           <div class="text">
             {{ $t('distribution.minRebateTip') }}
           </div>
@@ -623,19 +731,87 @@
       @handleSelectTemplate="handleSelectTemplate"
     />
 
+    <!-- 添加分销员弹窗 -->
+    <DistributorDialog
+      :turnUp="turnUpDialog"
+      @handleSelect="handleSelectRow"
+      :selectRowIds="selectDistributorIds"
+    />
+
+    <!-- 添加分销员等级 -->
+    <el-dialog
+      title="添加分销员等级"
+      :visible.sync="levelDialogVisible"
+      width="30%"
+      center
+      :close-on-click-modal="false"
+    >
+      <div>
+        <span>分销员等级：</span>
+        <el-select
+          v-model="levelValue"
+          filterable
+          multiple
+          size="small"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in levelList"
+            :key="item.levelId"
+            :label="item.levelName"
+            :value="item.levelId"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <span slot="footer">
+        <el-button
+          size="small"
+          @click="cancelLevelDialog"
+        >取 消</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="sureLevelDialog"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 // 引入组件
-import { setDistribution, getDistribution, getSelectGoods, getSelectTemplate } from '@/api/admin/marketManage/distribution.js'
+import { setDistribution, getPayType, getDistribution, getSelectGoods, getSelectTemplate, distributorLevelList, getRecommendPage } from '@/api/admin/marketManage/distribution.js'
+import imageView from '@/components/admin/imageView'
 export default {
   components: {
+    imageView,
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
     ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
-    SelectTemplate: () => import('@/components/admin/selectTemplate') // 选择模板弹窗
+    SelectTemplate: () => import('@/components/admin/selectTemplate'), // 选择模板弹窗
+    DistributorDialog: () => import('@/components/admin/distributorDialog'), // 添加分销员弹窗
+    pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
+    // 提现金额校验
+    var validateCash = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (!value && this.form.withdraw_status === 1) {
+        callback(new Error('请填写有效的提现金额'))
+      } else if (value && !re.test(value)) {
+        callback(new Error('提现金额请填写有效整数'))
+      } else {
+        callback()
+      }
+    }
+    // 分销推广配置校验
+    var validatePromoteScope = (rule, value, callback) => {
+      if (value === 1 && (this.selectDistributorIds && this.selectDistributorIds.length === 0) && this.selectLevelName && this.selectLevelName.length === 0) {
+        callback(new Error('请选择分销员'))
+      } else {
+        callback()
+      }
+    }
     return {
       vaildDate: null, // 有效期天数
       protectDate: null, // 保护期天数
@@ -657,8 +833,13 @@ export default {
         invitation_code: 0, // 邀请码
         activation_cfg: [], // 个人信息内容
         rank_status: 0, // 分销员排名及返佣记录展示
+        goods_promote_status: 0, // 分销独立商品开关
+        goods_promote_scope: 0, // 分销独立商品类型
+        goods_promote_distributor: '',
+        goods_promote_level: '',
+        directly_bind: 0, // 直接绑定
         vaild: 0, // 返利有效期
-        protect_date: 0, // 分销员保护期
+        protect_date: -1, // 分销员保护期
         rebate_center_name: '分销中心', // 分销中心页面名称
         distribution_goods_type: 2, // 推荐商品(自定义)
         recommend_goods_id: '', // 推荐商品ID
@@ -668,7 +849,13 @@ export default {
         withdraw_config: 0, // 提现设置
         withdraw_cash: null, // 返利最小提现金额
         desc: '分享给你一个好物店铺快来购物吧！', // 邀请文案
-        bg_img: this.$imageHost + '/image/admin/dis_bg_1.jpg' // 海报背景图
+        bg_img: this.$imageHost + '/image/admin/dis_bg_1.jpg', // 海报背景图
+
+        // 规则说明
+        actCopywriting: {
+          document: this.template,
+          isUseDefault: 1
+        }
       },
       // 分销员信息
       checkedList: [],
@@ -724,6 +911,25 @@ export default {
       fromRules: {
         custom_type: [{ required: true, message: '请填写选项类型', trigger: 'change' }],
         custom_title: [{ required: true, message: '请填写标题', trigger: 'change' }]
+      },
+      distributionRules: {
+        withdraw_cash: [{ validator: validateCash, trigger: 'change' }],
+        goods_promote_scope: [{ validator: validatePromoteScope, trigger: 'change' }]
+      },
+      payType: 1, // 提现商户类型
+
+      turnUpDialog: false, // 分销员弹窗
+      selectDistributorIds: [], // 回显数据
+
+      levelDialogVisible: false, // 分销员等级弹窗
+      levelList: [], // 分销员等级列表
+      levelValue: [],
+      selectLevelName: [],
+
+      // 推荐商品分页
+      pageParams: {
+        currentPage: 1,
+        pageRows: 10
       }
     }
   },
@@ -737,14 +943,37 @@ export default {
   mounted () {
     // 初始化数据
     this.langDefault()
-    this.getDistribution()
+    this.getAllData()
   },
   methods: {
     // 获取分销配置
+    async getAllData () {
+      await getPayType().then(res => {
+        if (res.error === 0) {
+          this.payType = res.content
+        }
+      })
+      // 获取分销等级
+      await distributorLevelList().then(res => {
+        if (res.error === 0 && res.content && res.content.length > 0) {
+          this.levelList = []
+          res.content.forEach(item => {
+            if (item.levelStatus === 1) {
+              this.levelList.push(item)
+            }
+          })
+          console.log(this.levelList)
+        }
+      })
+
+      this.getDistribution()
+    },
     getDistribution () {
       getDistribution().then((res) => {
         if (res.error === 0 && res.content) {
           this.form = res.content
+          // 分销员审核开关配置
+          localStorage.setItem('distributionJudgeStatus', this.form.judge_status)
           // 自定义激活项
           this.customList = this.form.custom_options
 
@@ -756,13 +985,13 @@ export default {
             this.form.vaild = 1
           }
           // 提现设置
-          if (!this.form.withdraw_config) {
-            this.form.withdraw_config = 0
-          } else {
-            this.form.withdraw_config = 1
-          }
+          // if (!this.form.withdraw_config) {
+          //   this.form.withdraw_config = 0
+          // } else {
+          //   this.form.withdraw_config = 1
+          // }
           // 保护期
-          if (this.form.protect_date === 0) {
+          if (this.form.protect_date === -1) {
             this.protectDate = null
           } else {
             this.protectDate = this.form.protect_date
@@ -770,19 +999,31 @@ export default {
           }
           // 推荐商品ID
           if (this.form.recommend_goods_id) {
+            // 获取推荐商品分页数据
+            var paramData = {}
+            paramData.currentPage = this.pageParams.currentPage
+            paramData.pageRows = this.pageParams.pageRows
+            paramData.recommendGoodsId = this.form.recommend_goods_id
+            getRecommendPage(paramData).then(res => {
+              if (res.error === 0) {
+                this.tableData = res.content.dataList
+                this.pageParams = res.content.page
+              }
+            })
+
             this.form.recommend_goods_id = this.form.recommend_goods_id.split(',')
             this.form.recommend_goods_id = this.form.recommend_goods_id.map(Number)
             // 推荐商品数据回显
             this.goodsInfo = this.form.recommend_goods_id
-            let that = this
-            for (var j = 0; j < this.goodsInfo.length; j++) {
-              that.getSelectGoods(this.goodsInfo[j])
-            }
+            // let that = this
+            // for (var j = 0; j < this.goodsInfo.length; j++) {
+            //   that.getSelectGoods(this.goodsInfo[j])
+            // }
           }
 
           // 选择模板数据回显
           let that = this
-          if (this.form.rebate_page_id !== '') {
+          if (this.form.rebate_page_id !== 0) {
             that.getSelectTemplate(this.form.rebate_page_id)
           }
 
@@ -805,7 +1046,28 @@ export default {
               }
             })
           }
+
+          // 推广独立页配置
+          if (this.form.goods_promote_distributor && this.form.goods_promote_distributor !== '') {
+            this.selectDistributorIds = this.form.goods_promote_distributor.split(',')
+            this.selectDistributorIds = this.selectDistributorIds.map(Number)
+          }
+
+          if (this.form.goods_promote_level && this.form.goods_promote_level !== '') {
+            this.levelValue = this.form.goods_promote_level.split(',')
+            this.levelValue = this.levelValue.map(Number)
+            this.selectLevelName = []
+            this.levelValue.forEach(item => {
+              var data = this.levelList.find(val => { return val.levelId === item })
+              this.selectLevelName.push(data)
+            })
+          }
+        } else {
+          // 分销员审核开关配置
+          localStorage.setItem('distributionJudgeStatus', 0)
         }
+        // 分销审核开关和分销员审核联动
+        this.$emit('distributionSetting')
       })
     },
 
@@ -934,61 +1196,70 @@ export default {
 
     // 保存分销配置
     addDistribution () {
-      // 分销审核项
-      var customFlag = this.form.custom_options.findIndex(item => { return item.is_checked === 1 })
-      if (this.form.activation === 1 && customFlag === -1 && this.form.activation_cfg.length === 0) {
-        this.$message.warning('分销员审核至少选择一项需提交信息')
-        return false
-      }
-      if (this.form.auto_examine === 1 && this.form.activation === 0) {
-        this.$message.warning('自动审核需要校验邀请码, 请开启分销员个人信息审核')
-        return false
-      }
-      // 自定义激活项
-      this.form.custom_options = this.customList
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          // 分销审核项
+          var customFlag = this.form.custom_options.findIndex(item => { return item.is_checked === 1 })
+          if (this.form.activation === 1 && customFlag === -1 && this.form.activation_cfg.length === 0) {
+            this.$message.warning('分销员审核至少选择一项需提交信息')
+            return false
+          }
+          if (this.form.auto_examine === 1 && this.form.activation === 0) {
+            this.$message.warning('自动审核需要校验邀请码, 请开启分销员个人信息审核')
+            return false
+          }
+          // 自定义激活项
+          this.form.custom_options = this.customList
 
-      // 邀请码
-      if (this.form.activation_cfg && this.form.activation_cfg.length > 0) {
-        var data = this.form.activation_cfg.find(item => { return item === '邀请码' || item === 'Invitation code' })
-        if (data === undefined) {
-          this.form.invitation_code = 0
-        } else {
-          this.form.invitation_code = 1
-        }
-      }
+          // 邀请码
+          if (this.form.activation_cfg && this.form.activation_cfg.length > 0) {
+            var data = this.form.activation_cfg.find(item => { return item === '邀请码' || item === 'Invitation code' })
+            if (data === undefined) {
+              this.form.invitation_code = 0
+            } else {
+              this.form.invitation_code = 1
+            }
+          }
 
-      // 有效期
-      if (this.form.vaild === 1) {
-        this.form.vaild = this.vaildDate
-      }
-      // 提现设置
-      if (this.form.withdraw_config === 1) {
-        this.form.withdraw_config = 'on'
-      } else {
-        delete this.form.withdraw_config
-      }
-      // 保护期
-      if (this.form.protect_date === 1) {
-        this.form.protect_date = this.protectDate
-      }
-      this.form.recommend_goods_id = this.goodsInfo.toString()
-      this.form.tableData = this.tableData
+          // 有效期
+          if (this.form.vaild === 1) {
+            this.form.vaild = this.vaildDate
+          }
+          // 提现设置
+          // if (this.form.withdraw_config === 1) {
+          //   this.form.withdraw_config = 'on'
+          // } else {
+          //   delete this.form.withdraw_config
+          // }
+          // 保护期
+          if (this.form.protect_date === 1) {
+            this.form.protect_date = this.protectDate
+          }
+          // 推荐商品
+          this.form.recommend_goods_id = this.goodsInfo.toString()
+          this.form.tableData = this.tableData
 
-      setDistribution(this.form).then((res) => {
-        if (res.error === 0) {
-          this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
-          this.getDistribution()
+          // 推广独立页配置
+          this.form.goods_promote_distributor = this.selectDistributorIds.toString()
+          this.form.goods_promote_level = this.levelValue.toString()
 
-          // 分销员审核开关配置
-          localStorage.setItem('distributionJudgeStatus', this.form.judge_status)
-          // 分销员审核项邀请码
-          var codeFlag = this.form.activation_cfg.find(item => { return item === '邀请码' })
-          localStorage.setItem('distributionCode', codeFlag === undefined ? 0 : 1)
+          setDistribution(this.form).then((res) => {
+            if (res.error === 0) {
+              this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+              this.getAllData()
 
-          // 分销审核开关和分销员审核联动
-          this.$emit('distributionSetting')
-        } else {
-          this.$message.warning(res.message)
+              // 分销员审核开关配置
+              localStorage.setItem('distributionJudgeStatus', this.form.judge_status)
+              // 分销员审核项邀请码
+              var codeFlag = this.form.activation_cfg.find(item => { return item === '邀请码' })
+              localStorage.setItem('distributionCode', codeFlag === undefined ? 0 : 1)
+
+              // 分销审核开关和分销员审核联动
+              this.$emit('distributionSetting')
+            } else {
+              this.$message.warning(res.message)
+            }
+          })
         }
       })
     },
@@ -1006,17 +1277,36 @@ export default {
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
       console.log('选择商品弹窗回调显示:', row)
-      this.tableData = row
       this.goodsInfo = []
-      this.tableData.map((item, index) => {
-        this.goodsInfo.push(item.goodsId)
-      })
+      if (row && row.length > 0) {
+        row.forEach(item => {
+          this.goodsInfo.push(item.goodsId)
+        })
+      }
+      this.pageParams.currentPage = 1
+      this.getPageData()
     },
 
     // 删除推荐商品
     deleteTable (index) {
-      this.tableData.splice(index, 1)
       this.goodsInfo.splice(index, 1)
+      this.pageParams.currentPage = 1
+      this.getPageData()
+    },
+
+    // 获取推荐商品分页数据
+    getPageData () {
+      this.form.recommend_goods_id = this.goodsInfo.toString()
+      var paramData = {}
+      paramData.currentPage = this.pageParams.currentPage
+      paramData.pageRows = this.pageParams.pageRows
+      paramData.recommendGoodsId = this.form.recommend_goods_id
+      getRecommendPage(paramData).then(res => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
     },
 
     // 调起模板弹窗
@@ -1055,19 +1345,25 @@ export default {
 
     // 跳转推广文案配置
     copyWritingHandler () {
-      this.$router.push({ name: 'distribution_info_copyWriting' })
+      let routeData = this.$router.resolve({
+        name: 'distribution_info_copyWriting',
+        query: {
+          type: 1
+        }
+      })
+      window.open(routeData.href, '_blank')
     },
 
     // 跳转分销员列表
     listClickHandler () {
       this.$emit('tabChange')
     },
-
     // 跳转添加模板
     templateHandler () {
       this.$router.push({
         path: '/admin/home/main/decorationHome',
         query: {
+          pageParams: -1,
           pageId: -1
         }
       })
@@ -1123,10 +1419,75 @@ export default {
       if (item === '邀请码' && value === false) {
         this.form.auto_examine = 0
       }
+    },
+
+    // 提现开关切换
+    withdrawStatusChange () {
+      this.$refs['form'].validateField('withdraw_cash')
+    },
+
+    // 添加分销员
+    hanldeToAddDistribution () {
+      this.turnUpDialog = !this.turnUpDialog
+    },
+
+    // 分销员弹窗回调函数
+    handleSelectRow (row) {
+      this.selectDistributorIds = row
+      this.$refs['form'].validateField('goods_promote_scope')
+    },
+
+    // 添加分销员等级
+    hanldeToAddLevel () {
+      this.levelDialogVisible = !this.levelDialogVisible
+    },
+
+    // 取消分销员等级弹窗
+    cancelLevelDialog () {
+      this.levelDialogVisible = false
+    },
+
+    // 确定分销员等级弹窗
+    sureLevelDialog () {
+      this.levelDialogVisible = false
+      this.selectLevelName = []
+      if (this.levelValue && this.levelValue.length > 0) {
+        this.levelValue.forEach(item => {
+          var data = this.levelList.find(val => { return val.levelId === item })
+          this.selectLevelName.push(data)
+        })
+      }
+      this.$refs['form'].validateField('goods_promote_scope')
+    },
+
+    // 跳转返利活动规则
+    rebateRuleHandler () {
+      let routeData = this.$router.resolve({
+        name: 'distribution_info_copyWriting',
+        query: {
+          type: 2
+        }
+      })
+      window.open(routeData.href, '_blank')
+    },
+
+    // 切换分销推广配置
+    promoteStatusChange () {
+      this.form.goods_promote_scope = 0
+      this.selectDistributorIds = []
+      this.selectLevelName = []
+      this.levelValue = []
+      this.form.directly_bind = 0
+      this.$refs['form'].validateField('goods_promote_scope')
+    },
+
+    promoteScopeChange () {
+      this.selectDistributorIds = []
+      this.selectLevelName = []
+      this.levelValue = []
+      this.$refs['form'].validateField('goods_promote_scope')
     }
-
   }
-
 }
 
 </script>
@@ -1139,9 +1500,8 @@ a {
 .footer {
   position: fixed;
   bottom: 0;
+  left: 160px;
   right: 27px;
-  width: 87.8%;
-  margin: 0 auto;
   height: 50px;
   line-height: 50px;
   background: #f8f8f8;
@@ -1298,7 +1658,18 @@ a {
 }
 
 /deep/ .el-dialog__body {
-  height: 430px;
+  max-height: 430px;
   overflow-y: auto;
+}
+
+.pageContent {
+  margin-top: 10px;
+  display: inline-block !important;
+}
+
+.pageContent >>> .pagination {
+  padding: 0px;
+  height: 50px;
+  line-height: 28px;
 }
 </style>

@@ -40,6 +40,9 @@
         border
         style="width: 100%"
       >
+        <template slot="empty">
+          <tableEmpty />
+        </template>
         <el-table-column
           prop="strategyName"
           :label="$t('distribution.strategyName')"
@@ -368,6 +371,9 @@ export default {
     position: relative;
     background-color: #fff;
   }
+}
+.content /deep/ .el-tabs__nav-wrap {
+  border: none;
 }
 /deep/ .tableClss th {
   background-color: #f5f5f5;

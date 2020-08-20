@@ -43,6 +43,17 @@
         </div>
         <div>
           <el-form-item
+            label="分销员ID："
+            class="item"
+          >
+            <el-input
+              v-model="param.distributorId"
+              :placeholder="$t('distribution.contentTip')"
+              size="small"
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <!-- <el-form-item
             :label="$t('distribution.invitedUserMobile') + '：'"
             class="item"
           >
@@ -52,7 +63,7 @@
               size="small"
               class="inputWidth"
             ></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item
             :label="$t('distribution.registTime') + '：'"
             class="item"
@@ -128,9 +139,9 @@
             >
               <el-option
                 v-for="level in groupLevelList"
-                :key="level.levelId"
+                :key="level.id"
                 :label="level.levelName"
-                :value="level.id"
+                :value="level.levelId"
               >
               </el-option>
             </el-select>
@@ -186,10 +197,10 @@
               type="primary"
               size="small"
             >{{$t('distribution.screen')}}</el-button>
-            <!-- <el-button
+            <el-button
               size="small"
               @click="exportDataList"
-            >{{$t('distribution.export')}}</el-button> -->
+            >{{$t('distribution.export')}}</el-button>
           </div>
         </div>
       </el-form>
@@ -206,13 +217,17 @@
           border
           style="width: 100%;font-size: 12px;"
         >
+          <template slot="empty">
+            <tableEmpty />
+          </template>
           <el-table-column
             type="selection"
             label-class-name="DisabledSelection"
-          ></el-table-column>
+          >
+          </el-table-column>
           <el-table-column
             prop="userId"
-            label="ID"
+            label="分销员ID"
             align="center"
           >
           </el-table-column>
@@ -259,6 +274,14 @@
           </el-table-column>
 
           <el-table-column
+            prop="updateTime"
+            label="审核通过时间"
+            align="center"
+            width="90"
+          >
+          </el-table-column>
+
+          <el-table-column
             prop="realName"
             :label="$t('distribution.reviewRealName')"
             align="center"
@@ -279,7 +302,7 @@
               </el-tooltip>
             </template>
             <template slot-scope="scope">
-              <p v-if="scope.row.invitationCode">{{ scope.row.invitationCode }}</p>
+              <p>{{ scope.row.invitationCode && scope.row.invitationCode !== '' ? scope.row.invitationCode : '暂无' }}</p>
               <p
                 class="nameStyle"
                 @click="invitationCodeHandler(scope.row.userId, scope.row.invitationCode)"
@@ -375,6 +398,7 @@
             :label="$t('distribution.opt')"
             align="center"
             width="120"
+            fixed="right"
           >
             <template slot-scope="scope">
               <div class="opt">
@@ -387,13 +411,14 @@
                   @click="del(scope.row.userId)"
                   v-if="judgeStatus === '1'"
                 >{{$t('distribution.listDelete')}}</p>
+                <p @click="tagsHandler(scope.row.userId)">打标签</p>
               </div>
             </template>
           </el-table-column>
         </el-table>
 
         <!-- 全选修改分销员分组 -->
-        <div class="checkedStyle">
+        <!-- <div class="checkedStyle">
           <el-checkbox
             v-model="allChecked"
             @change="checkChange"
@@ -414,8 +439,63 @@
             >
             </el-option>
           </el-select>
+          <el-select
+            v-model="checkedTagsValue"
+            :placeholder="$t('distribution.selectTip')"
+            size="small"
+            class="checkboxWidth"
+            @change="selectTagsChange"
+          >
+            <el-option
+              v-for="(item, index) in checkTagsList"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
 
-        </div>
+        </div> -->
+      </div>
+
+      <!-- 全选修改分销员分组 -->
+      <div class="checkedStyle">
+        <el-checkbox
+          v-model="allChecked"
+          @change="checkChange"
+        ></el-checkbox>
+        {{$t('distribution.allCheckTip')}}
+        <el-select
+          v-model="checkedValue"
+          :placeholder="$t('distribution.selectTip')"
+          size="small"
+          class="checkboxWidth"
+          @change="selectChange"
+        >
+          <el-option
+            v-for="(item, index) in checkList"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <el-select
+          v-model="checkedTagsValue"
+          :placeholder="$t('distribution.selectTip')"
+          size="small"
+          class="checkboxWidth"
+          @change="selectTagsChange"
+        >
+          <el-option
+            v-for="(item, index) in checkTagsList"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+
       </div>
       <pagination
         :page-params.sync="pageParams"
@@ -443,33 +523,22 @@
       :userId="remarksUserId"
     />
 
-    <!-- 导出数据提示弹窗 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="exportDialog"
-      width="30%"
-      center
-    >
-      <el-alert
-        :title="exportTip"
-        type="warning"
-        show-icon
-      ></el-alert>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          size="small"
-          @click="exportDialog = false"
-        >取 消</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="sureExportHandler"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
+    <!-- 导出数据弹窗 -->
+    <exportDialog
+      :tuneUp="exportDialog"
+      :param="this.param"
+      :totalRows="totalRows"
+      :type="1"
+      @export="exportHandler"
+    />
+
+    <!-- 打标签弹窗 -->
+    <tagsDialog
+      :tuneUp="tagsDialogVisible"
+      :selectTags="selectTags"
+      @resultTags="resultTags"
+      @cancelTags="cancelTags"
+    />
 
   </div>
 </template>
@@ -477,12 +546,15 @@
 <script>
 import { download } from '@/util/excelUtil.js'
 import { distributorList, distributorLevelList, distributorAllGroup, delDistributor, setInviteCode, setBatchGroup, distributorListExport } from '@/api/admin/marketManage/distribution.js'
+import { getTagForMemberRequest, setTagForMemberRequest } from '@/api/admin/membershipList.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
     groupDialog: () => import('./groupDialog'),
     inviteCodeDialog: () => import('./inviteCodeDialog'),
-    remarksDialog: () => import('./remarksDialog')
+    remarksDialog: () => import('./remarksDialog'),
+    exportDialog: () => import('./moneyExportDialog'),
+    tagsDialog: () => import('./tagsDialog')
   },
   props: {
     inviteFlag: {
@@ -505,7 +577,8 @@ export default {
         mobile: '',
         username: '',
         realName: '',
-        invitedMobile: '',
+        // invitedMobile: '',
+        distributorId: '',
         startCreateTime: '',
         endCreateTime: '',
         inviteName: '',
@@ -540,6 +613,17 @@ export default {
         label: '对筛选出的0人修改分组',
         value: '2'
       }],
+      checkedTagsValue: '0',
+      checkTagsList: [{
+        label: '批量添加标签',
+        value: '0'
+      }, {
+        label: '对选中的分销员修改标签',
+        value: '1'
+      }, {
+        label: '对筛选出的0人修改标签',
+        value: '2'
+      }],
 
       // 邀请码弹窗
       invitationDialog: false,
@@ -557,27 +641,52 @@ export default {
 
       // 导出数据弹窗
       exportDialog: false,
-      exportTip: ''
+      totalRows: 0, // 筛选个数
+
+      // 打标签弹窗
+      tagsDialogVisible: false,
+      selectTags: [], // 回显
+      tagsUserId: null
     }
   },
   watch: {
   },
   mounted () {
-    this.param.distributorGroup = this.distributorGroup ? this.distributorGroup : ''
-    this.param.distributorLevel = this.distributorLevel ? this.distributorLevel : ''
-    this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
-    this.distributionCode = localStorage.getItem('distributionCode')
-    console.log(this.distributionCode)
-    // 默认是否有下级用户
-    if (this.judgeStatus === '0') {
-      this.param.haveNextUser = 1
-    }
-    this.initDataList()
-    this.levelList() // 分销员等级
-    this.groupList() // 分销员分组
+    this.getAllData()
   },
 
   methods: {
+    async getAllData () {
+      // 获取分销员等级
+      this.groupLevelList = []
+      await distributorLevelList().then(res => {
+        if (res.error === 0 && res.content && res.content.length > 0) {
+          res.content.forEach(item => {
+            if (item.levelStatus === 1) {
+              this.groupLevelList.push(item)
+              var result = this.groupLevelList.find(val => { return this.distributorLevel === item.levelId })
+              if (result !== undefined) {
+                this.param.distributorLevel = this.distributorLevel ? this.distributorLevel : ''
+              }
+            }
+          })
+        }
+      })
+      // 获取分销员分组
+      await distributorAllGroup().then(res => {
+        this.groupNameList = res.content
+      })
+
+      this.param.distributorGroup = this.distributorGroup ? this.distributorGroup : ''
+      this.judgeStatus = localStorage.getItem('distributionJudgeStatus')
+      this.distributionCode = localStorage.getItem('distributionCode')
+      console.log(this.distributionCode)
+      // 默认是否有下级用户
+      if (this.judgeStatus === '0') {
+        this.param.haveNextUser = 1
+      }
+      this.initDataList()
+    },
     // 分销员列表
     initDataList () {
       return new Promise((resolve, reject) => {
@@ -586,6 +695,9 @@ export default {
         for (var i in this.param) {
           if (this.param[i]) {
             this.requestParams[i] = this.param[i]
+          }
+          if (this.param.distributorId !== '') {
+            this.requestParams.distributorId = Number(this.param.distributorId)
           }
         }
         // 排序
@@ -598,8 +710,15 @@ export default {
         distributorList(this.requestParams).then(res => {
           if (res.error === 0) {
             this.tableData = res.content.dataList
+            this.tableData.forEach(item => {
+              if (item.invitationCode === '0') {
+                item.invitationCode = ''
+              }
+            })
             this.pageParams = res.content.page
             this.checkList[2].label = '对筛选出的' + res.content.page.totalRows + '人修改分组'
+            this.checkTagsList[2].label = '对筛选出的' + res.content.page.totalRows + '人修改标签'
+
             resolve(this.pageParams)
           }
         }).catch(error => {
@@ -607,21 +726,14 @@ export default {
         })
       })
     },
-    // 等级下拉列表
-    levelList () {
-      distributorLevelList().then(res => {
-        this.groupLevelList = res.content
-      })
-    },
-    // 获取所有分销员分组
-    groupList () {
-      distributorAllGroup().then(res => {
-        this.groupNameList = res.content
-      })
-    },
+
     // 跳转佣金返利明细
     commissionDetail (userId) {
       this.$emit('commissionHandler', userId)
+      // tab
+      this.$http.$emit('distributionTap', 'sixth')
+      localStorage.setItem('distributionTap', 'sixth') // 刷新保持当前tab名称
+      localStorage.setItem('distributionTapIndex', 'sixth')
     },
     // 清除分销员身份
     del (userId) {
@@ -716,8 +828,7 @@ export default {
         path: '/admin/home/main/distribution/inviteUserList',
         query: {
           userId: userId,
-          userName: username,
-          type: 'invite'
+          userName: username
         }
       })
     },
@@ -728,8 +839,7 @@ export default {
         path: '/admin/home/main/distribution/indirectUserList',
         query: {
           userId: userId,
-          userName: username,
-          type: 'indirect'
+          userName: username
         }
       })
     },
@@ -742,6 +852,7 @@ export default {
         })
       } else {
         this.checkedValue = '0'
+        this.checkedTagsValue = '0'
         this.$refs.multipleTable.clearSelection()
       }
     },
@@ -767,6 +878,33 @@ export default {
           this.groupUserId = []
           this.tableData.forEach((item, index) => {
             this.groupUserId.push(item.userId)
+          })
+        }
+      }
+    },
+
+    selectTagsChange (val) {
+      var selected = this.$refs.multipleTable.selection
+      if (this.checkedTagsValue === '1' && selected.length === 0) {
+        this.$message.warning('请选择分销员')
+        this.checkedTagsValue = '0'
+      } else {
+        // 批量设置标签
+        if (this.checkedTagsValue === '1') {
+          this.tagsDialogVisible = !this.tagsDialogVisible
+          this.selectTags = []
+          this.tagsUserId = []
+          selected.forEach((item, index) => {
+            this.tagsUserId.push(item.userId)
+          })
+        }
+        // 筛选数据设置
+        if (this.checkedTagsValue === '2') {
+          this.tagsDialogVisible = !this.tagsDialogVisible
+          this.selectTags = []
+          this.tagsUserId = []
+          this.tableData.forEach((item, index) => {
+            this.tagsUserId.push(item.userId)
           })
         }
       }
@@ -798,29 +936,70 @@ export default {
     // 导出数据
     exportDataList () {
       this.initDataList().then(() => {
-        this.exportTip = `根据以下条件筛选出${this.pageParams.totalRows}条数据,是否确认导出？`
+        this.totalRows = this.pageParams.totalRows
         this.exportDialog = !this.exportDialog
       })
     },
 
-    // 确定导出
-    sureExportHandler () {
-      this.exportDialog = false
+    // 导出数据弹窗回调函数
+    exportHandler (data) {
       // 搜索条件
       var obj = {}
-      for (var i in this.param) {
-        if (this.param[i]) {
-          obj[i] = this.param[i]
+      for (var i in data) {
+        if (i === 'startNum' || i === 'endNum') {
+          obj[i] = data[i]
+        } else if (data[i]) {
+          obj[i] = data[i]
         }
       }
-      // if (this.optGroupId) {
-      //   obj.optGroupId = this.optGroupId
-      // }
       distributorListExport(obj).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '分销员列表导出.xlsx'
         download(res, decodeURIComponent(fileName))
       })
+    },
+
+    // 打标签弹窗
+    async tagsHandler (userId) {
+      this.tagsUserId = []
+      this.tagsUserId.push(userId) // 要操作的用户
+      this.selectTags = []
+      await getTagForMemberRequest({
+        userId: userId,
+        username: ''
+      }).then(res => {
+        if (res.error === 0) {
+          if (res.content && res.content.length > 0) {
+            res.content.forEach(item => {
+              this.selectTags.push(item.id)
+            })
+          }
+        }
+      })
+      this.tagsDialogVisible = !this.tagsDialogVisible
+    },
+
+    // 打标签弹窗回调函数
+    resultTags (data) {
+      setTagForMemberRequest({
+        userIdList: this.tagsUserId,
+        tagIdList: data,
+        isAll: this.tagsUserId && this.tagsUserId.length > 1 ? 1 : 0
+      }).then(res => {
+        if (res.error === 0) {
+          this.$message.success('设置成功')
+          this.checkedTagsValue = '0'
+          this.$refs.multipleTable.clearSelection()
+        } else {
+          this.$message.warning(res.message)
+        }
+      })
+    },
+
+    // 取消打标签
+    cancelTags () {
+      this.checkedTagsValue = '0'
+      this.$refs.multipleTable.clearSelection()
     }
 
   }

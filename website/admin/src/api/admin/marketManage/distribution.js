@@ -1,6 +1,15 @@
 import service from '@/util/request.js'
 
 // -------------分销配置--------------------
+// 获取商户类型
+export function getPayType (data) {
+  return service({
+    url: '/api/admin/distribution/mpPayType',
+    method: 'post',
+    data: data
+  })
+}
+
 // 获取分销配置
 export function getDistribution (data) {
   return service({
@@ -60,6 +69,33 @@ export function getDocument (data) {
   return service({
     url: '/api/admin/distribution/document/get',
     method: 'get',
+    data: data
+  })
+}
+
+// 设置返利规则
+export function setRebateDocument (data) {
+  return service({
+    url: '/api/admin/distribution/rebate/document/set',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取返利规则
+export function getRebateDocument (data) {
+  return service({
+    url: '/api/admin/distribution/rebate/document/get',
+    method: 'get',
+    data: data
+  })
+}
+
+// 推荐商品分页
+export function getRecommendPage (data) {
+  return service({
+    url: '/api/admin/goods/selectPage',
+    method: 'post',
     data: data
   })
 }
@@ -427,6 +463,7 @@ export function addDistributor (data) {
   })
 }
 
+// -------------佣金统计--------------------
 // 佣金统计列表
 export function brokerageList (data) {
   return service({
@@ -436,6 +473,17 @@ export function brokerageList (data) {
   })
 }
 
+// 佣金统计导出
+export function brokerageExport (data) {
+  return service({
+    url: '/api/admin/distribution/brokerage/list/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
+// -------------商品返利统计--------------------
 // 商品返利统计
 export function goodsReturnStatistics (data) {
   return service({
@@ -445,17 +493,28 @@ export function goodsReturnStatistics (data) {
   })
 }
 
-// 查看商品返利详情
-export function goodsReturnStatisticsDetail (data) {
+// 商品返利明细列表
+export function statisticsList (data) {
   return service({
-    url: '/api/admin/distribution/rebate/goods/list',
+    url: '/api/admin/distribution/rebate/goods/detail',
     method: 'post',
     data: data
   })
 }
 
-// 返利提现审核
-export function withdrawCheck (data) {
+// 商品返利导出
+export function rebateGoodsExport (data) {
+  return service({
+    url: '/api/admin/distribution/rebate/goods/detail/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
+// -------------返利提现--------------------
+// 返利提现审核列表
+export function withdrawList (data) {
   return service({
     url: '/api/admin/distribution/withdraw/list',
     method: 'post',
@@ -471,6 +530,28 @@ export function withdrawDetail (data) {
     data: data
   })
 }
+
+// 提现申请审核
+export function withdrawResult (data) {
+  return service({
+    url: '/api/admin/distribution/withdraw/audit',
+    method: 'post',
+    data: data
+  })
+}
+
+// 提现申请添加备注
+export function withdrawAddRemark (data) {
+  return service({
+    url: '/api/admin/distribution/withdraw/withdrawRemark/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 提现申请查看关联订单
+
+// ---------------------------------
 
 // 设置默认分组
 export function setDefaultGroup (data) {

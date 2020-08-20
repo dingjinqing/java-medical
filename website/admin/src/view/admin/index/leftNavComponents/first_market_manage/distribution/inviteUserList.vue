@@ -81,7 +81,7 @@
             type="primary"
             size="small"
           >{{$t('distribution.screen')}}</el-button>
-          <el-button size="small">{{$t('distribution.export')}}</el-button>
+          <!-- <el-button size="small">{{$t('distribution.export')}}</el-button> -->
         </el-form-item>
       </el-form>
     </div>
@@ -101,6 +101,9 @@
         border
         style="width: 100%"
       >
+        <template slot="empty">
+          <tableEmpty />
+        </template>
         <el-table-column
           :label="$t('distribution.username')"
           align="center"
@@ -163,12 +166,10 @@
         >
         </el-table-column>
         <el-table-column
+          prop="inviteExpiryDate"
           :label="$t('distribution.inviteExpiryDate')"
           align="center"
         >
-          <template slot-scope="scope">
-            <span>{{ scope.row.inviteExpiryDate ? scope.row.inviteExpiryDate : '永久'}}</span>
-          </template>
         </el-table-column>
         <el-table-column
           prop="inviteProtectDate"
@@ -229,6 +230,14 @@ export default {
           this.totalGetFanliMoney = res.content.totalGetFanliMoney
           this.tableData = res.content.inviteUserInfo.dataList
           this.pageParams = res.content.inviteUserInfo.page
+          this.tableData.forEach(item => {
+            if (item.inviteExpiryDate === null || item.inviteExpiryDate === '1970-01-13') {
+              item.inviteExpiryDate = '永久'
+            }
+            if (item.inviteProtectDate === null || item.inviteProtectDate === '1970-01-13') {
+              item.inviteProtectDate = '永久'
+            }
+          })
         }
       })
     },
