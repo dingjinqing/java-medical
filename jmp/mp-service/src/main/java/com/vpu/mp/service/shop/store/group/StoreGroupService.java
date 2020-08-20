@@ -2,12 +2,15 @@ package com.vpu.mp.service.shop.store.group;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountAddParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -119,9 +122,13 @@ public class StoreGroupService extends ShopBaseService{
      * 全部门店分组列
      * @return
      */
-    public List<StoreGroup> getAllStoreGroup(){
-        return db()
-            .select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,STORE_GROUP.CREATE_TIME)
+    public StoreAccountAddParam getAllStoreGroup(){
+        StoreAccountAddParam storeAccountAddParam = new StoreAccountAddParam();
+        List<StoreGroup> storeGroups = db().select(STORE_GROUP.GROUP_ID, STORE_GROUP.GROUP_NAME, STORE_GROUP.CREATE_TIME)
             .from(STORE_GROUP).orderBy(STORE_GROUP.CREATE_TIME.asc()).fetchInto(StoreGroup.class);
+        storeAccountAddParam.setStoreGroups(storeGroups);
+        Integer storeId = db().select(DSL.max(STORE.STORE_ID)).from(STORE).fetchAnyInto(Integer.class);
+        storeAccountAddParam.setStoreId(storeId + 1);
+        return storeAccountAddParam;
     }
 }
