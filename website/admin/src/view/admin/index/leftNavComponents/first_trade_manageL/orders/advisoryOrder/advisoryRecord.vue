@@ -4,50 +4,64 @@
       <div class="wrap">
         <div
           class="title"
-          :style="'background:url('+ $imageHost +'/image/admin/shop_beautify/phone_tops.png) 100%/100% no-repeat;'"
+          :style="
+            'background:url(' +
+              $imageHost +
+              '/image/admin/shop_beautify/phone_tops.png) 100%/100% no-repeat;'
+          "
         ></div>
         <div class="wrap-content">
-          <template v-for="(item,index) in recordList">
+          <template v-for="(item, index) in recordList">
             <div
               class="user_con"
-              :class="{'con_left':!item.doctor,'con_right':item.doctor}"
+              :class="{ con_left: !item.doctor, con_right: item.doctor }"
               :key="index"
             >
               <div
                 class="user_icon"
-                :class="{'user_left':!item.doctor,'user_right':item.doctor}"
+                :class="{ user_left: !item.doctor, user_right: item.doctor }"
               >
                 <img
-                  :src="!item.doctor ? $imageHost + '/image/wxapp/user_default_icon.png' : $imageHost + '/image/wxapp/doctor_default_icon.png'"
+                  :src="
+                    !item.doctor
+                      ? $imageHost + '/image/wxapp/user_default_icon.png'
+                      : $imageHost + '/image/wxapp/doctor_default_icon.png'
+                  "
                   alt=""
-                >
+                />
               </div>
               <div
                 class="origin_message"
-                :class="{'origin_left':!item.doctor,'origin_right':item.doctor}"
+                :class="{
+                  origin_left: !item.doctor,
+                  origin_right: item.doctor
+                }"
                 v-if="item.type === 0"
               >
-                {{JSON.parse(item.message).content}}
+                {{ JSON.parse(item.message).content }}
               </div>
               <div
                 class="patient_message"
-                :class="{'p_d_left':!item.doctor,'p_d_right':item.doctor}"
+                :class="{ p_d_left: !item.doctor, p_d_right: item.doctor }"
                 v-if="item.type === 3"
               >
                 <div class="p_m_top">
-                  <span>患者: {{JSON.parse(item.message).content.name}}</span>
-                  <span>{{JSON.parse(item.message).content.sex}}</span>
-                  <span>{{JSON.parse(item.message).content.age}}岁</span>
+                  <span>患者: {{ JSON.parse(item.message).content.name }}</span>
+                  <span>{{ JSON.parse(item.message).content.sex }}</span>
+                  <span>{{ JSON.parse(item.message).content.age }}岁</span>
                 </div>
                 <div class="p_m_bot">
                   <span>病情描述：</span>
-                  <span>{{JSON.parse(item.message).content.mess}}</span>
+                  <span>{{ JSON.parse(item.message).content.mess }}</span>
                 </div>
               </div>
               <div
                 class="origin_message"
-                :class="{'origin_left':!item.doctor,'origin_right':item.doctor}"
-                v-if='item.type === 1'
+                :class="{
+                  origin_left: !item.doctor,
+                  origin_right: item.doctor
+                }"
+                v-if="item.type === 1"
               >
                 <el-image
                   style="width: 180px"
@@ -56,34 +70,59 @@
                 ></el-image>
               </div>
               <div
-                slot='doctor_pres_message'
+                slot="doctor_pres_message"
                 class="prescription-item"
-                :class="{'p_d_left':!item.doctor,'p_d_right':item.doctor}"
-                v-if='item.type === 2'
+                :class="{ p_d_left: !item.doctor, p_d_right: item.doctor }"
+                v-if="item.type === 2"
+                @click="
+                  viewPrescriptionInfo(
+                    JSON.parse(item.message).content.prescriptionCode
+                  )
+                "
               >
                 <div
                   class="item-title"
-                  :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
-                >电子处方</div>
+                  :style="
+                    'background:#26c4bc url(' +
+                      $imageHost +
+                      '/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'
+                  "
+                >
+                  电子处方
+                </div>
                 <div class="item-list-content">
                   <div class="item-list">
                     <div class="list-item">
                       <div class="list-item-content">
                         <span class="list-item-dot"></span>
-                        <span>诊断：{{JSON.parse(item.message).content.diagnosisName}}</span>
+                        <span
+                          >诊断：{{
+                            JSON.parse(item.message).content.diagnosisName
+                          }}</span
+                        >
                       </div>
                     </div>
                     <div class="list-item">
                       <div class="list-item-content">
                         <span class="list-item-dot"></span>
-                        <span>科室：{{JSON.parse(item.message).content.departmentName}}</span>
+                        <span
+                          >科室：{{
+                            JSON.parse(item.message).content.departmentName
+                          }}</span
+                        >
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="doctor-info">
-                  <span class="doctor-name">医师：{{JSON.parse(item.message).content.doctorName}}</span>
-                  <span class="item-date">日期：{{JSON.parse(item.message).content.time}}</span>
+                  <span class="doctor-name"
+                    >医师：{{
+                      JSON.parse(item.message).content.doctorName
+                    }}</span
+                  >
+                  <span class="item-date"
+                    >日期：{{ JSON.parse(item.message).content.time }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -112,6 +151,15 @@ export default {
           this.recordList = res.content
         }
       })
+    },
+    viewPrescriptionInfo (code) {
+      const { href } = this.$router.resolve({
+        name: 'prescription_message',
+        query: {
+          prescriptionCode:code
+        }
+      })
+      window.open(href, '_blank')
     }
   }
 }

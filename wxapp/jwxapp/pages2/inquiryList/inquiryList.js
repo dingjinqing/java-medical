@@ -14,7 +14,10 @@ global.wxPage({
     pageParams:{
       currentPage:1,
       pageRows:20
-    }
+    },
+    show_modal:0,
+    refundReason:'',
+    returnTargetData:{}
   },
 
   /**
@@ -104,19 +107,34 @@ global.wxPage({
       let {parentIndex,sessionId} = e.currentTarget.dataset
       let targetIndex = this.data.dataList[parentIndex].findIndex(item=>item.id === sessionId)
       let target = this.data.dataList[parentIndex][targetIndex]
-      util.api('/api/wxapp/inquiry/order/refund',res=>{
-        console.log(res)
-        if(res.error === 0){
-          let targetList = this.data.dataList[parentIndex]
-            targetList.splice(targetList.findIndex(item=>item.id === sessionId),1)
-            this.setData({
-              [`dataList[${parentIndex}]`]:targetList
-            })
-        }
-      },{
-        orderSn:target.orderSn
+      this.data.returnTargetData = {
+        parentIndex,
+        sessionId,
+        target
+      }
+      this.setData({
+        show_modal: 1,
+        refundReason: ''
       })
     },true,'取消','确认')
+  },
+  requestReturn(){
+    let {parentIndex,sessionId,target} = this.data.returnTargetData
+    util.api('/api/wxapp/inquiry/order/refund',res=>{
+      console.log(res)
+      if(res.error === 0){
+        let targetList = this.data.dataList[parentIndex]
+          console.log(targetList.findIndex(item=>item.id === sessionId))
+          targetList.splice(targetList.findIndex(item=>item.id === sessionId),1)
+          this.setData({
+            [`dataList[${parentIndex}]`]:targetList
+          })
+          this.close_modal()
+      }
+    },{
+      orderSn:target.orderSn,
+      refundReason:this.data.refundReason
+    })
   },
   viewChat(e){
     let {parentIndex,sessionId} = e.currentTarget.dataset
@@ -127,6 +145,18 @@ global.wxPage({
       targetUserInfo:JSON.stringify({...target,parentIndex}),
       source:'inquiryList'
     })}`)
+  },
+  close_modal () {
+    this.setData({
+      show_modal: 0,
+      refundReason: ''
+    })
+  },
+  changeReason(e){
+    let {value} = e.detail
+    this.setData({
+      refundReason:value
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
