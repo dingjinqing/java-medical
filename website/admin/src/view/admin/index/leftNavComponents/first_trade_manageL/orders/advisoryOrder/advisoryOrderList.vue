@@ -11,7 +11,7 @@
             placeholder="请输入医生姓名"
           ></el-input>
         </div>
-        <div class="filters_item">
+        <!-- <div class="filters_item">
           <span class="fil_span">科室：</span>
           <el-select
             size="small"
@@ -34,7 +34,7 @@
               </el-option>
             </el-option-group>
           </el-select>
-        </div>
+        </div> -->
         <div class="filters_item">
           <span class="fil_span">患者：</span>
           <el-input
@@ -94,10 +94,10 @@
           prop='patientName'
           label='患者'
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop='departmentName'
           label='科室'
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           prop='orderAmount'
           label='咨询费'
