@@ -118,6 +118,8 @@ public class InquiryOrderService extends ShopBaseService {
         FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
         inquiryOrderDetailVo.setUserMobile(userDo.getMobile());
         inquiryOrderDetailVo.setUserName(userDo.getUsername());
+        //退款记录
+        inquiryOrderDetailVo.setRefundList(inquiryOrderRefundListDao.getListByOrderSn(inquiryOrderDo.getOrderSn()));
         return inquiryOrderDetailVo;
     }
 
