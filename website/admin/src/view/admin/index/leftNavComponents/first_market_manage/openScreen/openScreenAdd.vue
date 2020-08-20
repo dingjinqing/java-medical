@@ -480,8 +480,7 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     selectLinks: () => import('@/components/admin/selectLinks'),
     selectPayRewardAct: () => import('@/components/admin/marketManage/selectPayRewardAct'),
-    addCouponDialog: () => import('@/components/admin/addCouponDialog'),
-    hcInputNumber: () => import('@/components/admin/hcInputNumber/hcInputNumber')
+    addCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
     let that = this

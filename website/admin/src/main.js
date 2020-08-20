@@ -21,6 +21,8 @@ Vue.use(VCharts);
 // 复制粘贴
 import VueClipboard from 'vue-clipboard2';
 Vue.use(VueClipboard);
+import HcInputNumber from '@/components/admin/hcInputNumber/hcInputNumber'
+Vue.component('HcInputNumber', HcInputNumber)
 console.log(process.env)
 Vue.prototype.$imageHost = '//' + process.env.IMAGE_DOMAIN;
 Vue.prototype.$imageHostDev = `@/assets/image/admin/`;
