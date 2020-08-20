@@ -259,6 +259,8 @@ public class ShopApplication {
      */
     @Autowired
     public MpDistributionService  mpDistribution;
+    @Autowired
+    public MpDistributorLevelService mpDisLevel;
     /**分销商品service*/
     @Autowired
     public MpDistributionGoodsService mpDisGoods;
