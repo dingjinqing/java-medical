@@ -34,12 +34,12 @@
 					<view>接诊量</view>
 				</view>
 				<view>
-					<view>{{con.avgAnswerTime}}小时</view>
+					<view>{{con.answerHour}}小时</view>
 					<view>平均响应时间</view>
 				</view>
 				<view>
 					<view>{{con.avgCommentStar}}</view>
-					<view>患者评价</view>
+					<view>患者评分</view>
 				</view>
 			</view>
 			<image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>

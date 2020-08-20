@@ -22,7 +22,8 @@ global.wxPage({
     firstLoad: true,
     scrollTop: 0,
     arrive_bottom: true,
-    allHeight: 0
+    allHeight: 0,
+    showPre:false,
   },
 
   /**
@@ -57,6 +58,12 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    if(this.data.showPre){
+      this.setData({
+        showPre:false
+      })
+      return
+    }
     if (this.data.prescriptionMessage) this.sendMessage({ content: this.data.prescriptionMessage }, 2)
     this.requestHistoryChat()
   },
@@ -122,7 +129,6 @@ global.wxPage({
         if (this.data.arrive_bottom == true) {
           this.pageScrollBottom()
         }
-        this.getScrollHeight()
       }
     }, {
       sessionId: this.data.targetUserInfo.id,
@@ -230,21 +236,8 @@ global.wxPage({
 
   startScroll (e) {
     let that = this;
-    let scrollHeight = e.detail.scrollTop + that.data.scrollViewHeight - 10; //20是margin的大概差值
-    let allHeight = that.data.scrollHeight;
-    let arrive_bottom = that.data.arrive_bottom;
-    console.log(scrollHeight, allHeight)
-    if (scrollHeight >= allHeight) {
-      if (arrive_bottom == true) return
-      that.setData({
-        arrive_bottom: true
-      })
-    } else {
-      if (arrive_bottom == false) return
-      that.setData({
-        arrive_bottom: false
-      })
-    }
+    let scrollTop = e.detail.scrollTop;
+    if(scrollTop) that.getScrollHeight(scrollTop)
   },
 
   handleShowPrescriptionDialog (e) {
@@ -294,8 +287,10 @@ global.wxPage({
     })
   },
   viewImage (e) {
-
     let urls = [e.currentTarget.dataset.urls]
+    this.setData({
+      showPre:true
+    })
     wx.previewImage({
       urls
     })
@@ -317,25 +312,36 @@ global.wxPage({
     });
   },
   getBottomHeight(){
-    if(this.data.targetUserInfo.sessionStatus === 4) return 55
+    if(this.data.targetUserInfo.sessionStatus === 4) return 80
     if(this.data.targetUserInfo.sessionStatus === 6) return 0;
-    return 110
+    return 135
   },
-  getRectHeight () {
+  getRectHeight() {
     let that = this
     wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
       that.setData({
         allHeight: reda[0].height,
-        scrollHeight: reda[0].height
       })
     })
   },
-  getScrollHeight () {
+  getScrollHeight(scrollTop) {
     let that = this
     wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
-      that.setData({
-        scrollHeight: reda[0].height
-      })
+      let scrollHeight = scrollTop + that.data.scrollViewHeight;
+      let allHeight = reda[0].height;
+      let arrive_bottom = that.data.arrive_bottom;
+      console.log(scrollHeight, allHeight)
+      if (scrollHeight >= allHeight) {
+        if (arrive_bottom == true) return
+        that.setData({
+          arrive_bottom: true
+        })
+      } else {
+        if (arrive_bottom == false) return
+        that.setData({
+          arrive_bottom: false
+        })
+      }
     })
   }
 })

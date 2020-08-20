@@ -16,6 +16,10 @@
  position: relative;
   background: #fff url(http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_bg.png) no-repeat right top/ 60% 100% ;
 }
+.doc_square>image{
+  height: 120rpx;
+  width: 120rpx;
+}
 .doc_img{
   width: 120rpx;
   height: 120rpx;
