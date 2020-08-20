@@ -14,7 +14,7 @@
         <el-button
           type='primary'
           size='small'
-          v-if="orderContent.orderAmount - orderContent.refundMoney > 0"
+          v-if="orderContent.orderAmount - orderContent.refundMoney > 0 && orderContent.orderStatus !== 0 && orderContent.orderStatus !== 5"
           @click="returnOrder"
         >手动退款</el-button>
       </div>
@@ -42,6 +42,38 @@
           </div>
         </div>
       </div>
+      <div
+        class="order_mes"
+        v-if="orderContent.refundList && orderContent.refundList.length"
+      >
+        <span>退款详情</span>
+      </div>
+      <el-table
+        v-if="orderContent.refundList && orderContent.refundList.length"
+        :data="orderContent.refundList"
+        header-row-class-name="tableClss"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="moneyAmount"
+          label="已退金额"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="refundReason"
+          label="退款原因"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="refundTime"
+          label="退款时间"
+          align="center"
+        >
+        </el-table-column>
+      </el-table>
     </div>
     <ManualRefund
       :dataInfo="refundInfo"
@@ -204,6 +236,21 @@ export default {
           }
         }
       }
+    }
+    .return-info {
+      margin-bottom: 10px;
+    }
+    /deep/ .tableClss th {
+      background-color: #f5f5f5;
+      border: none;
+      height: 36px;
+      font-weight: bold;
+      color: #000;
+      padding: 8px 10px;
+    }
+
+    /deep/ .el-table {
+      margin: 10px 0;
     }
   }
 }
