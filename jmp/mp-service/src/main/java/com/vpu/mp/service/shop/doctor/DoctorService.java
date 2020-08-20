@@ -532,7 +532,9 @@ public class DoctorService extends ShopBaseService {
     public static String getAnswerHour(Integer seconds){
         String result = STRINGBLANK;
         float num =(float)seconds/3600;
-
+        if (num<(float)0.1) {
+            num = (float)0.1;
+        }
         DecimalFormat df = new DecimalFormat("0.0");
 
         result = df.format(num);
