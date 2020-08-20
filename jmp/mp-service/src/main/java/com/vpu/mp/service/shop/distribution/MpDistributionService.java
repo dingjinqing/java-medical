@@ -232,7 +232,8 @@ public class MpDistributionService extends ShopBaseService{
 	public String generateInvitationCode(){
         String inviteCode = "";
         char[] str = "0123456789abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-        for (int i = 0; i < 6; i++) {
+        int len=6;
+        for (int i = 0; i < len; i++) {
             int index = (int) (Math.random() * str.length);
             inviteCode += str[index];
         }
