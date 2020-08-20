@@ -13,18 +13,15 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static org.jooq.impl.DSL.avg;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
-import static org.jooq.impl.DSL.when;
 
 /**
  * @author yangpengcheng
@@ -79,16 +76,16 @@ public class OrderInfoDao extends ShopBaseDao {
         return db().select(
                 //日期
                 date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),
-                //销售金额
-                sum((ORDER_INFO.ORDER_AMOUNT)).as(ActiveDiscountMoney.ORDER_AMOUNT),
-                //销售单数
-                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
-                //平均数
-                avg(ORDER_INFO.ORDER_AMOUNT).as(ActiveDiscountMoney.ORDER_AVG),
-                //处方药销售金额
-                sum(when(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(OrderConstant.MEDICAL_TYPE_RX), ORDER_INFO.ORDER_AMOUNT).otherwise(BigDecimal.ZERO)).as(ActiveDiscountMoney.ORDER_MEDICAL_AMOUNT),
-                //处方药销售单数
-                sum(when(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(OrderConstant.MEDICAL_TYPE_RX), 1).otherwise(0)).as(ActiveDiscountMoney.ORDER_MEDICAL_NUMBER)
+                //销售金额  微信+余额+运费
+                sum((ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT).add(ORDER_INFO.SHIPPING_FEE))).as(ActiveDiscountMoney.ORDER_AMOUNT),
+                //微信
+                sum(ORDER_INFO.MONEY_PAID).as(ActiveDiscountMoney.MONEY_PAID),
+                //余额
+                sum(ORDER_INFO.USE_ACCOUNT).as(ActiveDiscountMoney.USE_ACCOUNT),
+                //运费
+                sum(ORDER_INFO.SHIPPING_FEE).as(ActiveDiscountMoney.SHIPPING_FEE),
+                 //销售单数
+                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER)
         )
                 .from(ORDER_INFO)
                 .where(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
