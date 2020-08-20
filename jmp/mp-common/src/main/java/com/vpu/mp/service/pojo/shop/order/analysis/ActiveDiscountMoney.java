@@ -20,6 +20,9 @@ public class ActiveDiscountMoney {
      * 销售金额
      */
     public static final String ORDER_AMOUNT ="orderAmount";
+    public static final String MONEY_PAID ="moneyPaid";
+    public static final String USE_ACCOUNT ="useAccount";
+    public static final String SHIPPING_FEE ="shippingFee";
     /**
      * 订单数量
      */
