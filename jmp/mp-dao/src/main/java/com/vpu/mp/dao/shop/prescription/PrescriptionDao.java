@@ -468,6 +468,15 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
+     * 更新处方为未使用状态
+     * @param prescriptionCode
+     * @return
+     */
+    public int updatePrescriprionIsUnUsered(String prescriptionCode) {
+      return  db().update(PRESCRIPTION).set(PRESCRIPTION.IS_USED,BaseConstant.NO).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
+    }
+
+    /**
      * 患者关联的处方数
      * @param patientId
      * @return
