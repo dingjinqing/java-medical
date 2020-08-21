@@ -65,7 +65,7 @@ public class DoctorCommentService extends ShopBaseService {
     public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId) {
         //保存
         DoctorCommentAddParam param =new DoctorCommentAddParam();
-        param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_NOT_CHECK);
+        param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
         param.setDoctorId(doctorId);
         param.setUserId(userId);
         param.setPatientId(patientId);
