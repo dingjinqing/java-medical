@@ -140,7 +140,7 @@ public class MapTemplateSendService extends ShopBaseService {
             {param.getDiseaseDetail()},
             {param.getDoctorName()},
             {param.getRemark()},
-            {param.getDiseaseDetail()},
+            {param.getDepartmentName()},
         };
         RabbitMessageParam param2 = RabbitMessageParam.builder()
             .maTemplateData(
