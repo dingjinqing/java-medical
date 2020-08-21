@@ -24,7 +24,7 @@
   border: 1rpx solid #eee;
   position: relative;
   margin-bottom: 35rpx;
-  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.24),0 0 0rpx rgba(10,16,20,.12);
+  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.1),0 0 0rpx rgba(10,16,20,.12);
 }
 .top_area{
   padding-left: 25rpx;
@@ -271,4 +271,21 @@
 .btn_ok{
   background: #26C4BC;
   color: #fff;
+}
+.is-null{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.is-null image{
+  width: 750rpx;
+  height: 448rpx;
+}
+.is-null text{
+  margin-top: -60rpx;
+  color: #999;
 }

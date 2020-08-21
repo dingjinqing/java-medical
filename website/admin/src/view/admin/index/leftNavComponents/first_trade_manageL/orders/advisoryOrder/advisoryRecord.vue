@@ -2,14 +2,14 @@
   <div class="main-container">
     <div class="content">
       <div class="wrap">
-        <div
+        <!-- <div
           class="title"
           :style="
             'background:url(' +
               $imageHost +
               '/image/admin/shop_beautify/phone_tops.png) 100%/100% no-repeat;'
           "
-        ></div>
+        ></div> -->
         <div class="wrap-content">
           <template v-for="(item, index) in recordList">
             <div
@@ -95,34 +95,26 @@
                     <div class="list-item">
                       <div class="list-item-content">
                         <span class="list-item-dot"></span>
-                        <span
-                          >诊断：{{
+                        <span>诊断：{{
                             JSON.parse(item.message).content.diagnosisName
-                          }}</span
-                        >
+                          }}</span>
                       </div>
                     </div>
                     <div class="list-item">
                       <div class="list-item-content">
                         <span class="list-item-dot"></span>
-                        <span
-                          >科室：{{
+                        <span>科室：{{
                             JSON.parse(item.message).content.departmentName
-                          }}</span
-                        >
+                          }}</span>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="doctor-info">
-                  <span class="doctor-name"
-                    >医师：{{
+                  <span class="doctor-name">医师：{{
                       JSON.parse(item.message).content.doctorName
-                    }}</span
-                  >
-                  <span class="item-date"
-                    >日期：{{ JSON.parse(item.message).content.time }}</span
-                  >
+                    }}</span>
+                  <span class="item-date">日期：{{ JSON.parse(item.message).content.time }}</span>
                 </div>
               </div>
             </div>
@@ -156,7 +148,7 @@ export default {
       const { href } = this.$router.resolve({
         name: 'prescription_message',
         query: {
-          prescriptionCode:code
+          prescriptionCode: code
         }
       })
       window.open(href, '_blank')
@@ -189,7 +181,7 @@ export default {
       .wrap-content {
         background-color: #f5f5f5;
         position: absolute;
-        top: 55px;
+        top: 0;
         bottom: 0;
         left: 0;
         right: 0;

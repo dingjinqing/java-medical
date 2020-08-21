@@ -69,7 +69,7 @@
 }
 .prescription-item{
   border-radius: 16rpx;
-  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.14),0 0 0rpx rgba(10,16,20,.12);
+  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.1),0 0 0rpx rgba(10,16,20,.12);
   position: relative;
   width: 702rpx;
   margin:0 auto;

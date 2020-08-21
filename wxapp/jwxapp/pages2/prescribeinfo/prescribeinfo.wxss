@@ -1,7 +1,7 @@
 /* pages2/prescribeinfo/prescribeinfo.wxss */
 @import "../../css/iconfont.wxss";
 .prescription-content{
-  padding: 20rpx 15rpx;
+  padding: 20rpx 24rpx;
   display: flex;
   flex-direction: column;
 }

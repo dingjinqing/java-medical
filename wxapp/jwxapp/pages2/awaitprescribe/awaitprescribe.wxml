@@ -126,9 +126,9 @@
     </view>
   </block>
   <block wx:else>
-    <view class="no_content" >
-      <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
-      <view class="no_word">暂无内容</view>
-    </view>
+    <view class="is-null">
+        <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+        <text>您还没有相应记录</text>
+      </view>
   </block>
 </view>
