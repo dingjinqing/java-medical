@@ -1192,5 +1192,9 @@ public class Tables {
      * 医师上下班记录表
      */
     public static final DoctorDutyRecord DOCTOR_DUTY_RECORD = com.vpu.mp.db.shop.tables.DoctorDutyRecord.DOCTOR_DUTY_RECORD;
+    /**
+     * 门店账户表
+     */
+    public static final StoreAccount STORE_ACCOUNT = com.vpu.mp.db.shop.tables.StoreAccount.STORE_ACCOUNT;
 
 }

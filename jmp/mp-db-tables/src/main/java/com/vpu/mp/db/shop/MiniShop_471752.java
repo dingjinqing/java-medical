@@ -1114,6 +1114,11 @@ public class MiniShop_471752 extends SchemaImpl {
      */
     public final DoctorComment DOCTOR_COMMENT = com.vpu.mp.db.shop.tables.DoctorComment.DOCTOR_COMMENT;
 
+    /**
+     * 门店账户表
+     */
+    public final StoreAccount STORE_ACCOUNT = com.vpu.mp.db.shop.tables.StoreAccount.STORE_ACCOUNT;
+
 
     /**
      * No further instances allowed
@@ -1359,7 +1364,8 @@ public class MiniShop_471752 extends SchemaImpl {
             UserAnnouncement.USER_ANNOUNCEMENT,
             UserDoctorAttention.USER_DOCTOR_ATTENTION,
             DoctorDutyRecord.DOCTOR_DUTY_RECORD,
-            DoctorComment.DOCTOR_COMMENT);
+            DoctorComment.DOCTOR_COMMENT,
+            StoreAccount.STORE_ACCOUNT);
 
 
     }

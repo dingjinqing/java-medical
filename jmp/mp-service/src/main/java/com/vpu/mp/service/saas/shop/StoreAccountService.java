@@ -145,22 +145,22 @@ public class StoreAccountService extends MainBaseService {
 		return null;
 	}
 
-	/**
-	 * 新建
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public int create(StoreAccountParam param,Integer shopId) {
-		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
-		StoreAccountRecord record = db().newRecord(STORE_ACCOUNT, param);
-		record.setStoreList(changeToString(param.getStoreList()));
-		record.setAccountPasswd(Util.md5(param.getAccountPasswd()));
-		record.setSysId(shop.getSysId());
-		record.setShopId(shopId);
-		int insert = record.insert();
-		return insert;
-	}
+    /**
+     * 新建
+     *
+     * @param param
+     * @return
+     */
+    public int create(StoreAccountParam param, Integer shopId) {
+        ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
+        StoreAccountRecord record = db().newRecord(STORE_ACCOUNT, param);
+        record.setStoreList(changeToString(param.getStoreList()));
+        record.setAccountPasswd(Util.md5(param.getAccountPasswd()));
+        record.setSysId(shop.getSysId());
+        record.setShopId(shopId);
+        int insert = record.insert();
+        return insert;
+    }
 
 	/**
 	 * 编辑

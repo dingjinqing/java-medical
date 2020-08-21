@@ -539,6 +539,9 @@ public class Indexes {
     public static final Index USER_DOCTOR_ATTENTION_PRIMARY = Indexes0.USER_DOCTOR_ATTENTION_PRIMARY;
     public static final Index DOCTOR_DUTY_RECORD_PRIMARY = Indexes0.DOCTOR_DUTY_RECORD_PRIMARY;
     public static final Index DOCTOR_COMMENT_PRIMARY = Indexes0.DOCTOR_COMMENT_PRIMARY;
+    public static final Index STORE_ACCOUNT_ACCOUNT_NAME = Indexes0.STORE_ACCOUNT_ACCOUNT_NAME;
+    public static final Index STORE_ACCOUNT_MOBILE = Indexes0.STORE_ACCOUNT_MOBILE;
+    public static final Index STORE_ACCOUNT_PRIMARY = Indexes0.STORE_ACCOUNT_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -1055,6 +1058,10 @@ public class Indexes {
         public static Index USER_DOCTOR_ATTENTION_PRIMARY = Internal.createIndex("PRIMARY", UserDoctorAttention.USER_DOCTOR_ATTENTION, new OrderField[] { UserDoctorAttention.USER_DOCTOR_ATTENTION.ID }, true);
         public static Index DOCTOR_DUTY_RECORD_PRIMARY = Internal.createIndex("PRIMARY", DoctorDutyRecord.DOCTOR_DUTY_RECORD, new OrderField[] { DoctorDutyRecord.DOCTOR_DUTY_RECORD.ID }, true);
         public static Index DOCTOR_COMMENT_PRIMARY = Internal.createIndex("PRIMARY", DoctorComment.DOCTOR_COMMENT, new OrderField[] { DoctorComment.DOCTOR_COMMENT.ID }, true);
+        public static Index STORE_ACCOUNT_ACCOUNT_NAME = Internal.createIndex("account_name", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_NAME }, false);
+        public static Index STORE_ACCOUNT_MOBILE = Internal.createIndex("mobile", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.MOBILE }, false);
+        public static Index STORE_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_ID }, true);
+
     }
 
 }
