@@ -89,8 +89,11 @@ public class DoctorCommentService extends ShopBaseService {
      */
     public PageResult<DoctorCommentListVo> listDoctorComment(DoctorCommentListParam param) {
         PageResult<DoctorCommentListVo> pageResult = doctorCommentDao.listDoctorComment(param);
-        pageResult.getDataList().forEach(page->{
-            page.setCommNoteLength(page.getCommNote().length());
+        pageResult.getDataList().forEach(item->{
+            item.setCommNoteLength(item.getCommNote().length());
+            if (item.getIsAnonymou().equals(BaseConstant.YES)){
+                item.setUserName(item.getUserName().trim().charAt(0)+"**");
+            }
         });
 
         return pageResult;
