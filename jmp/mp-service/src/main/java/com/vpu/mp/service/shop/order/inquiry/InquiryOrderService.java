@@ -299,7 +299,7 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void doctorRefund(InquiryOrderOnParam inquiryOrderOnParam)throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),InquiryOrderConstant.REFUND_REASON_DOCTOR);
+        refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
 
     }
 
