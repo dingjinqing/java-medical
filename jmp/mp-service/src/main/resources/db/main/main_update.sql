@@ -238,5 +238,78 @@ CREATE TABLE  if not exists  `b2c_order_info_bak` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='订单';
 
+-- 退款订单
+CREATE TABLE if not exists  `b2c_return_order_bak` (
+  `ret_id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL DEFAULT '0',
+  `order_sn` varchar(30) NOT NULL DEFAULT '',
+  `return_order_sn` varchar(30) DEFAULT '' COMMENT '退款单号',
+  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `goods_id` int(11) NOT NULL DEFAULT '0',
+  `refund_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1是审核中，2是通过审核，3退货没通过审核，4买家提交物流 或 仅退款申请，5：退款退货成功，6是拒绝退款退货,7 撤销退款、退货',
+  `money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款商品金额',
+  `shipping_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退运费金额',
+  `return_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '退款类型,0:只退款，1:退货又退款',
+  `reason_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '退款/退货原因类型，0：协商一致退款，1：未按约定时间发货，2：缺货，3：拍错/多拍/不想要，4：其他',
+  `reason_desc` text COMMENT '退款/退货描述',
+  `shipping_type` varchar(191) NOT NULL DEFAULT '' COMMENT '快递类型',
+  `shipping_no` varchar(50) NOT NULL DEFAULT '' COMMENT '快递单号',
+  `goods_images` text COMMENT '商品图片',
+  `voucher_images` text COMMENT '凭证图片',
+  `phone` varchar(12) NOT NULL DEFAULT '' COMMENT '电话号码',
+  `apply_time` timestamp NULL DEFAULT NULL COMMENT '退货且退货提交审核时间，对应refund_status=1',
+  `apply_pass_time` timestamp NULL DEFAULT NULL COMMENT '审核通过时间，对应refund_status=2',
+  `apply_not_pass_time` timestamp NULL DEFAULT NULL COMMENT '审核未通过时间，对应refund_status=3',
+  `shipping_or_refund_time` timestamp NULL DEFAULT NULL COMMENT '只退款时为退款申请时间，退货又退款时为提交物流信息时间，对应refund_status=4',
+  `refund_success_time` timestamp NULL DEFAULT NULL COMMENT '退款成功时间，对应refund_status=5',
+  `refund_refuse_time` timestamp NULL DEFAULT NULL COMMENT '退款拒绝时间，对应refund_status=6',
+  `refund_cancel_time` timestamp NULL DEFAULT NULL COMMENT '退款撤销时间，对应refund_status=7',
+  `apply_not_pass_reason` varchar(1000) DEFAULT NULL COMMENT '审核未通过原因',
+  `refund_refuse_reason` varchar(1000) DEFAULT NULL COMMENT '退款拒绝原因',
+  `return_address` varchar(1000) NOT NULL DEFAULT '' COMMENT '退货地址',
+  `merchant_telephone` varchar(12) NOT NULL DEFAULT '' COMMENT '商家电话',
+  `consignee` varchar(32) NOT NULL DEFAULT '' COMMENT '收货人',
+  `zip_code` varchar(10) NOT NULL DEFAULT '' COMMENT '邮编',
+  `currency` varchar(10) NOT NULL DEFAULT 'CNY' COMMENT '币种',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `is_auto_return` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0否；1是',
+  `return_source` tinyint(1) DEFAULT '1' COMMENT '售后发起来源：0商家手动发起，1用户主动申请，2订单异常系统自动发起',
+  `return_source_type` tinyint(1) DEFAULT '0' COMMENT '售后发起来源类型：0改价失败自动售后，1微信支付失败，2活动自动售后',
+  PRIMARY KEY (`ret_id`),
+  KEY `order_sn` (`order_sn`)
+)COMMENT='退回订单表';
+
+
+--退款订单商品
+CREATE TABLE if not exists  `b2c_return_order_goods_bak` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
+  `rec_id` int(11) DEFAULT NULL COMMENT '订单商品表的id',
+  `ret_id` int(11) DEFAULT NULL COMMENT '退货记录表的id',
+  `order_sn` varchar(20) NOT NULL DEFAULT '',
+  `goods_id` mediumint(8) NOT NULL DEFAULT '0',
+  `goods_name` varchar(120) NOT NULL DEFAULT '',
+  `product_id` mediumint(8) NOT NULL DEFAULT '0',
+  `goods_number` smallint(5) NOT NULL DEFAULT '1' COMMENT '退货商品数量',
+  `market_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `goods_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `goods_attr` text,
+  `send_number` smallint(5) NOT NULL DEFAULT '0' COMMENT '发货商品数量',
+  `return_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '实际退款金额',
+  `discounted_goods_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '实际退款金额',
+  `goods_img` varchar(191) NOT NULL DEFAULT '',
+  `success` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0代表退货申请被拒绝，1代表正在退货中，2代表退货成功',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `rec_id` (`rec_id`),
+  KEY `ret_id` (`ret_id`),
+  KEY `order_sn` (`order_sn`),
+  KEY `goods_id` (`goods_id`),
+  KEY `shop_id` (`shop_id`)
+)COMMENT='退货商品表';
+
 
 /*********************3.3*************************END*/

@@ -1,6 +1,6 @@
-package com.vpu.mp.service.pojo.shop.report;
+package com.vpu.mp.service.pojo.saas.order.report;
 
-import com.vpu.mp.common.pojo.shop.base.BasePageParam;
+import com.vpu.mp.service.pojo.shop.report.MedicalSalesReportParam;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -12,7 +12,7 @@ import java.util.Map;
  * @date 2020/7/31 14:59
  */
 @Data
-public class MedicalSalesReportParam extends BasePageParam {
+public class OrderBakSalesReportParam extends MedicalSalesReportParam {
 
     /**
      * 天

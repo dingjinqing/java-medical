@@ -46,6 +46,7 @@ public class TableSynchronizeTask {
         //同步最近一天的订单
         result.parallelStream().forEach(shopRecord -> {
             saas.getShopApp(shopRecord.getShopId()).shopTaskService.tableTaskService.orderDeltaUpdates(shopRecord.getShopId());
+            saas.getShopApp(shopRecord.getShopId()).shopTaskService.tableTaskService.ruturnOrderDeltaUpdates(shopRecord.getShopId());
         });
     }
 

@@ -23,6 +23,16 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * 退回订单表
+     */
+    public static final ReturnOrderBak RETURN_ORDER_BAK = com.vpu.mp.db.main.tables.ReturnOrderBak.RETURN_ORDER_BAK;
+
+    /**
+     * 退货商品表
+     */
+    public static final ReturnOrderGoodsBak RETURN_ORDER_GOODS_BAK = com.vpu.mp.db.main.tables.ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK;
+
+    /**
      * 订单
      */
     public static final OrderInfoBak ORDER_INFO_BAK = com.vpu.mp.db.main.tables.OrderInfoBak.ORDER_INFO_BAK;
