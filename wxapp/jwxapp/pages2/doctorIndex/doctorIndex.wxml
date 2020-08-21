@@ -34,14 +34,14 @@
       </view>
       <view class="item_text">待问诊</view>
     </view>
-    <view class="item">
+    <view class="item" data-status="1" bindtap="viewPrescriptionList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
         <view class="item_dot"  wx:if='{{doctorInfo.doctorMessageCountVo.alreadyPrescription == true}}'></view>
       </view>
       <view class="item_text">已续方</view>
     </view>
-    <view class="item">
+    <view class="item" data-status="2" bindtap="viewPrescriptionList">
       <view class="item_has_num">
         <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon1.png"></image>
         <view class="item_dot" wx:if='{{doctorInfo.doctorMessageCountVo.alreadyOrderInfoCount == true}}'></view>

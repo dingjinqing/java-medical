@@ -17,6 +17,10 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let {status = 0} = options
+    this.setData({
+      targetStatus:Number(status)
+    })
     this.requestList()
   },
   requestList(){
