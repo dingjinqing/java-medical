@@ -1,7 +1,9 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.service.pojo.shop.department.DepartmentIdNameVo;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListParam;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
@@ -9,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.title.TitleOneParam;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -86,6 +89,10 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
     @PostMapping("/api/wxapp/consultation/doctor/info")
     public JsonResult getConsultationDoctorInfo(@RequestBody UserDoctorParam param) {
         DoctorOneParam doctorInfo = shop().doctorService.getWxDoctorInfo(param);
+        InquiryOrderParam inquiryOrderParam = new InquiryOrderParam();
+        FieldsUtil.assign(param,inquiryOrderParam);
+        InquiryOrderDo inquiryOrderDo = shop().inquiryOrderService.getUndoneOrder(inquiryOrderParam);
+        doctorInfo.setHasUndoneOrder(inquiryOrderDo!=null);
         return success(doctorInfo);
     }
 }
