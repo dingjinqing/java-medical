@@ -4,11 +4,7 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.db.shop.tables.records.UserTotalFanliRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
@@ -382,7 +378,47 @@ public class MpDistributionService extends ShopBaseService{
         return rebateCenterVo;
 
     }
+    /**
+     * 分销中心推广语列表
+     * @return
+     */
+    public  List<PromotionLanguageListVo> promotionLanguagelist(Integer userId){
+        Result<Record> record = db().select().from(PROMOTION_LANGUAGE)
+            .where(PROMOTION_LANGUAGE.IS_BLOCK.eq((byte) 0)).and(PROMOTION_LANGUAGE.DEL_FLAG.eq((byte) 0)).fetch();
+        if(record.isNotEmpty()){
+            List<PromotionLanguageListVo> lists = record.into(PromotionLanguageListVo.class);
+            for (PromotionLanguageListVo list : lists){
+                Record record1 = db().select().from(USER_PROMOTION_LANGUAGE).where(USER_PROMOTION_LANGUAGE.USER_ID.eq(userId)).and(USER_PROMOTION_LANGUAGE.LAN_ID.eq(list.getId())).fetchOne();
+                if(record1 != null){
+                    list.setIsDefault((byte)1);
+                }
+            }
+            return lists;
+        }else{
+            return null;
+        }
+    }
 
+    /**
+     * 设置默认推广语
+     * @param param
+     * @return
+     */
+    public int setDefault(SetDefaulttParam param){
+        int res = 0;
+        Record record = db().select().from(USER_PROMOTION_LANGUAGE).where(USER_PROMOTION_LANGUAGE.USER_ID.eq(param.getUserId())).fetchOne();
+        if(record != null){
+            res = db().update(USER_PROMOTION_LANGUAGE).set(USER_PROMOTION_LANGUAGE.LAN_ID,param.getLanguageId()).where(USER_PROMOTION_LANGUAGE.USER_ID.eq(param.getUserId())).execute();
+        }else{
+            UserPromotionLanguageRecord userPromotionLanguage = new UserPromotionLanguageRecord();
+            userPromotionLanguage.setUserId(param.getUserId());
+            userPromotionLanguage.setLanId(param.getLanguageId());
+            userPromotionLanguage.setCreateTime(Util.currentTimeStamp());
+            assign(userPromotionLanguage,userPromotionLanguage);
+            res = db().executeInsert(userPromotionLanguage);
+        }
+        return res;
+    }
     /**
      * 待返利佣金金额
      * @param userId

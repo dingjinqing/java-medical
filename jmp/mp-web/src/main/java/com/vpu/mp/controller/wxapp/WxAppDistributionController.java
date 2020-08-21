@@ -93,7 +93,29 @@ public class WxAppDistributionController extends WxAppBaseController{
         RebateCenterVo rebateCenter = shop().mpDistribution.rebateCenter(userId);
         return this.success(rebateCenter);
     }
+    /**
+     * 推广语列表
+     * @return
+     */
+    @PostMapping("promotionLanguageList")
+    public JsonResult promotionLanguageList(){
+        Integer userId = wxAppAuth.user().getUserId();
+        List<PromotionLanguageListVo> promotionLanguageList = shop().mpDistribution.promotionLanguagelist(userId);
+        return this.success(promotionLanguageList);
+    }
 
+    /**
+     * 设置默认推广语
+     * @param param
+     * @return
+     */
+    @PostMapping("promotionLanguageList/setDefault")
+    public JsonResult setDefault(@RequestBody SetDefaulttParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        int res = shop().mpDistribution.setDefault(param);
+        return this.success(res);
+    }
     /**
      * 分销员邀请的下级用户列表
      * @param param
