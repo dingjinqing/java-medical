@@ -176,6 +176,10 @@ public class ImSessionDao extends ShopBaseDao {
             condition = condition.and(IM_SESSION.USER_ID.eq(imSessionCondition.getUserId()));
         }
 
+        if (imSessionCondition.getUpdateTimeLine() != null) {
+            condition = condition.and(IM_SESSION.UPDATE_TIME.le(imSessionCondition.getUpdateTimeLine()));
+        }
+
         return db().selectFrom(IM_SESSION).where(condition).fetchInto(ImSessionDo.class);
     }
 

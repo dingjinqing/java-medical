@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop;
 
-import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.collection.CollectService;
 import com.vpu.mp.service.shop.config.*;
@@ -22,6 +21,7 @@ import com.vpu.mp.service.shop.goods.goodsimport.GoodsImportRecordService;
 import com.vpu.mp.service.shop.goods.goodsimport.GoodsImportService;
 import com.vpu.mp.service.shop.goods.mp.GoodsActivityShareRecordService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -61,15 +61,16 @@ import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.marketcalendar.MarketCalendarService;
+import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.OrderApiService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.AuditService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.overview.*;
@@ -628,4 +629,7 @@ public class ShopApplication {
      */
     @Autowired
     public PrescriptionTaskService prescriptionTaskService;
+    /**咨询聊天*/
+    @Autowired
+    public ImSessionService imSessionService;
 }
