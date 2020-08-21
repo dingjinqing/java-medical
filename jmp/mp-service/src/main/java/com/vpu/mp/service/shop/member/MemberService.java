@@ -64,14 +64,8 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.InsertValuesStep2;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectField;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.UpdateSetMoreStep;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -286,51 +280,54 @@ public class MemberService extends ShopBaseService {
 
 		return sourceName;
 	}
-	
 
 
-	/**
-	 * 通用会员列表弹窗分页查询
-	 */
-	public PageResult<CommonMemberPageListQueryVo> getCommonPageList(CommonMemberPageListQueryParam param) {
-		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID, USER.USERNAME, USER.MOBILE).from(USER);
-		select = this.buildCommonPageListQueryOptions(select, param);
-		select.where(USER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(USER.CREATE_TIME);
-		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				CommonMemberPageListQueryVo.class);
-	}
 
-	/**
-	 * 通用会员选择弹窗的指定规则过滤条件构造
-	 * 
-	 * @return
-	 */
-	private SelectJoinStep<? extends Record> buildCommonPageListQueryOptions(SelectJoinStep<? extends Record> select,
-			CommonMemberPageListQueryParam param) {
-		if (param == null) {
-			return select;
-		}
+    /**
+     * 通用会员列表弹窗分页查询
+     */
+    public PageResult<CommonMemberPageListQueryVo> getCommonPageList(CommonMemberPageListQueryParam param) {
+        SelectJoinStep<? extends Record> select = db().select(USER.USER_ID, USER.USERNAME, USER.MOBILE).from(USER);
+        select = this.buildCommonPageListQueryOptions(select, param);
+        select.where(USER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(USER.CREATE_TIME);
+        return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+            CommonMemberPageListQueryVo.class);
+    }
 
-		if (null != param.getUserId() && param.getUserId() > 0) {
-			select.where(USER.USER_ID.eq(param.getUserId()));
-		}
-		if (!StringUtils.isEmpty(param.getMobile())) {
-			select.where(USER.MOBILE.contains(param.getMobile()));
-		}
-		if (!StringUtils.isEmpty(param.getUsername())) {
-			select.where(USER.USERNAME.contains(param.getUsername()));
-		}
+    /**
+     * 通用会员选择弹窗的指定规则过滤条件构造
+     *
+     * @return
+     */
+    private SelectJoinStep<? extends Record> buildCommonPageListQueryOptions(SelectJoinStep<? extends Record> select,
+                                                                             CommonMemberPageListQueryParam param) {
+        if (param == null) {
+            return select;
+        }
+        if (null != param.getUserId() && param.getUserId() > 0) {
+            select.where(USER.USER_ID.eq(param.getUserId()));
+        }
+        if (!StringUtils.isEmpty(param.getMobile())) {
+            select.where(USER.MOBILE.contains(param.getMobile()));
+        }
+        if (!StringUtils.isEmpty(param.getUsername())) {
+            select.where(USER.USERNAME.contains(param.getUsername()));
+        }
 
-		/**
-		 * 过滤已经是该门店核销员的用户，用于为该门店添加核销员
-		 */
-		if (null != param.getStoreId() && param.getStoreId() > 0) {
-			select.leftJoin(ORDER_VERIFIER).on(USER.USER_ID.eq(ORDER_VERIFIER.USER_ID))
-					.where(ORDER_VERIFIER.STORE_ID.ne(param.getStoreId()).or(ORDER_VERIFIER.STORE_ID.isNull()));
-		}
-
-		return select;
-	}
+        /**
+         * 过滤已经是该门店核销员的用户，用于为该门店添加核销员
+         */
+        if (null != param.getStoreId() && param.getStoreId() > 0) {
+            Table<Record1<Integer>> a = DSL.select(ORDER_VERIFIER.USER_ID)
+                .from(ORDER_VERIFIER)
+                .where(ORDER_VERIFIER.STORE_ID.eq(param.getStoreId())
+                    .and(ORDER_VERIFIER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).asTable("a");
+            select.leftJoin(a)
+                .on(USER.USER_ID.eq(a.field(0, Integer.class)))
+                .where(a.field(0).isNull()).and(USER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        }
+        return select;
+    }
 	
 	/**
 	 *  获取用户信息
@@ -459,7 +456,7 @@ public class MemberService extends ShopBaseService {
 
 	/**
 	 * 	通过筛选条件获得用户Id列表
-	 * @param param
+	 * @param searchParam
 	 * @return List<Integer>用户ID列表
 	 */
 	private List<Integer> getAllUserIdBySeachCond(MemberPageListParam searchParam) {
