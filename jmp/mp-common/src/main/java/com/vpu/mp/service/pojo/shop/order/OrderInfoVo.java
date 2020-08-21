@@ -6,7 +6,6 @@ import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import lombok.Getter;
 import lombok.Setter;
@@ -97,6 +96,14 @@ public class OrderInfoVo extends OrderListInfoVo {
     private Timestamp refundFinishTime;
     /**代付明细*/
     private List<InsteadPayDetailsVo> insteadPayInfo;
+
+
+	private Byte       orderMedicalType;
+	private Byte       orderAuditType;
+	private Byte       orderAuditStatus;
+	private String     prescriptionCodeList;
+	private Timestamp  auditTime;
+	private Integer    patientId;
 
     private List<PrescriptionDo> prescriptionDoList;
     private List<PrescriptionDo> prescriptionOldDoList;
