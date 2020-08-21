@@ -92,7 +92,7 @@ public class DoctorCommentService extends ShopBaseService {
         pageResult.getDataList().forEach(item->{
             item.setCommNoteLength(item.getCommNote().length());
             if (item.getIsAnonymou().equals(BaseConstant.YES)){
-                item.setUserName(item.getUserName().trim().charAt(0)+"**");
+                item.setUserName(DoctorCommentConstant.DOCTOR_COMMENT_ANONYMOU_NAME);
             }
         });
 
