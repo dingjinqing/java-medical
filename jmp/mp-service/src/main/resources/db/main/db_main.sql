@@ -2196,7 +2196,7 @@ CREATE TABLE `b2c_order_info_bak` (
 
 
 -- 退款订单
-CREATE TABLE if not exists  `b2c_return_order_bak` (
+CREATE TABLE   `b2c_return_order_bak` (
   `ret_id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL DEFAULT '0',
   `order_sn` varchar(30) NOT NULL DEFAULT '',
@@ -2240,7 +2240,7 @@ CREATE TABLE if not exists  `b2c_return_order_bak` (
 
 
 --退款订单商品
-CREATE TABLE if not exists  `b2c_return_order_goods_bak` (
+CREATE TABLE  `b2c_return_order_goods_bak` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
   `rec_id` int(11) DEFAULT NULL COMMENT '订单商品表的id',

@@ -238,6 +238,7 @@ CREATE TABLE  if not exists  `b2c_order_info_bak` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='订单';
 
+
 -- 退款订单
 CREATE TABLE if not exists  `b2c_return_order_bak` (
   `ret_id` int(11) NOT NULL AUTO_INCREMENT,
