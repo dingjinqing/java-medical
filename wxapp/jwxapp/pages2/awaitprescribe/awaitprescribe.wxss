@@ -112,7 +112,7 @@
   position: absolute;
   height: 16rpx;
   width: 100%;
-  bottom: -16rpx;
+  bottom: -12rpx;
   left: 0;
   background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
   background-size: 40rpx 20rpx;

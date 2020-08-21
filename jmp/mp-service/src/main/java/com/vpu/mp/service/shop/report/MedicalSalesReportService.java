@@ -70,7 +70,7 @@ public class MedicalSalesReportService extends ShopBaseService {
      * 计算报表时间(分页优化)
      * @param param
      */
-    private void buildSalesReportDate(MedicalSalesReportParam param) {
+    public void buildSalesReportDate(MedicalSalesReportParam param) {
         DateTime endDate=DateUtil.date(param.getEndTime());
         DateTime startDate =DateUtil.date(param.getStartTime());
         Map<Timestamp,Timestamp> map =new LinkedHashMap<>();
@@ -234,7 +234,7 @@ public class MedicalSalesReportService extends ShopBaseService {
         param.setTotalRows(totalRows);
     }
 
-    private Page getPage(MedicalSalesReportParam param, long totalRows) {
+    public Page getPage(MedicalSalesReportParam param, long totalRows) {
         Page page =new Page();
         page.setCurrentPage(param.getCurrentPage());
         page.setPageRows(param.getPageRows());
@@ -280,7 +280,7 @@ public class MedicalSalesReportService extends ShopBaseService {
         return workbook;
     }
 
-    private MedicalOrderReportVo getMedicalOrderReportVo(Timestamp startDate,Timestamp endDate,  Map<Date, MedicalOrderReportVo> orderMap, Map<Date, MedicalOrderReportVo> returnOrderMap) {
+    public MedicalOrderReportVo getMedicalOrderReportVo(Timestamp startDate,Timestamp endDate,  Map<Date, MedicalOrderReportVo> orderMap, Map<Date, MedicalOrderReportVo> returnOrderMap) {
         MedicalOrderReportVo report = new MedicalOrderReportVo();
         report.setTime(DateUtil.formatDate(startDate)+"~"+DateUtil.formatDate(endDate));
         BigDecimal orderAmount = BigDecimal.ZERO;
