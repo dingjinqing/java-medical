@@ -11,7 +11,7 @@
         <view class="pre_info">
           <view class="top_area top_area1">
             <view class="patient_title">患者信息</view>
-            <view class="patient_info">
+            <view class="patient_info patient">
               <view class="each_line">
                 <view class="line_dot"></view>
                 <view class="line_content has_three">
@@ -32,9 +32,13 @@
                 <view class="line_dot"></view>
                 <view class="line_content">过敏史：{{item.medicalHistory.allergyHistory}}</view>
               </view>
-              <view class="each_line has_bottom" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.gestationName}}'>
+              <view class="each_line" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.gestationName}}'>
                 <view class="line_dot"></view>
                 <view class="line_content">妊娠状态：{{item.medicalHistory.gestationName}}</view>
+              </view>
+              <view class="each_line has_bottom" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.describe}}'>
+                <view class="line_dot"></view>
+                <view class="line_content">病情描述：{{item.medicalHistory.describe}}</view>
               </view>
             </view>
           </view>
