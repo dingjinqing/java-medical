@@ -77,7 +77,8 @@ global.wxPage({
     util.showModal('提示',tipsInfo[type][0],()=>{
       util.api('/api/wxapp/doctor/audit/pass',res=>{
         console.log(res)
-        if(res.error === 0){
+        if(res.error === 0 || res.error === 120004){
+          if(res.error === 120004) util.showModal('提示','订单状态已改变')
           this.data.taped_order_id = '';
           this.data.taped_order_sn = '';
           this.data.taped_par_index = '';
