@@ -148,7 +148,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             condition = condition.and(DOCTOR.ID.in(doctorParam.getUserDoctorIds()));
         }
         SelectJoinStep<? extends Record> select = db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
-            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")
+            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")
         ,DSL.when(DOCTOR.CONSULTATION_NUMBER.gt(0), 1).otherwise(0).as("consultationFlag")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID));
         select.where(condition);
@@ -197,7 +197,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
             .and(DOCTOR.ID.gt(0)).groupBy(DOCTOR.ID);
         return db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
-            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
+            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
             .leftJoin(table).on(table.field(DOCTOR.ID).eq(DOCTOR.ID))
             .where(DOCTOR.ID.in(doctorIds))
@@ -220,7 +220,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
             .and(DOCTOR.ID.gt(0)).groupBy(DOCTOR.ID);
         return db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
-            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
+            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
             .leftJoin(table).on(table.field(DOCTOR.ID).eq(DOCTOR.ID))
             .where(DOCTOR.ID.notIn(doctorDepartments))

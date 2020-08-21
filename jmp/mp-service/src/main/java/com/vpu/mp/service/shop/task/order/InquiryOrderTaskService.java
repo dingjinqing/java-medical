@@ -5,8 +5,10 @@ import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.maptemplate.ConsultationOrderExpireParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.shop.im.ImSessionService;
+import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,8 @@ public class InquiryOrderTaskService extends ShopBaseService {
     private InquiryOrderDao inquiryOrderDao;
     @Autowired
     private ImSessionService imSessionService;
-
+    @Autowired
+    private MapTemplateSendService mapTemplateSendService;
     /**
      * 自动任务关闭待支付的问诊订单
      */
@@ -71,15 +74,21 @@ public class InquiryOrderTaskService extends ShopBaseService {
                 orderSns.add(order.getOrderSn());
                 imSessionService.batchCancelSession(orderSns);
                 logger().info("问诊订单自动任务,待接诊0元订单取消,orderSn:{}", order.getOrderSn());
-                return;
+            }else {
+                try {
+                    refundExecute(order);
+                    logger().info("问诊订单自动任务,待接诊订单退款成功,orderSn:{}", order.getOrderSn());
+                } catch (MpException e) {
+                    e.printStackTrace();
+                    logger().error("问诊订单自动任务,待接诊订单退款失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage());
+                }
             }
-            try {
-                refundExecute(order);
-                logger().info("问诊订单自动任务,待接诊订单退款成功,orderSn:{}", order.getOrderSn());
-            } catch (MpException e) {
-                e.printStackTrace();
-                logger().error("问诊订单自动任务,待接诊订单退款失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage());
-            }
+            //超时自动退款消息提醒
+            List<Integer> useIdrList=new ArrayList<>();
+            useIdrList.add(order.getUserId());
+            ConsultationOrderExpireParam param=ConsultationOrderExpireParam.builder().userIds(useIdrList).build();
+            mapTemplateSendService.sendConsultationExprieMessage(param);
+
         });
     }
 
