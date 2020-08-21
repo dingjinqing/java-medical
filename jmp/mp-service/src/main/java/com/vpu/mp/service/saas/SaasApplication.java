@@ -128,6 +128,8 @@ public class SaasApplication {
     public ApiExternalRequestService apiExternalRequestService;
     @Autowired
     public MainInquiryOrderService mainInquiryOrderService;
+	@Autowired
+	public SaasOrderService saasOrderService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);
