@@ -129,7 +129,7 @@ public class MapTemplateSendService extends ShopBaseService {
             {param.getDiseaseDetail()},
             {param.getDoctorName()},
             {param.getRemark()},
-            {param.getDiseaseDetail()},
+            {param.getDepartmentName()},
         };
 
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
