@@ -15,6 +15,8 @@ const {
 } = require('../../utils/i18n/page1/search.js');
 
 
+
+
 global.wxPage({
   /**
    * 页面的初始数据
@@ -30,7 +32,7 @@ global.wxPage({
     scrollTop: 0,
     arrive_bottom: true,
     allHeight: 0,
-    showPre:false,
+    showPre: false,
   },
 
   /**
@@ -72,9 +74,9 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if(this.data.showPre){
+    if (this.data.showPre) {
       this.setData({
-        showPre:false
+        showPre: false
       })
       return
     }
@@ -152,9 +154,9 @@ global.wxPage({
         } else {
           newStatus = 5
         }
-      }else if(sessionStatus == 6){
-          newStatus = 5
-      } else{
+      } else if (sessionStatus == 6) {
+        newStatus = 5
+      } else {
         newStatus = status
       }
 
@@ -165,7 +167,8 @@ global.wxPage({
             position: 0,
             messageInfo: {
               message: JSON.parse(item.message),
-              type: item.type
+              type: item.type,
+              sendTime: this.dealPullTime(item.sendTime)
             }
           })
           return defaultValue
@@ -217,9 +220,11 @@ global.wxPage({
   },
   sendMessage(message, type) {
     if (!message.content) return
+    let time = util.formatTime(new Date());
     let imSessionItem = {
       message: JSON.stringify(message),
-      type
+      type,
+      sendTime: time
     }
     util.api('/api/wxapp/im/session/send', res => {
       console.log(res)
@@ -230,6 +235,7 @@ global.wxPage({
           ...imSessionItem,
           message: JSON.parse(imSessionItem.message)
         };
+        chat.messageInfo.sendTime = this.getTodayTime(time)
         chat.position = 1;
         chatContent.push(chat)
         this.setData({
@@ -252,7 +258,7 @@ global.wxPage({
   startScroll(e) {
     let that = this;
     let scrollTop = e.detail.scrollTop;
-    if(scrollTop) that.getScrollHeight(scrollTop)
+    if (scrollTop) that.getScrollHeight(scrollTop)
   },
 
   handleShowPrescriptionDialog(e) {
@@ -354,7 +360,8 @@ global.wxPage({
               position: item.doctor ? 0 : 1,
               messageInfo: {
                 message: JSON.parse(item.message),
-                type: item.type
+                type: item.type,
+                sendTime: this.dealPullTime(item.sendTime)
               }
             })
             return defaultValue
@@ -375,7 +382,7 @@ global.wxPage({
   viewImage(e) {
     let urls = [e.currentTarget.dataset.urls]
     this.setData({
-      showPre:true
+      showPre: true
     })
     wx.previewImage({
       urls
@@ -394,7 +401,7 @@ global.wxPage({
       })
     }
     this.setData({
-      scrollViewHeight: win_h - navigation_h - 70 ,
+      scrollViewHeight: win_h - navigation_h - 70,
     });
   },
   getRectHeight() {
@@ -424,5 +431,17 @@ global.wxPage({
         })
       }
     })
+  },
+  getTodayTime(time) {
+    return time.split(' ')[1]
+  },
+  dealPullTime(time) {
+    if (time) {
+      let nowTime = util.formatTime(new Date()).split(' ')[0]
+      let pullTime = time.split(' ')[0]
+      if (nowTime == pullTime) return this.getTodayTime(time)
+    }
+    return time
   }
+
 })

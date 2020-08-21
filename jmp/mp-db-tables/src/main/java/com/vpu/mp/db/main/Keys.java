@@ -31,10 +31,11 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<ReturnOrderBakRecord, Integer> IDENTITY_RETURN_ORDER_BAK = Identities0.IDENTITY_RETURN_ORDER_BAK;
+    public static final Identity<ReturnOrderGoodsBakRecord, Integer> IDENTITY_RETURN_ORDER_GOODS_BAK = Identities0.IDENTITY_RETURN_ORDER_GOODS_BAK;
 
     public static final Identity<OrderInfoBakRecord, Long> IDENTITY_ORDER_INFO_BAK = Identities0.IDENTITY_ORDER_INFO_BAK;
     public static final Identity<OrderGoodsBakRecord, Long> IDENTITY_ORDER_GOODS_BAK = Identities0.IDENTITY_ORDER_GOODS_BAK;
-
 
     public static final Identity<CronDefineRecord, Integer> IDENTITY_CRON_DEFINE = Identities0.IDENTITY_CRON_DEFINE;
     public static final Identity<CronRecordRecord, Integer> IDENTITY_CRON_RECORD = Identities0.IDENTITY_CRON_RECORD;
@@ -112,6 +113,8 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_BAK_PRIMARY;
+    public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY;
 
     public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_INFO_BAK_PRIMARY;
     public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_ORDER_SN = UniqueKeys0.KEY_B2C_ORDER_INFO_BAK_ORDER_SN;
@@ -230,6 +233,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<ReturnOrderBakRecord, Integer> IDENTITY_RETURN_ORDER_BAK = Internal.createIdentity(ReturnOrderBak.RETURN_ORDER_BAK, ReturnOrderBak.RETURN_ORDER_BAK.RET_ID);
+        public static Identity<ReturnOrderGoodsBakRecord, Integer> IDENTITY_RETURN_ORDER_GOODS_BAK = Internal.createIdentity(ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID);
 
         public static Identity<OrderInfoBakRecord, Long> IDENTITY_ORDER_INFO_BAK = Internal.createIdentity(OrderInfoBak.ORDER_INFO_BAK, OrderInfoBak.ORDER_INFO_BAK.ID);
         public static Identity<OrderGoodsBakRecord, Long> IDENTITY_ORDER_GOODS_BAK = Internal.createIdentity(OrderGoodsBak.ORDER_GOODS_BAK, OrderGoodsBak.ORDER_GOODS_BAK.ID);
@@ -308,6 +313,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderBak.RETURN_ORDER_BAK, "KEY_b2c_return_order_bak_PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK.RET_ID);
+        public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, "KEY_b2c_return_order_goods_bak_PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID);
 
         public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_PRIMARY = Internal.createUniqueKey(OrderInfoBak.ORDER_INFO_BAK, "KEY_b2c_order_info_bak_PRIMARY", OrderInfoBak.ORDER_INFO_BAK.ID);
         public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_ORDER_SN = Internal.createUniqueKey(OrderInfoBak.ORDER_INFO_BAK, "KEY_b2c_order_info_bak_order_sn", OrderInfoBak.ORDER_INFO_BAK.ORDER_SN);

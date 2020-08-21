@@ -1,5 +1,5 @@
 <!--components/doctor/doctor_chat_date/index1.wxml-->
 
 <view class="chat-date">
-	{{sendTime}}
+	{{chatContent.messageInfo.sendTime}}
 </view>

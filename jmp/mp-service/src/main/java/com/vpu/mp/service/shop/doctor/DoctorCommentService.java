@@ -65,7 +65,7 @@ public class DoctorCommentService extends ShopBaseService {
     public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId) {
         //保存
         DoctorCommentAddParam param =new DoctorCommentAddParam();
-        param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_NOT_CHECK);
+        param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
         param.setDoctorId(doctorId);
         param.setUserId(userId);
         param.setPatientId(patientId);
@@ -89,8 +89,11 @@ public class DoctorCommentService extends ShopBaseService {
      */
     public PageResult<DoctorCommentListVo> listDoctorComment(DoctorCommentListParam param) {
         PageResult<DoctorCommentListVo> pageResult = doctorCommentDao.listDoctorComment(param);
-        pageResult.getDataList().forEach(page->{
-            page.setCommNoteLength(page.getCommNote().length());
+        pageResult.getDataList().forEach(item->{
+            item.setCommNoteLength(item.getCommNote().length());
+            if (item.getIsAnonymou().equals(BaseConstant.YES)){
+                item.setUserName(item.getUserName().trim().charAt(0)+"**");
+            }
         });
 
         return pageResult;

@@ -118,7 +118,8 @@ global.wxPage({
             position: 0,
             messageInfo: {
               message: JSON.parse(item.message),
-              type: item.type
+              type: item.type,
+              sendTime: this.dealPullTime(item.sendTime)
             }
           })
           return defaultValue
@@ -141,11 +142,12 @@ global.wxPage({
 
   },
   sendMessage (message, type) {
-
     if (!message.content) return
+    let time = util.formatTime(new Date());
     let imSessionItem = {
       message: JSON.stringify(message),
-      type
+      type,
+      sendTime: time
     }
     util.api('/api/wxapp/im/session/send', res => {
       console.log(res)
@@ -156,6 +158,7 @@ global.wxPage({
           ...imSessionItem,
           message: JSON.parse(imSessionItem.message)
         };
+        chat.messageInfo.sendTime = this.getTodayTime(time)
         chat.position = 1;
         chatContent.push(chat)
         this.setData({
@@ -268,7 +271,8 @@ global.wxPage({
               position: item.doctor ? 1 : 0,
               messageInfo: {
                 message: JSON.parse(item.message),
-                type: item.type
+                type: item.type,
+                sendTime: this.dealPullTime(item.sendTime)
               }
             })
             return defaultValue
@@ -343,5 +347,16 @@ global.wxPage({
         })
       }
     })
+  },
+  getTodayTime(time) {
+    return time.split(' ')[1]
+  },
+  dealPullTime(time) {
+    if (time) {
+      let nowTime = util.formatTime(new Date()).split(' ')[0]
+      let pullTime = time.split(' ')[0]
+      if (nowTime == pullTime) return this.getTodayTime(time)
+    }
+    return time
   }
 })

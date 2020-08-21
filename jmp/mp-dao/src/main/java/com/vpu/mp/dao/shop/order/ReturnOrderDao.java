@@ -1,5 +1,7 @@
 package com.vpu.mp.dao.shop.order;
 
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
+import com.vpu.mp.common.pojo.shop.table.ReturnOrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.RETURN_ORDER;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
 
@@ -57,8 +60,23 @@ public class ReturnOrderDao extends ShopBaseDao {
     }
 
 
+    public List<ReturnOrderGoodsDo> listUpdateOrderGoodsByYesterday(Timestamp beginTime, Timestamp endTime) {
+        return  db().selectFrom(RETURN_ORDER)
+                .where(RETURN_ORDER.UPDATE_TIME.ge(beginTime)).and(RETURN_ORDER.UPDATE_TIME.le(endTime))
+                .and(RETURN_ORDER.CREATE_TIME.le(beginTime))
+                .fetchInto(ReturnOrderGoodsDo.class);
+    }
 
+    public List<OrderInfoDo> listCreateOrderByYesterday(Timestamp beginTime, Timestamp endTime) {
+        return  db().selectFrom(RETURN_ORDER)
+                .where(RETURN_ORDER.CREATE_TIME.ge(beginTime)).and(RETURN_ORDER.CREATE_TIME.le(endTime))
+                .fetchInto(OrderInfoDo.class);
+    }
 
-
-
+    public List<OrderInfoDo> listUpdateOrderByYesterday(Timestamp beginTime, Timestamp endTime) {
+        return  db().selectFrom(RETURN_ORDER)
+                .where(RETURN_ORDER.UPDATE_TIME.ge(beginTime)).and(RETURN_ORDER.UPDATE_TIME.le(endTime))
+                .and(RETURN_ORDER.CREATE_TIME.le(beginTime))
+                .fetchInto(OrderInfoDo.class);
+    }
 }

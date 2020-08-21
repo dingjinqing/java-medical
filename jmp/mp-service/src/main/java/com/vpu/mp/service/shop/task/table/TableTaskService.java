@@ -7,6 +7,7 @@ import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.account.UserSysVo;
 import com.vpu.mp.service.saas.order.SaasOrderService;
+import com.vpu.mp.service.saas.order.SaasReturnOrderService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class TableTaskService extends ShopBaseService {
 	private UserService userService;
 	@Autowired
 	private SaasOrderService saasOrderService;
+	@Autowired
+	private SaasReturnOrderService saasReturnOrderService;
 	@Autowired
     private InquiryOrderDao inquiryOrderDao;
 
@@ -85,7 +88,22 @@ public class TableTaskService extends ShopBaseService {
 		saasOrderService.synOrderGoodsCreate(beginTime, endTime,shopId);
 		//同步订单商品更新
 		saasOrderService.synOrderGoodsUpdate(beginTime, endTime,shopId);
-
+	}
+	/**
+	 * 增量更新最近一天的数据
+	 */
+	public void ruturnOrderDeltaUpdates(Integer shopId) {
+		log.info("#####################开始同步店：" + getShopId() + "的order_Info#####################");
+		Timestamp beginTime = DateUtil.beginOfDay(DateUtil.yesterday()).toTimestamp();
+		Timestamp endTime = DateUtil.endOfDay(DateUtil.yesterday()).toTimestamp();
+		//同步新增order_info
+		saasReturnOrderService.synOrderCreate(beginTime, endTime,shopId);
+		//同步订单更新
+		saasReturnOrderService.synOrderUpdate(beginTime, endTime,shopId);
+		//同步新增订单商品
+		saasReturnOrderService.synOrderGoodsCreate(beginTime, endTime,shopId);
+		//同步订单商品更新
+		saasReturnOrderService.synOrderGoodsUpdate(beginTime, endTime,shopId);
 	}
 
 

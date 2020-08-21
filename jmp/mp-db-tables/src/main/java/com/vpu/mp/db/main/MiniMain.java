@@ -35,6 +35,15 @@ public class MiniMain extends SchemaImpl {
      */
     public static final MiniMain MINI_MAIN = new MiniMain();
 
+    /**
+     * 退回订单表
+     */
+    public final ReturnOrderBak RETURN_ORDER_BAK = com.vpu.mp.db.main.tables.ReturnOrderBak.RETURN_ORDER_BAK;
+
+    /**
+     * 退货商品表
+     */
+    public final ReturnOrderGoodsBak RETURN_ORDER_GOODS_BAK = com.vpu.mp.db.main.tables.ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK;
 
     /**
      * 订单商品表  b2c_order_goods
@@ -568,6 +577,8 @@ public class MiniMain extends SchemaImpl {
             TaskJobContent.TASK_JOB_CONTENT,
             TaskJobMain.TASK_JOB_MAIN,
             CronDefine.CRON_DEFINE,
-            CronRecord.CRON_RECORD);
+            CronRecord.CRON_RECORD,
+            ReturnOrderBak.RETURN_ORDER_BAK,
+            ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK);
     }
 }

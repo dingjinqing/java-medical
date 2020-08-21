@@ -2,7 +2,7 @@
 <wxs module="tools">
 	var getStatus = function(status){
 		var statusName = {
-		  '1':'已审核',
+		  '1':'已续方',
 			'2':'已开具',
 			'3':'问诊开方'
 		}
@@ -17,7 +17,7 @@
 	<view class="main-container">
 		<view class="tabs" >
 			<view data-type="0" bindtap="toggleStatus"><text class="{{targetStatus === 0 ? 'active' : ''}}">全部</text></view>
-			<view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === 1 ? 'active' : ''}}">已审核</text></view>
+			<view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === 1 ? 'active' : ''}}">已续方</text></view>
 			<view data-type="2" bindtap="toggleStatus"><text class="{{targetStatus === 2 ? 'active' : ''}}">已开具</text></view>
 			<view data-type="3" bindtap="toggleStatus"><text class="{{targetStatus === 3 ? 'active' : ''}}">问诊开方</text></view>
 		</view>
