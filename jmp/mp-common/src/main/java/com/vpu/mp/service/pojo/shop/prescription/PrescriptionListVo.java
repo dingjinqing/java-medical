@@ -13,8 +13,14 @@ import java.sql.Timestamp;
 
 public class PrescriptionListVo {
 
+    /**
+     * 患者id
+     */
+    private Integer id;
+    /**
+     * 患者名称
+     */
     private String name;
-
     /**
      * 处方号
      */
