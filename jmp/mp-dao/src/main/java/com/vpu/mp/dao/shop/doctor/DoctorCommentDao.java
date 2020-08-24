@@ -10,11 +10,12 @@ import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentConstant;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListVo;
 import org.jooq.Record;
-import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import static com.vpu.mp.db.shop.tables.DoctorComment.DOCTOR_COMMENT;
 
@@ -61,9 +62,9 @@ public class DoctorCommentDao extends ShopBaseDao {
      * @return
      */
     public PageResult<DoctorCommentListVo> listDoctorComment(DoctorCommentListParam param) {
-        SelectConditionStep<Record> where = db().select().from(DOCTOR_COMMENT)
-                .where(DOCTOR_COMMENT.DOCTOR_ID.eq(param.getDoctorId()));
-        return getPageResult(where,param, DoctorCommentListVo.class);
+        SelectSeekStep1<Record, Timestamp> records = db().select().from(DOCTOR_COMMENT)
+                .where(DOCTOR_COMMENT.DOCTOR_ID.eq(param.getDoctorId())).orderBy(DOCTOR_COMMENT.CREATE_TIME.desc());
+        return getPageResult(records,param, DoctorCommentListVo.class);
     }
 
     /**
