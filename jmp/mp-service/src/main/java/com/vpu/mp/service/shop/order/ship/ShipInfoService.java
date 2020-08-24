@@ -1,6 +1,16 @@
 package com.vpu.mp.service.shop.order.ship;
 
-import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
+import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
+import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
+import org.jooq.Record;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -10,18 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
-import org.jooq.Record;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
-import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
-import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
+import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
 
 /**
  * Table:part_order_goods_ship
@@ -97,7 +96,7 @@ public class ShipInfoService extends ShopBaseService {
 	}
 
 	public void receive(String orderSn) {
-		db().update(TABLE).set(TABLE.CONFIRM_TIME, DateUtils.getSqlTimestamp()).where(TABLE.ORDER_SN.eq(orderSn));
+		db().update(TABLE).set(TABLE.CONFIRM_TIME, DateUtils.getSqlTimestamp()).where(TABLE.ORDER_SN.eq(orderSn)).execute();
 	}
 
     /**
