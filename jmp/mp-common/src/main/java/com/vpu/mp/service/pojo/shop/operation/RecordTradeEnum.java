@@ -114,6 +114,8 @@ public enum RecordTradeEnum {
 	UACCOUNT_RECHARGE(0),
 	/** 消费 */
 	UACCOUNT_CONSUMPTION(1),
+    /** 分销 */
+    UACCOUNT_WITHDRAW(2),
 
 	/** 积分变动是否来自退款 */
 	IS_FROM_REFUND_Y(1),

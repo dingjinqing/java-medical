@@ -82,6 +82,14 @@ public class DistributorListParam {
      * 排序方式：asc:升序；desc：降序
      */
 	private String sortWay = "desc";
+    /**
+     * 导出起始值
+     */
+    private Integer startNum;
+    /**
+     * 导出结束值
+     */
+    private Integer endNum;
 
 	private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
 	private Integer pageRows = Page.DEFAULT_PAGE_ROWS;

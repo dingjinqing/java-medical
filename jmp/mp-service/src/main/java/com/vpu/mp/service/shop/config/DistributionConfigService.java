@@ -1,10 +1,14 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.payment.MpPaymentService;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,9 @@ import org.springframework.stereotype.Service;
 import static com.vpu.mp.db.shop.Tables.*;
 
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 分销配置
@@ -29,8 +36,17 @@ public class DistributionConfigService extends BaseShopConfigService {
 
     final public static String INVITE_DOCUMENT = "invite_document";
 
+    final public static Byte BYTE_ZERO =  0;
+    final public static Byte BYTE_ONE =  1;
+
     @Autowired
     private QrCodeService qrCode;
+
+    @Autowired
+    public MpPaymentService ms;
+
+    @Autowired
+    public RecordAdminActionService record;
 
     /**
      * 获取返利配置
@@ -103,5 +119,62 @@ public class DistributionConfigService extends BaseShopConfigService {
     public Integer hasDistributor() {
         Integer hasDistributor = db().selectCount().from(USER).where(USER.IS_DISTRIBUTOR.eq((byte) 1)).fetchOne().into(Integer.class);
         return hasDistributor;
+    }
+
+    /**
+     * 是否为自商户
+     * @return
+     */
+    public Byte getMpPay(){
+        MpAuthShopRecord mp = ms.getMpAuthShop();
+        Byte isSubMerchant = mp.getIsSubMerchant();  //1为子商户
+        return isSubMerchant;
+    }
+
+    /**
+     * 添加分销变更记录
+     * @param param
+     */
+    private void addDistributionRecord(DistributionParam param) {
+        DistributionParam oldParam = this.getJsonObject(K_FANLI, DistributionParam.class);
+        List<Integer> templateIds = new ArrayList<>();  List<String> templateData = new ArrayList<>();
+        templateIds.add(RecordContentTemplate.DISTRIBUTION_CHANGE.code);
+        if (!oldParam.getStatus().equals(param.getStatus())) {
+            templateIds.add(param.getStatus().equals(BYTE_ONE) ?
+                RecordContentTemplate.DISTRIBUTION_STATUS_ON.code : RecordContentTemplate.DISTRIBUTION_STATUS_OFF.code);
+        }
+        if (!oldParam.getJudgeStatus().equals(param.getJudgeStatus())) {
+            templateIds.add(param.getJudgeStatus().equals(BYTE_ONE) ?
+                RecordContentTemplate.DISTRIBUTION_JUDGE_STATUS_ON.code : RecordContentTemplate.DISTRIBUTION_JUDGE_STATUS_OFF.code);
+        }
+        if (!oldParam.getWithdrawStatus().equals(param.getWithdrawStatus())) {
+            templateIds.add(param.getWithdrawStatus().equals(BYTE_ONE) ?
+                RecordContentTemplate.DISTRIBUTION_WITHDRAW_STATUS_ON.code : RecordContentTemplate.DISTRIBUTION_WITHDRAW_STATUS_OFF.code);
+        }
+        // 有效期变更
+        if (oldParam.getVaild() > 0 && param.getVaild() == 0) {
+            templateIds.add(RecordContentTemplate.DISTRIBUTION_VALID_1.code);
+        } else if (oldParam.getVaild() == 0 && param.getVaild() > 0) {
+            templateIds.add(RecordContentTemplate.DISTRIBUTION_VALID_2.code);
+            templateData.add(param.getVaild().toString());
+        } else if (!oldParam.getVaild().equals(param.getVaild())) {
+            templateIds.add(RecordContentTemplate.DISTRIBUTION_VALID_3.code);
+            templateData.add(oldParam.getVaild().toString());
+            templateData.add(param.getVaild().toString());
+        }
+        // 保护期变更
+        if (oldParam.getProtectDate() > -1 && param.getProtectDate() == -1) {
+            templateIds.add(RecordContentTemplate.DISTRIBUTION_PROTECT_DATA_1.code);
+        } else if (oldParam.getProtectDate() == -1 && param.getProtectDate() > -1) {
+            templateIds.add(RecordContentTemplate.DISTRIBUTION_PROTECT_DATA_2.code);
+            templateData.add(param.getProtectDate().toString());
+        } else if (!oldParam.getProtectDate().equals(param.getProtectDate())) {
+            templateIds.add(RecordContentTemplate.DISTRIBUTION_PROTECT_DATA_3.code);
+            templateData.add(oldParam.getProtectDate().toString());
+            templateData.add(param.getProtectDate().toString());
+        }
+        if (templateIds.size() > BYTE_ONE) {
+            record.insertRecord(templateIds, templateData.toArray(new String[]{}));
+        }
     }
 }

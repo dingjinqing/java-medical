@@ -79,6 +79,7 @@ import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.question.FeedbackService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
+import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -185,6 +186,11 @@ public class ShopApplication {
 	@Autowired
 	public MallOverviewService mallOverview;
     /**
+     * 门店商品
+     */
+    @Autowired
+    public StoreGoodsService storeGoodsService;
+    /**
      * 优惠券管理
      */
 	@Autowired
@@ -243,11 +249,19 @@ public class ShopApplication {
      */
     @Autowired
 	public DistributorWithdrawService withdraw;
+
+    /**
+     * 分销提现
+     */
+    @Autowired
+    public WithdrawService withdrawService;
     /**
      * mp分销service
      */
     @Autowired
     public MpDistributionService  mpDistribution;
+    @Autowired
+    public MpDistributorLevelService mpDisLevel;
     /**分销商品service*/
     @Autowired
     public MpDistributionGoodsService mpDisGoods;

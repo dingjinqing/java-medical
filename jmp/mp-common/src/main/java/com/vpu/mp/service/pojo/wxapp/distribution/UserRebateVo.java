@@ -20,4 +20,8 @@ public class UserRebateVo {
     /**返利金额*/
     @JsonProperty("FinalMoney")
     private BigDecimal finalMoney;
+    /**分销员等级*/
+    private String levelName;
+    /**等级id*/
+    private Byte levelId;
 }

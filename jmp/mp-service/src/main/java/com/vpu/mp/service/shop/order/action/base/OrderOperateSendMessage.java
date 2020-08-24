@@ -302,23 +302,26 @@ public class OrderOperateSendMessage extends ShopBaseService {
      * @param values
      */
     public void rebateUpdateUserLevel(Collection<UpdateUserLevel> values) {
-        if(!isSendMp(MessageTemplateConfigConstant.FAIL_REVIEW)) {
-           return;
+        if(!isSendMp(MessageTemplateConfigConstant.LEVEL_UP)) {
+            return;
         }
+        String page = "pages1/distribution/distribution";
         for (UpdateUserLevel value: values) {
+            List<Integer> userIdList = new ArrayList<>();
+            userIdList.add(value.getUserId());
             //公众号数据
-            String[][] mpData = new String[][] { { "等级提升通知" }, { value.getOldLevelName() }, { value.getNewLevelName() }, { DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL)}};
+            String[][] mpData = new String[][] { { "等级升级通知" }, { value.getOldLevelName() }, { value.getNewLevelName() }, { DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL)}};
             //参数
             RabbitMessageParam param = RabbitMessageParam.builder()
                 .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.REBATE_USER_UP_GRADE).data(mpData).build())
-                .page("pages/distribution/distribution")
-                .shopId(getShopId())
-                .userIdList(Collections.singletonList(value.getUserId()))
+                .page(page).shopId(getShopId())
+                .userIdList(userIdList)
                 .type(RabbitParamConstant.Type.LEVEL_UP)
                 .build();
             saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         }
     }
+
     private String getGoodsName(List<OrderGoodsRecord> orderGoods) {
         return getString(orderGoods.get(0).getGoodsName(), orderGoods.stream().mapToInt(OrderGoodsRecord::getGoodsNumber).sum(), orderGoods.size());
     }
@@ -340,7 +343,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         return result.toString();
     }
 
-    private boolean isSendMp(Integer id) {
+    public boolean isSendMp(Integer id) {
         MessageConfigVo messageConfig = this.messageConfig.getMessageConfig(id);
         if(messageConfig != null && messageConfig.getOpenMp().equals(OrderConstant.YES)) {
             return true;

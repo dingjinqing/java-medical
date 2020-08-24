@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
+import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,16 +37,15 @@ public class StoreAccountService extends MainBaseService {
 	private static final Byte IS_DEL = 1;
 	private static final Byte NO_DEL = 0;
 	private static final String DOT = ",";
+	public StoreAccountDao storeAccountDao;
 
-	/**
-	 * 获取用户列表
-	 * 
-	 * @param currentPage
-	 * @param pageRows
-	 * @param sysId
-	 * @param shopId
-	 * @return
-	 */
+    /**
+     * 获取用户列表
+     * @param param
+     * @param sysId
+     * @param shopId
+     * @return
+     */
 	public PageResult<StoreAccountVo> accountList(StoreAuthListPage param, Integer sysId, Integer shopId) {
 		SelectConditionStep<StoreAccountRecord> where = db().selectFrom(STORE_ACCOUNT).where(STORE_ACCOUNT.DEL_FLAG
 				.eq(NO_DEL).and(STORE_ACCOUNT.SYS_ID.eq(sysId).and(STORE_ACCOUNT.SHOP_ID.eq(shopId))));
@@ -145,22 +147,22 @@ public class StoreAccountService extends MainBaseService {
 		return null;
 	}
 
-	/**
-	 * 新建
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public int create(StoreAccountParam param,Integer shopId) {
-		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
-		StoreAccountRecord record = db().newRecord(STORE_ACCOUNT, param);
-		record.setStoreList(changeToString(param.getStoreList()));
-		record.setAccountPasswd(Util.md5(param.getAccountPasswd()));
-		record.setSysId(shop.getSysId());
-		record.setShopId(shopId);
-		int insert = record.insert();
-		return insert;
-	}
+    /**
+     * 新建
+     *
+     * @param param
+     * @return
+     */
+    public int create(StoreAccountParam param, Integer shopId) {
+        ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
+        StoreAccountRecord record = db().newRecord(STORE_ACCOUNT, param);
+        record.setStoreList(changeToString(param.getStoreList()));
+        record.setAccountPasswd(Util.md5(param.getAccountPasswd()));
+        record.setSysId(shop.getSysId());
+        record.setShopId(shopId);
+        int insert = record.insert();
+        return insert;
+    }
 
 	/**
 	 * 编辑
@@ -191,4 +193,16 @@ public class StoreAccountService extends MainBaseService {
 		StoreAccountRecord any = where.fetchAny();
 		return any;
 	}
+
+	public StoreAuthInfoVo getStoreAccountFlag(StoreLoginParam param){
+        StoreAuthInfoVo storeAuthInfoVo = new StoreAuthInfoVo();
+        StoreAccountVo storeAccountInfo = storeAccountDao.getStoreAccountInfo(param);
+        storeAuthInfoVo.setStoreAccountInfo(storeAccountInfo);
+        return storeAuthInfoVo;
+    }
+
+    public StoreAuthInfoVo verifyStoreLogin(StoreLoginParam param){
+        StoreAuthInfoVo storeAuthInfoVo = getStoreAccountFlag(param);
+        return storeAuthInfoVo;
+    }
 }

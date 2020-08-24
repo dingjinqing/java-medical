@@ -100,17 +100,17 @@ public class AdminStoreManageController extends AdminBaseController {
 		case StoreConstant.ACT_DEL:
 			logger().info("删除");
 			int update = storeManageService.storeAccountService.delStoreAccount(accountId);
-			flag = update > 0 ? true : false;
+			flag = update > 0;
 			break;
 		case StoreConstant.ACT_STOP:
 			logger().info("停用");
 			int stop = storeManageService.stop(accountId);
-			flag = stop > 0 ? true : false;
+			flag = stop > 0;
 			break;
 		case StoreConstant.ACT_STATRT:
 			logger().info("启用");
 			code = storeManageService.start(accountId);
-			flag = code.equals(JsonResultCode.CODE_SUCCESS) ? true : false;
+			flag = code.equals(JsonResultCode.CODE_SUCCESS);
 			break;
 		default:
 			break;

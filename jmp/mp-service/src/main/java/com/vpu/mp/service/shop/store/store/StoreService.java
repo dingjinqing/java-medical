@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
+import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -19,13 +20,9 @@ import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
 import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
-import com.vpu.mp.service.pojo.shop.store.store.StorePickDetailPojo;
-import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreVo;
+import com.vpu.mp.service.pojo.shop.store.store.*;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
+import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
@@ -124,6 +121,9 @@ public class StoreService extends ShopBaseService {
      */
     @Autowired
     public StoreWxService wxService;
+
+    @Autowired
+    public TradeService trade;
 
     /**
      * The Reservation.小程序端门店服务预约
@@ -579,7 +579,7 @@ public class StoreService extends ShopBaseService {
         if (StringUtils.isEmpty(record.getTitle())||"".equals(articlePojo.getTitle())){
             throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR,",标题不能为空");
         }
-        return db().executeUpdate(record) > 0 ? true : false;
+        return db().executeUpdate(record) > 0;
     }
 
     /**
@@ -634,5 +634,16 @@ public class StoreService extends ShopBaseService {
      */
     public Boolean releaseArticle(Integer articleId) {
         return db().update(ARTICLE).set(ARTICLE.STATUS, NumberUtils.BYTE_ONE).where(ARTICLE.ARTICLE_ID.eq(articleId)).execute() > 0 ? true : false;
+    }
+
+    /**
+     * 获取门店和自提按钮开关
+     */
+    public StoreConfigVo getStoreBtnConfig(){
+        OrderProcessParam config = trade.getOrderProcessConfig();
+        StoreConfigVo storeConfigVo = new StoreConfigVo();
+        storeConfigVo.setFetch(config.getFetch());
+        storeConfigVo.setCityService(config.getCityService());
+        return storeConfigVo;
     }
 }

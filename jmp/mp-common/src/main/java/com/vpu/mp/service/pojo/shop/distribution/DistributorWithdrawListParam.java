@@ -40,6 +40,10 @@ public class DistributorWithdrawListParam {
 	 * 申请时间结束
 	 */
 	private Timestamp endCreateTime;
+    /** 操作时间开始*/
+    private Timestamp startOptTime;
+    /** 操作结束时间*/
+    private Timestamp endOptTime;
 	/**
 	 * 提现金额范围最小值
 	 */

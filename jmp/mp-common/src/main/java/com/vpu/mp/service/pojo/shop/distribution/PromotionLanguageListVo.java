@@ -20,5 +20,7 @@ public class PromotionLanguageListVo {
 	private Byte delFlag;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+    /**是否默认推广语*/
+    private Byte isDefault = 0;
 
 }

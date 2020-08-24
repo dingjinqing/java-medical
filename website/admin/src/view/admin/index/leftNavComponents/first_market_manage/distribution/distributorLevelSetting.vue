@@ -59,6 +59,9 @@
           border
           style="width: 100%"
         >
+          <template slot="empty">
+            <tableEmpty />
+          </template>
           <el-table-column
             prop="levelText"
             :label="$t('distribution.level')"
@@ -110,12 +113,21 @@
                     style="display: inline-block;"
                   >
                     <div>{{ $t('distribution.levelTip1') }}
-                      <el-input
+                      <hcInputNumber
+                        type="priority"
                         v-model="scope.row.inviteNumber"
                         @input="changeHandler()"
                         size="mini"
                         style="width: 70px;"
-                      ></el-input> {{ $t('distribution.levelTip2') }} {{ $t('distribution.levelTip3') }}</div>
+                        inline
+                      />
+                      <!-- <el-input
+                        v-model="scope.row.inviteNumber"
+                        @input="changeHandler()"
+                        size="mini"
+                        style="width: 70px;"
+                      ></el-input> -->
+                      {{ $t('distribution.levelTip2') }} {{ $t('distribution.levelTip3') }}</div>
                   </el-form-item>
                   <el-form-item
                     :prop="'tableData.' + scope.$index+ '.totalDistributionMoney'"
@@ -123,12 +135,21 @@
                     style="display: inline-block;"
                   >
                     <div>{{ $t('distribution.levelTip4') }}
-                      <el-input
+                      <hcInputNumber
+                        type="price"
                         v-model="scope.row.totalDistributionMoney"
                         @input="changeHandler()"
                         size="mini"
                         style="width: 70px;"
-                      ></el-input> {{ $t('distribution.levelTip5') }} {{ $t('distribution.levelTip3') }}</div>
+                        inline
+                      />
+                      <!-- <el-input
+                        v-model="scope.row.totalDistributionMoney"
+                        @input="changeHandler()"
+                        size="mini"
+                        style="width: 70px;"
+                      ></el-input>  -->
+                      {{ $t('distribution.levelTip5') }} {{ $t('distribution.levelTip3') }}</div>
                   </el-form-item>
                   <el-form-item
                     :prop="'tableData.' + scope.$index+ '.totalBuyMoney'"
@@ -136,12 +157,21 @@
                     style="display: inline-block;"
                   >
                     <div>{{ $t('distribution.levelTip6') }}
-                      <el-input
+                      <hcInputNumber
+                        type="price"
                         v-model="scope.row.totalBuyMoney"
                         @input="changeHandler()"
                         size="mini"
                         style="width: 70px;"
-                      ></el-input> {{ $t('distribution.levelTip5') }}</div>
+                        inline
+                      />
+                      <!-- <el-input
+                        v-model="scope.row.totalBuyMoney"
+                        @input="changeHandler()"
+                        size="mini"
+                        style="width: 70px;"
+                      ></el-input>  -->
+                      {{ $t('distribution.levelTip5') }}</div>
                   </el-form-item>
                 </div>
                 <div
@@ -166,7 +196,7 @@
                 <span
                   @click="numClickHandler(scope.row.levelId)"
                   style="color: #5a8bff;cursor: pointer;"
-                >{{ scope.row.users ? scope.row.users : 0 }}</span>
+                >{{ scope.row.users }}</span>
               </el-form-item>
             </template>
           </el-table-column>
@@ -222,7 +252,7 @@
     <DistributorDialog
       :turnUp="turnUpDialog"
       @handleSelect="handleSelectRow"
-      :userIds="userIds"
+      :selectRowIds="selectRowIds"
     />
 
     <!-- 升级规则弹窗 -->
@@ -251,7 +281,7 @@
 </template>
 
 <script>
-import { getDistributionLevel, setDistributionLevel, manualAddDistributor } from '@/api/admin/marketManage/distribution.js'
+import { getDistributionLevel, setDistributionLevel } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
@@ -273,7 +303,7 @@ export default {
       levelId: null,
       centerDialogVisible: false, // 规则弹框
       turnUpDialog: false, // 等级弹窗
-      userIds: '', // 手动升级分销员数据回显
+      selectRowIds: [], // 手动升级分销员数据回显
 
       // 表单
       form: {
@@ -282,12 +312,12 @@ export default {
         // 表格数据
         tableData: [{
           levelId: 1,
-          levelName: '',
+          levelName: '普通分销员',
           levelUpRoute: 0, // (0自动, 1手动)
           inviteNumber: '',
           totalDistributionMoney: '',
           totalBuyMoney: '',
-          levelUserIds: null,
+          levelUserIds: '',
           users: '',
           levelStatus: 1, // (1启用, 0禁用)
           amount: '',
@@ -299,7 +329,7 @@ export default {
           inviteNumber: '',
           totalDistributionMoney: '',
           totalBuyMoney: '',
-          levelUserIds: null,
+          levelUserIds: '',
           users: '',
           levelStatus: 0,
           amount: '',
@@ -311,7 +341,7 @@ export default {
           inviteNumber: '',
           totalDistributionMoney: '',
           totalBuyMoney: '',
-          levelUserIds: null,
+          levelUserIds: '',
           users: '',
           levelStatus: 0,
           amount: '',
@@ -323,7 +353,7 @@ export default {
           inviteNumber: '',
           totalDistributionMoney: '',
           totalBuyMoney: '',
-          levelUserIds: null,
+          levelUserIds: '',
           users: '',
           levelStatus: 0,
           amount: '',
@@ -335,7 +365,7 @@ export default {
           inviteNumber: '',
           totalDistributionMoney: '',
           totalBuyMoney: '',
-          levelUserIds: null,
+          levelUserIds: '',
           users: '',
           levelStatus: 0,
           amount: '',
@@ -368,12 +398,14 @@ export default {
         if (item.levelId === 1) {
           item.levelStatus = 1
         }
-        if (item.levelUserIds !== null) {
+        if (item.levelUserIds !== null && item.levelUserIds !== '') {
           item.levelUserIds = item.levelUserIds.split(',')
         }
         item.inviteNumber = !item.inviteNumber || item.inviteNumber === '0' ? '' : String(item.inviteNumber)
         item.totalDistributionMoney = !item.totalDistributionMoney || item.totalDistributionMoney === '0' ? '' : String(item.totalDistributionMoney)
         item.totalBuyMoney = !item.totalBuyMoney || item.totalBuyMoney === '0' ? '' : String(item.totalBuyMoney)
+
+        item.users = item.users && item.levelStatus === 1 ? item.users : 0
         switch (item.levelId) {
           case 1:
             item.levelText = '一级'
@@ -400,12 +432,39 @@ export default {
       console.log(this.form.tableData)
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          setDistributionLevel(this.form.tableData).then((res) => {
-            if (res.error === 0) {
-              this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+          // 拷贝
+          var data = JSON.parse(JSON.stringify(this.form.tableData))
+          data.forEach(item => {
+            item.inviteNumber = !item.inviteNumber || item.inviteNumber === '0' ? 0 : item.inviteNumber
+            item.totalDistributionMoney = !item.totalDistributionMoney || item.totalDistributionMoney === '0' ? 0 : item.totalDistributionMoney
+            item.totalBuyMoney = !item.totalBuyMoney || item.totalBuyMoney === '0' ? 0 : item.totalBuyMoney
+            // 手动添加分销员
+            if (item.levelUpRoute === 0) {
+              item.levelUserIds = ''
             } else {
-              this.$message.warning(res.message)
+              if (item.levelUserIds !== null && item.levelUserIds !== '') {
+                item.levelUserIds = item.levelUserIds.toString()
+              } else {
+                item.levelUserIds = ''
+              }
             }
+          })
+
+          // 提示
+          this.$confirm('等级设置修改后，将遍历店铺所有分销员，并逐个重新判断所属等级，将有大量分销员的等级受到影响，需要经过一段时间后完成数据更新，是否保存当前修改内容?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true
+          }).then(() => {
+            setDistributionLevel(data).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
+                this.initDataList()
+              } else {
+                this.$message.warning(res.message)
+              }
+            })
           })
         }
       })
@@ -414,21 +473,16 @@ export default {
     // 显示等级弹窗
     addDistributor (levelId, levelUserIds) {
       this.levelId = levelId
-      this.userIds = levelUserIds
+      if (levelUserIds && levelUserIds.length > 0) {
+        this.selectRowIds = levelUserIds.map(Number)
+      }
       this.turnUpDialog = !this.turnUpDialog
     },
 
-    // 弹窗回显数据
+    // 添加分销员弹窗回显数据
     handleSelectRow (row) {
-      manualAddDistributor({
-        level: this.levelId,
-        userIds: row
-      }).then(res => {
-        if (res.error === 0) {
-          this.$message.success({ message: '添加成功!' })
-          this.initDataList()
-        }
-      })
+      var currentData = this.form.tableData.find(item => { return item.levelId === this.levelId })
+      this.$set(currentData, 'levelUserIds', row)
     },
 
     // 跳转分销员列表

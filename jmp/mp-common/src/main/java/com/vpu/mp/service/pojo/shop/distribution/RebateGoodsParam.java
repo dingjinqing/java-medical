@@ -11,6 +11,8 @@ import lombok.Data;
 public class RebateGoodsParam {
 	private Integer goodsType;
 	private String goodsName;
+    private Integer startNum;
+    private Integer endNum;
 	
 	/**
      * 	分页信息

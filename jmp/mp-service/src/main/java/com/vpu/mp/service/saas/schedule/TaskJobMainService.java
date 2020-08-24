@@ -176,7 +176,7 @@ public class TaskJobMainService extends MainBaseService {
         }
     }
 
-    private TaskJobMainRecord getTaskJobMainRecordById(Integer taskJobId){
+    public TaskJobMainRecord getTaskJobMainRecordById(Integer taskJobId){
         return db().selectFrom(TASK_JOB_MAIN).where(TASK_JOB_MAIN.ID.eq(taskJobId)).fetchOne();
     }
     private TaskJobContentRecord getTaskJobContentRecordById(Integer taskContentId){

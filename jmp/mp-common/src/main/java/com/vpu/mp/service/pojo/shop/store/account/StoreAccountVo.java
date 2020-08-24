@@ -24,4 +24,5 @@ public class StoreAccountVo {
 
 	private Integer storeNum;
 	private List<Integer> storeLists;
+	private String accountPasswd;
 }

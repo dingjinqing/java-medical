@@ -171,6 +171,16 @@ public class JsonResultMessage {
      * 营销
      */
     public static final String DISTRIBUTOR_GROUP_NAME_EXIST = "distributor.group.name.exist";
+    public static final String DISTRIBUTOR_WITHDRAW_MONEY_NOT_NULL = "distributor.withdraw.money.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_REALNAME_NOT_NULL = "distributor.withdraw.realname.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_MINIMUM_LIMIT_MONEY  = "distributor.withdraw.minimum.limit.money";
+    public static final String DISTRIBUTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY  = "distributor.withdraw.maximum.limit.money";
+    public static final String DISTRIBUTOR_WITHDRAW_ISPASS_NOT_NULL = "distributor.withdraw.ispass.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_ORDER_SN_NOT_NULL = "distributor.withdraw.order.sn.not.null";
+    public static final String  DISTRIBUTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "distributor.withdraw.no.focus.wechat.official.accounts";
+    public static final String  DISTRIBUTOR_WITHDRAW_WX_ERROR = "distributor.withdraw.wx.error";
+    public static final String  WITHDRAW_OPERATE_ACTION_ERROR = "withdraw.operate.action.error";
+    public static final String  WITHDRAW_AUDIT_STATUS_NOT_ALLOW = "withdraw.audit.status.not.allow";
 
     /**
      * 营销-砍价excel导出-发起砍价
@@ -1321,6 +1331,71 @@ public class JsonResultMessage {
      * 会员卡充值记录导出
      */
     public static final String USER_CARD_CHARGE_FILE_NAME = "user.card.charge.file_name";
+
+    /**
+     * 分销-分销员列表导出
+     */
+    public static final String DISTRIBUTOR_LIST_NAME = "distributor.list.name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_NAME = "distributor.list.distributor_name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_MOBILE = "distributor.list.distributor_mobile";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_REAL_NAME = "distributor.list.distributor_real_name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_TAGS = "distributor.list.distributor_tags";
+    public static final String DISTRIBUTOR_LIST_CREATE_TIME = "distributor.list.create_time";
+    public static final String DISTRIBUTOR_LIST_CHECK_TIME = "distributor.list.check_time";
+    public static final String DISTRIBUTOR_LIST_INVITE_NAME = "distributor.list.invite_name";
+    public static final String DISTRIBUTOR_LIST_INVITE_REAL_NAME = "distributor.list.invite_real_name";
+    public static final String DISTRIBUTOR_LIST_INVITE_MOBILE = "distributor.list.invite_mobile";
+    public static final String DISTRIBUTOR_LIST_GROUP_NAME = "distributor.list.group_name";
+    public static final String DISTRIBUTOR_LIST_LEVEL_NAME = "distributor.list.level_name";
+    public static final String DISTRIBUTOR_LIST_SUBLAYER_NUMBER = "distributor.list.sublayer_number";
+    public static final String DISTRIBUTOR_LIST_NEXT_NUMBER = "distributor.list.next_number";
+    public static final String DISTRIBUTOR_LIST_TOTAL_FANLI_MONEY = "distributor.list.total_fanli_money";
+    public static final String DISTRIBUTOR_LIST_WAIT_FANLI_MONEY = "distributor.list.wait_fanli_money";
+    public static final String DISTRIBUTOR_LIST_INVITATION_CODE = "distributor.list.invitation_code";
+    public static final String DISTRIBUTOR_LIST_REMARK = "distributor.list.remark";
+
+    /** 分销-商品返利统计导出*/
+    public static final String REBATE_GOODS_NAME = "rebate.goods.name";
+    public static final String REBATE_GOODS_GOODS_NAME = "rebate.goods.goods_name";
+    public static final String REBATE_GOODS_GOODS_PRICE = "rebate.goods.goods_price";
+    public static final String REBATE_GOODS_GOODS_CATE = "rebate.goods.goods_cate";
+    public static final String REBATE_GOODS_GOODS_SALE_NUM = "rebate.goods.goods_sale_num";
+    public static final String REBATE_GOODS_SALE_NUM = "rebate.goods.sale_num";
+    public static final String REBATE_GOODS_TOTAL_FANLI = "rebate.goods.total_fanli";
+
+    /**分销-商品返利详情统计导出*/
+    public static final String REBATE_GOODS_DETAIL_NAME = "rebate.goods_detail.name";
+    public static final String REBATE_GOODS_DETAIL_GOODS_NAME = "rebate.goods_detail.goods_name";
+    public static final String REBATE_GOODS_DETAIL_GOODS_NUMBER = "rebate.goods_detail.goods_number";
+    public static final String REBATE_GOODS_DETAIL_ORDER_SN = "rebate.goods_detail.order_sn";
+    public static final String REBATE_GOODS_DETAIL_CAN_CALCULATE_MONEY = "rebate.goods_detail.can_calculate_money";
+    public static final String REBATE_GOODS_DETAIL_USERNAME = "rebate.goods_detail.username";
+    public static final String REBATE_GOODS_DETAIL_MOBILE = "rebate.goods_detail.mobile";
+    public static final String REBATE_GOODS_DETAIL_REBATE_LEVEL = "rebate.goods_detail.rebate_level";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_NAME = "rebate.goods_detail.distributor_name";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_REAL_NAME = "rebate.goods_detail.distributor_real_name";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_MOBILE = "rebate.goods_detail.distributor_mobile";
+    public static final String REBATE_GOODS_DETAIL_REBATE_PERCENT = "rebate.goods_detail.rebate_percent";
+    public static final String REBATE_GOODS_DETAIL_REAL_REBATE_MONEY = "rebate.goods_detail.real_rebate_money";
+    public static final String REBATE_GOODS_DETAIL_REBATE_STATUS = "rebate.goods_detail.rebate_status";
+    public static final String REBATE_GOODS_DETAIL_FINISHED_TIME = "rebate.goods_detail.finished_time";
+
+    /** 分销-佣金统计导出*/
+    public static final String BROKERAGE_LIST_NAME = "brokerage.list.brokerage_name";
+    public static final String BROKERAGE_LIST_DISTRIBUTOR_NAME = "brokerage.list.distributor_name";
+    public static final String BROKERAGE_LIST_DISTRIBUTOR_MOBILE = "brokerage.list.distributor_mobile";
+    public static final String BROKERAGE_LIST_REAL_NAME = "brokerage.list.real_name";
+    public static final String BROKERAGE_LIST_GROUP_NAME = "brokerage.list.group_name";
+    public static final String BROKERAGE_LIST_ORDER_SN = "brokerage.list.order_sn";
+    public static final String BROKERAGE_LIST_ORDER_AMOUNT = "brokerage.list.order_amount";
+    public static final String BROKERAGE_LIST_USER_MOBILE = "brokerage.list.user_mobile";
+    public static final String BROKERAGE_LIST_USER_NAME = "brokerage.list.user_name";
+    public static final String BROKERAGE_LIST_REBATE_LEVEL = "brokerage.list.rebate_level";
+    public static final String BROKERAGE_LIST_TOTAL_REBATE_MONRY = "brokerage.list.total_rebate_money";
+    public static final String BROKERAGE_LIST_REAL_REBATE_MONRY = "brokerage.list.real_rebate_money";
+    public static final String BROKERAGE_LIST_CREATE_TIME = "brokerage.list.create_time";
+    public static final String BROKERAGE_LIST_SETTLEMENT_FLAG = "brokerage.list.settlement_flag";
+    public static final String BROKERAGE_LIST_REBATE_TIME = "brokerage.list.rebate_time";
 
     /**
      * 科室

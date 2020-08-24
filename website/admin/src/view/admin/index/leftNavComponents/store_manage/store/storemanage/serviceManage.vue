@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { delayJudgment } from '@/util/pageName'
 export default {
   data () {
     return {
@@ -60,6 +61,7 @@ export default {
   methods: {
     tabClickHandle (tab) {
       let tabName = tab.name
+      console.log(tabName)
       switch (tabName) {
         case 'first':
           this.$router.push({
@@ -82,6 +84,7 @@ export default {
           })
           break
         case 'third':
+          delayJudgment(this, this.id, this.$t('pageName.addService'))
           this.$router.push({
             name: 'store_storemanage_service_add',
             query: {

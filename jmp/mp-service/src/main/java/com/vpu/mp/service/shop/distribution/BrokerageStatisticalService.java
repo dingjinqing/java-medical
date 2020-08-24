@@ -1,11 +1,12 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.distribution.BrokerageListParam;
-import com.vpu.mp.service.pojo.shop.distribution.BrokerageListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
+import com.vpu.mp.service.pojo.shop.distribution.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
@@ -32,6 +33,7 @@ public class BrokerageStatisticalService extends ShopBaseService{
 				ORDER_INFO.MOBILE,USER.USERNAME,ORDER_GOODS_REBATE.REBATE_LEVEL,DISTRIBUTOR_GROUP.GROUP_NAME,
 				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,ORDER_INFO.CREATE_TIME,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("realRebateMoney"),ORDER_INFO.SETTLEMENT_FLAG)
 				.from(ORDER_GOODS_REBATE
+                    .leftJoin(ORDER_GOODS).on(ORDER_GOODS.REC_ID.eq(ORDER_GOODS_REBATE.REC_ID))
 				.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID))
 				.leftJoin(USER.as(INVITE)).on(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(USER.as(INVITE).USER_ID))
@@ -94,11 +96,66 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		if(param.getRebateLevel() != null) {
 			select.where((ORDER_GOODS_REBATE.REBATE_LEVEL.eq(param.getRebateLevel())));
 		}
-		select.groupBy(USER.USER_ID,ORDER_GOODS_REBATE.ORDER_SN,ORDER_GOODS_REBATE.REBATE_LEVEL,ORDER_GOODS_REBATE.REBATE_USER_ID,
+        select.groupBy(USER.USER_ID,ORDER_GOODS_REBATE.ORDER_SN,ORDER_GOODS_REBATE.REBATE_LEVEL,ORDER_GOODS_REBATE.REBATE_USER_ID,
             USER.as(INVITE).USER_ID,USER.as(INVITE).USERNAME,USER.as(INVITE).MOBILE,USER_DETAIL.REAL_NAME,ORDER_INFO.ORDER_AMOUNT,ORDER_INFO.MOBILE,USER.USERNAME,ORDER_GOODS_REBATE.REBATE_LEVEL,
-				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,USER.USERNAME,USER.MOBILE,DISTRIBUTOR_GROUP.GROUP_NAME,ORDER_INFO.CREATE_TIME,ORDER_INFO.SETTLEMENT_FLAG);
+            ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,USER.USERNAME,USER.MOBILE,DISTRIBUTOR_GROUP.GROUP_NAME,ORDER_INFO.CREATE_TIME,ORDER_INFO.SETTLEMENT_FLAG, ORDER_GOODS_REBATE.CREATE_TIME,
+            ORDER_INFO.FINISHED_TIME,ORDER_GOODS.CAN_CALCULATE_MONEY,ORDER_GOODS_REBATE.REAL_REBATE_MONEY);
 		select.orderBy(ORDER_GOODS_REBATE.CREATE_TIME);
 	}
+
+    /**
+     * 佣金统计导出excel表
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook exportBrokeList(BrokerageListParam param, String lang){
+        SelectJoinStep<? extends Record> select = db().select(USER.as(INVITE).USER_ID .as("distributorId"),USER.as(INVITE).USERNAME .as("distributorName"),USER.as(INVITE).MOBILE.as("distributorMobile"),
+            USER.USER_ID,USER.USERNAME.as("orderUserName"),USER.MOBILE.as("userMobile"),USER_DETAIL.REAL_NAME,ORDER_GOODS_REBATE.ORDER_SN,ORDER_INFO.ORDER_AMOUNT,
+            ORDER_INFO.MOBILE,USER.USERNAME,ORDER_GOODS_REBATE.REBATE_LEVEL,DISTRIBUTOR_GROUP.GROUP_NAME,
+            ORDER_GOODS_REBATE.REAL_REBATE_MONEY,ORDER_INFO.CREATE_TIME,ORDER_GOODS.CAN_CALCULATE_MONEY.as("totalRebateMoney"),ORDER_INFO.SETTLEMENT_FLAG,ORDER_INFO.FINISHED_TIME.as("rebateTime"))
+            .from(ORDER_GOODS_REBATE
+                .leftJoin(ORDER_GOODS).on(ORDER_GOODS.REC_ID.eq(ORDER_GOODS_REBATE.REC_ID))
+                .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+                .leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID))
+                .leftJoin(USER.as(INVITE)).on(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(USER.as(INVITE).USER_ID))
+                .leftJoin(DISTRIBUTOR_GROUP).on(DISTRIBUTOR_GROUP.ID .eq(USER.as(INVITE).INVITE_GROUP))
+                .leftJoin(USER_DETAIL).on(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(USER_DETAIL.USER_ID)));
+
+        buildoptions(select,param);
+        select.limit(param.getStartNum(),param.getEndNum());
+
+        List<BrokerageListExportVo> brokerageListExportVo = select.fetchInto(BrokerageListExportVo.class);
+        for (BrokerageListExportVo item : brokerageListExportVo){
+            //返利关系 0：自购返利；1：直接返利；2：间接返利；
+            if(item.getRebateLevel().equals(0)){
+                item.setRebateLevelName("自购返利");
+            }
+            if(item.getRebateLevel().equals(1)){
+                item.setRebateLevelName("直接返利");
+            }
+            if(item.getRebateLevel().equals(2)){
+                item.setRebateLevelName("间接返利");
+            }
+            if(item.getSettlementFlag() != null){
+                //返利状态 0：待返利；1：已返利；2：不返利
+                if(item.getSettlementFlag().equals(0)){
+                    item.setSettlementName("待返利");
+                }
+                if(item.getSettlementFlag().equals(1)){
+                    item.setSettlementName("已返利");
+                }
+                if(item.getSettlementFlag().equals(2)){
+                    item.setSettlementName("不返利");
+                }
+            }
+        }
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(brokerageListExportVo, BrokerageListExportVo.class);
+        return workbook;
+
+    }
 
 	/**
 	 * 分销员等级列表

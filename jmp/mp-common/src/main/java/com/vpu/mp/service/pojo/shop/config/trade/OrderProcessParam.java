@@ -113,4 +113,9 @@ public class OrderProcessParam {
      */
     @JsonProperty(value = "shop_address")
     public ShopAddress shopAddress;
+    /**
+     * city_service 同城配送
+     */
+    @JsonProperty(value = "city_service")
+    public Byte cityService;
 }

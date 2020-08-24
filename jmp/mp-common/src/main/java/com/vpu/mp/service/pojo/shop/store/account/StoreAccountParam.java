@@ -28,4 +28,6 @@ public class StoreAccountParam {
 	private String accountPasswd;
 	@NotNull
 	private Integer[] storeList;
+	@NotNull
+	private String wxNickName;
 }

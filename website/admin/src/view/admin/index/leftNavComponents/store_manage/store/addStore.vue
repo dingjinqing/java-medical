@@ -121,17 +121,19 @@
             @click="addGroups"
           >{{$t('addStore.addNewGroup')}}</el-button>
         </el-form-item>
-        <el-form-item
+        <!-- <el-form-item
           :label="$t('addStore.storeNum') "
-          prop="posShopId"
+          prop="storeNumber"
         >
-          <el-input
-            v-model.number="storeFormInfo.posShopId"
+          <hc-input-number
+            type="integer"
+            inline
+            v-model.number="storeFormInfo.storeNumber"
             :placeholder="$t('addStore.storeNumTip')"
-            maxlength="9"
+            :maxlength="9"
             show-word-limit
-          ></el-input>
-        </el-form-item>
+          ></hc-input-number>
+        </el-form-item> -->
         <el-form-item
           :label="$t('addStore.location') "
           prop="provinceCode"
@@ -205,7 +207,7 @@
             <div
               class="storeImgWrap"
               @click="addStoreImg"
-              v-if="storeFormInfo.storeImgs.length < 5"
+              v-if="storeFormInfo.storeImgs && storeFormInfo.storeImgs.length < 5"
             >
               <el-image
                 fit="scale-down"
@@ -256,7 +258,7 @@
             <div class="line2">{{$t('addStore.selfopenTip')}}</div>
             <div class="line3">
               <el-switch
-                :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude)"
+                :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude) || (deliverConfig && deliverConfig.fetch === 0 && storeFormInfo.autoPick === 0)"
                 v-model="storeFormInfo.autoPick"
                 active-color="#E6A23C"
                 inactive-color="#ccc"
@@ -279,13 +281,15 @@
             <div class="line2">{{$t('addStore.townOpenTip')}}</div>
             <div class="line3">
               <el-switch
-                :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude)"
-                v-model="switchRight"
+                :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude) || (deliverConfig && deliverConfig.cityService === 0 && storeFormInfo.cityService === 0)"
+                v-model="storeFormInfo.cityService"
                 active-color="#E6A23C"
                 inactive-color="#ccc"
+                :active-value="1"
+                :inactive-value="0"
               ></el-switch>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span v-if="this.switchRight == true">{{$t('addStore.turnedOn')}}</span>
-              <span v-if="this.switchRight == false">{{$t('addStore.closed')}}</span>
+              <span v-if="storeFormInfo.cityService == 1">{{$t('addStore.turnedOn')}}</span>
+              <span v-if="storeFormInfo.cityService == 0">{{$t('addStore.closed')}}</span>
             </div>
           </div>
         </div>
@@ -334,11 +338,18 @@
                     :label="2"
                   ></el-radio>
                   <span>{{$t('addStore.submitOrder')}}</span>
-                  <el-input
+                  <hcInputNumber
+                    type="integer"
                     v-model.number="storeFormInfo.pickDetail.duration"
                     controls-position="right"
                     style="width:100px;"
-                  ></el-input>
+                    inline
+                  />
+                  <!-- <el-input
+                    v-model.number="storeFormInfo.pickDetail.duration"
+                    controls-position="right"
+                    style="width:100px;"
+                  ></el-input> -->
                   <el-select
                     v-model="storeFormInfo.pickDetail.type"
                     style="width:80px;"
@@ -370,45 +381,128 @@
               </div>
             </el-form-item>
           </div>
-          <div v-if="this.switchRight == true">
+          <div v-if="storeFormInfo.cityService == 1">
             <el-form-item
               :label="$t('addStore.deliveryArea') "
               prop="deliveryArea"
             >
-              {{$t('addStore.aroundTheStore')}}&nbsp;&nbsp;<el-input
-                v-model="deliveryMessage.deliveryArea"
+              {{$t('addStore.aroundTheStore')}}&nbsp;&nbsp;
+              <hcInputNumber
+                type="price"
+                v-model.number="deliveryMessage.deliveryArea"
                 style="width: 80px;"
-              ></el-input>&nbsp;&nbsp;{{$t('addStore.withinKilo')}}
+                inline
+              />
+              <!-- <el-input
+                v-model.number="deliveryMessage.deliveryArea"
+                style="width: 80px;"
+              ></el-input> -->
+              &nbsp;&nbsp;{{$t('addStore.withinKilo')}}
             </el-form-item>
             <el-form-item
               :label="$t('addStore.distributionPrice') "
               prop="deliveryPrice"
             >
-              <el-input
-                v-model="deliveryMessage.deliveryPrice"
+              <hcInputNumber
+                type="price"
+                v-model.number="deliveryMessage.deliveryPrice"
                 style="width: 80px;"
-              ></el-input>&nbsp;&nbsp;{{$t('addStore.yuan')}}
+                inline
+              />
+              <!-- <el-input
+                v-model.number="deliveryMessage.deliveryPrice"
+                style="width: 80px;"
+              ></el-input> -->
+              &nbsp;&nbsp;{{$t('addStore.yuan')}}
             </el-form-item>
             <el-form-item
               :label="$t('addStore.mailStrategy') "
               prop="deliveryPolicy"
             >
-              {{$t('addStore.fullPayTip')}}&nbsp;&nbsp;<el-input
-                v-model="deliveryMessage.deliveryPolicy"
+              {{$t('addStore.fullPayTip')}}&nbsp;&nbsp;
+              <hcInputNumber
+                type="price"
+                v-model.number="deliveryMessage.deliveryPolicy"
                 style="width: 80px;"
-              ></el-input>&nbsp;&nbsp;{{$t('addStore.fullPayTip2')}}
+                inline
+              />
+              <!-- <el-input
+                v-model.number="deliveryMessage.deliveryPolicy"
+                style="width: 80px;"
+              ></el-input> -->
+              &nbsp;&nbsp;{{$t('addStore.fullPayTip2')}}
             </el-form-item>
             <el-form-item
               :label="$t('addStore.deliveryMethod') "
               prop="deliveryType"
             >
-              <el-checkbox-group v-model="deliveryMessage.deliveryType">
-                <el-checkbox name="deliveryType">{{$t('addStore.businessSelfDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.bs_Tip')}})</span></el-checkbox><br />
-                <el-checkbox
-                  name="deliveryType"
-                  style="margin-left: 7%;"
-                >{{$t('addStore.thridDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.thridPremise')}})</span></el-checkbox>
-              </el-checkbox-group>
+              <el-checkbox
+                name="deliveryType"
+                v-model="deliveryMessage.deliveryTypeStore"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('addStore.businessSelfDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.bs_Tip')}})</span></el-checkbox><br />
+              <el-checkbox
+                name="deliveryType"
+                v-model="deliveryMessage.deliveryTypeThird"
+                @change="selectedDistribution = []"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('addStore.thridDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.thridPremise')}})</span></el-checkbox>
+              <div v-if="deliveryMessage.deliveryTypeThird === 1">
+                <!-- <el-select v-model="deliveryMessage.delivery">
+                  <el-option
+                    v-for="(item, index) in thirdDistributionData"
+                    :key="index"
+                    :label="item.name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select> -->
+                <selectLabel
+                  :datas="thirdDistributionData"
+                  v-model="selectedDistribution"
+                  select-value="id"
+                  select-label="customName"
+                ></selectLabel>
+              </div>
+            </el-form-item>
+            <el-form-item
+              label="定时起送"
+              prop="regularDeliveryType"
+            >
+              <el-radio-group v-model="deliveryMessage.regularDeliveryType">
+                <el-radio :label="0">关闭</el-radio>
+                <el-radio :label="1">开启</el-radio>
+              </el-radio-group>
+              <span style="color:#999;margin-left:20px;">由下单用户选择起送（发货）时间</span>
+              <div v-if="deliveryMessage.regularDeliveryType === 1">
+                支持用户选择下单
+                <hcInputNumber
+                  type="integer"
+                  v-model.number="deliveryMessage.regularTimeDetail.duration"
+                  style="width:100px;"
+                  inline
+                />
+                <!-- <el-input
+                  v-model.number="deliveryMessage.regularTimeDetail.duration"
+                  style="width:100px;"
+                ></el-input> -->
+                <el-select
+                  v-model="deliveryMessage.regularTimeDetail.type"
+                  size="small"
+                  style="width:80px;"
+                >
+                  <el-option
+                    label="小时"
+                    :value="1"
+                  ></el-option>
+                  <el-option
+                    label="天"
+                    :value="2"
+                  ></el-option>
+                </el-select>
+                后的指定时段内配送
+              </div>
             </el-form-item>
           </div>
         </el-form>
@@ -438,14 +532,15 @@
 <!-- 腾讯地图 -->
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
-import { addStore, getStore, updateStore, allStoreGroup } from '@/api/admin/storeManage/store'
+import { addStore, getStore, updateStore, allStoreGroup, getDeliverys, getDeliveryConfig } from '@/api/admin/storeManage/store'
 /* 组件导入 */
-
+import { delayJudgment } from '@/util/pageName'
 export default {
   components: {
     areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue'),
     ImageDalog: () => import('@/components/admin/imageDalog'),
-    TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
+    TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor'),
+    selectLabel: () => import('@/components/admin/selectLabel')
   },
   data () {
     let that = this
@@ -490,6 +585,30 @@ export default {
       }
       callback()
     }
+    function validDeliveryType (rule, value, callback) {
+      if (that.storeFormInfo.cityService === 1) {
+        if (!that.deliveryMessage.deliveryTypeThird && !that.deliveryMessage.deliveryTypeStore) {
+          callback(new Error(that.$t('addStore.selectDeliveryMethod')))
+        } else if (that.deliveryMessage.deliveryTypeThird && that.selectedDistribution.length === 0) {
+          callback(new Error('请选择第三方配送方式'))
+        }
+      }
+      callback()
+    }
+    function validRegular (rule, value, callback) {
+      if (that.storeFormInfo.cityService === 1 && that.deliveryMessage.regularDeliveryType === 1) {
+        if (!that.deliveryMessage.regularTimeDetail.duration) {
+          callback(new Error('请输入定时配送时间'))
+        }
+      }
+      callback()
+    }
+    function validNum (rule, value, callback) {
+      if (/\D/g.test(value)) {
+        callback(new Error('门店编码必须为数字'))
+      }
+      callback()
+    }
     return {
       reload: true,
       stepData: {
@@ -511,7 +630,8 @@ export default {
         openingTime: '',
         closeTime: '',
         group: '',
-        posShopId: '',
+        storeId: null,
+        // storeNumber: '',
         address: '',// 地图定位详细地址
         service: '', // 填写的服务
         storeImgs: [],
@@ -522,6 +642,7 @@ export default {
         latitude: '',
         longitude: '',
         autoPick: 0, // 设定自提
+        cityService: 0, // 设定同城配送
         content: '',
         pickTimeAction: 1, // 自提
         pickDetail: {
@@ -534,7 +655,7 @@ export default {
         manager: [{ required: true, message: this.$t('addStore.enterPersoninCharge'), trigger: 'blur' }],
         mobile: [{ required: true, message: this.$t('addStore.enterphone'), trigger: 'blur' }],
         businessType: [{ required: true, validator: validBusinessTime, trigger: 'change' }],
-        posShopId: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { type: 'number', message: '门店编码必须为数字值' }],
+        // storeNumber: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { validator: validNum }],
         provinceCode: [{ required: true, message: this.$t('addStore.selectArea') }, { validator: validateArea, trigger: 'blur' }],
         address: [{ required: true, message: this.$t('addStore.enterArea'), trigger: 'blur' }, { validator: validateAddress, trigger: 'change' }],
         storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto'), trigger: ['blur', 'change'] }],
@@ -561,28 +682,35 @@ export default {
         checked: false
       }],
       imgHost: `${this.$imageHost}`,
-      // 配送信息按钮
-      // switchLeft: false, // 门店自提
-      switchRight: false, // 同城配送
       // 同城配送信息
       deliveryMessage: {
         deliveryArea: '',
         deliveryPrice: '',
         deliveryPolicy: '',
-        deliveryType: []
+        deliveryTypeThird: 0,
+        deliveryTypeStore: 0,
+        regularDeliveryType: 0,
+        regularTimeDetail: {
+          duration: '',
+          type: 1 // 1小时 2日
+        }
       },
       // 同城配置信息校验
       deliveryFormRules: {
+        pickDetail: [{ required: true, validator: validPickDetail, trigger: 'blur' }],
         deliveryArea: [{ required: true, message: this.$t('addStore.enterDeliveryArea'), trigger: 'blur' }],
         deliveryPrice: [{ required: true, message: this.$t('addStore.enterDeliveryPrice'), trigger: 'blur' }],
-        deliveryType: [{ required: true, message: this.$t('addStore.selectDeliveryMethod'), trigger: 'change' }],
-        pickDetail: [{ required: true, validator: validPickDetail, trigger: 'blur' }]
+        deliveryType: [{ required: true, validator: validDeliveryType, trigger: 'change' }],
+        regularDeliveryType: [{ required: true, validator: validRegular, trigger: 'blur' }]
       },
       map: null,
       geocoder: null,
       marker: null,
       markersArray: [],
-      address: ''
+      address: '',
+      thirdDistributionData: [], // 第三方配送公司
+      selectedDistribution: [], // 已选择的配送公司
+      deliverConfig: null // 基础配置-自提fetch-同城配送cityService
     }
   },
   computed: {
@@ -612,6 +740,9 @@ export default {
       } else {
         this.initData()
       }
+    },
+    selectedDistribution: function (newVal) {
+      this.$refs.deliveryForm.validateField('deliveryType')
     }
   },
   mounted () {
@@ -621,7 +752,9 @@ export default {
     } else {
       this.initMap()
     }
+    delayJudgment(this, this.$route.query.id, this.$t('pageName.editStore'))
     this.initGroup()
+    this.initDelivery()
     this.langDefault()
   },
   methods: {
@@ -635,7 +768,7 @@ export default {
         openingTime: '',
         closeTime: '',
         group: '',
-        posShopId: '',
+        storeNumber: '',
         address: '',// 地图定位详细地址
         service: '', // 填写的服务
         storeImgs: [],
@@ -667,6 +800,8 @@ export default {
 
           if (res.content.storeImgs) {
             res.content.storeImgs = JSON.parse(res.content.storeImgs)
+          } else {
+            res.content.storeImgs = []
           }
           if (res.content.service) {
             let services = JSON.parse(res.content.service)
@@ -681,15 +816,40 @@ export default {
           }
           if (res.content.latitude && res.content.longitude) {
             that.initMap(res.content.latitude, res.content.longitude)
+          } else {
+            that.initMap()
           }
-          let storeFormInfo = Object.assign({}, that.storeFormInfo, res.content)
+          let storeFormInfo = Object.assign({}, that.deliveryMessage, that.storeFormInfo, res.content)
           if (!storeFormInfo.pickDetail) {
             storeFormInfo.pickDetail = {
               duration: '',
               type: 1
             }
           }
+          // 同城配送信息
+          if (storeFormInfo.cityService == 1) {
+            that.deliveryMessage = {
+              deliveryArea: storeFormInfo.deliveryArea,
+              deliveryPrice: storeFormInfo.deliveryPrice,
+              deliveryPolicy: storeFormInfo.deliveryPolicy,
+              deliveryTypeThird: storeFormInfo.deliveryTypeThird,
+              deliveryTypeStore: storeFormInfo.deliveryTypeStore,
+              regularDeliveryType: storeFormInfo.regularDeliveryType,
+              regularTimeDetail: storeFormInfo.regularTimeDetail || {
+                duration: '',
+                type: 1
+              }
+            }
+            that.selectedDistribution = storeFormInfo.cityAccountIds || []
+          }
           that.storeFormInfo = storeFormInfo
+        }
+      })
+      getDeliveryConfig().then(res => {
+        if (res.error === 0) {
+          this.deliverConfig = res.content
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -697,7 +857,18 @@ export default {
       let that = this
       allStoreGroup().then(res => {
         if (res.error === 0) {
-          that.storeGroups = res.content
+          that.storeGroups = res.content.storeGroups
+          that.storeForm.storeId = res.content.storeId
+        }
+      })
+    },
+    // 初始化第三方配送接口
+    initDelivery () {
+      getDeliverys().then(res => {
+        if (res.error === 0) {
+          this.thirdDistributionData = res.content
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -801,6 +972,7 @@ export default {
         }
       })
       qq.maps.event.addListener(this.map, 'click', function (e) {
+        that.$refs['storeForm'].clearValidate('address')
         if (that.marker) {
           that.marker.setMap(null)
         }
@@ -822,6 +994,7 @@ export default {
     },
     // 点击地图定位
     codeAddress () {
+      this.$refs['storeForm'].clearValidate('address')
       if (!this.address) {
         this.$message.warning(this.$t('addStore.selectRegion'))
         return false
@@ -872,6 +1045,10 @@ export default {
       that.$refs.deliveryForm.validate((valid) => {
         if (valid) {
           let params = Object.assign({}, this.storeFormInfo, this.deliveryMessage)
+          // 同城配送下拉列表对应id
+          if (params.cityService === 1 && params.deliveryTypeThird) {
+            params.cityAccountIds = this.selectedDistribution || []
+          }
           params.storeImgs = params.storeImgs.map(item => {
             if (item.indexOf('//') > -1) {
               item = item.replace(/^http:\/\/[^/]+\//, "")
@@ -881,6 +1058,7 @@ export default {
             return item
           })
           params.storeImgs = JSON.stringify(params.storeImgs)
+          console.log(params)
           if (!this.id) {
             addStore(params).then((res) => {
               if (res.error === 0) {
@@ -1029,7 +1207,7 @@ export default {
   margin-left: 30px;
 }
 .deliveryMsg .el-form-item {
-  margin-bottom: 10px;
+  margin-bottom: 18px;
 }
 .store-map {
   width: 600px;
@@ -1045,5 +1223,14 @@ export default {
   /deep/ .el-radio {
     margin-right: 0;
   }
+}
+/deep/ .tableClss th {
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  line-height: 1.4;
+  padding: 8px 10px;
+  color: #333;
 }
 </style>

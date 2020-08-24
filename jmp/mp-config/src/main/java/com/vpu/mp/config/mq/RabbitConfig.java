@@ -106,6 +106,14 @@ public class RabbitConfig {
     public static final String EXCHANGE_GOODS_IMPORT = "direct.goods";
     /**pos对接相关接口路由*/
     public static final String EXCHANGE_POS_SYNC = "direct.pos.sync";
+    /**
+     * 门店商品同步
+     */
+    public static final String EXCHANGE_STORE_GOODS_UPDATE = "direct.store.goods";
+    /**
+     * storeGoods刷新任务队列
+     **/
+    public static final String QUEUE_STORE_GOODS_UPDATE = "store.goods.update";
 
 
     /** 发送失败路由键 */
@@ -149,6 +157,11 @@ public class RabbitConfig {
     /*************pos对接相关接口路由键*************/
     public static final String BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY = "bind.pos.sync.product";
     /*************pos对接相关接口路由键结束*************/
+    /**
+     * 更新门店商品
+     */
+    public static final String BINDING_EXCHANGE_STORE_GOODS_UPDATE_KEY = "direct.update.store.good.key";
+
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =

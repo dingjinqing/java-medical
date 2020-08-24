@@ -150,6 +150,11 @@ public enum MpTemplateConfig {
 		"OPENTM409797795",
         "办理成功通知",
         "{{first.DATA}}商户名称：{{keyword1.DATA}}卡券名称：{{keyword2.DATA}}有效期：{{keyword3.DATA}}办理时间：{{keyword4.DATA}}{{remark.DATA}}"
+    ),
+    GET_MONEY(
+        "OPENTM410103702",
+        "提现申请通知",
+        "{{first.DATA}}申请时间：{{keyword1.DATA}}提现金额：{{keyword2.DATA}}{{remark.DATA}}"
     );
 	/**
 	 * 模板编号
