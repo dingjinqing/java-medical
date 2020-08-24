@@ -193,6 +193,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
     /**
+     * 随机生成核销码位数
+     */
+    private final Integer uuidLength = 6;
+    /**
+     * 核销码前缀
+     */
+    private final String HX = "HX";
+    /**
      * 营销活动processorFactory
      */
    @Autowired
@@ -350,18 +358,18 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
 
     /**
-     * 生成短8位UUID作为核销码
+     * 生成短6位UUID作为核销码
      * @return String
      */
     private String generateShortUuid() {
         StringBuilder shortBuilder = new StringBuilder();
         String uuid = UUID.randomUUID().toString().replace("-", "");
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < uuidLength; i++) {
             String str = uuid.substring(i * 4, i * 4 + 4);
             int x = Integer.parseInt(str, 16);
             shortBuilder.append(chars[x % 0X24]);
         }
-        return "HX" + shortBuilder.toString();
+        return HX + shortBuilder.toString();
 
     }
 
