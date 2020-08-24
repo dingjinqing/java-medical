@@ -464,6 +464,10 @@ public class MiniMain extends SchemaImpl {
      */
     public final ShopSmsConfig SHOP_SMS_CONFIG = com.vpu.mp.db.main.tables.ShopSmsConfig.SHOP_SMS_CONFIG;
     /**
+     * The table <code>mini_main.b2c_store_account</code>.
+     */
+    public final StoreAccount STORE_ACCOUNT = com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
+    /**
      * No further instances allowed
      */
     private MiniMain() {
@@ -576,6 +580,7 @@ public class MiniMain extends SchemaImpl {
             CronRecord.CRON_RECORD,
             OrderInfoNew.ORDER_INFO_NEW,
             InquiryOrder.INQUIRY_ORDER,
-            ShopSmsConfig.SHOP_SMS_CONFIG);
+            ShopSmsConfig.SHOP_SMS_CONFIG,
+            StoreAccount.STORE_ACCOUNT);
     }
 }

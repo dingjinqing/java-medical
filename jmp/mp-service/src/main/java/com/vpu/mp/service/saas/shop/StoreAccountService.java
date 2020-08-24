@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
+import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,6 +37,7 @@ public class StoreAccountService extends MainBaseService {
 	private static final Byte IS_DEL = 1;
 	private static final Byte NO_DEL = 0;
 	private static final String DOT = ",";
+	public StoreAccountDao storeAccountDao;
 
 	/**
 	 * 获取用户列表
@@ -191,4 +195,10 @@ public class StoreAccountService extends MainBaseService {
 		StoreAccountRecord any = where.fetchAny();
 		return any;
 	}
+
+	public StoreAuthInfoVo getStoreAccountFlag(StoreLoginParam param){
+        StoreAuthInfoVo storeAuthInfoVo = new StoreAuthInfoVo();
+        storeAuthInfoVo.setStoreAccountInfo(storeAccountDao.getStoreAccountInfo(param));
+        return storeAuthInfoVo;
+    }
 }
