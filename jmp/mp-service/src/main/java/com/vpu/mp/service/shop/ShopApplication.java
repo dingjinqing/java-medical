@@ -70,6 +70,7 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.AuditService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
@@ -148,6 +149,11 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public OrderWriteService writeOrder;
+    /**
+     * 订单业务操作
+     */
+	@Autowired
+	public OrderInfoService orderInfoService;
     /**
      * 订单对外统一接口
      */

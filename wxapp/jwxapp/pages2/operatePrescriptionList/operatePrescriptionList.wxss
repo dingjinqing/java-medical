@@ -212,22 +212,23 @@
   color: #999;
 }
 .modal_fotter{
-  padding: 25rpx 40rpx;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  margin-top: 25rpx;
+  border-top: 2rpx solid #eee;
 }
-.modal_btn{
-  width: 260rpx;
-  height: 70rpx;
+.modal_fotter > view{
+  flex: 1;
   text-align: center;
-  line-height: 70rpx;
-  box-sizing: border-box;
-  border-radius: 40rpx;
+  font-size: 32rpx;
+  line-height: 90rpx;
+}
+.modal_fotter > view:nth-child(2){
+  border-left: 2rpx solid #eee;
 }
 .btn_cancel{
-  border: 1rpx solid #ccc;
+  color: #999;
 }
 .btn_ok{
-  background: #26C4BC;
-  color: #fff;
+  color: #26C4BC;
 }

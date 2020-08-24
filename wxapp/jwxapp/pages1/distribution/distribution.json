@@ -1,5 +1,6 @@
 {
   "enablePullDownRefresh": true,
   "usingComponents": {
+    "v-share": "/components/item/popup/share/index"
   }
 }

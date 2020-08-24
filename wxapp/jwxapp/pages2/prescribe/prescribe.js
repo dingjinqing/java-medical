@@ -310,6 +310,16 @@ global.wxPage({
       depart_index: this.data.depart_index
     })
   },
+  areaFocus(){
+    this.setData({
+      focusStatus:true
+    })
+  },
+  areaBlur(){
+    this.setData({
+      focusStatus:false
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

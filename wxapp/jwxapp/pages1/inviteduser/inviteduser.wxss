@@ -1,5 +1,4 @@
 /* pages1/inviteduser/inviteduser.wxss */
-/* pages/inviteduser/inviteduser.wxss */
 @import "../../css/iconfont.wxss";
 page{
   background: #f5f5f5;

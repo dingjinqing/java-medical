@@ -129,8 +129,8 @@ public class PrescriptionDao extends ShopBaseDao {
                 PRESCRIPTION.DIAGNOSIS_NAME, PRESCRIPTION.DEPARTMENT_NAME, PRESCRIPTION.DIAGNOSE_TIME,
                 PATIENT.NAME).from(PRESCRIPTION)
                 .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID));
-        if (!Strings.isEmpty(param.getPatientName())){
-            record.where(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName())));
+        if (!Strings.isEmpty(param.getPatientName().trim())){
+            record.where(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName().trim())));
         }
         if (!Strings.isEmpty(param.getDoctorCode())){
             record.where(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode()));
