@@ -56,6 +56,7 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	private StorePojo storeInfo;
 	private Integer invoiceId;
 	private Integer verifierId;
+    private String verifyCode;
 	private Byte orderPayWay;
 	private String consignee;
 	private String mobile;

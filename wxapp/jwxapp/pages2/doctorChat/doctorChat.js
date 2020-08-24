@@ -24,6 +24,11 @@ global.wxPage({
     arrive_bottom: true,
     allHeight: 0,
     showPre:false,
+    triggered: false,
+    pageParams: {
+      currentPage: 1,
+      pageRows: 20
+    }
   },
 
   /**
@@ -265,8 +270,8 @@ global.wxPage({
     return new Promise((resolve, reject) => {
       util.api('/api/wxapp/im/session/render', res => {
         console.log(res)
-        if (res.error === 0 && res.content.dataList.length) {
-          let newChatContent = res.content.dataList.reduce((defaultValue, item) => {
+        if (res.error === 0 && res.content.length) {
+          let newChatContent = res.content.reduce((defaultValue, item) => {
             defaultValue.push({
               position: item.doctor ? 1 : 0,
               messageInfo: {
@@ -277,16 +282,19 @@ global.wxPage({
             })
             return defaultValue
           }, [])
+          let currentPage = 1 + this.data.pageParams.currentPage
           this.setData({
-            chatContent: [...newChatContent],
-            firstLoad: false
+            chatContent: [...newChatContent, ...this.data.chatContent],
+            firstLoad: false,
+            ['pageParams.currentPage']: currentPage
           })
         }
         resolve(res)
       }, {
+        ...this.data.pageParams,
         sessionId: this.data.targetUserInfo.id,
         isDoctor: true,
-        isFirstTime: this.data.firstLoad
+        isFirstTime: this.data.firstLoad,
       })
     })
   },
@@ -320,12 +328,31 @@ global.wxPage({
     if(this.data.targetUserInfo.sessionStatus === 6) return 0;
     return 135
   },
-  getRectHeight() {
+  getRectHeight(req = 1, count = 1) {
     let that = this
     wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
-      that.setData({
-        allHeight: reda[0].height,
-      })
+      if (req == 1) {
+        that.setData({
+          allHeight: reda[0].height,
+        })
+      } else {
+        let oldHeight;
+        if (count == 1) {
+          that.setData({
+            oldHeight: reda[0].height,
+          })
+          console.log('oldHeight:',oldHeight)
+          that.requestHistory(2)
+        } else {
+          let oldHeight = that.data.oldHeight
+          let newHeight = reda[0].height
+          let allHeight = newHeight - oldHeight;
+          console.log(oldHeight, newHeight, allHeight)
+          that.setData({
+            allHeight: allHeight
+          })
+        }
+      }
     })
   },
   getScrollHeight(scrollTop) {
@@ -358,5 +385,31 @@ global.wxPage({
       if (nowTime == pullTime) return this.getTodayTime(time)
     }
     return time
-  }
+  },
+  onRefresh() {
+    if (this._freshing) return
+    this._freshing = true
+    console.log('ddddd')
+    setTimeout(() => {
+      this.setData({
+        triggered: false,
+      })
+      this._freshing = false
+    }, 500)
+    this.getRectHeight(2,1)
+  },
+
+
+  onRestore(e) {
+    console.log('onRestore:', e)
+  },
+
+  onAbort(e) {
+    console.log('onAbort', e)
+  },
+
+  async requestHistory(count) {
+    let resData = await this.historyChatApi()
+    if (resData) this.getRectHeight(2,count)
+  },
 })

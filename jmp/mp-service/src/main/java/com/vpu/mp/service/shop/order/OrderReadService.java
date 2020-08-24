@@ -18,6 +18,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
@@ -269,6 +270,8 @@ public class OrderReadService extends ShopBaseService {
     private UserPatientCoupleDao userPatientCoupleDao;
     @Autowired
     private ReturnOrderDao returnOrderDao;
+    @Autowired
+    private OrderInfoDao orderInfoDao;
 
 	/**
 	 * 订单查询
@@ -1834,5 +1837,16 @@ showManualReturn(vo);
 		footprintListVo.setDelMarket(delMarket);
 		return footprintListVo;
 	}
+
+    /**
+     * 检查核销码是否正确
+     * @param verifyCode 核销码
+     * @param orderSn 订单唯一id
+     * @return boolean
+     * @author 赵晓东
+     */
+    public boolean checkVerifyCode(String verifyCode, String orderSn) {
+        return orderInfoDao.checkVerifyCode(verifyCode, orderSn);
+    }
 
 }

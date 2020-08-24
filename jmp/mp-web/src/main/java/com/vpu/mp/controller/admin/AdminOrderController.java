@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
+import com.vpu.mp.service.pojo.shop.order.pay.record.CheckVerifyCodeParam;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
@@ -36,6 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
 
 /**
  * 	订单模块
@@ -334,5 +337,22 @@ public class AdminOrderController extends AdminBaseController {
 	public JsonResult rejectPrescription(){
 		return success();
 	}
+
+
+    /**
+     * 核销码检验
+     * @param checkVerifyCodeParam
+     * @return JsonResult
+     */
+    @PostMapping("/checkVerifyCode")
+    public JsonResult checkVerifyCode(@RequestBody CheckVerifyCodeParam checkVerifyCodeParam) {
+        boolean b = shop().readOrder.checkVerifyCode(checkVerifyCodeParam.getVerifyCode(), checkVerifyCodeParam.getOrderSn());
+        // 核销码验证成功，订单转为已完成状态
+        if (b) {
+            shop().orderInfoService.setOrderstatus(checkVerifyCodeParam.getOrderSn(), ORDER_FINISHED);
+            return success();
+        }
+        return fail();
+    }
 
 }

@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.config.rebate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 /**
  * @author yangpengcheng
  * @date 2020/8/24
@@ -37,11 +39,11 @@ public class RebateConfig {
     /**
      *医生佣金比例
      */
-    private Double inquiryOrderDoctorProportion;
+    private BigDecimal inquiryOrderDoctorProportion;
     /**
      *平台佣金比例
      */
-    private Double inquiryOrderPlatformProportion;
+    private BigDecimal inquiryOrderPlatformProportion;
 
 
 }
