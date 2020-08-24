@@ -8,6 +8,7 @@
             v-model="param.doctorName"
             placeholder="请输入医生姓名"
             size="small"
+             clearable
             class="default_input"
             filterable
           >
