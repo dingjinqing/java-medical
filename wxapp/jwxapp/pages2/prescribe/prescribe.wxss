@@ -174,7 +174,7 @@
   width: 790rpx;
 }
 .goods-target{
-  width: 670rpx;
+  width: 672rpx;
   padding: 24rpx 32rpx 24rpx 0;
   box-sizing: border-box;
   display: flex;

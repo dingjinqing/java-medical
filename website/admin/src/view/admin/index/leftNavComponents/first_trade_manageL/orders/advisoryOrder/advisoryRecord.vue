@@ -2,14 +2,14 @@
   <div class="main-container">
     <div class="content">
       <div class="wrap">
-        <div
+        <!-- <div
           class="title"
           :style="
             'background:url(' +
               $imageHost +
               '/image/admin/shop_beautify/phone_tops.png) 100%/100% no-repeat;'
           "
-        ></div>
+        ></div> -->
         <div class="wrap-content">
           <template v-for="(item, index) in recordList">
             <div
@@ -181,7 +181,7 @@ export default {
       .wrap-content {
         background-color: #f5f5f5;
         position: absolute;
-        top: 55px;
+        top: 0;
         bottom: 0;
         left: 0;
         right: 0;

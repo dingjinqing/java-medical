@@ -21,7 +21,7 @@
           </view>
         </view>
     </view>
-    <view class="content_bottom" bindtap="{{canConfirm ? 'confirmData' : ''}}" style="background-color:{{canConfirm ? main_setting.comColor : '#999'}}">
+    <view class="content_bottom" bindtap="{{canConfirm ? 'confirmData' : ''}}" style="background-color:{{canConfirm ? main_setting.comColor : '#ccc'}}">
         {{i18n.$t(localePack,"pages.checkout.confirm")}}
     </view>
   </view>

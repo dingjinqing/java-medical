@@ -32,7 +32,8 @@ public class InquiryOrderScheduleTask {
             saas.getShopApp(shop.getShopId()).inquiryOrderTaskService.closeToWaitingInquiryOrder();
             saas.getShopApp(shop.getShopId()).inquiryOrderTaskService.finishedCloseOrder();
             saas.getShopApp(shop.getShopId()).inquiryOrderTaskService.close();
-
+            // 咨询会话关闭可继续问诊订单
+            saas.getShopApp(shop.getShopId()).imSessionService.timingDeadReadyToContinueSession();
         });
     }
 }

@@ -5,12 +5,14 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorCommentDo;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentDao;
+import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentAddParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentConstant;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ public class DoctorCommentService extends ShopBaseService {
     private DoctorService doctorService;
     @Autowired
     private ImSessionService imSessionService;
+    @Autowired
+    private PatientDao patientDao;
 
 
     /**
@@ -64,12 +68,14 @@ public class DoctorCommentService extends ShopBaseService {
      */
     public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId) {
         //保存
+        PatientOneParam oneInfo = patientDao.getOneInfo(patientId);
         DoctorCommentAddParam param =new DoctorCommentAddParam();
         param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
         param.setDoctorId(doctorId);
         param.setUserId(userId);
         param.setPatientId(patientId);
         param.setIsAnonymou(BaseConstant.YES);
+        param.setUserName(oneInfo.getName());
         param.setOrderSn(orderSn);
         param.setCommNote(DoctorCommentConstant.DOCTOR_DEFAULT_COMMENT);
         param.setImSessionId(imSessionId);

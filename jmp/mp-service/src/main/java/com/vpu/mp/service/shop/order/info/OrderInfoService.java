@@ -9,9 +9,11 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.DateUtils.IntervalType;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -113,6 +115,8 @@ public class OrderInfoService extends ShopBaseService {
     private OrderGoodsDao orderGoodsDao;
     @Autowired
     private OrderGoodsService orderGoodsService;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
     /**
      * 支付种类（细分）PAY_SUBDIVISION
      */
@@ -808,7 +812,10 @@ public class OrderInfoService extends ShopBaseService {
                     break;
                 }
                 // 退款退货订单完成时更新orderinfo订单信息
-                if (OrderConstant.ORDER_WAIT_DELIVERY == order.getOrderStatus()) {
+                if (OrderConstant.ORDER_TO_AUDIT == order.getOrderStatus() || OrderConstant.ORDER_WAIT_DELIVERY == order.getOrderStatus()) {
+                    set.set(TABLE.ORDER_STATUS, OrderConstant.ORDER_REFUND_FINISHED);
+                    set.set(TABLE.REFUND_FINISH_TIME, DateUtils.getSqlTimestamp());
+                } else if (OrderConstant.ORDER_TO_AUDIT_OPEN == order.getOrderStatus()) {
                     set.set(TABLE.ORDER_STATUS, OrderConstant.ORDER_REFUND_FINISHED);
                     set.set(TABLE.REFUND_FINISH_TIME, DateUtils.getSqlTimestamp());
                 } else {
@@ -819,6 +826,13 @@ public class OrderInfoService extends ShopBaseService {
                 if (order.getFanliType() != null && OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER == order.getFanliType() && order.getSettlementFlag() != null && !order.getSettlementFlag().equals(OrderConstant.SETTLEMENT_FINISH)) {
                     set.set(TABLE.SETTLEMENT_FLAG, OrderConstant.SETTLEMENT_NOT);
                     set.set(TABLE.FANLI_MONEY, BigDecimal.ZERO);
+                }
+                //处方下单的处方恢复未使用状态
+                if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION)){
+                    List<PrescriptionDo> prescriptionDoList = order.getPrescriptionDoList();
+                    prescriptionDoList.forEach(item->{
+                        prescriptionDao.updatePrescriprionIsUnUsered(item.getPrescriptionCode());
+                    });
                 }
                 break;
             default:

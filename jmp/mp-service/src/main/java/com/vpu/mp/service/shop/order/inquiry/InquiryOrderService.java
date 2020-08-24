@@ -156,6 +156,15 @@ public class InquiryOrderService extends ShopBaseService {
             imSessionService.closeImSession(param.getSessionId());
         }
         inquiryOrderDao.update(inquiryOrderDo);
+        //接诊发送提醒
+        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
+            List<Integer> list=new ArrayList<>();
+            list.add(inquiryOrderDo.getUserId());
+            ConsultationSuccessParam consultationSuccessParam=ConsultationSuccessParam.builder().patientName(inquiryOrderDo.getPatientName())
+                .departmentName(inquiryOrderDo.getDepartmentName()).diseaseDetail(inquiryOrderDo.getDescriptionDisease())
+                .doctorName(inquiryOrderDo.getDoctorName()).userIds(list).build();
+            mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
+        }
     }
     public void insert(InquiryOrderDo inquiryOrderDo){
         int orderId=inquiryOrderDao.save(inquiryOrderDo);

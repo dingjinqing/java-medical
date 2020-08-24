@@ -150,6 +150,8 @@ global.wxPage({
             }
           }, 1000)
         }
+      } else {
+        util.showModal('提示',res.message)
       }
     }, {
       mobile: this.data.mobile

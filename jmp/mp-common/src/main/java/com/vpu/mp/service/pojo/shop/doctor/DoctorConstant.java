@@ -58,4 +58,21 @@ public class DoctorConstant {
      * 关注
      */
     public static final Byte ATTENTION = 1;
+
+    /**
+     * 10分钟内
+     */
+    public static final Byte TEN_MUNITE_IN = 1;
+    /**
+     * 半小时内
+     */
+    public static final Byte HALF_HOUR_IN = 2;
+    /**
+     * 1小时内
+     */
+    public static final Byte ONE_HOUR_IN = 3;
+    /**
+     * 超过1小时
+     */
+    public static final Byte ONE_HOUR_OUT = 4;
 }

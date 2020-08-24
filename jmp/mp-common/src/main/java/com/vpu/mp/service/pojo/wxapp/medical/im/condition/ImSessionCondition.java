@@ -22,4 +22,6 @@ public class ImSessionCondition {
     private Integer doctorId;
 
     private Integer userId;
+
+    private Timestamp updateTimeLine;
 }

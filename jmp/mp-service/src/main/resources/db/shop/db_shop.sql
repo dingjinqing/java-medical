@@ -241,7 +241,7 @@ CREATE TABLE `b2c_card_examine` (
 )COMMENT='会员卡激活审核表';
 
 CREATE TABLE `b2c_card_renew` (
-  `id` int(20) int(20) NOT NULL AUTO_INCREMENT,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `user_id` int(20) NOT NULL DEFAULT '0' COMMENT '用户id',
   `card_id` int(20) NOT NULL DEFAULT '0' COMMENT '续费会员卡id',
   `card_no` varchar(32) NOT NULL DEFAULT '' COMMENT '会员卡号',

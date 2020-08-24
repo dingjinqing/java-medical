@@ -30,6 +30,7 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -451,6 +452,23 @@ public class ImSessionService extends ShopBaseService {
             imSessionDao.batchUpdateSessionEvaluateStatus(Collections.singletonList(sessionId), ImSessionConstant.SESSION_EVALUATE_CAN_STATUS, ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
         }
 
+    }
+
+    /**
+     * 定时任务调用，结束已经超时的可继续问诊项
+     */
+    public void timingDeadReadyToContinueSession(){
+        Timestamp updateTimeLine = DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS);
+        ImSessionCondition imSessionCondition = new ImSessionCondition();
+        imSessionCondition.setStatus(ImSessionConstant.SESSION_END);
+        imSessionCondition.setUpdateTimeLine(updateTimeLine);
+        List<ImSessionDo> imSessionDos = imSessionDao.listImSession(imSessionCondition);
+        for (ImSessionDo imSessionDo : imSessionDos) {
+            imSessionDo.setSessionStatus(ImSessionConstant.SESSION_DEAD);
+            imSessionDo.setWeightFactor(ImSessionConstant.SESSION_DEAD_WEIGHT);
+            imSessionDo.setEvaluateStatus(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
+        }
+        imSessionDao.batchUpdate(imSessionDos);
     }
 
     /**

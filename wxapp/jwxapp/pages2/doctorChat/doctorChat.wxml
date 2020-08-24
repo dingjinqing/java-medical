@@ -50,7 +50,7 @@
 							</view>
 							<view class="doctor-info">
 								<text class="doctor-name">医师：{{item.messageInfo.message.content.doctorName}}</text>
-								<text class="item-date">日期：{{item.messageInfo.message.content.time}}</text>
+								<text class="item-date">{{item.messageInfo.message.content.time}}</text>
 							</view>
 						</view>
 					</chat-message>

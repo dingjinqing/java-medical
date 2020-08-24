@@ -24,4 +24,9 @@ public class DoctorOneParam extends DoctorDo {
     private String departmentName;
     private Boolean isAttention=false;
     private String answerHour;
+    private Boolean hasUndoneOrder=false;
+    /**
+     * 响应时间区间1：10分钟内，2：半小时内，3：1小时内，4：1小时以上
+     */
+    private Byte answerType;
 }

@@ -56,8 +56,10 @@ public class DoctorService extends ShopBaseService {
     /**自动推荐最大数量*/
     public static final int RECOMMEND_MAX_NUM = 10;
     public static final String HOSPITAL_NAME = "六盘水医院";
-    public static final String STRINGBLANK = "";
-    public static final double MIN_ANSWER_TIME = 0.1;
+    public static final float ANSWER_TIME_TEN_MUNITES = 10;
+    public static final float ANSWER_TIME_HALF_HOUR = 30;
+    public static final float ANSWER_TIME_ONE_HOUR = 60;
+
     @Autowired
     protected DoctorDao doctorDao;
     @Autowired
@@ -526,21 +528,21 @@ public class DoctorService extends ShopBaseService {
         setDoctorDepartmentTitle(doctorInfo);
         doctorInfo.setIsAttention(userDoctorAttentionDao.isAttention(param));
         doctorInfo.setHospitalName(HOSPITAL_NAME);
-        doctorInfo.setAnswerHour(getAnswerHour(doctorInfo.getAvgAnswerTime()));
+        doctorInfo.setAnswerType(getAnswerHour(doctorInfo.getAvgAnswerTime()));
         return doctorInfo;
     }
 
-    public static String getAnswerHour(Integer seconds){
-        String result = STRINGBLANK;
-        float num =(float)seconds/3600;
-        if (num < (float)MIN_ANSWER_TIME) {
-            num = (float)MIN_ANSWER_TIME;
+    private static byte getAnswerHour(Integer seconds){
+        float num = (float)seconds/60;
+        if (num < ANSWER_TIME_TEN_MUNITES) {
+            return DoctorConstant.TEN_MUNITE_IN;
+        } else if(num < ANSWER_TIME_HALF_HOUR) {
+            return DoctorConstant.HALF_HOUR_IN;
+        } else if(num < ANSWER_TIME_ONE_HOUR) {
+            return DoctorConstant.ONE_HOUR_IN;
+        } else {
+            return DoctorConstant.ONE_HOUR_OUT;
         }
-        DecimalFormat df = new DecimalFormat("0.0");
-
-        result = df.format(num);
-
-        return result;
 
     }
 

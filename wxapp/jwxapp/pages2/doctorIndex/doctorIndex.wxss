@@ -80,7 +80,7 @@
   width: 80rpx;
   height: 80rpx;
   position: relative;
-  margin-bottom: 32rpx;
+  margin-bottom: 28rpx;
 }
 .item_num{
   position: absolute;
@@ -264,4 +264,7 @@
   font-size: 36rpx;
   color: #333;
 }
-
+.button_get_verify.gray{
+  color: #fff;
+  background-color: #999;
+}
