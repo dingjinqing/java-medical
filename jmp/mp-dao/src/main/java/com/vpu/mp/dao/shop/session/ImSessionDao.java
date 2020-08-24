@@ -150,10 +150,10 @@ public class ImSessionDao extends ShopBaseDao {
      * @return
      */
     public List<Integer> getRelevantSessionIds(Integer baseSessionId) {
-        final String TEMP_TABLE_NAME = "TEMP_TABLE";
+        final String tempTableName = "TEMP_TABLE";
 
         Table<Record3<Integer, Integer, Integer>> tempTable = db().select(IM_SESSION.DOCTOR_ID, IM_SESSION.USER_ID, IM_SESSION.PATIENT_ID).from(IM_SESSION)
-            .where(IM_SESSION.ID.eq(baseSessionId)).asTable(TEMP_TABLE_NAME);
+            .where(IM_SESSION.ID.eq(baseSessionId)).asTable(tempTableName);
 
         List<Integer> sessionIds = db().select(IM_SESSION.ID).from(IM_SESSION).innerJoin(tempTable)
             .on(IM_SESSION.DOCTOR_ID.eq(tempTable.field("doctor_id", Integer.class))
