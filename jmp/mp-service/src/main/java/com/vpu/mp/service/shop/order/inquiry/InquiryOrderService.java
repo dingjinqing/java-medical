@@ -23,6 +23,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.*;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
@@ -41,6 +42,7 @@ import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
@@ -70,6 +72,8 @@ import java.util.stream.Collectors;
 @Service
 public class InquiryOrderService extends ShopBaseService {
     public static final String BLANK = "测试";
+    public static final BigDecimal HUNDRED = new BigDecimal("100");
+    public static final int DECIMAL_POINT= 4;
     @Autowired
     private InquiryOrderDao inquiryOrderDao;
     @Autowired
@@ -96,6 +100,8 @@ public class InquiryOrderService extends ShopBaseService {
     private UserDao userDao;
     @Autowired
     private MapTemplateSendService mapTemplateSendService;
+    @Autowired
+    private RebateConfigService rebateConfigService;
 
     /**
      * 问询订单列表
@@ -208,6 +214,12 @@ public class InquiryOrderService extends ShopBaseService {
         order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
         order.setPayTime(DateUtils.getLocalDateTime());
+        //计算返利比例金额
+        RebateConfig rebateConfig=this.rebateConfigService.getRebateConfig();
+        BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN);
+        order.setRebateProportion(proportion);
+        order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN));
+
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
         //添加会话问诊
