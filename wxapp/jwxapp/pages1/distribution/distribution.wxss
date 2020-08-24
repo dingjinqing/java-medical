@@ -603,6 +603,7 @@ swiper-item {
   text-align: center;
 }
 .none_image{
+  display: inline-block;
   width: 250rpx;
   height: 250rpx;
   margin-top: 350rpx;
@@ -650,8 +651,8 @@ swiper-item {
   width: 750rpx;
   background: #fff;
   height:120rpx;
-  position: fixed;
-  bottom: 0rpx;
+  /* position: fixed; */
+  /* bottom: 0rpx; */
   z-index: 99;
 }
 .fix_area .btn_to_invite{
@@ -668,6 +669,12 @@ swiper-item {
   margin: 0 auto;
   margin-bottom: 20rpx;
   
+}
+.shareStyle {
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 26rpx;
+  color: #fff;
 }
 .share_content_box {
   display: flex;
@@ -754,10 +761,6 @@ swiper-item {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.tc_left .fontStyle {
-  font-size: 30rpx;
-  font-weight: bold;
 }
 .tc_right{
   float: right;
@@ -896,6 +899,32 @@ swiper-item {
 }
 .copy_content{
   display:flex
+}
+.own_promotion_center, .qrCode_center{
+  background: #fff;
+  border-radius: 8rpx;
+  margin: 0 auto;
+  margin-bottom: 20rpx;
+  width: 650rpx;
+  height: 90rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30rpx;  
+}
+.own_promotion_center image,
+.qrCode_center image {
+  width: 16rpx;
+}
+.qrCode_center .qrcode_right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.qrCode_center .qrcode_right text {
+  font-size: 26rpx;
+  color: #999;
+  margin-right: 20rpx;
 }
 
 

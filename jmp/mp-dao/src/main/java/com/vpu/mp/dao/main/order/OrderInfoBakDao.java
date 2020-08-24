@@ -71,7 +71,7 @@ public class OrderInfoBakDao extends MainBaseDao {
      * 药品销售报表
      * @return
      */
-    public Map<Date, MedicalOrderReportVo> orderSalesReport(Timestamp startTime, Timestamp endTime, Integer shopId){
+    public Map<Date, MedicalOrderReportVo> orderSalesReport(Timestamp startTime, Time-stamp endTime, Integer shopId){
         SelectConditionStep<? extends Record> where = db().select(
                 //日期
                 date(ORDER_INFO_BAK.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),

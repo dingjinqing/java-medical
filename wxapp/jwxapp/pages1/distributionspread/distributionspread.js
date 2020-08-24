@@ -11,6 +11,7 @@ global.wxPage({
     mobile: util.getCache('mobile'),
     dis_content: [], 
     status: null, // 分销状态
+    is_bind_mobile: 0, // 授权手机号配置
     is_block: 0, // 绑定手机号弹窗
     is_authorize: 0, // 已授权弹窗
   },
@@ -21,6 +22,7 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
+    wx.hideShareMenu();
     dis_request(that);
   },
 
@@ -34,11 +36,9 @@ global.wxPage({
   // 申请成为分销员
   apply_get: function (e) {
     var that = this;
-    if (util.getCache('mobile') == "") {
+    if (that.data.is_bind_mobile == 1 && util.getCache('mobile') == "") {
       util.checkSession(function () {
-        that.setData({
-          is_block: 1
-        })
+        that.setData({ is_block: 1 })
       })
       return false;
     }
@@ -81,7 +81,8 @@ function dis_request(that) {
     if (res.error == 0) {
       that.setData({
         dis_content: res.content,
-        page_name: res.content.title
+        page_name: res.content.title,
+        is_bind_mobile: res.content.bindMobile
       })
       if (res.content.document != null) {
         that.setData({

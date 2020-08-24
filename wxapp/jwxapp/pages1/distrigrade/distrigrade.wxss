@@ -42,8 +42,8 @@ page{
 .grade_top .grade_n{
   position: absolute;
   text-align: center;
-  top: 220rpx;
- width: 100%;
+  top: 230rpx;
+  width: 100%;
 }
 .need_more{
   width: 700rpx;
