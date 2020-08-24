@@ -5,6 +5,7 @@ var util = require('../../utils/util.js');
 const {
   theMaximumClaimLimit
 } = require('../../utils/i18n/components/decorate/decorate.js');
+
 global.wxPage({
 
   /**
@@ -17,7 +18,8 @@ global.wxPage({
     name: '',
     age: '',
     orderAmount: 0,
-    descriptionDisease: ''
+    descriptionDisease: '',
+    canSubmit: true
   },
 
   /**
@@ -148,6 +150,15 @@ global.wxPage({
   },
   toOrderDeal: function () {
     let that = this;
+    if (that.data.canSubmit == false) return
+    that.setData({
+      canSubmit:false
+    })
+    setTimeout(function () {
+      that.setData({
+        canSubmit: true
+      })
+    }, 3000)
     if (that.data.descriptionDisease == '') {
       util.showModal('提示', '请填写病情描述')
       return

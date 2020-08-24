@@ -4,7 +4,7 @@
 		<view>
 			<view class="doctor_item">
 				<view class="d_left">
-					<image src="{{con.url}}" wx:if='{{con.url != ""}}'></image>
+					<image src="{{imageUrl}}{{con.url}}" wx:if='{{con.url != ""}}'></image>
 					<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>
 				</view>
 				<view class="d_right">
@@ -34,7 +34,7 @@
 					<view>接诊量</view>
 				</view>
 				<view>
-					<view>{{con.answerHour}}小时</view>
+					<view>{{answerType == 1 ? '10分钟内' : (answerType == 2 ? '半小时内' : ( answerType == 3 ? '1小时内' : '1小时以上'))}}</view>
 					<view>平均响应时间</view>
 				</view>
 				<view>
@@ -82,7 +82,10 @@
 	</view>
 	<view class="bot_footer">
 	  <block wx:if='{{con.isOnDuty == 1}}'>
-			<view class="to_chat" data-doctor_id='{{con.id}}'  data-price='{{con.consultationPrice}}' catchtap="toChat">在线咨询￥{{con.consultationPrice}}/次</view>
+			<view class="to_chat" data-doctor_id='{{con.id}}'  data-price='{{con.consultationPrice}}' catchtap="toChat">
+ {{con.hasUndoneOrder == false ? '在线咨询￥' + con.consultationPrice + '/次' : '继续问诊'}} 
+			  
+			</view>
 		<view class="tell_patient" catchtap="patient_announce">患者须知 ></view>
 		</block>
 		<block wx:else>

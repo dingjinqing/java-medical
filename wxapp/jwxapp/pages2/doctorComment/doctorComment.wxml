@@ -3,7 +3,7 @@
 	<view class="doctor_content">
 		<view class="doctor_item">
 			<view class="d_left">
-				<image src="{{con.url}}" wx:if='{{con.url != ""}}'></image>
+				<image src="{{imageUrl}}{{con.url}}" wx:if='{{con.url != ""}}'></image>
 				<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>
 			</view>
 			<view class="d_right">

@@ -116,7 +116,7 @@ page{
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 40rpx;
+  margin: 40rpx;
 }
 .add_tips image{
   width: 30rpx;

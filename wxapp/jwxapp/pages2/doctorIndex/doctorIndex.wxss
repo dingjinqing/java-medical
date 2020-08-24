@@ -30,7 +30,7 @@
   align-self: flex-start;
 }
 .doc_name{
-  margin-bottom: 24rpx;
+  margin-bottom: 10rpx;
 }
 .doc_name{
   margin-right: 24rpx;
@@ -40,7 +40,7 @@
   font-weight: bold;
 }
 .doc_hos{
-  margin-bottom: 24rpx;
+  margin-bottom: 10rpx;
   width: 510rpx;
   overflow:hidden;
   text-overflow: ellipsis;

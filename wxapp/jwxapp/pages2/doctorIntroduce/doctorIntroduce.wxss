@@ -33,7 +33,7 @@ page {
   background: #fff;
   padding: 20rpx;
   display: flex;
-
+  align-items: center;
 }
 
 .doctor_item .d_left image {
@@ -91,7 +91,7 @@ page {
   font-size: 24rpx;
   color: #26C4BC;
   border: 2rpx solid #26C4BC;
-  border-radius: 25rpx;
+  border-radius: 30rpx !important;
   position: absolute;
   right: 0;
   top: -2rpx;
@@ -223,7 +223,7 @@ label {
   position: absolute;
   right: 10rpx;
   bottom: 4rpx;
-  font-weight: 500;
+  font-weight: 600;
 }
 .no_chat{
   background: #CBCBCB !important;
@@ -255,6 +255,12 @@ label {
 }	
 
 .is-null text{	
-  margin-top: 20rpx;	
   color: #999;	
+  position: absolute;
+bottom: 10px;
+
+}
+.is-null image{
+  width: 700rpx;
+  height: 400rpx;
 }

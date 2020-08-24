@@ -3,7 +3,7 @@
 <view class="mian-container">
   <view class="top_doc_info">
     <view class="doc_square">
-      <image class="doc_img" src="{{doctorInfo.url || imageUrl + 'image/wxapp/doctor_default_icon.png'}}"></image>
+      <image class="doc_img" src="{{imageUrl + doctorInfo.url || imageUrl + 'image/wxapp/doctor_default_icon.png'}}"></image>
       <view class="doc_message">
         <view class="doc_name"> <text>{{doctorInfo.name}}</text> {{doctorInfo.duty}}</view>
         <view class="doc_hos">{{doctorInfo.registerHospital}} {{doctorInfo.departArr}}</view>
