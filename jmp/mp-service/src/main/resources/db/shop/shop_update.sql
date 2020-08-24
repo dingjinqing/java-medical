@@ -591,8 +591,8 @@
 -- /*********************3.2*************************END*/
 
 /*********************3.2***********************BEGIN*/
-ALTER TABLE `b2c_inquiry_order` ADD COLUMN `rebate_proportion` decimal(6,4) DEFAULT '0.0000' COMMENT '返利比例' AFTER 'image_url';
-ALTER TABLE `b2c_inquiry_order` ADD COLUMN `total_rebate_money` decimal(10,4) DEFAULT '0.0000' COMMENT '返利金额' AFTER 'rebate_proportion';
+ALTER TABLE `b2c_inquiry_order` ADD COLUMN `rebate_proportion` decimal(6,4) DEFAULT '0.0000' COMMENT '返利比例';
+ALTER TABLE `b2c_inquiry_order` ADD COLUMN `total_rebate_money` decimal(10,4) DEFAULT '0.0000' COMMENT '返利金额';
 
 -- 医师问诊订单返利表
 CREATE TABLE if not exists `b2c_inquiry_order_rebate` (
