@@ -25,8 +25,8 @@ public class SystemOrderController extends SystemBaseController {
      * 订单列表
      * @return
      */
-    @PostMapping("/api/system/report/sales/order")
-    public JsonResult ListOrder(OrderPageListQueryParam param){
+    @PostMapping("/api/system/order/list")
+    public JsonResult listOrder(@RequestBody OrderPageListQueryParam param){
         OrderQueryVo orderInfoPageList = saas.saasOrderService.getOrderInfoPageList(param);
         return success(orderInfoPageList);
     }
