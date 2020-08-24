@@ -10,7 +10,7 @@
     </form>
     <view class='btn_wait bten_shenqing' wx:if='{{status == 0}}'>等待审核</view>
     <form report-submit='true' bindsubmit='apply_get'>
-      <button class='bten_shenqing' wx:if='{{status == null || status == 3}}' style='background:{{comColor}}' bindtap='apply_get' formType='submit'>申请成为分销员</button>
+      <button class='bten_shenqing' wx:if='{{status == null || status == 3}}' style='background:{{comColor}}' formType='submit'>申请成为分销员</button>
     </form>
 
     <!-- 绑定手机号弹窗 -->
@@ -20,7 +20,7 @@
     <view class='moblie_authorize' wx:if="{{is_authorize}}">
       <text>手机号已授权</text>
       <form report-submit='true' bindsubmit='apply_get'>
-      <button class='authorize_button' bindtap='apply_get' formType='submit'>继续申请</button>
+        <button class='authorize_button' formType='submit'>继续申请</button>
       </form>
     </view>
 

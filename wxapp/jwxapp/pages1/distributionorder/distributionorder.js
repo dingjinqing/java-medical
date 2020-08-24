@@ -1,10 +1,6 @@
 // pages1/distributionorder/distributionorder.js
 var util = require('../../utils/util.js')
 var app = getApp()
-var choose_lists = {};
-var usersi;
-var show_start_time;
-var show_end_time;
 global.wxPage({
 
   /**
@@ -12,14 +8,16 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    disorder_info: [],
-    is_pink: 0,
-    choose_lists: {},
-    info_list: [],
+    userId: null,
+    orderType: 0, // 订单类型
+    startTime: '',
+    endTime: '',
+    disorderInfo: {},
+    infoList: [],
     page: 1,
-    last_page: 1,
-    is_zero: 0,
-    is_load: 0
+    lastPage: 1,
+    pageRows: 20,
+    isLoad: 0
   },
 
   /**
@@ -27,18 +25,17 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    choose_lists = {};
-    if (options.user_id) {
-      usersi = options.user_id;
-      choose_lists.user_id = usersi;
+    if (options.userId) {
+      var userId = options.userId;
+    } else {
+      var userId = util.getCache('user_id');
     }
     if (options.username) {
-      var show_name = options.username;
-      if (show_name.length > 5) {
-        show_name = show_name.substring(0, 4) + '...';
+      if (options.username.length > 5) {
+        options.username = options.username.substring(0, 4) + '...';
       }
       this.setData({
-        page_name: show_name + "的返利订单明细"
+        page_name: options.username + "的返利订单明细"
       })
     }
     var that = this;
@@ -46,109 +43,86 @@ global.wxPage({
     if (this.data.comColor == '' || !this.data.comColor) {
       this.data.comColor = "#ff6666"
     }
-    show_end_time = util.formatTime(new Date());
-    show_end_time = show_end_time.substring(0, 10);
-    show_start_time = Date.parse(show_end_time);
-    show_start_time = show_start_time / 1000;
-    show_start_time = show_start_time - 30 * 24 * 60 * 60;
-    var dates = new Date(show_start_time * 1000);
+    // 结束时间
+    var endTime = util.formatTime(new Date());
+    endTime = endTime.substring(0, 10);
+    // 开始时间
+    var startTime = Date.parse(endTime);
+    startTime = startTime / 1000;
+    startTime = startTime - 30 * 24 * 60 * 60;
+    var dates = new Date(startTime * 1000);
     var Y = dates.getFullYear() + '-';
     var M = (dates.getMonth() + 1 < 10 ? '0' + (dates.getMonth() + 1) : dates.getMonth() + 1) + '-';
-    var D = (dates.getDate() + 1 < 10 ? '0' + (dates.getDate() + 1) : dates.getDate() + 1) + ' ';
-    show_start_time = Y + M + D;
-    choose_lists.start_time = show_start_time;
-    choose_lists.end_time = show_end_time;
+    var D = (dates.getDate() + 1 < 10 ? '0' + (dates.getDate() + 1) : dates.getDate() + 1);
+    startTime = Y + M + D;
+    that.setData({
+      userId: userId,
+      startTime: startTime,
+      endTime: endTime
+    })
     order_request(that);
   },
 
   // 时间选择
   bindDateChange: function (e) {
-    var idx = e.currentTarget.dataset.cur_idx;
     var that = this;
-    if (idx == 1) {
-      var val1 = e.detail.value;
-      if (val1 > show_end_time) {
-        util.showModal('提示', '起始时间不能晚于结束时间');
+    var time = e.currentTarget.dataset.time;
+    var value = e.detail.value;
+    if (time == 1) {
+      if (value > that.data.endTime) {
+        util.showModal('提示', '起始时间不能大于结束时间');
         return false;
       }
-      var ceshishijian = Date.parse(show_end_time);
-      ceshishijian = ceshishijian / 1000;
-      ceshishijian = ceshishijian - 6 * 30 * 24 * 60 * 60;
-      var dates = new Date(ceshishijian * 1000);
+      var limitTime = Date.parse(that.data.endTime);
+      limitTime = limitTime / 1000;
+      limitTime = limitTime - 6 * 30 * 24 * 60 * 60;
+      var dates = new Date(limitTime * 1000);
       var Y = dates.getFullYear() + '-';
       var M = (dates.getMonth() + 1 < 10 ? '0' + (dates.getMonth() + 1) : dates.getMonth() + 1) + '-';
-      var D = (dates.getDate() + 1 < 10 ? '0' + (dates.getDate() + 1) : dates.getDate() + 1) + ' ';
-      ceshishijian = Y + M + D;
-      if (val1 < ceshishijian) {
+      var D = (dates.getDate() + 1 < 10 ? '0' + (dates.getDate() + 1) : dates.getDate() + 1);
+      limitTime = Y + M + D;
+      if (value < limitTime) {
         util.showModal('提示', '请选择结束时间前六个月内的日期');
         return false;
       }
-      show_start_time = val1;
-      choose_lists.start_time = val1;
-      choose_lists.end_time = show_end_time;
+      that.setData({ startTime: value })
       order_request(that);
     }
-    if (idx == 0) {
-      var val2 = e.detail.value;
-      var that = this;
-      if (show_start_time > val2) {
-        util.showModal('提示', '起始时间不能晚于结束时间');
+    if (time == 0) {
+      if (value < that.data.startTime) {
+        util.showModal('提示', '结束时间不能小于开始时间');
         return false;
       }
-      var ceshishijian = Date.parse(show_start_time);
-      ceshishijian = ceshishijian / 1000;
-      ceshishijian = ceshishijian + 6 * 30 * 24 * 60 * 60;
-      var dates = new Date(ceshishijian * 1000);
+      var limitTime = Date.parse(that.data.startTime);
+      limitTime = limitTime / 1000;
+      limitTime = limitTime + 6 * 30 * 24 * 60 * 60;
+      var dates = new Date(limitTime * 1000);
       var Y = dates.getFullYear() + '-';
       var M = (dates.getMonth() + 1 < 10 ? '0' + (dates.getMonth() + 1) : dates.getMonth() + 1) + '-';
-      var D = (dates.getDate() + 1 < 10 ? '0' + (dates.getDate() + 1) : dates.getDate() + 1) + ' ';
-      ceshishijian = Y + M + D;
-      if (val2 > util.formatTime(new Date())) {
+      var D = (dates.getDate() + 1 < 10 ? '0' + (dates.getDate() + 1) : dates.getDate() + 1);
+      limitTime = Y + M + D;
+      if (value > util.formatTime(new Date())) {
         util.showModal('提示', '可选日期截止为今日');
         return false;
       }
-      if (val2 > ceshishijian) {
+      if (value > limitTime) {
         util.showModal('提示', '请选择开始时间之后六个月内的日期');
         return false;
       }
-      show_end_time = val2;
-      choose_lists.start_time = show_start_time;
-      choose_lists.end_time = val2;
+      that.setData({ endTime: value })
       order_request(that);
     }
-    this.setData({
-      disorder_info: disorder_info
-    })
   },
 
   //切换状态
   change_order: function (e) {
-    var f_type = e.currentTarget.dataset.ftype;
     var that = this;
-    that.data.page = 1;
-    if (f_type == "all") {
-      choose_lists.status = 0;
-      order_request(that);
-
-      that.setData({
-        is_pink: 0,
-        is_zero: 0
-      })
-    } else if (f_type == "notF") {
-      choose_lists.status = 1;
-      order_request(that);
-      that.setData({
-        is_pink: 1,
-        is_zero: 1
-      })
-    } else if (f_type == "yiF") {
-      choose_lists.status = 2;
-      order_request(that);
-      that.setData({
-        is_pink: 2,
-        is_zero: 0
-      })
-    }
+    var type = e.currentTarget.dataset.type;
+    that.setData({
+      orderType: Number(type),
+      page: 1
+    })
+    order_request(that);
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -190,72 +164,87 @@ global.wxPage({
    */
   onReachBottom: function () {
     var that = this;
-    that.setData({
-      is_load: 1
-    })
-    if (that.data.page == that.data.last_page) {
-      that.setData({
-        is_load: 0
-      })
+    that.setData({ isLoad: 1 })
+    if (that.data.page == that.data.lastPage) {
+      that.setData({ isLoad: 0 })
       return
     }
     that.data.page = that.data.page + 1;
 
-    // util.api('/api/wxapp/rebate/order_list', function (res) {
-    //   var disorder_info = res.content;
-    //   var info_list = [];
-    //   if (disorder_info.rebate_order.data.length > 0) {
-    //     for (var i = 0; i < disorder_info.rebate_order.data.length; i++) {
-    //       disorder_info.rebate_order.data[i].order_sn = disorder_info.rebate_order.data[i].order_sn.substring(0, 5) + "********" + disorder_info.rebate_order.data[i].order_sn.substring(14, 19);
-    //     }
-    //     info_list = disorder_info.rebate_order.data;
-    //     for (var i in info_list) {
-    //       info_list[i].can_fanli_money = parseFloat(info_list[i].can_fanli_money).toFixed(2);
-    //       info_list[i].fanli_money = parseFloat(info_list[i].fanli_money).toFixed(2);
-    //     }
-    //   }
-    //   disorder_info.sum_fanli_money = parseFloat(disorder_info.sum_fanli_money).toFixed(2);
-    //   disorder_info.rebate_info.total_money = parseFloat(disorder_info.rebate_info.total_money).toFixed(2);
-    //   disorder_info.wait_fanli_money = parseFloat(disorder_info.wait_fanli_money).toFixed(2);
-    //   that.setData({
-    //     disorder_info: disorder_info,
-    //     show_start_time: show_start_time,
-    //     show_end_time: show_end_time,
-    //     info_list: that.data.info_list.concat(info_list),
-    //     is_load: 0,
-    //     total_calculate_money: parseFloat(disorder_info.total_calculate_money || 0).toFixed(2)
-    //   });
-
-    // }, { choose_lists: JSON.stringify(choose_lists), pageNo: that.data.page });
+    util.api('/api/wxapp/distribution/rebateOrder', function (res) {
+      if (res.error == 0) {
+        var disorderInfo = res.content;
+        var infoList = [];
+        if (disorderInfo.rebateOrderInfo && disorderInfo.rebateOrderInfo.dataList && disorderInfo.rebateOrderInfo.dataList.length > 0) {
+          disorderInfo.rebateOrderInfo.dataList.forEach(item => {
+            item.orderSn = item.orderSn.substring(0, 5) + "********" + item.orderSn.substring(14, 19);
+            item.canCalculateMoney = parseFloat(item.canCalculateMoney).toFixed(2);
+            item.rebateMoney = parseFloat(item.rebateMoney).toFixed(2);
+          })
+          infoList = disorderInfo.rebateOrderInfo.dataList
+        }
+        disorderInfo.partRebateMoney = parseFloat(disorderInfo.partRebateMoney || 0).toFixed(2);
+        disorderInfo.partRebateGoodsMoney = parseFloat(disorderInfo.partRebateGoodsMoney || 0).toFixed(2);
+        disorderInfo.allRebateMoney = parseFloat(disorderInfo.allRebateMoney || 0).toFixed(2);
+        disorderInfo.waitRebateMoney = parseFloat(disorderInfo.waitRebateMoney || 0).toFixed(2);
+        if (disorderInfo.rebateOrderInfo && disorderInfo.rebateOrderInfo.page) {
+          var lastPage = disorderInfo.rebateOrderInfo.page.lastPage
+        }
+        that.setData({
+          disorderInfo: disorderInfo,
+          infoList: that.data.infoList.concat(infoList),
+          lastPage: lastPage,
+          isLoad: 0
+        })
+      } else {
+        util.showModal(res.message);
+        return false;
+      }
+    }, { 
+      userId: that.data.userId,
+      orderType: that.data.orderType,
+      startTime: that.data.startTime + ' 00:00:00',
+      endTime: that.data.endTime + ' 23:59:59',
+      currentPage: that.data.page,
+      pageRows: that.data.pageRows
+    });
   },
 })
 function order_request(that) {
-  // util.api('/api/wxapp/rebate/order_list', function (res) {
-  //   var disorder_info = res.content;
-  //   var info_list = [];
-  //   if (disorder_info.rebate_order.data.length > 0) {
-  //     for (var i = 0; i < disorder_info.rebate_order.data.length; i++) {
-  //       disorder_info.rebate_order.data[i].order_sn = disorder_info.rebate_order.data[i].order_sn.substring(0, 5) + "********" + disorder_info.rebate_order.data[i].order_sn.substring(14, 19);
-  //     }
-  //     info_list = disorder_info.rebate_order.data;
-  //     for (var i in info_list) {
-  //       info_list[i].can_fanli_money = parseFloat(info_list[i].can_fanli_money).toFixed(2);
-  //       info_list[i].fanli_money = parseFloat(info_list[i].fanli_money).toFixed(2);
-  //     }
-  //   }
-
-  //   that.data.last_page = disorder_info.rebate_order.last_page;
-  //   that.data._page = 1;
-  //   disorder_info.sum_fanli_money = parseFloat(disorder_info.sum_fanli_money).toFixed(2);
-  //   disorder_info.rebate_info.total_money = parseFloat(disorder_info.rebate_info.total_money).toFixed(2);
-  //   disorder_info.wait_fanli_money = parseFloat(disorder_info.wait_fanli_money).toFixed(2);
-  //   that.setData({
-  //     disorder_info: disorder_info,
-  //     show_start_time: show_start_time,
-  //     show_end_time: show_end_time,
-  //     info_list: info_list,
-  //     total_calculate_money: parseFloat(disorder_info.total_calculate_money || 0).toFixed(2)
-  //   });
-
-  // }, { choose_lists: JSON.stringify(choose_lists), pageNo: 1 });
+  util.api('/api/wxapp/distribution/rebateOrder', function (res) {
+    if (res.error == 0) {
+      var disorderInfo = res.content;
+      var infoList = [];
+      if (disorderInfo.rebateOrderInfo && disorderInfo.rebateOrderInfo.dataList && disorderInfo.rebateOrderInfo.dataList.length > 0) {
+        disorderInfo.rebateOrderInfo.dataList.forEach(item => {
+          item.orderSn = item.orderSn.substring(0, 5) + "********" + item.orderSn.substring(14, 19);
+          item.canCalculateMoney = parseFloat(item.canCalculateMoney).toFixed(2);
+          item.rebateMoney = parseFloat(item.rebateMoney).toFixed(2);
+        })
+        infoList = disorderInfo.rebateOrderInfo.dataList
+      }
+      disorderInfo.partRebateMoney = parseFloat(disorderInfo.partRebateMoney || 0).toFixed(2);
+      disorderInfo.partRebateGoodsMoney = parseFloat(disorderInfo.partRebateGoodsMoney || 0).toFixed(2);
+      disorderInfo.allRebateMoney = parseFloat(disorderInfo.allRebateMoney || 0).toFixed(2);
+      disorderInfo.waitRebateMoney = parseFloat(disorderInfo.waitRebateMoney || 0).toFixed(2);
+      if (disorderInfo.rebateOrderInfo && disorderInfo.rebateOrderInfo.page) {
+        var lastPage = disorderInfo.rebateOrderInfo.page.lastPage
+      }
+      that.setData({
+        disorderInfo: disorderInfo,
+        infoList: infoList,
+        lastPage: lastPage
+      })
+    } else {
+      util.showModal(res.message);
+      return false;
+    }
+  }, { 
+    userId: that.data.userId,
+    orderType: that.data.orderType,
+    startTime: that.data.startTime + ' 00:00:00',
+    endTime: that.data.endTime + ' 23:59:59',
+    currentPage: that.data.page,
+    pageRows: that.data.pageRows
+  });
 }
