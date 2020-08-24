@@ -93,11 +93,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -197,6 +193,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
     /**
+     * 随机生成核销码位数
+     */
+    private final Integer uuidLength = 6;
+    /**
+     * 核销码前缀
+     */
+    private final String HX = "HX";
+    /**
      * 营销活动processorFactory
      */
    @Autowired
@@ -262,6 +266,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 //订单入库,以上只有orderSn，无法获取orderId
+                // 自提订单生成核销码
+                if (param.getDeliverType() == 1) {
+                    String s = generateShortUuid();
+                    order.setVerifyCode(s);
+                    order.setStoreId(param.getStoreId());
+                    order.setDeliverType((byte) 1);
+                }
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
@@ -338,6 +349,28 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
             }
         }
+    }
+
+    private String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
+        "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
+        "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
+        "6", "7", "8", "9" };
+
+
+    /**
+     * 生成短6位UUID作为核销码
+     * @return String
+     */
+    private String generateShortUuid() {
+        StringBuilder shortBuilder = new StringBuilder();
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        for (int i = 0; i < uuidLength; i++) {
+            String str = uuid.substring(i * 4, i * 4 + 4);
+            int x = Integer.parseInt(str, 16);
+            shortBuilder.append(chars[x % 0X24]);
+        }
+        return HX + shortBuilder.toString();
+
     }
 
     private CreateOrderBo processPrepairCreateOrder(CreateParam param, OrderBeforeVo orderBeforeVo) throws MpException {

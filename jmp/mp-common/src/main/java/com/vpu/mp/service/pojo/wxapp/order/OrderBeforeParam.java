@@ -52,6 +52,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Byte deliverType;
     /**购物车标记*/
     private Byte isCart;
+    /**
+     * 门店Id
+     */
 	private Integer storeId;
     /**
      * 0:默认选第一张；null：小程序不选；""不可使用;其他：卡号

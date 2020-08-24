@@ -1196,5 +1196,8 @@ public class Tables {
      * 门店账户表
      */
     public static final StoreAccount STORE_ACCOUNT = com.vpu.mp.db.shop.tables.StoreAccount.STORE_ACCOUNT;
-
+    /**
+     * 医师问诊订单返利表
+     */
+    public static final InquiryOrderRebate INQUIRY_ORDER_REBATE = com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
 }
