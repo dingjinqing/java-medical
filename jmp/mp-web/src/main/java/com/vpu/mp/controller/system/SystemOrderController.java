@@ -3,6 +3,8 @@ package com.vpu.mp.controller.system;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.pojo.saas.order.report.OrderBakSalesReportParam;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,16 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class SystemOrderController extends SystemBaseController {
 
+
+    /**
+     * 订单列表
+     * @return
+     */
+    @PostMapping("/api/system/order/list")
+    public JsonResult listOrder(@RequestBody OrderPageListQueryParam param){
+        OrderQueryVo orderInfoPageList = saas.saasOrderService.getOrderInfoPageList(param);
+        return success(orderInfoPageList);
+    }
 
     /**
      * 医药销售报表
