@@ -50,8 +50,8 @@ public class WxAppImSessionController extends WxAppBaseController {
             return fail(JsonResultCode.IM_SESSION_NOT_EXIST);
         }
 
-        PageResult<ImSessionItemRenderVo> imSessionItemRenderVoPageResult = imSessionService.renderSession(param);
-        return success(imSessionItemRenderVoPageResult);
+        List<ImSessionItemRenderVo> retList = imSessionService.renderSession(param);
+        return success(retList);
     }
 
     /**

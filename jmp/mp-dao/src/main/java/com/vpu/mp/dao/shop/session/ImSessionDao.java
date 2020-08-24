@@ -10,9 +10,7 @@ import com.vpu.mp.db.shop.tables.records.ImSessionRecord;
 import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
-import org.jooq.Condition;
-import org.jooq.Record1;
-import org.jooq.SelectSeekStep2;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -143,6 +141,27 @@ public class ImSessionDao extends ShopBaseDao {
         SelectSeekStep2<ImSessionRecord, Byte, Timestamp> select = db().selectFrom(IM_SESSION).where(condition)
             .orderBy(IM_SESSION.WEIGHT_FACTOR.desc(), IM_SESSION.UPDATE_TIME.desc());
         return getPageResult(select,pageListParam.getCurrentPage(),pageListParam.getPageRows(),ImSessionListVo.class);
+    }
+
+    /**
+     * 获取当前sessionId相关的，其它会话id集合
+     * 相关指：医师id，用户id，患者id相同
+     * @param baseSessionId
+     * @return
+     */
+    public List<Integer> getRelevantSessionIds(Integer baseSessionId) {
+        final String TEMP_TABLE_NAME = "TEMP_TABLE";
+
+        Table<Record3<Integer, Integer, Integer>> tempTable = db().select(IM_SESSION.DOCTOR_ID, IM_SESSION.USER_ID, IM_SESSION.PATIENT_ID).from(IM_SESSION)
+            .where(IM_SESSION.ID.eq(baseSessionId)).asTable(TEMP_TABLE_NAME);
+
+        List<Integer> sessionIds = db().select(IM_SESSION.ID).from(IM_SESSION).innerJoin(tempTable)
+            .on(IM_SESSION.DOCTOR_ID.eq(tempTable.field("doctor_id", Integer.class))
+                .and(IM_SESSION.USER_ID.eq(tempTable.field("user_id", Integer.class)))
+                .and(IM_SESSION.PATIENT_ID.eq(tempTable.field("patient_id", Integer.class))))
+            .fetch(IM_SESSION.ID);
+
+        return sessionIds;
     }
 
     /**

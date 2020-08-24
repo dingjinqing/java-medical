@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.im;
 
 import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
@@ -105,24 +104,20 @@ public class ImSessionService extends ShopBaseService {
      * @param renderPageParam 会话内容请求参数
      * @return 会话聊天内容信息
      */
-    public PageResult<ImSessionItemRenderVo> renderSession(ImSessionRenderPageParam renderPageParam) {
+    public List<ImSessionItemRenderVo> renderSession(ImSessionRenderPageParam renderPageParam) {
         Integer sessionId = renderPageParam.getSessionId();
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
         Integer doctorId = imSessionDo.getDoctorId();
 
-        PageResult<ImSessionItemDo> pageResult = null;
+        List<ImSessionItemDo> imSessionItemDos = null;
         // 从redis中获取数据
-        if (!ImSessionConstant.SESSION_DEAD.equals(imSessionDo.getSessionStatus())) {
-            pageResult = renderSessionFromRedis(renderPageParam, imSessionDo);
+        if (!ImSessionConstant.SESSION_DEAD.equals(imSessionDo.getSessionStatus()) && !ImSessionConstant.SESSION_CANCEL.equals(imSessionDo.getSessionStatus())) {
+            imSessionItemDos = renderSessionFromRedis(renderPageParam, imSessionDo);
         } else {
             // 从mysql中获取数据
-            pageResult = imSessionItemDao.getBySessionItemPgaeList(renderPageParam);
-            Collections.reverse(pageResult.getDataList());
+            imSessionItemDos = renderSessionFromDb(renderPageParam);
         }
 
-        List<ImSessionItemDo> imSessionItemDos = pageResult.getDataList();
-
-        // 此处需要进行倒序排序
         List<ImSessionItemRenderVo> sessionItemRenderVos = imSessionItemDos.stream().map(item -> {
             ImSessionItemRenderVo itemVo = new ImSessionItemRenderVo();
             itemVo.setDoctor(doctorId.equals(item.getFromId()));
@@ -131,10 +126,7 @@ public class ImSessionService extends ShopBaseService {
             itemVo.setSendTime(item.getSendTime());
             return itemVo;
         }).collect(Collectors.toList());
-        PageResult<ImSessionItemRenderVo> retPageResult = new PageResult<>();
-        retPageResult.setPage(pageResult.getPage());
-        retPageResult.setDataList(sessionItemRenderVos);
-        return retPageResult;
+        return sessionItemRenderVos;
     }
 
     /**
@@ -142,23 +134,22 @@ public class ImSessionService extends ShopBaseService {
      * @param renderPageParam
      * @return
      */
-    private PageResult<ImSessionItemDo> renderSessionFromRedis(ImSessionRenderPageParam renderPageParam, ImSessionDo imSessionDo) {
-        Integer curPage = renderPageParam.getCurrentPage() - 1;
+    private List<ImSessionItemDo> renderSessionFromRedis(ImSessionRenderPageParam renderPageParam, ImSessionDo imSessionDo) {
+
         Integer pageRows = renderPageParam.getPageRows();
         String sessionBakKey = getSessionRedisKeyBak(getShopId(), renderPageParam.getSessionId());
 
-        PageResult<ImSessionItemDo> pageResult = new PageResult<>();
-        Page page = new Page();
-        page.setPageRows(pageRows);
+        // redis 超过长度
         Long totalRows = jedisManager.getListSize(sessionBakKey);
         Integer pageCount = (Integer) (int) Math.ceil(Double.valueOf(totalRows) / Double.valueOf(pageRows));
-        page.setPageCount(pageCount);
-        pageResult.setPage(page);
+
         List<ImSessionItemDo> imSessionItemDos = null;
 
         if (renderPageParam.getCurrentPage() > pageCount) {
-            imSessionItemDos = new ArrayList<>();
+            renderPageParam.setCurrentPage(renderPageParam.getCurrentPage() - pageCount);
+            imSessionItemDos = renderSessionFromDb(renderPageParam);
         } else {
+            Integer curPage = renderPageParam.getCurrentPage() - 1;
             Integer endIndex = -curPage * pageRows - 1;
             // redis list 包含两端，所以要去掉一个元素
             Integer startIndex = endIndex - pageRows + 1;
@@ -196,9 +187,20 @@ public class ImSessionService extends ShopBaseService {
                 imSessionItemDos.add(imSessionItemDo);
             }
         }
+        return imSessionItemDos;
+    }
 
-        pageResult.setDataList(imSessionItemDos);
-        return pageResult;
+    /**
+     * 从db中查询分页内容
+     * @param renderPageParam
+     * @return
+     */
+    private List<ImSessionItemDo> renderSessionFromDb(ImSessionRenderPageParam renderPageParam) {
+        List<Integer> sessionIds = imSessionDao.getRelevantSessionIds(renderPageParam.getSessionId());
+
+        List<ImSessionItemDo> retList = imSessionItemDao.getRelevantSessionItemPageList(renderPageParam, sessionIds);
+        Collections.reverse(retList);
+        return retList;
     }
 
     /**
@@ -457,7 +459,7 @@ public class ImSessionService extends ShopBaseService {
     /**
      * 定时任务调用，结束已经超时的可继续问诊项
      */
-    public void timingDeadReadyToContinueSession(){
+    public void timingDeadReadyToContinueSession() {
         Timestamp updateTimeLine = DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS);
         ImSessionCondition imSessionCondition = new ImSessionCondition();
         imSessionCondition.setStatus(ImSessionConstant.SESSION_END);
