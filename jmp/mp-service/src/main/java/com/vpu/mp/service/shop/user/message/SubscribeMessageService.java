@@ -56,6 +56,8 @@ public class SubscribeMessageService extends ShopBaseService {
 	private static final byte FOUR = 4;
 	private static final byte FIVE = 5;
 
+	private static final String WX_UNSUBSCRIBE ="43101";
+
 	@Autowired
 	protected OpenPlatform open;
 
@@ -217,7 +219,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			return true;
 		}
 		// 用户拒绝接受消息，如果用户之前曾经订阅过，则表示用户取消了订阅关系
-		if ("43101".equals(sendResult.getErrcode())) {
+		if (WX_UNSUBSCRIBE.equals(sendResult.getErrcode())) {
 			modifySubscribeStatus(templateIdRecord);
 			return false;
 		}
@@ -717,15 +719,19 @@ public class SubscribeMessageService extends ShopBaseService {
         return value;
     }
 
+    private static final String SHOP_ACTIVITY  ="店铺活动";
+    private static final String SHOP_ACTIVITY_NAME  ="活动名称";
+    private static final String SHOP_ACTIVITY_PRIZE  ="店铺奖品";
+    private static final String SHOP_ACTIVITY_PRIZE_NAME  ="店铺奖品";
     private String checkName(String name, String value, String content) {
         if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
             //有数字
-            value="店铺活动";
-            if("活动名称".equals(content)) {
-                value = toReturnAnLog(name, value,"店铺活动");
+            value=SHOP_ACTIVITY;
+            if(SHOP_ACTIVITY_NAME.equals(content)) {
+                value = toReturnAnLog(name, value,SHOP_ACTIVITY);
             }
-            if("奖品名称".equals(content)) {
-                value = toReturnAnLog(name, value,"店铺奖品");
+            if(SHOP_ACTIVITY_PRIZE_NAME.equals(content)) {
+                value = toReturnAnLog(name, value,SHOP_ACTIVITY_PRIZE);
             }
             logger().info("最后：{}",value);
             return value;
