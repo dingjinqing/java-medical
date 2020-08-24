@@ -39,15 +39,13 @@ public class StoreAccountService extends MainBaseService {
 	private static final String DOT = ",";
 	public StoreAccountDao storeAccountDao;
 
-	/**
-	 * 获取用户列表
-	 * 
-	 * @param currentPage
-	 * @param pageRows
-	 * @param sysId
-	 * @param shopId
-	 * @return
-	 */
+    /**
+     * 获取用户列表
+     * @param param
+     * @param sysId
+     * @param shopId
+     * @return
+     */
 	public PageResult<StoreAccountVo> accountList(StoreAuthListPage param, Integer sysId, Integer shopId) {
 		SelectConditionStep<StoreAccountRecord> where = db().selectFrom(STORE_ACCOUNT).where(STORE_ACCOUNT.DEL_FLAG
 				.eq(NO_DEL).and(STORE_ACCOUNT.SYS_ID.eq(sysId).and(STORE_ACCOUNT.SHOP_ID.eq(shopId))));
@@ -198,7 +196,13 @@ public class StoreAccountService extends MainBaseService {
 
 	public StoreAuthInfoVo getStoreAccountFlag(StoreLoginParam param){
         StoreAuthInfoVo storeAuthInfoVo = new StoreAuthInfoVo();
-        storeAuthInfoVo.setStoreAccountInfo(storeAccountDao.getStoreAccountInfo(param));
+        StoreAccountVo storeAccountInfo = storeAccountDao.getStoreAccountInfo(param);
+        storeAuthInfoVo.setStoreAccountInfo(storeAccountInfo);
+        return storeAuthInfoVo;
+    }
+
+    public StoreAuthInfoVo verifyStoreLogin(StoreLoginParam param){
+        StoreAuthInfoVo storeAuthInfoVo = getStoreAccountFlag(param);
         return storeAuthInfoVo;
     }
 }

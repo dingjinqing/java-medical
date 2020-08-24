@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class StoreAuthInfoVo {
-    private Byte flag=0;
+    private String msg;
     private StoreAccountVo storeAccountInfo;
+    private Boolean isOk=false;
 }

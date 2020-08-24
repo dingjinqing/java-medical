@@ -85,7 +85,7 @@ public class StoreAuth {
         }
         param.setSysId(account.getSysId());
         StoreAuthInfoVo storeAuthInfo = saas.shop.storeManageService.storeAccountService.getStoreAccountFlag(param);
-        if (!StoreAuthConstant.STORE_AUTH_OK.equals(storeAuthInfo.getFlag())) {
+        if (!StoreAuthConstant.STORE_AUTH_OK.equals(storeAuthInfo.getIsOk())) {
             return null;
         }
         ShopChildAccountRecord subAccount = null;
