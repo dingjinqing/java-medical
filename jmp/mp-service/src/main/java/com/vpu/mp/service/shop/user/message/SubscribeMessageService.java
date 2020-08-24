@@ -1,6 +1,33 @@
 package com.vpu.mp.service.shop.user.message;
 
-import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
+import com.google.common.base.Objects;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.RuleKey;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubscribeMessageConfig;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessage;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessageData;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
+import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
+import com.vpu.mp.service.shop.user.user.UserService;
+import com.vpu.mp.service.wechat.OpenPlatform;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult.WxOpenSubscribeTemplate;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -11,35 +38,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import com.google.common.base.Objects;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.RegexUtil;
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
-import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
-import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.RuleKey;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubscribeMessageConfig;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessage;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessageData;
-import com.vpu.mp.service.shop.user.user.UserService;
-import com.vpu.mp.service.wechat.OpenPlatform;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult.WxOpenSubscribeTemplate;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
-
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 /**
  * 小程序订阅消息
@@ -56,6 +55,8 @@ public class SubscribeMessageService extends ShopBaseService {
 	private static final byte THREE = 3;
 	private static final byte FOUR = 4;
 	private static final byte FIVE = 5;
+
+	private static final String WX_UNSUBSCRIBE ="43101";
 
 	@Autowired
 	protected OpenPlatform open;
@@ -218,7 +219,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			return true;
 		}
 		// 用户拒绝接受消息，如果用户之前曾经订阅过，则表示用户取消了订阅关系
-		if ("43101".equals(sendResult.getErrcode())) {
+		if (WX_UNSUBSCRIBE.equals(sendResult.getErrcode())) {
 			modifySubscribeStatus(templateIdRecord);
 			return false;
 		}
@@ -293,7 +294,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	public TemplateVo[] getTemplateId(String[] data) throws WxErrorException {
 		//获取所有类目id
 		List<Integer> getcategoryList = getcategoryList();
-		SubscribeMessageConfig[] titleList=new SubscribeMessageConfig[data.length];
+		List<SubscribeMessageConfig> titleList =new ArrayList<>();
 		for (Integer category : getcategoryList) {
 			for (int i = 0; i < data.length; i++) {
 				SubscribeMessageConfig byTempleName = SubscribeMessageConfig.getByTempleName(category, data[i]);
@@ -301,41 +302,39 @@ public class SubscribeMessageService extends ShopBaseService {
 					logger().info("appid：" + getMaAppId() + "。数据：" + data[i] + "在类目" + category + "暂时未定义");
 				} else {
 					logger().info("添加的TempleName为：" + byTempleName.getTitle()+"。类目为"+category);
-					titleList[i]=byTempleName;
+					titleList.add(byTempleName);
 				}
 			}
 		}
-		logger().info("titleList大小为"+titleList.length);
-		logger().info(titleList.toString());
-		TemplateVo[] results=new TemplateVo[data.length];
+		logger().info("titleList大小为"+titleList.size());
+		logger().info(Util.toJson(titleList));
+		List<TemplateVo> results =new ArrayList<>();
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		jedis.getIncrSequence("subScribe", Integer.MAX_VALUE, 0);
 		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
 		if (data2.size() != 0) {
-			for (int i = 0; i < titleList.length; i++) {
+			for (SubscribeMessageConfig title : titleList) {
 				Boolean flag = false;
 				for (WxOpenSubscribeTemplate template : data2) {
-					boolean contains = template.getTitle().contains(titleList[i].getTitle());
-					if (contains) {
+					if (template.getTitle().contains(title.getTitle())) {
 						// 存在，直接赋值
 						flag = true;
-						logger().info("已经定义了模板："+titleList[i].getTitle());
-						results[i] = new TemplateVo(template.getPriTmplId(), titleList[i].getId(),titleList[i].getTempleName());
+						logger().info("已经定义了模板：" + title.getTitle());
+						results.add(new TemplateVo(template.getPriTmplId(), title.getId(), title.getTempleName()));
 					}
 				}
 				if (!flag) {
-					logger().info("没有定义模板："+titleList[i].getTitle());
-					results[i] = new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
+					logger().info("没有定义模板：" + title.getTitle());
+					results.add(new TemplateVo(addTemplate(title), title.getId(), title.getTempleName()));
 				}
 			}
-
 		}else {
-			for(int i=0;i<titleList.length;i++) {
-				logger().info("没有定义模板："+titleList[i].getTitle());
-				results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
+			for (SubscribeMessageConfig title : titleList) {
+				logger().info("没有定义模板："+title.getTitle());
+				results.add(new TemplateVo(addTemplate(title), title.getId(),title.getTempleName()));
 			}
 		}
-		return results;
+		return results.toArray(new TemplateVo[0]);
 	}
 
 
@@ -720,15 +719,19 @@ public class SubscribeMessageService extends ShopBaseService {
         return value;
     }
 
+    private static final String SHOP_ACTIVITY  ="店铺活动";
+    private static final String SHOP_ACTIVITY_NAME  ="活动名称";
+    private static final String SHOP_ACTIVITY_PRIZE  ="店铺奖品";
+    private static final String SHOP_ACTIVITY_PRIZE_NAME  ="店铺奖品";
     private String checkName(String name, String value, String content) {
         if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
             //有数字
-            value="店铺活动";
-            if("活动名称".equals(content)) {
-                value = toReturnAnLog(name, value,"店铺活动");
+            value=SHOP_ACTIVITY;
+            if(SHOP_ACTIVITY_NAME.equals(content)) {
+                value = toReturnAnLog(name, value,SHOP_ACTIVITY);
             }
-            if("奖品名称".equals(content)) {
-                value = toReturnAnLog(name, value,"店铺奖品");
+            if(SHOP_ACTIVITY_PRIZE_NAME.equals(content)) {
+                value = toReturnAnLog(name, value,SHOP_ACTIVITY_PRIZE);
             }
             logger().info("最后：{}",value);
             return value;
