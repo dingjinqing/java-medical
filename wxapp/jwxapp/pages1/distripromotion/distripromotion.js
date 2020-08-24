@@ -24,19 +24,19 @@ global.wxPage({
   //设置or取消默认
   toDefault: function (e) {
     var that = this;
-    var lan_id = e.currentTarget.dataset.lanid;
-    var is_default = e.currentTarget.dataset.isdefault;
-    // util.api("/api/wxapp/rebate/promotionLanguage/setDef", function (res) {
-    //   if (res.error == 0) {
-    //     util.toast_success('设置成功');
-    //     setTimeout(function () {
-    //       promotonRequest(that);
-    //     }, 1000);
-    //   } else {
-    //     util.toast_fail('设置失败');
-    //     return false
-    //   }
-    // }, { lan_id: lan_id, is_default: is_default });
+    var id = e.currentTarget.dataset.lanid;
+    // var isdefault = e.currentTarget.dataset.isdefault;
+    util.api("api/wxapp/distribution/promotionLanguageList/setDefault", function (res) {
+      if (res.error == 0) {
+        util.toast_success('设置成功');
+        setTimeout(function () {
+          promotonRequest(that);
+        }, 1000);
+      } else {
+        util.toast_fail('设置失败');
+        return false
+      }
+    }, { userId: util.getCache('user_id'), languageId: id });
   },
 
   //复制到粘贴板
@@ -69,17 +69,15 @@ global.wxPage({
 })
 
 function promotonRequest(that) {
-  // util.api('/api/wxapp/rebate/promotionLanguage/list', function (res) {
-  //   if (res.error == 0) {
-  //     that.setData({
-  //       promotionList: res.content
-  //     })
-  //   } else {
-  //     that.setData({
-  //       none_message: res.message,
-  //       none_jump_page: res.content
-  //     })
-  //   }
-  // });
+  util.api('/api/wxapp/distribution/promotionLanguageList', function (res) {
+    if (res.error == 0) {
+      that.setData({
+        promotionList: res.content
+      })
+    } else {
+      util.showModal('提示', res.message);
+      return false
+    }
+  });
 
 }
