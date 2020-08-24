@@ -587,7 +587,7 @@ public class MiniMain extends SchemaImpl {
             CronDefine.CRON_DEFINE,
             CronRecord.CRON_RECORD,
             ReturnOrderBak.RETURN_ORDER_BAK,
-            ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK
+            ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK,
             InquiryOrder.INQUIRY_ORDER,
             ShopSmsConfig.SHOP_SMS_CONFIG,
             StoreAccount.STORE_ACCOUNT);
