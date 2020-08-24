@@ -127,7 +127,7 @@ public class PrescriptionDao extends ShopBaseDao {
         SelectOnConditionStep<? extends Record> record = db().select(PRESCRIPTION.PRESCRIPTION_CODE, PRESCRIPTION.DOCTOR_NAME,
                 PRESCRIPTION.DOCTOR_CODE,
                 PRESCRIPTION.DIAGNOSIS_NAME, PRESCRIPTION.DEPARTMENT_NAME, PRESCRIPTION.DIAGNOSE_TIME,
-                PATIENT.NAME).from(PRESCRIPTION)
+                PATIENT.NAME,PATIENT.ID).from(PRESCRIPTION)
                 .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID));
         if (!Strings.isEmpty(param.getPatientName().trim())){
             record.where(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName().trim())));
