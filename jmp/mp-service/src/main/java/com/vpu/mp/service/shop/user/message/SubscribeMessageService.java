@@ -1,6 +1,33 @@
 package com.vpu.mp.service.shop.user.message;
 
-import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
+import com.google.common.base.Objects;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.RuleKey;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubscribeMessageConfig;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessage;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessageData;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
+import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
+import com.vpu.mp.service.shop.user.user.UserService;
+import com.vpu.mp.service.wechat.OpenPlatform;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult.WxOpenSubscribeTemplate;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -11,35 +38,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import com.google.common.base.Objects;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.RegexUtil;
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
-import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
-import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.RuleKey;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubscribeMessageConfig;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessage;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessageData;
-import com.vpu.mp.service.shop.user.user.UserService;
-import com.vpu.mp.service.wechat.OpenPlatform;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult.WxOpenSubscribeTemplate;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
-
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 /**
  * 小程序订阅消息
@@ -293,7 +292,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	public TemplateVo[] getTemplateId(String[] data) throws WxErrorException {
 		//获取所有类目id
 		List<Integer> getcategoryList = getcategoryList();
-		SubscribeMessageConfig[] titleList=new SubscribeMessageConfig[data.length];
+		List<SubscribeMessageConfig> titleList =new ArrayList<>();
 		for (Integer category : getcategoryList) {
 			for (int i = 0; i < data.length; i++) {
 				SubscribeMessageConfig byTempleName = SubscribeMessageConfig.getByTempleName(category, data[i]);
@@ -301,41 +300,39 @@ public class SubscribeMessageService extends ShopBaseService {
 					logger().info("appid：" + getMaAppId() + "。数据：" + data[i] + "在类目" + category + "暂时未定义");
 				} else {
 					logger().info("添加的TempleName为：" + byTempleName.getTitle()+"。类目为"+category);
-					titleList[i]=byTempleName;
+					titleList.add(byTempleName);
 				}
 			}
 		}
-		logger().info("titleList大小为"+titleList.length);
-		logger().info(titleList.toString());
-		TemplateVo[] results=new TemplateVo[data.length];
+		logger().info("titleList大小为"+titleList.size());
+		logger().info(Util.toJson(titleList));
+		List<TemplateVo> results =new ArrayList<>();
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		jedis.getIncrSequence("subScribe", Integer.MAX_VALUE, 0);
 		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
 		if (data2.size() != 0) {
-			for (int i = 0; i < titleList.length; i++) {
+			for (SubscribeMessageConfig title : titleList) {
 				Boolean flag = false;
 				for (WxOpenSubscribeTemplate template : data2) {
-					boolean contains = template.getTitle().contains(titleList[i].getTitle());
-					if (contains) {
+					if (template.getTitle().contains(title.getTitle())) {
 						// 存在，直接赋值
 						flag = true;
-						logger().info("已经定义了模板："+titleList[i].getTitle());
-						results[i] = new TemplateVo(template.getPriTmplId(), titleList[i].getId(),titleList[i].getTempleName());
+						logger().info("已经定义了模板：" + title.getTitle());
+						results.add(new TemplateVo(template.getPriTmplId(), title.getId(), title.getTempleName()));
 					}
 				}
 				if (!flag) {
-					logger().info("没有定义模板："+titleList[i].getTitle());
-					results[i] = new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
+					logger().info("没有定义模板：" + title.getTitle());
+					results.add(new TemplateVo(addTemplate(title), title.getId(), title.getTempleName()));
 				}
 			}
-
 		}else {
-			for(int i=0;i<titleList.length;i++) {
-				logger().info("没有定义模板："+titleList[i].getTitle());
-				results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
+			for (SubscribeMessageConfig title : titleList) {
+				logger().info("没有定义模板："+title.getTitle());
+				results.add(new TemplateVo(addTemplate(title), title.getId(),title.getTempleName()));
 			}
 		}
-		return results;
+		return results.toArray(new TemplateVo[0]);
 	}
 
 
