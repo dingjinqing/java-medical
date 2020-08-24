@@ -21,6 +21,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -101,6 +102,10 @@ public class SmsAccountService extends ShopBaseService {
         HttpResponse response = smsService.requestApi(postBody);
         SmsAccountInfoVo smsAccountInfoVo = JSONUtil.toBean(response.body(), SmsAccountInfoVo.class);
         smsAccountInfoVo.setRechargeUrl(smsApiConfig.getChargeUrl());
+        if (!Strings.isBlank(smsAccountInfoVo.getBalance())){
+            BigDecimal balanceDecimal = new BigDecimal(smsAccountInfoVo.getBalance()).setScale(2, BigDecimal.ROUND_HALF_UP);
+            smsAccountInfoVo.setBalance(balanceDecimal.toString());
+        }
         smsAccountInfoVo.setSmsAccount(accountConfig);
         return smsAccountInfoVo;
     }
