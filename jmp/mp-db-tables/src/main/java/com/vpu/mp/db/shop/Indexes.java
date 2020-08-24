@@ -542,7 +542,9 @@ public class Indexes {
     public static final Index STORE_ACCOUNT_ACCOUNT_NAME = Indexes0.STORE_ACCOUNT_ACCOUNT_NAME;
     public static final Index STORE_ACCOUNT_MOBILE = Indexes0.STORE_ACCOUNT_MOBILE;
     public static final Index STORE_ACCOUNT_PRIMARY = Indexes0.STORE_ACCOUNT_PRIMARY;
-
+    public static final Index INQUIRY_ORDER_REBATE_DOCTOR_ID = Indexes0.INQUIRY_ORDER_REBATE_DOCTOR_ID;
+    public static final Index INQUIRY_ORDER_REBATE_ORDER_SN = Indexes0.INQUIRY_ORDER_REBATE_ORDER_SN;
+    public static final Index INQUIRY_ORDER_REBATE_PRIMARY = Indexes0.INQUIRY_ORDER_REBATE_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1061,7 +1063,9 @@ public class Indexes {
         public static Index STORE_ACCOUNT_ACCOUNT_NAME = Internal.createIndex("account_name", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_NAME }, false);
         public static Index STORE_ACCOUNT_MOBILE = Internal.createIndex("mobile", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.MOBILE }, false);
         public static Index STORE_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_ID }, true);
-
+        public static Index INQUIRY_ORDER_REBATE_DOCTOR_ID = Internal.createIndex("doctor_id", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ORDER_SN }, false);
+        public static Index INQUIRY_ORDER_REBATE_ORDER_SN = Internal.createIndex("order_sn", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ORDER_SN }, false);
+        public static Index INQUIRY_ORDER_REBATE_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ID }, true);
     }
 
 }

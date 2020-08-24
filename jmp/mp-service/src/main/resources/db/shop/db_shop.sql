@@ -5386,6 +5386,8 @@ CREATE TABLE `b2c_inquiry_order` (
  `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
  `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
  `image_url` text  COMMENT '病情描述image信息',
+ `rebate_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '返利比例',
+ `total_rebate_money` decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '返利金额',
  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -5408,6 +5410,22 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   KEY `order_sn` (`order_sn`),
   KEY `user_id` (`user_id`)
 ) COMMENT='问诊订单退款记录';
+-- 医师问诊订单返利表
+CREATE TABLE `b2c_inquiry_order_rebate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_sn` varchar(64)  NOT NULL DEFAULT '' COMMENT '订单号',
+  `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
+  `total_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '问诊金额',
+  `total_rebate_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '返利金额',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态  0待返利 1已返利',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+  `rebate_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'COMMENT  '返利日期',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `order_sn` (`order_sn`),
+  KEY `doctor_id` (`order_sn`)
+)COMMENT='医师问诊订单返利表';
 
 -- 用户消息表
 CREATE TABLE `b2c_user_message` (
