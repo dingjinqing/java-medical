@@ -2180,8 +2180,6 @@ CREATE TABLE `b2c_member_card` (
   `custom_options` text COMMENT '自定义激活信息配置',
   `card_tag` tinyint(1) DEFAULT 0 COMMENT '是否开启给领卡用户打标签0否，1是',
   `card_tag_id` varchar(20) COMMENT '领卡打标签id',
-  `card_tag` tinyint(1) DEFAULT 0 COMMENT '是否开启给领卡用户打标签0否，1是',
-  `card_tag_id` varchar(20) COMMENT '领卡打标签id',
   `card_give_away` tinyint(1) DEFAULT 0 COMMENT '0:不可转赠，1:可以转赠',
   `card_give_continue` tinyint(1) DEFAULT 0 COMMENT '0:不可继续转赠，1:可以继续转赠',
   `most_give_away` int(10) DEFAULT 0 COMMENT '最多可转赠多少次 0不限制',
