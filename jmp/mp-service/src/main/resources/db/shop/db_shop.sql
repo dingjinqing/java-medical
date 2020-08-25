@@ -5534,6 +5534,18 @@ create table `b2c_doctor_comment`(
     primary key(`id`)
 )comment ='医师评价和打分';
 
+-- 医师评价回复
+create table `b2c_doctor_comment_reply`(
+    `id`          int(11)       not null auto_increment,
+    `comment_id`  int(11)       not null comment '医师评价表id',
+    `reply_note`  varchar(1000) NOT NULL DEFAULT '' COMMENT '回复内容',
+    `is_delete`   tinyint(1)    not null default 0 comment '删除',
+    `create_time` timestamp     not null default current_timestamp,
+    `update_time` timestamp     not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+) comment ='医师评价回复';
+
+
 -- 医师上下班记录表
 create table `b2c_doctor_duty_record`(
     `id`   int(11)      not null auto_increment,
