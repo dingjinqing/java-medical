@@ -591,8 +591,8 @@
 -- /*********************3.2*************************END*/
 
 /*********************3.2***********************BEGIN*/
--- ALTER TABLE `b2c_inquiry_order` ADD COLUMN `rebate_proportion` decimal(6,4) DEFAULT '0.0000' COMMENT '返利比例';
--- ALTER TABLE `b2c_inquiry_order` ADD COLUMN `total_rebate_money` decimal(10,4) DEFAULT '0.0000' COMMENT '返利金额';
+ALTER TABLE `b2c_inquiry_order` ADD COLUMN `rebate_proportion` decimal(6,4) DEFAULT '0.0000' COMMENT '返利比例';
+ALTER TABLE `b2c_inquiry_order` ADD COLUMN `total_rebate_money` decimal(10,4) DEFAULT '0.0000' COMMENT '返利金额';
 
 -- 医师问诊订单返利表
 create table if not exists `b2c_inquiry_order_rebate` (
@@ -639,7 +639,7 @@ CREATE TABLE IF NOT EXISTS `b2c_city_service_account` (
 )COMMENT='同城配送账号表';
 
 -- 医师返利数据表
-create table if not exists `b2c_doctor_total_rebate`(
+create table if not exists `b2c_doctor_total_rebate` (
     `id`   int(11)   NOT NULL AUTO_INCREMENT,
     `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
     `total_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '累计获得返利金额',

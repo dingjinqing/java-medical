@@ -59,7 +59,6 @@ public class DbUtil {
                 log.warn("重复执行的修改表字段的sql-->{}",sql);
             }else{
                 errorNumbers.getAndIncrement();
-                log.error("错误sql："+sql);
                 throw new SQLRunTimeException(e.getMessage());
 
             }
@@ -175,6 +174,7 @@ public class DbUtil {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            log.info(tableName);
         }
     }
 
