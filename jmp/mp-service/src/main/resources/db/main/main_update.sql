@@ -283,7 +283,7 @@ CREATE TABLE if not exists  `b2c_return_order_bak` (
 )COMMENT='退回订单表';
 
 
---退款订单商品
+-- 退款订单商品
 CREATE TABLE if not exists  `b2c_return_order_goods_bak` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
@@ -312,5 +312,17 @@ CREATE TABLE if not exists  `b2c_return_order_goods_bak` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='退货商品表';
 
+-- 店铺物流信息表
+CREATE TABLE if not exists `b2c_shop_logistics` (
+    `id` int(8) NOT NULL AUTO_INCREMENT,
+    `shop_id` int(8) NOT NULL DEFAULT '0' COMMENT '店铺Id',
+    `logistic_name` varchar(30) NOT NULL DEFAULT '' COMMENT '快递公司名称',
+    `logistic_type` varchar(20) NOT NULL DEFAULT '' COMMENT '快递100type字段',
+    `shipping_code` varchar(20) NOT NULL DEFAULT '',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未删除，1:已删除',
+    PRIMARY KEY (`id`)
+) COMMENT='店铺物流信息表';
 
 /*********************3.3*************************END*/

@@ -1,7 +1,7 @@
 package com.vpu.sql.util;
 
 import com.google.common.collect.Lists;
-import com.vpu.sql.constant.DBOperator;
+import com.vpu.sql.constant.DbOperator;
 import com.vpu.sql.entity.SqlAttribute;
 
 import java.util.List;
@@ -96,16 +96,16 @@ public class RegexUtil {
         SqlAttribute sqlAttribute = new SqlAttribute();
         sql = sql.toLowerCase().replaceAll(" +"," ").replaceAll("`","").trim();
         String[] sqlArray = sql.split(" ");
-        if(DBOperator.DROP.getOperator().equals(sqlArray[0]) ){
+        if(DbOperator.DROP.getOperator().equals(sqlArray[0]) ){
             throw new RuntimeException("update sql file can't execute drop table");
         }
-        DBOperator dbOperator = DBOperator.getDBOperator(sqlArray[0]);
+        DbOperator dbOperator = DbOperator.getDbOperator(sqlArray[0]);
         String tableName = "";
-        if(Objects.equals(dbOperator, DBOperator.CREATE)){
+        if(Objects.equals(dbOperator, DbOperator.CREATE)){
             tableName = sqlArray[5];
-        }else if( Objects.equals(dbOperator, DBOperator.ALTER)  ){
+        }else if( Objects.equals(dbOperator, DbOperator.ALTER)  ){
             tableName = sqlArray[2];
-        }else if( Objects.equals(dbOperator, DBOperator.INSERT) ){
+        }else if( Objects.equals(dbOperator, DbOperator.INSERT) ){
             tableName = sqlArray[3];
         }
         sqlAttribute.setDbOperator(dbOperator);
@@ -123,12 +123,12 @@ public class RegexUtil {
         sql = sql.toLowerCase().replaceAll(" +"," ").replaceAll("`","").trim();
         String[] sqlArray = sql.split(" ");
 
-        if( DBOperator.UPDATE.getOperator().equals(sqlArray[0]) ){
+        if( DbOperator.UPDATE.getOperator().equals(sqlArray[0]) ){
             sqlAttribute.setTableName(sqlArray[1].replaceAll("\\(",""));
         }else{
             sqlAttribute.setTableName(tableName);
         }
-        sqlAttribute.setDbOperator(DBOperator.getDBOperator(sqlArray[0]));
+        sqlAttribute.setDbOperator(DbOperator.getDbOperator(sqlArray[0]));
 
         return sqlAttribute;
     }

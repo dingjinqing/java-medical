@@ -38,6 +38,7 @@ public class InquiryOrderDao extends ShopBaseDao {
             .from(INQUIRY_ORDER);
         select.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         select=buildOptions(select, param);
+        select.orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         PageResult<InquiryOrderDo> list=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderDo.class);
         return list;
     }
