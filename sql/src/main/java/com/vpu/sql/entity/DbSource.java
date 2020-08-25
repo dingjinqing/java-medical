@@ -5,7 +5,10 @@ import com.vpu.sql.constant.Scope;
 import javax.sql.DataSource;
 import java.util.List;
 
-public class DBSource {
+/**
+ * @author luguangyao
+ */
+public class DbSource {
 
     private DataSource dataSource;
 
@@ -16,12 +19,12 @@ public class DBSource {
 
 
 
-    public DBSource(DataSource dataSource, Scope scope) {
+    public DbSource(DataSource dataSource, Scope scope) {
         this.dataSource = dataSource;
         this.scope = scope;
     }
 
-    public DBSource(DataSource dataSource, List<String> dataBases, Scope scope) {
+    public DbSource(DataSource dataSource, List<String> dataBases, Scope scope) {
         this.dataSource = dataSource;
         this.dataBases = dataBases;
         this.scope = scope;

@@ -1,6 +1,6 @@
 package com.vpu.sql.config.source;
 
-import com.vpu.sql.entity.DBConfig;
+import com.vpu.sql.entity.DbConfig;
 
 import javax.sql.DataSource;
 import java.nio.file.Path;
@@ -14,5 +14,5 @@ public interface ShopDataSource {
     void execute(Path path);
 
 
-    Map<String,DataSource> getShopDataSource(List<DBConfig> configs);
+    Map<String,DataSource> getShopDataSource(List<DbConfig> configs);
 }

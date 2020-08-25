@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * @author luguangyao
  */
-public class DBConfig {
+public class DbConfig {
 
     private String host;
 

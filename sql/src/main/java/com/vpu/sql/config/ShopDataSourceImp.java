@@ -3,7 +3,7 @@ package com.vpu.sql.config;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vpu.sql.config.source.ShopDataSource;
-import com.vpu.sql.entity.DBConfig;
+import com.vpu.sql.entity.DbConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class ShopDataSourceImp implements ShopDataSource {
 
 
 
-    private HikariDataSource getShopDataSource(DBConfig dbConfig){
+    private HikariDataSource getShopDataSource(DbConfig dbConfig){
         HikariConfig config = new HikariConfig();
         String jdbcUrl = MessageFormat.format(CONNECTION_TEMPLATE,dbConfig.getHost(),dbConfig.getPort()+"");
 //        String jdbcUrl = MessageFormat.format(CONNECTION_TEMPLATE,"127.0.0.1","9910");
@@ -39,18 +39,18 @@ public class ShopDataSourceImp implements ShopDataSource {
         return new HikariDataSource(config);
     }
     @Override
-    public Map<String,DataSource> getShopDataSource(List<DBConfig> configs){
+    public Map<String,DataSource> getShopDataSource(List<DbConfig> configs){
         Map<String,DataSource> resultMap = Maps.newHashMap();
         log.info("\nall shop dataBase config:{}",configs.toString());
-        List<DBConfig> needInits = deduplicationDbConfig(configs);
-        for( DBConfig dbConfig: needInits ){
+        List<DbConfig> needInits = deduplicationDbConfig(configs);
+        for( DbConfig dbConfig: needInits ){
             resultMap.put(dbConfig.getHost(),getShopDataSource(dbConfig));
         }
         return resultMap;
     }
 
-    private List<DBConfig> deduplicationDbConfig(List<DBConfig> configList){
-        List<DBConfig> result = Lists.newArrayList();
+    private List<DbConfig> deduplicationDbConfig(List<DbConfig> configList){
+        List<DbConfig> result = Lists.newArrayList();
         List<String>  deduplicationList = Lists.newLinkedList();
         configList.stream().filter(x->!deduplicationList.contains(x.getHost())).forEach(x->{
             result.add(x);

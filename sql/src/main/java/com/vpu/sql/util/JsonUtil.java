@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class JsonUtil {
 
-    static final ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper MAPPER = new ObjectMapper();
 
 
 
@@ -23,7 +23,7 @@ public class JsonUtil {
                 = new TypeReference<HashMap<String,String>>() {};
         Map<String,String>  result =Maps.newHashMap();
         try {
-            result =  mapper.readValue(jsonStr, typeRef);
+            result =  MAPPER.readValue(jsonStr, typeRef);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -31,7 +31,7 @@ public class JsonUtil {
     }
     public static <T>T toEntity(String jsonStr,Class<T> clz){
         try {
-             return mapper.readValue(jsonStr, clz);
+             return MAPPER.readValue(jsonStr, clz);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

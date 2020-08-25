@@ -132,7 +132,8 @@ public class FileUtil {
         String newSql = sql.trim().toLowerCase();
         int indexAddress = newSql.indexOf(keyName);
         int lastParenthesesAddress = newSql.lastIndexOf(")");
-        if(indexAddress != 0 || newSql.length() - lastParenthesesAddress > 2){
+        int baseAddressIndex = 2;
+        if(indexAddress != 0 || newSql.length() - lastParenthesesAddress > baseAddressIndex){
             return false;
         }
         return (int)newSql.charAt(newSql.lastIndexOf("191")+3)==41;
