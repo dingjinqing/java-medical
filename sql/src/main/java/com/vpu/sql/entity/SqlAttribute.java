@@ -2,6 +2,9 @@ package com.vpu.sql.entity;
 
 import com.vpu.sql.constant.DBOperator;
 
+/**
+ * @author luguangyao
+ */
 public class SqlAttribute {
 
     private String tableName;

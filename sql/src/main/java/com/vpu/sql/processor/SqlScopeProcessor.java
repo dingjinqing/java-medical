@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/**
+ * @author luguangyao
+ */
 @Component
 public class SqlScopeProcessor implements ApplicationListener<ContextRefreshedEvent>, Ordered {
 

@@ -16,6 +16,9 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author luguangyao
+ */
 @Slf4j
 @Component("shopDataSource")
 @Lazy

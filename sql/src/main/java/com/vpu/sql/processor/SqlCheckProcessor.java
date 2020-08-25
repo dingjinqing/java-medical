@@ -56,21 +56,14 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
 
     private static final String MAIN_DATA_INIT_FILE= "/main/db_main_data.sql";
 
-
-    //测试专用
-    private static final String TEST_INIT = "/test/test_init.sql";
-
-    private static final String TEST_UPDATE = "/test/test_update.sql";
-
-
-
-
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        if( System.getProperty("check") == null ){
+        String checkName = "check";
+        String checkPathName = "checkPath";
+        if( System.getProperty(checkName) == null ){
             return ;
         }
-        String path = System.getProperty("checkPath");
+        String path = System.getProperty(checkPathName);
         if( StringUtils.isEmpty(path) ){
             throw  new NullPointerException("can't find checkPath");
         }

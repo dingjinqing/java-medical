@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * @author lugauangyao
+ */
 @Component
 @Slf4j
 public class DataConfigSource {
@@ -97,7 +100,7 @@ public class DataConfigSource {
     }
     public void execute(){
         initSourceTable();
-        String initSQL = "use ";
+        String initSql = "use ";
         if( CollectionUtils.isEmpty(dbSources) ){
             return ;
         }
@@ -108,12 +111,12 @@ public class DataConfigSource {
                 if( Scope.main.equals(source.getScope()) ){
                     log.info("主库执行:");
                     for( String sql :sqlSource ){
-                        String md5SQL = Md5Util.md5(RegexUtil.getCompressionSQL(sql));
-                        if( checkRepeatSQL(md5SQL,0,"main_sql_temp") ){
-                            insertIntoDB(sql,0,md5SQL,"main_sql");
+                        String md5Sql = Md5Util.md5(RegexUtil.getCompressionSql(sql));
+                        if( checkRepeatSQL(md5Sql,0,"main_sql_temp") ){
+                            insertIntoDB(sql,0,md5Sql,"main_sql");
                         }else{
                             DBUtil.realExecuteSQL(con,sql);
-                            insertIntoDB(sql,0,md5SQL,"main_sql");
+                            insertIntoDB(sql,0,md5Sql,"main_sql");
                         }
 
 
@@ -122,16 +125,16 @@ public class DataConfigSource {
                     for( String db: source.getDataBases() ){
                         log.info("shop执行:{}",db);
                         int shopId = RegexUtil.getShopIdByTableName(db);
-                        DBUtil.realExecuteSQL(con,initSQL+db);
+                        DBUtil.realExecuteSQL(con,initSql+db);
                         for( String sql : sqlSource ){
                             log.debug(sql);
-                            String md5SQL = Md5Util.md5(RegexUtil.getCompressionSQL(sql));
-                            if( checkRepeatSQL(md5SQL,shopId,"shop_sql_temp") ){
-                                insertIntoDB(sql,shopId,md5SQL,"shop_sql");
+                            String md5Sql = Md5Util.md5(RegexUtil.getCompressionSql(sql));
+                            if( checkRepeatSQL(md5Sql,shopId,"shop_sql_temp") ){
+                                insertIntoDB(sql,shopId,md5Sql,"shop_sql");
                             }else{
                                 DBUtil.realExecuteSQL(con,sql);
 
-                                insertIntoDB(sql,shopId,md5SQL,"shop_sql");
+                                insertIntoDB(sql,shopId,md5Sql,"shop_sql");
                             }
                         }
 

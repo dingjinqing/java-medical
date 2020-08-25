@@ -4,7 +4,9 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
-
+/**
+ * @author lugauangyao
+ */
 @Configuration
 public class H2DataSource {
 

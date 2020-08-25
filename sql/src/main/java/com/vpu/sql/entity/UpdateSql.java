@@ -5,6 +5,9 @@ import com.vpu.sql.constant.DBOperator;
 import java.util.LinkedList;
 import java.util.Map;
 
+/**
+ * @author luguangyao
+ */
 public class UpdateSql {
 
 

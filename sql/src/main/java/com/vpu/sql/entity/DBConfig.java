@@ -2,6 +2,9 @@ package com.vpu.sql.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * @author luguangyao
+ */
 public class DBConfig {
 
     private String host;

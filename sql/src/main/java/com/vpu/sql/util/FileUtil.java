@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * @author luguangyao
+ */
 public class FileUtil {
 
     /**
@@ -125,8 +128,9 @@ public class FileUtil {
      * @return true/false
      */
     private static boolean checkSetIndexLength(String sql){
+        String keyName = "key";
         String newSql = sql.trim().toLowerCase();
-        int indexAddress = newSql.indexOf("key");
+        int indexAddress = newSql.indexOf(keyName);
         int lastParenthesesAddress = newSql.lastIndexOf(")");
         if(indexAddress != 0 || newSql.length() - lastParenthesesAddress > 2){
             return false;
