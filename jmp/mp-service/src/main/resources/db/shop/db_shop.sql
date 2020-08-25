@@ -2022,7 +2022,7 @@ CREATE TABLE `b2c_lottery` (
   `lottery_name` varchar(120) NOT NULL COMMENT '抽奖名称',
   `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间',
   `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
-  `lottery_explain` varb2c_pay_awardchar(299) NOT NULL COMMENT '抽奖说明',
+  `lottery_explain` varchar(299) NOT NULL COMMENT '抽奖说明',
   `free_chances` int(8) NULL DEFAULT NULL COMMENT '免费抽奖次数 0不限制 -1不可免费抽奖 ',
   `can_share` tinyint(2) DEFAULT NULL COMMENT '是否分享获得次数',
   `share_chances` int(8) NULL DEFAULT NULL COMMENT '分享最多获得次数 0 不限制次数',
@@ -2943,14 +2943,14 @@ CREATE TABLE `b2c_package_sale` (
   `group_name_3` varchar(20) DEFAULT NULL COMMENT '分组名称',
   `goods_number_3` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数',
   `goods_ids_3` text COMMENT '分组goodsids',
-  `cat_ids_3` text COMMENT '分组平台分类id',b2c_customer_avail_coupons
+  `cat_ids_3` text COMMENT '分组平台分类id',
   `sort_ids_3` text COMMENT '分组商家分类id',
   `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '活动状态1启用',
   `del_flag` tinyint(2) NOT NULL DEFAULT '0' COMMENT '删除状态',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `package_type` tinyint(1) DEFAULT '0' COMMENT '活动类型0金额1折扣',
-  `total_ratio` decimal(4,2) DEFAULT '0.00' COMMENT '结算比例'
+  `total_ratio` decimal(4,2) DEFAULT '0.00' COMMENT '结算比例',
   PRIMARY KEY (`id`)
 )COMMENT='一口价活动';
 
