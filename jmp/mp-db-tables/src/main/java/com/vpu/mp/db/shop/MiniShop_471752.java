@@ -1123,6 +1123,11 @@ public class MiniShop_471752 extends SchemaImpl {
      * 同城配送账号表
      */
     public final CityServiceAccount CITY_SERVICE_ACCOUNT = com.vpu.mp.db.shop.tables.CityServiceAccount.CITY_SERVICE_ACCOUNT;
+    /**
+     * 同城配送订单表
+     */
+    public final CityServiceOrder CITY_SERVICE_ORDER = com.vpu.mp.db.shop.tables.CityServiceOrder.CITY_SERVICE_ORDER;
+
 
 
 
@@ -1372,7 +1377,8 @@ public class MiniShop_471752 extends SchemaImpl {
             DoctorDutyRecord.DOCTOR_DUTY_RECORD,
             DoctorComment.DOCTOR_COMMENT,
             StoreAccount.STORE_ACCOUNT,
-            CityServiceAccount.CITY_SERVICE_ACCOUNT);
+            CityServiceAccount.CITY_SERVICE_ACCOUNT,
+            CityServiceOrder.CITY_SERVICE_ORDER);
 
 
     }
