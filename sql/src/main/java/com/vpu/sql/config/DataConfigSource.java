@@ -115,7 +115,7 @@ public class DataConfigSource {
                         if( checkRepeatSql(md5Sql,0,"main_sql_temp") ){
                             insertIntoDb(sql,0,md5Sql,"main_sql");
                         }else{
-                            DBUtil.realExecuteSQL(con,sql);
+                            DbUtil.realExecuteSql(con,sql);
                             insertIntoDb(sql,0,md5Sql,"main_sql");
                         }
 
@@ -125,14 +125,14 @@ public class DataConfigSource {
                     for( String db: source.getDataBases() ){
                         log.info("shop执行:{}",db);
                         int shopId = RegexUtil.getShopIdByTableName(db);
-                        DBUtil.realExecuteSQL(con,initSql+db);
+                        DbUtil.realExecuteSql(con,initSql+db);
                         for( String sql : sqlSource ){
                             log.debug(sql);
                             String md5Sql = Md5Util.md5(RegexUtil.getCompressionSql(sql));
                             if( checkRepeatSql(md5Sql,shopId,"shop_sql_temp") ){
                                 insertIntoDb(sql,shopId,md5Sql,"shop_sql");
                             }else{
-                                DBUtil.realExecuteSQL(con,sql);
+                                DbUtil.realExecuteSql(con,sql);
 
                                 insertIntoDb(sql,shopId,md5Sql,"shop_sql");
                             }
@@ -193,7 +193,7 @@ public class DataConfigSource {
         try( Connection con = sqlLiteDataSource.getConnection()) {
             if( con != null ){
 
-                DBUtil.executeSQLFileByJar(con, "db/init.sql");
+                DbUtil.executeSQLFileByJar(con, "db/init.sql");
             }
         } catch (SQLException e) {
             e.printStackTrace();

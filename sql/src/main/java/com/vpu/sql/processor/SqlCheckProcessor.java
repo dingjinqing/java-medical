@@ -10,7 +10,7 @@ import com.vpu.sql.exception.DuplicateColumnException;
 import com.vpu.sql.exception.DuplicateIndexException;
 import com.vpu.sql.exception.SQLRunTimeException;
 import com.vpu.sql.template.SQLErrorMessageTemplate;
-import com.vpu.sql.util.DBUtil;
+import com.vpu.sql.util.DbUtil;
 import com.vpu.sql.util.FileUtil;
 import com.vpu.sql.util.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +70,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
         checkMain(path);
 
         checkShop(path);
-        log.info("本次检查共有{}处error", DBUtil.errorNumbers.intValue());
+        log.info("本次检查共有{}处error", DbUtil.errorNumbers.intValue());
     }
 
     /**
@@ -189,9 +189,9 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
 
         for(Map.Entry<String,String> entry : sqlMap.entrySet() ){
             log.debug("检查【{}】的create SQL--->{}",entry.getKey(),entry.getValue());
-            DBUtil.executeSQL(con,entry.getValue());
+            DbUtil.executeSql(con,entry.getValue());
             if(entry.getValue().toUpperCase().indexOf("DROP")!=0) {
-                DBUtil.deleteTable(con, entry.getKey());
+                DbUtil.deleteTable(con, entry.getKey());
             }
         }
 
@@ -220,7 +220,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
                     /*校验updateSQL首先需要创建对应的table*/
                     if( sqlMap.containsKey(updateSql.getTableName()) ){
                         log.debug("表【{}】的创建语句在update中不存在，在根sql文件里获取创建语句...",updateSql.getTableName());
-                        DBUtil.executeSQL(con,sqlMap.get(entry.getKey()));
+                        DbUtil.executeSql(con,sqlMap.get(entry.getKey()));
                         existTable = true;
                     }else{
                         log.error("表【{}】的创建语句在update中不存在，在根sql文件里也未找到...",updateSql.getTableName());
@@ -235,7 +235,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
                 }
                 log.debug("执行【{}】update的语句--->\n{}",sqlEntry.getValue().getOperator(),sql);
                 try{
-                    DBUtil.executeSQL(con,sql);
+                    DbUtil.executeSql(con,sql);
                 }catch (DuplicateColumnException e){
                     duplicateError.append(
                             MessageFormat.format(
@@ -263,7 +263,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
                 }
 
             }
-            DBUtil.deleteTable(con, updateSql.getTableName());
+            DbUtil.deleteTable(con, updateSql.getTableName());
 
             log.debug ("表【{}】的update语句校验结束...",updateSql.getTableName());
         }

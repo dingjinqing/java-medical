@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public class DBUtil {
+public class DbUtil {
 
 
     private static final String DELETE_TABLE_SQL = "drop table if exists ";
@@ -32,7 +32,7 @@ public class DBUtil {
      * @param con 连接
      * @param sql sql
      */
-    public static void executeSQL(Connection con, String sql){
+    public static void executeSql(Connection con, String sql){
         try {
             con.setAutoCommit(false);
             con.prepareStatement(sql).executeUpdate();
@@ -68,7 +68,7 @@ public class DBUtil {
      * @param con 连接
      * @param sql sql
      */
-    public static void realExecuteSQL(Connection con, String sql){
+    public static void realExecuteSql(Connection con, String sql){
         try {
             con.setAutoCommit(false);
             con.prepareStatement(sql).executeUpdate();
@@ -105,7 +105,7 @@ public class DBUtil {
      * @param con 连接
      * @param createTableSql sql
      */
-    public static void executeSQL(Connection con, String createTableSql, List<String> updateSql){
+    public static void executeSql(Connection con, String createTableSql, List<String> updateSql){
         try {
 
             con.prepareStatement(createTableSql).execute();
@@ -180,10 +180,10 @@ public class DBUtil {
 
     public static void executeSQLFile(Connection con, String path){
         List<String> sqlList = FileUtil.readSqlFile(path);
-        sqlList.forEach(x-> executeSQL(con,x));
+        sqlList.forEach(x-> executeSql(con,x));
     }
     public static void executeSQLFileByJar(Connection con, String path){
         List<String> sqlList = FileUtil.readSqlFileByJar(path);
-        sqlList.forEach(x-> executeSQL(con,x));
+        sqlList.forEach(x-> executeSql(con,x));
     }
 }
