@@ -1,6 +1,5 @@
 package com.vpu.sql.entity;
 
-import com.vpu.sql.constant.DBAlterOperator;
 import com.vpu.sql.constant.DBOperator;
 
 public class SqlAttribute {

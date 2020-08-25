@@ -27,7 +27,7 @@ public class UpdateSql {
     /**
      * 涉及到的字段以及操作类型
      */
-    private Map<String,DBOperator> sqlOperatorMap;
+    private Map<String, DBOperator> sqlOperatorMap;
 
 
     public String getTableName() {

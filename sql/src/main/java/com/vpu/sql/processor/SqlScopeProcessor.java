@@ -3,7 +3,6 @@ package com.vpu.sql.processor;
 import com.vpu.sql.config.DataConfigSource;
 import com.vpu.sql.constant.Scope;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;

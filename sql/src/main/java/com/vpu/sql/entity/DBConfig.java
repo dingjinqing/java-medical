@@ -1,7 +1,6 @@
 package com.vpu.sql.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 public class DBConfig {
 

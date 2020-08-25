@@ -1,9 +1,7 @@
 package com.vpu.sql.config;
 
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 import javax.sql.DataSource;
 

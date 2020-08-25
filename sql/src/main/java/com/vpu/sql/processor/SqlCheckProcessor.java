@@ -15,7 +15,6 @@ import com.vpu.sql.util.FileUtil;
 import com.vpu.sql.util.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
@@ -78,7 +77,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
         checkMain(path);
 
         checkShop(path);
-        log.info("本次检查共有{}处error",DBUtil.errorNumbers.intValue());
+        log.info("本次检查共有{}处error", DBUtil.errorNumbers.intValue());
     }
 
     /**
@@ -92,7 +91,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
 
         Map<String,String> shopTableMap = assemblyTableSql(createSqlList);
 
-        Map<String,UpdateSql> shopUpdateMap = assemblyUpdateSqlMap(updateSqlList,dataSqlList);
+        Map<String, UpdateSql> shopUpdateMap = assemblyUpdateSqlMap(updateSqlList,dataSqlList);
         try(Connection con = h2DataSource.getShopDataSource().getConnection()) {
             log.info("开始检查【db_shop_init.sql】...");
             checkTable(shopTableMap,con);
@@ -113,8 +112,8 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
      * @param updateSqlList Files.readAllLine()返回的List
      * @return TableName --> update SQL List
      */
-    private Map<String, UpdateSql> assemblyUpdateSqlMap(List<String> updateSqlList,List<String> dataSqlList) {
-        Map<String,UpdateSql> resultMap = Maps.newHashMap();
+    private Map<String, UpdateSql> assemblyUpdateSqlMap(List<String> updateSqlList, List<String> dataSqlList) {
+        Map<String, UpdateSql> resultMap = Maps.newHashMap();
         for( String sql: updateSqlList ){
             SqlAttribute sqlAttribute = RegexUtil.getTableNameByUpdateSql(sql);
             assemblyUpdateSqlDataMap(resultMap,sqlAttribute,sql);
@@ -127,7 +126,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
     }
 
 
-    private void assemblyUpdateSqlDataMap(Map<String,UpdateSql> resultMap,SqlAttribute sqlAttribute,String sql  ){
+    private void assemblyUpdateSqlDataMap(Map<String, UpdateSql> resultMap, SqlAttribute sqlAttribute, String sql  ){
         String tableName = sqlAttribute.getTableName();
         UpdateSql updateSql;
         if ( resultMap.containsKey(tableName) ){
@@ -208,20 +207,20 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
      * @param updateSqlMap all update sql
      * @param con 和数据库的连接
      */
-    private void checkUpdateSql(Map<String,String> sqlMap,Map<String,UpdateSql> updateSqlMap,Connection con){
+    private void checkUpdateSql(Map<String,String> sqlMap, Map<String, UpdateSql> updateSqlMap, Connection con){
         /* update sql执行时重复字段导致的异常统计输出 */
         StringBuilder duplicateError = new StringBuilder();
 
         StringBuilder executeError = new StringBuilder();
 
 
-        for(Map.Entry<String,UpdateSql> entry : updateSqlMap.entrySet() ){
+        for(Map.Entry<String, UpdateSql> entry : updateSqlMap.entrySet() ){
             UpdateSql updateSql = entry.getValue();
             boolean existTable =  false;
             log.debug("开始对表【{}】的update语句进行校验...",updateSql.getTableName());
 
 
-            for (Map.Entry<String,DBOperator> sqlEntry: updateSql.getSqlOperatorMap().entrySet()){
+            for (Map.Entry<String, DBOperator> sqlEntry: updateSql.getSqlOperatorMap().entrySet()){
                 String sql = sqlEntry.getKey();
                 /*如果不是在update.sql里创建的table，那么需要去根sql文件里获取创建table的sql并执行*/
                 if( !existTable && !sqlEntry.getValue().equals(DBOperator.CREATE) ){

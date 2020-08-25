@@ -4,31 +4,21 @@ package com.vpu.sql.config;
 import com.google.common.collect.Lists;
 import com.vpu.sql.config.source.MainDataSource;
 import com.vpu.sql.config.source.ShopDataSource;
-import com.vpu.sql.constant.DBOperator;
 import com.vpu.sql.constant.Scope;
 import com.vpu.sql.constant.SqlTemplate;
 import com.vpu.sql.entity.DBConfig;
 import com.vpu.sql.entity.DBSource;
-import com.vpu.sql.exception.DuplicateColumnException;
-import com.vpu.sql.exception.DuplicateIndexException;
-import com.vpu.sql.exception.SQLRunTimeException;
-import com.vpu.sql.template.SQLErrorMessageTemplate;
 import com.vpu.sql.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ResourceUtils;
 
 import javax.sql.DataSource;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,7 +48,7 @@ public class DataConfigSource {
 
 
     public DataConfigSource(ConfigurableBeanFactory beanFactory, ShopDataSource shopDataSource,
-                            MainDataSource mainDataSource,@Qualifier("sqlLiteSource") DataSource sqlLiteSource){
+                            MainDataSource mainDataSource, @Qualifier("sqlLiteSource") DataSource sqlLiteSource){
         this.beanFactory = beanFactory;
         this.shopDataSource = shopDataSource;
         this.mainDataSource = mainDataSource;
@@ -72,7 +62,7 @@ public class DataConfigSource {
         this.sqlSource = sql;
     }
 
-    public void initDataSource(Scope scope,List<Integer> shopIds) throws SQLException {
+    public void initDataSource(Scope scope, List<Integer> shopIds) throws SQLException {
         if( scope == Scope.main ){
             dbSources.add(new DBSource(mainDataSource.getMainDataSource(),scope));
 
@@ -89,7 +79,7 @@ public class DataConfigSource {
                 return ;
             }
             List<DBConfig> configs = allShop.stream().
-                    map(x->JsonUtil.toEntityAndIgnoreExtraFields(x,DBConfig.class)).
+                    map(x-> JsonUtil.toEntityAndIgnoreExtraFields(x, DBConfig.class)).
                     collect(Collectors.toList());
             Map<String,DataSource> sources = shopDataSource.getShopDataSource(configs);
             for( Map.Entry<String,DataSource> entry:sources.entrySet() ){

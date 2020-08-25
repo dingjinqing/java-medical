@@ -3,9 +3,7 @@ package com.vpu.sql.config;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vpu.sql.config.source.ShopDataSource;
-import com.vpu.sql.constant.BeanNameConstant;
 import com.vpu.sql.entity.DBConfig;
-import com.vpu.sql.util.JsonUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +15,6 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component("shopDataSource")

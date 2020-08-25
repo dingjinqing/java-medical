@@ -3,7 +3,6 @@ package com.vpu.sql.util;
 import com.google.common.collect.Lists;
 import com.vpu.sql.constant.DBOperator;
 import com.vpu.sql.entity.SqlAttribute;
-import com.vpu.sql.entity.UpdateSql;
 
 import java.util.List;
 import java.util.Objects;
@@ -101,9 +100,9 @@ public class RegexUtil {
         String tableName = "";
         if(Objects.equals(dbOperator, DBOperator.CREATE)){
             tableName = sqlArray[5];
-        }else if( Objects.equals(dbOperator,DBOperator.ALTER)  ){
+        }else if( Objects.equals(dbOperator, DBOperator.ALTER)  ){
             tableName = sqlArray[2];
-        }else if( Objects.equals(dbOperator,DBOperator.INSERT) ){
+        }else if( Objects.equals(dbOperator, DBOperator.INSERT) ){
             tableName = sqlArray[3];
         }
         sqlAttribute.setDbOperator(dbOperator);
