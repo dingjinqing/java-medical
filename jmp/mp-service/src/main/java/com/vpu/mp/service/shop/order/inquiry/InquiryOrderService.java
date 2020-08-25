@@ -14,6 +14,7 @@ import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
+import com.vpu.mp.dao.shop.rebate.InquiryOrderRebateDao;
 import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -33,6 +34,8 @@ import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateParam;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
@@ -102,6 +105,8 @@ public class InquiryOrderService extends ShopBaseService {
     private MapTemplateSendService mapTemplateSendService;
     @Autowired
     private RebateConfigService rebateConfigService;
+    @Autowired
+    private InquiryOrderRebateDao inquiryOrderRebateDao;
 
     /**
      * 问询订单列表
@@ -171,6 +176,10 @@ public class InquiryOrderService extends ShopBaseService {
                 .doctorName(inquiryOrderDo.getDoctorName()).userIds(list).build();
             mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
         }
+        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
+            //完成问诊，更改返利状态
+            inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn());
+        }
     }
     public void insert(InquiryOrderDo inquiryOrderDo){
         int orderId=inquiryOrderDao.save(inquiryOrderDo);
@@ -219,7 +228,8 @@ public class InquiryOrderService extends ShopBaseService {
         BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN);
         order.setRebateProportion(proportion);
         order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN));
-
+        //返利入库
+        addRebate(order);
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
         //添加会话问诊
@@ -229,7 +239,15 @@ public class InquiryOrderService extends ShopBaseService {
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
+    public void addRebate(InquiryOrderDo order){
+        InquiryOrderRebateParam param =new InquiryOrderRebateParam();
+        FieldsUtil.assign(order,param);
+        param.setStatus(InquiryOrderRebateConstant.TO_REBATE);
+        param.setTotalMoney(order.getTotalRebateMoney());
+        param.setTotalMoney(order.getOrderAmount());
+        inquiryOrderRebateDao.addInquiryOrderRebate(param);
 
+    }
 
     /**
      * 支付微信接口

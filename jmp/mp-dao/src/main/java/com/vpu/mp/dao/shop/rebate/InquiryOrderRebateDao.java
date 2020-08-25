@@ -32,6 +32,7 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      * @param orderSn
      */
     public void updateStatus(String orderSn){
-        db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, InquiryOrderRebateConstant.REBATED).where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn));
+        db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, InquiryOrderRebateConstant.REBATED).where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn))
+        .execute();
     }
 }
