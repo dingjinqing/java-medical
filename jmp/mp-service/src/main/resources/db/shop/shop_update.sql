@@ -611,3 +611,22 @@ CREATE TABLE if not exists `b2c_inquiry_order_rebate` (
   KEY `doctor_id` (`order_sn`)
 )COMMENT='医师问诊订单返利表';
 /*********************3.2*************************END*/
+
+/*********************3.3*************************BEGIN*/
+/*********************3.3*************************END*/
+
+/*********************3.4*************************BEGIN*/
+-- 同城配送账号表
+CREATE TABLE IF NOT EXISTS `b2c_city_service_account` (
+    `id`  int NOT NULL AUTO_INCREMENT ,
+    `delivery_id`  varchar(20) NOT NULL COMMENT '配送公司Id' ,
+    `appkey`  varchar(50) NULL DEFAULT NULL COMMENT '配送公司分配的appkey' ,
+    `appsecret`  varchar(100) NULL DEFAULT NULL COMMENT '配送公司分配的appsecret' ,
+    `account_status`  tinyint(1) NULL DEFAULT 1 COMMENT '账号状态： 0 审核通过 1 审核中 2 审核不通过' ,
+    `custom_name`  varchar(50) NULL DEFAULT '' COMMENT '自定义名称' ,
+    `status`  tinyint(1) NULL DEFAULT 0 COMMENT '系统设置状态： 1 启用 0 禁用' ,
+    `create_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP ,
+    `update_time`  timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+    PRIMARY KEY (`id`)
+)COMMENT='同城配送账号表';
+/*********************3.4*************************END*/

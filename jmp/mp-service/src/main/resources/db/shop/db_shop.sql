@@ -5565,3 +5565,17 @@ CREATE TABLE `b2c_store_account` (
     KEY `account_name` (`account_name`)
 ) comment '门店账户表';
 
+-- 同城配送账号表
+CREATE TABLE `b2c_city_service_account` (
+    `id`  int NOT NULL AUTO_INCREMENT ,
+    `delivery_id`  varchar(20) NOT NULL COMMENT '配送公司Id' ,
+    `appkey`  varchar(50) NULL DEFAULT NULL COMMENT '配送公司分配的appkey' ,
+    `appsecret`  varchar(100) NULL DEFAULT NULL COMMENT '配送公司分配的appsecret' ,
+    `account_status`  tinyint(1) NULL DEFAULT 1 COMMENT '账号状态： 0 审核通过 1 审核中 2 审核不通过' ,
+    `custom_name`  varchar(50) NULL DEFAULT '' COMMENT '自定义名称' ,
+    `status`  tinyint(1) NULL DEFAULT 0 COMMENT '系统设置状态： 1 启用 0 禁用' ,
+    `create_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP ,
+    `update_time`  timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+    PRIMARY KEY (`id`)
+)COMMENT='同城配送账号表';
+
