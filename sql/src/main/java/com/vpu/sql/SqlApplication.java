@@ -8,20 +8,14 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
+/**
+ * @author luguangyao
+ */
 @SpringBootApplication
 @Slf4j
 public class SqlApplication implements ExitCodeGenerator {
 
     public static void main(String[] args) {
-
-//        ConfigurableApplicationContext ctx = new
-//                SpringApplicationBuilder(SqlApplication.class).web(WebApplicationType.NONE).run();
-//        ctx.close();
-//        SpringApplication.exit(new
-//                SpringApplicationBuilder(SqlApplication.class).web(WebApplicationType.NONE).run());
-//        log.info( System.getProperty("sqlPath"));
-//        SpringApplication.start;
-//
         System.exit(SpringApplication.exit(new
                 SpringApplicationBuilder(SqlApplication.class).web(WebApplicationType.NONE).run()));
 

@@ -94,11 +94,10 @@ public class DbUtil {
                 changeColumnNumbers.getAndIncrement();
                 log.warn("重复执行的修改表字段的sql-->{}",sql);
             }else if("Multiple primary key defined".equals(e.getMessage().trim())){
-
+                log.warn("重复执行的主键sql-->{}",sql);
             }else{
                 errorNumbers.getAndIncrement();
                 throw new SQLRunTimeException(e.getMessage());
-
             }
 
         }

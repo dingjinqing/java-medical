@@ -8,6 +8,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author luguangyao
+ */
 @Slf4j
 @Component
 public class SqlExecuteProcessor  implements ApplicationListener<ContextRefreshedEvent>, Ordered {
