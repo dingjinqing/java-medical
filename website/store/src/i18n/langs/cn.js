@@ -1,85 +1,48 @@
 // cn.js
-import {
-  cn as router
-} from './views/admin_new/cn/routerCn'
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import { cn as marketCommon } from './views/admin_new/cn/index/storeManagement/marketCommonCn'
+import { cn as messageHint } from './views/admin_new/cn/messageHintCn'
+import { cn as router } from './views/admin_new/cn/routerCn'
 
 // 门店管理模块化
 // 门店通用
-import {
-  cn as storeCommon
-} from './views/admin_new/cn/index/storeManagement/storeCommonCn'
+import { cn as storeCommon } from './views/admin_new/cn/index/storeManagement/storeCommonCn'
 // 门店列表
-import {
-  cn as storeList
-} from './views/admin_new/cn/index/storeManagement/store/storeListCn'
+import { cn as storeList } from './views/admin_new/cn/index/storeManagement/store/storeListCn'
 // 门店列表-添加门店
-import {
-  cn as addStore
-} from './views/admin_new/cn/index/storeManagement/store/addStoreCn'
+import { cn as addStore } from './views/admin_new/cn/index/storeManagement/store/addStoreCn'
 // 门店列表-商品管理
-import {
-  cn as storeGoodsList
-} from './views/admin_new/cn/index/storeManagement/store/storeGoodsListCn'
+import { cn as storeGoodsList } from './views/admin_new/cn/index/storeManagement/store/storeGoodsListCn'
 // 门店列表-核销员管理
-import {
-  cn as verifierManage
-} from './views/admin_new/cn/index/storeManagement/store/verifierManageCn'
+import { cn as verifierManage } from './views/admin_new/cn/index/storeManagement/store/verifierManageCn'
 // 门店列表-门店管理
-import {
-  cn as storeManage
-} from './views/admin_new/cn/index/storeManagement/storeManage/storeManageCn'
+import { cn as storeManage } from './views/admin_new/cn/index/storeManagement/storeManage/storeManageCn'
 // 门店列表-服务管理
-import {
-  cn as serviceManage
-} from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceManageCn'
+import { cn as serviceManage } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceManageCn'
 // 门店列表-服务列表
-import {
-  cn as serviceList
-} from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceListCn'
+import { cn as serviceList } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceListCn'
 // 门店列表-服务分类
-import {
-  cn as serviceClassify
-} from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceClassifyCn'
+import { cn as serviceClassify } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceClassifyCn'
 // 门店列表-服务添加
-import {
-  cn as serviceAdd
-} from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceAddCn'
+import { cn as serviceAdd } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceAddCn'
 // 门店列表-预约管理
-import {
-  cn as reservationManage
-} from './views/admin_new/cn/index/storeManagement/storeManage/reservation/reservationCn'
+import { cn as reservationManage } from './views/admin_new/cn/index/storeManagement/storeManage/reservation/reservationCn'
 // 门店列表-技师管理
-import {
-  cn as technicianManage
-} from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianManageCn'
+import { cn as technicianManage } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianManageCn'
 // 门店列表-技师列表
-import {
-  cn as technicianList
-} from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianListCn'
+import { cn as technicianList } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianListCn'
 // 门店列表-技师列表
-import {
-  cn as technicianAdd
-} from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianAddCn'
+import { cn as technicianAdd } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianAddCn'
 // 门店列表-技师分类
-import {
-  cn as technicianClassify
-} from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianClassifyCn'
+import { cn as technicianClassify } from './views/admin_new/cn/index/storeManagement/storeManage/technician/technicianClassifyCn'
 // 门店列表-排班管理
-import {
-  cn as schedulingManage
-} from './views/admin_new/cn/index/storeManagement/storeManage/technician/schedulingManageCn'
+import { cn as schedulingManage } from './views/admin_new/cn/index/storeManagement/storeManage/technician/schedulingManageCn'
 // 门店管理-门店服务配置
-import {
-  cn as serviceConfig
-} from './views/admin_new/cn/index/storeManagement/storeService/serviceConfigCn'
+import { cn as serviceConfig } from './views/admin_new/cn/index/storeManagement/storeService/serviceConfigCn'
 // 门店权限
-import {
-  cn as storePermission
-} from './views/admin_new/cn/index/storeManagement/storePermission/storePermissionCn'
+import { cn as storePermission } from './views/admin_new/cn/index/storeManagement/storePermission/storePermissionCn'
 // 门店公告
-import {
-  cn as storeAnnouncement
-} from './views/admin_new/cn/index/storeManagement/storeAnnouncement/storeAnnouncementCn'
+import { cn as storeAnnouncement } from './views/admin_new/cn/index/storeManagement/storeAnnouncement/storeAnnouncementCn'
 const cn = {
   messages: {
     lang: '中文'
@@ -175,7 +138,10 @@ const cn = {
   storeAnnouncement, // 门店公告
   storePermission, // 门店权限
   serviceConfig, // 门店服务
-  reservationManage // 预约管理
+  reservationManage, // 预约管理
+  marketCommon,
+  ...zhLocale,
+  messageHint
 }
 
 export default cn

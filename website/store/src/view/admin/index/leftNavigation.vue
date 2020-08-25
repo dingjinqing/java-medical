@@ -73,9 +73,9 @@ export default {
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/page_decoration.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/page_decoration_h.png',
-          path: '/admin/store/list',
+          path: '/admin/store/group/config',
           span: '',
-          name: 'storeList',
+          name: 'storeGroupConfig',
           flag: false
         }
       ],
@@ -91,9 +91,9 @@ export default {
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-          path: '/admin/store/goods',
+          path: '/admin/store/goods/sellOut',
           span: '',
-          name: 'storeGoods',
+          name: 'sellOutGoods',
           flag: false
         }
       ],
@@ -109,41 +109,25 @@ export default {
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-          path: '/admin/store/order',
+          path: '/admin/store/order/selfPickUpOrder',
           span: '',
-          name: 'storeOrder',
+          name: 'selfPickUpOrder',
           flag: false
         },
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-          path: '/admin/store/order',
+          path: '/admin/store/order/intraCityOrder',
           span: '',
-          name: 'storeOrder',
+          name: 'intraCityOrder',
           flag: false
         },
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-          path: '/admin/store/order',
+          path: '/admin/store/order/afterSale',
           span: '',
-          name: 'storeOrder',
-          flag: false
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
-          imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-          path: '/admin/store/order',
-          span: '',
-          name: 'storeOrder',
-          flag: false
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
-          imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-          path: '/admin/store/order',
-          span: '',
-          name: 'storeOrder',
+          name: 'afterSale',
           flag: false
         }
       ],
@@ -159,9 +143,9 @@ export default {
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-          path: '/admin/store/member',
+          path: '/admin/store/member/permission',
           span: '',
-          name: 'storeMember',
+          name: 'memberPermission',
           flag: false
         }
       ],
@@ -257,9 +241,15 @@ export default {
       let leftName = {
         shopView: '概况',
         storeList: '门店列表',
+        storeGroupConfig: '分组管理',
         storeGoods: '全部商品',
+        storeMember: '全部店员',
+        memberPermission: '店员权限',
+        sellOutGoods: '售罄商品',
         storeOrder: '全部订单',
-        storeMember: '全部店员'
+        selfPickUpOrder: '自提订单',
+        intraCityOrder: '同城配送',
+        afterSale: '售后中心'
       }
       return leftName[name]
     }
