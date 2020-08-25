@@ -12,16 +12,19 @@ import java.util.Map;
  */
 public interface ShopDataSource {
     /**
+     * execute
      * @param sql
      */
     void execute(String sql);
 
     /**
+     * execute
      * @param path
      */
     void execute(Path path);
 
     /**
+     * getShopDataSource
      * @param configs
      * @return
      */
