@@ -1200,4 +1200,9 @@ public class Tables {
      * 医师问诊订单返利表
      */
     public static final InquiryOrderRebate INQUIRY_ORDER_REBATE = com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
+    /**
+     * 同城配送账号表
+     */
+    public static final CityServiceAccount CITY_SERVICE_ACCOUNT = com.vpu.mp.db.shop.tables.CityServiceAccount.CITY_SERVICE_ACCOUNT;
+
 }

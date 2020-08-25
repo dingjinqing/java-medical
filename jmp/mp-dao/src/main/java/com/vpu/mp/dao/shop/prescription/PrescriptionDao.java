@@ -132,25 +132,24 @@ public class PrescriptionDao extends ShopBaseDao {
         if (!Strings.isEmpty(param.getPatientName().trim())){
             record.where(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName().trim())));
         }
-        if (!Strings.isEmpty(param.getDoctorCode())){
-            record.where(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode()));
+        if (!Strings.isEmpty(param.getDoctorCode().trim())){
+            record.where(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode().trim()));
         }
         if (!Strings.isEmpty(param.getPatientMobile())){
             record.leftJoin(PATIENT).on(PATIENT.MOBILE.eq(param.getPatientMobile()));
             record.where(PATIENT.MOBILE.eq(param.getPatientMobile()));
         }
-        if (!Strings.isEmpty(param.getPrescriptionCode())){
-
-            record.where(PRESCRIPTION.PRESCRIPTION_CODE.eq(param.getPrescriptionCode()));
+        if (!Strings.isEmpty(param.getPrescriptionCode().trim())){
+            record.where(PRESCRIPTION.PRESCRIPTION_CODE.eq(param.getPrescriptionCode().trim()));
         }
         if (!Strings.isEmpty(param.getDepartmentName())){
             record.where(PRESCRIPTION.DEPARTMENT_NAME.eq(param.getDepartmentName()));
         }
-        if (!Strings.isEmpty(param.getDoctorName())){
-            record.where(PRESCRIPTION.DOCTOR_NAME.eq(likeValue(param.getDoctorName())));
+        if (!Strings.isEmpty(param.getDoctorName().trim())){
+            record.where(PRESCRIPTION.DOCTOR_NAME.eq(likeValue(param.getDoctorName().trim())));
         }
-        if (!Strings.isEmpty(param.getDiagnosisName())){
-            record.where(PRESCRIPTION.DIAGNOSIS_NAME.eq(param.getDiagnosisName()));
+        if (!Strings.isEmpty(param.getDiagnosisName().trim())){
+            record.where(PRESCRIPTION.DIAGNOSIS_NAME.eq(param.getDiagnosisName().trim()));
         }
         if (param.getDiagnoseEndTime()!=null&&param.getDiagnoseStartTime()!=null){
             record.where(PRESCRIPTION.DIAGNOSE_TIME.ge(param.getDiagnoseStartTime()))

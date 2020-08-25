@@ -545,6 +545,7 @@ public class Indexes {
     public static final Index INQUIRY_ORDER_REBATE_DOCTOR_ID = Indexes0.INQUIRY_ORDER_REBATE_DOCTOR_ID;
     public static final Index INQUIRY_ORDER_REBATE_ORDER_SN = Indexes0.INQUIRY_ORDER_REBATE_ORDER_SN;
     public static final Index INQUIRY_ORDER_REBATE_PRIMARY = Indexes0.INQUIRY_ORDER_REBATE_PRIMARY;
+    public static final Index CITY_SERVICE_ACCOUNT_PRIMARY = Indexes0.CITY_SERVICE_ACCOUNT_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1066,6 +1067,8 @@ public class Indexes {
         public static Index INQUIRY_ORDER_REBATE_DOCTOR_ID = Internal.createIndex("doctor_id", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ORDER_SN }, false);
         public static Index INQUIRY_ORDER_REBATE_ORDER_SN = Internal.createIndex("order_sn", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ORDER_SN }, false);
         public static Index INQUIRY_ORDER_REBATE_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ID }, true);
+        public static Index CITY_SERVICE_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", CityServiceAccount.CITY_SERVICE_ACCOUNT, new OrderField[] { CityServiceAccount.CITY_SERVICE_ACCOUNT.ID }, true);
+
     }
 
 }
