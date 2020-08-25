@@ -22,7 +22,7 @@ public enum DbOperator {
         return this.operator;
     }
 
-    public static DbOperator getDBOperator(String operator) {
+    public static DbOperator getDbOperator(String operator) {
         for (DbOperator dbOperator : values()) {
             if (dbOperator.getOperator().equals(operator)) {
                 return dbOperator;

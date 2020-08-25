@@ -99,7 +99,7 @@ public class RegexUtil {
         if(DbOperator.DROP.getOperator().equals(sqlArray[0]) ){
             throw new RuntimeException("update sql file can't execute drop table");
         }
-        DbOperator dbOperator = DbOperator.getDBOperator(sqlArray[0]);
+        DbOperator dbOperator = DbOperator.getDbOperator(sqlArray[0]);
         String tableName = "";
         if(Objects.equals(dbOperator, DbOperator.CREATE)){
             tableName = sqlArray[5];
@@ -128,7 +128,7 @@ public class RegexUtil {
         }else{
             sqlAttribute.setTableName(tableName);
         }
-        sqlAttribute.setDbOperator(DbOperator.getDBOperator(sqlArray[0]));
+        sqlAttribute.setDbOperator(DbOperator.getDbOperator(sqlArray[0]));
 
         return sqlAttribute;
     }
