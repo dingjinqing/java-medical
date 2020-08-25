@@ -189,7 +189,8 @@ public class InquiryOrderDao extends ShopBaseDao {
     public PageResult<InquiryOrderStatisticsVo> orderStatisticsPage(InquiryOrderStatisticsParam param){
         SelectJoinStep<? extends Record> select=selectOptions(param);
         select=buildOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME))
+        .orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         PageResult<InquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderStatisticsVo.class);
         return result;
     }
@@ -233,7 +234,8 @@ public class InquiryOrderDao extends ShopBaseDao {
     public List<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
         SelectJoinStep<? extends Record> select=selectOptions(param);
         select=buildOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME))
+            .orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
         return list;
     }
