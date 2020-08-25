@@ -2160,7 +2160,7 @@ CREATE TABLE `b2c_member_card` (
   `store_use_switch` tinyint(1) NOT NULL DEFAULT '0' COMMENT '可否在门店使用  0不可以 1可以',
   `exchang_goods` varchar(299) DEFAULT NULL COMMENT '可兑换商品id',
   `exchang_freight` tinyint(1) DEFAULT NULL COMMENT '运费策略 0免运费 1使用商品运费策略',
-  `exchang_count` int(11) DEFAULT NULL b2c_group_integration_defineCOMMENT '允许兑换次数',
+  `exchang_count` int(11) DEFAULT NULL COMMENT '允许兑换次数',
   `stock` int(11) DEFAULT '0' COMMENT '发放总量',
   `limit` int(11) DEFAULT '1' COMMENT '领取限制',
   `discount_brand_id` varchar(299) DEFAULT NULL COMMENT '商品品牌id',
