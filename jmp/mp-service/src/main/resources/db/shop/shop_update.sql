@@ -637,4 +637,18 @@ CREATE TABLE IF NOT EXISTS `b2c_city_service_account` (
     `update_time`  timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
     PRIMARY KEY (`id`)
 )COMMENT='同城配送账号表';
+
+-- 医师返利数据表
+create table if not exists `b2c_doctor_total_rebate`(
+    `id`   int(11)   NOT NULL AUTO_INCREMENT,
+    `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
+    `total_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '累计获得返利金额',
+    `blocked_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '冻结余额',
+    `final_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '总返利金额，total_money为提现后金额',
+    `is_delete`     tinyint(1)   NOT NULL DEFAULT '0',
+    `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key(`id`),
+    KEY `doctor_id` (`doctor_id`)
+)comment ='医师评价和打分';
 /*********************3.4*************************END*/

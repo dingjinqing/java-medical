@@ -3,17 +3,20 @@ package com.vpu.mp.service.shop.order.inquiry;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.db.sql.Order;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
+import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
 import com.vpu.mp.dao.shop.rebate.InquiryOrderRebateDao;
 import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
@@ -107,6 +110,8 @@ public class InquiryOrderService extends ShopBaseService {
     private RebateConfigService rebateConfigService;
     @Autowired
     private InquiryOrderRebateDao inquiryOrderRebateDao;
+    @Autowired
+    private DoctorTotalRebateDao doctorTotalRebateDao;
 
     /**
      * 问询订单列表
@@ -178,7 +183,13 @@ public class InquiryOrderService extends ShopBaseService {
         }
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
             //完成问诊，更改返利状态
-            inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn());
+            inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(),InquiryOrderRebateConstant.REBATED);
+
+            //第一次正常结束的时候统计返利金额
+            ImSessionDo im=imSessionService.getSessionInfoByOrderSn(inquiryOrderDo.getOrderSn());
+            if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){
+                doctorTotalRebateDao.updateDoctorTotalRebate(inquiryOrderDo.getDoctorId(),inquiryOrderDo.getTotalRebateMoney());
+            }
         }
     }
     public void insert(InquiryOrderDo inquiryOrderDo){
@@ -239,6 +250,11 @@ public class InquiryOrderService extends ShopBaseService {
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
+
+    /**
+     * 返利入库
+     * @param order
+     */
     public void addRebate(InquiryOrderDo order){
         InquiryOrderRebateParam param =new InquiryOrderRebateParam();
         FieldsUtil.assign(order,param);
@@ -339,7 +355,8 @@ public class InquiryOrderService extends ShopBaseService {
     public void doctorRefund(InquiryOrderOnParam inquiryOrderOnParam)throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
         refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
-
+        //问诊退款，更改返利状态
+        inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL);
     }
 
     /**
