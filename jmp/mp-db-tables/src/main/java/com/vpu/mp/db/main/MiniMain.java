@@ -478,6 +478,10 @@ public class MiniMain extends SchemaImpl {
      */
     public final StoreAccount STORE_ACCOUNT = com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
     /**
+     * 店铺物流信息表
+     */
+    public final ShopLogistics SHOP_LOGISTICS = com.vpu.mp.db.main.tables.ShopLogistics.SHOP_LOGISTICS;
+    /**
      * No further instances allowed
      */
     private MiniMain() {
@@ -590,6 +594,7 @@ public class MiniMain extends SchemaImpl {
             ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK,
             InquiryOrder.INQUIRY_ORDER,
             ShopSmsConfig.SHOP_SMS_CONFIG,
-            StoreAccount.STORE_ACCOUNT);
+            StoreAccount.STORE_ACCOUNT,
+            ShopLogistics.SHOP_LOGISTICS);
     }
 }
