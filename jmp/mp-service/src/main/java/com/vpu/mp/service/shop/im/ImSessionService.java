@@ -460,6 +460,7 @@ public class ImSessionService extends ShopBaseService {
      * 定时任务调用，结束已经超时的可继续问诊项
      */
     public void timingDeadReadyToContinueSession() {
+        logger().debug("定时任务调用，结束已经超时的可继续问诊项");
         Timestamp updateTimeLine = DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS);
         ImSessionCondition imSessionCondition = new ImSessionCondition();
         imSessionCondition.setStatus(ImSessionConstant.SESSION_END);
