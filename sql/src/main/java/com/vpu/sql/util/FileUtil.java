@@ -5,12 +5,20 @@ import com.vpu.sql.entity.ColumnOperator;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * @author luguangyao
+ */
 public class FileUtil {
 
     /**
@@ -120,10 +128,12 @@ public class FileUtil {
      * @return true/false
      */
     private static boolean checkSetIndexLength(String sql){
+        String keyName = "key";
         String newSql = sql.trim().toLowerCase();
-        int indexAddress = newSql.indexOf("key");
+        int indexAddress = newSql.indexOf(keyName);
         int lastParenthesesAddress = newSql.lastIndexOf(")");
-        if(indexAddress != 0 || newSql.length() - lastParenthesesAddress > 2){
+        int baseAddressIndex = 2;
+        if(indexAddress != 0 || newSql.length() - lastParenthesesAddress > baseAddressIndex){
             return false;
         }
         return (int)newSql.charAt(newSql.lastIndexOf("191")+3)==41;
