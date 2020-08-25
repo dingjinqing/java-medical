@@ -5,5 +5,6 @@
     "chat-input":"/components/doctor/doctor_chat_input/doctor_chat_input",
     "v-prescription-dialog": "/components/popup/prescription_dialog/index"
   },
-  "disableScroll": true
+  "disableScroll": true,
+  "pageOrientation": "auto"
 }
