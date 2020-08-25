@@ -80,7 +80,8 @@ public class MainInquiryOrderDao extends MainBaseDao {
     public PageResult<MainInquiryOrderStatisticsVo> orderStatisticsPage(MainInquiryOrderStatisticsParam param){
         SelectJoinStep<? extends Record> select=buildSelectOptions(param);
         select=buildWhereOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.SHOP_ID,SHOP.SHOP_NAME,INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.SHOP_ID,SHOP.SHOP_NAME,INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME))
+        .orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         PageResult<MainInquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),MainInquiryOrderStatisticsVo.class);
         return result;
     }
@@ -133,7 +134,8 @@ public class MainInquiryOrderDao extends MainBaseDao {
     public List<MainInquiryOrderStatisticsVo> orderStatistics(MainInquiryOrderStatisticsParam param){
         SelectJoinStep<? extends Record> select=buildSelectOptions(param);
         select=buildWhereOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.SHOP_ID,SHOP.SHOP_NAME,INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.SHOP_ID,SHOP.SHOP_NAME,INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME))
+            .orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         List<MainInquiryOrderStatisticsVo> list=select.fetchInto(MainInquiryOrderStatisticsVo.class);
         return list;
     }
