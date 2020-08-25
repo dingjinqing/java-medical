@@ -5591,3 +5591,35 @@ CREATE TABLE `b2c_city_service_account` (
     PRIMARY KEY (`id`)
 )COMMENT='同城配送账号表';
 
+-- 同城配送订单表
+CREATE TABLE `b2c_city_service_order` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `batch_no` VARCHAR(50) COMMENT '发货批次号',
+    `order_sn` VARCHAR(50) COMMENT '订单号',
+    `service_account_id` INT COMMENT '签约账号关联ID',
+    `fee` DECIMAL(10,2) COMMENT '实际运费(单位：元)，运费减去优惠券费用',
+    `deliverfee` DECIMAL(10,2) COMMENT '运费',
+    `couponfee` DECIMAL(10,2) COMMENT '优惠券费用',
+    `tips` DECIMAL(10,2) COMMENT '小费',
+    `insurancefee` DECIMAL(10,2) COMMENT '保价费',
+    `distance` DECIMAL(10,2) COMMENT '配送距离',
+    `waybill_id` VARCHAR(100) COMMENT '配送单号',
+    `order_status` VARCHAR(20) COMMENT '配送状态',
+    `finish_code` VARCHAR(50) COMMENT '收货码',
+    `pickup_code` VARCHAR(50) COMMENT '取货码',
+    `dispatch_duration` INT COMMENT '骑手接单时间(单位s)',
+    `agent_name` VARCHAR(50) COMMENT '骑手姓名',
+    `agent_phone` VARCHAR(20) COMMENT '骑手电话',
+    `action_time` DATETIME COMMENT '状态变更时间',
+    `action_msg` VARCHAR(500) NULL   COMMENT '附加信息',
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `update_time`  timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deduct_fee`  decimal(10,2) NULL DEFAULT 0 COMMENT '扣除的违约金',
+    PRIMARY KEY (`id`),
+    INDEX `batch_no` (`batch_no`),
+    INDEX `order_sn` (`order_sn`),
+    INDEX `waybill_id` (`waybill_id`),
+    INDEX `order_status` (`order_status`)
+)COMMENT='同城配送订单表';
+
+

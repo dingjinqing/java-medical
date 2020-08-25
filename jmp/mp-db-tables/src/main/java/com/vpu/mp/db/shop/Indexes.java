@@ -546,6 +546,11 @@ public class Indexes {
     public static final Index INQUIRY_ORDER_REBATE_ORDER_SN = Indexes0.INQUIRY_ORDER_REBATE_ORDER_SN;
     public static final Index INQUIRY_ORDER_REBATE_PRIMARY = Indexes0.INQUIRY_ORDER_REBATE_PRIMARY;
     public static final Index CITY_SERVICE_ACCOUNT_PRIMARY = Indexes0.CITY_SERVICE_ACCOUNT_PRIMARY;
+    public static final Index CITY_SERVICE_ORDER_BATCH_NO = Indexes0.CITY_SERVICE_ORDER_BATCH_NO;
+    public static final Index CITY_SERVICE_ORDER_ORDER_SN = Indexes0.CITY_SERVICE_ORDER_ORDER_SN;
+    public static final Index CITY_SERVICE_ORDER_ORDER_STATUS = Indexes0.CITY_SERVICE_ORDER_ORDER_STATUS;
+    public static final Index CITY_SERVICE_ORDER_PRIMARY = Indexes0.CITY_SERVICE_ORDER_PRIMARY;
+    public static final Index CITY_SERVICE_ORDER_WAYBILL_ID = Indexes0.CITY_SERVICE_ORDER_WAYBILL_ID;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1068,6 +1073,12 @@ public class Indexes {
         public static Index INQUIRY_ORDER_REBATE_ORDER_SN = Internal.createIndex("order_sn", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ORDER_SN }, false);
         public static Index INQUIRY_ORDER_REBATE_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ID }, true);
         public static Index CITY_SERVICE_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", CityServiceAccount.CITY_SERVICE_ACCOUNT, new OrderField[] { CityServiceAccount.CITY_SERVICE_ACCOUNT.ID }, true);
+        public static Index CITY_SERVICE_ORDER_BATCH_NO = Internal.createIndex("batch_no", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.BATCH_NO }, false);
+        public static Index CITY_SERVICE_ORDER_ORDER_SN = Internal.createIndex("order_sn", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.ORDER_SN }, false);
+        public static Index CITY_SERVICE_ORDER_ORDER_STATUS = Internal.createIndex("order_status", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.ORDER_STATUS }, false);
+        public static Index CITY_SERVICE_ORDER_PRIMARY = Internal.createIndex("PRIMARY", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.ID }, true);
+        public static Index CITY_SERVICE_ORDER_WAYBILL_ID = Internal.createIndex("waybill_id", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.WAYBILL_ID }, false);
+
 
     }
 
