@@ -301,6 +301,7 @@ public class Keys {
     public static final Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Identities0.IDENTITY_STORE_ACCOUNT;
     public static final Identity<InquiryOrderRebateRecord, Integer> IDENTITY_INQUIRY_ORDER_REBATE = Identities0.IDENTITY_INQUIRY_ORDER_REBATE;
     public static final Identity<CityServiceAccountRecord, Integer> IDENTITY_CITY_SERVICE_ACCOUNT = Identities0.IDENTITY_CITY_SERVICE_ACCOUNT;
+    public static final Identity<DoctorTotalRebateRecord, Integer> IDENTITY_DOCTOR_TOTAL_REBATE = Identities0.IDENTITY_DOCTOR_TOTAL_REBATE;
     public static final Identity<CityServiceOrderRecord, Integer> IDENTITY_CITY_SERVICE_ORDER = Identities0.IDENTITY_CITY_SERVICE_ORDER;
 
 
@@ -598,6 +599,7 @@ public class Keys {
     public static final UniqueKey<CityServiceOrderRecord> KEY_B2C_CITY_SERVICE_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_CITY_SERVICE_ORDER_PRIMARY;
 
 
+    public static final UniqueKey<DoctorTotalRebateRecord> KEY_B2C_DOCTOR_TOTAL_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_TOTAL_REBATE_PRIMARY;
 
 
     // -------------------------------------------------------------------------
@@ -869,6 +871,7 @@ public class Keys {
         public static Identity<CityServiceAccountRecord, Integer> IDENTITY_CITY_SERVICE_ACCOUNT = Internal.createIdentity(CityServiceAccount.CITY_SERVICE_ACCOUNT, CityServiceAccount.CITY_SERVICE_ACCOUNT.ID);
         public static Identity<CityServiceOrderRecord, Integer> IDENTITY_CITY_SERVICE_ORDER = Internal.createIdentity(CityServiceOrder.CITY_SERVICE_ORDER, CityServiceOrder.CITY_SERVICE_ORDER.ID);
 
+        public static Identity<DoctorTotalRebateRecord, Integer> IDENTITY_DOCTOR_TOTAL_REBATE = Internal.createIdentity(DoctorTotalRebate.DOCTOR_TOTAL_REBATE, DoctorTotalRebate.DOCTOR_TOTAL_REBATE.ID);
 
     }
 
@@ -1166,6 +1169,7 @@ public class Keys {
         public static final UniqueKey<CityServiceAccountRecord> KEY_B2C_CITY_SERVICE_ACCOUNT_PRIMARY = Internal.createUniqueKey(CityServiceAccount.CITY_SERVICE_ACCOUNT, "KEY_b2c_city_service_account_PRIMARY", CityServiceAccount.CITY_SERVICE_ACCOUNT.ID);
         public static final UniqueKey<CityServiceOrderRecord> KEY_B2C_CITY_SERVICE_ORDER_PRIMARY = Internal.createUniqueKey(CityServiceOrder.CITY_SERVICE_ORDER, "KEY_b2c_city_service_order_PRIMARY", CityServiceOrder.CITY_SERVICE_ORDER.ID);
 
+        public static final UniqueKey<DoctorTotalRebateRecord> KEY_B2C_DOCTOR_TOTAL_REBATE_PRIMARY = Internal.createUniqueKey(DoctorTotalRebate.DOCTOR_TOTAL_REBATE, "KEY_b2c_doctor_total_rebate_PRIMARY", DoctorTotalRebate.DOCTOR_TOTAL_REBATE.ID);
 
     }
 }

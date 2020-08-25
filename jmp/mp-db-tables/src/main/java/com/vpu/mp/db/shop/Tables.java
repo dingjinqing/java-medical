@@ -1210,4 +1210,8 @@ public class Tables {
     public static final CityServiceOrder CITY_SERVICE_ORDER = com.vpu.mp.db.shop.tables.CityServiceOrder.CITY_SERVICE_ORDER;
 
 
+    /**
+     * 医师返利数据表
+     */
+    public static final DoctorTotalRebate DOCTOR_TOTAL_REBATE = com.vpu.mp.db.shop.tables.DoctorTotalRebate.DOCTOR_TOTAL_REBATE;
 }

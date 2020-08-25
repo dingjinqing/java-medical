@@ -3,9 +3,11 @@ package com.vpu.mp.service.shop.task.order;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
+import com.vpu.mp.dao.shop.rebate.InquiryOrderRebateDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.maptemplate.ConsultationOrderExpireParam;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
@@ -33,6 +35,8 @@ public class InquiryOrderTaskService extends ShopBaseService {
     private ImSessionService imSessionService;
     @Autowired
     private MapTemplateSendService mapTemplateSendService;
+    @Autowired
+    private InquiryOrderRebateDao inquiryOrderRebateDao;
     /**
      * 自动任务关闭待支付的问诊订单
      */
@@ -83,6 +87,8 @@ public class InquiryOrderTaskService extends ShopBaseService {
                     logger().error("问诊订单自动任务,待接诊订单退款失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage());
                 }
             }
+            //问诊退款，更改返利状态
+            inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL);
             //超时自动退款消息提醒
             List<Integer> useIdrList=new ArrayList<>();
             useIdrList.add(order.getUserId());
@@ -115,6 +121,8 @@ public class InquiryOrderTaskService extends ShopBaseService {
             List<String> orderSnList=new ArrayList<>();
             orderSnList.add(order.getOrderSn());
             imSessionService.batchCloseSession(orderSnList);
+            //完成问诊，更改返利状态
+            inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATED);
             logger().info("接诊中问诊订单超时自动结束,成功,orderSn:{}", order.getOrderSn());
         });
         logger().info("接诊中问诊订单超时自动结束定时任务end");

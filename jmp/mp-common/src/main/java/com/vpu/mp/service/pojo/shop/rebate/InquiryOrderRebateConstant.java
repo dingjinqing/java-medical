@@ -13,4 +13,8 @@ public class InquiryOrderRebateConstant {
      * 已返利
      */
     public static final Byte REBATED=1;
+    /**
+     * 未返利
+     */
+    public static final Byte REBATE_FAIL=2;
 }
