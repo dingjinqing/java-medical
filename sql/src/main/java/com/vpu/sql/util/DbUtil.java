@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author luguangyao
+ */
 @Slf4j
 public class DbUtil {
 
@@ -143,7 +146,7 @@ public class DbUtil {
      * @param sql sql
      * @param filedName 打印值的字段名
      */
-    public static void executeQuerySQL(Connection con, String sql,String... filedName){
+    public static void executeQuerySql(Connection con, String sql, String... filedName){
         try {
             log.info("执行sql---{}",sql);
             ResultSet resultSet = con.prepareStatement(sql).executeQuery();
@@ -178,11 +181,11 @@ public class DbUtil {
         }
     }
 
-    public static void executeSQLFile(Connection con, String path){
+    public static void executeSqlFile(Connection con, String path){
         List<String> sqlList = FileUtil.readSqlFile(path);
         sqlList.forEach(x-> executeSql(con,x));
     }
-    public static void executeSQLFileByJar(Connection con, String path){
+    public static void executeSqlFileByJar(Connection con, String path){
         List<String> sqlList = FileUtil.readSqlFileByJar(path);
         sqlList.forEach(x-> executeSql(con,x));
     }

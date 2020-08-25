@@ -193,7 +193,7 @@ public class DataConfigSource {
         try( Connection con = sqlLiteDataSource.getConnection()) {
             if( con != null ){
 
-                DbUtil.executeSQLFileByJar(con, "db/init.sql");
+                DbUtil.executeSqlFileByJar(con, "db/init.sql");
             }
         } catch (SQLException e) {
             e.printStackTrace();
