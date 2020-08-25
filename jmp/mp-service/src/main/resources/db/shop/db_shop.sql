@@ -1363,7 +1363,7 @@ CREATE TABLE `b2c_goods` (
   KEY `goods_id_2` (`goods_id`),
   KEY `shop_id` (`shop_id`),
   KEY `cat_id` (`cat_id`)
-)COMMENT='商品表 `b2c_goods`';
+)COMMENT='商品表';
 
 
 
@@ -1425,7 +1425,7 @@ CREATE TABLE `b2c_goods_img` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`img_id`),
   KEY `goods_id` (`goods_id`)
-)COMMENT='商品图片表 `b2c_goods_img`';
+)COMMENT='商品图片表';
 
 
 
