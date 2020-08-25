@@ -399,6 +399,7 @@ public class ImSessionService extends ShopBaseService {
      * 批量关闭到时间的会话
      */
     public void batchCloseSession(List<String> orderSns) {
+        logger().info("批量关闭到时间的会话："+orderSns);
         ImSessionCondition cancelCondition = new ImSessionCondition();
         cancelCondition.setOrderSns(orderSns);
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(cancelCondition);
