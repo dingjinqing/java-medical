@@ -4,15 +4,18 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.StoreAccountRecord;
+import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.store.account.*;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListPage;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListParam;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthVo;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreConstant;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.saas.shop.StoreManageService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author chenjie
@@ -52,6 +55,8 @@ public class StoreAuthManageController extends StoreBaseController{
      */
     @PostMapping("/account/list")
     public JsonResult getAccount(@RequestBody StoreAuthListPage param) {
+        param.setStoreIds(storeAuth.user().getStoreIds());
+        param.setAccountType(StoreAuthConstant.STORE_CLERK);
         PageResult<StoreAccountVo> accountList = saas.shop.storeManageService.getAccountList(shopId(), param);
         return success(accountList);
     }
@@ -164,5 +169,15 @@ public class StoreAuthManageController extends StoreBaseController{
     public JsonResult getOneAccount(@PathVariable Integer accountId) {
         StoreAccountVo storeInfoById = saas.shop.storeManageService.storeAccountService.getStoreInfoById(accountId);
         return success(storeInfoById);
+    }
+
+    /**
+     * -门店下拉框弹窗api
+     * @return
+     */
+    @PostMapping(value = "/all/get")
+    public JsonResult getAllStore() {
+        List<StoreBasicVo> allStore = shop().store.getAllStoreForLeader(storeAuth.user().getStoreIds());
+        return success(allStore);
     }
 }
