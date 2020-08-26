@@ -174,24 +174,45 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDao.update(inquiryOrderDo);
         //接诊发送提醒
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            List<Integer> list=new ArrayList<>();
-            list.add(inquiryOrderDo.getUserId());
-            ConsultationSuccessParam consultationSuccessParam=ConsultationSuccessParam.builder().patientName(inquiryOrderDo.getPatientName())
-                .departmentName(inquiryOrderDo.getDepartmentName()).diseaseDetail(inquiryOrderDo.getDescriptionDisease())
-                .doctorName(inquiryOrderDo.getDoctorName()).userIds(list).build();
-            mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
+            sendConsultationMessage(inquiryOrderDo);
         }
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
             //完成问诊，更改返利状态
             inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(),InquiryOrderRebateConstant.REBATED);
 
             //第一次正常结束的时候统计返利金额
-            ImSessionDo im=imSessionService.getSessionInfoByOrderSn(inquiryOrderDo.getOrderSn());
-            if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){
-                doctorTotalRebateDao.updateDoctorTotalRebate(inquiryOrderDo.getDoctorId(),inquiryOrderDo.getTotalRebateMoney());
-            }
+            setDoctorTotalRebate(inquiryOrderDo);
         }
     }
+
+    /**
+     * 接诊发送提醒
+     * @param inquiryOrderDo
+     */
+    public void sendConsultationMessage( InquiryOrderDo inquiryOrderDo){
+        List<Integer> list=new ArrayList<>();
+        list.add(inquiryOrderDo.getUserId());
+        ConsultationSuccessParam consultationSuccessParam=ConsultationSuccessParam.builder().patientName(inquiryOrderDo.getPatientName())
+            .departmentName(inquiryOrderDo.getDepartmentName()).diseaseDetail(inquiryOrderDo.getDescriptionDisease())
+            .doctorName(inquiryOrderDo.getDoctorName()).userIds(list).build();
+        mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
+    }
+
+    /**
+     * 统计返利金额
+     * @param inquiryOrderDo
+     */
+    public void setDoctorTotalRebate( InquiryOrderDo inquiryOrderDo){
+        ImSessionDo im=imSessionService.getSessionInfoByOrderSn(inquiryOrderDo.getOrderSn());
+        if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){
+            doctorTotalRebateDao.updateDoctorTotalRebate(inquiryOrderDo.getDoctorId(),inquiryOrderDo.getTotalRebateMoney());
+        }
+    }
+
+    /**
+     * 新增
+     * @param inquiryOrderDo
+     */
     public void insert(InquiryOrderDo inquiryOrderDo){
         int orderId=inquiryOrderDao.save(inquiryOrderDo);
         inquiryOrderDo.setOrderId(orderId);

@@ -1214,4 +1214,8 @@ public class Tables {
      * 医师返利数据表
      */
     public static final DoctorTotalRebate DOCTOR_TOTAL_REBATE = com.vpu.mp.db.shop.tables.DoctorTotalRebate.DOCTOR_TOTAL_REBATE;
+    /**
+     * 处方药品返利表
+     */
+    public static final PrescriptionRebate PRESCRIPTION_REBATE = com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
 }
