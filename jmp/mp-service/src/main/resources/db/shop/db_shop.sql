@@ -3979,6 +3979,7 @@ CREATE TABLE `b2c_spec_vals` (
 CREATE TABLE `b2c_store` (
   `store_id` int(11) NOT NULL AUTO_INCREMENT,
   `store_name` varchar(60) NOT NULL COMMENT '门店名称',
+  `store_code` varchar(50) not null default '' comment '门店编号',
   `manager` varchar(30) NOT NULL COMMENT '负责人',
   `mobile` varchar(20) NOT NULL COMMENT '联系电话',
   `store_imgs` text COMMENT '图片',

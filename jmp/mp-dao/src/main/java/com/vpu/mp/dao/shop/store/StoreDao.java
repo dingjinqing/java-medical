@@ -12,7 +12,7 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
  */
 @Repository
 public class StoreDao extends ShopBaseDao {
-    public StoreBasicVo getStoreById (Integer storeId) {
-        return db().selectFrom(STORE).where(STORE.STORE_ID.eq(storeId)).fetchAnyInto(StoreBasicVo.class);
+    public StoreBasicVo getStoreByNo(String storeNo) {
+        return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).fetchAnyInto(StoreBasicVo.class);
     }
 }

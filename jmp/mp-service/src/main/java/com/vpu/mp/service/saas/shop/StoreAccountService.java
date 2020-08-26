@@ -6,9 +6,11 @@ import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
 import java.util.*;
 
 import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import jodd.util.StringUtil;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ public class StoreAccountService extends MainBaseService {
 	private static final String DOT = ",";
 	@Autowired
 	public StoreAccountDao storeAccountDao;
+    @Autowired
+    public StoreDao storeDao;
 
     /**
      * 获取用户列表
@@ -205,9 +209,17 @@ public class StoreAccountService extends MainBaseService {
         } else if (StringUtil.isBlank(storeAccountInfo.getStoreList())){
             storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_IS_EMPTY);
         } else {
+            Boolean isOk = true;
             List<Integer> list = changeToArray(storeAccountInfo.getStoreList());
             storeAccountInfo.setStoreLists(list);
-            storeAuthInfoVo.setIsOk(true);
+            if (StoreAuthConstant.STORE_CLERK.equals(param.getStoreAccountType())) {
+                StoreBasicVo storeInfo = saas().getShopApp(storeAccountInfo.getShopId()).store.getStoreByNo(param.getStoreNo());
+                if (storeInfo == null || !list.contains(storeInfo.getStoreId())) {
+                    storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_NOT_EXIST);
+                    isOk = false;
+                }
+            }
+            storeAuthInfoVo.setIsOk(isOk);
         }
         storeAuthInfoVo.setStoreAccountInfo(storeAccountInfo);
         return storeAuthInfoVo;

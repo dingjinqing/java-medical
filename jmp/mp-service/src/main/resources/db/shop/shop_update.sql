@@ -748,4 +748,6 @@ ALTER TABLE `b2c_prescription_item` ADD COLUMN `total_rebate_money` decimal(10,4
 ALTER TABLE `b2c_prescription` ADD COLUMN `settlement_flag` tinyint(1) DEFAULT '0' COMMENT '结算标志：0：未结算，1：已结算' AFTER `is_valid`;
 ALTER TABLE `b2c_inquiry_order` ADD COLUMN `settlement_flag` tinyint(1) DEFAULT '0' COMMENT '结算标志：0：未结算，1：已结算' AFTER `is_delete`;
 
+ALTER TABLE `b2c_store` ADD COLUMN `store_code` varchar(50) default '' comment '门店编号' after `store_name`;
+
 /*********************3.4*************************END*/

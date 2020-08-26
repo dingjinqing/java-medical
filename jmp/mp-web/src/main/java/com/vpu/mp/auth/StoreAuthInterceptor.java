@@ -27,7 +27,7 @@ import java.io.PrintWriter;
 @Component
 public class StoreAuthInterceptor extends HandlerInterceptorAdapter {
 
-    private static final String URL_NO_AUTH = "/api/store/authority/not?type=subaccount";
+    private static final String URL_NO_AUTH = "/api/store/authority/not";
     private static final String URL_LOGIN = "/api/store/login";
 
     Logger log= LoggerFactory.getLogger(StoreAuthInterceptor.class);
