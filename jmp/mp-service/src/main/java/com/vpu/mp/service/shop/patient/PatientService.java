@@ -21,6 +21,8 @@ import com.vpu.mp.db.shop.tables.Patient;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.sms.SmsCheckParam;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
@@ -267,6 +269,23 @@ public class PatientService extends BaseShopConfigService{
     }
 
     /**
+     * 待审核处方展示患者信息
+     * @param prescriptionNoParam 处方号
+     * @return UserPatientDetailVo
+     */
+    public PrescriptionShowPatientDetailsParam auditPatientShow(PrescriptionNoParam prescriptionNoParam) {
+        // 根据处方号获取该患者信息
+        PrescriptionShowPatientDetailsParam prescriptionShowPatientDetailsParam = new PrescriptionShowPatientDetailsParam();
+        PrescriptionVo doByPrescriptionNo = prescriptionDao.getDoByPrescriptionNo(prescriptionNoParam.getPrescriptionCode());
+        UserPatientParam userPatientParam = new UserPatientOneParam();
+        userPatientParam.setPatientId(doByPrescriptionNo.getPatientId());
+        userPatientParam.setUserId(doByPrescriptionNo.getUserId());
+        UserPatientDetailVo oneDetail = getOneDetail(userPatientParam);
+        FieldsUtil.assign(oneDetail, prescriptionShowPatientDetailsParam);
+        return prescriptionShowPatientDetailsParam;
+    }
+
+    /**
      * 获取患者信息
      * @param patientIds id集合
      * @return
@@ -311,7 +330,6 @@ public class PatientService extends BaseShopConfigService{
         if(patientList.size()==0) {
             userPatientCoupleDo.setIsDefault((byte) 1);
         }
-//        userPatientCoupleDao.save(userPatientCoupleDo);
         saveUserPaitientCouple(userPatientCoupleDo);
     }
 
