@@ -33,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -76,6 +77,7 @@ import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
@@ -192,6 +194,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private PrescriptionDao prescriptionDao;
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private PrescriptionRebateService prescriptionRebateService;
     /**
      * 随机生成核销码位数
      */
@@ -255,6 +259,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             transaction(()->{
                 //初始化订单（赋值部分数据）
                 OrderInfoRecord order = orderInfo.addRecord(orderSn, param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
+                //处方返利信息入库
+                addPrescriptionRebate(param);
                 //普通营销活动处理
                 processNormalActivity(order, orderBo, orderBeforeVo);
                 //计算其他数据（需关联去其他模块）
@@ -348,6 +354,21 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }else {
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
             }
+        }
+    }
+
+    /**
+     * 处方返利信息入库
+     * @param param
+     */
+    public void addPrescriptionRebate(CreateParam param){
+        //根据处方下单
+        if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
+            PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
+            //处方药品
+            List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
+            //处方返利信息入库
+            prescriptionRebateService.addPrescriptionRebate(prescriptionVo,prescriptionItemDos);
         }
     }
 

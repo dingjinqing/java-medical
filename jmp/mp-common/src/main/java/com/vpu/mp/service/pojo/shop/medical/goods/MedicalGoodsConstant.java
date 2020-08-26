@@ -62,4 +62,10 @@ public class MedicalGoodsConstant {
     public static final Byte SOURCE_FROM_STORE = 2;
     /**药房商品拉取后，对应唯一码值前缀*/
     public static final String STORE_GOODS_CODE_PREFIX= "STORE_";
+    /**
+     * 是否处方药 0不是 1是
+     */
+    public static final Byte IS_NO_RX=0;
+    public static final Byte IS_RX=1;
+
 }
