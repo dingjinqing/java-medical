@@ -2,6 +2,8 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.RequestUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
@@ -19,15 +21,20 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayPa
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.address.OrderAddressParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单
@@ -49,6 +57,8 @@ import java.util.List;
 public class WxAppOrderController extends WxAppBaseController{
     @Autowired
     private OrderInfoService orderInfoService;
+    @Autowired
+    private StoreService storeService;
 
     /**
      * 	结算页面
@@ -374,6 +384,17 @@ public class WxAppOrderController extends WxAppBaseController{
             return success();
         }
         return result(executeResult.getErrorCode(),executeResult.getResult());
+    }
+
+    /**
+     * 按距排序门店列表
+     * @param orderAddressParam 用户地址
+     * @return JsonResult
+     */
+    @PostMapping("/get/store")
+    public JsonResult getClosestStoreInformation(@RequestBody OrderAddressParam orderAddressParam) {
+        Map<Double, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
+        return success(storeListOpen);
     }
 
 

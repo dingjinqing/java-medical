@@ -1,10 +1,12 @@
 package com.vpu.mp.service.shop.store.store;
 
+import com.google.common.collect.Maps;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.store.StoreDao;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.db.shop.tables.records.ArticleRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
@@ -22,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.*;
+import com.vpu.mp.service.pojo.wxapp.order.address.OrderAddressParam;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -47,6 +50,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -652,5 +656,43 @@ public class StoreService extends ShopBaseService {
 
     public StoreBasicVo getStoreByNo(String storeNo) {
         return storeDao.getStoreByNo(storeNo);
+    }
+
+    /**
+     * 查询当前在营业的门店
+     * @return StoreDo
+     */
+    public Map<Double, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
+        List<StoreDo> stores = storeDao.getStoreOpen();
+        Map<Double, StoreDo> map = new HashMap<>(10);
+        stores.forEach(e -> {
+            double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
+                Double.parseDouble(orderAddressParam.getLat()),
+                Double.parseDouble(e.getLongitude()),
+                Double.parseDouble(e.getLatitude()));
+            map.put(distance, e);
+        });
+        sortByKey(map, false);
+        return map;
+
+    }
+
+    /**
+     * 根据map的key排序
+     *
+     * @param map 待排序的map
+     * @param isDesc 是否降序，true：降序，false：升序
+     * @return 排序好的map
+     */
+    private static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map, boolean isDesc) {
+        Map<K, V> result = Maps.newLinkedHashMap();
+        if (isDesc) {
+            map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByKey().reversed())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        } else {
+            map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByKey())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        }
+        return result;
     }
 }
