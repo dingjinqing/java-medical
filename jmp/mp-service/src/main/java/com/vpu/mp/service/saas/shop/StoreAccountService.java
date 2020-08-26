@@ -198,15 +198,16 @@ public class StoreAccountService extends MainBaseService {
         StoreAccountVo storeAccountInfo = storeAccountDao.getStoreAccountInfo(param);
         if (storeAccountInfo == null) {
             storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_NOT_EXIST);
-        } else if (StoreAuthConstant.DEL_NORMAL.equals(storeAccountInfo.getDelFlag())){
+        } else if (StoreAuthConstant.IS_DELETE.equals(storeAccountInfo.getDelFlag())){
             storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_DELETE);
         } else if (StoreAuthConstant.IS_FORBIDDEN.equals(storeAccountInfo.getStatus())){
-            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_DELETE);
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_FORBIDDEN);
         } else if (StringUtil.isBlank(storeAccountInfo.getStoreList())){
             storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_IS_EMPTY);
         } else {
             List<Integer> list = changeToArray(storeAccountInfo.getStoreList());
             storeAccountInfo.setStoreLists(list);
+            storeAuthInfoVo.setIsOk(true);
         }
         storeAuthInfoVo.setStoreAccountInfo(storeAccountInfo);
         return storeAuthInfoVo;

@@ -91,11 +91,10 @@ public class StoreAuth {
         }
         param.setSysId(account.getSysId());
         StoreAuthInfoVo storeAuthInfoVoNew = saas.shop.storeManageService.storeAccountService.verifyStoreLogin(param);
+        info.setStoreAuthInfoVo(storeAuthInfoVoNew);
         if (!StoreAuthConstant.STORE_AUTH_OK.equals(storeAuthInfoVoNew.getIsOk())) {
-            info.setStoreAuthInfoVo(storeAuthInfoVoNew);
-            return null;
+            return info;
         }
-
         info.setSysId(account.getSysId());
         info.setUserName(account.getUserName());
         info.setSubAccountId(0);
