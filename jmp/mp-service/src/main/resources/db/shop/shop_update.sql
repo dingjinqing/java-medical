@@ -720,4 +720,10 @@ create table if not exists `b2c_prescription_rebate` (
     KEY `doctor_id` (`doctor_id`)
 )comment ='处方药品返利表';
 
+-- 门店商品添加药品相关字段
+ALTER TABLE b2c_store_goods ADD goods_common_name VARCHAR(512) AFTER goods_id;
+ALTER TABLE b2c_store_goods ADD goods_quality_ratio VARCHAR(512) AFTER goods_common_name;
+ALTER TABLE b2c_store_goods ADD goods_approval_number VARCHAR(512) AFTER goods_quality_ratio;
+ALTER TABLE b2c_store_goods ADD goods_production_enterprise VARCHAR(512) AFTER goods_approval_number;
+
 /*********************3.4*************************END*/
