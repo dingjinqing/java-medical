@@ -704,7 +704,7 @@ CREATE TABLE if not exists `b2c_store_account` (
     KEY `account_name` (`account_name`)
 ) comment '门店账户表';
 
-create table if not exists `b2c_prescription_rebate`(
+create table if not exists `b2c_prescription_rebate` (
     `id`   int(11)   NOT NULL AUTO_INCREMENT,
     `prescription_code` varchar(64)  NOT NULL DEFAULT '' COMMENT '处方号',
     `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
