@@ -115,7 +115,7 @@ export function finish (data) {
 // 核销操作
 export function verify (data) {
   return service({
-    url: '/api/admin/order/verify',
+    url: '/api/admin/order/checkVerifyCode',
     method: 'post',
     data: data
   })

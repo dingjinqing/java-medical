@@ -56,11 +56,15 @@
 .list{
   width: 700rpx;
   margin: 0 auto;
+  margin-bottom: 20rpx;
   background: #fff;
   border-radius: 16rpx;
-  padding: 45rpx 0 5rpx;
+  padding: 30rpx 0 15rpx;
+}
+.list_content{
   display: flex;
   flex-wrap: wrap;
+  margin-top: 10rpx;
 }
 .item{
   display: flex;
@@ -70,7 +74,7 @@
   font-size: 28rpx;
   font-weight: bold;
   width: 232rpx;
-  margin-bottom: 50rpx;
+  margin:20rpx 0;
 }
 .item image{
   width: 80rpx;
@@ -267,4 +271,20 @@
 .button_get_verify.gray{
   color: #fff;
   background-color: #999;
+}
+.ma_title{
+  margin-left: 30rpx;
+  padding-bottom: 30rpx;
+  border-bottom: 2rpx solid #eee;
+  font-size: 30rpx;
+  color: #333;
+  display: flex;
+  align-items: center;
+  padding-right: 30rpx;
+  font-weight: bold;
+}
+.ma_title>view{
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
 }

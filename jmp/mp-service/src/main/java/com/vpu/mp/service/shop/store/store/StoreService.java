@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.db.shop.tables.records.ArticleRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
@@ -135,6 +136,8 @@ public class StoreService extends ShopBaseService {
      */
     @Autowired
     public ShopOverviewService shopOverviewService;
+    @Autowired
+    public StoreDao storeDao;
     /**
      * 门店列表分页查询
      *
@@ -645,5 +648,9 @@ public class StoreService extends ShopBaseService {
         storeConfigVo.setFetch(config.getFetch());
         storeConfigVo.setCityService(config.getCityService());
         return storeConfigVo;
+    }
+
+    public StoreBasicVo getStoreByNo(String storeNo) {
+        return storeDao.getStoreByNo(storeNo);
     }
 }

@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = -2021781923;
+    private static final long serialVersionUID = 1260950177;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order</code>
@@ -213,6 +213,11 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
      * The column <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除
      */
     public final TableField<InquiryOrderRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     */
+    public final TableField<InquiryOrderRecord, Byte> SETTLEMENT_FLAG = createField("settlement_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "结算标志：0：未结算，1：已结算");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.

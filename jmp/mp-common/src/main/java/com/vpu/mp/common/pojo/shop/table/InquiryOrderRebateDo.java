@@ -19,6 +19,7 @@ public class InquiryOrderRebateDo {
     private BigDecimal totalMoney;
     private BigDecimal totalRebateMoney;
     private Byte       status;
+    private String     reason;
     private Byte       isDelete;
     private Timestamp rebateTime;
     private Timestamp  createTime;
