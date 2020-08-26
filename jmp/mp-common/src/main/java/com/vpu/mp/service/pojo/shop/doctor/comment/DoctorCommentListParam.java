@@ -3,8 +3,6 @@ package com.vpu.mp.service.pojo.shop.doctor.comment;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * @author 孔德成
  * @date 2020/8/12 15:45
@@ -12,6 +10,13 @@ import javax.validation.constraints.NotNull;
 @Data
 public class DoctorCommentListParam extends BasePageParam {
 
-    @NotNull
+
     private Integer doctorId;
+    private String doctorCode;
+    private String doctorName;
+    private Byte stars;
+    /**
+     * 0:未审批,1:审批通过,2:审批未通过
+     */
+    private Byte auditStatus;
 }
