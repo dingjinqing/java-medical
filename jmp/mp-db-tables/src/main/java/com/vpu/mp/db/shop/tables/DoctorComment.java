@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorComment extends TableImpl<DoctorCommentRecord> {
 
-    private static final long serialVersionUID = 486666517;
+    private static final long serialVersionUID = 186005219;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor_comment</code>
@@ -111,6 +111,11 @@ public class DoctorComment extends TableImpl<DoctorCommentRecord> {
      * The column <code>mini_shop_471752.b2c_doctor_comment.comm_note</code>. 评论内容
      */
     public final TableField<DoctorCommentRecord, String> COMM_NOTE = createField("comm_note", org.jooq.impl.SQLDataType.VARCHAR(1000).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "评论内容");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor_comment.top</code>. 置顶
+     */
+    public final TableField<DoctorCommentRecord, Integer> TOP = createField("top", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "置顶");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor_comment.audit_status</code>. 0:未审批,1:审批通过,2:审批未通过

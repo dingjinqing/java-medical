@@ -27,6 +27,10 @@ public class Tables {
      */
     public static final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
 
+    /**
+     * 医师评价回复
+     */
+    public static final DoctorCommentReply DOCTOR_COMMENT_REPLY = com.vpu.mp.db.shop.tables.DoctorCommentReply.DOCTOR_COMMENT_REPLY;
 
 
     /**

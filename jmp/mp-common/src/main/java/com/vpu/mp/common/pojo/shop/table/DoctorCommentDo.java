@@ -24,6 +24,7 @@ public class DoctorCommentDo {
     private Byte      isAnonymou;
     private String    tag;
     private String    commNote;
+    private Integer   top;
     private Byte      auditStatus;
     private Byte      isDelete;
     private Timestamp createTime;

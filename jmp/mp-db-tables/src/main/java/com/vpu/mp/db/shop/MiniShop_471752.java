@@ -38,7 +38,10 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_4748160.b2c_prize_record</code>.
      */
     public final PrizeRecord PRIZE_RECORD = com.vpu.mp.db.shop.tables.PrizeRecord.PRIZE_RECORD;
-
+    /**
+     * 医师评价回复
+     */
+    public final DoctorCommentReply DOCTOR_COMMENT_REPLY = com.vpu.mp.db.shop.tables.DoctorCommentReply.DOCTOR_COMMENT_REPLY;
 
     /**
      * The table <code>mini_shop_4748160.b2c_pay_award_prize</code>.
@@ -1376,9 +1379,10 @@ public class MiniShop_471752 extends SchemaImpl {
             UserDoctorAttention.USER_DOCTOR_ATTENTION,
             DoctorDutyRecord.DOCTOR_DUTY_RECORD,
             DoctorComment.DOCTOR_COMMENT,
-            StoreAccount.STORE_ACCOUNT,
             CityServiceAccount.CITY_SERVICE_ACCOUNT,
-            CityServiceOrder.CITY_SERVICE_ORDER);
+            CityServiceOrder.CITY_SERVICE_ORDER,
+            DoctorCommentReply.DOCTOR_COMMENT_REPLY,
+            StoreAccount.STORE_ACCOUNT);
 
 
     }
