@@ -25,6 +25,7 @@ public class DoctorCommentListVo {
     private String commNote;
     private Integer commNoteLength;
     private String orderSn;
+    private Integer top;
     private Byte auditStatus;
     private Timestamp createTime;
     private List<DoctorCommentReplyDo> replylist;
