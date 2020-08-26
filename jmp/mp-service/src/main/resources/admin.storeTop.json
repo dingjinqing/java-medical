@@ -15,18 +15,27 @@
 			{
 				"enName": "store_list",
 				"name": "门店列表",
+        "linkUrl": "/store/list",
+        "topIndex": 1,
+        "includeApi": [],
 				"check": 1,
 				"isOnly": 2
 			},
 			{
 				"enName": "store_info",
 				"name": "门店信息",
+        "linkUrl": "/store/info",
+        "topIndex": 1,
+        "includeApi": [],
 				"check": 1,
 				"isOnly": 1
 			},
 			{
 				"enName": "group_list",
 				"name": "分组管理",
+        "linkUrl": "/store/group/list",
+        "topIndex": 1,
+        "includeApi": [],
 				"check": 1,
 				"isOnly": 2
 			}
@@ -41,12 +50,18 @@
 			{
 				"enName": "all_goods",
 				"name": "全部商品",
+        "linkUrl": "/store/goods/list",
+        "topIndex": 2,
+        "includeApi": ["/api/store/goods"],
 				"check": 1,
 				"isOnly": 0
 			},
 			{
 				"enName": "sel_out_goods",
 				"name": "售罄商品",
+        "linkUrl": "/store/goods/list",
+        "topIndex": 2,
+        "includeApi": ["/api/store/goods"],
 				"check": 1,
 				"isOnly": 0
 			}
@@ -61,24 +76,36 @@
 			{
 				"enName": "all_order",
 				"name": "全部订单",
+        "linkUrl": "/store/orders/manage/list",
+        "topIndex": 3,
+        "includeApi": ["/api/store/order/*"],
 				"check": 1,
 				"isOnly": 0
 			},
 			{
 				"enName": "picked_up_order",
 				"name": "自提订单",
+        "linkUrl": "/store/orders/manage/pick/list",
+        "topIndex": 3,
+        "includeApi": ["/api/store/order/*"],
 				"check": 1,
 				"isOnly": 0
 			},
 			{
 				"enName": "city_service",
 				"name": "同城配送",
+        "linkUrl": "/store/orders/manage/deliver/list",
+        "topIndex": 3,
+        "includeApi": ["/api/store/order/*"],
 				"check": 1,
 				"isOnly": 0
 			},
 			{
 				"enName": "booking_order",
 				"name": "预约订单",
+        "linkUrl": "/store/orders/manage/return/list",
+        "topIndex": 3,
+        "includeApi": ["/api/store/return/order"],
 				"check": 1,
 				"isOnly": 0
 			},
@@ -151,12 +178,18 @@
 			{
 				"enName": "staff_list",
 				"name": "全部店员",
+        "linkUrl": "/store/staff/list",
+        "topIndex": 4,
+        "includeApi": [],
 				"check": 1,
 				"isOnly": 0
 			},
 			{
 				"enName": "salesman_auth",
 				"name": "店员权限",
+        "linkUrl": "/store/staff/authority",
+        "topIndex": 4,
+        "includeApi": [],
 				"check": 1,
 				"isOnly": 0
 			}

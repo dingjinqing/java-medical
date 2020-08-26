@@ -128,4 +128,18 @@ public class OrderInfoDao extends ShopBaseDao {
                 .where(ORDER_INFO.CREATE_TIME.ge(beginTime)).and(ORDER_INFO.CREATE_TIME.le(endTime))
                 .fetchInto(OrderInfoDo.class);
     }
+
+    /**
+     * 检查核销码是否正确
+     * @param verifyCode 核销码
+     * @param orderSn 订单OrderSn
+     * @return boolean
+     * @author 赵晓东
+     */
+    public boolean checkVerifyCode(String verifyCode, String orderSn) {
+        OrderInfoDo orderInfoDo = db().select().from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_SN.eq(orderSn))
+            .and(ORDER_INFO.VERIFY_CODE.eq(verifyCode)).fetchAnyInto(OrderInfoDo.class);
+        return orderInfoDo != null;
+    }
 }

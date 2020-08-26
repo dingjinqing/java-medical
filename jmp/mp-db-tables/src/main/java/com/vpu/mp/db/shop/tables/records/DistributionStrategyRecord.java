@@ -158,112 +158,112 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.fanli_ratio_2</code>. 二级返利比例（%的系数）
      */
-    public void setFanliRatio_2(Double value) {
+    public void setFanliRatio2(Double value) {
         set(9, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.fanli_ratio_2</code>. 二级返利比例（%的系数）
      */
-    public Double getFanliRatio_2() {
+    public Double getFanliRatio2() {
         return (Double) get(9);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.rebate_ratio_2</code>. 间接
      */
-    public void setRebateRatio_2(Double value) {
+    public void setRebateRatio2(Double value) {
         set(10, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.rebate_ratio_2</code>. 间接
      */
-    public Double getRebateRatio_2() {
+    public Double getRebateRatio2() {
         return (Double) get(10);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.fanli_ratio_3</code>. 三级返利比例（%的系数）
      */
-    public void setFanliRatio_3(Double value) {
+    public void setFanliRatio3(Double value) {
         set(11, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.fanli_ratio_3</code>. 三级返利比例（%的系数）
      */
-    public Double getFanliRatio_3() {
+    public Double getFanliRatio3() {
         return (Double) get(11);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.rebate_ratio_3</code>. 间接
      */
-    public void setRebateRatio_3(Double value) {
+    public void setRebateRatio3(Double value) {
         set(12, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.rebate_ratio_3</code>. 间接
      */
-    public Double getRebateRatio_3() {
+    public Double getRebateRatio3() {
         return (Double) get(12);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.fanli_ratio_4</code>. 四级返利比例（%的系数）
      */
-    public void setFanliRatio_4(Double value) {
+    public void setFanliRatio4(Double value) {
         set(13, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.fanli_ratio_4</code>. 四级返利比例（%的系数）
      */
-    public Double getFanliRatio_4() {
+    public Double getFanliRatio4() {
         return (Double) get(13);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.rebate_ratio_4</code>. 间接
      */
-    public void setRebateRatio_4(Double value) {
+    public void setRebateRatio4(Double value) {
         set(14, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.rebate_ratio_4</code>. 间接
      */
-    public Double getRebateRatio_4() {
+    public Double getRebateRatio4() {
         return (Double) get(14);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.fanli_ratio_5</code>. 五级返利比例（%的系数）
      */
-    public void setFanliRatio_5(Double value) {
+    public void setFanliRatio5(Double value) {
         set(15, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.fanli_ratio_5</code>. 五级返利比例（%的系数）
      */
-    public Double getFanliRatio_5() {
+    public Double getFanliRatio5() {
         return (Double) get(15);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.rebate_ratio_5</code>. 间接
      */
-    public void setRebateRatio_5(Double value) {
+    public void setRebateRatio5(Double value) {
         set(16, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.rebate_ratio_5</code>. 间接
      */
-    public Double getRebateRatio_5() {
+    public Double getRebateRatio5() {
         return (Double) get(16);
     }
 
@@ -298,56 +298,56 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.first_ratio_2</code>. 首单返利金额
      */
-    public void setFirstRatio_2(Double value) {
+    public void setFirstRatio2(Double value) {
         set(19, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.first_ratio_2</code>. 首单返利金额
      */
-    public Double getFirstRatio_2() {
+    public Double getFirstRatio2() {
         return (Double) get(19);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.first_ratio_3</code>. 首单返利金额
      */
-    public void setFirstRatio_3(Double value) {
+    public void setFirstRatio3(Double value) {
         set(20, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.first_ratio_3</code>. 首单返利金额
      */
-    public Double getFirstRatio_3() {
+    public Double getFirstRatio3() {
         return (Double) get(20);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.first_ratio_4</code>. 首单返利金额
      */
-    public void setFirstRatio_4(Double value) {
+    public void setFirstRatio4(Double value) {
         set(21, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.first_ratio_4</code>. 首单返利金额
      */
-    public Double getFirstRatio_4() {
+    public Double getFirstRatio4() {
         return (Double) get(21);
     }
 
     /**
      * Setter for <code>jmini_shop_471752.b2c_distribution_strategy.first_ratio_5</code>. 首单返利金额
      */
-    public void setFirstRatio_5(Double value) {
+    public void setFirstRatio5(Double value) {
         set(22, value);
     }
 
     /**
      * Getter for <code>jmini_shop_471752.b2c_distribution_strategy.first_ratio_5</code>. 首单返利金额
      */
-    public Double getFirstRatio_5() {
+    public Double getFirstRatio5() {
         return (Double) get(22);
     }
 

@@ -10,6 +10,7 @@
             size="small"
             class="default_input"
             filterable
+            clearable
           >
             <el-option
               label="全部"
@@ -24,35 +25,46 @@
           </el-select>
 
         </div>
-        <div class="filters_item">
-          <span class="fil_span">时间筛选：</span>
+        <div class="filters_item ">
+          <span class="fil_span">评价星级：</span>
           <el-select
-            v-model="timeSelect"
+            v-model="param.commstar"
             size="small"
-            clearable
-            @change="dateChangeHandler"
-            class="timeSelect"
+            class="default_input"
+            filterable
           >
             <el-option
-              v-for="item in timeRange"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in starLevel"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
             ></el-option>
           </el-select>
-          <el-date-picker
-            v-if="timeSelect===0"
-            v-model="timeValue"
-            type="daterange"
+
+        </div>
+        <div class="filters_item">
+          <span>审核状态：</span>
+          <el-select
+            v-model="param.flag"
             size="small"
-            value-format="yyyyMMdd"
-            @change="changeDate"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            class="mini_select"
+            style="width: 170px;"
           >
-          </el-date-picker>
-          <span class="choosed_time">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+            <el-option
+              v-for="item in auditFlag"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="filters_item">
+          <span>自动审核：</span>
+          <el-switch
+            v-model="autoReview"
+            active-color="#f7931e"
+          ></el-switch>
+          <span style="margin-left:10px">{{autoReview ? '已开启':'已关闭'}}</span>
         </div>
         <div class="btn_wrap">
           <el-button
@@ -60,20 +72,8 @@
             size='small'
             @click="initData"
           >查询</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click='exportData'
-          >导出</el-button>
+
         </div>
-      </div>
-    </div>
-    <div
-      class="total_amount"
-      v-if='total.amountTotal > 0'
-    >
-      <div>
-        <span>总计:</span>咨询单数<span>{{total.amountTotal}};</span>咨询单次价格<span>{{total.oncePriceTotal}};</span>咨询总金额<span>{{total.amountPriceTotal}}</span>
       </div>
     </div>
     <div class="table_box">
@@ -92,33 +92,140 @@
             'text-align':'center'
           }"
       >
-
-        <el-table-column label='日期'>
+        <el-table-column
+          prop='doctorName'
+          label='医生姓名'
+        ></el-table-column>
+        <el-table-column
+          prop='doctorName'
+          label='用户昵称'
+        ></el-table-column>
+        <el-table-column
+          prop='amount'
+          label='咨询订单号'
+        ></el-table-column>
+        <el-table-column
+          label="评价内容"
+          align="center"
+          width="200px"
+        >
+          <template slot-scope="scope">
+            <div class="evaluation-info">
+              <div class="evaluation-info_item">
+                <span class="evaluation-info_title">评分：</span><span><i
+                    class="el-icon-star-on"
+                    v-for="index in scope.row.commstar"
+                    :key="index"
+                  ></i></span>
+              </div>
+              <div class="evaluation-info_item">
+                <span class="evaluation-info_title">评价：</span><span>{{
+                  scope.row.commNote || '此用户没有评价'
+                }}</span>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="评价回复"
+          align="center"
+          width="200px"
+        >
+          <template slot-scope="scope">
+            <div class="evaluation-info">
+              <div class="evaluation-info_item">
+                <span class="evaluation-info_title">回复：</span><span>{{
+                  scope.row.commNote || '暂无回复'
+                }}</span>
+              </div>
+              <div class="evaluation_response">
+                <el-button
+                  type="primary"
+                  v-if="!scope.row.content"
+                  size="mini"
+                  @click="writeReply(scope.row.id)"
+                >删除回复</el-button>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label='评价时间'>
           <template v-slot='scope'>
             <span>{{scope.row.createTime | timeDate}}</span>
           </template>
         </el-table-column>
 
         <el-table-column
-          prop='doctorName'
-          label='医生姓名'
-        ></el-table-column>
-        <el-table-column
           prop='departmentName'
-          label='科室'
+          label='匿名评价'
         ></el-table-column>
-        <el-table-column
-          prop='amount'
-          label='咨询单数'
-        ></el-table-column>
+
         <el-table-column
           prop='oncePrice'
-          label='咨询单次价格'
+          label='审核状态'
         ></el-table-column>
         <el-table-column
-          prop='amountPrice'
-          label='咨询总金额'
-        ></el-table-column>
+          label="操作"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-tooltip
+              content="删除"
+              placement="top"
+            >
+              <span
+                class="el-icon-delete operateSpan"
+                @click="delEvaluation(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              content="通过"
+              placement="top"
+              v-if="
+                target === 'Record' &&
+                  (scope.row.flag === 0 || scope.row.flag === 2)
+              "
+            >
+              <span
+                class="el-icon-success operateSpan"
+                @click="evaluationPass(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              content="拒绝"
+              placement="top"
+              v-if="
+                target === 'Record' &&
+                  (scope.row.flag === 0 || scope.row.flag === 1)
+              "
+            >
+              <span
+                class="el-icon-error operateSpan"
+                @click="evaluationRefuse(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              content="置顶"
+              placement="top"
+              v-if="scope.row.isTop === 0"
+            >
+              <span
+                class="el-icon-top operateSpan"
+                @click="evaluationTop(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <!-- <el-tooltip
+              :content="$t('evaluation.down')"
+              placement="top"
+              v-if="scope.row.isTop === 1"
+            >
+              <span
+                class="el-icon-bottom operateSpan"
+                @click="evaluationCancelTop(scope.row.id)"
+              ></span>
+            </el-tooltip> -->
+          </template>
+        </el-table-column>
       </el-table>
       <pagination
         :page-params.sync="pageParams"
@@ -152,26 +259,27 @@ export default {
   data () {
     return {
       loading: false,
-      timeValue: [],
-      timeSelect: 1,
       pageParams: {},
       tableData: [],
-      timeRange: this.$t('tradesStatistics.timeRange'),
-      startDate: {
-        year: '',
-        month: '',
-        day: ''
-      },
-      endDate: {
-        year: '',
-        month: '',
-        day: ''
-      },
+      starLevel: [
+        { key: 0, value: '全部' },
+        { key: 1, value: '一星' },
+        { key: 2, value: '二星' },
+        { key: 3, value: '三星' },
+        { key: 4, value: '四星' },
+        { key: 5, value: '五星' }
+      ],
+      auditFlag: [
+        { key: -1, value: '全部' },
+        { key: 0, value: '待审核' },
+        { key: 1, value: '已通过' },
+        { key: 2, value: '未通过' }
+      ],
       param: {
-        startTime: '',
-        endTime: '',
-        doctorId: ''
+        commstar: 0,
+        flag: 0
       },
+      autoReview: false,
       doctorList: [],
       total: {}
     }
@@ -274,6 +382,7 @@ export default {
         display: flex;
         justify-content: flex-end;
         margin-left: 15px;
+        align-items: center;
         .fil_span {
           font-size: 14px;
           text-align: right;
@@ -312,6 +421,39 @@ export default {
       color: #333;
       span {
         margin-right: 20px;
+      }
+    }
+  }
+}
+.operateSpan {
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer !important;
+}
+.evaluation_response {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  > .el-button {
+    width: 90px;
+  }
+}
+.evaluation-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  > .evaluation-info_item {
+    display: flex;
+    > span {
+      flex: 1;
+      &.evaluation-info_title {
+        flex: 0 1 auto;
+        width: auto;
+      }
+      > .el-icon-star-on {
+        color: #ff6666;
+        font-size: 20px;
       }
     }
   }

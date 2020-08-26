@@ -2,6 +2,7 @@ package com.vpu.mp.controller;
 
 import java.util.List;
 
+import com.vpu.mp.auth.StoreAuthInterceptor;
 import com.vpu.mp.auth.WxAppAuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +34,8 @@ public class WebConfig implements WebMvcConfigurer {
 	protected AdminAuthInterceptor adminAuthInterceptor;
 	@Autowired
 	protected WxAppAuthInterceptor wxAppAuthInterceptor;
+	@Autowired
+	protected StoreAuthInterceptor storeAuthInterceptor;
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -48,6 +51,8 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addInterceptor(adminAuthInterceptor).addPathPatterns("/api/admin/**").addPathPatterns("/api/wechat/**")
 				.excludePathPatterns("/api/admin/login", "/api/admin/logout", "/api/admin/shopDecorate/**",
 						"/api/admin/order/orderList", "/api/wechat/proxy/**","/admin/**");
+        registry.addInterceptor(storeAuthInterceptor).addPathPatterns("/api/store/**")
+            .excludePathPatterns("/api/store/login", "/api/store/logout");
 		registry.addInterceptor(wxAppAuthInterceptor).addPathPatterns("/api/wxapp/**");
 	}
 

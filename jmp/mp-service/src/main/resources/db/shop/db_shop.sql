@@ -1304,66 +1304,67 @@ CREATE TABLE `b2c_give_voucher` (
 )COMMENT='发券记录';
 
 
-
 CREATE TABLE `b2c_goods` (
-  `goods_id` int(8) NOT NULL AUTO_INCREMENT,
-  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
-  `cat_id` int(5) NOT NULL DEFAULT '0',
-  `goods_sn` varchar(60) BINARY NOT NULL DEFAULT '',
-  `goods_name` varchar(120) NOT NULL DEFAULT '',
-  `brand_id` int(11) NOT NULL DEFAULT '0' COMMENT '品牌id',
-  `goods_ad` varchar(1024) NOT NULL DEFAULT '' COMMENT '广告词',
-  `goods_number` int(11) NOT NULL DEFAULT '0' COMMENT '库存',
-  `goods_weight` DECIMAL(10,3) DEFAULT NULL COMMENT '商品重量，默认规格重量或自定义规格中的最小重量',
-  `market_price` DECIMAL(10,2) COMMENT '市场价格，多规格时取最高',
-  `shop_price` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `cost_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '成本价',
-  `goods_desc` text,
-  `goods_img` varchar(500) NOT NULL DEFAULT '',
-  `is_on_sale` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否在售，1在售，0下架',
-  `del_flag` tinyint(1) NOT NULL DEFAULT '0',
-  `goods_type` tinyint(2) NOT NULL DEFAULT '0' COMMENT '商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品',
-  `deliver_template_id` int(5) NOT NULL DEFAULT '0' COMMENT '运费模板id',
-  `goods_sale_num` int(8) NOT NULL DEFAULT '0' COMMENT '销售数量',
-  `goods_collect_num` int(8) NOT NULL DEFAULT '0' COMMENT '收藏数量',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
-  `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态,0待审核 1 审核通过 2 违规下架',
-  `reason` text COMMENT '违规下架原因',
-  `sub_account_id` int(11) NOT NULL DEFAULT '0' COMMENT '子帐号id，主要用于官方店铺',
-  `sale_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上架时间',
-  `limit_buy_num` int(11) NOT NULL DEFAULT '0' COMMENT '最少起购数量，0不限购',
-  `unit` varchar(60) NOT NULL DEFAULT '' COMMENT '商品单位',
-  `limit_max_num` int(11) NOT NULL DEFAULT '0' COMMENT '最多起购数量，0不限购',
-  `sale_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '上架状态,0立即上架， 1审核通过 2 加入仓库',
-  `sort_id` int(11) NOT NULL DEFAULT '0',
-  `goods_video` varchar(191) NOT NULL DEFAULT '' COMMENT '视频',
-  `goods_video_img` varchar(191) NOT NULL DEFAULT '' COMMENT '视频首图',
-  `goods_video_size` int(11) NOT NULL DEFAULT '0' COMMENT '视频尺寸',
-  `goods_video_id` int(11) NOT NULL DEFAULT '0' COMMENT '视频id',
-  `goods_page_id` int(11) NOT NULL DEFAULT '0' COMMENT '详情页装修模板id',
-  `is_page_up` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否在文本区域上方',
-  `is_card_exclusive` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否会员卡专属',
-  `base_sale` int(8) NOT NULL DEFAULT '0' COMMENT '初始销量',
-  `source` tinyint(1) NOT NULL DEFAULT '0' COMMENT '商品来源,0：店铺自带；1、2..等：不同类型店铺第三方抓取自带商品来源',
-  `is_control_price` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否控价：0不控价，1控价（不可修改价格）',
-  `can_rebate` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否分销改价',
-  `promotion_language_switch` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否使用分销推广语0关闭，1使用',
-  `promotion_language` varchar(400) NOT NULL DEFAULT '' COMMENT '推广语',
-  `deliver_place` varchar(191) DEFAULT NULL COMMENT '发货地址',
-  `share_config` varchar(500) DEFAULT NULL COMMENT '分享配置',
-  `is_default_product` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1默认规格，0自定义规格（多规格）',
-  `is_medical` tinyint(1) not null default 1 comment '是否药品 0否 1是',
-  `pv` int(11) DEFAULT '0' COMMENT '7天访问量',
-  `comment_num` int(11) DEFAULT '0' COMMENT '评论数',
-  `room_id` int(4) DEFAULT NULL COMMENT '直播间id',
-  PRIMARY KEY (`goods_id`),
-  UNIQUE KEY `goods_id` (`goods_id`,`shop_id`),
-  UNIQUE KEY `goods_sn` (`goods_sn`,`shop_id`),
-  KEY `goods_id_2` (`goods_id`),
-  KEY `shop_id` (`shop_id`),
-  KEY `cat_id` (`cat_id`)
+    `goods_id` int(8) NOT NULL AUTO_INCREMENT,
+    `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺id',
+    `cat_id` int(5) NOT NULL DEFAULT '0',
+    `goods_sn` varchar(60)  NOT NULL DEFAULT '',
+    `goods_name` varchar(120)  NOT NULL DEFAULT '',
+    `brand_id` int(11) NOT NULL DEFAULT '0' COMMENT '品牌id',
+    `goods_ad` varchar(1024)  NOT NULL DEFAULT '' COMMENT '广告词',
+    `goods_number` int(11) NOT NULL DEFAULT '0' COMMENT '库存',
+    `goods_weight` decimal(10,3) DEFAULT NULL COMMENT '商品重量，默认规格重量或自定义规格中的最小重量',
+    `market_price` decimal(10,2) DEFAULT NULL COMMENT '市场价格，多规格时取最高',
+    `shop_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+    `cost_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '成本价',
+    `goods_desc` text ,
+    `goods_img` varchar(500)  NOT NULL DEFAULT '',
+    `is_on_sale` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否在售，1在售，0下架',
+    `del_flag` tinyint(1) NOT NULL DEFAULT '0',
+    `goods_type` tinyint(2) NOT NULL DEFAULT '0' COMMENT '商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品',
+    `deliver_template_id` int(5) NOT NULL DEFAULT '0' COMMENT '运费模板id',
+    `goods_sale_num` int(8) NOT NULL DEFAULT '0' COMMENT '销售数量',
+    `goods_collect_num` int(8) NOT NULL DEFAULT '0' COMMENT '收藏数量',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态,0待审核 1 审核通过 2 违规下架',
+    `reason` text  COMMENT '违规下架原因',
+    `sub_account_id` int(11) NOT NULL DEFAULT '0' COMMENT '子帐号id，主要用于官方店铺',
+    `sale_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上架时间',
+    `limit_buy_num` int(11) NOT NULL DEFAULT '0' COMMENT '最少起购数量，0不限购',
+    `unit` varchar(60)  NOT NULL DEFAULT '' COMMENT '商品单位',
+    `limit_max_num` int(11) NOT NULL DEFAULT '0' COMMENT '最多起购数量，0不限购',
+    `sale_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '上架状态,0立即上架， 1审核通过 2 加入仓库',
+    `sort_id` int(11) NOT NULL DEFAULT '0',
+    `goods_video` varchar(191)  NOT NULL DEFAULT '' COMMENT '视频',
+    `goods_video_img` varchar(191)  NOT NULL DEFAULT '' COMMENT '视频首图',
+    `goods_video_size` int(11) NOT NULL DEFAULT '0' COMMENT '视频尺寸',
+    `goods_video_id` int(11) NOT NULL DEFAULT '0' COMMENT '视频id',
+    `goods_page_id` int(11) NOT NULL DEFAULT '0' COMMENT '详情页装修模板id',
+    `is_page_up` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否在文本区域上方',
+    `is_card_exclusive` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否会员卡专属',
+    `base_sale` int(8) NOT NULL DEFAULT '0' COMMENT '初始销量',
+    `source` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1 医院提供，2 药房提供',
+    `is_control_price` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否控价：0不控价，1控价（不可修改价格）',
+    `can_rebate` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否分销改价',
+    `promotion_language_switch` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否使用分销推广语0关闭，1使用',
+    `promotion_language` varchar(400)  NOT NULL DEFAULT '' COMMENT '推广语',
+    `deliver_place` varchar(191)  DEFAULT NULL COMMENT '发货地址',
+    `share_config` varchar(500)  DEFAULT NULL COMMENT '分享配置',
+    `is_default_product` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1默认规格，0自定义规格（多规格）',
+    `is_medical` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否药品 0否 1是',
+    `pv` int(11) DEFAULT '0' COMMENT '7天访问量',
+    `comment_num` int(11) DEFAULT '0' COMMENT '评论数',
+    `room_id` int(4) DEFAULT NULL COMMENT '直播间id',
+    PRIMARY KEY (`goods_id`),
+    UNIQUE KEY `goods_id` (`goods_id`,`shop_id`),
+    UNIQUE KEY `goods_sn` (`goods_sn`,`shop_id`),
+    KEY `goods_id_2` (`goods_id`),
+    KEY `shop_id` (`shop_id`),
+    KEY `cat_id` (`cat_id`)
 )COMMENT='商品表 `b2c_goods`';
+
+
 
 
 
@@ -1425,7 +1426,7 @@ CREATE TABLE `b2c_goods_img` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`img_id`),
   KEY `goods_id` (`goods_id`)
-)COMMENT='商品图片表 `b2c_goods_img`';
+)COMMENT='商品图片表';
 
 
 
@@ -2022,7 +2023,7 @@ CREATE TABLE `b2c_lottery` (
   `lottery_name` varchar(120) NOT NULL COMMENT '抽奖名称',
   `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间',
   `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
-  `lottery_explain` varb2c_pay_awardchar(299) NOT NULL COMMENT '抽奖说明',
+  `lottery_explain` varchar(299) NOT NULL COMMENT '抽奖说明',
   `free_chances` int(8) NULL DEFAULT NULL COMMENT '免费抽奖次数 0不限制 -1不可免费抽奖 ',
   `can_share` tinyint(2) DEFAULT NULL COMMENT '是否分享获得次数',
   `share_chances` int(8) NULL DEFAULT NULL COMMENT '分享最多获得次数 0 不限制次数',
@@ -2160,7 +2161,7 @@ CREATE TABLE `b2c_member_card` (
   `store_use_switch` tinyint(1) NOT NULL DEFAULT '0' COMMENT '可否在门店使用  0不可以 1可以',
   `exchang_goods` varchar(299) DEFAULT NULL COMMENT '可兑换商品id',
   `exchang_freight` tinyint(1) DEFAULT NULL COMMENT '运费策略 0免运费 1使用商品运费策略',
-  `exchang_count` int(11) DEFAULT NULL b2c_group_integration_defineCOMMENT '允许兑换次数',
+  `exchang_count` int(11) DEFAULT NULL COMMENT '允许兑换次数',
   `stock` int(11) DEFAULT '0' COMMENT '发放总量',
   `limit` int(11) DEFAULT '1' COMMENT '领取限制',
   `discount_brand_id` varchar(299) DEFAULT NULL COMMENT '商品品牌id',
@@ -2178,8 +2179,6 @@ CREATE TABLE `b2c_member_card` (
   `cannot_use_coupon` tinyint(1) DEFAULT 0 COMMENT '是否和会员卡一起使用0:可以1：不可以',
   `custom_rights_flag` tinyint(1) DEFAULT 0 COMMENT '自定义权益开关',
   `custom_options` text COMMENT '自定义激活信息配置',
-  `card_tag` tinyint(1) DEFAULT 0 COMMENT '是否开启给领卡用户打标签0否，1是',
-  `card_tag_id` varchar(20) COMMENT '领卡打标签id',
   `card_tag` tinyint(1) DEFAULT 0 COMMENT '是否开启给领卡用户打标签0否，1是',
   `card_tag_id` varchar(20) COMMENT '领卡打标签id',
   `card_give_away` tinyint(1) DEFAULT 0 COMMENT '0:不可转赠，1:可以转赠',
@@ -2945,14 +2944,14 @@ CREATE TABLE `b2c_package_sale` (
   `group_name_3` varchar(20) DEFAULT NULL COMMENT '分组名称',
   `goods_number_3` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数',
   `goods_ids_3` text COMMENT '分组goodsids',
-  `cat_ids_3` text COMMENT '分组平台分类id',b2c_customer_avail_coupons
+  `cat_ids_3` text COMMENT '分组平台分类id',
   `sort_ids_3` text COMMENT '分组商家分类id',
   `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '活动状态1启用',
   `del_flag` tinyint(2) NOT NULL DEFAULT '0' COMMENT '删除状态',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `package_type` tinyint(1) DEFAULT '0' COMMENT '活动类型0金额1折扣',
-  `total_ratio` decimal(4,2) DEFAULT '0.00' COMMENT '结算比例'
+  `total_ratio` decimal(4,2) DEFAULT '0.00' COMMENT '结算比例',
   PRIMARY KEY (`id`)
 )COMMENT='一口价活动';
 
@@ -5214,6 +5213,7 @@ create table `b2c_prescription`(
     `is_delete`     tinyint(1)   not null default '0',
     `is_used`     tinyint(1)   not null default '0' comment '是否使用过 0未使用  1已使用 ，默认0',
     `is_valid`     tinyint(1)   not null default '1' comment '是否有效  0无效 1有效，默认1',
+    `settlement_flag`     tinyint(1)   not null default '0' comment '结算标志：0：未结算，1：已结算',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
@@ -5242,6 +5242,8 @@ create table `b2c_prescription_item`(
     `goods_use_memo` varchar(1024) not null default '' comment '药品使用方式说明',
     `goods_production_enterprise` varchar(512) comment '生产企业',
     `medicine_price` decimal(18,2) not null default '0.00' comment '药品总价',
+    `rebate_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '返利比例',
+    `total_rebate_money` decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '返利金额',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
@@ -5386,7 +5388,10 @@ CREATE TABLE `b2c_inquiry_order` (
  `finished_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单完成时间',
  `description_disease` varchar(512)  NOT NULL  DEFAULT '' COMMENT '病情描述',
  `image_url` text  COMMENT '病情描述image信息',
+ `rebate_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '返利比例',
+ `total_rebate_money` decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '返利金额',
  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+ `settlement_flag`     tinyint(1)   not null default '0' comment '结算标志：0：未结算，1：已结算',
  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 PRIMARY KEY (`order_id`)
@@ -5408,6 +5413,23 @@ CREATE TABLE `b2c_inquiry_order_refund_list` (
   KEY `order_sn` (`order_sn`),
   KEY `user_id` (`user_id`)
 ) COMMENT='问诊订单退款记录';
+-- 医师问诊订单返利表
+CREATE TABLE `b2c_inquiry_order_rebate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_sn` varchar(64)  NOT NULL DEFAULT '' COMMENT '订单号',
+  `doctor_id` int(11) NOT NULL DEFAULT '0' COMMENT '医师id',
+  `total_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '问诊金额',
+  `total_rebate_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '返利金额',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态  0待返利 1已返利',
+  `reason` varchar(256) NOT NULL DEFAULT ''  COMMENT '未返利原因',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+  `rebate_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'COMMENT  '返利日期',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `order_sn` (`order_sn`),
+  KEY `doctor_id` (`order_sn`)
+)COMMENT='医师问诊订单返利表';
 
 -- 用户消息表
 CREATE TABLE `b2c_user_message` (
@@ -5497,24 +5519,36 @@ create table `b2c_user_doctor_attention`(
 )comment ='用户关注医师';
 
 -- 医师评价和打分
-create table `b2c_doctor_comment`(
-    `id`   int(11)      not null auto_increment,
-    `user_id` int(11) not null comment '用户id',
-    `user_name` varchar(60) not null default "" comment '用户昵称',
-    `patient_id` int(11) not null comment '患者id',
-    `doctor_id` int(11) not null comment '医师id',
-    `order_sn` varchar(20) not null default "" comment '订单编号',
-    `im_session_id` int(11)  not null comment '会话id',
-    `stars` tinyint(1) not null default 5 comment '评价星级1~5',
-    `is_anonymou` tinyint(1) not null default 0 comment '匿名状态 0.未匿名；1.匿名',
-    `tag` varchar(100) default '' comment '评价标签',
-    `comm_note` varchar(1000) not null default "" comment '评论内容',
-    `audit_status` tinyint(1) not null default 0 comment '0:未审批,1:审批通过,2:审批未通过',
-    `is_delete`     tinyint(1)   not null default '0',
-    `create_time`   timestamp    not null default current_timestamp,
-    `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key(`id`)
-)comment ='医师评价和打分';
+create table `b2c_doctor_comment` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL COMMENT '用户id',
+    `user_name` varchar(60)  NOT NULL DEFAULT '' COMMENT '用户昵称',
+    `patient_id` int(11) NOT NULL COMMENT '患者id',
+    `doctor_id` int(11) NOT NULL COMMENT '医师id',
+    `order_sn` varchar(20)  NOT NULL DEFAULT '' COMMENT '订单编号',
+    `im_session_id` int(11) NOT NULL COMMENT '会话id',
+    `stars` tinyint(1) NOT NULL DEFAULT '5' COMMENT '评价星级1~5',
+    `is_anonymou` tinyint(1) NOT NULL DEFAULT '0' COMMENT '匿名状态 0.未匿名；1.匿名',
+    `tag` varchar(100)  DEFAULT '' COMMENT '评价标签',
+    `comm_note` varchar(1000)  NOT NULL DEFAULT '' COMMENT '评论内容',
+    `audit_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未审批,1:审批通过,2:审批未通过',
+    `is_delete` tinyint(1) NOT NULL DEFAULT '0',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`)
+) COMMENT='医师评价和打分';
+
+-- 医师评价回复
+create table `b2c_doctor_comment_reply`(
+    `id`          int(11)       not null auto_increment,
+    `comment_id`  int(11)       not null comment '医师评价表id',
+    `reply_note`  varchar(1000) NOT NULL DEFAULT '' COMMENT '回复内容',
+    `is_delete`   tinyint(1)    not null default 0 comment '删除',
+    `create_time` timestamp     not null default current_timestamp,
+    `update_time` timestamp     not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+) comment ='医师评价回复';
+
 
 -- 医师上下班记录表
 create table `b2c_doctor_duty_record`(
@@ -5547,3 +5581,106 @@ CREATE TABLE `b2c_store_account` (
     KEY `account_name` (`account_name`)
 ) comment '门店账户表';
 
+-- 同城配送账号表
+CREATE TABLE `b2c_city_service_account` (
+    `id`  int NOT NULL AUTO_INCREMENT ,
+    `delivery_id`  varchar(20) NOT NULL COMMENT '配送公司Id' ,
+    `appkey`  varchar(50) NULL DEFAULT NULL COMMENT '配送公司分配的appkey' ,
+    `appsecret`  varchar(100) NULL DEFAULT NULL COMMENT '配送公司分配的appsecret' ,
+    `account_status`  tinyint(1) NULL DEFAULT 1 COMMENT '账号状态： 0 审核通过 1 审核中 2 审核不通过' ,
+    `custom_name`  varchar(50) NULL DEFAULT '' COMMENT '自定义名称' ,
+    `status`  tinyint(1) NULL DEFAULT 0 COMMENT '系统设置状态： 1 启用 0 禁用' ,
+    `create_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP ,
+    `update_time`  timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+    PRIMARY KEY (`id`)
+)COMMENT='同城配送账号表';
+
+-- 同城配送订单表
+CREATE TABLE `b2c_city_service_order` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `batch_no` VARCHAR(50) COMMENT '发货批次号',
+    `order_sn` VARCHAR(50) COMMENT '订单号',
+    `service_account_id` INT COMMENT '签约账号关联ID',
+    `fee` DECIMAL(10,2) COMMENT '实际运费(单位：元)，运费减去优惠券费用',
+    `deliverfee` DECIMAL(10,2) COMMENT '运费',
+    `couponfee` DECIMAL(10,2) COMMENT '优惠券费用',
+    `tips` DECIMAL(10,2) COMMENT '小费',
+    `insurancefee` DECIMAL(10,2) COMMENT '保价费',
+    `distance` DECIMAL(10,2) COMMENT '配送距离',
+    `waybill_id` VARCHAR(100) COMMENT '配送单号',
+    `order_status` VARCHAR(20) COMMENT '配送状态',
+    `finish_code` VARCHAR(50) COMMENT '收货码',
+    `pickup_code` VARCHAR(50) COMMENT '取货码',
+    `dispatch_duration` INT COMMENT '骑手接单时间(单位s)',
+    `agent_name` VARCHAR(50) COMMENT '骑手姓名',
+    `agent_phone` VARCHAR(20) COMMENT '骑手电话',
+    `action_time` DATETIME COMMENT '状态变更时间',
+    `action_msg` VARCHAR(500) NULL   COMMENT '附加信息',
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `update_time`  timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deduct_fee`  decimal(10,2) NULL DEFAULT 0 COMMENT '扣除的违约金',
+    PRIMARY KEY (`id`),
+    INDEX `batch_no` (`batch_no`),
+    INDEX `order_sn` (`order_sn`),
+    INDEX `waybill_id` (`waybill_id`),
+    INDEX `order_status` (`order_status`)
+)COMMENT='同城配送订单表';
+
+
+
+-- 医师返利数据表
+create table `b2c_doctor_total_rebate` (
+    `id`   int(11)   NOT NULL AUTO_INCREMENT,
+    `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
+    `total_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '累计获得返利金额',
+    `blocked_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '冻结余额',
+    `final_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '总返利金额，total_money为提现后金额',
+    `is_delete`     tinyint(1)   NOT NULL DEFAULT '0',
+    `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key(`id`),
+    KEY `doctor_id` (`doctor_id`)
+)comment ='医师返利数据表';
+
+-- 处方药品返利表
+create table `b2c_prescription_rebate` (
+    `id`   int(11)   NOT NULL AUTO_INCREMENT,
+    `prescription_code` varchar(64)  NOT NULL DEFAULT '' COMMENT '处方号',
+    `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
+    `total_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '处方包含药品总金额',
+    `total_rebate_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '返利总金额',
+    `status` tinyint(1)  NOT NULL DEFAULT '0' COMMENT '0待返利 1已返利 2未返利',
+    `reason` varchar(256) NOT NULL DEFAULT ''  COMMENT '未返利原因',
+    `rebate_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '返利日期',
+    `is_delete`     tinyint(1)   NOT NULL DEFAULT '0',
+    `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key(`id`),
+    KEY `doctor_id` (`doctor_id`)
+)comment ='处方药品返利表';
+
+-- 医生返利提现申请表
+create table `b2c_doctor_withdraw` (
+    `id`   int(11)   NOT NULL AUTO_INCREMENT,
+    `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
+    `type` tinyint(1)   NOT NULL DEFAULT '0' COMMENT '提现类型  1微信公众号钱包提现 2小程序',
+    `status` tinyint(1)   NOT NULL DEFAULT '1' COMMENT '处理状态 1待审核 2拒绝 3已审核待出账 4出账成功',
+    `order_sn` varchar(64)   NOT NULL DEFAULT '' COMMENT '提现单号',
+    `withdraw_user_num` varchar(20)   NOT NULL DEFAULT '' COMMENT '用户提现序号',
+    `withdraw_num` varchar(20)   NOT NULL DEFAULT '' COMMENT '流水号',
+    `withdraw_cash` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '提现金额',
+    `withdraw` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '可提现金额',
+    `desc` text COMMENT '备注',
+    `refuse_desc` text COMMENT '驳回原因',
+    `check_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '审核时间',
+    `refuse_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '驳回时间',
+    `billing_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '出账时间',
+    `fail_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '失败时间',
+    `desc_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '备注时间',
+    `withdraw_source` text COMMENT '申请时提现配置',
+    `real_name` varchar(32) NOT NULL DEFAULT '' COMMENT '真实姓名',
+    `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key(`id`),
+    KEY `doctor_id` (`doctor_id`)
+)comment ='医生返利提现申请表';

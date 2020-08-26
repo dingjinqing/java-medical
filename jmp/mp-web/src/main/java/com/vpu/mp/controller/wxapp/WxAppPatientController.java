@@ -7,6 +7,7 @@ import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.FetchPrescriptionService;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
@@ -179,6 +180,16 @@ public class WxAppPatientController extends WxAppBaseController {
     public JsonResult getPatientDetail(@RequestBody UserPatientParam param) {
         UserPatientDetailVo patientDetail = shop().patientService.getOneDetail(param);
         return success(patientDetail);
+    }
+
+    /**
+     * 待审核处方查看患者信息
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/user/patient/show/information")
+    public JsonResult showPatientInformation(@RequestBody @Validated PrescriptionNoParam param) {
+        return success(shop().patientService.auditPatientShow(param));
     }
 
     /**

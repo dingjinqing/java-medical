@@ -93,11 +93,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -197,6 +193,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
     /**
+     * 随机生成核销码位数
+     */
+    private final Integer uuidLength = 6;
+    /**
+     * 核销码前缀
+     */
+    private final String HX = "HX";
+    /**
      * 营销活动processorFactory
      */
    @Autowired
@@ -262,6 +266,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //保存营销活动信息 订单状态以改变（该方法不要在并发情况下出现临界资源）
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 //订单入库,以上只有orderSn，无法获取orderId
+                // 自提订单生成核销码
+                if (param.getDeliverType() == 1) {
+                    String s = generateShortUuid();
+                    order.setVerifyCode(s);
+                    order.setStoreId(param.getStoreId());
+                    order.setDeliverType((byte) 1);
+                }
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
@@ -273,7 +284,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 must.addRecord(param.getMust());
                 orderBo.setOrderId(order.getOrderId());
                 //待发货、拼团中、预售支付定金或支付完成
-                isAddLock.set(processEffective(param, orderBo, order));
+                processEffective(param, orderBo, order,isAddLock);
             });
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
@@ -338,6 +349,28 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
             }
         }
+    }
+
+    private String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
+        "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
+        "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
+        "6", "7", "8", "9" };
+
+
+    /**
+     * 生成短6位UUID作为核销码
+     * @return String
+     */
+    private String generateShortUuid() {
+        StringBuilder shortBuilder = new StringBuilder();
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        for (int i = 0; i < uuidLength; i++) {
+            String str = uuid.substring(i * 4, i * 4 + 4);
+            int x = Integer.parseInt(str, 16);
+            shortBuilder.append(chars[x % 0X24]);
+        }
+        return HX + shortBuilder.toString();
+
     }
 
     private CreateOrderBo processPrepairCreateOrder(CreateParam param, OrderBeforeVo orderBeforeVo) throws MpException {
@@ -1428,10 +1461,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param param
      * @param orderBo
      * @param order
+     * @param isAddLock
      * @throws MpException
      * @return
      */
-    private boolean processEffective(CreateParam param, CreateOrderBo orderBo, OrderInfoRecord order) throws MpException {
+    private boolean processEffective(CreateParam param, CreateOrderBo orderBo, OrderInfoRecord order, AtomicBoolean isAddLock) throws MpException {
         boolean orderSattus =order.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT)||order.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)||order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY);
         boolean orderActivity = order.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING) ||
                 (BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && (order.getBkOrderPaid() > OrderConstant.BK_PAY_NO));
@@ -1439,6 +1473,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("下单时待发货、拼团中、预售支付定金或支付完成减库存、调用Effective方法");
             //加锁
             atomicOperation.addLock(orderBo.getOrderGoodsBo());
+            isAddLock.set(true);
             //货到付款、余额、积分(非微信混合)付款，生成订单时修改活动状态
             marketProcessorFactory.processOrderEffective(param,order);
             //更新活动库存
@@ -1452,6 +1487,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("下单时待付款且配置为下单减库存或者为秒杀时调用更新库存方法");
             //加锁
             atomicOperation.addLock(orderBo.getOrderGoodsBo());
+            isAddLock.set(true);
             //下单减库存
             marketProcessorFactory.processUpdateStock(param,order);
             logger().info("加锁{}",order.getOrderSn());

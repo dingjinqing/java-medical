@@ -80,6 +80,8 @@ public class ConfigService extends ShopBaseService {
     public GoodsConfigService goodsCfg;
     @Autowired
     public SuspendWindowConfigService suspendWindowConfigService;
+    @Autowired
+    public RebateConfigService rebateConfigService;
 
     /**
      * 得到店铺配置

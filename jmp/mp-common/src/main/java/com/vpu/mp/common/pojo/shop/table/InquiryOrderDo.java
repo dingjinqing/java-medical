@@ -44,7 +44,10 @@ public class InquiryOrderDo {
     private Timestamp  finishedTime;
     private String     descriptionDisease;
     private String     imageUrl;
+    private BigDecimal rebateProportion;
+    private BigDecimal totalRebateMoney;
     private Byte       isDelete;
+    private Byte       settlementFlag;
     private Timestamp  createTime;
     private Timestamp  updateTime;
 }

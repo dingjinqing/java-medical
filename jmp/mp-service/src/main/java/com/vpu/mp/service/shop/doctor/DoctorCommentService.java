@@ -48,6 +48,8 @@ public class DoctorCommentService extends ShopBaseService {
         if (doctorCommentDo!=null){
             doctorCommentDo.setCreateTime(DateUtil.date().toTimestamp());
             doctorCommentDo.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
+            doctorCommentDo.setCommNote(param.getCommNote());
+            doctorCommentDo.setIsAnonymou(param.getIsAnonymou());
             doctorCommentDao.update(doctorCommentDo);
             //更新会话
             imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
@@ -83,7 +85,7 @@ public class DoctorCommentService extends ShopBaseService {
         //更新医师评价
         BigDecimal avgCommentStar = doctorCommentDao.getAvgCommentStar(param.getDoctorId());
         DoctorSortParam param1 =new DoctorSortParam();
-        param1.setAvgCommentStar(avgCommentStar);
+        param1.setAvgCommentStar(Optional.ofNullable(avgCommentStar).orElse(BigDecimal.ZERO));
         param1.setDoctorId(param.getDoctorId());
         doctorService.updateAvgCommentStar(param1);
     }

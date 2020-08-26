@@ -18,6 +18,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
@@ -269,6 +270,8 @@ public class OrderReadService extends ShopBaseService {
     private UserPatientCoupleDao userPatientCoupleDao;
     @Autowired
     private ReturnOrderDao returnOrderDao;
+    @Autowired
+    private OrderInfoDao orderInfoDao;
 
 	/**
 	 * 订单查询
@@ -790,14 +793,18 @@ showManualReturn(vo);
 		//处方信息
 		getPrescriptionInfo(order, goodsList);
 		//退款订单增加详情
-		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)){
+		returnOrderInfo(order);
+		return order;
+	}
+
+	private void returnOrderInfo(OrderInfoMpVo order) {
+		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)||order.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED)){
 			List<ReturnOrderListMp> returnOrderListMps = returnOrderDao.listByOrderSn(order.getOrderSn());
 			returnOrderListMps.forEach(itme->{
 				itme.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(itme.getReasonType().intValue()));
 			});
 			order.setReturnOrderList(returnOrderListMps);
 		}
-		return order;
 	}
 
 	/**
@@ -1834,5 +1841,16 @@ showManualReturn(vo);
 		footprintListVo.setDelMarket(delMarket);
 		return footprintListVo;
 	}
+
+    /**
+     * 检查核销码是否正确
+     * @param verifyCode 核销码
+     * @param orderSn 订单唯一id
+     * @return boolean
+     * @author 赵晓东
+     */
+    public boolean checkVerifyCode(String verifyCode, String orderSn) {
+        return orderInfoDao.checkVerifyCode(verifyCode, orderSn);
+    }
 
 }

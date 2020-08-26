@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = 1391118023;
+    private static final long serialVersionUID = 1260950177;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order</code>
@@ -200,9 +200,24 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
     public final TableField<InquiryOrderRecord, String> IMAGE_URL = createField("image_url", org.jooq.impl.SQLDataType.CLOB, this, "病情描述image");
 
     /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.rebate_proportion</code>. 返利比例
+     */
+    public final TableField<InquiryOrderRecord, BigDecimal> REBATE_PROPORTION = createField("rebate_proportion", org.jooq.impl.SQLDataType.DECIMAL(6, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利比例");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.total_rebate_money</code>. 返利金额
+     */
+    public final TableField<InquiryOrderRecord, BigDecimal> TOTAL_REBATE_MONEY = createField("total_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利金额");
+
+    /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除
      */
     public final TableField<InquiryOrderRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     */
+    public final TableField<InquiryOrderRecord, Byte> SETTLEMENT_FLAG = createField("settlement_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "结算标志：0：未结算，1：已结算");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.

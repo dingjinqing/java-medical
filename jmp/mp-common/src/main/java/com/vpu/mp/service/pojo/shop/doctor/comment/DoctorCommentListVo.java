@@ -5,7 +5,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 /**
- * 医师留言
+ * 医师评价
  * @author 孔德成
  * @date 2020/8/12 15:50
  */

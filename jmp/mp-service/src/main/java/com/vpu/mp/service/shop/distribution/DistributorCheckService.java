@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
@@ -131,7 +132,7 @@ public class DistributorCheckService extends ShopBaseService{
             //更新审核状态 1：审核通过；2：审核拒绝
             changeApplyStatus(param.getId(),(byte)1);
             //如果有邀请码处理邀请绑定
-            if(param.getInvitationCode() != null){
+            if(StringUtils.isNotBlank(param.getInvitationCode())){
                 Integer inviteId = db().select(USER.USER_ID).from(USER).where(USER.INVITATION_CODE.eq(param.getInvitationCode())).fetchOne().into(Integer.class);
                 UserBindParam userBindParam = new UserBindParam();
                 userBindParam.setInviteId(inviteId);

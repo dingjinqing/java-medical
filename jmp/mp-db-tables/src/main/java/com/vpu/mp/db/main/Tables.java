@@ -473,6 +473,10 @@ public class Tables {
      * The table <code>mini_main.b2c_store_account</code>.
      */
     public static final StoreAccount STORE_ACCOUNT = com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
+    /**
+     * 店铺物流信息表
+     */
+    public static final ShopLogistics SHOP_LOGISTICS = com.vpu.mp.db.main.tables.ShopLogistics.SHOP_LOGISTICS;
 
 
 }

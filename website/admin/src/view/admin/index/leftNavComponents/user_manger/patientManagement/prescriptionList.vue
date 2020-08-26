@@ -4,12 +4,12 @@
       <div class="navBox">
         <div class="filters">
           <div class="filters_item">
-            <span>手机号：</span>
+            <span>处方号：</span>
             <el-input
-              v-model="queryParams.mobile"
+              v-model="queryParams.prescriptionNos"
               size="small"
               style="width:190px;"
-              placeholder="请输入患者手机号"
+              placeholder="请输入患者处方号"
             >
             </el-input>
           </div>
@@ -98,6 +98,10 @@
             prop='departmentName'
             label='科室名称'
           ></el-table-column>
+           <el-table-column
+            prop='doctorCode'
+            label='医师Code'
+          ></el-table-column>
           <el-table-column
             prop='doctorName'
             label='医师名称'
@@ -170,7 +174,7 @@ export default {
       tableData: [],
       storeGroup: [],
       queryParams: {
-        mobile: null,
+        prescriptionNos: null,
         diagnoseStartTime: '',
         diagnoseEndTime: '',
         doctorName: ''
@@ -186,7 +190,11 @@ export default {
       this.queryParams.patientId = this.id
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
-      getPrescriptionList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
+      let params = {
+        ...this.queryParams
+      }
+      params.prescriptionNos = this.queryParams.prescriptionNos ? [this.queryParams.prescriptionNos] : null
+      getPrescriptionList(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -285,7 +293,7 @@ export default {
 <style scoped lang='scss'>
 .main {
   padding: 10px;
-    .navBox {
+  .navBox {
     display: flex;
     background-color: #fff;
     padding: 0px 15px 10px;

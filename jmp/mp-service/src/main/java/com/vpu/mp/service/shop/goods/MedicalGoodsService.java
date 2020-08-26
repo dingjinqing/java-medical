@@ -414,6 +414,9 @@ public class MedicalGoodsService extends ShopBaseService {
             for (int i = 0; i < goodsMedicalExternalRequestItemReadyToStore.size(); i++) {
                 GoodsMedicalExternalRequestItemBo bo = goodsMedicalExternalRequestItemReadyToStore.get(i);
                 bo.setGoodsNumber(MedicalGoodsConstant.MEDICAL_GOODS_DEFAULT_NUM);
+                bo.setIsMedical(MedicalGoodsConstant.GOODS_IS_MEDICAL);
+                bo.setSource(MedicalGoodsConstant.SOURCE_FROM_HIS);
+
                 if (existGoodsCodes.containsKey(bo.getGoodsCode())) {
                     bo.setGoodsId(existGoodsCodes.get(bo.getGoodsCode()));
                     readyForUpdate.add(bo);

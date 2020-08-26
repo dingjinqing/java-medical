@@ -4,16 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.collect.Maps;
-import com.vpu.sql.entity.DBConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author
+ */
 public class JsonUtil {
 
-    static final ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper MAPPER = new ObjectMapper();
 
 
 
@@ -22,7 +23,7 @@ public class JsonUtil {
                 = new TypeReference<HashMap<String,String>>() {};
         Map<String,String>  result =Maps.newHashMap();
         try {
-            result =  mapper.readValue(jsonStr, typeRef);
+            result =  MAPPER.readValue(jsonStr, typeRef);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -30,7 +31,7 @@ public class JsonUtil {
     }
     public static <T>T toEntity(String jsonStr,Class<T> clz){
         try {
-             return mapper.readValue(jsonStr, clz);
+             return MAPPER.readValue(jsonStr, clz);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

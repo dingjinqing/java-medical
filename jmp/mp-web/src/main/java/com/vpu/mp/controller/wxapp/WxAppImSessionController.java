@@ -9,7 +9,6 @@ import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionPullMsgVo;
-import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,8 +49,8 @@ public class WxAppImSessionController extends WxAppBaseController {
             return fail(JsonResultCode.IM_SESSION_NOT_EXIST);
         }
 
-        PageResult<ImSessionItemRenderVo> imSessionItemRenderVoPageResult = imSessionService.renderSession(param);
-        return success(imSessionItemRenderVoPageResult);
+        List<ImSessionItemRenderVo> retList = imSessionService.renderSession(param);
+        return success(retList);
     }
 
     /**
@@ -153,7 +152,7 @@ public class WxAppImSessionController extends WxAppBaseController {
 
     @PostMapping("/api/wxapp/im/test")
     public JsonResult test(@RequestBody ImSessionUnReadMessageInfoParam param){
-        List<ImSessionUnReadInfoVo> unReadMessageInfo = imSessionService.getUnReadMessageInfo(param);
-        return success(unReadMessageInfo);
+        imSessionService.timingDeadReadyToContinueSession();
+        return success();
     }
 }

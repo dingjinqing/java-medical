@@ -1,7 +1,7 @@
 <wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
-	<scroll-view class="main-container" bindtap="hideMoreActions" scroll-y='true' style='height:{{scrollViewHeight}}px' scroll-top='{{allHeight}}' bindscroll='startScroll'>
+	<scroll-view class="main-container" bindtap="hideMoreActions" scroll-y='true' style='height:{{scrollViewHeight || 500}}px' scroll-top='{{allHeight}}' bindscroll='startScroll' refresher-enabled='{{true}}' refresher-threshold="{{100}}" refresher-triggered="{{triggered}}" bindrefresherrefresh='onRefresh' bindrefresherpulling='onPulling' bindrefresherrestore="onRestore"   bindrefresherabort="onAbort" >
 		<!-- <chat-date send-time='{{time}}' /> -->
 		<view id='all_content'>
 			<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>

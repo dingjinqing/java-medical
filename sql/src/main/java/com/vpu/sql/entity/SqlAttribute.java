@@ -1,14 +1,16 @@
 package com.vpu.sql.entity;
 
-import com.vpu.sql.constant.DBAlterOperator;
-import com.vpu.sql.constant.DBOperator;
+import com.vpu.sql.constant.DbOperator;
 
+/**
+ * @author luguangyao
+ */
 public class SqlAttribute {
 
     private String tableName;
 
 
-    private DBOperator dbOperator;
+    private DbOperator dbOperator;
 
 
 
@@ -20,11 +22,11 @@ public class SqlAttribute {
         this.tableName = tableName;
     }
 
-    public DBOperator getDbOperator() {
+    public DbOperator getDbOperator() {
         return dbOperator;
     }
 
-    public void setDbOperator(DBOperator dbOperator) {
+    public void setDbOperator(DbOperator dbOperator) {
         this.dbOperator = dbOperator;
     }
 

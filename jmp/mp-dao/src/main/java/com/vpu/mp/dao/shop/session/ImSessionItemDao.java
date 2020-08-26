@@ -1,15 +1,12 @@
 package com.vpu.mp.dao.shop.session;
 
-import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.ImSessionItemDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.ImSessionItemRecord;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionRenderPageParam;
 import org.jooq.Condition;
-import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +31,18 @@ public class ImSessionItemDao extends ShopBaseDao {
     }
 
     /**
-     * 分页获取会话的聊天详细内容
+     * 相关会话记录，分页获取会话的聊天详细内容
      * @param pageParam 分页信息
      * @return
      */
-    public PageResult<ImSessionItemDo> getBySessionItemPgaeList(ImSessionRenderPageParam pageParam){
-        Condition condition = IM_SESSION_ITEM.IM_SESSION_ID.eq(pageParam.getSessionId());
+    public List<ImSessionItemDo> getRelevantSessionItemPageList(ImSessionRenderPageParam pageParam,List<Integer> relevantIds){
+        Condition condition = IM_SESSION_ITEM.IM_SESSION_ID.in(relevantIds);
+        Integer limitStart = (pageParam.getCurrentPage()-1)*pageParam.getPageRows();
 
-        SelectSeekStep1<ImSessionItemRecord, Timestamp> select =
-            db().selectFrom(IM_SESSION_ITEM).where(condition).orderBy(IM_SESSION_ITEM.SEND_TIME.desc());
-        PageResult<ImSessionItemDo> pageResult = getPageResult(select, pageParam.getCurrentPage(), pageParam.getPageRows(), ImSessionItemDo.class);
-        return pageResult;
+        return db().selectFrom(IM_SESSION_ITEM).where(condition).orderBy(IM_SESSION_ITEM.SEND_TIME.desc()).limit(limitStart, pageParam.getPageRows())
+            .fetchInto(ImSessionItemDo.class);
     }
+
 
     public void batchInsert(List<ImSessionItemDo> imSessionItemDos) {
         List<ImSessionItemRecord> records = new ArrayList<>(imSessionItemDos.size());
