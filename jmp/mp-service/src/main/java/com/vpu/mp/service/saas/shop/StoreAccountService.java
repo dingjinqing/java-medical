@@ -9,7 +9,6 @@ import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
-import com.vpu.mp.service.shop.store.store.StoreService;
 import jodd.util.StringUtil;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +37,6 @@ public class StoreAccountService extends MainBaseService {
 	private static final String DOT = ",";
 	@Autowired
 	public StoreAccountDao storeAccountDao;
-	@Autowired
-	public StoreService storeService;
 
     /**
      * 获取用户列表
