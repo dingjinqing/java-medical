@@ -98,6 +98,10 @@
             prop='departmentName'
             label='科室名称'
           ></el-table-column>
+           <el-table-column
+            prop='doctorCode'
+            label='医师Code'
+          ></el-table-column>
           <el-table-column
             prop='doctorName'
             label='医师名称'

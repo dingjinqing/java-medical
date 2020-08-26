@@ -1,111 +1,127 @@
 <!--pages2/doctorIndex/doctorIndex.wxml-->
-<include src="/pages/common/header.wxml"/>
+<include src="/pages/common/header.wxml" />
 <view class="mian-container">
-  <view class="top_doc_info">
-    <view class="doc_square">
-      <image class="doc_img" src="{{doctorInfo.url ? imageUrl + doctorInfo.url : imageUrl + 'image/wxapp/doctor_default_icon.png'}}"></image>
-      <view class="doc_message">
-        <view class="doc_name"> <text>{{doctorInfo.name}}</text> {{doctorInfo.duty}}</view>
-        <view class="doc_hos">{{doctorInfo.registerHospital}} {{doctorInfo.departArr}}</view>
-        <view class="doc_depart">擅长：{{doctorInfo.treatDisease}}</view>
-      </view>
-      <view class="if_work {{work_status == 1 ? 'stop_work':'begin_work'}}" bindtap="bindChangeWork" data-type='{{work_status}}'>{{work_status == 1 ? '暂停接诊':'开始接诊'}}</view>
-    </view>
-  </view>
-  <view class="list">
-    <view class="item" bindtap="viewOperatePrescriptionList">
-      <view class="item_has_num">
-        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
-        <view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount > 0}}'>{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount}}</view>
-      </view>
-      <view class="item_text">待续方</view>
-    </view>
-    <view class="item" bindtap="to_awaitPre">
-      <view class="item_has_num">
-        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon1.png"></image>
-        <view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notOrderInfoCount > 0 }}'>{{doctorInfo.doctorMessageCountVo.notOrderInfoCount}}</view>
-      </view>
-      <view class="item_text">待开方</view>
-    </view>
-    <view class="item" data-type="wait" bindtap="viewInquiryList">
-      <view class="item_has_num">
-        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
-        <view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notImSessionCount > 0}}'>{{doctorInfo.doctorMessageCountVo.notImSessionCount}}</view>
-      </view>
-      <view class="item_text">待问诊</view>
-    </view>
-    <view class="item" data-status="1" bindtap="viewPrescriptionList">
-      <view class="item_has_num">
-        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon3.png"></image>
-        <view class="item_dot"  wx:if='{{doctorInfo.doctorMessageCountVo.alreadyPrescription == true}}'></view>
-      </view>
-      <view class="item_text">已续方</view>
-    </view>
-    <view class="item" data-status="2" bindtap="viewPrescriptionList">
-      <view class="item_has_num">
-        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon1.png"></image>
-        <view class="item_dot" wx:if='{{doctorInfo.doctorMessageCountVo.alreadyOrderInfoCount == true}}'></view>
-      </view>
-      <view class="item_text">已开具</view>
-    </view>
-    <view class="item" data-type="my" bindtap="viewInquiryList">
-      <view class="item_has_num">
-        <image class="item_img" src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_icon2.png"></image>
-        <view class="item_dot" wx:if='{{doctorInfo.doctorMessageCountVo.alreadyImSessionCount == true}}'></view>
-      </view>
-      <view class="item_text">我的问诊</view>
-    </view>
-  </view>
+	<view class="top_doc_info">
+		<view class="doc_square">
+			<image class="doc_img" src="{{imageUrl + doctorInfo.url || imageUrl + 'image/wxapp/doctor_default_icon.png'}}"></image>
+			<view class="doc_message">
+				<view class="doc_name"> <text>{{doctorInfo.name}}</text> {{doctorInfo.duty}}</view>
+				<view class="doc_hos">{{doctorInfo.registerHospital}} {{doctorInfo.departArr}}</view>
+				<view class="doc_depart">擅长：{{doctorInfo.treatDisease}}</view>
+			</view>
+			<view class="if_work {{work_status == 1 ? 'stop_work':'begin_work'}}" bindtap="bindChangeWork" data-type='{{work_status}}'>{{work_status == 1 ? '暂停接诊':'开始接诊'}}</view>
+		</view>
+	</view>
+	<view class="list">
+		<view class='ma_title'>
+			<view>待处理</view>
+		</view>
+		<view class="list_content">
+			<view class="item" bindtap="viewOperatePrescriptionList">
+				<view class="item_has_num">
+					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_icon3.png"></image>
+					<view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount > 0}}'>{{doctorInfo.doctorMessageCountVo.notOrderGoodsCount}}</view>
+				</view>
+				<view class="item_text">待续方</view>
+			</view>
+			<view class="item" bindtap="to_awaitPre">
+				<view class="item_has_num">
+					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_icon1.png"></image>
+					<view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notOrderInfoCount > 0 }}'>{{doctorInfo.doctorMessageCountVo.notOrderInfoCount}}</view>
+				</view>
+				<view class="item_text">待开方</view>
+			</view>
+			<view class="item" data-type="wait" bindtap="viewInquiryList">
+				<view class="item_has_num">
+					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_icon2.png"></image>
+					<view class="item_num" wx:if='{{doctorInfo.doctorMessageCountVo.notImSessionCount > 0}}'>{{doctorInfo.doctorMessageCountVo.notImSessionCount}}</view>
+				</view>
+				<view class="item_text">待问诊</view>
+			</view>
+		</view>
+	</view>
+	<view class="list">
+		<view class='ma_title'>
+			<view>个人中心</view>
+		</view>
+		<view class="list_content">
+			<view class="item" data-status="1" bindtap="viewPrescriptionList">
+				<view class="item_has_num">
+					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_icon3.png"></image>
+					<view class="item_dot" wx:if='{{doctorInfo.doctorMessageCountVo.alreadyPrescription == true}}'></view>
+				</view>
+				<view class="item_text">已续方</view>
+			</view>
+			<view class="item" data-status="2" bindtap="viewPrescriptionList">
+				<view class="item_has_num">
+					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_icon1.png"></image>
+					<view class="item_dot" wx:if='{{doctorInfo.doctorMessageCountVo.alreadyOrderInfoCount == true}}'></view>
+				</view>
+				<view class="item_text">已开具</view>
+			</view>
+			<view class="item" data-type="my" bindtap="viewInquiryList">
+				<view class="item_has_num">
+					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_icon2.png"></image>
+					<view class="item_dot" wx:if='{{doctorInfo.doctorMessageCountVo.alreadyImSessionCount == true}}'></view>
+				</view>
+				<view class="item_text">我的问诊</view>
+			</view>
+		</view>
 
-  <!-- 医生认证 -->
-  <view class="modal_bg" wx:if='{{show_modal == 1}}'></view>
-  <view class="modal" wx:if='{{show_modal == 1}}'>
-    <view class="modal_content">
-      <view class="for_bg">
-        <image src="http://medicaldevimg.weipubao.cn/image/wxapp/medical_history_bg1.png"></image>
-        <view class="em_title">医生认证</view>
-      </view>
-      <view class="modal_info">
-        <view class="each_line">
-          <view class="left_text">姓名<text>*</text></view>
-          <input type="text" placeholder="请输入姓名" bindblur="docName"></input>
-        </view>
-        <view class="each_line">
-          <view class="left_text">手机号<text>*</text></view>
-          <input type="text" placeholder="请输入手机号" bindinput="docMobile" bindblur="docMobile" style="width:200rpx"></input>
-          <view class="button_get_verify {{countDown ? 'gray':''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
-        </view>
-        <view class="each_line">
-          <view class="left_text">验证码<text>*</text></view>
-          <input type="text" placeholder="请输入验证码" bindblur="verificationInput" bindinput='verificationInput'></input>
-        </view>
-        <view class="each_line">
-          <view class="left_text">院内编号<text>*</text></view>
-          <input type="text" placeholder="请输入院内编号" bindblur="docCode" bindinput="docCode"></input>
-        </view>
-      </view>
-      <view class="modal_fotter" bindtap="to_verify">确定</view>
-    </view>
-    <view class="btn_close" bindtap="close"><image src="http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_close.png"></image></view>
-  </view>
-  <!-- 上下班 -->
-  <view class="modal_bg" wx:if='{{show_work_modal == 1}}'></view>
-  <view class="work_modal" wx:if='{{show_work_modal == 1}}'>
-    <view class="work_content">
-      <view class="dm_line" bindtap="bindChangeWork" data-type='stop'>
-        <image src="{{imageUrl}}image/wxapp/doc_no_work.png"></image>
-        <view class="dm_word">
-          <view class="bold_word">暂停接诊</view>
-          <view>24小时内不再接受问诊</view>
-        </view>
-      </view>
-      <view class="dm_line" bindtap="bindChangeWork" data-type='begin'>
-        <image src="{{imageUrl}}image/wxapp/doc_now_work.png"></image>
-        <view class="dm_word">
-          <view class="bold_word">开始接诊</view>
-          <view>开始接受问诊</view>
-        </view>
-      </view>
-    </view>
-  </view>
+
+	</view>
+
+	<!-- 医生认证 -->
+	<view class="modal_bg" wx:if='{{show_modal == 1}}'></view>
+	<view class="modal" wx:if='{{show_modal == 1}}'>
+		<view class="modal_content">
+			<view class="for_bg">
+				<image src="{{imageUrl}}/image/wxapp/medical_history_bg1.png"></image>
+				<view class="em_title">医生认证</view>
+			</view>
+			<view class="modal_info">
+				<view class="each_line">
+					<view class="left_text">姓名<text>*</text></view>
+					<input type="text" placeholder="请输入姓名" bindblur="docName"></input>
+				</view>
+				<view class="each_line">
+					<view class="left_text">手机号<text>*</text></view>
+					<input type="text" placeholder="请输入手机号" bindinput="docMobile" bindblur="docMobile" style="width:200rpx"></input>
+					<view class="button_get_verify {{countDown ? 'gray':''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
+				</view>
+				<view class="each_line">
+					<view class="left_text">验证码<text>*</text></view>
+					<input type="text" placeholder="请输入验证码" bindblur="verificationInput" bindinput='verificationInput'></input>
+				</view>
+				<view class="each_line">
+					<view class="left_text">院内编号<text>*</text></view>
+					<input type="text" placeholder="请输入院内编号" bindblur="docCode" bindinput="docCode"></input>
+				</view>
+			</view>
+			<view class="modal_fotter" bindtap="to_verify">确定</view>
+		</view>
+		<view class="btn_close" bindtap="close">
+			<image src="{{imageUrl}}/image/wxapp/doctor_index_close.png"></image>
+		</view>
+	</view>
+	<!-- 上下班 -->
+	<view class="modal_bg" wx:if='{{show_work_modal == 1}}'></view>
+	<view class="work_modal" wx:if='{{show_work_modal == 1}}'>
+		<view class="work_content">
+			<view class="dm_line" bindtap="bindChangeWork" data-type='stop'>
+				<image src="{{imageUrl}}image/wxapp/doc_no_work.png"></image>
+				<view class="dm_word">
+					<view class="bold_word">暂停接诊</view>
+					<view>24小时内不再接受问诊</view>
+				</view>
+			</view>
+			<view class="dm_line" bindtap="bindChangeWork" data-type='begin'>
+				<image src="{{imageUrl}}image/wxapp/doc_now_work.png"></image>
+				<view class="dm_word">
+					<view class="bold_word">开始接诊</view>
+					<view>开始接受问诊</view>
+				</view>
+			</view>
+		</view>
+	</view>
 </view>

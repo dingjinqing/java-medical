@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = -1817021898;
+    private static final long serialVersionUID = -896345971;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.order_id</code>. 订单id
@@ -466,31 +466,45 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_inquiry_order.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     */
+    public void setSettlementFlag(Byte value) {
+        set(31, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_inquiry_order.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     */
+    public Byte getSettlementFlag() {
+        return (Byte) get(31);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(31, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(31);
+        return (Timestamp) get(32);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_inquiry_order.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(32, value);
+        set(33, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_inquiry_order.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(32);
+        return (Timestamp) get(33);
     }
 
     // -------------------------------------------------------------------------
@@ -519,7 +533,7 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
     /**
      * Create a detached, initialised InquiryOrderRecord
      */
-    public InquiryOrderRecord(Integer orderId, Integer shopId, String orderSn, Integer userId, Byte orderStatus, Integer doctorId, String doctorName, Integer departmentId, String departmentName, Integer patientId, String patientMobile, String patientName, Byte patientSex, Date patientBirthday, String patientIdentityCode, Byte patientIdentityType, String payCode, String payName, String paySn, String prepayId, BigDecimal orderAmount, Timestamp payTime, BigDecimal refundMoney, Timestamp limitTime, Timestamp cancelledTime, Timestamp finishedTime, String descriptionDisease, String imageUrl, BigDecimal rebateProportion, BigDecimal totalRebateMoney, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
+    public InquiryOrderRecord(Integer orderId, Integer shopId, String orderSn, Integer userId, Byte orderStatus, Integer doctorId, String doctorName, Integer departmentId, String departmentName, Integer patientId, String patientMobile, String patientName, Byte patientSex, Date patientBirthday, String patientIdentityCode, Byte patientIdentityType, String payCode, String payName, String paySn, String prepayId, BigDecimal orderAmount, Timestamp payTime, BigDecimal refundMoney, Timestamp limitTime, Timestamp cancelledTime, Timestamp finishedTime, String descriptionDisease, String imageUrl, BigDecimal rebateProportion, BigDecimal totalRebateMoney, Byte isDelete, Byte settlementFlag, Timestamp createTime, Timestamp updateTime) {
         super(InquiryOrder.INQUIRY_ORDER);
 
         set(0, orderId);
@@ -553,7 +567,8 @@ public class InquiryOrderRecord extends UpdatableRecordImpl<InquiryOrderRecord> 
         set(28, rebateProportion);
         set(29, totalRebateMoney);
         set(30, isDelete);
-        set(31, createTime);
-        set(32, updateTime);
+        set(31, settlementFlag);
+        set(32, createTime);
+        set(33, updateTime);
     }
 }

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 382973733;
+    private static final long serialVersionUID = -1629279169;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.id</code>. 主键id
@@ -534,31 +534,45 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_prescription.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     */
+    public void setSettlementFlag(Byte value) {
+        set(36, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     */
+    public Byte getSettlementFlag() {
+        return (Byte) get(36);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_prescription.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(36, value);
+        set(37, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(36);
+        return (Timestamp) get(37);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(37, value);
+        set(38, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(37);
+        return (Timestamp) get(38);
     }
 
     // -------------------------------------------------------------------------
@@ -587,7 +601,7 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     /**
      * Create a detached, initialised PrescriptionRecord
      */
-    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, Integer patientId, Integer userId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, Byte source, Byte auditType, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, Integer patientId, Integer userId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, Byte source, Byte auditType, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Byte settlementFlag, Timestamp createTime, Timestamp updateTime) {
         super(Prescription.PRESCRIPTION);
 
         set(0, id);
@@ -626,7 +640,8 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
         set(33, isDelete);
         set(34, isUsed);
         set(35, isValid);
-        set(36, createTime);
-        set(37, updateTime);
+        set(36, settlementFlag);
+        set(37, createTime);
+        set(38, updateTime);
     }
 }

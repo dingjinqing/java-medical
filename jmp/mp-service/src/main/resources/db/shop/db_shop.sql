@@ -5213,6 +5213,7 @@ create table `b2c_prescription`(
     `is_delete`     tinyint(1)   not null default '0',
     `is_used`     tinyint(1)   not null default '0' comment '是否使用过 0未使用  1已使用 ，默认0',
     `is_valid`     tinyint(1)   not null default '1' comment '是否有效  0无效 1有效，默认1',
+    `settlement_flag`     tinyint(1)   not null default '0' comment '结算标志：0：未结算，1：已结算',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
@@ -5241,6 +5242,8 @@ create table `b2c_prescription_item`(
     `goods_use_memo` varchar(1024) not null default '' comment '药品使用方式说明',
     `goods_production_enterprise` varchar(512) comment '生产企业',
     `medicine_price` decimal(18,2) not null default '0.00' comment '药品总价',
+    `rebate_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '返利比例',
+    `total_rebate_money` decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '返利金额',
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
@@ -5388,6 +5391,7 @@ CREATE TABLE `b2c_inquiry_order` (
  `rebate_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '返利比例',
  `total_rebate_money` decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '返利金额',
  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+ `settlement_flag`     tinyint(1)   not null default '0' comment '结算标志：0：未结算，1：已结算',
  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 PRIMARY KEY (`order_id`)
@@ -5625,7 +5629,7 @@ CREATE TABLE `b2c_city_service_order` (
 
 
 -- 医师返利数据表
-create table `b2c_doctor_total_rebate`(
+create table `b2c_doctor_total_rebate` (
     `id`   int(11)   NOT NULL AUTO_INCREMENT,
     `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
     `total_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '累计获得返利金额',
@@ -5639,7 +5643,7 @@ create table `b2c_doctor_total_rebate`(
 )comment ='医师返利数据表';
 
 -- 处方药品返利表
-create table `b2c_prescription_rebate`(
+create table `b2c_prescription_rebate` (
     `id`   int(11)   NOT NULL AUTO_INCREMENT,
     `prescription_code` varchar(64)  NOT NULL DEFAULT '' COMMENT '处方号',
     `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
@@ -5654,3 +5658,29 @@ create table `b2c_prescription_rebate`(
     primary key(`id`),
     KEY `doctor_id` (`doctor_id`)
 )comment ='处方药品返利表';
+
+-- 医生返利提现申请表
+create table `b2c_doctor_withdraw` (
+    `id`   int(11)   NOT NULL AUTO_INCREMENT,
+    `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
+    `type` tinyint(1)   NOT NULL DEFAULT '0' COMMENT '提现类型  1微信公众号钱包提现 2小程序',
+    `status` tinyint(1)   NOT NULL DEFAULT '1' COMMENT '处理状态 1待审核 2拒绝 3已审核待出账 4出账成功',
+    `order_sn` varchar(64)   NOT NULL DEFAULT '' COMMENT '提现单号',
+    `withdraw_user_num` varchar(20)   NOT NULL DEFAULT '' COMMENT '用户提现序号',
+    `withdraw_num` varchar(20)   NOT NULL DEFAULT '' COMMENT '流水号',
+    `withdraw_cash` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '提现金额',
+    `withdraw` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '可提现金额',
+    `desc` text COMMENT '备注',
+    `refuse_desc` text COMMENT '驳回原因',
+    `check_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '审核时间',
+    `refuse_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '驳回时间',
+    `billing_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '出账时间',
+    `fail_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '失败时间',
+    `desc_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '备注时间',
+    `withdraw_source` text COMMENT '申请时提现配置',
+    `real_name` varchar(32) NOT NULL DEFAULT '' COMMENT '真实姓名',
+    `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key(`id`),
+    KEY `doctor_id` (`doctor_id`)
+)comment ='医生返利提现申请表';
