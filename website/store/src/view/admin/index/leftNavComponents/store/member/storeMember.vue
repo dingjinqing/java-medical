@@ -6,21 +6,21 @@
         :inline="true"
         class="store-permission-form"
       >
-        <el-form-item :label="$t('storePermission.storeAccount')+'：'">
+        <el-form-item :label="$t('storePermission.storeAccount') + '：'">
           <el-input
             class="form-input"
             v-model="queryParams.accountName"
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('storePermission.phone')+'：'">
+        <el-form-item :label="$t('storePermission.phone') + '：'">
           <el-input
             class="form-input"
             v-model="queryParams.mobile"
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('storePermission.roles')+'：'">
+        <el-form-item :label="$t('storePermission.roles') + '：'">
           <el-select
             v-model="queryParams.accountType"
             class="form-input"
@@ -39,7 +39,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('storePermission.accountStatus')+'：'">
+        <el-form-item :label="$t('storePermission.accountStatus') + '：'">
           <el-select
             v-model="queryParams.status"
             class="form-input"
@@ -62,14 +62,18 @@
           type="primary"
           size="small"
           @click="initDataList"
-        >{{$t('storePermission.filter')}}</el-button>
+        >{{
+          $t('storePermission.filter')
+        }}</el-button>
       </el-form>
       <div>
         <el-button
           type="primary"
           size="small"
           @click="addAccountHandle"
-        >{{$t('storePermission.addAccount')}}</el-button>
+        >{{
+          $t('storePermission.addAccount')
+        }}</el-button>
       </div>
     </div>
     <div class="center">
@@ -96,13 +100,15 @@
           align="center"
         ></el-table-column>
         <el-table-column :label="$t('storePermission.AuthorizedStore')">
-          <template slot-scope="{row}">
-            <div style="text-align:center;">
+          <template slot-scope="{ row }">
+            <div style="text-align: center;">
               <span v-text="row.storeLists.length"></span>
               <el-button
                 type="text"
                 @click="setStoreListDialog(row)"
-              >{{$t('storePermission.settings')}}</el-button>
+              >{{
+                $t('storePermission.settings')
+              }}</el-button>
             </div>
           </template>
         </el-table-column>
@@ -115,10 +121,10 @@
           :label="$t('storePermission.operate')"
           align="center"
         >
-          <template slot-scope="{row}">
+          <template slot-scope="{ row }">
             <div>
               <el-tooltip
-                v-if="row.status === 1 || row.stauts==='1'"
+                v-if="row.status === 1 || row.stauts === '1'"
                 :content="$t('storePermission.disable')"
                 effect="light"
                 placement="top"
@@ -170,7 +176,11 @@
     </div>
     <!-- 添加账户 -->
     <el-dialog
-      :title="isEdit?$t('storePermission.editAccount'):$t('storePermission.addAccount')"
+      :title="
+        isEdit
+          ? $t('storePermission.editAccount')
+          : $t('storePermission.addAccount')
+      "
       :visible.sync="accountDialogVisible"
       width="500px"
     >
@@ -184,7 +194,7 @@
           :rules="accountFormRules"
         >
           <el-form-item
-            :label="$t('storePermission.accountRole')+'：'"
+            :label="$t('storePermission.accountRole') + '：'"
             prop="accountType"
           >
             <el-select
@@ -202,7 +212,7 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            :label="$t('storePermission.storeAccount')+'：'"
+            :label="$t('storePermission.storeAccount') + '：'"
             prop="accountName"
           >
             <el-input
@@ -211,10 +221,10 @@
               maxlength="20"
               :placeholder="$t('storePermission.storeLimit1')"
             ></el-input>
-            <p class="form-tip">{{$t('storePermission.storeLimit2')}}</p>
+            <p class="form-tip">{{ $t('storePermission.storeLimit2') }}</p>
           </el-form-item>
           <el-form-item
-            :label="$t('storePermission.phone')+'：'"
+            :label="$t('storePermission.phone') + '：'"
             prop="mobile"
           >
             <el-input
@@ -226,7 +236,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            :label="$t('storePermission.pwd')+'：'"
+            :label="$t('storePermission.pwd') + '：'"
             prop="accountPasswd"
           >
             <el-input
@@ -237,10 +247,10 @@
               autocomplete="off"
               auto-complete="new-password"
             ></el-input>
-            <p class="form-tip">{{$t('storePermission.pwdLimit')}}</p>
+            <p class="form-tip">{{ $t('storePermission.pwdLimit') }}</p>
           </el-form-item>
           <el-form-item
-            :label="$t('storePermission.AuthorizedStore')+'：'"
+            :label="$t('storePermission.AuthorizedStore') + '：'"
             prop="storeList"
           >
             <!-- <el-select
@@ -270,11 +280,15 @@
           type="primary"
           size="small"
           @click="saveAccountHandle"
-        >{{$t('storePermission.save')}}</el-button>
+        >{{
+          $t('storePermission.save')
+        }}</el-button>
         <el-button
           size="small"
           @click="accountDialogVisible = false"
-        >{{$t('storePermission.cancel')}}</el-button>
+        >{{
+          $t('storePermission.cancel')
+        }}</el-button>
       </div>
     </el-dialog>
     <!-- 设置权限门店 -->
@@ -308,23 +322,34 @@
           type="primary"
           size="small"
           @click="setStoreList"
-        >{{$t('storePermission.yes')}}</el-button>
+        >{{
+          $t('storePermission.yes')
+        }}</el-button>
         <el-button
           @click="setStoresVisible = false"
           size="small"
-        >{{$t('storePermission.cancel')}}</el-button>
+        >{{
+          $t('storePermission.cancel')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getAccountListApi, addAccountApi, editAccountApi, getAccountApi, updateAccountApi } from '@/api/admin/storeManage/storePermission'
-import { allSourceRequest } from '@/api/admin/membershipList.js'
+import {
+  getAccountListApi,
+  addAccountApi,
+  editAccountApi,
+  getAccountApi,
+  updateAccountApi,
+  allSourceRequest
+} from '@/api/store/store'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
-    storeMultipleChoice: () => import('@/components/admin/storeManage/storeMultipleChoice')
+    storeMultipleChoice: () =>
+      import('@/components/admin/storeManage/storeMultipleChoice')
   },
   data () {
     let that = this
@@ -387,11 +412,23 @@ export default {
       accountForm: {},
       storeList: [], // 门店列表
       accountFormRules: {
-        accountType: [{ required: true, message: that.$t('storePermission.psAr'), trigger: 'blur' }],
-        accountName: [{ required: true, validator: validName, trigger: 'blur' }],
+        accountType: [
+          {
+            required: true,
+            message: that.$t('storePermission.psAr'),
+            trigger: 'blur'
+          }
+        ],
+        accountName: [
+          { required: true, validator: validName, trigger: 'blur' }
+        ],
         mobile: [{ required: true, validator: validMobile, trigger: 'blur' }],
-        accountPasswd: [{ required: true, validator: validPassword, trigger: 'blur' }],
-        storeList: [{ required: true, validator: validStoreList, trigger: 'blur' }]
+        accountPasswd: [
+          { required: true, validator: validPassword, trigger: 'blur' }
+        ],
+        storeList: [
+          { required: true, validator: validStoreList, trigger: 'blur' }
+        ]
       },
       setStoresVisible: false, // 模板应用门店弹窗
       accountStoreList: [], // 模板应用门店设置
@@ -406,7 +443,7 @@ export default {
     initDataList () {
       let that = this
       let params = Object.assign({}, this.pageParams, this.queryParams)
-      getAccountListApi(params).then(res => {
+      getAccountListApi(params).then((res) => {
         if (res.error === 0) {
           let content = res.content
           console.log(content)
@@ -420,7 +457,7 @@ export default {
     // 初始化门店列表
     initStoreList () {
       let that = this
-      allSourceRequest().then(res => {
+      allSourceRequest().then((res) => {
         if (res.error === 0) {
           that.storeList = res.content
         } else {
@@ -438,10 +475,10 @@ export default {
     saveAccountHandle () {
       let that = this
       let params = this.accountForm
-      this.$refs.accountForm.validate(valid => {
+      this.$refs.accountForm.validate((valid) => {
         if (valid) {
           if (!that.isEdit) {
-            addAccountApi(params).then(res => {
+            addAccountApi(params).then((res) => {
               if (res.error === 0) {
                 that.$message.success(res.message)
                 that.accountDialogVisible = false
@@ -451,7 +488,7 @@ export default {
               }
             })
           } else {
-            updateAccountApi(params).then(res => {
+            updateAccountApi(params).then((res) => {
               if (res.error === 0) {
                 that.$message.success(res.message)
                 that.accountDialogVisible = false
@@ -492,7 +529,7 @@ export default {
         act: 'config',
         storeList: this.accountStoreList
       }
-      editAccountApi(params).then(res => {
+      editAccountApi(params).then((res) => {
         if (res.error === 0) {
           this.$message.success(res.message)
           this.setStoresVisible = false
@@ -508,40 +545,62 @@ export default {
       let that = this
       switch (operate) {
         case 'stop':
-          that.$confirm(that.$t('storePermission.ayStop'), that.$t('storePermission.remind'), {
-            confirmButtonText: that.$t('storePermission.yes'),
-            cancelButtonText: that.$t('storePermission.cancel'),
-            type: 'warning'
-          }).then(() => {
-            that.editRequest(operate, row)
-          })
+          that
+            .$confirm(
+              that.$t('storePermission.ayStop'),
+              that.$t('storePermission.remind'),
+              {
+                confirmButtonText: that.$t('storePermission.yes'),
+                cancelButtonText: that.$t('storePermission.cancel'),
+                type: 'warning'
+              }
+            )
+            .then(() => {
+              that.editRequest(operate, row)
+            })
           break
         case 'start':
-          that.$confirm(that.$t('storePermission.ayStart'), that.$t('storePermission.remind'), {
-            confirmButtonText: that.$t('storePermission.yes'),
-            cancelButtonText: that.$t('storePermission.cancel'),
-            type: 'warning'
-          }).then(() => {
-            that.editRequest(operate, row)
-          })
+          that
+            .$confirm(
+              that.$t('storePermission.ayStart'),
+              that.$t('storePermission.remind'),
+              {
+                confirmButtonText: that.$t('storePermission.yes'),
+                cancelButtonText: that.$t('storePermission.cancel'),
+                type: 'warning'
+              }
+            )
+            .then(() => {
+              that.editRequest(operate, row)
+            })
           break
         case 'del':
-          that.$confirm(that.$t('storePermission.ayDelete'), that.$t('storePermission.remind'), {
-            confirmButtonText: that.$t('storePermission.yes'),
-            cancelButtonText: that.$t('storePermission.cancel'),
-            type: 'warning'
-          }).then(() => {
-            that.editRequest(operate, row)
-          })
+          that
+            .$confirm(
+              that.$t('storePermission.ayDelete'),
+              that.$t('storePermission.remind'),
+              {
+                confirmButtonText: that.$t('storePermission.yes'),
+                cancelButtonText: that.$t('storePermission.cancel'),
+                type: 'warning'
+              }
+            )
+            .then(() => {
+              that.editRequest(operate, row)
+            })
           break
         case 'edit':
           that.isEdit = true
           that.editAccountId = row.accountId
           that.accountDialogVisible = true
-          getAccountApi(that.editAccountId).then(res => {
+          getAccountApi(that.editAccountId).then((res) => {
             if (res.error === 0) {
               res.content.storeList = res.content.storeLists
-              let accountForm = Object.assign({}, that.baseAccountForm, res.content)
+              let accountForm = Object.assign(
+                {},
+                that.baseAccountForm,
+                res.content
+              )
               accountForm.accountPasswd = ''
               if (res.content.storeLists && res.content.storeLists.length > 0) {
                 accountForm.storeList = res.content.storeLists
@@ -560,7 +619,7 @@ export default {
         act: operate,
         accountId: row.accountId
       }
-      editAccountApi(params).then(res => {
+      editAccountApi(params).then((res) => {
         if (res.error === 0) {
           this.$message.success(res.message)
           this.initDataList()

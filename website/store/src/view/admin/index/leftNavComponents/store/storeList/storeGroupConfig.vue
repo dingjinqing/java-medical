@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import { storeGroupList, addStoreGroup, delStoreGroup, updateStoreGroup } from '@/api/admin/storeManage/store'
+import { storeGroupList, addStoreGroup, delStoreGroup, updateStoreGroup } from '@/api/store/store'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },

@@ -6,15 +6,24 @@
           <span class="title">待办事项</span>
         </div>
         <div class="module-content">
-          <div class="module-item">
+          <div
+            class="module-item"
+            :style="'background:url('+$imageHost+'/image/store/overview/so_blue.png) no-repeat 95% 90%,-webkit-linear-gradient(left, #dfecff, #b2cbff);'"
+          >
             <span class="num">0</span>
             <span class="title">待核销自提订单</span>
           </div>
-          <div class="module-item">
+          <div
+            class="module-item"
+            :style="'background:url('+$imageHost+'/image/store/overview/so_orange.png) no-repeat 95% 90%,-webkit-linear-gradient(left, #fff6da, #ffe2af);'"
+          >
             <span class="num">0</span>
             <span class="title">待发货订单</span>
           </div>
-          <div class="module-item">
+          <div
+            class="module-item"
+            :style="'background:url('+$imageHost+'/image/store/overview/so_pink.png) no-repeat 95% 90%,-webkit-linear-gradient(left, #ffe9ed, #ffcfd8);'"
+          >
             <span class="num">0</span>
             <span class="title">待核销服务</span>
           </div>
@@ -121,6 +130,7 @@ export default {
         box-sizing: border-box;
         justify-content: center;
         flex-direction: column;
+        cursor: pointer;
         > .title {
           margin-top: 20px;
           font-size: 14px;

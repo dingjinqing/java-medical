@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { getSettingApi, setStorePermissionApi } from '@/api/admin/storeManage/storePermission'
+import { getSettingApi, setStorePermissionApi } from '@/api/store/store'
 export default {
   data () {
     return {
