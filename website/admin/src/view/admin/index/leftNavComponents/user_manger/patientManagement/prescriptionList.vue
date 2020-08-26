@@ -3,16 +3,6 @@
     <div class="main">
       <div class="navBox">
         <div class="filters">
-          <div class="filters_item">
-            <span>手机号：</span>
-            <el-input
-              v-model="queryParams.mobile"
-              size="small"
-              style="width:190px;"
-              placeholder="请输入患者手机号"
-            >
-            </el-input>
-          </div>
           <div class="filters_item ">
             <span class="fil_span">医师姓名：</span>
             <el-select
@@ -97,6 +87,10 @@
           <el-table-column
             prop='departmentName'
             label='科室名称'
+          ></el-table-column>
+           <el-table-column
+            prop='doctorCode'
+            label='医师Code'
           ></el-table-column>
           <el-table-column
             prop='doctorName'
