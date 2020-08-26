@@ -17,6 +17,7 @@ public class PrescriptionRebateDo {
     private BigDecimal totalMoney;
     private BigDecimal totalRebateMoney;
     private Byte       status;
+    private String     reason;
     private Timestamp rebateTime;
     private Byte       isDelete;
     private Timestamp  createTime;

@@ -178,6 +178,9 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             return false;
         }).map(OrderGoodsDo::getRecId).collect(Collectors.toList());
     }
+    public void addPrescriptionRebate(PrescriptionParam prescription){
+
+    }
 
 
 }
