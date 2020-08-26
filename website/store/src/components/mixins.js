@@ -1,6 +1,6 @@
 import {
   judgeJurisdictionRequest
-} from '@/api/admin/util.js'
+} from '@/api/store/store.js'
 const myMixin = {
   data () {
     return {

@@ -74,8 +74,8 @@
                 <el-form-item>
                   <el-button
                     type="primary"
-                    @click.native.prevent="onSubmit(isSubLogin ? 2 : 1,'ruleForm')"
-                    @keyup.enter.native="onSubmit(isSubLogin ? 2 : 1,'ruleForm')"
+                    @click.native.prevent="onSubmit('ruleForm')"
+                    @keyup.enter.native="onSubmit('ruleForm')"
                     class="btn"
                   >{{$t('login_page.login_main')}}</el-button>
                 </el-form-item>
@@ -190,7 +190,7 @@ export default {
     // window.addEventListener('keyup', this.keyupEnter, false)
   },
   methods: {
-    onSubmit (index, formName) {
+    onSubmit (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           localStorage.setItem('contentType', 'application/json;charset=UTF-8')
@@ -202,7 +202,6 @@ export default {
               document.onkeydown = undefined
               Cookies.set('V-Index-Token', res.content.token)
               localStorage.setItem('V-Username', res.content.storeAccountName)
-              localStorage.setItem('V-loginType', 0)
               localStorage.setItem('V-isSubLogin', this.isSubLogin)
               localStorage.setItem('V-AccountName', res.content.storeAccountName)
               this.$message.success({
