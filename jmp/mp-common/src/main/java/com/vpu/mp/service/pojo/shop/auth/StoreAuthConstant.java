@@ -19,6 +19,14 @@ public class StoreAuthConstant {
      */
     public static final Byte DEL_NORMAL=0;
     /**
+     * 已删除
+     */
+    public static final Byte IS_DELETE=1;
+    /**
+     * 已禁用
+     */
+    public static final Byte IS_FORBIDDEN=0;
+    /**
      * StoreAuthFlag
      */
     public static final Boolean STORE_AUTH_OK=true;
@@ -27,6 +35,10 @@ public class StoreAuthConstant {
      * 门店后台登录msg
      */
 
+    /**
+     * 店铺账号不存在
+     */
+    public static final String SHOP_ACCOUNT_NOT_EXIST="shopAccountNotExist";
     /**
      * 门店账号不存在
      */
@@ -51,6 +63,13 @@ public class StoreAuthConstant {
      * 门店不在该门店账号下（店员登录）
      */
     public static final String STORE_NOT_EXIST="storeNotExist";
+    /**
+     * 账号密码错误
+     */
+    public static final String ACCOUNT_PW_ERROR="accountPwError";
 
+    public static final String KEY_MENU = "storeAuthority";
 
+    /** 下面是文件名*/
+    public static final String FILE_MENUJSON = "admin.storeTop.json";
 }

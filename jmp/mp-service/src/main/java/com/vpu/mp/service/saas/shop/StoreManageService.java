@@ -79,7 +79,10 @@ public class StoreManageService extends MainBaseService {
 					if (cfgInfo != null && cfgInfo.getSubMenuCfg().size() > 0
 							&& inList(sub.get(j).getEnName(), cfgInfo.getSubMenuCfg())) {
 						sub.get(j).setCheck(StoreConstant.CHECK_ONE);
-						hasSubCheck = StoreConstant.CHECK_ONE;
+						if (!StoreConstant.CHECK_ONE.equals(hasSubCheck)) {
+                            hasSubCheck = StoreConstant.CHECK_ONE;
+                            list.get(i).setLinkUrl(sub.get(j).getLinkUrl());
+                        }
 					}
 				}
 			}
@@ -138,14 +141,12 @@ public class StoreManageService extends MainBaseService {
 		return execute == 1;
 	}
 
-	/**
-	 * 门店用户列表
-	 * 
-	 * @param sysId
-	 * @param shopId
-	 * @param param
-	 * @return
-	 */
+    /**
+     * 门店用户列表
+     * @param shopId
+     * @param param
+     * @return
+     */
 	public PageResult<StoreAccountVo> getAccountList(Integer shopId, StoreAuthListPage param) {
 		PageResult<StoreAccountVo> accountList = storeAccountService.accountList(param, getSysId(shopId), shopId);
 		List<StoreAccountVo> dataList = accountList.getDataList();

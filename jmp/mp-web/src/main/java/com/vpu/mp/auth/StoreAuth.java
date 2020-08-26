@@ -1,24 +1,26 @@
 package com.vpu.mp.auth;
 
-import java.util.Calendar;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.vpu.mp.service.pojo.shop.auth.*;
+import com.google.common.base.Joiner;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.config.AuthConfig;
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
+import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
+import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
+import com.vpu.mp.service.pojo.shop.auth.StoreTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
+import com.vpu.mp.service.saas.SaasApplication;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.config.AuthConfig;
-import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
-import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.saas.SaasApplication;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
 
 /**
  * @author chenjie
@@ -80,34 +82,32 @@ public class StoreAuth {
      */
     public StoreTokenAuthInfo login(StoreLoginParam param) {
         ShopAccountRecord account = saas.shop.account.getAccountInfo(param.username);
+        StoreTokenAuthInfo info = new StoreTokenAuthInfo();
+        StoreAuthInfoVo storeAuthInfoVo = new StoreAuthInfoVo();
         if (account == null) {
-            return null;
+            storeAuthInfoVo.setMsg(StoreAuthConstant.SHOP_ACCOUNT_NOT_EXIST);
+            info.setStoreAuthInfoVo(storeAuthInfoVo);
+            return info;
         }
         param.setSysId(account.getSysId());
-        StoreAuthInfoVo storeAuthInfo = saas.shop.storeManageService.storeAccountService.getStoreAccountFlag(param);
-        if (!StoreAuthConstant.STORE_AUTH_OK.equals(storeAuthInfo.getIsOk())) {
+        StoreAuthInfoVo storeAuthInfoVoNew = saas.shop.storeManageService.storeAccountService.verifyStoreLogin(param);
+        if (!StoreAuthConstant.STORE_AUTH_OK.equals(storeAuthInfoVoNew.getIsOk())) {
+            info.setStoreAuthInfoVo(storeAuthInfoVoNew);
             return null;
         }
-        ShopChildAccountRecord subAccount = null;
-//        if (StoreAuthConstant.STORE_CLERK.equals(param.storeAccountType) ) {
-//            subAccount = saas.shop.subAccount.verify(account.getSysId(), param.subUsername, param.password);
-//            if (subAccount == null) {
-//                return null;
-//            }
-//        } else {
-//            if (!account.getPassword().equals(Util.md5(param.password))) {
-//                return null;
-//            }
-//        }
 
-        StoreTokenAuthInfo info = new StoreTokenAuthInfo();
         info.setSysId(account.getSysId());
         info.setUserName(account.getUserName());
-        info.setSubAccountId(subAccount != null ? subAccount.getAccountId() : 0);
-        info.setSubUserName(subAccount != null ? subAccount.getAccountName() : "");
-        info.setSubLogin(subAccount != null);
+        info.setSubAccountId(0);
+        info.setSubUserName("");
+        info.setSubLogin(false);
         info.setLoginShopId(0);
-        info.setAccountName(subAccount != null ? subAccount.getAccountName() : account.getAccountName());
+        info.setAccountName(account.getAccountName());
+        StoreAccountVo storeAccountVo = storeAuthInfoVoNew.getStoreAccountInfo();
+        info.setStoreAccountId(storeAccountVo.getAccountId());
+        info.setStoreAccountName(storeAccountVo.getAccountName());
+        info.setStoreAccountType(storeAccountVo.getAccountType());
+        info.setStoreIds(storeAccountVo.getStoreLists());
 
         // 如果当前登录用户与正在登录的用户相同，则使用当前登录用户的Token
         StoreTokenAuthInfo user = user();
@@ -127,8 +127,8 @@ public class StoreAuth {
     public void saveTokenInfo(StoreTokenAuthInfo info) {
         if (StringUtils.isBlank(info.getToken())) {
             String loginToken = TOKEN_PREFIX
-                + Util.md5(String.format("admin_login_%d_%d_%s_%d", info.getSysId(), info.getSubAccountId(),
-                Util.randomId(), Calendar.getInstance().getTimeInMillis()));
+                + Util.md5(String.format("store_login_%d_%d_%d_%s_%s_%d", info.getSysId(), info.getSubAccountId(),
+                info.getStoreAccountId(),info.getStoreIds().size()>0 ? Joiner.on(",").join(info.getStoreIds()):"",Util.randomId(), Calendar.getInstance().getTimeInMillis()));
             info.setToken(loginToken);
         }
         jedis.set(info.token, Util.toJson(info), authConfig.getTimeout());
@@ -168,30 +168,6 @@ public class StoreAuth {
         if (null != info) {
             this.saveTokenInfo(info);
         }
-    }
-
-    /**
-     * 登录时间表更新
-     * @param info
-     * @param shop
-     * @return
-     * @return
-     */
-    public int insert(StoreTokenAuthInfo info, ShopRecord shop) {
-        UserLoginRecordRecord record = new UserLoginRecordRecord();
-        record.setUserName(info.getUserName());
-        record.setUserId(info.getSysId());
-        if (info.isSubLogin()) {
-            record.setUserName(info.getSubUserName());
-            record.setUserId(info.getSubAccountId());
-
-        }
-        record.setSysId(info.getSysId());
-        record.setShopName(shop.getShopName());
-        record.setShopId(shop.getShopId());
-        record.setUserIp(Util.getCleintIp(request));
-        record.setAccountType((byte)0);
-        return saas.shop.insertUserLoginRecord(record);
     }
 
     /**

@@ -41,4 +41,5 @@ public class StoreTokenAuthInfo {
      * 操作账户类型（操作记录）
      */
     public Byte accountType;
+    public StoreAuthInfoVo storeAuthInfoVo;
 }

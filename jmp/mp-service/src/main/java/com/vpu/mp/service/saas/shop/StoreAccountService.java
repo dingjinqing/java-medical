@@ -3,17 +3,16 @@ package com.vpu.mp.service.saas.shop;
 import static com.vpu.mp.db.main.Tables.SHOP;
 import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
+import com.vpu.mp.service.shop.store.store.StoreService;
+import jodd.util.StringUtil;
 import org.jooq.SelectConditionStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -37,7 +36,10 @@ public class StoreAccountService extends MainBaseService {
 	private static final Byte IS_DEL = 1;
 	private static final Byte NO_DEL = 0;
 	private static final String DOT = ",";
+	@Autowired
 	public StoreAccountDao storeAccountDao;
+	@Autowired
+	public StoreService storeService;
 
     /**
      * 获取用户列表
@@ -197,12 +199,31 @@ public class StoreAccountService extends MainBaseService {
 	public StoreAuthInfoVo getStoreAccountFlag(StoreLoginParam param){
         StoreAuthInfoVo storeAuthInfoVo = new StoreAuthInfoVo();
         StoreAccountVo storeAccountInfo = storeAccountDao.getStoreAccountInfo(param);
+        if (storeAccountInfo == null) {
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_NOT_EXIST);
+        } else if (StoreAuthConstant.DEL_NORMAL.equals(storeAccountInfo.getDelFlag())){
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_DELETE);
+        } else if (StoreAuthConstant.IS_FORBIDDEN.equals(storeAccountInfo.getStatus())){
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_DELETE);
+        } else if (StringUtil.isBlank(storeAccountInfo.getStoreList())){
+            storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_IS_EMPTY);
+        } else {
+            List<Integer> list = changeToArray(storeAccountInfo.getStoreList());
+            storeAccountInfo.setStoreLists(list);
+        }
         storeAuthInfoVo.setStoreAccountInfo(storeAccountInfo);
         return storeAuthInfoVo;
     }
 
     public StoreAuthInfoVo verifyStoreLogin(StoreLoginParam param){
         StoreAuthInfoVo storeAuthInfoVo = getStoreAccountFlag(param);
+        if (!StoreAuthConstant.STORE_AUTH_OK.equals(storeAuthInfoVo.getIsOk())) {
+            return storeAuthInfoVo;
+        }
+        if (!Util.md5(param.getPassword()).equals(storeAuthInfoVo.getStoreAccountInfo().getAccountPasswd())) {
+            storeAuthInfoVo.setIsOk(false);
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_PW_ERROR);
+        }
         return storeAuthInfoVo;
     }
 }
