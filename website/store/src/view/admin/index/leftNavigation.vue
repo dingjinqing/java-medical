@@ -174,7 +174,7 @@ export default {
   },
   methods: {
     async initLeftNav (meta) {
-      if (!this.menuParam) await this.filterNavShow()
+      // if (!this.menuParam) await this.filterNavShow()
       if (!this.hasOwnProperty(meta) || this.defaultList.meta === meta) return
       this.isRouterAlive = false
       this.$nextTick(function () {
@@ -188,7 +188,17 @@ export default {
     filterNavShow () {
       return new Promise((resolve, reject) => {
         getShowMenu().then((res) => {
-          console.log(res)
+          if (res.error === 0) {
+            let souceArray = res.content
+            souceArray.forEach((item) => {
+              if (item.sub.length) {
+              } else {
+                this[item.enName] = [this[item.enName].find(leftItem => {
+                  return leftItem.name === item.enName
+                })]
+              }
+            })
+          }
           // this.menuParam = menuParam
           // Object.keys(menuParam).forEach(keyItem => {
           //   if (!this.hasOwnProperty(keyItem)) return
