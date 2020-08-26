@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.medical.goods.bo;
 
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.base.GoodsMedicalBaseInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public class GoodsMedicalExternalRequestItemBo extends GoodsMedicalBaseInfo {
     private BigDecimal goodsPrice;
     private Integer goodsNumber;
     private Integer state;
-    private Byte isMedical;
+    private Byte isMedical = MedicalGoodsConstant.GOODS_IS_MEDICAL;
     private Byte source;
     private Integer lastUpdateTime;
 }

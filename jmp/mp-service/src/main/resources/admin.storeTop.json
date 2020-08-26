@@ -113,11 +113,13 @@
 				"enName": "paying_order",
 				"name": "买单订单",
 				"check": 1,
+        "includeApi": [],
 				"isOnly": 0
 			},
 			{
 				"enName": "after_sale_center",
 				"name": "售后中心",
+        "includeApi": [],
 				"check": 1,
 				"isOnly": 0
 			}
@@ -133,18 +135,21 @@
 				"enName": "store_service_manage",
 				"name": "服务管理",
 				"check": 1,
+        "includeApi": [],
 				"isOnly": 0
 			},
 			{
 				"enName": "technician_manage",
 				"name": "技师管理",
 				"check": 1,
+        "includeApi": [],
 				"isOnly": 0
 			},
 			{
 				"enName": "store_service_comment",
 				"name": "评价管理",
 				"check": 1,
+        "includeApi": [],
 				"isOnly": 0
 			}
 		]
@@ -159,12 +164,14 @@
 				"enName": "base_config",
 				"name": "基础配置",
 				"check": 1,
+        "includeApi": [],
 				"isOnly": 0
 			},
 			{
 				"enName": "deliver_config",
 				"name": "配送运费模板",
 				"check": 1,
+        "includeApi": [],
 				"isOnly": 0
 			}
 		]

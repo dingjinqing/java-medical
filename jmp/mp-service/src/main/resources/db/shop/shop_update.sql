@@ -750,4 +750,10 @@ ALTER TABLE `b2c_inquiry_order` ADD COLUMN `settlement_flag` tinyint(1) DEFAULT 
 
 ALTER TABLE `b2c_store` ADD COLUMN `store_code` varchar(50) default '' comment '门店编号' after `store_name`;
 
+-- 门店商品添加药品相关字段
+ALTER TABLE b2c_store_goods ADD goods_common_name VARCHAR(512) AFTER goods_id;
+ALTER TABLE b2c_store_goods ADD goods_quality_ratio VARCHAR(512) AFTER goods_common_name;
+ALTER TABLE b2c_store_goods ADD goods_approval_number VARCHAR(512) AFTER goods_quality_ratio;
+ALTER TABLE b2c_store_goods ADD goods_production_enterprise VARCHAR(512) AFTER goods_approval_number;
+
 /*********************3.4*************************END*/

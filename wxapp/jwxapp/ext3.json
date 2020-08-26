@@ -1,0 +1,17 @@
+{
+  "extEnable": true,
+  "extAppid": "wx9247a7ca4910ca83",
+  "directCommit": false,
+  "ext": {
+    "main_host": "medicaltest.weipubao.cn",
+    "image_host": "medicaltestimg.weipubao.cn",
+    "shop_id": 873981,
+    "schema": "https",
+    "currency":"CNY",
+    "shopLanguage":"zh_CN"
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  }
+}

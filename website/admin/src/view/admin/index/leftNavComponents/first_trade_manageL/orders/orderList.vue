@@ -619,15 +619,15 @@
                           size="small"
                           @click="deliver(orderItem)"
                         >{{$t('order.delivery')}}</el-button>
-                        <template v-if="orderItem.canVerify == true">
-                          <!-- 核销 -->
-                          <br />
-                          <el-button
-                            type="primary"
-                            size="small"
-                            @click="verify(orderItem)"
-                          >{{$t('order.verify')}}</el-button>
-                        </template>
+                      </template>
+                      <template v-if="orderItem.canVerify == true">
+                        <!-- 核销 -->
+                        <br />
+                        <el-button
+                          type="primary"
+                          size="small"
+                          @click="verify(orderItem)"
+                        >{{$t('order.verify')}}</el-button>
                       </template>
                     </template>
                     <template v-if="orderItem.refundStatus > 0">
@@ -1162,15 +1162,21 @@ export default {
       this.orderItemInfo = orderInfo
     },
     verify (orderInfo) {
-      let obj = {
-        orderId: orderInfo.orderId,
-        orderSn: orderInfo.orderSn,
-        isCheck: false,
-        // TODO
-        verifyCode: '',
-        action: 4
-      }
-      verify(obj).then(res => {
+      this.$prompt('请输入核销码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(({ value }) => {
+        let obj = {
+          orderSn: orderInfo.orderSn,
+          verifyCode: value
+        }
+        verify(obj).then(res => {
+          if (res.error === 0) {
+            this.search()
+          } else {
+            this.$$message.error('提示', res.message)
+          }
+        })
       })
     },
     close (orderInfo) {

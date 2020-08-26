@@ -60,4 +60,6 @@ public class MedicalGoodsConstant {
     public static final Byte SOURCE_FROM_HIS = 1;
     /**从门店拉取的数据*/
     public static final Byte SOURCE_FROM_STORE = 2;
+    /**药房商品拉取后，对应唯一码值前缀*/
+    public static final String STORE_GOODS_CODE_PREFIX= "STORE_";
 }
