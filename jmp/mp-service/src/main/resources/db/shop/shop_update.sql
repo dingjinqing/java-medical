@@ -602,6 +602,7 @@ create table if not exists `b2c_inquiry_order_rebate` (
   `total_money` decimal(10,2) not null default '0.00' comment '问诊金额',
   `total_rebate_money` decimal(10,2) not null default '0.00' comment '返利金额',
   `status` tinyint(1) not null default '0' comment '状态  0待返利 1已返利',
+  `reason` varchar(256) NOT NULL DEFAULT ''  COMMENT '未返利原因',
   `is_delete` tinyint(1) not null default '0' comment '删除',
   `rebate_time` timestamp not null default '0000-00-00 00:00:00'comment  '返利日期',
   `create_time` timestamp not null default current_timestamp,
@@ -650,7 +651,7 @@ create table if not exists `b2c_doctor_total_rebate` (
     `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     primary key(`id`),
     KEY `doctor_id` (`doctor_id`)
-)comment ='医师评价和打分';
+)comment ='医师返利数据表';
 
 -- 同城配送订单表
 CREATE TABLE IF NOT EXISTS `b2c_city_service_order` (
@@ -682,5 +683,41 @@ CREATE TABLE IF NOT EXISTS `b2c_city_service_order` (
     INDEX `waybill_id` (`waybill_id`),
     INDEX `order_status` (`order_status`)
 )COMMENT='同城配送订单表';
+
+-- 门店账户表
+CREATE TABLE if not exists `b2c_store_account` (
+    `account_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '门店账号ID',
+    `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属店铺id',
+    `sys_id` int(10) NOT NULL DEFAULT '0' COMMENT '所属账户id',
+    `mobile` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号',
+    `account_name` varchar(50) DEFAULT '' COMMENT '账户名称',
+    `wx_nick_name` varchar(50) default '' comment '门店账户绑定微信昵称',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `account_type` tinyint(1) DEFAULT '1' COMMENT '账户类型1:店员，2：店长',
+    `status` tinyint(1) DEFAULT '0' COMMENT '账户状态0:禁用，1：启用',
+    `del_flag` tinyint(1) DEFAULT '0' COMMENT '是否已删除0:否，1：是',
+    `account_passwd` varchar(64)  DEFAULT NULL COMMENT '账号密码',
+    `store_list` varchar(191)  DEFAULT NULL COMMENT '可用门店id,逗号隔开',
+    `update_time`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY (`account_id`),
+    KEY `mobile` (`mobile`),
+    KEY `account_name` (`account_name`)
+) comment '门店账户表';
+
+create table if not exists `b2c_prescription_rebate`(
+    `id`   int(11)   NOT NULL AUTO_INCREMENT,
+    `prescription_code` varchar(64)  NOT NULL DEFAULT '' COMMENT '处方号',
+    `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
+    `total_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '处方包含药品总金额',
+    `total_rebate_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '返利总金额',
+    `status` tinyint(1)  NOT NULL DEFAULT '0' COMMENT '0待返利 1已返利 2未返利',
+    `reason` varchar(256) NOT NULL DEFAULT ''  COMMENT '未返利原因',
+    `rebate_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '返利日期',
+    `is_delete`     tinyint(1)   NOT NULL DEFAULT '0',
+    `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key(`id`),
+    KEY `doctor_id` (`doctor_id`)
+)comment ='处方药品返利表';
 
 /*********************3.4*************************END*/

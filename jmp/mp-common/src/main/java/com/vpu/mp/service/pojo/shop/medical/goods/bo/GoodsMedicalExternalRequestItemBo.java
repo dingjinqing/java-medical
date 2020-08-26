@@ -18,5 +18,7 @@ public class GoodsMedicalExternalRequestItemBo extends GoodsMedicalBaseInfo {
     private BigDecimal goodsPrice;
     private Integer goodsNumber;
     private Integer state;
+    private Byte isMedical;
+    private Byte source;
     private Integer lastUpdateTime;
 }
