@@ -14,7 +14,7 @@
             >
               <el-option
                 label="全部"
-                value=" "
+                value=""
               ></el-option>
               <el-option
                 v-for="item in doctorList"
@@ -91,6 +91,10 @@
             }"
         >
           <el-table-column
+            prop='id'
+            label='患者ID'
+          ></el-table-column>
+          <el-table-column
             prop='name'
             label='患者姓名'
           ></el-table-column>
@@ -99,12 +103,16 @@
             label='处方号'
           ></el-table-column>
           <el-table-column
-            prop='departmentName'
-            label='科室名称'
+            prop='doctorCode'
+            label='医师Code'
           ></el-table-column>
           <el-table-column
             prop='doctorName'
             label='医师名称'
+          ></el-table-column>
+          <el-table-column
+            prop='departmentName'
+            label='科室名称'
           ></el-table-column>
           <el-table-column
             prop='diagnosisName'
@@ -311,8 +319,8 @@ export default {
       }
     }
   }
-  .operation a{
-    color:#5a8bff;
+  .operation a {
+    color: #5a8bff;
   }
   .table_box {
     padding: 10px;

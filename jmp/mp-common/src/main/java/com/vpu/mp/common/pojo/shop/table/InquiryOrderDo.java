@@ -47,6 +47,7 @@ public class InquiryOrderDo {
     private BigDecimal rebateProportion;
     private BigDecimal totalRebateMoney;
     private Byte       isDelete;
+    private Byte       settlementFlag;
     private Timestamp  createTime;
     private Timestamp  updateTime;
 }
