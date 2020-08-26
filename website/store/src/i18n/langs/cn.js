@@ -73,14 +73,7 @@ const cn = {
     Q_title: 'QQ咨询'
   },
   // admin选择店铺数据
-  shopData: [
-    '账户设置',
-    '子账号管理',
-    '子账号权限管理',
-    '授权公众号',
-    '选择店铺',
-    '退出'
-  ],
+  shopData: ['退出'],
   changePassword: '修改密码',
   // admin选择店铺页面contact组件数据
   adminContact: {

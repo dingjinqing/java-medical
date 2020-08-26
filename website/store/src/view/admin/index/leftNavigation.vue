@@ -46,7 +46,9 @@
 </template>
 
 <script>
-import { jurisdictionQueryRequest } from '@/api/admin/jurisdiction'
+import {
+  getShowMenu
+} from '@/api/store/store'
 export default {
   data () {
     return {
@@ -166,13 +168,13 @@ export default {
     }
   },
   created () {
-    // this.filterNavShow()
+    this.filterNavShow()
   },
   mounted () {
   },
   methods: {
     async initLeftNav (meta) {
-      // if (!this.menuParam) await this.filterNavShow()
+      if (!this.menuParam) await this.filterNavShow()
       if (!this.hasOwnProperty(meta) || this.defaultList.meta === meta) return
       this.isRouterAlive = false
       this.$nextTick(function () {
@@ -185,22 +187,23 @@ export default {
     },
     filterNavShow () {
       return new Promise((resolve, reject) => {
-        jurisdictionQueryRequest().then(({ content: { menuParam } }) => {
-          this.menuParam = menuParam
-          Object.keys(menuParam).forEach(keyItem => {
-            if (!this.hasOwnProperty(keyItem)) return
-            this[keyItem] = this[keyItem].reduce((defaultData, item) => {
-              if (item.children && item.children.length) {
-                item.children = item.children.reduce((childrenDefault, childrenItem) => {
-                  if (menuParam[keyItem].includes(childrenItem.name)) childrenDefault.push(childrenItem)
-                  return childrenDefault
-                }, [])
-              }
-              if (menuParam[keyItem].includes(item.name)) defaultData.push(item)
-              return defaultData
-            }, [])
-          })
-          resolve()
+        getShowMenu().then((res) => {
+          console.log(res)
+          // this.menuParam = menuParam
+          // Object.keys(menuParam).forEach(keyItem => {
+          //   if (!this.hasOwnProperty(keyItem)) return
+          //   this[keyItem] = this[keyItem].reduce((defaultData, item) => {
+          //     if (item.children && item.children.length) {
+          //       item.children = item.children.reduce((childrenDefault, childrenItem) => {
+          //         if (menuParam[keyItem].includes(childrenItem.name)) childrenDefault.push(childrenItem)
+          //         return childrenDefault
+          //       }, [])
+          //     }
+          //     if (menuParam[keyItem].includes(item.name)) defaultData.push(item)
+          //     return defaultData
+          //   }, [])
+          // })
+          // resolve()
         })
       })
     }

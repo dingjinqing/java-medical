@@ -473,7 +473,7 @@ export default {
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .el-button + .el-button {
   margin-left: 0;
 }
@@ -597,7 +597,7 @@ export default {
     // }
     &::before,
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       right: auto;
     }

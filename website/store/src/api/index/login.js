@@ -5,7 +5,7 @@ import request from '@/util/request'
 // 登录
 export function loginRequest (riid) {
   return request({
-    url: '/api/admin/login',
+    url: '/api/store/login',
     method: 'post',
     data: riid
   })
