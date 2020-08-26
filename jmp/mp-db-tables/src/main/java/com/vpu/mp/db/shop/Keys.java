@@ -300,6 +300,12 @@ public class Keys {
     public static final Identity<DoctorCommentRecord, Integer> IDENTITY_DOCTOR_COMMENT = Identities0.IDENTITY_DOCTOR_COMMENT;
     public static final Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Identities0.IDENTITY_STORE_ACCOUNT;
     public static final Identity<InquiryOrderRebateRecord, Integer> IDENTITY_INQUIRY_ORDER_REBATE = Identities0.IDENTITY_INQUIRY_ORDER_REBATE;
+    public static final Identity<CityServiceAccountRecord, Integer> IDENTITY_CITY_SERVICE_ACCOUNT = Identities0.IDENTITY_CITY_SERVICE_ACCOUNT;
+    public static final Identity<DoctorTotalRebateRecord, Integer> IDENTITY_DOCTOR_TOTAL_REBATE = Identities0.IDENTITY_DOCTOR_TOTAL_REBATE;
+    public static final Identity<CityServiceOrderRecord, Integer> IDENTITY_CITY_SERVICE_ORDER = Identities0.IDENTITY_CITY_SERVICE_ORDER;
+    public static final Identity<PrescriptionRebateRecord, Integer> IDENTITY_PRESCRIPTION_REBATE = Identities0.IDENTITY_PRESCRIPTION_REBATE;
+    public static final Identity<DoctorWithdrawRecord, Integer> IDENTITY_DOCTOR_WITHDRAW = Identities0.IDENTITY_DOCTOR_WITHDRAW;
+
 
 
     // -------------------------------------------------------------------------
@@ -591,6 +597,13 @@ public class Keys {
     public static final UniqueKey<DoctorDutyRecordRecord> KEY_B2C_DOCTOR_DUTY_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_DUTY_RECORD_PRIMARY;
     public static final UniqueKey<StoreAccountRecord> KEY_B2C_STORE_ACCOUNT_PRIMARY = UniqueKeys0.KEY_B2C_STORE_ACCOUNT_PRIMARY;
     public static final UniqueKey<InquiryOrderRebateRecord> KEY_B2C_INQUIRY_ORDER_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_INQUIRY_ORDER_REBATE_PRIMARY;
+    public static final UniqueKey<CityServiceAccountRecord> KEY_B2C_CITY_SERVICE_ACCOUNT_PRIMARY = UniqueKeys0.KEY_B2C_CITY_SERVICE_ACCOUNT_PRIMARY;
+    public static final UniqueKey<CityServiceOrderRecord> KEY_B2C_CITY_SERVICE_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_CITY_SERVICE_ORDER_PRIMARY;
+
+
+    public static final UniqueKey<DoctorTotalRebateRecord> KEY_B2C_DOCTOR_TOTAL_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_TOTAL_REBATE_PRIMARY;
+    public static final UniqueKey<PrescriptionRebateRecord> KEY_B2C_PRESCRIPTION_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_PRESCRIPTION_REBATE_PRIMARY;
+    public static final UniqueKey<DoctorWithdrawRecord> KEY_B2C_DOCTOR_WITHDRAW_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_WITHDRAW_PRIMARY;
 
 
     // -------------------------------------------------------------------------
@@ -859,6 +872,12 @@ public class Keys {
         public static Identity<DoctorCommentRecord, Integer> IDENTITY_DOCTOR_COMMENT = Internal.createIdentity(DoctorComment.DOCTOR_COMMENT, DoctorComment.DOCTOR_COMMENT.ID);
         public static Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Internal.createIdentity(StoreAccount.STORE_ACCOUNT, StoreAccount.STORE_ACCOUNT.ACCOUNT_ID);
         public static Identity<InquiryOrderRebateRecord, Integer> IDENTITY_INQUIRY_ORDER_REBATE = Internal.createIdentity(InquiryOrderRebate.INQUIRY_ORDER_REBATE, InquiryOrderRebate.INQUIRY_ORDER_REBATE.ID);
+        public static Identity<CityServiceAccountRecord, Integer> IDENTITY_CITY_SERVICE_ACCOUNT = Internal.createIdentity(CityServiceAccount.CITY_SERVICE_ACCOUNT, CityServiceAccount.CITY_SERVICE_ACCOUNT.ID);
+        public static Identity<CityServiceOrderRecord, Integer> IDENTITY_CITY_SERVICE_ORDER = Internal.createIdentity(CityServiceOrder.CITY_SERVICE_ORDER, CityServiceOrder.CITY_SERVICE_ORDER.ID);
+
+        public static Identity<DoctorTotalRebateRecord, Integer> IDENTITY_DOCTOR_TOTAL_REBATE = Internal.createIdentity(DoctorTotalRebate.DOCTOR_TOTAL_REBATE, DoctorTotalRebate.DOCTOR_TOTAL_REBATE.ID);
+        public static Identity<PrescriptionRebateRecord, Integer> IDENTITY_PRESCRIPTION_REBATE = Internal.createIdentity(PrescriptionRebate.PRESCRIPTION_REBATE, PrescriptionRebate.PRESCRIPTION_REBATE.ID);
+        public static Identity<DoctorWithdrawRecord, Integer> IDENTITY_DOCTOR_WITHDRAW = Internal.createIdentity(DoctorWithdraw.DOCTOR_WITHDRAW, DoctorWithdraw.DOCTOR_WITHDRAW.ID);
 
     }
 
@@ -1153,6 +1172,12 @@ public class Keys {
         public static final UniqueKey<DoctorCommentRecord> KEY_B2C_DOCTOR_COMMENT_PRIMARY = Internal.createUniqueKey(DoctorComment.DOCTOR_COMMENT, "KEY_b2c_doctor_comment_PRIMARY", DoctorComment.DOCTOR_COMMENT.ID);
         public static final UniqueKey<StoreAccountRecord> KEY_B2C_STORE_ACCOUNT_PRIMARY = Internal.createUniqueKey(StoreAccount.STORE_ACCOUNT, "KEY_b2c_store_account_PRIMARY", StoreAccount.STORE_ACCOUNT.ACCOUNT_ID);
         public static final UniqueKey<InquiryOrderRebateRecord> KEY_B2C_INQUIRY_ORDER_REBATE_PRIMARY = Internal.createUniqueKey(InquiryOrderRebate.INQUIRY_ORDER_REBATE, "KEY_b2c_inquiry_order_rebate_PRIMARY", InquiryOrderRebate.INQUIRY_ORDER_REBATE.ID);
+        public static final UniqueKey<CityServiceAccountRecord> KEY_B2C_CITY_SERVICE_ACCOUNT_PRIMARY = Internal.createUniqueKey(CityServiceAccount.CITY_SERVICE_ACCOUNT, "KEY_b2c_city_service_account_PRIMARY", CityServiceAccount.CITY_SERVICE_ACCOUNT.ID);
+        public static final UniqueKey<CityServiceOrderRecord> KEY_B2C_CITY_SERVICE_ORDER_PRIMARY = Internal.createUniqueKey(CityServiceOrder.CITY_SERVICE_ORDER, "KEY_b2c_city_service_order_PRIMARY", CityServiceOrder.CITY_SERVICE_ORDER.ID);
+
+        public static final UniqueKey<DoctorTotalRebateRecord> KEY_B2C_DOCTOR_TOTAL_REBATE_PRIMARY = Internal.createUniqueKey(DoctorTotalRebate.DOCTOR_TOTAL_REBATE, "KEY_b2c_doctor_total_rebate_PRIMARY", DoctorTotalRebate.DOCTOR_TOTAL_REBATE.ID);
+        public static final UniqueKey<PrescriptionRebateRecord> KEY_B2C_PRESCRIPTION_REBATE_PRIMARY = Internal.createUniqueKey(PrescriptionRebate.PRESCRIPTION_REBATE, "KEY_b2c_prescription_rebate_PRIMARY", PrescriptionRebate.PRESCRIPTION_REBATE.ID);
+        public static final UniqueKey<DoctorWithdrawRecord> KEY_B2C_DOCTOR_WITHDRAW_PRIMARY = Internal.createUniqueKey(DoctorWithdraw.DOCTOR_WITHDRAW, "KEY_b2c_doctor_withdraw_PRIMARY", DoctorWithdraw.DOCTOR_WITHDRAW.ID);
 
     }
 }

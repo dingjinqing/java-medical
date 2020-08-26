@@ -52,4 +52,12 @@ public class MedicalGoodsConstant {
 
     /**药品默认图片*/
     public static final String MEDICAL_GOODS_WXAPP_DEFAULT_IMG = "image/wxapp/medicalGodsDefault.jpg";
+
+    /**商品是药品*/
+    public static final Byte MEDICAL_GOODS = 1;
+
+    /**从his拉取的数据*/
+    public static final Byte SOURCE_FROM_HIS = 1;
+    /**从门店拉取的数据*/
+    public static final Byte SOURCE_FROM_STORE = 2;
 }

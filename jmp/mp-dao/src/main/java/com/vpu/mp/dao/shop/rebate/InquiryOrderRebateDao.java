@@ -31,7 +31,8 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      * 更改返利状态
      * @param orderSn
      */
-    public void updateStatus(String orderSn){
-        db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, InquiryOrderRebateConstant.REBATED).where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn));
+    public void updateStatus(String orderSn,Byte status){
+        db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, status).where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn))
+        .execute();
     }
 }

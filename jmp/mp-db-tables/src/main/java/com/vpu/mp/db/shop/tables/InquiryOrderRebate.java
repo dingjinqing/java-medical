@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrderRebate extends TableImpl<InquiryOrderRebateRecord> {
 
-    private static final long serialVersionUID = -856205215;
+    private static final long serialVersionUID = 927823598;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order_rebate</code>
@@ -66,47 +66,52 @@ public class InquiryOrderRebate extends TableImpl<InquiryOrderRebateRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.order_sn</code>. 订单号
      */
-    public final TableField<InquiryOrderRebateRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单号");
+    public final TableField<InquiryOrderRebateRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单号");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.doctor_id</code>. 医师id
      */
-    public final TableField<InquiryOrderRebateRecord, Integer> DOCTOR_ID = createField("doctor_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "医师id");
+    public final TableField<InquiryOrderRebateRecord, Integer> DOCTOR_ID = createField("doctor_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "医师id");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.total_money</code>. 问诊金额
      */
-    public final TableField<InquiryOrderRebateRecord, BigDecimal> TOTAL_MONEY = createField("total_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "问诊金额");
+    public final TableField<InquiryOrderRebateRecord, BigDecimal> TOTAL_MONEY = createField("total_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "问诊金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.total_rebate_money</code>. 返利金额
      */
-    public final TableField<InquiryOrderRebateRecord, BigDecimal> TOTAL_REBATE_MONEY = createField("total_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利金额");
+    public final TableField<InquiryOrderRebateRecord, BigDecimal> TOTAL_REBATE_MONEY = createField("total_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.status</code>. 状态  0待返利 1已返利
      */
-    public final TableField<InquiryOrderRebateRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态  0待返利 1已返利");
+    public final TableField<InquiryOrderRebateRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态  0待返利 1已返利");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.reason</code>. 未返利原因
+     */
+    public final TableField<InquiryOrderRebateRecord, String> REASON = createField("reason", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "未返利原因");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.is_delete</code>. 删除
      */
-    public final TableField<InquiryOrderRebateRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+    public final TableField<InquiryOrderRebateRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.rebate_time</code>. 返利日期
      */
-    public final TableField<InquiryOrderRebateRecord, Timestamp> REBATE_TIME = createField("rebate_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "返利日期");
+    public final TableField<InquiryOrderRebateRecord, Timestamp> REBATE_TIME = createField("rebate_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "返利日期");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.create_time</code>.
      */
-    public final TableField<InquiryOrderRebateRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<InquiryOrderRebateRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.update_time</code>. 最后修改时间
      */
-    public final TableField<InquiryOrderRebateRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<InquiryOrderRebateRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_inquiry_order_rebate</code> table reference

@@ -239,6 +239,7 @@ public class Indexes {
     public static final Index INQUIRY_ORDER_ORDER_SN = Indexes0.INQUIRY_ORDER_ORDER_SN;
     public static final Index INQUIRY_ORDER_SHOP_ID = Indexes0.INQUIRY_ORDER_SHOP_ID;
     public static final Index SHOP_SMS_CONFIG_PRIMARY = Indexes0.SHOP_SMS_CONFIG_PRIMARY;
+    public static final Index SHOP_LOGISTICS_PRIMARY = Indexes0.SHOP_LOGISTICS_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -453,5 +454,7 @@ public class Indexes {
         public static Index INQUIRY_ORDER_ORDER_SN = Internal.createIndex("order_sn", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.ORDER_SN }, false);
         public static Index INQUIRY_ORDER_SHOP_ID = Internal.createIndex("shop_id", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.SHOP_ID }, false);
         public static Index SHOP_SMS_CONFIG_PRIMARY = Internal.createIndex("PRIMARY", ShopSmsConfig.SHOP_SMS_CONFIG, new OrderField[] { ShopSmsConfig.SHOP_SMS_CONFIG.ID }, true);
+        public static Index SHOP_LOGISTICS_PRIMARY = Internal.createIndex("PRIMARY", ShopLogistics.SHOP_LOGISTICS, new OrderField[] { ShopLogistics.SHOP_LOGISTICS.ID }, true);
+
     }
 }

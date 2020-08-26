@@ -1200,4 +1200,26 @@ public class Tables {
      * 医师问诊订单返利表
      */
     public static final InquiryOrderRebate INQUIRY_ORDER_REBATE = com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
+    /**
+     * 同城配送账号表
+     */
+    public static final CityServiceAccount CITY_SERVICE_ACCOUNT = com.vpu.mp.db.shop.tables.CityServiceAccount.CITY_SERVICE_ACCOUNT;
+    /**
+     * 同城配送订单表
+     */
+    public static final CityServiceOrder CITY_SERVICE_ORDER = com.vpu.mp.db.shop.tables.CityServiceOrder.CITY_SERVICE_ORDER;
+
+
+    /**
+     * 医师返利数据表
+     */
+    public static final DoctorTotalRebate DOCTOR_TOTAL_REBATE = com.vpu.mp.db.shop.tables.DoctorTotalRebate.DOCTOR_TOTAL_REBATE;
+    /**
+     * 处方药品返利表
+     */
+    public static final PrescriptionRebate PRESCRIPTION_REBATE = com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
+    /**
+     * 医生返利提现申请表
+     */
+    public static final DoctorWithdraw DOCTOR_WITHDRAW = com.vpu.mp.db.shop.tables.DoctorWithdraw.DOCTOR_WITHDRAW;
 }

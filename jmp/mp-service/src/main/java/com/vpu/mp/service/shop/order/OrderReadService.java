@@ -793,14 +793,18 @@ showManualReturn(vo);
 		//处方信息
 		getPrescriptionInfo(order, goodsList);
 		//退款订单增加详情
-		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)){
+		returnOrderInfo(order);
+		return order;
+	}
+
+	private void returnOrderInfo(OrderInfoMpVo order) {
+		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)||order.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED)){
 			List<ReturnOrderListMp> returnOrderListMps = returnOrderDao.listByOrderSn(order.getOrderSn());
 			returnOrderListMps.forEach(itme->{
 				itme.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(itme.getReasonType().intValue()));
 			});
 			order.setReturnOrderList(returnOrderListMps);
 		}
-		return order;
 	}
 
 	/**

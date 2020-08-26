@@ -351,6 +351,15 @@ public class RabbitConfig {
     @Bean
     public Queue posSyncProductQueue(){return new Queue(QUEUE_POS_SYNC_PRODUCT,true,false,false);}
 
+
+    /**
+     * 更新门店商品路由
+     */
+    @Bean
+    public Queue storeGoodsUpdateQueue(){
+        return new Queue(QUEUE_STORE_GOODS_UPDATE,true);
+    }
+
     /**
      * 1.路由名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
@@ -396,6 +405,13 @@ public class RabbitConfig {
     public DirectExchange goodsImportExchange() {
         return new DirectExchange(EXCHANGE_GOODS_IMPORT,true,false);
     }
+    /**
+     * store.goods路由
+     */
+    @Bean
+    public DirectExchange storeGoodsExchange() {
+        return new DirectExchange(EXCHANGE_STORE_GOODS_UPDATE, true, false);
+    }
 
     /**
      * @return pos对接使用路由器
@@ -440,6 +456,7 @@ public class RabbitConfig {
     public Binding batchUpload() {
     	return BindingBuilder.bind(batchUploadQueue()).to(wxExchange()).with(BINDING_BATCH_UPLOAD_KEY);
     }
+
 
     /**
      * 微信好物圈 订单  收藏  物品信息
@@ -500,7 +517,10 @@ public class RabbitConfig {
         return BindingBuilder.bind(posSyncProductQueue()).to(posSyncExchange()).with(BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY);
     }
 
-
+    @Bean
+    public Binding bingingStoreGoodsUpdateQueue() {
+        return BindingBuilder.bind(storeGoodsUpdateQueue()).to(storeGoodsExchange()).with(BINDING_EXCHANGE_STORE_GOODS_UPDATE_KEY);
+    }
 
     @Bean
     public RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry(){

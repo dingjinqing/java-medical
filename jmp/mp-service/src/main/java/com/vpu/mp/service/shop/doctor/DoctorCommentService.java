@@ -48,6 +48,8 @@ public class DoctorCommentService extends ShopBaseService {
         if (doctorCommentDo!=null){
             doctorCommentDo.setCreateTime(DateUtil.date().toTimestamp());
             doctorCommentDo.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
+            doctorCommentDo.setCommNote(param.getCommNote());
+            doctorCommentDo.setIsAnonymou(param.getIsAnonymou());
             doctorCommentDao.update(doctorCommentDo);
             //更新会话
             imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
