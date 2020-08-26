@@ -361,7 +361,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 //裁剪样式
 .CropperContainer {
   display: flex;

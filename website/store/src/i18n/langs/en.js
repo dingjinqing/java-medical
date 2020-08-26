@@ -1,80 +1,40 @@
-import {
-  en as router
-} from './views/admin_new/en/routerEn'
+import { en as router } from './views/admin_new/en/routerEn'
 
 // 门店管理模块国际化
 // 门店通用
-import {
-  en as storeCommon
-} from './views/admin_new/en/index/storeManagement/storeCommonEn'
+import { en as storeCommon } from './views/admin_new/en/index/storeManagement/storeCommonEn'
 // 门店列表
-import {
-  en as storeList
-} from './views/admin_new/en/index/storeManagement/store/storeListEn'
-import {
-  en as addStore
-} from './views/admin_new/en/index/storeManagement/store/addStoreEn'
+import { en as storeList } from './views/admin_new/en/index/storeManagement/store/storeListEn'
+import { en as addStore } from './views/admin_new/en/index/storeManagement/store/addStoreEn'
 // 门店列表-商品管理
-import {
-  en as storeGoodsList
-} from './views/admin_new/en/index/storeManagement/store/storeGoodsListEn'
+import { en as storeGoodsList } from './views/admin_new/en/index/storeManagement/store/storeGoodsListEn'
 // 门店列表-核销员管理
-import {
-  en as verifierManage
-} from './views/admin_new/en/index/storeManagement/store/verifierManageEn'
+import { en as verifierManage } from './views/admin_new/en/index/storeManagement/store/verifierManageEn'
 // 门店列表-门店管理
-import {
-  en as storeManage
-} from './views/admin_new/en/index/storeManagement/storeManage/storeManageEn'
+import { en as storeManage } from './views/admin_new/en/index/storeManagement/storeManage/storeManageEn'
 // 门店列表-门店管理-预约管理
-import {
-  en as reservationManage
-} from './views/admin_new/en/index/storeManagement/storeManage/reservation/reservationEn'
+import { en as reservationManage } from './views/admin_new/en/index/storeManagement/storeManage/reservation/reservationEn'
 // 门店列表-门店管理-服务管理
-import {
-  en as serviceManage
-} from './views/admin_new/en/index/storeManagement/storeManage/service/serviceManageEn'
-import {
-  en as serviceList
-} from './views/admin_new/en/index/storeManagement/storeManage/service/serviceListEn'
-import {
-  en as serviceAdd
-} from './views/admin_new/en/index/storeManagement/storeManage/service/serviceAddEn'
-import {
-  en as serviceClassify
-} from './views/admin_new/en/index/storeManagement/storeManage/service/serviceClassifyEn'
+import { en as serviceManage } from './views/admin_new/en/index/storeManagement/storeManage/service/serviceManageEn'
+import { en as serviceList } from './views/admin_new/en/index/storeManagement/storeManage/service/serviceListEn'
+import { en as serviceAdd } from './views/admin_new/en/index/storeManagement/storeManage/service/serviceAddEn'
+import { en as serviceClassify } from './views/admin_new/en/index/storeManagement/storeManage/service/serviceClassifyEn'
 // 门店列表-技师管理
-import {
-  en as technicianManage
-} from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianManageEn'
+import { en as technicianManage } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianManageEn'
 // 门店列表-技师列表
-import {
-  en as technicianList
-} from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianListEn'
+import { en as technicianList } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianListEn'
 // 门店列表-技师添加
-import {
-  en as technicianClassify
-} from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianClassifyEn'
+import { en as technicianClassify } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianClassifyEn'
 // 门店列表-技师添加
-import {
-  en as technicianAdd
-} from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianAddEn'
+import { en as technicianAdd } from './views/admin_new/en/index/storeManagement/storeManage/technician/technicianAddEn'
 // 门店列表-排班管理
-import {
-  en as schedulingManage
-} from './views/admin_new/en/index/storeManagement/storeManage/technician/schedulingManageEn'
+import { en as schedulingManage } from './views/admin_new/en/index/storeManagement/storeManage/technician/schedulingManageEn'
 // 门店管理-门店服务配置
-import {
-  en as serviceConfig
-} from './views/admin_new/en/index/storeManagement/storeService/serviceConfigEn'
+import { en as serviceConfig } from './views/admin_new/en/index/storeManagement/storeService/serviceConfigEn'
 // 门店权限
-import {
-  en as storePermission
-} from './views/admin_new/en/index/storeManagement/storePermission/storePermissionEn'
+import { en as storePermission } from './views/admin_new/en/index/storeManagement/storePermission/storePermissionEn'
 // 门店公告
-import {
-  en as storeAnnouncement
-} from './views/admin_new/en/index/storeManagement/storeAnnouncement/storeAnnouncementEn'
+import { en as storeAnnouncement } from './views/admin_new/en/index/storeManagement/storeAnnouncement/storeAnnouncementEn'
 
 const en = {
   messages: {
@@ -82,19 +42,23 @@ const en = {
   },
   industry: {
     title_top: 'Covering multiple industries',
-    content: 'More vertical industry solutions to meet a wide range of business needs and serve the public'
+    content:
+      'More vertical industry solutions to meet a wide range of business needs and serve the public'
   },
   entrance: {
     title: 'Ten Flow Entrances for Small Programs',
-    content: 'Numerous traffic entrances increase the stickiness of consumers and brands and share the whole ecosystem of Wechat'
+    content:
+      'Numerous traffic entrances increase the stickiness of consumers and brands and share the whole ecosystem of Wechat'
   },
   case: {
     title: 'Industry case',
-    content: 'Drive Products with Creativity, Win-win Business Opportunities and Work Together'
+    content:
+      'Drive Products with Creativity, Win-win Business Opportunities and Work Together'
   },
   information: {
     title: 'News and Information',
-    content: 'Insight into the new trends of the industry and grasp the new direction of the industry',
+    content:
+      'Insight into the new trends of the industry and grasp the new direction of the industry',
     more: 'See more'
   },
   // 登录页面数据
@@ -114,7 +78,8 @@ const en = {
   environment: 'Office environment',
   contact: {
     title: 'Contact us',
-    adress: 'Fifth Floor of Yitai Building, 54 Xizhimen North Street, Haidian District, Beijing'
+    adress:
+      'Fifth Floor of Yitai Building, 54 Xizhimen North Street, Haidian District, Beijing'
   },
   contact_right: {
     service: 'Customer Service Telephone: 400-010-1039',
@@ -123,14 +88,7 @@ const en = {
     Q_title: 'QQ Consultation'
   },
   // admin选择店铺
-  shopData: [
-    'Account Settings',
-    'Subaccount management',
-    'Subaccount Authority',
-    'Authorized Public Number',
-    'Choose Shops',
-    'Sign out'
-  ],
+  shopData: ['Sign out'],
   changePassword: 'Change Password',
   // admin选择店铺页面contact组件数据
   adminContact: {

@@ -20,38 +20,50 @@
             class="title-head "
             :class="{'title-active': !isSubLogin}"
             @click="switchTab(false)"
-          >{{$t('login_page.main_name')}}</div>
+          >店长登录</div>
           <div
             class="title-head "
             :class="{'title-active': isSubLogin}"
             @click="switchTab(true)"
-          >{{$t('login_page.login_f')}}</div>
+          >店员登录</div>
         </div>
         <div class="main-right-content ">
           <div
             class="content-zhu content-account"
             data-type="0"
-            v-if="!isSubLogin"
           >
             <div class="mesg-error"></div>
             <div class="smart-form">
               <el-form
                 :model="ruleForm"
                 status-icon
-                :rules="rules"
+                :rules="rulesList"
                 ref="ruleForm"
                 label-width="100px"
                 class="demo-ruleForm"
                 :key="1"
               >
                 <el-form-item
-                  :label="$t('login_page.main_name')"
+                  label="商家账户"
                   prop="username"
                 >
                   <el-input v-model="ruleForm.username"></el-input>
                 </el-form-item>
                 <el-form-item
-                  :label="$t('login_page.password')"
+                  label="门店编码"
+                  prop="storeNum"
+                  v-if="isSubLogin"
+                >
+                  <el-input v-model="ruleForm.storeNum"></el-input>
+                </el-form-item>
+                <el-form-item
+                  label="门店员工账户"
+                  prop="storeUsername"
+                >
+                  <el-input v-model="ruleForm.storeUsername"></el-input>
+                </el-form-item>
+                <el-form-item
+                  label="密码"
                   prop="password"
                 >
                   <el-input
@@ -62,57 +74,8 @@
                 <el-form-item>
                   <el-button
                     type="primary"
-                    @click.native.prevent="onSubmit(1,'ruleForm')"
-                    @keyup.enter.native="onSubmit(1,'ruleForm')"
-                    class="btn"
-                  >{{$t('login_page.login_main')}}</el-button>
-                </el-form-item>
-              </el-form>
-            </div>
-          </div>
-          <div
-            class="content-zi content-account"
-            data-type="1"
-            v-if="isSubLogin"
-          >
-            <div class="mesg-error"></div>
-            <div class="smart-form">
-
-              <el-form
-                :model="subRuleForm"
-                status-icon
-                :rules="subRules"
-                ref="subRuleForm"
-                label-width="100px"
-                class="demo-ruleForm"
-                :key="2"
-              >
-                <el-form-item
-                  :label="$t('login_page.main_name')"
-                  prop="username"
-                >
-                  <el-input v-model="subRuleForm.username"></el-input>
-                </el-form-item>
-                <el-form-item
-                  :label="$t('login_page.subAccount')"
-                  prop="subUsername"
-                >
-                  <el-input v-model="subRuleForm.subUsername"></el-input>
-                </el-form-item>
-                <el-form-item
-                  :label="$t('login_page.password')"
-                  prop="password"
-                >
-                  <el-input
-                    show-password
-                    v-model="subRuleForm.password"
-                  ></el-input>
-                </el-form-item>
-                <el-form-item>
-                  <el-button
-                    type="primary"
-                    @click.native.prevent="onSubmit(2,'subRuleForm')"
-                    @keyup.enter.native="onSubmit(2,'subRuleForm')"
+                    @click.native.prevent="onSubmit(isSubLogin ? 2 : 1,'ruleForm')"
+                    @keyup.enter.native="onSubmit(isSubLogin ? 2 : 1,'ruleForm')"
                     class="btn"
                   >{{$t('login_page.login_main')}}</el-button>
                 </el-form-item>
@@ -133,7 +96,7 @@ export default {
     var validateUserName = (rule, value, callback) => {
       console.log(this.userNameReg, value)
       if (!this.userNameReg.test(value)) {
-        callback(new Error('主账号用户名应为非中文且不能为空'))
+        callback(new Error('商家账户应为非中文且不能为空'))
       } else {
         callback()
       }
@@ -141,6 +104,20 @@ export default {
     var validatePassword = (rule, value, callback) => {
       if (!this.passwordReg.test(value)) {
         callback(new Error('密码应为6至16位非中文且不能为空'))
+      } else {
+        callback()
+      }
+    }
+    var validateStoreNum = (rule, value, callback) => {
+      if (!this.userNameReg.test(value)) {
+        callback(new Error('门店编码应为非中文且不能为空'))
+      } else {
+        callback()
+      }
+    }
+    var validateStoreUsername = (rule, value, callback) => {
+      if (!this.userNameReg.test(value)) {
+        callback(new Error('门店员工账户应为非中文且不能为空'))
       } else {
         callback()
       }
@@ -160,23 +137,32 @@ export default {
       ruleForm: {
         username: '',
         password: '',
+        storeNum: '',
+        storeUsername: '',
         isSubLogin: false
       },
-      rules: {
+      rules1: {
         username: { validator: validateUserName, trigger: 'blur' },
-        password: { validator: validatePassword, trigger: 'blur' }
+        password: { validator: validatePassword, trigger: 'blur' },
+        storeUsername: { validator: validateStoreUsername, trigger: 'blur' }
       },
-      subRuleForm: {
-        username: '',
-        subUsername: '',
-        password: '',
-        isSubLogin: true
-      },
-      subRules: {
+      rules2: {
         username: { validator: validateUserName, trigger: 'blur' },
-        subUsername: { validator: validateUserName, trigger: 'blur' },
-        password: { validator: validatePassword, trigger: 'blur' }
+        password: { validator: validatePassword, trigger: 'blur' },
+        storeNum: { validator: validateStoreNum, trigger: 'blur' },
+        storeUsername: { validator: validateStoreUsername, trigger: 'blur' }
       }
+      // subRuleForm: {
+      //   username: '',
+      //   subUsername: '',
+      //   password: '',
+      //   isSubLogin: true
+      // },
+      // subRules: {
+      //   username: { validator: validateUserName, trigger: 'blur' },
+      //   subUsername: { validator: validateUserName, trigger: 'blur' },
+      //   password: { validator: validatePassword, trigger: 'blur' }
+      // }
     }
   },
   created () {
@@ -208,57 +194,27 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           localStorage.setItem('contentType', 'application/json;charset=UTF-8')
-          if (index === 1) {
-            loginRequest(this.ruleForm).then((res) => {
-              // test
-              console.log('第一')
-              console.log(res)
-              if (res.error === 0) {
-                document.onkeydown = undefined
-                Cookies.set('V-Index-Token', res.content.token)
-                localStorage.setItem('V-Username', res.content.userName)
-                localStorage.setItem('V-loginType', 0)
-                localStorage.setItem('V-isSubLogin', this.isSubLogin)
-                console.log('子账户登录')
-                console.log(this.isSubLogin)
-                localStorage.setItem('V-AccountName', res.content.accountName)
-                console.log(this.$message)
-                this.$message.success({
-                  showClose: true,
-                  message: res.message,
-                  type: 'success'
-                })
-                console.log(1111)
-                this.$router.push({
-                  name: 'shopView'
-                })
-                console.log(2222)
-              }
-              // test
-            })
-          } else {
-            loginRequest(this.subRuleForm).then((res) => {
-              console.log('第二')
-              if (res.error === 0) {
-                document.onkeydown = undefined
-                localStorage.setItem('V-loginType', 0)
-                Cookies.set('V-Index-Token', res.content.token)
-                localStorage.setItem('V-Username', res.content.subUserName)
-                localStorage.setItem('V-AccountName', res.content.accountName)
-                localStorage.setItem('V-isSubLogin', this.isSubLogin)
-                console.log('子账户登录')
-                console.log(this.isSubLogin)
-                this.$message.success({
-                  showClose: true,
-                  message: res.message,
-                  type: 'success'
-                })
-                this.$router.push({
-                  name: 'shopView'
-                })
-              }
-            })
-          }
+          loginRequest(this.ruleForm).then((res) => {
+            // test
+            console.log('第一')
+            console.log(res)
+            if (res.content.storeAuthInfoVo.isOk) {
+              document.onkeydown = undefined
+              Cookies.set('V-Index-Token', res.content.token)
+              localStorage.setItem('V-Username', res.content.storeAccountName)
+              localStorage.setItem('V-loginType', 0)
+              localStorage.setItem('V-isSubLogin', this.isSubLogin)
+              localStorage.setItem('V-AccountName', res.content.storeAccountName)
+              this.$message.success({
+                showClose: true,
+                message: res.message,
+                type: 'success'
+              })
+              this.$router.push({
+                name: 'shopView'
+              })
+            }
+          })
         } else {
           console.log('error submit!!')
           return false
@@ -277,6 +233,15 @@ export default {
       //    this.ruleForm[item] = ''
       //  })
       this.isSubLogin = subLogin
+    }
+  },
+  computed: {
+    rulesList () {
+      if (this.ruleForm.isSubLogin) {
+        return this.rules1
+      } else {
+        return this.rules2
+      }
     }
   }
 }
@@ -431,7 +396,7 @@ input::-webkit-input-placeholder {
 <style lang="scss" scoped>
 .demo-ruleForm {
   /deep/ .el-form-item__label {
-    width: 60px !important;
+    width: 100px !important;
     line-height: 14px;
     height: 40px;
     display: flex;
@@ -440,7 +405,6 @@ input::-webkit-input-placeholder {
   /deep/ .el-form-item__content {
     height: 46px;
     margin-bottom: 10px;
-    margin-left: 60px !important;
   }
 }
 .hc {
