@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -83,9 +84,11 @@ public class GoodsAggregate {
 
         for (GoodsMedicalExternalRequestItemBo bo : goodsMedicalExternalRequestItemBos) {
             GoodsDo goodsDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsDo(bo);
-            GoodsMedicalInfoDo goodsMedicalInfoDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(bo);
             goodsDos.add(goodsDo);
-            goodsMedicalInfoDos.add(goodsMedicalInfoDo);
+            if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(bo.getIsMedical())) {
+                GoodsMedicalInfoDo goodsMedicalInfoDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(bo);
+                goodsMedicalInfoDos.add(goodsMedicalInfoDo);
+            }
         }
 
         goodsDao.batchInsert(goodsDos);
@@ -151,6 +154,18 @@ public class GoodsAggregate {
         return goodsDao.mapGoodsSnToGoodsId(goodsCodes, MedicalGoodsConstant.GOODS_IS_MEDICAL);
     }
 
+    public Map<Integer, BigDecimal> mapGoodsIdToGoodsPrice(Collection<Integer> goodsIds) {
+        return goodsDao.mapGoodsIdToGoodsPrice(goodsIds);
+    }
+
+    /**
+     * 根据药品通用名称，规格系数，生产企业,查询his中的药品id对应关系
+     * @param goodsKeys
+     * @return
+     */
+    public Map<String, Integer> mapGoodsHisKeyToGoodsId(List<String> goodsKeys) {
+        return goodsMedicalInfoDao.mapGoodsHisKeyToGoodsId(goodsKeys);
+    }
     /**
      * 根据商品id查询
      * @param goodsId
