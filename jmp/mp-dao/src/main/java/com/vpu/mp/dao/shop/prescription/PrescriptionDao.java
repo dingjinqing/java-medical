@@ -129,26 +129,26 @@ public class PrescriptionDao extends ShopBaseDao {
                 PRESCRIPTION.DIAGNOSIS_NAME, PRESCRIPTION.DEPARTMENT_NAME, PRESCRIPTION.DIAGNOSE_TIME,
                 PATIENT.NAME,PATIENT.ID).from(PRESCRIPTION)
                 .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID));
-        if (!Strings.isEmpty(param.getPatientName().trim())){
+        if (!Strings.isEmpty(param.getPatientName())){
             record.where(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName().trim())));
         }
-        if (!Strings.isEmpty(param.getDoctorCode().trim())){
+        if (!Strings.isEmpty(param.getDoctorCode())){
             record.where(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode().trim()));
         }
         if (!Strings.isEmpty(param.getPatientMobile())){
-            record.leftJoin(PATIENT).on(PATIENT.MOBILE.eq(param.getPatientMobile()));
+            record.leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID));
             record.where(PATIENT.MOBILE.eq(param.getPatientMobile()));
         }
-        if (!Strings.isEmpty(param.getPrescriptionCode().trim())){
+        if (!Strings.isEmpty(param.getPrescriptionCode())){
             record.where(PRESCRIPTION.PRESCRIPTION_CODE.eq(param.getPrescriptionCode().trim()));
         }
         if (!Strings.isEmpty(param.getDepartmentName())){
             record.where(PRESCRIPTION.DEPARTMENT_NAME.eq(param.getDepartmentName()));
         }
-        if (!Strings.isEmpty(param.getDoctorName().trim())){
+        if (!Strings.isEmpty(param.getDoctorName())){
             record.where(PRESCRIPTION.DOCTOR_NAME.eq(likeValue(param.getDoctorName().trim())));
         }
-        if (!Strings.isEmpty(param.getDiagnosisName().trim())){
+        if (!Strings.isEmpty(param.getDiagnosisName())){
             record.where(PRESCRIPTION.DIAGNOSIS_NAME.eq(param.getDiagnosisName().trim()));
         }
         if (param.getDiagnoseEndTime()!=null&&param.getDiagnoseStartTime()!=null){
