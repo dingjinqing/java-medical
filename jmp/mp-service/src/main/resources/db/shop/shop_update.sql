@@ -591,8 +591,6 @@
 -- /*********************3.2*************************END*/
 
 /*********************3.2***********************BEGIN*/
-ALTER TABLE `b2c_inquiry_order` ADD COLUMN `rebate_proportion` decimal(6,4) DEFAULT '0.0000' COMMENT '返利比例';
-ALTER TABLE `b2c_inquiry_order` ADD COLUMN `total_rebate_money` decimal(10,4) DEFAULT '0.0000' COMMENT '返利金额';
 
 -- 医师问诊订单返利表
 create table if not exists `b2c_inquiry_order_rebate` (
@@ -704,7 +702,7 @@ CREATE TABLE if not exists `b2c_store_account` (
     KEY `account_name` (`account_name`)
 ) comment '门店账户表';
 
-create table if not exists `b2c_prescription_rebate`(
+create table if not exists `b2c_prescription_rebate` (
     `id`   int(11)   NOT NULL AUTO_INCREMENT,
     `prescription_code` varchar(64)  NOT NULL DEFAULT '' COMMENT '处方号',
     `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
@@ -719,5 +717,35 @@ create table if not exists `b2c_prescription_rebate`(
     primary key(`id`),
     KEY `doctor_id` (`doctor_id`)
 )comment ='处方药品返利表';
+
+create table if not exists `b2c_doctor_withdraw` (
+    `id`   int(11)   NOT NULL AUTO_INCREMENT,
+    `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
+    `type` tinyint(1)   NOT NULL DEFAULT '0' COMMENT '提现类型  1微信公众号钱包提现 2小程序',
+    `status` tinyint(1)   NOT NULL DEFAULT '1' COMMENT '处理状态 1待审核 2拒绝 3已审核待出账 4出账成功',
+    `order_sn` varchar(64)   NOT NULL DEFAULT '' COMMENT '提现单号',
+    `withdraw_user_num` varchar(20)   NOT NULL DEFAULT '' COMMENT '用户提现序号',
+    `withdraw_num` varchar(20)   NOT NULL DEFAULT '' COMMENT '流水号',
+    `withdraw_cash` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '提现金额',
+    `withdraw` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '可提现金额',
+    `desc` text COMMENT '备注',
+    `refuse_desc` text COMMENT '驳回原因',
+    `check_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '审核时间',
+    `refuse_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '驳回时间',
+    `billing_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '出账时间',
+    `fail_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '失败时间',
+    `desc_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '备注时间',
+    `withdraw_source` text COMMENT '申请时提现配置',
+    `real_name` varchar(32) NOT NULL DEFAULT '' COMMENT '真实姓名',
+    `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key(`id`),
+    KEY `doctor_id` (`doctor_id`)
+)comment ='医生返利提现申请表';
+
+ALTER TABLE `b2c_prescription_item` ADD COLUMN `rebate_proportion` decimal(6,4) DEFAULT '0.0000' COMMENT '返利比例' AFTER `medicine_price`;
+ALTER TABLE `b2c_prescription_item` ADD COLUMN `total_rebate_money` decimal(10,4) DEFAULT '0.0000' COMMENT '返利金额' AFTER `rebate_proportion`;
+ALTER TABLE `b2c_prescription` ADD COLUMN `settlement_flag` tinyint(1) DEFAULT '0' COMMENT '结算标志：0：未结算，1：已结算' AFTER `is_valid`;
+ALTER TABLE `b2c_inquiry_order` ADD COLUMN `settlement_flag` tinyint(1) DEFAULT '0' COMMENT '结算标志：0：未结算，1：已结算' AFTER `is_delete`;
 
 /*********************3.4*************************END*/

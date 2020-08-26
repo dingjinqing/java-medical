@@ -71,6 +71,14 @@
 						<view class="c_bot">
 							<text>{{item.createTime}}</text>
 						</view>
+						<view class="d_reply">
+						  <view class="reply_top">医师回复：</view>
+							<view class="reply_bot">
+							   <view class="re_text">
+								  312312312313 
+								 </view>
+							</view>
+						</view>
 					</view>
 				</block>
 			</block>

@@ -1218,4 +1218,8 @@ public class Tables {
      * 处方药品返利表
      */
     public static final PrescriptionRebate PRESCRIPTION_REBATE = com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
+    /**
+     * 医生返利提现申请表
+     */
+    public static final DoctorWithdraw DOCTOR_WITHDRAW = com.vpu.mp.db.shop.tables.DoctorWithdraw.DOCTOR_WITHDRAW;
 }
