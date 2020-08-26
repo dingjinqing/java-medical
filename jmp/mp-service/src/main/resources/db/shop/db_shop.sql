@@ -5417,6 +5417,7 @@ CREATE TABLE `b2c_inquiry_order_rebate` (
   `total_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '问诊金额',
   `total_rebate_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '返利金额',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态  0待返利 1已返利',
+  `reason` varchar(256) NOT NULL DEFAULT ''  COMMENT '未返利原因',
   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
   `rebate_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'COMMENT  '返利日期',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -5636,3 +5637,20 @@ create table `b2c_doctor_total_rebate`(
     primary key(`id`),
     KEY `doctor_id` (`doctor_id`)
 )comment ='医师返利数据表';
+
+-- 处方药品返利表
+create table `b2c_prescription_rebate`(
+    `id`   int(11)   NOT NULL AUTO_INCREMENT,
+    `prescription_code` varchar(64)  NOT NULL DEFAULT '' COMMENT '处方号',
+    `doctor_id` int(11)   NOT NULL DEFAULT '0' COMMENT '医师id',
+    `total_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '处方包含药品总金额',
+    `total_rebate_money` decimal(10,2)  NOT NULL DEFAULT '0.00' COMMENT '返利总金额',
+    `status` tinyint(1)  NOT NULL DEFAULT '0' COMMENT '0待返利 1已返利 2未返利',
+    `reason` varchar(256) NOT NULL DEFAULT ''  COMMENT '未返利原因',
+    `rebate_time`   timestamp    NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '返利日期',
+    `is_delete`     tinyint(1)   NOT NULL DEFAULT '0',
+    `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    primary key(`id`),
+    KEY `doctor_id` (`doctor_id`)
+)comment ='处方药品返利表';
