@@ -100,7 +100,7 @@ public class StoreAuth {
         info.setSubAccountId(0);
         info.setSubUserName("");
         info.setSubLogin(false);
-        info.setLoginShopId(0);
+        info.setLoginShopId(storeAuthInfoVoNew.getStoreAccountInfo().getShopId());
         info.setAccountName(account.getAccountName());
         StoreAccountVo storeAccountVo = storeAuthInfoVoNew.getStoreAccountInfo();
         info.setStoreAccountId(storeAccountVo.getAccountId());

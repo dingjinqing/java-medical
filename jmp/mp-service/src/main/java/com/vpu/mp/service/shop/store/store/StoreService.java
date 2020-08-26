@@ -206,6 +206,10 @@ public class StoreService extends ShopBaseService {
         if (!StoreListQueryParam.CONDITION_ALL.equals(param.getCityService())){
             select.where(STORE.CITY_SERVICE.eq(param.getCityService()));
         }
+        //门店Ids过滤
+        if (param.getStoreIds() != null) {
+            select.where(STORE.STORE_ID.in(param.getStoreIds()));
+        }
         return select;
     }
 
@@ -652,5 +656,17 @@ public class StoreService extends ShopBaseService {
 
     public StoreBasicVo getStoreByNo(String storeNo) {
         return storeDao.getStoreByNo(storeNo);
+    }
+
+    /**
+     * 获取所有门店id和名称
+     */
+    public List<StoreBasicVo> getAllStoreForLeader(List<Integer> storeIds) {
+        logger().info("获取所有门店id和名称");
+        return db().select(STORE.STORE_ID, STORE.STORE_NAME)
+            .from(STORE)
+            .where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(STORE.STORE_ID.in(storeIds))
+            .fetchInto(StoreBasicVo.class);
     }
 }
