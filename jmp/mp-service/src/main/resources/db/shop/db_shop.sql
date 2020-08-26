@@ -1344,7 +1344,7 @@ CREATE TABLE `b2c_goods` (
     `is_page_up` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否在文本区域上方',
     `is_card_exclusive` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否会员卡专属',
     `base_sale` int(8) NOT NULL DEFAULT '0' COMMENT '初始销量',
-    `source` tinyint(1) NOT NULL DEFAULT '0' COMMENT '商品来源,0：店铺自带；1、2..等：不同类型店铺第三方抓取自带商品来源',
+    `source` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1 医院提供，2 药房提供',
     `is_control_price` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否控价：0不控价，1控价（不可修改价格）',
     `can_rebate` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否分销改价',
     `promotion_language_switch` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否使用分销推广语0关闭，1使用',
