@@ -49,7 +49,7 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      */
     public PageResult<InquiryOrderRebateVo> getPageList(InquiryOrderRebateListParam param){
         SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,PRESCRIPTION_REBATE.asterisk())
+            .select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,INQUIRY_ORDER_REBATE.asterisk())
             .from(INQUIRY_ORDER_REBATE);
         select.leftJoin(DOCTOR).on(DOCTOR.ID.eq(INQUIRY_ORDER_REBATE.DOCTOR_ID));
         select.where(INQUIRY_ORDER_REBATE.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
