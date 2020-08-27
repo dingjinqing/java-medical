@@ -35,7 +35,7 @@ service.interceptors.request.use(
       config.headers['Content-Type'] = 'application/json;charset=UTF-8'
     }
 
-    if (config.url.split('/')[2] === 'admin') {
+    if (config.url.split('/')[2] === 'store') {
       config.headers['V-Token'] = Cookies.get('V-Index-Token')
     } else if (config.url.split('/')[2] === 'system') {
       config.headers['V-Token'] = Cookies.get('V-System-Token')

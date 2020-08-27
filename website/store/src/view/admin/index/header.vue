@@ -2,93 +2,76 @@
   <div class="header_container">
     <div>
       <div class="left">
-        <img :src="imageUrl[0].img_1">
+        <img :src="imageUrl[0].img_1" />
       </div>
-      <div
-        class="header_nav"
-        :class="headerNavEn"
-      >
+      <div class="header_nav" :class="headerNavEn">
         <div
-          v-for="(item,index) in header_navData"
+          v-for="(item, index) in header_navData"
           :key="index"
-          :class="$route.meta.meta == item.meta||click_nav_index==index?'active_bg':''"
-          @click="headerNavClick(index,item.name)"
+          :class="
+            $route.meta.meta == item.meta || click_nav_index == index
+              ? 'active_bg'
+              : ''
+          "
+          @click="headerNavClick(index, item.name)"
           @mouseover="header_nav_over(index)"
           @mouseleave="header_nav_leave(index)"
         >
-          <span>{{item.title}}</span>
+          <span>{{ item.title }}</span>
         </div>
-
       </div>
     </div>
 
     <div class="rightCon">
-      <div
-        class="langChange"
-        @mouseover="langEnter()"
-        @mouseout="langLeave()"
-      >
-        <span>{{$t('messages.lang')}}</span>
-        <img
-          :src="imageUrlData[1].image_4"
-          class="head_down"
-        >
+      <div class="langChange" @mouseover="langEnter()" @mouseout="langLeave()">
+        <span>{{ $t('messages.lang') }}</span>
+        <img :src="imageUrlData[1].image_4" class="head_down" />
         <div class="head_list_lang">
           <div
             class="lang_c"
             target="_blank"
             @click="handleChangeLang(index)"
             :class="item.login_active"
-            v-for="(item,index) in langData_show"
+            v-for="(item, index) in langData_show"
             :key="index"
-          >{{item.show_lang}}</div>
+          >
+            {{ item.show_lang }}
+          </div>
         </div>
       </div>
-      <div
-        class="middle"
-        @mouseenter="user_enter()"
-        @mouseleave="user_leave()"
-      >
+      <div class="middle" @mouseenter="user_enter()" @mouseleave="user_leave()">
         <div class="account">
           <div class="menu">
             <div class="menu_main">
-              <span
-                class="avatar"
-                v-if="!isSubLogin"
-              >
-                <img :src="imageUrl[1].img_2">
+              <span class="avatar" v-if="!isSubLogin">
+                <img :src="imageUrl[1].img_2" />
               </span>
               <span>
                 <label class="accountName">
-                  {{this.accountName}}
+                  {{ this.accountName }}
                 </label>
-                <img
-                  class="accountIcon"
-                  :src="imageUrl[2].img_3"
-                >
+                <img class="accountIcon" :src="imageUrl[2].img_3" />
               </span>
             </div>
           </div>
         </div>
-        <div
-          class="log-menu"
-          v-show="log_menu_show"
-          :class="menu_width"
-        >
+        <div class="log-menu" v-show="log_menu_show" :class="menu_width">
           <div
-            v-for="(item,index) in hiddle_menu_list"
+            v-for="(item, index) in hiddle_menu_list"
             :key="index"
             @mouseenter="user_enter(index)"
             @mouseleave="user_leave(index)"
             @click="handle_user_list(index)"
-            :class="[changeColorIndex === index?'changeColor':'',item=== 'empty'?'emptyClass':'logDiv']"
+            :class="[
+              changeColorIndex === index ? 'changeColor' : '',
+              item === 'empty' ? 'emptyClass' : 'logDiv',
+            ]"
           >
-            <div v-if="item!=='empty'">
-              {{item}}
+            <div v-if="item !== 'empty'">
+              {{ item }}
             </div>
-
           </div>
-          <img :src="imageUrl[3].img_4">
+          <img :src="imageUrl[3].img_4" />
         </div>
       </div>
     </div>
@@ -158,7 +141,7 @@ export default {
     lang (newData) {
       console.log(newData)
       this.header_navData = [
-        { title: '门店概况', index: '', meta: 'overView', name: 'shopView' },
+        { title: '门店概况', index: '', meta: 'overView', name: 'overView' },
         { title: '全部门店', index: '', meta: 'storeList', name: 'storeList' },
         { title: '门店商品', index: '', meta: 'storeGoods', name: 'storeGoods' },
         { title: '门店订单', index: '', meta: 'storeOrder', name: 'storeOrder' },

@@ -1,15 +1,20 @@
 <template>
   <div
-    :class="'container '+(titleList.length>2?'canClick':'')"
+    :class="'container ' + (titleList.length > 2 ? 'canClick' : '')"
     v-if="isSurvey"
   >
-    <span @click="handleToClickCrumb(titleLeft,true)">{{titleLeft}}</span>
+    <span @click="handleToClickCrumb(titleLeft, true)">{{ titleLeft }}</span>
     <span
-      @click="handleToClickCrumb(item,false,index)"
-      :style="index===(titleList.length-1)?'cursor:auto;text-decoration: none;color:#666;':'color:#666;'"
-      v-for="(item,index) in titleList"
+      @click="handleToClickCrumb(item, false, index)"
+      :style="
+        index === titleList.length - 1
+          ? 'cursor:auto;text-decoration: none;color:#666;'
+          : 'color:#666;'
+      "
+      v-for="(item, index) in titleList"
       :key="index"
-    ><i v-if="index !==0"> / {{item}}</i></span>
+      ><i v-if="index !== 0"> / {{ item }}</i></span
+    >
     <span class="showLink">
       <el-link
         v-if="$route.name == 'pin_integration'"
@@ -17,161 +22,184 @@
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2136&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
-      >瓜分积分使用教程</el-link>
+        >瓜分积分使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'distribution_info'"
         :underline="false"
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=50&extra=page=1&filter=sortid&sortid=15"
-      >分销使用教程</el-link>
+        >分销使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'gift'"
         :underline="false"
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2118&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
-      >赠品使用教程</el-link>
+        >赠品使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'promote'"
         :underline="false"
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=736&extra=page=1&filter=sortid&sortid=15"
-      >好友助力使用教程</el-link>
+        >好友助力使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'sec_kill'"
         :underline="false"
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=69"
-      >秒杀活动使用教程</el-link>
+        >秒杀活动使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'ordinary_coupon'"
         :underline="false"
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=52&extra=page=1&filter=sortid&sortid=15"
-      >普通优惠券使用教程</el-link>
+        >普通优惠券使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'free_ship'"
         :underline="false"
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2120&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
-      >满包邮使用教程</el-link>
+        >满包邮使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'group_draw'"
         :underline="false"
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2135&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
-      >拼团抽奖使用教程</el-link>
+        >拼团抽奖使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'reduce_price'"
         :underline="false"
         type="primary"
         target="_blank"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2112&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
-      >限时降价使用教程</el-link>
+        >限时降价使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'insteadpay'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2116&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
         type="primary"
         :underline="false"
         target="_blank"
-      >好友代付使用教程</el-link>
+        >好友代付使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'form_decoration'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=65&extra=page=1&filter=sortid&sortid=15"
         type="primary"
         :underline="false"
         target="_blank"
-      >表单统计使用教程</el-link>
+        >表单统计使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'live_broadcast'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2222&fromuid=1"
         type="primary"
         :underline="false"
         target="_blank"
-      >直播使用教程</el-link>
+        >直播使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'share_award'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2133&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
         type="primary"
         :underline="false"
         target="_blank"
-      >分享有礼使用教程</el-link>
+        >分享有礼使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'pin_group'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=48&extra=page=1&filter=sortid&sortid=15"
         type="primary"
         :underline="false"
         target="_blank"
-      >多人拼团使用教程</el-link>
+        >多人拼团使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'lottery_activity'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=51&extra=page=1&filter=sortid&sortid=15"
         type="primary"
         :underline="false"
         target="_blank"
-      >幸运大抽奖使用教程</el-link>
+        >幸运大抽奖使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'kanjia'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=49&extra=page=1&filter=sortid&sortid=15"
         type="primary"
         :underline="false"
         target="_blank"
-      >砍价活动使用教程</el-link>
+        >砍价活动使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'package'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2114&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
         type="primary"
         :underline="false"
         target="_blank"
-      >打包一口价使用教程</el-link>
+        >打包一口价使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'integral_convert'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=54&extra=page=1&filter=sortid&sortid=15"
         type="primary"
         :underline="false"
         target="_blank"
-      >积分兑换使用教程</el-link>
+        >积分兑换使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'comment_gift'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2121&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
         type="primary"
         :underline="false"
         target="_blank"
-      >评价有礼使用教程</el-link>
+        >评价有礼使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'market_act_give'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=53&extra=page=1&filter=sortid&sortid=15"
         type="primary"
         :underline="false"
         target="_blank"
-      >定向发券使用教程</el-link>
+        >定向发券使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'all_message_push'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2246"
         type="primary"
         :underline="false"
         target="_blank"
-      >消息推送使用教程</el-link>
+        >消息推送使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'coupon_package'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2127&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
         type="primary"
         :underline="false"
         target="_blank"
-      >优惠卷礼包使用教程</el-link>
+        >优惠卷礼包使用教程</el-link
+      >
       <el-link
         v-if="$route.name == 'payreward'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=61&extra=page=1&filter=sortid&sortid=15"
         type="primary"
         :underline="false"
         target="_blank"
-      >支付有礼使用教程</el-link>
+        >支付有礼使用教程</el-link
+      >
     </span>
   </div>
 </template>
@@ -217,7 +245,7 @@ export default {
       // 如果是概况则隐藏面包屑
       console.log(routeName)
       if (routeName) {
-        if (routeName === 'shopView') {
+        if (routeName === 'overView') {
           this.isSurvey = false
         } else {
           this.isSurvey = true
