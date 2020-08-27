@@ -166,6 +166,8 @@ public class AdminShopDecorateController extends AdminBaseController {
     @PostMapping(value = "/admin/decorate/page/save")
     public JsonResult saveDecoration(@RequestBody @Valid PageStoreParam param) {
         int previewState = 2;
+        // 新增系统公告
+        shop().userMessageService.addAnnouncement(param);
         if(param.getPageState() == previewState){
             //预览，返回太阳码的图片链接
             return this.success(shop().adminDecoration.getPreviewCode(param));

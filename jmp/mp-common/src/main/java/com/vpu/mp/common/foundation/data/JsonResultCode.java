@@ -751,8 +751,11 @@ public enum JsonResultCode {
 
     // 拉取his信息
     FETCH_HIS_ERROR(400052, JsonResultMessage.FETCH_HIS_ERROR),
-    FETCH_HIS_NULL(400053, JsonResultMessage.FETCH_HIS_NULL);
+    FETCH_HIS_NULL(400053, JsonResultMessage.FETCH_HIS_NULL),
 
+    //医师提现返利
+    DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY(500001,JsonResultMessage.DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY),
+    DOCTOR_WITHDRAW_IS_NOT_EXIST(500002,JsonResultMessage.DOCTOR_WITHDRAW_IS_NOT_EXIST);
     /**
      * 得到返回码
      */

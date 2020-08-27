@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.rebate;
 
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import lombok.Data;
 
 /**
@@ -11,7 +12,7 @@ public class DoctorWithdrawUpdateParam {
     /**
      *审核状态
      */
-    private Byte passStatus;
+    private Byte checkStatus;
     /**
      * 提现单号
      */

@@ -5243,6 +5243,7 @@ create table `b2c_prescription_item`(
     `goods_use_memo` varchar(1024) not null default '' comment '药品使用方式说明',
     `goods_production_enterprise` varchar(512) comment '生产企业',
     `medicine_price` decimal(18,2) not null default '0.00' comment '药品总价',
+    `goods_sharing_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '商品分成比例',
     `rebate_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '返利比例',
     `total_rebate_money` decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '返利金额',
     `is_delete`     tinyint(1)   not null default '0',

@@ -6,9 +6,12 @@ package com.vpu.mp.service.pojo.shop.rebate;
  **/
 public class DoctorWithdrawConstant {
     /**
-     * 小程序提现
+     * 小程序提现类型,小程序wx_mini、公众号wx_open、子商户sub_mch
      */
-    public static final Byte WX_MINI_TYPE=2;
+    public static final Byte RT_WX_OPEN=1;
+    public static final Byte RT_WX_MINI=2;
+    public static final Byte RT_SUB_MCH=3;
+
     public static final String ORDER_SN_PREFIX="T";
 
     /**

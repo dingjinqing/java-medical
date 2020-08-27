@@ -74,6 +74,10 @@ public class JedisKeyConstant {
          * 提现申请锁+shopId+userid
          */
         public static final String WITHDRAW_APPLY = "lock:withdrawApply";
+        /**
+         * 医师提现申请锁+shopId+userid
+         */
+        public static final String DOCTOR_WITHDRAW_APPLY = "lock:doctorWithdrawApply";
     }
 
     /**会话未读信息表*/
