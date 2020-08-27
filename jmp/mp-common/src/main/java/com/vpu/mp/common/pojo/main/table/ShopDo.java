@@ -14,6 +14,8 @@ import java.sql.Timestamp;
 
 /**
  * 店铺
+ * @author 孔德成
+ * @date 2020/8/26 15:31
  */
 @Generated(
     value = {
