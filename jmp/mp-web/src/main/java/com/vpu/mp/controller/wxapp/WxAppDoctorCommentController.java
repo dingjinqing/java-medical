@@ -62,8 +62,7 @@ public class WxAppDoctorCommentController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/doctor/comment/reply/add")
     public JsonResult addCommentReply(@RequestBody @Validated DoctorCommentReplyAddParam param){
-        doctorCommentService.addCommentReply(param);
-        return success();
+        return success(doctorCommentService.addCommentReply(param));
     }
 
     /**

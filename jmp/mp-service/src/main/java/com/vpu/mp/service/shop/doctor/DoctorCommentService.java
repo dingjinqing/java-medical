@@ -123,9 +123,10 @@ public class DoctorCommentService extends ShopBaseService {
     /**
      * 添加医师回复
      * @param param
+     * @return
      */
-    public void addCommentReply(DoctorCommentReplyAddParam param) {
-        doctorCommentReplyDao.save(param);
+    public DoctorCommentReplyDo addCommentReply(DoctorCommentReplyAddParam param) {
+      return  doctorCommentReplyDao.save(param);
     }
 
     public void deleteCommentReply(Integer id) {

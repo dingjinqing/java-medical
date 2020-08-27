@@ -463,9 +463,9 @@ public class MedicalGoodsService extends ShopBaseService {
      * @return
      */
     public void fetchExternalStoresGoodsInfo() {
-        String appId = ApiExternalGateConstant.APP_ID_HIS;
+        String appId = ApiExternalGateConstant.APP_ID_POS;
         Integer shopId = getShopId();
-        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_STORE, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(appId, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
         Timestamp now = DateUtils.getLocalDateTime();
         List<StoreBasicVo> storeInfos = storeDao.listStoreCodes();
 
@@ -605,6 +605,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 storeGoods.setGoodsQualityRatio(bo.getGoodsQualityRatio());
                 storeGoods.setGoodsApprovalNumber(bo.getGoodsApprovalNumber());
                 storeGoods.setGoodsProductionEnterprise(bo.getGoodsProductionEnterprise());
+                storeGoods.setGoodsStoreSn(bo.getGoodsCode());
                 storeGoods.setProductNumber(bo.getGoodsNumber());
                 storeGoods.setProductPrice(bo.getGoodsPrice());
                 if (BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.equals(bo.getState())) {

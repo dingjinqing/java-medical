@@ -16,6 +16,7 @@ public class StoreGoods {
     private String goodsQualityRatio;
     private String goodsApprovalNumber;
     private String goodsProductionEnterprise;
+    private String goodsStoreSn;
     private Integer prdId;
     private String prdSn;
     private Integer productNumber;
