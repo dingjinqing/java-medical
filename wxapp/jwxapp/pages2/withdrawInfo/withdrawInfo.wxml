@@ -1,0 +1,50 @@
+<view class="body">
+<include src="/pages/common/header.wxml"/>
+  <view class="main-container">
+    <view class="top-bg-style"></view>
+    <view class="tab-content">
+      <view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === '1' ? 'active' : ''}}">全部</text></view>
+			<view data-type="2" bindtap="toggleStatus"><text class="{{targetStatus === '2' ? 'active' : ''}}">待返利</text></view>
+			<view data-type="3" bindtap="toggleStatus"><text class="{{targetStatus === '3' ? 'active' : ''}}">已返利</text></view>
+    </view>
+    <view class="type-contennt" style="{{typeBgStyle}}">
+      <view class="type-item" bindtap="changeType" data-type="1" style="{{activeStyle1}}">处方列表</view>
+      <view class="type-item" bindtap="changeType" data-type="2" style="{{activeStyle2}}">咨询列表</view>
+    </view>
+    <view class="card-item">
+      <view class="card-item-title">
+        <view class="status-title">返利状态：<text>待返利</text></view>
+      </view>
+      <view class="prescription-content">
+        <view class="prescription-item">处方编号：P230988767</view>
+        <view class="prescription-item">关联药品：头孢</view>
+        <view class="prescription-item">开方时间：2020-08019 15:13:12</view>
+      </view>
+      <view class="prescription-content">
+        <view class="prescription-item">处方编号：P230988767</view>
+        <view class="prescription-item">关联药品：头孢</view>
+        <view class="prescription-item">开方时间：2020-08019 15:13:12</view>
+      </view>
+    </view>
+    <view class="card-item">
+      <view class="card-item-title">
+        <view class="username-title">张三 <view>待接诊</view></view>
+        <view class="date">2020-07-14</view>
+      </view>
+      <view class="money-content">
+        <view class="money-item">
+          <text class="money">46.00</text>
+          <text class="tips">处方商品总额</text>
+        </view>
+        <view class="money-item">
+          <text class="money">4.60</text>
+          <text class="tips">服务费</text>
+        </view>
+        <view class="money-item">
+          <text class="money">待返利</text>
+          <text class="tips">返利状态</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
