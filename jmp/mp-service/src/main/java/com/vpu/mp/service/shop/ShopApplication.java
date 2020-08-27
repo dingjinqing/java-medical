@@ -79,6 +79,8 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.question.FeedbackService;
+import com.vpu.mp.service.shop.rebate.InquiryOrderRebateService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -656,4 +658,14 @@ public class ShopApplication {
     /**咨询聊天*/
     @Autowired
     public ImSessionService imSessionService;
+    /**
+     * 处方返利
+     */
+    @Autowired
+    public PrescriptionRebateService prescriptionRebateService;
+    /**
+     * 咨询返利
+     */
+    @Autowired
+    public InquiryOrderRebateService inquiryOrderRebateService;
 }

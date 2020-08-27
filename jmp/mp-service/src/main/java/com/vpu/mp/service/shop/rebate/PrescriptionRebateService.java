@@ -1,20 +1,20 @@
 package com.vpu.mp.service.shop.rebate;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
-import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
-import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
+import com.vpu.mp.service.pojo.shop.rebate.*;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -49,5 +49,27 @@ public class PrescriptionRebateService extends ShopBaseService {
         rebateParam.setTotalMoney(totalMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_HALF_DOWN));
         rebateParam.setTotalRebateMoney(totalRebateMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_HALF_DOWN));
         prescriptionRebateDao.addPrescriptionRebate(rebateParam);
+    }
+
+    /**
+     * 分页查询列表
+     * @param param
+     * @return
+     */
+    public PageResult<PrescriptionRebateVo> getPageList(PrescriptionRebateListParam param){
+        beginAndEndOfDay(param);
+        PageResult<PrescriptionRebateVo> result=prescriptionRebateDao.getPageList(param);
+        return result;
+    }
+    public void beginAndEndOfDay(PrescriptionRebateListParam param){
+        Timestamp startDate = param.getStartTime();
+        Timestamp endDate = param.getEndTime();
+        if (startDate != null ) {
+            startDate = DateUtil.beginOfDay(startDate).toTimestamp();
+            param.setStartTime(startDate);
+        }if( endDate != null){
+            endDate = DateUtil.endOfDay(endDate).toTimestamp();
+            param.setEndTime(endDate);
+        }
     }
 }

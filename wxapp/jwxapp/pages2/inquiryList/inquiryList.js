@@ -34,7 +34,7 @@ global.wxPage({
     if(type === 'my'){
       this.setData({
         targetStatus:'2',
-        'filterParams.sessionStatus':[2,4,5,6],
+        'filterParams.sessionStatus':[2,3,4,5,6],
       })
     }
     this.requestSessionList()
@@ -66,7 +66,7 @@ global.wxPage({
     this.setData({
       targetStatus:type,
       'pageParams.currentPage':1,
-      'filterParams.sessionStatus':type === '1' ? [1] : [2,4,5,6]
+      'filterParams.sessionStatus':type === '1' ? [1] : [2,3,4,5,6]
     })
     this.requestSessionList()
   },

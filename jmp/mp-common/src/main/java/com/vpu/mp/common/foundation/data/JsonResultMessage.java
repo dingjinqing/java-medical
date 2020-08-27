@@ -1416,6 +1416,7 @@ public class JsonResultMessage {
     public static final String DOCTOR_CODE_IS_EXIST = "doctor.code.is.exist";
     public static final String PATIENT_IS_EXIST = "patient.is.exist";
     public static final String PATIENT_IS_NOT_EXIST = "patient.is.not.exist";
+    public static final String DOCTOR_AUTH_DISABLED = "doctor.auth.disabled";
 
     /**
      * 会话

@@ -18,6 +18,8 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
@@ -54,6 +56,7 @@ import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.config.InsteadPayConfigService;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -196,6 +199,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private PrescriptionItemDao prescriptionItemDao;
     @Autowired
     private PrescriptionRebateService prescriptionRebateService;
+    @Autowired
+    public RebateConfigService rebateConfigService;
     /**
      * 随机生成核销码位数
      */
@@ -362,14 +367,18 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param param
      */
     public void addPrescriptionRebate(CreateParam param){
-        //根据处方下单
-        if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
-            PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
-            //处方药品
-            List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
-            //处方返利信息入库
-            prescriptionRebateService.addPrescriptionRebate(prescriptionVo,prescriptionItemDos);
+        RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+        if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+            //根据处方下单
+            if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
+                PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
+                //处方药品
+                List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
+                //处方返利信息入库
+                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,prescriptionItemDos);
+            }
         }
+
     }
 
     private String[] chars = new String[] { "a", "b", "c", "d", "e", "f",

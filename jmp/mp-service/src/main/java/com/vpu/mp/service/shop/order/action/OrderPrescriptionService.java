@@ -26,6 +26,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
@@ -317,14 +318,16 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setMedicinePrice(goods.getShopPrice());
                 //计算应返利
                 RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
-                BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-                BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-                if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
-                    itemDo.setRebateProportion(rxProportion);
-                }else {
-                    itemDo.setRebateProportion(noRxProportion);
+                if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+                    BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+                    BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+                    if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
+                        itemDo.setRebateProportion(rxProportion);
+                    }else {
+                        itemDo.setRebateProportion(noRxProportion);
+                    }
+                    itemDo.setTotalRebateMoney(goods.getShopPrice().multiply(itemDo.getRebateProportion()).multiply(BigDecimal.valueOf(itemDo.getDragSumNum())).setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_DOWN));
                 }
-                itemDo.setTotalRebateMoney(goods.getShopPrice().multiply(itemDo.getRebateProportion()).multiply(BigDecimal.valueOf(itemDo.getDragSumNum())).setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_DOWN));
                 list.add(itemDo);
             }
         });
