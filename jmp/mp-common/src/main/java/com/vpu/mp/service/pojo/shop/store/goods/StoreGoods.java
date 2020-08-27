@@ -32,4 +32,5 @@ public class StoreGoods {
 
     private String goodsImg;
     private String goodsName;
+    private Byte isDelete;
 }

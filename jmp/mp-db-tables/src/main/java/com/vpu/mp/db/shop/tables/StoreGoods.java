@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreGoods extends TableImpl<StoreGoodsRecord> {
 
-    private static final long serialVersionUID = -741959679;
+    private static final long serialVersionUID = 619076541;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store_goods</code>
@@ -121,6 +121,11 @@ public class StoreGoods extends TableImpl<StoreGoodsRecord> {
      * The column <code>mini_shop_471752.b2c_store_goods.flag</code>. 1:初始化数据，0:无效数据
      */
     public final TableField<StoreGoodsRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:初始化数据，0:无效数据");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_store_goods.is_delete</code>. 是否删 0否 1是
+     */
+    public final TableField<StoreGoodsRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否删 0否 1是");
 
     /**
      * Create a <code>mini_shop_471752.b2c_store_goods</code> table reference

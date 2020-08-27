@@ -12,7 +12,7 @@ const routes = [
           // 门店概况
           {
             path: '/admin/store/shopView',
-            name: 'shopView',
+            name: 'overView',
             meta: {
               crumbTitle: '',
               meta: 'overView'

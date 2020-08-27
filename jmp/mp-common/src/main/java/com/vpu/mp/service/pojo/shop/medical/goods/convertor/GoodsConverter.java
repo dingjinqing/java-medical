@@ -63,6 +63,7 @@ public class GoodsConverter {
         return goodsDo;
     }
 
+
     public static GoodsMedicalInfoDo convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(GoodsMedicalExternalRequestItemBo bo) {
         GoodsMedicalInfoDo goodsMedicalInfoDo =new GoodsMedicalInfoDo();
         FieldsUtil.assign(bo,goodsMedicalInfoDo);

@@ -6,8 +6,8 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -134,5 +134,11 @@ public class AdminMedicalGoodsController extends AdminBaseController{
     @PostMapping("/api/admin/medical/goods/pull")
     public JsonResult fetchExternalMedicalInfo(){
         return shop().medicalGoodsService.fetchExternalMedicalInfo();
+    }
+
+    @PostMapping("/api/admin/medical/store/goods/pull")
+    public JsonResult fetchExternalStoreMedicalInfo(){
+         shop().medicalGoodsService.fetchExternalStoresGoodsInfo();
+         return success();
     }
 }

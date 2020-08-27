@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -388,6 +389,9 @@ public class WxAppOrderController extends WxAppBaseController{
      */
     @PostMapping("/get/store")
     public JsonResult getClosestStoreInformation(@RequestBody OrderAddressParam orderAddressParam) {
+        if (orderAddressParam.getLat() == null || orderAddressParam.getLng() == null) {
+            return fail(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
+        }
         Map<Double, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
         return success(storeListOpen);
     }

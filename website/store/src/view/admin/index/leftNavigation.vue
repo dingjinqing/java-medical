@@ -10,37 +10,31 @@
       :default-active="$route.path"
       v-if="isRouterAlive"
     >
-      <template v-for="(listItem,listIndex) in defaultList.list">
+      <template v-for="(listItem, listIndex) in defaultList.list">
         <el-submenu
           :index="listItem.path"
           :key="listIndex"
           v-if="listItem.children && listItem.children.length"
         >
           <template slot="title">
-            <img :src="listItem.imgUrl">
-            <span>{{listItem.name | getNavName}}</span>
+            <img :src="listItem.imgUrl" />
+            <span>{{ listItem.name | getNavName }}</span>
           </template>
           <el-menu-item
             :index="childrenItem.path"
-            v-for="(childrenItem,childrenIndex) in listItem.children"
+            v-for="(childrenItem, childrenIndex) in listItem.children"
             :key="childrenIndex"
           >
-            <span slot="title">{{childrenItem.name | getNavName}}</span>
+            <span slot="title">{{ childrenItem.name | getNavName }}</span>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item
-          :index="listItem.path"
-          :key="listIndex"
-          v-else
-        >
-          <img :src="listItem.imgUrl">
-          <span
-            slot="title"
-            v-if="!listItem.onlyPic"
-          >{{listItem.name | getNavName}}</span>
+        <el-menu-item :index="listItem.path" :key="listIndex" v-else>
+          <img :src="listItem.imgUrl" />
+          <span slot="title" v-if="!listItem.onlyPic">{{
+            listItem.name | getNavName
+          }}</span>
         </el-menu-item>
       </template>
-
     </el-menu>
   </div>
 </template>
@@ -59,7 +53,7 @@ export default {
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/shop_look_h.png',
           path: '/admin/store/shopView',
           span: '',
-          name: 'shopView',
+          name: 'overView',
           flag: false
         }
       ],
@@ -168,13 +162,13 @@ export default {
     }
   },
   created () {
-    this.filterNavShow()
   },
   mounted () {
+    this.filterNavShow()
   },
   methods: {
     async initLeftNav (meta) {
-      if (!this.menuParam) await this.filterNavShow()
+      // if (!this.menuParam) await this.filterNavShow()
       if (!this.hasOwnProperty(meta) || this.defaultList.meta === meta) return
       this.isRouterAlive = false
       this.$nextTick(function () {
@@ -186,25 +180,43 @@ export default {
       }
     },
     filterNavShow () {
-      return new Promise((resolve, reject) => {
-        getShowMenu().then((res) => {
-          console.log(res)
-          // this.menuParam = menuParam
-          // Object.keys(menuParam).forEach(keyItem => {
-          //   if (!this.hasOwnProperty(keyItem)) return
-          //   this[keyItem] = this[keyItem].reduce((defaultData, item) => {
-          //     if (item.children && item.children.length) {
-          //       item.children = item.children.reduce((childrenDefault, childrenItem) => {
-          //         if (menuParam[keyItem].includes(childrenItem.name)) childrenDefault.push(childrenItem)
-          //         return childrenDefault
-          //       }, [])
-          //     }
-          //     if (menuParam[keyItem].includes(item.name)) defaultData.push(item)
-          //     return defaultData
-          //   }, [])
-          // })
-          // resolve()
-        })
+      getShowMenu().then((res) => {
+        if (res.error === 0) {
+          let souceArray = res.content
+          souceArray.forEach((item) => {
+            if (item.sub.length) {
+              this[item.enName] = item.sub.reduce((newArray, subItem) => {
+                if (subItem.check === 1) {
+                  let objItem = this[item.enName].find(leftItem => {
+                    return leftItem.name === subItem.enName
+                  })
+                  newArray = [...newArray, objItem]
+                  return newArray
+                }
+              }, [])
+            } else {
+              let objItem = this[item.enName].find(leftItem => {
+                return leftItem.name === item.enName
+              })
+              this[item.enName] = [objItem]
+            }
+          })
+        }
+        // this.menuParam = menuParam
+        // Object.keys(menuParam).forEach(keyItem => {
+        //   if (!this.hasOwnProperty(keyItem)) return
+        //   this[keyItem] = this[keyItem].reduce((defaultData, item) => {
+        //     if (item.children && item.children.length) {
+        //       item.children = item.children.reduce((childrenDefault, childrenItem) => {
+        //         if (menuParam[keyItem].includes(childrenItem.name)) childrenDefault.push(childrenItem)
+        //         return childrenDefault
+        //       }, [])
+        //     }
+        //     if (menuParam[keyItem].includes(item.name)) defaultData.push(item)
+        //     return defaultData
+        //   }, [])
+        // })
+        // resolve()
       })
     }
   },
@@ -242,7 +254,7 @@ export default {
   filters: {
     getNavName (name) {
       let leftName = {
-        shopView: '概况',
+        overView: '概况',
         storeList: '门店列表',
         storeGroupConfig: '分组管理',
         storeGoods: '全部商品',
