@@ -1,17 +1,20 @@
 <template>
   <div class="main" v-loading="loading">
     <div class="order_info">
-      <p>{{ $t("order.orderSn") }}：{{ $route.query.orderSn }}</p>
-      <p>{{ $t("order.orderTime") }}：{{ $route.query.orderTime }}</p>
+      <p>{{ $t('order.orderSn') }}：{{ $route.query.orderSn }}</p>
+      <p>{{ $t('order.orderTime') }}：{{ $route.query.orderTime }}</p>
       <div>
-        <el-button type="primary" size="small">{{
-          $t("order.backRefundList")
-        }}</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleToClickBackOrder()"
+          >{{ $t('order.backRefundList') }}</el-button
+        >
       </div>
     </div>
     <div class="return_info">
       <p>
-        {{ $t("order.returnRefundType") }}：
+        {{ $t('order.returnRefundType') }}：
         <el-select
           v-model="params.returnType"
           size="small"
@@ -35,10 +38,10 @@
         :header-cell-style="{
           'background-color': '#f5f5f5',
           'text-align': 'center',
-          border: 'none'
+          border: 'none',
         }"
         :cell-style="{
-          'text-align': 'center'
+          'text-align': 'center',
         }"
         @selection-change="selectionChange"
       >
@@ -73,11 +76,9 @@
           :label="$t('order.purchaseDiscountedPrice')"
         ></el-table-column>
         <el-table-column
-          :label="
-            `${$t('order.canReturnNum')}/${$t('order.submitted')}/${$t(
-              'order.totalNum'
-            )}`
-          "
+          :label="`${$t('order.canReturnNum')}/${$t('order.submitted')}/${$t(
+            'order.totalNum'
+          )}`"
         >
           <template slot-scope="scope">
             <div>
@@ -151,11 +152,11 @@
         </template>
       </el-table>
       <div class="return_item">
-        <div class="item_title">{{ $t("order.refundPrice") }}：</div>
+        <div class="item_title">{{ $t('order.refundPrice') }}：</div>
         <div class="item_content money_set">
           <p>
             <span v-if="params.returnType != 2"
-              >{{ $t("order.refundGoodsPrice") }}：
+              >{{ $t('order.refundGoodsPrice') }}：
               <el-input-number
                 v-model="canRefundPrice"
                 :disabled="params.returnType == 3"
@@ -170,7 +171,7 @@
               >{{ currency[0] }}，</span
             >
             <span>
-              {{ $t("order.returnShippingFee") }}：
+              {{ $t('order.returnShippingFee') }}：
               <el-input-number
                 v-model="params.shippingFee"
                 :precision="2"
@@ -180,38 +181,38 @@
                 :min="0"
                 :max="returnShippingFee"
               ></el-input-number
-              >{{ currency[0] }}, {{ $t("order.maxRefundShippingFee") }}：{{
+              >{{ currency[0] }}, {{ $t('order.maxRefundShippingFee') }}：{{
                 returnShippingFee.toFixed(2)
               }}{{ currency[0] }}
             </span>
           </p>
           <p>
-            {{ $t("order.totalRefundPrice") }}：{{ currency[1]
+            {{ $t('order.totalRefundPrice') }}：{{ currency[1]
             }}<span class="text-warning">{{
               refundtotalPrice.toFixed(2)
             }}</span>
-            ={{ $t("order.refundMemberCardBalance") }}：{{ currency[1]
+            ={{ $t('order.refundMemberCardBalance') }}：{{ currency[1]
             }}<span class="text-warning">{{
               member_card_balance.toFixed(2)
             }}</span>
-            +{{ $t("order.refundBalanceMoney") }}：{{ currency[1]
+            +{{ $t('order.refundBalanceMoney') }}：{{ currency[1]
             }}<span class="text-warning">{{
               refund_balance_money.toFixed(2)
             }}</span
-            >+{{ $t("order.refundScoreMoney") }}：{{ currency[1]
+            >+{{ $t('order.refundScoreMoney') }}：{{ currency[1]
             }}<span class="text-warning">{{
               refund_score_money.toFixed(2)
             }}</span>
-            + {{ $t("order.refundPayMoney") }}：{{ currency[1]
+            + {{ $t('order.refundPayMoney') }}：{{ currency[1]
             }}<span class="text-warning">{{
               refund_pay_money.toFixed(2)
             }}</span>
           </p>
-          <p class="text-warning">{{ $t("order.refundTips") }}</p>
+          <p class="text-warning">{{ $t('order.refundTips') }}</p>
         </div>
       </div>
       <div class="return_item">
-        <div class="item_title">{{ $t("order.refundReason") }}：</div>
+        <div class="item_title">{{ $t('order.refundReason') }}：</div>
         <div class="item_content">
           <el-select
             v-model="params.reasonType"
@@ -229,7 +230,7 @@
       </div>
       <div class="return_item">
         <div class="item_title">
-          {{ $t("order.refundReasonDescription") }}：
+          {{ $t('order.refundReasonDescription') }}：
         </div>
         <div class="item_content">
           <el-input
@@ -242,7 +243,7 @@
         </div>
       </div>
       <div class="return_item">
-        <div class="item_title">{{ $t("order.voucherPicture") }}：</div>
+        <div class="item_title">{{ $t('order.voucherPicture') }}：</div>
         <div class="item_content">
           <img
             :src="
@@ -252,9 +253,7 @@
             "
             class="bgImgDiv"
             @click="handleToAddImg()"
-            :style="
-              `backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`
-            "
+            :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
           />
         </div>
       </div>
@@ -313,6 +312,14 @@ export default {
     }
   },
   methods: {
+    handleToClickBackOrder () {
+      this.$router.push({
+        path: '/admin/home/main/orders/refund/list',
+        query: {
+          orderSn: this.$route.query.orderSn
+        }
+      })
+    },
     handleToAddImg () {
       this.tuneUp = !this.tuneUp
     },
@@ -396,14 +403,16 @@ export default {
           returnGoods = [...returnGoods, {
             recId: item.recId,
             returnNumber: this.params.returnType !== 3 ? item.canRefundNum : 0,
-            money: this.params.returnType !== 3 ? null : item.returnOneGoodsAmount }]
+            money: this.params.returnType !== 3 ? null : item.returnOneGoodsAmount
+          }]
         })
         obj.returnGoods = returnGoods
       }
       console.log(obj)
       manualReturn(obj).then(res => {
         if (res.error === 0) {
-          this.$message.success({ message: '退款成功',
+          this.$message.success({
+            message: '退款成功',
             onClose: () => {
               this.$router.push({
                 name: 'order_return',
@@ -411,7 +420,8 @@ export default {
                   orderSn: this.$route.query.orderSn
                 }
               })
-            } })
+            }
+          })
         } else {
           this.$message.error(res.message)
         }
