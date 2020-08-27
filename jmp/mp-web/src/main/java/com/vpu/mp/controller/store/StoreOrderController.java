@@ -176,21 +176,6 @@ public class StoreOrderController extends StoreBaseController {
     }
 
     /**
-     * 订单核销
-     */
-    @PostMapping("/verify")
-    public JsonResult verify(@RequestBody @Valid VerifyParam param) {
-        param.setIsMp(OrderConstant.IS_MP_ADMIN);
-        param.setStoreInfo(storeAuth.user());
-        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult == null || executeResult.isSuccess()) {
-            return success(executeResult == null ? null : executeResult.getResult());
-        }else {
-            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
-        }
-    }
-
-    /**
      * 订单完成
      */
     @PostMapping("/finish")
@@ -314,7 +299,7 @@ public class StoreOrderController extends StoreBaseController {
 
     /**
      * 核销码检验
-     * @param checkVerifyCodeParam
+     * @param checkVerifyCodeParam 订单号、核销码
      * @return JsonResult
      */
     @PostMapping("/checkVerifyCode")

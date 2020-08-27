@@ -25,7 +25,7 @@ public class StoreBaseController extends BaseController {
      */
     protected ShopApplication shop() {
         StoreTokenAuthInfo user = storeAuth.user();
-        Assert.isTrue(user!=null && user.isShopLogin(),"shop is null");
+        Assert.isTrue(user != null && (user.loginShopId == 0), "shop is null");
         return saas.getShopApp(user.getLoginShopId());
     }
 
@@ -35,7 +35,7 @@ public class StoreBaseController extends BaseController {
      */
     protected Integer shopId() {
         StoreTokenAuthInfo user = storeAuth.user();
-        Assert.isTrue(user!=null && user.isShopLogin(),"shop is null");
+        Assert.isTrue(user != null && (user.loginShopId == 0), "shop is null");
         return user.getLoginShopId();
     }
 
