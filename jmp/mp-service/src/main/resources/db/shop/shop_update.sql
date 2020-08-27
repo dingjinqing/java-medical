@@ -763,6 +763,7 @@ ALTER TABLE b2c_store_goods ADD goods_quality_ratio VARCHAR(512) AFTER goods_com
 ALTER TABLE b2c_store_goods ADD goods_approval_number VARCHAR(512) AFTER goods_quality_ratio;
 ALTER TABLE b2c_store_goods ADD goods_production_enterprise VARCHAR(512) AFTER goods_approval_number;
 ALTER TABLE b2c_store_goods ADD is_delete tinyint(1) default 0 comment '是否删 0否 1是';
+ALTER TABLE b2c_store_goods ADD goods_store_sn varchar(512) comment '药房商品唯一码' AFTER goods_production_enterprise;
 
 
 /*********************3.4*************************END*/

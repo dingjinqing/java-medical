@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreGoods extends TableImpl<StoreGoodsRecord> {
 
-    private static final long serialVersionUID = 619076541;
+    private static final long serialVersionUID = -1378264128;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store_goods</code>
@@ -76,6 +76,11 @@ public class StoreGoods extends TableImpl<StoreGoodsRecord> {
      * The column <code>mini_shop_471752.b2c_store_goods.goods_production_enterprise</code>.
      */
     public final TableField<StoreGoodsRecord, String> GOODS_PRODUCTION_ENTERPRISE = createField("goods_production_enterprise", org.jooq.impl.SQLDataType.VARCHAR(512), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_store_goods.goods_store_sn</code>. 药房商品唯一码
+     */
+    public final TableField<StoreGoodsRecord, String> GOODS_STORE_SN = createField("goods_store_sn", org.jooq.impl.SQLDataType.VARCHAR(512), this, "药房商品唯一码");
 
     /**
      * The column <code>mini_shop_471752.b2c_store_goods.prd_id</code>.

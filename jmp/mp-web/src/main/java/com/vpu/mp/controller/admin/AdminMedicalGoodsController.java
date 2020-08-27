@@ -8,7 +8,12 @@ import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.order.goods.store.OrderStorePosBo;
+import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsConfirmParam;
+import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsConfirmVo;
+import com.vpu.mp.service.shop.order.goods.OrderStoreSyncService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -140,5 +145,20 @@ public class AdminMedicalGoodsController extends AdminBaseController{
     public JsonResult fetchExternalStoreMedicalInfo(){
          shop().medicalGoodsService.fetchExternalStoresGoodsInfo();
          return success();
+    }
+
+    @Autowired
+    OrderStoreSyncService orderStoreSyncService;
+
+    @PostMapping("/api/admin/medical/test1")
+    public JsonResult fetchTest(@RequestBody OrderStorePosBo param){
+        boolean b = orderStoreSyncService.pushOrderInfoToStore(param);
+        return success(b);
+    }
+
+    @PostMapping("/api/admin/medical/test2")
+    public JsonResult fetchTest(@RequestBody StoreGoodsConfirmParam param){
+        StoreGoodsConfirmVo vo = orderStoreSyncService.syncGoodsInfosFromStore(param);
+        return success(vo);
     }
 }
