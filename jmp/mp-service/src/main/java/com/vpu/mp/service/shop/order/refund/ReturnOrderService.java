@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.refund;
 
+import cn.hutool.db.sql.Order;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
@@ -53,6 +54,7 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 /**
  * Table:return_order
@@ -104,6 +106,7 @@ public class ReturnOrderService extends ShopBaseService{
 	public PageResult<OrderReturnListVo> getPageList(OrderPageListQueryParam param) {
 		SelectJoinStep<Record> select = db().select(TABLE.asterisk(),USER.USERNAME.as(OrderReturnListVo.ORDER_USERNAME),USER.MOBILE.as(OrderReturnListVo.ORDER_MOBILE))
             .from(TABLE)
+            .leftJoin(ORDER_INFO).on(TABLE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
             .innerJoin(USER).on(TABLE.USER_ID.eq(USER.USER_ID));
         buildOptionsReturn(select, param);
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
@@ -184,6 +187,9 @@ public class ReturnOrderService extends ShopBaseService{
         }
         if (!Strings.isNullOrEmpty(param.getOrderUserNameOrMobile())){
             select.where(USER.USERNAME.like(likeValue(param.getOrderUserNameOrMobile())).or(USER.MOBILE.like(likeValue(param.getOrderUserNameOrMobile()))));
+        }
+        if (param.getStoreIds() != null) {
+            select.where(ORDER_INFO.STORE_ID.in(param.getStoreIds()));
         }
 		return select;
 	}

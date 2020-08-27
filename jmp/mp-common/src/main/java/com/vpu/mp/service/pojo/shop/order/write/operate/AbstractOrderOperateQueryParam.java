@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.order.write.operate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.StoreTokenAuthInfo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.shop.order.base.IOrderBase;
 import lombok.Data;
@@ -23,6 +24,8 @@ public abstract class AbstractOrderOperateQueryParam implements IOrderBase {
     private AdminTokenAuthInfo adminInfo;
     @JsonIgnore
     private WxAppSessionUser wxUserInfo;
+    @JsonIgnore
+    private StoreTokenAuthInfo storeInfo;
     @Override
     public OrderServiceCode getServiceCode() {
         //enum类型values取得数组利用默认排序顺序获取对应service

@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch;
 
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.StoreTokenAuthInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,4 +23,5 @@ public class BatchShipParam {
     /**语言类型，controller层设置*/
     private String lang;
     private AdminTokenAuthInfo adminInfo;
+    private StoreTokenAuthInfo storeInfo;
 }

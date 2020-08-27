@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.order;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  *
@@ -104,4 +105,7 @@ public class OrderPageListQueryParam {
 
 	/***saas用的字段**/
 	private Integer shopId;
+
+	/**门店后台门店过滤*/
+	private List<Integer> storeIds;
 }

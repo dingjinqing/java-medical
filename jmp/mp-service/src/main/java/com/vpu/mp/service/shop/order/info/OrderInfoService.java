@@ -303,6 +303,10 @@ public class OrderInfoService extends ShopBaseService {
             select.where(ORDER_INFO.ORDER_ID.in(param.getOrderIds()));
         }
 
+        if (param.getStoreIds() != null) {
+            select.where(ORDER_INFO.STORE_ID.in(param.getStoreIds()));
+        }
+
         //店铺助手操作
         if (param.getShopHelperAction() != null) {
             if (param.getShopHelperAction().equals(SHOP_HELPER_OVERDUE_DELIVERY)) {
