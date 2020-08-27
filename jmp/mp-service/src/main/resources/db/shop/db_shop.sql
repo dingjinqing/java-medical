@@ -5196,7 +5196,7 @@ create table `b2c_prescription`(
     `department_name` varchar(32) not null default '' comment '科室名称',
     `doctor_code` varchar(32) not null comment '诊断医师编码',
     `doctor_name` varchar(32) not null comment '诊断医师名称',
-    `diagnose_time` timestamp not null comment '诊断时间',
+    `diagnose_time` timestamp not null default current_timestamp comment '诊断时间',
     `pharmacist_name` varchar(32) not null default '' comment '药师名称',
     `pharmacist_code` varchar(32) not null default '' comment '药师编码',
     `diagnosis_name` varchar(1024) not null default '' comment '诊断名称',
