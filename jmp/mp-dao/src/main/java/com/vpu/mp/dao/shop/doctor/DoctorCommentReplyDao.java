@@ -33,9 +33,10 @@ public class DoctorCommentReplyDao extends ShopBaseDao {
                 .fetchGroups(DOCTOR_COMMENT_REPLY.COMMENT_ID, DoctorCommentReplyDo.class);
     }
 
-    public void save(DoctorCommentReplyAddParam param) {
+    public DoctorCommentReplyDo save(DoctorCommentReplyAddParam param) {
         DoctorCommentReplyRecord record = db().newRecord(DOCTOR_COMMENT_REPLY, param);
         record.insert();
+        return record.into(DoctorCommentReplyDo.class);
     }
 
     public void deleteById(Integer id) {
