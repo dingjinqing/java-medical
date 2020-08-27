@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.action;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
@@ -13,11 +14,14 @@ import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
+import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalOneInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -25,8 +29,13 @@ import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsMedicalVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
+import com.vpu.mp.service.shop.config.RebateConfigService;
+import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -34,9 +43,11 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +79,12 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
     private PatientService patientService;
     @Autowired
     private ReturnService  returnService;
+    @Autowired
+    private DoctorService doctorService;
+    @Autowired
+    private PrescriptionRebateDao prescriptionRebateDao;
+    @Autowired
+    private PrescriptionRebateService prescriptionRebateService;
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.MAKE_PRESCRIPTION;
@@ -148,6 +165,11 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             transaction(() -> {
                 //生成处方，处方明细
                 PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
+                if(prescription!=null){
+                    //处方返利入库
+                    prescriptionRebateService.addPrescriptionRebate(prescription,prescription.getList());
+
+                }
                 //更新状态
                 orderInfoService.setOrderstatus(orderInfoDo.getOrderSn(),OrderConstant.ORDER_WAIT_DELIVERY);
 
@@ -178,9 +200,8 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
             return false;
         }).map(OrderGoodsDo::getRecId).collect(Collectors.toList());
     }
-    public void addPrescriptionRebate(PrescriptionParam prescription){
 
-    }
+
 
 
 }

@@ -553,6 +553,7 @@ public class Indexes {
     public static final Index CITY_SERVICE_ORDER_ORDER_STATUS = Indexes0.CITY_SERVICE_ORDER_ORDER_STATUS;
     public static final Index CITY_SERVICE_ORDER_PRIMARY = Indexes0.CITY_SERVICE_ORDER_PRIMARY;
     public static final Index CITY_SERVICE_ORDER_WAYBILL_ID = Indexes0.CITY_SERVICE_ORDER_WAYBILL_ID;
+    public static final Index DOCTOR_COMMENT_REPLY_PRIMARY = Indexes0.DOCTOR_COMMENT_REPLY_PRIMARY;
     public static final Index PRESCRIPTION_REBATE_DOCTOR_ID = Indexes0.PRESCRIPTION_REBATE_DOCTOR_ID;
     public static final Index PRESCRIPTION_REBATE_PRIMARY = Indexes0.PRESCRIPTION_REBATE_PRIMARY;
     public static final Index DOCTOR_WITHDRAW_DOCTOR_ID = Indexes0.DOCTOR_WITHDRAW_DOCTOR_ID;
@@ -1088,6 +1089,7 @@ public class Indexes {
 
         public static Index DOCTOR_TOTAL_REBATE_DOCTOR_ID = Internal.createIndex("doctor_id", DoctorTotalRebate.DOCTOR_TOTAL_REBATE, new OrderField[] { DoctorTotalRebate.DOCTOR_TOTAL_REBATE.DOCTOR_ID }, false);
         public static Index DOCTOR_TOTAL_REBATE_PRIMARY = Internal.createIndex("PRIMARY", DoctorTotalRebate.DOCTOR_TOTAL_REBATE, new OrderField[] { DoctorTotalRebate.DOCTOR_TOTAL_REBATE.ID }, true);
+        public static Index DOCTOR_COMMENT_REPLY_PRIMARY = Internal.createIndex("PRIMARY", DoctorCommentReply.DOCTOR_COMMENT_REPLY, new OrderField[] { DoctorCommentReply.DOCTOR_COMMENT_REPLY.ID }, true);
         public static Index PRESCRIPTION_REBATE_DOCTOR_ID = Internal.createIndex("doctor_id", PrescriptionRebate.PRESCRIPTION_REBATE, new OrderField[] { PrescriptionRebate.PRESCRIPTION_REBATE.DOCTOR_ID }, false);
         public static Index PRESCRIPTION_REBATE_PRIMARY = Internal.createIndex("PRIMARY", PrescriptionRebate.PRESCRIPTION_REBATE, new OrderField[] { PrescriptionRebate.PRESCRIPTION_REBATE.ID }, true);
         public static Index DOCTOR_WITHDRAW_DOCTOR_ID = Internal.createIndex("doctor_id", DoctorWithdraw.DOCTOR_WITHDRAW, new OrderField[] { DoctorWithdraw.DOCTOR_WITHDRAW.DOCTOR_ID }, false);

@@ -5,6 +5,7 @@ import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
 
 import java.util.*;
 
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
@@ -12,7 +13,9 @@ import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import jodd.util.StringUtil;
+import org.jooq.Condition;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -64,6 +67,13 @@ public class StoreAccountService extends MainBaseService {
 		if (param.getStatus() > -1) {
 			where.and(STORE_ACCOUNT.STATUS.eq(param.getStatus()));
 		}
+		if (param.getStoreIds() != null) {
+            Condition condition = DSL.noCondition();
+            for (Integer storeId:param.getStoreIds()) {
+                condition = condition.or(DslPlus.findInSet(storeId, STORE_ACCOUNT.STORE_LIST));
+            }
+            where.and(condition);
+        }
 		return this.getPageResult(where, param.getCurrentPage(), param.getPageRows(), StoreAccountVo.class);
 	}
 

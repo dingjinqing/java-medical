@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.action;
 import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
@@ -18,13 +19,16 @@ import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
+import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
 import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -36,9 +40,13 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.Audit
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.AuditOrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.message.UserMessageService;
@@ -47,9 +55,11 @@ import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -100,6 +110,12 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
     private GoodsMedicalInfoDao medicalInfoDao;
     @Autowired
     private GoodsDao goodsDao;
+    @Autowired
+    private PrescriptionRebateDao prescriptionRebateDao;
+    @Autowired
+    public RebateConfigService rebateConfigService;
+    @Autowired
+    private PrescriptionRebateService prescriptionRebateService;
 
 
     @Override
@@ -255,6 +271,9 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             logger().info("orderId:{}审核通过",orderInfoDo.getOrderId());
             //生成处方
             PrescriptionVo prescriptionVo = savePrescriptionInfo(param, orderInfoDo,allGoods,unAuditGoodsId);
+            if(prescriptionVo!=null){
+                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,prescriptionVo.getList());
+            }
             //修改状态
             orderGoodsDao.updateAuditedToWaitDelivery(unAuditGoodsId,prescriptionVo.getPrescriptionCode());
             orderGoodsDao.updateAuditStatusByRecIds(unAuditGoodsId,OrderConstant.MEDICAL_AUDIT_PASS);
@@ -296,10 +315,21 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setDragSumUnit(medicalInfoDo.getGoodsPackageUnit());
                 itemDo.setGoodsImg(goods.getGoodsImg());
                 itemDo.setMedicinePrice(goods.getShopPrice());
+                //计算应返利
+                RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+                BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+                BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+                if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
+                    itemDo.setRebateProportion(rxProportion);
+                }else {
+                    itemDo.setRebateProportion(noRxProportion);
+                }
+                itemDo.setTotalRebateMoney(goods.getShopPrice().multiply(itemDo.getRebateProportion()).multiply(BigDecimal.valueOf(itemDo.getDragSumNum())).setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_DOWN));
                 list.add(itemDo);
             }
         });
         prescriptionItemDao.batchSave(list);
+        prescriptionVo.setList(list);
         return prescriptionVo;
     }
 
@@ -389,4 +419,6 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         }
         return null;
     }
+
+
 }

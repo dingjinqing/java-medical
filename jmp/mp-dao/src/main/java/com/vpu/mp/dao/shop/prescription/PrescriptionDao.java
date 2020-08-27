@@ -483,4 +483,9 @@ public class PrescriptionDao extends ShopBaseDao {
     public Integer countPrescriptionByPatient(Integer patientId) {
         return db().fetchCount(PRESCRIPTION, PRESCRIPTION.PATIENT_ID.eq(patientId));
     }
+
+    public void updateSettlementFlag(String prescriptionCode,Byte settlementFlag){
+        db().update(PRESCRIPTION).set(PRESCRIPTION.SETTLEMENT_FLAG,settlementFlag).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode))
+        .execute();
+    }
 }

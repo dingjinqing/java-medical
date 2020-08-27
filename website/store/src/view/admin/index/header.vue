@@ -158,7 +158,7 @@ export default {
     lang (newData) {
       console.log(newData)
       this.header_navData = [
-        { title: '门店概况', index: '', meta: 'first_web_manage', name: 'shopView' },
+        { title: '门店概况', index: '', meta: 'overView', name: 'shopView' },
         { title: '全部门店', index: '', meta: 'storeList', name: 'storeList' },
         { title: '门店商品', index: '', meta: 'storeGoods', name: 'storeGoods' },
         { title: '门店订单', index: '', meta: 'storeOrder', name: 'storeOrder' },
@@ -166,15 +166,15 @@ export default {
       ]
       let data = JSON.parse(JSON.stringify(this.$t('shopData')))
       // this.hiddle_menu_list = this.$t('shopData')
-      this.$t('shopData').forEach((item, index) => {
-        if (index === 1) {
-          data[index] = 'empty'
-        }
-        if (this.isSubLogin) {
-          data[0] = '修改密码'
-          data[2] = 'empty'
-        }
-      })
+      // this.$t('shopData').forEach((item, index) => {
+      //   if (index === 1) {
+      //     data[index] = 'empty'
+      //   }
+      //   if (this.isSubLogin) {
+      //     data[0] = '修改密码'
+      //     data[2] = 'empty'
+      //   }
+      // })
       this.hiddle_menu_list = data
     }
   },
@@ -201,41 +201,41 @@ export default {
     handle_user_list (index) {
       console.log(1111)
       switch (index) {
+        // case 0:
+        //   // this.$emit('change_components', '0')
+        //   this.$router.push({
+        //     path: '/admin/home/shopMain',
+        //     query: {
+        //       change_components: '0'
+        //     }
+        //   })
+        //   break
+        // case 2:
+        //   // this.$emit('change_components', '3')
+        //   this.$router.push({
+        //     path: '/admin/home/shopMain',
+        //     query: {
+        //       change_components: '2'
+        //     }
+        //   })
+        //   break
+        // case 3:
+        //   this.$router.push({
+        //     path: '/admin/home/shopMain',
+        //     query: {
+        //       change_components: '3'
+        //     }
+        //   })
+        //   break
+        // case 4:
+        //   this.$router.push({
+        //     path: '/admin/home/shopMain',
+        //     query: {
+        //       change_components: '4'
+        //     }
+        //   })
+        //   break
         case 0:
-          // this.$emit('change_components', '0')
-          this.$router.push({
-            path: '/admin/home/shopMain',
-            query: {
-              change_components: '0'
-            }
-          })
-          break
-        case 2:
-          // this.$emit('change_components', '3')
-          this.$router.push({
-            path: '/admin/home/shopMain',
-            query: {
-              change_components: '2'
-            }
-          })
-          break
-        case 3:
-          this.$router.push({
-            path: '/admin/home/shopMain',
-            query: {
-              change_components: '3'
-            }
-          })
-          break
-        case 4:
-          this.$router.push({
-            path: '/admin/home/shopMain',
-            query: {
-              change_components: '4'
-            }
-          })
-          break
-        case 5:
           loginRequestOut().then((res) => {
             console.log(res)
             if (res.error === 0) {

@@ -29,7 +29,7 @@ public class StoreMenuService extends MainBaseService {
     /**
      * 账号登录例外URL
      */
-    protected String[] authExcept = { "" };
+    protected String[] authExcept = { "/api/store/overview","/api/store/showMenu"};
     final protected String menuJson = "admin.authorityNew.json";
     final protected String authorityJson = "admin.privilegePassNew.json";
     final protected String versionJson = "admin.versionNew.json";

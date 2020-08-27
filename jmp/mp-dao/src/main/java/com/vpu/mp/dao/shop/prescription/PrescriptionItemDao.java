@@ -68,10 +68,10 @@ public class PrescriptionItemDao extends ShopBaseDao {
      * @param codeList
      * @return
      */
-    public Map<String, List<PrescriptionItemParam>>  mapByPrescriptionCodeList(Collection<String> codeList){
+    public Map<String, List<PrescriptionItemDo>>  mapByPrescriptionCodeList(Collection<String> codeList){
         return db().select().from(PRESCRIPTION_ITEM)
                 .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.in(codeList))
-                .fetchGroups(PRESCRIPTION_ITEM.PRESCRIPTION_CODE,PrescriptionItemParam.class);
+                .fetchGroups(PRESCRIPTION_ITEM.PRESCRIPTION_CODE,PrescriptionItemDo.class);
     }
 
     /**
@@ -93,7 +93,7 @@ public class PrescriptionItemDao extends ShopBaseDao {
     public List<PrescriptionItemDo>  listOrderGoodsByPrescriptionCode(String prescriptionCode){
         return db().select(PRESCRIPTION_ITEM.GOODS_ID,PRESCRIPTION_ITEM.PRD_ID,
                 PRESCRIPTION_ITEM.MEDICINE_PRICE,
-                PRESCRIPTION_ITEM.DRAG_SUM_NUM)
+                PRESCRIPTION_ITEM.DRAG_SUM_NUM,PRESCRIPTION_ITEM.TOTAL_REBATE_MONEY,PRESCRIPTION_ITEM.REBATE_PROPORTION)
                 .from(PRESCRIPTION_ITEM)
                 .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionCode))
                 .fetchInto(PrescriptionItemDo.class);

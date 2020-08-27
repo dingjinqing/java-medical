@@ -4,7 +4,9 @@ import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorCommentDo;
+import com.vpu.mp.common.pojo.shop.table.DoctorCommentReplyDo;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentDao;
+import com.vpu.mp.dao.shop.doctor.DoctorCommentReplyDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
@@ -12,12 +14,16 @@ import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentAddParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentConstant;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListVo;
+import com.vpu.mp.service.pojo.shop.doctor.comment.reply.DoctorCommentReplyAddParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -30,6 +36,8 @@ public class DoctorCommentService extends ShopBaseService {
 
     @Autowired
     private DoctorCommentDao doctorCommentDao;
+    @Autowired
+    private DoctorCommentReplyDao doctorCommentReplyDao;
     @Autowired
     private DoctorService doctorService;
     @Autowired
@@ -97,13 +105,47 @@ public class DoctorCommentService extends ShopBaseService {
      */
     public PageResult<DoctorCommentListVo> listDoctorComment(DoctorCommentListParam param) {
         PageResult<DoctorCommentListVo> pageResult = doctorCommentDao.listDoctorComment(param);
+        List<Integer> ids =new ArrayList<>();
         pageResult.getDataList().forEach(item->{
             item.setCommNoteLength(item.getCommNote().length());
             if (item.getIsAnonymou().equals(BaseConstant.YES)){
                 item.setUserName(DoctorCommentConstant.DOCTOR_COMMENT_ANONYMOU_NAME);
             }
+            ids.add(item.getId());
         });
-
+        Map<Integer, List<DoctorCommentReplyDo>> map = doctorCommentReplyDao.mapDoctorReplyByIds(ids);
+        pageResult.getDataList().forEach(item->{
+            item.setReplylist(map.get(item.getId()));
+        });
         return pageResult;
+    }
+
+    /**
+     * 添加医师回复
+     * @param param
+     */
+    public void addCommentReply(DoctorCommentReplyAddParam param) {
+        doctorCommentReplyDao.save(param);
+    }
+
+    public void deleteCommentReply(Integer id) {
+        doctorCommentReplyDao.deleteById(id);
+    }
+
+    public void deleteComment(Integer id) {
+        doctorCommentDao.deleteById(id);
+    }
+
+    public void topComment(Integer id) {
+        Integer top = doctorCommentDao.getTop();
+        doctorCommentDao.updateTopComment(id,top+1);
+    }
+
+    public void unTopComment(Integer id) {
+        doctorCommentDao.updateTopComment(id,0);
+    }
+
+    public void auditComment(Integer id, Byte status) {
+        doctorCommentDao.updateAudit(id,status);
     }
 }

@@ -159,7 +159,6 @@ public class InquiryOrderService extends ShopBaseService {
     public void updateOrder(InquiryOrderOnParam param){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(param.getOrderSn());
         FieldsUtil.assign(param,inquiryOrderDo);
-        Byte prevStatus = inquiryOrderDo.getOrderStatus();
         inquiryOrderDo.setOrderStatus(param.getOrderStatus());
         //更新会话状态修改为进行中
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
@@ -169,6 +168,7 @@ public class InquiryOrderService extends ShopBaseService {
         //更新会话状态为关闭
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
             inquiryOrderDo.setFinishedTime(DateUtils.getLocalDateTime());
+            inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FINISH);
             imSessionService.closeImSession(param.getSessionId());
         }
         inquiryOrderDao.update(inquiryOrderDo);
