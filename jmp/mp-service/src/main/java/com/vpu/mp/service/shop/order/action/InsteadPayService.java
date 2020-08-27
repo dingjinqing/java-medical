@@ -218,6 +218,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         return webPayVo;
     }
 
+    private final static Integer INSTEAD_PAY_MESSAGE_MAX_LENGTH = 20;
     /**
      * 校验
      * @param param
@@ -235,7 +236,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_PAY_WAY_INSTEAD_PAY_FINISH, null);
         }
         //留言校验
-        if(StringUtils.isNotBlank(param.getMessage()) && param.getMessage().length() > 20) {
+        if(StringUtils.isNotBlank(param.getMessage()) && param.getMessage().length() > INSTEAD_PAY_MESSAGE_MAX_LENGTH) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_PAY_WAY_INSTEAD_PAY_FINISH, "留言长度限制20字以内");
         }
         //待支付金额
