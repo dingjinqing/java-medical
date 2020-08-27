@@ -9,29 +9,27 @@
     </div> -->
     <div class="main clearfix">
       <div class="main-left">
-        <img
-          :src="$imageHost+'/image/admin/hc_new_logo.jpg'"
-          alt=""
-        />
+        <img :src="$imageHost + '/image/admin/hc_new_logo.jpg'" alt="" />
       </div>
       <div class="main-right">
         <div class="main-right-title">
           <div
-            class="title-head "
-            :class="{'title-active': !isSubLogin}"
+            class="title-head"
+            :class="{ 'title-active': !isSubLogin }"
             @click="switchTab(false)"
-          >店长登录</div>
-          <div
-            class="title-head "
-            :class="{'title-active': isSubLogin}"
-            @click="switchTab(true)"
-          >店员登录</div>
-        </div>
-        <div class="main-right-content ">
-          <div
-            class="content-zhu content-account"
-            data-type="0"
           >
+            店长登录
+          </div>
+          <div
+            class="title-head"
+            :class="{ 'title-active': isSubLogin }"
+            @click="switchTab(true)"
+          >
+            店员登录
+          </div>
+        </div>
+        <div class="main-right-content">
+          <div class="content-zhu content-account" data-type="0">
             <div class="mesg-error"></div>
             <div class="smart-form">
               <el-form
@@ -43,29 +41,16 @@
                 class="demo-ruleForm"
                 :key="1"
               >
-                <el-form-item
-                  label="商家账户"
-                  prop="username"
-                >
+                <el-form-item label="商家账户" prop="username">
                   <el-input v-model="ruleForm.username"></el-input>
                 </el-form-item>
-                <el-form-item
-                  label="门店编码"
-                  prop="storeNum"
-                  v-if="isSubLogin"
-                >
-                  <el-input v-model="ruleForm.storeNum"></el-input>
+                <el-form-item label="门店编码" prop="storeNo" v-if="isSubLogin">
+                  <el-input v-model="ruleForm.storeNo"></el-input>
                 </el-form-item>
-                <el-form-item
-                  label="门店员工账户"
-                  prop="storeUsername"
-                >
+                <el-form-item label="门店员工账户" prop="storeUsername">
                   <el-input v-model="ruleForm.storeUsername"></el-input>
                 </el-form-item>
-                <el-form-item
-                  label="密码"
-                  prop="password"
-                >
+                <el-form-item label="密码" prop="password">
                   <el-input
                     show-password
                     v-model="ruleForm.password"
@@ -77,7 +62,8 @@
                     @click.native.prevent="onSubmit('ruleForm')"
                     @keyup.enter.native="onSubmit('ruleForm')"
                     class="btn"
-                  >{{$t('login_page.login_main')}}</el-button>
+                    >{{ $t('login_page.login_main') }}</el-button
+                  >
                 </el-form-item>
               </el-form>
             </div>
@@ -108,7 +94,7 @@ export default {
         callback()
       }
     }
-    var validateStoreNum = (rule, value, callback) => {
+    var validateStoreNo = (rule, value, callback) => {
       if (!this.userNameReg.test(value)) {
         callback(new Error('门店编码应为非中文且不能为空'))
       } else {
@@ -137,7 +123,7 @@ export default {
       ruleForm: {
         username: '',
         password: '',
-        storeNum: '',
+        storeNo: '',
         storeUsername: '',
         isSubLogin: false
       },
@@ -149,7 +135,7 @@ export default {
       rules2: {
         username: { validator: validateUserName, trigger: 'blur' },
         password: { validator: validatePassword, trigger: 'blur' },
-        storeNum: { validator: validateStoreNum, trigger: 'blur' },
+        storeNo: { validator: validateStoreNo, trigger: 'blur' },
         storeUsername: { validator: validateStoreUsername, trigger: 'blur' }
       }
       // subRuleForm: {
@@ -175,11 +161,7 @@ export default {
         key = window.event.keyCode
       }
       if (key === 13) {
-        if (_self.isSubLogin === true) {
-          _self.onSubmit(2, 'subRuleForm')
-        } else {
-          _self.onSubmit(1, 'ruleForm')
-        }
+        _self.onSubmit('ruleForm')
       }
     }
   },
@@ -194,7 +176,11 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           localStorage.setItem('contentType', 'application/json;charset=UTF-8')
-          loginRequest(this.ruleForm).then((res) => {
+          let params = {
+            ...this.ruleForm
+          }
+          if (this.isSubLogin) params.storeAccountType = 1
+          loginRequest(params).then((res) => {
             // test
             console.log('第一')
             console.log(res)
@@ -210,7 +196,7 @@ export default {
                 type: 'success'
               })
               this.$router.push({
-                name: 'shopView'
+                name: 'overView'
               })
             }
           })
