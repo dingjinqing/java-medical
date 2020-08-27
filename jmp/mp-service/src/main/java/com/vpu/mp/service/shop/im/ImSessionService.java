@@ -458,7 +458,8 @@ public class ImSessionService extends ShopBaseService {
      * 定时任务调用，结束已经超时的可继续问诊项
      */
     public void timingDeadReadyToContinueSession(){
-        Timestamp updateTimeLine = DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS);
+        Integer shopId = getShopId();
+        Timestamp updateTimeLine = DateUtils.getTimeStampPlus(-1, ChronoUnit.DAYS);
         ImSessionCondition imSessionCondition = new ImSessionCondition();
         imSessionCondition.setStatus(ImSessionConstant.SESSION_END);
         imSessionCondition.setUpdateTimeLine(updateTimeLine);
@@ -467,6 +468,7 @@ public class ImSessionService extends ShopBaseService {
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_DEAD);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_DEAD_WEIGHT);
             imSessionDo.setEvaluateStatus(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
+            clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
         }
         imSessionDao.batchUpdate(imSessionDos);
     }
