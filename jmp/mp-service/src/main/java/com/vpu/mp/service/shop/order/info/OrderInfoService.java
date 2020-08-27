@@ -894,6 +894,7 @@ public class OrderInfoService extends ShopBaseService {
                     order.setFanliMoney(BigDecimal.ZERO);
                 }
                 break;
+                //代发货
             case OrderConstant.ORDER_WAIT_DELIVERY:
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
                 if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
@@ -903,6 +904,14 @@ public class OrderInfoService extends ShopBaseService {
                 if(order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
                     order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
                 }
+                break;
+                //待续方
+           case OrderConstant.ORDER_TO_AUDIT:
+                order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+                break;
+                //待开方
+            case OrderConstant.ORDER_TO_AUDIT_OPEN:
+                order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
                 break;
             default:
                 return;
