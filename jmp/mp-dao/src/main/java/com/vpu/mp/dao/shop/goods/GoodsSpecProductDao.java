@@ -5,11 +5,14 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsSpecProductDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
+import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
@@ -59,6 +62,13 @@ public class GoodsSpecProductDao extends ShopBaseDao {
         return db().selectFrom(GOODS_SPEC_PRODUCT)
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId).and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(GoodsSpecProductDo.class);
+    }
+
+    public Map<Integer, List<GoodsSpecProductDetailVo>> groupGoodsIdToSku(List<Integer> goodsIds) {
+        Condition condition = GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds);
+        return db().select(GOODS_SPEC_PRODUCT.GOODS_ID, GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_SN)
+            .from(GOODS_SPEC_PRODUCT).where(condition)
+            .fetchGroups(GOODS_SPEC_PRODUCT.GOODS_ID, GoodsSpecProductDetailVo.class);
     }
 
     /**

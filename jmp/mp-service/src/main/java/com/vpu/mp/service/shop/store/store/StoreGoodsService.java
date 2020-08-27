@@ -157,16 +157,21 @@ public class StoreGoodsService extends ShopBaseService{
 		return select;
 	}
 
-
-    public void batchSyncStoreGoods(List<StoreGoods> storeGoodsList,Integer storeId) {
+    /**
+     * 批量同步门店商品数据
+     * @param storeGoodsList
+     */
+    public void batchSyncStoreGoods(List<StoreGoods> storeGoodsList) {
+        if (storeGoodsList.size() == 0) {
+            return;
+        }
         List<Integer> goodsIds = storeGoodsList.stream().map(StoreGoods::getGoodsId).collect(Collectors.toList());
-        Set<Integer> existStoreGoodsSet = new HashSet<>(storeGoodsDao.selectExistStoreGoodsIds(goodsIds, storeId));
+        Set<Integer> existStoreGoodsSet = new HashSet<>(storeGoodsDao.selectExistStoreGoodsIds(goodsIds, storeGoodsList.get(1).getStoreId()));
 
         List<StoreGoods> readyToInsert = new ArrayList<>();
         List<StoreGoods> readyToUpdate = new ArrayList<>();
 
         for (StoreGoods storeGoods : storeGoodsList) {
-            storeGoods.setStoreId(storeId);
             if (existStoreGoodsSet.contains(storeGoods.getGoodsId())) {
                 readyToUpdate.add(storeGoods);
             } else {

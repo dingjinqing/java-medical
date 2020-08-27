@@ -62,6 +62,10 @@ public class MedicalGoodsSpecProductService {
         goodsSpecProductAggregate.deleteSkuByGoodsId(goodsId);
     }
 
+    public Map<Integer, List<GoodsSpecProductDetailVo>> groupGoodsIdToSku(List<Integer> goodsIds) {
+        return goodsSpecProductAggregate.groupGoodsIdToSku(goodsIds);
+    }
+
     /**
      * 根据商品id查询对应sku集合
      * @param goodsId

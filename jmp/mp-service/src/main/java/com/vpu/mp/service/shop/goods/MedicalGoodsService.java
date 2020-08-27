@@ -48,6 +48,7 @@ import com.vpu.mp.service.pojo.shop.medical.sort.vo.GoodsSortVo;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.shop.goods.aggregate.GoodsAggregate;
+import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,6 +89,8 @@ public class MedicalGoodsService extends ShopBaseService {
     private MedicalGoodsImageService medicalGoodsImageService;
     @Autowired
     private GoodsSpecProductService goodsSpecProductService;
+    @Autowired
+    private StoreGoodsService storeGoodsService;
 
     /**
      * 新增
@@ -411,7 +414,7 @@ public class MedicalGoodsService extends ShopBaseService {
                     logger().info("同步药品信息错误：" + getShopId() + ":缺少药品生产企业-" + x.toString());
                     return false;
                 }
-
+                x.setGoodsCode(x.getGoodsCode().trim());
                 x.setGoodsCommonName(x.getGoodsCommonName().replaceAll("\\*", "").trim());
                 x.setGoodsQualityRatio(x.getGoodsQualityRatio().trim());
                 x.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise().trim());
@@ -420,8 +423,10 @@ public class MedicalGoodsService extends ShopBaseService {
                 }
                 goodsCodes.add(x.getGoodsCode());
                 return true;
-
             }).collect(Collectors.toList());
+
+            goodsMedicalExternalRequestItemReadyToStore = filterRepeatedGoodsCodeInfos(goodsMedicalExternalRequestItemReadyToStore);
+
             // 获取已存在的goodsSn到goodsId映射
             Map<String, Integer> existGoodsCodes = goodsAggregate.mapGoodsCodeToGoodsId(goodsCodes);
 
@@ -448,7 +453,6 @@ public class MedicalGoodsService extends ShopBaseService {
             Map<String, GoodsMedicalExternalRequestItemBo> trimRepeated = readyForInsert.stream().collect(Collectors.toMap(GoodsMedicalExternalRequestItemBo::getGoodsCode, Function.identity(), (x1, x2) -> x1));
             readyForInsert = new ArrayList<>(trimRepeated.values());
             batchInsertGoodsMedicalExternalInfo(readyForInsert);
-
             // 修改
             batchUpdateGoodsMedicalExternalInfo(readyForUpdate);
         });
@@ -476,7 +480,7 @@ public class MedicalGoodsService extends ShopBaseService {
     /**
      * 拉取指定药店药品信息
      * @param lastRequestTime
-     * @param storeSn
+     * @param storeInfo
      * @param currentPullTime
      * @param appId
      * @param shopId
@@ -555,6 +559,10 @@ public class MedicalGoodsService extends ShopBaseService {
                     return false;
                 }
                 if (StringUtils.isBlank(x.getGoodsProductionEnterprise())) {
+                    logger().info("同步药房：" + storeInfo.getStoreCode() + " 药品信息错误：" + getShopId() + ":缺少药品生产企业-" + x.toString());
+                    return false;
+                }
+                if (StringUtils.isBlank(x.getGoodsProductionEnterprise())) {
                     logger().info("同步药房：" + storeInfo.getStoreCode() + " 药品信息错误：" + getShopId() + ":缺少批准文号-" + x.toString());
                     return false;
                 }
@@ -565,6 +573,8 @@ public class MedicalGoodsService extends ShopBaseService {
                 goodsKeys.add(x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise());
                 return true;
             }).collect(Collectors.toList());
+
+            externalStoreRequestItemBos = filterRepeatedGoodsCodeInfos(externalStoreRequestItemBos);
 
             // 门店价格按照his价格进行设置
             Map<String, Integer> goodsHisKeyToGoodsId = goodsAggregate.mapGoodsHisKeyToGoodsId(goodsKeys);
@@ -584,8 +594,12 @@ public class MedicalGoodsService extends ShopBaseService {
             }
             batchInsertGoodsMedicalExternalInfo(readyToInsert);
 
+            List<Integer> goodsIds = readyToInsert.stream().map(GoodsMedicalExternalRequestItemBo::getGoodsId).collect(Collectors.toList());
+            Map<Integer, List<GoodsSpecProductDetailVo>> goodsSkuGroups = medicalGoodsSpecProductService.groupGoodsIdToSku(goodsIds);
+
             List<StoreGoods> storeGoodsList = externalStoreRequestItemBos.stream().map(bo -> {
                 StoreGoods storeGoods = new StoreGoods();
+                storeGoods.setStoreId(storeInfo.getStoreId());
                 storeGoods.setGoodsId(bo.getGoodsId());
                 storeGoods.setGoodsCommonName(bo.getGoodsCommonName());
                 storeGoods.setGoodsQualityRatio(bo.getGoodsQualityRatio());
@@ -593,11 +607,29 @@ public class MedicalGoodsService extends ShopBaseService {
                 storeGoods.setGoodsProductionEnterprise(bo.getGoodsProductionEnterprise());
                 storeGoods.setProductNumber(bo.getGoodsNumber());
                 storeGoods.setProductPrice(bo.getGoodsPrice());
+                if (BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.equals(bo.getState())) {
+                    storeGoods.setIsOnSale(MedicalGoodsConstant.ON_SALE);
+                } else if (BaseConstant.EXTERNAL_ITEM_STATE_DISABLE.equals(bo.getState())) {
+                    storeGoods.setIsOnSale(MedicalGoodsConstant.OFF_SALE);
+                } else {
+                    storeGoods.setIsDelete(DelFlag.DISABLE_VALUE);
+                }
+                List<GoodsSpecProductDetailVo> goodsSpecProductDetailVos = goodsSkuGroups.get(bo.getGoodsId());
+                storeGoods.setPrdId(goodsSpecProductDetailVos.get(0).getPrdId());
+                storeGoods.setPrdSn(goodsSpecProductDetailVos.get(0).getPrdSn());
                 return storeGoods;
             }).collect(Collectors.toList());
 
-
+            storeGoodsService.batchSyncStoreGoods(storeGoodsList);
         });
+    }
+
+    /**
+     * 过滤掉一次拉取时GoodsCode重复的数据
+     */
+    private List<GoodsMedicalExternalRequestItemBo> filterRepeatedGoodsCodeInfos(List<GoodsMedicalExternalRequestItemBo> externalRequestItemBos){
+        Map<String, GoodsMedicalExternalRequestItemBo> collect = externalRequestItemBos.stream().collect(Collectors.toMap(GoodsMedicalExternalRequestItemBo::getGoodsCode, Function.identity(), (x1, x2) -> x1));
+        return new ArrayList<>(collect.values());
     }
 
     /**
