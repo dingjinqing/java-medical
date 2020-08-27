@@ -28,6 +28,7 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.*;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
@@ -255,13 +256,9 @@ public class InquiryOrderService extends ShopBaseService {
         order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
         order.setPayTime(DateUtils.getLocalDateTime());
-        //计算返利比例金额
-        RebateConfig rebateConfig=this.rebateConfigService.getRebateConfig();
-        BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN);
-        order.setRebateProportion(proportion);
-        order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN));
-        //返利入库
+        //返利配置计算返利
         addRebate(order);
+
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
         //添加会话问诊
@@ -277,13 +274,19 @@ public class InquiryOrderService extends ShopBaseService {
      * @param order
      */
     public void addRebate(InquiryOrderDo order){
-        InquiryOrderRebateParam param =new InquiryOrderRebateParam();
-        FieldsUtil.assign(order,param);
-        param.setStatus(InquiryOrderRebateConstant.TO_REBATE);
-        param.setTotalMoney(order.getTotalRebateMoney());
-        param.setTotalMoney(order.getOrderAmount());
-        inquiryOrderRebateDao.addInquiryOrderRebate(param);
-
+        RebateConfig rebateConfig=this.rebateConfigService.getRebateConfig();
+        if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+            BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN);
+            order.setRebateProportion(proportion);
+            order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN));
+            //返利入库
+            InquiryOrderRebateParam param =new InquiryOrderRebateParam();
+            FieldsUtil.assign(order,param);
+            param.setStatus(InquiryOrderRebateConstant.TO_REBATE);
+            param.setTotalMoney(order.getTotalRebateMoney());
+            param.setTotalMoney(order.getOrderAmount());
+            inquiryOrderRebateDao.addInquiryOrderRebate(param);
+        }
     }
 
     /**

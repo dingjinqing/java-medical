@@ -29,6 +29,15 @@
         "includeApi": [],
         "check": 1,
         "isOnly": 2
+      },
+      {
+        "enName": "storeInfo",
+        "name": "门店信息",
+        "linkUrl": "/store/info",
+        "topIndex": 1,
+        "includeApi": [],
+        "check": 1,
+        "isOnly": 1
       }
     ]
   },

@@ -26,4 +26,38 @@ public class ShopBaseConfig {
     private String logo = "";
     /** 小程序端店铺logo点击跳转链接，在shop_cfg表 */
     private String logoLink = "";
+
+    /**
+     * 省
+     */
+    private Integer provinceCode;
+    private String provinceName;
+    /**
+     * 市
+     */
+    private Integer cityCode;
+    private String cityName;
+    /**
+     * 区县
+     */
+    private Integer districtCode;
+    private String  districtName;
+    /**
+     * 所在地址
+     */
+    private Integer address;
+    /**
+     * 地址全称
+     */
+    private String completeAddress;
+    /**
+     * 宣传图
+     */
+    private String  publicityImg;
+    /**
+     * 店面详情
+     */
+    private String copywriting;
+
+
 }

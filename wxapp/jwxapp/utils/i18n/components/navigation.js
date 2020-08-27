@@ -144,6 +144,7 @@ module.exports = {
     "doctorComment": "医师评价",
     "doctorIntroduce": "医师简介",
     "doctorPrescriptionList": "处方列表",
-    "doctorFocus": "关注的医师"
+    "doctorFocus": "关注的医师",
+    "serviceWithdraw":"服务提现"
   }
 }
