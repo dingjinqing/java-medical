@@ -6,7 +6,8 @@
     width="300px"
   >
     <div>
-      <p style="margin-bottom:10px">退款金额：<el-input-number
+      <p style="margin-bottom: 10px;">
+        退款金额：<el-input-number
           controls-position="right"
           :min="0"
           :max="dataInfo.orderAmount - dataInfo.refundMoney"
@@ -15,7 +16,7 @@
         ></el-input-number>
       </p>
       <div>
-        <p style="margin-bottom:10px">退款原因</p>
+        <p style="margin-bottom: 10px;">退款原因</p>
         <el-input
           type="textarea"
           :rows="2"
@@ -23,15 +24,9 @@
         ></el-input>
       </div>
     </div>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
+    <span slot="footer" class="dialog-footer">
       <el-button @click="dialogShow = false">取消</el-button>
-      <el-button
-        type="primary"
-        @click="refundConfirm"
-      >确定</el-button>
+      <el-button type="primary" @click="refundConfirm">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -60,6 +55,7 @@ export default {
       let { orderSn } = this.dataInfo
       returnAdvisoryOrder({ orderSn, ...this.returnInfo }).then(res => {
         if (res.error === 0) {
+          this.$message.success({ message: '退款成功' })
           this.$emit('complete')
         } else {
           this.$message.error({ message: res.message })
