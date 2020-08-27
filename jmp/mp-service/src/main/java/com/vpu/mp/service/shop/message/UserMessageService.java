@@ -80,13 +80,14 @@ public class UserMessageService extends ShopBaseService {
      * @return UserMessageCountVo
      */
     public UserMessageCountVo changeMessageStatus(MessageParam messageParam, Integer userId) {
+        // 拉取新消息
+        fetchUserMessage(userId);
         // 去除系统公告未读
         if (USER_MESSAGE_SYSTEM.equals(messageParam.getMessageType())) {
             userAnnouncementDao.updateUserAnnouncement(userId, messageParam.getMessageId());
         } else { // 去除订单消息和会话消息未读
             messageDao.updateMessageStatus(userId, messageParam);
         }
-        fetchUserMessage(userId);
         Integer announcementCount = messageDao.selectAnnouncementCount(userId);
         Integer orderCount = messageDao.selectOrderCount(userId);
         Integer chatCount = messageDao.selectChatCount(userId);
@@ -95,7 +96,6 @@ public class UserMessageService extends ShopBaseService {
         userMessageCountVo.setChatCount(chatCount);
         userMessageCountVo.setOrderCount(orderCount);
         return userMessageCountVo;
-
     }
 
     /**
@@ -255,6 +255,7 @@ public class UserMessageService extends ShopBaseService {
                     String messageByOrderStatus = UserMessageTemplate.getMessageByOrderStatus(orderInfoDo.getOrderStatus());
                     assert messageByOrderStatus != null;
                     userMessageParam.setMessageContent(String.format(messageByOrderStatus, orderInfoDo.getOrderSn()));
+                    userMessageParam.setMessageRelevanceOrderSn(orderInfoDo.getOrderSn());
                     messageDao.updateMessage(userMessageParam);
                 }
             }
@@ -320,14 +321,11 @@ public class UserMessageService extends ShopBaseService {
      * @param userId 用户id
      */
     public void fetchUserMessage(Integer userId) {
-//        this.transaction(() -> {
-            // 拉取用户新信息
-            ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
-            imSessionUnReadMessageInfoParam.setUserId(userId);
-            setImSessionMessage(imSessionUnReadMessageInfoParam);
-            setOrderMessage(userId);
-            setAnnouncementMessage(userId);
-//        });
+        ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
+        imSessionUnReadMessageInfoParam.setUserId(userId);
+        setImSessionMessage(imSessionUnReadMessageInfoParam);
+        setOrderMessage(userId);
+        setAnnouncementMessage(userId);
     }
 
     /**

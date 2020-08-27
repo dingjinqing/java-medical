@@ -138,10 +138,16 @@ public class MessageDao extends ShopBaseDao {
      * @param userMessageParam 消息入参
      */
     public void updateMessage(UserMessageParam userMessageParam) {
-        db().update(USER_MESSAGE)
+        int execute = db().update(USER_MESSAGE)
             .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
-            .set(USER_MESSAGE.MESSAGE_STATUS, userMessageParam.getMessageStatus())
-            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn())).execute();
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
+            .execute();
+        if (execute != 0) {
+            db().update(USER_MESSAGE)
+                .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_NOT_READ)
+                .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
+                .execute();
+        }
     }
 
     /**
