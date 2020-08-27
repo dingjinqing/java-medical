@@ -22,8 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
-import static com.vpu.mp.common.foundation.data.JsonResultCode.DOCTOR_LOGIN_AUTH_ERROR;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.*;
 
 /**
  * @Description 医师端
