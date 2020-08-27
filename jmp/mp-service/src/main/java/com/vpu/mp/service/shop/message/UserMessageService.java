@@ -81,7 +81,7 @@ public class UserMessageService extends ShopBaseService {
      */
     public UserMessageCountVo changeMessageStatus(MessageParam messageParam, Integer userId) {
         // 拉取新消息
-        fetchUserMessage(userId);
+//        fetchUserMessage(userId);
         // 去除系统公告未读
         if (USER_MESSAGE_SYSTEM.equals(messageParam.getMessageType())) {
             userAnnouncementDao.updateUserAnnouncement(userId, messageParam.getMessageId());
