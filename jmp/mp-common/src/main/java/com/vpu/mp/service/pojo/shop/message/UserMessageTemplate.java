@@ -40,7 +40,7 @@ public enum UserMessageTemplate {
     /**
      * 订单已收货
      */
-    USER_MESSAGE_ORDER_INFO_ORDER_RECEIVED(2005, (byte) 5, "您订单号为%s的订单已经收获。"),
+    USER_MESSAGE_ORDER_INFO_ORDER_RECEIVED(2005, (byte) 5, "您订单号为%s的订单已经收货。"),
     /**
      * 订单已完成
      */

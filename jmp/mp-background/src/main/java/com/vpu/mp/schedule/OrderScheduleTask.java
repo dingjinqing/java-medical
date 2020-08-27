@@ -1,8 +1,6 @@
 package com.vpu.mp.schedule;
 
-import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.saas.SaasApplication;
 import org.jooq.Result;
@@ -33,22 +31,25 @@ public class OrderScheduleTask {
      * 拼团订单处理（自动成团、退款等）
      * 每一分钟执行一次
      */
-    @Scheduled(cron = "0 */1 * * * ?")
+    /**      *
+
     public void monitorGroupBuyOrders() {
-        Result<ShopRecord> result = saas.shop.getAll();
-        result.forEach((r)->{
-            String uuid = Util.randomId();
-            String key = JedisKeyConstant.TASK_JOB_LOCK_ORDER_GROUP_BUY + r.getShopId();
-            saas.getShopApp(r.getShopId()).groupIntegration.updateState();
-            //订单处理时间可能较长，加锁防止重入
-            if( jedisManager.addLock(key,uuid,1000*90) ){
-                saas.getShopApp(r.getShopId()).shopTaskService.groupBuyTaskService.monitorOrder();
-                /** 处理拼团抽奖*/
-                saas.getShopApp(r.getShopId()).groupDraw.groupDrawUser.dealOpenGroupDraw();
-                jedisManager.releaseLock(key,uuid);
-            }
-        });
-    }
+     *Result<ShopRecord> result = saas.shop.getAll();
+     *result.forEach((r) -> {
+     *String uuid = Util.randomId();
+     *String key = JedisKeyConstant.TASK_JOB_LOCK_ORDER_GROUP_BUY + r.getShopId();
+     *saas.getShopApp(r.getShopId()).groupIntegration.updateState();
+     *             //订单处理时间可能较长，加锁防止重入
+     *if (jedisManager.addLock(key, uuid, 1000 * 90)) {
+     *saas.getShopApp(r.getShopId()).shopTaskService.groupBuyTaskService.monitorOrder();
+     *
+     *saas.getShopApp(r.getShopId()).groupDraw.groupDrawUser.dealOpenGroupDraw();
+     *jedisManager.releaseLock(key, uuid);
+     *}
+     *});
+     *}
+      */
+
 
     /**
      * 预售订单自动关闭
@@ -72,6 +73,17 @@ public class OrderScheduleTask {
         shops.forEach((shop)->{
             saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.close();
             saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.serviceOrderClose();
+        });
+    }
+
+    /**
+     * 24小时未审核
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void unAudit(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.unAudit();
         });
     }
 
@@ -146,4 +158,6 @@ public class OrderScheduleTask {
             saas.getShopApp(r.getShopId()).shopTaskService.couponPackTaskService.monitorCouponPackOrders();
         });
     }
+
+
 }

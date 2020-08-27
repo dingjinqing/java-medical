@@ -33,42 +33,20 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
 @Repository
 public class MessageDao extends ShopBaseDao {
 
-    /**
-     * 消息接收入库
-     * @param userMessageParam 用户消息入参
-     */
-    public void addMessage(UserMessageParam userMessageParam){
-        UserMessageRecord messageRecord = db().newRecord(USER_MESSAGE);
-        FieldsUtil.assign(userMessageParam, messageRecord);
-        //系统消息
-        if (0 == userMessageParam.getMessageType()){
-            FieldsUtil.assign(userMessageParam, messageRecord);
-            messageRecord.setMessageName("系统公告");
-            messageRecord.setMessageRelevanceId(0);
-        }
-        //订单消息
-        if (0 == userMessageParam.getMessageType()){
-            messageRecord.setMessageName("订单消息");
-        }
-        //会话消息
-        if (0 == userMessageParam.getMessageType()){
-            messageRecord.setMessageName("医师会话");
-        }
-        messageRecord.insert();
-    }
+    private static final String USER_MESSAGE_SYSTEM_ANNOUNCEMENT = "系统公告";
 
     /**
-     * 消息已读状态变更
-     * @param messageId 消息id
+     * 新增系统消息
+     * @param list
      */
-    public void changeMessageStatus(Integer messageId){
-        UserMessageRecord messageRecord = db().select().from(USER_MESSAGE)
-            .where(USER_MESSAGE.MESSAGE_ID.eq(messageId))
-            .fetchOneInto(UserMessageRecord.class);
-        messageRecord.setMessageStatus(USER_MESSAGE_STATUS_ALREADY_READ);
-        messageRecord.update();
+    public void addAnnouncementMessage(List<String> list){
+        list.forEach(e -> {
+            db().insertInto(USER_MESSAGE).set(USER_MESSAGE.MESSAGE_NAME, USER_MESSAGE_SYSTEM_ANNOUNCEMENT)
+                .set(USER_MESSAGE.MESSAGE_CONTENT, e)
+                .set(USER_MESSAGE.MESSAGE_TYPE, USER_MESSAGE_SYSTEM)
+                .execute();
+        });
     }
-
 
     /**
      * 医师端显示待问诊数量
@@ -160,10 +138,16 @@ public class MessageDao extends ShopBaseDao {
      * @param userMessageParam 消息入参
      */
     public void updateMessage(UserMessageParam userMessageParam) {
-        db().update(USER_MESSAGE)
+        int execute = db().update(USER_MESSAGE)
             .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
-            .set(USER_MESSAGE.MESSAGE_STATUS, userMessageParam.getMessageStatus())
-            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn())).execute();
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
+            .execute();
+        if (execute != 0) {
+            db().update(USER_MESSAGE)
+                .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_NOT_READ)
+                .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
+                .execute();
+        }
     }
 
     /**

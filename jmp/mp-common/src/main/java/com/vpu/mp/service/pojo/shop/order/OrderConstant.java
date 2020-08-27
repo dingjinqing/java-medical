@@ -243,6 +243,7 @@ public class OrderConstant {
     public final static byte RS_AUTO_COMMUNITY_GROUP = 0;
     public final static byte RS_AUTO_GIVE_GIFT = 1;
     public final static byte RS_AUTO_GROUP_BUY = 2;
+    public final static byte RS_AUTO_AUDIT = 3;
 
 	/**
 	 * 订单退款退货流程操作

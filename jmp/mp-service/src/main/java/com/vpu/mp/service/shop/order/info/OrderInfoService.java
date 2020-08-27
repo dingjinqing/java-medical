@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.info;
 
+import cn.hutool.core.date.DateUtil;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
@@ -1105,6 +1106,17 @@ public class OrderInfoService extends ShopBaseService {
             and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
             and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))).
             fetch();
+    }
+    /**
+     * 自动任务获取可退款的订单 未审核
+     */
+    public Result<OrderInfoRecord> getCanAutoUnAuditOrders() {
+        return db().selectFrom(TABLE)
+                .where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT_OPEN)))
+                .and(TABLE.PAY_TIME.le(DateUtil.tomorrow().toTimestamp()))
+                .and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL))
+                .and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))
+                .fetch();
     }
 
     /**
