@@ -379,6 +379,7 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
         prescriptionParam.setStatus(PrescriptionConstant.STATUS_PASS);
         prescriptionParam.setIsValid(BaseConstant.YES);
+        prescriptionParam.setSettlementFlag(PrescriptionConstant.SETTLEMENT_WAIT);
         List<PrescriptionDrugVo> goodsList=param.getGoodsList();
         List<Integer> goodsIdList=goodsList.stream().map(PrescriptionDrugVo::getGoodsId).collect(Collectors.toList());
         Map<Integer,PrescriptionDrugVo> goodsMap=goodsList.stream().collect(Collectors.toMap(PrescriptionDrugVo::getGoodsId, Function.identity(),(x1, x2) -> x1));

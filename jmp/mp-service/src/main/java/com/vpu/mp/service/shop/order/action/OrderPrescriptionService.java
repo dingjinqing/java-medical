@@ -381,6 +381,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setPrescriptionCreateTime(null);
         prescriptionVo.setCreateTime(null);
         prescriptionVo.setUpdateTime(null);
+        prescriptionVo.setSettlementFlag(PrescriptionConstant.SETTLEMENT_WAIT);
         prescriptionDao.save(prescriptionVo);
         return prescriptionVo;
     }
