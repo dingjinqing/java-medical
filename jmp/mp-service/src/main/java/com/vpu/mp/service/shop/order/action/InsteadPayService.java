@@ -280,7 +280,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         //获取已支付金额（包含当此）
         BigDecimal moneyPaid = BigDecimalUtil.add(order.getMoneyPaid(), subOrder.getMoneyPaid());
         if(BigDecimalUtil.compareTo(moneyPaid, order.getInsteadPayMoney()) > -1){
-            logger().info("代付子单支付回调_支付金额大于代付金额");
+            logger().info("代付子单支付回调,订单支付完成");
             //支付金额大于代付金额
             toWaitDeliver(order);
             //超付退款
@@ -297,7 +297,16 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
     private void toWaitDeliver(OrderInfoRecord order) throws MpException {
         if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY)) {
             logger().info("代付子单支付回调,设置订单为待发货,更新库存");
-            orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_WAIT_DELIVERY);
+            if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
+                //待审核
+                orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_TO_AUDIT);
+            }else if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                //待开方
+                orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_TO_AUDIT_OPEN);
+            }else {
+                //代发货
+                orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_WAIT_DELIVERY);
+            }
             //订单商品
             Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
             //库存销量
