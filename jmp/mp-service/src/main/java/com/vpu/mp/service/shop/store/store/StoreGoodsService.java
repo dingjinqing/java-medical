@@ -1,8 +1,5 @@
 package com.vpu.mp.service.shop.store.store;
 
-import com.beust.jcommander.internal.Lists;
-import com.google.common.collect.Maps;
-import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.shop.store.StoreGoodsDao;
 import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
@@ -15,14 +12,11 @@ import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
 import com.vpu.mp.service.pojo.shop.store.goods.*;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.*;
 import org.jooq.tools.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -163,6 +157,26 @@ public class StoreGoodsService extends ShopBaseService{
 		return select;
 	}
 
+
+    public void batchSyncStoreGoods(List<StoreGoods> storeGoodsList,Integer storeId) {
+        List<Integer> goodsIds = storeGoodsList.stream().map(StoreGoods::getGoodsId).collect(Collectors.toList());
+        Set<Integer> existStoreGoodsSet = new HashSet<>(storeGoodsDao.selectExistStoreGoodsIds(goodsIds, storeId));
+
+        List<StoreGoods> readyToInsert = new ArrayList<>();
+        List<StoreGoods> readyToUpdate = new ArrayList<>();
+
+        for (StoreGoods storeGoods : storeGoodsList) {
+            storeGoods.setStoreId(storeId);
+            if (existStoreGoodsSet.contains(storeGoods.getGoodsId())) {
+                readyToUpdate.add(storeGoods);
+            } else {
+                readyToInsert.add(storeGoods);
+            }
+        }
+
+        storeGoodsDao.batchInsert(readyToInsert);
+        storeGoodsDao.batchUpdate(readyToUpdate);
+    }
     /**
      * 门店商品-上架
      * @param param
