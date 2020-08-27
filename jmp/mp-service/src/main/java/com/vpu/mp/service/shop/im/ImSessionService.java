@@ -211,7 +211,11 @@ public class ImSessionService extends ShopBaseService {
         ImSessionCondition imSessionCondition = new ImSessionCondition();
         imSessionCondition.setDoctorId(param.getDoctorId());
         imSessionCondition.setUserId(param.getUserId());
-        imSessionCondition.setStatus(ImSessionConstant.SESSION_ON);
+        imSessionCondition.setStatusList(Arrays.asList(ImSessionConstant.SESSION_ON,ImSessionConstant.SESSION_CONTINUE_ON));
+        if (param.getDoctorId() != null) {
+            imSessionCondition.getStatusList().add(ImSessionConstant.SESSION_READY_TO_START);
+            imSessionCondition.getStatusList().add(ImSessionConstant.SESSION_END);
+        }
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(imSessionCondition);
         if (imSessionDos == null) {
             return new ArrayList<>(0);
