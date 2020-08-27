@@ -76,6 +76,17 @@ public class OrderScheduleTask {
     }
 
     /**
+     * 24小时未审核
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void unAudit(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.unAudit();
+        });
+    }
+
+    /**
      * 收货
      * 每天00：05执行
      */
@@ -146,4 +157,6 @@ public class OrderScheduleTask {
             saas.getShopApp(r.getShopId()).shopTaskService.couponPackTaskService.monitorCouponPackOrders();
         });
     }
+
+
 }
