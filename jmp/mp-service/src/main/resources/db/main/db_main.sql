@@ -1303,6 +1303,8 @@ CREATE TABLE `b2c_shop` (
   `shop_language` varchar(45) NOT NULL DEFAULT 'zh-CN' COMMENT '语言',
   `expire_time` timestamp null DEFAULT NULL COMMENT '到期时间',
   `store_clerk_privilege_list` TEXT NULL DEFAULT NULL COMMENT '门店店员权限列表',
+  `publicity_img` varchar(512) DEFAULT '' COMMENT '店铺宣传图',
+  `copywriting` text COMMENT '店铺详情文案',
   PRIMARY KEY (`shop_id`),
   KEY `mobile` (`mobile`)
 )COMMENT='店铺';
