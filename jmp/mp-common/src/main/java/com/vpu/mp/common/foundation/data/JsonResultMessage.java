@@ -1451,5 +1451,8 @@ public class JsonResultMessage {
 
     public static final String DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY = "医师提现金额超出可提现金额";
     public static final String DOCTOR_WITHDRAW_IS_NOT_EXIST = "不存在医师可提现金额";
+    public static final String NO_LINK_WECHAT_OFFICIAL_ACCOUNTS = "小程序未绑定微信公众号";
+    public static final String DOCTOR_WITHDRAW_EX_ERROR = "医师提现wx错误";
+    public static final String DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "医师提现未关注微信公众号";
 
 }
