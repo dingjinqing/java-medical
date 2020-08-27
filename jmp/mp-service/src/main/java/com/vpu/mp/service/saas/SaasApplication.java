@@ -130,6 +130,8 @@ public class SaasApplication {
     public MainInquiryOrderService mainInquiryOrderService;
 	@Autowired
 	public SaasOrderService saasOrderService;
+	@Autowired
+	public ShopService shopService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);
