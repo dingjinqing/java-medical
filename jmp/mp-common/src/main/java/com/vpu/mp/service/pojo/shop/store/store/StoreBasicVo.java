@@ -19,4 +19,5 @@ public class StoreBasicVo {
 	private Integer storeId;
 	@JsonProperty("label")
 	private String storeName;
+	private String storeCode;
 }

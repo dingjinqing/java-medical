@@ -12,6 +12,10 @@ import java.math.BigDecimal;
 public class StoreGoods {
     private Integer storeId;
     private Integer goodsId;
+    private String goodsCommonName;
+    private String goodsQualityRatio;
+    private String goodsApprovalNumber;
+    private String goodsProductionEnterprise;
     private Integer prdId;
     private String prdSn;
     private Integer productNumber;

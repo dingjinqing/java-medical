@@ -2,14 +2,17 @@ package com.vpu.mp.dao.shop.store;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateTimeParam;
+import org.jooq.Condition;
 import org.jooq.Record6;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
@@ -40,6 +43,44 @@ public class StoreGoodsDao extends ShopBaseDao {
             select.and(GOODS_SPEC_PRODUCT.UPDATE_TIME.between(param.getUpdateBegin(), param.getUpdateEnd()));
         }
         return select.fetchInto(StoreGoods.class);
+    }
+
+    /**
+     * 查询已有的商品id信息
+     * @param goodsIds
+     * @param storeId
+     * @return
+     */
+    public List<Integer> selectExistStoreGoodsIds(List<Integer> goodsIds, Integer storeId) {
+        Condition condition = STORE_GOODS.STORE_ID.eq(storeId).and(STORE_GOODS.GOODS_ID.in(goodsIds));
+        return db().select(STORE_GOODS.GOODS_ID).from(STORE_GOODS).where(condition).fetch(STORE_GOODS.GOODS_ID);
+    }
+
+    public void batchUpdate(List<StoreGoods> storeGoodsList) {
+        List<StoreGoodsRecord> records = convertStoreGoodsToRecord(storeGoodsList);
+        db().batchUpdate(records).execute();
+    }
+
+    public void batchInsert(List<StoreGoods> storeGoodsList){
+        List<StoreGoodsRecord> records = convertStoreGoodsToRecord(storeGoodsList);
+        db().batchInsert(records).execute();
+    }
+
+    private List<StoreGoodsRecord> convertStoreGoodsToRecord(List<StoreGoods> storeGoodsList){
+        return storeGoodsList.stream().map(x -> {
+            StoreGoodsRecord storeGoodsRecord = new StoreGoodsRecord();
+            storeGoodsRecord.setStoreId(x.getStoreId());
+            storeGoodsRecord.setGoodsId(x.getGoodsId());
+            storeGoodsRecord.setGoodsCommonName(x.getGoodsCommonName());
+            storeGoodsRecord.setGoodsQualityRatio(x.getGoodsQualityRatio());
+            storeGoodsRecord.setGoodsApprovalNumber(x.getGoodsApprovalNumber());
+            storeGoodsRecord.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise());
+            storeGoodsRecord.setPrdSn(x.getPrdSn());
+            storeGoodsRecord.setPrdId(x.getPrdId());
+            storeGoodsRecord.setIsOnSale(x.getIsOnSale());
+            storeGoodsRecord.setProductPrice(x.getProductPrice());
+            return storeGoodsRecord;
+        }).collect(Collectors.toList());
     }
 
     /**

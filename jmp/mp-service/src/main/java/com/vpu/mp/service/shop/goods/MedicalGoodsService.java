@@ -18,6 +18,7 @@ import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.sort.SortDao;
+import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
@@ -44,6 +45,8 @@ import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductGoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.SpecVo;
 import com.vpu.mp.service.pojo.shop.medical.sort.vo.GoodsSortVo;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.shop.goods.aggregate.GoodsAggregate;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +73,8 @@ public class MedicalGoodsService extends ShopBaseService {
     private GoodsMedicalInfoDao goodsMedicalInfoDao;
     @Autowired
     private SortDao sortDao;
+    @Autowired
+    private StoreDao storeDao;
 
     @Autowired
     private MedicalGoodsSpecProductService medicalGoodsSpecProductService;
@@ -453,24 +458,32 @@ public class MedicalGoodsService extends ShopBaseService {
      * 拉取药店商品信息
      * @return
      */
-    public JsonResult fetchExternalStoresGoodsInfo() {
+    public void fetchExternalStoresGoodsInfo() {
         String appId = ApiExternalGateConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_STORE, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
-        return JsonResult.success();
+        Timestamp now = DateUtils.getLocalDateTime();
+        List<StoreBasicVo> storeInfos = storeDao.listStoreCodes();
+
+        for (StoreBasicVo storeInfo : storeInfos) {
+            JsonResult jsonResult = fetchExternalStoreGoodsInfo(lastRequestTime, storeInfo, now, appId, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
+            if (!JsonResult.success().equals(jsonResult)) {
+                logger().info("门店："+storeInfo.getStoreCode()+" 药品同步数据失败");
+            }
+        }
     }
 
     /**
      * 拉取指定药店药品信息
      * @param lastRequestTime
-     * @param shopSn
+     * @param storeSn
      * @param currentPullTime
      * @param appId
      * @param shopId
      * @param serviceName
      * @return
      */
-    public JsonResult fetchExternalStoreGoodsInfo(Long lastRequestTime, String shopSn, Timestamp currentPullTime, String appId, Integer shopId, String serviceName) {
+    public JsonResult fetchExternalStoreGoodsInfo(Long lastRequestTime, StoreBasicVo storeInfo, Timestamp currentPullTime, String appId, Integer shopId, String serviceName) {
         MedicalGoodsExternalStoreRequestParam param = new MedicalGoodsExternalStoreRequestParam();
         param.setStartTime(lastRequestTime);
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
@@ -480,7 +493,7 @@ public class MedicalGoodsService extends ShopBaseService {
             result.setError(apiExternalRequestResult.getError());
             result.setMessage(apiExternalRequestResult.getMsg());
             result.setContent(apiExternalRequestResult.getData());
-            logger().debug("拉取药房：" + shopSn + " 商品信息错误：error " + apiExternalRequestResult.getError() + ",msg " + apiExternalRequestResult.getMsg());
+            logger().debug("拉取药房：" + storeInfo.getStoreCode() + " 商品信息错误：error " + apiExternalRequestResult.getError() + ",msg " + apiExternalRequestResult.getMsg());
             saas().externalRequestHistoryService.eraseRequestHistory(appId, shopId, serviceName, currentPullTime);
             return result;
         }
@@ -491,7 +504,7 @@ public class MedicalGoodsService extends ShopBaseService {
         }
         Integer pullCount = 0;
         for (Integer curPage = 1; curPage <= goodsMedicalExternalStoreRequestBo.getPageSize(); curPage++) {
-            logger().debug("拉取药店" + shopSn + " 商品信息：共" + goodsMedicalExternalStoreRequestBo.getTotalCount() + "条,共" + goodsMedicalExternalStoreRequestBo.getPageSize() + "页,当前页：" + param.getCurrentPage());
+            logger().debug("拉取药店" + storeInfo.getStoreCode() + " 商品信息：共" + goodsMedicalExternalStoreRequestBo.getTotalCount() + "条,共" + goodsMedicalExternalStoreRequestBo.getPageSize() + "页,当前页：" + param.getCurrentPage());
             param.setCurrentPage(curPage);
             apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
             // 数据拉取错误
@@ -500,7 +513,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 result.setError(apiExternalRequestResult.getError());
                 result.setMessage(apiExternalRequestResult.getMsg());
                 result.setContent(apiExternalRequestResult.getData());
-                logger().debug("拉取药房：" + shopSn + " 商品信息错误：error " + apiExternalRequestResult.getError() + ",msg " + apiExternalRequestResult.getMsg());
+                logger().debug("拉取药房：" + storeInfo.getStoreCode() + " 商品信息错误：error " + apiExternalRequestResult.getError() + ",msg " + apiExternalRequestResult.getMsg());
                 saas().externalRequestHistoryService.eraseRequestHistory(appId, shopId, serviceName, currentPullTime);
                 return result;
             }
@@ -512,37 +525,37 @@ public class MedicalGoodsService extends ShopBaseService {
             List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalStoreRequestBo.getDataList();
             // 药品数据入库操作
             try {
-                batchSaveGoodsMedicalExternalStoreInfo(dataList, shopSn);
+                batchSaveGoodsMedicalExternalStoreInfo(dataList, storeInfo);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             pullCount += dataList.size();
         }
-        logger().debug("拉取药店：" + shopSn + " 商品信息结束：共处理" + pullCount + "条");
+        logger().debug("拉取药店：" + storeInfo.getStoreCode() + " 商品信息结束：共处理" + pullCount + "条");
         return JsonResult.success();
     }
 
     /**
      * 插入医院his药品信息
      * @param goodsMedicalExternalRequestItemBos
-     * @param shopSn 门店编码
+     * @param storeInfo 门店编码
      */
-    private void batchSaveGoodsMedicalExternalStoreInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos, String shopSn) {
+    private void batchSaveGoodsMedicalExternalStoreInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos, StoreBasicVo storeInfo) {
         transaction(()->{
             // 剔除不合法药品信息
             List<String> goodsKeys =new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
 
             List<GoodsMedicalExternalRequestItemBo> externalStoreRequestItemBos = goodsMedicalExternalRequestItemBos.stream().filter(x -> {
                 if (StringUtils.isBlank(x.getGoodsCommonName())) {
-                    logger().info("同步药房：" + shopSn + " 药品信息错误：" + getShopId() + ":缺少通用名称-" + x.toString());
+                    logger().info("同步药房：" + storeInfo.getStoreCode() + " 药品信息错误：" + getShopId() + ":缺少通用名称-" + x.toString());
                     return false;
                 }
                 if (StringUtils.isBlank(x.getGoodsQualityRatio())) {
-                    logger().info("同步药房：" + shopSn + " 药品信息错误：" + getShopId() + ":缺少规格系数-" + x.toString());
+                    logger().info("同步药房：" + storeInfo.getStoreCode() + " 药品信息错误：" + getShopId() + ":缺少规格系数-" + x.toString());
                     return false;
                 }
                 if (StringUtils.isBlank(x.getGoodsProductionEnterprise())) {
-                    logger().info("同步药房：" + shopSn + " 药品信息错误：" + getShopId() + ":缺少批准文号-" + x.toString());
+                    logger().info("同步药房：" + storeInfo.getStoreCode() + " 药品信息错误：" + getShopId() + ":缺少批准文号-" + x.toString());
                     return false;
                 }
                 x.setGoodsCommonName(x.getGoodsCommonName().trim());
@@ -570,6 +583,20 @@ public class MedicalGoodsService extends ShopBaseService {
                 externalStoreRequestItemBo.setGoodsPrice(shopPrice);
             }
             batchInsertGoodsMedicalExternalInfo(readyToInsert);
+
+            List<StoreGoods> storeGoodsList = externalStoreRequestItemBos.stream().map(bo -> {
+                StoreGoods storeGoods = new StoreGoods();
+                storeGoods.setGoodsId(bo.getGoodsId());
+                storeGoods.setGoodsCommonName(bo.getGoodsCommonName());
+                storeGoods.setGoodsQualityRatio(bo.getGoodsQualityRatio());
+                storeGoods.setGoodsApprovalNumber(bo.getGoodsApprovalNumber());
+                storeGoods.setGoodsProductionEnterprise(bo.getGoodsProductionEnterprise());
+                storeGoods.setProductNumber(bo.getGoodsNumber());
+                storeGoods.setProductPrice(bo.getGoodsPrice());
+                return storeGoods;
+            }).collect(Collectors.toList());
+
+
         });
     }
 
