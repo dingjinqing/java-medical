@@ -19,7 +19,7 @@ public class RebateConfig {
     /**
      * 商品订单分成比例
      */
-    private BigDecimal goodsOrderProportion;
+    private BigDecimal goodsSharingProportion;
     /**
      *处方药医生佣金比例
      */
@@ -37,11 +37,11 @@ public class RebateConfig {
      */
     private BigDecimal noRxMedicalPlatformProportion;
     /**
-     *医生佣金比例
+     *咨询医生佣金比例
      */
     private BigDecimal inquiryOrderDoctorProportion;
     /**
-     *平台佣金比例
+     *咨询平台佣金比例
      */
     private BigDecimal inquiryOrderPlatformProportion;
 

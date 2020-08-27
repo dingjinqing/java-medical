@@ -319,14 +319,19 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 //计算应返利
                 RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
                 if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+                    BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
                     BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
                     BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+                    itemDo.setGoodsSharingProportion(sharingProportion);
                     if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
                         itemDo.setRebateProportion(rxProportion);
                     }else {
                         itemDo.setRebateProportion(noRxProportion);
                     }
-                    itemDo.setTotalRebateMoney(goods.getShopPrice().multiply(itemDo.getRebateProportion()).multiply(BigDecimal.valueOf(itemDo.getDragSumNum())).setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_DOWN));
+                    itemDo.setTotalRebateMoney(goods.getShopPrice().multiply(BigDecimal.valueOf(itemDo.getDragSumNum()))
+                        .multiply(itemDo.getGoodsSharingProportion())
+                        .multiply(itemDo.getRebateProportion())
+                        .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_DOWN));
                 }
                 list.add(itemDo);
             }

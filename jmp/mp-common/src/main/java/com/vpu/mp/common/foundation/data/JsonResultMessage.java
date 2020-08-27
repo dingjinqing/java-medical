@@ -1449,4 +1449,7 @@ public class JsonResultMessage {
     public static final String TO_FETCH_PATIENT = "请跳转至输入验证码拉取信息界面";
     public static final String SMS_OUT_OF_LIMITS = "今日可发送短信已超额";
 
+    public static final String DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY = "医师提现金额超出可提现金额";
+    public static final String DOCTOR_WITHDRAW_IS_NOT_EXIST = "不存在医师可提现金额";
+
 }

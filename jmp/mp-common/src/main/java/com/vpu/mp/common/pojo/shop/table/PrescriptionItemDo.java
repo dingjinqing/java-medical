@@ -49,6 +49,7 @@ public class PrescriptionItemDo implements Serializable {
     private String     goodsUseMemo;
     private String     goodsProductionEnterprise;
     private BigDecimal medicinePrice;
+    private BigDecimal goodsSharingProportion;
     private BigDecimal rebateProportion;
     private BigDecimal totalRebateMoney;
     private Byte       isDelete;

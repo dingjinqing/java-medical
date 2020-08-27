@@ -14,6 +14,9 @@ import org.jooq.SelectJoinStep;
 import org.jooq.UpdateSetFirstStep;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+
+import static org.jooq.impl.DSL.*;
 import static com.vpu.mp.db.shop.Tables.DOCTOR_WITHDRAW;
 
 /**
@@ -39,7 +42,7 @@ public class DoctorWithdrawDao extends ShopBaseDao {
      * @param status
      * @param refuseDesc
      */
-    public void update(Integer id,Byte status,String refuseDesc){
+    public  void update(Integer id,Byte status,String refuseDesc){
         UpdateSetFirstStep<DoctorWithdrawRecord> update=db().update(DOCTOR_WITHDRAW);
         switch (status){
             case (byte)2:
@@ -61,7 +64,7 @@ public class DoctorWithdrawDao extends ShopBaseDao {
      * @param orderSn
      * @return
      */
-    public DoctorWithdrawVo getWithDrawByOrderSn(String orderSn){
+    public DoctorWithdrawVo getWithdrawByOrderSn(String orderSn){
         return db().select().from(DOCTOR_WITHDRAW).where(DOCTOR_WITHDRAW.ORDER_SN.eq(orderSn)).fetchAnyInto(DoctorWithdrawVo.class);
     }
 
@@ -87,6 +90,17 @@ public class DoctorWithdrawDao extends ShopBaseDao {
         PageResult<DoctorWithdrawVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),DoctorWithdrawVo.class);
         return result;
 
+    }
+
+    /**
+     * 获取累计提现金额总数
+     * @param doctorId
+     * @param status
+     * @return
+     */
+    public BigDecimal getWithdrawCashSum(Integer doctorId, Byte status){
+        return db().select(sum(DOCTOR_WITHDRAW.WITHDRAW_CASH)).from(DOCTOR_WITHDRAW).where(DOCTOR_WITHDRAW.DOCTOR_ID.eq(doctorId).and(DOCTOR_WITHDRAW.STATUS.eq(status)))
+            .fetchAnyInto(BigDecimal.class);
     }
 
 }

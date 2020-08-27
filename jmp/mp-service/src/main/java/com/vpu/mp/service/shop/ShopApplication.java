@@ -79,6 +79,7 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.question.FeedbackService;
+import com.vpu.mp.service.shop.rebate.DoctorWithdrawService;
 import com.vpu.mp.service.shop.rebate.InquiryOrderRebateService;
 import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
@@ -668,4 +669,9 @@ public class ShopApplication {
      */
     @Autowired
     public InquiryOrderRebateService inquiryOrderRebateService;
+    /**
+     * 医师提现
+     */
+    @Autowired
+    public DoctorWithdrawService doctorWithdrawService;
 }
