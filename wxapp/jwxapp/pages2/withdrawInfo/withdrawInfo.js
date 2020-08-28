@@ -9,18 +9,24 @@ global.wxPage({
     activeStyle1:'border-radius:16rpx 16rpx 0 0;background-color:#fff',
     activeStyle2:'border-radius:0 16rpx 0 16rpx;background-color:#f5f5f5',
     activeType:'1',
-    targetStatus:'1'
+    targetStatus:'0',
+    pageParams: {
+      currentPage: 1,
+      pageRows: 20
+    }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.requestWithdrawList()
   },
   changeType(e){
     let {type} = e.currentTarget.dataset
-    this.data.activeType = type
+    this.setData({
+      activeType:type
+    })
     if(type === '1'){
       this.setData({
         activeStyle1:'border-radius:16rpx 16rpx 0 0;background-color:#fff',
@@ -32,11 +38,31 @@ global.wxPage({
         activeStyle2:'border-radius:16rpx 16rpx 0 0;background-color:#fff'
       })
     }
+    this.requestWithdrawList()
   },
   toggleStatus(e){
     let {type} = e.currentTarget.dataset
     this.setData({
       targetStatus:type
+    })
+    this.requestWithdrawList()
+  },
+  requestWithdrawList(){
+    let apiStr = this.data.activeType === '1' ? '/api/wxapp/doctor/rebate/prescription/list' : '/api/wxapp/doctor/rebate/inquiryOrder/list'
+    let params = {
+      doctorId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
+      status:Number(this.data.targetStatus) === 0 ? null : Number(this.data.targetStatus),
+      ...this.pageParams
+    }
+    util.api(apiStr,res=>{
+      if(res.error === 0){
+        this.setData({
+          dataList:res.content.dataList
+        })
+        this.data.pageParams = res.content.page
+      }
+    },{
+      ...params
     })
   },
   /**
