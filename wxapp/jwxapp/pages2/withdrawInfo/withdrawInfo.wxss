@@ -39,7 +39,7 @@ page{
 .tab-content>view>text.active::after {
   content: '';
   width: 80%;
-  height: 6rpx;
+  height: 5rpx;
   border-radius: 3rpx;
   background-color: #fff;
   position: absolute;
@@ -75,9 +75,11 @@ page{
   position: relative;
   z-index: 2;
   box-sizing: border-box;
+  border-radius: 0 0 16rpx 16rpx;
 }
 .card-item + .card-item{
   margin-top: 24rpx;
+  border-radius: 16rpx 16rpx 16rpx 16rpx;
 }
 .card-item-title{
   margin-bottom: 28rpx;

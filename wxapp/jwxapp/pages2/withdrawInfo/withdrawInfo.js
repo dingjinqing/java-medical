@@ -8,7 +8,8 @@ global.wxPage({
     title_bgColor:'#26C4BC',
     activeStyle1:'border-radius:16rpx 16rpx 0 0;background-color:#fff',
     activeStyle2:'border-radius:0 16rpx 0 16rpx;background-color:#f5f5f5',
-    activeType:1
+    activeType:'1',
+    targetStatus:'1'
   },
 
   /**
@@ -31,6 +32,12 @@ global.wxPage({
         activeStyle2:'border-radius:16rpx 16rpx 0 0;background-color:#fff'
       })
     }
+  },
+  toggleStatus(e){
+    let {type} = e.currentTarget.dataset
+    this.setData({
+      targetStatus:type
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

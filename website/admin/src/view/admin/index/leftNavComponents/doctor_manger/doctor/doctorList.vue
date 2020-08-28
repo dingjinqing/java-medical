@@ -17,7 +17,7 @@
           <el-input
             v-model="queryParams.name"
             size="small"
-            style="width:190px;"
+            style="width: 190px;"
             placeholder="请输入姓名"
           >
           </el-input>
@@ -27,54 +27,47 @@
           <el-input
             v-model="queryParams.departmentName"
             size="small"
-            style="width:190px;"
+            style="width: 190px;"
             placeholder="请输入科室"
           >
           </el-input>
         </div>
         <div class="btn_wrap">
-          <el-button
-            type='primary'
-            size='small'
-            @click="initDataList"
-          >搜索</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click='handleAddDoctor'
-          >添加</el-button>
+          <el-button type="primary" size="small" @click="initDataList"
+            >搜索</el-button
+          >
+          <el-button type="primary" size="small" @click="handleAddDoctor"
+            >添加</el-button
+          >
+          <el-button type="primary" size="small" @click="fetch">同步</el-button>
         </div>
       </div>
     </div>
     <div class="table_box">
       <el-table
-        v-loading='loading'
-        :data='tableData'
-        style="width:100%"
+        v-loading="loading"
+        :data="tableData"
+        style="width: 100%;"
         border
         :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none',
-            'color': '#000'
-          }"
+          'background-color': '#f5f5f5',
+          'text-align': 'center',
+          border: 'none',
+          color: '#000',
+        }"
         :cell-style="{
-            'text-align':'center'
-          }"
+          'text-align': 'center',
+        }"
       >
         <el-table-column
-          prop='hospitalCode'
-          label='医师院内编号'
+          prop="hospitalCode"
+          label="医师院内编号"
         ></el-table-column>
-        <el-table-column label='名称'>
+        <el-table-column label="名称">
           <template slot-scope="scope">
             <div class="doc_name_url">
-              <img
-                class="doc_img"
-                v-if='scope.row.url'
-                :src="scope.row.url"
-              >
-              <div>{{scope.row.name}}</div>
+              <img class="doc_img" v-if="scope.row.url" :src="scope.row.url" />
+              <div>{{ scope.row.name }}</div>
             </div>
           </template>
         </el-table-column>
@@ -82,71 +75,58 @@
             prop='name'
             label='姓名'
           ></el-table-column> -->
-        <el-table-column
-          prop='age'
-          label='年龄'
-        ></el-table-column>
-        <el-table-column
-          prop='departmentNames'
-          label='科室'
-        ></el-table-column>
-        <el-table-column
-          prop='titleName'
-          label='职称'
-        ></el-table-column>
-        <el-table-column
-          prop='mobile'
-          label='手机号'
-        ></el-table-column>
-        <el-table-column
-          prop='workTime'
-          label='从业时间'
-        ></el-table-column>
-        <el-table-column label='操作'>
+        <el-table-column prop="age" label="年龄"></el-table-column>
+        <el-table-column prop="departmentNames" label="科室"></el-table-column>
+        <el-table-column prop="titleName" label="职称"></el-table-column>
+        <el-table-column prop="mobile" label="手机号"></el-table-column>
+        <el-table-column prop="workTime" label="从业时间"></el-table-column>
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="operation">
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 @click="editDoctor(scope.row.id)"
-              >编辑</a>
+                >编辑</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.status == 1"
                 @click="puaseDoctor(scope.row)"
-              >停用</a>
+                >停用</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.status == 0"
                 @click="beginDoctor(scope.row)"
-              >启用</a>
+                >启用</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.userId !== 0"
                 @click="setBundling(scope.row.id)"
-              >解除绑定</a>
+                >解除绑定</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 @click="setConsultation(scope.row)"
-              >{{scope.row.canConsultation ? '禁止问诊' : '允许问诊'}}</a>
+                >{{ scope.row.canConsultation ? '禁止问诊' : '允许问诊' }}</a
+              >
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="initDataList"
-      />
+      <pagination :page-params.sync="pageParams" @pagination="initDataList" />
     </div>
   </div>
 </template>
 
 <script>
-import { doctorList, enableDoctor, unBundling, updateConsultation } from '@/api/admin/doctorManage/doctorInfo/doctor'
+import { doctorList, enableDoctor, unBundling, updateConsultation, fetchDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
@@ -292,6 +272,11 @@ export default {
             this.initDataList()
           }
         })
+      })
+    },
+    fetch () {
+      fetchDoctor().then(res => {
+        console.log(res)
       })
     }
   },

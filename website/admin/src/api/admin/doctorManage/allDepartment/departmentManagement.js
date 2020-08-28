@@ -47,3 +47,11 @@ export function getDepartment (id) {
     method: 'get'
   })
 }
+// 同步医生科室
+export function fetchDoctorDepartment (data) {
+  return service({
+    url: `/api/admin/doctor/department/fetch`,
+    method: 'post',
+    data: data
+  })
+}
