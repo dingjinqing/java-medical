@@ -49,6 +49,7 @@
         <module>mp-common</module>
         <module>mp-dao</module>
         <module>mp-sql</module>
+        <module>mp-sql-deploy</module>
     </modules>
 
 	<parent>
@@ -103,6 +104,12 @@
             <dependency>
                 <groupId>com.vpu.mp</groupId>
                 <artifactId>mp-sql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.vpu.mp</groupId>
+                <artifactId>mp-sql-deploy</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

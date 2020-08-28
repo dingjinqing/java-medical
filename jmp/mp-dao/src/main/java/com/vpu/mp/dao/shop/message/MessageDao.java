@@ -42,6 +42,8 @@ public class MessageDao extends ShopBaseDao {
 
     /**
      * 新增系统消息
+     * @param list
+     * 新增系统消息
      * @param list 新增公告列表
      */
     public void addAnnouncementMessage(List<AnnounceBo> list){
