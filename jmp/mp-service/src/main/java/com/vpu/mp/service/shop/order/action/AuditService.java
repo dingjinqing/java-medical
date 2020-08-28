@@ -140,15 +140,14 @@ public class AuditService extends ShopBaseService implements IorderOperate<Audit
         Result<OrderInfoRecord> orders = orderInfo.getCanAutoUnAuditOrders();
         orders.forEach(orderRecord->{
             Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(orderRecord.getOrderId());
-            //组装退款param
             RefundParam param = new RefundParam();
-            //1是退款
             param.setAction((byte) OrderServiceCode.RETURN.ordinal());
-            param.setIsMp(OrderConstant.IS_MP_DOCTOR);
-            param.setReturnSourceType(OrderConstant.RS_AUTO_AUDIT);
+            param.setIsMp(OrderConstant.IS_MP_AUTO);
             param.setOrderSn(orderRecord.getOrderSn());
             param.setOrderId(orderRecord.getOrderId());
             param.setReturnType(OrderConstant.RT_ONLY_MONEY);
+            param.setReasonType(OrderConstant.RETRURN_REASON_TYPE_DOCTOR_AUDIT);
+            param.setReasonDesc("时间段内未被审核");
             param.setReturnMoney(orderRecord.getMoneyPaid().add(orderRecord.getScoreDiscount()).add(orderRecord.getUseAccount()).add(orderRecord.getMemberCardBalance()).subtract(orderRecord.getShippingFee()));
             param.setShippingFee(orderRecord.getShippingFee());
             List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
