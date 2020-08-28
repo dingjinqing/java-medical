@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.message;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
@@ -13,16 +14,20 @@ import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.message.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionUnReadMessageInfoParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
+import com.vpu.mp.service.shop.decoration.AdminDecorationService;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.vpu.mp.common.foundation.data.ImSessionConstant.*;
@@ -64,6 +69,9 @@ public class UserMessageService extends ShopBaseService {
 
     @Autowired
     private ImSessionDao imSessionDao;
+
+    @Autowired
+    private AdminDecorationService adminDecorationService;
 
     /**
      * 更改消息已读状态
@@ -312,14 +320,48 @@ public class UserMessageService extends ShopBaseService {
      * @param userId 用户id
      */
     public void fetchUserMessage(Integer userId) {
-//        this.transaction(() -> {
-            // 拉取用户新信息
-            ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
-            imSessionUnReadMessageInfoParam.setUserId(userId);
-            setImSessionMessage(imSessionUnReadMessageInfoParam);
-            setOrderMessage(userId);
-            setAnnouncementMessage(userId);
-//        });
+        ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
+        imSessionUnReadMessageInfoParam.setUserId(userId);
+        setImSessionMessage(imSessionUnReadMessageInfoParam);
+        setOrderMessage(userId);
+        setAnnouncementMessage(userId);
+    }
+
+    /**
+     * 新增系统公告
+     * @param pageStoreParam 系统公告入参
+     */
+    public void addAnnouncement(PageStoreParam pageStoreParam) {
+        String pageContent = pageStoreParam.getPageContent();
+        List<String> list = this.processPageContentBeforeSave(pageContent);
+        messageDao.addAnnouncementMessage(list);
+    }
+
+    /**
+     * 处理装修的JSON，提出门店公告信息
+     * @param pageContent 装修json
+     * @return String
+     */
+    protected List<String> processPageContentBeforeSave(String pageContent) {
+        List<String> list = toAnnounceBoBo(pageContent);
+        return list;
+    }
+
+    /**
+     * 记录转实体类
+     * @param pageContent
+     * @return
+     */
+    private List<String> toAnnounceBoBo(String pageContent) {
+        List<String> list = new ArrayList<>();
+        Map<String, AnnounceBo> announceBo = Util.json2Object(pageContent, new TypeReference<Map<String, AnnounceBo>>() {}, false);
+        assert announceBo != null;
+        announceBo.forEach( (k, v) ->{
+            if (v.getShopText() != null) {
+                list.add(v.getShopText());
+            }
+        });
+        return list;
     }
 
 }

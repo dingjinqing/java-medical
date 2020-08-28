@@ -63,6 +63,7 @@ import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.marketcalendar.MarketCalendarService;
 import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.member.*;
+import com.vpu.mp.service.shop.message.UserMessageService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.OrderApiService;
@@ -136,6 +137,8 @@ public class ShopApplication {
 	public MpDecorationService mpDecoration;
     @Autowired
     public AdminDecorationService adminDecoration;
+    @Autowired
+    public UserMessageService userMessageService;
 
 	/**
 	 * 订单普通查询
