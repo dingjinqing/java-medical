@@ -62,6 +62,9 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
         if(StringUtils.isNotBlank(param.getDoctorName())){
             select.where(DOCTOR.NAME.like(this.likeValue(param.getDoctorName())));
         }
+        if(param.getDoctorId()!=null){
+            select.where(INQUIRY_ORDER_REBATE.DOCTOR_ID.eq(param.getDoctorId()));
+        }
         if(param.getStatus()!=null){
             select.where(INQUIRY_ORDER_REBATE.STATUS.eq(param.getStatus()));
         }

@@ -99,9 +99,9 @@ export function fetchDoctor (data) {
 }
 
 // 同步系统职称
-export function fetchDoctorDepartment (data) {
+export function fetchDoctorTitle (data) {
   return service({
-    url: '/api/admin/doctor/department/fetch',
+    url: '/api/admin/doctor/title/fetch',
     method: 'post',
     data
   })
