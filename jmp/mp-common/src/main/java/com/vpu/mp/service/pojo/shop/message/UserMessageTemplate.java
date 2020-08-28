@@ -82,11 +82,11 @@ public enum UserMessageTemplate {
      */
     USER_MESSAGE_IM_SESSION_PRESCRIPTION_ADD(3003, (byte) 3003, "%s医师根据您的病情描述，为您开具以下处方");
 
-    private final Integer code;
+    private Integer code;
 
-    private final byte orderStatus;
+    private byte orderStatus;
 
-    private final String message;
+    private String message;
 
     public static String getMessageByCode(Integer code) {
         for (UserMessageTemplate item : UserMessageTemplate.values()) {

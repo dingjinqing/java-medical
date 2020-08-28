@@ -1113,7 +1113,7 @@ public class OrderInfoService extends ShopBaseService {
     public Result<OrderInfoRecord> getCanAutoUnAuditOrders() {
         return db().selectFrom(TABLE)
                 .where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT_OPEN)))
-                .and(TABLE.PAY_TIME.le(DateUtil.tomorrow().toTimestamp()))
+                .and(TABLE.PAY_TIME.ge(DateUtil.yesterday().toTimestamp()))
                 .and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL))
                 .and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))
                 .fetch();
