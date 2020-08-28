@@ -8,7 +8,7 @@
     <view class="card-content">
       <view class="money-content">
         <text class="money-tips">可提现金额</text>
-        <text class="money-now">100.00</text>
+        <text class="money-now">{{totalMoney}}</text>
         <view class="record">提现记录</view>
       </view>
       <view class="info-content">
@@ -16,14 +16,14 @@
           <image src="http://medicaldevimg.weipubao.cn/upload/965554/image/20200812/9CVLWuMhA3q0KQAyDUUX.png"></image>
           <view class="info-text">
             <text class="info-tips">累计提现</text>
-            <text class="info-money">0.00</text>
+            <text class="info-money">{{accruingWithDrawCash}}</text>
           </view>
         </view>
         <view class="info-item">
           <image src="http://medicaldevimg.weipubao.cn/upload/965554/image/20200812/9CVLWuMhA3q0KQAyDUUX.png"></image>
           <view class="info-text">
             <text class="info-tips">待提现</text>
-            <text class="info-money">100.00</text>
+            <text class="info-money">{{waitWithDrawCash}}</text>
           </view>
         </view>
       </view>
