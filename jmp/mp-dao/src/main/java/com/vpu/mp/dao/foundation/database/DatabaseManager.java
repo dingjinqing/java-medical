@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DatabaseConfig;
 import com.vpu.mp.dao.foundation.service.QueryFilter;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.migrate.MigrateSql;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -48,6 +49,9 @@ public class DatabaseManager {
 
 	@Autowired
 	protected DatasourceManager datasourceManager;
+
+    @Autowired
+    protected MigrateSql migrateSql;
 
 	Logger loger = LoggerFactory.getLogger(DatabaseManager.class);
 
@@ -139,126 +143,15 @@ public class DatabaseManager {
 	 * 安装店铺数据库
 	 */
     public boolean installShopDb(DbConfig dbConfig) {
-        try {
-            String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
-			DataSource ds = datasourceManager.getToCreateShopDbDatasource();
-            getDsl(ds, dbConfig, 0).execute(sql);
-        } catch (DataAccessException e) {
+        DataSource ds = datasourceManager.getDatasource(dbConfig);
+        try{
+            migrateSql.migrateDb(ds,dbConfig.getDatabase(),false,true);
+        }catch (Exception e){
             e.printStackTrace();
             return false;
         }
-
-        boolean ret = execScript(dbConfig, "db/shop/db_shop.sql");
-        boolean updateRet = execScript(dbConfig, "db/shop/shop_update.sql");;
-        // 测试用，测完删log
-        loger.debug("db_shop执行结果{}\nshop_update.sql执行结果{}",ret,updateRet);
-        if (ret && updateRet) {
-            loger.debug("准备执行db_shop_data.sql的dbConfig" + dbConfig);
-            ret = execScript(dbConfig, "db/shop/db_shop_data.sql");
-            loger.debug("db_shop_data.sql执行结果" + ret);
-        }
-        return ret && updateRet;
+        return true;
     }
-
-	/**
-	 * 执行SQL脚本
-	 */
-	public boolean execScript(DbConfig dbConfig, String sqlPath) {
-		ClassPathResource cpr = new ClassPathResource(sqlPath);
-		String sql = "";
-		try {
-			byte[] bdata = FileCopyUtils.copyToByteArray(cpr.getInputStream());
-			sql = new String(bdata, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		sql = this.filterSql(sql);
-		final class SqlExecuter extends SQLExec {
-			public SqlExecuter() {
-				Project project = new Project();
-				project.init();
-				setProject(project);
-				setTaskType("sql");
-				setTaskName("sql");
-				this.setDelimiter(";");
-				this.setAutocommit(true);
-				this.setEncoding("UTF-8");
-			}
-		}
-
-		SqlExecuter executer = new SqlExecuter();
-		executer.addText(sql);
-		executer.setDriver(databaseConfig.getDriver());
-		executer.setPassword(dbConfig.password);
-		executer.setUserid(dbConfig.username);
-		executer.setUrl(datasourceManager.getJdbcUrl(dbConfig.host, dbConfig.port, dbConfig.database));
-		try {
-			executer.execute();
-		} catch (BuildException e) {
-			loger.debug(e.getMessage(), e);
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * 过滤SQL注释
-	 */
-	public String filterSql(String sql) {
-		String[] lines = sql.split("\n");
-		StringBuffer sqlBuffer = new StringBuffer();
-		boolean startMultiLineComments = false;
-		int p1 = -1;
-		int p2 = -1;
-
-		sqlBuffer.append("SET NAMES utf8mb4;").append("\n");
-		sqlBuffer.append("Set sql_mode='ONLY_FULL_GROUP_BY';").append("\n");
-
-		for (String line : lines) {
-			line = line.trim();
-			if (!startMultiLineComments) {
-				if (line.startsWith("//") || line.startsWith("#") || line.startsWith("--")) {
-					continue;
-				}
-			}
-
-			if (startMultiLineComments) {
-				p2 = line.indexOf("*/");
-				if (p2 == -1) {
-					continue;
-				} else {
-					startMultiLineComments = false;
-					line = line.substring(p2 + 2);
-				}
-			}
-
-			while (true) {
-				p1 = line.indexOf("/*");
-				if (p1 != -1) {
-					sqlBuffer.append(line.substring(0, p1));
-					p2 = line.indexOf("*/");
-					if (p2 == -1) {
-						startMultiLineComments = true;
-						break;
-					} else {
-						line = line.substring(p2 + 2);
-						continue;
-					}
-				} else {
-					sqlBuffer.append(line).append("\n");
-					break;
-				}
-			}
-			if (startMultiLineComments) {
-				continue;
-			}
-
-		}
-		return sqlBuffer.toString();
-	}
 
 	/**
 	 * 根据数据源得到JOOQ的配置

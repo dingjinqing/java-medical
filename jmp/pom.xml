@@ -36,6 +36,7 @@
 		<org.apache.ant.version>1.8.4</org.apache.ant.version>
 		<com.google.code.gson.version>2.8.5</com.google.code.gson.version>
 		<javax.persistence-api.version>2.2</javax.persistence-api.version>
+        <project.flywaydb.version>6.5.5</project.flywaydb.version>
 	</properties>
 
 
@@ -47,6 +48,7 @@
 		<module>mp-web</module>
         <module>mp-common</module>
         <module>mp-dao</module>
+        <module>mp-sql</module>
     </modules>
 
 	<parent>
@@ -98,7 +100,11 @@
                 <version>${project.version}</version>
             </dependency>
 
-
+            <dependency>
+                <groupId>com.vpu.mp</groupId>
+                <artifactId>mp-sql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
 			<dependency>
 				<groupId>com.alibaba</groupId>
