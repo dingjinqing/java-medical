@@ -56,11 +56,11 @@ public enum UserMessageTemplate {
     /**
      * 订单正在退款
      */
-    USER_MESSAGE_ORDER_INFO_ORDER_REFUNDING(2009, (byte) 9, "您订单号为%s的订单正在退款。"),
+    USER_MESSAGE_ORDER_INFO_ORDER_REFUNDING(2009, (byte) 9, "您订单号为%s的订单已退货成功。"),
     /**
      * 订单退款成功
      */
-    USER_MESSAGE_ORDER_INFO_ORDER_REFUND_FINISHED(2010, (byte) 10, "您订单号为%s的订单退款成功。"),
+    USER_MESSAGE_ORDER_INFO_ORDER_REFUND_FINISHED(2010, (byte) 10, "您订单号为%s的订单已退货成功。"),
     /**
      * 订单正在审核中
      */
@@ -82,11 +82,11 @@ public enum UserMessageTemplate {
      */
     USER_MESSAGE_IM_SESSION_PRESCRIPTION_ADD(3003, (byte) 3003, "%s医师根据您的病情描述，为您开具以下处方");
 
-    private Integer code;
+    private final Integer code;
 
-    private byte orderStatus;
+    private final byte orderStatus;
 
-    private String message;
+    private final String message;
 
     public static String getMessageByCode(Integer code) {
         for (UserMessageTemplate item : UserMessageTemplate.values()) {
