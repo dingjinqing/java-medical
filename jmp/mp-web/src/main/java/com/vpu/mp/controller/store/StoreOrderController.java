@@ -274,8 +274,6 @@ public class StoreOrderController extends StoreBaseController {
         }
     }
 
-
-
     /**
      * 核销码检验
      * @param checkVerifyCodeParam 订单号、核销码

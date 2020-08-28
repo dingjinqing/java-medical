@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.UserMessage;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserAnnouncementRecord;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
+import com.vpu.mp.service.pojo.shop.message.AnnounceBo;
 import com.vpu.mp.service.pojo.shop.message.MessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
@@ -35,16 +36,22 @@ public class MessageDao extends ShopBaseDao {
 
     private static final String USER_MESSAGE_SYSTEM_ANNOUNCEMENT = "系统公告";
 
+    private static final Byte IS_PULL_YES = 1;
+
+    private static final Byte IS_PULL_NO = 0;
+
     /**
      * 新增系统消息
-     * @param list
+     * @param list 新增公告列表
      */
-    public void addAnnouncementMessage(List<String> list){
+    public void addAnnouncementMessage(List<AnnounceBo> list){
         list.forEach(e -> {
-            db().insertInto(USER_MESSAGE).set(USER_MESSAGE.MESSAGE_NAME, USER_MESSAGE_SYSTEM_ANNOUNCEMENT)
-                .set(USER_MESSAGE.MESSAGE_CONTENT, e)
-                .set(USER_MESSAGE.MESSAGE_TYPE, USER_MESSAGE_SYSTEM)
-                .execute();
+            if (IS_PULL_YES.equals(e.getIsPull())) {
+                db().insertInto(USER_MESSAGE).set(USER_MESSAGE.MESSAGE_NAME, USER_MESSAGE_SYSTEM_ANNOUNCEMENT)
+                    .set(USER_MESSAGE.MESSAGE_CONTENT, e.getShopText())
+                    .set(USER_MESSAGE.MESSAGE_TYPE, USER_MESSAGE_SYSTEM)
+                    .execute();
+            }
         });
     }
 
