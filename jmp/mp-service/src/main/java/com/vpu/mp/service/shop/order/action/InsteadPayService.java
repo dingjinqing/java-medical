@@ -308,6 +308,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
                 //代发货
                 orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_WAIT_DELIVERY);
             }
+            orderInfo.setPayTime(order.getOrderSn());
             //订单商品
             Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
             //库存销量
