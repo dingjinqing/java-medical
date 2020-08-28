@@ -25,7 +25,7 @@ public class AdminDoctorWithdrawController extends AdminBaseController{
     public JsonResult audit(@RequestBody DoctorWithdrawUpdateParam param){
         try {
             param.setClientIp(RequestUtil.getIp(request));
-            shop().doctorWithdrawService.update(param);
+            shop().doctorWithdrawService.audit(param);
         } catch (MpException e) {
             return fail(e.getErrorCode());
         }

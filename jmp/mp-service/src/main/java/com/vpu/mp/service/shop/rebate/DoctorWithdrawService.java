@@ -93,7 +93,7 @@ public class DoctorWithdrawService extends ShopBaseService {
      * @param param
      * @throws MpException
      */
-    public void update(DoctorWithdrawUpdateParam param)throws MpException {
+    public void audit(DoctorWithdrawUpdateParam param)throws MpException {
         DoctorWithdrawVo doctorWithdrawVo= doctorWithDrawDao.getWithdrawByOrderSn(param.getOrderSn());
         if(doctorWithdrawVo==null){
             throw new MpException(JsonResultCode.CODE_FAIL);
