@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.doctor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -61,7 +60,7 @@ public class DoctorService extends ShopBaseService {
     public static final float ANSWER_TIME_HALF_HOUR = 30;
     public static final float ANSWER_TIME_ONE_HOUR = 60;
 
-    public static final Byte DOCTOR_STATUS_DISABLE = 0;
+    private static final Byte DOCTOR_STATUS_DISABLE = 0;
 
     @Autowired
     protected DoctorDao doctorDao;
@@ -268,11 +267,11 @@ public class DoctorService extends ShopBaseService {
         }
         // 查询是否有当前医师信息
         DoctorDo doctorDo = doctorDao.doctorAuth(doctorAuthParam);
-        if (doctorDo.getStatus().equals(DOCTOR_STATUS_DISABLE)) {
+        if (doctorDo == null || DOCTOR_STATUS_DISABLE.equals(doctorDo.getStatus())) {
             return null;
         }
         // 如果医师存在且没有被认证过
-        if (doctorDo != null && doctorDo.getUserId() == 0) {
+        if (doctorDo.getUserId() == 0) {
             this.transaction(() -> {
                 // 修改user表中用户类型为医师
                 userDao.updateDoctorAuth(doctorAuthParam.getUserId());
