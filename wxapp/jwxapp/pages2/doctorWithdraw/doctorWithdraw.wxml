@@ -1,0 +1,27 @@
+<view class="body">
+<include src="/pages/common/header.wxml"/>
+  <view class="main-container">
+    <view class="tips-title">
+      提现到微信钱包
+    </view>
+    <view class="card-content">
+      <view class="title">
+        提现金额
+        <text>（单次最小提现金额：100.00元）</text>
+      </view>
+      <view class="input-content">
+        ￥ <input type="number"></input>
+      </view>
+      <view class="text-line">
+        <text>可提现余额：￥20.00</text>
+        <text>全部提现</text>
+      </view>
+      <view class="button">
+        全部提现
+      </view>
+    </view>
+    <view class="tips-bottom">
+      注意：提现前，请确保已关注关注公众号“微铺宝企业服务”
+    </view>
+  </view>
+</view>

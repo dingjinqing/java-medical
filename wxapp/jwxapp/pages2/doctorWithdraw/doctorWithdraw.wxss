@@ -1,0 +1,55 @@
+.tips-title,.tips-bottom{
+  line-height: 80rpx;
+  text-align: center;
+  color: #666;
+}
+.card-content{
+  width: 702rpx;
+  border-radius: 16rpx;
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 40rpx 60rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.title{
+  color: #343434;
+}
+.title > text{
+  color: #666;
+  font-size: 24rpx;
+}
+.input-content{
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+  font-size: 60rpx;
+  line-height: 120rpx;
+  align-items: center;
+  margin-top: 10rpx;
+}
+.input-content > input{
+  font-size: 72rpx;
+  line-height: 120rpx;
+  height: 120rpx;
+}
+.text-line{
+  line-height: 100rpx;
+  display: flex;
+}
+.text-line > text:first-of-type{
+  margin-right: auto;
+  font-size: 24rpx;
+  color: #666;
+}
+.text-line > text:last-of-type{
+  color: #5B6B92;
+  font-size: 24rpx;
+}
+.button{
+  line-height: 80rpx;
+  border-radius: 40rpx;
+  text-align: center;
+  background-color: #26C4BC;
+  color: #fff;
+}

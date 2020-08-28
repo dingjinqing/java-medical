@@ -154,7 +154,9 @@
         "doctorPrescriptionList/doctorPrescriptionList",
         "doctorFocus/doctorFocus",
         "serviceWithdraw/serviceWithdraw",
-        "withdrawInfo/withdrawInfo"
+        "withdrawInfo/withdrawInfo",
+        "doctorWithdrawRecord/doctorWithdrawRecord",
+        "doctorWithdraw/doctorWithdraw"
       ]
     }
   ],

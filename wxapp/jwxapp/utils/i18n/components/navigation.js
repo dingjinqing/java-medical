@@ -146,6 +146,8 @@ module.exports = {
     "doctorPrescriptionList": "处方列表",
     "doctorFocus": "关注的医师",
     "serviceWithdraw":"服务提现",
-    "withdrawInfo":"提现详情"
+    "withdrawInfo":"提现详情",
+    "doctorWidthdrawRecord":'医师返利记录',
+    "doctorWithdraw":'返利提现'
   }
 }

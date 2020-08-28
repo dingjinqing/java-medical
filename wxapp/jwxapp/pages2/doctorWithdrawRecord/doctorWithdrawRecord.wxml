@@ -1,0 +1,19 @@
+<view class="body">
+<include src="/pages/common/header.wxml"/>
+  <view class="main-container">
+    <view class="top-content" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <view class="top-tops">已提现</view>
+      <view class="total-money">￥<text>0.00</text></view>
+    </view>
+    <view class="record-list">
+      <view class="record-item">
+        <view class="item-top">
+          <view class="money">￥100.00</view>
+          <view class="point">到微信钱包</view>
+          <view class="status">提现中</view>
+        </view>
+        <view class="item-bottom">2017-08-01 14:50:36</view>
+      </view>
+    </view>
+  </view>
+</view>
