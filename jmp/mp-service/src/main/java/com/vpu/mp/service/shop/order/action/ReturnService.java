@@ -12,6 +12,8 @@ import com.vpu.mp.common.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -32,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -128,6 +131,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     private AtomicOperation atomicOperation;
     @Autowired
     private WxCardExchangeService wxCardExchange;
+    @Autowired
+    private PrescriptionRebateDao prescriptionRebateDao;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -162,6 +169,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         if (e != null) {
             return e;
         }
+        //更改处方返利状态
+        updatePrescriptionRebateStatus(param,order);
         //操作记录
         record.insertRecord(Arrays.asList(new Integer[]{RecordContentTemplate.ORDER_RETURN.code}), new String[]{param.getOrderSn()});
         ReturnOrderRecord rOrder = (ReturnOrderRecord) result.getResult();
@@ -180,6 +189,22 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
     }
 
+    /**
+     * 更改处方返利状态
+     * @param param
+     * @param order
+     */
+    public void updatePrescriptionRebateStatus(RefundParam param,OrderInfoVo order){
+        //仅退款，退货退款
+        if(param.getReturnType().equals(OrderConstant.RT_ONLY_MONEY)||param.getReturnType().equals(OrderConstant.RT_GOODS)){
+            List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(order.getOrderSn());
+            for(String preCode:preCodeList){
+                //更改处方返利状态
+                prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATE_FAIL);
+            }
+        }
+
+    }
     /**
      * 审核失败退款
      * @param orderSn

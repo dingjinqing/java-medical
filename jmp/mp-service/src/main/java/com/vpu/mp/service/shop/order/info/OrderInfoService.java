@@ -1732,4 +1732,7 @@ public class OrderInfoService extends ShopBaseService {
             .fetch(x -> x.into(String.class));
     }
 
+    public void setPayTime(String orderSn) {
+        db().update(TABLE).set(TABLE.PAY_TIME,DSL.now()).where(TABLE.ORDER_SN.eq(orderSn)).execute();
+    }
 }
