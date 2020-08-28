@@ -2160,7 +2160,7 @@ CREATE TABLE `b2c_member_card` (
   `store_use_switch` tinyint(1) NOT NULL DEFAULT '0' COMMENT '可否在门店使用  0不可以 1可以',
   `exchang_goods` varchar(299) DEFAULT NULL COMMENT '可兑换商品id',
   `exchang_freight` tinyint(1) DEFAULT NULL COMMENT '运费策略 0免运费 1使用商品运费策略',
-  `exchang_count` int(11) DEFAULT NULL b2c_group_integration_defineCOMMENT '允许兑换次数',
+  `exchang_count` int(11) DEFAULT NULL COMMENT '允许兑换次数',
   `stock` int(11) DEFAULT '0' COMMENT '发放总量',
   `limit` int(11) DEFAULT '1' COMMENT '领取限制',
   `discount_brand_id` varchar(299) DEFAULT NULL COMMENT '商品品牌id',
@@ -2178,8 +2178,6 @@ CREATE TABLE `b2c_member_card` (
   `cannot_use_coupon` tinyint(1) DEFAULT 0 COMMENT '是否和会员卡一起使用0:可以1：不可以',
   `custom_rights_flag` tinyint(1) DEFAULT 0 COMMENT '自定义权益开关',
   `custom_options` text COMMENT '自定义激活信息配置',
-  `card_tag` tinyint(1) DEFAULT 0 COMMENT '是否开启给领卡用户打标签0否，1是',
-  `card_tag_id` varchar(20) COMMENT '领卡打标签id',
   `card_tag` tinyint(1) DEFAULT 0 COMMENT '是否开启给领卡用户打标签0否，1是',
   `card_tag_id` varchar(20) COMMENT '领卡打标签id',
   `card_give_away` tinyint(1) DEFAULT 0 COMMENT '0:不可转赠，1:可以转赠',
@@ -2945,14 +2943,14 @@ CREATE TABLE `b2c_package_sale` (
   `group_name_3` varchar(20) DEFAULT NULL COMMENT '分组名称',
   `goods_number_3` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数',
   `goods_ids_3` text COMMENT '分组goodsids',
-  `cat_ids_3` text COMMENT '分组平台分类id',b2c_customer_avail_coupons
+  `cat_ids_3` text COMMENT '分组平台分类id',
   `sort_ids_3` text COMMENT '分组商家分类id',
   `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '活动状态1启用',
   `del_flag` tinyint(2) NOT NULL DEFAULT '0' COMMENT '删除状态',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `package_type` tinyint(1) DEFAULT '0' COMMENT '活动类型0金额1折扣',
-  `total_ratio` decimal(4,2) DEFAULT '0.00' COMMENT '结算比例'
+  `total_ratio` decimal(4,2) DEFAULT '0.00' COMMENT '结算比例',
   PRIMARY KEY (`id`)
 )COMMENT='一口价活动';
 
