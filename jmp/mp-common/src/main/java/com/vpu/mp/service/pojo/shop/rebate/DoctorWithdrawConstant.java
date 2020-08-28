@@ -6,11 +6,16 @@ package com.vpu.mp.service.pojo.shop.rebate;
  **/
 public class DoctorWithdrawConstant {
     /**
-     * 小程序提现
+     * 小程序提现类型,小程序wx_mini、公众号wx_open、子商户sub_mch
      */
-    public static final Byte WX_MINI_TYPE=2;
+    public static final Byte RT_WX_OPEN=1;
+    public static final Byte RT_WX_MINI=2;
+    public static final Byte RT_SUB_MCH=3;
+
     public static final String ORDER_SN_PREFIX="T";
 
+    /**元_分的比例*/
+    public final static byte YUAN_FEN_RATIO = 100;
     /**
      * 提现审核状态 1待审核 2拒绝 3已审核待出账 4出账成功 5失败 6已发红包
      */

@@ -71,6 +71,7 @@ public class StoreGoodsDao extends ShopBaseDao {
             StoreGoodsRecord storeGoodsRecord = new StoreGoodsRecord();
             storeGoodsRecord.setStoreId(x.getStoreId());
             storeGoodsRecord.setGoodsId(x.getGoodsId());
+            storeGoodsRecord.setGoodsStoreSn(x.getGoodsStoreSn());
             storeGoodsRecord.setGoodsCommonName(x.getGoodsCommonName());
             storeGoodsRecord.setGoodsQualityRatio(x.getGoodsQualityRatio());
             storeGoodsRecord.setGoodsApprovalNumber(x.getGoodsApprovalNumber());

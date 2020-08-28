@@ -459,13 +459,13 @@ public class MedicalGoodsService extends ShopBaseService {
     }
 
     /**
-     * 拉取药店商品信息
+     * 迭代拉取药店商品信息
      * @return
      */
     public void fetchExternalStoresGoodsInfo() {
-        String appId = ApiExternalGateConstant.APP_ID_HIS;
+        String appId = ApiExternalGateConstant.APP_ID_POS;
         Integer shopId = getShopId();
-        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_STORE, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
+        Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(appId, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
         Timestamp now = DateUtils.getLocalDateTime();
         List<StoreBasicVo> storeInfos = storeDao.listStoreCodes();
 
@@ -524,7 +524,7 @@ public class MedicalGoodsService extends ShopBaseService {
             dataJson = apiExternalRequestResult.getData();
             goodsMedicalExternalStoreRequestBo = Util.parseJson(dataJson, GoodsMedicalExternalStoreRequestBo.class);
             if (goodsMedicalExternalStoreRequestBo == null) {
-                return JsonResult.success();
+                continue;
             }
             List<GoodsMedicalExternalRequestItemBo> dataList = goodsMedicalExternalStoreRequestBo.getDataList();
             // 药品数据入库操作
@@ -540,7 +540,7 @@ public class MedicalGoodsService extends ShopBaseService {
     }
 
     /**
-     * 插入医院his药品信息
+     * 对拉取到的数据进行插入
      * @param goodsMedicalExternalRequestItemBos
      * @param storeInfo 门店编码
      */
@@ -585,6 +585,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 String key = externalStoreRequestItemBo.getGoodsCommonName()+externalStoreRequestItemBo.getGoodsQualityRatio()+externalStoreRequestItemBo.getGoodsProductionEnterprise();
                 Integer goodsId = goodsHisKeyToGoodsId.get(key);
                 if (goodsId == null) {
+                    // 肯定是医院没有，而药房存在的药品
                     externalStoreRequestItemBo.setSource(MedicalGoodsConstant.SOURCE_FROM_STORE);
                     readyToInsert.add(externalStoreRequestItemBo);
                     continue;
@@ -592,9 +593,10 @@ public class MedicalGoodsService extends ShopBaseService {
                 BigDecimal shopPrice = goodsIdToGoodsPrice.get(goodsId);
                 externalStoreRequestItemBo.setGoodsPrice(shopPrice);
             }
+            // 插入需要插入的药房数据
             batchInsertGoodsMedicalExternalInfo(readyToInsert);
 
-            List<Integer> goodsIds = readyToInsert.stream().map(GoodsMedicalExternalRequestItemBo::getGoodsId).collect(Collectors.toList());
+            List<Integer> goodsIds = externalStoreRequestItemBos.stream().map(GoodsMedicalExternalRequestItemBo::getGoodsId).collect(Collectors.toList());
             Map<Integer, List<GoodsSpecProductDetailVo>> goodsSkuGroups = medicalGoodsSpecProductService.groupGoodsIdToSku(goodsIds);
 
             List<StoreGoods> storeGoodsList = externalStoreRequestItemBos.stream().map(bo -> {
@@ -605,6 +607,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 storeGoods.setGoodsQualityRatio(bo.getGoodsQualityRatio());
                 storeGoods.setGoodsApprovalNumber(bo.getGoodsApprovalNumber());
                 storeGoods.setGoodsProductionEnterprise(bo.getGoodsProductionEnterprise());
+                storeGoods.setGoodsStoreSn(bo.getGoodsCode());
                 storeGoods.setProductNumber(bo.getGoodsNumber());
                 storeGoods.setProductPrice(bo.getGoodsPrice());
                 if (BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.equals(bo.getState())) {

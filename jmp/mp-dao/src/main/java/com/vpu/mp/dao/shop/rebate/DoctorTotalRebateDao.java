@@ -56,10 +56,20 @@ public class DoctorTotalRebateDao extends ShopBaseDao {
      * @param totalMoney
      * @param blockMoney
      */
-    public void blockedMoney(Integer doctorId,BigDecimal totalMoney,BigDecimal blockMoney){
+    public void updateTotalMoneyBlockedMoney(Integer doctorId,BigDecimal totalMoney,BigDecimal blockMoney){
         db().update(DOCTOR_TOTAL_REBATE).set(DOCTOR_TOTAL_REBATE.TOTAL_MONEY,totalMoney)
             .set(DOCTOR_TOTAL_REBATE.BLOCKED_MONEY,blockMoney)
             .where(DOCTOR_TOTAL_REBATE.DOCTOR_ID.eq(doctorId)).execute();
 
+    }
+
+    /**
+     * 更新冻结金额
+     * @param doctorId
+     * @param blockMoney
+     */
+    public void updateBlockMoney(Integer doctorId,BigDecimal blockMoney){
+        db().update(DOCTOR_TOTAL_REBATE).set(DOCTOR_TOTAL_REBATE.BLOCKED_MONEY,blockMoney)
+            .where(DOCTOR_TOTAL_REBATE.DOCTOR_ID.eq(doctorId)).execute();
     }
 }

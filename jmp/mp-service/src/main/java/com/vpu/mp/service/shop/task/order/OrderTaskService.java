@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.task.order;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.store.ReservationDetail;
+import com.vpu.mp.service.shop.order.action.AuditService;
 import com.vpu.mp.service.shop.order.action.CloseService;
 import com.vpu.mp.service.shop.order.action.FinishService;
 import com.vpu.mp.service.shop.order.action.PayService;
@@ -24,6 +25,9 @@ public class OrderTaskService extends ShopBaseService {
     private CloseService close;
 
     @Autowired
+    private AuditService auditService;
+
+    @Autowired
     private ReceiveService receive;
 
     @Autowired
@@ -43,6 +47,12 @@ public class OrderTaskService extends ShopBaseService {
         close.autoCloseOrders();
         //TODO 再写一个定时任务  后台定时关闭超时未领取商品
         logger().info("订单关闭定时任务end");
+    }
+
+    public void unAudit(){
+        logger().info("订单退款未审核订单start,shop:{}", getShopId());
+        auditService.autoUnAuditOrders();
+        logger().info("订单退款未审核订单定时任务end");
     }
 
     /**

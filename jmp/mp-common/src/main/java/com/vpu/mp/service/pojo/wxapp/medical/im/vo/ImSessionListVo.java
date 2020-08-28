@@ -33,7 +33,7 @@ public class ImSessionListVo {
     private Byte sessionStatus;
     /**是否有新信息*/
     private Long newMsgNum;
-    /**留言状态*/
+    /**评价状态*/
     private Byte evaluateStatus;
 
     private Timestamp createTime;

@@ -274,27 +274,6 @@ public class StoreOrderController extends StoreBaseController {
         }
     }
 
-    /**
-     * 续方/审核通过
-     *  医师根据历史处方和药品开出新的处方
-     * @return
-     */
-    @PostMapping("/medical/prescription/continue")
-    public JsonResult continuePrescription(@RequestBody @Validated PrescriptionAuditParam param){
-
-
-        return success();
-    }
-
-    /**
-     * 驳回处方
-     *  医师根据历史处方和药品驳回订单中的商品
-     * @return
-     */
-    @PostMapping("medical/prescription/reject")
-    public JsonResult rejectPrescription(){
-        return success();
-    }
 
 
     /**

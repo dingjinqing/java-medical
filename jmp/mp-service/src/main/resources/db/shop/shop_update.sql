@@ -749,7 +749,8 @@ create table if not exists `b2c_doctor_withdraw` (
     KEY `doctor_id` (`doctor_id`)
 )comment ='医生返利提现申请表';
 
-ALTER TABLE `b2c_prescription_item` ADD COLUMN `rebate_proportion` decimal(6,4) DEFAULT '0.0000' COMMENT '返利比例' AFTER `medicine_price`;
+ALTER TABLE `b2c_prescription_item` ADD COLUMN `goods_sharing_proportion` decimal(10,4) DEFAULT '0.0000' COMMENT '商品分成比例' AFTER `medicine_price`;
+ALTER TABLE `b2c_prescription_item` ADD COLUMN `rebate_proportion` decimal(6,4) DEFAULT '0.0000' COMMENT '返利比例' AFTER `goods_sharing_proportion`;
 ALTER TABLE `b2c_prescription_item` ADD COLUMN `total_rebate_money` decimal(10,4) DEFAULT '0.0000' COMMENT '返利金额' AFTER `rebate_proportion`;
 ALTER TABLE `b2c_prescription` ADD COLUMN `settlement_flag` tinyint(1) DEFAULT '0' COMMENT '结算标志：0：未结算，1：已结算' AFTER `is_valid`;
 ALTER TABLE `b2c_inquiry_order` ADD COLUMN `settlement_flag` tinyint(1) DEFAULT '0' COMMENT '结算标志：0：未结算，1：已结算' AFTER `is_delete`;
@@ -762,5 +763,7 @@ ALTER TABLE b2c_store_goods ADD goods_quality_ratio VARCHAR(512) AFTER goods_com
 ALTER TABLE b2c_store_goods ADD goods_approval_number VARCHAR(512) AFTER goods_quality_ratio;
 ALTER TABLE b2c_store_goods ADD goods_production_enterprise VARCHAR(512) AFTER goods_approval_number;
 ALTER TABLE b2c_store_goods ADD is_delete tinyint(1) default 0 comment '是否删 0否 1是';
+ALTER TABLE b2c_store_goods ADD goods_store_sn varchar(512) comment '药房商品唯一码' AFTER goods_production_enterprise;
+
 
 /*********************3.4*************************END*/

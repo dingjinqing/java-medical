@@ -211,7 +211,14 @@ public class ImSessionService extends ShopBaseService {
         ImSessionCondition imSessionCondition = new ImSessionCondition();
         imSessionCondition.setDoctorId(param.getDoctorId());
         imSessionCondition.setUserId(param.getUserId());
-        imSessionCondition.setStatus(ImSessionConstant.SESSION_ON);
+        List<Byte> statusList = new ArrayList<>();
+        statusList.add(ImSessionConstant.SESSION_ON);
+        statusList.add(ImSessionConstant.SESSION_CONTINUE_ON);
+        imSessionCondition.setStatusList(statusList);
+        if (param.getDoctorId() != null) {
+            imSessionCondition.getStatusList().add(ImSessionConstant.SESSION_READY_TO_START);
+            imSessionCondition.getStatusList().add(ImSessionConstant.SESSION_END);
+        }
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(imSessionCondition);
         if (imSessionDos == null) {
             return new ArrayList<>(0);
@@ -462,7 +469,7 @@ public class ImSessionService extends ShopBaseService {
      */
     public void timingDeadReadyToContinueSession() {
         logger().debug("定时任务调用，结束已经超时的可继续问诊项");
-        Timestamp updateTimeLine = DateUtils.getTimeStampPlus(1, ChronoUnit.DAYS);
+        Timestamp updateTimeLine = DateUtils.getTimeStampPlus(-1, ChronoUnit.DAYS);
         ImSessionCondition imSessionCondition = new ImSessionCondition();
         imSessionCondition.setStatus(ImSessionConstant.SESSION_END);
         imSessionCondition.setUpdateTimeLine(updateTimeLine);

@@ -155,7 +155,7 @@ public class PrescriptionDao extends ShopBaseDao {
             record.where(PRESCRIPTION.DIAGNOSE_TIME.ge(param.getDiagnoseStartTime()))
                     .and(PRESCRIPTION.DIAGNOSE_TIME.le(param.getDiagnoseEndTime()));
         }
-        record.orderBy(PRESCRIPTION.CREATE_TIME.desc());
+        record.orderBy(PRESCRIPTION.DIAGNOSE_TIME.desc());
         return getPageResult(record, param, PrescriptionListVo.class);
     }
     /**

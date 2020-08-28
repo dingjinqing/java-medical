@@ -1,6 +1,7 @@
 <template>
   <div class="pageClassification">
     <div class="pageClassificationContent">
+      <el-button type="primary" size="small" @click="fetch">同步</el-button>
       <!-- <div class="main">
         <el-row>
           <el-col :span='24'>
@@ -66,19 +67,11 @@
           :data="tableData"
           v-loading="loading"
           border
-          style="width: 100%"
+          style="width: 100%;"
         >
-          <el-table-column
-            prop="name"
-            label="医师职称"
-            align="center"
-          >
+          <el-table-column prop="name" label="医师职称" align="center">
           </el-table-column>
-          <el-table-column
-            prop="code"
-            label="职称代码"
-            align="center"
-          >
+          <el-table-column prop="code" label="职称代码" align="center">
           </el-table-column>
           <el-table-column
             prop="createTime"
@@ -91,29 +84,24 @@
             :label="$t('pageClassification.operate')"
             align="center"
           > -->
-            <!-- <template slot-scope="scope"> -->
-              <!-- <a
+          <!-- <template slot-scope="scope"> -->
+          <!-- <a
                 style="color: #5A8BFF;margin-right:10px;cursor: pointer;"
                 @click="handleEdit(scope.row)"
               >编辑</a> -->
-              <!-- <a
+          <!-- <a
                 style="color: #5A8BFF;margin-right:10px;cursor: pointer;"
                 @click="removeCatergory(scope.row)"
               >删除</a> -->
-              <!-- <a
+          <!-- <a
                 style="color: #5A8BFF;cursor: pointer;"
                 @click="jumpCatergory(scope.row, $event)"
               >查看详情</a> -->
-            <!-- </template> -->
+          <!-- </template> -->
           <!-- </el-table-column> -->
-
         </el-table>
-        <div class="footer">
-        </div>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="handleQuery"
-        />
+        <div class="footer"></div>
+        <pagination :page-params.sync="pageParams" @pagination="handleQuery" />
       </div>
       <div>
         <el-dialog
@@ -131,14 +119,10 @@
               ></el-input>
             </el-form-item>
           </el-form>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
-            <el-button
-              size="small"
-              @click="dialogVisible = false"
-            >{{$t('pageClassification.cancel')}}</el-button>
+          <span slot="footer" class="dialog-footer">
+            <el-button size="small" @click="dialogVisible = false">{{
+              $t('pageClassification.cancel')
+            }}</el-button>
             <!-- <el-button
               type="primary"
               size="small"
@@ -152,7 +136,7 @@
 </template>
 <script>
 import {
-  getProfessionTitle
+  getProfessionTitle, fetchDoctorTitle
 } from '@//api/admin/doctorManage/doctorInfo/doctor'
 import pagination from '@/components/admin/pagination/pagination.vue'
 
@@ -250,6 +234,11 @@ export default {
         this.editCatergory(row)
         this.handleQuery()
       }).catch(() => {
+      })
+    },
+    fetch () {
+      fetchDoctorTitle().then(res => {
+        console.log(res)
       })
     }
   }

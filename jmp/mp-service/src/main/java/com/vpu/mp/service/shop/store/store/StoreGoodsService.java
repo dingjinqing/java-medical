@@ -166,7 +166,7 @@ public class StoreGoodsService extends ShopBaseService{
             return;
         }
         List<Integer> goodsIds = storeGoodsList.stream().map(StoreGoods::getGoodsId).collect(Collectors.toList());
-        Set<Integer> existStoreGoodsSet = new HashSet<>(storeGoodsDao.selectExistStoreGoodsIds(goodsIds, storeGoodsList.get(1).getStoreId()));
+        Set<Integer> existStoreGoodsSet = new HashSet<>(storeGoodsDao.selectExistStoreGoodsIds(goodsIds, storeGoodsList.get(0).getStoreId()));
 
         List<StoreGoods> readyToInsert = new ArrayList<>();
         List<StoreGoods> readyToUpdate = new ArrayList<>();
