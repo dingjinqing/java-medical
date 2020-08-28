@@ -57,7 +57,7 @@
         "isOnly": 0
       },
       {
-        "enName": "sellOutGoods",
+        "enName": "saleOutGoods",
         "name": "售罄商品",
         "linkUrl": "/store/goods/list",
         "topIndex": 2,
