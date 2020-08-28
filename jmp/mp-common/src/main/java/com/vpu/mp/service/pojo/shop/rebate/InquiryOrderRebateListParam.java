@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 @Data
 public class InquiryOrderRebateListParam extends BasePageParam {
     private String doctorName;
+    private Integer doctorId;
     private Byte status;
     private Timestamp startTime;
     private Timestamp endTime;

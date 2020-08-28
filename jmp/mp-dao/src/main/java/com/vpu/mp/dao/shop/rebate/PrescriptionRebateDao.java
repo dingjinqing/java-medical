@@ -75,6 +75,9 @@ public class PrescriptionRebateDao extends ShopBaseDao {
         if(StringUtils.isNotBlank(param.getDoctorName())){
             select.where(DOCTOR.NAME.like(this.likeValue(param.getDoctorName())));
         }
+        if(param.getDoctorId()!=null){
+            select.where(PRESCRIPTION_REBATE.DOCTOR_ID.eq(param.getDoctorId()));
+        }
         if(param.getStatus()!=null){
             select.where(PRESCRIPTION_REBATE.STATUS.eq(param.getStatus()));
         }
