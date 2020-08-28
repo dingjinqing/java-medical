@@ -12,15 +12,14 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 /**
  * @author lixinguo
  */
-@ConditionalOnProperty(prefix = "flyway",name = "app",havingValue = "true")
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-public class MigrateApp implements ApplicationRunner {
+public class SqlDeployApp implements ApplicationRunner {
 
     @Autowired
     protected DeployDb deployDb;
 
     public static void main(String[] args) {
-        SpringApplication.run(MigrateApp.class, args);
+        SpringApplication.run(SqlDeployApp.class, args);
     }
 
     @Override

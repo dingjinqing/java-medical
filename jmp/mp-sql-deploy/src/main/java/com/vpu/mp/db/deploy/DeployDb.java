@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.api.FlywayException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author lixinguo
  */
-@ConditionalOnProperty(prefix = "flyway",name = "app",havingValue = "true")
 @Component
 @Slf4j
 public class DeployDb {
