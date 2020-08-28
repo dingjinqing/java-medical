@@ -4,7 +4,7 @@ export const cn = {
   storeList: ['全部门店', '门店列表'],
   storeGroupConfig: ['全部门店', '分组管理'],
   goodsList: ['门店商品', '全部商品'],
-  sellOutGoods: ['门店商品', '售罄商品'],
+  saleOutGoods: ['门店商品', '售罄商品'],
   storeOrder: ['门店订单', '全部订单'],
   selfPickUpOrder: ['门店订单', '自提订单'],
   intraCityOrder: ['门店订单', '同城配送'],

@@ -87,9 +87,9 @@ export default {
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-          path: '/admin/store/goods/sellOut',
+          path: '/admin/store/goods/saleOut',
           span: '',
-          name: 'sellOutGoods',
+          name: 'saleOutGoods',
           flag: false
         }
       ],
@@ -260,7 +260,7 @@ export default {
         storeGoods: '全部商品',
         storeMember: '全部店员',
         memberPermission: '店员权限',
-        sellOutGoods: '售罄商品',
+        saleOutGoods: '售罄商品',
         storeOrder: '全部订单',
         selfPickUpOrder: '自提订单',
         intraCityOrder: '同城配送',

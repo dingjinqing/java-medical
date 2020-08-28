@@ -48,6 +48,19 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/store/goods/goodsList'
               )
           },
+          // 售罄商品
+          {
+            path: '/admin/store/goods/saleOut',
+            name: 'saleOutGoods',
+            meta: {
+              crumbTitle: 'router.saleOutGoods',
+              meta: 'storeGoods'
+            },
+            component: () =>
+                import(
+                  '@/view/admin/index/leftNavComponents/store/goods/saleOutGoodsList'
+                )
+          },
           // 门店订单
           {
             path: '/admin/store/order',
@@ -137,19 +150,6 @@ const routes = [
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/store/storeList/storeGroupConfig'
-              )
-          },
-          // 售罄商品
-          {
-            path: '/admin/store/goods/sellOut',
-            name: 'sellOutGoods',
-            meta: {
-              crumbTitle: 'router.sellOutGoods',
-              meta: 'storeGoods'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/store/goods/sellOutGoodsList'
               )
           }
         ]
