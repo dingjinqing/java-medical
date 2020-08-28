@@ -88,6 +88,9 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipList
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -1853,4 +1856,21 @@ showManualReturn(vo);
         return orderInfoDao.checkVerifyCode(verifyCode, orderSn);
     }
 
+    /**
+     * 获取门店支付统计数据
+     * @param param
+     * @return
+     */
+    public StatisticPayVo getStoreOrderPayData(StatisticParam param) {
+        return orderInfoDao.getStoreOrderPayData(param);
+    }
+
+    /**
+     * 获取门店下单统计数据
+     * @param param
+     * @return
+     */
+    public StatisticAddVo getStoreOrderAddData(StatisticParam param) {
+        return orderInfoDao.getStoreOrderAddData(param);
+    }
 }
