@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
@@ -27,6 +28,8 @@ public class PrescriptionRebateService extends ShopBaseService {
     private DoctorService doctorService;
     @Autowired
     private PrescriptionRebateDao prescriptionRebateDao;
+    @Autowired
+    private PrescriptionItemDao prescriptionItemDao;
     /**
      * 处方返利信息入库
      * @param prescription
@@ -59,6 +62,11 @@ public class PrescriptionRebateService extends ShopBaseService {
     public PageResult<PrescriptionRebateVo> getPageList(PrescriptionRebateListParam param){
         beginAndEndOfDay(param);
         PageResult<PrescriptionRebateVo> result=prescriptionRebateDao.getPageList(param);
+        List<PrescriptionRebateVo> list=result.getDataList();
+        for(PrescriptionRebateVo vo:list){
+            List<PrescriptionItemDo> prescriptionItemDos =prescriptionItemDao.listOrderGoodsByPrescriptionCode(vo.getPrescriptionCode());
+            vo.setMedicalList(prescriptionItemDos);
+        }
         return result;
     }
     public void beginAndEndOfDay(PrescriptionRebateListParam param){

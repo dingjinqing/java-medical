@@ -93,7 +93,8 @@ public class PrescriptionItemDao extends ShopBaseDao {
     public List<PrescriptionItemDo>  listOrderGoodsByPrescriptionCode(String prescriptionCode){
         return db().select(PRESCRIPTION_ITEM.GOODS_ID,PRESCRIPTION_ITEM.PRD_ID,
                 PRESCRIPTION_ITEM.MEDICINE_PRICE,
-                PRESCRIPTION_ITEM.DRAG_SUM_NUM,PRESCRIPTION_ITEM.TOTAL_REBATE_MONEY,PRESCRIPTION_ITEM.REBATE_PROPORTION)
+                PRESCRIPTION_ITEM.DRAG_SUM_NUM,PRESCRIPTION_ITEM.TOTAL_REBATE_MONEY,PRESCRIPTION_ITEM.REBATE_PROPORTION,PRESCRIPTION_ITEM.GOODS_SHARING_PROPORTION,PRESCRIPTION_ITEM.CREATE_TIME,
+            PRESCRIPTION_ITEM.GOODS_COMMON_NAME)
                 .from(PRESCRIPTION_ITEM)
                 .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionCode))
                 .fetchInto(PrescriptionItemDo.class);
