@@ -558,6 +558,8 @@ public class Indexes {
     public static final Index PRESCRIPTION_REBATE_PRIMARY = Indexes0.PRESCRIPTION_REBATE_PRIMARY;
     public static final Index DOCTOR_WITHDRAW_DOCTOR_ID = Indexes0.DOCTOR_WITHDRAW_DOCTOR_ID;
     public static final Index DOCTOR_WITHDRAW_PRIMARY = Indexes0.DOCTOR_WITHDRAW_PRIMARY;
+    public static final Index STORE_ORDER_SUMMARY_TREND_PRIMARY = Indexes0.STORE_ORDER_SUMMARY_TREND_PRIMARY;
+    public static final Index STORE_ORDER_SUMMARY_TREND_REF_TYPE = Indexes0.STORE_ORDER_SUMMARY_TREND_REF_TYPE;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1094,6 +1096,8 @@ public class Indexes {
         public static Index PRESCRIPTION_REBATE_PRIMARY = Internal.createIndex("PRIMARY", PrescriptionRebate.PRESCRIPTION_REBATE, new OrderField[] { PrescriptionRebate.PRESCRIPTION_REBATE.ID }, true);
         public static Index DOCTOR_WITHDRAW_DOCTOR_ID = Internal.createIndex("doctor_id", DoctorWithdraw.DOCTOR_WITHDRAW, new OrderField[] { DoctorWithdraw.DOCTOR_WITHDRAW.DOCTOR_ID }, false);
         public static Index DOCTOR_WITHDRAW_PRIMARY = Internal.createIndex("PRIMARY", DoctorWithdraw.DOCTOR_WITHDRAW, new OrderField[] { DoctorWithdraw.DOCTOR_WITHDRAW.ID }, true);
+        public static Index STORE_ORDER_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND, new OrderField[] { StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.ID }, true);
+        public static Index STORE_ORDER_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND, new OrderField[] { StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.REF_DATE, StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.TYPE }, false);
     }
 
 }
