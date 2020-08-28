@@ -334,7 +334,10 @@ public class UserMessageService extends ShopBaseService {
      */
     public void addAnnouncement(PageStoreParam pageStoreParam) {
         String pageContent = pageStoreParam.getPageContent();
-        List<String> list = this.processPageContentBeforeSave(pageContent);
+        List<AnnounceBo> list = this.processPageContentBeforeSave(pageContent);
+        if (list.isEmpty()) {
+            return;
+        }
         messageDao.addAnnouncementMessage(list);
     }
 
@@ -343,9 +346,8 @@ public class UserMessageService extends ShopBaseService {
      * @param pageContent 装修json
      * @return String
      */
-    protected List<String> processPageContentBeforeSave(String pageContent) {
-        List<String> list = toAnnounceBoBo(pageContent);
-        return list;
+    private List<AnnounceBo> processPageContentBeforeSave(String pageContent) {
+        return toAnnouncementBo(pageContent);
     }
 
     /**
@@ -353,12 +355,13 @@ public class UserMessageService extends ShopBaseService {
      * @param pageContent
      * @return
      */
-    private List<String> toAnnounceBoBo(String pageContent) {
-        List<String> list = new ArrayList<>();
+    private List<AnnounceBo> toAnnouncementBo(String pageContent) {
+        List<AnnounceBo> list = new ArrayList<>();
         Map<String, AnnounceBo> announceBo = Util.json2Object(pageContent, new TypeReference<Map<String, AnnounceBo>>() {}, false);
-        announceBo.forEach( (k,v) ->{
+        assert announceBo != null;
+        announceBo.forEach( (k, v) ->{
             if (v.getShopText() != null) {
-                list.add(v.getShopText());
+                list.add(v);
             }
         });
         return list;

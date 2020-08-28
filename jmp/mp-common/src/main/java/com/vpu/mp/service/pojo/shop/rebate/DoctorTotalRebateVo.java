@@ -14,9 +14,9 @@ public class DoctorTotalRebateVo extends DoctorTotalRebateDo {
     /**
      * 累计提现金额
      */
-    private BigDecimal accruingWithDrawCash;
+    private BigDecimal accruingWithDrawCash=BigDecimal.ZERO;
     /**
      * 待提现金额
      */
-    private BigDecimal waitWithDrawCash;
+    private BigDecimal waitWithDrawCash=BigDecimal.ZERO;
 }

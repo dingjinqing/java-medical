@@ -28,6 +28,9 @@ public class DoctorTotalRebateService extends ShopBaseService {
      */
     public DoctorTotalRebateVo getRebateByDoctorId(Integer doctorId){
         DoctorTotalRebateVo doctorTotalRebateVo=doctorTotalRebateDao.getRebateByDoctorId(doctorId);
+        if(doctorTotalRebateVo==null){
+            return new DoctorTotalRebateVo();
+        }
         //累计提现金额
         BigDecimal accruingWithDrawCash=BigDecimal.ZERO;
         BigDecimal paySuccessWithDrawCash=doctorWithdrawDao.getWithdrawCashSum(doctorId, DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS);

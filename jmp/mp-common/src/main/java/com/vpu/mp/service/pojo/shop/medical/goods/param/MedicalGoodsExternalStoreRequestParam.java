@@ -12,6 +12,6 @@ import lombok.Data;
 public class MedicalGoodsExternalStoreRequestParam {
     private Long startTime;
     private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
-    private Integer pageRows = 500;
+    private Integer pageRows = 200;
     private String shopSn;
 }

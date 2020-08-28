@@ -34,8 +34,8 @@ public class StoreStatisticScheduleTask {
         result.forEach((r) -> {
             ShopApplication shop = saas.getShopApp(r.getShopId());
             List<StoreBasicVo> allStore = shop.store.getAllStore();
-            allStore.forEach((e)->{
-                shop.storeTaskService.insertStoreStatistic(e.getStoreId());
+            allStore.forEach((s)->{
+                shop.storeTaskService.insertStoreStatistic(s.getStoreId());
             });
         });
     }
