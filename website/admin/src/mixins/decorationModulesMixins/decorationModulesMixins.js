@@ -382,7 +382,8 @@ export default {
             'font_color': '#333333', // 字体颜色
             'bg_color': '#fcf9dd', // 背景颜色
             'title_link': '', // 链接路径
-            'announce_position': 0 // 显示位置
+            'announce_position': 0, // 显示位置
+            'is_pull': 0 // 是否实时推送更新
           }
           break
         case 24: // 公众号

@@ -1,4 +1,4 @@
-// pages2/withdrawInfo/withdrawInfo.js
+const util = require("../../utils/util")
 global.wxPage({
 
   /**

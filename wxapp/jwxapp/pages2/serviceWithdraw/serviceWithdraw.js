@@ -1,4 +1,4 @@
-// pages2/serviceWithdraw/serviceWithdraw.js
+const util = require("../../utils/util")
 global.wxPage({
 
   /**
@@ -12,9 +12,13 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.requestWithDrawInfo()
   },
-
+  requestWithDrawInfo(){
+    util.api('/api/wxapp/doctor/rebate/total',res=>{
+      console.log(res)
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
