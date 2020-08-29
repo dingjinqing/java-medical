@@ -1,16 +1,13 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.audit.AuditExternalParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionOneParam;
@@ -116,7 +113,7 @@ public class AuditService extends ShopBaseService implements IorderOperate<Audit
         RefundParam param = new RefundParam();
         //1是退款
         param.setAction((byte) OrderServiceCode.RETURN.ordinal());
-        param.setIsMp(OrderConstant.IS_MP_AUTO);
+        param.setIsMp(OrderConstant.IS_MP_DOCTOR);
         param.setReturnSourceType(OrderConstant.RS_AUTO_COMMUNITY_GROUP);
         param.setOrderSn(orderSn);
         param.setOrderId(orderRecord.getOrderId());
@@ -136,5 +133,32 @@ public class AuditService extends ShopBaseService implements IorderOperate<Audit
         returnService.execute(param);
     }
 
-
+    /**
+     * 订单未审核自动退款
+     */
+    public void autoUnAuditOrders() {
+        Result<OrderInfoRecord> orders = orderInfo.getCanAutoUnAuditOrders();
+        orders.forEach(orderRecord->{
+            Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(orderRecord.getOrderId());
+            RefundParam param = new RefundParam();
+            param.setAction((byte) OrderServiceCode.RETURN.ordinal());
+            param.setIsMp(OrderConstant.IS_MP_AUTO);
+            param.setOrderSn(orderRecord.getOrderSn());
+            param.setOrderId(orderRecord.getOrderId());
+            param.setReturnType(OrderConstant.RT_ONLY_MONEY);
+            param.setReasonType(OrderConstant.RETRURN_REASON_TYPE_DOCTOR_AUDIT);
+            param.setReasonDesc("时间段内未被审核");
+            param.setReturnMoney(orderRecord.getMoneyPaid().add(orderRecord.getScoreDiscount()).add(orderRecord.getUseAccount()).add(orderRecord.getMemberCardBalance()).subtract(orderRecord.getShippingFee()));
+            param.setShippingFee(orderRecord.getShippingFee());
+            List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
+            oGoods.forEach(orderGoods->{
+                RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();
+                returnGoods.setRecId(orderGoods.getRecId());
+                returnGoods.setReturnNumber(orderGoods.getGoodsNumber());
+                returnGoodsList.add(returnGoods);
+            });
+            param.setReturnGoods(returnGoodsList);
+            returnService.execute(param);
+        });
+    }
 }

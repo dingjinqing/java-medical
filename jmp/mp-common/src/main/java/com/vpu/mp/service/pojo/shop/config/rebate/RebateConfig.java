@@ -19,29 +19,29 @@ public class RebateConfig {
     /**
      * 商品订单分成比例
      */
-    private Double goodsOrderProportion;
+    private BigDecimal goodsSharingProportion;
     /**
      *处方药医生佣金比例
      */
-    private Double rxMedicalDoctorProportion;
+    private BigDecimal rxMedicalDoctorProportion;
     /**
      *处方药平台佣金比例
      */
-    private Double rxMedicalPlatformProportion;
+    private BigDecimal rxMedicalPlatformProportion;
     /**
      *非处方药医生佣金比例
      */
-    private Double noRxMedicalDoctorProportion;
+    private BigDecimal noRxMedicalDoctorProportion;
     /**
      *非处方药平台佣金比例
      */
-    private Double noRxMedicalPlatformProportion;
+    private BigDecimal noRxMedicalPlatformProportion;
     /**
-     *医生佣金比例
+     *咨询医生佣金比例
      */
     private BigDecimal inquiryOrderDoctorProportion;
     /**
-     *平台佣金比例
+     *咨询平台佣金比例
      */
     private BigDecimal inquiryOrderPlatformProportion;
 

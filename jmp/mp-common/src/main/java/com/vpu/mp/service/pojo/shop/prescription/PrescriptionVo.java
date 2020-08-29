@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.prescription;
 
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -14,6 +15,6 @@ import java.util.List;
 @Data
 public class PrescriptionVo extends PrescriptionDo {
 
-
+    List<PrescriptionItemDo> list =new ArrayList<>();
 
 }

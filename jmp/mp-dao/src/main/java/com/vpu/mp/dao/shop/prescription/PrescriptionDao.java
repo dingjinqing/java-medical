@@ -155,7 +155,7 @@ public class PrescriptionDao extends ShopBaseDao {
             record.where(PRESCRIPTION.DIAGNOSE_TIME.ge(param.getDiagnoseStartTime()))
                     .and(PRESCRIPTION.DIAGNOSE_TIME.le(param.getDiagnoseEndTime()));
         }
-        record.orderBy(PRESCRIPTION.CREATE_TIME.desc());
+        record.orderBy(PRESCRIPTION.DIAGNOSE_TIME.desc());
         return getPageResult(record, param, PrescriptionListVo.class);
     }
     /**
@@ -482,5 +482,10 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public Integer countPrescriptionByPatient(Integer patientId) {
         return db().fetchCount(PRESCRIPTION, PRESCRIPTION.PATIENT_ID.eq(patientId));
+    }
+
+    public void updateSettlementFlag(String prescriptionCode,Byte settlementFlag){
+        db().update(PRESCRIPTION).set(PRESCRIPTION.SETTLEMENT_FLAG,settlementFlag).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode))
+        .execute();
     }
 }

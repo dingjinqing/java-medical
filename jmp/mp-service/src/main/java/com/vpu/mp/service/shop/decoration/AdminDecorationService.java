@@ -584,16 +584,6 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             return 0;
         }
 
-        //如果增加了系统公告
-        if (page.getNoticeContext() != null && !"".equals(page.getNoticeContext())) {
-            //添加消息至消息列表
-            UserMessageParam userMessageParam = new UserMessageParam();
-            userMessageParam.setMessageContent(page.getNoticeContext());
-            userMessageParam.setMessageType((byte) 0);
-            messageDao.addMessage(userMessageParam);
-        }
-
-
         //记录页面变化
         recordPageChange(page);
 
@@ -671,7 +661,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         return objectMapper.writeValueAsString(result);
     }
 
-    private Object confirmPageContent(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
+    public Object confirmPageContent(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException {
         if (node.getKey().startsWith(MODULE_NAME_PREFIX)) {
             String moduleName = node.getValue().get("module_name").asText();
             switch (moduleName) {

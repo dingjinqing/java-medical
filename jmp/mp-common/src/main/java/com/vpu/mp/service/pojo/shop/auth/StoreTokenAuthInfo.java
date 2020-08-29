@@ -17,9 +17,7 @@ public class StoreTokenAuthInfo {
     public String userName = "";
     public Integer subAccountId = 0;
     public String subUserName = "";
-    public boolean subLogin = false;
     public Integer loginShopId = 0;
-    public boolean shopLogin = false;
     public String token = "";
     public String accountName;
     @JsonInclude(JsonInclude.Include.NON_NULL)

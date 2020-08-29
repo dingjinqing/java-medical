@@ -11,57 +11,18 @@ import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
-import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.db.shop.Tables;
-import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRebatePriceRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
-import com.vpu.mp.db.shop.tables.records.LiveBroadcastRecord;
-import com.vpu.mp.db.shop.tables.records.SortRecord;
-import com.vpu.mp.db.shop.tables.records.StoreRecord;
-import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.goods.goods.BatchUpdateGoodsNumAndSaleNumForOrderParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsActivityType;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsBatchOperateParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsColumnCheckExistParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIIllegalEnum;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIllegalEnumWrap;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsExportColumnVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsExportParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsExportVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsNumCountParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPrdNumEditParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsQrCodeVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsRebatePrice;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.PrdPriceNumberParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
-import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
-import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductMqParam;
-import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
-import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
@@ -79,11 +40,7 @@ import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigCacheService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
-import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
-import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
-import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
+import com.vpu.mp.service.shop.goods.es.*;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -97,20 +54,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep2;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record3;
-import org.jooq.Record4;
-import org.jooq.Record6;
-import org.jooq.Record7;
-import org.jooq.Result;
-import org.jooq.Select;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectSelectStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,29 +65,11 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
-import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
-import static com.vpu.mp.db.shop.Tables.GOODS_REBATE_PRICE;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.PRESALE;
-import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.db.shop.Tables.UPLOADED_VIDEO;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
@@ -2802,101 +2728,7 @@ public class GoodsService extends ShopBaseService {
         }
     }
 
-    /**
-     * pos同步商品信息 上下架和价格
-     * @param posSyncProductParam
-     * @return
-     */
-    public ApiJsonResult posSyncProductMq(PosSyncProductParam posSyncProductParam){
-        ApiJsonResult apiJsonResult = new ApiJsonResult();
-        Integer posShopId = posSyncProductParam.getShopId();
-        if (posShopId == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("缺少必传参数shop_id");
-            return  apiJsonResult;
-        }
-        StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
-        if (storeRecord == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("该店铺没有对应的门店");
-            return  apiJsonResult;
-        }
 
-        if (posSyncProductParam.getGoodsList() == null || posSyncProductParam.getGoodsList().size() == 0) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("缺少商品");
-            return  apiJsonResult;
-        }
-        PosSyncProductMqParam mqParam = new PosSyncProductMqParam();
-        mqParam.setShopId(getShopId());
-        mqParam.setStoreId(storeRecord.getStoreId());
-        mqParam.setGoodsPrdList(posSyncProductParam.getGoodsList());
-        // 调用消息队列
-        saas.taskJobMainService.dispatchImmediately(mqParam, PosSyncProductMqParam.class.getName(), getShopId(),
-            TaskJobsConstant.TaskJobEnum.POS_SYNC_PRODUCT.getExecutionType());
-//        posSyncProductMqCallback(storeRecord.getStoreId(),posSyncProductParam.getGoodsList());
-        return apiJsonResult;
-    }
-
-    /**
-     * pos 同步商品规格信息
-     * @param storeId 门店id
-     * @param goodsPrdList 规格同步信息
-     */
-    public void posSyncProductMqCallback(Integer storeId,List<PosSyncGoodsPrdParam> goodsPrdList){
-        Map<String, PosSyncGoodsPrdParam> posPrdMap = goodsPrdList.stream().collect(Collectors.toMap(PosSyncGoodsPrdParam::getPrdSn, Function.identity()));
-        // 过滤掉prdSn无法匹配上的
-        List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(posPrdMap.keySet());
-
-        // 待更新规格条码字段的规格集合
-        List<GoodsSpecProductRecord> goodsSpecPrdReadyToUpdate = new ArrayList<>(goodsSpecPrdBySns.size()/2);
-        List<PosSyncGoodsPrdParam> storePrdReadyToUpdate = new ArrayList<>(posPrdMap.size());
-        goodsSpecPrdBySns.forEach(prdRecord->{
-            PosSyncGoodsPrdParam posSyncGoodsPrdParam = posPrdMap.get(prdRecord.getPrdSn());
-            if (!Objects.equals(prdRecord.getPrdCodes(), posSyncGoodsPrdParam.getPrdCodes())) {
-                prdRecord.setPrdCodes(posSyncGoodsPrdParam.getPrdCodes());
-                goodsSpecPrdReadyToUpdate.add(prdRecord);
-            }
-
-            posSyncGoodsPrdParam.setPrdId(prdRecord.getPrdId());
-            storePrdReadyToUpdate.add(posSyncGoodsPrdParam);
-        });
-        db().batchUpdate(goodsSpecPrdReadyToUpdate).execute();
-        storeGoodsService.batchUpdateForSyncPosProduct(storeId,storePrdReadyToUpdate);
-    }
-
-    /**
-     * pos 对接 同步规格数量
-     * @param param
-     * @return
-     */
-    public ApiJsonResult posSyncStock(PosSyncStockParam param){
-        ApiJsonResult apiJsonResult = new ApiJsonResult();
-        Integer posShopId = param.getPosShopId();
-        if (posShopId == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("缺少必传参数shop_id");
-            return  apiJsonResult;
-        }
-
-        StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
-        if (storeRecord == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("该店铺没有对应的门店");
-            return  apiJsonResult;
-        }
-
-        List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(Collections.singleton(param.getPrdSn()));
-        if (goodsSpecPrdBySns == null || goodsSpecPrdBySns.size() == 0) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("该prd_sn没有对应的商品");
-            return  apiJsonResult;
-        }
-        Integer prdId = goodsSpecPrdBySns.get(0).getPrdId();
-        Integer prdNum = (int) (Math.floor(param.getNumber()));
-        storeGoodsService.updatePrdNumForPosSyncStock(storeRecord.getStoreId(),prdId,prdNum);
-        return apiJsonResult;
-    }
 
     /**
      * 根据prdId获取商品名称

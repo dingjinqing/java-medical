@@ -1,24 +1,31 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>{{$t('shopNotices.shopAnnouncementModule')}}</h2>
+      <h2>{{ $t('shopNotices.shopAnnouncementModule') }}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="content">
-          <span>{{$t('shopNotices.content')}}：</span>
+          <span>{{ $t('shopNotices.content') }}：</span>
           <el-input
             type="textarea"
             :placeholder="$t('shopNotices.shopAnnouncementModule')"
             v-model="moduleSaveData.shop_text"
             maxlength="120"
             show-word-limit
-            resize='none'
-            :rows='5'
+            resize="none"
+            :rows="5"
           >
           </el-input>
         </div>
-        <div class='content'>
-          <span>{{$t('shopNotices.fontColor')}}：</span>
+        <div class="content">
+          <span :style="!columnFlag ? 'line-height:32px' : 'line-height:16px'"
+            >开启实时推送：</span
+          >
+          <el-radio v-model="moduleSaveData.is_pull" :label="1">是</el-radio>
+          <el-radio v-model="moduleSaveData.is_pull" :label="0">否</el-radio>
+        </div>
+        <div class="content">
+          <span>{{ $t('shopNotices.fontColor') }}：</span>
           <el-color-picker
             v-model="moduleSaveData.font_color"
             show-alpha
@@ -26,13 +33,14 @@
             size="small"
           >
           </el-color-picker>
-          <el-button
-            @click="handleToReset(0)"
-            size="small"
-          >{{$t('shopNotices.reset')}}</el-button>
+          <el-button @click="handleToReset(0)" size="small">{{
+            $t('shopNotices.reset')
+          }}</el-button>
         </div>
-        <div class='content'>
-          <span :style="columnFlag?'line-height:32px':'line-height:16px'">{{$t('shopNotices.backgroundColor')}}：</span>
+        <div class="content">
+          <span :style="!columnFlag ? 'line-height:32px' : 'line-height:16px'"
+            >{{ $t('shopNotices.backgroundColor') }}：</span
+          >
           <el-color-picker
             v-model="moduleSaveData.bg_color"
             show-alpha
@@ -40,39 +48,34 @@
             size="small"
           >
           </el-color-picker>
-          <el-button
-            @click="handleToReset(1)"
-            size="small"
-          >{{$t('shopNotices.reset')}}</el-button>
+          <el-button @click="handleToReset(1)" size="small">{{
+            $t('shopNotices.reset')
+          }}</el-button>
         </div>
         <div class="content link">
-          <span>{{$t('shopNotices.link')}}：</span>
-          <el-input
-            size="small"
-            v-model="moduleSaveData.title_link"
-          ></el-input>
-          <el-button
-            @click="handleToSelectLinkPath()"
-            size="small"
-          >{{$t('shopNotices.selectLink')}}</el-button>
+          <span>{{ $t('shopNotices.link') }}：</span>
+          <el-input size="small" v-model="moduleSaveData.title_link"></el-input>
+          <el-button @click="handleToSelectLinkPath()" size="small">{{
+            $t('shopNotices.selectLink')
+          }}</el-button>
         </div>
         <div class="content">
-          <span :style="columnFlag?'line-height:32px':'line-height:16px'">{{$t('shopNotices.displayPosition')}}：</span>
-          <el-radio
-            v-model="moduleSaveData.announce_position"
-            :label="0"
-          >{{$t('shopNotices.generalStyle')}}</el-radio>
-          <el-radio
-            v-model="moduleSaveData.announce_position"
-            :label="1"
-          >{{$t('shopNotices.scrollToTopFixed')}}</el-radio>
+          <span :style="!columnFlag ? 'line-height:32px' : 'line-height:16px'"
+            >{{ $t('shopNotices.displayPosition') }}：</span
+          >
+          <el-radio v-model="moduleSaveData.announce_position" :label="0">{{
+            $t('shopNotices.generalStyle')
+          }}</el-radio>
+          <el-radio v-model="moduleSaveData.announce_position" :label="1">{{
+            $t('shopNotices.scrollToTopFixed')
+          }}</el-radio>
         </div>
       </div>
       <!--模块私有end-->
     </div>
     <!--选择链接弹窗-->
     <SelectLinks
-      :tuneUpSelectLink='tuneUpSelectLink'
+      :tuneUpSelectLink="tuneUpSelectLink"
       @selectLinkPath="handleToGetLinkPath"
     />
   </div>
@@ -107,8 +110,8 @@ export default {
       ],
       moduleSaveData: {
         'shop_text': ''
-      }
-
+      },
+      columnFlag: false // 英文适配
     }
   },
   watch: {

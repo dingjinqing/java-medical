@@ -161,4 +161,14 @@ public class OrderGoodsDao extends ShopBaseDao {
                 .where(ORDER_GOODS.CREATE_TIME.ge(beginTime)).and(ORDER_GOODS.CREATE_TIME.le(endTime))
                 .fetchInto(OrderGoodsDo.class);
     }
+
+    /**
+     * 根据订单号获取处方号列表
+     * @param orderSn
+     * @return
+     */
+    public List<String> getPrescriptionCodeListByOrderSn(String orderSn){
+        return db().select(ORDER_GOODS.PRESCRIPTION_CODE).from(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn))
+            .fetchInto(String.class);
+    }
 }

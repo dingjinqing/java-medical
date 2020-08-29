@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.info;
 
+import cn.hutool.core.date.DateUtil;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
@@ -301,6 +302,10 @@ public class OrderInfoService extends ShopBaseService {
 
         if (param.getOrderIds() != null && param.getOrderIds().length != 0) {
             select.where(ORDER_INFO.ORDER_ID.in(param.getOrderIds()));
+        }
+
+        if (param.getStoreIds() != null) {
+            select.where(ORDER_INFO.STORE_ID.in(param.getStoreIds()));
         }
 
         //店铺助手操作
@@ -890,6 +895,7 @@ public class OrderInfoService extends ShopBaseService {
                     order.setFanliMoney(BigDecimal.ZERO);
                 }
                 break;
+                //代发货
             case OrderConstant.ORDER_WAIT_DELIVERY:
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
                 if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
@@ -899,6 +905,14 @@ public class OrderInfoService extends ShopBaseService {
                 if(order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
                     order.setOrderAuditStatus(OrderConstant.MEDICAL_AUDIT_PASS);
                 }
+                break;
+                //待续方
+           case OrderConstant.ORDER_TO_AUDIT:
+                order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+                break;
+                //待开方
+            case OrderConstant.ORDER_TO_AUDIT_OPEN:
+                order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
                 break;
             default:
                 return;
@@ -1092,6 +1106,17 @@ public class OrderInfoService extends ShopBaseService {
             and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
             and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))).
             fetch();
+    }
+    /**
+     * 自动任务获取可退款的订单 未审核
+     */
+    public Result<OrderInfoRecord> getCanAutoUnAuditOrders() {
+        return db().selectFrom(TABLE)
+                .where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT_OPEN)))
+                .and(TABLE.PAY_TIME.ge(DateUtil.yesterday().toTimestamp()))
+                .and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL))
+                .and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))
+                .fetch();
     }
 
     /**
@@ -1707,4 +1732,7 @@ public class OrderInfoService extends ShopBaseService {
             .fetch(x -> x.into(String.class));
     }
 
+    public void setPayTime(String orderSn) {
+        db().update(TABLE).set(TABLE.PAY_TIME,DSL.now()).where(TABLE.ORDER_SN.eq(orderSn)).execute();
+    }
 }

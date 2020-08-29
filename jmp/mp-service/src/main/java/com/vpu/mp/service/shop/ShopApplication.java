@@ -63,6 +63,7 @@ import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.marketcalendar.MarketCalendarService;
 import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
 import com.vpu.mp.service.shop.member.*;
+import com.vpu.mp.service.shop.message.UserMessageService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.OrderApiService;
@@ -79,6 +80,9 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.question.FeedbackService;
+import com.vpu.mp.service.shop.rebate.DoctorWithdrawService;
+import com.vpu.mp.service.shop.rebate.InquiryOrderRebateService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -90,6 +94,7 @@ import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.task.order.InquiryOrderTaskService;
 import com.vpu.mp.service.shop.task.prescription.PrescriptionTaskService;
+import com.vpu.mp.service.shop.task.store.StoreTaskService;
 import com.vpu.mp.service.shop.title.TitleService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.shop.user.message.MessageRecordService;
@@ -138,6 +143,8 @@ public class ShopApplication {
 	public MpDecorationService mpDecoration;
     @Autowired
     public AdminDecorationService adminDecoration;
+    @Autowired
+    public UserMessageService userMessageService;
 
 	/**
 	 * 订单普通查询
@@ -291,6 +298,9 @@ public class ShopApplication {
 
 	@Autowired
 	public ShopTaskService shopTaskService;
+
+    @Autowired
+    public StoreTaskService storeTaskService;
 
 	/**
 	 * 组团购
@@ -652,4 +662,19 @@ public class ShopApplication {
     /**咨询聊天*/
     @Autowired
     public ImSessionService imSessionService;
+    /**
+     * 处方返利
+     */
+    @Autowired
+    public PrescriptionRebateService prescriptionRebateService;
+    /**
+     * 咨询返利
+     */
+    @Autowired
+    public InquiryOrderRebateService inquiryOrderRebateService;
+    /**
+     * 医师提现
+     */
+    @Autowired
+    public DoctorWithdrawService doctorWithdrawService;
 }

@@ -51,7 +51,7 @@ public class GoodsConverter {
         goodsDo.setCostPrice(bo.getGoodsPrice());
         goodsDo.setMarketPrice(bo.getGoodsPrice());
         goodsDo.setGoodsNumber(bo.getGoodsNumber());
-        goodsDo.setIsMedical(MedicalGoodsConstant.GOODS_IS_MEDICAL);
+        goodsDo.setIsMedical(bo.getIsMedical());
 
         if (BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.equals(bo.getState())) {
             goodsDo.setIsOnSale(MedicalGoodsConstant.ON_SALE);
@@ -62,6 +62,7 @@ public class GoodsConverter {
         }
         return goodsDo;
     }
+
 
     public static GoodsMedicalInfoDo convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(GoodsMedicalExternalRequestItemBo bo) {
         GoodsMedicalInfoDo goodsMedicalInfoDo =new GoodsMedicalInfoDo();

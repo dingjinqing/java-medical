@@ -179,7 +179,7 @@ public class DepartmentDao extends ShopBaseDao {
      */
     public DepartmentOneParam getDepartmentByCode(String code) {
         return db().select().from(DEPARTMENT).where(DEPARTMENT.CODE.eq(code))
-            .fetchOneInto(DepartmentOneParam.class);
+            .fetchAnyInto(DepartmentOneParam.class);
     }
 
     /**

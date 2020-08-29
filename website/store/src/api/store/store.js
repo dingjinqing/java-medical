@@ -1,0 +1,158 @@
+import service from '@/util/request.js'
+
+// 获取门店账户列表
+export function getAccountListApi (data) {
+  return service({
+    url: '/api/store/account/list',
+    data,
+    method: 'post'
+  })
+}
+
+// 添加门店账户
+export function addAccountApi (data) {
+  return service({
+    url: '/api/store/account/create',
+    data,
+    method: 'post'
+  })
+}
+// 操作门店账户
+export function editAccountApi (data) {
+  return service({
+    url: '/api/store/account/manage',
+    data,
+    method: 'post'
+  })
+}
+// 读取账户信息
+export function getAccountApi (accountId) {
+  return service({
+    url: `/api/store/account/getOne/${accountId}`,
+    method: 'get'
+  })
+}
+
+// 更新账户信息
+export function updateAccountApi (data) {
+  return service({
+    url: '/api/store/account/edit',
+    data,
+    method: 'post'
+  })
+}
+
+// 获取所有门店来源
+export function allSourceRequest () {
+  return service({
+    url: '/api/store/all/get',
+    method: 'post'
+  })
+}
+// 门店分组列表
+export function storeGroupList (data) {
+  return service({
+    url: '/api/store/group/list',
+    method: 'post',
+    data: data
+  })
+}
+// 门店分组新增
+export function addStoreGroup (data) {
+  return service({
+    url: '/api/store/group/add',
+    method: 'post',
+    data: data
+  })
+}
+// 门店分组删除
+export function delStoreGroup (data) {
+  return service({
+    url: '/api/store/group/del',
+    method: 'post',
+    data: data
+  })
+}
+
+// 门店分组编辑
+export function updateStoreGroup (data) {
+  return service({
+    url: '/api/store/group/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 门店列表
+export function storeList (data) {
+  return service({
+    url: '/api/store/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 全部门店分组
+export function allStoreGroup () {
+  return service({
+    url: '/api/store/group/all',
+    method: 'get'
+  })
+}
+
+// 门店更新
+export function updateStore (data) {
+  return service({
+    url: '/api/store/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 门店删除
+export function delStore (data) {
+  return service({
+    url: '/api/store/del',
+    method: 'post',
+    data: data
+  })
+}
+// 请求基础配置中的设置
+export function getDeliveryConfig () {
+  return service({
+    url: '/api/store/get/config',
+    method: 'get'
+  })
+}
+
+// 获取门店权限列表和选中状态
+export function getSettingApi () {
+  return service({
+    url: '/api/store/account/getSetting',
+    method: 'get'
+  })
+}
+
+export function setStorePermissionApi (data) {
+  return service({
+    url: '/api/store/account/setting',
+    data,
+    method: 'post'
+  })
+}
+// 权限判断
+export function judgeJurisdictionRequest (data) {
+  return service({
+    url: '/api/admin/checkMenu',
+    method: 'post',
+    data: data
+  })
+}
+// 导航权限判断
+export function getShowMenu (data) {
+  return service({
+    url: '/api/store/showMenu',
+    method: 'post',
+    data: data
+  })
+}

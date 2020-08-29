@@ -3,15 +3,13 @@ package com.vpu.mp.service.shop.prescription;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderMedicalHistoryDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
@@ -23,18 +21,23 @@ import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
@@ -70,6 +73,8 @@ public class PrescriptionService extends ShopBaseService {
     public PatientService patientService;
     @Autowired
     public OrderMedicalHistoryDao orderMedicalHistoryDao;
+    @Autowired
+    public RebateConfigService rebateConfigService;
     /**
      * 保存处方
      */
@@ -374,13 +379,14 @@ public class PrescriptionService extends ShopBaseService {
         prescriptionParam.setPrescriptionExpireTime(DateUtils.getTimeStampPlus(PrescriptionConstant.PRESCRIPTION_EXPIRE_DAY, ChronoUnit.DAYS));
         prescriptionParam.setStatus(PrescriptionConstant.STATUS_PASS);
         prescriptionParam.setIsValid(BaseConstant.YES);
+        prescriptionParam.setSettlementFlag(PrescriptionConstant.SETTLEMENT_WAIT);
         List<PrescriptionDrugVo> goodsList=param.getGoodsList();
         List<Integer> goodsIdList=goodsList.stream().map(PrescriptionDrugVo::getGoodsId).collect(Collectors.toList());
         Map<Integer,PrescriptionDrugVo> goodsMap=goodsList.stream().collect(Collectors.toMap(PrescriptionDrugVo::getGoodsId, Function.identity(),(x1, x2) -> x1));
         //药品信息生成处方明细列表
         List<GoodsMedicalInfoDo> goodsMedicalInfoDoList=goodsMedicalInfoDao.listByGoodsIds(goodsIdList);
 
-        List<PrescriptionItemParam> itemList=new ArrayList<>();
+        List<PrescriptionItemDo> itemList=new ArrayList<>();
         for (GoodsMedicalInfoDo info: goodsMedicalInfoDoList) {
             PrescriptionItemParam item=new PrescriptionItemParam();
             //药品信息映射
@@ -393,6 +399,23 @@ public class PrescriptionService extends ShopBaseService {
             item.setDragSumUnit(info.getGoodsPackageUnit());
             item.setGoodsImg(goods.getGoodsImg());
             item.setPrdId(goodsMap.get(info.getGoodsId()).getPrdId());
+            //计算应返利
+            RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+            if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+                BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+                BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+                BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+                item.setGoodsSharingProportion(sharingProportion);
+                if(MedicalGoodsConstant.IS_RX.equals(info.getIsRx())){
+                    item.setRebateProportion(rxProportion);
+                }else {
+                    item.setRebateProportion(noRxProportion);
+                }
+                //应返利金额
+                item.setTotalRebateMoney(goods.getShopPrice().multiply(BigDecimal.valueOf(item.getDragSumNum())).multiply(item.getGoodsSharingProportion())
+                    .multiply(item.getRebateProportion())
+                    .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_DOWN));
+            }
             itemList.add(item);
         }
         prescriptionParam.setList(itemList);
@@ -473,7 +496,7 @@ public class PrescriptionService extends ShopBaseService {
             param.setDoctorCode(oneInfo.getHospitalCode());
             PageResult<PrescriptionParam> result = prescriptionDao.listAuditedByDoctor(param);
             List<String> preCodeList = result.getDataList().stream().map(PrescriptionDo::getPrescriptionCode).collect(Collectors.toList());
-            Map<String, List<PrescriptionItemParam>> stringPrescriptionItemInfoVoMap = prescriptionItemDao.mapByPrescriptionCodeList(preCodeList);
+            Map<String, List<PrescriptionItemDo>> stringPrescriptionItemInfoVoMap = prescriptionItemDao.mapByPrescriptionCodeList(preCodeList);
             result.getDataList().forEach(prescription -> {
                 if (stringPrescriptionItemInfoVoMap.containsKey(prescription.getPrescriptionCode())){
                     prescription.setList(stringPrescriptionItemInfoVoMap.get(prescription.getPrescriptionCode()));

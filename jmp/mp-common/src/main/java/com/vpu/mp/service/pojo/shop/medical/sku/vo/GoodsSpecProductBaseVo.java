@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 public class GoodsSpecProductBaseVo {
     private Integer prdId;
     private Integer goodsId;
+    private String prdSn;
     private BigDecimal prdPrice;
     private Integer prdNumber;
 }

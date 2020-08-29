@@ -1416,6 +1416,7 @@ public class JsonResultMessage {
     public static final String DOCTOR_CODE_IS_EXIST = "doctor.code.is.exist";
     public static final String PATIENT_IS_EXIST = "patient.is.exist";
     public static final String PATIENT_IS_NOT_EXIST = "patient.is.not.exist";
+    public static final String DOCTOR_AUTH_DISABLED = "doctor.auth.disabled";
 
     /**
      * 会话
@@ -1447,5 +1448,11 @@ public class JsonResultMessage {
     public static final String FETCH_HIS_NULL = "暂无信息";
     public static final String TO_FETCH_PATIENT = "请跳转至输入验证码拉取信息界面";
     public static final String SMS_OUT_OF_LIMITS = "今日可发送短信已超额";
+
+    public static final String DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY = "医师提现金额超出可提现金额";
+    public static final String DOCTOR_WITHDRAW_IS_NOT_EXIST = "不存在医师可提现金额";
+    public static final String NO_LINK_WECHAT_OFFICIAL_ACCOUNTS = "小程序未绑定微信公众号";
+    public static final String DOCTOR_WITHDRAW_EX_ERROR = "医师提现wx错误";
+    public static final String DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "医师提现未关注微信公众号";
 
 }

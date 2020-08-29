@@ -27,6 +27,10 @@ public class Tables {
      */
     public static final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
 
+    /**
+     * 医师评价回复
+     */
+    public static final DoctorCommentReply DOCTOR_COMMENT_REPLY = com.vpu.mp.db.shop.tables.DoctorCommentReply.DOCTOR_COMMENT_REPLY;
 
 
     /**
@@ -1222,4 +1226,8 @@ public class Tables {
      * 医生返利提现申请表
      */
     public static final DoctorWithdraw DOCTOR_WITHDRAW = com.vpu.mp.db.shop.tables.DoctorWithdraw.DOCTOR_WITHDRAW;
+    /**
+     * 门店数据概览
+     */
+    public static final StoreOrderSummaryTrend STORE_ORDER_SUMMARY_TREND = com.vpu.mp.db.shop.tables.StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND;
 }

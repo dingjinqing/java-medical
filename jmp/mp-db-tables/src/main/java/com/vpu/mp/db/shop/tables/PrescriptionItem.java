@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = -418491113;
+    private static final long serialVersionUID = 40002784;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_item</code>
@@ -162,6 +162,11 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_item.medicine_price</code>. 药品总价
      */
     public final TableField<PrescriptionItemRecord, BigDecimal> MEDICINE_PRICE = createField("medicine_price", org.jooq.impl.SQLDataType.DECIMAL(18, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "药品总价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.goods_sharing_proportion</code>. 商品分成比例
+     */
+    public final TableField<PrescriptionItemRecord, BigDecimal> GOODS_SHARING_PROPORTION = createField("goods_sharing_proportion", org.jooq.impl.SQLDataType.DECIMAL(10, 4).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "商品分成比例");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_item.rebate_proportion</code>. 返利比例

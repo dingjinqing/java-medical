@@ -40,7 +40,7 @@ public enum UserMessageTemplate {
     /**
      * 订单已收货
      */
-    USER_MESSAGE_ORDER_INFO_ORDER_RECEIVED(2005, (byte) 5, "您订单号为%s的订单已经收获。"),
+    USER_MESSAGE_ORDER_INFO_ORDER_RECEIVED(2005, (byte) 5, "您订单号为%s的订单已经收货。"),
     /**
      * 订单已完成
      */
@@ -56,11 +56,11 @@ public enum UserMessageTemplate {
     /**
      * 订单正在退款
      */
-    USER_MESSAGE_ORDER_INFO_ORDER_REFUNDING(2009, (byte) 9, "您订单号为%s的订单正在退款。"),
+    USER_MESSAGE_ORDER_INFO_ORDER_REFUNDING(2009, (byte) 9, "您订单号为%s的订单已退货成功。"),
     /**
      * 订单退款成功
      */
-    USER_MESSAGE_ORDER_INFO_ORDER_REFUND_FINISHED(2010, (byte) 10, "您订单号为%s的订单退款成功。"),
+    USER_MESSAGE_ORDER_INFO_ORDER_REFUND_FINISHED(2010, (byte) 10, "您订单号为%s的订单已退货成功。"),
     /**
      * 订单正在审核中
      */

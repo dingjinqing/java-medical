@@ -18,6 +18,8 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
@@ -33,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -53,6 +56,7 @@ import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.config.InsteadPayConfigService;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -76,6 +80,7 @@ import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
@@ -192,6 +197,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private PrescriptionDao prescriptionDao;
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private PrescriptionRebateService prescriptionRebateService;
+    @Autowired
+    public RebateConfigService rebateConfigService;
     /**
      * 随机生成核销码位数
      */
@@ -255,6 +264,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             transaction(()->{
                 //初始化订单（赋值部分数据）
                 OrderInfoRecord order = orderInfo.addRecord(orderSn, param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
+                //处方返利信息入库
+                addPrescriptionRebate(param);
                 //普通营销活动处理
                 processNormalActivity(order, orderBo, orderBeforeVo);
                 //计算其他数据（需关联去其他模块）
@@ -284,7 +295,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 must.addRecord(param.getMust());
                 orderBo.setOrderId(order.getOrderId());
                 //待发货、拼团中、预售支付定金或支付完成
-                isAddLock.set(processEffective(param, orderBo, order));
+                processEffective(param, orderBo, order,isAddLock);
             });
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
@@ -349,6 +360,25 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
             }
         }
+    }
+
+    /**
+     * 处方返利信息入库
+     * @param param
+     */
+    public void addPrescriptionRebate(CreateParam param){
+        RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+        if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+            //根据处方下单
+            if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
+                PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
+                //处方药品
+                List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
+                //处方返利信息入库
+                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,prescriptionItemDos);
+            }
+        }
+
     }
 
     private String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
@@ -1461,10 +1491,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param param
      * @param orderBo
      * @param order
+     * @param isAddLock
      * @throws MpException
      * @return
      */
-    private boolean processEffective(CreateParam param, CreateOrderBo orderBo, OrderInfoRecord order) throws MpException {
+    private boolean processEffective(CreateParam param, CreateOrderBo orderBo, OrderInfoRecord order, AtomicBoolean isAddLock) throws MpException {
         boolean orderSattus =order.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT)||order.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)||order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY);
         boolean orderActivity = order.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING) ||
                 (BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && (order.getBkOrderPaid() > OrderConstant.BK_PAY_NO));
@@ -1472,6 +1503,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("下单时待发货、拼团中、预售支付定金或支付完成减库存、调用Effective方法");
             //加锁
             atomicOperation.addLock(orderBo.getOrderGoodsBo());
+            isAddLock.set(true);
             //货到付款、余额、积分(非微信混合)付款，生成订单时修改活动状态
             marketProcessorFactory.processOrderEffective(param,order);
             //更新活动库存
@@ -1485,6 +1517,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             logger().info("下单时待付款且配置为下单减库存或者为秒杀时调用更新库存方法");
             //加锁
             atomicOperation.addLock(orderBo.getOrderGoodsBo());
+            isAddLock.set(true);
             //下单减库存
             marketProcessorFactory.processUpdateStock(param,order);
             logger().info("加锁{}",order.getOrderSn());

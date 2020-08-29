@@ -2,11 +2,10 @@
   <div class="allDepartment">
     <allDepartmentHeaderTab :tabIndex="0" />
     <div class="goodsSortForm">
-      <el-button
-        type="primary"
-        size="small"
-        @click="addDepartmentClicked"
-      >添加科室</el-button>
+      <el-button type="primary" size="small" @click="addDepartmentClicked"
+        >添加科室</el-button
+      >
+      <el-button type="primary" size="small" @click="fetch">同步</el-button>
     </div>
     <div>
       <el-table
@@ -14,83 +13,60 @@
         header-row-class-name="tableClss"
         :data="departmentData"
         border
-        style="width: 100%"
+        style="width: 100%;"
       >
-        <el-table-column
-          align="left"
-          label="科室名称"
-        >
-          <template v-slot="{row,$index}">
+        <el-table-column align="left" label="科室名称">
+          <template v-slot="{ row, $index }">
             <template v-if="row.isLeaf === 0 && row.level === 1">
               <span
                 v-if="!row.open"
                 class="collapseIcon el-icon-folder-add"
-                @click="collapseIconClicked(row,$index)"
+                @click="collapseIconClicked(row, $index)"
               ></span>
               <span
                 v-else
                 class="collapseIcon el-icon-folder-remove"
-                @click="collapseIconClicked(row,$index)"
+                @click="collapseIconClicked(row, $index)"
               ></span>
-              <span class="n-bold"> {{row.name}}</span>
-
+              <span class="n-bold"> {{ row.name }}</span>
             </template>
             <template v-else-if="row.level === 1">
-              <span
-                class="collapseTab"
-                style='width:48px;'
-              ></span>
+              <span class="collapseTab" style="width: 48px;"></span>
 
-              <span class="n-bold"> {{row.name}}</span>
+              <span class="n-bold"> {{ row.name }}</span>
             </template>
             <template v-else>
               <span class="collapseTab"></span>
-              {{row.name}}
+              {{ row.name }}
             </template>
           </template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          label="科室代码"
-          prop="code"
-        />
-        <el-table-column
-          align="center"
-          label="操作"
-        >
+        <el-table-column align="center" label="科室代码" prop="code" />
+        <el-table-column align="center" label="操作">
           <template v-slot="scope">
-            <el-tooltip
-              content="编辑"
-              placement="top"
-            >
+            <el-tooltip content="编辑" placement="top">
               <span
                 class="iconfont iconbianji"
                 @click="editDepartmentClicked(scope.row)"
               ></span>
             </el-tooltip>
-            <el-tooltip
-              content="删除"
-              placement="top"
-            >
+            <el-tooltip content="删除" placement="top">
               <span
                 class="iconfont iconshanchu2"
-                @click="deleteDepartmentClicked(scope.row,scope.$index)"
+                @click="deleteDepartmentClicked(scope.row, scope.$index)"
               ></span>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="handleQuery"
-      />
+      <pagination :page-params.sync="pageParams" @pagination="handleQuery" />
     </div>
   </div>
 </template>
 
 <script>
 // 导入api
-import { getDepartmentList, getBatchDepartmentList, deleteDepartment } from '@/api/admin/doctorManage/allDepartment/departmentManagement.js'
+import { getDepartmentList, getBatchDepartmentList, deleteDepartment, fetchDoctorDepartment } from '@/api/admin/doctorManage/allDepartment/departmentManagement.js'
 // 组件导入
 import allDepartmentHeaderTab from './officesHeaderTab'
 
@@ -166,6 +142,11 @@ export default {
         deleteDepartment(row.id).then(res => {
           row.level === 1 ? this.handleQuery() : this.departmentData.splice($index, 1)
         })
+      })
+    },
+    fetch () {
+      fetchDoctorDepartment().then(res => {
+        console.log(res)
       })
     }
   },

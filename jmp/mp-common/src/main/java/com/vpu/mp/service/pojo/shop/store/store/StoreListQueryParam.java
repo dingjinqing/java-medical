@@ -5,6 +5,8 @@ import com.vpu.mp.common.foundation.util.Page;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author 王兵兵
  *
@@ -34,4 +36,5 @@ public class StoreListQueryParam {
      */
     private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
     private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+    private List<Integer> storeIds;
 }

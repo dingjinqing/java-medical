@@ -5,12 +5,17 @@ import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
 
 import java.util.*;
 
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import jodd.util.StringUtil;
+import org.jooq.Condition;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -37,6 +42,8 @@ public class StoreAccountService extends MainBaseService {
 	private static final String DOT = ",";
 	@Autowired
 	public StoreAccountDao storeAccountDao;
+    @Autowired
+    public StoreDao storeDao;
 
     /**
      * 获取用户列表
@@ -60,6 +67,13 @@ public class StoreAccountService extends MainBaseService {
 		if (param.getStatus() > -1) {
 			where.and(STORE_ACCOUNT.STATUS.eq(param.getStatus()));
 		}
+		if (param.getStoreIds() != null) {
+            Condition condition = DSL.noCondition();
+            for (Integer storeId:param.getStoreIds()) {
+                condition = condition.or(DslPlus.findInSet(storeId, STORE_ACCOUNT.STORE_LIST));
+            }
+            where.and(condition);
+        }
 		return this.getPageResult(where, param.getCurrentPage(), param.getPageRows(), StoreAccountVo.class);
 	}
 
@@ -198,15 +212,24 @@ public class StoreAccountService extends MainBaseService {
         StoreAccountVo storeAccountInfo = storeAccountDao.getStoreAccountInfo(param);
         if (storeAccountInfo == null) {
             storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_NOT_EXIST);
-        } else if (StoreAuthConstant.DEL_NORMAL.equals(storeAccountInfo.getDelFlag())){
+        } else if (StoreAuthConstant.IS_DELETE.equals(storeAccountInfo.getDelFlag())){
             storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_DELETE);
         } else if (StoreAuthConstant.IS_FORBIDDEN.equals(storeAccountInfo.getStatus())){
-            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_DELETE);
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_FORBIDDEN);
         } else if (StringUtil.isBlank(storeAccountInfo.getStoreList())){
             storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_IS_EMPTY);
         } else {
+            Boolean isOk = true;
             List<Integer> list = changeToArray(storeAccountInfo.getStoreList());
             storeAccountInfo.setStoreLists(list);
+            if (StoreAuthConstant.STORE_CLERK.equals(param.getStoreAccountType())) {
+                StoreBasicVo storeInfo = saas().getShopApp(storeAccountInfo.getShopId()).store.getStoreByNo(param.getStoreNo());
+                if (storeInfo == null || !list.contains(storeInfo.getStoreId())) {
+                    storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_NOT_EXIST);
+                    isOk = false;
+                }
+            }
+            storeAuthInfoVo.setIsOk(isOk);
         }
         storeAuthInfoVo.setStoreAccountInfo(storeAccountInfo);
         return storeAuthInfoVo;

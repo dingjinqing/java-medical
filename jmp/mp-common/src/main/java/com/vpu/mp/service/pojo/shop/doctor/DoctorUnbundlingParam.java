@@ -14,6 +14,6 @@ public class DoctorUnbundlingParam {
     /**
      * 医师id
      */
-    public Integer doctorId;
+    private Integer doctorId;
 
 }

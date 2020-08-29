@@ -28,7 +28,7 @@ public class AdminInquiryOrderController extends AdminBaseController{
      * 获取订单详情
      */
     @PostMapping("/api/admin/inquiry/order/detail")
-    public JsonResult payOrder(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
+    public JsonResult orderDetail(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
         if(inquiryOrderOnParam.getOrderId()==null){
             return fail(JsonResultCode.INQUIRY_ORDER_ID_IS_NULL);
         }
@@ -39,7 +39,7 @@ public class AdminInquiryOrderController extends AdminBaseController{
      * 查询问诊订单
      */
     @PostMapping("/api/admin/inquiry/order/list")
-    public JsonResult refundOrder(@RequestBody InquiryOrderListParam param){
+    public JsonResult orderList(@RequestBody InquiryOrderListParam param){
         PageResult<InquiryOrderDo> list=shop().inquiryOrderService.getInquiryOrderList(param);
         return success(list);
     }

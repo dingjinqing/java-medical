@@ -3979,6 +3979,7 @@ CREATE TABLE `b2c_spec_vals` (
 CREATE TABLE `b2c_store` (
   `store_id` int(11) NOT NULL AUTO_INCREMENT,
   `store_name` varchar(60) NOT NULL COMMENT '门店名称',
+  `store_code` varchar(50) not null default '' comment '门店编号',
   `manager` varchar(30) NOT NULL COMMENT '负责人',
   `mobile` varchar(20) NOT NULL COMMENT '联系电话',
   `store_imgs` text COMMENT '图片',
@@ -5195,7 +5196,7 @@ create table `b2c_prescription`(
     `department_name` varchar(32) not null default '' comment '科室名称',
     `doctor_code` varchar(32) not null comment '诊断医师编码',
     `doctor_name` varchar(32) not null comment '诊断医师名称',
-    `diagnose_time` timestamp not null comment '诊断时间',
+    `diagnose_time` timestamp not null default current_timestamp comment '诊断时间',
     `pharmacist_name` varchar(32) not null default '' comment '药师名称',
     `pharmacist_code` varchar(32) not null default '' comment '药师编码',
     `diagnosis_name` varchar(1024) not null default '' comment '诊断名称',
@@ -5242,6 +5243,7 @@ create table `b2c_prescription_item`(
     `goods_use_memo` varchar(1024) not null default '' comment '药品使用方式说明',
     `goods_production_enterprise` varchar(512) comment '生产企业',
     `medicine_price` decimal(18,2) not null default '0.00' comment '药品总价',
+    `goods_sharing_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '商品分成比例',
     `rebate_proportion` decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '返利比例',
     `total_rebate_money` decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '返利金额',
     `is_delete`     tinyint(1)   not null default '0',
@@ -5684,3 +5686,19 @@ create table `b2c_doctor_withdraw` (
     primary key(`id`),
     KEY `doctor_id` (`doctor_id`)
 )comment ='医生返利提现申请表';
+
+-- 门店数据概览
+create table `b2c_store_order_summary_trend` (
+  `id`                   int(11)        not null auto_increment,
+  `ref_date`             date           not null comment '2018-09-04',
+  `type`                 tinyint(2)     not null comment '1,7,30,90',
+  `store_id`             int(8)          default null comment '门店ID',
+  `order_pay_user_num`   int(11)        not null comment '付款人数',
+  `total_paid_money`     decimal(10, 2)      default null comment '消费金额',
+  `order_pay_num`        int(11) default 0  null comment '成交订单数',
+  `order_num`            int(11) default 0  not null comment '下单数',
+  `order_user_num`       int(11) default 0  null comment '下单人数',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  primary key (`id`),
+  key `ref_type` (`ref_date`, `type`) using btree
+)comment ='门店数据概览';

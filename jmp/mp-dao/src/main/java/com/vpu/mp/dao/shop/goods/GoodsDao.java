@@ -5,8 +5,8 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
-import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -19,14 +19,14 @@ import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 商品dao
@@ -262,6 +262,16 @@ public class GoodsDao extends ShopBaseDao {
 
        return goodsDos.stream().collect(Collectors.toMap(GoodsDo::getGoodsSn, GoodsDo::getGoodsId, (x1, x2) -> x1));
    }
+
+    /**
+     * 查询商品id和价格的映射
+     * @param goodsIds
+     * @return
+     */
+    public Map<Integer, BigDecimal> mapGoodsIdToGoodsPrice(Collection<Integer> goodsIds) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_ID.in(goodsIds));
+        return db().select(GOODS.GOODS_ID, GOODS.SHOP_PRICE).from(GOODS).where(condition).fetchMap(GOODS.GOODS_ID, GOODS.SHOP_PRICE);
+    }
 
     /**
      * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品Id

@@ -88,3 +88,21 @@ export function updateConsultation (data) {
     data
   })
 }
+
+// 同步系统医师
+export function fetchDoctor (data) {
+  return service({
+    url: '/api/admin/doctors/fetch',
+    method: 'post',
+    data
+  })
+}
+
+// 同步系统职称
+export function fetchDoctorTitle (data) {
+  return service({
+    url: '/api/admin/doctor/title/fetch',
+    method: 'post',
+    data
+  })
+}

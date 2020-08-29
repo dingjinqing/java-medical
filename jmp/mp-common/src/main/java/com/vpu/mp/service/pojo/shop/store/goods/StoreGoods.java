@@ -12,6 +12,11 @@ import java.math.BigDecimal;
 public class StoreGoods {
     private Integer storeId;
     private Integer goodsId;
+    private String goodsCommonName;
+    private String goodsQualityRatio;
+    private String goodsApprovalNumber;
+    private String goodsProductionEnterprise;
+    private String goodsStoreSn;
     private Integer prdId;
     private String prdSn;
     private Integer productNumber;
@@ -28,4 +33,5 @@ public class StoreGoods {
 
     private String goodsImg;
     private String goodsName;
+    private Byte isDelete;
 }
