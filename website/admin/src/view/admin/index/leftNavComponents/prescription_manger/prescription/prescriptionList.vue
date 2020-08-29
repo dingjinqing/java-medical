@@ -35,6 +35,10 @@
             >
             </el-input>
           </div>
+        </div>
+      </div>
+      <div class="nav_box" style='margin-top:0;padding-top:0'>
+        <div class="filters">
           <div class="filters_item">
             <span class="fil_span">时间筛选：</span>
             <el-select

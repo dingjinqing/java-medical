@@ -7,8 +7,9 @@
 		<view class="a_con">
 		  <slot />
 		</view>
-    <view class="a_bot" catchtap="close">
-         <view class='determine' >确定</view>
+    <view class="a_bot">
+		    <view class="a_cancel" wx:if='{{if_cancel}}' catchtap="close">{{cancel_title}}</view>
+         <view class='a_determine' catchtap="{{if_cancel ? 'onTap' : 'close'}}">{{success_title}}</view>
     </view>
 	</view>
 </v-popup>

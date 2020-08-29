@@ -2,6 +2,7 @@
   background: #fff;
   width: 640rpx;
   border-radius:16rpx;
+  overflow: hidden;
 }
 .a_title{
   padding: 20rpx 20rpx 0;
@@ -32,8 +33,20 @@
   align-items: center;
   justify-content: center;
   padding: 20rpx;
-  color: #26C4BC;
   font-size: 32rpx;
   font-weight: bold;
   border-top: 2rpx solid #eee;
+}
+.a_bot>view{
+  flex: 1;
+  text-align: center;
+}
+.a_bot > view + view{
+  border-left: 2rpx solid #eee;
+}
+.a_bot .a_determine{
+  color: #26C4BC;
+}
+.a_bot .a_cancel{
+  color: #999;
 }

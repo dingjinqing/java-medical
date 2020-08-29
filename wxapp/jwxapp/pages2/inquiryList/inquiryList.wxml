@@ -28,17 +28,16 @@
 				<block wx:else>
 					<view class="comment_item">
 						<view class="c_top">
-							<view class="c_t_name">测试{{item.userName}}</view>
+							<view class="c_t_name">{{item.userName}}</view>
 							<view class="c_t_star">
-								<block wx:for='{{item.stars - 0}}' wx:key=''>
+								<block wx:for='{{item.stars - 0}}' wx:key='key'>
 									<text class='iconfont iconshoucang star'></text>
 								</block>
-                	<text class='iconfont iconshoucang star'></text>
 							</view>
 						</view>
 						<view class="c_mid">
 							<view class="c_m_text">
-								测试一下测试一下测试一下{{ item.need_expand  ? ( item.zk ? item.new_comm_note : item.commNote) : item.commNote}}
+								{{ item.need_expand  ? ( item.zk ? item.new_comm_note : item.commNote) : item.commNote}}
 							</view>
 							<view class="expand" wx:if='{{item.need_expand == true}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' catchtap="zk_sq">
 								{{item.zk ? '展开' : '收起'}}
@@ -47,18 +46,21 @@
 						<view class="c_bot">
 							<text>{{item.createTime}}</text>
 						</view>
-						<view class="d_reply">
+						<view class="d_reply" wx:if='{{item.replylist}}'>
 							<view class="reply_top">医师回复：</view>
 							<view class="reply_bot">
 								<view class="re_text">
-									312312312313
+									{{ item.rp_need_expand  ? ( item.rp_zk ? item.rp_new_comm_note : item.replylist[0].replyNote) : item.replylist[0].replyNote}}
+								</view>
+								<view class="rp_expand" wx:if='{{item.rp_need_expand == true}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' catchtap="rp_zk_sq">
+									{{item.rp_zk ? '展开' : '收起'}}
 								</view>
 							</view>
 						</view>
-            <view class="btn_reply">
-                <view class="to_reply">回复</view>
-                <view class="del_reply">删除回复</view>
-            </view>
+						<view class="btn_reply">
+							<view class="del_reply" catchtap="del_reply" wx:if='{{item.replylist}}' data-id='{{item.replylist[0].id}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}'>删除回复</view>
+							<view class="to_reply" data-id='{{item.id}}' catchtap="to_reply" data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' wx:else>回复</view>
+						</view>
 					</view>
 				</block>
 
@@ -87,3 +89,6 @@
 		<view class="modal_btn btn_ok" bindtap="requestReturn" data-taped_order_id='{{taped_order_id}}'>确定</view>
 	</view>
 </view>
+<pop-announce show='{{show_announce}}' title='回复' success_title='发布' if_cancel='{{true}}' binddetermine='com_publish' id='comment'>
+	<textarea placeholder="回复" placeholder-style='#999' value='{{comment_note}}' bindinput='comment_note'></textarea>
+</pop-announce>

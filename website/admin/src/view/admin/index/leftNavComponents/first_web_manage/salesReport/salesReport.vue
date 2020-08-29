@@ -7,7 +7,6 @@
           <el-select
             v-model="param.analyzeType"
             size="small"
-            clearable
             @change="dateChangeHandler"
             class="timeSelect"
           >
@@ -24,7 +23,6 @@
           <el-select
             v-model="timeSelect"
             size="small"
-            clearable
             @change="dateChangeHandler"
             class="timeSelect"
           >
@@ -50,11 +48,11 @@
           <span class="choosed_time">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
         </div>
         <div class="btn_wrap">
-          <el-button
+          <!-- <el-button
             type='primary'
             size='small'
             @click="initData"
-          >查询</el-button>
+          >查询</el-button> -->
           <el-button
             type="primary"
             size="small"

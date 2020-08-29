@@ -30,7 +30,6 @@
           <el-select
             v-model="timeSelect"
             size="small"
-            clearable
             @change="dateChangeHandler"
             class="timeSelect"
           >

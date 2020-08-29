@@ -242,11 +242,15 @@
   position: relative;
 }
 
-.expand {
+.expand,.rp_expand {
   position: absolute;
   right: 10rpx;
   bottom: 4rpx;
   font-weight: 600;
+}
+.rp_expand{
+  right: 18rpx;
+  bottom: 16rpx;
 }
 
 .no_chat {
@@ -307,7 +311,7 @@
   margin-right: 10rpx;
 }
 
-.btn_reply{
+.btn_reply {
   overflow: hidden;
   margin: 20rpx 0;
 }
@@ -322,4 +326,12 @@
   text-align: center;
   line-height: 60rpx;
   float: right;
+}
+
+textarea {
+  width: 540rpx;
+  height: 360rpx;
+  background: rgba(245, 245, 245, 1);
+  border-radius: 4px;
+  padding: 20rpx;
 }

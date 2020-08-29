@@ -5,7 +5,7 @@
         <div class="filters_item ">
           <span class="fil_span">医师姓名：</span>
           <el-select
-            v-model="param.doctorId"
+            v-model="param.doctorName"
             placeholder="请输入医生姓名"
             size="small"
             class="default_input"
@@ -28,7 +28,7 @@
         <div class="filters_item ">
           <span class="fil_span">评价星级：</span>
           <el-select
-            v-model="param.commstar"
+            v-model="param.stars"
             size="small"
             class="default_input"
             filterable
@@ -63,6 +63,7 @@
           <el-switch
             v-model="autoReview"
             active-color="#f7931e"
+            @change='changeAudit'
           ></el-switch>
           <span style="margin-left:10px">{{autoReview ? '已开启':'已关闭'}}</span>
         </div>
@@ -93,15 +94,15 @@
           }"
       >
         <el-table-column
-          prop='doctorName'
+          prop='name'
           label='医生姓名'
         ></el-table-column>
         <el-table-column
-          prop='doctorName'
+          prop='userName'
           label='用户昵称'
         ></el-table-column>
         <el-table-column
-          prop='amount'
+          prop='orderSn'
           label='咨询订单号'
         ></el-table-column>
         <el-table-column
@@ -114,7 +115,7 @@
               <div class="evaluation-info_item">
                 <span class="evaluation-info_title">评分：</span><span><i
                     class="el-icon-star-on"
-                    v-for="index in scope.row.commstar"
+                    v-for="index in scope.row.stars"
                     :key="index"
                   ></i></span>
               </div>
@@ -134,16 +135,16 @@
           <template slot-scope="scope">
             <div class="evaluation-info">
               <div class="evaluation-info_item">
-                <span class="evaluation-info_title">回复：</span><span>{{
-                  scope.row.commNote || '暂无回复'
+                <span class="evaluation-info_title"></span><span>{{
+                  scope.row.replylist ? '回复：' + scope.row.replylist[0].replyNote : '暂无回复'
                 }}</span>
               </div>
               <div class="evaluation_response">
                 <el-button
                   type="primary"
-                  v-if="!scope.row.content"
+                  v-if="scope.row.replylist"
                   size="mini"
-                  @click="writeReply(scope.row.id)"
+                  @click="delDoctorComment(scope.row.replylist[0].id)"
                 >删除回复</el-button>
               </div>
             </div>
@@ -154,16 +155,17 @@
             <span>{{scope.row.createTime | timeDate}}</span>
           </template>
         </el-table-column>
+        <el-table-column label='匿名评价'>
+          <template v-slot='scope'>
+            <span>{{scope.row.isAnonymou == 0 ? '否' : '是'}}</span>
+          </template>
+        </el-table-column>
 
-        <el-table-column
-          prop='departmentName'
-          label='匿名评价'
-        ></el-table-column>
-
-        <el-table-column
-          prop='oncePrice'
-          label='审核状态'
-        ></el-table-column>
+        <el-table-column label='审核状态'>
+          <template v-slot='scope'>
+            <span>{{scope.row.auditStatus | status}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           align="center"
@@ -175,55 +177,49 @@
             >
               <span
                 class="el-icon-delete operateSpan"
-                @click="delEvaluation(scope.row.id)"
+                @click="delComment(scope.row.id)"
               ></span>
             </el-tooltip>
             <el-tooltip
               content="通过"
               placement="top"
-              v-if="
-                target === 'Record' &&
-                  (scope.row.flag === 0 || scope.row.flag === 2)
-              "
+              v-if="scope.row.auditStatus == 0"
             >
               <span
                 class="el-icon-success operateSpan"
-                @click="evaluationPass(scope.row.id)"
+                @click="passComment(scope.row.id,1)"
               ></span>
             </el-tooltip>
             <el-tooltip
               content="拒绝"
               placement="top"
-              v-if="
-                target === 'Record' &&
-                  (scope.row.flag === 0 || scope.row.flag === 1)
-              "
+              v-if="scope.row.auditStatus == 0"
             >
               <span
                 class="el-icon-error operateSpan"
-                @click="evaluationRefuse(scope.row.id)"
+                @click="passComment(scope.row.id,0)"
               ></span>
             </el-tooltip>
             <el-tooltip
               content="置顶"
               placement="top"
-              v-if="scope.row.isTop === 0"
+              v-if="scope.row.top === 0"
             >
               <span
                 class="el-icon-top operateSpan"
-                @click="evaluationTop(scope.row.id)"
+                @click="evaluationTop(scope.row.id,1)"
               ></span>
             </el-tooltip>
-            <!-- <el-tooltip
-              :content="$t('evaluation.down')"
+            <el-tooltip
+              content="取消置顶"
               placement="top"
               v-if="scope.row.isTop === 1"
             >
               <span
                 class="el-icon-bottom operateSpan"
-                @click="evaluationCancelTop(scope.row.id)"
+                @click="evaluationTop(scope.row.id,0)"
               ></span>
-            </el-tooltip> -->
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -238,28 +234,28 @@
 </template>
 
 <script>
-import { getAdvistoryReportList, getReportExport, getDoctorList, getDoctorTotal } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
-import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
-import { download } from '@/util/excelUtil.js'
+import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
+import { getCommentList, ifAuditAuto, getAuditAuto, commentUntop, deleteComment, deleteDoctorComment, aduitComment } from '@/api/admin/doctorManage/comment/comment.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: {
     pagination
   },
   watch: {
-    lang () {
-      this.timeRange = this.$t('tradesStatistics.timeRange')
-    }
+
   },
   mounted () {
-    this.getDateValue(1)
     this.getDoctor({})
+    this.auditAuto()
     this.initData()
   },
   data () {
     return {
       loading: false,
-      pageParams: {},
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
       tableData: [],
       starLevel: [
         { key: 0, value: '全部' },
@@ -276,8 +272,9 @@ export default {
         { key: 2, value: '未通过' }
       ],
       param: {
-        commstar: 0,
-        flag: 0
+        stars: 0,
+        flag: -1,
+        doctorName: ''
       },
       autoReview: false,
       doctorList: [],
@@ -285,58 +282,16 @@ export default {
     }
   },
   methods: {
-    // 导出
-    exportData () {
-      getReportExport(this.param).then(res => {
-        let fileName = localStorage.getItem('V-content-disposition')
-        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '咨询报表.xlsx'
-        download(res, decodeURIComponent(fileName))
-      }).catch(err => console.log(err))
-    },
-    // 选择时间段
-    dateChangeHandler (time) {
-      if (time !== 0) {
-        this.getDateValue(time)
-        this.initData()
-      }
-    },
-    // 自定义时间
-    changeDate () {
-      this.param.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
-      this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
-      this.startDate.year = this.timeValue[0].substring(0, 4)
-      this.startDate.month = this.timeValue[0].substring(4, 6)
-      this.startDate.day = this.timeValue[0].substring(6, 8)
-      this.endDate.year = this.timeValue[1].substring(0, 4)
-      this.endDate.month = this.timeValue[1].substring(4, 6)
-      this.endDate.day = this.timeValue[1].substring(6, 8)
-      this.initData()
-    },
-    getDateValue (unit) {
-      getDate(unit).then(res => {
-        if (res.error === 0) {
-          this.startDate.year = res.content.startTime.split('-')[0]
-          this.startDate.month = res.content.startTime.split('-')[1]
-          this.startDate.day = res.content.startTime.split('-')[2]
-          this.endDate.year = res.content.endTime.split('-')[0]
-          this.endDate.month = res.content.endTime.split('-')[1]
-          this.endDate.day = res.content.endTime.split('-')[2]
-          this.param.startTime = res.content.startTime + ' 00:00:00'
-          this.param.endTime = res.content.endTime + ' 00:00:00'
-          this.initData()
-        }
-      }).catch(err => console.log(err))
-    },
+
     initData () {
       let params = Object.assign({}, this.param, this.pageParams)
-      getAdvistoryReportList(params).then(res => {
+      getCommentList(params).then(res => {
         console.log(res)
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
         }
       }).catch(err => console.log(err))
-      this.getTotal({ doctorId: this.param.doctorId, startTime: this.param.startTime, endTime: this.param.endTime })
     },
     getDoctor (doctor) {
       getDoctorList(doctor).then(res => {
@@ -346,11 +301,83 @@ export default {
         }
       })
     },
-    getTotal (doctor) {
-      getDoctorTotal(doctor).then(res => {
+    auditAuto () {
+      getAuditAuto().then(res => {
         if (res.error === 0) {
-          console.log(res)
-          this.total = res.content
+          this.autoReview = res.content === 1
+        }
+      })
+    },
+    changeAudit () {
+      let status = this.autoReview === true ? 1 : 0
+      let params = { status: status }
+      ifAuditAuto(params).then(res => {
+        console.log(res)
+      })
+    },
+    delDoctorComment (id) {
+      deleteDoctorComment({ id: id }).then(res => {
+        if (res.error === 0) {
+          this.$message.success({
+            message: '删除成功',
+            duration: '2000'
+          })
+          console.log(this.tableData)
+          let targetData = this.tableData.find(item => { if (item.replylist) return item.replylist[0].id === id })
+          targetData.replylist = null
+        }
+      })
+    },
+    delComment (id) {
+      deleteComment({ id: id }).then(res => {
+        if (res.error === 0) {
+          this.$message.success({
+            message: '删除成功',
+            duration: '2000'
+          })
+        }
+      })
+    },
+    evaluationTop (id, status) {
+      commentUntop({ id: id, status: status }).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          if (status === 1) {
+            this.$message.success({
+              message: '置顶成功',
+              duration: '2000'
+            })
+            let targetData = this.dataList.find(item => item.id === id)
+            targetData.top = 1
+          } else {
+            this.$message.success({
+              message: '取消成功',
+              duration: '2000'
+            })
+            let targetData = this.dataList.find(item => item.id === id)
+            targetData.top = 0
+          }
+        }
+      })
+    },
+    passComment (id, status) {
+      aduitComment({ id: id }).then(res => {
+        if (res.error === 0) {
+          if (status === 1) {
+            this.$message.success({
+              message: '审核通过',
+              duration: '2000'
+            })
+            let targetData = this.dataList.find(item => item.id === id)
+            targetData.auditStatus = 1
+          } else {
+            this.$message.success({
+              message: '审核未通过',
+              duration: '2000'
+            })
+            let targetData = this.dataList.find(item => item.id === id)
+            targetData.auditStatus = 2
+          }
         }
       })
     }
@@ -360,6 +387,10 @@ export default {
       if (!val) return
       val = val.split(' ')
       return val[0]
+    },
+    status: function (val) {
+      let status = ['未审核', '审核通过', '审核未通过']
+      return status[val]
     }
   }
 }

@@ -1,0 +1,77 @@
+.patient_content {
+  width: 640rpx;
+  min-height: 540rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.p_top {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(229, 248, 247, 1));
+  height: 110rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.p_top .p_title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: bold;
+  position: relative;
+}
+
+.p_top .p_title::after {
+  content: '';
+  width: 110%;
+  height: 14rpx;
+  background: rgba(95, 193, 185, 0.5);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 2rpx;
+}
+
+.p_top image {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100rpx;
+}
+
+.p_con {
+  padding: 0 30rpx;
+  margin-top: 10rpx;
+}
+
+.p_item {
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: flex-start;
+}
+
+.p_item>view {
+  display: inline-block;
+}
+
+.p_item text {
+  margin-right: 50rpx;
+}
+
+.p_item text,
+.p_item view {
+  color: #333;
+}
+
+.p_item .item_dot {
+  border: 4rpx solid #25C3BB;
+  border-radius: 50%;
+  height: 10rpx;
+  width: 10rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  position: relative;
+  top: 10rpx;
+
+}

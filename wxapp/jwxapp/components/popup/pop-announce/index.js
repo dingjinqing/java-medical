@@ -8,7 +8,19 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    title:String
+    title:String,
+    success_title:{
+      type:String,
+      value:'确定' //默认为确定
+    },
+    cancel_title:{
+      type:String,
+      value:'取消' //默认为取消
+    },
+    if_cancel:{
+      type:Boolean,
+      value:false
+    }
   },
 
   /**
@@ -26,6 +38,9 @@ global.wxComponent({
        this.setData({
          show:false
        })
+     },
+     onTap(){
+       this.triggerEvent('determine')
      }
   }
 });

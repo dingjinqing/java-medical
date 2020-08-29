@@ -68,7 +68,7 @@
         ></el-table-column>
         <el-table-column label='名称'>
           <template slot-scope="scope">
-            <div class="doc_name_url">
+            <div class="doc_name_url" style='display: flex;justify-content: flex-start;'>
               <img
                 class="doc_img"
                 v-if='scope.row.url'
