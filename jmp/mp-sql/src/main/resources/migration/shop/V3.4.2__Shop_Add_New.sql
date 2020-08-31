@@ -18,4 +18,20 @@ create table if not exists `b2c_anchor_points` (
     primary key (`id`)
 ) comment ='埋点';
 
+-- 门店数据概览
+create table `b2c_store_order_summary_trend` (
+  `id`                   int(11)        not null auto_increment,
+  `ref_date`             date           not null comment '2018-09-04',
+  `type`                 tinyint(2)     not null comment '1,7,30,90',
+  `store_id`             int(8)          default null comment '门店ID',
+  `order_pay_user_num`   int(11)        not null comment '付款人数',
+  `total_paid_money`     decimal(10, 2)      default null comment '消费金额',
+  `order_pay_num`        int(11) default 0  null comment '成交订单数',
+  `order_num`            int(11) default 0  not null comment '下单数',
+  `order_user_num`       int(11) default 0  null comment '下单人数',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  primary key (`id`),
+  key `ref_type` (`ref_date`, `type`) using btree
+)comment ='门店数据概览';
+
 /*********************3.4*************************END*/
