@@ -77,9 +77,9 @@ public class DoctorWithdrawDao extends ShopBaseDao {
      */
     public int count(Integer doctorId){
         if(doctorId==null){
-            return db().selectCount().from(DOCTOR_WITHDRAW).execute();
+            return db().selectCount().from(DOCTOR_WITHDRAW).fetchAnyInto(Integer.class);
         }
-        return db().selectCount().from(DOCTOR_WITHDRAW).where(DOCTOR_WITHDRAW.DOCTOR_ID.eq(doctorId)).execute();
+        return db().selectCount().from(DOCTOR_WITHDRAW).where(DOCTOR_WITHDRAW.DOCTOR_ID.eq(doctorId)).fetchAnyInto(Integer.class);
     }
     /**
      * 提现记录

@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.comment.reply.DoctorCommentReplyAddParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.shop.config.DoctorCommentAutoAuditConfigService;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -43,6 +45,8 @@ public class DoctorCommentService extends ShopBaseService {
     @Autowired
     private ImSessionService imSessionService;
     @Autowired
+    private DoctorCommentAutoAuditConfigService doctorCommentAutoAuditConfigService;
+    @Autowired
     private PatientDao patientDao;
 
 
@@ -54,11 +58,19 @@ public class DoctorCommentService extends ShopBaseService {
         //保存
         DoctorCommentDo doctorCommentDo = doctorCommentDao.getByImSessionId(param.getImSessionId());
         if (doctorCommentDo!=null){
-            doctorCommentDo.setCreateTime(DateUtil.date().toTimestamp());
-            doctorCommentDo.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
-            doctorCommentDo.setCommNote(param.getCommNote());
-            doctorCommentDo.setIsAnonymou(param.getIsAnonymou());
-            doctorCommentDao.update(doctorCommentDo);
+            Integer autoAudit = doctorCommentAutoAuditConfigService.get();
+            DoctorCommentDo commentDo =new DoctorCommentDo();
+            if (Objects.equals(autoAudit.byteValue(), BaseConstant.YES)){
+                commentDo.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
+            }else {
+                commentDo.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_NOT_CHECK);
+            }
+            commentDo.setId(doctorCommentDo.getId());
+            commentDo.setCreateTime(DateUtil.date().toTimestamp());
+            commentDo.setCommNote(param.getCommNote());
+            commentDo.setIsAnonymou(param.getIsAnonymou());
+            commentDo.setStars(param.getStars());
+            doctorCommentDao.update(commentDo);
             //更新会话
             imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
         }else {
