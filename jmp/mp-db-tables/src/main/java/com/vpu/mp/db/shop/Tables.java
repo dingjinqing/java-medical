@@ -23,6 +23,11 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * 埋点
+     */
+    public static final AnchorPoints ANCHOR_POINTS = com.vpu.mp.db.shop.tables.AnchorPoints.ANCHOR_POINTS;
+
+    /**
      * The table <code>mini_shop_471752.b2c_division_receive_record</code>.
      */
     public static final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
