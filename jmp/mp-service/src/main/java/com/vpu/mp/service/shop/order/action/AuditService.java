@@ -147,7 +147,7 @@ public class AuditService extends ShopBaseService implements IorderOperate<Audit
             param.setOrderId(orderRecord.getOrderId());
             param.setReturnType(OrderConstant.RT_ONLY_MONEY);
             param.setReasonType(OrderConstant.RETRURN_REASON_TYPE_DOCTOR_AUDIT);
-            param.setReasonDesc("时间段内未被审核");
+            param.setReasonDesc("订单24小时内医师未审核");
             param.setReturnMoney(orderRecord.getMoneyPaid().add(orderRecord.getScoreDiscount()).add(orderRecord.getUseAccount()).add(orderRecord.getMemberCardBalance()).subtract(orderRecord.getShippingFee()));
             param.setShippingFee(orderRecord.getShippingFee());
             List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();

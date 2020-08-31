@@ -54,11 +54,14 @@ public class DoctorCommentService extends ShopBaseService {
         //保存
         DoctorCommentDo doctorCommentDo = doctorCommentDao.getByImSessionId(param.getImSessionId());
         if (doctorCommentDo!=null){
-            doctorCommentDo.setCreateTime(DateUtil.date().toTimestamp());
-            doctorCommentDo.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
-            doctorCommentDo.setCommNote(param.getCommNote());
-            doctorCommentDo.setIsAnonymou(param.getIsAnonymou());
-            doctorCommentDao.update(doctorCommentDo);
+            DoctorCommentDo commentDo =new DoctorCommentDo();
+            commentDo.setId(doctorCommentDo.getId());
+            commentDo.setCreateTime(DateUtil.date().toTimestamp());
+            commentDo.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
+            commentDo.setCommNote(param.getCommNote());
+            commentDo.setIsAnonymou(param.getIsAnonymou());
+            commentDo.setStars(param.getStars());
+            doctorCommentDao.update(commentDo);
             //更新会话
             imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
         }else {
