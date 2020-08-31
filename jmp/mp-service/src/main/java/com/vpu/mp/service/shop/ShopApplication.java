@@ -84,6 +84,7 @@ import com.vpu.mp.service.shop.rebate.DoctorWithdrawService;
 import com.vpu.mp.service.shop.rebate.InquiryOrderRebateService;
 import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
+import com.vpu.mp.service.shop.store.statistic.StoreOrderSummaryTrendService;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
@@ -677,4 +678,8 @@ public class ShopApplication {
      */
     @Autowired
     public DoctorWithdrawService doctorWithdrawService;
+    /**
+     * 门店订单统计
+     */
+    public StoreOrderSummaryTrendService storeSummary;
 }

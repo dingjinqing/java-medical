@@ -180,4 +180,36 @@ public class OrderInfoDao extends ShopBaseDao {
             .and(ORDER_INFO.CREATE_TIME.le(param.getEndTime()))
             .fetchAnyInto(StatisticAddVo.class);
     }
+
+    /**
+     * 获取门店配送单待发货单量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreOrderWaitDeliver(List<Integer> storeIds) {
+        return db().select(
+            DSL.count(ORDER_INFO.ORDER_ID).as("orderNum")
+        ).from(ORDER_INFO)
+            .where(ORDER_INFO.STORE_ID.in(storeIds))
+            .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.CITY_EXPRESS_SERVICE))
+            .and(ORDER_INFO.DEL_FLAG.eq(OrderConstant.NORMAL_DEL))
+            .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))
+            .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 获取门店自提单待核销单量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreOrderWaitVerify(List<Integer> storeIds) {
+        return db().select(
+            DSL.count(ORDER_INFO.ORDER_ID).as("orderNum")
+        ).from(ORDER_INFO)
+            .where(ORDER_INFO.STORE_ID.in(storeIds))
+            .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF))
+            .and(ORDER_INFO.DEL_FLAG.eq(OrderConstant.NORMAL_DEL))
+            .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))
+            .fetchAnyInto(Integer.class);
+    }
 }
