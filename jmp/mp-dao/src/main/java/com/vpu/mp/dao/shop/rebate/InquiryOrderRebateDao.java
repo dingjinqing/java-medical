@@ -50,7 +50,7 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      */
     public PageResult<InquiryOrderRebateVo> getPageList(InquiryOrderRebateListParam param){
         SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR.NAME.as("doctorName"),INQUIRY_ORDER.ORDER_STATUS,DOCTOR.MOBILE,INQUIRY_ORDER_REBATE.asterisk())
+            .select(DOCTOR.NAME.as("doctorName"),INQUIRY_ORDER.ORDER_STATUS,INQUIRY_ORDER.PATIENT_NAME,DOCTOR.MOBILE,INQUIRY_ORDER_REBATE.asterisk())
             .from(INQUIRY_ORDER_REBATE);
         select.leftJoin(DOCTOR).on(DOCTOR.ID.eq(INQUIRY_ORDER_REBATE.DOCTOR_ID))
             .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.ORDER_SN.eq(INQUIRY_ORDER_REBATE.ORDER_SN));
