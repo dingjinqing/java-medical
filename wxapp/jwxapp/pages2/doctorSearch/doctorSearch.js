@@ -158,7 +158,7 @@ global.wxPage({
     this.setData({
       'pageParams.currentPage': this.data.pageParams.currentPage + 1
     });
-    this.inputSearch();
+    this.inputSearch(1);
   },
 
   /**
@@ -172,16 +172,16 @@ global.wxPage({
       keyword: e.detail.value
     })
   },
-  inputSearch() {
+  inputSearch(type = 0) {
     let keyword = this.data.keyword;
     let deparId = this.data.deparId;
     let sortType = this.data.sortType;
-    this.requestList(keyword, deparId, sortType)
+    this.requestList(keyword, deparId, sortType,type)
   },
 
-  requestList: function (keyword = '', departmentId = 0, sortType = 0) {
+  requestList: function (keyword = '', departmentId = 0, sortType = 0,type = 0) {
     let that = this;
-    if (departmentId !== 0 || sortType !== 0 || keyword !== '') that.setData({
+    if ((departmentId !== 0 || sortType !== 0 || keyword !== '') && type == 0) that.setData({
       'pageParams.currentPage': 1
     })
     let currentPage = that.data.pageParams ? that.data.pageParams.currentPage : 1;

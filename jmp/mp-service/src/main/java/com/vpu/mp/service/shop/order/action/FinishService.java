@@ -62,6 +62,7 @@ import org.springframework.util.comparator.Comparators;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
@@ -183,6 +184,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
      */
     public void setDoctorRebate(String orderSn){
         List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(orderSn);
+        preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
         for(String preCode:preCodeList){
             //更改处方返利状态
             prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATED);
@@ -196,8 +198,8 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                 doctorTotalRebateDao.updateDoctorTotalRebate(doctor.getId(),rebate.getTotalRebateMoney());
 
             }
-
         }
+
     }
     /**
      * 订单完成时进行返利

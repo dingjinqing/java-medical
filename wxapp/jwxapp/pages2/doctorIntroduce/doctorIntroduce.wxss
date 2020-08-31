@@ -219,11 +219,15 @@ label {
 .c_mid{
   position: relative;
 }
-.expand{
+.expand,.rp_expand {
   position: absolute;
   right: 10rpx;
   bottom: 4rpx;
   font-weight: 600;
+}
+.rp_expand{
+  right: 18rpx;
+  bottom: 16rpx;
 }
 .no_chat{
   background: #CBCBCB !important;

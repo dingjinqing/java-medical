@@ -1,65 +1,76 @@
-.main-container{
+.main-container {
   overflow: hidden;
 }
-.card-item{
+
+.card-item {
   margin-top: 24rpx;
   border-radius: 16rpx;
   box-sizing: border-box;
   background-color: #fff;
 }
-.status-title{
-  width:702rpx;
+
+.status-title {
+  width: 702rpx;
   height: 90rpx;
   margin: 0 auto;
   display: flex;
   align-items: center;
 }
-.status-title>text:first-of-type{
+
+.status-title>text:first-of-type {
   color: #333;
   font-weight: 600;
   margin-right: auto;
 }
-.status-title>text:last-of-type{
+
+.status-title>text:last-of-type {
   color: #FF9F15;
 }
-.prescription-item{
+
+.prescription-item {
   border-radius: 16rpx;
-  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.1),0 0 0rpx rgba(10,16,20,.12);
+  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.1), 0 0 0rpx rgba(10, 16, 20, .12);
   position: relative;
   width: 702rpx;
-  margin:0 auto;
+  margin: 0 auto;
 }
-.prescription-item > .item-list-content{
+
+.prescription-item>.item-list-content {
   padding-left: 30rpx;
   background-color: #fff;
   position: relative;
   border-radius: 16rpx 16rpx 0 0;
   /* margin-top: -20rpx; */
-  background:linear-gradient(0deg,rgba(255,255,255,1),rgba(255,255,255,1),rgba(229,248,247,1));
+  background: linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(229, 248, 247, 1));
 }
-.prescription-item > .item-list-content > .item-list{
+
+.prescription-item>.item-list-content>.item-list {
   display: flex;
   flex-direction: column;
   line-height: 55rpx;
   padding: 15rpx 0;
   border-bottom: 2rpx solid #eee;
 }
-.prescription-item > .item-list-content > .item-list > .list-item{
+
+.prescription-item>.item-list-content>.item-list>.list-item {
   display: flex;
   align-items: center;
 }
-.prescription-item > .item-list-content > .item-list > .list-item > .list-item-dot{
+
+.prescription-item>.item-list-content>.item-list>.list-item>.list-item-dot {
   border: 4rpx solid skyblue;
   border-radius: 50%;
   height: 10rpx;
   width: 10rpx;
   margin-right: 20rpx;
 }
-.prescription-item > .item-list-content > .item-list > .list-item > .list-item-content{
+
+.prescription-item>.item-list-content>.item-list>.list-item>.list-item-content {
   color: #666;
   font-size: 26rpx;
 }
-.prescription-item > .doctor-info{
+
+.prescription-item>.doctor-info {
   height: 80rpx;
   padding: 0 30rpx;
   align-items: center;
@@ -68,7 +79,8 @@
   color: #999;
   position: relative;
 }
-.prescription-item > .doctor-info::after{
+
+.prescription-item>.doctor-info::after {
   content: '';
   position: absolute;
   height: 16rpx;
@@ -78,53 +90,64 @@
   background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
   background-size: 40rpx 20rpx;
 }
-.prescription-item > .doctor-info > .doctor-name {
+
+.prescription-item>.doctor-info>.doctor-name {
   margin-right: auto;
   font-size: 26rpx;
-} 
-.prescription-item > .doctor-info > .item-date {
+}
+
+.prescription-item>.doctor-info>.item-date {
   font-size: 26rpx;
 }
-.goods-content{
+
+.goods-content {
   display: flex;
   padding-left: 24rpx;
   flex-direction: column;
   margin-top: 20rpx;
 }
-.goods-item{
+
+.goods-item {
   border-bottom: 2rpx solid #eee;
   display: flex;
   padding: 24rpx 0;
   padding-right: 24rpx;
 }
-.goods-item > image{
+
+.goods-item>image {
   width: 160rpx;
   height: 160rpx;
   margin-right: 24rpx;
 }
-.goods-item > .goods-desc{
+
+.goods-item>.goods-desc {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.goods-item > .goods-desc > .goods-name{
+
+.goods-item>.goods-desc>.goods-name {
   color: #333;
   line-height: 42rpx;
 }
-.goods-item > .goods-desc > .price-content{
+
+.goods-item>.goods-desc>.price-content {
   display: flex;
   align-items: center;
 }
-.goods-item > .goods-desc > .price-content > .goods-price{
+
+.goods-item>.goods-desc>.price-content>.goods-price {
   margin-right: auto;
   color: #FF9F15;
   font-size: 30rpx;
 }
-.goods-item > .goods-desc > .price-content > .num{
+
+.goods-item>.goods-desc>.price-content>.num {
   color: #999;
 }
-.button-content{
+
+.button-content {
   padding: 0 24rpx;
   display: flex;
   justify-content: flex-end;
@@ -133,50 +156,59 @@
   line-height: 60rpx;
   text-align: center;
 }
-.button-content > text{
+
+.button-content>text {
   border-radius: 30rpx;
   padding: 0 50rpx;
   box-sizing: border-box;
   border: 2rpx solid #ccc;
   color: #333;
 }
-.button-content > text + text{
+
+.button-content>text+text {
   margin-left: 24rpx;
 }
-.button-content > text.pass{
+
+.button-content>text.pass {
   background-color: #26C4BC;
   border-color: #26C4BC;
   color: #fff;
 }
-.button-content > text.reject{
+
+.button-content>text.reject {
   border-color: #ccc;
 }
-.is-null{
+
+.is-null {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 }
-.is-null image{
+
+.is-null image {
   width: 750rpx;
   height: 448rpx;
 }
-.is-null text{
+
+.is-null text {
   margin-top: -60rpx;
   color: #999;
 }
-.modal_bg{
+
+.modal_bg {
   position: fixed;
   top: 0;
   left: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 100%;
 }
-.modal_content{
+
+.modal_content {
   width: 640rpx;
   position: fixed;
   top: 450rpx;
@@ -184,7 +216,8 @@
   background: #fff;
   border-radius: 16rpx;
 }
-.modal_title{
+
+.modal_title {
   height: 100rpx;
   width: 100%;
   text-align: center;
@@ -193,42 +226,74 @@
   line-height: 100rpx;
   position: relative;
 }
-.modal_title image{
+
+.modal_title image {
   width: 36rpx;
   height: 36rpx;
   position: absolute;
   top: 32rpx;
   right: 40rpx;
 }
-.modal_info{
+
+.modal_info {
   padding: 0 40rpx;
 }
-.modal_info textarea{
+
+.modal_info textarea {
   background: #f5f5f5;
   padding: 20rpx;
   width: 520rpx;
 }
-.modal_info .place{
+
+.modal_info .place {
   color: #999;
 }
-.modal_fotter{
+
+.modal_fotter {
   display: flex;
   align-items: center;
   margin-top: 25rpx;
   border-top: 2rpx solid #eee;
 }
-.modal_fotter > view{
+
+.modal_fotter>view {
   flex: 1;
   text-align: center;
   font-size: 32rpx;
   line-height: 90rpx;
 }
-.modal_fotter > view:nth-child(2){
+
+.modal_fotter>view:nth-child(2) {
   border-left: 2rpx solid #eee;
 }
-.btn_cancel{
+
+.btn_cancel {
   color: #999;
 }
-.btn_ok{
+
+.btn_ok {
   color: #26C4BC;
+}
+
+.patient_message {
+  width: 702rpx;
+  margin: 0 auto;
+  height: 80rpx;
+  line-height: 80rpx;
+  border: 2rpx solid rgba(238, 238, 238, 1);
+  box-shadow: 0rpx 6rpx 10rpx 0rpx rgba(234, 249, 248, 0.3);
+  border-radius: 16rpx;
+  margin-top: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+.patient_message view:first-of-type{
+  margin-left: 20rpx;
+}
+
+.patient_message image {
+  width: 15rpx;
+  margin-right: 20rpx;
 }

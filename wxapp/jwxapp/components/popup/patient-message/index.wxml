@@ -1,0 +1,50 @@
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+	<view class='patient_content'>
+		<view class="p_top">
+			<view class="p_title">患者信息</view>
+			<image src='{{imageUrl}}/image/wxapp/patient_message_top.png' mode="heightFix"></image>
+		</view>
+		<view class="p_con">
+			<view class="p_item">
+				<view class="item_dot"></view>
+				<view class="item_con">
+					<text>姓名：{{patientMessage.name}}</text>
+					<text>年龄：{{patientMessage.age}}岁</text>
+					<text>性别：{{filter.getSex(patientMessage.sex)}}</text>
+				</view>
+			</view>
+			<view class="p_item">
+				<view class="item_dot"></view>
+				<view class="item_con">
+					<text>疾病史：<block wx:for='{{patientMessage.diseaseHistoryList}}' wx:key='id'>{{item.name}}  </block>
+          </text>
+				</view>
+			</view>
+			<view class="p_item">
+				<view class="item_dot"></view>
+				<view class="item_con">
+					<text>家族病史：<block wx:for='{{patientMessage.familyDiseaseHistoryList}}' wx:key='id'>{{item.name}}  </block></text>
+				</view>
+			</view>
+			<view class="p_item">
+				<view class="item_dot"></view>
+				<view class="item_con">
+					<text>过敏史：{{patientMessage.allergyHistory == '' ? '无' : patientMessage.allergyHistory}}</text>
+				</view>
+			</view>
+			<view class="p_item">
+				<view class="item_dot"></view>
+				<view class="item_con">
+					<text>妊娠状态：{{filter.getGestation(patientMessage.gestationType)}}</text>
+				</view>
+			</view>
+			<view class="p_item">
+				<view class="item_dot"></view>
+				<view class="item_con">
+					<text>备注：{{patientMessage.remarks}}</text>
+				</view>
+			</view>
+		</view>
+	</view>
+</v-popup>

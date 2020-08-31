@@ -146,6 +146,19 @@ global.wxPage({
   rejectReason (e) {
     this.data.rejectReason = e.detail.value
   },
+  handlePatientMessage(e){
+    let {prescriptionCode} = e.currentTarget.dataset
+    util.api('/api/wxapp/user/patient/show/information',res=>{
+      if(res.error === 0){
+        this.setData({
+          showPatientMessage:true,
+          patientMessage:res.content
+        })
+      }
+    },{
+      prescriptionCode
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

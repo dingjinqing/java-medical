@@ -325,6 +325,9 @@ global.wxPage({
             } else {
               that.sendMessage(patient_message, 3)
             }
+            that.setData({
+              firstSendMessage:patient_message
+            })
           }
 
         }
@@ -375,6 +378,13 @@ global.wxPage({
             })
             return defaultValue
           }, [])
+          if(this.data.first){
+             let firstSendMessage = this.data.firstSendMessage;
+             let lastMessge = newChatContent[newChatContent.length - 1];
+             if( JSON.stringify(firstSendMessage) == JSON.stringify(lastMessge.messageInfo.message)){
+              newChatContent.pop()
+             }
+          }
           let currentPage = 1 + this.data.pageParams.currentPage
           this.setData({
             chatContent: [...newChatContent, ...this.data.chatContent],
