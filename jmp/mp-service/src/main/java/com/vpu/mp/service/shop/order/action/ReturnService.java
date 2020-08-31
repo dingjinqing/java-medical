@@ -198,6 +198,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //仅退款，退货退款
         if(param.getReturnType().equals(OrderConstant.RT_ONLY_MONEY)||param.getReturnType().equals(OrderConstant.RT_GOODS)){
             List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(order.getOrderSn());
+            preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
             for(String preCode:preCodeList){
                 //更改处方返利状态
                 prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATE_FAIL);

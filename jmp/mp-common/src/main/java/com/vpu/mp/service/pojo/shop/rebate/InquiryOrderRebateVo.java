@@ -15,4 +15,8 @@ public class InquiryOrderRebateVo extends InquiryOrderRebateDo {
      * 问诊订单状态
      */
     private Integer orderStatus;
+    /**
+     * 患者姓名
+     */
+    private String patientName;
 }
