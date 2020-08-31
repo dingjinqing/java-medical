@@ -666,6 +666,11 @@
     "topIndex": 7
   },
   {
+    "enName": "rebateConfig",
+    "name": "返利配置",
+    "topIndex": 8
+  },
+  {
     "enName": "prescription_list",
     "name": "处方列表",
     "linkUrl": "/api/admin/prescription/list",
