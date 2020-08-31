@@ -2,6 +2,7 @@ package com.vpu.mp.dao.shop.message;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.pojo.shop.table.UserMessageDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 
 import com.vpu.mp.db.shop.tables.UserMessage;
@@ -138,10 +139,16 @@ public class MessageDao extends ShopBaseDao {
      * @param userMessageParam 消息入参
      */
     public void updateMessage(UserMessageParam userMessageParam) {
-        db().update(USER_MESSAGE)
-            .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
-            .set(USER_MESSAGE.MESSAGE_STATUS, userMessageParam.getMessageStatus())
-            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn())).execute();
+        UserMessageDo userMessageDo = db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
+            .fetchAnyInto(UserMessageDo.class);
+        if (!userMessageDo.getMessageContent().equals(userMessageParam.getMessageContent())) {
+            db().update(USER_MESSAGE)
+                .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
+                .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_NOT_READ)
+                .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
+                .execute();
+        }
     }
 
     /**
