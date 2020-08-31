@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
@@ -152,14 +153,11 @@ public class WxAppAuth {
 				}
 			}
 		}
-
 		UserDetailRecord userDetail = shopApp.user.userDetail.getUserDetailByUserId(user.getUserId());
 		WxAppSessionUser.WxUserInfo wxUser = WxAppSessionUser.WxUserInfo.builder().openId(user.getWxOpenid())
 				.unionid(user.getWxUnionId()).mobile(user.getMobile() != null ? user.getMobile() : "").build();
-
 		String token = TOKEN_PREFIX + Util.md5(shopId + "_" + user.getUserId());
 		//获取用户角色
-        Byte userType = user.getUserType();
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
 		sessionUser.setWxUser(wxUser);
 		sessionUser.setToken(token);
@@ -169,29 +167,39 @@ public class WxAppAuth {
 		sessionUser.setUserAvatar(userDetail == null ? null : userDetail.getUserAvatar());
 		sessionUser.setUsername(userDetail == null ? null : userDetail.getUsername());
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
+        WxAppSessionUser wxAppSessionUser = setDoctorAuth(sessionUser, user);
+        jedis.set(token, Util.toJson(wxAppSessionUser));
+        wxAppSessionUser.setImageHost(imageService.getImageHost());
+        return wxAppSessionUser;
+	}
 
-		//添加用户个人角色信息
-        sessionUser.setUserType(user.getUserType());
-        if (userType == 0){
-            sessionUser.setDoctorId(0);
-            sessionUser.setPharmacistId(0);
+    /**
+     * 向Token中添加医师认证相关字段
+     * @param wxAppSessionUser Token
+     * @param userRecord       user
+     * @return WxAppSessionUser
+     */
+    private WxAppSessionUser setDoctorAuth(WxAppSessionUser wxAppSessionUser, UserRecord userRecord) {
+        // 如果有认证医师查看是否禁用
+        Byte userType = userRecord.getUserType();
+        //添加用户个人角色信息
+        wxAppSessionUser.setUserType(userRecord.getUserType());
+        if (userType == 0) {
+            wxAppSessionUser.setDoctorId(0);
+            wxAppSessionUser.setPharmacistId(0);
         }
         //如果当前用户是医师，那么直接进入医师界面
         if (userType == 1) {
-            Integer doctorId = adminUserService.getDoctorId(user.getUserId());
-            sessionUser.setDoctorId(doctorId);
+            // 查询该医师是否禁用，如果禁用禁止登录
+            Integer doctorId = adminUserService.getDoctorId(userRecord.getUserId());
+            wxAppSessionUser.setDoctorId(doctorId);
+            DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
+            if (oneInfo.getStatus() == 0) {
+                wxAppSessionUser.setUserType((byte) -1);
+            }
         }
-
-        //TODO 后期药师角色验证
-        //如果当前用户是药师，直接进入药师界面
-//        if (userType == 2) {
-//
-//        }
-
-		jedis.set(token, Util.toJson(sessionUser));
-		sessionUser.setImageHost(imageService.getImageHost());
-		return sessionUser;
-	}
+        return wxAppSessionUser;
+    }
 
 	/**
 	 * 得到当前登录用户
