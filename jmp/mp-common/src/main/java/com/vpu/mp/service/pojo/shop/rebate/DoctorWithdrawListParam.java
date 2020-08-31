@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 public class DoctorWithdrawListParam extends BasePageParam {
     private Integer doctorId;
     private String doctorName;
+    private Byte status;
     private Timestamp startTime;
     private Timestamp endTime;
 }

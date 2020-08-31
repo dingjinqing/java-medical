@@ -103,6 +103,9 @@ public class DoctorWithdrawDao extends ShopBaseDao {
         if(StringUtils.isNotBlank(param.getDoctorName())){
             select.where(DOCTOR.NAME.like(this.likeValue(param.getDoctorName())));
         }
+        if(param.getStatus()!=null){
+            select.where(DOCTOR_WITHDRAW.STATUS.eq(param.getStatus()));
+        }
         if(param.getStartTime()!=null){
             select.where(DOCTOR_WITHDRAW.CREATE_TIME.ge(DateUtil.beginOfDay(param.getStartTime()).toTimestamp()));
         }

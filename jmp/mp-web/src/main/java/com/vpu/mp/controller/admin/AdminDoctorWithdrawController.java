@@ -19,6 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminDoctorWithdrawController extends AdminBaseController{
 
+    /**
+     * 提现列表
+     * @param param
+     * @return
+     */
     @PostMapping("/api/admin/doctor/withdraw/list")
     public JsonResult getPageList(@RequestBody DoctorWithdrawListParam param){
         PageResult<DoctorWithdrawVo> result=shop().doctorWithdrawService.getPageList(param);
