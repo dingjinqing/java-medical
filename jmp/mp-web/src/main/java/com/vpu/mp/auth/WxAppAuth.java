@@ -156,7 +156,6 @@ public class WxAppAuth {
 		UserDetailRecord userDetail = shopApp.user.userDetail.getUserDetailByUserId(user.getUserId());
 		WxAppSessionUser.WxUserInfo wxUser = WxAppSessionUser.WxUserInfo.builder().openId(user.getWxOpenid())
 				.unionid(user.getWxUnionId()).mobile(user.getMobile() != null ? user.getMobile() : "").build();
-
 		String token = TOKEN_PREFIX + Util.md5(shopId + "_" + user.getUserId());
 		//获取用户角色
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
@@ -171,7 +170,7 @@ public class WxAppAuth {
         WxAppSessionUser wxAppSessionUser = setDoctorAuth(sessionUser, user);
         jedis.set(token, Util.toJson(wxAppSessionUser));
         wxAppSessionUser.setImageHost(imageService.getImageHost());
-		return wxAppSessionUser;
+        return wxAppSessionUser;
 	}
 
     /**
@@ -196,7 +195,7 @@ public class WxAppAuth {
             wxAppSessionUser.setDoctorId(doctorId);
             DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
             if (oneInfo.getStatus() == 0) {
-                wxAppSessionUser.setUserType((byte)-1);
+                wxAppSessionUser.setUserType((byte) -1);
             }
         }
         return wxAppSessionUser;
