@@ -99,7 +99,8 @@
     "third_auth",
     "action_record",
     "pledge",
-    "smsConfig"
+    "smsConfig",
+    "rebateConfig"
   ],
   "prescription_manage": ["prescription_list"],
   "doctor_manage": ["doctor_list", "department_list", "title_list"],

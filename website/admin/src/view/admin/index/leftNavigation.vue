@@ -10,37 +10,31 @@
       :default-active="$route.path"
       v-if="isRouterAlive"
     >
-      <template v-for="(listItem,listIndex) in defaultList.list">
+      <template v-for="(listItem, listIndex) in defaultList.list">
         <el-submenu
           :index="listItem.path"
           :key="listIndex"
           v-if="listItem.children && listItem.children.length"
         >
           <template slot="title">
-            <img :src="listItem.imgUrl">
-            <span>{{listItem.name | getNavName}}</span>
+            <img :src="listItem.imgUrl" />
+            <span>{{ listItem.name | getNavName }}</span>
           </template>
           <el-menu-item
             :index="childrenItem.path"
-            v-for="(childrenItem,childrenIndex) in listItem.children"
+            v-for="(childrenItem, childrenIndex) in listItem.children"
             :key="childrenIndex"
           >
-            <span slot="title">{{childrenItem.name | getNavName}}</span>
+            <span slot="title">{{ childrenItem.name | getNavName }}</span>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item
-          :index="listItem.path"
-          :key="listIndex"
-          v-else
-        >
-          <img :src="listItem.imgUrl">
-          <span
-            slot="title"
-            v-if="!listItem.onlyPic"
-          >{{listItem.name | getNavName}}</span>
+        <el-menu-item :index="listItem.path" :key="listIndex" v-else>
+          <img :src="listItem.imgUrl" />
+          <span slot="title" v-if="!listItem.onlyPic">{{
+            listItem.name | getNavName
+          }}</span>
         </el-menu-item>
       </template>
-
     </el-menu>
   </div>
 </template>
@@ -652,6 +646,14 @@ export default {
           path: '/admin/home/main/basicConfig/smsConfig',
           span: '',
           name: 'smsConfig',
+          flag: true
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/icon_left/smsConfig.png',
+          imgUrl_h: this.$imageHost + '/image/admin/icon_left/smsConfig_h.png',
+          path: '/admin/home/main/basicConfig/smsConfig',
+          span: '',
+          name: 'rebateConfig',
           flag: true
         }
       ],
