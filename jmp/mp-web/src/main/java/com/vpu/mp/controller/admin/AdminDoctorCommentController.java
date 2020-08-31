@@ -83,7 +83,7 @@ public class AdminDoctorCommentController extends AdminBaseController {
      *
      * @return
      */
-    @PostMapping("/api/admin/doctor/comment/detele")
+    @PostMapping("/api/admin/doctor/comment/delete")
     public JsonResult delete(@RequestBody DoctorCommentIdParam param) {
         doctorCommentService.deleteComment(param.getId());
         return success();
