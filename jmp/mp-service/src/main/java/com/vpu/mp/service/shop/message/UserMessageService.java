@@ -86,7 +86,6 @@ public class UserMessageService extends ShopBaseService {
         } else { // 去除订单消息和会话消息未读
             messageDao.updateMessageStatus(userId, messageParam);
         }
-        fetchUserMessage(userId);
         Integer announcementCount = messageDao.selectAnnouncementCount(userId);
         Integer orderCount = messageDao.selectOrderCount(userId);
         Integer chatCount = messageDao.selectChatCount(userId);
@@ -255,6 +254,7 @@ public class UserMessageService extends ShopBaseService {
                     String messageByOrderStatus = UserMessageTemplate.getMessageByOrderStatus(orderInfoDo.getOrderStatus());
                     assert messageByOrderStatus != null;
                     userMessageParam.setMessageContent(String.format(messageByOrderStatus, orderInfoDo.getOrderSn()));
+                    userMessageParam.setMessageRelevanceOrderSn(orderInfoDao.selectOrderSnByOrderId(orderInfoDo.getOrderId()));
                     messageDao.updateMessage(userMessageParam);
                 }
             }
