@@ -210,6 +210,10 @@ public class StoreService extends ShopBaseService {
         if (!StoreListQueryParam.CONDITION_ALL.equals(param.getCityService())){
             select.where(STORE.CITY_SERVICE.eq(param.getCityService()));
         }
+        //查询条件-门店过滤
+        if (param.getStoreIds() != null){
+            select.where(STORE.STORE_ID.in(param.getStoreIds()));
+        }
         return select;
     }
 

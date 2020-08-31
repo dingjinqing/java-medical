@@ -168,7 +168,7 @@ public class WxAppPatientController extends WxAppBaseController {
         userPatientCoupleDo.setId(null);
         userPatientCoupleDo.setPatientId(patientDo.getId());
         userPatientCoupleDo.setUserId(userId);
-        userPatientCoupleDo.setIsFetch(PatientConstant.FETCH);
+        userPatientCoupleDo.setIsFetch(PatientConstant.UN_FETCH);
         shop().patientService.addPatientUser(userPatientCoupleDo);
         return success();
     }
