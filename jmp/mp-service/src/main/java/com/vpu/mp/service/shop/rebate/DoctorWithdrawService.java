@@ -1,10 +1,13 @@
 package com.vpu.mp.service.shop.rebate;
 
+import cn.hutool.core.date.DateUtil;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
 import com.vpu.mp.dao.shop.rebate.DoctorWithdrawDao;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
@@ -12,9 +15,11 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.rebate.*;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
@@ -40,6 +45,8 @@ public class DoctorWithdrawService extends ShopBaseService {
     private MpPaymentService mpPaymentService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private RebateConfigService rebateConfigService;
 
     /**
      * 提现记录列表
@@ -55,7 +62,10 @@ public class DoctorWithdrawService extends ShopBaseService {
      * @param param
      */
     public void addDoctorWithdraw(DoctorWithdrawParam param) throws MpException{
-        checkApply(param);
+        RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+        DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(param.getDoctorId());
+        //提现申请校验
+        checkApply(param,rebateConfig,doctorTotalRebateVo);
         param.setType(DoctorWithdrawConstant.RT_WX_MINI);
         param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK);
         //提现单号
@@ -64,8 +74,8 @@ public class DoctorWithdrawService extends ShopBaseService {
         param.setWithdrawUserNum(String.valueOf(doctorWithDrawDao.count(param.getDoctorId())+1));
         param.setWithdrawNum(String.valueOf(doctorWithDrawDao.count(null)+1));
         //可提现金额
-        DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(param.getDoctorId());
         param.setWithdraw(doctorTotalRebateVo.getTotalMoney());
+        param.setWithdrawSource(Util.toJson(rebateConfig));
         transaction(() -> {
             doctorWithDrawDao.addDoctorWithdraw(param);
             //修改可提现金额，冻结金额
@@ -79,8 +89,7 @@ public class DoctorWithdrawService extends ShopBaseService {
      * @param param
      * @throws MpException
      */
-    public void checkApply(DoctorWithdrawParam param) throws MpException{
-        DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(param.getDoctorId());
+    public void checkApply(DoctorWithdrawParam param,RebateConfig rebateConfig, DoctorTotalRebateVo doctorTotalRebateVo) throws MpException{
         if(doctorTotalRebateVo==null){
             //不存在可提现金额
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_IS_NOT_EXIST);
@@ -89,6 +98,20 @@ public class DoctorWithdrawService extends ShopBaseService {
             //超出可提现金额
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY);
         }
+
+        if(rebateConfig!=null){
+            if(BigDecimalUtil.compareTo(param.getWithdrawCash(),rebateConfig.getWithdrawCashMix())<0){
+                //小于单次提现最小额度限制
+                throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_LESS_MINIMUM);
+            }
+
+            BigDecimal withdrawSum=doctorWithDrawDao.getWithdrawCashSum(param.getDoctorId(),null, DateUtils.getTimestampForTodayStartTime(),DateUtils.getTimestampForTodayEndTime());
+            if(withdrawSum!=null&&BigDecimalUtil.compareTo(param.getWithdrawCash().add(withdrawSum),rebateConfig.getWithdrawCashMax())>0){
+                //大于每日提现额度限制
+                throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EXCEED_DAY_MAX_LIMIT_MONEY);
+            }
+        }
+
     }
 
     /**
@@ -153,4 +176,5 @@ public class DoctorWithdrawService extends ShopBaseService {
                 e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
         }
     }
+
 }

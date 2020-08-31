@@ -368,7 +368,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void addPrescriptionRebate(CreateParam param){
         RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
-        if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+        if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
             //根据处方下单
             if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
                 PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
