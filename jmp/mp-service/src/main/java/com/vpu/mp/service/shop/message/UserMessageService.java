@@ -254,6 +254,7 @@ public class UserMessageService extends ShopBaseService {
                     String messageByOrderStatus = UserMessageTemplate.getMessageByOrderStatus(orderInfoDo.getOrderStatus());
                     assert messageByOrderStatus != null;
                     userMessageParam.setMessageContent(String.format(messageByOrderStatus, orderInfoDo.getOrderSn()));
+                    userMessageParam.setMessageRelevanceOrderSn(orderInfoDao.selectOrderSnByOrderId(orderInfoDo.getOrderId()));
                     messageDao.updateMessage(userMessageParam);
                 }
             }

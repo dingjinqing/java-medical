@@ -32,6 +32,7 @@ import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
@@ -834,10 +835,14 @@ public class OrderInfoService extends ShopBaseService {
                 }
                 //处方下单的处方恢复未使用状态
                 if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION)){
-                    List<PrescriptionDo> prescriptionDoList = order.getPrescriptionDoList();
-                    prescriptionDoList.forEach(item->{
-                        prescriptionDao.updatePrescriprionIsUnUsered(item.getPrescriptionCode());
-                    });
+                    List<OrderGoodsSimpleAuditVo> allGoods = orderGoodsDao.listSimpleAuditByOrderId(order.getOrderId());
+                    List<String> codes = allGoods.stream().map(OrderGoodsSimpleAuditVo::getPrescriptionCode).collect(Collectors.toList());
+                    List<PrescriptionDo> prescriptionDoList = prescriptionDao.listPrescriptionByCode(codes, PrescriptionDo.class);
+                    if (prescriptionDoList!=null){
+                        prescriptionDoList.forEach(item->{
+                            prescriptionDao.updatePrescriprionIsUnUsered(item.getPrescriptionCode());
+                        });
+                    }
                 }
                 break;
             default:
