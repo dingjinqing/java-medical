@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.rebate;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -12,6 +13,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.rebate.*;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -130,22 +132,25 @@ public class DoctorWithdrawService extends ShopBaseService {
     public void pay2Person(String orderSn, String ip, String realName, Integer userId, Byte type, BigDecimal money) throws MpException {
         logger().info("pay2Person start");
         MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
-        if(DoctorWithdrawConstant.RT_SUB_MCH.equals(type)){
-            if( StringUtils.isBlank(wxapp.getLinkOfficialAppId())||wxapp == null) {
-                throw new MpException(JsonResultCode.NO_LINK_WECHAT_OFFICIAL_ACCOUNTS);
-            }
-            UserRecord userRecord = memberService.getUserRecordById(userId);
-            String wxOpenId = memberService.getUserWxOpenId(userId);
-            String openId = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
-            if(StringUtils.isBlank(openId)){
-                throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS);
-            }
-            try {
+        try {
+            if(DistributionConstant.RT_WX_MINI.equals(type)) {
+                UserRecord userRecord = memberService.getUserRecordById(userId);
+                mpPaymentService.companyPay(wxapp.getAppId(), ip, orderSn, userRecord.getWxOpenid(), realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), "佣金提现");
+            }else if(DoctorWithdrawConstant.RT_SUB_MCH.equals(type)){
+                if( StringUtils.isBlank(wxapp.getLinkOfficialAppId())||wxapp == null) {
+                    throw new MpException(JsonResultCode.NO_LINK_WECHAT_OFFICIAL_ACCOUNTS);
+                }
+                UserRecord userRecord = memberService.getUserRecordById(userId);
+                String wxOpenId = memberService.getUserWxOpenId(userId);
+                String openId = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
+                if(StringUtils.isBlank(openId)){
+                    throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS);
+                }
                 mpPaymentService.sendRedpack(wxapp.getLinkOfficialAppId(), orderSn, ip, openId, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), userRecord.getUsername() + "的红包", "佣金提现", "活跃赚取更多佣金");
-            } catch (WxPayException e) {
-                throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EX_ERROR,
-                    e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
             }
+        } catch (WxPayException e) {
+            throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EX_ERROR,
+                e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
         }
     }
 }
