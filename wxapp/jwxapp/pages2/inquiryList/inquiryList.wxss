@@ -1,4 +1,4 @@
-@import "/css/iconfont.wxss";
+@import '/css/iconfont.wxss';
 
 .tabs {
   display: flex;
@@ -7,35 +7,35 @@
   background-color: #fff;
 }
 
-.tabs>view {
+.tabs > view {
   flex: 1;
   display: flex;
   justify-content: center;
 }
 
-.tabs>view>text {
+.tabs > view > text {
   font-size: 28rpx;
   color: #333;
   position: relative;
 }
 
-.tabs>view>text.active {
+.tabs > view > text.active {
   font-weight: 600;
 }
 
-.tabs>view>text.active::after {
+.tabs > view > text.active::after {
   content: '';
   width: 80%;
   height: 6rpx;
   border-radius: 3rpx;
-  background-color: #26C4BC;
+  background-color: #26c4bc;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   bottom: -8rpx;
 }
 
-.tabs>view+view {
+.tabs > view + view {
   border-left: 2rpx solid #eee;
 }
 
@@ -47,6 +47,8 @@
   padding: 24rpx 0rpx 24rpx 24rpx;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
 .doctor-info {
@@ -57,19 +59,19 @@
   justify-content: center;
 }
 
-.doctor-info>.doctor-desc>.doctor-name {
+.doctor-info > .doctor-desc > .doctor-name {
   color: #333;
   font-weight: 600;
   font-size: 32rpx;
   margin-right: 24rpx;
 }
 
-.doctor-info>.doctor-desc>.office {
+.doctor-info > .doctor-desc > .office {
   color: #333;
   margin-right: auto;
 }
 
-.doctor-info>.doctor-desc>.status {
+.doctor-info > .doctor-desc > .status {
   line-height: 36rpx;
   box-sizing: border-box;
   padding: 4rpx 16rpx;
@@ -77,17 +79,17 @@
   border-radius: 4rpx;
 }
 
-.doctor-info>.doctor-desc>.status.ongoing {
-  background-color: #FFF2E0;
-  color: #FF9F15;
+.doctor-info > .doctor-desc > .status.ongoing {
+  background-color: #fff2e0;
+  color: #ff9f15;
 }
 
-.doctor-info>.doctor-desc>.status.end {
-  background-color: #E4FBFA;
-  color: #26C4BC;
+.doctor-info > .doctor-desc > .status.end {
+  background-color: #e4fbfa;
+  color: #26c4bc;
 }
 
-.doctor-info>.date {
+.doctor-info > .date {
   color: #999;
   margin-top: 20rpx;
 }
@@ -102,7 +104,7 @@
   text-align: center;
 }
 
-.button-content>text {
+.button-content > text {
   border-radius: 30rpx;
   width: 150rpx;
   box-sizing: border-box;
@@ -110,13 +112,13 @@
   color: #333;
 }
 
-.button-content>text.pass {
-  background-color: #26C4BC;
-  border-color: #26C4BC;
+.button-content > text.pass {
+  background-color: #26c4bc;
+  border-color: #26c4bc;
   color: #fff;
 }
 
-.button-content>text.reject {
+.button-content > text.reject {
   border-color: #ccc;
 }
 
@@ -197,14 +199,14 @@
   border-top: 2rpx solid #eee;
 }
 
-.modal_fotter>view {
+.modal_fotter > view {
   flex: 1;
   text-align: center;
   font-size: 32rpx;
   line-height: 90rpx;
 }
 
-.modal_fotter>view:nth-child(2) {
+.modal_fotter > view:nth-child(2) {
   border-left: 2rpx solid #eee;
 }
 
@@ -213,7 +215,7 @@
 }
 
 .btn_ok {
-  color: #26C4BC;
+  color: #26c4bc;
 }
 
 .comment_item {
@@ -242,19 +244,20 @@
   position: relative;
 }
 
-.expand,.rp_expand {
+.expand,
+.rp_expand {
   position: absolute;
   right: 10rpx;
   bottom: 4rpx;
   font-weight: 600;
 }
-.rp_expand{
+.rp_expand {
   right: 18rpx;
   bottom: 16rpx;
 }
 
 .no_chat {
-  background: #CBCBCB !important;
+  background: #cbcbcb !important;
   margin-bottom: 0rpx;
 }
 
@@ -281,7 +284,7 @@
 }
 
 .d_reply::before {
-  content: "";
+  content: '';
   width: 0;
   height: 0;
   position: absolute;
@@ -307,7 +310,7 @@
 
 .star {
   font-size: 26rpx;
-  color: #FF9F15;
+  color: #ff9f15;
   margin-right: 10rpx;
 }
 
@@ -316,13 +319,13 @@
   margin: 20rpx 0;
 }
 
-.btn_reply>view {
+.btn_reply > view {
   width: 150rpx;
   height: 60rpx;
   background: rgba(255, 255, 255, 1);
   border: 2rpx solid rgba(37, 195, 187, 1);
   border-radius: 30rpx;
-  color: #26C4BC;
+  color: #26c4bc;
   text-align: center;
   line-height: 60rpx;
   float: right;
@@ -334,4 +337,17 @@ textarea {
   background: rgba(245, 245, 245, 1);
   border-radius: 4px;
   padding: 20rpx;
+}
+.red_dot {
+  width: 36rpx;
+  height: 36rpx;
+  background: rgba(246, 73, 74, 1);
+  border-radius: 50%;
+  position: absolute;
+  top: -2rpx;
+  right: -6rpx;
+  text-align: center;
+  line-height: 36rpx;
+  font-size: 18rpx;
+  color: #fff;
 }
