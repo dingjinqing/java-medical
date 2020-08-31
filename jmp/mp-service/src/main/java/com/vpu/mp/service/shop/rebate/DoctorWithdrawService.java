@@ -56,7 +56,7 @@ public class DoctorWithdrawService extends ShopBaseService {
      */
     public void addDoctorWithdraw(DoctorWithdrawParam param) throws MpException{
         checkApply(param);
-        param.setType(DoctorWithdrawConstant.RT_SUB_MCH);
+        param.setType(DoctorWithdrawConstant.RT_WX_MINI);
         param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK);
         //提现单号
         param.setOrderSn(IncrSequenceUtil.generateOrderSn(DoctorWithdrawConstant.ORDER_SN_PREFIX));
