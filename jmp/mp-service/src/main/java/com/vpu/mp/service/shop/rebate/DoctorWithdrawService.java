@@ -61,8 +61,8 @@ public class DoctorWithdrawService extends ShopBaseService {
         //提现单号
         param.setOrderSn(IncrSequenceUtil.generateOrderSn(DoctorWithdrawConstant.ORDER_SN_PREFIX));
         //提现序号
-        param.setWithdrawUserNum(String.valueOf(doctorWithDrawDao.count(param.getDoctorId())));
-        param.setWithdrawNum(String.valueOf(doctorWithDrawDao.count(null)));
+        param.setWithdrawUserNum(String.valueOf(doctorWithDrawDao.count(param.getDoctorId())+1));
+        param.setWithdrawNum(String.valueOf(doctorWithDrawDao.count(null)+1));
         //可提现金额
         DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(param.getDoctorId());
         param.setWithdraw(doctorTotalRebateVo.getTotalMoney());
