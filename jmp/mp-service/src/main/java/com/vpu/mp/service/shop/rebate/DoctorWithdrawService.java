@@ -156,7 +156,17 @@ public class DoctorWithdrawService extends ShopBaseService {
         logger().info("pay2Person start");
         MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
         try {
-            if(DistributionConstant.RT_WX_MINI.equals(type)) {
+            if(DoctorWithdrawConstant.RT_WX_OPEN.equals(type)){
+                if( StringUtils.isBlank(wxapp.getLinkOfficialAppId())||wxapp == null) {
+                    throw new MpException(JsonResultCode.NO_LINK_WECHAT_OFFICIAL_ACCOUNTS);
+                }
+                String wxOpenId = memberService.getUserWxOpenId(userId);
+                String openId = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
+                if(StringUtils.isBlank(openId)){
+                    throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS);
+                }
+                mpPaymentService.companyPay(wxapp.getLinkOfficialAppId(), ip, orderSn, openId, realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(), "佣金提现");
+            }else if(DoctorWithdrawConstant.RT_WX_MINI.equals(type)) {
                 UserRecord userRecord = memberService.getUserRecordById(userId);
                 mpPaymentService.companyPay(wxapp.getAppId(), ip, orderSn, userRecord.getWxOpenid(), realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), "佣金提现");
             }else if(DoctorWithdrawConstant.RT_SUB_MCH.equals(type)){

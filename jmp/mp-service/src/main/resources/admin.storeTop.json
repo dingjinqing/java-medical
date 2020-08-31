@@ -35,7 +35,7 @@
         "name": "门店信息",
         "linkUrl": "/store/info",
         "topIndex": 1,
-        "includeApi": [],
+        "includeApi": ["/api/store/store/*"],
         "check": 1,
         "isOnly": 1
       }
@@ -52,7 +52,7 @@
         "name": "全部商品",
         "linkUrl": "/store/goods/list",
         "topIndex": 2,
-        "includeApi": ["/api/store/goods"],
+        "includeApi": ["/api/store/goods/*"],
         "check": 1,
         "isOnly": 0
       },
@@ -61,7 +61,7 @@
         "name": "售罄商品",
         "linkUrl": "/store/goods/list",
         "topIndex": 2,
-        "includeApi": ["/api/store/goods"],
+        "includeApi": ["/api/store/goods/*"],
         "check": 1,
         "isOnly": 0
       }

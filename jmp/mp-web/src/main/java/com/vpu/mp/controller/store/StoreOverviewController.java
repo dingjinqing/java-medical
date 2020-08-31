@@ -7,10 +7,11 @@ import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticOrderWaitVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author chenjie
@@ -22,7 +23,7 @@ public class StoreOverviewController extends StoreBaseController {
      * 门店待发货和待核销订单数量
      * @return
      */
-    @RequestMapping(value = "/api/store/overview/wait/data")
+    @GetMapping(value = "/api/store/overview/wait/data")
     public JsonResult getStoreWaitOrder() {
         StatisticOrderWaitVo statisticOrderWaitVo = new StatisticOrderWaitVo();
         statisticOrderWaitVo.setWaitDeliverNum(shop().readOrder.getStoreOrderWaitDeliver(storeAuth.user().getStoreIds()));
@@ -36,6 +37,8 @@ public class StoreOverviewController extends StoreBaseController {
      */
     @PostMapping(value = "/api/store/overview/statistic/data")
     public JsonResult getStoreStatistic(@RequestBody StatisticParam param) {
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        param.setRefDate(Date.valueOf(today.minusDays(1).toLocalDate()));
         return success(shop().storeSummary.getStoreStatistic(param));
     }
 
