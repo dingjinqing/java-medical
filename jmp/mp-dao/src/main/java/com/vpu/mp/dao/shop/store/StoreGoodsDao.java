@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
@@ -125,6 +126,9 @@ public class StoreGoodsDao extends ShopBaseDao {
         }
         if (param.getIsOnSale() != null) {
             condition = condition.and(STORE_GOODS.IS_ON_SALE.eq(param.getIsOnSale()));
+        }
+        if (MedicalGoodsConstant.SALE_OUT_YES.equals(param.getIsSaleOut())) {
+            condition = condition.and(STORE_GOODS.PRODUCT_NUMBER.eq(0));
         }
         return condition;
     }
