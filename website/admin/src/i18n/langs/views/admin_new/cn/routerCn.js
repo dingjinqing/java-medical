@@ -135,6 +135,8 @@ export const cn = {
   third_auth: ['基础配置', '第三方对接配置'],
   // 基础配置 短信信息
   smsConfig: ['短信中心', '充值记录'],
+  // 基础配置 短信信息
+  rebateConfig: ['基础配置', '返利配置'],
   // 小程序管理 自定义页面装修
   picture_setting: ['小程序管理', '自定义页面装修'],
 
