@@ -6,13 +6,41 @@
       </div>
       <div class="item-setting-content">
         <div class="item">
-          <el-form-item prop="setting0">
+          <el-form-item prop="setting8">
             开启返利：<el-switch
-              v-model="formData.setting0"
+              v-model="formData.setting8"
               active-color="#F7931E"
               inactive-color="#ccc"
             >
             </el-switch>
+          </el-form-item>
+          <el-form-item prop="setting9" style="margin-left: 200px;">
+            自动审核：<el-switch
+              v-model="formData.setting9"
+              active-color="#F7931E"
+              inactive-color="#ccc"
+            >
+            </el-switch>
+          </el-form-item>
+        </div>
+        <div class="item">
+          <el-form-item prop="setting10">
+            每人每日最多提现金额：<el-input-number
+              controls-position="right"
+              :min="0"
+              size="small"
+              v-model="formData.setting10"
+            ></el-input-number
+            >元
+          </el-form-item>
+          <el-form-item prop="setting11">
+            每人每次最少提现金额：<el-input-number
+              controls-position="right"
+              :min="0"
+              size="small"
+              v-model="formData.setting11"
+            ></el-input-number
+            >元
           </el-form-item>
         </div>
       </div>
@@ -119,14 +147,17 @@ export default {
   data () {
     return {
       formData: {
-        setting0: false,
         setting1: '',
         setting2: '',
         setting3: '',
         setting4: '',
         setting5: '',
         setting6: '',
-        setting7: ''
+        setting7: '',
+        setting8: false,
+        setting9: false,
+        setting10: '',
+        setting11: ''
       }
     }
   },
