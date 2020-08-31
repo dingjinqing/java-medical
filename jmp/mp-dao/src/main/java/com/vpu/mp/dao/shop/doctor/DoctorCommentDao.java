@@ -80,6 +80,7 @@ public class DoctorCommentDao extends ShopBaseDao {
         if (param.getAuditStatus() != null) {
             records.where(DOCTOR_COMMENT.AUDIT_STATUS.eq(param.getAuditStatus()));
         }
+        records.where(DOCTOR_COMMENT.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         records.orderBy(DOCTOR_COMMENT.TOP.desc(), DOCTOR_COMMENT.CREATE_TIME.desc());
         return getPageResult(records, param, DoctorCommentListVo.class);
     }
