@@ -298,6 +298,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
     private void toWaitDeliver(OrderInfoRecord order) throws MpException {
         if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY)) {
             logger().info("代付子单支付回调,设置订单为待发货,更新库存");
+            orderInfo.setPayTime(order.getOrderSn());
             if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
                 //待审核
                 orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_TO_AUDIT);
@@ -308,7 +309,6 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
                 //代发货
                 orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_WAIT_DELIVERY);
             }
-            orderInfo.setPayTime(order.getOrderSn());
             //订单商品
             Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
             //库存销量
