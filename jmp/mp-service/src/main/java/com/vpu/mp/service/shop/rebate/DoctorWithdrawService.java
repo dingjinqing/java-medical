@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.rebate.*;
@@ -66,8 +67,9 @@ public class DoctorWithdrawService extends ShopBaseService {
         DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(param.getDoctorId());
         //提现申请校验
         checkApply(param,rebateConfig,doctorTotalRebateVo);
+        //出账类型 默认小程序出账
         param.setType(DoctorWithdrawConstant.RT_WX_MINI);
-        param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK);
+
         //提现单号
         param.setOrderSn(IncrSequenceUtil.generateOrderSn(DoctorWithdrawConstant.ORDER_SN_PREFIX));
         //提现序号
@@ -76,12 +78,41 @@ public class DoctorWithdrawService extends ShopBaseService {
         //可提现金额
         param.setWithdraw(doctorTotalRebateVo.getTotalMoney());
         param.setWithdrawSource(Util.toJson(rebateConfig));
+
         transaction(() -> {
-            doctorWithDrawDao.addDoctorWithdraw(param);
-            //修改可提现金额，冻结金额
-            doctorTotalRebateDao.updateTotalMoneyBlockedMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().add(param.getWithdrawCash()));
+            if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getIsAutomaticAudit())){
+                //自动审核
+                automaticAudit(param);
+            }else {
+                //手动审核
+                manualAudit(param,doctorTotalRebateVo);
+            }
         });
 
+    }
+
+    /**
+     * 手动审核
+     * @param param
+     * @param doctorTotalRebateVo
+     */
+    public void manualAudit(DoctorWithdrawParam param,DoctorTotalRebateVo doctorTotalRebateVo){
+        param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK);
+        doctorWithDrawDao.addDoctorWithdraw(param);
+        //修改可提现金额，冻结金额
+        doctorTotalRebateDao.updateTotalMoneyBlockedMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().add(param.getWithdrawCash()));
+    }
+    /**
+     * 自动审核
+     * @param param
+     * @throws MpException
+     */
+    public void automaticAudit(DoctorWithdrawParam param) throws MpException {
+        DoctorOneParam doctor=doctorService.getOneInfo(param.getDoctorId());
+        //提现出账
+        pay2Person(param.getOrderSn(),param.getClientIp(),param.getRealName(),doctor.getUserId(),param.getType(),param.getWithdrawCash());
+        param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS);
+        doctorWithDrawDao.addDoctorWithdraw(param);
     }
 
     /**
@@ -156,30 +187,9 @@ public class DoctorWithdrawService extends ShopBaseService {
         logger().info("pay2Person start");
         MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
         try {
-            if(DoctorWithdrawConstant.RT_WX_OPEN.equals(type)){
-                if( StringUtils.isBlank(wxapp.getLinkOfficialAppId())||wxapp == null) {
-                    throw new MpException(JsonResultCode.NO_LINK_WECHAT_OFFICIAL_ACCOUNTS);
-                }
-                String wxOpenId = memberService.getUserWxOpenId(userId);
-                String openId = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
-                if(StringUtils.isBlank(openId)){
-                    throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS);
-                }
-                mpPaymentService.companyPay(wxapp.getLinkOfficialAppId(), ip, orderSn, openId, realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(), "佣金提现");
-            }else if(DoctorWithdrawConstant.RT_WX_MINI.equals(type)) {
+            if(DoctorWithdrawConstant.RT_WX_MINI.equals(type)) {
                 UserRecord userRecord = memberService.getUserRecordById(userId);
-                mpPaymentService.companyPay(wxapp.getAppId(), ip, orderSn, userRecord.getWxOpenid(), realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), "佣金提现");
-            }else if(DoctorWithdrawConstant.RT_SUB_MCH.equals(type)){
-                if( StringUtils.isBlank(wxapp.getLinkOfficialAppId())||wxapp == null) {
-                    throw new MpException(JsonResultCode.NO_LINK_WECHAT_OFFICIAL_ACCOUNTS);
-                }
-                UserRecord userRecord = memberService.getUserRecordById(userId);
-                String wxOpenId = memberService.getUserWxOpenId(userId);
-                String openId = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
-                if(StringUtils.isBlank(openId)){
-                    throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS);
-                }
-                mpPaymentService.sendRedpack(wxapp.getLinkOfficialAppId(), orderSn, ip, openId, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), userRecord.getUsername() + "的红包", "佣金提现", "活跃赚取更多佣金");
+                mpPaymentService.companyPay(wxapp.getAppId(), ip, orderSn, userRecord.getWxOpenid(), realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), "医师佣金提现");
             }
         } catch (WxPayException e) {
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EX_ERROR,
