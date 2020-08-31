@@ -81,7 +81,7 @@ public class CoopenService extends ShopBaseService {
                     break;
                 case BaseConstant.NAVBAR_TYPE_FINISHED:
                     select.and(TABLE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                            .and(TABLE.END_DATE.lt(Util.currentTimeStamp()));
+                            .and(TABLE.END_DATE.lt(Util.currentTimeStamp())).and(TABLE.IS_FOREVER.eq(BaseConstant.ACTIVITY_NOT_FOREVER.intValue()));
                     break;
                 case BaseConstant.NAVBAR_TYPE_DISABLED:
                     select.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));

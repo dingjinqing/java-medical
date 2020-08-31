@@ -51,24 +51,30 @@ public class MigrateSqlImpl implements MigrateSql {
     }
 
     @Override
-    public void migrateDb(DataSource dataSource, String database, Boolean isMainDb, boolean isCreateDb) throws FlywayException {
-        Flyway flyway = config(dataSource, database, isMainDb, isCreateDb).load();
+    public void migrateDb(DataSource dataSource, String database, Boolean isMainDb, boolean autoCreateDb) throws FlywayException {
+        Flyway flyway = config(dataSource, database, isMainDb, autoCreateDb).load();
         flyway.migrate();
+    }
+
+    @Override
+    public void validateDb(DataSource dataSource, String database, Boolean isMainDb) throws FlywayException {
+        Flyway flyway = config(dataSource, database, isMainDb, false).load();
+        flyway.validate();
     }
 
 
     /**
      * flyway配置信息
      *
-     * @param dataSource 数据源,不包含库名
-     * @param database   数据库名字
-     * @param isMainDb   是否为主库，true主库，false店铺库
-     * @param isCreateDb 是否创建库
+     * @param dataSource   数据源,不包含库名
+     * @param database     数据库名字
+     * @param isMainDb     是否为主库，true主库，false店铺库
+     * @param autoCreateDb 是否自动创建库
      */
-    private FluentConfiguration config(DataSource dataSource, String database, Boolean isMainDb, boolean isCreateDb) {
+    private FluentConfiguration config(DataSource dataSource, String database, Boolean isMainDb, boolean autoCreateDb) {
         String initSql = "SET NAMES utf8mb4;\n";
-        if (isCreateDb) {
-            initSql = initSql + " create database " + database
+        if (autoCreateDb) {
+            initSql = initSql + " create database if not exists " + database
                 + "  DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; \n use " + database + " ;";
         }
         return Flyway.configure()

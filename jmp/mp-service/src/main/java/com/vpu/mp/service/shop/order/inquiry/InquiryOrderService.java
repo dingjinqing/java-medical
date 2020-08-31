@@ -275,7 +275,7 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void addRebate(InquiryOrderDo order){
         RebateConfig rebateConfig=this.rebateConfigService.getRebateConfig();
-        if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+        if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
             BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN);
             order.setRebateProportion(proportion);
             order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN));

@@ -1,11 +1,13 @@
 package com.vpu.mp.auth;
 
-import java.io.PrintWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DatabaseManager;
+import com.vpu.mp.service.foundation.language.LanguageManager;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.saas.SaasApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +15,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.service.foundation.language.LanguageManager;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.saas.SaasApplication;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 
 /****
@@ -53,7 +51,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	protected String[] accountLoginExcept = { "/api/admin/login", "/api/admin/login/*", "/api/admin/logout", "/region/*",
 			"/wechat/notify/*", "/api/admin/notice/*", "/api/admin/subPasswordModify", "/api/admin/password", "/api/admin/official/*",
 			"/api/admin/public/service/auth/list", "/api/admin/public/service/auth/detail", "/api/admin/public/image/account/*",
-			"/api/admin/authority/*", "/api/admin/message" };
+			"/api/admin/authority/*", "/api/admin/message","/api/admin/anchor/Points" };
 
 	/**
 	 * 账号登录后，店铺未登录例外URL

@@ -145,7 +145,6 @@ export default {
           flag: false
         }
       ],
-
       menuParam: null,
       activeIndex: null,
       isRouterAlive: false
@@ -178,6 +177,8 @@ export default {
         meta: meta,
         list: this[meta]
       }
+      console.log('进入')
+      console.log(this[meta])
     },
     filterNavShow () {
       getShowMenu().then((res) => {

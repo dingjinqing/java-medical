@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
@@ -43,6 +44,7 @@ public class WxAppDoctorWithdrawController extends WxAppBaseController{
     @PostMapping("/api/wxapp/doctor/withdraw/apply")
     public JsonResult apply(@RequestBody DoctorWithdrawParam param){
         try {
+            param.setClientIp(RequestUtil.getIp(request));
             doctorWithdrawService.addDoctorWithdraw(param);
         } catch (MpException e) {
             return fail(e.getErrorCode());

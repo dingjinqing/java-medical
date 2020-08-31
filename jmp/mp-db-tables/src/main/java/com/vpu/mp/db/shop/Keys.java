@@ -305,6 +305,7 @@ public class Keys {
     public static final Identity<CityServiceOrderRecord, Integer> IDENTITY_CITY_SERVICE_ORDER = Identities0.IDENTITY_CITY_SERVICE_ORDER;
     public static final Identity<PrescriptionRebateRecord, Integer> IDENTITY_PRESCRIPTION_REBATE = Identities0.IDENTITY_PRESCRIPTION_REBATE;
     public static final Identity<DoctorWithdrawRecord, Integer> IDENTITY_DOCTOR_WITHDRAW = Identities0.IDENTITY_DOCTOR_WITHDRAW;
+    public static final Identity<AnchorPointsRecord, Integer> IDENTITY_ANCHOR_POINTS = Identities0.IDENTITY_ANCHOR_POINTS;
 
     public static final Identity<DoctorCommentReplyRecord, Integer> IDENTITY_DOCTOR_COMMENT_REPLY = Identities0.IDENTITY_DOCTOR_COMMENT_REPLY;
     public static final Identity<StoreOrderSummaryTrendRecord, Integer> IDENTITY_STORE_ORDER_SUMMARY_TREND = Identities0.IDENTITY_STORE_ORDER_SUMMARY_TREND;
@@ -608,6 +609,7 @@ public class Keys {
     public static final UniqueKey<PrescriptionRebateRecord> KEY_B2C_PRESCRIPTION_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_PRESCRIPTION_REBATE_PRIMARY;
     public static final UniqueKey<DoctorWithdrawRecord> KEY_B2C_DOCTOR_WITHDRAW_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_WITHDRAW_PRIMARY;
     public static final UniqueKey<StoreOrderSummaryTrendRecord> KEY_B2C_STORE_ORDER_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_STORE_ORDER_SUMMARY_TREND_PRIMARY;
+    public static final UniqueKey<AnchorPointsRecord> KEY_B2C_ANCHOR_POINTS_PRIMARY = UniqueKeys0.KEY_B2C_ANCHOR_POINTS_PRIMARY;
 
 
 
@@ -885,6 +887,7 @@ public class Keys {
         public static Identity<PrescriptionRebateRecord, Integer> IDENTITY_PRESCRIPTION_REBATE = Internal.createIdentity(PrescriptionRebate.PRESCRIPTION_REBATE, PrescriptionRebate.PRESCRIPTION_REBATE.ID);
         public static Identity<DoctorWithdrawRecord, Integer> IDENTITY_DOCTOR_WITHDRAW = Internal.createIdentity(DoctorWithdraw.DOCTOR_WITHDRAW, DoctorWithdraw.DOCTOR_WITHDRAW.ID);
         public static Identity<StoreOrderSummaryTrendRecord, Integer> IDENTITY_STORE_ORDER_SUMMARY_TREND = Internal.createIdentity(StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND, StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.ID);
+        public static Identity<AnchorPointsRecord, Integer> IDENTITY_ANCHOR_POINTS = Internal.createIdentity(AnchorPoints.ANCHOR_POINTS, AnchorPoints.ANCHOR_POINTS.ID);
 
     }
 
@@ -1187,6 +1190,7 @@ public class Keys {
         public static final UniqueKey<PrescriptionRebateRecord> KEY_B2C_PRESCRIPTION_REBATE_PRIMARY = Internal.createUniqueKey(PrescriptionRebate.PRESCRIPTION_REBATE, "KEY_b2c_prescription_rebate_PRIMARY", PrescriptionRebate.PRESCRIPTION_REBATE.ID);
         public static final UniqueKey<DoctorWithdrawRecord> KEY_B2C_DOCTOR_WITHDRAW_PRIMARY = Internal.createUniqueKey(DoctorWithdraw.DOCTOR_WITHDRAW, "KEY_b2c_doctor_withdraw_PRIMARY", DoctorWithdraw.DOCTOR_WITHDRAW.ID);
         public static final UniqueKey<StoreOrderSummaryTrendRecord> KEY_B2C_STORE_ORDER_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND, "KEY_b2c_store_order_summary_trend_PRIMARY", StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.ID);
+        public static final UniqueKey<AnchorPointsRecord> KEY_B2C_ANCHOR_POINTS_PRIMARY = Internal.createUniqueKey(AnchorPoints.ANCHOR_POINTS, "KEY_b2c_anchor_points_PRIMARY", AnchorPoints.ANCHOR_POINTS.ID);
 
     }
 }

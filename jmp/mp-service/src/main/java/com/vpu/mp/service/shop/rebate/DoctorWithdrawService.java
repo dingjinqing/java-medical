@@ -1,10 +1,13 @@
 package com.vpu.mp.service.shop.rebate;
 
+import cn.hutool.core.date.DateUtil;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
 import com.vpu.mp.dao.shop.rebate.DoctorWithdrawDao;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
@@ -12,9 +15,12 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.rebate.*;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
@@ -40,6 +46,8 @@ public class DoctorWithdrawService extends ShopBaseService {
     private MpPaymentService mpPaymentService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private RebateConfigService rebateConfigService;
 
     /**
      * 提现记录列表
@@ -55,23 +63,56 @@ public class DoctorWithdrawService extends ShopBaseService {
      * @param param
      */
     public void addDoctorWithdraw(DoctorWithdrawParam param) throws MpException{
-        checkApply(param);
+        RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+        DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(param.getDoctorId());
+        //提现申请校验
+        checkApply(param,rebateConfig,doctorTotalRebateVo);
+        //出账类型 默认小程序出账
         param.setType(DoctorWithdrawConstant.RT_WX_MINI);
-        param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK);
+
         //提现单号
         param.setOrderSn(IncrSequenceUtil.generateOrderSn(DoctorWithdrawConstant.ORDER_SN_PREFIX));
         //提现序号
         param.setWithdrawUserNum(String.valueOf(doctorWithDrawDao.count(param.getDoctorId())+1));
         param.setWithdrawNum(String.valueOf(doctorWithDrawDao.count(null)+1));
         //可提现金额
-        DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(param.getDoctorId());
         param.setWithdraw(doctorTotalRebateVo.getTotalMoney());
+        param.setWithdrawSource(Util.toJson(rebateConfig));
+
         transaction(() -> {
-            doctorWithDrawDao.addDoctorWithdraw(param);
-            //修改可提现金额，冻结金额
-            doctorTotalRebateDao.updateTotalMoneyBlockedMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().add(param.getWithdrawCash()));
+            if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getIsAutomaticAudit())){
+                //自动审核
+                automaticAudit(param);
+            }else {
+                //手动审核
+                manualAudit(param,doctorTotalRebateVo);
+            }
         });
 
+    }
+
+    /**
+     * 手动审核
+     * @param param
+     * @param doctorTotalRebateVo
+     */
+    public void manualAudit(DoctorWithdrawParam param,DoctorTotalRebateVo doctorTotalRebateVo){
+        param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK);
+        doctorWithDrawDao.addDoctorWithdraw(param);
+        //修改可提现金额，冻结金额
+        doctorTotalRebateDao.updateTotalMoneyBlockedMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().add(param.getWithdrawCash()));
+    }
+    /**
+     * 自动审核
+     * @param param
+     * @throws MpException
+     */
+    public void automaticAudit(DoctorWithdrawParam param) throws MpException {
+        DoctorOneParam doctor=doctorService.getOneInfo(param.getDoctorId());
+        //提现出账
+        pay2Person(param.getOrderSn(),param.getClientIp(),param.getRealName(),doctor.getUserId(),param.getType(),param.getWithdrawCash());
+        param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS);
+        doctorWithDrawDao.addDoctorWithdraw(param);
     }
 
     /**
@@ -79,8 +120,7 @@ public class DoctorWithdrawService extends ShopBaseService {
      * @param param
      * @throws MpException
      */
-    public void checkApply(DoctorWithdrawParam param) throws MpException{
-        DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(param.getDoctorId());
+    public void checkApply(DoctorWithdrawParam param,RebateConfig rebateConfig, DoctorTotalRebateVo doctorTotalRebateVo) throws MpException{
         if(doctorTotalRebateVo==null){
             //不存在可提现金额
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_IS_NOT_EXIST);
@@ -89,6 +129,20 @@ public class DoctorWithdrawService extends ShopBaseService {
             //超出可提现金额
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY);
         }
+
+        if(rebateConfig!=null){
+            if(BigDecimalUtil.compareTo(param.getWithdrawCash(),rebateConfig.getWithdrawCashMix())<0){
+                //小于单次提现最小额度限制
+                throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_LESS_MINIMUM);
+            }
+
+            BigDecimal withdrawSum=doctorWithDrawDao.getWithdrawCashSum(param.getDoctorId(),null, DateUtils.getTimestampForTodayStartTime(),DateUtils.getTimestampForTodayEndTime());
+            if(withdrawSum!=null&&BigDecimalUtil.compareTo(param.getWithdrawCash().add(withdrawSum),rebateConfig.getWithdrawCashMax())>0){
+                //大于每日提现额度限制
+                throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EXCEED_DAY_MAX_LIMIT_MONEY);
+            }
+        }
+
     }
 
     /**
@@ -133,24 +187,14 @@ public class DoctorWithdrawService extends ShopBaseService {
         logger().info("pay2Person start");
         MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
         try {
-            if(DistributionConstant.RT_WX_MINI.equals(type)) {
+            if(DoctorWithdrawConstant.RT_WX_MINI.equals(type)) {
                 UserRecord userRecord = memberService.getUserRecordById(userId);
-                mpPaymentService.companyPay(wxapp.getAppId(), ip, orderSn, userRecord.getWxOpenid(), realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), "佣金提现");
-            }else if(DoctorWithdrawConstant.RT_SUB_MCH.equals(type)){
-                if( StringUtils.isBlank(wxapp.getLinkOfficialAppId())||wxapp == null) {
-                    throw new MpException(JsonResultCode.NO_LINK_WECHAT_OFFICIAL_ACCOUNTS);
-                }
-                UserRecord userRecord = memberService.getUserRecordById(userId);
-                String wxOpenId = memberService.getUserWxOpenId(userId);
-                String openId = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
-                if(StringUtils.isBlank(openId)){
-                    throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS);
-                }
-                mpPaymentService.sendRedpack(wxapp.getLinkOfficialAppId(), orderSn, ip, openId, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), userRecord.getUsername() + "的红包", "佣金提现", "活跃赚取更多佣金");
+                mpPaymentService.companyPay(wxapp.getAppId(), ip, orderSn, userRecord.getWxOpenid(), realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(DoctorWithdrawConstant.YUAN_FEN_RATIO).toString())).intValue(), "医师佣金提现");
             }
         } catch (WxPayException e) {
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EX_ERROR,
                 e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
         }
     }
+
 }

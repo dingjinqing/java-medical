@@ -17,6 +17,18 @@ public class RebateConfig {
      */
     private Byte status;
     /**
+     *自动审核开关
+     */
+    private Byte isAutomaticAudit;
+    /**
+     * 最小提现金额
+     */
+    private BigDecimal withdrawCashMix;
+    /**
+     * 最大提现金额
+     */
+    private BigDecimal withdrawCashMax;
+    /**
      * 商品订单分成比例
      */
     private BigDecimal goodsSharingProportion;

@@ -681,5 +681,6 @@ public class ShopApplication {
     /**
      * 门店订单统计
      */
+    @Autowired
     public StoreOrderSummaryTrendService storeSummary;
 }
