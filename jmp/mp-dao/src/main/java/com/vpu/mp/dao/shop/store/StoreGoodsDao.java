@@ -1,19 +1,22 @@
 package com.vpu.mp.dao.shop.store;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateTimeParam;
-import org.jooq.Condition;
-import org.jooq.Record6;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
@@ -45,6 +48,7 @@ public class StoreGoodsDao extends ShopBaseDao {
         return select.fetchInto(StoreGoods.class);
     }
 
+    /*****************药房药品数据*****************/
     /**
      * 查询已有的商品id信息
      * @param goodsIds
@@ -96,4 +100,32 @@ public class StoreGoodsDao extends ShopBaseDao {
             .fetchInto(Integer.class);
     }
 
+    /**
+     * 门店商品分页查询
+     * @param param
+     * @return
+     */
+    public PageResult<StoreGoodsListQueryVo> getGoodsPageList(StoreGoodsListQueryParam param){
+        Condition condition = buildCondition(param);
+        SelectSeekStep1<Record, Timestamp> select = db().select(STORE_GOODS.asterisk(), STORE.STORE_NAME).from(STORE_GOODS).innerJoin(STORE).on(STORE_GOODS.STORE_ID.eq(STORE.STORE_ID))
+            .where(condition)
+            .orderBy(STORE_GOODS.CREATE_TIME);
+
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreGoodsListQueryVo.class);
+    }
+
+    private Condition buildCondition(StoreGoodsListQueryParam param){
+        Condition condition = STORE_GOODS.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
+
+        if (param.getKeywords() != null) {
+            condition = condition.and(STORE_GOODS.GOODS_COMMON_NAME.like(likeValue(param.getKeywords())));
+        }
+        if (param.getStoreId() != null) {
+            condition = condition.and(STORE_GOODS.STORE_ID.eq(param.getStoreId()));
+        }
+        if (param.getIsOnSale() != null) {
+            condition = condition.and(STORE_GOODS.IS_ON_SALE.eq(param.getIsOnSale()));
+        }
+        return condition;
+    }
 }

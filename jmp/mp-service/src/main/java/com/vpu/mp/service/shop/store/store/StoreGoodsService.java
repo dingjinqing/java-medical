@@ -259,4 +259,15 @@ public class StoreGoodsService extends ShopBaseService{
             .where(STORE_GOODS.PRD_ID.eq(prdId).and(STORE_GOODS.STORE_ID.eq(storeId)))
             .execute();
     }
+
+    /***************门店后端商品功能代码*****************/
+
+    /**
+     * 门店商品分页查询
+     * @param param
+     * @return
+     */
+    public PageResult<StoreGoodsListQueryVo> getGoodsPageList(StoreGoodsListQueryParam param) {
+        return storeGoodsDao.getGoodsPageList(param);
+    }
 }
