@@ -31,6 +31,10 @@ public class MiniShop_471752 extends SchemaImpl {
     private static final long serialVersionUID = -390755599;
 
     /**
+     * 埋点
+     */
+    public final AnchorPoints ANCHOR_POINTS = com.vpu.mp.db.shop.tables.AnchorPoints.ANCHOR_POINTS;
+    /**
      * The table <code>mini_shop_471752.b2c_division_receive_record</code>.
      */
     public final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
@@ -1387,6 +1391,7 @@ public class MiniShop_471752 extends SchemaImpl {
             CityServiceOrder.CITY_SERVICE_ORDER,
             DoctorCommentReply.DOCTOR_COMMENT_REPLY,
             StoreAccount.STORE_ACCOUNT,
+            AnchorPoints.ANCHOR_POINTS,
             StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND);
 
 

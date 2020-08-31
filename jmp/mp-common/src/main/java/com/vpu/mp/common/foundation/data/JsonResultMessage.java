@@ -1454,5 +1454,7 @@ public class JsonResultMessage {
     public static final String NO_LINK_WECHAT_OFFICIAL_ACCOUNTS = "小程序未绑定微信公众号";
     public static final String DOCTOR_WITHDRAW_EX_ERROR = "医师提现wx错误";
     public static final String DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "医师提现未关注微信公众号";
+    public static final String DOCTOR_WITHDRAW_EXCEED_DAY_MAX_LIMIT_MONEY = "医师提现超出每日可提现最大额度限制";
+    public static final String DOCTOR_WITHDRAW_LESS_MINIMUM = "医师提现不满足单次最小额度限制";
 
 }

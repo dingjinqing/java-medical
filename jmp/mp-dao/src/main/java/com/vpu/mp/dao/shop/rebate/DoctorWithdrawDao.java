@@ -10,12 +10,11 @@ import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawParam;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawVo;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.jooq.UpdateSetFirstStep;
+import org.jooq.*;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
@@ -108,7 +107,7 @@ public class DoctorWithdrawDao extends ShopBaseDao {
             select.where(DOCTOR_WITHDRAW.CREATE_TIME.ge(DateUtil.beginOfDay(param.getStartTime()).toTimestamp()));
         }
         if(param.getEndTime()!=null){
-            select.where(DOCTOR_WITHDRAW.CREATE_TIME.ge(DateUtil.beginOfDay(param.getEndTime()).toTimestamp()));
+            select.where(DOCTOR_WITHDRAW.CREATE_TIME.le(DateUtil.beginOfDay(param.getEndTime()).toTimestamp()));
         }
         return select;
     }
@@ -119,9 +118,18 @@ public class DoctorWithdrawDao extends ShopBaseDao {
      * @param status
      * @return
      */
-    public BigDecimal getWithdrawCashSum(Integer doctorId, Byte status){
-        return db().select(sum(DOCTOR_WITHDRAW.WITHDRAW_CASH)).from(DOCTOR_WITHDRAW).where(DOCTOR_WITHDRAW.DOCTOR_ID.eq(doctorId).and(DOCTOR_WITHDRAW.STATUS.eq(status)))
-            .fetchAnyInto(BigDecimal.class);
+    public BigDecimal getWithdrawCashSum(Integer doctorId, Byte status, Timestamp startTime,Timestamp endTime){
+        SelectConditionStep<? extends Record> step=db().select(sum(DOCTOR_WITHDRAW.WITHDRAW_CASH)).from(DOCTOR_WITHDRAW).where(DOCTOR_WITHDRAW.DOCTOR_ID.eq(doctorId));
+        if(status!=null){
+            step.and(DOCTOR_WITHDRAW.STATUS.eq(status));
+        }
+        if(startTime!=null){
+            step.and(DOCTOR_WITHDRAW.CREATE_TIME.ge(startTime));
+        }
+        if(endTime!=null){
+            step.and(DOCTOR_WITHDRAW.CREATE_TIME.le(endTime));
+        }
+        return step.fetchAnyInto(BigDecimal.class);
     }
 
 }
