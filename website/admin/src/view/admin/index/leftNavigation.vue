@@ -651,7 +651,7 @@ export default {
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/smsConfig.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/smsConfig_h.png',
-          path: '/admin/home/main/basicConfig/smsConfig',
+          path: '/admin/home/main/basicConfig/rebateConfig',
           span: '',
           name: 'rebateConfig',
           flag: true
