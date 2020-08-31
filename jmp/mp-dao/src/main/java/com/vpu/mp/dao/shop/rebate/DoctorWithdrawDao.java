@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.rebate;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -7,8 +8,8 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorWithdrawRecord;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawParam;
-import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawUpdateParam;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawVo;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.jooq.UpdateSetFirstStep;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 
+import static com.vpu.mp.db.shop.Tables.DOCTOR;
+import static com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
 import static org.jooq.impl.DSL.*;
 import static com.vpu.mp.db.shop.Tables.DOCTOR_WITHDRAW;
 
@@ -85,11 +88,29 @@ public class DoctorWithdrawDao extends ShopBaseDao {
      * @return
      */
     public PageResult<DoctorWithdrawVo> getPageList(DoctorWithdrawListParam param){
-        SelectJoinStep<? extends Record> select=db().select().from(DOCTOR_WITHDRAW);
-        select.where(DOCTOR_WITHDRAW.DOCTOR_ID.eq(param.getDoctorId())).orderBy(DOCTOR_WITHDRAW.CREATE_TIME.desc());
+        SelectJoinStep<? extends Record> select=db().select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,DOCTOR_WITHDRAW.asterisk()).from(DOCTOR_WITHDRAW);
+        select.leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_WITHDRAW.DOCTOR_ID));
+        select=buildOptions(select,param);
+        select.orderBy(DOCTOR_WITHDRAW.CREATE_TIME.desc());
         PageResult<DoctorWithdrawVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),DoctorWithdrawVo.class);
         return result;
 
+    }
+
+    public SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select,DoctorWithdrawListParam param){
+        if(param.getDoctorId()!=null){
+            select.where(DOCTOR_WITHDRAW.DOCTOR_ID.eq(param.getDoctorId()));
+        }
+        if(StringUtils.isNotBlank(param.getDoctorName())){
+            select.where(DOCTOR.NAME.like(this.likeValue(param.getDoctorName())));
+        }
+        if(param.getStartTime()!=null){
+            select.where(DOCTOR_WITHDRAW.CREATE_TIME.ge(DateUtil.beginOfDay(param.getStartTime()).toTimestamp()));
+        }
+        if(param.getEndTime()!=null){
+            select.where(DOCTOR_WITHDRAW.CREATE_TIME.ge(DateUtil.beginOfDay(param.getEndTime()).toTimestamp()));
+        }
+        return select;
     }
 
     /**
