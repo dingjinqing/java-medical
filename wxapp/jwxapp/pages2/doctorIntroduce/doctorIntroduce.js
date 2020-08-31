@@ -127,7 +127,8 @@ global.wxPage({
       if (res.error == 0) {
         that.setData({
           con: res.content,
-          isAttention: res.content.isAttention
+          isAttention: res.content.isAttention,
+          answerType:res.content.answerType
         })
       }
     }, {
