@@ -352,7 +352,7 @@ export default {
       }
       manualReturnInfo(obj).then(res => {
         if (res.error === 0) {
-          this.refundGoods = res.content.refundGoods.map(item => {
+          this.refundGoods = !res.content.refundGoods ? [] : res.content.refundGoods.map(item => {
             item.canRefundNum = item.returnable
             return item
           })
