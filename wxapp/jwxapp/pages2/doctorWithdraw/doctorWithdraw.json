@@ -1,3 +1,5 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "v-real-name-dialog": "/components/popup/real_name_dialog/index"
+  }
 }
