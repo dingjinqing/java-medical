@@ -1,14 +1,18 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.image.UploadedImageDao;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.pojo.shop.image.UploadedImageDo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
@@ -23,6 +27,9 @@ import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.user.user.UserService;
+import jodd.util.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +38,14 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import com.vpu.mp.common.foundation.data.DistributionConstant.*;
 
+import static com.vpu.mp.common.foundation.data.DistributionConstant.*;
 import static com.vpu.mp.db.shop.Tables.*;
 import static org.jooq.impl.DSL.recordType;
 import static org.jooq.impl.DSL.sum;
@@ -70,7 +83,16 @@ public class MpDistributionService extends ShopBaseService{
     private UserService us;
     @Autowired
     public MpAuthShopService mss;
+    @Autowired
+    protected UploadedImageDao uploadedImageDao;
+    @Autowired
+    protected UserDao userDao;
     private final static String DEFAULT_USER_AVATAR = "/image/admin/head_icon.png";
+    public static Integer ORDER_TYPE_WAIT_FANLI = 1;
+    public static Integer ORDER_TYPE_HAS_FANLI = 2;
+    public static Integer GOODS_RECOMMEND_NO = 0;
+    public static Integer GOODS_RECOMMEND_THREE = 1;
+    public static Integer GOODS_RECOMMEND_SELECT = 2;
     /**
      * 申请分销员页面信息
      * @param lang
@@ -318,32 +340,16 @@ public class MpDistributionService extends ShopBaseService{
         //分销开关是否开启
         DistributionParam distributionCfg = this.distributionCfg.getDistributionCfg();
         if(distributionCfg != null) {
+            rebateCenterVo.setJudgeStatus(distributionCfg.getJudgeStatus());
             rebateCenterVo.setStatus(distributionCfg.getStatus());
             rebateCenterVo.setRankStatus(distributionCfg.getRankStatus());
-            //用户信息
-            BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
-            //返利信息
-            UserTotalFanliVo userRebate1 = this.userTotalFanli.getUserRebate(userId);
-            if (userRebate1.getTotalMoney() != null && userRebate1.getTotalMoney().compareTo(account) < 0) {
-                rebateCenterVo.setCanWithdraw(userRebate1.getTotalMoney());
-            } else {
-                rebateCenterVo.setCanWithdraw(account);
-            }
-            if (userRebate1.getTotalMoney() == null) {
-                BigDecimal canWithdraw = new BigDecimal("0");
-                rebateCenterVo.setCanWithdraw(canWithdraw);
-            }
-            rebateCenterVo.setTotalWithdraw(userRebate1.getFinalMoney());
-            boolean canWithdraw = distributionCfg.getStatus() != 1 || (isDistributor != 1 && distributionCfg.getJudgeStatus() == 1);
-            if (canWithdraw) {
-                if (distributionCfg.getWithdrawStatus() != 1) {
-                    BigDecimal account1 = new BigDecimal("0");
-                    rebateCenterVo.setCanWithdraw(account1);
-                }
-            }
-            //待返利佣金
-            BigDecimal waitFanliMoney = this.waitFanliMoney(userId);
-            rebateCenterVo.setWaitWithdraw(waitFanliMoney);
+            //可提现金额
+            rebateCenterVo.setCanWithdraw(canWithdraw(userId));
+            //设置返利金额
+            processSetRebateMoney(userId, rebateCenterVo);
+            //累积返利商品总额
+            BigDecimal rebateGoodsMoney = rebateGoodsMoney(userId);
+            rebateCenterVo.setTotalCanFanliMoney(rebateGoodsMoney);
             //我的邀请码
             UserRecord userInfo = db().select().from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(UserRecord.class);
             rebateCenterVo.setInvitationCode(userInfo.getInvitationCode());
@@ -351,11 +357,8 @@ public class MpDistributionService extends ShopBaseService{
             Integer inviteUserNum = this.inviteUserNum(userId);
             rebateCenterVo.setInviteUserNum(inviteUserNum);
             //返利订单数
-            Integer rebateOrderNum = distributorList.getRebateOrderNum(userId);
+            Integer rebateOrderNum = getRebateOrderNum(userId);
             rebateCenterVo.setRebateOrderNum(rebateOrderNum);
-            //累积商品返利总额
-            BigDecimal totalCanFanliMoney = this.totalCanFanliMoney(userId);
-            rebateCenterVo.setTotalCanFanliMoney(totalCanFanliMoney);
             //我的等级
             DistributorLevelParam distributorLevelInfo = this.distributorLevel(userId);
             rebateCenterVo.setDistributorLevel(distributorLevelInfo.getLevelName());
@@ -374,9 +377,67 @@ public class MpDistributionService extends ShopBaseService{
             //返利轮播信息
             List<RebateOrderListVo> rebateOrderList = this.getRebateOrderList();
             rebateCenterVo.setRebateOrderList(rebateOrderList);
+            //最低分销员等级信息
+            DistributorLevelRecord lowerLevel = lowerDistributorLevel();
+            if(lowerLevel != null){
+                rebateCenterVo.setLowerLevelName(lowerLevel.getLevelName());
+            }
+            List<PromotionLanguageListVo> promotionLanguageListVos = promotionLanguagelist(userId);
+            if(promotionLanguageListVos!=null){
+                rebateCenterVo.setHasPromotionLanguage(1);
+            }else{
+                rebateCenterVo.setHasPromotionLanguage(0);
+            }
+            //分销邀请码配置
+            rebateCenterVo.setInvitationCodeCfg(distributionCfg.getInvitationCode());
+            //提现开关
+            rebateCenterVo.setWithdrawStatus(distributionCfg.getWithdrawStatus());
+            // 处理独立商品推广页的权限
+            if (DistributionConstant.DISTRIBUTOR_PROMOTE_OPEN.equals(distributionCfg.getGoodsPromoteStatus())) {
+                rebateCenterVo.setPersonalPromote(disposePersonalPromote(distributionCfg, userId));
+            }
+            // 判断该分销员是否已上传微信二维码
+            UploadedImageDo distributorImage = getDistributorImage(userId);
+            if (distributorImage == null || StringUtils.isBlank(distributorImage.getImgUrl())) {
+                rebateCenterVo.setQrCode(DistributionConstant.NO_QR_CODE);
+            } else {
+                rebateCenterVo.setQrCode(DistributionConstant.QR_CODE);
+            }
         }
         return rebateCenterVo;
 
+    }
+
+    private void processSetRebateMoney(Integer userId, RebateCenterVo rebateCenterVo) {
+        BigDecimal allRebateMoney = BigDecimal.ZERO;
+        BigDecimal allWaitRebateMoney = BigDecimal.ZERO;
+        List<RebateOrderVo.RebateOrderInfo> allRebate = totalRebateMoney(userId);
+        for(RebateOrderVo.RebateOrderInfo item : allRebate){
+            if(item.getSettlementFlag() != null){
+                if(item.getSettlementFlag() == 1){
+                    allRebateMoney = allRebateMoney.add(item.getRebateMoney());
+                }
+                if(item.getSettlementFlag() == 0){
+                    allWaitRebateMoney = allWaitRebateMoney.add(item.getRebateMoney());
+                }
+            }
+        }
+        //累积返利佣金总额
+        rebateCenterVo.setTotalWithdraw(allRebateMoney);
+        //待返利佣金
+        rebateCenterVo.setWaitWithdraw(allWaitRebateMoney);
+    }
+    /**
+     * 最低分销员等级信息
+     * @return
+     */
+    public DistributorLevelRecord lowerDistributorLevel(){
+        Record record = db().select().from(DISTRIBUTOR_LEVEL).orderBy(DISTRIBUTOR_LEVEL.LEVEL_ID.asc()).limit(1).fetchOne();
+        if(record != null){
+            return record.into(DistributorLevelRecord.class);
+        }else{
+            return null;
+        }
     }
     /**
      * 分销中心推广语列表
@@ -397,6 +458,33 @@ public class MpDistributionService extends ShopBaseService{
         }else{
             return null;
         }
+    }
+    /**
+     * 判断分销员是否有独立商品推广页的权限
+     * @param distributionCfg 分销配置
+     * @param userId 分销员id
+     * @return 0:不具有 1:具有
+     */
+    private Byte disposePersonalPromote(DistributionParam distributionCfg, Integer userId) {
+        // 全部分销员具有独立推广页权限
+        if (DistributionConstant.ALL_DISTRIBUTOR.equals(distributionCfg.getGoodsPromoteScope())) {
+            return DistributionConstant.PERSONAL_PROMOTE;
+        }
+
+        // 部分分销员具有独立推广页权限
+        if (DistributionConstant.PART_DISTRIBUTOR.equals(distributionCfg.getGoodsPromoteScope())) {
+            String distributorLevelIds = distributionCfg.getGoodsPromoteLevel();
+            List<Integer> distributorIds = userDao.listUserIdByDistributorLevel(Util.stringToList(distributorLevelIds));
+
+            String promoteDistributorIds = distributionCfg.getGoodsPromoteDistributor();
+            distributorIds.addAll(Util.stringToList(promoteDistributorIds));
+
+            if (distributorIds.contains(userId)) {
+                return DistributionConstant.PERSONAL_PROMOTE;
+            }
+        }
+
+        return DistributionConstant.NO_PERSONAL_PROMOTE;
     }
 
     /**
@@ -480,11 +568,167 @@ public class MpDistributionService extends ShopBaseService{
      * @param param
      * @return
      */
-    public DistributorInvitedListVo myInviteUser(DistributorInvitedListParam param){
-        DistributorInvitedListVo invitedList = disList.getInvitedList(param);
-        return invitedList;
+    public  PageResult<InviteUserVo> myInviteUser(InviteUserListParam param){
+        SelectConditionStep<? extends Record> select = db().select(USER.USER_ID, USER.USERNAME,USER_DETAIL.USER_AVATAR, USER.INVITE_TIME, USER_FANLI_STATISTICS.ORDER_NUMBER,
+            USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY,DISTRIBUTOR_LEVEL.LEVEL_NAME,USER.INVITE_PROTECT_DATE,USER.INVITE_EXPIRY_DATE,USER.IS_DISTRIBUTOR,USER.INVITE_ID,USER.DISTRIBUTOR_LEVEL)
+            .from(USER).leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID))
+            .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID))
+            .leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)).where();
+        myInviteUserOption(select,param);
+        PageResult<InviteUserVo> inviteUserList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), InviteUserVo.class);
+        Timestamp nowDate = Util.currentTimeStamp();
+
+
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        for (int i = 0; i < inviteUserList.dataList.size(); i++) {
+            InviteUserVo inviteUserVo = inviteUserList.dataList.get(i);
+            //合并相同用户的返利订单数以及佣金
+            if (map.containsKey(inviteUserVo.getUserId())) {
+                //1.合并返利订单数以及佣金
+                InviteUserVo userVo = inviteUserList.dataList.get(map.get(inviteUserVo.getUserId()));
+                userVo.setOrderNumber(userVo.getOrderNumber() + inviteUserVo.getOrderNumber());
+                userVo.setTotalFanliMoney(userVo.getTotalFanliMoney().add(inviteUserVo.getTotalFanliMoney()));
+                inviteUserList.dataList.set(map.get(inviteUserVo.getUserId()), userVo);
+
+                //2.从列表中删除当前记录
+                inviteUserList.dataList.set(i, null);
+            } else {
+                map.put(inviteUserList.dataList.get(i).getUserId(), i);
+            }
+            //间接邀请
+            if(inviteUserVo.getInviteId() != null && inviteUserVo.getInviteId().compareTo(param.getUserId()) != 0){
+                inviteUserVo.setInviteType((byte)1);
+            }
+            if(inviteUserVo.getInviteProtectDate() != null && inviteUserVo.getInviteProtectDate().compareTo(nowDate)>0){
+                int leftProtectDay = Util.differentDays(nowDate, inviteUserVo.getInviteProtectDate());
+                inviteUserVo.setLeftProtectDay(leftProtectDay);
+            }else{
+                inviteUserVo.setIsFailture(1);
+            }
+            if(inviteUserVo.getInviteExpiryDate() != null && inviteUserVo.getInviteExpiryDate().compareTo(nowDate)>0){
+                int leftExpireDay = Util.differentDays(nowDate, inviteUserVo.getInviteExpiryDate());
+                inviteUserVo.setLeftExpiryDay(leftExpireDay);
+            }
+            if (inviteUserVo.getOrderNumber() == null) {
+                inviteUserVo.setOrderNumber(0);
+            }
+            if (inviteUserVo.getTotalFanliMoney() == null) {
+                inviteUserVo.setTotalFanliMoney(new BigDecimal(0));
+            }
+            String inviteName = db().select(USER.USERNAME).from(USER).where(USER.USER_ID.eq(inviteUserVo.getInviteId())).fetchOne().into(String.class);
+            inviteUserVo.setInviteName(inviteName);
+        }
+
+        //处理inviteUserList.dataList中的null值
+        List<InviteUserVo> nullArr = new ArrayList<>();
+        nullArr.add(null);
+        inviteUserList.dataList.removeAll(nullArr);
+        //修改总记录数
+        inviteUserList.getPage().setTotalRows(inviteUserList.dataList.size());
+
+        return inviteUserList;
+
+    }
+    /**
+     * 邀请用户列表条件查询｜表头排序
+     * @param select
+     * @param param
+     */
+    public void myInviteUserOption(SelectConditionStep<? extends Record> select,InviteUserListParam param){
+        List<Integer> inviteUser = null;
+        //受邀用户Id集合
+        Result<Record1<Integer>> fetch = db().select(USER.USER_ID).from(USER).where(USER.INVITE_ID.eq(param.getUserId())).fetch();
+        Timestamp nowdate = Util.currentTimeStamp();
+        Timestamp failureDate = Util.getEarlyTimeStamp(nowdate,10);
+
+        Date nowdate1 = Date.valueOf(DateUtils.getLocalDate());
+        Date tenLater = new Date(failureDate.getTime());
+
+        if(fetch != null){
+            inviteUser = fetch.into(Integer.class);
+        }
+        //邀请关系集合 0:全部；1：直接邀请；2：间接邀请
+        processInviteTypeOption(select, param, inviteUser);
+
+        //用户类型：0：有效用户；1：即将过期用户；2：已失效用户
+        processInviteUserStatusOption(select, param, nowdate, failureDate);
+        //有效期集合 0:都不选；1:都选； 2:保护有效期剩余不超过10天；3：返利有效期不超过10天
+        processValidityDateOption(select, param, nowdate, failureDate, nowdate1, tenLater);
+
+        //分销员等级
+        if (CollectionUtils.isNotEmpty(param.getDistributorLevels())) {
+            select.and(USER.DISTRIBUTOR_LEVEL.in(param.getDistributorLevels()));
+        }
+        //用户昵称
+        if(StringUtil.isNotEmpty(param.getUsername())){
+            select.and(USER.USERNAME.contains(param.getUsername()));
+        }
+        if(INVITE_TIME.equals(param.getSortField())){
+            if(SORT_TYPE.equals(param.getSortType())){
+                select.orderBy(USER.INVITE_TIME.desc());
+            }else{
+                select.orderBy(USER.INVITE_TIME.asc());
+            }
+
+        }
+        if(ORDER_NUMBER.equals(param.getSortField())){
+            if(SORT_TYPE.equals(param.getSortType())){
+                select.orderBy(USER_FANLI_STATISTICS.ORDER_NUMBER.desc());
+            }else{
+                select.orderBy(USER_FANLI_STATISTICS.ORDER_NUMBER.asc());
+            }
+
+        }
+        if(TOTAL_FANLI_MONEY.equals(param.getSortField())){
+            if(SORT_TYPE.equals(param.getSortType())){
+                select.orderBy(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY.desc());
+            }else{
+                select.orderBy(USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY.asc());
+            }
+
+        }
+    }
+    private void processInviteTypeOption(SelectConditionStep<? extends Record> select, InviteUserListParam param, List<Integer> inviteUser) {
+        if (param.getInviteType() != null && param.getInviteType().equals(INVITE_RELATION_ALL)) {
+            select.and(USER.INVITE_ID.eq(param.getUserId()).or(USER.INVITE_ID.in(inviteUser)));
+        }
+
+        if (param.getInviteType() != null && param.getInviteType().equals(INVITE_RELATION_DIRECTLY)) {
+            //直接邀请
+            select.and(USER.INVITE_ID.eq(param.getUserId()));
+        }
+
+        if (param.getInviteType() != null && param.getInviteType().equals(INVITE_RELATION_INDIRECT)) {
+            //间接邀请
+            select.and(USER.INVITE_ID.in(inviteUser));
+        }
     }
 
+    private void processInviteUserStatusOption(SelectConditionStep<? extends Record> select, InviteUserListParam param, Timestamp nowdate, Timestamp failureDate) {
+        if(param.getInviteUserStatus() != null && param.getInviteUserStatus().equals(USER_EFFECTIVE)){
+            select.and(USER.INVITE_PROTECT_DATE.ge(nowdate));
+        }
+        if(param.getInviteUserStatus() != null && param.getInviteUserStatus().equals(USER_WILL_EXPIRE)){
+            select.and(USER.INVITE_PROTECT_DATE.ge(nowdate).and(USER.INVITE_PROTECT_DATE.le(failureDate)));
+        }
+        if(param.getInviteUserStatus() != null && param.getInviteUserStatus().equals(USER_HAS_EXPIRE)){
+            select.and(USER.INVITE_PROTECT_DATE.le(nowdate));
+        }
+    }
+
+    private void processValidityDateOption(SelectConditionStep<? extends Record> select, InviteUserListParam param, Timestamp nowdate, Timestamp failureDate, Date nowdate1, Date tenLater) {
+        if (param.getValidityDate() != null && param.getValidityDate().equals(ALL_EXPIRE_PROTECT)) {
+            select.and(USER.INVITE_PROTECT_DATE.ge(nowdate).and(USER.INVITE_PROTECT_DATE.le(failureDate))).
+                and(USER.INVITE_EXPIRY_DATE.ge(nowdate1).and(USER.INVITE_EXPIRY_DATE.le(tenLater)));
+        }
+        if (param.getValidityDate() != null && param.getValidityDate().equals(PROTECT_LEFT_TEN)) {
+            select.and(USER.INVITE_PROTECT_DATE.ge(nowdate).and(USER.INVITE_PROTECT_DATE.le(failureDate)));
+        }
+
+        if (param.getValidityDate() != null && param.getValidityDate().equals(EXPIRE_LEFT_TEN)) {
+            select.and(USER.INVITE_EXPIRY_DATE.ge(nowdate1).and(USER.INVITE_EXPIRY_DATE.le(tenLater)));
+        }
+    }
     /**
      * 佣金排名前三榜
      * @return
@@ -564,22 +808,53 @@ public class MpDistributionService extends ShopBaseService{
      * @param param
      * @return
      */
-    public PageResult<RebateOrderVo> rebateOrder(RebateOrderParam param){
-        SelectOnConditionStep<? extends Record> select = db().select(ORDER_GOODS_REBATE.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,
-            ORDER_INFO.ORDER_STATUS, ORDER_INFO.ORDER_STATUS_NAME, USER.USERNAME, sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("fanliMoney"),
+    public RebateOrderVo rebateOrder(RebateOrderParam param){
+        SelectOnConditionStep<? extends Record> select = db().select(ORDER_GOODS.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,ORDER_INFO.SETTLEMENT_FLAG,
+            ORDER_INFO.ORDER_STATUS, ORDER_INFO.ORDER_STATUS_NAME,USER.USERNAME,sum(ORDER_GOODS.CAN_CALCULATE_MONEY).as("canCalculateMoney"), sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("rebateMoney"),
             ORDER_GOODS_REBATE.REBATE_LEVEL)
             .from(ORDER_GOODS_REBATE)
             .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+            .leftJoin(ORDER_GOODS).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
             .leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
         SelectOnConditionStep<? extends Record> sql = rebateOrderOptions(select, param);
-        PageResult<RebateOrderVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getRowsPage(), RebateOrderVo.class);
+        PageResult<RebateOrderVo.RebateOrderInfo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), RebateOrderVo.RebateOrderInfo.class);
 
-        for(RebateOrderVo list : pageResult.dataList){
-            getCanCalculateMoney(list.getOrderSn(),param.getUserId());
+        List<RebateOrderVo.RebateOrderInfo> allRebate = db().select(ORDER_GOODS_REBATE.ORDER_SN,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("rebateMoney"),ORDER_INFO.SETTLEMENT_FLAG).from(ORDER_GOODS_REBATE)
+            .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+            .where(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(param.getUserId())).groupBy(ORDER_GOODS_REBATE.ORDER_SN,ORDER_INFO.SETTLEMENT_FLAG).fetch().into(RebateOrderVo.RebateOrderInfo.class);
+
+        RebateOrderVo orderVo = new RebateOrderVo();
+        BigDecimal rebateMoney =BigDecimal.ZERO;
+        BigDecimal rebateGoodsMoney = BigDecimal.ZERO;
+        BigDecimal allRebateMoney = BigDecimal.ZERO;
+        BigDecimal allWaitRebateMoney = BigDecimal.ZERO;
+        //时间端内统计
+        for(RebateOrderVo.RebateOrderInfo list : pageResult.dataList){
+            if(list.getSettlementFlag() == 1){
+                rebateMoney = rebateMoney.add(list.getRebateMoney());
+            }
+            if(list.getCanCalculateMoney() != null){
+                rebateGoodsMoney = rebateGoodsMoney.add(list.getCanCalculateMoney());
+            }
+
+//            getCanCalculateMoney(list.getOrderSn(),param.getUserId());
         }
-        //TODO 计算实际返利信息
-
-        return pageResult;
+        for(RebateOrderVo.RebateOrderInfo item : allRebate){
+            if(item.getSettlementFlag() != null){
+                if(item.getSettlementFlag() == 1){
+                    allRebateMoney = allRebateMoney.add(item.getRebateMoney());
+                }
+                if(item.getSettlementFlag() == 0){
+                    allWaitRebateMoney = allWaitRebateMoney.add(item.getRebateMoney());
+                }
+            }
+        }
+        orderVo.setPartRebateMoney(rebateMoney);
+        orderVo.setPartRebateGoodsMoney(rebateGoodsMoney);
+        orderVo.setAllRebateMoney(allRebateMoney);
+        orderVo.setWaitRebateMoney(allWaitRebateMoney);
+        orderVo.setRebateOrderInfo(pageResult);
+        return orderVo;
     }
 
     /**
@@ -589,13 +864,20 @@ public class MpDistributionService extends ShopBaseService{
      * @return
      */
     public SelectOnConditionStep<? extends Record> rebateOrderOptions(SelectOnConditionStep<? extends Record> select,RebateOrderParam param){
+        logger().info("param"+param);
         select.where(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(param.getUserId()));
+        if(param.getOrderType().equals(ORDER_TYPE_WAIT_FANLI)){ //待返利
+            select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(DistributionConstant.WAIT_SETTLEMENT_FLAG));
+        }
+        if(param.getOrderType().equals(ORDER_TYPE_HAS_FANLI)){ //已返利
+            select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(DistributionConstant.HAS_SETTLEMENT_FLAG));
+        }
         if(param.getStartTime() != null && param.getStartTime() != null){
             select.and(ORDER_INFO.CREATE_TIME.gt(param.getStartTime())).and(ORDER_INFO.CREATE_TIME.lt(param.getEndTime()));
         }
-        select.groupBy(ORDER_GOODS_REBATE.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,
+        select.groupBy(ORDER_GOODS.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,
             ORDER_INFO.ORDER_STATUS, ORDER_INFO.ORDER_STATUS_NAME, USER.USERNAME,
-            ORDER_GOODS_REBATE.REBATE_LEVEL);
+            ORDER_GOODS_REBATE.REBATE_LEVEL,ORDER_INFO.SETTLEMENT_FLAG);
         return select;
     }
 
@@ -968,7 +1250,40 @@ public class MpDistributionService extends ShopBaseService{
         return null;
     }
 
+    /**
+     * 小程序端返利订单数
+     * @param userId
+     * @return
+     */
+    public Integer getRebateOrderNum(Integer userId){
+        Integer rebateOrderNum = db().selectCount().from(ORDER_GOODS_REBATE).where(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(userId)).fetchOne().into(Integer.class);
+        return rebateOrderNum;
+    }
 
+    /**
+     * 累积佣金信息（返利和待返利）
+     */
+    public List<RebateOrderVo.RebateOrderInfo> totalRebateMoney(Integer userId){
+        List<RebateOrderVo.RebateOrderInfo> allRebate = db().select(ORDER_GOODS_REBATE.ORDER_SN,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("rebateMoney"),ORDER_INFO.SETTLEMENT_FLAG).from(ORDER_GOODS_REBATE)
+            .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+            .where(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(userId)).groupBy(ORDER_GOODS_REBATE.ORDER_SN,ORDER_INFO.SETTLEMENT_FLAG).fetch().into(RebateOrderVo.RebateOrderInfo.class);
+        return allRebate;
+    }
+
+    public BigDecimal rebateGoodsMoney(Integer userId){
+        BigDecimal rebateGoodsMoney = BigDecimal.ZERO;
+        List<RebateOrderVo.RebateOrderInfo> all = db().select(ORDER_GOODS.ORDER_SN, sum(ORDER_GOODS.CAN_CALCULATE_MONEY).as("canCalculateMoney"))
+            .from(ORDER_GOODS_REBATE)
+            .leftJoin(ORDER_GOODS).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+            .where(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(userId))
+            .groupBy(ORDER_GOODS_REBATE.ORDER_SN,ORDER_GOODS.ORDER_SN).fetch().into(RebateOrderVo.RebateOrderInfo.class);
+        for (RebateOrderVo.RebateOrderInfo item:all){
+            if(item.getCanCalculateMoney() != null){
+                rebateGoodsMoney = rebateGoodsMoney.add(item.getCanCalculateMoney());
+            }
+        }
+        return rebateGoodsMoney;
+    }
 
 
 
@@ -1017,6 +1332,23 @@ public class MpDistributionService extends ShopBaseService{
         }
         return rebateRankingListVo;
     }
+    /**
+     * 获取分销员上传的微信二维码
+     * @param distributorId 分销员id
+     * @return 如果返回null说明当前分销员不存在微信二维码
+     */
+    public UploadedImageDo getDistributorImage(Integer distributorId) {
+        List<UploadedImageDo> imageList = uploadedImageDao.getValidImageByUserId(distributorId);
+        if (imageList != null && imageList.size() > 0) {
+            imageList = imageList.stream().filter(img -> img.getImgName().startsWith(DistributionConstant.DISTRIBUTOR_IMAGE_PREFIX)).collect(Collectors.toList());
+            if (imageList.size() > 0) {
+                return imageList.get(0);
+            }
+        }
+
+        return null;
+    }
+
 
 
 }

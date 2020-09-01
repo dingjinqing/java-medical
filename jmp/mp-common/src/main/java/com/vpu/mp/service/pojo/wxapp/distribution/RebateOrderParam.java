@@ -14,6 +14,8 @@ public class RebateOrderParam {
      *  邀请人ID
      */
     private Integer userId;
+    /** 订单类型 0：全部订单；1：待返利订单；2：已返利订单*/
+    private Integer orderType = 0;
     /**
      * 订单开始时间
      */
@@ -25,5 +27,5 @@ public class RebateOrderParam {
 
     private Integer currentPage;
 
-    private Integer rowsPage;
+    private Integer pageRows;
 }

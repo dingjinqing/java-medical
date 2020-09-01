@@ -86,4 +86,10 @@ public class JedisKeyConstant {
     public static final String IM_SESSION_ITEM_LIST_KEY_BAK = "session:shopId%d:sessionId%d:bak";
     /**会话状态标识位key存在则表明会话可用，否则不可用*/
     public static final String IM_SESSION_STATUS = "session:shopId%d:sessionId%d:status";
+
+    /**
+     * 分销员二维码
+     */
+    public static final String DISTRIBUTION_QR_CODE = "distribution:qrCode:";
+    // ============ 分销相关 end ============
 }
