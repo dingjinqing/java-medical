@@ -79,7 +79,8 @@ public class StoreDao extends ShopBaseDao {
             // 查询未打烊门店
             select.and(STORE.OPENING_TIME.lt(dateStringParse));
             select.and(STORE.CLOSE_TIME.gt(dateStringParse));
-            select.limit(10);
+            // TODO: 添加门店库存校验、门店是否支持自提
+            select.limit(15);
             return select.fetchInto(StoreDo.class);
         } catch (Exception e) {
             e.printStackTrace();
