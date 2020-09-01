@@ -2,48 +2,94 @@
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
 	<view class="main-container">
-		<view class="tabs" >
+		<view class="tabs">
 			<view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === '1' ? 'active' : ''}}">待问诊</text></view>
 			<view data-type="2" bindtap="toggleStatus"><text class="{{targetStatus === '2' ? 'active' : ''}}">我的问诊</text></view>
+			<view data-type="3" bindtap="toggleStatus"><text class="{{targetStatus === '3' ? 'active' : ''}}">我的评价</text></view>
 		</view>
-     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
-      <block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
-        <view class="card-item" data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}"  bindtap="viewChat">
-          <view class="doctor-info">
-            <view class="doctor-desc">
-              <text class="doctor-name">{{item.patientName}}</text>
-              <!-- <text class="office" wx:if="{{targetStatus === '1'}}">{{item.departmentName}}</text> -->
-              <text class="status {{item.sessionStatus === 2 || item.sessionStatus === 5 ? 'ongoing' : 'end'}}" wx:if="{{targetStatus === '2'}}">{{item.sessionStatus === 2 || item.sessionStatus === 5 ?  '已接诊': item.sessionStatus === 3 ? '已退款':'问诊结束'}}</text>
-            </view>
-            <text class="date">{{item.createTime}}</text>
-          </view>
-          <view class="button-content">
-            <text class="pass" data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" wx:if="{{targetStatus === '1' || (targetStatus === '2' && item.sessionStatus === 4)}}" catchtap="accept">{{targetStatus === '1' ? '接诊' : '继续问诊'}}</text>
-            <text class="reject"  data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" catchtap="returnOrder" wx:if="{{targetStatus === '2' && (item.sessionStatus === 2 || item.sessionStatus === 5)}}">退款</text>
-          </view>
-          <view class="red_dot" wx:if='{{item.newMsgNum > 0}}'>{{item.newMsgNum > 99 ? '99+' : item.newMsgNum}}</view>
-        </view>
-      </block>
-     </block> 
-     <view class="is-null" wx:if="{{dataList[0].length <= 0}}">
-        <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
-        <text>您还没有相应记录</text>
-      </view>
+		<block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+				<block wx:if='{{targetStatus != 3}}'>
+					<view class="card-item" data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" bindtap="viewChat">
+						<view class="doctor-info">
+							<view class="doctor-desc">
+								<text class="doctor-name">{{item.patientName}}</text>
+								<!-- <text class="office" wx:if="{{targetStatus === '1'}}">{{item.departmentName}}</text> -->
+								<text class="status {{item.sessionStatus === 2 || item.sessionStatus === 5 ? 'ongoing' : 'end'}}" wx:if="{{targetStatus === '2'}}">{{item.sessionStatus === 2 || item.sessionStatus === 5 ?  '已接诊': item.sessionStatus === 3 ? '已退款':'问诊结束'}}</text>
+							</view>
+							<text class="date">{{item.createTime}}</text>
+						</view>
+						<view class="button-content">
+							<text class="pass" data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" wx:if="{{targetStatus === '1' || (targetStatus === '2' && item.sessionStatus === 4)}}" catchtap="accept">{{targetStatus === '1' ? '接诊' : '继续问诊'}}</text>
+							<text class="reject"  data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" catchtap="returnOrder" wx:if="{{targetStatus === '2' && (item.sessionStatus === 2 || item.sessionStatus === 5)}}">退款</text>
+						</view>
+						<view class="red_dot" wx:if='{{item.newMsgNum > 0}}'>{{item.newMsgNum > 99 ? '99+' : item.newMsgNum}}</view>
+					</view>
+				</block>
+				<block wx:else>
+					<view class="comment_item">
+						<view class="c_top">
+							<view class="c_t_name">{{item.userName}}</view>
+							<view class="c_t_star">
+								<block wx:for='{{item.stars - 0}}' wx:key='key'>
+									<text class='iconfont iconshoucang star'></text>
+								</block>
+							</view>
+						</view>
+						<view class="c_mid">
+							<view class="c_m_text">
+								{{ item.need_expand  ? ( item.zk ? item.new_comm_note : item.commNote) : item.commNote}}
+							</view>
+							<view class="expand" wx:if='{{item.need_expand == true}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' catchtap="zk_sq">
+								{{item.zk ? '展开' : '收起'}}
+							</view>
+						</view>
+						<view class="c_bot">
+							<text>{{item.createTime}}</text>
+						</view>
+						<view class="d_reply" wx:if='{{item.replylist}}'>
+							<view class="reply_top">医师回复：</view>
+							<view class="reply_bot">
+								<view class="re_text">
+									{{ item.rp_need_expand  ? ( item.rp_zk ? item.rp_new_comm_note : item.replylist[0].replyNote) : item.replylist[0].replyNote}}
+								</view>
+								<view class="rp_expand" wx:if='{{item.rp_need_expand == true}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' catchtap="rp_zk_sq">
+									{{item.rp_zk ? '展开' : '收起'}}
+								</view>
+							</view>
+						</view>
+						<view class="btn_reply">
+							<view class="del_reply" catchtap="del_reply" wx:if='{{item.replylist}}' data-id='{{item.replylist[0].id}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}'>删除回复</view>
+							<view class="to_reply" data-id='{{item.id}}' catchtap="to_reply" data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' wx:else>回复</view>
+						</view>
+					</view>
+				</block>
+
+			</block>
+		</block>
+
+		<view class="is-null" wx:if="{{dataList[0].length <= 0}}">
+			<image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+			<text>您还没有相应记录</text>
+		</view>
 	</view>
-  <include src="../../pages/common/footer.wxml" />
+	<include src="../../pages/common/footer.wxml" />
 </view>
 
 <view class="modal_bg" wx:if='{{show_modal == 1}}'></view>
 <view class="modal_content" wx:if='{{show_modal == 1}}'>
-  <view class="modal_title">
-    退款原因
-    <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="close_modal"></image>
-  </view>
-  <view class="modal_info">
-    <textarea placeholder="请您输入退款原因" value="{{refundReason}}" bindinput="changeReason"></textarea>
-  </view>
-  <view class="modal_fotter">
-    <view class="modal_btn btn_cancel" bindtap="close_modal">取消</view>
-    <view class="modal_btn btn_ok" bindtap="requestReturn" data-taped_order_id='{{taped_order_id}}'>确定</view>
-  </view>
+	<view class="modal_title">
+		退款原因
+		<image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="close_modal"></image>
+	</view>
+	<view class="modal_info">
+		<textarea placeholder="请您输入退款原因" value="{{refundReason}}" bindinput="changeReason"></textarea>
+	</view>
+	<view class="modal_fotter">
+		<view class="modal_btn btn_cancel" bindtap="close_modal">取消</view>
+		<view class="modal_btn btn_ok" bindtap="requestReturn" data-taped_order_id='{{taped_order_id}}'>确定</view>
+	</view>
 </view>
+<pop-announce show='{{show_announce}}' title='回复' success_title='发布' if_cancel='{{true}}' binddetermine='com_publish' id='comment'>
+	<textarea placeholder="回复" placeholder-style='#999' value='{{comment_note}}' bindinput='comment_note'></textarea>
+</pop-announce>

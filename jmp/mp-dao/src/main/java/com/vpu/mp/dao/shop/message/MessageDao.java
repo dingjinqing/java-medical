@@ -2,22 +2,17 @@ package com.vpu.mp.dao.shop.message;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.pojo.shop.table.UserMessageDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-
-import com.vpu.mp.db.shop.tables.UserMessage;
-import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
-import com.vpu.mp.db.shop.tables.records.UserAnnouncementRecord;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
+import com.vpu.mp.service.pojo.shop.message.AnnounceBo;
 import com.vpu.mp.service.pojo.shop.message.MessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
-import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
