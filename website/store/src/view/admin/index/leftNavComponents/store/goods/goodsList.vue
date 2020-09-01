@@ -132,19 +132,19 @@ export default {
 
 <style scoped>
     .goods-list-wrap{
-        margin-top: 10px;
-        width: calc(100% - 10px);
+        padding: 10px;
         height: 100%;
+        box-sizing: border-box;
         overflow: hidden;
     }
     .goods-list-header{
-        padding: 10px;
+        padding: 15px;
         background-color: white;
         height: 120px;
     }
     .goods-list-content{
         margin-top: 10px;
-        height: calc(100% - 120px);
+        height: calc(100% - 130px);
         background-color:white;
         overflow-y: auto;
     }
