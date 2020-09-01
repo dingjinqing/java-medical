@@ -146,7 +146,7 @@ public class DeployDb {
             DataSource mainDataSource = getDatasource(mainConfig);
             return migrateSql.needUpdateSqlVersion(mainDataSource, mainConfig.getDatabase(), mainConfig.isMainDb);
         } else {
-            DbConfig shopDbConfig = getFirstShopDbConfig();
+            DbConfig shopDbConfig = getLastShopDbConfig();
             if (shopDbConfig != null) {
                 return migrateSql.needUpdateSqlVersion(getDatasource(shopDbConfig), shopDbConfig.getDatabase(), shopDbConfig.isMainDb);
             }
@@ -168,7 +168,8 @@ public class DeployDb {
         DbConfig mainConfig = mainDbConfig();
         DataSource mainDataSource = getDatasource(mainConfig);
         JdbcTemplate mainJdbcTemplate = new JdbcTemplate(mainDataSource);
-        List<Map<String, Object>> list = mainJdbcTemplate.queryForList("select db_config from " + mainConfig.getDatabase() + ".b2c_shop");
+        List<Map<String, Object>> list = mainJdbcTemplate.queryForList("select db_config from "
+            + mainConfig.getDatabase() + ".b2c_shop  order by shop_id");
         for (Map<String, Object> row : list) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -181,14 +182,15 @@ public class DeployDb {
     }
 
     /**
-     * 得到第一个店铺配置，用于判断店铺SQL是否需要升级
+     * 得到最后一个店铺配置，用于判断店铺SQL是否需要升级
      *
      * @return 第一个店铺配置
      */
-    private DbConfig getFirstShopDbConfig() {
+    private DbConfig getLastShopDbConfig() {
         DbConfig mainConfig = mainDbConfig();
         JdbcTemplate mainJdbcTemplate = new JdbcTemplate(getDatasource(mainConfig));
-        List<Map<String, Object>> list = mainJdbcTemplate.queryForList("select db_config from " + mainConfig.getDatabase() + ".b2c_shop limit 1");
+        List<Map<String, Object>> list = mainJdbcTemplate.queryForList("select db_config from "
+            + mainConfig.getDatabase() + ".b2c_shop order by shop_id desc limit 1");
         if (list.isEmpty()) {
             return null;
         }
