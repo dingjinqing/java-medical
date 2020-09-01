@@ -150,6 +150,7 @@ export default {
     ManualRefund
   },
   mounted () {
+    this.queryParams.doctorName = this.$route.query.name ? this.$route.query.name : ''
     this.initDoctorPart()
     this.initDataList()
   },

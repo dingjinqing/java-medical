@@ -30,7 +30,7 @@ export function getAuditAuto (data) {
 // 医师评论置顶
 export function commentUntop (data) {
   return service({
-    url: '/api/admin/doctor/comment/untop',
+    url: '/api/admin/doctor/comment/top',
     method: 'post',
     data: data
   })

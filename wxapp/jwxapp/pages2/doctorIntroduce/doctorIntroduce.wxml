@@ -34,7 +34,7 @@
 					<view>接诊量</view>
 				</view>
 				<view>
-					<view>{{answerType == 1 ? '10分钟内' : (answerType == 2 ? '半小时内' : ( answerType == 3 ? '1小时内' : '1小时以上'))}}</view>
+					<view>{{con.answerType == 1 ? '10分钟内' : (con.answerType == 2 ? '半小时内' : ( con.answerType == 3 ? '1小时内' : '1小时以上'))}}</view>
 					<view>平均响应时间</view>
 				</view>
 				<view>

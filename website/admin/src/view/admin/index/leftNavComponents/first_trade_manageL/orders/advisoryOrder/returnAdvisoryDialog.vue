@@ -23,6 +23,7 @@
           v-model="returnInfo.refundReason"
         ></el-input>
       </div>
+      <div style='margin-top:10px'>剩余退款金额:{{dataInfo.orderAmount - dataInfo.refundMoney}}</div>
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogShow = false">取消</el-button>

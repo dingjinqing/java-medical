@@ -135,7 +135,7 @@
           <template slot-scope="scope">
             <div class="evaluation-info">
               <div class="evaluation-info_item">
-                <span class="evaluation-info_title"></span><span>{{
+                <span class="evaluation-info_title"></span><span style="text-align:center">{{
                   scope.row.replylist ? '回复：' + scope.row.replylist[0].replyNote : '暂无回复'
                 }}</span>
               </div>
@@ -213,7 +213,7 @@
             <el-tooltip
               content="取消置顶"
               placement="top"
-              v-if="scope.row.isTop === 1"
+              v-if="scope.row.top === 1"
             >
               <span
                 class="el-icon-bottom operateSpan"
@@ -245,6 +245,7 @@ export default {
 
   },
   mounted () {
+    this.param.doctorName = this.$route.query.name ? this.$route.query.name : ''
     this.getDoctor({})
     this.auditAuto()
     this.initData()
@@ -330,6 +331,7 @@ export default {
     },
     delComment (id) {
       deleteComment({ id: id }).then(res => {
+        this.tableData = this.tableData.filter(item => item.id !== id)
         if (res.error === 0) {
           this.$message.success({
             message: '删除成功',
@@ -347,14 +349,14 @@ export default {
               message: '置顶成功',
               duration: '2000'
             })
-            let targetData = this.dataList.find(item => item.id === id)
+            let targetData = this.tableData.find(item => item.id === id)
             targetData.top = 1
           } else {
             this.$message.success({
               message: '取消成功',
               duration: '2000'
             })
-            let targetData = this.dataList.find(item => item.id === id)
+            let targetData = this.tableData.find(item => item.id === id)
             targetData.top = 0
           }
         }
@@ -368,14 +370,14 @@ export default {
               message: '审核通过',
               duration: '2000'
             })
-            let targetData = this.dataList.find(item => item.id === id)
+            let targetData = this.tableData.find(item => item.id === id)
             targetData.auditStatus = 1
           } else {
             this.$message.success({
               message: '审核未通过',
               duration: '2000'
             })
-            let targetData = this.dataList.find(item => item.id === id)
+            let targetData = this.tableData.find(item => item.id === id)
             targetData.auditStatus = 2
           }
         }

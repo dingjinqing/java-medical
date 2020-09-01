@@ -2,16 +2,6 @@
   <div class="main">
     <div class="navBox">
       <div class="filters">
-        <!-- <div class="filters_item">
-          <span>医师院内编号：</span>
-          <el-input
-            v-model="queryParams.hospitalCode"
-            size="small"
-            style="width:190px;"
-            placeholder="请输入医师院内编号"
-          >
-          </el-input>
-        </div> -->
         <div class="filters_item">
           <span>姓名：</span>
           <el-input
@@ -33,13 +23,21 @@
           </el-input>
         </div>
         <div class="btn_wrap">
-          <el-button type="primary" size="small" @click="initDataList"
-            >搜索</el-button
-          >
-          <el-button type="primary" size="small" @click="handleAddDoctor"
-            >添加</el-button
-          >
-          <el-button type="primary" size="small" @click="fetch">同步</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="initDataList"
+          >搜索</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="handleAddDoctor"
+          >添加</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="fetch"
+          >同步</el-button>
         </div>
       </div>
     </div>
@@ -65,7 +63,10 @@
         ></el-table-column>
         <el-table-column label="名称">
           <template slot-scope="scope">
-            <div class="doc_name_url" style='display: flex;justify-content: flex-start;'>
+            <div
+              class="doc_name_url"
+              style='display: flex;justify-content: flex-start;'
+            >
               <img
                 class="doc_img"
                 v-if='scope.row.url'
@@ -75,15 +76,62 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column
-            prop='name'
-            label='姓名'
-          ></el-table-column> -->
-        <el-table-column prop="age" label="年龄"></el-table-column>
-        <el-table-column prop="departmentNames" label="科室"></el-table-column>
-        <el-table-column prop="titleName" label="职称"></el-table-column>
-        <el-table-column prop="mobile" label="手机号"></el-table-column>
-        <el-table-column prop="workTime" label="从业时间"></el-table-column>
+        <el-table-column label="年龄/从业时间">
+          <template slot-scope="scope">
+            <span> {{scope.row.age}}/{{scope.row.workTime}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="departmentNames"
+          label="职称/科室"
+        >
+          <template slot-scope="scope">
+            <span> {{scope.row.titleName}}/{{scope.row.departmentNames}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="手机号"
+        ></el-table-column>
+        <el-table-column
+          label="评价星级"
+          align="center"
+          width="200px"
+        >
+          <template slot-scope="scope">
+            <div class="evaluation-info">
+              <div class="evaluation-info_item">
+                <star :value="scope.row.avgCommentStar" />
+                <a
+                  href="javaScript:void(0);"
+                  class="same_btn"
+                  style="margin-top:10px"
+                  @click="toComment(scope.row.name)"
+                >查看</a>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="平均响应时间">
+          <template v-slot="scope">
+            <span>{{scope.row.answerType == 1 ? '10分钟内' : (scope.row.answerType == 2 ? '半小时内' : ( scope.row.answerType == 3 ? '1小时内' : '1小时以上'))}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="attentionNumber"
+          label="关注量"
+        ></el-table-column>
+        <el-table-column label="接诊量">
+          <template v-slot='scope'>
+            <span>{{scope.row.consultationNumber}}</span>
+            <a
+              href="javaScript:void(0);"
+              class="same_btn"
+              style="margin:0px;display:block"
+              @click="toAdvistory(scope.row.name)"
+            >查看</a>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="operation">
@@ -91,40 +139,38 @@
                 href="javaScript:void(0);"
                 class="same_btn"
                 @click="editDoctor(scope.row.id)"
-                >编辑</a
-              >
+              >编辑</a>
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.status == 1"
                 @click="puaseDoctor(scope.row)"
-                >停用</a
-              >
+              >停用</a>
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.status == 0"
                 @click="beginDoctor(scope.row)"
-                >启用</a
-              >
+              >启用</a>
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.userId !== 0"
                 @click="setBundling(scope.row.id)"
-                >解除绑定</a
-              >
+              >解除绑定</a>
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 @click="setConsultation(scope.row)"
-                >{{ scope.row.canConsultation ? '禁止问诊' : '允许问诊' }}</a
-              >
+              >{{ scope.row.canConsultation ? '禁止问诊' : '允许问诊' }}</a>
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <pagination :page-params.sync="pageParams" @pagination="initDataList" />
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
     </div>
   </div>
 </template>
@@ -132,8 +178,9 @@
 <script>
 import { doctorList, enableDoctor, unBundling, updateConsultation, fetchDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
 import pagination from '@/components/admin/pagination/pagination'
+import star from '@/components/admin/commonStar'
 export default {
-  components: { pagination },
+  components: { pagination, star },
   data () {
     return {
       loading: false,
@@ -282,6 +329,24 @@ export default {
       fetchDoctor().then(res => {
         console.log(res)
       })
+    },
+    toAdvistory (name) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/orders/advisoryOrder/list',
+        query: {
+          name: name
+        }
+      })
+      window.open(href, '_blank')
+    },
+    toComment (name) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/comment/list',
+        query: {
+          name: name
+        }
+      })
+      window.open(href, '_blank')
     }
   },
   watch: {
@@ -349,13 +414,13 @@ export default {
       display: flex;
       justify-content: center;
       flex-direction: column;
-      > .same_btn {
-        font-size: 12px;
-        text-decoration: none;
-        cursor: pointer;
-        margin-right: 8px;
-        color: #5a8bff;
-      }
+    }
+    .same_btn {
+      font-size: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      margin-right: 8px;
+      color: #5a8bff;
     }
   }
 }
