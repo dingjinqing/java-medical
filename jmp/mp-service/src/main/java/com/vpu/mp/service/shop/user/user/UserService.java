@@ -303,6 +303,7 @@ public class UserService extends ShopBaseService {
 			String unionId = (!StringUtils.isBlank(result.getUnionid())) ? result.getUnionid() : "";
 			user.setWxUnionId(unionId);
 			int insert = user.insert();
+            user.refresh();
 			logger().info("插入user结果 " + insert);
 			//syncMainUser(user);
 			// avatar==null?"/image/admin/head_icon.png":avatar
