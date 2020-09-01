@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 
 /**
  * 处方信息表
+ * @author 孔德成
+ * @date 2020/7/6 16:28
  */
 @Generated(
     value = {
