@@ -85,12 +85,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 580rpx;
+  flex: 1;
 }
 .ipt_line input{
   font-weight: bold;
 }
-.ipt_line .iconfont{
+.each_line .iconfont{
   font-size: 36rpx;
   color: #333;
   opacity: 0.6;
@@ -117,4 +117,8 @@
 .line_tit text{
   color: red;
   margin-left: 5rpx;
+}
+.right-into{
+  width: 16rpx;
+  height: 32rpx;
 }

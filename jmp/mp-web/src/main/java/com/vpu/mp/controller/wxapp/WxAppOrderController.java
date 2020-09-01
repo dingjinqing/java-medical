@@ -383,14 +383,14 @@ public class WxAppOrderController extends WxAppBaseController{
     }
 
     /**
-     * 按距排序门店列表
+     * 按距排序门店列表 不传地址返回单量最大15家门店
      * @param orderAddressParam 用户地址
      * @return JsonResult
      */
     @PostMapping("/get/store")
     public JsonResult getClosestStoreInformation(@RequestBody OrderAddressParam orderAddressParam) {
-        if (orderAddressParam.getLat() == null || orderAddressParam.getLng() == null) {
-            return fail(JsonResultCode.CODE_ORDER_MUST_NOT_NULL);
+        if ("".equals(orderAddressParam.getLat()) || "".equals(orderAddressParam.getLng())) {
+            return success(storeService.getStoreListOpen());
         }
         Map<Double, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
         return success(storeListOpen);

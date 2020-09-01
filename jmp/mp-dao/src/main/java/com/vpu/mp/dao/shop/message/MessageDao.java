@@ -2,23 +2,17 @@ package com.vpu.mp.dao.shop.message;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.pojo.shop.table.UserMessageDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-
-import com.vpu.mp.db.shop.tables.UserMessage;
-import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
-import com.vpu.mp.db.shop.tables.records.UserAnnouncementRecord;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
 import com.vpu.mp.service.pojo.shop.message.AnnounceBo;
 import com.vpu.mp.service.pojo.shop.message.MessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
-import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -41,8 +35,6 @@ public class MessageDao extends ShopBaseDao {
     private static final Byte IS_PULL_NO = 0;
 
     /**
-     * 新增系统消息
-     * @param list
      * 新增系统消息
      * @param list 新增公告列表
      */
@@ -147,12 +139,12 @@ public class MessageDao extends ShopBaseDao {
      * @param userMessageParam 消息入参
      */
     public void updateMessage(UserMessageParam userMessageParam) {
-        int execute = db().update(USER_MESSAGE)
-            .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
+        UserMessageDo userMessageDo = db().select().from(USER_MESSAGE)
             .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
-            .execute();
-        if (execute != 0) {
+            .fetchAnyInto(UserMessageDo.class);
+        if (!userMessageDo.getMessageContent().equals(userMessageParam.getMessageContent())) {
             db().update(USER_MESSAGE)
+                .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
                 .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_NOT_READ)
                 .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
                 .execute();

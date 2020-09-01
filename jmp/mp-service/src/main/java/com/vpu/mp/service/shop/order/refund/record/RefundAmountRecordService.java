@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.RefundAmountRecord;
 import com.vpu.mp.db.shop.tables.records.RefundAmountRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.sub.SubOrderService;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -29,21 +30,24 @@ import static com.vpu.mp.db.shop.tables.RefundAmountRecord.REFUND_AMOUNT_RECORD;
  */
 @Service
 public class RefundAmountRecordService extends ShopBaseService{
-	
+
 	public final RefundAmountRecord TABLE = REFUND_AMOUNT_RECORD;
 	/**会员卡余额退款*/
 	public static String MEMBER_CARD_BALANCE = "member_card_balance";
 	/**余额退款*/
 	public static String USE_ACCOUNT = "use_account";
 	/**积分退款*/
-	public static String SCORE_DISCOUNT = "score_discount";	
+	public static String SCORE_DISCOUNT = "score_discount";
 	/**微信退款*/
-	public static String MONEY_PAID = "money_paid";	
-	@Autowired 
+	public static String MONEY_PAID = "money_paid";
+	@Autowired
 	private OrderInfoService orderInfo;
+	@Autowired
+	private SubOrderService subOrderService;
+
 	/**
 	 * 	获取该订单退款汇总信息(存在优先级)
-	 * 
+	 *
 	 * @param orderSns
 	 * @return Map<支付种类(细分) , 金额>
 	 */
@@ -63,7 +67,7 @@ public class RefundAmountRecordService extends ShopBaseService{
 					}
 				}
 			}
-		}		
+		}
 		return result;
 	}
 
@@ -119,7 +123,8 @@ public class RefundAmountRecordService extends ShopBaseService{
      * @return BigDecimal
      */
     public BigDecimal getOrderRefundAmount(String orderSn){
-        List<BigDecimal> result = db().select(TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(BigDecimal.class);
+		List<String> subOrderSn = subOrderService.getSubOrderSn(orderSn);
+		List<BigDecimal> result = db().select(TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn).or(TABLE.ORDER_SN.in(subOrderSn))).fetchInto(BigDecimal.class);
         return result.stream().reduce(BigDecimalUtil.BIGDECIMAL_ZERO, BigDecimalUtil::add);
     }
 }

@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.doctor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorCommentDo;
@@ -16,6 +17,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.tables.DoctorComment.DOCTOR_COMMENT;
@@ -79,6 +81,12 @@ public class DoctorCommentDao extends ShopBaseDao {
         }
         if (param.getAuditStatus() != null) {
             records.where(DOCTOR_COMMENT.AUDIT_STATUS.eq(param.getAuditStatus()));
+        }
+         if (param.getUserId()!=null) {
+             records.where(DOCTOR_COMMENT.AUDIT_STATUS.eq(DoctorCommentConstant.CHECK_COMMENT_PASS).or(DOCTOR_COMMENT.USER_ID.eq(param.getUserId())));
+        }
+        if (!Objects.equals(BaseConstant.YES,param.getHasDelete())){
+            records.where(DOCTOR_COMMENT.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         }
         records.orderBy(DOCTOR_COMMENT.TOP.desc(), DOCTOR_COMMENT.CREATE_TIME.desc());
         return getPageResult(records, param, DoctorCommentListVo.class);

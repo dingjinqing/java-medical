@@ -9,4 +9,6 @@ import lombok.Data;
  **/
 @Data
 public class DoctorWithdrawVo extends DoctorWithdrawDo {
+    private String doctorName;
+    private String mobile;
 }

@@ -43,7 +43,8 @@ global.wxPage({
   toggleStatus(e){
     let {type} = e.currentTarget.dataset
     this.setData({
-      targetStatus:type
+      targetStatus:type,
+      'pageParams.currentPage':1
     })
     this.requestWithdrawList()
   },
@@ -56,9 +57,15 @@ global.wxPage({
     }
     util.api(apiStr,res=>{
       if(res.error === 0){
-        this.setData({
-          dataList:res.content.dataList
-        })
+        if(this.data.pageParams.currentPage === 1){
+          this.setData({
+            dataList:[[...res.content.dataList]]
+          })
+        } else {
+          this.setData({
+            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']:res.content.dataList
+          })
+        }
         this.data.pageParams = res.content.page
       }
     },{
@@ -104,7 +111,16 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (
+      this.data.pageParams &&
+      this.data.pageParams.currentPage === this.data.pageParams.lastPage
+    ) {
+      return;
+    }
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestWithdrawList()
   },
 
   /**

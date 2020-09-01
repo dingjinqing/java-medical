@@ -560,6 +560,8 @@ public class Indexes {
     public static final Index DOCTOR_WITHDRAW_PRIMARY = Indexes0.DOCTOR_WITHDRAW_PRIMARY;
     public static final Index STORE_ORDER_SUMMARY_TREND_PRIMARY = Indexes0.STORE_ORDER_SUMMARY_TREND_PRIMARY;
     public static final Index STORE_ORDER_SUMMARY_TREND_REF_TYPE = Indexes0.STORE_ORDER_SUMMARY_TREND_REF_TYPE;
+    public static final Index ANCHOR_POINTS_PRIMARY = Indexes0.ANCHOR_POINTS_PRIMARY;
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1088,7 +1090,7 @@ public class Indexes {
         public static Index CITY_SERVICE_ORDER_PRIMARY = Internal.createIndex("PRIMARY", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.ID }, true);
         public static Index CITY_SERVICE_ORDER_WAYBILL_ID = Internal.createIndex("waybill_id", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.WAYBILL_ID }, false);
 
-
+        public static Index ANCHOR_POINTS_PRIMARY = Internal.createIndex("PRIMARY", AnchorPoints.ANCHOR_POINTS, new OrderField[] { AnchorPoints.ANCHOR_POINTS.ID }, true);
         public static Index DOCTOR_TOTAL_REBATE_DOCTOR_ID = Internal.createIndex("doctor_id", DoctorTotalRebate.DOCTOR_TOTAL_REBATE, new OrderField[] { DoctorTotalRebate.DOCTOR_TOTAL_REBATE.DOCTOR_ID }, false);
         public static Index DOCTOR_TOTAL_REBATE_PRIMARY = Internal.createIndex("PRIMARY", DoctorTotalRebate.DOCTOR_TOTAL_REBATE, new OrderField[] { DoctorTotalRebate.DOCTOR_TOTAL_REBATE.ID }, true);
         public static Index DOCTOR_COMMENT_REPLY_PRIMARY = Internal.createIndex("PRIMARY", DoctorCommentReply.DOCTOR_COMMENT_REPLY, new OrderField[] { DoctorCommentReply.DOCTOR_COMMENT_REPLY.ID }, true);

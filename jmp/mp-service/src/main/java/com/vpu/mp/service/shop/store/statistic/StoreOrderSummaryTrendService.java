@@ -3,12 +3,14 @@ package com.vpu.mp.service.shop.store.statistic;
 import com.vpu.mp.common.pojo.shop.table.StoreOrderSummaryTrendDo;
 import com.vpu.mp.dao.shop.store.StoreOrderSummaryTrendDao;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -50,7 +52,14 @@ public class StoreOrderSummaryTrendService {
      * @return
      */
     public StoreOrderSummaryTrendDo getStoreStatistic(StatisticParam param) {
-        return storeOrderSummaryTrendDao.getStoreStatistic(param);
+        if (StatisticConstant.TYPE_TODAY.equals(param.getType())) {
+            LocalDateTime today = LocalDate.now().atStartOfDay();
+            param.setStartTime(Timestamp.valueOf(today));
+            param.setEndTime(Timestamp.valueOf(today.plusDays(1)));
+            return getStoreOrderSummary(param);
+        } else {
+            return storeOrderSummaryTrendDao.getStoreStatistic(param);
+        }
     }
 
     /**
@@ -58,7 +67,17 @@ public class StoreOrderSummaryTrendService {
      * @param param
      */
     public void statisticStore(StatisticParam param) {
-        LocalDateTime today = LocalDate.now().atStartOfDay();
+        StoreOrderSummaryTrendDo storeOrderSummaryTrendDo = getStoreOrderSummary(param);
+        StoreOrderSummaryTrendDo hasStatisticInfo = getStoreStatistic(param);
+        if (hasStatisticInfo != null) {
+            storeOrderSummaryTrendDo.setId(hasStatisticInfo.getId());
+            updateStoreStatistic(storeOrderSummaryTrendDo);
+        } else {
+            insertStoreStatistic(storeOrderSummaryTrendDo);
+        }
+    }
+
+    public StoreOrderSummaryTrendDo getStoreOrderSummary(StatisticParam param) {
         StoreOrderSummaryTrendDo storeOrderSummaryTrendDo = new StoreOrderSummaryTrendDo();
         StatisticPayVo payData = orderReadService.getStoreOrderPayData(param);
         StatisticAddVo addData = orderReadService.getStoreOrderAddData(param);
@@ -70,12 +89,6 @@ public class StoreOrderSummaryTrendService {
         storeOrderSummaryTrendDo.setTotalPaidMoney(payData.getTotalMoneyPaid());
         storeOrderSummaryTrendDo.setType(param.getType());
         storeOrderSummaryTrendDo.setStoreId(param.getStoreId());
-        StoreOrderSummaryTrendDo hasStatisticInfo = getStoreStatistic(param);
-        if (hasStatisticInfo != null) {
-            storeOrderSummaryTrendDo.setId(hasStatisticInfo.getId());
-            updateStoreStatistic(storeOrderSummaryTrendDo);
-        } else {
-            insertStoreStatistic(storeOrderSummaryTrendDo);
-        }
+        return storeOrderSummaryTrendDo;
     }
 }

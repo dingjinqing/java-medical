@@ -1031,6 +1031,18 @@ const routes = [
               import(
                 '@/view/admin/index/leftNavComponents/base_manger/smsRecord/smsConfig'
               )
+          },
+          {
+            path: '/admin/home/main/basicConfig/rebateConfig',
+            name: 'rebateConfig',
+            meta: {
+              crumbTitle: 'router.rebateConfig',
+              meta: 'base_manger'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/rebateConfig/rebateConfig'
+              )
           }
         ].concat(
           marketing,

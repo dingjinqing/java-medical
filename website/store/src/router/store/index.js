@@ -54,7 +54,7 @@ const routes = [
             name: 'saleOutGoods',
             meta: {
               crumbTitle: 'router.saleOutGoods',
-              meta: 'storeGoods'
+              meta: 'saleOutGoods'
             },
             component: () =>
                 import(

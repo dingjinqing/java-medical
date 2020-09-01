@@ -58,4 +58,5 @@ public class DoctorWithdrawParam {
      * 真实姓名
      */
     private String     realName;
+    private String clientIp;
 }

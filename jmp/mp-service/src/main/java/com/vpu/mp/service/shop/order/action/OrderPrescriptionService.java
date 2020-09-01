@@ -318,7 +318,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setMedicinePrice(goods.getShopPrice());
                 //计算应返利
                 RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
-                if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+                if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
                     BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
                     BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
                     BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);

@@ -37,6 +37,7 @@ public class AdminDoctorCommentController extends AdminBaseController {
      */
     @PostMapping("/api/admin/doctor/comment/list")
     public JsonResult list(@RequestBody DoctorCommentListParam param) {
+        param.setHasDelete(BaseConstant.YES);
         return success(doctorCommentService.listDoctorComment(param));
     }
 
@@ -83,7 +84,7 @@ public class AdminDoctorCommentController extends AdminBaseController {
      *
      * @return
      */
-    @PostMapping("/api/admin/doctor/comment/detele")
+    @PostMapping("/api/admin/doctor/comment/delete")
     public JsonResult delete(@RequestBody DoctorCommentIdParam param) {
         doctorCommentService.deleteComment(param.getId());
         return success();

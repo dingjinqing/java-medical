@@ -3,8 +3,10 @@ package com.vpu.mp.service.shop.rebate;
 import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
 import com.vpu.mp.dao.shop.rebate.DoctorWithdrawDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorTotalRebateVo;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawConstant;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ public class DoctorTotalRebateService extends ShopBaseService {
     private DoctorTotalRebateDao doctorTotalRebateDao;
     @Autowired
     private DoctorWithdrawDao doctorWithdrawDao;
+    @Autowired
+    private RebateConfigService rebateConfigService;
 
     /**
      * 根据医师id查询
@@ -31,24 +35,30 @@ public class DoctorTotalRebateService extends ShopBaseService {
         if(doctorTotalRebateVo==null){
             return new DoctorTotalRebateVo();
         }
+        //配置中的提现额度大小限制
+        RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+        if(rebateConfig!=null){
+            doctorTotalRebateVo.setWithdrawCashMix(rebateConfig.getWithdrawCashMix());
+            doctorTotalRebateVo.setWithdrawCashMax(rebateConfig.getWithdrawCashMax());
+        }
         //累计提现金额
-        BigDecimal accruingWithDrawCash=BigDecimal.ZERO;
-        BigDecimal paySuccessWithDrawCash=doctorWithdrawDao.getWithdrawCashSum(doctorId, DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS);
+        BigDecimal accruingWithdrawCash=BigDecimal.ZERO;
+        BigDecimal paySuccessWithDrawCash=doctorWithdrawDao.getWithdrawCashSum(doctorId, DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS,null,null);
         if(paySuccessWithDrawCash!=null){
-            accruingWithDrawCash=accruingWithDrawCash.add(paySuccessWithDrawCash);
+            accruingWithdrawCash=accruingWithdrawCash.add(paySuccessWithDrawCash);
         }
-        doctorTotalRebateVo.setAccruingWithDrawCash(accruingWithDrawCash);
+        doctorTotalRebateVo.setAccruingWithdrawCash(accruingWithdrawCash);
         //待提现金额
-        BigDecimal waitWithDrawCash=BigDecimal.ZERO;
-        BigDecimal waitCheckWithDrawCash=doctorWithdrawDao.getWithdrawCashSum(doctorId,DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK);
-        BigDecimal waitPayWithDrawCash=doctorWithdrawDao.getWithdrawCashSum(doctorId,DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY);
-        if(waitCheckWithDrawCash!=null){
-            waitWithDrawCash=waitWithDrawCash.add(waitCheckWithDrawCash);
+        BigDecimal waitWithdrawCash=BigDecimal.ZERO;
+        BigDecimal waitCheckWithdrawCash=doctorWithdrawDao.getWithdrawCashSum(doctorId,DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK,null,null);
+        BigDecimal waitPayWithdrawCash=doctorWithdrawDao.getWithdrawCashSum(doctorId,DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY,null,null);
+        if(waitCheckWithdrawCash!=null){
+            waitWithdrawCash=waitWithdrawCash.add(waitCheckWithdrawCash);
         }
-        if(waitPayWithDrawCash!=null){
-            waitWithDrawCash=waitWithDrawCash.add(waitPayWithDrawCash);
+        if(waitPayWithdrawCash!=null){
+            waitWithdrawCash=waitWithdrawCash.add(waitPayWithdrawCash);
         }
-        doctorTotalRebateVo.setWaitWithDrawCash(waitWithDrawCash);
+        doctorTotalRebateVo.setWaitWithdrawCash(waitWithdrawCash);
         return doctorTotalRebateVo;
     }
 }

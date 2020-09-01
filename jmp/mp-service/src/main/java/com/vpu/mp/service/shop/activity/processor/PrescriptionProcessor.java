@@ -27,6 +27,7 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.common.Strings;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -188,8 +189,13 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 param.setOrderMedicalType(OrderConstant.MEDICAL_TYPE_RX);
                 goods.setMedicalInfo(medicalInfo);
                 //获取有效的处方
-                PrescriptionVo prescriptionVo = prescriptionService
-                        .getByGoodsInfo(goods.getGoodsId(),userPatientParam, medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
+                PrescriptionVo prescriptionVo=null;
+                if (Strings.isEmpty(param.getPrescriptionCode())){
+                    prescriptionVo = prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
+                }else {
+                    prescriptionVo = prescriptionService
+                            .getByGoodsInfo(goods.getGoodsId(),userPatientParam, medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
+                }
                 //处方信息
                 if (prescriptionVo != null) {
                     prescriptionList.add(prescriptionVo);

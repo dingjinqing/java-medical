@@ -19,4 +19,7 @@ public class DoctorCommentListParam extends BasePageParam {
      * 0:未审批,1:审批通过,2:审批未通过
      */
     private Byte auditStatus;
+
+    private Byte hasDelete;
+    private Integer userId;
 }

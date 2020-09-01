@@ -174,6 +174,7 @@ export const cn = {
     officesList: '科室管理',
     commentList: '评价列表',
     advisoryTotal: '咨询统计',
-    prescriptionList: '处方列表'
+    prescriptionList: '处方列表',
+    rebateConfig: '返利配置'
   }
 }

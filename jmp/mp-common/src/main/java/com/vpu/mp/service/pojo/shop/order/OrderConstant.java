@@ -665,8 +665,10 @@ public class OrderConstant {
 	 * 退款
 	 */
 	public static final Byte EXTERNAL_HIS_ORDER_STATUS_REFUND =0;
-
-
+    /**
+     * 未删除
+     */
+    public static final Byte NORMAL_DEL=0;
 
 
     /**对外接口 start*/

@@ -23,14 +23,7 @@ import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
@@ -44,34 +37,17 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.order.OrderParam;
-import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
-import com.vpu.mp.service.pojo.shop.order.OrderSimpleInfoVo;
+import com.vpu.mp.service.pojo.shop.order.*;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderPageResult;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnGoodsListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderPageResult;
+import com.vpu.mp.service.pojo.shop.order.api.*;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
+import com.vpu.mp.service.pojo.shop.order.refund.*;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -164,17 +140,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -638,7 +605,13 @@ showManualReturn(vo);
 	public void setCalculateMoney (ReturnOrderInfoVo vo) {
 		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
 			//成功状态查此次退款记录
-			vo.setCalculateMoney(refundAmountRecord.getReturnAmountMap(Arrays.asList(vo.getOrderSn()),vo.getRetId(), null));
+			List<String> subOrderSn = subOrderService.getSubOrderSn(vo.getOrderSn());
+			if (subOrderSn!=null&&subOrderSn.size()>0){
+				subOrderSn.add(vo.getOrderSn());
+			}else {
+				subOrderSn =Arrays.asList(vo.getOrderSn());
+			}
+			vo.setCalculateMoney(refundAmountRecord.getReturnAmountMap(subOrderSn,vo.getRetId(), null));
 			return;
 		}
 		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_PASS || vo.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
@@ -1872,5 +1845,23 @@ showManualReturn(vo);
      */
     public StatisticAddVo getStoreOrderAddData(StatisticParam param) {
         return orderInfoDao.getStoreOrderAddData(param);
+    }
+
+    /**
+     * 获取门店配送单待发货单量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreOrderWaitDeliver(List<Integer> storeIds) {
+        return orderInfoDao.getStoreOrderWaitDeliver(storeIds);
+    }
+
+    /**
+     * 获取门店自提单待核销单量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreOrderWaitVerify(List<Integer> storeIds) {
+        return orderInfoDao.getStoreOrderWaitVerify(storeIds);
     }
 }

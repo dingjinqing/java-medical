@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.rebate;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author yangpengcheng
  * @date 2020/8/27
@@ -10,4 +12,8 @@ import lombok.Data;
 @Data
 public class DoctorWithdrawListParam extends BasePageParam {
     private Integer doctorId;
+    private String doctorName;
+    private Byte status;
+    private Timestamp startTime;
+    private Timestamp endTime;
 }

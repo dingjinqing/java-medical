@@ -70,9 +70,9 @@ public class DeployDb {
      */
     public void deploy() throws FlywayException, IOException {
 
-        dryRun(true);
+        checkSqlGrammar(dryRunDbConfig(true));
 
-        dryRun(false);
+        checkSqlGrammar(dryRunDbConfig(false));
 
         if (needUpdateSqlVersion(true)) {
             migrateMainDb();
@@ -110,33 +110,27 @@ public class DeployDb {
         migrateSql.migrateDb(mainDataSource, database, false, true);
     }
 
-    /**
-     * 校验整体SQL语法
-     */
-    public void dryRun(Boolean isMain) {
-        if (isMain) {
-            DbConfig dryMainRunDbConfig = dryRunDbConfig(true);
-            DataSource dryMainDataSource = getDatasource(dryMainRunDbConfig);
-            JdbcTemplate mainJdbcTemplate = new JdbcTemplate(dryMainDataSource);
-            log.info("dryRun MainDb:{}", dryMainRunDbConfig.getDatabase());
-            try {
-                migrateSql.migrateDb(dryMainDataSource, dryMainRunDbConfig.getDatabase(), true, true);
-                log.info("dryRun MainDb: {} Ok", dryMainRunDbConfig.getDatabase());
-            } finally {
-                mainJdbcTemplate.execute("drop database if exists " + dryMainRunDbConfig.getDatabase());
-            }
+    private void checkSqlGrammar(DbConfig dbConfig) {
+        DataSource dataSource = getDatasource(dbConfig);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        log.info("CheckSqlGrammar `{}` ...", dbConfig.getDatabase());
+        try {
+            // 测试验证
+            migrateSql.migrateDb(dataSource, dbConfig.getDatabase(), dbConfig.getIsMainDb(), true);
+            log.info("CheckSqlGrammar `{}`, migrateDb Ok", dbConfig.getDatabase());
+        } catch (Exception e) {
+            // 失败后，删除数据库
+            log.info("CheckSqlGrammar `{}` failed, drop database.", dbConfig.getDatabase());
+            jdbcTemplate.execute("drop database if exists " + dbConfig.getDatabase());
+            throw e;
+        }
 
-        } else {
-            DbConfig dryShopRunDbConfig = dryRunDbConfig(false);
-            DataSource dryShopDataSource = getDatasource(dryShopRunDbConfig);
-            JdbcTemplate shopJdbcTemplate = new JdbcTemplate(dryShopDataSource);
-            log.info("dryRun ShopDb:{}", dryShopRunDbConfig.getDatabase());
-            try {
-                migrateSql.migrateDb(dryShopDataSource, dryShopRunDbConfig.getDatabase(), false, true);
-                log.info("dryRun ShopDb: {} Ok", dryShopRunDbConfig.getDatabase());
-            } finally {
-                shopJdbcTemplate.execute("drop database if exists " + dryShopRunDbConfig.getDatabase());
-            }
+        try {
+            // 验证本地SQL与老数据库的CheckSum的正确性
+            migrateSql.validateDb(dataSource, dbConfig.getDatabase(), dbConfig.getIsMainDb());
+            log.info("CheckSqlGrammar {}, validateDb Ok", dbConfig.getDatabase());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -152,7 +146,7 @@ public class DeployDb {
             DataSource mainDataSource = getDatasource(mainConfig);
             return migrateSql.needUpdateSqlVersion(mainDataSource, mainConfig.getDatabase(), mainConfig.isMainDb);
         } else {
-            DbConfig shopDbConfig = getFirstShopDbConfig();
+            DbConfig shopDbConfig = getLastShopDbConfig();
             if (shopDbConfig != null) {
                 return migrateSql.needUpdateSqlVersion(getDatasource(shopDbConfig), shopDbConfig.getDatabase(), shopDbConfig.isMainDb);
             }
@@ -162,8 +156,8 @@ public class DeployDb {
 
     public void migrateMainDb() {
         DbConfig mainConfig = mainDbConfig();
-        log.info("migrateMainDb:{}", mainConfig.getDatabase());
-        migrateSql.migrateDb(getDatasource(mainConfig), mainConfig.getDatabase(), mainConfig.getIsMainDb(), false);
+        log.info("migrateMainDb: `{}`", mainConfig.getDatabase());
+        migrateSql.migrateDb(getDatasource(mainConfig), mainConfig.getDatabase(), mainConfig.getIsMainDb(), true);
     }
 
     /**
@@ -174,27 +168,29 @@ public class DeployDb {
         DbConfig mainConfig = mainDbConfig();
         DataSource mainDataSource = getDatasource(mainConfig);
         JdbcTemplate mainJdbcTemplate = new JdbcTemplate(mainDataSource);
-        List<Map<String, Object>> list = mainJdbcTemplate.queryForList("select db_config from " + mainConfig.getDatabase() + ".b2c_shop");
+        List<Map<String, Object>> list = mainJdbcTemplate.queryForList("select db_config from "
+            + mainConfig.getDatabase() + ".b2c_shop  order by shop_id");
         for (Map<String, Object> row : list) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             String dbConfigStr = row.get("db_config").toString();
             DbConfig dbConfig = mapper.readValue(dbConfigStr, DbConfig.class);
             dbConfig.setIsMainDb(false);
-            log.info("migrate ShopDb:{}", dbConfig.getDatabase());
+            log.info("migrate ShopDb: `{}`", dbConfig.getDatabase());
             migrateSql.migrateDb(getDatasource(dbConfig), dbConfig.getDatabase(), dbConfig.getIsMainDb(), false);
         }
     }
 
     /**
-     * 得到第一个店铺配置，用于判断店铺SQL是否需要升级
+     * 得到最后一个店铺配置，用于判断店铺SQL是否需要升级
      *
      * @return 第一个店铺配置
      */
-    private DbConfig getFirstShopDbConfig() {
+    private DbConfig getLastShopDbConfig() {
         DbConfig mainConfig = mainDbConfig();
         JdbcTemplate mainJdbcTemplate = new JdbcTemplate(getDatasource(mainConfig));
-        List<Map<String, Object>> list = mainJdbcTemplate.queryForList("select db_config from " + mainConfig.getDatabase() + ".b2c_shop limit 1");
+        List<Map<String, Object>> list = mainJdbcTemplate.queryForList("select db_config from "
+            + mainConfig.getDatabase() + ".b2c_shop order by shop_id desc limit 1");
         if (list.isEmpty()) {
             return null;
         }
