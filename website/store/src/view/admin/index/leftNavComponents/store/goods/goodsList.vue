@@ -72,7 +72,7 @@ export default {
       pageInfo: {
         currentPage: 1,
         pageRows: 20,
-        total: 0
+        totalRows: 0
       },
       storeInfos: [],
       goodsList: []
@@ -146,9 +146,6 @@ export default {
         margin-top: 10px;
         height: calc(100% - 130px);
         background-color:white;
-        overflow-y: auto;
-    }
-    .goods-list-table{
         overflow-y: auto;
     }
     /deep/.tableClass th {
