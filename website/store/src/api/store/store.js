@@ -156,3 +156,34 @@ export function getShowMenu (data) {
     data: data
   })
 }
+// 首页查询未发货订单数
+export function getUnfilledOrderNum () {
+  return service({
+    url: '/api/store/overview/wait/data',
+    method: 'get'
+  })
+}
+// 首页门店下单和支付统计数据
+export function getOrderNum (data) {
+  return service({
+    url: '/api/store/overview/statistic/data',
+    method: 'post',
+    data
+  })
+}
+// 公告列表
+export function getArticleList (data) {
+  return service({
+    url: '/api/store/overview/article/list',
+    method: 'post',
+    data
+  })
+}
+// 获取门店下拉列表数据
+export function getAllStoreList (data) {
+  return service({
+    url: '/api/store/all/get',
+    method: 'post',
+    data
+  })
+}
