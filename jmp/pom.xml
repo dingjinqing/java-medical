@@ -214,12 +214,6 @@
 				<version>${javax.persistence-api.version}</version>
 			</dependency>
 
-            <dependency>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-core</artifactId>
-                <version>${flywaydb.version}</version>
-            </dependency>
-
 		</dependencies>
 	</dependencyManagement>
 
