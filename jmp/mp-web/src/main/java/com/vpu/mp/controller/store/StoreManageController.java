@@ -22,7 +22,6 @@ import java.util.List;
  * @date 2020年08月26日
  */
 @RestController
-@RequestMapping("/api/store")
 public class StoreManageController extends StoreBaseController{
     private static final String LANGUAGE_TYPE_EXCEL= "excel";
 
