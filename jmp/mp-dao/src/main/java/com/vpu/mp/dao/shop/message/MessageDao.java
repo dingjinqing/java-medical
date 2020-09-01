@@ -135,7 +135,7 @@ public class MessageDao extends ShopBaseDao {
     }
 
     /**
-     * 更新会话消息
+     * 更新订单消息
      * @param userMessageParam 消息入参
      */
     public void updateMessage(UserMessageParam userMessageParam) {
@@ -146,9 +146,22 @@ public class MessageDao extends ShopBaseDao {
             db().update(USER_MESSAGE)
                 .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
                 .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_NOT_READ)
+                .set(USER_MESSAGE.IS_DELETE, DelFlag.NORMAL_VALUE)
                 .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
                 .execute();
         }
+    }
+
+    /**
+     * 更新会话消息
+     * @param userMessageParam 消息入参
+     */
+    public void updateImMessage(UserMessageParam userMessageParam) {
+        db().update(USER_MESSAGE)
+            .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
+            .set(USER_MESSAGE.MESSAGE_STATUS, userMessageParam.getMessageStatus())
+            .set(USER_MESSAGE.IS_DELETE, DelFlag.NORMAL_VALUE)
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn())).execute();
     }
 
     /**
@@ -161,7 +174,7 @@ public class MessageDao extends ShopBaseDao {
             .where(USER_MESSAGE.MESSAGE_RELEVANCE_ID.eq(orderId))
             .and(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_ORDER))
             .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
-            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(UserMessageVo.class);
+            .fetchAnyInto(UserMessageVo.class);
     }
 
     /**
