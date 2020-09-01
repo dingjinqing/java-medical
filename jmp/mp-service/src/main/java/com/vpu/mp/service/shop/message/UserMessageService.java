@@ -191,7 +191,7 @@ public class UserMessageService extends ShopBaseService {
                     userMessageParam.setMessageStatus(USER_MESSAGE_STATUS_NOT_READ);
                     String content = addImMessageContent(imSessionUnReadInfoVo);
                     userMessageParam.setMessageContent(content);
-                    messageDao.updateMessage(userMessageParam);
+                    messageDao.updateImMessage(userMessageParam);
                 }
             }
         }
