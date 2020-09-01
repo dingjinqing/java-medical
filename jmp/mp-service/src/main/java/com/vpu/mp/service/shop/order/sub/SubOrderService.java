@@ -87,6 +87,10 @@ public class SubOrderService  extends ShopBaseService {
             .fetch();
     }
 
+    public List<String> getSubOrderSn(String orderSn){
+       return db().select(TABLE.SUB_ORDER_SN).where(TABLE.MAIN_ORDER_SN.eq(orderSn)).fetchInto(String.class);
+    }
+
     public void updateBeforeReturn(SubOrderInfoRecord record, BigDecimal currMoney) {
         BigDecimal returned = BigDecimalUtil.add(currMoney, record.getRefundMoney());
         if(BigDecimalUtil.compareTo(
