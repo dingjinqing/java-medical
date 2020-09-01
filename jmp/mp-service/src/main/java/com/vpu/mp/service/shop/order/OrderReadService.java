@@ -605,7 +605,13 @@ showManualReturn(vo);
 	public void setCalculateMoney (ReturnOrderInfoVo vo) {
 		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
 			//成功状态查此次退款记录
-			vo.setCalculateMoney(refundAmountRecord.getReturnAmountMap(Arrays.asList(vo.getOrderSn()),vo.getRetId(), null));
+			List<String> subOrderSn = subOrderService.getSubOrderSn(vo.getOrderSn());
+			if (subOrderSn!=null&&subOrderSn.size()>0){
+				subOrderSn.add(vo.getOrderSn());
+			}else {
+				subOrderSn =Arrays.asList(vo.getOrderSn());
+			}
+			vo.setCalculateMoney(refundAmountRecord.getReturnAmountMap(subOrderSn,vo.getRetId(), null));
 			return;
 		}
 		if(vo.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_PASS || vo.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {

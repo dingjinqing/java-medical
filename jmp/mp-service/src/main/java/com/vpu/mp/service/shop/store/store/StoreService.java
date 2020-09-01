@@ -49,10 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
 import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
@@ -663,12 +660,13 @@ public class StoreService extends ShopBaseService {
     }
 
     /**
-     * 查询当前在营业的门店
-     * @return StoreDo
+     * 查询当前在营业的门店列表(传地址)
+     * @param orderAddressParam 地址经纬度
+     * @return Map<Double, StoreDo>
      */
     public Map<Double, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
         List<StoreDo> stores = storeDao.getStoreOpen();
-        Map<Double, StoreDo> map = new HashMap<>(10);
+        Map<Double, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
             double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
                 Double.parseDouble(orderAddressParam.getLat()),
@@ -678,12 +676,23 @@ public class StoreService extends ShopBaseService {
         });
         sortByKey(map, false);
         return map;
+    }
 
+    /**
+     * 查询当前在营业的门店列表(不传地址)
+     * @return Map<Double, StoreDo>
+     */
+    public Map<Double, StoreDo> getStoreListOpen() {
+        List<StoreDo> stores = storeDao.getStoreOpen();
+        Map<Double, StoreDo> map = new IdentityHashMap<>(15);
+        stores.forEach(e -> {
+            map.put(0D, e);
+        });
+        return map;
     }
 
     /**
      * 根据map的key排序
-     *
      * @param map 待排序的map
      * @param isDesc 是否降序，true：降序，false：升序
      * @return 排序好的map
