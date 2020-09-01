@@ -14,6 +14,7 @@ public class StorePageListVo {
 
     public Integer storeId;
 	public String storeName;
+	public String storeCode;
 	/**
 	 * 门店编码（对接pos之后的posId）
 	 */

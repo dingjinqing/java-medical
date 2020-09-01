@@ -103,7 +103,7 @@ export function allStoreGroup () {
 // 门店更新
 export function updateStore (data) {
   return service({
-    url: '/api/store/update',
+    url: '/api/store/store/update',
     method: 'post',
     data: data
   })
@@ -122,6 +122,14 @@ export function getDeliveryConfig () {
   return service({
     url: '/api/store/get/config',
     method: 'get'
+  })
+}
+
+export function getStoreList (data) {
+  return service({
+    url: '/api/store/store/list',
+    method: 'post',
+    data
   })
 }
 

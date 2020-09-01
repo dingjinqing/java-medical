@@ -98,7 +98,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -610,13 +615,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
         }else if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
-            //初始化处方商品
-            List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
-            List<Goods> list = new ArrayList<>();
-            for (PrescriptionItemDo prescriptionItemDo : prescriptionItemDos) {
-                list.add(Goods.init(prescriptionItemDo.getGoodsId(),  prescriptionItemDo.getDragSumNum().intValue(),prescriptionItemDo.getPrdId()));
+            PrescriptionVo prescriptionVo = prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
+            if (prescriptionVo.getIsUsed().equals(BaseConstant.NO)){
+                //初始化处方商品
+                List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
+                List<Goods> list = new ArrayList<>();
+                for (PrescriptionItemDo prescriptionItemDo : prescriptionItemDos) {
+                    list.add(Goods.init(prescriptionItemDo.getGoodsId(),  prescriptionItemDo.getDragSumNum().intValue(),prescriptionItemDo.getPrdId()));
+                }
+                param.setGoods(list);
             }
-            param.setGoods(list);
         }
     }
 
