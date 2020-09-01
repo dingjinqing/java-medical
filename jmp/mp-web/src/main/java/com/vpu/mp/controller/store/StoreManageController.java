@@ -30,7 +30,7 @@ public class StoreManageController extends StoreBaseController{
      * 门店分组-列表
      * @return
      */
-    @PostMapping(value = "/store/group/list")
+    @PostMapping(value = "/api/store/store/group/list")
     public JsonResult getStoreGroupByPage(@RequestBody StoreGroupQueryParam param) {
         PageResult<StoreGroup> storeGroupPageResult = shop().store.storeGroup.getStoreGroupPageList(param);
         return success(storeGroupPageResult);
@@ -40,7 +40,7 @@ public class StoreManageController extends StoreBaseController{
      * 门店分组-全部分组
      * @return
      */
-    @GetMapping(value = "/store/group/all")
+    @GetMapping(value = "/api/store/store/group/all")
     public JsonResult getAllStoreGroup() {
         return success(shop().store.storeGroup.getAllStoreGroup());
     }
@@ -49,7 +49,7 @@ public class StoreManageController extends StoreBaseController{
      * 获取门店列表
      * @return
      */
-    @PostMapping(value = "/store/list")
+    @PostMapping(value = "/api/store/store/list")
     public JsonResult getStorePageList(@RequestBody(required = false) StoreListQueryParam param) {
         param.setStoreIds(storeAuth.user().getStoreIds());
         return success(shop().store.getPageList(param));
@@ -59,7 +59,7 @@ public class StoreManageController extends StoreBaseController{
      * 门店-新增
      * @return
      */
-    @PostMapping(value = "/store/add")
+    @PostMapping(value = "/api/store/store/add")
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
         if(shop().store.addStore(store)) {
             return success();
@@ -72,7 +72,7 @@ public class StoreManageController extends StoreBaseController{
      * 门店-修改
      * @return
      */
-    @PostMapping(value = "/store/update")
+    @PostMapping(value = "/api/store/store/update")
     public JsonResult updateStore(@RequestBody(required = true) @Validated({StoreUpdateValidatedGroup.class}) StorePojo store) {
         if(shop().store.updateStore(store)) {
             return success();
@@ -84,7 +84,7 @@ public class StoreManageController extends StoreBaseController{
     /**
      * 门店-批量修改
      */
-    @PostMapping(value = "/store/batchupdate")
+    @PostMapping(value = "/api/store/store/batchupdate")
     public JsonResult batchUpdateStore(@RequestBody(required = true) @Validated({StoreUpdateValidatedGroup.class}) List<StorePojo> storeList) {
         shop().store.batchUpdateStore(storeList);
         return success();
@@ -94,7 +94,7 @@ public class StoreManageController extends StoreBaseController{
      * 门店-删除
      * @return
      */
-    @PostMapping(value = "/store/del")
+    @PostMapping(value = "/api/store/store/del")
     public JsonResult delStore(@RequestBody(required = true) @Valid StoreParam store) {
         if(shop().store.delStore(store.getStoreId())) {
             return success();
@@ -107,7 +107,7 @@ public class StoreManageController extends StoreBaseController{
      * 门店-取单个门店信息
      * @return
      */
-    @PostMapping(value = "/store/get")
+    @PostMapping(value = "/api/store/store/get")
     public JsonResult getStore(@RequestBody(required = true) @Valid StoreParam store) {
         StorePojo storeRes = shop().store.getStore(store.getStoreId());
         if(null != storeRes) {
@@ -121,7 +121,7 @@ public class StoreManageController extends StoreBaseController{
      * 检查门店编码
      * @return
      */
-    @PostMapping(value = "/store/coding/check")
+    @PostMapping(value = "/api/store/store/coding/check")
     public JsonResult checkStoreCoding(@RequestBody(required = true) @Validated({StoreCodingCheckValidatedGroup.class}) StorePojo store) {
         if(shop().store.checkStoreCoding(store.getPosShopId())) {
             return success();
@@ -135,7 +135,7 @@ public class StoreManageController extends StoreBaseController{
      * @param param
      * @return
      */
-    @PostMapping(value = "/store/group/add")
+    @PostMapping(value = "/api/store/store/group/add")
     public JsonResult addStoreGroup(@RequestBody StoreGroupQueryParam param) {
         boolean isExist = shop().store.storeGroup.isStoreGroupExist(param);
         if ( isExist ){
@@ -173,7 +173,7 @@ public class StoreManageController extends StoreBaseController{
      * @param param
      * @return
      */
-    @PostMapping(value = "/store/group/del")
+    @PostMapping(value = "/api/store/store/group/del")
     public JsonResult delStoreGroup(@RequestBody StoreGroupQueryParam param) {
         shop().store.storeGroup.deleteStoreGroup(param);
         return success();
@@ -183,7 +183,7 @@ public class StoreManageController extends StoreBaseController{
     /**
      * 获取自提和门店开关信息系
      */
-    @GetMapping(value = "/store/get/config")
+    @GetMapping(value = "/api/store/store/get/config")
     public JsonResult getStoreConfig(){
         return success(shop().store.getStoreBtnConfig());
     }
