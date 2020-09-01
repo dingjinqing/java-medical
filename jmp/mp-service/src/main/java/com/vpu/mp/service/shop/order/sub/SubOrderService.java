@@ -88,7 +88,7 @@ public class SubOrderService  extends ShopBaseService {
     }
 
     public List<String> getSubOrderSn(String orderSn){
-       return db().select(TABLE.SUB_ORDER_SN).where(TABLE.MAIN_ORDER_SN.eq(orderSn)).fetchInto(String.class);
+       return db().select(TABLE.SUB_ORDER_SN).from(TABLE).where(TABLE.MAIN_ORDER_SN.eq(orderSn)).fetchInto(String.class);
     }
 
     public void updateBeforeReturn(SubOrderInfoRecord record, BigDecimal currMoney) {
