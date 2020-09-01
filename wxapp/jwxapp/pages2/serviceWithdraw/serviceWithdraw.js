@@ -26,6 +26,13 @@ global.wxPage({
       }
     })
   },
+  viewDetail(){
+    util.jumpLink('pages2/withdrawInfo/withdrawInfo')
+  },
+  withDrawInfo(){
+    util.jumpLink('pages2/doctorWithdraw/doctorWithdraw')
+  },
+  
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

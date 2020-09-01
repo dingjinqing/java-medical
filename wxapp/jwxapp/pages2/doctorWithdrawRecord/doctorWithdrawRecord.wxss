@@ -37,10 +37,10 @@
 }
 .point{
   color: #999;
-  margin-right: auto;
 }
 .status{
   color: #26C4BC;
+  margin-left: auto;
 }
 .item-bottom{
   color: #999;

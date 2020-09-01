@@ -28,10 +28,10 @@
         </view>
       </view>
     </view>
-    <view class="button">
+    <view class="button" bindtap="withDrawInfo">
       提现
     </view>
-    <view class="more">
+    <view class="more" bindtap="viewDetail">
       查看详情
     </view>
   </view>

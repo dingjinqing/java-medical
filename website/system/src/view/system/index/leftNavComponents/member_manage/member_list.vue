@@ -46,8 +46,8 @@
                 border
                 style="width: 100%"
         >
-          <el-table-column type="index" width="50" align="center"/>
-          <el-table-column label="用户编号" align="center" prop="userId"/>
+          <el-table-column label="编号" type="index" width="50" align="center"/>
+          <!--<el-table-column label="用户编号" align="center" prop="userId"/>-->
           <el-table-column label="用户昵称" align="center" prop="username"/>
           <el-table-column label="手机号" align="center" prop="mobile"/>
           <el-table-column label="医院" align="center" prop="shopName"/>
