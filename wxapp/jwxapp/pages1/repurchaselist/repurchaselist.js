@@ -65,7 +65,9 @@ global.wxPage({
       return false
     }
     util.jumpLink(`pages/checkout/checkout${util.getUrlParams({
-      goodsList:JSON.stringify(goodsList)
+      goodsList:JSON.stringify(goodsList),
+      isPrescription:1,
+      prescriptionCode:this.data.prescriptionCode
     })}`)
   },
   toggleSelect(e){

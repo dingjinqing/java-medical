@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = 2146388225;
+    private static final long serialVersionUID = -73317638;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
@@ -63,11 +63,6 @@ public class Doctor extends TableImpl<DoctorRecord> {
      * The column <code>mini_shop_471752.b2c_doctor.id</code>.
      */
     public final TableField<DoctorRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_doctor.account_id</code>. 医师子账号id
-     */
-    public final TableField<DoctorRecord, Integer> ACCOUNT_ID = createField("account_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "医师子账号id");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor.age</code>. 年龄
