@@ -126,6 +126,17 @@ public class MessageDao extends ShopBaseDao {
     }
 
     /**
+     * 根据orderSn查询消息
+     * @param orderSn 订单号
+     * @return 消息信息
+     */
+    public UserMessageVo getMessageByOrderSn(String orderSn) {
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(orderSn))
+            .fetchAnyInto(UserMessageVo.class);
+    }
+
+    /**
      * 储存会话消息
      * @param userMessageParam 消息入参
      */

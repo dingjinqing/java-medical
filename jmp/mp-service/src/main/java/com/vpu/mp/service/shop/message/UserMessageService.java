@@ -196,7 +196,8 @@ public class UserMessageService extends ShopBaseService {
         if (!unReadMessageInfo.isEmpty()) {
             //查询当前用户有没有此医生的问诊记录
             for (ImSessionUnReadInfoVo imSessionUnReadInfoVo : unReadMessageInfo) {
-                UserMessageVo imSessionBySessionId = messageDao.getImSessionBySessionId(imSessionUnReadInfoVo.getSessionId(), imSessionUnReadMessageInfoParam.getUserId());
+                ImSessionDo sessionInfoById = imSessionService.getSessionInfoById(imSessionUnReadInfoVo.getSessionId());
+                UserMessageVo imSessionBySessionId = messageDao.getMessageByOrderSn(sessionInfoById.getOrderSn());
                 // 新增
                 UserMessageParam userMessageParam = new UserMessageParam();
                 ImSessionDo imSession = imSessionDao.getImSession(imSessionUnReadInfoVo.getSessionId());
