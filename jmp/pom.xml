@@ -37,6 +37,7 @@
 		<com.google.code.gson.version>2.8.5</com.google.code.gson.version>
 		<javax.persistence-api.version>2.2</javax.persistence-api.version>
         <flywaydb.version>6.5.5</flywaydb.version>
+		<slf4j-simple.version>1.18.6</slf4j-simple.version>
 	</properties>
 
 
@@ -117,6 +118,12 @@
 				<groupId>com.alibaba</groupId>
 				<artifactId>druid</artifactId>
 				<version>${com.alibaba.version}</version>
+			</dependency>
+			<!--编译报错  https://blog.csdn.net/u010696630/article/details/84991116  -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j-simple.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>cn.hutool</groupId>

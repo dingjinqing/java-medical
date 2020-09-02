@@ -25,4 +25,24 @@ public class CoopenConstant {
      * 分裂优惠卷
      */
     public static final byte SPLIT_COUPON = 6;
+
+    /* 活动类型name */
+    /** 送券 **/
+    public static final String COUPON_NAME = "优惠券";
+    /** 幸运大抽奖 **/
+    public static final String DRAW_NAME = "幸运大抽奖";
+    /** 自定义活动 **/
+    public static final String CUSTOMIZE_NAME = "自定义";
+    /**
+     * 积分
+     */
+    public static final String SCORE_NAME = "积分";
+    /**
+     * 余额
+     */
+    public static final String ACCOUNT_NAME = "余额";
+    /**
+     * 分裂优惠卷
+     */
+    public static final String SPLIT_COUPON__NAME = "分裂优惠卷";
 }

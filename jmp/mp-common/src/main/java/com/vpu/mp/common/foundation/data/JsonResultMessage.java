@@ -867,6 +867,7 @@ public class JsonResultMessage {
      * 药品信息校验
      */
     public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK = "order.medical.prescription.check";
+    public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_INVALID = "order.medical.prescription.Invalid";
     public static final String MSG_ORDER_MEDICAL_HISTORY_CHECK = "order.medical.history.check";
 
     /**

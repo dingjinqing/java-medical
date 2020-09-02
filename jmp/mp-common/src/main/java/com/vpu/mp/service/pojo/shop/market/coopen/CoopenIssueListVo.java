@@ -19,5 +19,6 @@ public class CoopenIssueListVo {
     private String name;
     private Timestamp receiveTime;
     private String comment;
-
+    private Byte activityAction;
+    private String awardName;
 }

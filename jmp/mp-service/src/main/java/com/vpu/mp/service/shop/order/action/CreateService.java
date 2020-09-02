@@ -98,7 +98,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -201,6 +206,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private PrescriptionRebateService prescriptionRebateService;
     @Autowired
     public RebateConfigService rebateConfigService;
+    @Autowired
+    private StoreService storeService;
     /**
      * 随机生成核销码位数
      */
@@ -411,6 +418,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         orderBo = initCreateOrderBo(param);
         //校验
         checkCreateOrderBo(orderBo, param);
+        // 校验门店商品是否充足 TODO:拉取校验药房库存
+        checkStoreGoodsIsEnough(param);
         //设置规格和商品信息、基础校验规格与商品
         processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
         //TODO 营销相关 活动校验或活动参数初始化
@@ -560,6 +569,27 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
+     * 校验门店商品是否充足
+     * @param param 订单商品
+     * @throws MpException 门店商品不足
+     */
+    private void checkStoreGoodsIsEnough(CreateParam param) throws MpException {
+        logger().info("校验门店商品是否充足");
+        List<Goods> goods = param.getGoods();
+        Integer storeId = param.getStoreId();
+        goods.forEach(e -> {
+            Integer integer = storeService.checkOrderGoodsIsEnough(e.getGoodsId(), storeId);
+            if (integer <= 0) {
+                try {
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK);
+                } catch (MpException mpException) {
+                    mpException.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
      * 获取默认地址
      *  规则:默认地址>上次下单地址>null
      *
@@ -610,13 +640,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
         }else if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
-            //初始化处方商品
-            List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
-            List<Goods> list = new ArrayList<>();
-            for (PrescriptionItemDo prescriptionItemDo : prescriptionItemDos) {
-                list.add(Goods.init(prescriptionItemDo.getGoodsId(),  prescriptionItemDo.getDragSumNum().intValue(),prescriptionItemDo.getPrdId()));
+            PrescriptionVo prescriptionVo = prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
+            if (prescriptionVo.getIsUsed().equals(BaseConstant.NO)){
+                //初始化处方商品
+                List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
+                List<Goods> list = new ArrayList<>();
+                for (PrescriptionItemDo prescriptionItemDo : prescriptionItemDos) {
+                    list.add(Goods.init(prescriptionItemDo.getGoodsId(),  prescriptionItemDo.getDragSumNum().intValue(),prescriptionItemDo.getPrdId()));
+                }
+                param.setGoods(list);
             }
-            param.setGoods(list);
         }
     }
 

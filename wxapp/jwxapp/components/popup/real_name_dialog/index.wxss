@@ -1,0 +1,31 @@
+.dialog-content{
+  display: flex;
+  background-color: #fff;
+  border-radius: 16rpx;
+  flex-direction: column;
+  position: relative;
+  width: 500rpx;
+  justify-content: center;
+  align-items: center;
+}
+.title{
+  line-height: 80rpx;
+  color: #333;
+}
+.real-name{
+  height: 80rpx;
+  line-height: 80rpx;
+  background-color: #eee;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+}
+.button{
+  width: 210rpx;
+  line-height: 60rpx;
+  text-align: center;
+  color: #fff;
+  background-color: #26C4BC;
+  margin-top: 20rpx;
+  border-radius: 30rpx;
+  margin-bottom: 20rpx;
+}

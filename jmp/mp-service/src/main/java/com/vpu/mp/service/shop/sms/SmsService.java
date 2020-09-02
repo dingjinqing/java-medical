@@ -3,10 +3,7 @@ package com.vpu.mp.service.shop.sms;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSON;
-import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RandomUtil;
 import com.vpu.mp.common.foundation.util.Util;
@@ -15,15 +12,21 @@ import com.vpu.mp.dao.main.SmsConfigDao;
 import com.vpu.mp.dao.shop.config.ShopCfgDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.sms.SmsSendRecordDao;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckNumParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
-import com.vpu.mp.service.pojo.shop.sms.*;
+import com.vpu.mp.service.pojo.shop.sms.ResponseMsgVo;
+import com.vpu.mp.service.pojo.shop.sms.SmsBaseParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsCheckParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsConfigVo;
+import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminParam;
+import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordAdminVo;
+import com.vpu.mp.service.pojo.shop.sms.SmsSendRecordParam;
 import com.vpu.mp.service.pojo.shop.sms.base.SmsBaseRequest;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.config.SmsAccountConfigService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +34,10 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
 import static com.vpu.mp.common.foundation.data.JsonResultCode.SMS_OUT_OF_LIMITS;
@@ -48,7 +54,8 @@ import static com.vpu.mp.service.pojo.shop.sms.SmsSendRecordConstant.SMS_FIND_SU
 @Slf4j
 public class SmsService extends BaseShopConfigService {
 
-
+    @Autowired
+    private MpAuthShopService mpAuthShopService;
     @Autowired
     protected  SmsApiConfig smsApiConfig;
     @Autowired
@@ -246,11 +253,12 @@ public class SmsService extends BaseShopConfigService {
      */
     public void sendCheckSms(PatientSmsCheckParam param) throws MpException {
         //0000-9999
-        int intRandom = RandomUtil.getIntRandom();
-        String smsContent = String.format(SmsTemplate.DOCTOR_CHECK_MOBILE, "XX医院", intRandom);
+        Integer intRandom = RandomUtil.getIntRandom(RandomUtil.MIN_RANDOM_100000, RandomUtil.MAX_RANDOM_999999);
+        MpAuthShopRecord mpAuthShopRecord = mpAuthShopService.getAuthShopByShopId(getShopId());
+        String smsContent = String.format(SmsTemplate.DOCTOR_CHECK_MOBILE, mpAuthShopRecord.getNickName(), intRandom);
         sendSms(param.getUserId(), param.getMobile(), smsContent);
         String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_DOCTOR_MOBILE, getShopId(), param.getUserId(), param.getMobile());
-        jedisManager.set(key, intRandom + "", 600);
+        jedisManager.set(key, intRandom.toString(), 600);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.vpu.mp.dao.shop.message;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.UserMessageDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
@@ -125,6 +126,17 @@ public class MessageDao extends ShopBaseDao {
     }
 
     /**
+     * 根据orderSn查询消息
+     * @param orderSn 订单号
+     * @return 消息信息
+     */
+    public UserMessageVo getMessageByOrderSn(String orderSn) {
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(orderSn))
+            .fetchAnyInto(UserMessageVo.class);
+    }
+
+    /**
      * 储存会话消息
      * @param userMessageParam 消息入参
      */
@@ -135,7 +147,7 @@ public class MessageDao extends ShopBaseDao {
     }
 
     /**
-     * 更新会话消息
+     * 更新订单消息
      * @param userMessageParam 消息入参
      */
     public void updateMessage(UserMessageParam userMessageParam) {
@@ -146,9 +158,22 @@ public class MessageDao extends ShopBaseDao {
             db().update(USER_MESSAGE)
                 .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
                 .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_NOT_READ)
+                .set(USER_MESSAGE.IS_DELETE, DelFlag.NORMAL_VALUE)
                 .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn()))
                 .execute();
         }
+    }
+
+    /**
+     * 更新会话消息
+     * @param userMessageParam 消息入参
+     */
+    public void updateImMessage(UserMessageParam userMessageParam) {
+        db().update(USER_MESSAGE)
+            .set(USER_MESSAGE.MESSAGE_CONTENT, userMessageParam.getMessageContent())
+            .set(USER_MESSAGE.MESSAGE_STATUS, userMessageParam.getMessageStatus())
+            .set(USER_MESSAGE.IS_DELETE, DelFlag.NORMAL_VALUE)
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(userMessageParam.getMessageRelevanceOrderSn())).execute();
     }
 
     /**
@@ -161,7 +186,7 @@ public class MessageDao extends ShopBaseDao {
             .where(USER_MESSAGE.MESSAGE_RELEVANCE_ID.eq(orderId))
             .and(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_ORDER))
             .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
-            .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(UserMessageVo.class);
+            .fetchAnyInto(UserMessageVo.class);
     }
 
     /**
@@ -247,4 +272,52 @@ public class MessageDao extends ShopBaseDao {
                 .and(USER_MESSAGE.MESSAGE_ID.eq(messageParam.getMessageId())).execute();
         }
     }
+
+    /**
+     * 更新会话信息状态
+     * @param userId 用户id
+     * @param messageParam 消息入参
+     */
+    public void updateImMessageStatus(Integer userId, MessageParam messageParam) {
+        db().update(USER_MESSAGE)
+            .set(USER_MESSAGE.MESSAGE_STATUS, USER_MESSAGE_STATUS_ALREADY_READ)
+            .where(USER_MESSAGE.MESSAGE_TYPE.eq(messageParam.getMessageType()))
+            .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
+            .and(USER_MESSAGE.MESSAGE_ID.eq(messageParam.getMessageId())).execute();
+    }
+
+    /**
+     * 根据消息id查询会话orderSN
+     * @param messageId 消息id
+     * @return String
+     */
+    public String selectOrderSnByMessageId(Integer messageId) {
+        return db().select(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN).from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_ID.eq(messageId))
+            .fetchAnyInto(String.class);
+    }
+
+    /**
+     * 根据orderSn查询会话
+     * @param orderSn 订单Sn
+     * @return ImSessionDo
+     */
+    public ImSessionDo selectImByOrderSn(String orderSn) {
+        return db().select().from(IM_SESSION)
+            .where(IM_SESSION.ORDER_SN.eq(orderSn))
+            .fetchAnyInto(ImSessionDo.class);
+    }
+
+    /**
+     * 根据消息id查消息详情
+     * @param messageId 消息id
+     * @return UserMessageDo
+     */
+    public UserMessageDo selectMessageById(Integer messageId) {
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_ID.eq(messageId))
+            .fetchAnyInto(UserMessageDo.class);
+    }
+
+
 }

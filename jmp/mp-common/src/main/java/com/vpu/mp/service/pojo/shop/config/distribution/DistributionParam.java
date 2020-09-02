@@ -35,6 +35,35 @@ public class DistributionParam {
 	@JsonProperty(value = "rank_status")
 	public Byte rankStatus;
 
+    /**
+     * 独立商品推广页开关 0：关闭；1：开启
+     */
+    @JsonProperty(value = "goods_promote_status")
+    public Byte goodsPromoteStatus;
+
+    /**
+     * 推广商品页使用范围 0：全部分销员；1：部分分销员
+     */
+    @JsonProperty(value = "goods_promote_scope")
+    public Byte goodsPromoteScope;
+
+    /**
+     * 指定分销员 使用独立推广页
+     */
+    @JsonProperty(value = "goods_promote_distributor")
+    public String goodsPromoteDistributor;
+
+    /**
+     * 指定分销员等级 使用独立推广页
+     */
+    @JsonProperty(value = "goods_promote_level")
+    public String goodsPromoteLevel;
+
+    /**
+     * 是否可以直接绑定 0：否；1：是
+     */
+    @JsonProperty(value = "directly_bind")
+    public Byte directlyBind;
 	/**
 	 * 返利有效期
 	 */

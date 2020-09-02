@@ -1,7 +1,6 @@
 package com.vpu.mp.controller.system;
 
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateResult;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
@@ -34,23 +33,23 @@ public class ApiExternalGateController extends ShopBaseService {
             // 必要系统参数验证
             String nullKey = gateService.checkSystemParam(param);
             if (nullKey != null) {
-                return response(ApiExternalGateConstant.ERROR_LACK_PARAM,ApiExternalGateConstant.ERROR_LACK_PARAM_MSG+"："+nullKey);
+                return response(ApiExternalGateConfig.ERROR_LACK_PARAM,ApiExternalGateConfig.ERROR_LACK_PARAM_MSG+"："+nullKey);
             }
 
             // 时间戳验证
             if (!gateService.checkTimeStamp(param)) {
-                return response(ApiExternalGateConstant.ERROR_CODE_INVALID_TIMESTAMP,ApiExternalGateConstant.ERROR_CODE_INVALID_TIMESTAMP_MSG);
+                return response(ApiExternalGateConfig.ERROR_CODE_INVALID_TIMESTAMP,ApiExternalGateConfig.ERROR_CODE_INVALID_TIMESTAMP_MSG);
             }
 
             // 验证签名
             if (!gateService.checkSign(param)) {
-                return response(ApiExternalGateConstant.ERROR_CODE_INVALID_SIGN,ApiExternalGateConstant.ERROR_CODE_INVALID_SIGN_MSG);
+                return response(ApiExternalGateConfig.ERROR_CODE_INVALID_SIGN,ApiExternalGateConfig.ERROR_CODE_INVALID_SIGN_MSG);
             }
 
             // 解析shopId
             Integer shopId = gateService.parseShopId(param);
             if (shopId == -1) {
-                return response(ApiExternalGateConstant.ERROR_CODE_INVALID_SHOP,ApiExternalGateConstant.ERROR_CODE_INVALID_SHOP_MSG);
+                return response(ApiExternalGateConfig.ERROR_CODE_INVALID_SHOP,ApiExternalGateConfig.ERROR_CODE_INVALID_SHOP_MSG);
             }
             param.setShopId(shopId);
 

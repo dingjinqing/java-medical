@@ -52,7 +52,7 @@
               <el-option
                 selected
                 :label="$t('storeCommon.all')"
-                :value="-1"
+                :value="null"
               ></el-option>
               <el-option
                 :label="$t('storeList.open')"
@@ -89,7 +89,7 @@
             >
               <el-option
                 :label="$t('storeCommon.all')"
-                :value="-1"
+                :value="null"
               ></el-option>
               <el-option
                 :label="$t('storeList.turnedOn')"
@@ -110,7 +110,7 @@
             >
               <el-option
                 :label="$t('storeCommon.all')"
-                :value="-1"
+                :value="null"
               ></el-option>
               <el-option
                 :label="$t('storeList.turnedOn')"
@@ -364,9 +364,9 @@ export default {
       queryParams: {
         groupId: null,
         isAuthPos: null,
-        businessState: -1,
-        autoPick: -1,
-        cityService: -1
+        businessState: null,
+        autoPick: null,
+        cityService: null
       },
       tableData: [],
       storeGroup: [],

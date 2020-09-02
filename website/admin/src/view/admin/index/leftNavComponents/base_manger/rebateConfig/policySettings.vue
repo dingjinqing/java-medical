@@ -6,17 +6,17 @@
       </div>
       <div class="item-setting-content">
         <div class="item">
-          <el-form-item prop="setting8">
+          <el-form-item prop="status">
             开启返利：<el-switch
-              v-model="formData.setting8"
+              v-model="formData.status"
               active-color="#F7931E"
               inactive-color="#ccc"
             >
             </el-switch>
           </el-form-item>
-          <el-form-item prop="setting9" style="margin-left: 200px;">
+          <el-form-item prop="isAutomaticAudit" style="margin-left: 200px;">
             自动审核：<el-switch
-              v-model="formData.setting9"
+              v-model="formData.isAutomaticAudit"
               active-color="#F7931E"
               inactive-color="#ccc"
             >
@@ -24,21 +24,21 @@
           </el-form-item>
         </div>
         <div class="item">
-          <el-form-item prop="setting10">
+          <el-form-item prop="withdrawCashMax">
             每人每日最多提现金额：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting10"
+              v-model="formData.withdrawCashMax"
             ></el-input-number
             >元
           </el-form-item>
-          <el-form-item prop="setting11">
+          <el-form-item prop="withdrawCashMix">
             每人每次最少提现金额：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting11"
+              v-model="formData.withdrawCashMix"
             ></el-input-number
             >元
           </el-form-item>
@@ -49,52 +49,52 @@
       </div>
       <div class="item-setting-content">
         <div class="item">
-          <el-form-item prop="setting1">
+          <el-form-item prop="goodsSharingProportion">
             分成比例：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting1"
+              v-model="formData.goodsSharingProportion"
             ></el-input-number
             >%
           </el-form-item>
         </div>
         <div class="item">
-          <el-form-item prop="setting2">
+          <el-form-item prop="rxMedicalDoctorProportion">
             处方药医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting2"
+              v-model="formData.rxMedicalDoctorProportion"
             ></el-input-number
             >%，
           </el-form-item>
-          <el-form-item prop="setting3">
+          <el-form-item prop="rxMedicalPlatformProportion">
             处方药平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting3"
+              v-model="formData.rxMedicalPlatformProportion"
             ></el-input-number
             >%
           </el-form-item>
         </div>
         <div class="item">
-          <el-form-item prop="setting4">
+          <el-form-item prop="noRxMedicalDoctorProportion">
             非处方药医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting4"
+              v-model="formData.noRxMedicalDoctorProportion"
             ></el-input-number
             >%，
           </el-form-item>
-          <el-form-item prop="setting5">
+          <el-form-item prop="noRxMedicalPlatformProportion">
             非处方药平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting5"
+              v-model="formData.noRxMedicalPlatformProportion"
             ></el-input-number
             >%
           </el-form-item>
@@ -110,21 +110,21 @@
       </div>
       <div class="item-setting-content">
         <div class="item">
-          <el-form-item prop="setting6">
+          <el-form-item prop="inquiryOrderDoctorProportion">
             医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting1"
+              v-model="formData.inquiryOrderDoctorProportion"
             ></el-input-number
             >%，
           </el-form-item>
-          <el-form-item prop="setting7">
+          <el-form-item prop="inquiryOrderPlatformProportion">
             平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
               size="small"
-              v-model="formData.setting1"
+              v-model="formData.inquiryOrderPlatformProportion"
             ></el-input-number
             >%
           </el-form-item>
@@ -143,27 +143,38 @@
 </template>
 
 <script>
+import { getWithDrawConfig, setWithDrawConfig } from '@/api/admin/basicConfiguration/doctorWithDraw'
 export default {
   data () {
     return {
       formData: {
-        setting1: '',
-        setting2: '',
-        setting3: '',
-        setting4: '',
-        setting5: '',
-        setting6: '',
-        setting7: '',
-        setting8: false,
-        setting9: false,
-        setting10: '',
-        setting11: ''
       }
     }
   },
+  mounted () {
+    this.getSetting()
+  },
   methods: {
+    getSetting () {
+      getWithDrawConfig().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.formData = { ...res.content, status: !!res.content.status, isAutomaticAudit: !!res.content.isAutomaticAudit }
+        } else {
+          this.$message.error({ message: res.message })
+        }
+      })
+    },
     setSetting () {
-      console.log(111)
+      let params = { ...this.formData, status: this.formData.status ? 1 : 0, isAutomaticAudit: this.formData.isAutomaticAudit ? 1 : 0 }
+      setWithDrawConfig(params).then(res => {
+        console.log(params)
+        if (res.error === 0) {
+          this.$message.success({ message: '保存成功' })
+        } else {
+          this.$message.error({ message: '保存失败' })
+        }
+      })
     }
   }
 }

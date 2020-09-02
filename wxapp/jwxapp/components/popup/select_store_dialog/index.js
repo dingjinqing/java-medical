@@ -12,7 +12,8 @@ global.wxComponent({
       observer(newVal) {
         if (newVal) this._initData(newVal);
       }
-    }
+    },
+    selectedStore:Number
   },
 
   /**
@@ -26,39 +27,27 @@ global.wxComponent({
   methods: {
     _initData(data) {
       let storeInfo = JSON.parse(JSON.stringify(data));
-      storeInfo.titleName = this._getDialogTitle(storeInfo.openType);
+      // console.log(Object.keys(storeInfo).map(item=>{return parseFloat(item)}))
+      let newArray = Object.keys(storeInfo).map(item=>parseFloat(item)).sort((a,b)=>{return a - b}).map(item=>{
+        storeInfo[item].distance = item
+        return storeInfo[item]
+      })
+      console.log(newArray)
       this.setData({
-        storeInfo: storeInfo
+        storeInfo: newArray
       });
-    },
-    _getDialogTitle(openType) {
-      switch (openType) {
-        case 2:
-          return `选择同城配送门店`;
-        default:
-          return `选择自提门店`;
-      }
     },
     _selectStore(e) {
-      let nArr = this.data.storeInfo.data.map(item => {
-        let nObj = JSON.parse(JSON.stringify(item));
-        if (e.currentTarget.dataset.id === nObj.id) {
-          nObj.checked = true;
-        } else {
-          nObj.checked = false;
-        }
-        return nObj;
-      });
+      let {idx} = e.currentTarget.dataset
       this.setData({
-        "storeInfo.data": nArr
-      });
+        selectedStore : this.data.storeInfo[idx].storeId
+      })
     },
     _triggerSubmit() {
-      let targetData = this.data.storeInfo.data.find(
-        item => item.checked === true
+      let targetData = this.data.storeInfo.find(
+        item => item.storeId === this.data.selectedStore
       );
-      this.triggerEvent("submit", {
-        openType: this.data.storeInfo.openType,
+      this.triggerEvent("confirm", {
         ...targetData
       });
       this.bindClose();

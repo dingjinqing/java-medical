@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @Builder
 public class ConsultationOrderExpireParam {
-    public static final String STATUS = "医生超过24小时未回答问题，资金将通过原路退还给您。";
+    public static final String STATUS = "医生24小时内未接诊，资金将原路退还。";
     public static final String REMARK = "您可以尝试向其他专家提问。";
     @Builder.Default
     private String consultationStatus=STATUS;

@@ -137,9 +137,11 @@ public class EnterPolitelyService extends ShopBaseService {
                 return noAward;
             }
             // 不满足新用户直接返回
-            int newUserCreateTimeExpire = 600;
+            int newUserCreateTimeExpire = 600000;
             if (BYTE_ONE.equals(record.getAction()) && (Timestamp.valueOf(LocalDateTime.now()).getTime() - userRecord.getCreateTime().getTime() >= newUserCreateTimeExpire)) {
                 logger().debug("不满足新用户");
+                logger().debug("当前时间" + Long.toString(Timestamp.valueOf(LocalDateTime.now()).getTime()));
+                logger().debug("用户注册时间" + Long.toString(userRecord.getCreateTime().getTime()));
                 return noAward;
             }
             // 不满足支付新用户直接返回

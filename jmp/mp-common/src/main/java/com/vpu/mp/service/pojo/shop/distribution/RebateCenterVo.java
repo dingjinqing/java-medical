@@ -46,7 +46,6 @@ public class RebateCenterVo {
     /**
      * 累积返利商品总额
      */
-    @JsonProperty("TotalCanFanliMoney")
     private BigDecimal totalCanFanliMoney;
     /**
      * 返利佣金排名
@@ -71,10 +70,22 @@ public class RebateCenterVo {
     private List<RebateOrderListVo> rebateOrderList;
     /**是否是分销员*/
     private Integer isDistributor;
+    /**最低等级名称*/
+    private String lowerLevelName;
+
+    private Integer hasPromotionLanguage;
 
     /**分销开关*/
     private Byte status;
 
     /**分销审核开关*/
     private Byte judgeStatus;
+    /**邀请码配置 0：关闭；1：开启*/
+    private Integer invitationCodeCfg;
+    /** 提现开关*/
+    private Byte withdrawStatus;
+    /**分销员是否具有独立商品推广页的权限 0:不具有 1:具有*/
+    private Byte personalPromote;
+    /**分销员是否已上传二维码 0:未上传 1:已上传*/
+    private Byte qrCode;
 }

@@ -56,8 +56,10 @@ public class RebateGoodsService extends ShopBaseService{
 		PageResult<RebateGoodsVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsVo.class);
 		//获取商品对应分类名称
 		for(RebateGoodsVo listInfo : pageList.dataList) {
-			SysCatevo catInfo = saas.sysCate.getOneCateInfo(listInfo.getCatId());
-			listInfo.setCatName(catInfo.getCatName());
+            SortRecord sort = gs.getSortDao(listInfo.getSortId());
+            if(sort!=null){
+                listInfo.setCatName(sort.getSortName());
+            }
 		}
 		return pageList;
 	}
@@ -69,8 +71,8 @@ public class RebateGoodsService extends ShopBaseService{
 	 */
 	public void optionBuild(SelectJoinStep<? extends Record> select,RebateGoodsParam param) {
 		//商品类型
-		if(param.getGoodsType() != null) {
-			select.where(FANLI_GOODS_STATISTICS.CAT_ID.eq(param.getGoodsType()));
+		if(param.getGoodsSort() != null) {
+			select.where(FANLI_GOODS_STATISTICS.CAT_ID.eq(param.getGoodsSort()));
 		}
 		//商品名称
 		if(param.getGoodsName() != null) {
@@ -113,62 +115,9 @@ public class RebateGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<RebateGoodsDetailVo> getRebateGoodsDetail(RebateGoodsDetailParam param) {
-		SelectJoinStep<? extends Record> select = db().select(ORDER_GOODS_REBATE.ORDER_SN,ORDER_GOODS_REBATE.REBATE_MONEY,
-				ORDER_GOODS_REBATE.REBATE_USER_ID,ORDER_GOODS_REBATE.REBATE_PERCENT,ORDER_INFO.SETTLEMENT_FLAG,
-				ORDER_INFO.FINISHED_TIME,ORDER_INFO.USER_ID,ORDER_GOODS.RETURN_NUMBER,ORDER_GOODS.CAN_CALCULATE_MONEY,
-				ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_NUMBER,ORDER_INFO.MOBILE,USER.as(INVITE).USERNAME.as("distributorName"))
-				.from(ORDER_GOODS_REBATE
-				.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
-				.leftJoin(USER.as(INVITE)).on(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(USER.as(INVITE).USER_ID))
-				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID)))
-				.leftJoin(ORDER_GOODS).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
-		buildOptionDetail(select,param);
-		PageResult<RebateGoodsDetailVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsDetailVo.class);
-		
-		return pageList;
+        return orderGoodsRebateDao.listRebateGoodsDetails(param);
 	}
-	
-	/**
-	 * 商品返利明细条件查询
-	 * @param select
-	 * @param param
-	 */
-	public void buildOptionDetail(SelectJoinStep<? extends Record> select,RebateGoodsDetailParam param) {
-		select.where(ORDER_INFO.FANLI_TYPE.eq((byte) 1).and(ORDER_GOODS_REBATE.GOODS_ID.eq(param.getGoodsId())));
-		//被邀请人手机号
-		if(param.getMobile() != null) {
-			select.where(USER.MOBILE.contains(param.getMobile()));
-		}
-		//被邀请人用户名
-		if(param.getUsername() != null) {
-			select.where(USER.USERNAME.contains(param.getUsername()));
-		}
-		
-		//分销员手机号
-		if(param.getDistributorMobile() != null) {
-			select.where(USER.as(INVITE).MOBILE.contains(param.getDistributorMobile()));
-		}
-		//分销员用户名
-		if(param.getDistributorName() != null) {
-			select.where(USER.as(INVITE).USERNAME.contains(param.getUsername()));
-		}
-		//返利开始时间
-		if(param.getStartRebateTime() != null && param.getEndRebateTime() != null) {
-			select.where(ORDER_INFO.FINISHED_TIME.ge(param.getStartRebateTime()));
-		}
-		//返利结束时间
-		if(param.getEndRebateTime() != null) {
-			select.where(ORDER_INFO.FINISHED_TIME.le(param.getEndRebateTime()));
-		}
-		//返利订单号
-		if(param.getRebateOrderSn() != null) {
-			select.where(ORDER_GOODS_REBATE.ORDER_SN.contains(param.getRebateOrderSn()));
-		}
-		//返利状态
-		if(param.getRebateStatus() != null) {
-			select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(param.getRebateStatus()));
-		}
-	}
+
 
     /**
      * 商品返利明细导出Excel

@@ -1,5 +1,6 @@
 package com.vpu.mp.common.pojo.saas.api;
 
+import com.vpu.mp.config.ApiExternalGateConfig;
 import lombok.Data;
 
 /**
@@ -8,8 +9,8 @@ import lombok.Data;
  */
 @Data
 public class ApiExternalGateResult {
-    private Integer code = ApiExternalGateConstant.ERROR_CODE_SUCCESS;
-    private String msg = ApiExternalGateConstant.ERROR_CODE_SUCCESS_MSG;
+    private Integer code = ApiExternalGateConfig.ERROR_CODE_SUCCESS;
+    private String msg = ApiExternalGateConfig.ERROR_CODE_SUCCESS_MSG;
     private Object data = new Object[]{};
 
     public ApiExternalGateResult() {

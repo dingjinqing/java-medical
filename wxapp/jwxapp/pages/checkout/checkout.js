@@ -35,7 +35,9 @@ global.wxPage({
       cardBalance: null, //会员卡抵扣金额
       orderPayWay: null, //支付方式
       isCart: 0,
-      patientId:null //患者id
+      patientId:null, //患者id
+      lat:null,
+      lng:null
     },
     usePayInfo: {
       moneyPaid: 0, //订单可支付的金额
@@ -57,7 +59,8 @@ global.wxPage({
     },
     options: {},
     title_bgColor:'#26C4BC',
-    patientDiagnose:null
+    patientDiagnose:null,
+    selectedStoreInfo:null
   },
 
   /**
@@ -508,9 +511,42 @@ global.wxPage({
   },
   // 变更配送方式
   selectShippingMethod (e) {
-    this.setData({
-      'params.deliverType': e.currentTarget.dataset.index
-    })
+    let that = this
+    if(e.currentTarget.dataset.index !== 0){
+       (async() => {
+        let res = await this.getLocationData()
+        this.data.params.lat = res.latitude
+        this.data.params.lng = res.longitude
+        util.api('/api/wxapp/order/get/store',res=>{
+          if(res.error === 0){
+            let keysList = Object.keys(res.content)
+            
+            this.setData({
+              selectedStoreInfo:{
+                ...res.content[keysList[keysList.length - 1]],
+                distance:keysList[keysList.length - 1]
+              },
+              storeList:res.content,
+              'params.deliverType': e.currentTarget.dataset.index,
+              'params.storeId': res.content[keysList[keysList.length - 1]].storeId
+            })
+          }
+        },{
+          lat:this.data.params.lat,
+          lng:this.data.params.lng
+        })
+        // this.setData({
+        //   'params.lat':
+        //   'params.lng':
+        // })
+      })()
+    }
+    if(e.currentTarget.dataset.index === 0){
+      this.setData({
+        'params.deliverType': e.currentTarget.dataset.index
+      })
+    }
+    
     this.requestOrder()
   },
   // 选择门店
@@ -547,14 +583,11 @@ global.wxPage({
   },
   // 获取门店改变
   getSelectStore (info) {
-    let { id: storeId, openType } = info.detail
-    console.log(storeId, openType)
-    switch (openType) {
-      case 2:
-        break
-      default:
-        break
-    }
+    let selectedStoreInfo = info.detail
+    this.setData({
+      selectedStoreInfo,
+      'params.storeId':selectedStoreInfo.storeId
+    })
   },
   // 是否使用发票
   bindInvoiceChange (e) {
@@ -744,6 +777,7 @@ global.wxPage({
         addParams.prescriptionCode = this.data.orderInfo.prescriptionList[0].prescriptionCode
       }
       if (this.data.patientDiagnose) addParams.patientDiagnose = this.data.patientDiagnose
+      if (this.data.params.deliverType !== 0 && this.data.params.storeId) addParams.storeId = this.data.params.storeId
       let params = {
         goods,
         action: 10,
@@ -927,6 +961,62 @@ global.wxPage({
   togglePatient(){
     if(this.data.isPrescription) return
     util.jumpLink('pages1/familylist/familylist?source=checkout')
+  },
+  getLocationData(){
+    return new Promise((resolve,reject)=>{
+      if (wx.canIUse('wx.getLocation')) {
+        console.log('can...')
+      }
+      wx.getLocation({
+        success (res) {
+          resolve(res)
+        },
+        fail (err) {
+          if (err.errMsg.indexOf('auth')>-1) {
+            wx.getSetting({
+              success (tip) {
+                console.log('getsetting...', tip)
+                if (!tip.authSetting['scope.userLocation']) {
+                  wx.showModal({
+                    title: '是否授权当前位置',
+                    content: '需要获取您的地理位置，请确认授权，否则定位功能将无法使用',
+                    success: function(tip) {
+                      if (tip.confirm) {
+                        wx.openSetting({
+                          success: (res) => {
+                            console.log(res)
+                            if (res.authSetting['scope.userLocation']) {
+                              wx.showToast({
+                                title: '地理位置授权成功',
+                                icon: 'success'
+                              })
+                              wx.getLocation({
+                                success (res) {
+                                  console.log(res)
+                                  resolve(res)
+                                }
+                              })
+                            } else {
+                              util.fail_toast('地理位置授权失败')
+                            }
+                          },
+                          fail: (err) => {
+                            console.log(err)
+                          }
+                        })
+                      }
+                    }
+                  })
+                }
+              },
+              fail (err) {
+                console.log('getsetting fail', err)
+              }
+            })
+          }
+        }
+      })
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

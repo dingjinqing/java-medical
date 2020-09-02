@@ -99,12 +99,14 @@ public class MedicalSalesReportService extends ShopBaseService {
         DateTime startDate2;
         DateTime endDate2;
         long totalRows;
-        DateTime startDate3;
+        DateTime endDate3;
         startDate2 = DateUtil.beginOfYear(startDate);
         endDate2 = DateUtil.beginOfYear(endDate);
         totalRows = DateUtil.betweenYear(startDate2, endDate2,true)+1;
         if (param.getCurrentPage()>1){
             startDate2 = DateUtil.offset(startDate2, DateField.YEAR, ((param.getCurrentPage() - 1) * param.getPageRows()));
+        }else {
+            startDate2 =startDate;
         }
         logger().info("开始时间{},结束时间{}",startDate2,endDate2);
         endDate2 = DateUtil.offset(startDate2, DateField.YEAR, (param.getPageRows()-1));
@@ -114,10 +116,13 @@ public class MedicalSalesReportService extends ShopBaseService {
         }
         param.setStartTime(startDate2.toTimestamp());
         while (endDate2.compareTo(startDate2)>=0){
-            startDate3 = DateUtil.endOfYear(startDate2);
-            map.put(startDate2.toTimestamp(), startDate3.toTimestamp());
-            logger().info("每条数据-开始时间{},结束时间{}",startDate2,startDate3);
-            startDate2 = DateUtil.offset(startDate2,DateField.YEAR, 1);
+            endDate3 = DateUtil.endOfYear(startDate2);
+            if (endDate3.after(endDate2)){
+                endDate3 =endDate2;
+            }
+            map.put(startDate2.toTimestamp(), endDate3.toTimestamp());
+            logger().info("每条数据-开始时间{},结束时间{}",startDate2,endDate3);
+            startDate2 = DateUtil.offset(DateUtil.beginOfYear(startDate2),DateField.YEAR, 1);
         }
         param.setEndTime(endDate2.toTimestamp());
         param.setMap(map);
@@ -128,25 +133,30 @@ public class MedicalSalesReportService extends ShopBaseService {
         DateTime startDate2;
         DateTime endDate2;
         long totalRows;
-        DateTime startDate3;
+        DateTime endDate3;
         startDate2 = DateUtil.beginOfQuarter(startDate);
-        endDate2 = DateUtil.beginOfMonth(endDate);
+        endDate2 = DateUtil.beginOfQuarter(endDate);
         totalRows = (DateUtil.betweenMonth(startDate2, endDate2,true))/3+1;
         if (param.getCurrentPage()>1){
             startDate2 = DateUtil.offset(startDate2, DateField.MONTH, ((param.getCurrentPage() - 1) * param.getPageRows())*3);
+        }else {
+            startDate2 =startDate;
         }
         endDate2 = DateUtil.offset(startDate2, DateField.MONTH, (param.getPageRows()-1)*3);
-        endDate2 = DateUtil.endOfMonth(endDate2);
+        endDate2 = DateUtil.endOfQuarter(endDate2);
         if (endDate2.after(endDate)) {
             endDate2 = endDate;
         }
         logger().info("开始时间{},结束时间{}",startDate2,endDate2);
         param.setStartTime(startDate2.toTimestamp());
         while (endDate2.compareTo(startDate2)>=0){
-            startDate3 = DateUtil.endOfQuarter(startDate2);
-            map.put(startDate2.toTimestamp(), startDate3.toTimestamp());
-            logger().info("每条数据-开始时间{},结束时间{}",startDate2,startDate3);
-            startDate2 = DateUtil.offset(startDate2,DateField.MONTH, 3);
+            endDate3 = DateUtil.endOfQuarter(startDate2);
+            if (endDate3.after(endDate2)){
+                endDate3 =endDate2;
+            }
+            map.put(startDate2.toTimestamp(), endDate3.toTimestamp());
+            logger().info("每条数据-开始时间{},结束时间{}",startDate2,endDate3);
+            startDate2 = DateUtil.offset(DateUtil.beginOfQuarter(startDate2),DateField.MONTH, 3);
         }
         param.setEndTime(endDate2.toTimestamp());
         param.setMap(map);
@@ -157,12 +167,14 @@ public class MedicalSalesReportService extends ShopBaseService {
         DateTime startDate2;
         DateTime endDate2;
         long totalRows;
-        DateTime startDate3;
+        DateTime endDate3;
         startDate2 = DateUtil.beginOfMonth(startDate);
         endDate2 = DateUtil.beginOfMonth(endDate);
         totalRows = DateUtil.betweenMonth(startDate2, endDate2,true)+1;
         if (param.getCurrentPage()>1){
             startDate2 = DateUtil.offset(startDate2, DateField.MONTH, ((param.getCurrentPage() - 1) * param.getPageRows()));
+        }else {
+            startDate2 =startDate;
         }
         endDate2 = DateUtil.offset(startDate2, DateField.MONTH, (param.getPageRows()-1));
         endDate2 = DateUtil.endOfMonth(endDate2);
@@ -173,10 +185,13 @@ public class MedicalSalesReportService extends ShopBaseService {
 
         param.setStartTime(startDate2.toTimestamp());
         while (endDate2.compareTo(startDate2)>=0){
-            startDate3 = DateUtil.endOfWeek(startDate2);
-            map.put(startDate2.toTimestamp(), startDate3.toTimestamp());
-            logger().info("每条数据-开始时间{},结束时间{}",startDate2,startDate3);
-            startDate2 = DateUtil.offset(startDate2,DateField.MONTH, 1);
+            endDate3 = DateUtil.endOfMonth(startDate2);
+            if (endDate3.after(endDate2)){
+                endDate3 =endDate2;
+            }
+            map.put(startDate2.toTimestamp(), endDate3.toTimestamp());
+            logger().info("每条数据-开始时间{},结束时间{}",startDate2,endDate3);
+            startDate2 = DateUtil.offset(DateUtil.beginOfMonth(startDate2),DateField.MONTH, 1);
         }
         param.setEndTime(endDate2.toTimestamp());
         param.setMap(map);
@@ -187,12 +202,14 @@ public class MedicalSalesReportService extends ShopBaseService {
         DateTime startDate2;
         DateTime endDate2;
         long totalRows;
-        DateTime startDate3;
+        DateTime endDate3;
         startDate2 = DateUtil.beginOfWeek(startDate);
         endDate2 = DateUtil.beginOfWeek(endDate);
         totalRows = DateUtil.betweenWeek(startDate2, endDate2,true)+1;
         if (param.getCurrentPage()>1){
             startDate2 = DateUtil.offset(startDate2, DateField.WEEK_OF_YEAR,(param.getCurrentPage() - 1) * param.getPageRows());
+        }else {
+            startDate2 =startDate;
         }
         endDate2 = DateUtil.offset(startDate2,DateField.WEEK_OF_YEAR,  (param.getPageRows()-1));
         endDate2 = DateUtil.endOfWeek(endDate2);
@@ -202,10 +219,13 @@ public class MedicalSalesReportService extends ShopBaseService {
         logger().info("开始时间{},结束时间{}",startDate2,endDate2);
         param.setStartTime(startDate2.toTimestamp());
         while (endDate2.compareTo(startDate2)>=0){
-            startDate3 = DateUtil.endOfWeek(startDate2);
-            map.put(startDate2.toTimestamp(), startDate3.toTimestamp());
-            logger().info("每条数据-开始时间{},结束时间{}",startDate2,startDate3);
-            startDate2 = DateUtil.offset(startDate2,DateField.WEEK_OF_YEAR, 1);
+            endDate3 = DateUtil.endOfWeek(startDate2);
+            if (endDate3.after(endDate2)){
+                endDate3 =endDate2;
+            }
+            map.put(startDate2.toTimestamp(), endDate3.toTimestamp());
+            logger().info("每条数据-开始时间{},结束时间{}",startDate2,endDate3);
+            startDate2 = DateUtil.offset(DateUtil.beginOfWeek(startDate2),DateField.WEEK_OF_YEAR, 1);
         }
         param.setEndTime(endDate2.toTimestamp());
         param.setMap(map);

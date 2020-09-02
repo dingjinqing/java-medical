@@ -78,6 +78,7 @@ import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+import static com.vpu.mp.service.pojo.shop.user.UserInviteSourceConstant.*;
 
 /**
  * @author lixinguo
@@ -151,6 +152,12 @@ public class UserService extends ShopBaseService {
 
 	public static final Byte SYCUPDATE= 1;
 	public static final Byte SYCINSERT= 0;
+
+	private static final Byte IS_SETTING_STATUS = 2;
+
+	private static final Integer DEFAULT_PROVINCE_ID = 100000;
+
+	private static final Long DEFAULT_NEW_USER_TIME = 120L;
 
 	@Autowired
 	protected JedisManager jedis;
@@ -246,15 +253,8 @@ public class UserService extends ShopBaseService {
 
     /**
      * 根据openid获取user_id
-     * @param openid
-     * @param userName
-     * @param avatar
-     * @param pathQuery
-     * @param result
-     * @return
      */
-    public UserRecord getUserId(String openid, String userName, String avatar, PathQuery pathQuery,
-			WxMaJscode2SessionResult result) {
+    public UserRecord getUserId(String openid, String userName, String avatar, PathQuery pathQuery, WxMaJscode2SessionResult result) {
 		UserRecord ret = db().selectFrom(USER).where(USER.WX_OPENID.eq(openid)).fetchAny();
 		if (ret != null) {
             boolean canUpdateUserName = StringUtils.isNotEmpty(userName)
@@ -262,7 +262,6 @@ public class UserService extends ShopBaseService {
             if (canUpdateUserName) {
 				db().update(USER).set(USER.USERNAME, userName).where(USER.WX_OPENID.eq(openid)).execute();
 				ret.setWxOpenid(openid);
-				//syncMainUser(ret);
 			}
 			if (StringUtils.isNotBlank(avatar)) {
 				UserDetailRecord userDetail = this.getUserDetail(ret.getUserId());
@@ -274,7 +273,6 @@ public class UserService extends ShopBaseService {
 								.execute();
 						userDetail.setUserAvatar(avatar);
 						userDetail.setUsername(userName);
-						//syncMainUserDetail(userDetail);
 					}
 				}
 			}
@@ -303,9 +301,8 @@ public class UserService extends ShopBaseService {
 			String unionId = (!StringUtils.isBlank(result.getUnionid())) ? result.getUnionid() : "";
 			user.setWxUnionId(unionId);
 			int insert = user.insert();
+            user.refresh();
 			logger().info("插入user结果 " + insert);
-			//syncMainUser(user);
-			// avatar==null?"/image/admin/head_icon.png":avatar
 			if (insert < 0) {
 				return null;
 			}
@@ -315,14 +312,9 @@ public class UserService extends ShopBaseService {
 				user.setUsername(name);
 				user.update();
 				logger().info("更新用户名为" + name);
-				//syncMainUser(user);
 			}
-
             saveUserDetail(avatar, user, userId);
-
             logger().info("开始同步Detail");
-			//syncMainUserDetail(uDetailRecord);
-
 			String path = pathQuery.getPath();
 			Map<String, String> query = pathQuery.getQuery();
 			String groupDrawId = pathQuery.getQuery().get("group_draw_id");
@@ -336,8 +328,7 @@ public class UserService extends ShopBaseService {
 			}
             String indexPath = "pages/index/index";
             String itemPath = "pages/item/item";
-            final boolean c = path.equals(indexPath)
-                || path.equals(itemPath) && pathQuery.getQuery().get("c") != null;
+            final boolean c = path.equals(indexPath) || path.equals(itemPath) && pathQuery.getQuery().get("c") != null;
             if (c) {
 				saas.getShopApp(getShopId()).channelService.recordChannel(pathQuery.getQuery().get("c"), userId, (byte) 1);
 			}
@@ -381,53 +372,42 @@ public class UserService extends ShopBaseService {
 		logger().info("pathQuery的内容：{}",pathQuery.toString());
         int initialCapacity = 16;
         Map<String, String> map = new HashMap<String, String>(initialCapacity);
-        String groupBuyItemPath = "pages/groupbuyitem/groupbuyitem";
-        String groupBuyInfoPath = "pages/groupbuyinfo/groupbuyinfo";
-        if (path.equals(groupBuyItemPath) || path.equals(groupBuyInfoPath)) {
+        if (path.equals(GROUP_BUY_ITEM_PATH) || path.equals(GROUP_BUY_INFO_PATH)) {
 			map.put("invite_source", "groupbuy");// 多人拼团
 			map.put("invite_act_id", pathQuery.getQuery().get("pin_group_id"));
 		}
-        String bargainListPath = "pages/bargainlist/bargainlist";
-        String bargainInfoPath = "pages/bargaininfo/bargaininfo";
-        if (path.equals(bargainListPath) || path.equals(bargainInfoPath)) {
+        if (path.equals(BARGAIN_LIST_PATH) || path.equals(BARGAIN_INFO_PATH)) {
 			map.put("invite_source", "bargain");// 砍价
 			map.put("invite_act_id", pathQuery.getQuery().get("bargain_id"));
 		}
-        String secKillItemPath = "pages/seckillitem/seckillitem";
-        if (path.equals(secKillItemPath)) {
+        if (path.equals(SEC_KILL_ITEM_PATH)) {
 			map.put("invite_source", "seckill");// 秒杀 跟item合并了，没用
 			map.put("invite_act_id", pathQuery.getQuery().get("sk_id"));
 		}
-        String integralPath = "pages1/integral/integral";
-        if (path.equals(integralPath)) {
+        if (path.equals(INTEGRAL_PATH)) {
 			map.put("invite_source", "integral");// 积分购买
 			map.put("invite_act_id", pathQuery.getQuery().get("integral_goods_id"));
 		}
-        String lotteryPath = "pages1/lottery/lottery";
-        if (path.equals(lotteryPath)) {
+        if (path.equals(LOTTERY_PATH)) {
 			map.put("invite_source", "lottery");// 抽奖
 			map.put("invite_act_id", pathQuery.getQuery().get("lotteryId"));
 		}
-        String formPath = "pages1/form/form";
-        if (path.equals(formPath)) {
+        if (path.equals(FORM_PATH)) {
 			map.put("invite_source", "form");// 表单
 			map.put("invite_act_id", pathQuery.getQuery().get("page_id"));
 		}
-        String cardInfoPath = "pages/cardinfo/cardinfo";
-        if (path.equals(cardInfoPath)) {
+        if (path.equals(CARD_INFO_PATH)) {
 			map.put("invite_source", "membercard");// 会员卡
 			map.put("invite_act_id", pathQuery.getQuery().get("cardNo"));
 		}
-        String itemPath = "pages/item/item";
-        String paramChannel = "channel";
-        if (path.equals(itemPath)) {
+        if (path.equals(ITEM_PATH)) {
             String paramChanel = "c";
             if (!StringUtils.isEmpty(pathQuery.getQuery().get(paramChanel))) {
 				// 渠道页
 				ChannelRecord channelInfo = saas.getShopApp(this.getShopId()).channelService
 						.getChannelInfo(pathQuery.getQuery().get(paramChanel));
 				if (channelInfo != null) {
-					map.put("invite_source", paramChannel);
+					map.put("invite_source", PARAM_CHANNEL);
 					map.put("invite_act_id", channelInfo.getId().toString());
 				} else {
 					map.put("invite_source", "scanqrcode");
@@ -435,8 +415,7 @@ public class UserService extends ShopBaseService {
 					map.put("invite_act_id","0");
 				}
 			}
-            String paramShareAward = "shareAward";
-            if (!StringUtils.isEmpty(pathQuery.getQuery().get(paramShareAward))) {
+            if (!StringUtils.isEmpty(pathQuery.getQuery().get(PARAM_SHARE_AWARD))) {
 				map.put("invite_source", "share_award");// 分享有礼
                 String paramShareId = "share_id";
                 map.put("invite_act_id", pathQuery.getQuery().get(paramShareId));
@@ -446,54 +425,51 @@ public class UserService extends ShopBaseService {
                 map.put("invite_act_id", pathQuery.getQuery().get(paramGoodId));
 			}
 		}
-        String indexPath = "pages/index/index";
-        if (path.equals(indexPath)) {
-			// TODO 有问题
-			ChannelRecord channelInfo = saas.getShopApp(this.getShopId()).channelService
-					.getChannelInfo(pathQuery.getQuery().get(paramChannel));
-			if (channelInfo != null) {
-				map.put("invite_source", paramChannel);
-				map.put("invite_act_id", channelInfo.getId().toString());
-			} else {
-				map.put("invite_source", "scanqrcode");
-				// TODO php上有问题 app/Service/Shop/User/User/User.php
-				map.put("invite_act_id", "1");
-			}
-		}
-        String mainGoodsListPath = "pages/maingoodslist/maingoodslist";
-        String paramIdentityId = "identity_id";
-        if (path.equals(mainGoodsListPath)) {
-			map.put("invite_source", "purchase_price");// 加价购
-			map.put("invite_act_id", pathQuery.getQuery().get(paramIdentityId));
-		}
-        String fullPricePath = "pages/fullprice/fullprice";
-        if (path.equals(fullPricePath)) {
-			map.put("invite_source", "purchase_price");// 满折满减
-			map.put("invite_act_id", pathQuery.getQuery().get(paramIdentityId));
-		}
-        String pinLotterInfoPath = "pages1/pinlotteryinfo/pinlotteryinfo";
-        String pinLotteryInfoPath2 = "pages/pinlotteryinfo/pinlotteryinfo";
-        if (path.equals(pinLotterInfoPath)||path.equals(pinLotteryInfoPath2)) {
-			map.put("invite_source", "group_draw");// 拼团抽奖
+        return getInviteSourceToContinue(pathQuery, map);
+	}
+
+	public Map<String, String> getInviteSourceToContinue(PathQuery pathQuery,Map<String, String> map) {
+        String path = pathQuery.getPath();
+        if (path.equals(INDEX_PATH)) {
+            // TODO 有问题
+            ChannelRecord channelInfo = saas.getShopApp(this.getShopId()).channelService
+                .getChannelInfo(pathQuery.getQuery().get(PARAM_CHANNEL));
+            if (channelInfo != null) {
+                map.put("invite_source", PARAM_CHANNEL);
+                map.put("invite_act_id", channelInfo.getId().toString());
+            } else {
+                map.put("invite_source", "scanqrcode");
+                // TODO php上有问题 app/Service/Shop/User/User/User.php
+                map.put("invite_act_id", "1");
+            }
+        }
+        if (path.equals(MAIN_GOODS_LIST_PATH)) {
+            map.put("invite_source", "purchase_price");// 加价购
+            map.put("invite_act_id", pathQuery.getQuery().get(PARAM_IDENTITY_ID));
+        }
+        if (path.equals(FULL_PRICE_PATH)) {
+            map.put("invite_source", "purchase_price");// 满折满减
+            map.put("invite_act_id", pathQuery.getQuery().get(PARAM_IDENTITY_ID));
+        }
+        if (path.equals(PIN_LOTTER_INFO_PATH)||path.equals(PIN_LOTTERY_INFO_PATH2)) {
+            map.put("invite_source", "group_draw");// 拼团抽奖
             String paramGroupDrawId = "group_draw_id";
             map.put("invite_act_id", pathQuery.getQuery().get(paramGroupDrawId));
-		}
-        String pinIntegrationPath = "pages1/pinintegration/pinintegration";
-        if (path.equals(pinIntegrationPath)) {
-			map.put("invite_source", "pin_integration");// 拼团抽奖
+        }
+        if (path.equals(PIN_INTEGRATION_PATH)) {
+            map.put("invite_source", "pin_integration");// 拼团抽奖
             String paramPid = "pid";
             map.put("invite_act_id", pathQuery.getQuery().get(paramPid));
-		}
-        String promoteInfoPath = "pages1/promoteinfo/promoteinfo";
-        if (path.equals(promoteInfoPath)) {
-			map.put("invite_source", "friend_promote");// 好友助力
+        }
+        if (path.equals(PROMOTE_INFO_PATH)) {
+            map.put("invite_source", "friend_promote");// 好友助力
             String paramActCode = "actCode";
             FriendPromoteActivityRecord promoteInfo = saas.getShopApp(this.getShopId()).friendPromoteService
-					.promoteInfo(0, pathQuery.getQuery().get(paramActCode));
-			map.put("invite_act_id", promoteInfo.getId().toString());
-		}
-		return map;
-	}
+                .promoteInfo(0, pathQuery.getQuery().get(paramActCode));
+            map.put("invite_act_id", promoteInfo.getId().toString());
+        }
+        return map;
+    }
 
 	/**
 	 * 更新用户昵称，头像
@@ -811,10 +787,8 @@ public class UserService extends ShopBaseService {
 			logger().info("直接检测并自动升级");
 			try {
                 int isGet = userCard.updateGrade(userId, null, (byte) 2);
-//				int isGet = userCard.updateGrade(userId, null, (byte) 0); // 上面方法返回值is_get
 				logger().info("isGet的值为"+isGet);
 				if (isGet > 0) {
-//					data.put("get_grade", 1);
                     logger().info("已经自动升级到等级会员卡："+isGet);
                     data.put("get_grade", 0);
 				} else {
@@ -962,7 +936,7 @@ public class UserService extends ShopBaseService {
 		userDetailRecord.setBirthdayDay(param.getBirthdayDay());
 		userDetailRecord.setRealName(param.getRealName());
 		userDetailRecord.setSex(param.getSex());
-		if (param.getIsSetting() == 1 || param.getIsSetting() == 2) {
+		if (param.getIsSetting() == 1 || IS_SETTING_STATUS.equals(param.getIsSetting())) {
 			String provinceName = param.getProvinceCode();
 			String cityName = param.getCityCode();
 			String districtName = param.getDistrictCode();
@@ -972,7 +946,7 @@ public class UserService extends ShopBaseService {
 				DictProvinceRecord provinceRecord = saas.region.province.getProvinceName(provinceName);
 				if (provinceRecord != null) {
 					provinceId = provinceRecord.getProvinceId();
-					if (provinceId < 100000) {
+					if (provinceId < DEFAULT_PROVINCE_ID) {
 						DictProvinceRecord provinceName2 = saas.region.province.getProvinceName(provinceName.substring(0, 2));
 						if (provinceName2 != null) {
 							provinceId = provinceName2.getProvinceId();
@@ -1010,7 +984,7 @@ public class UserService extends ShopBaseService {
 				//syncMainUserDetail(userDetailRecord);
 				return JsonResultCode.CODE_SUCCESS;
 			}
-			if (param.getIsSetting() == 2) {
+			if (IS_SETTING_STATUS.equals(param.getIsSetting())) {
 				//激活卡标志
 				userDetail.updateRow(userDetailRecord);
 				//syncMainUserDetail(userDetailRecord);
@@ -1036,9 +1010,9 @@ public class UserService extends ShopBaseService {
 	 * @return
 	 */
 	public UserAccountSetVo accountSetting(Integer userId,Byte isSetting)  {
-		if(isSetting==1||isSetting==2) {
-			return null;
-		}
+        if (isSetting == 1 || IS_SETTING_STATUS.equals(isSetting)) {
+            return null;
+        }
 		UserInfo userInfo = getUserInfo(userId);
 		UserAccountSetVo vo=null;
 		if(userInfo!=null) {
@@ -1225,7 +1199,7 @@ public class UserService extends ShopBaseService {
         if (Objects.isNull(record)) {
             return false;
         }
-        if (Timestamp.valueOf(LocalDateTime.now()).getTime() - record.getCreateTime().getTime() <= 120) {
+        if (Timestamp.valueOf(LocalDateTime.now()).getTime() - record.getCreateTime().getTime() <= DEFAULT_NEW_USER_TIME) {
             return true;
         }
         return false;

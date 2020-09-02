@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.Store.STORE;
+import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+
 /**
  * @author chenjie
  * @date 2020年08月24日
@@ -86,5 +88,21 @@ public class StoreDao extends ShopBaseDao {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 查询门店商品是否充足
+     * @param goodsId 商品id
+     * @param storeId 门店id
+     * @return Integer
+     */
+    public Integer checkOrderGoodsIsEnough(Integer goodsId, Integer storeId) {
+        return db().selectCount().from(STORE_GOODS)
+            .where(STORE_GOODS.GOODS_ID.eq(goodsId))
+            .and(STORE_GOODS.STORE_ID.eq(storeId))
+            .and(STORE_GOODS.PRODUCT_NUMBER.gt(0))
+            .and(STORE_GOODS.IS_ON_SALE.eq((byte) 1))
+            .and(STORE_GOODS.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .fetchAnyInto(Integer.class);
     }
 }

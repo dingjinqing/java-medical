@@ -3,13 +3,13 @@
   <view class="main-container">
     <view class="top-bg-style"></view>
     <view class="tips">
-      每日可提现额度为1-200元
+      每日可提现额度为{{withdrawCashMin}}-{{withdrawCashMax}}元
     </view>
     <view class="card-content">
       <view class="money-content">
         <text class="money-tips">可提现金额</text>
         <text class="money-now">{{totalMoney}}</text>
-        <view class="record">提现记录</view>
+        <view class="record" bindtap="viewRecord">提现记录</view>
       </view>
       <view class="info-content">
         <view class="info-item">
@@ -28,10 +28,10 @@
         </view>
       </view>
     </view>
-    <view class="button">
+    <view class="button" bindtap="withDrawInfo">
       提现
     </view>
-    <view class="more">
+    <view class="more" bindtap="viewDetail">
       查看详情
     </view>
   </view>

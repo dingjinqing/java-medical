@@ -30,6 +30,8 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Objects;
+
 import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
 
 /**
@@ -184,7 +186,7 @@ public class WxAppAuth {
         Byte userType = userRecord.getUserType();
         //添加用户个人角色信息
         wxAppSessionUser.setUserType(userRecord.getUserType());
-        if (userType == 0) {
+        if (Objects.equals(userType, 0)) {
             wxAppSessionUser.setDoctorId(0);
             wxAppSessionUser.setPharmacistId(0);
         }

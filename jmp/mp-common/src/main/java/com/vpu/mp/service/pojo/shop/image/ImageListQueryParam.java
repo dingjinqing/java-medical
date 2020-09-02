@@ -1,9 +1,12 @@
 package com.vpu.mp.service.pojo.shop.image;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -47,4 +50,9 @@ public class ImageListQueryParam {
 	 * 排序
 	 */
 	private Integer uploadSortId;
+    /**
+     * imgCatId下的所有子分类id和imgCatId
+     */
+    @JsonIgnore
+    private List<Integer> childCatIdsAndImgCatId = new ArrayList<>(1);
 };
