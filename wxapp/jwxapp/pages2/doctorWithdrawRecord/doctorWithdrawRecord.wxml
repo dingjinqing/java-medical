@@ -9,7 +9,7 @@
     return statusName[''+status]
   }
   module.exports = {
-getStatus:getStatus
+    getStatus:getStatus
   }
 </wxs>
 <view class="body">
@@ -17,7 +17,7 @@ getStatus:getStatus
   <view class="main-container">
     <view class="top-content" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
       <view class="top-tops">已提现</view>
-      <view class="total-money">￥<text>0.00</text></view>
+      <view class="total-money">￥<text>{{accruingWithDrawCash}}</text></view>
     </view>
     <view class="record-list">
     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">

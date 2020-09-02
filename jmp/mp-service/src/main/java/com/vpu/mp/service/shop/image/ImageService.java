@@ -13,6 +13,8 @@ import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
@@ -62,6 +64,8 @@ public class ImageService extends ShopBaseService implements ImageDefault {
 
     @Autowired
     protected StorageConfig storageConfig;
+    @Autowired
+    protected JedisManager jedisManager;
 
     @Override
     public String imageUrl(String relativePath) {
@@ -550,5 +554,30 @@ public class ImageService extends ShopBaseService implements ImageDefault {
             e.printStackTrace();
             return null;
         }
+    }
+    /**
+     * 向redis中存入分销员微信二维码海报URL
+     * @param key 用户id
+     * @param value 图片url
+     */
+    public void setQrCodeUrlByRedisKey(String key, String value) {
+        jedisManager.set(JedisKeyConstant.DISTRIBUTION_QR_CODE + key, value);
+    }
+
+    /**
+     * 从redis中获取分销员微信二维码海报URL
+     * @param key 用户id
+     * @return 图片url
+     */
+    public String getQrCodeUrlByRedisKey(String key) {
+        return jedisManager.get(JedisKeyConstant.DISTRIBUTION_QR_CODE + key);
+    }
+
+    /**
+     * 删除redis中分销员对应的微信二维码海报url
+     * @param key 用户id
+     */
+    public void deleteQrCodeUrlByRedisKey(String key) {
+        jedisManager.delete(JedisKeyConstant.DISTRIBUTION_QR_CODE + key);
     }
 }

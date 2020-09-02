@@ -17,11 +17,13 @@ global.wxPage({
   requestWithDrawInfo(){
     util.api('/api/wxapp/doctor/rebate/total',res=>{
       if(res.error === 0){
-        let {totalMoney,accruingWithDrawCash,waitWithDrawCash} = res.content
+        let {totalMoney,accruingWithDrawCash,waitWithDrawCash,withdrawCashMax,withdrawCashMix} = res.content
         this.setData({
           totalMoney:totalMoney || '0.00',
           accruingWithDrawCash:accruingWithDrawCash || '0.00',
-          waitWithDrawCash:waitWithDrawCash || '0.00'
+          waitWithDrawCash:waitWithDrawCash || '0.00',
+          withdrawCashMin:withdrawCashMix || '0.00',
+          withdrawCashMax:withdrawCashMax || '0.00'
         })
       }
     })
@@ -32,7 +34,11 @@ global.wxPage({
   withDrawInfo(){
     util.jumpLink('pages2/doctorWithdraw/doctorWithdraw')
   },
-  
+  viewRecord(){
+    util.jumpLink(`pages2/doctorWithdrawRecord/doctorWithdrawRecord${util.getUrlParams({
+      accruingWithDrawCash:this.data.accruingWithDrawCash
+    })}`)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

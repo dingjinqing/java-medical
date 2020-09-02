@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.image.postertraits;
 
+import com.upyun.UpException;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.FileUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -8,15 +10,21 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.GoodsShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.image.UploadPath;
+import com.vpu.mp.service.pojo.shop.image.UploadedImageDo;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopStyleConfigService;
+import com.vpu.mp.service.shop.distribution.MpDistributionService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -46,6 +54,10 @@ public abstract class BaseShareService extends ShopBaseService {
     private ShopStyleConfigService shopStyleConfigService;
     @Autowired
     private ShopCommonConfigService commonConfigService;
+    @Autowired
+    private DistributionConfigService distributionConfigService;
+    @Autowired
+    private MpDistributionService distributionService;
     public static final Pattern PATTERN_NUMBER = Pattern.compile("\\d+");
 
     /**
@@ -228,6 +240,119 @@ public abstract class BaseShareService extends ShopBaseService {
 //        }
 
         return goodsPictorialInfo;
+    }
+    /**
+     * 获取分销中心推广海报信息，与商品无关
+     *
+     * @param baseParam 分享参数
+     * @return 海报获取的信息
+     */
+    public GoodsPictorialInfo getDistributionPictorialInfo(GoodsShareBaseParam baseParam) {
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
+
+        // 获取分销配置
+        DistributionParam distributionCfg = distributionConfigService.getDistributionCfg();
+        shareLog(getActivityName(), "分享配置信息:" + Util.toJson(distributionCfg));
+
+        if (distributionCfg == null || distributionCfg.getStatus().equals((byte) 0)) {
+            pictorialLog(getActivityName(), "已关闭");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
+
+        ShopRecord shop = saas.shop.getShopById(getShopId());
+        // 分享人信息
+        PictorialUserInfo userInfo;
+        try {
+            userInfo = pictorialService.getPictorialUserInfo(baseParam.getUserId(), shop);
+        } catch (IOException e) {
+            pictorialLog(getActivityName(), "获取用户信息失败：" + e.getMessage());
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
+        }
+
+        String mpQrCode = createMpQrCode(null, null, baseParam);
+        BufferedImage qrCodeImage;
+        try {
+            qrCodeImage = ImageIO.read(new URL(mpQrCode));
+        } catch (IOException e) {
+            pictorialLog(getActivityName(), "获取二维码失败：" + e.getMessage());
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return goodsPictorialInfo;
+        }
+
+        BufferedImage activityShareImg;
+        try {
+            activityShareImg = ImageIO.read(new URL("https:" + distributionCfg.getBgImg()));
+        } catch (IOException e) {
+            pictorialLog(getActivityName(), "获取背景图片信息失败：" + e.getMessage());
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return goodsPictorialInfo;
+        }
+
+        pictorialLog(getActivityName(), "处理海报背景图片");
+        createPictorialImg(qrCodeImage, activityShareImg, userInfo,
+            distributionCfg.getDesc(), null, null, shop, baseParam, goodsPictorialInfo);
+
+        return goodsPictorialInfo;
+    }
+    /**
+     * 获取分销员微信二维码海报，与商品无关
+     * @param baseParam 分享参数
+     * @return 海报获取的信息
+     */
+    public GoodsPictorialInfo getDistributorPictorialInfo(GoodsShareBaseParam baseParam) {
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
+
+        // 获取分销员微信二维码图片
+        UploadedImageDo distributorImage = distributionService.getDistributorImage(baseParam.getUserId());
+
+        if (distributorImage == null) {
+            pictorialLog(getActivityName(), "获取用户信息失败，用户没有上传二维码");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
+        }
+
+        // 获取二维码信息
+        BufferedImage qrCodeImage;
+        try {
+            qrCodeImage = ImageIO.read(new URL(distributorImage.getImgUrl()));
+        } catch (IOException e) {
+            pictorialLog(getActivityName(), "获取二维码失败：" + e.getMessage());
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return goodsPictorialInfo;
+        }
+
+        pictorialLog(getActivityName(), "处理海报背景图片");
+        createPictorialImg(qrCodeImage, null, null, null, null, null, null, null, goodsPictorialInfo);
+
+        // 海报图片上传又拍云并将其URL存入缓存中
+        uploadAndSavePictorial(goodsPictorialInfo.getBase64(), baseParam.getUserId());
+
+        return goodsPictorialInfo;
+    }
+    /**
+     * 海报图片上传又拍云并将其URL存入缓存中
+     * @param base64 微信二维码海报base64形式
+     * @param userId 用户id
+     */
+    private void uploadAndSavePictorial(String base64, Integer userId) {
+        // 1.构造图片文件
+        MultipartFile multipartFile = FileUtil.base64MutipartFile(base64);
+        // 2.上传又拍云
+        UploadPath uploadPath = imageService.getImageWritableUploadPath(multipartFile.getContentType());
+        boolean result = false;
+        try {
+            result = imageService.uploadToUpYunBySteam(uploadPath.relativeFilePath, multipartFile.getInputStream());
+        } catch (IOException e) {
+            pictorialLog(getActivityName(), "读取微信二维码海报失败：" + e.getMessage());
+        } catch (UpException e) {
+            pictorialLog(getActivityName(), "上传微信二维码海报失败：" + e.getMessage());
+        }
+        if (result) {
+            // 3.海报url存入缓存
+            imageService.setQrCodeUrlByRedisKey(String.valueOf(userId), uploadPath.getImageUrl());
+        }
     }
 
     /**

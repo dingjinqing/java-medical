@@ -280,7 +280,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         }
         //更新
         db().batchUpdate(updateRecords).execute();
-        db().batchUpdate(statisticsRecords).execute();
+        fanliGoodsStatistics.batchUpdate(statisticsRecords);
         //更新分销员等级
         updateUserLevel(updateLevel);
         return total;

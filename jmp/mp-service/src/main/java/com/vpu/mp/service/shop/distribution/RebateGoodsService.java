@@ -56,8 +56,10 @@ public class RebateGoodsService extends ShopBaseService{
 		PageResult<RebateGoodsVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsVo.class);
 		//获取商品对应分类名称
 		for(RebateGoodsVo listInfo : pageList.dataList) {
-			SysCatevo catInfo = saas.sysCate.getOneCateInfo(listInfo.getCatId());
-			listInfo.setCatName(catInfo.getCatName());
+            SortRecord sort = gs.getSortDao(listInfo.getSortId());
+            if(sort!=null){
+                listInfo.setCatName(sort.getSortName());
+            }
 		}
 		return pageList;
 	}
@@ -69,8 +71,8 @@ public class RebateGoodsService extends ShopBaseService{
 	 */
 	public void optionBuild(SelectJoinStep<? extends Record> select,RebateGoodsParam param) {
 		//商品类型
-		if(param.getGoodsType() != null) {
-			select.where(FANLI_GOODS_STATISTICS.CAT_ID.eq(param.getGoodsType()));
+		if(param.getGoodsSort() != null) {
+			select.where(FANLI_GOODS_STATISTICS.CAT_ID.eq(param.getGoodsSort()));
 		}
 		//商品名称
 		if(param.getGoodsName() != null) {

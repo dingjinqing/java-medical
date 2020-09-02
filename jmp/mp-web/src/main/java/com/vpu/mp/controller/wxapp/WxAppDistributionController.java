@@ -122,10 +122,10 @@ public class WxAppDistributionController extends WxAppBaseController{
      * @return
      */
     @PostMapping("myInvite")
-    public JsonResult myInviteUser(@RequestBody DistributorInvitedListParam param){
+    public JsonResult myInviteUser(@RequestBody InviteUserListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        DistributorInvitedListVo inviteList = shop().mpDistribution.myInviteUser(param);
+        PageResult<InviteUserVo> inviteList = shop().mpDistribution.myInviteUser(param);
         return this.success(inviteList);
     }
 
@@ -146,7 +146,7 @@ public class WxAppDistributionController extends WxAppBaseController{
      */
     @PostMapping("rebateOrder")
     public JsonResult rebateOrderList(@RequestBody RebateOrderParam param){
-        PageResult<RebateOrderVo> rebateOrderVo = shop().mpDistribution.rebateOrder(param);
+        RebateOrderVo rebateOrderVo = shop().mpDistribution.rebateOrder(param);
         return this.success(rebateOrderVo);
     }
 

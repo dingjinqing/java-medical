@@ -2,9 +2,12 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorQrCodeVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.distribution.DistributionShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.distribution.DistributorShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
@@ -14,6 +17,7 @@ import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.rebate.RebateShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.seckill.SeckillShareInfoParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -299,6 +303,60 @@ public class WxAppPictorialController extends WxAppBaseController  {
             return fail(JsonResultCode.WX_SHARE_USER_PIC_ERROR);
         } else {
             return success(activityPictorialInfo.getBase64());
+        }
+    }
+    /**
+     * 获取分销中心推广海报
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/distribution/pictorial/info")
+    public JsonResult getDistributionPictorialInfo() {
+        DistributionShareInfoParam param = new DistributionShareInfoParam();
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+
+        GoodsPictorialInfo goodsPictorialInfo = shop().pictorialIntegrationService.getDistributionPictorialInfo(param);
+        Byte code = goodsPictorialInfo.getPictorialCode();
+
+        if (PictorialConstant.ACTIVITY_DELETED.equals(code)) {
+            // 活动已删除，即分销配置已关闭
+            return fail(JsonResultCode.WX_SHARE_ACTIVITY_DELETED);
+        } else if (PictorialConstant.GOODS_PIC_ERROR.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_PIC_ERROR);
+        } else if (PictorialConstant.QRCODE_ERROR.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_QRCDOE_ERROR);
+        } else if (PictorialConstant.USER_PIC_ERROR.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_USER_PIC_ERROR);
+        } else {
+            return success(goodsPictorialInfo.getBase64());
+        }
+    }
+    /**
+     * 获取分销员微信二维码海报
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/distribution/distributor/pictorial/info")
+    public JsonResult getDistributorPictorialInfo(@RequestBody DistributorShareInfoParam param) {
+        DistributorQrCodeVo distributorQrCodeVo = new DistributorQrCodeVo();
+        // 从缓存中获取海报url，如果获取不到，生成后存入缓存
+        String qrCodeUrl = shop().image.getQrCodeUrlByRedisKey(String.valueOf(param.getUserId()));
+        if (StringUtils.isNotBlank(qrCodeUrl)) {
+            distributorQrCodeVo.setExtend(qrCodeUrl);
+            distributorQrCodeVo.setType(DistributorQrCodeVo.QR_CODE_URL);
+            return this.success(distributorQrCodeVo);
+        }
+        GoodsPictorialInfo goodsPictorialInfo = shop().pictorialIntegrationService.getDistributorPictorialInfo(param);
+        Byte code = goodsPictorialInfo.getPictorialCode();
+
+        if (PictorialConstant.USER_PIC_ERROR.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_USER_PIC_ERROR);
+        } else if (PictorialConstant.QRCODE_ERROR.equals(code)) {
+            return fail(JsonResultCode.WX_SHARE_QRCDOE_ERROR);
+        } else {
+            distributorQrCodeVo.setExtend(goodsPictorialInfo.getBase64());
+            distributorQrCodeVo.setType(DistributorQrCodeVo.BASE64);
+            return this.success(distributorQrCodeVo);
         }
     }
 
