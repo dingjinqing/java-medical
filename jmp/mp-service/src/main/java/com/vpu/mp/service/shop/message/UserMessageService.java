@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.UserAnnouncementDo;
+import com.vpu.mp.common.pojo.shop.table.UserMessageDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.message.MessageDao;
@@ -17,7 +18,9 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.message.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPullMsgParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionUnReadMessageInfoParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionPullMsgVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.shop.decoration.AdminDecorationService;
 import com.vpu.mp.service.shop.im.ImSessionService;
@@ -83,8 +86,11 @@ public class UserMessageService extends ShopBaseService {
         // 去除系统公告未读
         if (USER_MESSAGE_SYSTEM.equals(messageParam.getMessageType())) {
             userAnnouncementDao.updateUserAnnouncement(userId, messageParam.getMessageId());
-        } else { // 去除订单消息和会话消息未读
+        } else if (USER_MESSAGE_ORDER.equals(messageParam.getMessageType())) {
+            // 去除订单消息未读
             messageDao.updateMessageStatus(userId, messageParam);
+        } else if (USER_MESSAGE_CHAT.equals(messageParam.getMessageType())) {
+            messageDao.updateImMessageStatus(userId, messageParam);
         }
         Integer announcementCount = messageDao.selectAnnouncementCount(userId);
         Integer orderCount = messageDao.selectOrderCount(userId);
@@ -137,7 +143,27 @@ public class UserMessageService extends ShopBaseService {
      * @param messageId 消息id
      */
     public void deleteUserMessage(Integer messageId) {
+        UserMessageDo userMessageDo = messageDao.selectMessageById(messageId);
+        if (userMessageDo.getMessageType().equals(USER_MESSAGE_CHAT)) {
+            ImSessionPullMsgParam imSessionPullMsgParam = selectImSessionByMessageId(messageId);
+            ImSessionPullMsgVo imSessionPullMsgVo = imSessionService.pullMsg(imSessionPullMsgParam);
+        }
         messageDao.deleteUserMessage(messageId);
+    }
+
+    /**
+     * 根据messageId查询会话
+     * @param messageId 消息入参
+     * @return ImSessionPullMsgParam
+     */
+    private ImSessionPullMsgParam selectImSessionByMessageId(Integer messageId) {
+        String orderSnByMessageId = messageDao.selectOrderSnByMessageId(messageId);
+        ImSessionDo imSessionDo = messageDao.selectImByOrderSn(orderSnByMessageId);
+        ImSessionPullMsgParam imSessionPullMsgParam = new ImSessionPullMsgParam();
+        imSessionPullMsgParam.setPullFromId(imSessionDo.getDoctorId());
+        imSessionPullMsgParam.setSelfId(imSessionDo.getUserId());
+        imSessionPullMsgParam.setSessionId(imSessionDo.getId());
+        return imSessionPullMsgParam;
     }
 
 
@@ -170,7 +196,8 @@ public class UserMessageService extends ShopBaseService {
         if (!unReadMessageInfo.isEmpty()) {
             //查询当前用户有没有此医生的问诊记录
             for (ImSessionUnReadInfoVo imSessionUnReadInfoVo : unReadMessageInfo) {
-                UserMessageVo imSessionBySessionId = messageDao.getImSessionBySessionId(imSessionUnReadInfoVo.getSessionId(), imSessionUnReadMessageInfoParam.getUserId());
+                ImSessionDo sessionInfoById = imSessionService.getSessionInfoById(imSessionUnReadInfoVo.getSessionId());
+                UserMessageVo imSessionBySessionId = messageDao.getMessageByOrderSn(sessionInfoById.getOrderSn());
                 // 新增
                 UserMessageParam userMessageParam = new UserMessageParam();
                 ImSessionDo imSession = imSessionDao.getImSession(imSessionUnReadInfoVo.getSessionId());
