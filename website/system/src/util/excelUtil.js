@@ -15,3 +15,4 @@ export function download (data, fileName) {
   // 释放掉blob资源
   window.URL.revokeObjectURL(url)
 }
+

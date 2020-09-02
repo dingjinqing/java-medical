@@ -19,14 +19,14 @@ export function getReportExport (data) {
   })
 }
 
-// 获取医师列表
-export function getDoctorList (data) {
-  return service({
-    url: '/api/admin/doctors/select/list',
-    method: 'post',
-    data: data
-  })
-}
+// // 获取医师列表
+// export function getDoctorList (data) {
+//   return service({
+//     url: '/api/admin/doctors/select/list',
+//     method: 'post',
+//     data: data
+//   })
+// }
 
 // 获取医师统计总数
 export function getDoctorTotal (data) {

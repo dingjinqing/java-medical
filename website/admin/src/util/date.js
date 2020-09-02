@@ -64,3 +64,16 @@ Date.prototype.format = function (format) {
   }
   return format
 }
+
+export const dateChange = function (num = 1, date = false) {
+  if (!date) {
+    date = new Date()
+    date = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+  }
+  let oldDate = date
+  date += ' 00:00:00'
+  date = Date.parse(new Date(date)) / 1000
+  date += (86400) * num
+  var newDate = new Date(parseInt(date) * 1000)
+  return [oldDate, newDate.getFullYear() + '-' + (newDate.getMonth() + 1) + '-' + newDate.getDate()]
+}
