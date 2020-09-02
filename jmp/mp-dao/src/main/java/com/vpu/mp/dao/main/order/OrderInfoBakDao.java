@@ -36,11 +36,8 @@ import java.util.Map;
 
 import static com.vpu.mp.db.main.Tables.ORDER_GOODS_BAK;
 import static com.vpu.mp.db.main.Tables.ORDER_INFO_BAK;
-import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
-import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+import static com.vpu.mp.db.main.Tables.RETURN_ORDER_BAK;
+import static com.vpu.mp.db.main.Tables.USER;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUNDING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURNING;
@@ -106,7 +103,7 @@ public class OrderInfoBakDao extends MainBaseDao {
     public Map<String, List<OrderListInfoVo>> getOrders(List<String> orderSn) {
         List<OrderListInfoVo> orders = db().select(ORDER_INFO_BAK.asterisk(), USER.USERNAME, USER.MOBILE.as("userMobile"))
                 .from(ORDER_INFO_BAK)
-                .innerJoin(USER).on(ORDER_INFO_BAK.USER_ID.eq(USER.USER_ID))
+                .innerJoin(USER).on(ORDER_INFO_BAK.USER_ID.eq(USER.USER_ID).and(ORDER_INFO_BAK.SHOP_ID.eq(USER.SHOP_ID)))
                 .where(ORDER_INFO_BAK.MAIN_ORDER_SN.in(orderSn).or(ORDER_INFO_BAK.ORDER_SN.in(orderSn)))
                 .orderBy(ORDER_INFO_BAK.ORDER_ID.desc())
                 .fetchInto(OrderListInfoVo.class);
@@ -171,7 +168,7 @@ public class OrderInfoBakDao extends MainBaseDao {
         if (param.getSortRule() != null) {
             switch (param.getSortRule()) {
                 case OrderConstant.OQSR_APPLY_RETURN: {
-                    mainOrder.orderBy(RETURN_ORDER.RET_ID.desc());
+                    mainOrder.orderBy(RETURN_ORDER_BAK.RET_ID.desc());
                     break;
                 }
                 default:
@@ -249,9 +246,6 @@ public class OrderInfoBakDao extends MainBaseDao {
             if (!StringUtils.isBlank(param.userName)) {
                 select.where(USER.USERNAME.like(likeValue(param.userName)));
             }
-            if (param.tagIds != null && param.tagIds.length != 0) {
-                select.where(USER_TAG.TAG_ID.in(param.tagIds));
-            }
         }
         if (param.getUserId() != null) {
             select.where(ORDER_INFO_BAK.USER_ID.eq(param.getUserId()));
@@ -298,14 +292,6 @@ public class OrderInfoBakDao extends MainBaseDao {
         if (param.getIsStar() != null) {
             select.where(ORDER_INFO_BAK.STAR_FLAG.eq(param.getIsStar()));
         }
-        if (!StringUtils.isBlank(param.getShippingNo())) {
-            select.leftJoin(PART_ORDER_GOODS_SHIP).on(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(ORDER_INFO_BAK.ORDER_SN)).where(PART_ORDER_GOODS_SHIP.SHIPPING_NO.like(likeValue(param.getShippingNo())));
-        }
-        // 拼团退款失败订单
-        if (param.pinStatus != null && param.pinStatus.length != 0) {
-            select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO_BAK.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
-            select.where(GROUP_BUY_LIST.STATUS.in(param.pinStatus));
-        }
     }
 
     private void processPayWayOption(SelectJoinStep<?> select, OrderPageListQueryParam param) {
@@ -341,13 +327,13 @@ public class OrderInfoBakDao extends MainBaseDao {
             List<Byte> status = Lists.newArrayList(param.orderStatus);
             Condition condition = DSL.noCondition();
             if (status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING) || status.contains(ORDER_RETURN_FINISHED) || status.contains(ORDER_REFUND_FINISHED)) {
-                select.leftJoin(RETURN_ORDER).on(ORDER_INFO_BAK.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
+                select.leftJoin(RETURN_ORDER_BAK).on(ORDER_INFO_BAK.ORDER_ID.eq(RETURN_ORDER_BAK.ORDER_ID));
                 if (status.contains(ORDER_REFUNDING)) {
-                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    condition = condition.or(RETURN_ORDER_BAK.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER_BAK.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
                     status.remove(Byte.valueOf(ORDER_REFUNDING));
                 }
                 if (status.contains(ORDER_RETURNING)) {
-                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING, REFUND_STATUS_AUDIT_PASS, REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    condition = condition.or(RETURN_ORDER_BAK.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER_BAK.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING, REFUND_STATUS_AUDIT_PASS, REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
                     status.remove(Byte.valueOf(ORDER_RETURNING));
                 }
             }
