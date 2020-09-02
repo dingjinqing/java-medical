@@ -181,6 +181,14 @@ const routes = [{
       meta: {
         title: '咨询订单'
       }
+    },
+    {
+      path: 'sales_report',
+      component: () => import('@/view/system/index/leftNavComponents/order_management/sales_report/salesReport'),
+      name: 'salesReport',
+      meta: {
+        title: '销售报表'
+      }
     }
   ]
 },

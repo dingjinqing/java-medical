@@ -7,7 +7,7 @@
           <el-select
             v-model="param.analyzeType"
             size="small"
-            @change="dateChangeHandler"
+            @change="dateChangeHandler(time,1)"
             class="timeSelect"
           >
             <el-option
@@ -170,7 +170,7 @@
 
 <script>
 import { getSalesReportList, getSalesReportExport } from '@/api/admin/basicConfiguration/salesreport.js'
-import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
+import { dateChange } from '@/util/date.js'
 import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -179,24 +179,34 @@ export default {
   },
   watch: {
     lang () {
-      this.timeRange = this.$t('tradesStatistics.timeRange')
+      this.timeRange = [
+        { value: -1, label: '最新1天' },
+        { value: -7, label: '最新7天' },
+        { value: -30, label: '最新30天' },
+        { value: 0, label: '自定义' }
+      ]
     }
   },
   mounted () {
-    this.getDateValue(1)
+    this.getDateValue(-1)
   },
   data () {
     return {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      timeSelect: 1,
+      timeSelect: -1,
       pageParams: {
         currentPage: 1,
         pageRows: 20
       },
       tableData: [],
-      timeRange: this.$t('tradesStatistics.timeRange'),
+      timeRange: [
+        { value: -1, label: '最新1天' },
+        { value: -7, label: '最新7天' },
+        { value: -30, label: '最新30天' },
+        { value: 0, label: '自定义' }
+      ],
       startDate: {
         year: '',
         month: '',
@@ -232,9 +242,9 @@ export default {
       }).catch(err => console.log(err))
     },
     // 选择时间段
-    dateChangeHandler (time) {
+    dateChangeHandler (time, type = 0) {
       if (time !== 0) {
-        this.getDateValue(time)
+        if (type === 0) this.getDateValue(time)
         this.initData()
       }
     },
@@ -265,19 +275,16 @@ export default {
       }).catch(err => console.log(err))
     },
     getDateValue (unit) {
-      getDate(unit).then(res => {
-        if (res.error === 0) {
-          this.startDate.year = res.content.startTime.split('-')[0]
-          this.startDate.month = res.content.startTime.split('-')[1]
-          this.startDate.day = res.content.startTime.split('-')[2]
-          this.endDate.year = res.content.endTime.split('-')[0]
-          this.endDate.month = res.content.endTime.split('-')[1]
-          this.endDate.day = res.content.endTime.split('-')[2]
-          this.param.startTime = res.content.startTime + ' 00:00:00'
-          this.param.endTime = res.content.endTime + ' 00:00:00'
-          this.initData()
-        }
-      }).catch(err => console.log(err))
+      let date = dateChange(unit)
+      this.startDate.year = date[1].split('-')[0]
+      this.startDate.month = date[1].split('-')[1]
+      this.startDate.day = date[1].split('-')[2]
+      this.endDate.year = date[0].split('-')[0]
+      this.endDate.month = date[0].split('-')[1]
+      this.endDate.day = date[0].split('-')[2]
+      this.param.startTime = date[1] + ' 00:00:00'
+      this.param.endTime = date[0] + ' 00:00:00'
+      this.initData()
     },
     handleData (data) {
       this.tableData = data

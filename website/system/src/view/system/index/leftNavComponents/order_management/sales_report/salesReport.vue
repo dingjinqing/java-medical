@@ -2,23 +2,27 @@
   <div class="main">
     <div class="nav_box">
       <div class="filters">
-        <div class="filters_item ">
-          <span class="fil_span">医师姓名：</span>
-          <el-input
-            v-model="param.doctorName"
+        <div class="filters_item">
+          <span class="fil_span">分析时段：</span>
+          <el-select
+            v-model="param.analyzeType"
             size="small"
-            style="width:190px;"
-            placeholder="请输入医师姓名"
+            @change="dateChangeHandler(time,1)"
+            class="timeSelect"
           >
-          </el-input>
-
+            <el-option
+              v-for="item in analyRange"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </div>
         <div class="filters_item">
           <span class="fil_span">时间筛选：</span>
           <el-select
             v-model="timeSelect"
             size="small"
-            clearable
             @change="dateChangeHandler"
             class="timeSelect"
           >
@@ -43,26 +47,34 @@
           </el-date-picker>
           <span class="choosed_time">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
         </div>
+        <div class="filters_item">
+          <span class="fil_span">医院：</span>
+          <el-select
+            v-model="param.shopId"
+            size="small"
+            @change="getShop"
+            class="timeSelect"
+          >
+            <el-option
+              v-for="item in shopList"
+              :key="item.shopId"
+              :label="item.shopName"
+              :value="item.shopId"
+            ></el-option>
+          </el-select>
+        </div>
         <div class="btn_wrap">
-          <el-button
+          <!-- <el-button
             type='primary'
             size='small'
             @click="initData"
-          >查询</el-button>
+          >查询</el-button> -->
           <el-button
             type="primary"
             size="small"
             @click='exportData'
           >导出</el-button>
         </div>
-      </div>
-    </div>
-    <div
-      class="total_amount"
-      v-if='total.amountTotal > 0'
-    >
-      <div>
-        <span>总计:</span>咨询单数:<span>{{total.amountTotal}};</span>咨询单次价格:<span>{{total.oncePriceTotal}};</span>咨询总金额:<span>{{total.amountPriceTotal}}</span>
       </div>
     </div>
     <div class="table_box">
@@ -81,48 +93,102 @@
             'text-align':'center'
           }"
       >
+        <el-table-column
+          prop='time'
+          label='日期'
+        ></el-table-column>
+        <el-table-column>
+          <template slot="header">
+            <span>销售金额</span>
+            <el-tooltip
+              class="item"
+              effect="light"
+              content="订单成交总金额"
+              placement="top"
+            >
+              <img
+                class="icon_img"
+                :src="$imageHost + '/image/admin/system_icon.png'"
+              >
+            </el-tooltip>
 
-        <el-table-column label='日期'>
-          <template v-slot='scope'>
-            <span>{{scope.row.createTime | timeDate}}</span>
+          </template>
+          <template v-slot="scope">
+            <span>{{scope.row.orderAmount}}</span>
           </template>
         </el-table-column>
+        <el-table-column
+          prop='orderMedicalAmount'
+          label='处方药销售金额'
+        ></el-table-column>
+        <el-table-column
+          prop='orderMedicalNumber'
+          label='处方药订单数量'
+        ></el-table-column>
 
         <el-table-column
-          prop='doctorName'
-          label='医生姓名'
+          prop='moneyPaid'
+          label='实付金额'
         ></el-table-column>
         <el-table-column
-          prop='shopName'
-          label='医院'
+          prop='returnAmount'
+          label='退款金额'
         ></el-table-column>
         <el-table-column
-          prop='amount'
-          label='咨询单数'
+          prop='returnNumber'
+          label='退款单数'
         ></el-table-column>
-        <el-table-column
-          prop='oncePrice'
-          label='咨询单次价格'
-        ></el-table-column>
-        <el-table-column
-          prop='amountPrice'
-          label='咨询总金额'
-        ></el-table-column>
+        <el-table-column>
+          <template slot="header">
+            <span>净销售额</span>
+            <el-tooltip
+              class="item"
+              effect="light"
+              content="销售金额-退款金额"
+              placement="top"
+            >
+              <img
+                class="icon_img"
+                :src="$imageHost + '/image/admin/system_icon.png'"
+              >
+            </el-tooltip>
+
+          </template>
+          <template v-slot="scope">
+            <span>{{scope.row.netSales}}</span>
+          </template></el-table-column>
+        <el-table-column>
+          <template slot="header">
+            <span>笔单价</span>
+            <el-tooltip
+              class="item"
+              effect="light"
+              content="净销售额/销售单数"
+              placement="top"
+            >
+              <img
+                class="icon_img"
+                :src="$imageHost + '/image/admin/system_icon.png'"
+              >
+            </el-tooltip>
+
+          </template>
+          <template v-slot="scope">
+            <span>{{scope.row.orderAvg}}</span>
+          </template></el-table-column>
       </el-table>
       <pagination
         :page-params.sync="pageParams"
         @pagination="initData"
       />
-
     </div>
-
   </div>
 </template>
 
 <script>
-import { getAdvistoryReportList, getReportExport, getDoctorTotal } from '@/api/admin/orderManage/advisory.js'
-import { download } from '@/util/excelUtil.js'
+import { getSalesReportList, getSalesReportExport, getShopList } from '@/api/admin/orderManage/salesReport.js'
 import { dateChange } from '@/util/date.js'
+import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/system/pagination/pagination'
 export default {
   components: {
@@ -140,15 +206,18 @@ export default {
   },
   mounted () {
     this.getDateValue(-1)
-    // this.getDoctor({})
-    this.initData()
+    this.getShop()
   },
   data () {
     return {
       loading: false,
+      langDefaultFlag: false,
       timeValue: [],
       timeSelect: -1,
-      pageParams: {},
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
       tableData: [],
       timeRange: [
         { value: -1, label: '最新1天' },
@@ -169,32 +238,40 @@ export default {
       param: {
         startTime: '',
         endTime: '',
-        doctorName: ''
+        analyzeType: 1,
+        shopId: ''
       },
-      doctorList: [],
-      total: {}
+      originalData: [],
+      analyRange: [
+        { value: 1, label: '每天' },
+        { value: 2, label: '每周' },
+        { value: 3, label: '每月' },
+        { value: 4, label: '每季度' },
+        { value: 5, label: '每年' }
+      ],
+      shopList: null
     }
   },
   methods: {
     // 导出
     exportData () {
-      getReportExport(this.param).then(res => {
+      getSalesReportExport(this.param).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
-        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '咨询报表.xlsx'
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '销售报表.xlsx'
         download(res, decodeURIComponent(fileName))
       }).catch(err => console.log(err))
     },
     // 选择时间段
-    dateChangeHandler (time) {
+    dateChangeHandler (time, type = 0) {
       if (time !== 0) {
-        this.getDateValue(time)
+        if (type === 0) this.getDateValue(time)
         this.initData()
       }
     },
     // 自定义时间
     changeDate () {
       this.param.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
-      this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
+      this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 23:59:59'
       this.startDate.year = this.timeValue[0].substring(0, 4)
       this.startDate.month = this.timeValue[0].substring(4, 6)
       this.startDate.day = this.timeValue[0].substring(6, 8)
@@ -202,6 +279,30 @@ export default {
       this.endDate.month = this.timeValue[1].substring(4, 6)
       this.endDate.day = this.timeValue[1].substring(6, 8)
       this.initData()
+    },
+    initData () {
+      let params = Object.assign({}, this.param, this.pageParams)
+      getSalesReportList(params).then(res => {
+        console.log(res)
+        if (res.error !== 0) {
+          this.$message.error({ message: res.message })
+          return
+        }
+        this.originalData = res.content.dataList
+        this.pageParams = res.content.page
+        let originalData = JSON.parse(JSON.stringify(this.originalData))
+        this.handleData(originalData)
+      }).catch(err => console.log(err))
+    },
+    getShop () {
+      getShopList(this.param.shopId).then(res => {
+        if (res.error !== 0) {
+          this.$message.error({ message: res.message })
+          return
+        }
+        this.shopList = res.content
+        this.initData()
+      })
     },
     getDateValue (unit) {
       let date = dateChange(unit)
@@ -215,24 +316,8 @@ export default {
       this.param.endTime = date[0] + ' 00:00:00'
       this.initData()
     },
-    initData () {
-      let params = Object.assign({}, this.param, this.pageParams)
-      getAdvistoryReportList(params).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          this.tableData = res.content.dataList
-          this.pageParams = res.content.page
-        }
-      }).catch(err => console.log(err))
-      this.getTotal({ doctorName: this.param.doctorName, startTime: this.param.startTime, endTime: this.param.endTime })
-    },
-    getTotal (doctor) {
-      getDoctorTotal(doctor).then(res => {
-        if (res.error === 0) {
-          console.log(res)
-          this.total = res.content
-        }
-      })
+    handleData (data) {
+      this.tableData = data
     }
   },
   filters: {
@@ -249,8 +334,9 @@ export default {
 .main {
   .nav_box {
     display: flex;
+    width: 100%;
     background-color: #fff;
-    padding: 20px 15px 10px;
+    padding: 10px 15px;
     margin: 10px 10px 0;
     .filters {
       flex: 2;
@@ -262,7 +348,9 @@ export default {
         display: flex;
         justify-content: flex-end;
         margin-left: 15px;
+        min-width: 260px !important;
         .fil_span {
+          width: 100px;
           font-size: 14px;
           text-align: right;
         }
@@ -284,24 +372,9 @@ export default {
     background: #fff;
     margin: 0 10px 10px;
   }
-  .default_input {
-    width: 150px;
-  }
-  .doctor_input {
-    width: 150px;
-  }
-  .total_amount {
-    background: #fff;
-    padding: 10px 0;
-    margin: 0 10px;
-    div {
-      text-align: center;
-      font-size: 15px;
-      color: #333;
-      span {
-        margin-right: 20px;
-      }
-    }
+  .icon_img {
+    position: relative;
+    top: 2px;
   }
 }
 </style>
