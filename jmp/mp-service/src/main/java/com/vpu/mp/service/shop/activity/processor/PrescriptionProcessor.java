@@ -145,6 +145,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                     }
                 }
                 goods.setPrescriptionOldCode(prescriptionVo.getPrescriptionCode());
+                goods.setPrescriptionInfo(prescriptionVo);
             }
             if (!OrderConstant.MEDICAL_TYPE_RX.equals(param.getOrderMedicalType())){
                 log.info("订单全部非处方药,不需要审核");
