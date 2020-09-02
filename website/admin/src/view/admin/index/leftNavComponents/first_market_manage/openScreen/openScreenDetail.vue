@@ -87,7 +87,7 @@
           ></el-table-column>
           <el-table-column
             :label="$t('openScreenDetail.award')"
-            prop="comment"
+            prop="awardName"
             align="center"
           ></el-table-column>
           <el-table-column

@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.market.coopen;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.CoopenActivityRecords;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenIssueListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenIssueListVo;
 import org.jooq.Record;
@@ -29,12 +30,36 @@ public class CoopenRecordService extends ShopBaseService {
     public PageResult<CoopenIssueListVo> getIssuePageList(CoopenIssueListParam param) {
 
         SelectConditionStep<? extends Record> select =
-            db().select(TABLE.MRKING_VOUCHER_ID,TABLE.RECEIVE_TIME,TABLE.COMMENT,TABLE.USER_ID, COOPEN_ACTIVITY.NAME, USER.USERNAME, USER.MOBILE)
+            db().select(TABLE.MRKING_VOUCHER_ID,TABLE.RECEIVE_TIME,TABLE.COMMENT,TABLE.USER_ID, TABLE.ACTIVITY_ACTION,COOPEN_ACTIVITY.NAME, USER.USERNAME, USER.MOBILE)
                     .from(TABLE)
                 .leftJoin(USER).on(USER.USER_ID.eq(TABLE.USER_ID))
                 .leftJoin(COOPEN_ACTIVITY).on(COOPEN_ACTIVITY.ID.eq(TABLE.ACTIVITY_ID)).where();
         buildOptions(select, param);
-        return getPageResult(select, param, CoopenIssueListVo.class);
+        PageResult<CoopenIssueListVo> issueList = getPageResult(select, param, CoopenIssueListVo.class);
+        for (CoopenIssueListVo issue: issueList.getDataList()) {
+            switch (issue.getActivityAction()){
+                case CoopenConstant.COUPON:
+                    issue.setAwardName(CoopenConstant.COUPON_NAME);
+                    break;
+                case CoopenConstant.DRAW:
+                    issue.setAwardName(CoopenConstant.DRAW_NAME);
+                    break;
+                case CoopenConstant.CUSTOMIZE:
+                    issue.setAwardName(CoopenConstant.CUSTOMIZE_NAME);
+                    break;
+                case CoopenConstant.SCORE:
+                    issue.setAwardName(CoopenConstant.SCORE_NAME);
+                    break;
+                case CoopenConstant.ACCOUNT:
+                    issue.setAwardName(CoopenConstant.ACCOUNT_NAME);
+                    break;
+                case CoopenConstant.SPLIT_COUPON:
+                    issue.setAwardName(CoopenConstant.SPLIT_COUPON__NAME);
+                    break;
+                default:
+            }
+        }
+        return issueList;
     }
 
     private void buildOptions(SelectConditionStep<? extends Record> select, CoopenIssueListParam param) {
