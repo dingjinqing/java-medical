@@ -197,7 +197,7 @@ global.wxPage({
 })
 
 function withdraw_request(that) {
-  util.api('/api/wxapp/distributor/withdraw/detail', function (res) {
+  util.api('/api/wxapp/distribution/withdraw/detail', function (res) {
     if (res.error == 0) {
       sub_flag = '0';
       withdraw_money = '';
