@@ -192,8 +192,8 @@ export default {
                     return leftItem.name === subItem.enName
                   })
                   newArray = [...newArray, objItem]
-                  return newArray
                 }
+                return newArray
               }, [])
             } else {
               let objItem = this[item.enName].find(leftItem => {
