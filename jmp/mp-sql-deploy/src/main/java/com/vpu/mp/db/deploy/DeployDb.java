@@ -75,7 +75,7 @@ public class DeployDb {
         checkSqlGrammar(dryRunDbConfig(false));
 
         if (needUpdateSqlVersion(true)) {
-            migrateMainDb();
+            migrateDb(mainDbConfig());
         }
 
         if (needUpdateSqlVersion(false)) {
@@ -128,7 +128,7 @@ public class DeployDb {
         try {
             // 验证本地SQL与老数据库的CheckSum的正确性
             migrateSql.validateDb(dataSource, dbConfig.getDatabase(), dbConfig.getIsMainDb());
-            log.info("CheckSqlGrammar {}, validateDb Ok", dbConfig.getDatabase());
+            log.info("CheckSqlGrammar `{}`, validateDb Ok", dbConfig.getDatabase());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,10 +154,9 @@ public class DeployDb {
         }
     }
 
-    public void migrateMainDb() {
-        DbConfig mainConfig = mainDbConfig();
-        log.info("migrateMainDb: `{}`", mainConfig.getDatabase());
-        migrateSql.migrateDb(getDatasource(mainConfig), mainConfig.getDatabase(), mainConfig.getIsMainDb(), true);
+    public void migrateDb(DbConfig dbConfig) {
+        log.info("migrateDb: `{}`", dbConfig.getDatabase());
+        migrateSql.migrateDb(getDatasource(dbConfig), dbConfig.getDatabase(), dbConfig.getIsMainDb(), true);
     }
 
     /**
@@ -176,8 +175,7 @@ public class DeployDb {
             String dbConfigStr = row.get("db_config").toString();
             DbConfig dbConfig = mapper.readValue(dbConfigStr, DbConfig.class);
             dbConfig.setIsMainDb(false);
-            log.info("migrate ShopDb: `{}`", dbConfig.getDatabase());
-            migrateSql.migrateDb(getDatasource(dbConfig), dbConfig.getDatabase(), dbConfig.getIsMainDb(), false);
+            migrateDb(dbConfig);
         }
     }
 
