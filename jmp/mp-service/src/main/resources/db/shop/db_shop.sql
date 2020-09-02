@@ -5130,7 +5130,6 @@ create table b2c_doctor_title(
 -- 医师
 create table b2c_doctor(
     `id`   int(11)      not null auto_increment,
-    `account_id` int(11) not null default 0 comment '医师子账号id',
     `age` int(11) not null default 0 comment '年龄',
     `work_time` int(11) not null default 0 comment '从业时间',
     `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
