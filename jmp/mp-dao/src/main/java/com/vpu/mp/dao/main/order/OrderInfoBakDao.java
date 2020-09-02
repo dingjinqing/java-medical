@@ -103,7 +103,7 @@ public class OrderInfoBakDao extends MainBaseDao {
     public Map<String, List<OrderListInfoVo>> getOrders(List<String> orderSn) {
         List<OrderListInfoVo> orders = db().select(ORDER_INFO_BAK.asterisk(), USER.USERNAME, USER.MOBILE.as("userMobile"))
                 .from(ORDER_INFO_BAK)
-                .innerJoin(USER).on(ORDER_INFO_BAK.USER_ID.eq(USER.USER_ID).and(ORDER_INFO_BAK.SHOP_ID.eq(USER.SHOP_ID)))
+                .leftJoin(USER).on(ORDER_INFO_BAK.USER_ID.eq(USER.USER_ID).and(ORDER_INFO_BAK.SHOP_ID.eq(USER.SHOP_ID)))
                 .where(ORDER_INFO_BAK.MAIN_ORDER_SN.in(orderSn).or(ORDER_INFO_BAK.ORDER_SN.in(orderSn)))
                 .orderBy(ORDER_INFO_BAK.ORDER_ID.desc())
                 .fetchInto(OrderListInfoVo.class);

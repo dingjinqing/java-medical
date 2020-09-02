@@ -17,20 +17,35 @@ import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
-import com.vpu.mp.db.shop.tables.Patient;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientExternalVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientMoreInfoParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckNumParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.sms.SmsCheckParam;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.config.SmsApiConfig.REDIS_KEY_SMS_USER_CHECK_NUM;
@@ -43,6 +58,8 @@ import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.ALRE
 public class PatientService extends BaseShopConfigService{
     public static final String STRING_BLANK = "";
     public static final String NOTHING = "无";
+    @Autowired
+    private MpAuthShopService mpAuthShopService;
     @Autowired
     protected PatientDao patientDao;
     @Autowired
@@ -282,7 +299,8 @@ public class PatientService extends BaseShopConfigService{
     public void sendCheckSms(PatientSmsCheckNumParam param) throws MpException {
         //0000-9999
         int intRandom = RandomUtil.getIntRandom();
-        String smsContent = String.format(SmsTemplate.PATIENT_CHECK_MOBILE, "XX医院", intRandom);
+        MpAuthShopRecord mpAuthShopRecord = mpAuthShopService.getAuthShopByShopId(getShopId());
+        String smsContent = String.format(SmsTemplate.PATIENT_CHECK_MOBILE, mpAuthShopRecord.getNickName(), intRandom);
         smsService.sendSms(param.getUserId(), param.getMobile(), smsContent);
         Integer patientId = patientDao.getPatientIdByIdentityCode(param.getIdentityCode());
         String checkKey = String.format(REDIS_KEY_SMS_USER_CHECK_NUM, getShopId(), patientId);
