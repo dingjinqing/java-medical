@@ -43,7 +43,7 @@ public class MigrateSqlImpl implements MigrateSql {
         Flyway flyway = config(dataSource, database, isMainDb, false).load();
         MigrationInfoService info = flyway.info();
         for (MigrationInfo migrationInfo : info.all()) {
-            if (migrationInfo.getState() == MigrationState.PENDING) {
+            if (!migrationInfo.getState().isApplied()) {
                 return true;
             }
         }
