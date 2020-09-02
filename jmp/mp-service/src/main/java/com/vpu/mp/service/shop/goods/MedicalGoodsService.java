@@ -463,7 +463,7 @@ public class MedicalGoodsService extends ShopBaseService {
      * @return
      */
     public void fetchExternalStoresGoodsInfo() {
-        String appId = ApiExternalGateConstant.APP_ID_STORE;
+        String appId = ApiExternalGateConfig.APP_ID_STORE;
         Integer shopId = getShopId();
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(appId, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
         Timestamp now = DateUtils.getLocalDateTime();
