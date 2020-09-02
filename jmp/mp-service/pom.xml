@@ -10,16 +10,12 @@
 	<artifactId>mp-service</artifactId>
 	<name>mp-service</name>
 
-	<properties>
-		<weixin-java-open.version>3.5.0</weixin-java-open.version>
-	</properties>
-
 
 	<dependencies>
 
 		<dependency>
 			<groupId>com.vpu.mp</groupId>
-			<artifactId>mp-config</artifactId>
+			<artifactId>mp-dao</artifactId>
 		</dependency>
 
 		<dependency>
@@ -28,26 +24,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-		</dependency>
-
-
-		<dependency>
-			<groupId>com.vpu.mp</groupId>
-			<artifactId>mp-db-tables</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>com.github.binarywang</groupId>
 			<artifactId>weixin-java-open</artifactId>
-			<version>${weixin-java-open.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.github.binarywang</groupId>
 			<artifactId>weixin-java-pay</artifactId>
-			<version>${weixin-java-open.version}</version>
 		</dependency>
 
 		<dependency>
@@ -58,26 +41,22 @@
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
-			<version>0.4.8</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
-			<version>4.0.4</version>
 		</dependency>
 
 		<!-- 基本依赖，仅操作 xls 格式只需引入此依赖 -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.17</version>
 		</dependency>
 		<!-- 使用 xlsx 格式需要额外引入此依赖 -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.17</version>
 		</dependency>
 
 		<dependency>
@@ -105,7 +84,6 @@
 		<dependency>
 			<groupId>com.upyun</groupId>
 			<artifactId>java-sdk</artifactId>
-			<version>4.1.2</version>
 		</dependency>
 
 		<dependency>
@@ -114,17 +92,10 @@
 			<version>2.6</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>3.0.0</version>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.jooq</groupId>
 			<artifactId>jool</artifactId>
-			<version>0.9.12</version>
 		</dependency>
 
 		<dependency>
@@ -148,12 +119,8 @@
 	        <artifactId>javase</artifactId>
 	        <version>3.3.0</version>
 	    </dependency>
-		<dependency>
-			<groupId>cn.hutool</groupId>
-			<artifactId>hutool-all</artifactId>
-			<version>4.5.7</version>
-			<scope>test</scope>
-		</dependency>
+
+		<!--测试-->
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
@@ -166,6 +133,13 @@
 			<version>5.1.6.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.0.0</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
 
 </project>

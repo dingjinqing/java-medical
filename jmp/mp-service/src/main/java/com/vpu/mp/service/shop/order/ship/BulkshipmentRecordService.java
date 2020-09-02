@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.order.ship;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.ShopAccount;
 import com.vpu.mp.db.main.tables.ShopChildAccount;
 import com.vpu.mp.db.shop.tables.BulkshipmentRecord;
 import com.vpu.mp.db.shop.tables.records.BulkshipmentRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;

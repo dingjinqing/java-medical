@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.decoration;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.PageClassification;
 import com.vpu.mp.db.shop.tables.records.PageClassificationRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.PageCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
 import org.jooq.*;

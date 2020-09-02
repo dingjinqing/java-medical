@@ -3,15 +3,16 @@ package com.vpu.mp.service.foundation.es.thread;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.shop.ShopApplication;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author luguangyao
+ */
 @Component
 public class EsDynamicAssemblyProcessor extends MainBaseService {
 

@@ -12,12 +12,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.DateUtils.IntervalType;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.DateUtil.IntervalType;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardExchangGoods.GoodsCfg;
@@ -42,7 +42,7 @@ public class CardExchangService extends ShopBaseService {
 		//	是否可兑换商品
 		Byte isExchang = card.getIsExchang();
 		cardExGoods.setIsExchange(isExchang);
-		
+
 		//	商品兑换总次数
 		cardExGoods.setExchangCount(card.getExchangCount());
 		//	兑换时间类型
@@ -51,12 +51,12 @@ public class CardExchangService extends ShopBaseService {
 		cardExGoods.setExchangTimeNum(card.getPeriodNum());
 		//	运费策略
 		cardExGoods.setExchangFreight(card.getExchangFreight());
-		
+
 		String exchangGoods = card.getExchangGoods();
 		if(CardUtil.canExchangGoods(isExchang) && !StringUtils.isBlank(exchangGoods)) {
 			if(CardUtil.isExchangPartGoods(isExchang)) {
 				//	兑换部分商品
-				List<GoodsCfg> goodsCfgList = parseExchangGoods(exchangGoods);				
+				List<GoodsCfg> goodsCfgList = parseExchangGoods(exchangGoods);
 				cardExGoods.setExchangGoods(goodsCfgList);
 			}else if(CardUtil.isExchangAllGoods(isExchang)) {
 				//	兑换全部商品
@@ -65,7 +65,7 @@ public class CardExchangService extends ShopBaseService {
 		}
 		return cardExGoods;
 	}
-	
+
 	/**
 	 * 	解析兑换商品数据
 	 * @param exchangGoods 兑换商品存储的json数据
@@ -73,7 +73,8 @@ public class CardExchangService extends ShopBaseService {
 	 */
 	private List<GoodsCfg> parseExchangGoods(String exchangGoods) {
 		List<GoodsCfg> goodsCfgList = new ArrayList<GoodsCfg>();
-		if(exchangGoods.startsWith("{")) { 
+        String leftBracket = "{";
+        if(exchangGoods.startsWith(leftBracket)) {
 			//	目前存储的数据格式为map
 			Map<String,Integer> map = Util.json2Object(exchangGoods, new TypeReference<Map<String,Integer>>() {}, false);
 			for(Map.Entry<String, Integer> entry: map.entrySet()) {
@@ -82,7 +83,7 @@ public class CardExchangService extends ShopBaseService {
 				List<Integer> goodsId = Util.stringToList(key);
 				goodsCfg.setGoodsIds(goodsId);
 				goodsCfg.setMaxNum(entry.getValue());
-				
+
 				goodsCfgList.add(goodsCfg);
 			}
 		}else {
@@ -90,7 +91,7 @@ public class CardExchangService extends ShopBaseService {
 			GoodsCfg goodsCfg = new GoodsCfg();
 			goodsCfg.setGoodsIds(Util.stringToList(exchangGoods));
 			goodsCfg.setMaxNum(NUM_INFINITE);
-			
+
 			goodsCfgList.add(goodsCfg);
 		}
 		return goodsCfgList;
@@ -111,7 +112,7 @@ public class CardExchangService extends ShopBaseService {
 		}
 		return goodsIds;
 	}
-	
+
 	/**
 	 * 获取兑换卡可兑换的商品Id
 	 * @param card
@@ -124,7 +125,7 @@ public class CardExchangService extends ShopBaseService {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * 兑换商品时间限制范围
 	 * @param periodLimit
@@ -135,8 +136,8 @@ public class CardExchangService extends ShopBaseService {
 			//	不限制
 			return null;
 		}
-		IntervalType[] values = DateUtil.IntervalType.values();
-		return DateUtil.getInterval(values[periodLimit-1]);
+		IntervalType[] values = DateUtils.IntervalType.values();
+		return DateUtils.getInterval(values[periodLimit-1]);
 	}
 
 

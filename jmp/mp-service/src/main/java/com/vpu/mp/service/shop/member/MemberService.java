@@ -1,5 +1,14 @@
 package com.vpu.mp.service.shop.member;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.db.shop.tables.records.TagRecord;
@@ -7,18 +16,9 @@ import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.area.AreaCityVo;
 import com.vpu.mp.service.pojo.shop.area.AreaDistrictVo;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
@@ -48,6 +48,7 @@ import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
 import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
@@ -59,6 +60,7 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -146,6 +148,8 @@ public class MemberService extends ShopBaseService {
 	@Autowired
 	public UserCardService userCardService;
 	@Autowired
+	public PatientService patientService;
+	@Autowired
 	public UserCardDaoService userCardDao;
 	@Autowired
 	public UserImportService userImportService;
@@ -219,6 +223,7 @@ public class MemberService extends ShopBaseService {
 
 			logger().info(sourceName);
 			member.setSourceName(sourceName);
+			member.setPatientNum(patientService.countPatientByUser(userId));
 		}
 		logger().info("获取会员成功");
 
@@ -254,7 +259,7 @@ public class MemberService extends ShopBaseService {
 		logger().info("正在获取用户来源信息");
 		// 微信后台相关来源
 		String sourceName = SourceNameEnum.getI18NameByCode(member.getScene(), language);
-		final String SYMBOL = "; ";
+		final String symbol = "; ";
 		if(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
 			// 渠道页
 			StringBuilder tmp = new StringBuilder();
@@ -262,7 +267,7 @@ public class MemberService extends ShopBaseService {
 					.where(CHANNEL.ID.eq(member.getInviteActId())).fetchOne().into(String.class);
 			if(!StringUtils.isBlank(sourceName)) {
 				tmp.append(sourceName);
-				tmp.append(SYMBOL);
+				tmp.append(symbol);
 			}
 			tmp.append(Util.translateMessage(language, "member.channal.page", "member"));
 			tmp.append(channelName);
@@ -274,7 +279,7 @@ public class MemberService extends ShopBaseService {
 			StringBuilder tmp = new StringBuilder();
 			if(!StringUtils.isBlank(sourceName)) {
 				tmp.append(sourceName);
-				tmp.append(SYMBOL);
+				tmp.append(symbol);
 			}
 			tmp.append(store.getStoreName(new Integer(member.getSource())));
 			sourceName = tmp.toString();
@@ -455,7 +460,7 @@ public class MemberService extends ShopBaseService {
 
 	/**
 	 * 	通过筛选条件获得用户Id列表
-	 * @param param
+	 * @param searchParam
 	 * @return List<Integer>用户ID列表
 	 */
 	private List<Integer> getAllUserIdBySeachCond(MemberPageListParam searchParam) {
@@ -608,7 +613,8 @@ public class MemberService extends ShopBaseService {
 		
 		/** 邀请人分销分组名称 */
 		memberBasicInfoVo.setInviteGroupName(distributorListService.getGroupName(userId));
-
+        List<PatientOneParam> patientList = patientService.listPatientByUserId(userId);
+        memberBasicInfoVo.setPatientList(patientList);
 		return memberBasicInfoVo;
 	}
 
@@ -891,7 +897,8 @@ public class MemberService extends ShopBaseService {
     private static Timestamp getMaxTimestamp(Timestamp... timestamps) {
         Timestamp r = null;
         for (Timestamp t : timestamps) {
-            if (t != null && (r == null || t.after(r))) {
+            boolean isMaxT = t != null && (r == null || t.after(r));
+            if (isMaxT) {
                 r = t;
             }
         }

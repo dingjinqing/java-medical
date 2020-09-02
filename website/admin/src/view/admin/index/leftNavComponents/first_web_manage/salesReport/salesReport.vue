@@ -1,0 +1,242 @@
+<template>
+  <div class="main">
+    <div class="nav_box">
+        <div class="filters">
+            <div class="filters_item">
+                <span class="fil_span">时间筛选：</span>
+                <el-select
+                    v-model="timeSelect"
+                    size="small"
+                    clearable
+                    @change="dateChangeHandler"
+                    class="timeSelect"
+                >
+                    <el-option
+                    v-for="item in timeRange"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    ></el-option>
+                </el-select>
+                <el-date-picker
+                    v-if="timeSelect===0"
+                    v-model="timeValue"
+                    type="daterange"
+                    size="small"
+                    value-format="yyyyMMdd"
+                    @change="changeDate"
+                    range-separator="-"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                >
+                </el-date-picker>
+                <span class="choosed_time">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+            </div>
+            <div class="btn_wrap">
+                <el-button
+                    type='primary'
+                    size='small'
+                    @click="initData"
+                >查询</el-button>
+                <el-button
+                    type="primary"
+                    size="small"
+                    @click='exportData'
+                >导出</el-button>
+            </div>
+        </div>
+    </div>
+    <div class="table_box">
+        <el-table
+          v-loading='loading'
+          :data='tableData'
+          style="width:100%"
+          border
+          :header-cell-style="{
+            'background-color':'#f5f5f5',
+            'text-align':'center',
+            'border':'none',
+            'color': '#000'
+          }"
+          :cell-style="{
+            'text-align':'center'
+          }"
+        >
+            <el-table-column
+                prop='time'
+                label='日期'
+            ></el-table-column>
+            <el-table-column
+                prop='orderAmount'
+                label='销售金额'
+            ></el-table-column>
+            <el-table-column
+                prop='orderNumber'
+                label='销售单数'
+            ></el-table-column>
+            <el-table-column
+                prop='orderMedicalAmount'
+                label='处方药销售金额'
+            ></el-table-column>
+            <el-table-column
+                prop='orderMedicalNumber'
+                label='处方药销售单数'
+            ></el-table-column>
+            <el-table-column
+                prop='returnAmount'
+                label='退货金额'
+            ></el-table-column>
+            <el-table-column
+                prop='returnNumber'
+                label='退货单数'
+            ></el-table-column>
+            <el-table-column
+                prop='orderAvg'
+                label='笔单价'
+            ></el-table-column>
+        </el-table>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="initData"
+        />
+    </div>
+  </div>
+</template>
+
+<script>
+import { getSalesReportList, getSalesReportExport } from '@/api/admin/basicConfiguration/salesreport.js'
+// import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
+import { download } from '@/util/excelUtil.js'
+import pagination from '@/components/admin/pagination/pagination'
+export default {
+  components: {
+    pagination
+  },
+  watch: {
+    lang () {
+      this.timeRange = this.$t('tradesStatistics.timeRange')
+    }
+  },
+  mounted () {
+    this.initData()
+  },
+  data () {
+    return {
+      loading: false,
+      timeValue: [],
+      timeSelect: 1,
+      pageParams: {},
+      tableData: [],
+      timeRange: this.$t('tradesStatistics.timeRange'),
+      startDate: {
+        year: '',
+        month: '',
+        day: ''
+      },
+      endDate: {
+        year: '',
+        month: '',
+        day: ''
+      },
+      param: {
+        startTime: '',
+        endTime: '',
+        day: 1
+      }
+    }
+  },
+  methods: {
+    // 导出
+    exportData () {
+      getSalesReportExport(this.param).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '销售报表.xlsx'
+        download(res, decodeURIComponent(fileName))
+      }).catch(err => console.log(err))
+    },
+    // 选择时间段
+    dateChangeHandler (time) {
+      if (time !== 0) {
+        this.param.day = time
+        this.initData()
+      }
+    },
+    // 自定义时间
+    changeDate () {
+      this.param.day = ''
+      this.param.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
+      this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 23:59:59'
+      this.startDate.year = this.timeValue[0].substring(0, 4)
+      this.startDate.month = this.timeValue[0].substring(4, 6)
+      this.startDate.day = this.timeValue[0].substring(6, 8)
+
+      this.endDate.year = this.timeValue[1].substring(0, 4)
+      this.endDate.month = this.timeValue[1].substring(4, 6)
+      this.endDate.day = this.timeValue[1].substring(6, 8)
+      this.initData()
+    },
+    initData () {
+      let params = Object.assign({}, this.param, this.pageParams)
+      getSalesReportList(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.startDate.year = res.content.startTime.substr(0, 10).split('-')[0]
+          this.startDate.month = res.content.startTime.substr(0, 10).split('-')[1]
+          this.startDate.day = res.content.startTime.substr(0, 10).split('-')[2]
+          this.endDate.year = res.content.endTime.substr(0, 10).split('-')[0]
+          this.endDate.month = res.content.endTime.substr(0, 10).split('-')[1]
+          this.endDate.day = res.content.endTime.substr(0, 10).split('-')[2]
+          this.param.startTime = res.content.startTime
+          this.param.endTime = res.content.endTime
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      }).catch(err => console.log(err))
+    }
+  }
+}
+</script>
+
+<style lang='scss' scoped>
+.main{
+    .nav_box{
+        display: flex;
+        width: 100%;
+        background-color: #fff;
+        padding: 10px 15px;
+        margin: 10px 10px 0;
+        .filters{
+            flex: 2;
+            display: flex;
+            flex-wrap: wrap;
+            line-height: 32px;
+            margin-left: -15px;
+            .filters_item {
+                display: flex;
+                justify-content: flex-end;
+                margin-left: 15px;
+                .fil_span {
+                    width: 100px;
+                    font-size: 14px;
+                    text-align: right;
+                }
+                .timeSelect {
+                    width: 140px;
+                    margin: 0 10px 0 10px;
+                }
+                .choosed_time{
+                    margin-left: 20px;
+                }
+            }
+            .btn_wrap{
+                margin-left: 20px;
+            }
+        }
+    }
+    .table_box{
+        padding: 10px;
+        background: #fff;
+        margin: 0 10px 10px;
+    }
+}
+</style>

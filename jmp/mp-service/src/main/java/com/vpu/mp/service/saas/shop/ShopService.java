@@ -1,5 +1,12 @@
 package com.vpu.mp.service.saas.shop;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DatasourceManager;
+import com.vpu.mp.dao.foundation.database.DbConfig;
+import com.vpu.mp.dao.main.ShopDao;
+import com.vpu.mp.dao.main.SmsConfigDao;
 import com.vpu.mp.db.main.tables.records.*;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
@@ -7,18 +14,10 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
-import com.vpu.mp.service.foundation.database.DatasourceManager;
-import com.vpu.mp.service.foundation.database.DbConfig;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
-import com.vpu.mp.service.pojo.saas.marketCalendar.SysCalendarActVo;
-import com.vpu.mp.service.pojo.saas.shop.ShopConst;
-import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
-import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;
-import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
+import com.vpu.mp.service.pojo.saas.marketcalendar.SysCalendarActVo;
+import com.vpu.mp.service.pojo.saas.shop.*;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumberConfig;
@@ -26,7 +25,7 @@ import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
-import com.vpu.mp.service.saas.marketCalendar.MarketSysCalendarService;
+import com.vpu.mp.service.saas.marketcalendar.MarketSysCalendarService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
@@ -117,6 +116,12 @@ public class ShopService extends MainBaseService {
     @Autowired
     public ShopApplyService shopApply;
 
+    @Autowired
+    private SmsConfigDao smsConfigDao;
+
+    @Autowired
+    private ShopDao shopDao;
+
     public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
         SelectWhereStep<?> select = db()
             .select(SHOP.SYS_ID, SHOP.SHOP_ID, SHOP.SHOP_NAME, SHOP.SHOP_TYPE, SHOP.MOBILE, SHOP.CREATED,
@@ -162,43 +167,15 @@ public class ShopService extends MainBaseService {
 					.or(MP_AUTH_SHOP.NICK_NAME.like(keywords)).or(SHOP.SHOP_ID.eq(shopId)));
 		}
 
-		//使用中
-		Integer shopUsingStatus = 1;
-		//已过期
-		Integer shopExpiredStatus = 2;
-		//即将过期
-		Integer shopSoonExpiredStatus = 3;
-		if (param.isUse != null && param.isUse.equals(shopUsingStatus)) {
-			// 店铺在使用中
-			select.where(SHOP.EXPIRE_TIME.ge(DSL.currentTimestamp()));
-		}
+        buildShopExpireOption(select, param);
 
-		if (param.isUse != null && param.isUse.equals(shopExpiredStatus)) {
-			// 店铺已过期
-			select.where(SHOP.EXPIRE_TIME.lt(DSL.currentTimestamp()));
-		}
-		if (param.isUse != null && param.isUse.equals(shopSoonExpiredStatus)) {
-			// 即将过期
-			select.where(SHOP.EXPIRE_TIME.le(DSL.timestampAdd(DSL.currentTimestamp(), 1, DatePart.MONTH)).and(SHOP.EXPIRE_TIME.ge(DSL.currentTimestamp())));
-		}
-
-		if (!StringUtils.isEmpty(param.shopType)) {
+        if (!StringUtils.isEmpty(param.shopType)) {
 			select.where(SHOP.SHOP_TYPE.eq(param.shopType));
 		}
 
-		if (StringUtils.isEmpty(param.shopType) && !StringUtils.isEmpty(param.shopTypes)) {
-			// 区分体验版和付费版
-			if (param.shopTypes.equals(ShopConst.shopTypes.TRIAL_VERSION)) {
-				// 体验版
-				select.where(SHOP.SHOP_TYPE.eq(ShopConst.shopType.V_1));
-			}
-			if (param.shopTypes.equals(ShopConst.shopTypes.PAID_VERSION)) {
-				// 付费版
-				select.where(SHOP.SHOP_TYPE.in(ShopConst.shopType.V_2, ShopConst.shopType.V_3, ShopConst.shopType.V_4));
-			}
+        buildShopTypeOption(select, param);
 
-		}
-		if (param.shopFlag != null) {
+        if (param.shopFlag != null) {
 			if (param.shopFlag == 0) {
 				select.where(SHOP.SHOP_FLAG.eq(param.shopFlag).or(SHOP.SHOP_FLAG.isNull()));
 			} else {
@@ -240,7 +217,44 @@ public class ShopService extends MainBaseService {
 		return select;
 	}
 
-	/**
+    private void buildShopTypeOption(SelectWhereStep<?> select, ShopListQueryParam param) {
+        if (StringUtils.isEmpty(param.shopType) && !StringUtils.isEmpty(param.shopTypes)) {
+            // 区分体验版和付费版
+            if (param.shopTypes.equals(ShopConst.ShopTypes.TRIAL_VERSION)) {
+                // 体验版
+                select.where(SHOP.SHOP_TYPE.eq(ShopConst.ShopType.V_1));
+            }
+            if (param.shopTypes.equals(ShopConst.ShopTypes.PAID_VERSION)) {
+                // 付费版
+                select.where(SHOP.SHOP_TYPE.in(ShopConst.ShopType.V_2, ShopConst.ShopType.V_3, ShopConst.ShopType.V_4));
+            }
+
+        }
+    }
+
+    private void buildShopExpireOption(SelectWhereStep<?> select, ShopListQueryParam param) {
+        //使用中
+        Integer shopUsingStatus = 1;
+        //已过期
+        Integer shopExpiredStatus = 2;
+        //即将过期
+        Integer shopSoonExpiredStatus = 3;
+        if (param.isUse != null && param.isUse.equals(shopUsingStatus)) {
+            // 店铺在使用中
+            select.where(SHOP.EXPIRE_TIME.ge(DSL.currentTimestamp()));
+        }
+
+        if (param.isUse != null && param.isUse.equals(shopExpiredStatus)) {
+            // 店铺已过期
+            select.where(SHOP.EXPIRE_TIME.lt(DSL.currentTimestamp()));
+        }
+        if (param.isUse != null && param.isUse.equals(shopSoonExpiredStatus)) {
+            // 即将过期
+            select.where(SHOP.EXPIRE_TIME.le(DSL.timestampAdd(DSL.currentTimestamp(), 1, DatePart.MONTH)).and(SHOP.EXPIRE_TIME.ge(DSL.currentTimestamp())));
+        }
+    }
+
+    /**
 	 * TODO 加个事务
 	 * 
 	 * @param shopReq
@@ -272,6 +286,8 @@ public class ShopService extends MainBaseService {
 		if (updateOperation(record, user, request,new ShopRecord()) == 1) {			
 			logger().info("更新ShopOperation记录表成功");
 		}
+		// 初始化店铺配置
+		initShopConfig(shopReq.getShopId());
 		return true;
 	}
 
@@ -690,5 +706,18 @@ public class ShopService extends MainBaseService {
             .where(MP_AUTH_SHOP.SHOP_ID.eq(shopId))
             .limit(1)
             .fetchOneInto(String.class);
+    }
+
+    /**
+     * 初始化店铺配置
+     * @param shopId 店铺id
+     */
+    public Integer initShopConfig(Integer shopId) {
+        // 初始化短信配置
+        return smsConfigDao.initSmsConfig(shopId);
+    }
+
+    public List<ShopListInfoVo> getShopListInfo(){
+        return shopDao.getShopListInfo();
     }
 }

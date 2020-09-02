@@ -1,13 +1,13 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.DeleteGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
@@ -234,7 +234,7 @@ public class AdminStoreController extends AdminBaseController{
         if(!shop().config.storeConfigService.getStoreBuy().equals(storeServiceConfig.getStoreBuy()) || !shop().config.storeConfigService.getTechnicianTitle().equals(storeServiceConfig.getTechnicianTitle())){
             String[] verifys = saas.shop.version.verifyVerPurview(shopId(), VersionName.SUB_5_STORE_PAY,VersionName.SUB_5_TECHNICIAN);
             for(String v: verifys){
-                if(!v.equals("true")){
+                if(!"true".equals(v)){
                     return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
                 }
             }
@@ -590,7 +590,7 @@ public class AdminStoreController extends AdminBaseController{
     	if(tradeFlag) {
     	    /**交易完成，更新服务订单状态 **/
     		ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
-    		updateParam.setFinishedTime(DateUtil.getLocalDateTime());
+    		updateParam.setFinishedTime(DateUtils.getLocalDateTime());
     		updateParam.setVerifyAdmin(adminAuth.user().getUserName());
     		updateParam.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
             updateParam.setOrderStatusName(ORDER_STATUS_NAME_FINISHED);
@@ -618,7 +618,7 @@ public class AdminStoreController extends AdminBaseController{
     		return fail(JsonResultCode.CODE_SERVICE_ORDER_CANCEL_REASON_IS_NULL);
     	}
     	ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
-		updateParam.setCancelledTime(DateUtil.getLocalDateTime());
+		updateParam.setCancelledTime(DateUtils.getLocalDateTime());
 		FieldsUtil.assignNotNull(param, updateParam);
         updateParam.setOrderStatus(ORDER_STATUS_CANCELED);
         updateParam.setOrderStatusName(ORDER_STATUS_NAME_CANCELED);

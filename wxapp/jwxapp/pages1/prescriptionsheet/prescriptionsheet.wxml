@@ -1,0 +1,61 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
+<view class="body">
+  <include src="../../pages/common/header.wxml" />
+  <view class="main-container">
+    <view class="title-module">患者信息</view>
+    <view class="card-content has-padding p-left">
+      <view class="list-item">
+        <text class="default-text">姓名：</text>
+        <text class="emphasis-text">{{patientInfo.name}}</text>
+      </view>
+      <view class="list-item">
+        <text class="default-text">年龄：</text>
+        <text class="emphasis-text">{{patientInfo.age}}</text>
+      </view>
+      <view class="list-item">
+        <text class="default-text">性别：</text>
+        <text class="emphasis-text">{{filter.getSex(patientInfo.sex)}}</text>
+      </view>
+    </view>
+    <view class="title-module">历史诊断（可多选）</view>
+    <view class="card-content has-padding p-left">
+      <view class="list-item">
+        <view class="label-content wrap has-padding p-bottom">
+          <view class="label-item" style="{{filter.includes(selectedDiagnose,item) ? 'background-color:'+ somColor +';color:'+comColor+';border-color:'+comColor+';' : ''}}" wx:for="{{diagnose}}" wx:key="index" data-index="{{index}}" bindtap="chooseDiagnose">{{item}}</view>
+        </view>
+      </view>
+      <view class="list-item space-between" wx:for="{{optionsList}}" wx:for-index="key" wx:key="key">
+        <text class="default-text">{{optionsName[key]}}</text>
+        <view class="radio-group">
+          <view class="radio-content" data-key="{{key}}" data-status="1" bindtap="toggleOptions">
+            <text class="iconfont {{item ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};"></text>
+            <text>是</text>
+          </view>
+          <view class="radio-content" data-key="{{key}}" data-status="0" bindtap="toggleOptions">
+            <text class="iconfont {{!item ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};"></text>
+            <text>否</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="title-module">病情描述</view>
+    <view class="card-content has-padding p-left p-top p-bottom p-right">
+      <textarea placeholder="请详细输入您的病情描述" bindinput="getDescribe" class="describe" ></textarea>
+    </view>
+
+    <view class="card-content center column has-padding p-top p-bottom">
+      <view class="image-content center column" wx:if="{{prescriptionImageList.length}}">
+        <image mode='widthFix' src="{{item}}" wx:for="{{prescriptionImageList}}" wx:key="index"></image>
+      </view>
+      <view class="upload-content center column" bindtap="uploadImage">
+        <image class="upload-icon" src="{{imageUrl}}image/wxapp/upload_prescription-icon.png"></image>
+        <text class="upload-tips">上传历史处方</text>
+      </view>
+    </view>
+    <view class="footer-content">
+      <view class="footer-button" style="background-color:#26C4BC;" bindtap="confirm">确定</view>
+    </view>
+    <include src="../../pages/common/footer.wxml" />
+  </view>
+</view>

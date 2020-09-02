@@ -1,0 +1,57 @@
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
+<view class="case-history-content {{m.topHasRadius ? 'top-has-radius' : ''}} {{m.topIsAdver ? 'top-is-adver' : ''}}" style="{{m.page_color ? 'background-color:'+m.page_color+';':''}}">
+	<view class="prescription-module-title" bindtap="viewCaseHistoryList">
+		<image src="{{imageUrl}}image/wxapp/prescription-icon1.png"></image>
+		<text>我的病历</text>
+		<view class="more" wx:if="{{m.hasMore}}">更多</view>
+	</view>
+	<block wx:if="{{m.caseHistoryListData.length}}">
+		<view class="case-history-list" wx:for="{{m.caseHistoryListData}}" bindtap="handleShowDialog" wx:key="id" data-case-history-id="{{item.id}}">
+			<view class="list-item title" style="background:url({{imageUrl}}image/wxapp/case-history-top-bg.png) no-repeat left top/100% 100rpx , linear-gradient(#d0edeb, #ffffff);">
+				<text style="background: url({{imageUrl}}image/wxapp/medical_history_bg2.png) no-repeat center 54rpx/80% 14rpx;">电子病历</text>
+			</view>
+			<view class="list-item">
+				<view class="item-line">
+					<text class="item-dot"></text>
+					<text class="item-title">诊断：</text>
+					<text>{{item.diagnosisContent}}</text>
+				</view>
+			</view>
+			<view class="list-item">
+				<view class="item-line">
+					<text class="item-dot"></text>
+					<text class="item-title">就诊科室：</text>
+					<text>{{item.departmentName}}</text>
+				</view>
+			</view>
+			<view class="list-item">
+				<view class="item-line">
+					<text class="item-dot"></text>
+					<text class="item-title">诊疗处理意见：</text>
+				</view>
+				<view class="item-info">
+					<text>{{item.diagnosisSuggestion}}</text>
+				</view>
+			</view>
+			<view class="list-item">
+				<view class="doctor-info">
+					<text>医师：{{item.doctorName}}</text>
+					<text>日期：{{filter.substring(item.visitTime,0,10)}}</text>
+				</view>
+			</view>
+		</view>
+	</block>
+	<block wx:else>
+		<view class="no-content">
+			<image src="http://medicaldevimg.weipubao.cn/image/wxapp/no-case-content.png"></image>
+			<text class="no-content-tips">您需要同步病历才可查看</text>
+			<view class="update-case" bindtap="updatePage">
+				<text>去同步</text>
+				<text class="iconfont iconjiantou"></text>
+			</view>
+		</view>
+	</block>
+
+</view>
+
+<v-case-history-dialog show="{{showCaseHistory}}" case-history-data="{{caseHistoryData}}" />

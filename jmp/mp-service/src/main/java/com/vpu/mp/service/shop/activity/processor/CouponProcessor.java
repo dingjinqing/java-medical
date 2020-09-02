@@ -1,9 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -13,11 +12,9 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.CouponListMpVo;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
-import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +49,7 @@ public class CouponProcessor implements Processor,ActivityGoodsListProcessor,Goo
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType())).collect(Collectors.toList());
 
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         availableCapsules.forEach(capsule->{
             Record couponInfo = couponProcessorDao.getGoodsCouponClosestInfo(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), now);
             if (couponInfo == null) {
@@ -72,7 +69,7 @@ public class CouponProcessor implements Processor,ActivityGoodsListProcessor,Goo
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         log.debug("商品详情-优惠券查询");
-        List<MrkingVoucherRecord> goodsCouponForDetail = couponProcessorDao.getGoodsCouponForDetail(param.getGoodsId(), param.getCatId(), param.getSortId(), DateUtil.getLocalDateTime());
+        List<MrkingVoucherRecord> goodsCouponForDetail = couponProcessorDao.getGoodsCouponForDetail(param.getGoodsId(), param.getCatId(), param.getSortId(), DateUtils.getLocalDateTime());
         List<Integer> couponIds = goodsCouponForDetail.stream().map(MrkingVoucherRecord::getId).collect(Collectors.toList());
         log.debug("商品详情-可使用优惠券ids:{}",couponIds.toString());
         Map<Integer, Integer> userCouponsAlreadyNum = couponProcessorDao.getUserCouponsAlreadyNum(param.getUserId(), couponIds);

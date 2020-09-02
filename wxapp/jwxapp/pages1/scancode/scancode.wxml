@@ -23,7 +23,7 @@
         <view class="operate_left" bindtap="gocart">
             <text class='iconfont iconsaomagougouwuche' style='color:{{comColor}};font-size:90rpx;'></text>
             <view class='cart_num' style='color:{{comColor}};border-color:{{comColor}}'>{{info.store_cart_number}}</view>
-            <text>购物车</text>
+            <text>清单</text>
         </view>
         <view class="operate_right" bindtap="goappearancecode">
             <text class='iconfont iconerweima' style='color:{{comColor}};font-size:90rpx;'></text>

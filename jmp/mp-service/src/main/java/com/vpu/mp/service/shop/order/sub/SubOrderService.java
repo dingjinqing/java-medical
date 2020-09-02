@@ -1,14 +1,14 @@
 package com.vpu.mp.service.shop.order.sub;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.SubOrderInfo;
 import com.vpu.mp.db.shop.tables.UserDetail;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
@@ -25,8 +25,8 @@ import java.util.List;
 @Service
 public class SubOrderService  extends ShopBaseService {
 
-    private SubOrderInfo TABLE = SubOrderInfo.SUB_ORDER_INFO;
-    private UserDetail TABLE_USER_DETAIL = UserDetail.USER_DETAIL;
+    final static private SubOrderInfo TABLE = SubOrderInfo.SUB_ORDER_INFO;
+    final static private UserDetail TABLE_USER_DETAIL = UserDetail.USER_DETAIL;
 
     public SubOrderInfoRecord create(String orderSn, BigDecimal money, String message, Integer userId, String userName){
         logger().info("代付生成sub order start");
@@ -75,7 +75,7 @@ public class SubOrderService  extends ShopBaseService {
         SubOrderInfoRecord order = get(subOrderSn);
         order.setOrderStatus(OrderConstant.SubOrderConstant.SUB_ORDER_PAY_OK);
         order.setPaySn(record.getPaySn());
-        order.setPayTime(DateUtil.getSqlTimestamp());
+        order.setPayTime(DateUtils.getSqlTimestamp());
         order.update();
     }
 
@@ -87,6 +87,10 @@ public class SubOrderService  extends ShopBaseService {
             .fetch();
     }
 
+    public List<String> getSubOrderSn(String orderSn){
+       return db().select(TABLE.SUB_ORDER_SN).from(TABLE).where(TABLE.MAIN_ORDER_SN.eq(orderSn)).fetchInto(String.class);
+    }
+
     public void updateBeforeReturn(SubOrderInfoRecord record, BigDecimal currMoney) {
         BigDecimal returned = BigDecimalUtil.add(currMoney, record.getRefundMoney());
         if(BigDecimalUtil.compareTo(
@@ -95,7 +99,7 @@ public class SubOrderService  extends ShopBaseService {
             record.setOrderStatus(OrderConstant.SubOrderConstant.SUB_ORDER_REFUND_SUCESS);
         }
         record.setRefundMoney(returned);
-        record.setRefundTime(DateUtil.getSqlTimestamp());
+        record.setRefundTime(DateUtils.getSqlTimestamp());
         record.update();
     }
 }

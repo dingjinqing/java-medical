@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * @author luguangyao
+ */
 @Component
 @EnableAsync
 @Slf4j

@@ -1,19 +1,23 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
-import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseParam;
 import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseVo;
+import com.vpu.mp.service.pojo.shop.order.goods.param.OrderGoodsParam;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionMakeParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -23,6 +27,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +47,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/wxapp/order")
 public class WxAppOrderController extends WxAppBaseController{
+    @Autowired
+    private OrderInfoService orderInfoService;
 
     /**
      * 	结算页面
@@ -88,6 +96,21 @@ public class WxAppOrderController extends WxAppBaseController{
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
     }
+
+
+    /**
+     * 审核
+     * -通过
+     * -失败
+     * @return
+     */
+    @PostMapping("/audit")
+    public JsonResult auditOrderInfo(){
+        WxAppSessionUser user = wxAppAuth.user();
+
+        return success();
+    }
+
 
 	/**
 	 * 	退款、退货创建页面
@@ -319,4 +342,39 @@ public class WxAppOrderController extends WxAppBaseController{
         return fail();
 
     }
+
+    /**
+     * 获取待开方的订单
+     * @param param
+     * @return
+     */
+    @PostMapping("/prescribe/medical/get")
+    public JsonResult getMakePrescriptionOrder(@RequestBody OrderToPrescribeQueryParam param){
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setAction((byte)OrderServiceCode.MAKE_PRESCRIPTION.ordinal());
+        param.setWxUserInfo(wxAppAuth.user());
+        try {
+            return(success(shop().orderActionFactory.orderQuery(param)));
+        } catch (MpException e) {
+            return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
+        }
+    }
+
+    /**
+     * 待开方的生成处方
+     * @param param
+     * @return
+     */
+    @PostMapping("/prescription/make")
+    public JsonResult makePrescription(@RequestBody PrescriptionMakeParam param){
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setAction((byte)OrderServiceCode.MAKE_PRESCRIPTION.ordinal());
+        ExecuteResult executeResult=shop().orderActionFactory.orderOperate(param);
+        if(executeResult == null || executeResult.isSuccess()) {
+            return success();
+        }
+        return result(executeResult.getErrorCode(),executeResult.getResult());
+    }
+
+
 }

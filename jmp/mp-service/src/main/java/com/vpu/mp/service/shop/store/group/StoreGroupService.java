@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.store.group;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import org.jooq.Record;
@@ -29,7 +29,6 @@ public class StoreGroupService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-//	@RecordAction(templateId = {RecordContentTemplate.GOODS_CONTENT_ADD},templateData = {"#{param.groupId}"})
 	public PageResult<StoreGroup> getStoreGroupPageList(StoreGroupQueryParam param){
 		SelectWhereStep<? extends Record> select = db()
             .select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,STORE_GROUP.CREATE_TIME)

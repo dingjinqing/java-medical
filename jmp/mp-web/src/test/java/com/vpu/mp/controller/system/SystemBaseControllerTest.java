@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.controller.BaseControllerTest;
-import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 

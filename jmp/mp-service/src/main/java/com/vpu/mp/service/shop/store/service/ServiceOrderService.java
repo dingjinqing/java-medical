@@ -1,13 +1,17 @@
 package com.vpu.mp.service.shop.store.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreServiceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -22,8 +26,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
@@ -58,12 +62,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.shop.store.store.StoreReservation.HH_MM_FORMATTER;
@@ -364,11 +368,11 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public JsonResultCode checkServiceOrderAdd(ServiceOrderAddParam param){
         StoreServiceRecord storeServiceRecord = storeService.getStoreServiceById(param.getServiceId());
-        Timestamp serviceTime = DateUtil.convertToTimestamp(param.getServiceDate() + " " + param.getServicePeriod());
+        Timestamp serviceTime = DateUtils.convertToTimestamp(param.getServiceDate() + " " + param.getServicePeriod());
 
         if(serviceTime.after(storeServiceRecord.getStartDate()) && serviceTime.before(storeServiceRecord.getEndDate())){
-            Timestamp storeServiceStartDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getStartPeriod() + ":00");
-            Timestamp storeServiceEndDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getEndPeriod() + ":00");
+            Timestamp storeServiceStartDate = DateUtils.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getStartPeriod() + ":00");
+            Timestamp storeServiceEndDate = DateUtils.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getEndPeriod() + ":00");
             if(serviceTime.before(storeServiceStartDate) || serviceTime.after(storeServiceEndDate)){
                 return JsonResultCode.CODE_SERVICE_ORDER_WRONG_SERVICE_DATE;
             }
@@ -905,15 +909,15 @@ public class ServiceOrderService extends ShopBaseService {
      * @return
      */
     public List<StoreAppointmentRemindVo> getDealServiceOrder() {
-    	Timestamp timeStampPlus = DateUtil.getTimeStampPlus(1, ChronoUnit.HOURS);
+    	Timestamp timeStampPlus = DateUtils.getTimeStampPlus(1, ChronoUnit.HOURS);
     	//当前时间一小时之后
-    	String date = DateUtil.dateFormat("HH:mm", timeStampPlus);
+    	String date = DateUtils.dateFormat("HH:mm", timeStampPlus);
     	List<StoreAppointmentRemindVo> into=new ArrayList<StoreAppointmentRemindVo>();
 		Result<Record> fetch = db().select(SERVICE_ORDER.asterisk(), USER.WX_OPENID, USER.WX_UNION_ID)
 				.from(SERVICE_ORDER, USER)
 				.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(SERVICE_ORDER.USER_ID.eq(USER.USER_ID))
 						.and(SERVICE_ORDER.ORDER_STATUS.eq(ORDER_STATUS_WAIT_PAY)
-								.and(SERVICE_ORDER.SERVICE_DATE.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)))
+								.and(SERVICE_ORDER.SERVICE_DATE.eq(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE)))
 								.and(DSL.left(SERVICE_ORDER.SERVICE_PERIOD,5).eq(date))))
 				.fetch();
 		logger().info("查询");
@@ -1017,7 +1021,7 @@ public class ServiceOrderService extends ShopBaseService {
 					.where(SERVICE_ORDER.USER_ID.eq(userId))
 					.orderBy(SERVICE_ORDER.CREATE_TIME.desc())
 					.fetchAnyInto(Timestamp.class);
-		
+
 	}
 
 }

@@ -353,9 +353,31 @@ view{
 .center_QR_code{
   position: absolute;
   top: 30rpx;
-  right: 40rpx;
+  right: 115rpx;
   width: 42rpx;
   z-index: 200
+}
+.message_list_icon{
+  position: absolute;
+  top: 30rpx;
+  right: 40rpx;
+  width:40rpx;
+  height: 40rpx;
+  z-index: 200;
+}
+.message_list_icon image{
+  width: 40rpx;
+  height: 40rpx;
+}
+.not_read_icon{
+  position: absolute;
+  top: 0;
+  right: -4rpx;
+  width: 14rpx;
+  height: 14rpx;
+  background: #FF9F15;
+  border-radius: 100%;
+  z-index: 201;
 }
 .zhezhao{
   width: 750rpx;
@@ -631,10 +653,22 @@ view{
   margin-bottom: 40rpx;
 }
 .es_img {
-  width:100%;
+  width:70rpx;
   text-align: center;
   height: 70rpx;
   margin-bottom: 25rpx;
+  position: relative;
+}
+.item_mes_num{
+  position: absolute;
+  top: -5rpx;
+  right: -15rpx;
+  padding: 0 5rpx;
+  height: 26rpx;
+  border-radius: 20rpx;
+  border: 2rpx solid #FF9F15;
+  color: #FF9F15;
+  line-height: 26rpx;
 }
 .es_img image{
   width:70rpx;
@@ -642,4 +676,37 @@ view{
 }
 .es_word {
   height: 40rpx;
+}
+.patient_info{
+  float: none;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 50rpx;
+}
+.patient_info > view:last-of-type{
+  color: #999;
+  margin-left: 24rpx;
+}
+.no_patient_area{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 0;
+  width: 100%;
+}
+.brn_get_pre{
+  width: 240rpx;
+  height: 70rpx;
+  border-radius: 50rpx;
+  color: #fff;
+  background: #26C4BC;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brn_get_pre > image{
+  margin-left: 20rpx;
+  margin-top: 6rpx;
+  width: 16rpx;
 }

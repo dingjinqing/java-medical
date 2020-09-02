@@ -1,6 +1,15 @@
 package com.vpu.mp.service.shop.market.integralconvert;
 
 import com.mysql.cj.util.StringUtils;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
@@ -9,16 +18,7 @@ import com.vpu.mp.db.shop.tables.IntegralMallRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.IntegralMallDefineRecord;
 import com.vpu.mp.db.shop.tables.records.IntegralMallProductRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleIntegral;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -562,9 +562,9 @@ public class IntegralConvertService extends ShopBaseService {
                     g.setTip((byte)2);
                 }else if(integralMallDefineRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)){
                     g.setTip((byte)3);
-                }else if(integralMallDefineRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+                }else if(integralMallDefineRecord.getStartTime().after(DateUtils.getLocalDateTime())){
                     g.setTip((byte)4);
-                }else if(integralMallDefineRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+                }else if(integralMallDefineRecord.getEndTime().before(DateUtils.getLocalDateTime())){
                     g.setTip((byte)5);
                 }else {
                     g.setTip((byte)0);
@@ -699,7 +699,7 @@ public class IntegralConvertService extends ShopBaseService {
      * @param param 活动id
      * @retuen 二维码信息
      */
-    public ShareQrCodeVo getMpQRCode(IntegralConvertId param) {
+    public ShareQrCodeVo getMpQrCode(IntegralConvertId param) {
         Integer goodsId = db().select(INTEGRAL_MALL_DEFINE.GOODS_ID)
             .from(INTEGRAL_MALL_DEFINE)
             .where(INTEGRAL_MALL_DEFINE.ID.eq(param.getId()))
@@ -792,7 +792,7 @@ public class IntegralConvertService extends ShopBaseService {
 						INTEGRAL_MALL_DEFINE.END_TIME)
 				.from(INTEGRAL_MALL_DEFINE)
 				.where(INTEGRAL_MALL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(INTEGRAL_MALL_DEFINE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(INTEGRAL_MALL_DEFINE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(INTEGRAL_MALL_DEFINE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(INTEGRAL_MALL_DEFINE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

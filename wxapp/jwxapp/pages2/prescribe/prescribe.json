@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "v-footer-dialog":"/components/popup/footer-dialog/index",
+    "v-single-col-goods":"/components/item/single_col_goods/index"
+  }
+}

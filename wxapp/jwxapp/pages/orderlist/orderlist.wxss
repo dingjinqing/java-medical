@@ -38,25 +38,47 @@
   background-color: #fff;
   display: flex;
   white-space: nowrap;
-  height: 84rpx;
+  height: 90rpx;
+  align-items: center;
 }
 .top_nav view {
-  border-bottom: 4rpx solid transparent;
   padding: 0 40rpx;
+  margin-top: 26rpx;
   color: #7f7d7a;
-  line-height: 80rpx;
+  display: flex;
+  align-items: center;
+}
+.top_nav view > text{
+  position: relative;
+}
+.top_nav view > text.active::after{
+  content: '';
+  width: 80%;
+  height:6rpx;
+  border-radius: 3rpx;
+  background-color: #26C4BC;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -14rpx;
 }
 .order_list {
   display: flex;
   flex-direction: column;
-  padding-top: 190rpx;
+  padding-top: 210rpx;
 }
 .order_item {
   color: #333;
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  width: 702rpx;
+  margin: 0 auto;
 }
 .order_item + .order_item {
   margin-top: 20rpx;
 }
+
 .order_sn_status,
 .goods_item,
 .pay_info {
@@ -64,6 +86,14 @@
   font-size: 26rpx;
   padding: 10rpx 14rpx;
   background-color: #fff;
+}
+.order_sn_status{
+  height: 60rpx;
+  align-items: center;
+}
+.pay_info{
+  height: 60rpx;
+  align-items: center;
 }
 .goods_item {
   background-color: #fafafa;
@@ -134,7 +164,7 @@
   display: flex;
   flex-direction: row-reverse;
   background-color: #fff;
-  height: 90rpx;
+  height: 100rpx;
   align-items: center;
   padding: 0 14rpx;
 }
@@ -143,6 +173,7 @@
   border: 1px solid #ccc;
   color: #333;
   margin-left: 10rpx;
+  border-radius: 12rpx;
 }
 .presale_info {
   display: flex;
@@ -196,11 +227,11 @@
   transform: translate(-50%,-50%);
 }
 .is-null image{
-  width: 262rpx;
-  height: 276rpx;
+  width: 750rpx;
+  height: 448rpx;
 }
 .is-null text{
-  margin-top: 20rpx;
+  margin-top: -60rpx;
   color: #999;
 }
 .goods_price view{

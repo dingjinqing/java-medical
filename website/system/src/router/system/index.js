@@ -13,9 +13,9 @@ const routes = [{
       component: () => import('@/view/system/index/leftNavComponents/overview/overview_index/overview'),
       name: 'overview',
       meta: {
-        title: '概览',
-        imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
-        imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png'
+        title: '概览'
+        // imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+        // imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png'
       }
     },
     {
@@ -172,6 +172,34 @@ const routes = [{
       name: 'orderList',
       meta: {
         title: '订单列表'
+      }
+    },
+    {
+      path: 'advisory_total',
+      component: () => import('@/view/system/index/leftNavComponents/order_management/advisory/advisoryTotal'),
+      name: 'advisoryTotal',
+      meta: {
+        title: '咨询订单'
+      }
+    }
+  ]
+},
+{
+  path: '/system/member_management',
+  name: 'member_statistics',
+  meta: {
+    title: '会员管理'
+  },
+  component: () => import('@/view/system/layout/index'),
+  redirect: '/system/member_management/member_list',
+  children: [
+    // 会员管理子路由
+    {
+      path: 'member_list',
+      component: () => import('@/view/system/index/leftNavComponents/member_manage/member_list'),
+      name: 'member_list',
+      meta: {
+        title: '会员列表'
       }
     }
   ]

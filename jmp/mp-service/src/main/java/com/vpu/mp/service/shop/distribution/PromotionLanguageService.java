@@ -6,13 +6,16 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.PromotionLanguageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageAddParam;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListParam;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListVo;
 
+/**
+ * @author changle
+ */
 @Service
 public class PromotionLanguageService extends ShopBaseService{
 	/**

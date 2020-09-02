@@ -2,20 +2,20 @@ package com.vpu.mp.service.shop.order.action.base;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.DistributionConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
@@ -66,6 +66,9 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -74,9 +77,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 订单模块计算类
@@ -180,8 +180,9 @@ public class Calculate extends ShopBaseService {
             //会员卡 或 优惠卷-> one
             if (OrderConstant.D_T_MEMBER_CARD.equals(discountType) || OrderConstant.D_T_COUPON.equals(discountType)) {
                 //加价购 或 满折满减 与 one 不共存
-                if ((bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) ||
-                    (bo.getStraId() != null && bo.getStraId() > 0)) {
+                boolean isPlusPriceBuyOrDiscountReduce = (bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) ||
+                    (bo.getStraId() != null && bo.getStraId() > 0);
+                if (isPlusPriceBuyOrDiscountReduce) {
                     continue;
                 }
 
@@ -559,7 +560,7 @@ public class Calculate extends ShopBaseService {
     public OrderMustVo getOrderMust(List<OrderGoodsBo> orderGoods) {
         OrderMustVo must = new OrderMustVo();
         //初始化赋值
-        must.init(trade);
+        must.init(trade.getOrderRealName(), trade.getOrderCid(), trade.getConsigneeRealName(), trade.getConsigneeCid(), trade.getCustom(), trade.getCustomTitle());
         if (OrderConstant.NO == must.isCheck()) {
             return must;
         }
@@ -606,7 +607,7 @@ public class Calculate extends ShopBaseService {
 
     public OrderTerm getTermsofservice() {
         OrderTerm orderTerm = new OrderTerm();
-        orderTerm.init(trade);
+        orderTerm.init(trade.getServiceTerms(), trade.getServiceName(), trade.getServiceChoose());
         return orderTerm;
     }
 
@@ -891,6 +892,11 @@ public class Calculate extends ShopBaseService {
         UserRecord userInfo = user.getUserByUserId(param.getWxUserInfo().getUserId());
         //是否首单
         boolean isFs = orderInfoService.isNewUser(userInfo.getUserId());
+
+        rebateAll(param, order, cfg, avgScoreDiscount, goingStrategy, userInfo, isFs);
+    }
+
+    private void rebateAll(OrderBeforeParam param, OrderInfoRecord order, DistributionParam cfg, BigDecimal avgScoreDiscount, List<DistributionStrategyParam> goingStrategy, UserRecord userInfo, boolean isFs) {
         //是否进行返利标识
         boolean flag = false;
         //总返利
@@ -971,7 +977,7 @@ public class Calculate extends ShopBaseService {
             logger().info("该商品无返利策略，goodsId:{}", bo.getGoodsId());
             return null;
         }
-        Timestamp current = DateUtil.getSqlTimestamp();
+        Timestamp current = DateUtils.getSqlTimestamp();
 
         List<RebateRecord> rebateRecords = selfRebate(cfg, userInfo, isFs, goodsStrategy, current);
         if(CollectionUtils.isEmpty(rebateRecords)) {
@@ -985,12 +991,12 @@ public class Calculate extends ShopBaseService {
      * 自购返利(当自购返利开关开启，若下单人是分销员，则该下单人的间接邀请人不会获得返利，其直接邀请人可获得返利，返利比例为直接邀请人所在等级的间接邀请返利比例)
      * @param cfg
      * @param userInfo
-     * @param isFS
+     * @param isFs
      * @param goodsStrategy
      * @param current
      * @return
      */
-    private ArrayList<RebateRecord> selfRebate(DistributionParam cfg, UserRecord userInfo, boolean isFS, DistributionStrategyParam goodsStrategy, Timestamp current) {
+    private ArrayList<RebateRecord> selfRebate(DistributionParam cfg, UserRecord userInfo, boolean isFs, DistributionStrategyParam goodsStrategy, Timestamp current) {
         logger().info("自购返利start");
         if (goodsStrategy.getSelfPurchase() == OrderConstant.YES) {
             ArrayList<RebateRecord> result = new ArrayList<>();
@@ -1012,7 +1018,7 @@ public class Calculate extends ShopBaseService {
                     //自购二级返利（下单用户的直接邀请人，间接返利比例（或首单返利比例））
                     RebateRatioVo userRebateRatio2 = distributionGoods.getUserRebateRatio(userInfo2, goodsStrategy, cfg);
                     if(userRebateRatio2 != null) {
-                        Double rebateRatio2 = (isFS && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio2.getFirstRatio() : userRebateRatio2.getRebateRatio();
+                        Double rebateRatio2 = (isFs && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio2.getFirstRatio() : userRebateRatio2.getRebateRatio();
                         if(rebateRatio2 != null) {
                             logger().info("自购直接上级返利");
                             BigDecimal ratio2 = BigDecimalUtil.divide(new BigDecimal(rebateRatio2.toString()), BigDecimalUtil.BIGDECIMAL_100);

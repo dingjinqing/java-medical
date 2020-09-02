@@ -1,0 +1,136 @@
+/* pages1/prescriptioninfo/prescriptioninfo.wxss */
+.prescription-content{
+  padding: 20rpx 15rpx;
+  display: flex;
+  flex-direction: column;
+}
+.prescription-item{
+  border-radius: 16rpx;
+  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.24),0 0 0rpx rgba(10,16,20,.12);
+  position: relative;
+  margin-bottom: 15rpx;
+}
+.prescription-item + .prescription-item{
+  margin-top: 30rpx;
+}
+.prescription-item > .top_info{
+  color: #fff;
+  background-color: skyblue;
+  height: 350rpx;
+  background:#26c4bc url(http://medicaldevimg.weipubao.cn/image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx; 
+  border-radius: 16rpx 16rpx 0 0;
+}
+.prescription-item > .top_info .item-title{
+  padding: 46rpx 0;
+  text-align: center;
+  font-size: 40rpx;
+  font-weight: bold;
+}
+.prescription-item > .top_info .top_content{
+  padding-left: 34rpx;
+  font-size: 26rpx;
+}
+.prescription-item > .top_info .top_content > view:first-of-type{
+  margin-bottom: 15rpx;
+}
+.prescription-item > .item-list-content{
+  padding-left: 30rpx;
+  background-color: #fff;
+  position: relative;
+  border-radius: 16rpx 16rpx 0 0;
+  margin-top: -190rpx;
+}
+.prescription-item > .item-list-content > .item-list{
+  display: flex;
+  flex-direction: column;
+  line-height: 55rpx;
+  padding: 15rpx 0;
+  border-bottom: 2rpx solid #eee;
+}
+.prescription-item > .item-list-content > .item-list > .list-item{
+  display: flex;
+  align-items: center;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-dot{
+  border: 4rpx solid skyblue;
+  border-radius: 50%;
+  height: 10rpx;
+  width: 10rpx;
+  margin-right: 14rpx;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-content{
+  font-weight: bold;
+}
+.prescription-item > .doctor-info{
+  padding: 0 30rpx 20rpx;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  position: relative;
+}
+.prescription-item > .doctor-info::after{
+  content: '';
+  position: absolute;
+  height: 16rpx;
+  width: 100%;
+  bottom: -16rpx;
+  left: 0;
+  background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
+  background-size: 40rpx 20rpx;
+}
+.prescription-item > .doctor-info > .doctor-name {
+  margin-right: auto;
+  font-size: 26rpx;
+} 
+.doctor-name > view{
+  display: flex;
+  align-items: center;
+  margin-top: 30rpx;
+}
+.doctor-name > view image{
+  width: 120rpx;
+  height: 60rpx;
+  border: 2rpx solid #eee;
+}
+.prescription-item > .doctor-info > .item-date {
+  font-size: 26rpx;
+  color: #999;
+  position: absolute;
+  bottom: 30rpx;
+  right: 30rpx;
+} 
+.list_content{
+  padding: 30rpx;
+}
+.list_patient_info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 60rpx;
+}
+.each_patient_column {
+  color: #999;
+  text-align: center;
+} 
+.dark_one{
+  margin-bottom: 10rpx;
+  color: #333;
+}
+.medicine_spec{
+  color: #999;
+  margin-top: 10rpx;
+}
+.pre_tips{
+  color: #999;
+  margin-top: 40rpx;
+  text-align: center;
+}
+.button{
+  line-height: 80rpx;
+  width: 702rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  background-color: #26C4BC;
+  color: #fff;
+  margin: 20rpx auto 0;
+}

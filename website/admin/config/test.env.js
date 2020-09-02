@@ -4,6 +4,6 @@ const prodEnv = require('./prod.env');
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"testing"',
-  API_DOMAIN: '"jmptest.weipubao.cn"',
-  IMAGE_DOMAIN: '"jmptestimg.weipubao.cn"'
+  API_DOMAIN: '"medicaltest.weipubao.cn"',
+  IMAGE_DOMAIN: '"medicaltestimg.weipubao.cn"'
 });

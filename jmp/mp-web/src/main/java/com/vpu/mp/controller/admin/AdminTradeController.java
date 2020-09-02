@@ -2,10 +2,10 @@ package com.vpu.mp.controller.admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.pojo.shop.config.trade.*;
 import lombok.extern.slf4j.Slf4j;

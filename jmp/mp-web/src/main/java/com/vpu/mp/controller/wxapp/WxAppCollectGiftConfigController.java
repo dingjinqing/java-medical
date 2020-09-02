@@ -1,8 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
-import com.vpu.mp.service.pojo.wxapp.collectGift.SetCollectGiftVo;
+import com.vpu.mp.service.pojo.wxapp.collectgift.SetCollectGiftVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 

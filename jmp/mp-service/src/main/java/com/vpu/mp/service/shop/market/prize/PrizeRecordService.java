@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.market.prize;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.prize.PrizeRecordParam;
@@ -71,7 +71,7 @@ public class PrizeRecordService extends ShopBaseService {
         prizeRecord.setPrdId(prdId);
         prizeRecord.setExpiredDay(day);
         if (expiredTime==null){
-            prizeRecord.setExpiredTime(DateUtil.getTimeStampPlus(day, ChronoUnit.DAYS));
+            prizeRecord.setExpiredTime(DateUtils.getTimeStampPlus(day, ChronoUnit.DAYS));
         }
         else {
             prizeRecord.setExpiredTime(expiredTime);
@@ -157,7 +157,7 @@ public class PrizeRecordService extends ShopBaseService {
      * 定时过期的奖品
      */
     public void closePrizeGoods() {
-        Timestamp localDateTime = DateUtil.getLocalDateTime();
+        Timestamp localDateTime = DateUtils.getLocalDateTime();
         Result<PrizeRecordRecord> fetch = db().selectFrom(PRIZE_RECORD).where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
                 .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).fetch();
         fetch.forEach(prizeRecord->{

@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.RebatePriceRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
@@ -78,7 +78,13 @@ public class MpDistributionGoodsService extends ShopBaseService {
         }
     }
 
-    //分销配置
+    /**
+     * 分销配置
+     * @param goodsId
+     * @param catId
+     * @param sortId
+     * @return
+     */
     public DistributionStrategyParam distributionStrategyInfo(Integer goodsId,Integer catId,Integer sortId){
         //分销配置
         DistributionParam distributionCfg = distributionConf.getDistributionCfg();
@@ -197,27 +203,27 @@ public class MpDistributionGoodsService extends ShopBaseService {
         }
         if(level.equals(DistributionConstant.level_2)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
-            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_2());
-            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_2());
-            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_2());
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio2());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio2());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio2());
         }
         if(level.equals(DistributionConstant.level_3)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
-            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_3());
-            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_3());
-            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_3());
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio3());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio3());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio3());
         }
         if(level.equals(DistributionConstant.level_4)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
-            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_4());
-            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_4());
-            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_4());
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio4());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio4());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio4());
         }
         if(level.equals(DistributionConstant.level_5)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
-            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_5());
-            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_5());
-            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_5());
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio5());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio5());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio5());
         }
     }
 
@@ -370,7 +376,9 @@ public class MpDistributionGoodsService extends ShopBaseService {
             //判断优惠券库存和每人限领
             MrkingVoucherRecord info = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne().into(MrkingVoucherRecord.class);
 
-            if(!((info.getSurplus() <= 0 && info.getLimitSurplusFlag() == 0) || (hasReceive >= info.getReceivePerPerson() && info.getReceivePerPerson() != 0))){
+            boolean b = !((info.getSurplus() <= 0 && info.getLimitSurplusFlag() == 0)
+                || (hasReceive >= info.getReceivePerPerson() && info.getReceivePerPerson() != 0));
+            if(b){
                 mpGetCouponParam.setCouponId(couponId);
                 Byte res = mpCoupon.fetchCoupon(mpGetCouponParam);
 
@@ -389,11 +397,11 @@ public class MpDistributionGoodsService extends ShopBaseService {
      */
     private void addRebatePriceRecord(GoodsDetailMpParam param){
         String rebateConfigInfo = Util.toJson(param.getRebateConfig());
-        String DataSign = Util.md5(rebateConfigInfo);
-        Integer into = db().selectCount().from(REBATE_PRICE_RECORD).where(REBATE_PRICE_RECORD.DATA_SIGN.eq(DataSign)).fetchOne().into(Integer.class);
+        String dataSign = Util.md5(rebateConfigInfo);
+        Integer into = db().selectCount().from(REBATE_PRICE_RECORD).where(REBATE_PRICE_RECORD.DATA_SIGN.eq(dataSign)).fetchOne().into(Integer.class);
         if (into < 1) {
             RebatePriceRecordRecord rebatePriceRecord = new RebatePriceRecordRecord();
-            rebatePriceRecord.setDataSign(DataSign);
+            rebatePriceRecord.setDataSign(dataSign);
             rebatePriceRecord.setRebateData(rebateConfigInfo);
             rebatePriceRecord.setUserId(param.getUserId());
             db().executeInsert(rebatePriceRecord);

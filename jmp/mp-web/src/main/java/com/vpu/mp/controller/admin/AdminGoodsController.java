@@ -1,24 +1,25 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.*;
@@ -218,7 +219,7 @@ public class AdminGoodsController extends AdminBaseController {
      * 查询字段值在数据库内是否重复
      *
      * @param goodsColumnCheckExistParam
-     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
+     * @return {@link com.vpu.mp.common.foundation.data.JsonResult}
      */
     @PostMapping("/api/admin/goods/columns/exist")
     public JsonResult isColumnValueExist(@RequestBody GoodsColumnCheckExistParam goodsColumnCheckExistParam) {
@@ -325,7 +326,7 @@ public class AdminGoodsController extends AdminBaseController {
      * 根据id值查询商品信息
      *
      * @param goods 商品信息
-     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
+     * @return {@link com.vpu.mp.common.foundation.data.JsonResult}
      */
     @PostMapping("/api/admin/goods/select")
     public JsonResult select(@RequestBody Goods goods) {
@@ -451,7 +452,7 @@ public class AdminGoodsController extends AdminBaseController {
     public void export(@RequestBody @Valid GoodsExportParam param, HttpServletResponse response) {
         shop().config.goodsCfg.setGoodsExportList(param.getColumns());
         Workbook workbook = shop().goods.exportGoodsList(param, getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);
 //        test(param,response);
     }
@@ -466,8 +467,9 @@ public class AdminGoodsController extends AdminBaseController {
         ExcelWriter excelWriter = new ExcelWriter(getLang(), workbook);
         List<GoodsExportVo> goodsList = new ArrayList<>();
         int count = shop().goods.selectGoodsCount();
-        String timeStr = DateUtil.getLocalDateFullTightFormat();
-        for (int i =1; i <= 2000; i++) {
+        String timeStr = DateUtils.getLocalDateFullTightFormat();
+        int max = 2000;
+        for (int i = 1; i <= max; i++) {
             GoodsExportVo vo = new GoodsExportVo();
             vo.setSortNameParent("日化用品");
             vo.setSortNameChild("面部护肤");
@@ -522,7 +524,8 @@ public class AdminGoodsController extends AdminBaseController {
     @PostMapping("/api/admin/goods/mp/list")
     public JsonResult getGoodsList(@RequestBody GoodsListMpParam goodsListMpParam) {
         goodsListMpParam.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
-        List<? extends GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam, null);
+        PageResult<GoodsListMpBo> pageIndexGoodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam, null);
+        List<? extends GoodsListMpVo> goodsList = pageIndexGoodsList.getDataList();
         return success(goodsList);
     }
 

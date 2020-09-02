@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelCfgVo;
@@ -67,13 +67,13 @@ public class DistributorLevelService extends ShopBaseService{
 	 */
 	public DistributorLevelCfgVo levelConfig() {
 	    //获取每级分销员等级信息
-		Integer level_info = db().selectCount()
+		Integer levelInfo = db().selectCount()
 				.from(DISTRIBUTOR_LEVEL)
 				.where(DISTRIBUTOR_LEVEL.LEVEL_ID.eq((byte) 1))
 				.fetchOne().into(Integer.class);
 		
 		//初始化没有默认等级，自动创建默认等级
-		if(level_info == 0) {
+		if(levelInfo == 0) {
 			db().insertInto(DISTRIBUTOR_LEVEL,DISTRIBUTOR_LEVEL.LEVEL_ID,DISTRIBUTOR_LEVEL.LEVEL_NAME,DISTRIBUTOR_LEVEL.LEVEL_STATUS)
 			.values((byte) 1,"普通分销员",(byte) 1).execute();
 		}
@@ -304,13 +304,13 @@ public class DistributorLevelService extends ShopBaseService{
 		Record levelInfo = db().select().from(DISTRIBUTOR_LEVEL).where(DISTRIBUTOR_LEVEL.LEVEL_ID.eq((byte)1)).fetchOne();	
 		
 		for(Record user : users) {
-			Byte isGoUP = user.get(USER.DISTRIBUTOR_LEVEL) > 1 ? (byte)0 : (byte)1;
+			Byte isGoUp = user.get(USER.DISTRIBUTOR_LEVEL) > 1 ? (byte)0 : (byte)1;
 				
 			db().insertInto(DISTRIBUTOR_LEVEL_RECORD,DISTRIBUTOR_LEVEL_RECORD.USER_ID,
 					DISTRIBUTOR_LEVEL_RECORD.IS_GO_UP,DISTRIBUTOR_LEVEL_RECORD.OLD_LEVEL,
 					DISTRIBUTOR_LEVEL_RECORD.OLD_LEVEL_NAME,DISTRIBUTOR_LEVEL_RECORD.NEW_LEVEL,
 					DISTRIBUTOR_LEVEL_RECORD.NEW_LEVEL_NAME,DISTRIBUTOR_LEVEL_RECORD.UPDATE_NOTE)
-			.values(user.get(USER.USER_ID),isGoUP,user.get(USER.DISTRIBUTOR_LEVEL),user.get(DISTRIBUTOR_LEVEL.LEVEL_NAME),(byte) 1,
+			.values(user.get(USER.USER_ID),isGoUp,user.get(USER.DISTRIBUTOR_LEVEL),user.get(DISTRIBUTOR_LEVEL.LEVEL_NAME),(byte) 1,
 					levelInfo.get(DISTRIBUTOR_LEVEL.LEVEL_NAME),"后台修改配置")
 			.execute();
 		}
@@ -464,7 +464,7 @@ public class DistributorLevelService extends ShopBaseService{
      * @param param
      * @return
      */
-	public Integer addDistributorTOLevel(AddDistributorToLevelParam param){
+	public Integer addDistributorToLevel(AddDistributorToLevelParam param){
         int result = db().update(USER)
             .set(USER.DISTRIBUTOR_LEVEL,(param.getLevel()))
             .where(USER.USER_ID.in(param.getUserIds()))

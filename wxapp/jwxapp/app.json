@@ -42,7 +42,10 @@
     "components/popup/view_benefits/index",
     "pages/personalcenter/personalcenter",
     "components/usercenter/useraddress/useraddress",
-    "pages/search/search"
+    "pages/search/search",
+    "components/popup/get-prescription/index",
+    "components/doctor/doctor_list/doctor_list",
+    "components/doctor/doctor_chat_message/doctor_chat_message"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -50,16 +53,6 @@
     "navigationBarTitleText": "首页",
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
-  },
-  "plugins": {
-    "live-player-plugin": {
-      "version": "1.0.13",
-      "provider": "wx2b03c6e691cd7370"
-    },
-    "goodsSharePlugin": {
-      "version": "4.0.1",
-      "provider": "wx56c8f077de74b07c"
-    }
   },
   "permission": {
     "scope.userLocation": {
@@ -69,8 +62,7 @@
   "usingComponents": {
     "v-navigation": "/components/custom-navigation/index",
     "v-popup-get-phone-number": "/components/popup/get-phone-number/index",
-    "v-toast":"/components/popup/toast/index",
-    "share-button": "plugin://goodsSharePlugin/share-button"
+    "v-toast": "/components/popup/toast/index"
   },
   "subpackages": [
     {
@@ -129,12 +121,40 @@
         "livetransition/livetransition",
         "aftersaleorder/aftersaleorder",
         "packagesalelist/packagesalelist",
-        "addressedit/addressedit"
+        "addressedit/addressedit",
+        "prescriptionlist/prescriptionlist",
+        "familylist/familylist",
+        "getprescription/getprescription",
+        "prescriptioninfo/prescriptioninfo",
+        "medicalrecordinfo/medicalrecordinfo",
+        "medicalrecordlist/medicalrecordlist",
+        "prescriptionsheet/prescriptionsheet",
+        "repurchaselist/repurchaselist",
+        "patientinfo/patientinfo",
+        "messagelist/messagelist"
+      ]
+    },
+    {
+      "root": "pages2",
+      "pages": [
+        "doctorConsultation/doctorConsultation",
+        "allDepartment/allDepartment",
+        "operatePrescriptionList/operatePrescriptionList",
+        "inquiryList/inquiryList",
+        "doctorPatientMessage/doctorPatientMessage",
+        "doctorChat/doctorChat",
+        "patientChat/patientChat",
+        "prescribe/prescribe",
+        "awaitprescribe/awaitprescribe",
+        "prescribeinfo/prescribeinfo",
+        "doctorIndex/doctorIndex",
+        "doctorSearch/doctorSearch",
+        "doctorComment/doctorComment",
+        "doctorIntroduce/doctorIntroduce",
+        "doctorPrescriptionList/doctorPrescriptionList",
+        "doctorFocus/doctorFocus"
       ]
     }
-  ],
-  "navigateToMiniProgramAppIdList":[
-    "wx6885acbedba59c14"
   ],
   "sitemapLocation": "sitemap.json"
 }

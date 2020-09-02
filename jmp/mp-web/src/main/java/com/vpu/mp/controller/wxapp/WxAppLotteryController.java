@@ -1,8 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
@@ -63,7 +63,7 @@ public class WxAppLotteryController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/join")
-    public JsonResult JoinLottery(@RequestBody @Valid JoinLotteryParam param){
+    public JsonResult joinLottery(@RequestBody @Valid JoinLotteryParam param){
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
         JoinLottery joinLottery = shop().lottery.joinLottery(param);

@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.collection;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.UserCollectionRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.wxapp.collection.*;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -54,7 +54,8 @@ public class CollectService extends ShopBaseService{
 
                 BigDecimal groupPrice = goodsInfo.getCollectPrice() ;
                 System.out.println(groupPrice);
-                for(CollectGroupVo info:infos){//规格商品、获取最低规格价
+                for(CollectGroupVo info:infos){
+                    //规格商品、获取最低规格价
                     System.out.println(info.getGroupPrice());
                     if(info.getGroupPrice().compareTo(groupPrice)<0){
                         groupPrice = info.getGroupPrice();

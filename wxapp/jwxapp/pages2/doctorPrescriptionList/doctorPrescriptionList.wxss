@@ -1,0 +1,173 @@
+.tabs{
+  display: flex;
+  height: 90rpx;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 0 0 16rpx 16rpx;
+}
+.tabs > view{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.tabs > view > text{
+  font-size: 28rpx;
+  color: #333;
+  position: relative;
+}
+.tabs > view > text.active{
+  font-weight: 600;
+}
+.tabs > view > text.active::after{
+  content: '';
+  width: 80%;
+  height:6rpx;
+  border-radius: 3rpx;
+  background-color: #26C4BC;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -8rpx;
+}
+.is-null{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.is-null image{
+  width: 750rpx;
+  height: 448rpx;
+}
+.is-null text{
+  margin-top: -60rpx;
+  color: #999;
+}
+.card-item{
+  margin-top: 24rpx;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+.status-title{
+  width:702rpx;
+  height: 90rpx;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+.status-title>text:first-of-type{
+  color: #333;
+  font-weight: 600;
+  margin-right: auto;
+}
+.status-title>text:last-of-type{
+  color: #FF9F15;
+}
+.prescription-item{
+  border-radius: 16rpx;
+  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.1),0 0 0rpx rgba(10,16,20,.12);
+  position: relative;
+  width: 702rpx;
+  margin:0 auto;
+}
+.prescription-item > .item-list-content{
+  padding-left: 30rpx;
+  background-color: #fff;
+  position: relative;
+  border-radius: 16rpx 16rpx 0 0;
+  /* margin-top: -20rpx; */
+  background:linear-gradient(0deg,rgba(255,255,255,1),rgba(255,255,255,1),rgba(229,248,247,1));
+}
+.prescription-item > .item-list-content > .item-list{
+  display: flex;
+  flex-direction: column;
+  line-height: 55rpx;
+  padding: 15rpx 0;
+  border-bottom: 2rpx solid #eee;
+}
+.prescription-item > .item-list-content > .item-list > .list-item{
+  display: flex;
+  align-items: center;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-dot{
+  border: 4rpx solid skyblue;
+  border-radius: 50%;
+  height: 10rpx;
+  width: 10rpx;
+  margin-right: 20rpx;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-content{
+  color: #666;
+  font-size: 26rpx;
+}
+.prescription-item > .doctor-info{
+  height: 80rpx;
+  padding: 0 30rpx;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  color: #999;
+  position: relative;
+}
+.prescription-item > .doctor-info::after{
+  content: '';
+  position: absolute;
+  height: 16rpx;
+  width: 100%;
+  bottom: -16rpx;
+  left: 0;
+  background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
+  background-size: 40rpx 20rpx;
+}
+.prescription-item > .doctor-info > .doctor-name {
+  margin-right: auto;
+  font-size: 26rpx;
+} 
+.prescription-item > .doctor-info > .item-date {
+  font-size: 26rpx;
+}
+.goods-content{
+  display: flex;
+  padding-left: 24rpx;
+  flex-direction: column;
+  margin-top: 20rpx;
+}
+.goods-item{
+  display: flex;
+  padding: 24rpx 0;
+  padding-right: 24rpx;
+}
+.goods-item + .goods-item{
+  border-top: 2rpx solid #eee;
+}
+.goods-item > image{
+  width: 160rpx;
+  height: 160rpx;
+  margin-right: 24rpx;
+}
+.goods-item > .goods-desc{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.goods-item > .goods-desc > .goods-name{
+  color: #333;
+  line-height: 42rpx;
+}
+.goods-item > .goods-desc > .price-content{
+  display: flex;
+  align-items: center;
+}
+.goods-item > .goods-desc > .price-content > .goods-price{
+  margin-right: auto;
+  color: #FF9F15;
+  font-size: 30rpx;
+}
+.goods-item > .goods-desc > .price-content > .num{
+  color: #999;
+}

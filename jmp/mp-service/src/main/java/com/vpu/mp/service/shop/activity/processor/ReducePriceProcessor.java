@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
@@ -75,7 +75,7 @@ public class ReducePriceProcessor implements Processor, ActivityGoodsListProcess
         // 是限时降价商品且不是会员专享
         List<GoodsListMpBo> availableCapsule = capsules.stream().filter(x -> BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(x.getActivityType()) && x.getProcessedTypes().size() == 0).collect(Collectors.toList());
         List<Integer> goodsIds = availableCapsule.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsReduceListInfo(goodsIds, DateUtil.getLocalDateTime());
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsReduceListInfo(goodsIds, DateUtils.getLocalDateTime());
 
         availableCapsule.forEach(capsule -> {
             if (goodsReduceListInfo.get(capsule.getGoodsId()) == null) {
@@ -107,10 +107,10 @@ public class ReducePriceProcessor implements Processor, ActivityGoodsListProcess
             return;
         }
 
-        ReducePriceMpVo reducePriceInfo = reducePriceProcessorDao.getReducePriceInfo(param.getGoodsId(), DateUtil.getLocalDateTime());
+        ReducePriceMpVo reducePriceInfo = reducePriceProcessorDao.getReducePriceInfo(param.getGoodsId(), DateUtils.getLocalDateTime());
         if (reducePriceInfo == null) {
             if (param.getActivityType() == null && capsule.getActivityAnnounceMpVo() == null) {
-                GoodsActivityAnnounceMpVo announceInfo = reducePriceProcessorDao.getAnnounceInfo(param.getGoodsId(), DateUtil.getLocalDateTime());
+                GoodsActivityAnnounceMpVo announceInfo = reducePriceProcessorDao.getAnnounceInfo(param.getGoodsId(), DateUtils.getLocalDateTime());
                 capsule.setActivityAnnounceMpVo(announceInfo);
             }
             return;
@@ -146,7 +146,7 @@ public class ReducePriceProcessor implements Processor, ActivityGoodsListProcess
         List<Integer> productList = cartBo.getCartGoodsList().stream()
             .filter(goods -> goods.getBuyStatus().equals(BaseConstant.YES))
             .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
-        Map<Integer, List<Record5<Integer, Integer, Byte, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtil.getLocalDateTime());
+        Map<Integer, List<Record5<Integer, Integer, Byte, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtils.getLocalDateTime());
         if (goodsReduceListInfo != null && goodsReduceListInfo.size() > 0) {
             cartBo.getCartGoodsList().stream().filter(goods ->
                 goodsReduceListInfo.get(goods.getProductId()) != null
@@ -157,7 +157,8 @@ public class ReducePriceProcessor implements Processor, ActivityGoodsListProcess
                 if (reducePrize.compareTo(goods.getPrdPrice()) < 0) {
                     Integer limitNum = reducePriceRecord.get(REDUCE_PRICE.LIMIT_AMOUNT);
                     Byte limitFlag = reducePriceRecord.get(REDUCE_PRICE.LIMIT_FLAG);
-                    if (limitNum.equals(0) || goods.getCartNumber() <= limitNum || (goods.getCartNumber() > limitNum && limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE))) {
+                    boolean isInLimit = limitNum.equals(0) || goods.getCartNumber() <= limitNum || (goods.getCartNumber() > limitNum && limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE));
+                    if (isInLimit) {
                         log.info("购物车-限时降价-商品{}", goods.getGoodsName());
                         CartActivityInfo activityInfo = new CartActivityInfo();
                         activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);

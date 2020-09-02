@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallMaAllVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationInfoVo;
-import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupDetailVo;
-import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartParam;
-import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartVo;
+import com.vpu.mp.service.pojo.wxapp.market.groupintegration.GroupDetailVo;
+import com.vpu.mp.service.pojo.wxapp.market.groupintegration.GroupStartParam;
+import com.vpu.mp.service.pojo.wxapp.market.groupintegration.GroupStartVo;
 
 /**
  * 组团瓜分积分

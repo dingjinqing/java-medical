@@ -6,13 +6,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.wxapp.subscribe.MsgRecordParam;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
-import com.vpu.mp.service.shop.user.message.msgRecordConfig.MessageRecordType;
+import com.vpu.mp.service.pojo.shop.market.message.msgrecordconfig.MessageRecordType;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpTemplateMsgService;
@@ -29,7 +29,7 @@ import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 @Service
 public class MpOfficialAccountMessageService extends MainBaseService {
 
-	private static final int _40037 = 40037;
+	private static final int ERROR_CODE_INVALID_TEMPLATE_ID = 40037;
 	protected static final String NEED_INDUSTRY_ID_1 = "1";
 	protected static final String NEED_INDUSTRY_ID_2 = "2";
 	protected static final String INDUSTRY_FIRST = "IT科技";
@@ -121,7 +121,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 			sendTemplateMsg = service.sendTemplateMsg(messageBuilder.build());
 		} catch (WxErrorException e) {
 			// template_id不正确，移除缓存，重新发送模板消息
-			if (e.getError().getErrorCode() == _40037) {
+			if (e.getError().getErrorCode() == ERROR_CODE_INVALID_TEMPLATE_ID) {
 				jedis.delete(key);
 				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, maAppId, page, url,shopId,type,userId,messageTemplateId);
 			}else {

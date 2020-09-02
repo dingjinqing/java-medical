@@ -165,7 +165,9 @@ export default {
         { title: this.$t('adminPageFramework.headerData.title_5'), index: '', meta: 'first_market_manage', name: 'first_market_manage' },
         { title: this.$t('adminPageFramework.headerData.title_6'), index: '', meta: 'user_manger', name: 'user_list' },
         { title: this.$t('adminPageFramework.headerData.title_7'), index: '', meta: 'store_manage', name: 'store_list' },
-        { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' }]
+        { title: this.$t('adminPageFramework.headerData.title_8'), index: '', meta: 'base_manger', name: 'config_list' },
+        { title: '医师管理', index: '', meta: 'doctor_manger', name: 'doctorList' },
+        { title: '处方管理', index: '', meta: 'prescription_manger', name: 'prescriptionList' }]
       let data = JSON.parse(JSON.stringify(this.$t('shopData')))
       // this.hiddle_menu_list = this.$t('shopData')
       this.$t('shopData').forEach((item, index) => {
@@ -357,7 +359,7 @@ export default {
   color: #fff;
   background: #5a8bff;
   padding: 0 25px 0 45px;
-  padding-left: 34px;
+  padding-left: 20px;
   position: absolute;
   z-index: 40;
   display: flex;
@@ -374,7 +376,6 @@ export default {
 .middle {
   float: right;
   height: 100%;
-  margin-right: 22px;
   position: relative;
 }
 .account {
@@ -461,7 +462,7 @@ label {
 .header_nav > div {
   height: 85px;
   display: flex;
-  padding: 15px 25px;
+  padding: 15px 15px;
   cursor: pointer;
 }
 /* .headerNavEn {

@@ -2,8 +2,19 @@ package com.vpu.mp.service.shop.goods;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRebatePriceRecord;
@@ -14,19 +25,9 @@ import com.vpu.mp.db.shop.tables.records.LiveBroadcastRecord;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.BatchUpdateGoodsNumAndSaleNumForOrderParam;
@@ -155,13 +156,13 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  * 商品标签(b2c_goods_label,b2c_goods_label_couple)标签可以打在平台和商家分类上，在通过标签查商品时要进行关联查询，
  * 会员等价卡价格(b2c_grade_prd)，运费模板(b2c_deliver_fee_template)，会员专享商品(b2c_goods_card_couple),商品页模板，
  * 分销改价(b2c_goods_rebate_price)
+ * TODO:1.所有操作添加操作记录
+ * TODO:2.自定义商品上架时间的时候在新增删除修改的时候修改定时任务
  *
  * @author 李晓冰
  * @date 2019年6月25日
  */
 @Service
-// TODO:1.所有操作添加操作记录
-// TODO:2.自定义商品上架时间的时候在新增删除修改的时候修改定时任务
 @Slf4j
 public class GoodsService extends ShopBaseService {
 
@@ -217,6 +218,8 @@ public class GoodsService extends ShopBaseService {
     private BargainProcessorDao bargainProcessorDao;
     @Autowired
     private GroupBuyProcessorDao groupBuyProcessorDao;
+    @Autowired
+    private GoodsDao goodsDao;
     @Autowired
     private StoreService storeService;
     @Autowired
@@ -956,7 +959,7 @@ public class GoodsService extends ShopBaseService {
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
             int count = db().fetchCount(GOODS) + 1;
-            String timeStr = DateUtil.getLocalDateFullTightFormat();
+            String timeStr = DateUtils.getLocalDateFullTightFormat();
             goods.setGoodsSn(String.format("G%s-%08d", timeStr, count));
         }
 
@@ -1161,8 +1164,8 @@ public class GoodsService extends ShopBaseService {
         try {
             transaction(() -> {
                 //存在重复值则直接返回
-                GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForUpdate(goods);
-                codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
+                GoodsDataIIllegalEnum goodsDataIllegalEnum = columnValueExistCheckForUpdate(goods);
+                codeWrap.setIllegalEnum(goodsDataIllegalEnum);
                 if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
                     return;
                 }
@@ -1451,7 +1454,7 @@ public class GoodsService extends ShopBaseService {
      * 商品新增接口数据重复检查（非原子操作）
      *
      * @param goods 商品
-     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
+     * @return {@link com.vpu.mp.common.foundation.data.JsonResult}
      */
     public GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
         GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
@@ -1856,10 +1859,7 @@ public class GoodsService extends ShopBaseService {
      * @return 商品信息
      */
     public GoodsVo select(Integer goodsId) {
-        Record record = db().select()
-            .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
-            .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
-            .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
+        Record record = getGoodsAndBrandById(goodsId);
         if (record == null) {
             return null;
         }
@@ -1878,28 +1878,11 @@ public class GoodsService extends ShopBaseService {
         setGoodsImgs(goodsVo);
 
         //设置商品指定标签
-        Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
-        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId)==null ? new ArrayList<>(0):gtaLabelMap.get(goodsId));
-        goodsVo.setGoodsLabelNormalListVos(new ArrayList<>(5));
-        // 商家分类关联标签
-        if (!GoodsConstant.GOODS_SORT_DEFAULT_VALUE.equals(goodsVo.getSortId())){
-            Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelSortMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsVo.getSortId()), GoodsLabelCoupleTypeEnum.SORTTYPE);
-            if (gtaLabelSortMap.get(goodsVo.getSortId()) != null && gtaLabelSortMap.get(goodsVo.getSortId()).size() > 0) {
-                goodsVo.getGoodsLabelNormalListVos().addAll(gtaLabelSortMap.get(goodsVo.getSortId()));
-            }
-        }
-        // 绑定全部商品上的标签
-        List<GoodsLabelSelectListVo> allGoodsLabels = goodsLabel.getAllGoodsLabels();
-        goodsVo.getGoodsLabelNormalListVos().addAll(allGoodsLabels);
+        setGoodsTags(goodsId, goodsVo);
 
 
         //设置sku
-        List<GoodsSpecProduct> goodsSpecProducts = goodsSpecProductService.selectByGoodsId(goodsId);
-        goodsSpecProducts.forEach(goodsSpecProduct -> goodsSpecProduct.setPrdImgUrl(getImgFullUrlUtil(goodsSpecProduct.getPrdImg())));
-        goodsVo.setGoodsSpecProducts(goodsSpecProducts);
-
-        List<GoodsSpec> goodsSpecs = goodsSpecProductService.selectSpecByGoodsId(goodsId);
-        goodsVo.setGoodsSpecs(goodsSpecs);
+        setGoodsSku(goodsId, goodsVo);
 
         //设置商品规格会员价
         List<GoodsGradePrd> goodsGradePrds = selectGoodsGradePrd(goodsId);
@@ -1938,6 +1921,38 @@ public class GoodsService extends ShopBaseService {
         }
 
         return goodsVo;
+    }
+
+    private void setGoodsSku(Integer goodsId, GoodsVo goodsVo) {
+        List<GoodsSpecProduct> goodsSpecProducts = goodsSpecProductService.selectByGoodsId(goodsId);
+        goodsSpecProducts.forEach(goodsSpecProduct -> goodsSpecProduct.setPrdImgUrl(getImgFullUrlUtil(goodsSpecProduct.getPrdImg())));
+        goodsVo.setGoodsSpecProducts(goodsSpecProducts);
+
+        List<GoodsSpec> goodsSpecs = goodsSpecProductService.selectSpecByGoodsId(goodsId);
+        goodsVo.setGoodsSpecs(goodsSpecs);
+    }
+
+    private void setGoodsTags(Integer goodsId, GoodsVo goodsVo) {
+        Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
+        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId)==null ? new ArrayList<>(0):gtaLabelMap.get(goodsId));
+        goodsVo.setGoodsLabelNormalListVos(new ArrayList<>(5));
+        // 商家分类关联标签
+        if (!GoodsConstant.GOODS_SORT_DEFAULT_VALUE.equals(goodsVo.getSortId())){
+            Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelSortMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsVo.getSortId()), GoodsLabelCoupleTypeEnum.SORTTYPE);
+            if (gtaLabelSortMap.get(goodsVo.getSortId()) != null && gtaLabelSortMap.get(goodsVo.getSortId()).size() > 0) {
+                goodsVo.getGoodsLabelNormalListVos().addAll(gtaLabelSortMap.get(goodsVo.getSortId()));
+            }
+        }
+        // 绑定全部商品上的标签
+        List<GoodsLabelSelectListVo> allGoodsLabels = goodsLabel.getAllGoodsLabels();
+        goodsVo.getGoodsLabelNormalListVos().addAll(allGoodsLabels);
+    }
+
+    private Record getGoodsAndBrandById(Integer goodsId) {
+        return db().select()
+                .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+                .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
+                .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
     }
 
     /**
@@ -2537,7 +2552,7 @@ public class GoodsService extends ShopBaseService {
         List<Integer> goodsIds = db().select().from(GOODS)
             .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.IS_ON_SALE.eq(GoodsConstant.OFF_SALE))
             .and(GOODS.GOODS_NUMBER.gt(0)).and(GOODS.STATE.ne(GoodsConstant.INVALIDATE_OFF_SALE))
-            .and(GOODS.SALE_TYPE.eq(GoodsConstant.POINT_TIME_TO_ON_SALE)).and(GOODS.SALE_TIME.le(DateUtil.getLocalDateTime()))
+            .and(GOODS.SALE_TYPE.eq(GoodsConstant.POINT_TIME_TO_ON_SALE)).and(GOODS.SALE_TIME.le(DateUtils.getLocalDateTime()))
             .fetch(GOODS.GOODS_ID);
 
         db().update(GOODS).set(GOODS.IS_ON_SALE, GoodsConstant.ON_SALE)
@@ -2681,7 +2696,7 @@ public class GoodsService extends ShopBaseService {
      */
     private GoodsActivityType getGoodsActivityType(Integer goodsId) {
         GoodsActivityType type = new GoodsActivityType();
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         // 秒杀
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsSecKillListInfo = secKillProcessorDao.getGoodsSecKillListInfo(Collections.singletonList(goodsId), now);
         if (goodsSecKillListInfo.containsKey(goodsId)) {
@@ -2881,5 +2896,14 @@ public class GoodsService extends ShopBaseService {
         Integer prdNum = (int) (Math.floor(param.getNumber()));
         storeGoodsService.updatePrdNumForPosSyncStock(storeRecord.getStoreId(),prdId,prdNum);
         return apiJsonResult;
+    }
+
+    /**
+     * 根据prdId获取商品名称
+     * @param prdId
+     * @return
+     */
+    public String getGoodsNameByPrdId(Integer prdId) {
+        return goodsDao.getGoodsNameByPrdId(prdId);
     }
 }

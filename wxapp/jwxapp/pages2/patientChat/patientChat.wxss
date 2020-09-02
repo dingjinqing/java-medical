@@ -1,0 +1,169 @@
+/* pages2/patientChat/patientChat.wxss */
+.main-container{
+  padding-bottom: 110rpx;
+  min-height: inherit;
+}
+.origin_message {
+  max-width: 450rpx;
+  min-height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  position: relative;
+  word-wrap:break-word;
+  word-break: break-all;
+}
+
+.origin_left {
+  background: #fff;
+  font-size: 32rpx;
+  color: #333;
+  margin-left: 20rpx;
+}
+
+.origin_left::before ,.p_d_left::before{
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 34rpx;
+  left: -10rpx;
+  border-top: solid 10rpx transparent;
+  border-right: solid 10rpx #fff;
+  border-bottom: solid 10rpx transparent;
+}
+
+.origin_right {
+  background: #26C4BC;
+  font-size: 32rpx;
+  color: #fff;
+  margin-right: 20rpx;
+}
+.origin_right::before,.p_d_right::before {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 34rpx;
+  right: -10rpx;
+  border-top: solid 10rpx transparent;
+  border-left: solid 10rpx #26C4BC;
+  border-bottom: solid 10rpx transparent;
+}
+
+.image-message{
+  max-width: 450rpx;
+}
+
+.patient_message{
+  width: 480rpx;
+  min-height: 160rpx;
+  border-radius:10rpx 10rpx 0rpx 0rpx;
+  background: #fff;
+  position: relative;
+}
+.p_d_left{
+  margin-left: 20rpx;
+}
+.p_d_right{
+  margin-right: 20rpx;
+}
+.p_m_top{
+  background: #26C4BC;
+  height: 80rpx;
+  line-height: 80rpx;
+  color: #fff;
+  padding-left: 20rpx;
+  border-radius: 10rpx 10rpx 0 0;
+}
+.p_m_top text{
+  font-size: 32rpx;
+  margin-right: 30rpx;
+}
+.p_m_bot{
+  padding: 20rpx;
+}
+.p_m_bot text:first-of-type{
+  color: #999;
+}
+.p_m_bot text:last-of-type{
+  color: #333;
+  line-height: 38rpx;
+}
+.prescription-item{
+  border-radius: 16rpx;
+  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.14),0 0 0rpx rgba(10,16,20,.12);
+  position: relative;
+  width: 480rpx;
+  min-height: 300rpx;
+}
+.prescription-item + .prescription-item{
+  margin-top: 30rpx;
+}
+.prescription-item > .item-title{
+  line-height: 80rpx;
+  color: #fff;
+  font-size: 30rpx;
+  text-align: center;
+  background-color: skyblue;
+  height: 100rpx;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.prescription-item > .item-list-content{
+  padding-left: 30rpx;
+  background-color: #fff;
+  position: relative;
+  border-radius: 16rpx 16rpx 0 0;
+  margin-top: -20rpx;
+}
+.prescription-item > .item-list-content > .item-list{
+  display: flex;
+  flex-direction: column;
+  line-height: 55rpx;
+  padding: 15rpx 0;
+  border-bottom: 2rpx solid #eee;
+}
+.prescription-item > .item-list-content > .item-list > .list-item{
+  display: flex;
+  align-items: center;
+}
+.prescription-item > .item-list-content  .list-item-dot{
+  border: 4rpx solid skyblue;
+  border-radius: 50%;
+  height: 10rpx;
+  width: 10rpx;
+  margin-right: 20rpx;
+  display: inline-block;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-content{
+  color: #666;
+  font-size: 26rpx;
+}
+.prescription-item > .doctor-info{
+  height: 80rpx;
+  padding: 0 30rpx;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  color: #999;
+  position: relative;
+}
+.prescription-item > .doctor-info::after{
+  content: '';
+  position: absolute;
+  height: 16rpx;
+  width: 100%;
+  bottom: -16rpx;
+  left: 0;
+  background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
+  background-size: 40rpx 20rpx;
+}
+.prescription-item > .doctor-info > .doctor-name {
+  margin-right: auto;
+  font-size: 26rpx;
+} 
+.prescription-item > .doctor-info > .item-date {
+  font-size: 26rpx;
+} 

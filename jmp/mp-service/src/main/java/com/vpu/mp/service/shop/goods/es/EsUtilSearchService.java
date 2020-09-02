@@ -2,25 +2,22 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParamBuilder;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
-import com.vpu.mp.service.shop.goods.es.goods.EsSearchSource;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsSearchSource;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 
+ *
  * @author 卢光耀
  * @date 2019/11/8 5:15 下午
  *
@@ -57,7 +54,7 @@ public class EsUtilSearchService extends EsBaseSearchService{
         Set<Integer> result = Sets.newHashSet();
         List<FieldProperty> propertyList = new ArrayList<>();
         propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,getShopId()));
-        propertyList.add(new FieldProperty(EsSearchName.UPDATE_TIME, DateUtil.getBeforeLocalFor(30), Operator.LT));
+        propertyList.add(new FieldProperty(EsSearchName.UPDATE_TIME, DateUtils.getBeforeLocalFor(30), Operator.LT));
         BoolQueryBuilder searchBuilder = assemblySearchBuilder(propertyList, EsSearchSource.ADMIN,Boolean.FALSE);
         EsSearchSourceBuilderParam param = EsSearchSourceBuilderParamBuilder.builder()
             .queryBuilder(searchBuilder)

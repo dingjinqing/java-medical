@@ -27,6 +27,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelReader;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.IdentityUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
@@ -37,18 +47,8 @@ import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelReader;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.IdentityUtils;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -63,21 +63,21 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberSexEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UIGetNoActListVo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportActivePojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportErroPojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportParam;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportPojo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportTemplate;
+import com.vpu.mp.service.pojo.shop.member.userimp.CardInfoVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeJson;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeJsonDetailVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeJsonVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.SetNoticeParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetListParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetListVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetNoActListParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UiGetNoActListVo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportActivePojo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportErroPojo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportMqParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportParam;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportPojo;
+import com.vpu.mp.service.pojo.shop.member.userimp.UserImportTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.shop.config.ConfigService;
@@ -89,7 +89,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
 
 /**
  * 会员导入
- * 
+ *
  * @author zhaojianqiang
  * @time 下午1:51:15
  */
@@ -125,6 +125,9 @@ public class UserImportService extends ShopBaseService {
 //			"大型设备/机电设备/重工业", "加工制造（原料加工/模具）", "汽车/摩托车（制造/维护/配件/销售/服务）", "交通/运输/物流", "医药/生物工程", "医疗/护理/美容/保健", "医疗设备/器械",
 //			"酒店/餐饮", "娱乐/体育/休闲", "旅游/度假", "石油/石化/化工", "能源/矿产/采掘/冶炼", "电气/电力/水利", "航空/航天", "学术/科研", "政府/公共事业/非盈利机构",
 //			"环保", "农/林/牧/渔", "跨领域经营", "其它" };
+
+
+
 	private static final Byte ONE = 1;
 	private static final Byte BYTE_ZERO = 0;
 	private static final Byte BYTE_ONE = 1;
@@ -136,7 +139,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 设置用户导入通知
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -166,7 +169,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 获取用户导入通知
-	 * 
+	 *
 	 * @return
 	 */
 	public SetNoticeJson getActivationNotice() {
@@ -176,7 +179,7 @@ public class UserImportService extends ShopBaseService {
 			return json;
 		}
 		json = Util.parseJson(record.getV(), SetNoticeJson.class);
-		
+
 		return json;
 	}
 
@@ -189,7 +192,7 @@ public class UserImportService extends ShopBaseService {
 		}
 		return new SetNoticeJsonVo(json.getExplain(), json.getScore(), mrkingVoucherId, couponViewByIds);
 	}
-	
+
 	public SetNoticeJsonDetailVo getInfo(String lang) {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
@@ -197,7 +200,7 @@ public class UserImportService extends ShopBaseService {
 		if (StringUtils.isNotEmpty(mrkingVoucherId)) {
 			String[] split = mrkingVoucherId.split(",");
 			for (String string : split) {
-				CouponWxUserImportVo couponVo = couponService.getOneMVById(Integer.valueOf(string), lang);
+				CouponWxUserImportVo couponVo = couponService.getOneMvById(Integer.valueOf(string), lang);
 				if (couponVo != null) {
 					voList.add(couponVo);
 				}
@@ -209,7 +212,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 获取模板
-	 * 
+	 *
 	 * @param lang
 	 * @return
 	 */
@@ -348,7 +351,7 @@ public class UserImportService extends ShopBaseService {
 			if (StringUtils.isNotEmpty(birthday)) {
 				try {
 					// ExcelUtil.DATE_FORMAT
-					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SIMPLE));
+					LocalDate parse = LocalDate.parse(birthday, DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SIMPLE));
 					//userImportPojo.setBirthday(parse.toString());
 				} catch (Exception e) {
 					logger().info("生日日期格式错误");
@@ -357,47 +360,12 @@ public class UserImportService extends ShopBaseService {
 					continue;
 				}
 			}
-			String province = userImportPojo.getProvince();
-			String city = userImportPojo.getCity();
-			String district = userImportPojo.getDistrict();
-			userImportPojo.setCity(city);
-			userImportPojo.setDistrict(district);
-			logger().info("省市区"+province+city+district);
-			boolean isProvince = StringUtils.isEmpty(province);
-			boolean isCity = StringUtils.isEmpty(city);
-			boolean isDistrict = StringUtils.isEmpty(district);
-			if (isProvince || isCity || isDistrict) {
-				logger().info("省，市，区需完整填写");
-				userImportPojo.setErrorMsg(UserImportTemplate.ADDRESS_ERROR.getCode());
-				continue;
-			}
-			if (!isProvince) {
-				Integer provinceId = saas.region.province.getProvinceIdByName(province);
-				if (provinceId == null) {
-					logger().info("无效省份");
-					userImportPojo.setErrorMsg(UserImportTemplate.PROVINCE_ERROR.getCode());
-					continue;
-				}
-				if (!isCity) {
-					DictCityRecord cityId = saas.region.city.getCityId(city, provinceId);
-					if (cityId == null) {
-						logger().info("无效市");
-						userImportPojo.setErrorMsg(UserImportTemplate.CITY_ERROR.getCode());
-						continue;
-					}
-					if (!isDistrict) {
-						Integer districtId = saas.region.district.getDistrictIdByNameAndCityId(cityId.getCityId(),
-								district);
-						if (districtId == null) {
-							logger().info("无效区");
-							userImportPojo.setErrorMsg(UserImportTemplate.DISTRICT_ERROR.getCode());
-							continue;
-						}
-					}
-				}
-			}
 
-			String idNumber = userImportPojo.getIdNumber();
+            if (errorArea(userImportPojo)) {
+                continue;
+            }
+
+            String idNumber = userImportPojo.getIdNumber();
 			logger().info("身份证"+idNumber);
 			if (!IdentityUtils.isLegalPattern(idNumber)) {
 				logger().info("无效身份证号");
@@ -438,28 +406,75 @@ public class UserImportService extends ShopBaseService {
 			successNum++;
 		}
 		// 可能存在id不正确
-		logger().info("准备插入");
-		UserImportRecord newRecord = db().newRecord(USER_IMPORT);
-		newRecord.setSuccessNum(successNum);
-		newRecord.setTotalNum(totalNum);
-		newRecord.setCardId(cardId);
-		newRecord.setTagId(tagId);
-		newRecord.setGroupId(groupId);
-		int insert2 = newRecord.insert();
-		logger().info("插入USER_IMPORT"+insert2);
-		for (UserImportPojo userImportPojo2 : list) {
-			UserImportDetailRecord record = db().newRecord(USER_IMPORT_DETAIL, userImportPojo2);
-			record.setCardId(cardId);
-			record.setTagId(tagId);
-			record.setGroupId(groupId);
-			//FieldsUtil.assignNotNull(userImportPojo2, record);
-			record.setBatchId(newRecord.getId());
-			int insert = record.insert();
-			logger().info("插入" + insert);
-		}
-	}
+        insertUserImport(list, cardId, groupId, tagId, successNum, totalNum);
+    }
 
-	private Boolean checkRule(String[] list, String mark) {
+    private boolean errorArea(UserImportPojo userImportPojo) {
+        String province = userImportPojo.getProvince();
+        String city = userImportPojo.getCity();
+        String district = userImportPojo.getDistrict();
+        userImportPojo.setCity(city);
+        userImportPojo.setDistrict(district);
+        logger().info("省市区"+province+city+district);
+        boolean isProvince = StringUtils.isEmpty(province);
+        boolean isCity = StringUtils.isEmpty(city);
+        boolean isDistrict = StringUtils.isEmpty(district);
+        if (isProvince || isCity || isDistrict) {
+            logger().info("省，市，区需完整填写");
+            userImportPojo.setErrorMsg(UserImportTemplate.ADDRESS_ERROR.getCode());
+            return true;
+        }
+        if (!isProvince) {
+            Integer provinceId = saas.region.province.getProvinceIdByName(province);
+            if (provinceId == null) {
+                logger().info("无效省份");
+                userImportPojo.setErrorMsg(UserImportTemplate.PROVINCE_ERROR.getCode());
+                return true;
+            }
+            if (!isCity) {
+                DictCityRecord cityId = saas.region.city.getCityId(city, provinceId);
+                if (cityId == null) {
+                    logger().info("无效市");
+                    userImportPojo.setErrorMsg(UserImportTemplate.CITY_ERROR.getCode());
+                    return true;
+                }
+                if (!isDistrict) {
+                    Integer districtId = saas.region.district.getDistrictIdByNameAndCityId(cityId.getCityId(),
+                            district);
+                    if (districtId == null) {
+                        logger().info("无效区");
+                        userImportPojo.setErrorMsg(UserImportTemplate.DISTRICT_ERROR.getCode());
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void insertUserImport(List<UserImportPojo> list, String cardId, Integer groupId, Integer tagId, int successNum, int totalNum) {
+        logger().info("准备插入");
+        UserImportRecord newRecord = db().newRecord(USER_IMPORT);
+        newRecord.setSuccessNum(successNum);
+        newRecord.setTotalNum(totalNum);
+        newRecord.setCardId(cardId);
+        newRecord.setTagId(tagId);
+        newRecord.setGroupId(groupId);
+        int insert2 = newRecord.insert();
+        logger().info("插入USER_IMPORT"+insert2);
+        for (UserImportPojo userImportPojo2 : list) {
+            UserImportDetailRecord record = db().newRecord(USER_IMPORT_DETAIL, userImportPojo2);
+            record.setCardId(cardId);
+            record.setTagId(tagId);
+            record.setGroupId(groupId);
+            //FieldsUtil.assignNotNull(userImportPojo2, record);
+            record.setBatchId(newRecord.getId());
+            int insert = record.insert();
+            logger().info("插入" + insert);
+        }
+    }
+
+    private Boolean checkRule(String[] list, String mark) {
 		for (String string : list) {
 			if (string.equals(mark)) {
 				return true;
@@ -491,7 +506,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 返回Excel文件
-	 * 
+	 *
 	 * @param lang
 	 * @param list
 	 * @return
@@ -505,7 +520,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 错误信息的返回
-	 * 
+	 *
 	 * @param lang
 	 * @param list
 	 * @return
@@ -519,7 +534,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 查询激活成功
-	 * 
+	 *
 	 * @param lang
 	 * @param list
 	 * @return
@@ -533,7 +548,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 查询失败数据
-	 * 
+	 *
 	 * @param batchId
 	 * @return
 	 */
@@ -556,7 +571,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 查询激活成功数据
-	 * 
+	 *
 	 * @param batchId
 	 * @return
 	 */
@@ -572,7 +587,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 返回失败的信息
-	 * 
+	 *
 	 * @param batchId
 	 * @param lang
 	 * @return
@@ -583,7 +598,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 激活成功的用户信息
-	 * 
+	 *
 	 * @param batchId
 	 * @param lang
 	 * @return
@@ -623,7 +638,7 @@ public class UserImportService extends ShopBaseService {
 		return result;
 	}
 
-	public PageResult<UIGetListVo> getList(UIGetListParam param) {
+	public PageResult<UiGetListVo> getList(UiGetListParam param) {
 		SelectWhereStep<UserImportRecord> selectFrom = db().selectFrom(USER_IMPORT);
 		Integer batchId = param.getBatchId();
 		if (batchId != null) {
@@ -639,18 +654,18 @@ public class UserImportService extends ShopBaseService {
 		}
 		selectFrom.where(USER_IMPORT.TOTAL_NUM.gt(0));
 		selectFrom.orderBy(USER_IMPORT.ID.desc());
-		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UIGetListVo.class);
+		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UiGetListVo.class);
 	}
 
 	/**
 	 * 会员导入列表
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
-	public PageResult<UIGetListVo> descList(UIGetListParam param) {
-		PageResult<UIGetListVo> list = getList(param);
-		for (UIGetListVo vo : list.getDataList()) {
+	public PageResult<UiGetListVo> descList(UiGetListParam param) {
+		PageResult<UiGetListVo> list = getList(param);
+		for (UiGetListVo vo : list.getDataList()) {
 			vo.setFailNum(vo.getTotalNum() - vo.getSuccessNum());
 			int activateNum = getActivateNum(vo.getId(), ONE);
 			vo.setActivateNum(activateNum);
@@ -681,11 +696,11 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 会员导入明细列表
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
-	public PageResult<UIGetNoActListVo> getDetailList(UIGetNoActListParam param) {
+	public PageResult<UiGetNoActListVo> getDetailList(UiGetNoActListParam param) {
 		SelectWhereStep<UserImportDetailRecord> selectFrom = db().selectFrom(USER_IMPORT_DETAIL);
 		selectFrom.where(USER_IMPORT_DETAIL.ERROR_MSG.isNull());
 		Timestamp startTime = param.getStartTime();
@@ -721,12 +736,12 @@ public class UserImportService extends ShopBaseService {
 			selectFrom.where(USER_IMPORT_DETAIL.GROUP_ID.eq(groupId));
 		}
 		selectFrom.orderBy(USER_IMPORT_DETAIL.ID.desc());
-		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UIGetNoActListVo.class);
+		return this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), UiGetNoActListVo.class);
 	}
 
-	public PageResult<UIGetNoActListVo> addGroupName(UIGetNoActListParam param) {
-		PageResult<UIGetNoActListVo> detailList = getDetailList(param);
-		for (UIGetNoActListVo vo : detailList.dataList) {
+	public PageResult<UiGetNoActListVo> addGroupName(UiGetNoActListParam param) {
+		PageResult<UiGetNoActListVo> detailList = getDetailList(param);
+		for (UiGetNoActListVo vo : detailList.dataList) {
 			DistributorGroupListVo oneInfo = saas.getShopApp(getShopId()).distributorGroup.getOneInfo(vo.getGroupId());
 			if (oneInfo == null) {
 				//TODO 国际化
@@ -745,7 +760,11 @@ public class UserImportService extends ShopBaseService {
 				.fetchAny();
 	}
 
-	// 激活用户
+    /**
+     * 激活用户
+     * @param userId
+     * @return
+     */
 	public JsonResultCode toActivateUser(Integer userId) {
 		UserRecord user = userService.getUserByUserId(userId);
 		String mobile = user.getMobile();
@@ -773,7 +792,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 赠送积分
-	 * 
+	 *
 	 * @param userId
 	 * @param activationNotice
 	 */
@@ -799,7 +818,7 @@ public class UserImportService extends ShopBaseService {
 
 	/**
 	 * 发放优惠券
-	 * 
+	 *
 	 * @param userId
 	 */
 	private void grantCoupon(Integer userId, SetNoticeJson activationNotice) {
@@ -827,7 +846,11 @@ public class UserImportService extends ShopBaseService {
 				TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
 	}
 
-	// 激活用户
+    /**
+     * 激活用户
+     * @param userId
+     * @param importUser
+     */
 	public void activateUser(Integer userId, UserImportDetailRecord importUser) {
 		logger().info("激活用户");
 		String cardId = importUser.getCardId();
@@ -883,16 +906,16 @@ public class UserImportService extends ShopBaseService {
 					&& cfg.getStatus().equals(BYTE_ONE) && !inviteUser.getInviteId().equals(userId)) {
 				logger().info("处理邀请人");
 				userRecord.setInviteId(inviteUser.getUserId());
-				userRecord.setInviteTime(DateUtil.getSqlTimestamp());
+				userRecord.setInviteTime(DateUtils.getSqlTimestamp());
 				Byte vaild = cfg.getVaild();
 				Timestamp time = vaild > BYTE_ZERO
-						? DateUtil.getTimeStampPlus(Integer.valueOf(vaild) - 1, ChronoUnit.DAYS)
+						? DateUtils.getTimeStampPlus(Integer.valueOf(vaild) - 1, ChronoUnit.DAYS)
 						: null;
 				if (time != null) {
 					userRecord.setInviteExpiryDate(new Date(time.getTime()));
 				}
 				Byte protectDate = cfg.getProtectDate();
-				time = vaild > BYTE_ZERO ? DateUtil.getTimeStampPlus(Integer.valueOf(protectDate) - 1, ChronoUnit.DAYS)
+				time = vaild > BYTE_ZERO ? DateUtils.getTimeStampPlus(Integer.valueOf(protectDate) - 1, ChronoUnit.DAYS)
 						: null;
 				if (time != null) {
 					userRecord.setInviteProtectDate(Util.currentTimeStamp());
@@ -990,7 +1013,7 @@ public class UserImportService extends ShopBaseService {
 			userDetail.setCityCode(cityId);
 			userDetail.setDistrictCode(districtId);
 		}
-		
+
 		BigDecimal income = importUser.getIncome();
 		logger().info("判断收入");
 		if (income != null) {

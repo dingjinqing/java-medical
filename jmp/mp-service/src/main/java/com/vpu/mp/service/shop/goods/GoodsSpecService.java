@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.db.shop.tables.records.SpecRecord;
 import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;

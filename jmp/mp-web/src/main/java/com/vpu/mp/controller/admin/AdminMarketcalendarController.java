@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.ActInfoVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAct;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
@@ -35,7 +35,7 @@ public class AdminMarketcalendarController extends AdminBaseController {
 		String act = param.getAct();
 		for (CalendarAct calendarAct : param.getCalendarAct()) {
 			String[] strings = saas.shop.version.verifyVerPurview(shopId(), calendarAct.getActivityType());
-			if(strings[0].equals("false")) {
+			if("false".equals(strings[0])) {
 				 return this.fail(JsonResultCode.SOME_NO_AUTH,""+calendarAct.getActivityType());
 			}
 		}

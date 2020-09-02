@@ -1,16 +1,16 @@
 package com.vpu.mp.service.shop.market.goupbuy;
 
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
@@ -25,8 +25,8 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
@@ -48,7 +48,7 @@ import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
-import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +61,9 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
 
 /**
@@ -377,8 +377,8 @@ public class GroupBuyService extends ShopBaseService {
         Timestamp startDate = param.getStartTime();
         Timestamp endDate = param.getEndTime();
         if (startDate == null || endDate == null) {
-            startDate = DateUtil.currentMonthFirstDay();
-            endDate = DateUtil.getLocalDateTime();
+            startDate = DateUtils.currentMonthFirstDay();
+            endDate = DateUtils.getLocalDateTime();
         }
         //获取销售额等金额
         List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(BaseConstant.ACTIVITY_TYPE_GROUP_BUY, param.getId(), startDate, endDate);
@@ -386,7 +386,7 @@ public class GroupBuyService extends ShopBaseService {
         ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(BaseConstant.ACTIVITY_TYPE_GROUP_BUY, param.getId(), startDate, endDate);
 
         while (Objects.requireNonNull(startDate).compareTo(endDate) <= 0) {
-            String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate);
+            String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE, startDate);
             //活动实付金额
             ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, startDate);
             if (discountMoney == null) {
@@ -530,7 +530,7 @@ public class GroupBuyService extends ShopBaseService {
         //判断是否拼团成功
         if (groupBuyLimitAmountRecord <= groupUserList.size()) {
             logger().info("拼团成功,groupId:{}", groupId);
-            Timestamp date = DateUtil.getLocalDateTime();
+            Timestamp date = DateUtils.getLocalDateTime();
             List<String> orderSnList = groupUserList.stream().map(GroupBuyUserInfo::getOrderSn).collect(Collectors.toList());
             updateGroupSuccess(groupId, date, orderSnList);
             logger().info("修改订单状态");
@@ -644,7 +644,7 @@ public class GroupBuyService extends ShopBaseService {
         }else {
             isGrouper =IS_GROUPER_N;
         }
-        Timestamp date = DateUtil.getLocalDateTime();
+        Timestamp date = DateUtils.getLocalDateTime();
         // 拼团状态
         ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(param.getUserId(), date, grouperInfo.getActivityId(), grouperInfo.getGroupId(), isGrouper);
         //拼团活动
@@ -681,7 +681,7 @@ public class GroupBuyService extends ShopBaseService {
         Integer groupBuyStock = groupBuyProductRecord.stream().mapToInt(Record3<Integer, BigDecimal, Short>::component3).sum();
         BigDecimal maxPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().max(BigDecimal::compareTo).get();
         BigDecimal minPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().min(BigDecimal::compareTo).get();
-        long dateDiff = date.getTime() - DateUtil.getLocalDateTime().getTime();
+        long dateDiff = date.getTime() - DateUtils.getLocalDateTime().getTime();
         long hour = 23 - (dateDiff / (60 * 60 * 1000));
         long min = 59 - (dateDiff % (60 * 60 * 1000)) / (60 * 1000);
         long s = 59 - ((dateDiff % (60 * 60 * 1000)) % (60 * 1000)) / 1000;
@@ -739,7 +739,7 @@ public class GroupBuyService extends ShopBaseService {
     protected Byte canCreatePinGroupOrder(Integer userId, Timestamp date, Integer activityId, GroupBuyDefineRecord groupBuyDefineRecord) {
         logger().debug("小程序-商品详情-拼团信息-是否可以参与活动判断");
         if (date == null) {
-            date = DateUtil.getLocalDateTime();
+            date = DateUtils.getLocalDateTime();
         }
 
         if (groupBuyDefineRecord == null) {
@@ -817,7 +817,7 @@ public class GroupBuyService extends ShopBaseService {
      * @return 可用商品id集合
      */
     public List<Integer> getGroupBuyCanUseGoodsIds(Integer activityId, Condition baseCondition) {
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         GroupBuyDefineRecord record = getGroupBuyDefinedInfoBuyId(activityId);
         if (record == null || record.getEndTime().compareTo(now) <= 0) {
             logger().debug("小程序-admin-groupbuy-扫码进小程序搜索列表页-活动已删除或停止");
@@ -871,7 +871,7 @@ public class GroupBuyService extends ShopBaseService {
 				.from(GROUP_BUY_DEFINE)
 				.where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)
-								.and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+								.and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(GROUP_BUY_DEFINE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

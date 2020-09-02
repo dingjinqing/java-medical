@@ -108,6 +108,7 @@
                   <el-radio
                     v-model="form.isForever"
                     :label="0"
+                    @change="timeChange"
                   >{{$t('openScreenAdd.fixedTime')}}</el-radio>
                   <el-date-picker
                     v-model="dateInterval"
@@ -117,12 +118,14 @@
                     :start-placeholder="$t('openScreenAdd.effectiveTime')"
                     :end-placeholder="$t('openScreenAdd.expireDate')"
                     :default-time="['00:00:00','23:59:59']"
+                    :disabled="form.isForever === 1"
                   ></el-date-picker>
                 </div>
                 <div>
                   <el-radio
                     v-model="form.isForever"
                     :label="1"
+                    @change="timeChange"
                   >{{$t('openScreenAdd.permanent')}}</el-radio>
                 </div>
               </el-form-item>
@@ -130,12 +133,20 @@
                 :label="$t('openScreenAdd.priority')"
                 prop="first"
               >
-                <el-input
+                <hcInputNumber
+                  type="priority"
+                  v-model.number="form.first"
+                  size="small"
+                  style="width:170px;"
+                  :min="0"
+                  inline
+                />
+                <!-- <el-input
                   v-model.number="form.first"
                   size="small"
                   style="width:170px;"
                   min="0"
-                ></el-input>
+                ></el-input> -->
                 <p class="tips">{{$t('openScreenAdd.diffPriority')}}</p>
               </el-form-item>
               <el-form-item
@@ -153,17 +164,20 @@
                     <el-radio :label="2">{{$t('openScreenAdd.allUsers')}}</el-radio>
                   </div>
                 </el-radio-group>
-                <p class="tips">{{$t('openScreenAdd.forNew')}}</p>
+                <!-- <p class="tips">{{$t('openScreenAdd.forNew')}}</p> -->
               </el-form-item>
             </div>
             <div class="right-bottom">
               <header>{{$t('openScreenAdd.openReward')}}</header>
               <el-form-item
-                :label="$t('openScreenAdd.payReward')"
+                :label="$t('openScreenAdd.openReward')+'：'"
                 prop="activityAction"
                 required
               >
-                <el-radio-group v-model="form.activityAction">
+                <el-radio-group
+                  v-model="form.activityAction"
+                  @change="radioChange"
+                >
                   <div class="radio-layout">
                     <el-radio :label="4">{{$t('openScreenAdd.integral')}}</el-radio>
                     <el-radio :label="1">{{$t('openScreenAdd.coupon')}}</el-radio>
@@ -181,16 +195,23 @@
                 :label="$t('openScreenAdd.integral') + '：'"
                 prop="giveScore"
               >
-                <el-input
+                <hcInputNumber
+                  type="integer"
                   v-model.number="form.giveScore"
                   :placeholder="$t('openScreenAdd.enterIntegral')"
                   style="width:170px;"
-                ></el-input>
+                  inline
+                />
+                <!-- <el-input
+                  v-model.number="form.giveScore"
+                  :placeholder="$t('openScreenAdd.enterIntegral')"
+                  style="width:170px;"
+                ></el-input> -->
               </el-form-item>
               <el-form-item
                 v-if="form.activityAction == 1"
                 :label="$t('openScreenAdd.coupon2')"
-                prop="mrkingVoucherId"
+                prop='ordinaryCoupon'
               >
                 <div
                   class="coupon-added"
@@ -259,16 +280,23 @@
                 :label="$t('openScreenAdd.balance')+'：'"
                 prop="giveAccount"
               >
-                <el-input
+                <hcInputNumber
+                  type="price"
                   v-model.number="form.giveAccount"
                   style="width:170px;"
                   :placeholder="$t('openScreenAdd.please')"
-                ></el-input>
+                  inline
+                />
+                <!-- <el-input
+                  v-model.number="form.giveAccount"
+                  style="width:170px;"
+                  :placeholder="$t('openScreenAdd.please')"
+                ></el-input> -->
               </el-form-item>
               <el-form-item
                 v-if="form.activityAction == 6"
                 :label="$t('openScreenAdd.splitCoupon')+'：'"
-                prop="mrkingVoucherId"
+                prop="splitCoupon"
               >
                 <div
                   class="coupon-added"
@@ -381,11 +409,18 @@
                 :label="$t('openScreenAdd.numPrizes')"
                 prop="awardNum"
               >
-                <el-input-number
+                <hcInputNumber
+                  type="integer"
                   v-model="form.awardNum"
                   controls-position="right"
                   size="small"
-                ></el-input-number>
+                  inline
+                />
+                <!-- <el-input-number
+                  v-model="form.awardNum"
+                  controls-position="right"
+                  size="small"
+                ></el-input-number> -->
                 <span>份</span>
                 <span class="span-tip">{{$t('openScreenAdd.unlimited0')}}</span>
                 <p class="tips">{{$t('openScreenAdd.issuers')}}</p>
@@ -445,7 +480,8 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     selectLinks: () => import('@/components/admin/selectLinks'),
     selectPayRewardAct: () => import('@/components/admin/marketManage/selectPayRewardAct'),
-    addCouponDialog: () => import('@/components/admin/addCouponDialog')
+    addCouponDialog: () => import('@/components/admin/addCouponDialog'),
+    hcInputNumber: () => import('@/components/admin/hcInputNumber/hcInputNumber')
   },
   data () {
     let that = this
@@ -459,6 +495,26 @@ export default {
       // 当奖品是优惠券和分类优惠券时，活动宣传语必填
       if ((that.form.activityAction === 1 || that.form.activityAction === 6) && value === '') {
         callback(new Error(that.$t('openScreenAdd.piSlogan')))
+      }
+      callback()
+    }
+    function validScore (rule, value, callback) {
+      if (value - 0 < 0) {
+        callback(new Error('积分不能为负数'))
+      }
+      callback()
+    }
+    function validAccount (rule, value, callback) {
+      if (value - 0 < 0) {
+        callback(new Error('赠送金额不能为负数'))
+      }
+      callback()
+    }
+    function validInteger (rule, value, callback) {
+      if (!value && value !== 0) {
+        callback(new Error(that.$t('openScreenAdd.piPizesNum')))
+      } else if (value - 0 < 0) {
+        callback(new Error('奖品份数不能为负数'))
       }
       callback()
     }
@@ -483,6 +539,8 @@ export default {
         awardNum: 0, // 礼物数量
 
         giveScore: '', // 积分
+        ordinaryCoupon: '', // 普通优惠券
+        splitCoupon: '', // 分裂优惠券
         mrkingVoucherId: '', // 优惠券id,字符串逗号分隔
         lotteryId: '', // 抽奖活动id
         giveAccount: '', // 金额
@@ -497,22 +555,25 @@ export default {
         first: [{ required: true, message: this.$t('openScreenAdd.piPriority'), trigger: 'blur' }, {
           type: 'number', message: this.$t('openScreenAdd.priorityNum')
         }],
-        mrkingVoucherId: [{ required: true, message: this.$t('openScreenAdd.psCoupon'), trigger: 'blur' }],
-        lotteryId: [{ required: true, message: this.$t('openScreenAdd.psSweepstakes'), trigger: 'blur' }],
-        customizeImgPath: [{ required: true, message: this.$t('openScreenAdd.psPicture') }],
+        ordinaryCoupon: [{ required: true, message: this.$t('openScreenAdd.psCoupon'), trigger: ['blur', 'change'] }],
+        splitCoupon: [{ required: true, message: this.$t('openScreenAdd.psSplitCoupon'), trigger: ['blur', 'change'] }],
+        lotteryId: [{ required: true, message: this.$t('openScreenAdd.psSweepstakes'), trigger: ['blur', 'change'] }],
+        customizeImgPath: [{ required: true, message: this.$t('openScreenAdd.psPicture'), trigger: 'change' }],
         giveScore: [
           { required: true, message: this.$t('openScreenAdd.piPoints'), trigger: 'blur' },
-          { type: 'number', message: this.$t('openScreenAdd.integralNum') }
+          { type: 'number', message: this.$t('openScreenAdd.integralNum') },
+          { validator: validScore }
         ],
         giveAccount: [
           { required: true, message: this.$t('openScreenAdd.piAmount'), trigger: 'blur' },
-          { type: 'number', message: this.$t('openScreenAdd.amountNum') }
+          { type: 'number', message: this.$t('openScreenAdd.amountNum') },
+          { validator: validAccount }
         ],
         customizeUrl: [
-          { required: true, message: this.$t('openScreenAdd.pselectLink'), trigger: 'blur' }
+          { required: true, message: this.$t('openScreenAdd.pselectLink'), trigger: ['blur', 'change'] }
         ],
         awardNum: [
-          { required: true, message: this.$t('openScreenAdd.piPizesNum'), trigger: 'blur' }
+          { required: true, validator: validInteger, trigger: 'blur' }
         ],
         title: [
           { validator: validTitle, trigger: 'blur' }
@@ -535,14 +596,14 @@ export default {
     // 优惠券id数组
     couponAdded: function () {
       let added = this.couponSelected.map(item => item.id)
-      this.$set(this.form, 'mrkingVoucherId', added.join(','))
+      this.$set(this.form, 'ordinaryCoupon', added.join(','))
       return added
     },
     // 分裂优惠券id数组
     disCouponAdded: function () {
       if (this.disCouponSelected && this.disCouponSelected.length) {
         let added = [this.disCouponSelected[0].id]
-        this.$set(this.form, 'mrkingVoucherId', this.disCouponSelected[0].id)
+        this.$set(this.form, 'splitCoupon', this.disCouponSelected[0].id)
         return added
       } else {
         return []
@@ -557,6 +618,31 @@ export default {
       } else {
         this.$set(this.form, 'startDate', '')
         this.$set(this.form, 'endDate', '')
+      }
+    },
+    'form.ordinaryCoupon': function (value) {
+      if (value) {
+        this.$refs.openScreenForm.validateField('ordinaryCoupon')
+      }
+    },
+    'form.splitCoupon': function (value) {
+      if (value) {
+        this.$refs.openScreenForm.validateField('splitCoupon')
+      }
+    },
+    'form.lotteryId': function (value) {
+      if (value) {
+        this.$refs.openScreenForm.validateField('lotteryId')
+      }
+    },
+    'form.customizeImgPath': function (value) {
+      if (value) {
+        this.$refs.openScreenForm.validateField('customizeImgPath')
+      }
+    },
+    'form.pselectLink': function (value) {
+      if (value) {
+        this.$refs.openScreenForm.validateField('pselectLink')
       }
     }
   },
@@ -597,6 +683,12 @@ export default {
       console.log('zhixing...')
       that.$refs.openScreenForm.validate(valid => {
         if (valid) {
+          if (that.form.activityAction === 1) {
+            that.form.mrkingVoucherId = that.form.ordinaryCoupon
+          }
+          if (that.form.activityAction === 6) {
+            that.form.mrkingVoucherId = that.form.splitCoupon
+          }
           let params = Object.assign({}, that.form)
           if (that.id) {
             that.updateRequest(params)
@@ -681,6 +773,21 @@ export default {
     },
     hoverImgHandle () {
       this.uploadHover = !this.uploadHover
+    },
+    radioChange (val) {
+      this.$refs.openScreenForm.clearValidate([
+        'giveScore',
+        'ordinaryCoupon',
+        'splitCoupon',
+        'lotteryId',
+        'giveAccount',
+        'customizeImgPath',
+        'customizeUrl'
+      ])
+    },
+    // 活动有效期时间处理
+    timeChange (val) {
+      this.$refs.openScreenForm.clearValidate('isForever')
     }
   }
 }

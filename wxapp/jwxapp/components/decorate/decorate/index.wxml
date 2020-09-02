@@ -52,6 +52,10 @@
 		<v-window wx:elif="{{module.component_name == 'v-window'}}" module="{{module}}" />
 		<!--商品分组-->
 		<v-goods-group class="v-goods-group" wx:elif="{{module.component_name == 'v-goods-group'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
+		<!-- 患者处方列表 -->
+		<v-prescription  wx:if="{{module.component_name == 'v-prescription'}}" module="{{module}}"/>
+		<!-- 患者病例 -->
+		<v-case-history wx:if="{{module.component_name == 'v-case-history'}}" module="{{module}}"/>
 	</block>
 </view>
 <v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">

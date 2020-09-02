@@ -1,0 +1,45 @@
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main_container">
+		<view class="title-module">患者信息</view>
+		<view class="card-content has-padding p-left">
+			<view class="list-item">
+				<text class="default-text">姓名</text>
+			
+				<text class="emphasis-text" >{{name}}</text>
+			</view>
+			<view class="list-item">
+				<text class="default-text">年龄</text>
+		
+				<text class="emphasis-text" >{{age}}</text>
+			</view>
+			<view class="list-item">
+				<text class="default-text">性别</text>
+
+	      <text class="emphasis-text" >{{array[sex]}}</text>
+			</view>
+		</view>
+		<view class="title-module">病情描述</view>
+		<view class="card-content column has-padding p-top p-bottom">
+			<textarea placeholder="请在此填写病情描述" maxlength='300' bindblur='bindCheckInput' bindinput='bindCheckInput'></textarea>
+			<view class="image-con">
+
+				<block wx:for="{{comm_img}}" wx:key="index" wx:for-item="imgitem" wx:for-index="imgindex">
+					<view class='shai_view'>
+						<image src='{{imageUrl}}image/wxapp/dele_service.png' class="shai_close" bindtap='customDelImage' data-imgindex="{{imgindex}}" data-idx='{{index}}'></image>
+						<image src="{{imgitem.imageUrl}}"></image>
+					</view>
+				</block>
+				<view class="upload-image" bindtap="customUpImage" >
+					<image class="upload-icon" src="{{imageUrl}}image/wxapp/upload_prescription-icon.png"></image>
+					<text class="upload-tips">上传图片</text>
+				</view>
+			</view>
+
+		</view>
+		<view class="footer-content">
+			<view class="footer-button" style="background-color:#26C4BC;" bindtap="toOrder">问诊￥{{orderAmount}}/次</view>
+		</view>
+
+	</view>
+</view>

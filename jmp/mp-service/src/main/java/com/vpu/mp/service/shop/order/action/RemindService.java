@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.order.action;
 
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -26,13 +26,13 @@ import java.util.Arrays;
 
 @Component
 public class RemindService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, OrderOperateQueryParam>{
-	
+
 	@Autowired
 	private OrderInfoService orderInfo;
-	
+
 	@Autowired
 	public RecordAdminActionService record;
-	
+
 	@Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.REMIND;
@@ -52,11 +52,12 @@ public class RemindService extends ShopBaseService implements IorderOperate<Orde
 		if(!OrderOperationJudgment.isShowRemindShip(order)) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_NOT_SUPPORTED, null);
 		}
-		if(order.getOrderRemind() == 3) {
+        int maxRemindNumber = 3;
+        if(order.getOrderRemind() == maxRemindNumber) {
 			//限制三次
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT, null);
 		}
-		if(order.getOrderRemindTime() != null && DateUtil.TimestampIsNowDay(order.getOrderRemindTime())) {
+		if(order.getOrderRemindTime() != null && DateUtils.timestampIsNowDay(order.getOrderRemindTime())) {
 			//限制一天一次
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT_TODAY, null);
 		}
@@ -64,7 +65,7 @@ public class RemindService extends ShopBaseService implements IorderOperate<Orde
 		orderInfo.remind(order);
 		//TODO 发送通知
 		//操作记录
-		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_REMIND.code }), new String[] {param.getOrderSn()});
+		record.insertRecord(Arrays.asList(RecordContentTemplate.ORDER_REMIND.code), param.getOrderSn());
 		return null;
 	}
 

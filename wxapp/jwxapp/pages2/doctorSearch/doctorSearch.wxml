@@ -1,0 +1,39 @@
+<include src="/pages/common/header.wxml" />
+<view class="mian-container">
+	<view class="filter">
+		<view class="input_box">
+			<view>
+				<icon size="14" type="search" role="img"></icon>
+			</view>
+			<input placeholder='搜索医生、科室、疾病' bindconfirm="inputSearch" bindinput="changeInput" value="{{keyWords}}"></input>
+		</view>
+	</view>
+
+	<view class="search_content">
+		<view>
+			<view class="s_depar" data-type='depar' bindtap="choose_type">
+				<text style='color:{{choose_type == "depar" ? "#26C4BC" : "#333"}}'>{{deparName}}</text>
+				<text class="iconfont iconjiantou2 {{choose_type == 'depar' ? 'rotate' : ''}}"></text>
+			</view>
+		</view>
+		<view>
+			<view class="s_doctor" data-type='doctor' bindtap="choose_type">
+				<text  style='color:{{choose_type == "doctor" ? "#26C4BC" : "#333"}}'>{{composName}}</text>
+				<text class="iconfont iconjiantou2 {{choose_type == 'doctor' ? 'rotate' : ''}}"></text>
+			</view>
+		</view>
+		<scroll-view class="search_result" scroll-y="true" style="height:{{can_show ? (search_data.length >= 6 ? 552:search_data.length * 92):0}}rpx;">
+			<block wx:for='{{search_data}}' wx:key='id'>
+				<view data-id='{{item.id}}' data-name='{{item.name}}' class="result_item {{item.name == deparName || item.name == composName ? 'choose_name' : ''}}" catchtap="choose_item">{{item.name}}</view>
+			</block>
+		</scroll-view>
+	</view>
+
+	<doctor-list doctor-list='{{doctorList}}' />
+	<view class="is-null" wx:if="{{doctorList[0].length <= 0}}">
+		<image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+		<text>暂无搜索结果</text>
+	</view>
+	<view class="cover_all" wx:if='{{can_show}}' catchtap="hide_cover"></view>
+
+</view>

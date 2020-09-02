@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.market.givegift;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.GiveGiftReceive;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftConstant;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;

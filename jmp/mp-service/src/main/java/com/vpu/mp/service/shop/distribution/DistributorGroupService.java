@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.distribution;
 
 import java.sql.Timestamp;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.DistributorGroupRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.pojo.shop.distribution.*;
@@ -12,10 +13,12 @@ import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
+/**
+ * @author changle
+ */
 @Service
 public class DistributorGroupService extends ShopBaseService{
 	/**
@@ -201,8 +204,8 @@ public class DistributorGroupService extends ShopBaseService{
     public int showDistributionGroup(ShowDistributionGroupParam param){
         int res;
         //判断是否已设置
-        int show_distributor_group = db().selectCount().from(SHOP_CFG).where(SHOP_CFG.K.eq("show_distributor_group")).fetchOne().into(Integer.class);
-        if(show_distributor_group == 1){
+        int showDistributorGroup = db().selectCount().from(SHOP_CFG).where(SHOP_CFG.K.eq("show_distributor_group")).fetchOne().into(Integer.class);
+        if(showDistributorGroup == 1){
             res = db().update(SHOP_CFG).set(SHOP_CFG.V, param.getV()).where(SHOP_CFG.K.eq("show_distributor_group")).execute();
         }else{
             ShopCfgRecord record = new ShopCfgRecord();

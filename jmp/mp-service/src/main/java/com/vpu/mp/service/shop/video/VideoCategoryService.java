@@ -13,9 +13,9 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.UploadedVideoCategoryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.video.category.CategoryTreeItemVo;
 import com.vpu.mp.service.pojo.shop.video.category.VideoCategoryParam;
 

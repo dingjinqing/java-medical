@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.db.shop.tables.records.UploadedVideoRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.video.UploadVideoParam;
@@ -51,7 +51,7 @@ public class WxAppVideoController extends WxAppBaseController {
         String[] segs = dispostion.split(";");
         for (String seg : segs) {
             String[] values = seg.trim().split("=");
-            if (values[0].equals("filename")) {
+            if ("filename".equals(values[0])) {
                 filename = values[1].trim();
                 filename = filename.substring(1, filename.length() - 1);
                 break;

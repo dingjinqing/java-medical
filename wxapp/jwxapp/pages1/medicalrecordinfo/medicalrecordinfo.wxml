@@ -1,0 +1,29 @@
+<!--pages1/medicalrecordinfo/medicalrecordinfo.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="record_detail">
+    <view class="record_title">电子病历1</view>
+    <view class="patient_info">
+      <view class="pf_line1 pf_line">
+        <view>姓名：{{medicalInfo.patientName}}</view>
+        <view>年龄：{{medicalInfo.age}}</view>
+        <view>性别：{{medicalInfo.sex_text}}</view>
+      </view>
+      <view class="pf_line">就诊科室：{{medicalInfo.departmentName}}</view>
+      <view class="pf_line">过敏史：{{medicalInfo.allergyHistory}}</view>
+    </view>
+    <view class="medical_info">
+      <view>病人主诉：{{medicalInfo.patientComplain}}</view>
+      <view>病史：{{medicalInfo.diseaseHistory}}</view>
+      <view>体格检查：{{medicalInfo.physicalExamination}}</view>
+      <view class="has_bottom_line">辅助检查：{{medicalInfo.auxiliaryPhysicalExamination}}</view>
+      <view>诊断：{{medicalInfo.diagnosisContent}}</view>
+      <view>诊疗处理意见：</view>
+      <view>{{medicalInfo.diagnosisSuggestion}}</view>
+    </view>
+    <view class="doctor_info">
+      <view>就诊时间：{{medicalInfo.visitTime}}</view>
+      <view>医生签名：{{medicalInfo.doctorName}}</view>
+    </view>
+  </view>
+</view>

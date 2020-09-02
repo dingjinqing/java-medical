@@ -3,18 +3,15 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
@@ -25,24 +22,19 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
 import com.vpu.mp.service.shop.config.GiftConfigService;
-import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Record6;
-import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.shop.activity.dao.GiftProcessorDao.ORDER_ACT_FILTER;
 import static com.vpu.mp.service.shop.market.gift.GiftService.CONDITION_PRIORITY;
 
 /**
@@ -72,7 +64,7 @@ public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor,
     /*****************商品详情处理*******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        List<GoodsGiftMpVo> goodsGift = giftDao.getGoodsGiftInfoForDetail(capsule.getGoodsId(), DateUtil.getLocalDateTime());
+        List<GoodsGiftMpVo> goodsGift = giftDao.getGoodsGiftInfoForDetail(capsule.getGoodsId(), DateUtils.getLocalDateTime());
         capsule.setGoodsGifts(goodsGift);
     }
 
@@ -136,7 +128,7 @@ public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor,
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
         log.info("购物车--赠品活动");
-        Timestamp nowTime =DateUtil.getLocalDateTime();
+        Timestamp nowTime = DateUtils.getLocalDateTime();
         //0：赠送满足赠品条件的所有赠品;1：只赠送其中优先级最高的活动赠品
         Byte cfg = giftConfigService.getCfg();
         List<GiftVo> activeActivity = giftDao.getActiveActivity();

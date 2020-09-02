@@ -3,11 +3,14 @@
     <div class="since-info">
       <div class="since-info-top">
         <span>{{$t('order.orderSn')}}：{{searchParam.orderSn}}</span>
-        <span>{{$t('order.orderStatusText')}}：{{orderStatusMap.get(order.orderStatus)}}</span>
+        <span>{{$t('order.orderStatusText')}}：{{showOrderStatusMap.get(order.orderStatus)}}</span>
       </div>
       <div class="order-status-bar">
         <template v-for="(item,index) in timeFlowDiagramMapping[statusKey]">
-          <div :key="index" :class="{'active':order[item]}">
+          <div
+            :key="index"
+            :class="{'active':order[item]}"
+          >
             <span>{{$t('order.timeFlowDiagram')[item]}}</span>
             <span v-if="order[item]">{{order[item]}}</span>
           </div>
@@ -17,7 +20,7 @@
         <div class="order_info">
           <div class="title">{{$t('order.orderInfo')}}</div>
           <div class="item_box">
-            <div class="item">{{$t('order.orderStatusText')}}： {{orderStatusMap.get(order.orderStatus)}}</div>
+            <div class="item">{{$t('order.orderStatusText')}}：{{showOrderStatusMap.get(order.orderStatus)}}</div>
             <div class="item">{{$t('order.orderAmount')}}：
               <template v-if="goodsTypeArray.indexOf($t('order.goodsTypeList')[5][0].toString()) > -1">
                 {{order.moneyPaid.toFixed(2)}}{{currencyPool[order.currency][lang][0]}} +
@@ -30,7 +33,10 @@
             <div class="item">{{$t('order.orderTime')}}：{{order.createTime}}</div>
             <div class="item">{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(order.deliverType)}}</div>
             <div class="item">{{$t('order.orderSn')}}：{{order.orderSn}}</div>
-            <div class="item">{{$t('order.userNameText')}}：<span class="pointer" @click="viewUserCenter(order.userId)">{{order.username}}</span></div>
+            <div class="item">{{$t('order.userNameText')}}：<span
+                class="pointer"
+                @click="viewUserCenter(order.userId)"
+              >{{order.username}}</span></div>
             <div class="item">{{$t('order.userMobileText')}}：{{order.userMobile || '无'}}</div>
             <div
               class="item"
@@ -132,7 +138,7 @@
                   <td
                     v-if="index === 0"
                     :rowspan="item.goods.length"
-                  >{{item.confirmTime}}</td>
+                  >{{order.confirmTime}}</td>
                 </template>
                 <template v-else>
                   <th width="100px">{{order.storeId}}</th>
@@ -256,6 +262,90 @@
         </table>
       </div>
     </div>
+    <div
+      class="prescription-list"
+      v-if="order.prescriptionOldDoList && order.prescriptionOldDoList.length"
+    >
+      <div class="module-title">
+        历史处方信息
+      </div>
+      <div class="prescription-content">
+        <template v-for="item in order.prescriptionOldDoList">
+          <div
+            class="prescription-item"
+            :key="item.id"
+            @click="handlePrescriptionInfo(item.prescriptionCode)"
+          >
+            <div
+              class="item-title"
+              :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
+            >电子处方</div>
+            <div class="item-list-content">
+              <div class="item-list">
+                <div class="list-item">
+                  <span class="list-item-dot"></span>
+                  <div class="list-item-content">
+                    诊断：{{item.diagnosisName}}
+                  </div>
+                </div>
+                <div class="list-item">
+                  <span class="list-item-dot"></span>
+                  <div class="list-item-content">
+                    科室：{{item.departmentName}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="doctor-info">
+              <span class="doctor-name">医师：{{item.doctorName}}</span>
+              <span class="item-date">日期：{{item.prescriptionCreateTime.substring(0,10)}}</span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+    <div
+      class="prescription-list"
+      v-if="order.prescriptionDoList && order.prescriptionDoList.length"
+    >
+      <div class="module-title">
+        新开处方信息
+      </div>
+      <div class="prescription-content">
+        <template v-for="item in order.prescriptionDoList">
+          <div
+            class="prescription-item"
+            :key="item.id"
+            @click="handlePrescriptionInfo(item.prescriptionCode)"
+          >
+            <div
+              class="item-title"
+              :style="'background:#26c4bc url('+$imageHost+'/image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 40px;'"
+            >电子处方</div>
+            <div class="item-list-content">
+              <div class="item-list">
+                <div class="list-item">
+                  <span class="list-item-dot"></span>
+                  <div class="list-item-content">
+                    诊断：{{item.diagnosisName}}
+                  </div>
+                </div>
+                <div class="list-item">
+                  <span class="list-item-dot"></span>
+                  <div class="list-item-content">
+                    科室：{{item.departmentName}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="doctor-info">
+              <span class="doctor-name">医师：{{item.doctorName}}</span>
+              <span class="item-date">日期：{{item.prescriptionCreateTime.substring(0,10)}}</span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
     <div class="order-list-table">
       <div class="table_box">
         <table width="100%">
@@ -311,7 +401,10 @@
                         {{$t('order.partShipText')}}</span>
                     </div>
                     <div class="right">
-                      <span @click="manualReturn(oneOrder.orderSn,oneOrder.orderId,oneOrder.createTime)" v-if="order.showManualReturn">{{$t('order.manualReturnText')}}</span>
+                      <span
+                        @click="manualReturn(oneOrder.orderSn,oneOrder.orderId,oneOrder.createTime)"
+                        v-if="order.showManualReturn"
+                      >{{$t('order.manualReturnText')}}</span>
                       <span @click="goComment(oneOrder.orderSn)">{{$t('order.comment')}}</span>
                     </div>
                   </div>
@@ -372,7 +465,7 @@
                         </template>
                       </template>
                       <template v-else>
-                        {{orderStatusMap.get(order.orderStatus)}}
+                        {{showOrderStatusMap.get(order.orderStatus)}}
                       </template>
                     </template>
                     <template v-else>
@@ -430,7 +523,10 @@
                       >{{$t('order.applyRetrunView')}}</el-button>
                     </template>
                     <template v-else>
-                      <el-button type="text">{{$t('order.retrunView')}}</el-button>
+                      <el-button
+                        type="text"
+                        @click="goReturnView(oneOrder.orderSn)"
+                      >{{$t('order.retrunView')}}</el-button>
                     </template>
                   </template>
                   <template v-if="oneOrder.canClose == true">
@@ -592,7 +688,10 @@
         </table>
       </div>
     </div>
-    <div class="order-list-table" v-if="rebateList">
+    <div
+      class="order-list-table"
+      v-if="rebateList"
+    >
       <div class="title">返利详情</div>
       <div class="table_box">
         <table width="100%">
@@ -602,7 +701,12 @@
               <th>分销员微信昵称</th>
               <th>
                 分销员真实姓名
-                <el-tooltip class="item" effect="dark" content="分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息" placement="top">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息"
+                  placement="top"
+                >
                   <i class="el-icon-question"></i>
                 </el-tooltip>
               </th>
@@ -618,10 +722,23 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(rebateItem,rebateIndex) in rebateList" :key="rebateIndex" class="order-tb-body">
-              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.mobile}}</td>
-              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.username}}</td>
-              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.realName}}</td>
+            <tr
+              v-for="(rebateItem,rebateIndex) in rebateList"
+              :key="rebateIndex"
+              class="order-tb-body"
+            >
+              <td
+                v-if="rebateItem.rowSpan"
+                :rowspan="rebateItem.rowSpan"
+              >{{rebateItem.mobile}}</td>
+              <td
+                v-if="rebateItem.rowSpan"
+                :rowspan="rebateItem.rowSpan"
+              >{{rebateItem.username}}</td>
+              <td
+                v-if="rebateItem.rowSpan"
+                :rowspan="rebateItem.rowSpan"
+              >{{rebateItem.realName}}</td>
               <td>
                 <div class="goods_info">
                   <div class="right_info">
@@ -637,8 +754,14 @@
               <td>{{rebateItem.rebateLevel | getRebateLevel}}</td>
               <td>{{(rebateItem.rebatePercent * 100).toFixed(2)}}%</td>
               <td>{{(rebateItem.realRebateMoney).toFixed(2)}}</td>
-              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">{{order.settlementFlag | getSettlementName}}</td>
-              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">{{order.orderStatus === 6 ? rebateItem.updateTime : ''}}</td>
+              <td
+                v-if="rebateIndex === 0"
+                :rowspan="rebateList.length"
+              >{{order.settlementFlag | getSettlementName}}</td>
+              <td
+                v-if="rebateIndex === 0"
+                :rowspan="rebateList.length"
+              >{{order.orderStatus === 6 ? rebateItem.updateTime : ''}}</td>
             </tr>
           </tbody>
         </table>
@@ -724,6 +847,7 @@ export default {
         orderSn: null
       },
       orderStatusMap: {},
+      showOrderStatusMap: {},
       goodsTypeMap: {},
       deliverTypeMap: {},
       paymentTypeMap: {},
@@ -797,7 +921,8 @@ export default {
     },
     arrayToMap () {
       this.returnTypeMap = new Map(this.$t('order.returnTypeList'))
-      this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
+      this.orderStatusMap = new Map(this.$t('order.orderStatusFilterList'))
+      this.showOrderStatusMap = new Map(this.$t('order.showOrderStatus'))
       this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
       this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
       this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
@@ -918,6 +1043,15 @@ export default {
           userId
         }
       })
+    },
+    handlePrescriptionInfo (prescriptionCode) {
+      let newpage = this.$router.resolve({
+        name: 'prescription_message',
+        query: {
+          prescriptionCode
+        }
+      })
+      window.open(newpage.href, '_blank')
     }
   },
   computed: {
@@ -1049,10 +1183,10 @@ export default {
         margin-right: 60px;
       }
     }
-    .order-status-bar{
+    .order-status-bar {
       display: flex;
       padding: 5px 0 20px;
-      > div{
+      > div {
         flex: 1;
         background: #ddd;
         height: 48px;
@@ -1063,11 +1197,11 @@ export default {
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        > span + span{
+        > span + span {
           margin-top: 5px;
-          font-size:12px;
+          font-size: 12px;
         }
-        &::after{
+        &::after {
           content: '';
           position: absolute;
           height: 0;
@@ -1077,8 +1211,8 @@ export default {
           border-left: 30px solid #ddd;
           right: -30px;
         }
-        &:last-of-type{
-          &::after{
+        &:last-of-type {
+          &::after {
             content: '';
             position: absolute;
             height: 0;
@@ -1089,7 +1223,7 @@ export default {
             right: 0;
           }
         }
-        & + div::before{
+        & + div::before {
           content: '';
           position: absolute;
           height: 0;
@@ -1099,16 +1233,16 @@ export default {
           border-top: 24px solid #ddd;
           left: -30px;
         }
-        & + div{
+        & + div {
           margin-left: 55px;
-          &.active::before{
+          &.active::before {
             border-bottom-color: #5a8bff;
             border-top-color: #5a8bff;
           }
         }
-        &.active{
+        &.active {
           background-color: #5a8bff;
-          &::after{
+          &::after {
             border-left-color: #5a8bff;
           }
         }
@@ -1275,6 +1409,106 @@ export default {
       }
     }
   }
+  .prescription-list {
+    background-color: #fff;
+    overflow: hidden;
+    .module-title {
+      padding-left: 25px;
+      padding-top: 14px;
+      color: #333;
+    }
+    .prescription-content {
+      padding: 0 15px 40px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: -10px;
+      .prescription-item {
+        cursor: pointer;
+        border-radius: 16px;
+        margin: 20px 0 0 20px;
+        box-shadow: 0 5px 15px rgba(13, 19, 24, 0.14),
+          0 0 0px rgba(10, 16, 20, 0.12);
+        position: relative;
+        width: 300px;
+      }
+      .prescription-item > .item-title {
+        line-height: 40px;
+        color: #fff;
+        font-size: 15px;
+        text-align: center;
+        background-color: skyblue;
+        height: 50px;
+        border-radius: 16px 16px 0 0;
+      }
+      .prescription-item > .item-list-content {
+        padding-left: 15px;
+        background-color: #fff;
+        position: relative;
+        border-radius: 16px 16px 0 0;
+        margin-top: -10px;
+      }
+      .prescription-item > .item-list-content > .item-list {
+        display: flex;
+        flex-direction: column;
+        line-height: 27.5px;
+        padding: 15px 0;
+        border-bottom: 2px solid #eee;
+      }
+      .prescription-item > .item-list-content > .item-list > .list-item {
+        display: flex;
+        align-items: center;
+      }
+      .prescription-item
+        > .item-list-content
+        > .item-list
+        > .list-item
+        > .list-item-dot {
+        border: 2px solid skyblue;
+        border-radius: 50%;
+        height: 10px;
+        width: 10px;
+        margin-right: 10px;
+      }
+      .prescription-item
+        > .item-list-content
+        > .item-list
+        > .list-item
+        > .list-item-content {
+        color: #666;
+        font-size: 13px;
+      }
+      .prescription-item > .doctor-info {
+        height: 40px;
+        padding: 0 15px;
+        align-items: center;
+        background: #fff;
+        display: flex;
+        color: #999;
+        position: relative;
+      }
+      .prescription-item > .doctor-info::after {
+        content: '';
+        position: absolute;
+        height: 8px;
+        width: 100%;
+        bottom: -8px;
+        left: 0;
+        background-image: radial-gradient(
+          5px circle at 12px 8px,
+          transparent 7px,
+          #fff 7px
+        );
+        background-size: 20px 10px;
+      }
+      .prescription-item > .doctor-info > .doctor-name {
+        margin-right: auto;
+        font-size: 13px;
+      }
+      .prescription-item > .doctor-info > .item-date {
+        font-size: 13px;
+      }
+    }
+  }
   .title {
     font-weight: 600;
     color: #333;
@@ -1288,14 +1522,14 @@ export default {
     color: #409eff;
     cursor: pointer;
   }
-  .ellipsis-content{
-    width:300px;
+  .ellipsis-content {
+    width: 300px;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
-  .pointer{
+  .pointer {
     cursor: pointer;
     color: #409eff;
   }

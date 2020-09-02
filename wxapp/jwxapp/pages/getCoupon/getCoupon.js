@@ -22,6 +22,7 @@ global.wxPage({
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
     couponStatus: '0', // 优惠券状态(0未使用, 1已使用,2已过期)
     isGrant: 1, // 用户类型(1发放者, 0被发放者)
+    code: null // 优惠券编号
   },
 
   /**
@@ -34,11 +35,12 @@ global.wxPage({
       couponSn: options.couponSn,
       couponId: Number(options.couponId),
       couponStatus: options.type,
-      isGrant: options.isGrant
+      isGrant: options.isGrant,
+      code: options.code ? options.code : null
     })
     console.log(that.data.isGrant)
     // 查看详情
-    util.api("api/wxapp/coupon/detail", function (res) {
+    util.api("/api/wxapp/coupon/detail", function (res) {
       if (res.error == 0) {
         that.initHandler(res, 0)
       } else {
@@ -203,6 +205,14 @@ global.wxPage({
         actId
       })
     })}`);
+  },
+
+  // 会员专享 - 去开卡
+  top_more: function () {
+    util.jumpLink(`pages/cardlist/cardlist${util.getUrlParams({
+      isExclusive: 1,
+      needGetCard: this.data.act_info.needGetCard
+    })}`, 'navigateTo')
   },
 
   // 我的优惠券

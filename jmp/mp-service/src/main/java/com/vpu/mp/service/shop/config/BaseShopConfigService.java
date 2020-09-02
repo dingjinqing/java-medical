@@ -1,15 +1,13 @@
 package com.vpu.mp.service.shop.config;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.DSLContext;
-import org.jooq.Record;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.shop.config.ShopCfgDao;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 
 /**
  * @author 王兵兵
@@ -18,9 +16,10 @@ import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
  *
  */
 @Service
-@Slf4j
 public class BaseShopConfigService extends ShopBaseService {
 
+	@Autowired
+	ShopCfgDao shopCfgDao;
 
 	/**
 	 * 获取配置key对应value
@@ -29,7 +28,7 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	protected String get(String key) {
-		return db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny(SHOP_CFG.V);
+		return shopCfgDao.get(key);
 	}
 
 	/**
@@ -40,27 +39,9 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	protected Boolean isHaveKey(String key) {
-		Record record = db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny();
-		if(record==null) {
-			return false;
-		}
-		return true;
+		return shopCfgDao.exists(key);
 	}
 
-	/**
-	 * 设置配置key对应value
-     *
-	 * @param  key
-	 * @param  value
-	 * @return
-	 */
-	protected int set(String key, String value) {
-		if (!isHaveKey(key)) {
-			return db().insertInto(SHOP_CFG, SHOP_CFG.K, SHOP_CFG.V).values(key, value).execute();
-		} else {
-			return db().update(SHOP_CFG).set(SHOP_CFG.V, value).where(SHOP_CFG.K.eq(key)).execute();
-		}
-	}
 
 	/**
 	 * 设置配置key对应value
@@ -70,17 +51,19 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @param  db
 	 * @return
 	 */
-	protected int set(DSLContext db, String key, String value) {
+	protected int set(String key, String value) {
 		if (!isHaveKey(key)) {
-			return db.insertInto(SHOP_CFG, SHOP_CFG.K, SHOP_CFG.V).values(key, value).execute();
+			return shopCfgDao.add(key, value);
 		} else {
-			return db.update(SHOP_CFG).set(SHOP_CFG.V, value).where(SHOP_CFG.K.eq(key)).execute();
+			return shopCfgDao.update(key, value);
 		}
 	}
+
 
 	/**
 	 * 设置其他类型数据配置
      *
+	 * @param  db
 	 * @param  <T>
 	 * @param  key
 	 * @param  value
@@ -88,21 +71,7 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	protected <T> int set(String key, T value, Class<? extends T> toClass) {
-        return this.set(key, value.toString());
-    }
-
-	/**
-	 * 设置其他类型数据配置
-     *
-	 * @param  db
-	 * @param  <T>
-	 * @param  key
-	 * @param  value
-	 * @param  toClass
-	 * @return
-	 */
-	protected <T> int set(DSLContext db, String key, T value, Class<? extends T> toClass) {
-		return this.set(db, key, value.toString());
+		return this.set(key, value.toString());
 	}
 
 	/**
@@ -116,17 +85,6 @@ public class BaseShopConfigService extends ShopBaseService {
 		return this.set(key, Util.toJson(value));
 	}
 
-	/**
-	 * 设置json对象数据配置
-     *
-	 * @param  key
-	 * @param  value
-	 * @param  db
-	 * @return
-	 */
-	protected int setJsonObject(DSLContext db, String key, Object value) {
-		return this.set(db, key, Util.toJson(value));
-	}
 
 	/**
 	 * 获取配置key对应value,未取到时，则返回默认值
@@ -164,7 +122,7 @@ public class BaseShopConfigService extends ShopBaseService {
      * @return the 2 object
      */
     protected <T> T getJsonObject(String key, TypeReference<T> reference, T defaultValue) {
-        String s = db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchOneInto(String.class);
+    	String s = this.get(key);
         if (StringUtils.isBlank(s)) {
             return defaultValue;
         }
@@ -197,7 +155,7 @@ public class BaseShopConfigService extends ShopBaseService {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	protected <T> T getJsonObject(String key, TypeReference valueTypeRef) {
+	protected <T> T getJsonObject(String key, TypeReference<T> valueTypeRef) {
 		return Util.parseJson(get(key), valueTypeRef);
 	}
 

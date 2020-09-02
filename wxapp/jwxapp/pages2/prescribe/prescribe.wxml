@@ -1,0 +1,136 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
+<wxs module="prescribe">
+var getGoodsName = function(goodsList){
+  if(!goodsList.length) return null;
+	var goodsNameList = []
+	goodsList.forEach(function(item){
+		goodsNameList.push(item.goodsName)
+	})
+	return goodsNameList.join(',')
+}
+module.exports = {
+  getGoodsName:getGoodsName
+}
+</wxs>
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main-container">
+		<view class="prescription-content">
+			<view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
+				<view class="title">电子处方</view>
+			</view>
+			<view class="prescription-info-content top-radius">
+				<view class="prescription-item user-info">
+					<view>姓名：<text>{{patientInfo.name}}</text></view>
+					<view>年龄：<text>{{patientInfo.age}}岁</text></view>
+					<view>性别：<text>{{filter.getSex(patientInfo.sex)}}</text></view>
+				</view>
+				<view class="prescription-item">
+					<view class="item-left">科室：</view>
+					<view class="item-center">
+						<picker mode="selector" value="{{depart_index}}" range="{{depart_arr}}" 
+										bindchange="changeDepart">
+							<view class="picker" wx:if='{{depart_index != -1}}'>{{depart_arr[depart_index]}}</view>
+							<view class='place' wx:else>请选择</view>
+						</picker>
+					</view>
+					<view class="item-right">
+						<text class="iconfont iconjiantou"></text>
+					</view>
+				</view>
+				<view class="prescription-item">
+					<view class="item-left">诊断：</view>
+					<view class="item-center">
+						<input type="text" placeholder="请输入诊断信息" bindinput="getDiagnose" value="{{diagnose.info}}"></input>
+					</view>
+					<view class="item-right" bindtap="clearInput" wx:if="{{diagnose.canClear}}">
+						<text class="iconfont iconshanchu"></text>
+					</view>
+				</view>
+				<view class="prescription-item">
+					<view class="item-left">治疗建议：</view>
+					<view class="item-center">
+						<text>{{prescribe.getGoodsName(pageGoodsList) || '请选择药品'}}</text>
+					</view>
+					<view class="item-right" bindtap="addGoods">
+						<text class="iconfont icontianjia"></text>
+					</view>
+				</view>
+			</view>
+			<view class="goods-content">
+				<block wx:for="{{pageGoodsList}}" wx:key="index">
+					<movable-area>
+						<movable-view damping="100" out-of-bounds="true" direction="horizontal">
+							<view class="goods-item">
+								<view class="goods-target">
+									<image src="{{item.goodsImg}}"></image>
+								<view class="goods-desc">
+									<text class="goods-name">{{item.goodsName}}</text>
+									<view class="goods-price-content">
+										<text class="goods-price">￥{{item.prdPrice}}</text>
+										<text class="num">x{{item.cartNumber}}</text>
+									</view>
+								</view>
+								</view>
+								<view class="del" bindtap="delGoodsItem" data-goods-id="{{item.goodsId}}">
+									删除
+								</view>
+							</view>
+						</movable-view>
+					</movable-area>
+					<view class="goods-line"></view>
+				</block>
+			</view>
+			<view class="prescription-info-content">
+				<view class="prescription-item column">
+					<view class="line-title">医嘱：</view>
+					<view class="medical-advice" bindtap="areaFocus" wx:if="{{!focusStatus}}">{{doctorAdvice || '默认显示药品用法用量，医生可手动更改'}}</view>
+					<textarea class="medical-advice" wx:else placeholder="{{!showGoodsListDialog ? '默认显示药品用法用量，医生可手动更改' : ''}}" bindinput="getDoctorAdvice" focus="{{focusStatus}}" bindfocus="areaFocus" bindblur="areaBlur" value="{{doctorAdvice}}"></textarea>
+				</view>
+			</view>
+			<view class="prescription-doctor-info">
+				<!-- <view class="doctor-info">
+					<text class="doctor-name">处方医师：</text>
+					<text>6666666</text>
+				</view> -->
+				<!-- <view class="doctor-info">
+          <text class="doctor-name">审核药师：</text>
+          <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
+        </view> -->
+				<view class="doctor-info">
+					<text class="doctor-name">处方医师：</text>
+					<text>{{doctorInfo.name}}</text>
+					<text class="item-date">日期：{{theDateToday}}</text>
+				</view>
+			</view>
+		</view>
+		<view class="footer-content">
+			<view class="footer-button" bindtap="createPrescription">确认开方</view>
+		</view>
+		<include src="../../pages/common/footer.wxml" />
+	</view>
+</view>
+
+<v-footer-dialog show="{{showGoodsListDialog}}" bindbindClose="bindClose">
+	<view slot="content" class="page-dialog-content">
+		<view class="search-content">
+			<view class="search-input-content">
+				<text class="iconfont iconsousuo"></text>
+				<input class="search-input" placeholder="搜索药品" placeholder-style="color:#999;font-size:28rpx;" bindconfirm="searchDialogGoods" value="{{goodsName}}"></input>
+			</view>
+		</view>
+		<view class="goods-content">
+			<block wx:for="{{dialogGoodsList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+				<block wx:for="{{pageItem}}" wx:for-item="goodsItem" wx:key="id" wx:for-index="itemIndex">
+					<v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-select enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum" bindtoggleSelect="toggleSelect"/>
+					<view class="line" wx:if="{{index !== goodsList.length - 1}}"></view>
+				</block>
+			</block>
+		</view>
+		<view class="dialog-footer-content">
+			<view class="footer">
+				<view class="button" bindtap="confirmGoods">添加</view>
+			</view>
+		</view>
+	</view>
+</v-footer-dialog>

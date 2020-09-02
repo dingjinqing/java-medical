@@ -1,17 +1,17 @@
 package com.vpu.mp.service.shop.image;
 
 import com.upyun.UpException;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.qrcode.QrCodeGenerator;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.CodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.WxpUnlimitSceneRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.foundation.util.qrcode.QrCodeGenerator;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -134,7 +134,7 @@ public class QrCodeService extends ShopBaseService {
                 .getQrcodeService().createWxaCodeUnlimitBytes(paramStr,typeUrl, qrcodWidth,true,null,true);
             log.debug("调取微信二维码接口，图片字节长度：{}",qrcodeBytes==null? 0 : qrcodeBytes.length);
 
-            relativePath = getQrCodeImgRelativePath(type) + format("T%sP%s_%s.jpg", type, paramId, DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
+            relativePath = getQrCodeImgRelativePath(type) + format("T%sP%s_%s.jpg", type, paramId, DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE));
 
             this.imageService.getUpYunClient().writeFile(relativePath, qrcodeBytes, true);
             log.debug("通过UpYun将二进制写入磁盘，磁盘路径{}",relativePath);
@@ -159,14 +159,14 @@ public class QrCodeService extends ShopBaseService {
     public String getQrCodeImgRelativePath(short type){
         return format("upload/%s/qrcode/%s/",getShopId(), type);
     }
-    
-    
+
+
     /**
      * 生成用户会员卡二维码图
      * @return 二维码地址
      */
     public String getUserCardQrCode(String cardNo,MemberCardRecord card) {
-		
+
 		// 	获取底图背景
 		BufferedImage bgImg = getBgImg(600, 800);
     	if(isNull(bgImg)) {
@@ -182,24 +182,24 @@ public class QrCodeService extends ShopBaseService {
     	if(isNull(cardQrCode)) {
     		return null;
     	}
-    	
+
     	// 	获取会员卡条形码
     	BufferedImage cardBarCode = getCardNoBarCode(cardNo);
     	if(isNull(cardBarCode)) {
     		return null;
     	}
-    	
+
     	// 设置会员卡号二维码
     	ImageUtil.addTwoImage(bgImg, cardQrCode, 65, 200);
     	// 设置背景
     	setCardBgType(bgImg,card);
     	// 设置卡名称
-    	ImageUtil.addFont(bgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 150, 70,
+    	ImageUtil.addFont(bgImg, card.getCardName(), ImageUtil.sourceHanSansCn(Font.BOLD, 30), 150, 70,
 				Color.WHITE);
     	// 设置折扣
     	if(null != card.getDiscount()) {
     		String dis = card.getDiscount().toString()+" 折";
-        	ImageUtil.addFont(bgImg, dis, ImageUtil.SourceHanSansCN(Font.BOLD, 22), 500, 180,
+        	ImageUtil.addFont(bgImg, dis, ImageUtil.sourceHanSansCn(Font.BOLD, 22), 500, 180,
     				Color.WHITE);
     	}
     	// 会员卡号
@@ -210,7 +210,7 @@ public class QrCodeService extends ShopBaseService {
     	ImageUtil.addTwoImage(bgImg, cardBarCode,15, 620);
     	return ImageUtil.toBase64(bgImg);
     }
-    
+
 	/**
 	 * 	设置会员卡背景
 	 */
@@ -223,15 +223,15 @@ public class QrCodeService extends ShopBaseService {
     	Integer bgWidth = 600,bgHeight = 208;
     	if(CardUtil.isBgColorType(bgType)) {
     		logger().info("设置会员卡颜色");
-    		
+
     		if(StringUtils.isBlank(card.getBgColor())) {
     			// 默认背景色
     			card.setBgColor(CardUtil.getDefaultBgColor());
     		}
-    		
+
 	    	Color color = Color.decode(card.getBgColor());
-	    	
-	    	
+
+
 	    	Graphics2D graph = bgImg.createGraphics();
 	    	graph.setPaint(color);
 	    	graph.fillRect(0, 0, bgWidth, bgHeight);
@@ -251,7 +251,7 @@ public class QrCodeService extends ShopBaseService {
         	ImageUtil.addTwoImage(bgImg, bgImgTwo, 0, 0);
     	}
 	}
-   
+
     /**
      * 生成会员卡号条形码
      */
@@ -269,7 +269,7 @@ public class QrCodeService extends ShopBaseService {
 		}
 		return cardBarCode;
 	}
-	
+
     /**
      * 获取会员卡号二维码
      */
@@ -277,7 +277,7 @@ public class QrCodeService extends ShopBaseService {
 		BufferedImage cardQrCode = null;
 		Integer size = 450;
     	try {
-			byte[] qrCodeByte = QrCodeGenerator.generateQRCodeImg(cardNo, size, size);
+			byte[] qrCodeByte = QrCodeGenerator.generateQrCodeImg(cardNo, size, size);
 			ByteArrayInputStream bais = new ByteArrayInputStream(qrCodeByte);
 			cardQrCode = ImageIO.read(bais);
 		} catch (Exception e) {
@@ -286,7 +286,7 @@ public class QrCodeService extends ShopBaseService {
 		}
 		return cardQrCode;
 	}
-	
+
     /**
      * 	获取 会员卡头像
      */
@@ -296,7 +296,7 @@ public class QrCodeService extends ShopBaseService {
 			return null;
 		}
 		String cardAvatarAddress = imageService.imageUrl(shopAvatar);
-		
+
     	if(StringUtils.isBlank(cardAvatarAddress)) {
     		return null;
     	}
@@ -307,7 +307,7 @@ public class QrCodeService extends ShopBaseService {
 			logger().info("获取会员卡头像失败: "+ cardAvatarAddress);
 			return null;
 		}
-    	
+
     	cardAvatar = ImageUtil.makeRound(cardAvatar, 110);
 		return cardAvatar;
 	}
@@ -319,7 +319,7 @@ public class QrCodeService extends ShopBaseService {
 		String userBgPath = "image/wxapp/user_background.png";
 		return getBgImg(width,height,userBgPath);
 	}
-		
+
 	private BufferedImage getBgImg(Integer width,Integer height,String userBgPath) {
 		// 背景图片
     	BufferedImage bgImg = null;
@@ -342,12 +342,12 @@ public class QrCodeService extends ShopBaseService {
     	bgImg = ImageUtil.resizeImage(width, height, bgImg);
 		return bgImg;
 	}
-    
-    
+
+
 	private boolean isNull(Object obj) {
 		return obj == null;
 	}
-    
+
     /**
      * 	获取转赠会员卡图
      *	@return	图片绝对路径
@@ -358,7 +358,7 @@ public class QrCodeService extends ShopBaseService {
     	//	背景
     	final String bgPath = "image/wxapp/card_give_away.png";
     	BufferedImage giveWayBgImg = getBgImg(500,400,bgPath);
-    	
+
     	//	头像
     	BufferedImage cardVatar = getCardVatar();
     	if(cardVatar == null){
@@ -366,17 +366,17 @@ public class QrCodeService extends ShopBaseService {
         }
     	//	会员卡名称
     	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 30, 20);
-    	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 170, 90,
+    	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.sourceHanSansCn(Font.BOLD, 30), 170, 90,
 				Color.WHITE);
 
-    	String relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
+    	String relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE));
     	byte[] imgBytes = ImageUtil.changeImageToByteArr(giveWayBgImg);
     	try {
 			this.imageService.getUpYunClient().writeFile(relativePath, imgBytes, true);
 		} catch (Exception e) {
 			logger().error("转赠卡上传upyun失败");
 		}
-    	
+
     	return imageService.imageUrl(relativePath);
     }
 

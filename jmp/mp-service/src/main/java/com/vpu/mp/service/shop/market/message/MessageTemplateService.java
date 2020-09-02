@@ -21,12 +21,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.MathUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.TemplateConfigRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.MathUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -45,10 +45,8 @@ import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
 import com.vpu.mp.service.pojo.shop.market.message.UserInfoVo;
 import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageVo;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.user.user.SendUserService;
@@ -66,7 +64,7 @@ public class MessageTemplateService extends ShopBaseService {
     private SendUserService sendUserService;
 
     private TaskJobMainService taskJobMainService;
-    
+
 	@Autowired
 	public OrderPayService orderPayService;
 
@@ -169,7 +167,7 @@ public class MessageTemplateService extends ShopBaseService {
                     {templateConfigRecord.getTitle()},
                     {templateConfigRecord.getContent()},
                     {"点击查看详情"},
-                    {DateUtil.getLocalDateTime().toString()}
+                    {DateUtils.getLocalDateTime().toString()}
                 })
                 .build())
             .build();
@@ -307,7 +305,7 @@ public class MessageTemplateService extends ShopBaseService {
     public void deleteById(Integer id) {
         db().update(TEMPLATE_CONFIG)
             .set(TEMPLATE_CONFIG.DEL_FLAG,(byte)1)
-            .set(TEMPLATE_CONFIG.DEL_TIME,DateUtil.getLocalDateTime())
+            .set(TEMPLATE_CONFIG.DEL_TIME, DateUtils.getLocalDateTime())
             .where(TEMPLATE_CONFIG.ID.eq(id))
             .execute();
     }
@@ -342,7 +340,7 @@ public class MessageTemplateService extends ShopBaseService {
         MessageStatisticsVo vo = new MessageStatisticsVo();
         Integer allSendNum = 0,allSentNum = 0,allVisitNum = 0;
         List<MessageStatisticsVo.StatisticsByDay> allStatistics = new ArrayList<>();
-        List<LocalDate> allDate = DateUtil
+        List<LocalDate> allDate = DateUtils
             .getAllDatesBetweenTwoDates(query.getStartTime().toLocalDateTime().toLocalDate(),query.getEndTime().toLocalDateTime().toLocalDate());
         Map<String,Integer> messageMap = db()
             .select(dateFormat(TEMPLATE_CONFIG.START_TIME,"%Y-%m-%d").as("everyDate"),DSL.count().as("numbers"))

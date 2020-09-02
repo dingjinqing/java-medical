@@ -27,6 +27,10 @@
     <view bindtap="bindJumpLink" data-url="/pages/userqrcode/userqrcode?userName={{user_name}}&userAvatar={{wx_user_avatar}}&myQrCode={{myQrCode}}">
       <image src="{{imageUrl}}image/wxapp/center_QR_Code.png" mode='widthFix' class="center_QR_code" />
     </view>
+    <view class="message_list_icon" bindtap='bindJumpLink' data-url='/pages1/messagelist/messagelist'>
+      <image src="http://medicaldevimg.weipubao.cn/image/wxapp/icon_message_list.png" mode='widthFix' />
+      <view class="not_read_icon" wx:if='{{mes_count > 0}}'></view>
+    </view>
     <!-- <view bindtap="bindJumpLink" data-url="/pages/userinfo/userinfo">
       <image src="{{imageUrl}}image/wxapp/center_set.png" mode='widthFix' class="center_set" />
     </view> -->
@@ -95,45 +99,47 @@
           <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_PAY" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_pay" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
-            <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitPay")}}</view>
+            <view class='account_word'>待付款</view>
           </view>
-          <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_DELIVERY" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_deliver" && item2.is_show == 1}}'>
+          <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_CONFIRM" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_confirm" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
-            <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitDeliver")}}</view>
+            <view class='account_word'>待审核</view>
           </view>
-          <view class='ac_item' bindtap="bindOrderNav" data-type="SHIPPED" data-disabled_r="none" data-disabled_l="block" data-transform="-30" wx:if='{{item2.icon_name == "wait_receive" && item2.is_show == 1}}'>
+          <view class='ac_item' bindtap="bindOrderNav" data-type="WAIT_DELIVERY" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_delivery" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
-            <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitReceive")}}</view>
+            <view class='account_word'>待发货</view>
           </view>
-          <view class='ac_item' bindtap="bindOrderNav" data-type="FINISHED" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_comment" && (item.module_style == 1 || (item.module_style == 2 && item2.is_show == 1))}}'>
+          <view class='ac_item' bindtap="bindOrderNav" data-type="SHIPPED" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "shipped" && item2.is_show == 1}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
-              <!-- <view class='order_num'  wx:if='{{item2.num != ""}}'  style='color:{{comColor}};border-color:{{comColor}}'>{{item2.num}}</view> -->
-            </view>
-            <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitComment")}}</view>
-          </view>
-          <view class='ac_item' bindtap="bindOrderNav" data-type="RETURNING" data-disabled_r="none" data-disabled_l="block" data-transform="-30" wx:if='{{item2.icon_name == "refund" && (item.module_style == 1 || (item.module_style == 2 && item2.is_show == 1))}}'>
-            <view class='order_img'>
-              <image src="{{item2.icon}}"></image>
-              <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
                 {{item2.num}}
               </view>
             </view>
-            <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.refund")}}</view>
+            <view class='account_word'>已发货</view>
+          </view>
+          <view class='ac_item' bindtap="bindOrderNav" data-type="RETURNING" data-disabled_r="none" data-disabled_l="block" data-transform="-30" wx:if='{{item2.icon_name == "returning" && (item.module_style == 1 || (item.module_style == 2 && item2.is_show == 1))}}'>
+            <view class='order_img'>
+              <image src="{{item2.icon}}"></image>
+              <view class='order_num' wx:if='{{item2.num}}' style='color:{{comColor}};border-color:{{comColor}}'>
+                {{item2.num}}
+              </view>
+            </view>
+            <view class='account_word'>已取消</view>
           </view>
         </block>
         <view class='ac_item order_special' wx:if='{{item.module_style == 2}}' bindtap="allOrder">
@@ -142,6 +148,28 @@
           </view>
           <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.allOrders")}}</view>
           <image src="{{imageUrl}}image/admin/uc_config/icon_jiantou.png" class='order_all_jiantou'></image>
+        </view>
+      </view>
+    </view>
+    <!-- 医药部分 -->
+    <view class='patient_list each_model {{page_style==1?"":"each_model_radius"}}' 
+          wx:if='{{item.module_name == "current_patient" && item.is_show == 1 }}'>
+      <view class='ma_title'>
+        <view wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
+        <view class='to_more' bindtap='allPrescription'>
+          {{i18n.$t(localePack,"page1.usercenter.viewAllPatients")}}
+          <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+        </view>
+      </view>
+      <view class='ma_appoint clearfix'>
+        <view class='patient_info' wx:if='{{!!item.content}}'>
+          <view>{{item.content.name}}</view>
+          <view>{{item.content.mobile}}</view>
+        </view>
+        <view class="no_patient_area" wx:else>
+          <view class="brn_get_pre" bindtap="to_get_pre">
+            去同步 <image src="http://medicaldevimg.weipubao.cn/image/wxapp/right_into_white.png" mode='widthFix'></image>
+          </view>
         </view>
       </view>
     </view>
@@ -252,6 +280,7 @@
           <view class='each_service' wx:if='{{item3.is_show == 1}}' bindtap='bindJumpLink' data-url="{{item3.link}}">
             <view class='es_img'>
               <image src='{{item3.icon}}'></image>
+              <view class="item_mes_num" wx:if='{{item3.title == "我的消息" && mes_count > 0}}'>{{mes_count}}</view>
             </view>
             <view class='es_word'>{{item3.title}}</view>
           </view>

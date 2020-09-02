@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.activity.factory;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.shop.activity.processor.*;
 import lombok.extern.slf4j.Slf4j;
@@ -69,27 +69,25 @@ public class CartProcessorContext {
         // 数据初始化
         executeStrategy(goodsBegin,cartBo);
         //预售-不可购买
-        executeStrategy(preSale,cartBo);
+//        executeStrategy(preSale,cartBo);
         //会员专享-不可购买
-        executeStrategy(exclusive,cartBo);
+//        executeStrategy(exclusive,cartBo);
         //秒杀-提示
-        executeStrategy(seckill,cartBo);
+//        executeStrategy(seckill,cartBo);
         //分销
-        executeStrategy(rebateProcess,cartBo);
+//        executeStrategy(rebateProcess,cartBo);
         //首单特惠
-        executeStrategy(firstSpecial,cartBo);
+//        executeStrategy(firstSpecial,cartBo);
         //限时降价
-        executeStrategy(reducePrice,cartBo);
+//        executeStrategy(reducePrice,cartBo);
         //等级价格
-        executeStrategy(gradeCard,cartBo);
-
+//        executeStrategy(gradeCard,cartBo);
         //满折满减
-        executeStrategy(fullReduction,cartBo);
+//        executeStrategy(fullReduction,cartBo);
         //加价购
-        executeStrategy(purchasePrice,cartBo);
+//        executeStrategy(purchasePrice,cartBo);
         //优惠券礼包
-        executeStrategy(couponPackage, cartBo);
-
+//        executeStrategy(couponPackage, cartBo);
         //活动冲突处理
         executeStrategy(goodsTail,cartBo);
     }

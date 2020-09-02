@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.summary.visit;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.MpDistributionVisitRecord;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.ChartData;
 import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
 import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;

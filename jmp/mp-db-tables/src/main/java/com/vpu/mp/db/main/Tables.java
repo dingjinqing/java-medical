@@ -21,6 +21,27 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * 退回订单表
+     */
+    public static final ReturnOrderBak RETURN_ORDER_BAK = com.vpu.mp.db.main.tables.ReturnOrderBak.RETURN_ORDER_BAK;
+
+    /**
+     * 退货商品表
+     */
+    public static final ReturnOrderGoodsBak RETURN_ORDER_GOODS_BAK = com.vpu.mp.db.main.tables.ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK;
+
+    /**
+     * 订单
+     */
+    public static final OrderInfoBak ORDER_INFO_BAK = com.vpu.mp.db.main.tables.OrderInfoBak.ORDER_INFO_BAK;
+
+    /**
+     * 订单商品表  b2c_order_goods
+     */
+    public static final OrderGoodsBak ORDER_GOODS_BAK = com.vpu.mp.db.main.tables.OrderGoodsBak.ORDER_GOODS_BAK;
+
     /**
      * 定时任务定义表
      */
@@ -266,15 +287,6 @@ public class Tables {
      */
     public static final MpWeeklyVisit MP_WEEKLY_VISIT = com.vpu.mp.db.main.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 
-    /**
-     * The table <code>mini_main.b2c_order_goods</code>.
-     */
-    public static final OrderGoods ORDER_GOODS = com.vpu.mp.db.main.tables.OrderGoods.ORDER_GOODS;
-
-    /**
-     * The table <code>mini_main.b2c_order_info</code>.
-     */
-    public static final OrderInfo ORDER_INFO = com.vpu.mp.db.main.tables.OrderInfo.ORDER_INFO;
 
     /**
      * The table <code>mini_main.b2c_qf_img</code>.
@@ -445,5 +457,18 @@ public class Tables {
 
     public static final TaskJobMain TASK_JOB_MAIN = com.vpu.mp.db.main.tables.TaskJobMain.TASK_JOB_MAIN;
 
-    public static final OrderInfoNew ORDER_INFO_NEW = com.vpu.mp.db.main.tables.OrderInfoNew.ORDER_INFO_NEW;
+    /**
+     * 外部接口请求记录表
+     */
+    public static final ExternalRequestHistory EXTERNAL_REQUEST_HISTORY = com.vpu.mp.db.main.tables.ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY;
+    /**
+     * 问诊订单表
+     */
+    public static final InquiryOrder INQUIRY_ORDER = com.vpu.mp.db.main.tables.InquiryOrder.INQUIRY_ORDER;
+    /**
+     * 店铺短信配置表
+     */
+    public static final ShopSmsConfig SHOP_SMS_CONFIG = com.vpu.mp.db.main.tables.ShopSmsConfig.SHOP_SMS_CONFIG;
+
+
 }

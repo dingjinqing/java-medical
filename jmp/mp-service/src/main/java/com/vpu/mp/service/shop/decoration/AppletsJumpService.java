@@ -11,8 +11,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpAddPrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUpdatePrarm;
@@ -116,7 +116,7 @@ public class AppletsJumpService extends ShopBaseService {
 
 	
 
-	public List<String> getMpJumpAppIDList() {
+	public List<String> getMpJumpAppIdList() {
 		List<String> values = db().selectFrom(MP_JUMP)
 				.where(MP_JUMP.DEL_FLAG.eq((byte) 0).and(MP_JUMP.FLAG.eq((byte) 0))).orderBy(MP_JUMP.CREATE_TIME)
 				.fetch().getValues(MP_JUMP.APP_ID, String.class);
@@ -143,7 +143,7 @@ public class AppletsJumpService extends ShopBaseService {
 	 * @param jumpList
 	 * @param templateId
 	 */
-	public void saveMpJumpAppIDList(List<String> jumpList, Integer templateId) {
+	public void saveMpJumpAppIdList(List<String> jumpList, Integer templateId) {
 		// TODO 状态usable插不插？？？
 		if (jumpList.size() == 0) {
 			// 为空
@@ -172,7 +172,7 @@ public class AppletsJumpService extends ShopBaseService {
      * 审核更新跳转小程序的appid为不可用，在更新本版本提交的appid为可用
      * @param templateId
      */
-	public void updateMpJumpAppIDList(Integer templateId) {
+	public void updateMpJumpAppIdList(Integer templateId) {
 		db().update(MP_JUMP_USABLE).set(MP_JUMP_USABLE.USABLE, (byte) 0)
 				.set(MP_JUMP_USABLE.UPDATE_TIME, new Timestamp(System.currentTimeMillis())).execute();
 		db().update(MP_JUMP_USABLE).set(MP_JUMP_USABLE.USABLE, (byte) 1)

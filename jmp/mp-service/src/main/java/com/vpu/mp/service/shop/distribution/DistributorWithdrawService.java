@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawDetailVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListVo;

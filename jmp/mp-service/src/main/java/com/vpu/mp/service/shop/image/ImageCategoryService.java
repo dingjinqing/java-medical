@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.image;
 
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
 import com.vpu.mp.service.pojo.shop.video.category.CategoryTreeItemVo;
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.common.foundation.data.JsonResult.LANGUAGE_TYPE_MSG;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
-import static com.vpu.mp.service.foundation.data.JsonResult.LANGUAGE_TYPE_MSG;
 
 /**
  * @author 新国，孔德成

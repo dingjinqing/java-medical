@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.DistributionStrategyRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
 import org.jooq.Record;
@@ -89,7 +89,9 @@ public class RebateStrategyService extends ShopBaseService{
 				case 4:
 					sql = sql.and(DISTRIBUTION_STRATEGY.STATUS.eq(STATUS_DISABLED));
 					break;
-			}
+                default:
+                    break;
+            }
 		}
 		return sql;
 	}

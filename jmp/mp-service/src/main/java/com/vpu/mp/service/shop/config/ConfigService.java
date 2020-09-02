@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.wxapp.config.WxAppConfigVo;
@@ -101,6 +101,11 @@ public class ConfigService extends ShopBaseService {
         config.setLogoLink(shopCommonConfigCacheService.getLogoLink());
         config.setSetting(setting);
         config.setStatus(getStatus(user != null ? user.getUserId() : null));
+        //添加用户角色信息、医师id、药师id
+        assert user != null;
+        config.setUserType(user.getUserType());
+        config.setDoctorId(user.getDoctorId());
+        config.setPharmacistId(user.getPharmacistId());
         ShowPoster showPoster = new ShowPoster();
         // TODO: 取ShowPoster数据
         config.setShowPoster(showPoster);
@@ -117,31 +122,35 @@ public class ConfigService extends ShopBaseService {
 			return new String[] { "", "" };
 		}
 		String style = config.getShopStyleValue().trim();
-		if (!style.contains("rgb")) {
+        String rgb = "rgb";
+        if (!style.contains(rgb)) {
 			return style.split(",");
-		} else if (style.startsWith("rgba")){
-			String pattern = "rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
-			Pattern r = Pattern.compile(pattern);
-			Matcher m = r.matcher(style);
-			if (m.find()) {
-				Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)),Integer.parseInt(m.group(4)));
-				Color color2 =new Color(Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)), Integer.parseInt(m.group(7)),Integer.parseInt(m.group(8)));
-				String hexColor1 = toHexFromColor(color1);
-				String hexColor2 = toHexFromColor(color2);
-				return new String[]{hexColor1,hexColor2};
-			}
 		} else {
-			String pattern = "rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
-			Pattern r = Pattern.compile(pattern);
-			Matcher m = r.matcher(style);
-			if (m.find()) {
-				Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
-				Color color2 =new Color(Integer.parseInt(m.group(4)), Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)));
-				String hexColor1 = toHexFromColor(color1);
-				String hexColor2 = toHexFromColor(color2);
-				return new String[]{hexColor1,hexColor2};
-			}
-		}
+            String rgba = "rgba";
+            if (style.startsWith(rgba)){
+                String pattern = "rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgba\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
+                Pattern r = Pattern.compile(pattern);
+                Matcher m = r.matcher(style);
+                if (m.find()) {
+                    Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)),Integer.parseInt(m.group(4)));
+                    Color color2 =new Color(Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)), Integer.parseInt(m.group(7)),Integer.parseInt(m.group(8)));
+                    String hexColor1 = toHexFromColor(color1);
+                    String hexColor2 = toHexFromColor(color2);
+                    return new String[]{hexColor1,hexColor2};
+                }
+            } else {
+                String pattern = "rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
+                Pattern r = Pattern.compile(pattern);
+                Matcher m = r.matcher(style);
+                if (m.find()) {
+                    Color color1 =new Color(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
+                    Color color2 =new Color(Integer.parseInt(m.group(4)), Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)));
+                    String hexColor1 = toHexFromColor(color1);
+                    String hexColor2 = toHexFromColor(color2);
+                    return new String[]{hexColor1,hexColor2};
+                }
+            }
+        }
 		return new String[] {};
 	}
 	/**
@@ -182,7 +191,8 @@ public class ConfigService extends ShopBaseService {
 		byte status=0;
 		ShopSelectInnerResp shopInfo = saas.shop.getShopInfo(getShopId());
 		String expireTimeStatus = shopInfo.getExpireTimeStatus();
-		if(expireTimeStatus.equals("1")) {
+        String expiredStatus = "1";
+        if(expireTimeStatus.equals(expiredStatus)) {
 			//已过期
 			status=1;
 		}

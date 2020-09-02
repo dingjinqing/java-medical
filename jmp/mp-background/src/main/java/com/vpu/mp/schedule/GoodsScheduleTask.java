@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 /**
  * 商品相关监控定时任务
  *
+ * @author wangbingbing
  */
 @Component
 @EnableScheduling

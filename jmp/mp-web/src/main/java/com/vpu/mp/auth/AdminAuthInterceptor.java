@@ -5,23 +5,25 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.vpu.mp.dao.foundation.database.DatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.language.LanguageManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
 
 /****
- ** 
+ **
  ** @author 新国
  **
  **/
@@ -33,13 +35,16 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	private static final String URL_LOGIN = "/api/admin/login";
 
 	Logger log=LoggerFactory.getLogger(AdminAuthInterceptor.class);
-	
+
 	@Autowired
 	protected AdminAuth adminAuth;
-	
+
 	@Autowired
 	protected SaasApplication saas;
-	
+
+	@Autowired
+	protected DatabaseManager databaseManager;
+
 	final String LANG = "V-Lang";
 
 	/**
@@ -59,8 +64,8 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			"/api/admin/service/auth/list", "/wechat/official/account/authorization", "/api/admin/service/auth/detail",
 			"/api/admin/public/image/account/*", "/api/admin/frame/image/dialog/select", "/api/admin/authority/not",
 			"/api/admin/frame/*", "/api/admin/ajax/*", "/api/admin/account/*", "/api/admin/public/*" };
-	
-	
+
+
 	/**
 	 * 一些特殊的api，不校验
 	 */
@@ -72,29 +77,21 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 		String path = request.getRequestURI();
 		String language = request.getHeader(LANG);
 		String enName = request.getHeader("V-EnName");
-		
 		// 按钮的权限时候传
 		String prName = request.getHeader("V-PrName");
-		
 		// 需要密码的请求验证密码
 		String passwd = request.getHeader("V-RolePass");
-		
 		// 版本控制传的值
 		String vsName = request.getHeader("V-VsName");
-		
 		// 切换语言
 		LanguageManager.switchLanguage(language);
-
 		// 如果为账户登录例外URL，直接通过
 		if (match(this.accountLoginExcept, path)) {
 			return true;
 		}
-
 		AdminTokenAuthInfo user = adminAuth.user();
-		
 		// 设置当前线程登录用户
 		ShopBaseService.setCurrentAdminLoginUser(user);
-		
 		if (user == null) {
 			errorResponse(request, response, URL_LOGIN,
 					(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
@@ -111,6 +108,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				log.debug("请求"+path+"选择店铺后操作");
 				return false;
 			} else {
+				databaseManager.switchShopDb(user.getLoginShopId());
 				if(match(specialExcept, path)) {
 					return true;
 				}
@@ -155,6 +153,12 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 		}
 		return true;
 	}
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+                                @Nullable Exception ex) throws Exception {
+        ShopBaseService.removeCurrentAdminLoginUser();
+    }
 
 	protected void errorResponse(HttpServletRequest request, HttpServletResponse response, String path,
 			JsonResult result) throws Exception {

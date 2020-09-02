@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareReceiveDetailParam;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardAddParam;

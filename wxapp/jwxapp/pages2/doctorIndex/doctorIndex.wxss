@@ -1,0 +1,270 @@
+/* pages2/doctorIndex/doctorIndex.wxss */
+.top_doc_info{
+  background:  #67C4B4;
+  width: 750rpx;
+  padding-top:25rpx;
+  margin-bottom: 25rpx;
+}
+.doc_square{
+  width: 700rpx;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 36rpx 24rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx 16rpx 0 0;
+ position: relative;
+  background: #fff url(http://medicaldevimg.weipubao.cn/image/wxapp/doctor_index_bg.png) no-repeat right top/ 60% 100% ;
+}
+.doc_square>image{
+  height: 120rpx;
+  width: 120rpx;
+}
+.doc_img{
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 25rpx;
+  border: 1rpx solid #ddd;
+  box-sizing: border-box;
+  border-radius: 100%;
+  align-self: flex-start;
+}
+.doc_name{
+  margin-bottom: 10rpx;
+}
+.doc_name{
+  margin-right: 24rpx;
+}
+.doc_name text{
+  font-size: 32rpx;
+  font-weight: bold;
+}
+.doc_hos{
+  margin-bottom: 10rpx;
+  width: 510rpx;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.doc_depart{
+  color: #999;
+  width: 510rpx;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.list{
+  width: 700rpx;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 45rpx 0 5rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+.item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  width: 232rpx;
+  margin-bottom: 50rpx;
+}
+.item image{
+  width: 80rpx;
+  height: 80rpx;
+}
+.item_has_num{
+  width: 80rpx;
+  height: 80rpx;
+  position: relative;
+  margin-bottom: 28rpx;
+}
+.item_num{
+  position: absolute;
+  right: -10rpx;
+  top: 0rpx;
+  border: 2rpx solid #FF9F15;
+  color: #FF9F15;
+  font-size: 18rpx;
+  padding: 0 5rpx;
+  border-radius: 20rpx;
+  z-index: 9;
+  width: auto;
+  min-width: 30rpx;
+  text-align: center;
+  box-sizing: border-box;
+  height: 30rpx;
+}
+.item_dot{
+  position: absolute;
+  right: 10rpx;
+  top: 0rpx;
+  width: 14rpx;
+  height: 14rpx;
+  background: #FF9F15;
+  border-radius: 100%;
+}
+.modal_bg{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 10;
+}
+.modal{
+  position: absolute;
+  top: 300rpx;
+  width: 630rpx;
+  left: 60rpx;
+  z-index: 11;
+}
+.modal_content{
+  background: #fff;
+  width: 630rpx;
+  border-radius: 16rpx;
+  padding-bottom: 40rpx;
+}
+.for_bg{
+  height: 100rpx;
+  width: 100%;
+  line-height: 120rpx;
+  background:-webkit-linear-gradient(top,#d0edeb,#fff); 
+  margin-bottom: 26rpx;
+  position: relative;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.for_bg image{
+  width: 100%;
+  height: 100rpx;
+  position: absolute;
+}
+.em_title{
+  text-align: center;
+  background: url(http://medicaldevimg.weipubao.cn/image/wxapp/medical_history_bg2.png) no-repeat center 68%/120rpx 14rpx;
+  font-weight: bold;
+  font-size: 36rpx;
+  position: absolute;
+  top: 0;
+  bottom: -20rpx;
+  left: 0;
+  right: 0;
+  z-index: 9;
+}
+.modal_info{
+  padding: 0 30rpx;
+} 
+.each_line{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 40rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+.left_text{
+  width: 150rpx;
+  font-size: 28rpx;
+}
+.left_text text{
+  margin-left: 10rpx;
+  color: #f00;
+}
+.modal_fotter{
+  width: 560rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  margin: 0 auto;
+  background: #26C4BC;
+  font-size: 28rpx;
+  color: #fff;
+  margin-top: 40rpx;
+  border-radius: 40rpx;
+}
+.btn_close{
+  text-align: center;
+}
+.btn_close image{
+  width: 90rpx;
+  height: 90rpx;
+  margin-top: 40rpx;
+}
+.button_get_verify{
+  border-radius: 8rpx;
+  background-color: #26C4BC;
+  color: #fff;
+  line-height: 70rpx;
+  text-align: center;
+  width: 200rpx;
+}
+.gray{
+  color: #999;
+}
+.if_work{
+  background: #fff;
+  position: absolute;
+  border: 1rpx solid;
+  border-radius: 25rpx;
+  width: 150rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  font-size: 24rpx;
+  text-align: center;
+  right: 25rpx;
+  top: 20rpx;
+}
+.begin_work{
+  color: #26C4BC;
+  border-color: #26C4BC;
+}
+.stop_work{
+  color: #999;
+  border-color: #ccc;
+}
+.work_modal{
+  position: absolute;
+  top: 500rpx;
+  width: 630rpx;
+  left: 60rpx;
+  z-index: 11;
+}
+.work_content{
+  width: 600rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding-left: 30rpx;
+}
+.dm_line{
+  padding: 50rpx 30rpx 50rpx 0;
+  display: flex;
+  justify-content:flex-start;
+}
+.dm_line:first-of-type{
+  border-bottom: 1rpx solid #eee;
+}
+.dm_line image{
+  width: 100rpx;
+  height: 100rpx;
+  margin-right: 55rpx;
+}
+.dm_word{
+  font-size: 30rpx;
+  color: #999;
+  height: 100rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.bold_word{
+  font-weight: bold;
+  font-size: 36rpx;
+  color: #333;
+}
+.button_get_verify.gray{
+  color: #fff;
+  background-color: #999;
+}

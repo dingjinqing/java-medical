@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.BrokerageListParam;
 import com.vpu.mp.service.pojo.shop.distribution.BrokerageListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;

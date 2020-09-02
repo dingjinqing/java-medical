@@ -1,0 +1,41 @@
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
+<view class="prescription-content {{m.topHasRadius ? 'top-has-radius' : ''}} {{m.topIsAdver ? 'top-is-adver' : ''}}" style="{{m.page_color ? 'background-color:'+m.page_color+';':''}}">
+	<view class="prescription-module-title" bindtap="viewPrescriptionList">
+		<image src="{{imageUrl}}image/wxapp/prescription-icon1.png"></image>
+		<text>我的处方</text>
+		<view class="more" wx:if="{{m.hasMore}}">更多</view>
+	</view>
+	<block wx:if="{{m.prescriptionListData.length}}">
+		<view class="prescription-item" bindtap="handleShowDialog" data-prescription-code="{{item.prescriptionCode}}" wx:for="{{m.prescriptionListData}}" wx:key="prescriptionCode">
+			<view class="item-title" style="background:#26c4bc url({{imageUrl}}image/wxapp/inedx-prescription-bg.png) no-repeat left top/100% 80rpx; ">电子处方</view>
+			<view class="item-list-content">
+				<view class="item-list">
+					<view class="list-item" wx:if="{{item.diagnosisName}}">
+						<text class="list-item-dot"></text>
+						<view class="list-item-content">
+							诊断：{{item.diagnosisName}}
+						</view>
+					</view>
+					<view class="list-item" wx:if="{{item.departmentName}}">
+						<text class="list-item-dot"></text>
+						<view class="list-item-content">
+							科室：{{item.departmentName}}
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="doctor-info">
+				<text class="doctor-name">医师：{{item.doctorName}}</text>
+				<text class="item-date">日期：{{filter.substring(item.prescriptionCreateTime,0,10)}}</text>
+			</view>
+		</view>
+	</block>
+	<block wx:else>
+		<view class="no-content">
+			暂无内容
+		</view>
+	</block>
+
+</view>
+
+<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}" />

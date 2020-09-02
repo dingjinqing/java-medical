@@ -14,9 +14,9 @@ import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.ArticleCategoryRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.category.ArtCategoryListQuertParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryVo;
@@ -70,7 +70,7 @@ public class ArticleCategoryService extends MainBaseService {
 	
 	public boolean insertArticleCategory(ArticleCategoryParam arArticleCategory) {
 		Byte useFooterNav = extracted(arArticleCategory);
-		if(useFooterNav.equals(ArticlesClass.cuo)) {
+		if(useFooterNav.equals(ArticlesClass.INVALID)) {
 			logger().info("传入参数错误，传入参数为："+arArticleCategory.getUseFooterNav());
 			return false;
 		}
@@ -112,7 +112,7 @@ public class ArticleCategoryService extends MainBaseService {
 
 	public boolean updateArticleCategory(ArticleCategoryParam arArticleCategory) {
 		Byte useFooterNav = extracted(arArticleCategory);
-		if(useFooterNav.equals(ArticlesClass.cuo)) {
+		if(useFooterNav.equals(ArticlesClass.INVALID)) {
 			logger().info("传入参数错误，传入参数为："+arArticleCategory.getUseFooterNav());
 			return false;
 		}

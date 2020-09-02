@@ -4,7 +4,6 @@ import static com.vpu.mp.db.main.Tables.SHOP;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -13,11 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
 import com.vpu.mp.service.pojo.shop.store.account.StoreInfoVo;
@@ -44,7 +43,7 @@ public class StoreManageService extends MainBaseService {
 	public StoreAccountService storeAccountService;
 
 	private static final String STOREJSON = "admin.storeTop.json";
-	private static final String dot = ",";
+	private static final String DOT = ",";
 
 	/**
 	 * 获取店员权限的配置和选中状态
@@ -106,8 +105,8 @@ public class StoreManageService extends MainBaseService {
 	private List<Integer> splitString(String stores) {
 		List<Integer> list = new ArrayList<Integer>();
 		if (stores != null) {
-			if (stores.contains(dot)) {
-				String[] split = stores.split(dot);
+			if (stores.contains(DOT)) {
+				String[] split = stores.split(DOT);
 				for (String string : split) {
 					Integer valueOf = Integer.valueOf(string);
 					if(!list.contains(valueOf)) {
@@ -126,7 +125,7 @@ public class StoreManageService extends MainBaseService {
 		List<String> menuCfg = param.getMenuCfg();
 		boolean flag = false;
 		for (String string : menuCfg) {
-			if (string.equals("store_overview")) {
+			if ("store_overview".equals(string)) {
 				flag = true;
 			}
 		}

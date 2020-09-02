@@ -13,8 +13,8 @@ import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListVo;
 

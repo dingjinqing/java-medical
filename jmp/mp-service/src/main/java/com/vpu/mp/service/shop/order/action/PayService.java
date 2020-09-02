@@ -1,18 +1,18 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
@@ -42,6 +42,8 @@ import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
+import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record2;
@@ -57,7 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_GROUP_BUY;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_GROUP_BUY;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 
 /**
@@ -108,12 +110,16 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     @Autowired
     private ThirdPartyMsgServices thirdPartyMsgServices;
+    @Autowired
+    private UploadPrescriptionService uploadPrescriptionService;
 
     /**
      * 营销活动processorFactory
      */
     @Autowired
     private OrderCreateMpProcessorFactory marketProcessorFactory;
+    @Autowired
+    private CartService cart;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -234,7 +240,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         ArrayList<Byte> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
         if (goodsType.contains(ACTIVITY_TYPE_GROUP_BUY)){
             GroupOrderVo groupBuyRecord = groupBuyListService.getByOrder(order.getOrderSn());
-            Timestamp date = DateUtil.getLocalDateTime();
+            Timestamp date = DateUtils.getLocalDateTime();
             // 是否可以参加拼团
             ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(groupBuyRecord.getUserId(), date, groupBuyRecord.getActivityId(), groupBuyRecord.getGroupId(), IS_GROUPER_N);
             if (!resultMessage.getFlag()) {
@@ -258,7 +264,6 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
      * @throws MpException
      */
     public void toWaitDeliver(OrderInfoRecord orderInfo, PaymentRecordRecord payRecord) throws MpException {
-
         ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(orderInfo.getGoodsType()));
 
         if(!OrderOperationJudgment.canWaitDeliver(orderInfo.getOrderStatus())) {
@@ -279,9 +284,19 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             orderInfo.setOrderStatus(OrderConstant.ORDER_PIN_PAYED_GROUPING);
         }else{
             //TODO 通知服务、上报广告信息
-            orderInfo.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+            if (orderInfo.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT)){
+                //待审核
+                orderInfo.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+            }else if (orderInfo.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
+                //待开方
+                orderInfo.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
+            }else {
+                //代发货
+                orderInfo.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
+            }
+
         }
-        orderInfo.setPayTime(DateUtil.getSqlTimestamp());
+        orderInfo.setPayTime(DateUtils.getSqlTimestamp());
         orderInfo.setPaySn(payRecord == null ? StringUtils.EMPTY : payRecord.getPaySn());
         orderInfo.update();
 
@@ -291,6 +306,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
             //库存销量
             atomicOperation.updateStockAndSalesByLock(orderInfo, goods.into(OrderGoodsBo.class), false);
         }
+
         //TODO 异常订单处理等等
         // 订单生效时营销活动后续处理
         processOrderEffective(orderInfo);

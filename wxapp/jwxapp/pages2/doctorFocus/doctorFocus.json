@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "doctor-list": "../../components/doctor/doctor_list/doctor_list"
+  }
+}

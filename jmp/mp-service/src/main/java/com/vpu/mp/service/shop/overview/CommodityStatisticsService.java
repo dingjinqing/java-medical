@@ -1,17 +1,17 @@
 package com.vpu.mp.service.shop.overview;
 
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.GoodsOverviewSummary;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.commodity.*;
 import com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,14 +42,14 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsBrand.GOODS_BRAND;
 import static com.vpu.mp.db.shop.tables.GoodsLabel.GOODS_LABEL;
 import static com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
 import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
@@ -97,14 +97,14 @@ public class CommodityStatisticsService extends ShopBaseService {
         byte type = param.getDynamicDate();
         LocalDate now = LocalDate.now();
         LocalDate prefix = now.minusDays(type);
-        ProductOverviewVo nowData = getGoodsOverviewSummary(DateUtil.yyyyMmDdDate(now), type);
+        ProductOverviewVo nowData = getGoodsOverviewSummary(DateUtils.yyyyMmDdDate(now), type);
         if (Objects.isNull(nowData)) {
             return ProductOverviewVo.builder().build();
         }
         nowData.setStartTime(Date.valueOf(prefix));
         nowData.setEndTime(Date.valueOf(now));
         nowData.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(nowData.getPaidGoodsNum()), BigDecimal.valueOf(nowData.getVisitedGoodsNum())));
-        ProductOverviewVo prefixData = getGoodsOverviewSummary(DateUtil.yyyyMmDdDate(prefix), type);
+        ProductOverviewVo prefixData = getGoodsOverviewSummary(DateUtils.yyyyMmDdDate(prefix), type);
         if (Objects.isNull(prefixData)) {
             return nowData;
         }
@@ -304,7 +304,7 @@ public class CommodityStatisticsService extends ShopBaseService {
      */
     public PageResult<ProductEffectVo> fixedDayEffect(ProductEffectParam param) {
         /** 必要筛选条件 */
-        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.eq(DateUtil.yyyyMmDdDate(LocalDate.now())))
+        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.eq(DateUtils.yyyyMmDdDate(LocalDate.now())))
             .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate()));
         SelectJoinStep<?> joinStep = db().select(GOODS_SUMMARY.GOODS_ID
             , GOODS.GOODS_NAME
@@ -473,61 +473,10 @@ public class CommodityStatisticsService extends ShopBaseService {
         SelectLimitStep<?> limitStep;
         if (param.getDynamicDate() > 0) {
 //        全连接：取交集
-            limitStep = db().select(min(GOODS_SUMMARY.GOODS_ID).as("goodsId")
-                , min(tempGoods.field(GOODS.GOODS_NAME)).as("goodsName")
-                , min(tempGoods.field(GOODS.GOODS_IMG)).as("goodsImg")
-                , min(tempGoods.field(GOODS.SHOP_PRICE)).as("shopPrice")
-                , min(tempGoods.field(GOODS_BRAND.BRAND_NAME)).as("brandName")
-                , min(tempGoods.field(SORT.SORT_NAME)).as("sortName")
-                , DslPlus.groupConCat(tempGoodsLabel.field(GOODS_LABEL.NAME)).as("name")
-                , min(GOODS_SUMMARY.NEW_USER_NUMBER).as("newUserNumber")
-                , min(GOODS_SUMMARY.OLD_USER_NUMBER).as("oldUserNumber")
-                , min(GOODS_SUMMARY.PV).as("pv")
-                , min(GOODS_SUMMARY.UV).as("uv")
-                , min(GOODS_SUMMARY.CART_UV).as("cartUv")
-                , min(GOODS_SUMMARY.PAID_UV).as("paidUv")
-                , min(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber")
-                , min(GOODS_SUMMARY.GOODS_SALES).as("goodsSales")
-                , min(GOODS_SUMMARY.RECOMMEND_USER_NUM).as("recommendUserNum")
-                , min(GOODS_SUMMARY.COLLECT_USE_NUM).as("collectUserNum")
-                , min(GOODS_SUMMARY.SHARE_PV).as("sharePv")
-                , min(GOODS_SUMMARY.SHARE_UV).as("shareUv")
-            )
-                .from(GOODS_SUMMARY)
-                .innerJoin(tempGoods).on(tempGoods.field(GOODS.GOODS_ID).eq(GOODS_SUMMARY.GOODS_ID))
-                .innerJoin(tempGoodsLabel).on(tempGoodsLabel.field(GOODS.GOODS_ID).eq(GOODS_SUMMARY.GOODS_ID))
-                .where(GOODS_SUMMARY.REF_DATE.eq(Date.valueOf(LocalDate.now())))
-                .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate()))
-                .groupBy(GOODS_SUMMARY.GOODS_ID);
+            limitStep = getStatByDynamicDate(param, tempGoods, tempGoodsLabel);
         } else {
             /** 自定义时间 */
-            limitStep = db().select(min(GOODS_SUMMARY.GOODS_ID).as("goodsId")
-                , min(tempGoods.field(GOODS.GOODS_NAME)).as("goodsName")
-                , min(tempGoods.field(GOODS.GOODS_IMG)).as("goodsImg")
-                , min(tempGoods.field(GOODS.SHOP_PRICE)).as("shopPrice")
-                , min(tempGoods.field(GOODS_BRAND.BRAND_NAME)).as("brandName")
-                , min(tempGoods.field(SORT.SORT_NAME)).as("sortName")
-                , DSL.groupConcatDistinct(tempGoodsLabel.field(GOODS_LABEL.NAME)).as("name")
-                , sum(GOODS_SUMMARY.NEW_USER_NUMBER).as("newUserNumber")
-                , sum(GOODS_SUMMARY.OLD_USER_NUMBER).as("oldUserNumber")
-                , sum(GOODS_SUMMARY.PV).as("pv")
-                , sum(GOODS_SUMMARY.UV).as("uv")
-                , sum(GOODS_SUMMARY.CART_UV).as("cartUv")
-                , sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
-                , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber")
-                , sum(GOODS_SUMMARY.GOODS_SALES).as("goodsSales")
-                , sum(GOODS_SUMMARY.RECOMMEND_USER_NUM).as("recommendUserNum")
-                , sum(GOODS_SUMMARY.COLLECT_USE_NUM).as("collectUserNum")
-                , sum(GOODS_SUMMARY.SHARE_PV).as("sharePv")
-                , sum(GOODS_SUMMARY.SHARE_UV).as("shareUv")
-            )
-                .from(GOODS_SUMMARY)
-                .innerJoin(tempGoods).on(tempGoods.field(GOODS.GOODS_ID).eq(GOODS_SUMMARY.GOODS_ID))
-                .innerJoin(tempGoodsLabel).on(tempGoodsLabel.field(GOODS.GOODS_ID).eq(GOODS_SUMMARY.GOODS_ID))
-                .where(GOODS_SUMMARY.REF_DATE.greaterThan(Date.valueOf(param.getStartTime().toLocalDateTime().toLocalDate())))
-                .and(GOODS_SUMMARY.REF_DATE.le(Date.valueOf(param.getEndTime().toLocalDateTime().toLocalDate())))
-                .and(GOODS_SUMMARY.TYPE.eq(BYTE_ONE))
-                .groupBy(GOODS_SUMMARY.GOODS_ID);
+            limitStep = getStatByCustomDatePeriod(param, tempGoods, tempGoodsLabel);
         }
         List<ProductEffectExportVo> exportVos = limitStep.fetchInto(ProductEffectExportVo.class);
         for (ProductEffectExportVo vo : exportVos) {
@@ -537,6 +486,69 @@ public class CommodityStatisticsService extends ShopBaseService {
         ExcelWriter excelWriter = new ExcelWriter(workbook);
         excelWriter.writeModelList(exportVos, ProductEffectExportVo.class);
         return workbook;
+    }
+
+    private SelectLimitStep<?> getStatByCustomDatePeriod(ProductEffectParam param, SelectConditionStep<Record6<Integer, String, String, BigDecimal, String, String>> tempGoods, SelectConditionStep<Record2<Integer, String>> tempGoodsLabel) {
+        SelectLimitStep<?> limitStep;
+        limitStep = db().select(min(GOODS_SUMMARY.GOODS_ID).as("goodsId")
+            , min(tempGoods.field(GOODS.GOODS_NAME)).as("goodsName")
+            , min(tempGoods.field(GOODS.GOODS_IMG)).as("goodsImg")
+            , min(tempGoods.field(GOODS.SHOP_PRICE)).as("shopPrice")
+            , min(tempGoods.field(GOODS_BRAND.BRAND_NAME)).as("brandName")
+            , min(tempGoods.field(SORT.SORT_NAME)).as("sortName")
+            , DSL.groupConcatDistinct(tempGoodsLabel.field(GOODS_LABEL.NAME)).as("name")
+            , sum(GOODS_SUMMARY.NEW_USER_NUMBER).as("newUserNumber")
+            , sum(GOODS_SUMMARY.OLD_USER_NUMBER).as("oldUserNumber")
+            , sum(GOODS_SUMMARY.PV).as("pv")
+            , sum(GOODS_SUMMARY.UV).as("uv")
+            , sum(GOODS_SUMMARY.CART_UV).as("cartUv")
+            , sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
+            , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber")
+            , sum(GOODS_SUMMARY.GOODS_SALES).as("goodsSales")
+            , sum(GOODS_SUMMARY.RECOMMEND_USER_NUM).as("recommendUserNum")
+            , sum(GOODS_SUMMARY.COLLECT_USE_NUM).as("collectUserNum")
+            , sum(GOODS_SUMMARY.SHARE_PV).as("sharePv")
+            , sum(GOODS_SUMMARY.SHARE_UV).as("shareUv")
+        )
+            .from(GOODS_SUMMARY)
+            .innerJoin(tempGoods).on(tempGoods.field(GOODS.GOODS_ID).eq(GOODS_SUMMARY.GOODS_ID))
+            .innerJoin(tempGoodsLabel).on(tempGoodsLabel.field(GOODS.GOODS_ID).eq(GOODS_SUMMARY.GOODS_ID))
+            .where(GOODS_SUMMARY.REF_DATE.greaterThan(Date.valueOf(param.getStartTime().toLocalDateTime().toLocalDate())))
+            .and(GOODS_SUMMARY.REF_DATE.le(Date.valueOf(param.getEndTime().toLocalDateTime().toLocalDate())))
+            .and(GOODS_SUMMARY.TYPE.eq(BYTE_ONE))
+            .groupBy(GOODS_SUMMARY.GOODS_ID);
+        return limitStep;
+    }
+
+    private SelectLimitStep<?> getStatByDynamicDate(ProductEffectParam param, SelectConditionStep<Record6<Integer, String, String, BigDecimal, String, String>> tempGoods, SelectConditionStep<Record2<Integer, String>> tempGoodsLabel) {
+        SelectLimitStep<?> limitStep;
+        limitStep = db().select(min(GOODS_SUMMARY.GOODS_ID).as("goodsId")
+            , min(tempGoods.field(GOODS.GOODS_NAME)).as("goodsName")
+            , min(tempGoods.field(GOODS.GOODS_IMG)).as("goodsImg")
+            , min(tempGoods.field(GOODS.SHOP_PRICE)).as("shopPrice")
+            , min(tempGoods.field(GOODS_BRAND.BRAND_NAME)).as("brandName")
+            , min(tempGoods.field(SORT.SORT_NAME)).as("sortName")
+            , DslPlus.groupConCat(tempGoodsLabel.field(GOODS_LABEL.NAME)).as("name")
+            , min(GOODS_SUMMARY.NEW_USER_NUMBER).as("newUserNumber")
+            , min(GOODS_SUMMARY.OLD_USER_NUMBER).as("oldUserNumber")
+            , min(GOODS_SUMMARY.PV).as("pv")
+            , min(GOODS_SUMMARY.UV).as("uv")
+            , min(GOODS_SUMMARY.CART_UV).as("cartUv")
+            , min(GOODS_SUMMARY.PAID_UV).as("paidUv")
+            , min(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber")
+            , min(GOODS_SUMMARY.GOODS_SALES).as("goodsSales")
+            , min(GOODS_SUMMARY.RECOMMEND_USER_NUM).as("recommendUserNum")
+            , min(GOODS_SUMMARY.COLLECT_USE_NUM).as("collectUserNum")
+            , min(GOODS_SUMMARY.SHARE_PV).as("sharePv")
+            , min(GOODS_SUMMARY.SHARE_UV).as("shareUv")
+        )
+            .from(GOODS_SUMMARY)
+            .innerJoin(tempGoods).on(tempGoods.field(GOODS.GOODS_ID).eq(GOODS_SUMMARY.GOODS_ID))
+            .innerJoin(tempGoodsLabel).on(tempGoodsLabel.field(GOODS.GOODS_ID).eq(GOODS_SUMMARY.GOODS_ID))
+            .where(GOODS_SUMMARY.REF_DATE.eq(Date.valueOf(LocalDate.now())))
+            .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate()))
+            .groupBy(GOODS_SUMMARY.GOODS_ID);
+        return limitStep;
     }
 
     /**
@@ -675,11 +687,16 @@ public class CommodityStatisticsService extends ShopBaseService {
             list[i] = tempMap.values().toArray();
             tempMap.put(STRING_DATE, dateValue);
         }
-        return swapHV(list);
+        return swapHv(list);
     }
 
-    // 二维数组行列转换
-    private Object[][] swapHV(Object[][] array) {
+
+    /**
+     * 二维数组行列转换
+     * @param array
+     * @return
+     */
+    private Object[][] swapHv(Object[][] array) {
         if (array.length <= 0) {
             return array;
         }
@@ -808,7 +825,17 @@ public class CommodityStatisticsService extends ShopBaseService {
         return tDate.getYear() == u.getYear();
     }
 
-    // 构造每天/月/年的图形数据
+    /**
+     * 构造每天/月/年的图形数据
+     * @param rows
+     * @param results
+     * @param showDate
+     * @param rule
+     * @param field
+     * @param func
+     * @param compare
+     * @param <T>
+     */
     private <T extends Number> void dayCharData(List<Map<String, Object>> rows,
                                                 final Result<Record4<Date, Integer, T, String>> results,
                                                 List<LocalDate> showDate,
@@ -868,7 +895,15 @@ public class CommodityStatisticsService extends ShopBaseService {
         return s.equals(yearDate(date));
     }
 
-    // 构造每周的图形数据
+    /**
+     * 构造每周的图形数据
+     * @param rows
+     * @param results
+     * @param showDate
+     * @param rule
+     * @param field
+     * @param <T>
+     */
     private <T extends Number> void weekCharData(List<Map<String, Object>> rows,
                                                  final Result<Record4<Date, Integer, T, String>> results,
                                                  List<Tuple2<LocalDate, LocalDate>> showDate,

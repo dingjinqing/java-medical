@@ -1,18 +1,16 @@
 package com.vpu.mp.service.shop.goods.es.convert.goods;
 
-import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
-import com.vpu.mp.service.shop.goods.es.goods.product.EsGoodsProductEntity;
-import org.apache.commons.collections4.CollectionUtils;
+import com.vpu.mp.service.foundation.es.pojo.goods.product.EsGoodsProductEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author luguangyao
+ */
 public class GoodsPageListVoForProductConverter {
     public static GoodsPageListVo convert(EsGoodsProductEntity esProduct) {
             GoodsPageListVo vo = new GoodsPageListVo();

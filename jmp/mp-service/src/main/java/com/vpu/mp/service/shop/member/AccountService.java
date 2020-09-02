@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.member;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -17,8 +17,8 @@ import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.builder.UserAccountRecordBuilder;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
@@ -31,7 +31,7 @@ import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.member.dao.AccountDao;
 import com.vpu.mp.service.shop.member.dao.UserAccountDao;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -47,9 +47,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
-import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 /**
  * 余额管理
@@ -218,9 +218,11 @@ public class AccountService extends ShopBaseService {
 		return BigDecimalUtil.compareTo(val, BigDecimal.ZERO)>=0;
 	}
 	
-	/*
-	 * 插入交易记录
-	 */
+    /**
+     * 插入交易记录
+     * @param param
+     * @param tradeOpt
+     */
 	private void addTradeRecord(AccountParam param,TradeOptParam tradeOpt) {
 		logger().info("记录用户余额到交易tradeRecord表");
 		recordTradeService.insertTradeRecord(TradeOptParam.builder()

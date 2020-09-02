@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchParam;
 import org.apache.commons.collections4.CollectionUtils;
@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author luguangyao
+ */
 public class GoodsSearchParamConverter implements EsParamConvertInterface {
 
     private GoodsSearchParam param;

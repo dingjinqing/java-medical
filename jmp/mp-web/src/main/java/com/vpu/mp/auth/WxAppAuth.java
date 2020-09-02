@@ -1,5 +1,6 @@
 package com.vpu.mp.auth;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
@@ -8,9 +9,8 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
@@ -18,7 +18,9 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.user.AdminUserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,8 +30,12 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Objects;
+
+import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
+
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -47,9 +53,15 @@ public class WxAppAuth {
 
 	@Autowired
 	protected JedisManager jedis;
-	
+
 	@Autowired
 	protected ImageService imageService;
+
+	@Autowired
+	protected AdminUserService adminUserService;
+
+	@Autowired
+	protected DoctorService doctorService;
 
 	public static final String TOKEN = "V-Token";
 
@@ -60,7 +72,7 @@ public class WxAppAuth {
 	private final Logger log = LoggerFactory.getLogger(WxAppAuth.class);
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	protected String getToken() {
@@ -69,7 +81,7 @@ public class WxAppAuth {
 
 	/**
 	 * 得到当前小程序ID
-	 * 
+	 *
 	 * @return
 	 */
 	public Integer shopId() {
@@ -82,7 +94,7 @@ public class WxAppAuth {
 
 	/**
 	 * 是否有效system登录TOKEN
-	 * 
+	 *
 	 * @param token
 	 * @return
 	 */
@@ -92,7 +104,7 @@ public class WxAppAuth {
 
 	/**
 	 * 登录账户
-	 * 
+	 *
 	 * @param param
 	 * @param request
 	 * @return
@@ -118,14 +130,17 @@ public class WxAppAuth {
 		UserScoreRecord scoreInDay = shopApp.member.score.getScoreInDay(user.getUserId(), "score_login");
 		// 获取登录送积分开关配置
 		ShopCfgRecord isLoginScore = shopApp.score.getScoreNum("login_score");
-		if (scoreInDay != null || (isLoginScore == null || isLoginScore.getV() == "0")) {
+        String closeLoginScore = "0";
+        boolean noSettingLoginScore = scoreInDay != null || (isLoginScore == null || isLoginScore.getV().equals(closeLoginScore));
+        if (noSettingLoginScore) {
 			// 没有登录送积分设置
 			log.info("没有设置登录送积分");
 			// return
 		} else {
 			log.info("设置登录送积分");
 			ShopCfgRecord scoreNum = shopApp.score.getScoreNum("score_login");
-			if (scoreNum.getV() != "0") {
+            String zeroScore = "0";
+            if (!scoreNum.getV().equals(zeroScore)) {
 				ScoreParam param2=new ScoreParam();
 				param2.setDesc("score_login");
 				param2.setScore(Integer.parseInt(scoreNum.getV()));
@@ -140,12 +155,11 @@ public class WxAppAuth {
 				}
 			}
 		}
-
 		UserDetailRecord userDetail = shopApp.user.userDetail.getUserDetailByUserId(user.getUserId());
 		WxAppSessionUser.WxUserInfo wxUser = WxAppSessionUser.WxUserInfo.builder().openId(user.getWxOpenid())
 				.unionid(user.getWxUnionId()).mobile(user.getMobile() != null ? user.getMobile() : "").build();
-
 		String token = TOKEN_PREFIX + Util.md5(shopId + "_" + user.getUserId());
+		//获取用户角色
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
 		sessionUser.setWxUser(wxUser);
 		sessionUser.setToken(token);
@@ -155,14 +169,43 @@ public class WxAppAuth {
 		sessionUser.setUserAvatar(userDetail == null ? null : userDetail.getUserAvatar());
 		sessionUser.setUsername(userDetail == null ? null : userDetail.getUsername());
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
-		jedis.set(token, Util.toJson(sessionUser));
-		sessionUser.setImageHost(imageService.getImageHost());
-		return sessionUser;
+        WxAppSessionUser wxAppSessionUser = setDoctorAuth(sessionUser, user);
+        jedis.set(token, Util.toJson(wxAppSessionUser));
+        wxAppSessionUser.setImageHost(imageService.getImageHost());
+        return wxAppSessionUser;
 	}
+
+    /**
+     * 向Token中添加医师认证相关字段
+     * @param wxAppSessionUser Token
+     * @param userRecord       user
+     * @return WxAppSessionUser
+     */
+    private WxAppSessionUser setDoctorAuth(WxAppSessionUser wxAppSessionUser, UserRecord userRecord) {
+        // 如果有认证医师查看是否禁用
+        Byte userType = userRecord.getUserType();
+        //添加用户个人角色信息
+        wxAppSessionUser.setUserType(userRecord.getUserType());
+        if (Objects.equals(userType, 0)) {
+            wxAppSessionUser.setDoctorId(0);
+            wxAppSessionUser.setPharmacistId(0);
+        }
+        //如果当前用户是医师，那么直接进入医师界面
+        if (userType == 1) {
+            // 查询该医师是否禁用，如果禁用禁止登录
+            Integer doctorId = adminUserService.getDoctorId(userRecord.getUserId());
+            wxAppSessionUser.setDoctorId(doctorId);
+            DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
+            if (oneInfo.getStatus() == 0) {
+                wxAppSessionUser.setUserType((byte) -1);
+            }
+        }
+        return wxAppSessionUser;
+    }
 
 	/**
 	 * 得到当前登录用户
-	 * 
+	 *
 	 * @return
 	 */
 	public WxAppSessionUser user() {
@@ -175,4 +218,19 @@ public class WxAppAuth {
 		}
 		return null;
 	}
+
+    /**
+     * 更新当前医师缓存信息
+     */
+	public void updateUserType(Integer doctorId){
+        String json = jedis.get(getToken());
+        if (!StringUtils.isBlank(json)) {
+            WxAppSessionUser wxAppSessionUser = Util.parseJson(json, WxAppSessionUser.class);
+            assert wxAppSessionUser != null;
+            wxAppSessionUser.setUserType(AUTH_TYPE_DOCTOR_USER);
+            wxAppSessionUser.setDoctorId(doctorId);
+            jedis.set(getToken(), Util.toJson(wxAppSessionUser));
+            doctorService.updateUserToken(doctorId,getToken());
+        }
+    }
 }

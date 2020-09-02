@@ -1,9 +1,9 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.member.address.*;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -173,6 +173,16 @@ public class WxAppAddressController extends WxAppBaseController {
         String path = String.format("static/mp/address/addressData%s.json", param.getIndex());
         log.info("读取地址文件{}", path);
         return success(Util.loadResource(path));
+    }
+
+    /**
+     * 获取json下载地址
+     * @param param
+     * @return
+     */
+    @PostMapping("/address/database/get")
+    public JsonResult getBaseJsonPath(@RequestBody @Validated AddressDataParam param) {
+        return  success(shop().addressService.getBaseJsonPath(param));
     }
 
 }

@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.market.sharereward;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.sharereward.*;
@@ -145,7 +145,8 @@ public class ShareRewardService extends BaseShopConfigService {
             //未开始状态
             return PURCHASE_PREPARE;
         }
-        if (foreverFlag || (vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now()) && vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now()))) {
+        boolean isProcessing = foreverFlag || (vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now()) && vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now()));
+        if (isProcessing) {
             //进行中状态
             return PURCHASE_PROCESSING;
         }
@@ -281,7 +282,11 @@ public class ShareRewardService extends BaseShopConfigService {
         return awardRecord;
     }
 
-    // ShareRule奖励规则数据清洗
+    /**
+     * ShareRule奖励规则数据清洗
+     * @param shareRule
+     * @return
+     */
     private ShareRule dataClean(ShareRule shareRule) {
         if (Objects.isNull(shareRule)) {
             return null;
@@ -608,10 +613,10 @@ public class ShareRewardService extends BaseShopConfigService {
         db().update(AWARD_RECORD).set(AWARD_RECORD.USER_NUMBER, AWARD_RECORD.USER_NUMBER.add(INTEGER_ONE)).where(AWARD_RECORD.ID.eq(id)).execute();
         return db().select(AWARD_RECORD.USER_NUMBER).from(AWARD_RECORD).where(AWARD_RECORD.ID.eq(id)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
-    
+
 	/**
 	 * 营销日历用id查询活动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -624,7 +629,7 @@ public class ShareRewardService extends BaseShopConfigService {
 
 	/**
 	 * 营销日历用查询目前正常的活动
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -633,7 +638,7 @@ public class ShareRewardService extends BaseShopConfigService {
 				.select(AWARD.ID, AWARD.NAME.as(CalendarAction.ACTNAME), AWARD.START_TIME, AWARD.END_TIME,
 						AWARD.IS_FOREVER.as(CalendarAction.ISPERMANENT))
 				.from(AWARD).where(AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(AWARD.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(AWARD.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(AWARD.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(AWARD.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

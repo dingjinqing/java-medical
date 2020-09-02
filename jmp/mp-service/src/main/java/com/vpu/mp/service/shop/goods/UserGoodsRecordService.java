@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.UserGoodsRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class UserGoodsRecordService extends ShopBaseService {
      */
     private UserGoodsRecordRecord getTodayRecord(Integer userId,Integer goodsId){
         return db().selectFrom(USER_GOODS_RECORD)
-            .where(USER_GOODS_RECORD.CREATE_TIME.ge(DateUtil.getLocalTimeDateBySelf("yyyy-MM-dd 00:00:00")))
+            .where(USER_GOODS_RECORD.CREATE_TIME.ge(DateUtils.getLocalTimeDateBySelf("yyyy-MM-dd 00:00:00")))
             .and(USER_GOODS_RECORD.GOODS_ID.eq(goodsId))
             .and(USER_GOODS_RECORD.USER_ID.eq(userId))
             .fetchAny();

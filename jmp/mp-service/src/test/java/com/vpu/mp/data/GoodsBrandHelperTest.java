@@ -3,7 +3,7 @@ package com.vpu.mp.data;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.vpu.mp.App;
-import com.vpu.mp.service.foundation.database.DatabaseManager;
+import com.vpu.mp.dao.foundation.database.DatabaseManager;
 import com.vpu.mp.service.foundation.jedis.data.GoodsBrandDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandAddParam;

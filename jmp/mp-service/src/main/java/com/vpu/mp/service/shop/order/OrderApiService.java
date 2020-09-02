@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.order;
 
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
+import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
-import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.order.api.ApiReturnParam;
 import com.vpu.mp.service.pojo.shop.order.api.ApiShippingParam;
 import com.vpu.mp.service.shop.order.action.ReturnService;

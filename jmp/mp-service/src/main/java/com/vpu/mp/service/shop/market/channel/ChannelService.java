@@ -24,14 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelStatisticalRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelConstant;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageInfo;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageParam;
@@ -39,7 +39,6 @@ import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageVo;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelParam;
 import com.vpu.mp.service.pojo.shop.market.channel.QrCodeShareVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 
@@ -72,9 +71,9 @@ public class ChannelService extends ShopBaseService {
 
 	/**
 	 * 渠道页面分析 分页查询
-	 * 
+	 *
 	 * @param param
-	 * @return 
+	 * @return
 	 */
 	public PageResult<ChannelPageVo> getPageList(ChannelPageParam param) {
 		SelectOnConditionStep<?> step = db()
@@ -106,7 +105,7 @@ public class ChannelService extends ShopBaseService {
 
 	/**
 	 * 设置昨日访问次数和访问人数信息
-	 * 
+	 *
 	 * @param vo
 	 */
 	private void setYesterdayInfo(ChannelPageVo vo) {
@@ -136,7 +135,7 @@ public class ChannelService extends ShopBaseService {
 
 	/**
 	 * 渠道用户数量
-	 * 
+	 *
 	 * @param id
 	 * @param invitesource
 	 * @return
@@ -148,7 +147,7 @@ public class ChannelService extends ShopBaseService {
 
 	/**
 	 * 渠道订单数量
-	 * 
+	 *
 	 * @param inviteActId
 	 * @param inviteSource
 	 * @return
@@ -191,7 +190,7 @@ public class ChannelService extends ShopBaseService {
 
 	/**
 	 * 停用渠道页面
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -202,7 +201,7 @@ public class ChannelService extends ShopBaseService {
 
 	/**
 	 * 启用渠道页面
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -240,7 +239,7 @@ public class ChannelService extends ShopBaseService {
 	}
 
 	/**
-	 * 添加渠道页面 
+	 * 添加渠道页面
 	 * @param param
 	 * @return
 	 */
@@ -264,7 +263,7 @@ public class ChannelService extends ShopBaseService {
 		BigInteger hex =new BigInteger(Util.randomId().replace("-", ""),16);
 		return convert62(hex).substring(0,6);
 	}
-	
+
 	private String convert62(BigInteger from) {
 		StringBuilder dest = new StringBuilder();
 		String sign = from.signum() ==-1?"-":"";
@@ -310,7 +309,7 @@ public class ChannelService extends ShopBaseService {
 			temp.put(goodsChannel.getGoodsId(), new ChannelPageInfo(goodsChannel.getId(), goodsChannel.getGoodsName()));
 		}
 		result.addAll(temp.values());
-		
+
 		List<PageChannel> pageChannelList = db().select(CHANNEL.ID, CHANNEL.PAGE_ID, XCX_CUSTOMER_PAGE.PAGE_NAME).from(CHANNEL).innerJoin(XCX_CUSTOMER_PAGE)
 				.on(CHANNEL.PAGE_ID.eq(XCX_CUSTOMER_PAGE.PAGE_ID)).where(CHANNEL.SOURCE_TYPE.eq(ChannelConstant.SOURCETYPE_CUSTOMIZE))
 				.and(CHANNEL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
@@ -328,7 +327,7 @@ public class ChannelService extends ShopBaseService {
 	public ChannelRecord getChannelInfo(String share) {
 		return db().selectFrom(CHANNEL).where(CHANNEL.SHARE.eq(share)).and(CHANNEL.DEL_FLAG.eq((byte)0)).fetchAny();
 	}
-	
+
 	/**
 	 * 渠道统计
 	 * @param share
@@ -339,13 +338,13 @@ public class ChannelService extends ShopBaseService {
 		ChannelRecord channelRecord = db().selectFrom(CHANNEL).where(CHANNEL.SHARE.eq(share)).fetchAny();
 		Result<ChannelRecordRecord> records = db().selectFrom(CHANNEL_RECORD)
 				.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
-						.and(dateFormat(CHANNEL_RECORD.CREATE_TIME, DateUtil.DATE_MYSQL_SIMPLE).eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE))))
+						.and(dateFormat(CHANNEL_RECORD.CREATE_TIME, DateUtils.DATE_MYSQL_SIMPLE).eq(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE))))
 				.fetch();
 		if(records.size()>0) {
 			db().update(CHANNEL_RECORD).set(CHANNEL_RECORD.COUNT, records.size() + 1)
 					.where(CHANNEL_RECORD.USER_ID.eq(userId).and(CHANNEL_RECORD.CHANNEL_ID.eq(channelRecord.getId()))
-							.and(dateFormat(CHANNEL_RECORD.CREATE_TIME, DateUtil.DATE_MYSQL_SIMPLE)
-									.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)))
+							.and(dateFormat(CHANNEL_RECORD.CREATE_TIME, DateUtils.DATE_MYSQL_SIMPLE)
+									.eq(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE)))
 							.and(CHANNEL_RECORD.TYPE.eq((byte) 0)))
 					.execute();
 		}else {
@@ -358,7 +357,7 @@ public class ChannelService extends ShopBaseService {
 				int insert = newRecord.insert();
 				logger().info("插入结果：{}",insert);
 			}
-			
+
 		}
 	}
 }

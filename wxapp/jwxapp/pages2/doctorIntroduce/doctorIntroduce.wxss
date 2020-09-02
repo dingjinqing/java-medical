@@ -1,0 +1,266 @@
+@import "/css/iconfont.wxss";
+
+page {
+  background: #fff;
+}
+
+.container {
+  background: #fff;
+  padding-bottom: 180rpx;
+}
+
+.doctor_content {
+  padding: 20rpx;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(38, 196, 188, 0.3), rgba(38, 196, 188, 1));
+}
+
+.doctor_content>view {
+  box-shadow: 0rpx 6rpx 10rpx 0rpx rgba(238, 238, 238, 0.3);
+  border-radius: 16rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.doctor_content>view>image {
+  height: 100%;
+  position: absolute;
+  width: 300rpx;
+  right: 0;
+  top: 0;
+}
+
+.doctor_item {
+  background: #fff;
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+}
+
+.doctor_item .d_left image {
+  height: 120rpx;
+  width: 120rpx;
+  border-radius: 50%;
+}
+
+.doctor_item .d_right {
+  margin-left: 20rpx;
+  color: #333;
+  width: 80%;
+  position: relative;
+}
+
+.doctor_item .d_right .d_r_top text:first-of-type {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-right: 20rpx;
+}
+
+.doctor_item .d_right .d_r_m_t {
+  font-weight: 400;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.doctor_item .d_right .d_r_m_b view {
+  color: #999;
+  font-weight: 400;
+}
+
+.doctor_item .d_right .d_r_bot view {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #FF9F15;
+}
+
+.doctor_item .d_right .d_r_bot text {
+  font-weight: 400;
+  font-size: 26rpx;
+}
+
+.d_r_m_t,
+.d_r_m_b {
+  margin: 10rpx 0;
+}
+
+.focus {
+  width: 120rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #26C4BC;
+  border: 2rpx solid #26C4BC;
+  border-radius: 30rpx !important;
+  position: absolute;
+  right: 0;
+  top: -2rpx;
+  z-index: 9;
+  background: #fff;
+}
+
+.have_focus {
+  color: #999;
+  border: 2rpx solid #ccc;
+}
+
+
+
+.bot_footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 110rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20rpx 0;
+}
+
+.bot_footer .to_chat {
+  width: 700rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  color: #fff;
+  background: #26C4BC;
+  border-radius: 40rpx;
+  margin-bottom: 10rpx;
+}
+
+.star {
+  font-size: 26rpx;
+  color: #FF9F15;
+  margin-right: 10rpx;
+}
+
+.no_choose {
+  color: #E5E5E5;
+}
+
+.mid_con {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  min-height: 600rpx;
+  position: relative;
+}
+
+label {
+  position: absolute;
+  left: 10rpx;
+  bottom: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.radio {
+  transform: scale(0.7);
+}
+
+.doctor_introduce {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #fff;
+  padding-bottom: 30rpx;
+  height: 120rpx;
+}
+
+.doctor_introduce>view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+}
+
+.doctor_introduce>view>view:first-of-type {
+  color: #333;
+  font-size: 32rpx;
+  margin-bottom: 10rpx;
+  font-weight: bold;
+}
+
+.doctor_introduce>view>view:last-of-type {
+  color: #333;
+}
+
+.comment_title {
+  color: #333;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.comment_item {
+  padding: 30rpx 0;
+  border-bottom: 2rpx solid #eee;
+
+}
+
+.c_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.c_t_name {
+  color: #333;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+.c_mid{
+  position: relative;
+}
+.expand{
+  position: absolute;
+  right: 10rpx;
+  bottom: 4rpx;
+  font-weight: 600;
+}
+.no_chat{
+  background: #CBCBCB !important;
+  margin-bottom: 0rpx;
+}
+
+.c_m_text {
+  color: #333;
+  font-size: 28rpx;
+  margin-bottom: 10rpx;
+}
+
+.c_bot text {
+  color: #999;
+}
+
+.tell_patient {
+  color: #999;
+}
+
+.is-null{	
+  display: flex;	
+  flex-direction: column;	
+  align-items: center;	
+  position: absolute;	
+  top: 50%;	
+  left: 50%;	
+  transform: translate(-50%,-50%);	
+}	
+
+.is-null text{	
+  color: #999;	
+  position: absolute;
+bottom: 10px;
+
+}
+.is-null image{
+  width: 700rpx;
+  height: 400rpx;
+}

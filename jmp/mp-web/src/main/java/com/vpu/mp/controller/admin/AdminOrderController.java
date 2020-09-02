@@ -1,11 +1,11 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
@@ -15,15 +15,18 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionAuditParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.verify.VerifyParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +39,7 @@ import java.util.List;
 
 /**
  * 	订单模块
- * 
+ *
  * @author 常乐,王帅 2019年6月27日
  */
 @RestController
@@ -45,7 +48,7 @@ public class AdminOrderController extends AdminBaseController {
 
 	/**
 	 * 	订单综合查询（不包括买单订单、虚拟商品订单）
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -62,7 +65,7 @@ public class AdminOrderController extends AdminBaseController {
 		PageResult<StoreOrderListInfoVo> result = shop().readOrder.getPageList(param);
 		return success(result);
 	}
-	
+
 	/**
 	 * 	买单订单详情查询
 	 */
@@ -74,7 +77,7 @@ public class AdminOrderController extends AdminBaseController {
 
 	/**
 	 * 	订单详情（不包括退款货、买单订单、虚拟商品订单）
-	 * 
+	 *
 	 * @param order
 	 * @return
 	 */
@@ -107,7 +110,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
-	
+
 	/**
 	 * 	订单标星切换
 	 */
@@ -116,7 +119,7 @@ public class AdminOrderController extends AdminBaseController {
 		shop().writeOrder.switchStar(param);
 		return success();
 	}
-	
+
 	/**
 	 * 	更新卖家备注
 	 */
@@ -124,7 +127,7 @@ public class AdminOrderController extends AdminBaseController {
 	public JsonResult sellerRemark(@RequestBody @Valid SellerRemarkParam param) {
 		return success(shop().writeOrder.sellerRemark(param));
 	}
-	
+
 	/**
 	 * 	发货_查询可发货商品
 	 */
@@ -137,7 +140,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
-	
+
 	/**
 	 * 	发货
 	 */
@@ -152,7 +155,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
-	
+
 	/**
 	 * 	退款、退货查询
 	 */
@@ -165,7 +168,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
 		}
 	}
-	
+
 	/**
 	 * 退款
 	 */
@@ -180,7 +183,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
-	
+
 	/**
 	 * 订单关闭
 	 */
@@ -195,12 +198,12 @@ public class AdminOrderController extends AdminBaseController {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
-	
+
 	/**
 	 * 订单核销
 	 */
 	@PostMapping("/verify")
-	public JsonResult verify(@RequestBody @Valid verifyParam param) {
+	public JsonResult verify(@RequestBody @Valid VerifyParam param) {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
@@ -210,7 +213,7 @@ public class AdminOrderController extends AdminBaseController {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
 	}
-	
+
 	/**
 	 * 订单完成
 	 */
@@ -259,7 +262,7 @@ public class AdminOrderController extends AdminBaseController {
     public void orderExport(@RequestBody @Valid OrderExportQueryParam param, HttpServletResponse response) {
         List<String> columns = shop().config.orderExportCfg.getOrderExportList();
         Workbook workbook =shop().readOrder.exportOrderList(param,columns,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook,fileName,response);
     }
 
@@ -292,6 +295,44 @@ public class AdminOrderController extends AdminBaseController {
     @PostMapping("/ship/batch/fail/download/{batchId}")
     public void downloadFailData(@PathVariable Integer batchId, HttpServletResponse response) {
         Workbook workbook = shop().readOrder.downloadFailData(batchId, getLang());
-        export2Excel(workbook, DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE), response);
+        export2Excel(workbook, DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE), response);
     }
+    //*******医药**********//
+	/**
+	 * 获取订单关联的处方
+	 * @return
+	 */
+	@PostMapping("/medical/prescription/get")
+	public JsonResult getPrescription(@RequestBody @Validated PrescriptionQueryParam param) throws MpException {
+		param.setIsMp(OrderConstant.IS_MP_ADMIN);
+		param.setAdminInfo(adminAuth.user());
+		try {
+			return success(shop().orderActionFactory.orderQuery(param));
+		} catch (MpException e) {
+			return result(e.getErrorCode(), e.getErrorResult(), e.getCodeParamWrapper());
+		}
+	}
+
+	/**
+	 * 续方/审核通过
+	 *  医师根据历史处方和药品开出新的处方
+	 * @return
+	 */
+	@PostMapping("/medical/prescription/continue")
+	public JsonResult continuePrescription(@RequestBody @Validated PrescriptionAuditParam param){
+
+
+		return success();
+	}
+
+	/**
+	 * 驳回处方
+	 *  医师根据历史处方和药品驳回订单中的商品
+	 * @return
+	 */
+	@PostMapping("medical/prescription/reject")
+	public JsonResult rejectPrescription(){
+		return success();
+	}
+
 }

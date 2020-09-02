@@ -1,0 +1,198 @@
+.tabs{
+  display: flex;
+  height: 90rpx;
+  align-items: center;
+  background-color: #fff;
+}
+.tabs > view{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.tabs > view > text{
+  font-size: 28rpx;
+  color: #333;
+  position: relative;
+}
+.tabs > view > text.active{
+  font-weight: 600;
+}
+.tabs > view > text.active::after{
+  content: '';
+  width: 80%;
+  height:6rpx;
+  border-radius: 3rpx;
+  background-color: #26C4BC;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -8rpx;
+}
+.tabs > view + view{
+  border-left: 2rpx solid #eee;
+}
+.card-item{
+  width: 702rpx;
+  margin: 24rpx auto 0;
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding:24rpx 0rpx 24rpx 24rpx;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.doctor-info{
+  display: flex;
+  padding-right: 24rpx;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.doctor-info > .doctor-desc > .doctor-name{
+  color: #333;
+  font-weight: 600;
+  font-size: 32rpx;
+  margin-right: 24rpx;
+}
+.doctor-info > .doctor-desc > .office{
+  color: #333;
+  margin-right: auto;
+}
+.doctor-info > .doctor-desc > .status{
+  line-height: 36rpx;
+  box-sizing: border-box;
+  padding: 4rpx 16rpx;
+  margin-right: auto;
+  border-radius: 4rpx;
+}
+.doctor-info > .doctor-desc > .status.ongoing{
+  background-color: #FFF2E0;
+  color: #FF9F15;
+}
+.doctor-info > .doctor-desc > .status.end{
+  background-color: #E4FBFA;
+  color: #26C4BC;
+}
+.doctor-info > .date{
+  color: #999;
+  margin-top: 20rpx;
+}
+.button-content{
+  padding: 0 24rpx;
+  display: flex;
+  justify-content: flex-end;
+  height: 100rpx;
+  align-items: center;
+  line-height: 60rpx;
+  text-align: center;
+}
+.button-content > text{
+  border-radius: 30rpx;
+  width: 150rpx;
+  box-sizing: border-box;
+  border: 2rpx solid #ccc;
+  color: #333;
+}
+.button-content > text.pass{
+  background-color: #26C4BC;
+  border-color: #26C4BC;
+  color: #fff;
+}
+.button-content > text.reject{
+  border-color: #ccc;
+}
+.is-null{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.is-null image{
+  width: 750rpx;
+  height: 448rpx;
+}
+.is-null text{
+  margin-top: -60rpx;
+  color: #999;
+}
+.modal_bg{
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.5);
+  width: 100%;
+  height: 100%;
+}
+.modal_content{
+  width: 640rpx;
+  position: fixed;
+  top: 450rpx;
+  left: 55rpx;
+  background: #fff;
+  border-radius: 16rpx;
+}
+.modal_title{
+  height: 100rpx;
+  width: 100%;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: bold;
+  line-height: 100rpx;
+  position: relative;
+}
+.modal_title image{
+  width: 36rpx;
+  height: 36rpx;
+  position: absolute;
+  top: 32rpx;
+  right: 40rpx;
+}
+.modal_info{
+  padding: 0 40rpx;
+}
+.modal_info textarea{
+  background: #f5f5f5;
+  padding: 20rpx;
+  width: 520rpx;
+}
+.modal_info .place{
+  color: #999;
+}
+.modal_fotter{
+  display: flex;
+  align-items: center;
+  margin-top: 25rpx;
+  border-top: 2rpx solid #eee;
+}
+.modal_fotter > view{
+  flex: 1;
+  text-align: center;
+  font-size: 32rpx;
+  line-height: 90rpx;
+}
+.modal_fotter > view:nth-child(2){
+  border-left: 2rpx solid #eee;
+}
+.btn_cancel{
+  color: #999;
+}
+.btn_ok{
+  color: #26C4BC;
+}
+.red_dot {
+  width: 36rpx;
+  height: 36rpx;
+  background: rgba(246, 73, 74, 1);
+  border-radius: 50%;
+  position: absolute;
+  top: -2rpx;
+  right: -6rpx;
+  text-align: center;
+  line-height: 36rpx;
+  font-size: 18rpx;
+  color: #fff;
+}

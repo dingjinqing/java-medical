@@ -195,16 +195,17 @@ export default {
             span: '分类管理'
           }
         ],
-        member_manage: [
+        member_statistics: [
+          // {
+          //   imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          //   imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
+          //   span: '会员统计'
+          // },
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
             imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
-            span: '会员统计'
-          },
-          {
-            imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
-            imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
-            span: '会员列表'
+            span: '会员列表',
+            routeName: 'member_list'
           }
         ],
         orderMain: [
@@ -219,6 +220,12 @@ export default {
             imgUrl_h: this.$imageHost + '/image/system/icon_left/order_admin_h.png',
             span: '订单列表',
             routeName: 'orderList'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/system/icon_left/order_admin.png',
+            imgUrl_h: this.$imageHost + '/image/system/icon_left/order_admin_h.png',
+            span: '咨询订单',
+            routeName: 'advisoryTotal'
           }
         ],
         setting: [

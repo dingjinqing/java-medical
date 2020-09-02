@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
@@ -13,7 +13,6 @@ import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
-import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 
 /**
  * 商品获取展示价格通用service
@@ -87,7 +84,7 @@ public class GoodsPriceService extends ShopBaseService {
         for(Map.Entry<Byte,List<Integer>> entry:param.entrySet()){
             Byte goodsType = entry.getKey();
             List<Integer> goodsIds = entry.getValue();
-            Timestamp now = DateUtil.getLocalDateTime();
+            Timestamp now = DateUtils.getLocalDateTime();
             if( goodsType.equals(BaseConstant.ACTIVITY_TYPE_GROUP_BUY) ){
                 Map<Integer,BigDecimal> resultMap =
                     groupBuyService.getGroupBuyProductByGoodsIds(goodsIds,now);

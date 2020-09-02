@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.market.coopen;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.CoopenActivityRecords;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenIssueListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenIssueListVo;
 import org.jooq.Record;

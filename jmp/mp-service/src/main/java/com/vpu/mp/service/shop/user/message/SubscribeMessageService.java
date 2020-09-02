@@ -1,9 +1,35 @@
 package com.vpu.mp.service.shop.user.message;
 
-import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
+import com.google.common.base.Objects;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.RuleKey;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubscribeMessageConfig;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessage;
+import com.vpu.mp.service.pojo.shop.market.message.maconfig.WxMaSubscribeMessageData;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
+import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
+import com.vpu.mp.service.shop.user.user.UserService;
+import com.vpu.mp.service.wechat.OpenPlatform;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult.WxOpenSubscribeTemplate;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,39 +38,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import com.google.common.base.Objects;
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.RegexUtil;
-import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
-import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
-import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
-import com.vpu.mp.service.shop.user.message.maConfig.RuleKey;
-import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
-import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
-import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessageData;
-import com.vpu.mp.service.shop.user.user.UserService;
-import com.vpu.mp.service.wechat.OpenPlatform;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult.WxOpenSubscribeTemplate;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
-
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 /**
  * 小程序订阅消息
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年12月4日 上午9:26:12
@@ -58,16 +56,21 @@ public class SubscribeMessageService extends ShopBaseService {
 	private static final byte FOUR = 4;
 	private static final byte FIVE = 5;
 
+	private static final String WX_UNSUBSCRIBE ="43101";
+
 	@Autowired
 	protected OpenPlatform open;
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	protected JedisManager jedis;
 
-	// 获取小程序的AppId
+    /**
+     * 获取小程序的AppId
+     * @return
+     */
 	private String getMaAppId() {
 		MpAuthShopRecord authShop = saas.shop.mp.getAuthShopByShopId(getShopId());
 		if (null == authShop) {
@@ -96,7 +99,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	/**
 	 * 获取所需的类目Id ,找第一个符合的
 	 * @return
-	 * @throws WxErrorException 
+	 * @throws WxErrorException
 	 */
 	public Integer getcategoryId() throws WxErrorException {
 		List<Integer> getcategoryList = getcategoryList();
@@ -118,12 +121,12 @@ public class SubscribeMessageService extends ShopBaseService {
 			}
 		}
 		return id;
-		
+
 	}
 
 	/**
 	 * 获取发送时候要的template_id
-	 * 
+	 *
 	 * @param user
 	 * @param templateNo
 	 * @return
@@ -178,7 +181,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			// TODO发送到公众号
 			return false;
 		}
-		
+
 		SubscribeMessageConfig config = SubscribeMessageConfig.getByTempleName(secondId, templateName);
 		if(config==null) {
 			logger().info("类目：{};下没有模板：{}",secondId,templateName);
@@ -203,9 +206,9 @@ public class SubscribeMessageService extends ShopBaseService {
 			logger().info("拼装报文失败，为空");
 			return false;
 		}
-		//进行要发送数据的格式校验 
+		//进行要发送数据的格式校验
 		verification(templateList, templateId, postData);
-		
+
 		logger().info("开始发送：{}",postData.toJson());
 		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(),postData);
 		boolean success = sendResult.isSuccess();
@@ -216,7 +219,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			return true;
 		}
 		// 用户拒绝接受消息，如果用户之前曾经订阅过，则表示用户取消了订阅关系
-		if (sendResult.getErrcode().equals("43101")) {
+		if (WX_UNSUBSCRIBE.equals(sendResult.getErrcode())) {
 			modifySubscribeStatus(templateIdRecord);
 			return false;
 		}
@@ -232,7 +235,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @param touser
 	 * @return
 	 */
-	
+
 	private WxMaSubscribeMessage assembleData(MaSubscribeData data,SubscribeMessageConfig config,String page,String templateId,String touser,Integer secondId) {
 		WxMaSubscribeMessage postData=new WxMaSubscribeMessage();
 		String content = config.getContent();
@@ -257,7 +260,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		postData.setTemplateId(templateId);
 		postData.setTouser(touser);
 		return postData;
-		
+
 	}
 
 	/**
@@ -281,7 +284,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return stringData;
 	}
-	
+
 	/**
 	 * 返回前端需要的TemplateId
 	 * @param data
@@ -291,7 +294,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	public TemplateVo[] getTemplateId(String[] data) throws WxErrorException {
 		//获取所有类目id
 		List<Integer> getcategoryList = getcategoryList();
-		SubscribeMessageConfig[] titleList=new SubscribeMessageConfig[data.length];
+		List<SubscribeMessageConfig> titleList =new ArrayList<>();
 		for (Integer category : getcategoryList) {
 			for (int i = 0; i < data.length; i++) {
 				SubscribeMessageConfig byTempleName = SubscribeMessageConfig.getByTempleName(category, data[i]);
@@ -299,43 +302,41 @@ public class SubscribeMessageService extends ShopBaseService {
 					logger().info("appid：" + getMaAppId() + "。数据：" + data[i] + "在类目" + category + "暂时未定义");
 				} else {
 					logger().info("添加的TempleName为：" + byTempleName.getTitle()+"。类目为"+category);
-					titleList[i]=byTempleName;
+					titleList.add(byTempleName);
 				}
 			}
 		}
-		logger().info("titleList大小为"+titleList.length);
-		logger().info(titleList.toString());
-		TemplateVo[] results=new TemplateVo[data.length];
+		logger().info("titleList大小为"+titleList.size());
+		logger().info(Util.toJson(titleList));
+		List<TemplateVo> results =new ArrayList<>();
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		jedis.getIncrSequence("subScribe", Integer.MAX_VALUE, 0);
 		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
 		if (data2.size() != 0) {
-			for (int i = 0; i < titleList.length; i++) {
+			for (SubscribeMessageConfig title : titleList) {
 				Boolean flag = false;
 				for (WxOpenSubscribeTemplate template : data2) {
-					boolean contains = template.getTitle().contains(titleList[i].getTitle());
-					if (contains) {
+					if (template.getTitle().contains(title.getTitle())) {
 						// 存在，直接赋值
 						flag = true;
-						logger().info("已经定义了模板："+titleList[i].getTitle());
-						results[i] = new TemplateVo(template.getPriTmplId(), titleList[i].getId(),titleList[i].getTempleName());
+						logger().info("已经定义了模板：" + title.getTitle());
+						results.add(new TemplateVo(template.getPriTmplId(), title.getId(), title.getTempleName()));
 					}
 				}
 				if (!flag) {
-					logger().info("没有定义模板："+titleList[i].getTitle());
-					results[i] = new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
+					logger().info("没有定义模板：" + title.getTitle());
+					results.add(new TemplateVo(addTemplate(title), title.getId(), title.getTempleName()));
 				}
 			}
-
 		}else {
-			for(int i=0;i<titleList.length;i++) {
-				logger().info("没有定义模板："+titleList[i].getTitle());
-				results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
-			}	
+			for (SubscribeMessageConfig title : titleList) {
+				logger().info("没有定义模板："+title.getTitle());
+				results.add(new TemplateVo(addTemplate(title), title.getId(),title.getTempleName()));
+			}
 		}
-		return results;
+		return results.toArray(new TemplateVo[0]);
 	}
-	
+
 
 	/**
 	 * 更新表中可用数量
@@ -364,14 +365,14 @@ public class SubscribeMessageService extends ShopBaseService {
 					insertRecord.setTemplateNo(String.valueOf(successConfig.getTid()));
 					insertRecord.setCanUseNum(1);
 					int insert = insertRecord.insert();
-					logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);		
+					logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);
 				}else {
 					record.setStatus((byte)1);
 					record.setCanUseNum(record.getCanUseNum()==null?1:record.getCanUseNum()+1);
 					int update = record.update();
-					logger().info("成功的templateId："+success.getTemplateId()+"更新结果"+update);				
+					logger().info("成功的templateId："+success.getTemplateId()+"更新结果"+update);
 				}
-			}			
+			}
 		}
 		if(rejects!=null) {
 			logger().info("进入rejects的");
@@ -391,14 +392,14 @@ public class SubscribeMessageService extends ShopBaseService {
 							rejrecord.setCanUseNum(canUseNum);
 							if(canUseNum==0) {
 								logger().info("可用次数为0，状态变更为取消");
-								rejrecord.setStatus((byte)0);								
+								rejrecord.setStatus((byte)0);
 							}
 						}
 					}
 					int update = rejrecord.update();
-					logger().info("拒绝的templateId："+reject.getTemplateId()+"更新结果"+update);	
+					logger().info("拒绝的templateId："+reject.getTemplateId()+"更新结果"+update);
 				}
-			}			
+			}
 		}
 		if(bans!=null) {
 			logger().info("进入bans的");
@@ -412,9 +413,9 @@ public class SubscribeMessageService extends ShopBaseService {
 				if(rejrecord!=null) {
 					rejrecord.setStatus((byte)2);
 					int update = rejrecord.update();
-					logger().info("已被后台封禁的templateId："+ban.getTemplateId()+"更新结果"+update);	
+					logger().info("已被后台封禁的templateId："+ban.getTemplateId()+"更新结果"+update);
 				}
-			}			
+			}
 		}
 	}
 	/**
@@ -442,14 +443,14 @@ public class SubscribeMessageService extends ShopBaseService {
 				String.valueOf(config.getTid()), config.getKidList(), config.getTitle());
 		logger().info("创建模板" + config.getTitle()+"。结果："+addTemplate.getErrmsg() + "  " + addTemplate.getErrcode());
 		if (addTemplate.isSuccess()) {
-			
+
 			return addTemplate.getPriTmplId();
 		}
 		return null;
 	}
 	/**
 	 * 当前帐号下的个人模板列表中是否有要用的templateId，有：true；没有false
-	 * 
+	 *
 	 * @param templateId
 	 * @return
 	 * @throws WxErrorException
@@ -479,7 +480,7 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	/**
 	 * 减少用户的订阅数
-	 * 
+	 *
 	 * @param templateIdRecord
 	 */
 	public void decrementSubscribeNum(SubscribeMessageRecord templateIdRecord) {
@@ -494,7 +495,7 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	/**
 	 * 增加用户的发送成功数
-	 * 
+	 *
 	 * @param templateIdRecord
 	 */
 	public void incrementSubscribeNum(SubscribeMessageRecord templateIdRecord) {
@@ -505,7 +506,7 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	/**
 	 * 更新消息订阅状态
-	 * 
+	 *
 	 * @param templateIdRecord
 	 */
 	public void modifySubscribeStatus(SubscribeMessageRecord templateIdRecord) {
@@ -513,7 +514,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		int update = templateIdRecord.update();
 		logger().info(" 更新消息订阅状态"+update);
 	}
-	
+
 	/**
 	 * 是否可用发送
 	 * @param userId
@@ -530,10 +531,10 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * 对数据的格式进行校验并修改
-	 * @param templateList
+	 * @param templateLists
 	 * @param templateId
 	 * @param postData
 	 */
@@ -556,7 +557,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		thingRule(postData.getData(),list);
 		logger().info("出格式校验");
 	}
-	
+
 	/**
 	 * 对数据切割，目前没啥用
 	 * @param content
@@ -584,14 +585,14 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return list;
 	}
-	
+
 	public void ruleCheck(List<String> ruleKeys,List<WxMaSubscribeMessageData> data) {
 		for (int i = 0; i < ruleKeys.size(); i++) {
-			
+
 		}
-		
+
 	}
-	
+
 	private void thingRule(List<WxMaSubscribeMessageData> data,List<String> contentList) {
 		for (int i = 0; i < data.size(); i++) {
 			String name = data.get(i).getName();
@@ -639,88 +640,112 @@ public class SubscribeMessageService extends ShopBaseService {
 			}
 			break;
 		case RuleKey.TIME:
-			boolean specialDate = specialDate(value, DateUtil.DATE_FORMAT_FULL);
+			boolean specialDate = specialDate(value, DateUtils.DATE_FORMAT_FULL);
 			if(!specialDate) {
 				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.DATE:
-			boolean specialDate1 = specialDate(value, DateUtil.DATE_FORMAT_FULL);
-			boolean specialDate2 = specialDate(value, DateUtil.DATE_FORMAT_SIMPLE);
+			boolean specialDate1 = specialDate(value, DateUtils.DATE_FORMAT_FULL);
+			boolean specialDate2 = specialDate(value, DateUtils.DATE_FORMAT_SIMPLE);
 			if(!specialDate1&&!specialDate2) {
 				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.AMOUNT:
-			int yuan = value.indexOf("元");
-			if(yuan>0) {
-				value = subLimit(name,value,yuan);
-				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
-					value = toReturnAnLog(name, value,targValue);
-				}
-			}else {
-				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
-					value = toReturnAnLog(name, value,targValue);
-				}
-			}
-			break;
+            value = checkAmount(name, value, targValue);
+            break;
 		case RuleKey.PHONE_NUMBER:
-			value = subLimit(name,value,17);
-			if (Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
-				//包含中文
-				value = toReturnAnLog(name, value,targValue);
-			}
-			if (Pattern.matches(RuleKey.HAVEENGILSH_PATTERN, value)) {
-				//包含英文
-				value = toReturnAnLog(name, value,targValue);
-			}
-			break;
+            value = checkPhoneNumber(name, value, targValue);
+            break;
 		case RuleKey.CAR_NUMBER:
 			if (!Pattern.matches(RuleKey.CAR_NUMBER_PATTERN, value)) {
 				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.NAME:
-			if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
-				//有数字
-				value="店铺活动";
-				if(content.equals("活动名称")) {
-					value = toReturnAnLog(name, value,"店铺活动");
-				}
-				if(content.equals("奖品名称")) {
-					value = toReturnAnLog(name, value,"店铺奖品");
-				}
-				logger().info("最后：{}",value);
-				break;
-			}
-			if (!Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
-				//不包含中文
-				value = subLimit(name,value,20);
-			}else {
-				value = subLimit(name,value,10);
-			}
-			break;
+            value = checkName(name, value, content);
+            break;
 		case RuleKey.PHRASE:
-			if (!Pattern.matches(RuleKey.PHRASE_PATTERN, value)) {
-				//包含非中文
-				logger().info("类型：{}，校验不通过，原来值：{}",name,value);
-				StringBuilder builder=new StringBuilder();
-				for (int i = 0; i < value.length(); i++) {
-					if(isChineseChar(value.charAt(i))) {
-						builder.append(value.charAt(i));
-					}
-				}
-				value=builder.toString();
-				logger().info("类型：{}，校验不通过，新值：{}",name,value);
-			}
-			break;
+            value = checkPhrase(name, value);
+            break;
 		default:
 			break;
 		}
 		return value;
 	}
 
-	/**
+    private String checkAmount(String name, String value, String targValue) {
+        int yuan = value.indexOf("元");
+        if(yuan>0) {
+            value = subLimit(name,value,yuan);
+            if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
+                value = toReturnAnLog(name, value,targValue);
+            }
+        }else {
+            if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
+                value = toReturnAnLog(name, value,targValue);
+            }
+        }
+        return value;
+    }
+
+    private String checkPhoneNumber(String name, String value, String targValue) {
+        value = subLimit(name,value,17);
+        if (Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
+            //包含中文
+            value = toReturnAnLog(name, value,targValue);
+        }
+        if (Pattern.matches(RuleKey.HAVEENGILSH_PATTERN, value)) {
+            //包含英文
+            value = toReturnAnLog(name, value,targValue);
+        }
+        return value;
+    }
+
+    private String checkPhrase(String name, String value) {
+        if (!Pattern.matches(RuleKey.PHRASE_PATTERN, value)) {
+            //包含非中文
+            logger().info("类型：{}，校验不通过，原来值：{}",name,value);
+            StringBuilder builder=new StringBuilder();
+            for (int i = 0; i < value.length(); i++) {
+                if(isChineseChar(value.charAt(i))) {
+                    builder.append(value.charAt(i));
+                }
+            }
+            value=builder.toString();
+            logger().info("类型：{}，校验不通过，新值：{}",name,value);
+        }
+        return value;
+    }
+
+    private static final String SHOP_ACTIVITY  ="店铺活动";
+    private static final String SHOP_ACTIVITY_NAME  ="活动名称";
+    private static final String SHOP_ACTIVITY_PRIZE  ="店铺奖品";
+    private static final String SHOP_ACTIVITY_PRIZE_NAME  ="店铺奖品";
+    private String checkName(String name, String value, String content) {
+        if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
+            //有数字
+            value=SHOP_ACTIVITY;
+            if(SHOP_ACTIVITY_NAME.equals(content)) {
+                value = toReturnAnLog(name, value,SHOP_ACTIVITY);
+            }
+            if(SHOP_ACTIVITY_PRIZE_NAME.equals(content)) {
+                value = toReturnAnLog(name, value,SHOP_ACTIVITY_PRIZE);
+            }
+            logger().info("最后：{}",value);
+            return value;
+        }
+        if (!Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
+            //不包含中文
+            value = subLimit(name,value,20);
+        }else {
+            value = subLimit(name,value,10);
+        }
+        return value;
+    }
+
+    /**
 	 * 类型校验不通过的log
 	 * @param name       thing之类
 	 * @param value      原来的值
@@ -733,7 +758,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		logger().info("类型：{}，校验不通过，新值：{}",name,value);
 		return value;
 	}
-	
+
 	/**
 	 * 对末尾的数字类型进行处理
 	 * @param name
@@ -749,7 +774,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return name;
 	}
-	
+
 	/**
 	 * 长度的截取
 	 * @param value
@@ -764,7 +789,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * 对时间样式的校验
 	 * @param value
@@ -780,9 +805,9 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param value
 	 * @param flag  true:返回为去掉特殊符号的值；false：返回值为特殊符号的值
 	 * @return
@@ -793,7 +818,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			if(flag) {
 				if(RuleKey.SYMBOL_CHARACTERSTR.indexOf(value.charAt(i))<0) {
 					builder.append(value.charAt(i));
-				}				
+				}
 			}else {
 				if(RuleKey.SYMBOL_CHARACTERSTR.indexOf(value.charAt(i))>=0) {
 					builder.append(value.charAt(i));
@@ -803,7 +828,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		value=builder.toString();
 		return value;
 	}
-	
+
     public boolean isChineseChar(char c) {
         try {
             return String.valueOf(c).getBytes("UTF-8").length > 1;

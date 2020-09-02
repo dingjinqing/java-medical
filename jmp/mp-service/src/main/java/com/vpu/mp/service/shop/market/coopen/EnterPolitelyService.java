@@ -1,18 +1,18 @@
 package com.vpu.mp.service.shop.market.coopen;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.CoopenActivity;
 import com.vpu.mp.db.shop.tables.CoopenActivityRecords;
 import com.vpu.mp.db.shop.tables.records.CoopenActivityRecord;
 import com.vpu.mp.db.shop.tables.records.CoopenActivityRecordsRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -131,12 +131,14 @@ public class EnterPolitelyService extends ShopBaseService {
             logger().info("缓存key【{}】已失效！", cacheKey);
             // 用户是否已领取/奖品是否已发放完
             CoopenActivityRecordsRecord receiveRecord = getReceiveRecords(userId, activityId);
-            if (Objects.nonNull(receiveRecord) || activityReceiveNum(activityId) >= record.getAwardNum()) {
+            boolean stockFlag = record.getAwardNum() >0 && activityReceiveNum(activityId) >= record.getAwardNum();
+            if (Objects.nonNull(receiveRecord) || stockFlag) {
                 logger().debug("用户已领取/奖品已发放完");
                 return noAward;
             }
             // 不满足新用户直接返回
-            if (BYTE_ONE.equals(record.getAction()) && (Timestamp.valueOf(LocalDateTime.now()).getTime() - userRecord.getCreateTime().getTime() >= 600)) {
+            int newUserCreateTimeExpire = 600;
+            if (BYTE_ONE.equals(record.getAction()) && (Timestamp.valueOf(LocalDateTime.now()).getTime() - userRecord.getCreateTime().getTime() >= newUserCreateTimeExpire)) {
                 logger().debug("不满足新用户");
                 return noAward;
             }
@@ -200,28 +202,9 @@ public class EnterPolitelyService extends ShopBaseService {
             case 1:
                 logger().info("优惠卷");
             case 6:
-                logger().info("分裂优惠卷");
-                String[] couponArray = awardContent.split(",");
-                List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringList2IntList(Arrays.asList(couponArray)));
-                CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
-                couponGive.setUserIds(Collections.singletonList(userId));
-                couponGive.setCouponArray(couponArray);
-                couponGive.setActId(activityId);
-                couponGive.setAccessMode(BYTE_ZERO);
-                couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
-                // 发送优惠卷
-                CouponGiveQueueBo sendData = couponGiveService.handlerCouponGive(couponGive);
-                // 一张都没发成功
-                if (sendData.getSuccessSize().compareTo(INTEGER_ZERO) <= INTEGER_ZERO) {
-                    logger().debug("优惠券发送全部失败");
+                if (!awardCouponGive(awardContent, userId, activityId, bo, award, record)) {
                     return noAward;
                 }
-                award.setExtContent(new HashMap<String, String>(INTEGER_TWO) {{
-                    put("title", bo.getTitle());
-                    put("coupon_detail", Util.toJson(couponViews));
-                    put("bg_img", StringUtils.isBlank(bo.getBgImg()) ? imageUrl(DEFAULT_COUPON_BG_IMG) : bo.getBgImg());
-                }});
-                record.setMrkingVoucherId(awardContent);
                 break;
             case 2:
                 logger().info("幸运大抽奖");
@@ -274,9 +257,9 @@ public class EnterPolitelyService extends ShopBaseService {
                 break;
             case 3:
                 logger().info("自定义");
-                String imgPath = this.imageUrl(bo.getCustomizeImgPath());
+//                String imgPath = this.imageUrl(bo.getCustomizeImgPath());
                 award.setExtContent(new HashMap<String, String>(INTEGER_ONE) {{
-                    put("customize_img_path", imgPath);
+                    put("customize_img_path", bo.getCustomizeImgPath());
                 }});
                 break;
             default:
@@ -284,6 +267,43 @@ public class EnterPolitelyService extends ShopBaseService {
         }
         db().executeInsert(record);
         return award;
+    }
+
+    /**
+     * 发放分裂优惠券
+     *
+     * @param awardContent
+     * @param userId
+     * @param activityId
+     * @param bo
+     * @param award
+     * @param record
+     * @return
+     */
+    private boolean awardCouponGive(String awardContent, int userId, int activityId, ExtBo bo, AwardVo award, CoopenActivityRecordsRecord record) {
+        logger().info("分裂优惠卷");
+        String[] couponArray = awardContent.split(",");
+        List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringList2IntList(Arrays.asList(couponArray)));
+        CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
+        couponGive.setUserIds(Collections.singletonList(userId));
+        couponGive.setCouponArray(couponArray);
+        couponGive.setActId(activityId);
+        couponGive.setAccessMode(BYTE_ZERO);
+        couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
+        // 发送优惠卷
+        CouponGiveQueueBo sendData = couponGiveService.handlerCouponGive(couponGive);
+        // 一张都没发成功
+        if (sendData.getSuccessSize().compareTo(INTEGER_ZERO) <= INTEGER_ZERO) {
+            logger().debug("优惠券发送全部失败");
+            return false;
+        }
+        award.setExtContent(new HashMap<String, String>(INTEGER_TWO) {{
+            put("title", bo.getTitle());
+            put("coupon_detail", Util.toJson(couponViews));
+            put("bg_img", StringUtils.isBlank(bo.getBgImg()) ? imageUrl(DEFAULT_COUPON_BG_IMG) : bo.getBgImg());
+        }});
+        record.setMrkingVoucherId(awardContent);
+        return true;
     }
 
     /**

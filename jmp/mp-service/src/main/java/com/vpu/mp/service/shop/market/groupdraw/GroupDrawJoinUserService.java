@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.invite.InvitedUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.invite.InvitedUserListVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.join.JoinUserListParam;

@@ -29,7 +29,8 @@ public class ShopMallBaseService extends ShopBaseService{
 			log.info("wx_shopping_list_enbaled是空的");
 			return null;
 		} else {
-			if (cfg.equals("0")) {
+            String disabledWxShoppingList = "0";
+            if (cfg.equals(disabledWxShoppingList)) {
 				log.info("wx_shopping_list_enbaled为0");
 				return null;
 			}
@@ -60,7 +61,8 @@ public class ShopMallBaseService extends ShopBaseService{
 			log.info("wx_shopping_list_enbaled是空的");
 			return false;
 		} else {
-			if (cfg.equals("0")) {
+            String disabledWxShoppingList = "0";
+            if (cfg.equals(disabledWxShoppingList)) {
 				log.info("wx_shopping_list_enbaled为0");
 				return false;
 			}

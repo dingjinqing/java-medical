@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
@@ -182,12 +182,12 @@ public class DistributorCheckService extends ShopBaseService{
     /**
      * 设置审核更新数据
      * @param userId 申请人id
-     * @param GroupId 分组id
+     * @param groupId 分组id
      */
-    private void updateApplyGroup(Integer userId,Integer GroupId){
+    private void updateApplyGroup(Integer userId,Integer groupId){
         db().update(USER)
             .set(USER.IS_DISTRIBUTOR, (byte)1)
-            .set(USER.INVITE_GROUP,GroupId)
+            .set(USER.INVITE_GROUP,groupId)
             .where(USER.USER_ID.eq(userId))
             .execute();
     }

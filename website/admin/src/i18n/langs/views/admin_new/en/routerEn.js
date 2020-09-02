@@ -32,6 +32,8 @@ export const en = {
   analysis_portrait: ['Overview', 'User portrait'],
   // 概况 实时概况
   situation: ['Overview', 'Real Time Profile'],
+  // 概况 销售报表
+  sales_report: ['Overview', 'Sales Report'],
   // 会员管理 会员卡
   userCard: ['Membership', 'Normal Card'],
   // 会员管理 限次
@@ -528,6 +530,8 @@ export const en = {
   manualRefund: ['Order management', 'Manual return refund'],
   // 订单管理 批量发货
   bulk_shipment: ['Order Management', 'Bulk Delivery'],
+  // 订单管理 咨询订单
+  advisory_order: ['Order Management', 'Advisory Order'],
 
   // 门店管理 门店列表
   store_list: ['Store management', 'Stores list'],

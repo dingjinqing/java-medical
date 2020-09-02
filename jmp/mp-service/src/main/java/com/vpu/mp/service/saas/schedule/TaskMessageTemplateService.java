@@ -8,9 +8,9 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 
 /**
@@ -29,7 +29,7 @@ public class TaskMessageTemplateService extends MainBaseService {
             .from(TASK_JOB_MAIN)
             .leftJoin(TASK_JOB_CONTENT).on(TASK_JOB_MAIN.CONTENT_ID.eq(TASK_JOB_CONTENT.ID))
             .where(TASK_JOB_MAIN.EXECUTION_TYPE.eq(executionType))
-            .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessThan(DateUtil.getLocalDateTime()))
+            .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessThan(DateUtils.getLocalDateTime()))
             .fetch();
     }
     public void sendMessage(Result<Record2<String,Integer>> result, TaskJobsConstant.TaskJobEnum job){

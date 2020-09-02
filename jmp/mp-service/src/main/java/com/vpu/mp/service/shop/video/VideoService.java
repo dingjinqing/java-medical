@@ -2,16 +2,16 @@ package com.vpu.mp.service.shop.video;
 
 import com.UpYun;
 import com.upyun.UpException;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.UploadedVideoRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.video.UpyunSynVideo;
 import com.vpu.mp.service.foundation.video.UpyunSynVideo.AvMeta;
 import com.vpu.mp.service.foundation.video.UpyunSynVideo.Stream;
@@ -36,6 +36,9 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.tables.UploadedVideo.UPLOADED_VIDEO;
 import static com.vpu.mp.db.shop.tables.UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class VideoService extends ShopBaseService {
 
@@ -159,7 +162,7 @@ public class VideoService extends ShopBaseService {
         String videoPath =
             String.format(
                 "/video/%s/%s%s",
-                DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT), Util.randomId(), ext);
+                DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT), Util.randomId(), ext);
         this.uploadToUpYunBySteam(videoPath, inStream);
         UpyunSynVideo synVideo = getUpyunSynVideo();
         AvMeta avMeta = synVideo.avMeta(videoPath);
@@ -167,7 +170,7 @@ public class VideoService extends ShopBaseService {
         String snapshot =
             String.format(
                 "/snapshot/%s/%s.jpg",
-                DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT), Util.randomId());
+                DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT), Util.randomId());
         synVideo.snapshot(videoPath, snapshot, "00:00:00");
 
         return this.insertVideoRecord(
@@ -225,7 +228,7 @@ public class VideoService extends ShopBaseService {
     public int removeRow(Integer videoId) {
         return db().update(UPLOADED_VIDEO)
             .set(UPLOADED_VIDEO.DEL_FLAG, (byte) 1)
-            .set(UPLOADED_VIDEO.DEL_TIME, DateUtil.getLocalDateTime())
+            .set(UPLOADED_VIDEO.DEL_TIME, DateUtils.getLocalDateTime())
             .where(UPLOADED_VIDEO.VIDEO_ID.eq(videoId))
             .execute();
     }
@@ -239,7 +242,7 @@ public class VideoService extends ShopBaseService {
     public int removeRows(Integer[] videoIds) {
         return db().update(UPLOADED_VIDEO)
             .set(UPLOADED_VIDEO.DEL_FLAG, (byte) 1)
-            .set(UPLOADED_VIDEO.DEL_TIME, DateUtil.getLocalDateTime())
+            .set(UPLOADED_VIDEO.DEL_TIME, DateUtils.getLocalDateTime())
             .where(UPLOADED_VIDEO.VIDEO_ID.in(videoIds))
             .execute();
     }
@@ -366,10 +369,10 @@ public class VideoService extends ShopBaseService {
     public int deleteOvertimeVideo() {
         return db().update(UPLOADED_VIDEO)
             .set(UPLOADED_VIDEO.DEL_FLAG, (byte) 1)
-            .set(UPLOADED_VIDEO.DEL_TIME, DateUtil.getLocalDateTime())
+            .set(UPLOADED_VIDEO.DEL_TIME, DateUtils.getLocalDateTime())
             .where(UPLOADED_VIDEO.DEL_FLAG.eq((byte) 0))
             .and(UPLOADED_VIDEO.VIDEO_CAT_ID.eq(-1))
-            .and(UPLOADED_VIDEO.UPDATE_TIME.lt(DateUtil.getDalyedDateTime(-24 * 3600 * 7)))
+            .and(UPLOADED_VIDEO.UPDATE_TIME.lt(DateUtils.getDalyedDateTime(-24 * 3600 * 7)))
             .execute();
     }
 
@@ -387,7 +390,7 @@ public class VideoService extends ShopBaseService {
                     .and(UPLOADED_VIDEO.UPYUN_DEL.eq((byte) 0))
                     .and(
                         UPLOADED_VIDEO.UPDATE_TIME.lt(
-                            DateUtil.getDalyedDateTime(-24 * 3600 * 30))));
+                            DateUtils.getDalyedDateTime(-24 * 3600 * 30))));
         for (UploadedVideoRecord record : records) {
             try {
                 this.deleteYpYunVideo(record.getVideoPath());

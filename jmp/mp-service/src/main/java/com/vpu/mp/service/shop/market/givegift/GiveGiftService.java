@@ -5,7 +5,6 @@ import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_ACTIVITY;
 import java.sql.Timestamp;
 
 import org.jooq.Record;
-import org.jooq.Record4;
 import org.jooq.Record5;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -13,13 +12,13 @@ import org.jooq.SelectSeekStep1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GiveGiftActivityRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftParam;
@@ -214,7 +213,7 @@ public class GiveGiftService extends ShopBaseService {
         });
         return giftReceiveList;
     }
-    
+
     /**
      * 营销日历用id查询活动
      * @param id
@@ -226,7 +225,7 @@ public class GiveGiftService extends ShopBaseService {
 						GIVE_GIFT_ACTIVITY.END_TIME, GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.as(CalendarAction.ISPERMANENT))
 				.from(GIVE_GIFT_ACTIVITY).where(GIVE_GIFT_ACTIVITY.ID.eq(id)).fetchAnyInto(MarketVo.class);
 	}
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -239,7 +238,7 @@ public class GiveGiftService extends ShopBaseService {
 				.from(GIVE_GIFT_ACTIVITY)
 				.where(GIVE_GIFT_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(GIVE_GIFT_ACTIVITY.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)
-								.and(GIVE_GIFT_ACTIVITY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+								.and(GIVE_GIFT_ACTIVITY.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(GIVE_GIFT_ACTIVITY.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

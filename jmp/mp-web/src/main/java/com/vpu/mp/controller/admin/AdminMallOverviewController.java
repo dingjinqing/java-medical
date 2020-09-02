@@ -1,9 +1,9 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/15
  * 商城概览
  */

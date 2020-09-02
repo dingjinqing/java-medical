@@ -1,10 +1,10 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
 import com.vpu.mp.service.pojo.shop.overview.commodity.*;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -21,7 +21,7 @@ import static com.vpu.mp.service.pojo.shop.order.OrderExportVo.LANGUAGE_TYPE_EXC
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
- * author liufei
+ * @author liufei
  * date 2019/7/19
  * 概览-商品统计
  */
@@ -55,7 +55,7 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
      */
     private void formatDate(ProductOverviewParam param) {
         param.setStartTime(Timestamp.valueOf(LocalDate.now().minusDays(param.getDynamicDate()).atStartOfDay()));
-        param.setEndTime(DateUtil.getLocalDateTime());
+        param.setEndTime(DateUtils.getLocalDateTime());
         logger().info("统计开始时间：{}",param.getStartTime());
         logger().info("统计结束时间：{}",param.getEndTime());
     }

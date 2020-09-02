@@ -1,26 +1,34 @@
-<view class="product-container person_reconmmend" style='{{m.goods_module_style == 1 ? "width:750rpx;margin-top:18rpx;" : ""}}'>
- <block wx:if='{{m.goods_module_title == 1}}'>
+<view class="product-container person_reconmmend {{m.topHasRadius ? 'top-has-radius' : ''}} {{m.topIsAdver ? 'top-is-adver' : ''}}" style='{{m.goods_module_style == 1 ? "width:750rpx;margin-top:18rpx;" : ""}}{{m.page_color ? "background-color:"+m.page_color+";":""}}'>
+ <block wx:if='{{m.goods_module_title == 1 && (m.recommend_type === 1 || (m.recommend_type === 0 && m.auto_recommend_type === 0))}}'>
 		<view class='module_names' style='{{m.tit_center == 1 ? "justify-content:center" : ""}}' data-url='{{m.title_link}}' bindtap='bindJumpLink' wx:if='{{m.img_url || m.title}}'>
 			<image class="image" src="{{m.img_url}}" wx:if="{{m.img_url}}" />
 			<text class="text">{{m.title}}</text>
 		</view>
 	</block>
-  <block wx:if='{{m.goods_module_title == 2}}'>
+  <block wx:if='{{m.goods_module_title == 2 && (m.recommend_type === 1 || (m.recommend_type === 0 && m.auto_recommend_type === 0))}}'>
 		<view class='module_names' style='{{m.tit_center == 1 ? "justify-content:center" : ""}}' data-url='{{m.title_link}}' bindtap='bindJumpLink' wx:if='{{m.img_url || m.title}}'>
 			<text>{{m.title}}</text>
 		</view>
 		<image src='{{m.img_title_url}}' wx:if='{{m.img_title_url}}' mode='widthFix' style='width:100%' data-url='{{m.title_link}}' bindtap='bindJumpLink'></image>
 	</block>
+  <view class="prescription-module-title" style="{{m.topHasRadius ? 'margin-top:0rpx;' : ''}}" wx:if="{{m.recommend_type === 0 && m.auto_recommend_type === 1}}" bindtap="viewRxSearch">
+    <image src="{{imageUrl}}image/wxapp/prescription-icon2.png"></image>
+    <text>我的处方药</text>
+    <text class="more">更多</text>
+  </view>
   <!-- 单列商品 -->
-  <v-single-colGoods wx:if="{{m.col_type =='4'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
+  <v-single-colGoods wx:if="{{m.col_type =='4' && m.goodsListData.length}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 双列商品 -->
-  <v-double-colGoods wx:if="{{m.col_type =='1'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
+  <v-double-colGoods wx:if="{{m.col_type =='1' && m.goodsListData.length}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 三列商品 -->
-  <v-three-commodities wx:if="{{m.col_type =='2'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
+  <v-three-commodities wx:if="{{m.col_type =='2' && m.goodsListData.length}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 多列商品 -->
-  <v-multiple-pommodities wx:if="{{m.col_type =='3'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
+  <v-multiple-pommodities wx:if="{{m.col_type =='3' && m.goodsListData.length}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 大图商品 -->
-  <v-big-pictureGoods wx:if="{{m.col_type =='0'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
+  <v-big-pictureGoods wx:if="{{m.col_type =='0' && m.goodsListData.length}}" bindaddCart="getAddCartGoods" module="{{module}}" />
+  <view class="no-content" wx:if="{{m.recommend_type === 0 && m.auto_recommend_type === 1 && !m.goodsListData.length}}">
+		暂无内容
+	</view>
 </view>
 <v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">
   <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>

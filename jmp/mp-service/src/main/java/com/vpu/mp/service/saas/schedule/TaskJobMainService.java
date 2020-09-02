@@ -1,14 +1,14 @@
 package com.vpu.mp.service.saas.schedule;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.MathUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.TaskJobContentRecord;
 import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.MathUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.BaseTaskJob;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
@@ -91,20 +91,24 @@ public class TaskJobMainService extends MainBaseService {
     }
 
     private String setTaskJobId(String jsonStr,String clzName,Integer jobId){
-            if( !jsonStr.contains("taskJobId")&& assertContainsTaskJobId(clzName) ){
+        String taskJobId = "taskJobId";
+        if( !jsonStr.contains(taskJobId)&& assertContainsTaskJobId(clzName) ){
                 String jobIdStr = "\"taskJobId\":"+jobId+",";
                 String resultString = jsonStr.replaceFirst("\\[\\{","[{"+jobIdStr);
-                if (!resultString.contains("taskJobId")) {
+                if (!resultString.contains(taskJobId)) {
 					resultString = resultString.replaceFirst("\\{", "{"+jobIdStr);
 				}
                 return  resultString;
-            }else if( jsonStr.contains("\"taskJobId\":null") ){
+            }else {
+            String taskJobNullKey = "\"taskJobId\":null";
+            if( jsonStr.contains(taskJobNullKey) ){
                 String jobIdStr = "\"taskJobId\":"+jobId;
-                return jsonStr.replaceFirst("\"taskJobId\":null",jobIdStr);
+                return jsonStr.replaceFirst(taskJobNullKey,jobIdStr);
             }
             else{
                 return jsonStr;
             }
+        }
     }
     private Boolean assertContainsTaskJobId(String clzName)  {
         try {
@@ -125,8 +129,8 @@ public class TaskJobMainService extends MainBaseService {
             .type(TaskJobsConstant.TYPE_ONCE)
             .content(param)
             .className(className)
-            .startTime(DateUtil.getLocalDateTime())
-            .endTime(DateUtil.getLocalDateTime())
+            .startTime(DateUtils.getLocalDateTime())
+            .endTime(DateUtils.getLocalDateTime())
             .executionType(Objects.requireNonNull(TaskJobsConstant.TaskJobEnum
                 .getTaskJobEnumByExecutionType(executionType)))
             .builder();
@@ -138,7 +142,8 @@ public class TaskJobMainService extends MainBaseService {
      */
     public  void  getAndSendMessage(){
         String uuid = Util.randomId();
-        if( jedisManager.addLock(JedisKeyConstant.TASK_JOB_LOCK,uuid,60*60*1000) ){
+        int timeOut = 60 * 60 * 1000;
+        if( jedisManager.addLock(JedisKeyConstant.TASK_JOB_LOCK,uuid, timeOut) ){
             db().transaction(configuration -> {
 
                 Result<Record4<Integer,String,String,Integer>> result = DSL.using(configuration)
@@ -147,7 +152,7 @@ public class TaskJobMainService extends MainBaseService {
                     .leftJoin(TASK_JOB_CONTENT).on(TASK_JOB_CONTENT.ID.eq(TASK_JOB_MAIN.CONTENT_ID))
                     .where(TASK_JOB_MAIN.STATUS.eq(TaskJobsConstant.STATUS_NEW))
                     .and(TASK_JOB_MAIN.TYPE.notEqual(TaskJobsConstant.TYPE_ONCE))
-                    .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtil.getLocalDateTime()))
+                    .and(TASK_JOB_MAIN.NEXT_EXECUTE_TIME.lessOrEqual(DateUtils.getLocalDateTime()))
                     .fetch();
                 List<Integer> jobIds = result.stream().map(x->x.get(TASK_JOB_CONTENT.ID)).collect(Collectors.toList());
                 result.forEach(r->{
@@ -207,7 +212,7 @@ public class TaskJobMainService extends MainBaseService {
             contentRecord.update();
             record.setProgress((byte)(MathUtil.deciMal(allSize-failSize,allSize)*100));
             if( record.getType().equals(TaskJobsConstant.TYPE_CYCLE_ONCE) ){
-                Timestamp next = DateUtil.getDalyedDateTime(record.getCycle());
+                Timestamp next = DateUtils.getDalyedDateTime(record.getCycle());
                 if( next.before(record.getEndTime()) ){
                     record.setNextExecuteTime(next);
                     record.setStatus(TaskJobsConstant.STATUS_EXECUTING);

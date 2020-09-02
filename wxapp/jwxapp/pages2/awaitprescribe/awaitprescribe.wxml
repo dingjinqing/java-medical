@@ -1,0 +1,134 @@
+<!--pages2/awaitprescribe/awaitprescribe.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <block wx:if='{{ page_info[0].length }}'>
+    <block wx:for-item="pageItem" wx:for='{{page_info}}' wx:key="key" wx:for-index="pageIndex" >
+      <view class="await_info" wx:for='{{pageItem}}' wx:key='key'>
+        <view class="await_title">
+          <view>提交时间：{{item.createTime}}</view>
+          <view class="await_status">待开方</view>
+        </view>
+        <view class="pre_info">
+          <view class="top_area top_area1">
+            <view class="patient_title">患者信息</view>
+            <view class="patient_info patient">
+              <view class="each_line">
+                <view class="line_dot"></view>
+                <view class="line_content has_three">
+                  <view>姓名：{{item.medicalHistory.patientName}}</view>
+                  <view>年龄：{{item.medicalHistory.age}}岁</view>
+                  <view>性别：{{item.medicalHistory.sex == 0 ? '男' : '女'}}</view>
+                </view>
+              </view>
+              <view class="each_line" wx:if='{{!!item.medicalHistory.diseaseHistory}}'>
+                <view class="line_dot"></view>
+                <view class="line_content">疾病史：{{item.medicalHistory.diseaseHistory}}</view>
+              </view>
+              <view class="each_line" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.familyDiseaseHistory}}'>
+                <view class="line_dot"></view>
+                <view class="line_content">家族病史：{{item.medicalHistory.familyDiseaseHistory}}</view>
+              </view>
+              <view class="each_line" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.allergyHistory}}'>
+                <view class="line_dot"></view>
+                <view class="line_content">过敏史：{{item.medicalHistory.allergyHistory}}</view>
+              </view>
+              <view class="each_line" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.gestationName}}'>
+                <view class="line_dot"></view>
+                <view class="line_content">妊娠状态：{{item.medicalHistory.gestationName}}</view>
+              </view>
+              <view class="each_line has_bottom" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory.describe}}'>
+                <view class="line_dot"></view>
+                <view class="line_content">病情描述：{{item.medicalHistory.describe}}</view>
+              </view>
+            </view>
+          </view>
+          <view class="top_area" wx:if='{{item.if_show_more == 1 && !!item.medicalHistory}}'>
+            <view class="patient_title">历史诊断</view>
+            <view class="patient_info case_history">
+              <view class="each_line">
+                <view class="line_dot"></view>
+                <view class="line_content">{{item.medicalHistory.patientComplain.selectedDiagnose}}</view>
+              </view>
+              <view class="each_line">
+                <view class="line_dot"></view>
+                <view class="line_content has_two">
+                  <view class="">曾服用过本药品：</view>
+                  <view class="has_iconfont">
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isUsed == true ? 'icondanxuan':'iconjinyong'}}"></text> 是</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isUsed == false ? 'icondanxuan':'iconjinyong'}}"></text> 否</view>
+                  </view>
+                </view>
+              </view>
+              <view class="each_line">
+                <view class="line_dot"></view>
+                <view class="line_content has_two">
+                  <view class="">有无不良反应：</view>
+                  <view class="has_iconfont">
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.hasBadReaction == true ? 'icondanxuan':'iconjinyong'}}"></text> 是</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.hasBadReaction == false ? 'icondanxuan':'iconjinyong'}}"></text> 否</view>
+                  </view>
+                </view>
+              </view>
+              <view class="each_line">
+                <view class="line_dot"></view>
+                <view class="line_content has_two">
+                  <view class="">是否妊娠哺乳：</view>
+                  <view class="has_iconfont">
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isGravida == true ? 'icondanxuan':'iconjinyong'}}"></text> 是</view>
+                    <view><text class="iconfont {{item.medicalHistory.patientComplain.isGravida == false ? 'icondanxuan':'iconjinyong'}}"></text> 否</view>
+                  </view>
+                </view>
+              </view>
+              <view class="each_line">
+                <image src="{{item3}}" class="case_img" wx:for='{{item.medicalHistory.imagesList}}' wx:key='key' wx:for-item='item3'></image>
+              </view>
+            </view>
+          </view>
+          <!-- 展开和收起 -->
+          <view class="handle_line show_more" bindtap="show_more" wx:if='{{item.if_show_more == 0}}' data-index='{{index}}' data-parent_index='{{pageIndex}}'>
+            查看更多 <image src="{{imageUrl}}/image/wxapp/right_into.png" mode="widthFix"></image>
+          </view>
+          <view class="handle_line show_less" bindtap="show_more" wx:if='{{item.if_show_more == 1}}' data-index='{{index}}' data-parent_index='{{pageIndex}}'>
+            收起 <image src="{{imageUrl}}/image/wxapp/right_into.png" mode="widthFix"></image>
+          </view>
+        </view>
+        <view class="medicine_info" wx:if='{{!!item.goodsMedicalOneInfoVoList}}'>
+          <view class="each_medicine clearfix" wx:for='{{item.goodsMedicalOneInfoVoList}}' wx:key='key' wx:for-item='item1' wx:for-index='index1' bindtap="viewGoodsInfo" data-gid="{{item1.goodsId}}">
+            <view class="medi_img"><image src="{{imageUrl}}{{item1.goodsImg}}"></image></view>
+            <view class="medi_content">
+              <view class="medi_name">{{item1.goodsCommonName}}</view>
+              <view class="medi_info">
+                <view class="medi_price">￥<text>{{item1.shopPrice}}</text></view>
+                <view class="medi_num">X{{item1.goodsNumber}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="awati_fotter">
+          <view class="btn_not_agree" bindtap="tp_reject" data-order_id='{{item.orderId}}'>驳回</view>
+          <view class="btn_to_prescribe" bindtap="to_pre" data-order_id='{{item.orderId}}'>去开方</view>
+        </view>
+      </view>
+    </block>
+    <view class="modal_bg" wx:if='{{show_modal == 1}}'></view>
+    <view class="modal_content" wx:if='{{show_modal == 1}}'>
+      <view class="modal_title">
+        驳回原因
+        <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="close_modal"></image>
+      </view>
+      <view class="modal_info">
+        <textarea placeholder="请您输入驳回原因" value="{{rejectReason}}" bindtap="rejectReason" bindinput="rejectReason"></textarea>
+      </view>
+      <view class="modal_fotter">
+        <view class="modal_btn btn_cancel" bindtap="close_modal">取消</view>
+        <view class="modal_btn btn_ok" bindtap="to_reject" data-taped_order_id='{{taped_order_id}}'>确定</view>
+      </view>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="is-null">
+        <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+        <text>您还没有相应记录</text>
+      </view>
+  </block>
+</view>

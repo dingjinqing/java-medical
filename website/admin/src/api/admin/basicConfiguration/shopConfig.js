@@ -99,3 +99,47 @@ export function versionChangeRenew (data) {
     method: 'post'
   })
 }
+
+// 短信列表展示
+export function getSmsListPage (data) {
+  return service({
+    url: '/api/admin/sms/list',
+    data,
+    method: 'post'
+  })
+}
+
+// 充值列表展示
+export function getSmsPayListPage (data) {
+  return service({
+    url: '/api/admin/recharge/list',
+    data,
+    method: 'post'
+  })
+}
+
+// 创建短信账号
+export function setSmsAccount (data) {
+  return service({
+    url: '/api/admin/sms/account/create',
+    data,
+    method: 'post'
+  })
+}
+
+// 获取短信设置
+export function getSmsSetting (data) {
+  return service({
+    url: '/api/admin/sms/show',
+    data,
+    method: 'post'
+  })
+}
+// 更新短信设置
+export function setSmsSetting (data) {
+  return service({
+    url: '/api/admin/sms/config',
+    data,
+    method: 'post'
+  })
+}

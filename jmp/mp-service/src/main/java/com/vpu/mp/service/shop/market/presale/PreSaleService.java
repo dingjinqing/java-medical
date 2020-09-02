@@ -1,5 +1,10 @@
 package com.vpu.mp.service.shop.market.presale;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderInfo;
@@ -7,13 +12,8 @@ import com.vpu.mp.db.shop.tables.Presale;
 import com.vpu.mp.db.shop.tables.PresaleProduct;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
@@ -41,12 +41,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.*;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
 import static org.springframework.util.StringUtils.isEmpty;
@@ -349,11 +349,13 @@ public class PreSaleService extends ShopBaseService {
         BigDecimal presaleMoney = product.getPresaleMoney();
         BigDecimal preDiscountMoney1 = product.getPreDiscountMoney1();
         BigDecimal preDiscountMoney2 = product.getPreDiscountMoney2();
-        if (param.getPresaleType() == PresaleConstant.PRESALE && (preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0)) {
+        boolean isDiscountMoneyInvalid = param.getPresaleType() == PresaleConstant.PRESALE && (preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0);
+        if (isDiscountMoneyInvalid) {
             logger().error("预售--抵扣金额异常");
             throw new IllegalArgumentException("Discount money error");
         }
-        if (null != preDiscountMoney2&&(preDiscountMoney2.compareTo(presaleMoney) < 0 || preDiscountMoney2.compareTo(presalePrice) > 0)) {
+        boolean isDiscountMoneyInvalid2 = null != preDiscountMoney2 && (preDiscountMoney2.compareTo(presaleMoney) < 0 || preDiscountMoney2.compareTo(presalePrice) > 0);
+        if (isDiscountMoneyInvalid2) {
             logger().error("预售--抵扣金额异常");
             throw new IllegalArgumentException("Discount money error");
         }
@@ -552,17 +554,17 @@ public class PreSaleService extends ShopBaseService {
 	 * @return
 	 */
 	public List<PreSaleVo> getPreSaleListByHour(Integer hours,Byte type) {
-		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
-		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Timestamp timeStampPlus = DateUtils.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		SelectConditionStep<PresaleRecord> fetch = db().selectFrom(PRESALE)
 				.where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
 		//还没开始
 		if(type.equals((byte) 0)) {
-			fetch.and(dateFormat(PRESALE.END_TIME, DateUtil.DATE_MYSQL_DAY).eq(date));
+			fetch.and(dateFormat(PRESALE.END_TIME, DateUtils.DATE_MYSQL_DAY).eq(date));
 		}
 		//快开始
 		if(type.equals((byte) 1)) {
-			fetch.and(dateFormat(PRESALE.START_TIME, DateUtil.DATE_MYSQL_DAY).eq(date));
+			fetch.and(dateFormat(PRESALE.START_TIME, DateUtils.DATE_MYSQL_DAY).eq(date));
 		}
 		Result<PresaleRecord> fetch2 = fetch.fetch();
 		List<PreSaleVo> into = new ArrayList<PreSaleVo>();
@@ -616,7 +618,7 @@ public class PreSaleService extends ShopBaseService {
 						TABLE.END_TIME)
 				.from(TABLE)
 				.where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(TABLE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(TABLE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);
@@ -630,7 +632,7 @@ public class PreSaleService extends ShopBaseService {
      * @return 可用商品id集合
      */
     public List<Integer> getPreSaleCanUseGoodsIds(Integer activityId,Condition baseCondition) {
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内
         //全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）

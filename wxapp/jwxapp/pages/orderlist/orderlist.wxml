@@ -28,19 +28,24 @@
         </view>
       </view>
       <scroll-view class="top_nav" wx:if="{{navStatusNum}}" scroll-into-view="{{scrollIntoId}}" enable-flex scroll-x>
-        <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
-          {{i18n.$t(localePack,"pages.order.navType.ALL")}}({{navStatusNum[0]}})
+        <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';' : ''}}">
+          <text class="{{scrollIntoId === 'ALL' ? 'active' : ''}}">{{i18n.$t(localePack,"pages.order.navType.ALL")}}({{navStatusNum[0]}})</text>
         </view>
-        <view id="WAIT_PAY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_PAY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
-          {{i18n.$t(localePack,"pages.order.navType.WAIT_PAY")}}({{navStatusNum[1]}})
+        <view id="WAIT_PAY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_PAY' ? 'color:' + comColor + ';' : ''}}">
+          <text class="{{scrollIntoId === 'WAIT_PAY' ? 'active' : ''}}">{{i18n.$t(localePack,"pages.order.navType.WAIT_PAY")}}({{navStatusNum[1]}})</text>
         </view>
-        <view id="WAIT_DELIVERY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_DELIVERY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
-          {{i18n.$t(localePack,"pages.order.navType.WAIT_DELIVERY")}}({{navStatusNum[2]}})
+        <view id="WAIT_CONFIRM" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_CONFIRM' ? 'color:' + comColor + ';' : ''}}">
+          <text class="{{scrollIntoId === 'WAIT_CONFIRM' ? 'active' : ''}}">待审核({{navStatusNum[6]}})</text>
         </view>
-        <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
-          {{i18n.$t(localePack,"pages.order.navType.SHIPPED")}}({{navStatusNum[3]}})
+        <view id="WAIT_DELIVERY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_DELIVERY' ? 'color:' + comColor + ';' : ''}}">
+          <text class="{{scrollIntoId === 'WAIT_DELIVERY' ? 'active' : ''}}">{{i18n.$t(localePack,"pages.order.navType.WAIT_DELIVERY")}}({{navStatusNum[2]}})</text>
         </view>
-        
+        <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';' : ''}}">
+          <text class="{{scrollIntoId === 'SHIPPED' ? 'active' : ''}}">已发货({{navStatusNum[3]}})</text>
+        </view>
+        <view id="RETURNING" bindtap="handleChangeNav" style="{{scrollIntoId === 'RETURNING' ? 'color:' + comColor + ';' : ''}}">
+          <text class="{{scrollIntoId === 'RETURNING' ? 'active' : ''}}">已取消({{navStatusNum[7]}})</text>
+        </view>
       </scroll-view>
     </view>
     <view class="order_list">
@@ -132,8 +137,8 @@
       </block>
     </view>
     <view class="is-null" wx:if="{{dataList[0].length <= 0}}">
-      <image src="{{imageUrl}}image/wxapp/order-no.png"></image>
-      <text>您还没有相关订单哦</text>
+      <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+      <text>您还没有相关订单</text>
     </view>
     
   </view>

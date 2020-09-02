@@ -4,24 +4,24 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobInfo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.OrderCloseQueenParam;
@@ -71,11 +71,11 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_DATA_NOT_EXIST;
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
-import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_DATA_NOT_EXIST;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.*;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -554,9 +554,7 @@ public class StoreReservation extends ShopBaseService {
      * Prefix check boolean.预约成功通知
      *
      * @param serviceOrder the service order
-     * @return the boolean
      */
-//    @Async
     public void sendAppointmentSuccess(ServiceOrderRecord serviceOrder) {
         int serviceId = serviceOrder.getServiceId();
         StoreServiceParam service = storeService.getStoreService(serviceId);
@@ -801,16 +799,16 @@ public class StoreReservation extends ShopBaseService {
         serviceOrderService.updateServiceOrder(param.getOrderId(), map);
         int shopId = getShopId();
         // 调用微信关闭订单接口
-        CompletableFuture.supplyAsync(() -> cancelWXOrder(param.getOrderSn(),shopId));
+        CompletableFuture.supplyAsync(() -> cancelWxOrder(param.getOrderSn(),shopId));
     }
 
-    private boolean cancelWXOrder(String orderSn,int shopId) {
+    private boolean cancelWxOrder(String orderSn, int shopId) {
         // 队列五分钟后调用微信关闭订单接口
 
         OrderCloseQueenParam param = new OrderCloseQueenParam();
         param.setShopId(shopId);
         param.setOrderSn(orderSn);
-        Timestamp startTime = DateUtil.getDalyedDateTime(60*5);
+        Timestamp startTime = DateUtils.getDalyedDateTime(60*5);
 
         TaskJobInfo info = TaskJobInfo.builder(shopId)
             .type(TaskJobsConstant.EXECUTION_TIMING)
@@ -883,7 +881,7 @@ public class StoreReservation extends ShopBaseService {
      */
     public Result<ServiceOrderRecord> getExpiredUnpaidOrders(){
         int cancelTime = shopCommonConfigService.getCancelTime();
-        Timestamp expiredTime = DateUtil.getDalyedDateTime(- cancelTime * 60);
+        Timestamp expiredTime = DateUtils.getDalyedDateTime(- cancelTime * 60);
         return db().selectFrom(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq(ORDER_STATUS_WAIT_PAY)).and(SERVICE_ORDER.CREATE_TIME.lt(expiredTime)).fetch();
     }
 }

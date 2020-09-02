@@ -1,19 +1,17 @@
 package com.vpu.mp.thread.es;
 
-import com.github.fonimus.ssh.shell.SshShellHelper;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
-import com.vpu.mp.service.foundation.jedis.data.DBOperating;
-import com.vpu.mp.service.saas.SaasApplication;
-import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.google.common.base.Stopwatch;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
+import com.vpu.mp.service.saas.SaasApplication;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * es thread config

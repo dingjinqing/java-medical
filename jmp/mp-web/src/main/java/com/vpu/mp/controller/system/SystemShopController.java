@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
@@ -190,10 +190,12 @@ public class SystemShopController extends SystemBaseController {
 		log.info("更改禁用"+vParam.toString());
 		if(!StringUtils.isEmpty(vParam.getIsEnable())) {
 			Byte isEnable=null;
-			if(vParam.getIsEnable().equals("yes")) {
+            String enable = "yes";
+            if(enable.equals(vParam.getIsEnable())) {
 				isEnable=1;
 			}
-			if(vParam.getIsEnable().equals("no")) {
+            String disable = "no";
+            if(disable.equals(vParam.getIsEnable())) {
 				isEnable=0;
 			}
 			if(!StringUtils.isEmpty(isEnable)) {
@@ -215,10 +217,12 @@ public class SystemShopController extends SystemBaseController {
 		log.info("更改隐藏底部导航"+vParam.toString());
 		if(!StringUtils.isEmpty(vParam.getHidBottom())) {
 			Byte hidBottom=null;
-			if(vParam.getHidBottom().equals("yes")) {
+            String hideBottomNav = "yes";
+            if(hideBottomNav.equals(vParam.getHidBottom())) {
 				hidBottom=1;
 			}
-			if(vParam.getHidBottom().equals("no")) {
+            String noHideBottomNav = "no";
+            if(noHideBottomNav.equals(vParam.getHidBottom())) {
 				hidBottom=0;
 			}
 			if(!StringUtils.isEmpty(hidBottom)) {
@@ -290,4 +294,9 @@ public class SystemShopController extends SystemBaseController {
 	public JsonResult getVersionOne(@PathVariable String level) {
 		return success(saas.shop.version.getOneVersion(level));
 	}
+
+	@GetMapping("/system/shop/getList")
+	public JsonResult getAllShopList(){
+        return success(saas.shop.getShopListInfo());
+    }
 }

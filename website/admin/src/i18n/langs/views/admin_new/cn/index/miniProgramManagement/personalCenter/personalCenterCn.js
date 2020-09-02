@@ -11,6 +11,7 @@ export const cn = {
   appointmentInfo: '预约信息展示项配置',
   shopUseInfo: '店铺使用相关数据展示项配置',
   serveShowInfo: '服务展示项配置',
+  currentPatient: '当前就诊人信息展示项配置',
 
   // 个人信息
   storeColor: '同步店铺配色',
@@ -44,6 +45,11 @@ export const cn = {
   changeIcon: '更换图标',
   iconTip: '建议尺寸：50px*50px',
   resetIcon: '重置图标',
+
+  // 当前就诊人
+  currentPatientLabel: '当前就诊人：',
+  currentPatientLabelTip: '开关开启，则展示当前就诊人信息',
+  currentPatientTitle: '当前就诊人模块标题，不填写则不显示',
 
   // 预约
   appointmentLabel: '预约：',
@@ -91,6 +97,9 @@ export const cn = {
   viewAllAppointments: '查看全部预约',
   tip1: '单人璀璨睫毛嫁接套餐1次',
   tip2: '预约到店时间：2018-03-05 12:30',
+  viewAllPatients: '查看全部就诊人',
+  tipMedical1: '张三',
+  tipMedical2: '13245657898',
 
   save: '保存'
 

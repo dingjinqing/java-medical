@@ -1,18 +1,18 @@
 package com.vpu.mp.service.shop.order.store;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.StoreOrder;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
@@ -57,6 +57,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.db.shop.tables.Invoice.INVOICE;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
@@ -64,7 +65,6 @@ import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
@@ -313,71 +313,14 @@ public class StoreOrderService extends ShopBaseService {
             payAmount = moneyPaid;
         }
         // 余额抵扣金额
-        if (BigDecimalUtil.greaterThanZero(balanceAmount)) {
-            if (!tradeService.paymentIsEnabled(PAY_CODE_BALANCE_PAY)) {
-                log.error("未开启余额支付");
-                throw new BusinessException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_ACCOUNT);
-            }
-            if (balanceAmount.compareTo(userInfo.getAccount()) > 0) {
-                // 余额不足，无法下单
-                log.error("用户余额[{}]不足(实际抵扣金额[{}])，无法下单", userInfo.getAccount(), balanceAmount);
-                throw new BusinessException(JsonResultCode.CODE_BALANCE_INSUFFICIENT);
-            }
-            // 创建会员余额变动事件
-            accountParam = new AccountParam() {{
-                setAccount(userInfo.getAccount());
-                setUserId(userInfo.getUserId());
-                // 更新金额  区分正负号， 这里置为负号，表示扣减
-                setAmount(balanceAmount.negate());
-                setOrderSn(orderSn);
-                setPayment(PAY_CODE_BALANCE_PAY);
-                // 支付类型，0：充值，1：消费
-                setIsPaid(BYTE_ONE);
-                setRemarkId(RemarkTemplate.STORE_PAYMEMBT.code);
-            }};
-            log.debug("余额抵扣金额:{}", balanceAmount);
-            moneyPaid = moneyPaid.subtract(balanceAmount).setScale(2, RoundingMode.UP);
-        }
+        InnerBalanceReduce innerBalanceReduce = new InnerBalanceReduce(userInfo, orderSn, moneyPaid, balanceAmount, accountParam).invoke();
+        moneyPaid = innerBalanceReduce.getMoneyPaid();
+        accountParam = innerBalanceReduce.getAccountParam();
+
         // 积分抵扣金额(积分数除以100就是积分抵扣金额数)todo 积分润换比暂时为固定的100积分=1元RMB，后续会改为可配置参数
-        if (BigDecimalUtil.greaterThanZero(scoreAmount)) {
-            if (!tradeService.paymentIsEnabled(PAY_CODE_SCORE_PAY)) {
-                log.error("未开启积分支付");
-                throw new BusinessException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
-            }
-            //积分兑换比
-            int scoreProportion = baseScoreCfgService.getScoreProportion();
-            BigDecimal proportion = BigDecimal.valueOf(scoreProportion);
-            // 积分使用上下限限制
-            int scoreValue = scoreAmount.multiply(proportion).intValue();
-            // 积分下限开关（0： 不限制使用下限值；1：限制）
-            byte scorePayLimitSwitch = baseScoreCfgService.getScorePayLimit();
-            if (scorePayLimitSwitch != 0) {
-                if (scoreValue < baseScoreCfgService.getScorePayNum()) {
-                    log.debug("低于积分使用下限配置，不可使用积分支付");
-                    throw new BusinessException(JsonResultCode.CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG);
-                }
-            }
-            BigDecimal ratio = BigDecimal.valueOf(baseScoreCfgService.getScoreDiscountRatio()).divide(HUNDRED);
-            if (scoreAmount.compareTo(payAmount.multiply(ratio)) > INTEGER_ZERO) {
-                log.debug("超过积分使用上限配置，不可使用积分支付");
-                throw new BusinessException(JsonResultCode.CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG);
-            }
-            if (scoreValue > userInfo.getScore()) {
-                // 积分不足，无法下单
-                log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换比为1:{})，无法下单", userInfo.getScore(), scoreAmount, scoreProportion);
-                throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
-            }
-            scoreParam = new ScoreParam() {{
-                setScoreDis(userInfo.getScore());
-                setUserId(userInfo.getUserId());
-                // 积分变动数额
-                setScore(-scoreValue);
-                setOrderSn(orderSn);
-                setRemarkCode(RemarkTemplate.STORE_PAYMEMBT.code);
-            }};
-            log.debug("积分抵扣金额:{}", scoreAmount);
-            moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);
-        }
+        InnerScoreReduce innerScoreReduce = new InnerScoreReduce(userInfo, orderSn, moneyPaid, payAmount, scoreAmount, scoreParam).invoke();
+        moneyPaid = innerScoreReduce.getMoneyPaid();
+        scoreParam = innerScoreReduce.getScoreParam();
         // 应付金额
         log.debug("应付金额:{}", moneyPaid);
         if (Objects.isNull(orderInfo.getMoneyPaid()) || orderInfo.getMoneyPaid().compareTo(moneyPaid) != 0) {
@@ -385,6 +328,19 @@ public class StoreOrderService extends ShopBaseService {
             log.debug("应付金额【{}】计算有误【前端计算结果为：{}】", moneyPaid, orderInfo.getMoneyPaid());
             throw new BusinessException(JsonResultCode.CODE_AMOUNT_PAYABLE_CALCULATION_FAILED);
         }
+
+        StoreOrderRecord orderRecord = getStoreOrderRecord(userInfo, invoiceInfo, orderInfo, orderSn, orderAmount,
+            moneyPaid, cardAmount, cardDisAmount, scoreAmount, balanceAmount, cardNo);
+
+        return StoreOrderTran.builder()
+            .account(accountParam)
+            .cardConsumpData(cardConsumpData)
+            .scoreParam(scoreParam)
+            .storeOrder(orderRecord)
+            .build();
+    }
+
+    private StoreOrderRecord getStoreOrderRecord(UserRecord userInfo, InvoiceVo invoiceInfo, StorePayOrderInfo orderInfo, String orderSn, BigDecimal orderAmount, BigDecimal moneyPaid, BigDecimal cardAmount, BigDecimal cardDisAmount, BigDecimal scoreAmount, BigDecimal balanceAmount, String cardNo) {
         StoreOrderRecord orderRecord = new StoreOrderRecord();
         orderRecord.setStoreId(orderInfo.getStoreId());
         orderRecord.setOrderSn(orderSn);
@@ -411,12 +367,7 @@ public class StoreOrderService extends ShopBaseService {
         orderRecord.setCardNo(Objects.nonNull(cardNo) ? cardNo : StringUtils.EMPTY);
         orderRecord.setAliTradeNo(StringUtils.EMPTY);
         orderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
-        return StoreOrderTran.builder()
-            .account(accountParam)
-            .cardConsumpData(cardConsumpData)
-            .scoreParam(scoreParam)
-            .storeOrder(orderRecord)
-            .build();
+        return orderRecord;
     }
 
     /**
@@ -665,5 +616,128 @@ public class StoreOrderService extends ShopBaseService {
         // TODO 等待门店买单退款业务功能添加  service_order_refund
 
         return new Tuple2<>(BigDecimal.ZERO, 0);
+    }
+
+    private class InnerScoreReduce {
+        private UserRecord userInfo;
+        private String orderSn;
+        private BigDecimal moneyPaid;
+        private BigDecimal payAmount;
+        private BigDecimal scoreAmount;
+        private ScoreParam scoreParam;
+
+        public InnerScoreReduce(UserRecord userInfo, String orderSn, BigDecimal moneyPaid, BigDecimal payAmount, BigDecimal scoreAmount, ScoreParam scoreParam) {
+            this.userInfo = userInfo;
+            this.orderSn = orderSn;
+            this.moneyPaid = moneyPaid;
+            this.payAmount = payAmount;
+            this.scoreAmount = scoreAmount;
+            this.scoreParam = scoreParam;
+        }
+
+        public BigDecimal getMoneyPaid() {
+            return moneyPaid;
+        }
+
+        public ScoreParam getScoreParam() {
+            return scoreParam;
+        }
+
+        public InnerScoreReduce invoke() {
+            // 积分抵扣金额(积分数除以100就是积分抵扣金额数)todo 积分润换比暂时为固定的100积分=1元RMB，后续会改为可配置参数
+            if (BigDecimalUtil.greaterThanZero(scoreAmount)) {
+                if (!tradeService.paymentIsEnabled(PAY_CODE_SCORE_PAY)) {
+                    log.error("未开启积分支付");
+                    throw new BusinessException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
+                }
+                //积分兑换比
+                int scoreProportion = baseScoreCfgService.getScoreProportion();
+                BigDecimal proportion = BigDecimal.valueOf(scoreProportion);
+                // 积分使用上下限限制
+                int scoreValue = scoreAmount.multiply(proportion).intValue();
+                // 积分下限开关（0： 不限制使用下限值；1：限制）
+                byte scorePayLimitSwitch = baseScoreCfgService.getScorePayLimit();
+                if (scorePayLimitSwitch != 0) {
+                    if (scoreValue < baseScoreCfgService.getScorePayNum()) {
+                        log.debug("低于积分使用下限配置，不可使用积分支付");
+                        throw new BusinessException(JsonResultCode.CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG);
+                    }
+                }
+                BigDecimal ratio = BigDecimal.valueOf(baseScoreCfgService.getScoreDiscountRatio()).divide(HUNDRED);
+                if (scoreAmount.compareTo(payAmount.multiply(ratio)) > INTEGER_ZERO) {
+                    log.debug("超过积分使用上限配置，不可使用积分支付");
+                    throw new BusinessException(JsonResultCode.CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG);
+                }
+                if (scoreValue > userInfo.getScore()) {
+                    // 积分不足，无法下单
+                    log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换比为1:{})，无法下单", userInfo.getScore(), scoreAmount, scoreProportion);
+                    throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
+                }
+                scoreParam = new ScoreParam() {{
+                    setScoreDis(userInfo.getScore());
+                    setUserId(userInfo.getUserId());
+                    // 积分变动数额
+                    setScore(-scoreValue);
+                    setOrderSn(orderSn);
+                    setRemarkCode(RemarkTemplate.STORE_PAYMEMBT.code);
+                }};
+                log.debug("积分抵扣金额:{}", scoreAmount);
+                moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);
+            }
+            return this;
+        }
+    }
+
+    private class InnerBalanceReduce {
+        private UserRecord userInfo;
+        private String orderSn;
+        private BigDecimal moneyPaid;
+        private BigDecimal balanceAmount;
+        private AccountParam accountParam;
+
+        public InnerBalanceReduce(UserRecord userInfo, String orderSn, BigDecimal moneyPaid, BigDecimal balanceAmount, AccountParam accountParam) {
+            this.userInfo = userInfo;
+            this.orderSn = orderSn;
+            this.moneyPaid = moneyPaid;
+            this.balanceAmount = balanceAmount;
+            this.accountParam = accountParam;
+        }
+
+        public BigDecimal getMoneyPaid() {
+            return moneyPaid;
+        }
+
+        public AccountParam getAccountParam() {
+            return accountParam;
+        }
+
+        public InnerBalanceReduce invoke() {
+            if (BigDecimalUtil.greaterThanZero(balanceAmount)) {
+                if (!tradeService.paymentIsEnabled(PAY_CODE_BALANCE_PAY)) {
+                    log.error("未开启余额支付");
+                    throw new BusinessException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_ACCOUNT);
+                }
+                if (balanceAmount.compareTo(userInfo.getAccount()) > 0) {
+                    // 余额不足，无法下单
+                    log.error("用户余额[{}]不足(实际抵扣金额[{}])，无法下单", userInfo.getAccount(), balanceAmount);
+                    throw new BusinessException(JsonResultCode.CODE_BALANCE_INSUFFICIENT);
+                }
+                // 创建会员余额变动事件
+                accountParam = new AccountParam() {{
+                    setAccount(userInfo.getAccount());
+                    setUserId(userInfo.getUserId());
+                    // 更新金额  区分正负号， 这里置为负号，表示扣减
+                    setAmount(balanceAmount.negate());
+                    setOrderSn(orderSn);
+                    setPayment(PAY_CODE_BALANCE_PAY);
+                    // 支付类型，0：充值，1：消费
+                    setIsPaid(BYTE_ONE);
+                    setRemarkId(RemarkTemplate.STORE_PAYMEMBT.code);
+                }};
+                log.debug("余额抵扣金额:{}", balanceAmount);
+                moneyPaid = moneyPaid.subtract(balanceAmount).setScale(2, RoundingMode.UP);
+            }
+            return this;
+        }
     }
 }

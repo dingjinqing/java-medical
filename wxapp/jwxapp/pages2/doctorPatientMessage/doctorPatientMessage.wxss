@@ -1,0 +1,187 @@
+/* pages2/doctorPatientMessage/doctorPatientMessage.wxss */
+@import "/css/iconfont.wxss";
+
+.main_container {
+  padding: 24rpx;
+  padding-bottom: 130rpx;
+  width: 100%;
+  height: auto;
+}
+
+.title-module {
+  line-height: 46rpx;
+  font-weight: 600;
+}
+
+.card-content {
+  background-color: #fff;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  margin: 20rpx 0;
+}
+
+.list-item {
+  padding-right: 24rpx;
+  min-height: 98rpx;
+  display: flex;
+  align-items: center;
+}
+
+.list-item+.list-item {
+  border-top: 2rpx solid #eee;
+}
+
+.default-text {
+  font-size: 28rpx;
+  margin-right: 50rpx;
+}
+
+.emphasis-text {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.phClass {
+  color: #999;
+  font-weight: 400;
+  font-size: 26rpx;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.radio-group,
+.radio-content {
+  display: flex;
+  align-items: center;
+}
+
+.radio-content+.radio-content {
+  margin-left: 60rpx;
+}
+
+.radio-content>.iconfont {
+  margin-right: 15rpx;
+  font-size: 32rpx;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.has-padding.p-top {
+  padding-top: 24rpx;
+}
+
+.has-padding.p-bottom {
+  padding-bottom: 24rpx;
+}
+
+.has-padding.p-left {
+  padding-left: 24rpx;
+}
+
+.has-padding.p-right {
+  padding-right: 24rpx;
+}
+
+.center {
+  align-items: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.upload-icon {
+  width: 70rpx;
+  height: 56rpx;
+}
+
+.upload-tips {
+  color: #999;
+  margin-top: 22rpx;
+}
+
+.footer-content {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24rpx;
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+}
+
+.footer-button {
+  width: 100%;
+  line-height: 80rpx;
+  border-radius: 40rpx;
+  color: #fff;
+  text-align: center;
+}
+
+.main_picker {
+  background-size: 15rpx 25rpx;
+}
+
+.main_ipt {
+  width: 82%;
+  height: 50rpx;
+  min-height: 50rpx;
+  line-height: 50rpx;
+  font-size: 26rpx;
+}
+
+textarea {
+  margin: 10rpx 0 20rpx 30rpx;
+  width: 670rpx;
+  min-height: 300rpx;
+  border-bottom: 2rpx solid #eee;
+}
+
+.upload-image {
+  width: 160rpx;
+  height: 160rpx;
+  border: 2rpx dashed #ddd;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.shai_view {
+  border: 1px solid #eee;
+  position: relative;
+  width: 164rpx;
+  height: 164rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.shai_view image,
+.shai_right image {
+  width: 160rpx;
+  height: 160rpx;
+
+}
+
+.shai_view .shai_close {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 26rpx;
+  height: 26rpx;
+}
+
+.image-con {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 30rpx;
+}

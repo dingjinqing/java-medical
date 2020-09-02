@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.trade.third.*;
 
 import org.springframework.validation.annotation.Validated;
@@ -60,10 +60,11 @@ public class AdminConfigThirdController  extends AdminBaseController {
     @PostMapping("/resetsessionkey")
     public JsonResult resetSessionKey(@RequestBody @Valid ThirdAppAuthIdParam param){
         int i = shop().thirdAuthService.resetSessionKey(param.getId());
-        if (i==1)
+        if (i==1) {
             return success();
-        else
+        } else {
             return fail();
+        }
     }
 
     /**
@@ -73,10 +74,11 @@ public class AdminConfigThirdController  extends AdminBaseController {
     @PostMapping("/appkey/save")
     public JsonResult saveAppKey(@RequestBody @Valid ThirdAppKeyParam param){
         int i = shop().thirdAuthService.saveAppKey(param);
-        if (i>0)
+        if (i>0) {
             return success();
-        else
+        } else {
             return fail();
+        }
     }
 
     /**

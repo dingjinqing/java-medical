@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.summary.visit;
 
+import com.vpu.mp.common.foundation.util.PropertiesUtil;
 import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
-import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVo;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVoItem;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
@@ -58,7 +58,7 @@ public class PageService extends BaseVisitService {
             return null;
         }else {
             Double exitRate = (exitNum*100.00/(double)visitNum);
-            BigDecimal tempAverageNum = new BigDecimal(exitRate);
+            BigDecimal tempAverageNum = BigDecimal.valueOf(exitRate);
             exitRate = tempAverageNum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             return exitRate;
         }
@@ -127,7 +127,7 @@ public class PageService extends BaseVisitService {
         return PropertiesUtil.toMap("visit/pages.properties");
     }
     private Double doubleFormat(Double d){
-        BigDecimal b = new BigDecimal(d);
+        BigDecimal b = BigDecimal.valueOf(d);
         return b.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

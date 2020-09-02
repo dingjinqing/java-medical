@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.UserTotalFanli;
 import com.vpu.mp.db.shop.tables.records.UserTotalFanliRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
 @Service
 public class UserTotalFanliService extends ShopBaseService {
 
-    UserTotalFanli TABLE = USER_TOTAL_FANLI;
+    final static UserTotalFanli TABLE = USER_TOTAL_FANLI;
 
 	public UserTotalFanliVo getUserRebate(Integer userId) {
 		  UserTotalFanliVo res = db().select(USER_DETAIL.USERNAME,USER_DETAIL.USER_AVATAR,USER_TOTAL_FANLI.asterisk())

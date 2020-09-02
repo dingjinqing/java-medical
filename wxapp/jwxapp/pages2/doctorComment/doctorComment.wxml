@@ -1,0 +1,48 @@
+<include src="/pages/common/header.wxml" />
+<view class="container">
+	<view class="doctor_content">
+		<view class="doctor_item">
+			<view class="d_left">
+				<image src="{{imageUrl}}{{con.url}}" wx:if='{{con.url != ""}}'></image>
+				<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>
+			</view>
+			<view class="d_right">
+				<view class="d_r_top">
+					<text>{{con.name}}</text>
+					<text wx:if='{{con.titleName}}'>{{con.titleName}}</text>
+				</view>
+				<view class="d_r_m_t">
+					<text>{{con.hospitalName}}</text>
+					<text style="margin-left:10rpx" wx:if='{{con.departmentName}}'>{{con.departmentName}}</text>
+				</view>
+				<view class="d_r_m_b" wx:if='{{item.treatDisease}}'>
+					<view>擅长：{{con.treatDisease}}</view>
+				</view>
+				<view class="d_r_bot">
+					<view>￥{{con.consultationPrice}}<text>/次</text></view>
+				</view>
+				<view class="focus {{isAttention == true ? 'have_focus' :''}}" catchtap="choose_focus">
+					{{isAttention == 0 ? '关注' : '已关注'}}
+				</view>
+			</view>
+		</view>
+	</view>
+	<view class="mid_con">
+		<view class="tit service_comment">
+			<view>服务评价</view>
+			<block wx:for='{{star}}'>
+				<text class='iconfont iconshoucang star {{item.show == false ? "no_choose" : ""}}' catchtap="choose_star" data-idx='{{index}}'></text>
+			</block>
+		</view>
+		<view class="tit service_text">
+			<view>服务描述</view>
+			<textarea placeholder="请您对医生的服务进行描述" maxlength='-1' bindblur='bindCheckInput' bindinput='bindCheckInput'></textarea>
+		</view>
+		<label>
+			<radio value="r1" checked="{{isAnonymou}}" class="radio" color="#26c4bc" bindtap="radioChange"/>匿名
+		</label>
+	</view>
+	<view class="bot_footer">
+		<view bindtap='submit'>发布</view>
+	</view>
+</view>

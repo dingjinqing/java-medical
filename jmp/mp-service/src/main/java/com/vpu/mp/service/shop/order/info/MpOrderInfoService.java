@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.order.info;
 
 import com.google.common.collect.ImmutableMap;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
@@ -64,6 +64,11 @@ public class MpOrderInfoService extends OrderInfoService{
             .put(OrderConstant.FINISHED,
                 (mapDefaultValue(countMap , OrderConstant.ORDER_FINISHED)) + mapDefaultValue(countMap , OrderConstant.ORDER_RECEIVED))
             .put(OrderConstant.REFUND, returnCount)
+            .put(OrderConstant.AUDIT,
+                    mapDefaultValue(countMap,OrderConstant.ORDER_TO_AUDIT)+mapDefaultValue(countMap,OrderConstant.ORDER_TO_AUDIT_OPEN))
+             .put(OrderConstant.RETURNING,
+                     (mapDefaultValue(countMap,OrderConstant.ORDER_CANCELLED)+
+                             mapDefaultValue(countMap,OrderConstant.ORDER_CLOSED)))
             .build();
     }
 
@@ -124,7 +129,8 @@ public class MpOrderInfoService extends OrderInfoService{
         if(param == null) {
             return select;
         }
-        select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
+        select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId())
+                .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
         if(!StringUtils.isBlank(param.getSearch())) {
             select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).
                 where(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
@@ -147,6 +153,13 @@ public class MpOrderInfoService extends OrderInfoService{
                 break;
             case OrderConstant.REFUND:
                 select.where(TABLE.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS));
+                break;
+            case OrderConstant.AUDIT:
+                //审核 包括续方和开方
+                select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_TO_AUDIT_OPEN)));
+                break;
+            case OrderConstant.RETURNING:
+                select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED));
                 break;
             default:
                 break;

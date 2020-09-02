@@ -1,11 +1,11 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.promoteActCopywriting;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteActCopywriting;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupActivityCopyWriting;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
@@ -32,15 +32,15 @@ public class HelpController extends HelpBaseController {
 	
 	/**
 	 * 服务条款
-	 * @param shop_id
-	 * @param user_id
+	 * @param shopId
+	 * @param userId
 	 * @return
 	 */
 	@GetMapping("/api/wxapp/score/scoreDocument")
-	public JsonResult scoreDocument(@RequestParam Integer shop_id, @RequestParam Integer user_id) {
+	public JsonResult scoreDocument(@RequestParam Integer shopId, @RequestParam Integer userId) {
 		log.info("查询积分说明");
 		checkId();
-		ShopCfgRecord scoreNum = saas.getShopApp(shop_id).userCard.scoreService.score.getScoreNum("score_document");
+		ShopCfgRecord scoreNum = saas.getShopApp(shopId).userCard.scoreService.score.getScoreNum("score_document");
 		if(scoreNum!=null) {
 			log.info("设置查询积分说明");
 			String v = scoreNum.getV();
@@ -55,30 +55,30 @@ public class HelpController extends HelpBaseController {
 	
 	/**
 	 * 签到帮助页
-	 * @param shop_id
-	 * @param user_id
+	 * @param shopId
+	 * @param userId
 	 * @param sign_rule
 	 * @return
 	 */
 	@GetMapping("/api/wxapp/sign/help")
-	public JsonResult getSignHelp(@RequestParam Integer shop_id, @RequestParam Integer user_id) {
+	public JsonResult getSignHelp(@RequestParam Integer shopId, @RequestParam Integer userId) {
 		log.info("进入签到帮助页");
 		checkId();
-		CheckSignVo sCheckSignVo = saas.getShopApp(shop_id).userCard.scoreService.checkSignInScore(user_id);
+		CheckSignVo sCheckSignVo = saas.getShopApp(shopId).userCard.scoreService.checkSignInScore(userId);
 		return success(sCheckSignVo);
 	}
 	
 	/**
 	 * 组团瓜分积分活动说明
-	 * @param shop_id
+	 * @param shopId
 	 * @param pid
 	 * @return
 	 */
 	@GetMapping("/api/wxapp/pinintegration/help")
-	public JsonResult getGroupInfo(@RequestParam Integer shop_id,@RequestParam Integer pid) {
+	public JsonResult getGroupInfo(@RequestParam Integer shopId,@RequestParam Integer pid) {
 		log.info("进入组团瓜分积分活动说明");
 		checkId();
-		GroupInteMaVo vo = saas.getShopApp(shop_id).groupIntegration.getActivityCopywriting(pid);
+		GroupInteMaVo vo = saas.getShopApp(shopId).groupIntegration.getActivityCopywriting(pid);
 		if(vo==null) {
 			return fail();
 		}else {
@@ -140,7 +140,7 @@ public class HelpController extends HelpBaseController {
      */
     @GetMapping("/api/wxapp/promote/actCopywriting")
     public JsonResult promoteActCopywriting(@RequestParam Integer shopId,@RequestParam String actCode) {
-        promoteActCopywriting vo = saas.getShopApp(shopId).friendPromoteService.getActCopywriting(actCode);
+        PromoteActCopywriting vo = saas.getShopApp(shopId).friendPromoteService.getActCopywriting(actCode);
         return success(vo);
     }
 

@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.market.gift;
 
+import static com.vpu.mp.common.foundation.util.Util.listToString;
+import static com.vpu.mp.common.foundation.util.Util.numberToString;
+import static com.vpu.mp.common.foundation.util.Util.stringToList;
+import static com.vpu.mp.common.foundation.util.Util.underLineStyleGson;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Tag.TAG;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
-import static com.vpu.mp.service.foundation.util.Util.numberToString;
-import static com.vpu.mp.service.foundation.util.Util.stringToList;
-import static com.vpu.mp.service.foundation.util.Util.underLineStyleGson;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.jooq.impl.DSL.countDistinct;
@@ -40,18 +40,18 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.Gift;
 import com.vpu.mp.db.shop.tables.GiftProduct;
 import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
 import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 import com.vpu.mp.db.shop.tables.records.GiftRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftDetailListParam;
@@ -627,10 +627,10 @@ public class GiftService extends ShopBaseService {
         if(giftRecord == null || giftRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
             vo.setState((byte)1);
             return vo;
-        }else if(giftRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+        }else if(giftRecord.getStartTime().after(DateUtils.getLocalDateTime())){
             vo.setState((byte)2);
             return vo;
-        }else if(giftRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+        }else if(giftRecord.getEndTime().before(DateUtils.getLocalDateTime())){
             vo.setState((byte)3);
             return vo;
         }
@@ -748,7 +748,7 @@ public class GiftService extends ShopBaseService {
 		return db().select(TABLE.ID, TABLE.NAME.as(CalendarAction.ACTNAME), TABLE.START_TIME,
 				TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -760,7 +760,7 @@ public class GiftService extends ShopBaseService {
 						TABLE.END_TIME)
 				.from(TABLE)
 				.where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(TABLE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(TABLE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

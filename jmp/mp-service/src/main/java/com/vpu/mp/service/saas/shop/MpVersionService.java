@@ -1,12 +1,15 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionIdVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
 import org.jooq.Record;
 import org.jooq.Record7;
 import org.jooq.Result;
@@ -16,20 +19,15 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionIdVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
 /**
- * 
+ *
  * @author lixinguo
  *
  */
@@ -45,7 +43,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 同步版本列表
-	 * 
+	 *
 	 * @return 返回模板的数量
 	 * @throws WxErrorException
 	 */
@@ -79,7 +77,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 得到最新版本信息
-	 * 
+	 *
 	 * @return
 	 */
 	public MpVersionRecord getLastVersion() {
@@ -88,7 +86,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 得到最新版本信息，分为：1 正常版本 2 好物推荐版本 3 直播普通 4 直播好物
-	 * 
+	 *
 	 * @param appId          小程序appId，不为空时，查询小程序的使用版本
 	 * @param packageVersion 插件版本标识：1 正常版本 2 好物推荐版本 3 直播普通 4 直播好物
 	 * @return
@@ -108,7 +106,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 得到当前使用的模板Id
-	 * 
+	 *
 	 * @param appId
 	 * @param packageVersion
 	 * @return
@@ -120,7 +118,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 得到当前使用的模板Id
-	 * 
+	 *
 	 * @param appId
 	 * @return
 	 */
@@ -130,7 +128,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 得到当前使用的模板Id
-	 * 
+	 *
 	 * @return
 	 */
 	public Integer getCurrentUseTemplateId() {
@@ -139,7 +137,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 设置当前可用版本
-	 * 
+	 *
 	 * @param templateId
 	 * @return
 	 */
@@ -156,7 +154,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 得到小程序模板版本列表
-	 * 
+	 *
 	 * @return
 	 */
 	public Result<MpVersionRecord> getAll() {
@@ -165,7 +163,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 得到模板ID的版本记录
-	 * 
+	 *
 	 * @param templateId
 	 * @return
 	 */
@@ -175,7 +173,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 查询版本分页
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -203,7 +201,7 @@ public class MpVersionService extends MainBaseService {
 	public Result<MpVersionRecord> getAllByDelFlag() {
 		return db().selectFrom(MP_VERSION).where(MP_VERSION.DEL_FLAG.eq((byte) 0)).orderBy(MP_VERSION.TEMPLATE_ID.desc()).fetch();
 	}
-	
+
 	/**
 	 * 对删除的模板做判断
 	 * @param wxOpenList
@@ -219,7 +217,7 @@ public class MpVersionService extends MainBaseService {
 			db().update(MP_VERSION).set( MP_VERSION.DEL_FLAG,(byte) 1).where(MP_VERSION.TEMPLATE_ID.in(wxOldList)).execute();
 		}
 	}
-	
+
 	/**
 	 * 更新当前包版本
 	 * @param templateId
@@ -229,8 +227,8 @@ public class MpVersionService extends MainBaseService {
 	public Integer updatePackVersion(Integer templateId,Byte packVersion) {
 		return db().update(MP_VERSION).set(MP_VERSION.PACKAGE_VERSION,packVersion).where(MP_VERSION.TEMPLATE_ID.eq(templateId)).execute();
 	}
-	
-    
+
+
 	public PageResult<MpVersionListVo> getMpStat(MpVersionParam mVersionParam) {
 
 		// MpVersionListVo 返回

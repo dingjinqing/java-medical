@@ -171,7 +171,7 @@ export const cn = {
   keyTips: '谨慎设置支付方式，设置之前，请确认商户支付已经申请成功。',
   PaymentMethod: '支付方式',
   SubMerchantModel: '子商户模式',
-  NonSubMerchants: '非子商户',
+  NonSubMerchants: '微信直连',
   WeipuBaoziMerchants: '微铺宝子商户',
   UnicomPaymentSubmerchants: '通联支付子商户',
   PaymentConfiguration: '支付配置',

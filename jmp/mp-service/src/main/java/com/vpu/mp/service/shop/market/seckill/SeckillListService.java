@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.market.seckill;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillListRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -73,7 +73,7 @@ public class SeckillListService extends ShopBaseService {
                 .where(SEC_KILL_LIST.SK_ID.eq(skId)
                         .and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                         .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY))
-                        .and(ORDER_GOODS.PRODUCT_ID.eq(productId))).fetchOptionalInto(Integer.class);//.ofNullable(0).get();
+                        .and(ORDER_GOODS.PRODUCT_ID.eq(productId))).fetchOptionalInto(Integer.class);
         return  bigDecimalRecord1.orElse(0);
     }
 

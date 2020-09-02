@@ -1,0 +1,104 @@
+/* pages1/prescriptionlist/prescriptionlist.wxss */
+.prescription-content{
+  padding: 20rpx 15rpx;
+  display: flex;
+  flex-direction: column;
+}
+.prescription-item{
+  border-radius: 16rpx;
+  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.24),0 0 0rpx rgba(10,16,20,.12);
+  position: relative;
+  margin-bottom: 15rpx;
+}
+.prescription-item + .prescription-item{
+  margin-top: 30rpx;
+}
+.prescription-item > .item-title{
+  line-height: 80rpx;
+  color: #fff;
+  font-size: 30rpx;
+  text-align: center;
+  background-color: skyblue;
+  height: 100rpx;
+  background:#26c4bc url(http://medicaldevimg.weipubao.cn/upload/224462/image/20200702/cHqjI9maXz2wGvOzjoHJ.png) no-repeat left top/100% 80rpx; 
+  border-radius: 16rpx 16rpx 0 0;
+}
+.prescription-item > .item-list-content{
+  padding-left: 30rpx;
+  background-color: #fff;
+  position: relative;
+  border-radius: 16rpx 16rpx 0 0;
+  margin-top: -20rpx;
+}
+.prescription-item > .item-list-content > .item-list{
+  display: flex;
+  flex-direction: column;
+  line-height: 55rpx;
+  padding: 15rpx 0;
+  border-bottom: 2rpx solid #eee;
+}
+.prescription-item > .item-list-content > .item-list > .list-item{
+  display: flex;
+  align-items: center;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-dot{
+  border: 4rpx solid skyblue;
+  border-radius: 50%;
+  height: 10rpx;
+  width: 10rpx;
+  margin-right: 20rpx;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-content{
+  color: #666;
+  font-size: 26rpx;
+}
+.prescription-item > .doctor-info{
+  height: 80rpx;
+  padding: 0 30rpx;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  color: #999;
+  position: relative;
+}
+.prescription-item > .doctor-info::after{
+  content: '';
+  position: absolute;
+  height: 16rpx;
+  width: 100%;
+  bottom: -16rpx;
+  left: 0;
+  background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
+  background-size: 40rpx 20rpx;
+}
+.prescription-item > .doctor-info > .doctor-name {
+  margin-right: auto;
+  font-size: 26rpx;
+} 
+.prescription-item > .doctor-info > .item-date {
+  font-size: 26rpx;
+} 
+.no_content {
+  text-align: center;
+  padding-top: 350rpx;
+}
+.no_content image{
+  height: 450rpx;
+  width: 750rpx;
+  margin: 0 auto 40rpx;
+}
+.no_content .no_word{
+  text-align: center;
+  margin-bottom: 20rpx;
+  color: #999;
+}
+.no_content .btn_get_pre{
+  width: 120px;
+  height: 60rpx;
+  background: #26c4bc;
+  color: #fff;
+  line-height: 60rpx;
+  text-align: center;
+  border-radius: 30rpx;
+  margin: 0 auto;
+}

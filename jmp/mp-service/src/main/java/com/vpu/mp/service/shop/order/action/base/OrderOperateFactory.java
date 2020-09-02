@@ -22,51 +22,52 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 @Component
 public class OrderOperateFactory implements ApplicationContextAware {
 
-	private  Map<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam>> orderOperateMap;
+    private  Map<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam>> orderOperateMap;
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		// 获取实现IorderOperate接口并加入ioc管理的实例
-		Map<String, IorderOperate> map = applicationContext.getBeansOfType(IorderOperate.class);
-		orderOperateMap = new HashMap<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam, AbstractOrderOperateQueryParam>>();
-		map.forEach((key, value) -> {
-			//防止实现IorderOperate接口的类的ServiceCode重复
-			Assert.isTrue(orderOperateMap.get(value.getServiceCode()) == null,"防止实现IorderOperate接口的类的ServiceCode重复");
-			orderOperateMap.put(value.getServiceCode(), value);
-		});
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        // 获取实现IorderOperate接口并加入ioc管理的实例
+        Map<String, IorderOperate> map = applicationContext.getBeansOfType(IorderOperate.class);
+        orderOperateMap = new HashMap<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam, AbstractOrderOperateQueryParam>>();
+        map.forEach((key, value) -> {
+            boolean noExists = orderOperateMap.get(value.getServiceCode()) == null;
+            //防止实现IorderOperate接口的类的ServiceCode重复
+            Assert.isTrue(noExists,"防止实现IorderOperate接口的类的ServiceCode重复");
+            orderOperateMap.put(value.getServiceCode(), value);
+        });
+    }
 
-	/**
-	 * 通过传出param取其ServiceCode并调用execute
-	 *
-	 * @param info 执行参数
-	 * @return 执行结果
-	 * @throws MpException
-	 */
-	public ExecuteResult orderOperate(AbstractOrderOperateQueryParam info) {
-		return getService(info.getServiceCode()).execute(info);
-	}
+    /**
+     * 通过传出param取其ServiceCode并调用execute
+     *
+     * @param info 执行参数
+     * @return 执行结果
+     * @throws MpException
+     */
+    public ExecuteResult orderOperate(AbstractOrderOperateQueryParam info) {
+        return getService(info.getServiceCode()).execute(info);
+    }
 
-	/**
-	 * 通过传出param取其ServiceCode并调用query
-	 *
-	 * @param param 查询参数
-	 * @return 执行结果
-	 * @throws MpException
-	 */
-	public Object orderQuery(AbstractOrderOperateQueryParam param) throws MpException {
-		return getService(param.getServiceCode()).query(param);
-	}
+    /**
+     * 通过传出param取其ServiceCode并调用query
+     *
+     * @param param 查询参数
+     * @return 执行结果
+     * @throws MpException
+     */
+    public Object orderQuery(AbstractOrderOperateQueryParam param) throws MpException {
+        return getService(param.getServiceCode()).query(param);
+    }
 
     /**
      * 根据传入的code获得处理该业务的service
      * @param code OrderServiceCode
      * @return IorderOperate的实现类
      */
-	public IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam> getService(OrderServiceCode code) {
-		return orderOperateMap.get(code);
-	}
+    public IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam> getService(OrderServiceCode code) {
+        return orderOperateMap.get(code);
+    }
 
 
 }

@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.MpDailyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
 import com.vpu.mp.db.shop.tables.records.MpDistributionVisitRecord;
@@ -40,8 +42,6 @@ import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
 import com.vpu.mp.db.shop.tables.records.MpWeeklyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpWeeklyVisitRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
 import com.vpu.mp.service.wechat.api.WxGetWeAnalysService;
 
@@ -71,22 +71,22 @@ public class WechatTaskService extends ShopBaseService {
 	private static final byte ONE = 1;
 	private static final byte TWO = 2;
     private static final String CONTENT = "wechat-context";
-    private static final ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
+    private static final ThreadLocal<String> LOCAL = ThreadLocal.withInitial(() -> {
         LocalDate date = LocalDate.now().minusDays(1);
-        DateTimeFormatter faDateTimeFormatter = DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT);
+        DateTimeFormatter faDateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SHORT);
         return date.format(faDateTimeFormatter);
     });
 
     private WxMaAnalysisService getServiceByShopId(Integer shopId) {
         return saas().shop.mp.getMaServiceByShopId(shopId).getAnalysisService();
     }
-    
+
     private String getAppId(Integer shopId) {
     	return saas().shop.mp.getAppIdByShopId(shopId);
     }
 
     public void beginDailyTask(){
-        Date date = DateUtil.convert(LocalDate.now().minusDays(1));
+        Date date = DateUtils.convert(LocalDate.now().minusDays(1));
         WxMaAnalysisService service = mpAuthShopService.getMaServiceByShopId(getShopId()).getAnalysisService();
         WxGetWeAnalysService maService=open().getMaExtService();
 
@@ -178,7 +178,7 @@ public class WechatTaskService extends ShopBaseService {
                 record.setPageSharePv(v.getPageSharePv().intValue());
                 record.setPageShareUv(v.getPageShareUv().intValue());
                 record.setPageStaytimePv(v.getPageStayTimePv().doubleValue());
-                record.setRefDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT, date));
+                record.setRefDate(DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT, date));
                 list.add(record);
             });
             db().batchInsert(list).execute();
@@ -212,7 +212,7 @@ public class WechatTaskService extends ShopBaseService {
 		try {
             MaPortraitResult info = service.getUserPortrait(getAppId(getShopId()),beginDate,endDate);
             MpUserPortraitRecord record = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).fetchAny();
-            
+
             if(record!=null) {
             	logger().info("更新:{}",record.getId());
             	record = assignment(type, info, record);
@@ -249,7 +249,7 @@ public class WechatTaskService extends ShopBaseService {
 		record.setStartTime(startTime);
 		return  record;
 	}
-	
+
 	/**
 	 * startTime日期处理
 	 * @param date
@@ -292,8 +292,8 @@ public class WechatTaskService extends ShopBaseService {
      */
     private void getWeeklyVisitTrend(WxMaAnalysisService service, Date date) {
         try {
-            LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT)).minusDays(6);
+            LocalDate startDate = LocalDate.parse(LOCAL.get(),
+                    DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SHORT)).minusDays(6);
             List<WxMaVisitTrend> result = service.getWeeklyVisitTrend(
                     Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),date);
             if(validationData(result, MP_WEEKLY_VISIT)){
@@ -316,8 +316,8 @@ public class WechatTaskService extends ShopBaseService {
      */
     private void getMonthlyVisitTrend(WxMaAnalysisService service, Date date) {
         try {
-            LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT)).withDayOfMonth(1);
+            LocalDate startDate = LocalDate.parse(LOCAL.get(),
+                    DateTimeFormatter.ofPattern(DateUtils.DATE_FORMAT_SHORT)).withDayOfMonth(1);
             List<WxMaVisitTrend> result = service.getMonthlyVisitTrend(
                     Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),date);
             if(validationData(result, MP_MONTHLY_VISIT)){
@@ -343,7 +343,7 @@ public class WechatTaskService extends ShopBaseService {
         try {
             LocalDate localDate = LocalDate.now();
             for( int i = 1; i<16;i++ ){
-                Date dateParam = DateUtil.convert(localDate.minusDays(i));
+                Date dateParam = DateUtils.convert(localDate.minusDays(i));
                 WxMaRetainInfo info = service.getDailyRetainInfo(dateParam,dateParam);
                 MpDailyRetainRecord record = db().newRecord(MP_DAILY_RETAIN);
                 record.setRefDate(info.getRefDate());
@@ -368,8 +368,8 @@ public class WechatTaskService extends ShopBaseService {
     private void getWeeklyRetainInfo(WxMaAnalysisService service,Date date){
             List<WxMaRetainInfo> infos = Lists.newArrayList();
             for (int i = 1; i < 6; i++) {
-                Date startDate = DateUtil.convert(LocalDate.now().minusWeeks(i).with(DayOfWeek.MONDAY));
-                Date endDate = DateUtil.convert(LocalDate.now().minusWeeks(i).with(DayOfWeek.SUNDAY));
+                Date startDate = DateUtils.convert(LocalDate.now().minusWeeks(i).with(DayOfWeek.MONDAY));
+                Date endDate = DateUtils.convert(LocalDate.now().minusWeeks(i).with(DayOfWeek.SUNDAY));
                 WxMaRetainInfo info = getWeeklyRetain(service,startDate,endDate);
                 if( info!= null ){
                     infos.add(info);
@@ -418,8 +418,8 @@ public class WechatTaskService extends ShopBaseService {
             for( int i = 1; i < 3;i++){
                 LocalDate local = LocalDate.now();
                 LocalDate month = local.minusMonths(i);
-                Date startDate = DateUtil.convert(month.withDayOfMonth(1));
-                Date endDate = DateUtil.convert(month.withDayOfMonth(month.lengthOfMonth()));
+                Date startDate = DateUtils.convert(month.withDayOfMonth(1));
+                Date endDate = DateUtils.convert(month.withDayOfMonth(month.lengthOfMonth()));
                 WxMaRetainInfo info = getMonthlyRetain(service,startDate,endDate);
                 if( info!= null ){
                     infos.add(info);
@@ -454,14 +454,14 @@ public class WechatTaskService extends ShopBaseService {
         if( o == null ){
             return false;
         }
-        Field<String> data = DSL.val(local.get());
+        Field<String> data = DSL.val(LOCAL.get());
         return isHavingData(table, data);
     }
     private boolean isHavingData(Table<?> table,Field<String> date){
         int count =db().selectCount().from(table).where(table.field("ref_date",String.class).eq(date)).fetchOneInto(Integer.class);
         return count > 0;
     }
-    
+
     /**
      * 获取对应的日期
      * @param num

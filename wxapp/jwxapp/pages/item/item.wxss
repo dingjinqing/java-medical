@@ -475,3 +475,20 @@
   top: 50%;
   transform: translateY(-50%);
 }
+.prescription-tips{
+  display: flex;
+  background-color: #FFF4E3;
+  height: 80rpx;
+  border-radius:16rpx;
+  padding: 0 20rpx;
+  flex: 1;
+  align-items: center;
+}
+.prescription-tips > image{
+  height: 31rpx;
+  width: 31rpx;
+  margin-right: 20rpx;
+}
+.prescription-tips > text{
+  color: #FF9F15;
+}

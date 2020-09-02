@@ -5,7 +5,10 @@ import com.vpu.mp.service.pojo.shop.question.FeedbackParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import org.springframework.stereotype.Service;
 
-
+/**
+ *
+ * @author luguangyao
+ */
 @Service
 public class FeedbackService extends BaseShopConfigService {
 

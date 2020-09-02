@@ -12,10 +12,10 @@ import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 
 /**
 * @author 黄壮壮
@@ -28,7 +28,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 	final static Byte CBATCH_DF_NO = 0;
 	/** del_flag 删除状态： 1：确定删除 */
 	final static Byte CBATCH_DF_YES = 1;
-	
+
 	/**
 	 * 获取正在使用的批次
 	 */
@@ -38,7 +38,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 				 	.and(CARD_BATCH.DEL_FLAG.eq(CBATCH_DF_NO))
 				 	.fetchInto(CardBatchRecord.class);
 	}
-	
+
 	/**
 	 * 获取全部批次
 	 */
@@ -47,7 +47,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 			 	.where(CARD_BATCH.CARD_ID.eq(cardId))
 			 	.fetchInto(CardBatchRecord.class);
 	}
-	
+
 	/**
 	 * 添加卡id到批次
 	 */
@@ -57,9 +57,9 @@ public class CardReceiveCodeDao extends ShopBaseService {
 			bindCardIdToBatch(cardId,batchIdList);
 			bindCardIdToReceiveCode(cardId,batchIdList);
 		});
-		
+
 	}
-	
+
 	/**
 	 * 绑定卡id到批次
 	 */
@@ -69,7 +69,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 		.where(CARD_BATCH.ID.in(batchIdList))
 		.execute();
 	}
-	
+
 	/**
 	 * 绑定卡id到领取码
 	 */
@@ -82,7 +82,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 		.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())
 		.execute();
 	}
-	
+
 	/**
 	 * 删除批次
 	 */
@@ -97,7 +97,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 	private void deleteCardReceiveCode(Set<Integer> batchIdSet) {
 		db().update(CARD_RECEIVE_CODE)
 			.set(CARD_RECEIVE_CODE.DEL_FLAG,CBATCH_DF_YES)
-			.set(CARD_RECEIVE_CODE.DEL_TIME,DateUtil.getLocalDateTime())
+			.set(CARD_RECEIVE_CODE.DEL_TIME, DateUtils.getLocalDateTime())
 			.where(CARD_RECEIVE_CODE.BATCH_ID.in(batchIdSet))
 			.and(CARD_RECEIVE_CODE.USER_ID.eq(0))
 			.execute();
@@ -106,7 +106,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 	private void deleteCardBatch(Set<Integer> batchIdSet) {
 		db().update(CARD_BATCH)
 			.set(CARD_BATCH.DEL_FLAG,CBATCH_DF_YES)
-			.set(CARD_BATCH.DEL_TIME,DateUtil.getLocalDateTime())
+			.set(CARD_BATCH.DEL_TIME, DateUtils.getLocalDateTime())
 			.where(CARD_BATCH.ID.in(batchIdSet))
 			.execute();
 	}
@@ -124,7 +124,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 		}
 		if(code != null) {
 			condition = condition.and(CARD_RECEIVE_CODE.CODE.eq(code));
-		}	
+		}
 		return getRow(condition);
 	}
 
@@ -141,7 +141,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 		}
 		return getRow(condition);
 	}
-	
+
 	private Condition getValidCondition() {
 		Condition condition = DSL.noCondition();
 		condition = condition
@@ -161,7 +161,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 		}
 		return getRow(condition);
 	}
-	
+
 	public CardReceiveCodeRecord getCardPwd(Integer cardId, String cardNo, String cardPwd) {
 		Condition condition = getValidCondition();
 		if(cardId!=null) {
@@ -175,8 +175,8 @@ public class CardReceiveCodeDao extends ShopBaseService {
 		}
 		return getRow(condition);
 	}
-	
-	
+
+
 	public void updateRecord(CardReceiveCodeRecord cardReceiveCodeRecord) {
 		db().executeUpdate(cardReceiveCodeRecord, CARD_RECEIVE_CODE.ID.eq(cardReceiveCodeRecord.getId()));
 	}
@@ -184,5 +184,5 @@ public class CardReceiveCodeDao extends ShopBaseService {
 
 
 
-	
+
 }

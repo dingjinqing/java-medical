@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +53,7 @@ public class WxAppCommentController extends WxAppBaseController {
      * @param param
      */
     @PostMapping("/goods")
-    public JsonResult getGoodsComment(@RequestBody MPGoodsCommentParam param) {
+    public JsonResult getGoodsComment(@RequestBody MpGoodsCommentParam param) {
         CommentInfo commentInfo = shop().goods.goodsComment.goodsComment(param);
         return success(commentInfo);
     }

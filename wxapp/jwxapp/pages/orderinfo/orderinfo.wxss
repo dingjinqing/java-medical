@@ -1,3 +1,4 @@
+@import '/components/decorate/prescription/index.wxss';
 .common-footer .footer-text {
   padding-bottom: 120rpx !important;
 }
@@ -33,12 +34,18 @@
   vertical-align: middle;
   margin-right: 10rpx;
 }
+.status-name>text {
+  width: 32rpx;
+  height: 32rpx;
+  vertical-align: middle;
+  margin-right: 10rpx;
+}
 
 .shipping_info {
   display: flex;
   flex-direction: column;
   border-radius: 10rpx;
-  width: 720rpx;
+  width: 702rpx;
   margin: 0 auto;
   margin-top: 16rpx;
   background-color: #fff;
@@ -82,10 +89,14 @@
 }
 
 .order_top {
-  padding: 16rpx;
+  padding:0 16rpx;
   background-color: #fff;
   color: #333;
-  margin-top: 16rpx;
+  margin: 16rpx auto 0;
+  border-radius: 16rpx 16rpx 0 0;
+  width: 702rpx;
+  box-sizing: border-box;
+  line-height: 80rpx;
 }
 
 .goods_item {
@@ -93,6 +104,9 @@
   font-size: 26rpx;
   padding: 14rpx 14rpx;
   background-color: #fafafa;
+  box-sizing: border-box;
+  width: 702rpx;
+  margin: 0 auto;
 }
 
 .goods_item>image {
@@ -102,7 +116,7 @@
 
 .goods_item>.goods_info {
   flex: 1;
-  margin-left: 6rpx;
+  margin-left: 20rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -140,15 +154,18 @@
 .pay_info {
   display: flex;
   flex-direction: column;
-  padding: 16rpx 16rpx 0;
+  padding: 0 16rpx 0;
   background-color: #fff;
-  margin-top: 16rpx;
+  margin: 16rpx auto 0;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+  width: 702rpx;
 }
 
 .pay_info .pay_item {
-  margin-bottom: 10rpx;
   color: #888;
   display: flex;
+  line-height: 60rpx;
 }
 
 .pay_info .pay_item>text:first-of-type {
@@ -158,7 +175,7 @@
 .pay_info .total_money {
   text-align: right;
   color: #333;
-  padding: 10rpx 0;
+  line-height: 80rpx;
 }
 
 .line-item {
@@ -185,25 +202,29 @@
   padding: 0 10rpx;
   border: 2rpx solid #eee;
   margin-left: 10rpx;
+  border-radius: 12rpx;
 }
 
 .order_info {
-  margin-top: 16rpx;
+  margin: 16rpx auto 0;
   background-color: #fff;
   padding: 0 16rpx;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  width: 702rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx;
 }
 
 .order_info .title {
   color: #333;
-  line-height: 60rpx;
+  line-height: 80rpx;
   border-bottom: 2rpx solid #eee;
 }
 
 .order_item {
-  line-height: 46rpx;
+  line-height: 60rpx;
   color: #888;
 }
 
@@ -390,7 +411,7 @@
 }
 
 .kefu_btn{
-  width: 600rpx;
+  width: 702rpx;
   height: 80rpx;
   margin: 30rpx auto;
   background: linear-gradient(left,#f66,#ff8c8c);
@@ -404,7 +425,7 @@
   position: relative;
 }
 .kefu_btn .con_button{
-  width: 600rpx;
+  width: 702rpx;
   height: 80rpx;
   position: absolute;
   border-radius: 100rpx;
@@ -436,4 +457,13 @@
 .to_goods_list view{
   color: #666;
   font-size: 24rpx;
+}
+.prescription-item{
+  width: 702rpx;
+  margin: 16rpx auto 0;
+  margin-bottom: 34rpx;
+  box-shadow: none;
+}
+.prescription-item > .item-title{
+  color: #26C4BC;
 }

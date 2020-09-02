@@ -2,6 +2,10 @@ package com.vpu.mp.service.saas.index.vo;
 
 import java.util.List;
 
+
+/**
+ * @author luguangyao
+ */
 public class OrderStatisticsInfo {
 
     private Integer allOrderNum;

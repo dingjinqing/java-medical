@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.summary.visit;
 
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
 import com.vpu.mp.service.pojo.shop.summary.visit.*;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -79,7 +79,7 @@ public class AmountService extends BaseVisitService {
             return TOTAL_NUM;
         }else {
             Double averageNum = totalNum/num;
-            BigDecimal tempAverageNum = new BigDecimal(averageNum);
+            BigDecimal tempAverageNum = BigDecimal.valueOf(averageNum);
             averageNum = tempAverageNum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             return averageNum;
         }
@@ -126,7 +126,7 @@ public class AmountService extends BaseVisitService {
         }
         VisitStatisticsVo handleData =  getStatisticsVo(units, grading);
         Double totalNum = handleData.getList().stream().reduce(Double::sum).orElse(TOTAL_NUM);
-        BigDecimal tempTotalNum = new BigDecimal(totalNum);
+        BigDecimal tempTotalNum = BigDecimal.valueOf(totalNum);
         totalNum = tempTotalNum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
         Double averageNum = getAverageNum(totalNum,handleData.getDate().size());
         VisitStatisticsVo vo = new VisitStatisticsVo();
@@ -325,135 +325,163 @@ public class AmountService extends BaseVisitService {
         for (VisitExportTempVo vo : tempVoList){
             switch (vo.getAction()) {
                 case SESSION_COUNT:
-                    for (int i = 0;i < vo.getList().size();i++) {
-                        exportVoList.get(i).setSessionCount(vo.getList().get(i));
-                        switch (vo.getGrading()){
-                            case GRADING_DAY:
-                                exportVoList.get(i).setGrading(GRADING_DAY_STRING);
-                                break;
-                            case GRADING_WEEK:
-                                exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
-                                break;
-                            case GRADING_MONTH:
-                                exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + vo.getGrading());
-                        }
-                    }
+                    handleSessionCountExport(exportVoList, vo);
                     break;
                 case PV:
-                    for (int i = 0;i < vo.getList().size();i++) {
-                        exportVoList.get(i).setPv(vo.getList().get(i));
-                        switch (vo.getGrading()){
-                            case GRADING_DAY:
-                                exportVoList.get(i).setGrading(GRADING_DAY_STRING);
-                                break;
-                            case GRADING_WEEK:
-                                exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
-                                break;
-                            case GRADING_MONTH:
-                                exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + vo.getGrading());
-                        }
-                    }
+                    handlePvExport(exportVoList, vo);
                     break;
                 case UV:
-                    for (int i = 0;i < vo.getList().size();i++) {
-                        exportVoList.get(i).setUv(vo.getList().get(i));
-                        switch (vo.getGrading()){
-                            case GRADING_DAY:
-                                exportVoList.get(i).setGrading(GRADING_DAY_STRING);
-                                break;
-                            case GRADING_WEEK:
-                                exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
-                                break;
-                            case GRADING_MONTH:
-                                exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + vo.getGrading());
-                        }
-                    }
+                    handleUvExport(exportVoList, vo);
                     break;
                 case UV_NEW:
-                    for (int i = 0;i < vo.getList().size();i++) {
-                        exportVoList.get(i).setUvNew(vo.getList().get(i));
-                        switch (vo.getGrading()){
-                            case GRADING_DAY:
-                                exportVoList.get(i).setGrading(GRADING_DAY_STRING);
-                                break;
-                            case GRADING_WEEK:
-                                exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
-                                break;
-                            case GRADING_MONTH:
-                                exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + vo.getGrading());
-                        }
-                    }
+                    handleUvNewExport(exportVoList, vo);
                     break;
                 case STAY_TIME_UV:
-                    for (int i = 0;i < vo.getList().size();i++) {
-                        exportVoList.get(i).setStayTimeUv(vo.getList().get(i));
-                        switch (vo.getGrading()){
-                            case GRADING_DAY:
-                                exportVoList.get(i).setGrading(GRADING_DAY_STRING);
-                                break;
-                            case GRADING_WEEK:
-                                exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
-                                break;
-                            case GRADING_MONTH:
-                                exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + vo.getGrading());
-                        }
-                    }
+                    handleStayTimeUvExport(exportVoList, vo);
                     break;
                 case STAY_TIME_SESSION:
-                    for (int i = 0;i < vo.getList().size();i++) {
-                        exportVoList.get(i).setStayTimeSession(vo.getList().get(i));
-                        switch (vo.getGrading()){
-                            case GRADING_DAY:
-                                exportVoList.get(i).setGrading(GRADING_DAY_STRING);
-                                break;
-                            case GRADING_WEEK:
-                                exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
-                                break;
-                            case GRADING_MONTH:
-                                exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + vo.getGrading());
-                        }
-                    }
+                    handleStayTimeSessionExport(exportVoList, vo);
                     break;
                 case VISIT_DEPTH:
-                    for (int i = 0;i < vo.getList().size();i++) {
-                        exportVoList.get(i).setVisitDepth(vo.getList().get(i));
-                        switch (vo.getGrading()){
-                            case GRADING_DAY:
-                                exportVoList.get(i).setGrading(GRADING_DAY_STRING);
-                                break;
-                            case GRADING_WEEK:
-                                exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
-                                break;
-                            case GRADING_MONTH:
-                                exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + vo.getGrading());
-                        }
-                    }
+                    handleVisitDepthExport(exportVoList, vo);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected action: " + vo.getGrading());
             }
         }
         return exportVoList;
+    }
+
+    private void handleVisitDepthExport(List<VisitExportVo> exportVoList, VisitExportTempVo vo) {
+        for (int i = 0;i < vo.getList().size();i++) {
+            exportVoList.get(i).setVisitDepth(vo.getList().get(i));
+            switch (vo.getGrading()){
+                case GRADING_DAY:
+                    exportVoList.get(i).setGrading(GRADING_DAY_STRING);
+                    break;
+                case GRADING_WEEK:
+                    exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
+                    break;
+                case GRADING_MONTH:
+                    exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + vo.getGrading());
+            }
+        }
+    }
+
+    private void handleStayTimeSessionExport(List<VisitExportVo> exportVoList, VisitExportTempVo vo) {
+        for (int i = 0;i < vo.getList().size();i++) {
+            exportVoList.get(i).setStayTimeSession(vo.getList().get(i));
+            switch (vo.getGrading()){
+                case GRADING_DAY:
+                    exportVoList.get(i).setGrading(GRADING_DAY_STRING);
+                    break;
+                case GRADING_WEEK:
+                    exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
+                    break;
+                case GRADING_MONTH:
+                    exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + vo.getGrading());
+            }
+        }
+    }
+
+    private void handleStayTimeUvExport(List<VisitExportVo> exportVoList, VisitExportTempVo vo) {
+        for (int i = 0;i < vo.getList().size();i++) {
+            exportVoList.get(i).setStayTimeUv(vo.getList().get(i));
+            switch (vo.getGrading()){
+                case GRADING_DAY:
+                    exportVoList.get(i).setGrading(GRADING_DAY_STRING);
+                    break;
+                case GRADING_WEEK:
+                    exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
+                    break;
+                case GRADING_MONTH:
+                    exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + vo.getGrading());
+            }
+        }
+    }
+
+    private void handleUvNewExport(List<VisitExportVo> exportVoList, VisitExportTempVo vo) {
+        for (int i = 0;i < vo.getList().size();i++) {
+            exportVoList.get(i).setUvNew(vo.getList().get(i));
+            switch (vo.getGrading()){
+                case GRADING_DAY:
+                    exportVoList.get(i).setGrading(GRADING_DAY_STRING);
+                    break;
+                case GRADING_WEEK:
+                    exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
+                    break;
+                case GRADING_MONTH:
+                    exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + vo.getGrading());
+            }
+        }
+    }
+
+    private void handleUvExport(List<VisitExportVo> exportVoList, VisitExportTempVo vo) {
+        for (int i = 0;i < vo.getList().size();i++) {
+            exportVoList.get(i).setUv(vo.getList().get(i));
+            switch (vo.getGrading()){
+                case GRADING_DAY:
+                    exportVoList.get(i).setGrading(GRADING_DAY_STRING);
+                    break;
+                case GRADING_WEEK:
+                    exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
+                    break;
+                case GRADING_MONTH:
+                    exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + vo.getGrading());
+            }
+        }
+    }
+
+    private void handlePvExport(List<VisitExportVo> exportVoList, VisitExportTempVo vo) {
+        for (int i = 0;i < vo.getList().size();i++) {
+            exportVoList.get(i).setPv(vo.getList().get(i));
+            switch (vo.getGrading()){
+                case GRADING_DAY:
+                    exportVoList.get(i).setGrading(GRADING_DAY_STRING);
+                    break;
+                case GRADING_WEEK:
+                    exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
+                    break;
+                case GRADING_MONTH:
+                    exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + vo.getGrading());
+            }
+        }
+    }
+
+    private void handleSessionCountExport(List<VisitExportVo> exportVoList, VisitExportTempVo vo) {
+        for (int i = 0;i < vo.getList().size();i++) {
+            exportVoList.get(i).setSessionCount(vo.getList().get(i));
+            switch (vo.getGrading()){
+                case GRADING_DAY:
+                    exportVoList.get(i).setGrading(GRADING_DAY_STRING);
+                    break;
+                case GRADING_WEEK:
+                    exportVoList.get(i).setGrading(GRADING_WEEK_STRING);
+                    break;
+                case GRADING_MONTH:
+                    exportVoList.get(i).setGrading(GRADING_MONTH_STRING);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + vo.getGrading());
+            }
+        }
     }
 }

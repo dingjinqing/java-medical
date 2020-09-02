@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.task.overview;
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.records.TradesRecord;
 import com.vpu.mp.db.shop.tables.records.TradesRecordSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.UserRfmSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.UserSummaryTrendRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
 import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeBo;
 import org.jooq.Record3;
@@ -172,7 +172,7 @@ public class StatisticalTableInsert extends ShopBaseService {
      */
     public void insertUserRfmSummary() {
         userSummary.getRecencyType(LocalDate.now().atStartOfDay()).forEach((k, v) -> {
-            Map<Integer, Record3<Integer, Integer, BigDecimal>> rfmData = userSummary.getRFMData(v.v1(), v.v2());
+            Map<Integer, Record3<Integer, Integer, BigDecimal>> rfmData = userSummary.getRrmData(v.v1(), v.v2());
             Stream.of(1, 2, 3, 4).forEach((n) -> {
                 Tuple3<Integer, Integer, BigDecimal> tuple3 = userSummary.reduceRfmData(rfmData, (e) -> e.equals(n));
                 UserRfmSummaryRecord record = createUserRfmSummary(tuple3, k, n);

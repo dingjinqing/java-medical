@@ -16,7 +16,7 @@
             <div
               class="hiddenTitle"
               :style="data.tit_center==='1'?'justify-content:center':''"
-              v-if="data.goods_module_title!=='0'&&(data.title || data.img_url || data.img_title_url)"
+              v-if="data.goods_module_title!=='0'&&(data.title || data.img_url || data.img_title_url)&&data.auto_recommend_type === '0'"
             >
               <img
                 v-if="data.goods_module_title==='1'&&data.img_url"
@@ -33,8 +33,17 @@
               >
             </div>
           </div>
-
           <!--end-->
+          <!-- 我的处方药标题 -->
+          <div
+            class="prescription-module-title"
+            v-if="data.auto_recommend_type === '1' && data.recommend_type === '0'"
+          >
+            <img :src="$imageHost+'/image/wxapp/prescription-icon2.png'" />
+            <span>我的处方药</span>
+            <span class="more">更多</span>
+          </div>
+          <!-- 我的处方药结束 -->
           <!--无商品占位-->
           <div
             v-if="!goodsFlag"
@@ -569,8 +578,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "@/style/admin/decorationModules.scss";
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/style/admin/decorationModules.scss';
+@import '@/assets/aliIcon/iconfont.scss';
 .commodity {
   .hiddenTitle {
     height: 55px;
@@ -579,6 +588,30 @@ export default {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+  }
+  .prescription-module-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 25px 6px 0;
+    > img {
+      width: 17px;
+      height: 17px;
+      margin-right: 12px;
+    }
+    > span {
+      font-size: 16px;
+      color: #333;
+      font-weight: 600;
+    }
+    > span:first-of-type {
+      margin-right: auto;
+    }
+    > span.more {
+      font-size: 13px;
+      color: #656565;
+      font-weight: 400;
+    }
   }
   .img_title {
     display: inline-block;
@@ -611,7 +644,7 @@ export default {
               left: 0px;
               top: 0px;
               height: 42.16px;
-              background: url("../../../../../../../../assets/adminImg/label-three.png")
+              background: url('../../../../../../../../assets/adminImg/label-three.png')
                 no-repeat;
               background-size: 100% 100%;
               text-align: center;

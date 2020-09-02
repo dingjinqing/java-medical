@@ -1,12 +1,13 @@
 package com.vpu.mp.controller;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.ValidatorConfig;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.Util;
+
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
@@ -23,8 +24,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.io.IOException;
 import java.util.Objects;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.LANGUAGE_TYPE_PARAM;
 import static com.vpu.mp.config.ValidatorConfig.UNDEER_POINT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.LANGUAGE_TYPE_PARAM;
 
 /**
  * controller全局异常捕获处理
@@ -57,7 +58,8 @@ public class ExceptionControllerHandler extends BaseController {
             return "";
         }
         String field = Objects.requireNonNull(result.getFieldError()).getField();
-        if (field.contains("[")){
+        String leftBracket = "[";
+        if (field.contains(leftBracket)){
             field = field.replaceAll("[\\[\\d+\\]]", "");
         }
         String objectName = result.getObjectName();

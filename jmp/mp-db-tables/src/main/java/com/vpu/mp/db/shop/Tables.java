@@ -1090,4 +1090,107 @@ public class Tables {
      * The table <code>jmini_shop_489258.b2c_checked_goods_cart</code>.
      */
     public static final CheckedGoodsCart CHECKED_GOODS_CART = com.vpu.mp.db.shop.tables.CheckedGoodsCart.CHECKED_GOODS_CART;
+    /**
+     * 科室
+     */
+    public static final Department DEPARTMENT = com.vpu.mp.db.shop.tables.Department.DEPARTMENT;
+
+    /**
+     * 医师表
+     */
+    public static final Doctor DOCTOR = com.vpu.mp.db.shop.tables.Doctor.DOCTOR;
+
+    /**
+     * 科室
+     */
+    public static final DoctorTitle DOCTOR_TITLE = com.vpu.mp.db.shop.tables.DoctorTitle.DOCTOR_TITLE;
+
+    /**
+     * 商品辅助信息表
+     */
+    public static final GoodsMedicalInfo GOODS_MEDICAL_INFO = com.vpu.mp.db.shop.tables.GoodsMedicalInfo.GOODS_MEDICAL_INFO;
+
+    /**
+     * 患者信息
+     */
+    public static final Patient PATIENT = com.vpu.mp.db.shop.tables.Patient.PATIENT;
+
+    /**
+     * 药师表
+     */
+    public static final Pharmacist PHARMACIST = com.vpu.mp.db.shop.tables.Pharmacist.PHARMACIST;
+
+    /**
+     * 处方信息表
+     */
+    public static final Prescription PRESCRIPTION = com.vpu.mp.db.shop.tables.Prescription.PRESCRIPTION;
+
+    /**
+     * 处方项目明细表
+     */
+    public static final PrescriptionItem PRESCRIPTION_ITEM = com.vpu.mp.db.shop.tables.PrescriptionItem.PRESCRIPTION_ITEM;
+
+    /**
+     * 用户患者关联表
+     */
+    public static final UserPatientCouple USER_PATIENT_COUPLE = com.vpu.mp.db.shop.tables.UserPatientCouple.USER_PATIENT_COUPLE;
+
+    /**
+     * 医嘱表
+     */
+    public static final DoctorAdvice DOCTOR_ADVICE = com.vpu.mp.db.shop.tables.DoctorAdvice.DOCTOR_ADVICE;
+
+    /**
+     * 医师科室关联表
+     */
+    public static final DoctorDepartmentCouple DOCTOR_DEPARTMENT_COUPLE = com.vpu.mp.db.shop.tables.DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE;
+
+    /**
+     * The table <code>jmini_shop_224462.b2c_medical_history</code>.
+     * 病历表
+     */
+    public static final MedicalHistory MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.MedicalHistory.MEDICAL_HISTORY;
+    /**
+     * 问诊订单表
+     */
+    public static final InquiryOrder INQUIRY_ORDER = com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
+
+    /**
+     * 问诊会话记录一次医生和患者的在线会话
+     */
+    public static final ImSession IM_SESSION = com.vpu.mp.db.shop.tables.ImSession.IM_SESSION;
+
+    /**
+     * 问诊会话详情 记录每一条会话
+     */
+    public static final ImSessionItem IM_SESSION_ITEM = com.vpu.mp.db.shop.tables.ImSessionItem.IM_SESSION_ITEM;
+    /**
+     * 问诊订单退款记录
+     */
+    public static final InquiryOrderRefundList INQUIRY_ORDER_REFUND_LIST = com.vpu.mp.db.shop.tables.InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST;
+    /**
+     * 充值记录表
+     */
+    public static final OrderMedicalHistory ORDER_MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.OrderMedicalHistory.ORDER_MEDICAL_HISTORY;
+    /**
+     * 用户消息表
+     */
+    public static final UserMessage USER_MESSAGE = com.vpu.mp.db.shop.tables.UserMessage.USER_MESSAGE;
+    /**
+     * 短信充值记录表
+     */
+    public static final SmsRecharge SMS_RECHARGE = com.vpu.mp.db.shop.tables.SmsRecharge.SMS_RECHARGE;
+    /**
+     * 用户公告关联表
+     */
+    public static final UserAnnouncement USER_ANNOUNCEMENT = com.vpu.mp.db.shop.tables.UserAnnouncement.USER_ANNOUNCEMENT;
+    /**
+     * 用户关注医师
+     */
+    public static final UserDoctorAttention USER_DOCTOR_ATTENTION = com.vpu.mp.db.shop.tables.UserDoctorAttention.USER_DOCTOR_ATTENTION;
+    /**
+     * 医师上下班记录表
+     */
+    public static final DoctorDutyRecord DOCTOR_DUTY_RECORD = com.vpu.mp.db.shop.tables.DoctorDutyRecord.DOCTOR_DUTY_RECORD;
+
 }

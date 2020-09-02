@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.market.lottery;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -49,7 +49,6 @@ import java.util.Collections;
 import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_LOTTERY_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_PRIZE_STATUS_RECEIVED;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_PRIZE_STATUS_UNCLAIMED;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TYPE_BALANCE;
@@ -226,49 +225,36 @@ public class LotteryRecordService extends ShopBaseService {
         }
         joinValid.setPrizeImage(imageService.getImgFullUrl(lotteryPrizeRecord != null ? lotteryPrizeRecord.getIconImgsImage() : null));
         joinValid.setPrizeText(lotteryPrizeRecord!=null?lotteryPrizeRecord.getIconImgs():"");
+
+        // 处理抽奖
+        processLottery(userId, joinValid, lotteryPrizeRecord, lotteryRecord, recordRecord);
+
+        if (recordRecord.getId() == null) {
+            recordRecord.insert();
+        }
+    }
+
+    /**
+     * 处理抽奖
+     *
+     * @param userId
+     * @param joinValid
+     * @param lotteryPrizeRecord
+     * @param lotteryRecord
+     * @param recordRecord
+     * @throws MpException
+     */
+    private void processLottery(Integer userId, JoinLottery joinValid, LotteryPrizeRecord lotteryPrizeRecord, LotteryRecord lotteryRecord, LotteryRecordRecord recordRecord) throws MpException {
         logger().info("抽奖结果:");
         //选择奖类型
         switch (joinValid.getResultsType()) {
             case LOTTERY_TYPE_NULL:
                 logger().info("未中奖");
             case LOTTERY_TYPE_SEND_OUT:
-                logger().info("已经发完了");
-                recordRecord.setLotteryGrade((byte) 0);
-                recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_RECEIVED);
-                if (lotteryPrizeRecord!=null){
-                    LotteryPrizeVo lotteryPrizeVo =lotteryPrizeRecord.into(LotteryPrizeVo.class);
-                    recordRecord.setAwardInfo(Util.toJson(lotteryPrizeVo==null?"":lotteryPrizeVo));
-                }
-                if (lotteryRecord.getNoAwardScore()!=null&&!lotteryRecord.getNoAwardScore().equals(0)){
-                    logger().info("有安慰奖");
-                    recordRecord.setLotteryAward("赠送积分"+lotteryRecord.getNoAwardScore());
-                    ScoreParam scoreParam = new ScoreParam();
-                    scoreParam.setScore(lotteryRecord.getNoAwardScore());
-                    scoreParam.setUserId(userId);
-                    scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
-                    scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
-                    scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_IN.val());
-                    joinValid.setLotteryAward("赠送积分"+lotteryRecord.getNoAwardScore());
-                }else {
-                    logger().info("没有安慰奖");
-                    recordRecord.setLotteryAward(lotteryRecord.getNoAwardIcon());
-                    joinValid.setLotteryAward(lotteryRecord.getNoAwardIcon());
-                }
-                joinValid.setPrizeImage(imageService.getImgFullUrl(lotteryRecord.getNoAwardImage()));
-                joinValid.setPrizeText(lotteryRecord.getNoAwardIcon());
+                processSendOut(userId, joinValid, lotteryPrizeRecord, lotteryRecord, recordRecord);
                 break;
             case LOTTERY_TYPE_SCORE:
-                logger().info("积分");
-                recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_RECEIVED);
-                recordRecord.setLotteryAward(lotteryPrizeRecord.getIntegralScore()+"积分");
-                joinValid.setLotteryAward(lotteryPrizeRecord.getIntegralScore()+"积分");
-
-                ScoreParam   scoreParam = new ScoreParam();
-                scoreParam.setScore(lotteryPrizeRecord != null ? lotteryPrizeRecord.getIntegralScore() : 0);
-                scoreParam.setUserId(userId);
-                scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
-                scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
-                scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_IN.val());
+                processTypeScore(userId, joinValid, lotteryPrizeRecord, recordRecord);
 
                 break;
             case LOTTERY_TYPE_BALANCE:
@@ -317,7 +303,7 @@ public class LotteryRecordService extends ShopBaseService {
                     recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                     recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
                     recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
-                    Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
+                    Timestamp timeStampPlus = DateUtils.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
                     recordRecord.setLotteryExpiredTime(timeStampPlus);
                     recordRecord.insert();
                     PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(userId, lotteryRecord.getId(), recordRecord.getId(),
@@ -338,9 +324,47 @@ public class LotteryRecordService extends ShopBaseService {
                 break;
             default:
         }
-        if (recordRecord.getId() == null) {
-            recordRecord.insert();
+    }
+
+    private void processTypeScore(Integer userId, JoinLottery joinValid, LotteryPrizeRecord lotteryPrizeRecord, LotteryRecordRecord recordRecord) throws MpException {
+        logger().info("积分");
+        recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_RECEIVED);
+        recordRecord.setLotteryAward(lotteryPrizeRecord.getIntegralScore()+"积分");
+        joinValid.setLotteryAward(lotteryPrizeRecord.getIntegralScore()+"积分");
+
+        ScoreParam scoreParam = new ScoreParam();
+        scoreParam.setScore(lotteryPrizeRecord != null ? lotteryPrizeRecord.getIntegralScore() : 0);
+        scoreParam.setUserId(userId);
+        scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+        scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
+        scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_IN.val());
+    }
+
+    private void processSendOut(Integer userId, JoinLottery joinValid, LotteryPrizeRecord lotteryPrizeRecord, LotteryRecord lotteryRecord, LotteryRecordRecord recordRecord) throws MpException {
+        logger().info("已经发完了");
+        recordRecord.setLotteryGrade((byte) 0);
+        recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_RECEIVED);
+        if (lotteryPrizeRecord!=null){
+            LotteryPrizeVo lotteryPrizeVo =lotteryPrizeRecord.into(LotteryPrizeVo.class);
+            recordRecord.setAwardInfo(Util.toJson(lotteryPrizeVo==null?"":lotteryPrizeVo));
         }
+        if (lotteryRecord.getNoAwardScore()!=null&&!lotteryRecord.getNoAwardScore().equals(0)){
+            logger().info("有安慰奖");
+            recordRecord.setLotteryAward("赠送积分"+lotteryRecord.getNoAwardScore());
+            ScoreParam scoreParam = new ScoreParam();
+            scoreParam.setScore(lotteryRecord.getNoAwardScore());
+            scoreParam.setUserId(userId);
+            scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+            scoreParam.setRemarkCode(RemarkTemplate.MSG_LOTTERY_GIFT.code);
+            scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_LOTTERY.val(), TRADE_FLOW_IN.val());
+            joinValid.setLotteryAward("赠送积分"+lotteryRecord.getNoAwardScore());
+        }else {
+            logger().info("没有安慰奖");
+            recordRecord.setLotteryAward(lotteryRecord.getNoAwardIcon());
+            joinValid.setLotteryAward(lotteryRecord.getNoAwardIcon());
+        }
+        joinValid.setPrizeImage(imageService.getImgFullUrl(lotteryRecord.getNoAwardImage()));
+        joinValid.setPrizeText(lotteryRecord.getNoAwardIcon());
     }
 
 

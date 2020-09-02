@@ -1,14 +1,18 @@
 package com.vpu.mp.service.shop.goods.es.goods.product;
 
 import com.beust.jcommander.internal.Lists;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsProduct;
+import com.vpu.mp.service.foundation.es.pojo.goods.product.EsGoodsProductEntity;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * @author luguangyao
+ */
 @Component
 public class EsAssemblyProductService {
     public List<EsGoodsProductEntity> getEsProduct(List<EsGoods> esGoodsList){

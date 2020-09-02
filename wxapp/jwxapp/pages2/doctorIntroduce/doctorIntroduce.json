@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "pop-announce": "../../components/popup/pop-announce/index"
+  }
+}

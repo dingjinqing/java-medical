@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.payment;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import static com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class PaymentRecordService extends ShopBaseService {
 

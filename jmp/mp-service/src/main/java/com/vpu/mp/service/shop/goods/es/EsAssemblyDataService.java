@@ -2,41 +2,30 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.jedis.data.SortDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
-import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAndCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.*;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsGrade;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsProduct;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsGrade;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsProduct;
 import com.vpu.mp.service.shop.image.ImageService;
-import com.vpu.mp.service.shop.market.bargain.BargainService;
-import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
-import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
-import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +37,9 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
-
+/**
+ * @author luguangyao
+ */
 @Service
 @Slf4j
 public class EsAssemblyDataService extends ShopBaseService {
@@ -128,32 +117,7 @@ public class EsAssemblyDataService extends ShopBaseService {
             }
 
             if (validationMap(goodsProductMap, goodsId)) {
-                List<GoodsSpecProductRecord> list = goodsProductMap.get(goodsId);
-                list.sort(Comparator.comparing(GoodsSpecProductRecord::getPrdPrice));
-                List<BigDecimal> specPrdPrices = Lists.newLinkedList();
-                List<EsGoodsProduct> voList = Lists.newArrayList();
-                StringBuilder prdSns = new StringBuilder();
-                if( list.size() == 1 && StringUtils.isBlank(list.get(0).getPrdSpecs()) ){
-                    esGoods.setDefPrd(true);
-                }else{
-                    esGoods.setDefPrd(false);
-                }
-                list.forEach(x -> {
-                    if( StringUtils.isNotBlank(x.getPrdImg()) ){
-                        String imgUlr = imageService.imageUrl(x.getPrdImg());
-                        x.setPrdImg(imgUlr);
-                    }
-                    voList.add(new EsGoodsProduct(x));
-                    specPrdPrices.add(x.getPrdPrice());
-                    prdSns.append(x.getPrdSn()).append(",");
-                });
-                esGoods.setPrdSns(prdSns.toString());
-                int length = specPrdPrices.size();
-                esGoods.setPrdJson(Util.toJson(voList));
-                esGoods.setPrds(voList);
-                esGoods.setMaxSpecPrdPrices(specPrdPrices.get(length - 1));
-                esGoods.setMinSpecPrdPrices(specPrdPrices.get(0));
-
+                buildProduct(goodsProductMap, goodsId, esGoods);
             }
             if (validationMap(goodsCatInfoMap, goodsId)) {
                 List<SysCatevo> list = goodsCatInfoMap.get(goodsId);
@@ -181,6 +145,34 @@ public class EsAssemblyDataService extends ShopBaseService {
             }
         });
         return esGoodsList;
+    }
+
+    private void buildProduct(Map<Integer, Result<GoodsSpecProductRecord>> goodsProductMap, Integer goodsId, EsGoods esGoods) {
+        List<GoodsSpecProductRecord> list = goodsProductMap.get(goodsId);
+        list.sort(Comparator.comparing(GoodsSpecProductRecord::getPrdPrice));
+        List<BigDecimal> specPrdPrices = Lists.newLinkedList();
+        List<EsGoodsProduct> voList = Lists.newArrayList();
+        StringBuilder prdSns = new StringBuilder();
+        if( list.size() == 1 && StringUtils.isBlank(list.get(0).getPrdSpecs()) ){
+            esGoods.setDefPrd(true);
+        }else{
+            esGoods.setDefPrd(false);
+        }
+        list.forEach(x -> {
+            if( StringUtils.isNotBlank(x.getPrdImg()) ){
+                String imgUlr = imageService.imageUrl(x.getPrdImg());
+                x.setPrdImg(imgUlr);
+            }
+            voList.add(new EsGoodsProduct(x));
+            specPrdPrices.add(x.getPrdPrice());
+            prdSns.append(x.getPrdSn()).append(",");
+        });
+        esGoods.setPrdSns(prdSns.toString());
+        int length = specPrdPrices.size();
+        esGoods.setPrdJson(Util.toJson(voList));
+        esGoods.setPrds(voList);
+        esGoods.setMaxSpecPrdPrices(specPrdPrices.get(length - 1));
+        esGoods.setMinSpecPrdPrices(specPrdPrices.get(0));
     }
 
 
@@ -218,12 +210,12 @@ public class EsAssemblyDataService extends ShopBaseService {
         esGoods.setShopId(shopId);
         esGoods.setTotalSaleNumber(goodsSaleNumber.orElse(0)+baseSaleNumber.orElse(0));
         esGoods.setGoodsImg(imageService.imageUrl(goods.getGoodsImg()));
-        esGoods.setSaleTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getSaleTime()));
-        esGoods.setCreateTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getCreateTime()));
-        esGoods.setAddEsDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, new Date()));
-        esGoods.setUpdateDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getUpdateTime()));
-        esGoods.setCreateTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getCreateTime()));
-        esGoods.setSaleTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getSaleTime()));
+        esGoods.setSaleTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getSaleTime()));
+        esGoods.setCreateTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getCreateTime()));
+        esGoods.setAddEsDate(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, new Date()));
+        esGoods.setUpdateDate(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getUpdateTime()));
+        esGoods.setCreateTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getCreateTime()));
+        esGoods.setSaleTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL, goods.getSaleTime()));
         return esGoods;
     }
 
@@ -265,10 +257,16 @@ public class EsAssemblyDataService extends ShopBaseService {
             categoryName.append(x.getCatName()).append(" ");
             if (x.getLevel() == 0) {
                 esGoods.setFirstCatId(x.getCatId());
-            } else if (x.getLevel() == 1) {
-                esGoods.setSecondCatId(x.getCatId());
-            } else if (x.getLevel() == 2) {
-                esGoods.setThirdCatId(x.getCatId());
+            } else {
+                int level1 = 1;
+                if (x.getLevel() == level1) {
+                    esGoods.setSecondCatId(x.getCatId());
+                } else {
+                    int level2 = 2;
+                    if (x.getLevel() == level2) {
+                        esGoods.setThirdCatId(x.getCatId());
+                    }
+                }
             }
         });
         esGoods.setCatName(categoryName.toString());
@@ -417,7 +415,8 @@ public class EsAssemblyDataService extends ShopBaseService {
                 }
             });
             list.addAll(allGoodsForLabelList);
-            if (list.size() > 5) {
+            int maxValidLabels = 5;
+            if (list.size() > maxValidLabels) {
                 //优先级降序
                 Comparator<GoodsLabelAndCouple> byLevelDesc = Comparator.comparing(GoodsLabelAndCouple::getLevel).reversed();
                 //创建时间降序

@@ -18,7 +18,7 @@ export const cn = {
   // 概况 搜索统计
   search_summary: ['概况', '搜索统计'],
   // 概况 资产管理
-  asset_summary: ['概况', '资产管理'],
+  // asset_summary: ['概况', '资产管理'],
   // 概况 访问分析
   analysis_visit: ['概况', '访问分析'],
   // 概况 来源分析
@@ -27,6 +27,8 @@ export const cn = {
   analysis_portrait: ['概况', '用户画像'],
   // 概况 实时概况
   situation: ['概况', '实时概况'],
+  // 概况 销售报表
+  sales_report: ['销售统计', '销售报表'],
   // 小程序管理 页面分类
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间
@@ -101,6 +103,12 @@ export const cn = {
   memberValueAdded: ['会员管理', '会员增值'],
   // 会员管理 积分管理
   integralManagement: ['会员管理', '积分管理'],
+  // 会员管理 患者列表
+  patientList: ['会员管理', '患者列表'],
+  // 会员管理 患者列表 患者信息
+  patientMessage: ['会员管理', '患者列表', '患者信息'],
+  // 会员管理 患者列表 患者信息 处方详情
+  prescriptionMessage: ['会员管理', '患者列表', '患者信息', '处方详情'],
   // 积分管理 查看签到会员
   viewSigninMembers: ['积分管理', '查看签到会员'],
   // 积分管理 积分说明
@@ -125,6 +133,8 @@ export const cn = {
   pledge: ['基础配置', '服务承诺'],
   // 基础配置  第三方对接配置
   third_auth: ['基础配置', '第三方对接配置'],
+  // 基础配置 短信信息
+  smsConfig: ['短信中心', '充值记录'],
   // 小程序管理 自定义页面装修
   picture_setting: ['小程序管理', '自定义页面装修'],
 
@@ -380,7 +390,10 @@ export const cn = {
   manualRefund: ['订单管理', '手动退货退款'],
   // 订单管理 批量发货
   bulk_shipment: ['订单管理', '批量发货'],
-
+  // 订单管理 咨询订单
+  advisory_order: ['订单管理', '咨询订单'],
+  // 订单管理 咨询订单 查看记录
+  advisoryRecord: ['订单管理', '咨询订单', '查看记录'],
   // 门店管理 门店列表
   store_list: ['门店管理', '门店列表'],
   storeGoodsList: ['门店管理', '商品管理'],
@@ -411,5 +424,19 @@ export const cn = {
   // 门店公告 添加公告
   store_announcement_add: ['门店管理', '门店公告', '添加公告'],
   // 门店权限
-  store_permission: ['门店管理', '门店权限']
+  store_permission: ['门店管理', '门店权限'],
+  // 医师管理 医师列表
+  doctorList: ['医师管理', '医师列表'],
+  // 医师管理 医师职称
+  doctorProfessionalTitle: ['医师管理', '医师职称'],
+  // 医师管理 科室管理
+  officesList: ['医师管理', '科室管理'],
+  // 医师管理 评价列表
+  commentList: ['医师管理', '医师评价'],
+  // 处方管理 处方列表
+  prescriptionList: ['处方管理', '处方列表'],
+  // 医师管理 添加医师
+  addDoctor: ['医师管理', '添加医师'],
+  // 咨询订单 订单统计
+  advisoryTotal: ['销售统计', '咨询订单统计']
 }

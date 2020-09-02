@@ -1,0 +1,200 @@
+/* pages1/familylist/familylist.wxss */
+@import "../../css/iconfont.wxss";
+page{
+  background: #f5f5f5;
+}
+.mian-container{
+  padding-top: 20rpx;
+}
+.family_content{
+  width: 700rpx;
+  margin: 0 auto;
+  padding-bottom: 100rpx;
+}
+.each_family{
+  background: #fff;
+  border-radius: 8rpx;
+  padding: 30rpx 0 20rpx;
+  width: 700rpx;
+  margin-bottom: 20rpx;
+}
+.ef_top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 30rpx;
+  border-bottom: 1rpx solid #eee;
+  margin-left: 25rpx;
+  font-weight: bold;
+  padding-right: 26rpx;
+}
+.ef_top .ef_top_left{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.ef_top .ef_top_left > view:first-of-type{
+  margin-right: 30rpx;
+}
+.ef_top_img{
+  width: 35rpx;
+  height: 35rpx;
+}
+.ef_bottom{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 25rpx 0 0;
+  margin-left: 25rpx;
+}
+.ef_bott_left{
+  display: flex;
+  align-items: center;
+}
+.iconfont_set_default{
+  margin-right:16rpx;
+}
+.iconfont_set_default .iconfont{
+  width: 26rpx;
+  height: 26rpx;
+  color: #ccc;
+}
+.family_footer{
+  background: #fff;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.btn_add_person{
+  width: 700rpx;
+  height: 80rpx;
+  background: #26c4bc;
+  color: #fff;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  border-radius: 50rpx;
+}
+.no_content {
+  text-align: center;
+  padding-top: 350rpx;
+}
+.no_content image{
+  height: 450rpx;
+  width: 750rpx;
+  margin: 0 auto 40rpx;
+}
+.no_content .no_word{
+  text-align: center;
+  margin-bottom: 20rpx;
+  color: #999;
+}
+.no_content .btn_get_pre{
+  width: 120px;
+  height: 60rpx;
+  background: #26c4bc;
+  color: #fff;
+  line-height: 60rpx;
+  text-align: center;
+  border-radius: 30rpx;
+  margin: 0 auto;
+}
+.some_opea{
+  display: flex;
+  align-items: center;
+  color: #999;
+}
+.some_opea .del_patient{
+  padding-left: 40rpx;
+  margin-left: 40rpx;
+  border-left: 1rpx solid #999
+}
+.modal_bg{
+  width: 750rpx;
+  height: 100%;
+  z-index: 9;
+  background: rgba(0,0,0,0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.refresh_one{
+  position: fixed;
+  top: 500rpx;
+  left: 55rpx;
+  background: #fff;
+  width: 640rpx;
+  height: 250rpx;
+  border-radius: 16rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9;
+}
+.btn_modal{
+  margin-top: 28rpx;
+  width: 240rpx;
+  height: 70rpx;
+  border-radius: 36rpx;
+  background: #26C4BC;
+  color: #fff;
+  text-align: center;
+  line-height: 70rpx;
+}
+.to_get_pre{
+  position: fixed;
+  top: 300rpx;
+  left: 55rpx;
+  width: 640rpx;
+  z-index: 10;
+}
+.modal_content1{
+  width: 100%;
+  height: 612rpx;
+  border-radius: 16rpx;
+  background:linear-gradient(0deg,rgba(255,255,255,1),rgba(208,237,235,1));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.modal_content1 image{
+  width: 381rpx;
+  height: 256rpx;
+}
+.tip_word{
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.tip_btn{
+  width: 240rpx;
+  line-height: 72rpx;
+  border-radius: 36rpx;
+  background-color: #26C4BC;
+  text-align: center;
+  color: #fff;
+  margin-top: 20rpx;
+}
+.tip_btn .iconfont{
+  font-size: 30rpx;
+  margin-left: 10rpx;
+}
+.close_btn{
+  text-align: center;
+  margin-top: 30rpx;
+}
+.close_btn image{
+  width: 70rpx;
+  height: 70rpx;
+}
+
+
+
+

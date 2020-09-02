@@ -157,7 +157,8 @@ export default {
             show_market: 1, // 其他信息选中 隐藏radio字段  1市场价 2销量 3评价数 y
             goods_module_bg: 0, // 背景颜色 0与页面一致  1自定义 y
             goods_bg_color: null, // 背景自定义颜色 y
-            goodsListData: [] // 传递商品列表数据
+            goodsListData: [], // 传递商品列表数据,
+            auto_recommend_type: 0 // 推荐类别 0店铺药品 | 1我的处方药
           }
           break
         case 9: // 商品搜索模块
@@ -420,6 +421,17 @@ export default {
             'latitude': '39.92855',
             'longitude': '116.41637'
           }
+          break
+        case 29: // 处方模块
+          obj = {
+            'module_name': 'm_prescription'
+          }
+          break
+        case 30: // 病历模块
+          obj = {
+            'module_name': 'm_case_history'
+          }
+          break
       }
       console.log(obj)
       return obj

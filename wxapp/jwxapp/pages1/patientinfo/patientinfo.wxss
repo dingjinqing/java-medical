@@ -1,0 +1,196 @@
+/* pages1/patientinfo/patientinfo.wxss */
+@import "../../css/iconfont.wxss";
+.mian-container{
+  padding-top: 20rpx;
+  padding-bottom: 80rpx;
+}
+.patirnt_info{
+  padding-left: 25rpx;
+  width: 675rpx;
+  margin: 0 auto 25rpx;
+  background: #fff;
+  border-radius:16rpx;
+} 
+.each_p_line{
+  padding:35rpx 0;
+  padding-right: 25rpx;
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.el_left{
+  width: 160rpx;
+}
+.el_left text{
+  color: red;
+  margin-left: 5rpx;
+}
+.el_right{
+  width: 470rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.el_right picker{
+  width: 100%;
+}
+.spcial_line{
+  padding: 35rpx 0;
+}
+.ape_title{
+  margin-bottom: 30rpx;
+}
+.ape_title text{
+  color: red;
+  margin-left: 5rpx;
+}
+.spcial_line textarea{
+  width: 600rpx;
+  background: #f5f5f5;
+  border-radius:16rpx;
+  padding: 25rpx;
+}
+.placeholder{
+  color: #999;
+  font-weight: normal;
+}
+.history{
+  width: 440rpx;
+  text-overflow: ellipsis;
+  overflow:hidden;
+  white-space: nowrap;
+}
+.btn_submit{
+  background: #fff;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.btn_submit view{
+  width: 700rpx;
+  height: 80rpx;
+  background: #26c4bc;
+  color: #fff;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  border-radius: 50rpx;
+}
+.modal_bg{
+  background: rgba(0,0,0,0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 99;
+}
+.history_modal{
+  border-radius: 16rpx 16rpx 0 0;
+  background: #fff;
+  position: fixed;
+  bottom: 0;
+  width: 725rpx;
+  padding-left: 25rpx;
+  z-index: 999;
+}
+.modal_title{
+  font-size: 36rpx;
+  font-weight: bold;
+  text-align: center;
+  padding-right: 25rpx;
+  height: 110rpx;
+  line-height: 110rpx;
+  position: relative;
+}
+.modal_title image{
+  width: 36rpx;
+  height: 36rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 37rpx;
+}
+.modal_content{
+  max-height: 700rpx;
+  overflow-y: scroll;
+  padding-right: 25rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.modal_btn{
+  width: 700rpx;
+  height: 80rpx;
+  background: #26c4bc;
+  color: #fff;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  border-radius: 50rpx;
+  margin-top:25rpx;
+}
+.each_pain_line{
+  height: 100rpx;
+  border-top: 2rpx solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.epl_choose{
+  display: flex;
+  justify-content: flex-start;
+  text-align: right;
+}
+.iconfont{
+  font-size: 32rpx;
+  color:#26C4BC;
+  margin-left: 50rpx;
+}
+.history_area{
+  display: flex;
+  flex-wrap: wrap;
+}
+.each_his_item{
+  padding: 0 20rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  color: #000;
+  border: 1rpx solid #ccc;
+  text-align: center;
+  line-height: 60rpx;
+  margin-right: 20rpx;
+  margin-bottom: 20rpx;
+}
+.history_area .active{
+  border-color: #26C4BC;
+  color: #26C4BC;
+  background: #E4FBFA;
+}
+.guomin_his{
+  padding-bottom: 25rpx;
+}
+.guomin_his textarea{
+  width: 100%;
+  padding: 20rpx;
+  box-sizing: border-box;
+  height: 150rpx;
+}
+.btn_save_guomin{
+  width: 180rpx;
+  margin-left: 500rpx;
+  background: #26C4BC;
+  color: #fff;
+  text-align: center;
+  height: 60rpx;
+  line-height: 60rpx;
+  border-radius: 30rpx;
+}
+.can_not_edit{
+  color: #999;
+}
+
+

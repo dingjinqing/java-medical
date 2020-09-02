@@ -5,18 +5,19 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.vpu.mp.dao.foundation.database.DatabaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /****
- ** 
+ **
  ** @author 新国
  **
  **/
@@ -31,6 +32,9 @@ public class WxAppAuthInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
 	protected SaasApplication saas;
+
+	@Autowired
+	protected DatabaseManager databaseManager;
 
 	/**
 	 * 账号登录例外URL
@@ -50,10 +54,11 @@ public class WxAppAuthInterceptor extends HandlerInterceptorAdapter {
 
 		WxAppSessionUser user = wxAppAuth.user();
 		if (user == null) {
-			errorResponse(request, response, URL_LOGIN,
-					(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
-			return false;
+			return true;
+//			errorResponse(request, response, URL_LOGIN,
+//					(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
 		}
+		databaseManager.switchShopDb(wxAppAuth.shopId());
 		return true;
 	}
 

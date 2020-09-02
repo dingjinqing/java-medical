@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.order.ship;
 
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.db.shop.tables.BulkshipmentRecordDetail;
 import com.vpu.mp.db.shop.tables.records.BulkshipmentRecordDetailRecord;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFailModel;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipPojo;

@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.MrkingStrategy;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
@@ -251,8 +251,9 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                     break;
                 case 3:
                     //满折
-                    if ((BigDecimalUtil.compareTo(condition.getFullMoney(), null) > 0 && condition.getFullMoney().compareTo(price) < 1) ||
-                        (condition.getAmount() != null && condition.getAmount() > 0 && condition.getAmount() <= num)) {
+                    boolean isDiscountByFullMoney = (BigDecimalUtil.compareTo(condition.getFullMoney(), null) > 0 && condition.getFullMoney().compareTo(price) < 1) ||
+                        (condition.getAmount() != null && condition.getAmount() > 0 && condition.getAmount() <= num);
+                    if (isDiscountByFullMoney) {
                         result =
                             price.subtract(
                                 BigDecimalUtil.multiplyOrDivide(
@@ -330,7 +331,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             activityInfo.setFullReduction(fullReduction);
 
             Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal> record = values.get(0);
-            fullReduction.setFullReductiontype(record.get(MRKING_STRATEGY.TYPE));
+            fullReduction.setFullReductionType(record.get(MRKING_STRATEGY.TYPE));
             //会员专享
             if (StringUtils.isNotBlank(record.get(MRKING_STRATEGY.CARD_ID))) {
                 fullReduction.setIsExclusive(true);
@@ -370,7 +371,9 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
      */
     public String fullReductionRuleToString(CartActivityInfo.FullReduction fullReduction, CartActivityInfo.FullReductionRule rule, BigDecimal reduceMoney) {
         if (reduceMoney.compareTo(BigDecimal.ZERO)>0){
-            if (!fullReduction.getFullReductiontype().equals((byte)4)){
+            /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
+            byte typeDiscountNth = (byte) 4;
+            if (!fullReduction.getFullReductionType().equals(typeDiscountNth)){
                 if (fullReduction.getRulesType().equals((byte)1)){
                     logger().info("已满{}元,减{}元",rule.getFullMoney(),reduceMoney);
                     return "已购满"+rule.getFullMoney()+"元,下单立减"+reduceMoney+"元";
@@ -384,8 +387,9 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             }
         }
         //满减
-        switch (fullReduction.getFullReductiontype()){
-            case 1://每满减
+        switch (fullReduction.getFullReductionType()){
+            case 1:
+                //每满减
                 if (rule.getFullMoney().compareTo(BigDecimal.ZERO)>0&&rule.getReduceMoney()!=null){
                     return "每满"+rule.getFullMoney()+"元,减"+rule.getReduceMoney()+"元";
                 }
@@ -393,7 +397,8 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                     return "每满"+rule.getAmount()+"件,减"+rule.getReduceMoney()+"元";
                 }
                 break;
-            case 2://满减
+            case 2:
+                //满减
                 if (rule.getFullMoney().compareTo(BigDecimal.ZERO)>0&&rule.getReduceMoney()!=null){
                     return "满"+rule.getFullMoney()+"元,减"+rule.getReduceMoney()+"元";
                 }
@@ -401,7 +406,8 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                     return "满"+rule.getAmount()+"件,减"+rule.getReduceMoney()+"元";
                 }
                 break;
-            case 3://3满折
+            case 3:
+                //3满折
                 if (rule.getFullMoney().compareTo(BigDecimal.ZERO)>0&&rule.getReduceMoney()!=null){
                     return "满"+rule.getFullMoney()+"元,打"+rule.getDiscount()+"折";
                 }
@@ -409,7 +415,8 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                     return "满"+rule.getAmount()+"件,打"+rule.getDiscount()+"折";
                 }
                 break;
-            case 4://第几件=
+            case 4:
+                //第几件=
                 if (rule.getAmount()>0&&rule.getReduceMoney()!=null){
                     return "购买同一件商品第"+rule.getAmount()+"件,打"+rule.getDiscount()+"折";
                 }
@@ -429,12 +436,13 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
         for (Map.Entry<Integer, List<FullReductionGoodsCartBo>> entry : ruleCartIdMap.entrySet()) {
             Integer ruleId = entry.getKey();
             List<FullReductionGoodsCartBo> fullGoodsList = entry.getValue();
-            CartActivityInfo cartActivityInfo = cartActivityMap.get(ruleId);//stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(ruleId)).findFirst();
+            CartActivityInfo cartActivityInfo = cartActivityMap.get(ruleId);
+            //stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(ruleId)).findFirst();
             if (cartActivityInfo!=null) {
                 CartActivityInfo.FullReduction fullReduction = cartActivityInfo.getFullReduction();
                 CartActivityInfo.FullReductionRule fullReductionRule = fullReduction.getRules().get(0);
                 /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
-                switch (fullReduction.getFullReductiontype()) {
+                switch (fullReduction.getFullReductionType()) {
                     case 1:
                         break;
                     case 2:
@@ -553,14 +561,15 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             List<FullReductionGoodsCartBo> goodsList = entry.getValue();
             CartActivityInfo fullReduction = goodsList.get(0).getFullReduction();
             CartActivityInfo.FullReductionRule fullReductionRule = goodsList.get(0).getFullReductionRule();
-            CartActivityInfo cartActivityInfo = activityMap.get(entry.getKey());//stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(ruleId)).findFirst();
+            CartActivityInfo cartActivityInfo = activityMap.get(entry.getKey());
+            //stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(ruleId)).findFirst();
             //总数量
             int totalNum = goodsList.stream().filter(fullGoods->fullGoods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)).mapToInt(FullReductionGoodsCartBo::getNum).sum();
             //总金额
             BigDecimal totalMoney = goodsList.stream().filter(fullGoods->fullGoods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)).map(FullReductionGoodsCartBo::getMoney).reduce(BigDecimal.ZERO, BigDecimal::add);
             BigDecimal reduceMoney=BigDecimal.ZERO;
             /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
-            switch (fullReduction.getFullReduction().getFullReductiontype()) {
+            switch (fullReduction.getFullReduction().getFullReductionType()) {
                 case 1:
                     if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
                         if (fullReductionRule.getAmount()<=totalNum){
@@ -576,7 +585,8 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                         }
                     }
                     break;
-                case 2://满减
+                case 2:
+                    //满减
                     if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
                         if (fullReductionRule.getAmount()<=totalNum){
                             reduceMoney =fullReductionRule.getReduceMoney();
@@ -591,7 +601,8 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                         }
                     }
                     break;
-                case 3://3满折
+                case 3:
+                    //3满折
                     if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
                         if (fullReductionRule.getAmount()<=totalNum){
                             reduceMoney = BigDecimal.ONE.subtract(fullReductionRule.getDiscount().multiply(new BigDecimal("0.1"))).multiply(totalMoney);
@@ -618,6 +629,8 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                             reduceMoney = reduceMoney.add(multiply);
                         }
                     }
+                    break;
+                default:
                     break;
             }
             fullReductionRule.setReduceTotalMoney(reduceMoney.setScale(2,RoundingMode.HALF_UP));

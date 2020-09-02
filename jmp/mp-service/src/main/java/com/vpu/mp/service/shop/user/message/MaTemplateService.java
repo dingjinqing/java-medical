@@ -7,9 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 
@@ -21,6 +21,9 @@ import cn.binarywang.wx.miniapp.bean.template.WxMaTemplateAddResult;
 import cn.binarywang.wx.miniapp.bean.template.WxMaTemplateListResult;
 import me.chanjar.weixin.common.error.WxErrorException;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MaTemplateService extends ShopBaseService {
 
@@ -66,7 +69,8 @@ public class MaTemplateService extends ShopBaseService {
             service.sendTemplateMsg(messageBuilder.build());
         } catch (WxErrorException e) {
             // template_id不正确，移除缓存，重新发送模板消息
-            if (e.getError().getErrorCode() == 40037) {
+            int invalidTemplateIdCode = 40037;
+            if (e.getError().getErrorCode() == invalidTemplateIdCode) {
                 jedis.delete(key);
                 sendMaTemplateMessage(appId, toUser, keywordValues, templateConfig, emphasisKeyword,
                     page, formId);

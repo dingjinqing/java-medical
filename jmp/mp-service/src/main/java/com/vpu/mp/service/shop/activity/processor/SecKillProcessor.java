@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductBo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -59,7 +59,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(x.getActivityType())).collect(Collectors.toList());
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsSecKillListInfo = secKillProcessorDao.getGoodsSecKillListInfo(goodsIds, DateUtil.getLocalDateTime());
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsSecKillListInfo = secKillProcessorDao.getGoodsSecKillListInfo(goodsIds, DateUtils.getLocalDateTime());
 
         availableCapsules.forEach(capsule->{
             if (goodsSecKillListInfo.get(capsule.getGoodsId()) == null) {
@@ -84,7 +84,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         if (param.getActivityType() == null && capsule.getActivityAnnounceMpVo() == null) {
             // 探测是否需要进行活动预告
-            capsule.setActivityAnnounceMpVo(secKillProcessorDao.getAnnounceInfo(capsule.getGoodsId(),DateUtil.getLocalDateTime()));
+            capsule.setActivityAnnounceMpVo(secKillProcessorDao.getAnnounceInfo(capsule.getGoodsId(), DateUtils.getLocalDateTime()));
             return;
         }
         if(param.getActivityId() != null && param.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_SEC_KILL)){

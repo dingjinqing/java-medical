@@ -2,35 +2,15 @@ package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.collection.CollectService;
-import com.vpu.mp.service.shop.config.ConfigService;
-import com.vpu.mp.service.shop.config.ShopBasicConfigService;
-import com.vpu.mp.service.shop.config.ThirdAuthConfigService;
-import com.vpu.mp.service.shop.config.TradeService;
-import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
+import com.vpu.mp.service.shop.config.*;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
-import com.vpu.mp.service.shop.decoration.AdminDecorationService;
-import com.vpu.mp.service.shop.decoration.AppletsJumpService;
-import com.vpu.mp.service.shop.decoration.ChooseLinkService;
-import com.vpu.mp.service.shop.decoration.MpDecorationService;
-import com.vpu.mp.service.shop.decoration.PageClassificationService;
-import com.vpu.mp.service.shop.distribution.BrokerageStatisticalService;
-import com.vpu.mp.service.shop.distribution.DistributorCheckService;
-import com.vpu.mp.service.shop.distribution.DistributorGroupService;
-import com.vpu.mp.service.shop.distribution.DistributorLevelService;
-import com.vpu.mp.service.shop.distribution.DistributorListService;
-import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
-import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
-import com.vpu.mp.service.shop.distribution.MpDistributionService;
-import com.vpu.mp.service.shop.distribution.PromotionLanguageService;
-import com.vpu.mp.service.shop.distribution.RebateGoodsService;
-import com.vpu.mp.service.shop.distribution.RebateStrategyService;
+import com.vpu.mp.service.shop.decoration.*;
+import com.vpu.mp.service.shop.department.DepartmentService;
+import com.vpu.mp.service.shop.distribution.*;
+import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.express.ExpressService;
-import com.vpu.mp.service.shop.goods.ApiGoodsService;
-import com.vpu.mp.service.shop.goods.FootPrintService;
-import com.vpu.mp.service.shop.goods.GoodsRecommendService;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.goods.GoodsWrapService;
+import com.vpu.mp.service.shop.goods.*;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
@@ -41,6 +21,7 @@ import com.vpu.mp.service.shop.goods.goodsimport.GoodsImportRecordService;
 import com.vpu.mp.service.shop.goods.goodsimport.GoodsImportService;
 import com.vpu.mp.service.shop.goods.mp.GoodsActivityShareRecordService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -79,28 +60,24 @@ import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
-import com.vpu.mp.service.shop.marketCalendar.MarketCalendarService;
-import com.vpu.mp.service.shop.member.AddressService;
-import com.vpu.mp.service.shop.member.CardVerifyService;
-import com.vpu.mp.service.shop.member.MemberService;
-import com.vpu.mp.service.shop.member.ScoreCfgService;
-import com.vpu.mp.service.shop.member.TagService;
-import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.marketcalendar.MarketCalendarService;
+import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
+import com.vpu.mp.service.shop.member.*;
+import com.vpu.mp.service.shop.message.UserMessageService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.OrderApiService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
+import com.vpu.mp.service.shop.order.action.AuditService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
-import com.vpu.mp.service.shop.overview.AssetManagementService;
-import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
-import com.vpu.mp.service.shop.overview.MallOverviewService;
-import com.vpu.mp.service.shop.overview.OverviewService;
-import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
-import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
+import com.vpu.mp.service.shop.overview.*;
+import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.question.FeedbackService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -110,6 +87,9 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
+import com.vpu.mp.service.shop.task.order.InquiryOrderTaskService;
+import com.vpu.mp.service.shop.task.prescription.PrescriptionTaskService;
+import com.vpu.mp.service.shop.title.TitleService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.shop.user.message.MessageRecordService;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
@@ -157,6 +137,8 @@ public class ShopApplication {
 	public MpDecorationService mpDecoration;
     @Autowired
     public AdminDecorationService adminDecoration;
+    @Autowired
+    public UserMessageService userMessageService;
 
 	/**
 	 * 订单普通查询
@@ -552,7 +534,7 @@ public class ShopApplication {
      */
     @Autowired
     public WxShareRewardService wxShareReward;
-    
+
     /**
      * 小程序公众号短信发送记录表
      */
@@ -584,4 +566,73 @@ public class ShopApplication {
     @Autowired
     public MarketCalendarService calendarService;
 
+    /**
+     * 科室
+     */
+    @Autowired
+    public DepartmentService departmentService;
+
+    /**
+     * 职称
+     */
+    @Autowired
+    public TitleService titleService;
+
+    /**
+     * 医师
+     */
+    @Autowired
+    public DoctorService doctorService;
+
+    /**
+     * 患者
+     */
+    @Autowired
+    public PatientService patientService;
+
+    /**
+     * 药品
+     */
+    @Autowired
+    public MedicalGoodsService medicalGoodsService;
+
+    /**
+     * 病历
+     */
+    @Autowired
+    public MedicalHistoryService medicalHistoryService;
+
+    @Autowired
+    public AuditService auditService;
+
+    /**
+     * 处方
+     */
+    @Autowired
+    public PrescriptionService prescriptionService;
+
+    /**
+     * 问诊订单
+     */
+    @Autowired
+    public InquiryOrderService inquiryOrderService;
+    /**
+     * 问诊订单任务
+     */
+    @Autowired
+    public InquiryOrderTaskService inquiryOrderTaskService;
+
+    /**
+     * 商品
+     */
+    @Autowired
+    public GoodsService goodsService;
+    /**
+     * 处方任务
+     */
+    @Autowired
+    public PrescriptionTaskService prescriptionTaskService;
+    /**咨询聊天*/
+    @Autowired
+    public ImSessionService imSessionService;
 }

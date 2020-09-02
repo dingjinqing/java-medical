@@ -47,7 +47,7 @@ const actType = {
     dialogButtonName: {
       left: {
         left: {
-          name: '加入购物车',
+          name: '加入清单',
           event: 'addCart'
         },
         right: {
@@ -130,7 +130,7 @@ const actType = {
     dialogButtonName: {
       left: {
         left: {
-          name: '加入购物车',
+          name: '加入清单',
           event: 'addCart'
         },
         right: {
@@ -168,7 +168,7 @@ const actType = {
     dialogButtonName: {
       left: {
         left: {
-          name: '加入购物车',
+          name: '加入清单',
           event: 'addCart'
         },
         right: {
@@ -193,7 +193,7 @@ const actType = {
   default: {
     footerButtonName: {
       left: {
-        name: '加入购物车',
+        name: '加入清单',
         event: 'checkAddCart'
       },
       right: {
@@ -216,7 +216,7 @@ const actType = {
       },
       default: {
         left: {
-          name: '加入购物车',
+          name: '加入清单',
           event: 'addCart'
         },
         right: {
@@ -467,7 +467,7 @@ global.wxComponent({
       console.log(buttonData)
       return buttonData
     },
-    // 添加购物车
+    // 添加清单
     addCart () {
       let {
         goodsNum: goodsNumber,
@@ -705,6 +705,9 @@ global.wxComponent({
     },
     toCartList () {
       util.jumpLink("pages/cart/cart", "navigateTo")
+    },
+    viewDoctorConsultation(){
+      util.jumpLink("pages2/doctorConsultation/doctorConsultation", "navigateTo")
     }
   }
 })

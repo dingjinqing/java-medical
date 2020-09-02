@@ -330,108 +330,121 @@
             v-if="data.recommend_type === '0'"
           >
             <div class="manual">
-              <div class="goodsNum">
-                <span>{{$t('commodity.quantityOfCommodities')}}：</span>
-                <el-select
-                  v-model="data.goods_num"
-                  :placeholder="$t('commodity.placeChiose')"
-                  size="small"
-                >
-                  <el-option
-                    v-for="item in commodityModule.goodsOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+              <div class="goodsPrice price auto_recommend_type">
+                <span>推荐类别：</span>
+                <el-radio
+                  v-model="data.auto_recommend_type"
+                  label="0"
+                >店铺商品</el-radio>
+                <el-radio
+                  v-model="data.auto_recommend_type"
+                  label="1"
+                >患者处方药</el-radio>
+              </div>
+              <template v-if="data.auto_recommend_type === '0'">
+                <div class="goodsNum">
+                  <span>{{$t('commodity.quantityOfCommodities')}}：</span>
+                  <el-select
+                    v-model="data.goods_num"
+                    :placeholder="$t('commodity.placeChiose')"
+                    size="small"
                   >
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="goodsPrice price">
-                <span>{{$t('commodity.commodityPrice')}}：</span>
-                <el-input
-                  v-model="data.min_price"
-                  size="small"
-                ></el-input>
-                <i style="display:inline-block;margin:0 5px">{{$t('commodity.reach')}}</i>
-                <el-input
-                  v-model="data.max_price"
-                  size="small"
-                ></el-input>
-              </div>
-              <div class="goodsPrice price keyWors">
-                <span>{{$t('commodity.keyWord')}}：</span>
-                <el-input
-                  size="small"
-                  v-model="data.keywords"
-                ></el-input>
-              </div>
-              <div class="goodsPrice price commodityScope">
-                <span>{{$t('commodity.commodityScope')}}：</span>
-                <el-select
-                  v-model="data.goods_area"
-                  :placeholder="$t('commodity.placeChiose')"
-                  size="small"
-                  @change='handleToSelectRange()'
-                >
-                  <el-option
-                    v-for="item in commodityModule.commodityScopeOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                  </el-option>
-                </el-select>
-              </div>
-              <!--选中商品范围后显示的对应隐藏弹窗按钮-->
-              <div
-                class="hiddenRangeCheck"
-                style="margin-left:100px"
-                v-if="data.goods_area!=='0'"
-              >
-                <!--商家分类-->
-                <div
-                  class="rangeHiddenBtn"
-                  @click="handleToClickRangeBtn(Number(data.goods_area))"
-                >
-                  {{rangeList[Number(data.goods_area)]}}
+                    <el-option
+                      v-for="item in commodityModule.goodsOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
                 </div>
+                <div class="goodsPrice price">
+                  <span>{{$t('commodity.commodityPrice')}}：</span>
+                  <el-input
+                    v-model="data.min_price"
+                    size="small"
+                  ></el-input>
+                  <i style="display:inline-block;margin:0 5px">{{$t('commodity.reach')}}</i>
+                  <el-input
+                    v-model="data.max_price"
+                    size="small"
+                  ></el-input>
+                </div>
+                <div class="goodsPrice price keyWors">
+                  <span>{{$t('commodity.keyWord')}}：</span>
+                  <el-input
+                    size="small"
+                    v-model="data.keywords"
+                  ></el-input>
+                </div>
+                <div class="goodsPrice price commodityScope">
+                  <span>{{$t('commodity.commodityScope')}}：</span>
+                  <el-select
+                    v-model="data.goods_area"
+                    :placeholder="$t('commodity.placeChiose')"
+                    size="small"
+                    @change='handleToSelectRange()'
+                  >
+                    <el-option
+                      v-for="item in commodityModule.commodityScopeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                </div>
+                <!--选中商品范围后显示的对应隐藏弹窗按钮-->
                 <div
-                  style="height:30px;line-height:30px;margin-left:5px"
-                  v-if="rangeCheckData.length>0"
-                >{{$t('commodity.haveChosen')}}{{rangeHiddenRightText}}：{{rangeCheckData.length}}个{{rangeHiddenRightText}}</div>
-              </div>
-              <!--end-->
-              <div class="goodsPrice price commodityScope">
-                <span>{{$t('commodity.activeCommodities')}}：</span>
-                <el-select
-                  v-model="data.goods_type"
-                  :placeholder="$t('commodity.placeChiose')"
-                  size="small"
+                  class="hiddenRangeCheck"
+                  style="margin-left:100px"
+                  v-if="data.goods_area!=='0'"
                 >
-                  <el-option
-                    v-for="item in commodityModule.activeCommoditiesOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                  <!--商家分类-->
+                  <div
+                    class="rangeHiddenBtn"
+                    @click="handleToClickRangeBtn(Number(data.goods_area))"
                   >
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="goodsPrice price commodityScope">
-                <span>{{$t('commodity.sortRule')}}：</span>
-                <el-select
-                  v-model="data.sort_type"
-                  size="small"
-                >
-                  <el-option
-                    v-for="item in commodityModule.sortRuleOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    {{rangeList[Number(data.goods_area)]}}
+                  </div>
+                  <div
+                    style="height:30px;line-height:30px;margin-left:5px"
+                    v-if="rangeCheckData.length>0"
+                  >{{$t('commodity.haveChosen')}}{{rangeHiddenRightText}}：{{rangeCheckData.length}}个{{rangeHiddenRightText}}</div>
+                </div>
+                <!--end-->
+                <div class="goodsPrice price commodityScope">
+                  <span>{{$t('commodity.activeCommodities')}}：</span>
+                  <el-select
+                    v-model="data.goods_type"
+                    :placeholder="$t('commodity.placeChiose')"
+                    size="small"
                   >
-                  </el-option>
-                </el-select>
-              </div>
+                    <el-option
+                      v-for="item in commodityModule.activeCommoditiesOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="goodsPrice price commodityScope">
+                  <span>{{$t('commodity.sortRule')}}：</span>
+                  <el-select
+                    v-model="data.sort_type"
+                    size="small"
+                  >
+                    <el-option
+                      v-for="item in commodityModule.sortRuleOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                </div>
+              </template>
             </div>
           </div>
           <!--手动推荐选中显示模块-->
@@ -783,7 +796,8 @@ export default {
       zbGoodsBack: [],
       brandBackData: [], // 选择商品品牌弹窗回显数据
       labelBackData: [], // 选择商品标签弹窗回显数据
-      BusClassBackData: [] // 商家分类、平台分类回显
+      BusClassBackData: [], // 商家分类、平台分类回显
+      auto_recommend_type: '0'// 推荐类别 0店铺药品 | 1我的处方药
     }
   },
   watch: {
@@ -819,10 +833,13 @@ export default {
             let d = this.handleToTransformationRangeData(turnToString.goods_area)
             getModulesData.goods_area = d
             // 赋值
+            if (!turnToString.auto_recommend_type) turnToString.auto_recommend_type = '0'
+            if (!getModulesData.auto_recommend_type) getModulesData.auto_recommend_type = '0'
             Object.keys(turnToString).forEach((item, index) => { // 将数据赋值给当前页面数据池
               this.$set(this.data, item, getModulesData[item])
             })
             console.log(turnToString)
+
             // 如果是初次回显则处理手动推荐数据
 
             if (turnToString.recommend_type === '1') {
@@ -1427,7 +1444,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 .rightCommodity {
   .rightCommodityMain {
     background: #f8f8f8;
@@ -1520,7 +1537,7 @@ export default {
                 position: absolute;
                 right: -7px;
                 top: -8px;
-                background: url("../../../../../../../../assets/adminImg/icon_delete.png")
+                background: url('../../../../../../../../assets/adminImg/icon_delete.png')
                   no-repeat;
                 cursor: pointer;
               }
@@ -1852,6 +1869,11 @@ export default {
               &:hover {
                 color: #333;
                 text-decoration: underline;
+              }
+            }
+            .auto_recommend_type {
+              /deep/ .el-radio {
+                padding-top: 8px;
               }
             }
           }

@@ -1,13 +1,14 @@
 package com.vpu.mp.service.shop.goods.mp;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoodsConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -35,11 +36,12 @@ import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.UserGoodsRecordService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.patient.PatientService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -56,8 +58,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
 
 /**
  * @author 李晓冰
@@ -81,7 +83,7 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     FootPrintService footPrintService;
     @Autowired
-    public MPGoodsRecommendService mpGoodsRecommendService;
+    public MpGoodsRecommendService mpGoodsRecommendService;
     @Autowired
     EsGoodsSearchMpService esGoodsSearchMpService;
     @Autowired
@@ -106,6 +108,10 @@ public class GoodsMpService extends ShopBaseService {
     private UserCardService userCardService;
     @Autowired
     private QrCodeService qrCodeService;
+    @Autowired
+    private PrescriptionService prescriptionService;
+    @Autowired
+    private PatientService patientService;
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
      *
@@ -113,11 +119,11 @@ public class GoodsMpService extends ShopBaseService {
      * @param userId 用户id
      * @return 对应的商品集合信息
      */
-    public List<? extends GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
+    public PageResult<GoodsListMpBo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
         List<GoodsListMpBo> goodsListCapsules;
+        PageResult<GoodsListMpBo> goodsListCapsulesPage;
 
         param.setSoldOutGoodsShow(canShowSoldOutGoods());
-
         if (esUtilSearchService.esState()) {
             try {
                 if (userId == null) {
@@ -132,21 +138,24 @@ public class GoodsMpService extends ShopBaseService {
                 }
                 // 从es获取
                 log.debug("小程序-es-搜索商品列表");
-                goodsListCapsules = getPageIndexGoodsListFromEs(param);
-                log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsules);
+                goodsListCapsulesPage = getPageIndexGoodsPageResultFromEs(param);
+                log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsulesPage);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
-                goodsListCapsules = getPageIndexGoodsListFromDb(param);
-                log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
+                goodsListCapsulesPage = getPageIndexGoodsListFromDb(param,userId);
+//                goodsListCapsules = goodsListCapsulesPage.getDataList();
+                log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsulesPage);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
-            goodsListCapsules = getPageIndexGoodsListFromDb(param);
-            log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
+            goodsListCapsulesPage = getPageIndexGoodsListFromDb(param,userId);
+//            goodsListCapsules = goodsListCapsulesPage.getDataList();
+            log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsulesPage);
         }
-
+        goodsListCapsules = goodsListCapsulesPage.getDataList();
         disposeGoodsList(goodsListCapsules, userId);
-        return goodsListCapsules;
+        goodsListCapsulesPage.setDataList(goodsListCapsules);
+        return goodsListCapsulesPage;
     }
 
     /**
@@ -154,13 +163,13 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 装修页面配置的商品获取过滤条件
      * @return 对应的商品集合信息
      */
-    private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param) {
+    private PageResult<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param, Integer userId) {
         // 手动推荐展示但是未指定商品数据
         boolean specifiedNoContent = (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
         if (specifiedNoContent) {
-            return new ArrayList<>();
+            return new PageResult<>();
         }
-        Condition condition = buildPageIndexCondition(param);
+        Condition condition = buildPageIndexCondition(param,userId);
         PageResult<GoodsListMpBo> pageResult;
         // 手动推荐拼接排序条件
         if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
@@ -177,7 +186,7 @@ public class GoodsMpService extends ShopBaseService {
             pageResult = findActivityGoodsListCapsulesDao(condition, orderFields, param.getCurrentPage(), param.getGoodsNum(), null);
         }
         logger().debug("商品列表数据信息：" + pageResult.toString());
-        return pageResult.getDataList();
+        return pageResult;
     }
 
     /**
@@ -185,7 +194,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 过滤参数
      * @return 拼接后的条件
      */
-    private Condition buildPageIndexCondition(GoodsListMpParam param) {
+    private Condition buildPageIndexCondition(GoodsListMpParam param,Integer userId) {
         // 获取在售商品
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
@@ -196,6 +205,12 @@ public class GoodsMpService extends ShopBaseService {
         // 指定商品列表
         if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
             condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsItems()));
+            return condition;
+        }
+
+        if (GoodsConstant.AUTO_RECOMMEND_PRESCRIPTION.equals(param.getAutoRecommendType())){
+            List<Integer> goodsIds = prescriptionService.getPrescriptionGoodsIdsByUserId(userId);
+            condition = condition.and(GOODS.GOODS_ID.in(goodsIds));
             return condition;
         }
 
@@ -449,9 +464,9 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setShareAwardId(param.getShareAwardId());
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
         // 处理分销信息临时这样处理，分销返利方法个人不建议在此处处理。
-        if (param.getRebateSId() != null) {
+        if (param.getRebateSid() != null) {
             try {
-                String qrCodeValue = qrCodeService.getQrCodeParamInfoBySceneId(param.getRebateSId());
+                String qrCodeValue = qrCodeService.getQrCodeParamInfoBySceneId(param.getRebateSid());
                 GoodsRebateConfigParam goodsRebateConfigParam = Util.parseJson(qrCodeValue, GoodsRebateConfigParam.class);
                 param.setRebateConfig(goodsRebateConfigParam);
             } catch (Exception e) {
@@ -497,6 +512,16 @@ public class GoodsMpService extends ShopBaseService {
     private List<GoodsListMpBo> getPageIndexGoodsListFromEs(GoodsListMpParam param) throws IOException {
         PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
         return goodsListMpBoPageResult.dataList;
+    }
+
+    /**
+     * 商品列表模块中获取配置后的商品集合数据 Es获取
+     * @param param 装修页面配置的商品获取过滤条件
+     * @return 对应的商品集合信息
+     */
+    private PageResult<GoodsListMpBo> getPageIndexGoodsPageResultFromEs(GoodsListMpParam param) throws IOException {
+        PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
+        return goodsListMpBoPageResult;
     }
 
     /**
@@ -592,8 +617,8 @@ public class GoodsMpService extends ShopBaseService {
     private SelectJoinStep<?> getGoodsListSelectJoinStep() {
         return db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
             GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
-            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
-            .from(GOODS);
+            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID,GOODS.IS_MEDICAL,GOODS_MEDICAL_INFO.IS_RX)
+            .from(GOODS).leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_ID.eq(GOODS.GOODS_ID));
     }
 
     /**
@@ -605,8 +630,9 @@ public class GoodsMpService extends ShopBaseService {
         Record record1 = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,GOODS.UNIT,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DELIVER_TEMPLATE_ID, GOODS.DELIVER_PLACE, GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG, GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
-            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_AD, GOODS.GOODS_DESC, GOODS.CAN_REBATE,GOODS.CAN_REBATE,GOODS.ROOM_ID)
-            .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_AD, GOODS.GOODS_DESC, GOODS.CAN_REBATE,GOODS.CAN_REBATE,GOODS.ROOM_ID,GOODS.IS_MEDICAL,GOODS_MEDICAL_INFO.IS_RX)
+            .from(GOODS).leftJoin(GOODS_MEDICAL_INFO).on(GOODS.GOODS_ID.eq(GOODS_MEDICAL_INFO.GOODS_ID))
+            .leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
         if (record1 == null) {
             log.debug("商品详情-{}已被从数据库真删除", goodsId);

@@ -1,0 +1,74 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
+<view class="body">
+	<include src="../../pages/common/header.wxml" />
+	<view class="main-container">
+		<block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+				<view class="card-item">
+					<view class="status-title">
+						<text>提交时间：{{filter.substring(item.time,0,16)}}</text>
+						<text>待审核</text>
+					</view>
+					<view class="prescription-item" data-prescription-code="{{item.prescription.prescriptionCode}}" bindtap="handleShowDialog">
+						<view class="item-list-content">
+							<view class="item-list">
+								<view class="list-item">
+									<text class="list-item-dot"></text>
+									<view class="list-item-content">
+										诊断：{{item.prescription.diagnosisName}}
+									</view>
+								</view>
+								<view class="list-item">
+									<text class="list-item-dot"></text>
+									<view class="list-item-content">
+										科室：{{item.prescription.departmentName}}
+									</view>
+								</view>
+							</view>
+						</view>
+						<view class="doctor-info">
+							<text class="doctor-name">医师：{{item.prescription.doctorName}}</text>
+							<text class="item-date">日期：{{item.prescription.prescriptionCreateTime}}</text>
+						</view>
+					</view>
+					<view class="goods-content" wx:if="{{item.goodsList.length}}">
+						<view class="goods-item" bindtap="viewGoodsInfo" data-gid="{{goodsItem.goodsId}}" wx:for="{{item.goodsList}}" wx:key="goodsId" wx:for-item="goodsItem" wx:for-index="goodsIndex">
+							<image src="{{imageUrl + goodsItem.goodsImg}}"></image>
+							<view class="goods-desc">
+								<text class="goods-name">{{goodsItem.goodsName}}</text>
+								<view class="price-content">
+									<text class="goods-price">￥{{goodsItem.goodsPrice}}</text>
+									<text class="num">x{{goodsItem.goodsNumber}}</text>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="button-content">
+						<text class="reject" data-type="reject" data-order_id="{{item.orderId}}" data-order_sn="{{item.orderSn}}" data-prescription_old_code="{{item.prescription.prescriptionCode}}" data-parent_index="{{pageIndex}}"  bindtap="showRejectModal">驳回</text>
+						<text class="pass" data-type="pass" data-order-id="{{item.orderId}}" data-order-sn="{{item.orderSn}}" data-prescription-old-code="{{item.prescription.prescriptionCode}}" data-parent-index="{{pageIndex}}" bindtap="changeStatus">通过</text>
+					</view>
+				</view>
+			</block>
+			<view class="modal_bg" wx:if='{{show_modal == 1}}'></view>
+			<view class="modal_content" wx:if='{{show_modal == 1}}'>
+				<view class="modal_title">
+					驳回原因
+					<image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="close_modal"></image>
+				</view>
+				<view class="modal_info">
+					<textarea placeholder="请您输入驳回原因" value="{{rejectReason}}" bindtap="rejectReason" bindinput="rejectReason"></textarea>
+				</view>
+				<view class="modal_fotter">
+					<view class="modal_btn btn_cancel" bindtap="close_modal">取消</view>
+					<view class="modal_btn btn_ok" data-type="reject" data-order-id="{{taped_order_id}}" data-order-sn="{{taped_order_sn}}" data-prescription-old-code="{{taped_old_code}}" data-parent-index="{{taped_par_index}}" bindtap="changeStatus">确定</view>
+				</view>
+			</view>
+		</block>
+		<view class="is-null" wx:if="{{dataList[0].length <= 0}}">
+        <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+        <text>您还没有相应记录</text>
+      </view>
+	</view>
+	<include src="../../pages/common/footer.wxml" />
+</view>
+<v-prescription-dialog show="{{showPrescription}}" is-doctor="{{true}}" prescription-data="{{prescriptionData}}"/>

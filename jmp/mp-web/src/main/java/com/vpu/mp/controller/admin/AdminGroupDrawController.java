@@ -3,9 +3,10 @@ package com.vpu.mp.controller.admin;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisParam;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawShareParam;
@@ -115,7 +115,7 @@ public class AdminGroupDrawController extends AdminBaseController {
     @PostMapping("/order/export")
     public void orderExport(@RequestBody @Valid OrderListParam param,HttpServletResponse response) {
         Workbook workbook = shop().groupDraw.groupDrawOrders.orderExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GROUP_ORDER_EXPORT, LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GROUP_ORDER_EXPORT, LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtils.getLocalDateTime().toString();
         export2Excel(workbook, fileName, response);
     }
     /**
@@ -139,7 +139,7 @@ public class AdminGroupDrawController extends AdminBaseController {
      */
     @PostMapping("/share")
     public JsonResult getGroupDrawShare(@RequestBody GroupDrawShareParam param) throws Exception {
-        return success(shop().groupDraw.getMpQRCode(param));
+        return success(shop().groupDraw.getMpQrCode(param));
     }
     /**
      * 活动分享

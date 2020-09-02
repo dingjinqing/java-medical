@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
 import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsActivityAnnounceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePriceMpVo;
@@ -155,7 +155,7 @@ public class ReducePriceProcessorDao extends ShopBaseService {
         // 定时预告判断
         if (GoodsConstant.ACTIVITY_NOT_PRE.compareTo(reducePriceRecord.getPreTime()) < 0) {
             Integer hours = reducePriceRecord.getPreTime();
-            int timeHourDifference = DateUtil.getTimeHourDifference(nextActivityStartDate, date);
+            int timeHourDifference = DateUtils.getTimeHourDifference(nextActivityStartDate, date);
             if (timeHourDifference > hours) {
                 return null;
             }

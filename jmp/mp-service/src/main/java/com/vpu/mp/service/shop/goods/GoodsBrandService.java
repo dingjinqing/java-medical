@@ -2,14 +2,14 @@ package com.vpu.mp.service.shop.goods;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.ChineseToPinYinUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.BrandClassifyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.jedis.data.GoodsBrandDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.ChineseToPinYinUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.brand.*;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandClassifyNameMpVo;

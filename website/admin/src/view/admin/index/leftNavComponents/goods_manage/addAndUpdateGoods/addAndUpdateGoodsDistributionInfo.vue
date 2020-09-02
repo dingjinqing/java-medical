@@ -120,7 +120,7 @@
           />
         </div>
       </el-form-item>
-      <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.shareGoodsAction')">
+      <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.shareGoodsAction')" v-if="false">
         <!--默认样式-->
         <div>
           <el-radio

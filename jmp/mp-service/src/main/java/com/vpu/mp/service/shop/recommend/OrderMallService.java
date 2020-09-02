@@ -11,14 +11,14 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
@@ -341,7 +341,7 @@ public class OrderMallService extends ShopMallBaseService {
 			param.setExpressGoodsInfoList(itemList);
 			ExpressParam expressCompany = getExpressCompany(partShip.getShippingId(), partShip.getShippingName());
 			param.setExpressCompanyId(expressCompany.getCode());
-			param.setExpress_companyName(expressCompany.getName());
+			param.setExpressCompanyName(expressCompany.getName());
 			param.setExpressCode(partShip.getShippingNo());
 			param.setShipTime(partShip.getShippingTime().getTime() / 1000L);
 			param.setExpressPage(new ExpressPage(
@@ -418,8 +418,8 @@ public class OrderMallService extends ShopMallBaseService {
 		for (String goods : goodsAttrs) {
 			StockAttrInfo sAttrInfo = new StockAttrInfo();
 			String[] split = goods.split(":");
-			sAttrInfo.setAttr_name(new AttrName(split[0]));
-			sAttrInfo.setAttr_value(new AttrValue(split[1]));
+			sAttrInfo.setAttrName(new AttrName(split[0]));
+			sAttrInfo.setAttrValue(new AttrValue(split[1]));
 			stockAttrInfo.add(sAttrInfo);
 		}
 

@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.store.store;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;

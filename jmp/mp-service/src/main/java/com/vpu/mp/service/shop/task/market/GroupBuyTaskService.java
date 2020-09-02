@@ -1,14 +1,14 @@
 package com.vpu.mp.service.shop.task.market;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.bo.GroupBuyListScheduleBo;
@@ -164,8 +164,8 @@ public class GroupBuyTaskService  extends ShopBaseService {
             .where(
                 GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
                 .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-                .and(GROUP_BUY_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime()))
-                .and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))
+                .and(GROUP_BUY_DEFINE.START_TIME.lt(DateUtils.getLocalDateTime()))
+                .and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtils.getLocalDateTime()))
                 .and(GROUP_BUY_DEFINE.STOCK.gt((short)0))
                 .and(GOODS.GOODS_NUMBER.gt(0))
             ).fetchInto(Integer.class);
@@ -206,8 +206,8 @@ public class GroupBuyTaskService  extends ShopBaseService {
         List<GroupBuyDetailVo> res = db().select(GROUP_BUY_DEFINE.STOCK,GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_DEFINE.ID).from(GROUP_BUY_DEFINE).where(
             GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
             .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(GROUP_BUY_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime()))
-            .and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))
+            .and(GROUP_BUY_DEFINE.START_TIME.lt(DateUtils.getLocalDateTime()))
+            .and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtils.getLocalDateTime()))
             .and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
         ).fetchInto(GroupBuyDetailVo.class);
         for(GroupBuyDetailVo groupBuy : res){
@@ -227,7 +227,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
             .where(
                 GROUP_BUY_LIST.STATUS.eq(STATUS_ONGOING)
                 .and(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
-                .and(GROUP_BUY_LIST.START_TIME.lt(DateUtil.getDalyedDateTime(-3600*24)))
+                .and(GROUP_BUY_LIST.START_TIME.lt(DateUtils.getDalyedDateTime(-3600*24)))
             ).fetchInto(GroupBuyListScheduleBo.class);
     }
 
@@ -249,7 +249,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
      * @param status
      */
     private void updateGroupBuyListStatus(int groupId,byte status){
-        db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS,status).set(GROUP_BUY_LIST.END_TIME,DateUtil.getLocalDateTime()).where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).execute();
+        db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS,status).set(GROUP_BUY_LIST.END_TIME, DateUtils.getLocalDateTime()).where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).execute();
     }
 
     /**
@@ -267,7 +267,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
         record.setStatus(STATUS_SUCCESS);
         record.setOrderSn("");
         record.setStartTime(group.getStartTime());
-        record.setEndTime(DateUtil.getLocalDateTime());
+        record.setEndTime(DateUtils.getLocalDateTime());
         List<GroupBuyListRecord> list = new ArrayList<>();
         for(int i = 0;i < randNum;i++){
             list.add(record);

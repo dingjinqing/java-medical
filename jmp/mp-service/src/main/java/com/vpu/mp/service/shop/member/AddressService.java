@@ -1,16 +1,19 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.config.TxMapLBSConfig;
+import com.upyun.UpException;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.HttpsUtils;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.config.TxMapLbsConfig;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.HttpsUtils;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.upyun.UpYunManager;
 import com.vpu.mp.service.pojo.shop.member.address.AddressAddParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
+import com.vpu.mp.service.pojo.shop.member.address.AddressDataParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressGoodsShippingParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.AddressListVo;
@@ -30,15 +33,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.Strings;
 import org.jooq.Record1;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
+import static java.lang.String.format;
 
 /**
  * @author 黄壮壮
@@ -50,9 +56,9 @@ import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
 public class AddressService extends ShopBaseService {
     private static final String QQ_MAP_GEOCODER_URL = "https://apis.map.qq.com/ws/geocoder/v1";
     public static final Integer USER_ADDRESS_MAX_COUNT=50;
-
+    private static final Integer FILE_NUM =6;
     @Autowired
-    private TxMapLBSConfig txMapLBSConfig;
+    private TxMapLbsConfig txMapLbsConfig;
     @Autowired
     private GoodsDeliverTemplateService shippingFeeTemplate;
     @Autowired
@@ -61,6 +67,8 @@ public class AddressService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private OrderInfoService orderInfoService;
+    @Autowired
+    private UpYunManager  upYunManager;
 
 
     /**
@@ -97,7 +105,10 @@ public class AddressService extends ShopBaseService {
         if (userId == null) {
             return null;
         }
-        return db().select().from(USER_ADDRESS).where(USER_ADDRESS.USER_ID.eq(userId).and(USER_ADDRESS.IS_DEFAULT.eq(OrderConstant.YES))).fetchAnyInto(UserAddressVo.class);
+        return db().select().from(USER_ADDRESS)
+                .where(USER_ADDRESS.USER_ID.eq(userId).and(USER_ADDRESS.IS_DEFAULT.eq(OrderConstant.YES)))
+                .and(USER_ADDRESS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .fetchAnyInto(UserAddressVo.class);
     }
 
 
@@ -241,7 +252,7 @@ public class AddressService extends ShopBaseService {
     public AddressLocation getGeocoderAddressLocation(String address) {
         Map<String, Object> param = new HashMap<>(2);
         param.put("address", address);
-        param.put("key", txMapLBSConfig.getKey());
+        param.put("key", txMapLbsConfig.getKey());
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressLocation.class, true);
     }
 
@@ -255,7 +266,7 @@ public class AddressService extends ShopBaseService {
     public AddressInfo getGeocoderAddressInfo(String lat, String lng) {
         Map<String, Object> param = new HashMap<>(2);
         param.put("location", lat + "," + lng);
-        param.put("key", txMapLBSConfig.getKey());
+        param.put("key", txMapLbsConfig.getKey());
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressInfo.class, true);
     }
 
@@ -478,5 +489,32 @@ public class AddressService extends ShopBaseService {
             vo.setStatus((byte)2);
         }
         return vo;
+    }
+
+    /**
+     * 获取json地址
+     * @param param
+     * @return
+     */
+    public List<String> getBaseJsonPath(AddressDataParam param) {
+        List<String> pathList =new ArrayList<>();
+        for (int i = 0; i <=FILE_NUM ; i++) {
+            String relativePath = format("upload/static/address/addressData%s.json", i);
+            try {
+                Map<String, String> fileInfo = upYunManager.getFileInfo(relativePath);
+                if (fileInfo==null){
+                    String path = String.format("static/mp/address/addressData%s.json", i);
+                    log.info("读取地址文件{}", path);
+                    ClassPathResource resource = new ClassPathResource(path);
+                    upYunManager.uploadToUpYun(relativePath,resource.getFile());
+                }
+                pathList.add(relativePath);
+            } catch (IOException | UpException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return pathList;
     }
 }

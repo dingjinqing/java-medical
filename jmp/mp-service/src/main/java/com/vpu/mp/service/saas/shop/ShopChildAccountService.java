@@ -1,45 +1,29 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
-import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
-import static com.vpu.mp.db.main.tables.ShopRole.SHOP_ROLE;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Record4;
-import org.jooq.Record6;
-import org.jooq.Record8;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectLimitStep;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
-import org.springframework.stereotype.Service;
-
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.ShopChildAccount;
 import com.vpu.mp.db.main.tables.ShopChildRole;
 import com.vpu.mp.db.main.tables.ShopRole;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildRoleRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountPojo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopSubAccountAddParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
-import com.vpu.mp.service.pojo.shop.config.group.ShopChildUserListVo;
-import com.vpu.mp.service.pojo.shop.config.group.ShopChildUserShopInfoVo;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
+import com.vpu.mp.service.pojo.shop.config.group.*;
+import org.jooq.*;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
+import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
+import static com.vpu.mp.db.main.tables.ShopRole.SHOP_ROLE;
 
 /**
  * 
@@ -52,8 +36,7 @@ public class ShopChildAccountService extends MainBaseService {
 
 	public ShopChildAccountRecord verify(Integer sysId, String username, String password) {
 		return db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId))
-				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username))
-				.or(SHOP_CHILD_ACCOUNT.MOBILE.eq(username))
+				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username).or(SHOP_CHILD_ACCOUNT.MOBILE.eq(username)))
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_PWD.eq(Util.md5(password))).fetchAny();
 	}
 

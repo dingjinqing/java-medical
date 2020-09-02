@@ -1,6 +1,5 @@
 package com.vpu.mp.service.saas.categroy;
 
-import com.google.common.base.Functions;
 import com.vpu.mp.db.main.tables.records.CategoryRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo;
@@ -12,6 +11,7 @@ import org.jooq.Record1;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.Tables.CATEGORY;
@@ -73,7 +73,7 @@ public class SysCateService extends MainBaseService {
             categoryRecords = tempList;
         }
         // 没有在上上面的递归中一次性转换，为了逻辑清晰点（效率稍有损耗，但是不大）
-        Map<Integer, SysCategorySelectTreeVo> catIdMap = retTree.stream().collect(Collectors.toMap(SysCategorySelectTreeVo::getCatId, Functions.identity()));
+        Map<Integer, SysCategorySelectTreeVo> catIdMap = retTree.stream().collect(Collectors.toMap(SysCategorySelectTreeVo::getCatId, Function.identity()));
         retTree.forEach(vo->{
             SysCategorySelectTreeVo parent = catIdMap.get(vo.getParentId());
             while (parent != null) {
@@ -109,22 +109,29 @@ public class SysCateService extends MainBaseService {
         Short level = db().select(CATEGORY.LEVEL).from(CATEGORY).where(CATEGORY.CAT_ID.eq(catId)).fetchOne()
             .into(Short.class);
         res.add(catId);
-        if (level == 2) {
+        int level2 = 2;
+        if (level == level2) {
             /** 第三级，子分类 */
-        } else if (level == 1) {
-            /** 第二级分类 */
-            List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
-                .fetch(CATEGORY.CAT_ID);
-            res.addAll(children);
-        } else if (level == 0) {
-            /** 第一级分类 */
-            List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
-                .fetch(CATEGORY.CAT_ID);
-            res.addAll(children);
-            for (Integer id : children) {
-                List<Integer> grandchildren = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(id))
+        } else {
+            int level1 = 1;
+            if (level == level1) {
+                /** 第二级分类 */
+                List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
                     .fetch(CATEGORY.CAT_ID);
-                res.addAll(grandchildren);
+                res.addAll(children);
+            } else {
+                int level0 = 0;
+                if (level == level0) {
+                    /** 第一级分类 */
+                    List<Integer> children = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(catId))
+                        .fetch(CATEGORY.CAT_ID);
+                    res.addAll(children);
+                    for (Integer id : children) {
+                        List<Integer> grandchildren = db().select(CATEGORY.CAT_ID).from(CATEGORY).where(CATEGORY.PARENT_ID.eq(id))
+                            .fetch(CATEGORY.CAT_ID);
+                        res.addAll(grandchildren);
+                    }
+                }
             }
         }
         return res;

@@ -6,6 +6,8 @@
     "v-select-card": "/components/popup/select_card_dialog/index",
     "v-select-store": "/components/popup/select_store_dialog/index",
     "v-friend-pay":"./friend_pay_dialog/index",
-    "v-pre-sale-rule":"/components/item/popup/pre_sale_rule/index"
+    "v-pre-sale-rule":"/components/item/popup/pre_sale_rule/index",
+    "v-prescription-dialog": "/components/popup/prescription_dialog/index",
+    "no-prescription-dialog": "/components/popup/no_prescription_dialog/index"
   }
 }

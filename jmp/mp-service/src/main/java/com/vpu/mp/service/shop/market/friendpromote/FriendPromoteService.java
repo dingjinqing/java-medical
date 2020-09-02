@@ -42,13 +42,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mysql.cj.util.StringUtils;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
 import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteTimesRecord;
@@ -56,17 +63,8 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -81,24 +79,6 @@ import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
-
-import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 好友助力
@@ -118,7 +98,7 @@ public class FriendPromoteService extends ShopBaseService {
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
 
-	private static final Byte[] s=new Byte[] {(byte)0,(byte)1};
+	private static final Byte[] REWARD_TYPES = new Byte[] {(byte)0,(byte)1};
 	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
 	private static final byte TWO = 2;
@@ -408,7 +388,7 @@ public class FriendPromoteService extends ShopBaseService {
 		FriendPromoteSelectVo vo = db().select().from(fpa).where(fpa.ID.eq(param.getId()))
 				.fetchOneInto(FriendPromoteSelectVo.class);
         if (vo!=null&&vo.getActivityCopywriting()!=null){
-            promoteActCopywriting copywriting = Util.json2Object(vo.getActivityCopywriting(),promoteActCopywriting.class,false);
+            PromoteActCopywriting copywriting = Util.json2Object(vo.getActivityCopywriting(), PromoteActCopywriting.class,false);
             vo.setActCopywriting(copywriting);
         }
 		return vo;
@@ -452,13 +432,13 @@ public class FriendPromoteService extends ShopBaseService {
 	 * @return
 	 */
 	public List<FriendPromoteSelectVo> getLaunchListByHour(Integer hours) {
-		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
-		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Timestamp timeStampPlus = DateUtils.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		Result<Record> fetch = db()
 				.select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE).from(fpl,
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
-						.and(dateFormat(fpa.END_TIME, DateUtil.DATE_MYSQL_DAY).eq(date)))
+						.and(dateFormat(fpa.END_TIME, DateUtils.DATE_MYSQL_DAY).eq(date)))
 				.fetch();
 		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
 		if (fetch != null) {
@@ -473,13 +453,13 @@ public class FriendPromoteService extends ShopBaseService {
 	 * @return
 	 */
 	public List<FriendPromoteSelectVo> getPromoteFailedList(Integer hours) {
-		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
-		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Timestamp timeStampPlus = DateUtils.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		Result<Record> fetch = db().select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(
 						fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
-								.and(dateFormat(fpl.LAUNCH_TIME, DateUtil.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.le(DateUtil.getLocalDateTime()))))
+								.and(dateFormat(fpl.LAUNCH_TIME, DateUtils.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.le(DateUtils.getLocalDateTime()))))
 				.fetch();
 		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
 		if (fetch != null) {
@@ -505,11 +485,11 @@ public class FriendPromoteService extends ShopBaseService {
 	 */
 	public List<FriendPromoteSelectVo> getPromoteWaitReceiveList(Integer hours) {
 		logger().info("运行助力失效前一小时的sql");
-		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
-		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Timestamp timeStampPlus = DateUtils.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtils.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		SelectConditionStep<Record> where = db()
 				.select(fpl.asterisk(), fpa.ACT_CODE, fpa.ACT_NAME, fpa.REWARD_CONTENT, fpa.REWARD_TYPE).from(fpl, fpa)
-				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.REWARD_TYPE.in(s)).and(fpa.DEL_FLAG.eq(ZERO))
+				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.REWARD_TYPE.in(REWARD_TYPES)).and(fpa.DEL_FLAG.eq(ZERO))
 						.and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ONE)));
 		Field<String> left = DSL.left(DSL.dateAdd(fpl.SUCCESS_TIME.cast(Date.class),
 				DSL.when(fpa.REWARD_DURATION_UNIT.eq(ZERO), fpa.REWARD_DURATION)
@@ -564,6 +544,62 @@ public class FriendPromoteService extends ShopBaseService {
             promoteInfo.setHasPromoteTimes(getHasPromoteTimes(launchInfo.getId(),null,null,null));
         }
 
+        // 处理发起页 和 助力页
+        processLaunchAndHelpPage(param, promoteInfo, launchInfo, launchFlag);
+
+        //活动倒计时
+        promoteDownTime(promoteInfo,launchInfo);
+        //奖励倒计时
+        if (promoteInfo.getPromoteStatus()==1){
+            Long duration = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
+            //成功时间 倒计时的起点
+            Long successTime = getSuccessTime(launchInfo.getId()).getTime();
+            //奖励结束时间
+            Long endTime = successTime+duration*1000;
+            Long nowTime = DateUtils.getLocalDateTime().getTime();
+            Long spurTime = endTime-nowTime>0?(endTime/1000-nowTime/1000):0;
+            promoteInfo.setRewardSpurTime(spurTime);
+        }
+
+        //已助力总值
+        if (promoteInfo.getPromoteStatus()>=0){
+            promoteInfo.setHasPromoteValue(hasPromoteValue(launchInfo.getId()));
+            promoteInfo.setLaunchId(launchInfo.getId());
+        }else {
+            promoteInfo.setHasPromoteValue(0);
+            promoteInfo.setHasPromoteTimes(0);
+            promoteInfo.setLaunchId(null);
+        }
+
+        //更多的助力活动
+        promoteInfo.setPromoteActList(promoteActList(promoteInfo.getId()));
+        promoteInfo.setLaunchFlag(launchFlag);
+        //todo 生成助力图片
+        //设置奖品记录id 下单用
+        if (launchInfo!=null){
+            promoteInfo.setRewardRecordId(getRewardRecordId(param.getUserId(),promoteInfo.getId(),launchInfo.getId()));
+        }
+        if (promoteInfo.getRewardRecordId()!=null&&promoteInfo.getRewardRecordId()!=0){
+
+            String orderSn = getRewardOrderSn(promoteInfo.getRewardRecordId());
+            if (orderSn!=null&&!"".equals(orderSn)&&orderSn.length()>0){
+                logger().info("奖品已领取，开始同步活动状态和订单编号:{}",orderSn);
+                if (launchInfo.getId()!=null){
+                    //更新状态
+                    upPromoteInfo(TWO,launchInfo.getId());
+                    //更新订单号
+                    upOrderSn(orderSn,launchInfo.getId());
+                    promoteInfo.setPromoteStatus((byte)2);
+                    //重新设置订单
+                    promoteInfo.setOrderSn(orderSn);
+                }
+                logger().info("同步完成活动状态和订单编号:{}",orderSn);
+            }
+        }
+        return promoteInfo;
+    }
+
+    private void processLaunchAndHelpPage(PromoteParam param, PromoteInfo promoteInfo, FriendPromoteLaunchRecord launchInfo, Integer launchFlag) {
         //如果是发起页面
         if(launchFlag==1){
             //是否可以再次发起好友助力
@@ -607,58 +643,8 @@ public class FriendPromoteService extends ShopBaseService {
             Byte canShareTimes = canShareTimes(promoteInfo.getShareCreateTimes(),param.getUserId(),param.getLaunchId());
             promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
         }
-
-        //活动倒计时
-        promoteDownTime(promoteInfo,launchInfo);
-        //奖励倒计时
-        if (promoteInfo.getPromoteStatus()==1){
-            Long duration = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
-            //成功时间 倒计时的起点
-            Long successTime = getSuccessTime(launchInfo.getId()).getTime();
-            //奖励结束时间
-            Long endTime = successTime+duration*1000;
-            Long nowTime = DateUtil.getLocalDateTime().getTime();
-            Long spurTime = endTime-nowTime>0?(endTime/1000-nowTime/1000):0;
-            promoteInfo.setRewardSpurTime(spurTime);
-        }
-
-        //已助力总值
-        if (promoteInfo.getPromoteStatus()>=0){
-            promoteInfo.setHasPromoteValue(hasPromoteValue(launchInfo.getId()));
-            promoteInfo.setLaunchId(launchInfo.getId());
-        }else {
-            promoteInfo.setHasPromoteValue(0);
-            promoteInfo.setHasPromoteTimes(0);
-            promoteInfo.setLaunchId(null);
-        }
-
-        //更多的助力活动
-        promoteInfo.setPromoteActList(promoteActList(promoteInfo.getId()));
-        promoteInfo.setLaunchFlag(launchFlag);
-        //todo 生成助力图片
-        //设置奖品记录id 下单用
-        if (launchInfo!=null){
-            promoteInfo.setRewardRecordId(getRewardRecordId(param.getUserId(),promoteInfo.getId(),launchInfo.getId()));
-        }
-        if (promoteInfo.getRewardRecordId()!=null&&promoteInfo.getRewardRecordId()!=0){
-
-            String orderSn = getRewardOrderSn(promoteInfo.getRewardRecordId());
-            if (orderSn!=null&&!"".equals(orderSn)&&orderSn.length()>0){
-                logger().info("奖品已领取，开始同步活动状态和订单编号:{}",orderSn);
-                if (launchInfo.getId()!=null){
-                    //更新状态
-                    upPromoteInfo(TWO,launchInfo.getId());
-                    //更新订单号
-                    upOrderSn(orderSn,launchInfo.getId());
-                    promoteInfo.setPromoteStatus((byte)2);
-                    //重新设置订单
-                    promoteInfo.setOrderSn(orderSn);
-                }
-                logger().info("同步完成活动状态和订单编号:{}",orderSn);
-            }
-        }
-        return promoteInfo;
     }
+
     /**
      * 修改助力状态
      * @param orderSn 订单号
@@ -755,16 +741,25 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setPromoteCondition(record.getPromoteCondition());
         //设置活动说明相关
         if (record.getActivityCopywriting()!=null){
-            promoteInfo.setActCopywriting(Util.json2Object(record.getActivityCopywriting(),promoteActCopywriting.class,false));
+            promoteInfo.setActCopywriting(Util.json2Object(record.getActivityCopywriting(), PromoteActCopywriting.class,false));
         }
 
+        // 设置商品信息和库存
+        setPromotGoodsAndStore(promoteInfo, record, rewardContent);
+
+        //销毁奖励内容
+        promoteInfo.setRewardContent(null);
+        return promoteInfo;
+    }
+
+    private void setPromotGoodsAndStore(PromoteInfo promoteInfo, FriendPromoteActivityRecord record, FpRewardContent rewardContent) {
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
             if (goodsInfo==null){
                 goodsInfo = new GoodsInfo();
             }
-            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
+            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice(): BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
             //检查活动库存是否发完
@@ -782,9 +777,6 @@ public class FriendPromoteService extends ShopBaseService {
             //检查活动库存是否发完
             promoteInfo.setMarketStore(promoteInfo.getMarketStore()>promoteInfo.getHasLaunchNum()?promoteInfo.getMarketStore()-promoteInfo.getHasLaunchNum():0);
         }
-        //销毁奖励内容
-        promoteInfo.setRewardContent(null);
-        return promoteInfo;
     }
 
     /**
@@ -1132,8 +1124,8 @@ public class FriendPromoteService extends ShopBaseService {
         }
         //判断当天助力次数限制
         if(promoteInfo.getPromoteTimesPerDay()>0){
-            Integer usedPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
-            Integer launchIdTime = getHasPromoteTimes(launchId,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
+            Integer usedPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId, DateUtils.getLocalDateTime());
+            Integer launchIdTime = getHasPromoteTimes(launchId,promoteInfo.getId(),userId, DateUtils.getLocalDateTime());
             logger().info("*********");
             logger().info("*判断当天助力次数限制*");
             logger().info("*********");
@@ -1218,7 +1210,7 @@ public class FriendPromoteService extends ShopBaseService {
         //如果助力进度是完成待领取
         if (promoteInfo.getPromoteStatus()==1){
             Long sec = promoteDurationSec(promoteInfo.getLaunchLimitUnit(),promoteInfo.getLaunchLimitDuration());
-            Long surplusSecond = launchInfo.getCreateTime().getTime()+sec*1000-DateUtil.getLocalDateTime().getTime();
+            Long surplusSecond = launchInfo.getCreateTime().getTime()+sec*1000- DateUtils.getLocalDateTime().getTime();
             promoteInfo.setSurplusSecond(surplusSecond>0?surplusSecond/1000:0);
         }
         //活动进行中 助力未开始
@@ -1226,13 +1218,13 @@ public class FriendPromoteService extends ShopBaseService {
             long secDeadTime = 24*60*60*1000;
             long secLaunchTime = launchInfo.getLaunchTime().getTime();
             if (secEndTime<secDeadTime+secLaunchTime){
-                promoteInfo.setSurplusSecond((secEndTime-DateUtil.getLocalDateTime().getTime())/1000);
+                promoteInfo.setSurplusSecond((secEndTime- DateUtils.getLocalDateTime().getTime())/1000);
             }else {
-                promoteInfo.setSurplusSecond((secDeadTime+secLaunchTime-DateUtil.getLocalDateTime().getTime())/1000);
+                promoteInfo.setSurplusSecond((secDeadTime+secLaunchTime- DateUtils.getLocalDateTime().getTime())/1000);
             }
         }
         else {
-            promoteInfo.setSurplusSecond(promoteInfo.getActStatus()==1?(secEndTime-DateUtil.getLocalDateTime().getTime())/1000:0);
+            promoteInfo.setSurplusSecond(promoteInfo.getActStatus()==1?(secEndTime- DateUtils.getLocalDateTime().getTime())/1000:0);
         }
     }
 
@@ -1282,7 +1274,7 @@ public class FriendPromoteService extends ShopBaseService {
             .from(FRIEND_PROMOTE_ACTIVITY)
             .where(FRIEND_PROMOTE_ACTIVITY.IS_BLOCK.eq((byte)0))
             .and(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq((byte)0))
-            .and(FRIEND_PROMOTE_ACTIVITY.END_TIME.greaterThan(DateUtil.getSqlTimestamp()))
+            .and(FRIEND_PROMOTE_ACTIVITY.END_TIME.greaterThan(DateUtils.getSqlTimestamp()))
             .and(FRIEND_PROMOTE_ACTIVITY.ID.notEqual(id))
             .orderBy(FRIEND_PROMOTE_ACTIVITY.ID.desc())
             .limit(10)
@@ -1362,7 +1354,7 @@ public class FriendPromoteService extends ShopBaseService {
      */
     public Integer promoteLaunch(Integer userId,Integer promoteId){
         Integer effectRows = db().insertInto(FRIEND_PROMOTE_LAUNCH,FRIEND_PROMOTE_LAUNCH.USER_ID,FRIEND_PROMOTE_LAUNCH.PROMOTE_ID,FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME)
-            .values(userId,promoteId,DateUtil.getSqlTimestamp())
+            .values(userId,promoteId, DateUtils.getSqlTimestamp())
             .execute();
         return effectRows;
     }
@@ -1426,7 +1418,7 @@ public class FriendPromoteService extends ShopBaseService {
         messageVo.setUserId(launchUserId);
         messageVo.setActCode(record.getActCode());
         messageVo.setActName(record.getActName());
-        messageVo.setSuccessTime(DateUtil.getSqlTimestamp());
+        messageVo.setSuccessTime(DateUtils.getSqlTimestamp());
         messageVo.setRewardType(record.getRewardType());
         messageVo.setRewardContent(record.getRewardContent());
         String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
@@ -1534,7 +1526,7 @@ public class FriendPromoteService extends ShopBaseService {
                         if (prdRecord!=null&&prdRecord.getPrdNumber()>0){
                             //计算奖励过期时间
                             Long durationSec = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
-                            Long endSec = DateUtil.getLocalDateTime().getTime()+durationSec*1000;
+                            Long endSec = DateUtils.getLocalDateTime().getTime()+durationSec*1000;
                             Timestamp expiredTime = new Timestamp(endSec);
                             //奖励入库
                             PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),null,expiredTime);
@@ -1739,7 +1731,7 @@ public class FriendPromoteService extends ShopBaseService {
      */
     public void updateSuccessTime(Integer launchId){
         db().update(FRIEND_PROMOTE_LAUNCH)
-            .set(FRIEND_PROMOTE_LAUNCH.SUCCESS_TIME,DateUtil.getSqlTimestamp())
+            .set(FRIEND_PROMOTE_LAUNCH.SUCCESS_TIME, DateUtils.getSqlTimestamp())
             .where(FRIEND_PROMOTE_LAUNCH.ID.eq(launchId))
             .execute();
     }
@@ -1771,7 +1763,7 @@ public class FriendPromoteService extends ShopBaseService {
             .and(PRIZE_RECORD.ACTIVITY_ID.eq(actId))
             .and(PRIZE_RECORD.RECORD_ID.eq(recordId))
             .and(PRIZE_RECORD.ACTIVITY_TYPE.eq((byte)1))
-            .and(PRIZE_RECORD.EXPIRED_TIME.greaterThan(DateUtil.getSqlTimestamp()))
+            .and(PRIZE_RECORD.EXPIRED_TIME.greaterThan(DateUtils.getSqlTimestamp()))
             .fetchOptionalInto(Integer.class)
             .orElse(0);
         return id;
@@ -1790,7 +1782,7 @@ public class FriendPromoteService extends ShopBaseService {
                 .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
                 .fetchOneInto(FriendPromoteActivityRecord.class);
             //设置筛选起止时间
-            Timestamp todayTime = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,DateUtil.getLocalDateTime()));
+            Timestamp todayTime = Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_END, DateUtils.getLocalDateTime()));
             startTime = record.getStartTime();
             endTime = record.getEndTime().before(todayTime)?record.getEndTime():todayTime;
         }
@@ -1799,37 +1791,11 @@ public class FriendPromoteService extends ShopBaseService {
         vo.setEndTime(endTime);
         List<ActEffectData> dataList = new ArrayList<>();
         while (startTime.before(endTime)){
-            Timestamp tempEnd = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,startTime));
-            Integer launch = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("launch"))
-                .from(FRIEND_PROMOTE_LAUNCH)
-                .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
-                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
-                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
-                .fetchOptionalInto(Integer.class)
-                .orElse(0);
-            Integer promote = db().select(DSL.count(FRIEND_PROMOTE_DETAIL.ID).as("promote"))
-                .from(FRIEND_PROMOTE_DETAIL)
-                .where(FRIEND_PROMOTE_DETAIL.PROMOTE_ID.eq(param.getId()))
-                .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.greaterOrEqual(startTime))
-                .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.lessOrEqual(tempEnd))
-                .fetchOptionalInto(Integer.class)
-                .orElse(0);
-            Integer success = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("success"))
-                .from(FRIEND_PROMOTE_LAUNCH)
-                .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
-                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
-                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
-                .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)1).or(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)2)))
-                .fetchOptionalInto(Integer.class)
-                .orElse(0);
-            Integer newUser = db().select(DSL.count(USER.USER_ID).as("new_user"))
-                .from(USER)
-                .where(USER.INVITE_ACT_ID.eq(param.getId()))
-                .and(USER.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE))
-                .and(USER.CREATE_TIME.greaterOrEqual(startTime))
-                .and(USER.CREATE_TIME.lessOrEqual(tempEnd))
-                .fetchOptionalInto(Integer.class)
-                .orElse(0);
+            Timestamp tempEnd = Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_END,startTime));
+            Integer launch = getLaunchCount(param, startTime, tempEnd);
+            Integer promote = getPromoteCount(param, startTime, tempEnd);
+            Integer success = getSuccessCount(param, startTime, tempEnd);
+            Integer newUser = getActivityNewUserCount(param, startTime, tempEnd);
             String date = startTime.toString().substring(0,10);
             ActEffectData actEffectData = new ActEffectData();
             actEffectData.setDate(date);
@@ -1842,8 +1808,14 @@ public class FriendPromoteService extends ShopBaseService {
             Long longTime = startTime.getTime()+(long)1000*3600*24;
             startTime = new Timestamp(longTime);
         }
-        //处理dataList
 
+        //处理dataList
+        processTotalNumber(vo, dataList);
+
+        return vo;
+    }
+
+    private void processTotalNumber(ActEffectDataVo vo, List<ActEffectData> dataList) {
         Integer launchTotal = 0;
         Integer promoteTotal = 0;
         Integer successTotal = 0;
@@ -1892,8 +1864,50 @@ public class FriendPromoteService extends ShopBaseService {
         vo.setPromoteTotal(promoteTotal);
         vo.setSuccessTotal(successTotal);
         vo.setNewUserTotal(newUserTotal);
-        return vo;
     }
+
+    private Integer getActivityNewUserCount(FriendPromoteSelectParam param, Timestamp startTime, Timestamp tempEnd) {
+        return db().select(DSL.count(USER.USER_ID).as("new_user"))
+                    .from(USER)
+                    .where(USER.INVITE_ACT_ID.eq(param.getId()))
+                    .and(USER.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE))
+                    .and(USER.CREATE_TIME.greaterOrEqual(startTime))
+                    .and(USER.CREATE_TIME.lessOrEqual(tempEnd))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(0);
+    }
+
+    private Integer getSuccessCount(FriendPromoteSelectParam param, Timestamp startTime, Timestamp tempEnd) {
+        return db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("success"))
+                    .from(FRIEND_PROMOTE_LAUNCH)
+                    .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
+                    .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
+                    .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
+                    .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)1).or(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)2)))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(0);
+    }
+
+    private Integer getPromoteCount(FriendPromoteSelectParam param, Timestamp startTime, Timestamp tempEnd) {
+        return db().select(DSL.count(FRIEND_PROMOTE_DETAIL.ID).as("promote"))
+                    .from(FRIEND_PROMOTE_DETAIL)
+                    .where(FRIEND_PROMOTE_DETAIL.PROMOTE_ID.eq(param.getId()))
+                    .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.greaterOrEqual(startTime))
+                    .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.lessOrEqual(tempEnd))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(0);
+    }
+
+    private Integer getLaunchCount(FriendPromoteSelectParam param, Timestamp startTime, Timestamp tempEnd) {
+        return db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("launch"))
+                    .from(FRIEND_PROMOTE_LAUNCH)
+                    .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
+                    .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
+                    .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
+                    .fetchOptionalInto(Integer.class)
+                    .orElse(0);
+    }
+
     /**
      * 分享
      * @param param 活动id
@@ -1922,7 +1936,8 @@ public class FriendPromoteService extends ShopBaseService {
         for (FriendPromoteLaunchVo item : pageResult.getDataList()){
             FriendPromoteLaunchVo tempVo = new FriendPromoteLaunchVo();
             FieldsUtil.assignNotNull(item,tempVo);
-            if (item.getPromoteStatus()!=null&&(item.getPromoteStatus()==(byte)1||item.getPromoteStatus()==(byte)2)){
+            boolean success = item.getPromoteStatus() != null && (item.getPromoteStatus() == (byte) 1 || item.getPromoteStatus() == (byte) 2);
+            if (success){
                 tempVo.setIsSuccess("是");
             }else {
                 tempVo.setIsSuccess("否");
@@ -2002,7 +2017,7 @@ public class FriendPromoteService extends ShopBaseService {
 						FRIEND_PROMOTE_ACTIVITY.END_TIME)
 				.from(FRIEND_PROMOTE_ACTIVITY)
 				.where(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FRIEND_PROMOTE_ACTIVITY.IS_BLOCK
-						.eq(ZERO).and(FRIEND_PROMOTE_ACTIVITY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+						.eq(ZERO).and(FRIEND_PROMOTE_ACTIVITY.END_TIME.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(FRIEND_PROMOTE_ACTIVITY.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);
@@ -2012,17 +2027,17 @@ public class FriendPromoteService extends ShopBaseService {
     /**
      * 小程序-根据actCode获得当前活动的活动说明
      * @param actCode actCode
-     * @return {{@link promoteActCopywriting}}
+     * @return {{@link PromoteActCopywriting}}
      */
-	public promoteActCopywriting getActCopywriting(String actCode){
+	public PromoteActCopywriting getActCopywriting(String actCode){
 	    String activityCopywriting = db().select(FRIEND_PROMOTE_ACTIVITY.ACTIVITY_COPYWRITING)
             .from(FRIEND_PROMOTE_ACTIVITY)
             .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
             .fetchOptionalInto(String.class)
             .orElse(null);
-	    promoteActCopywriting actCopywriting = new promoteActCopywriting();
+	    PromoteActCopywriting actCopywriting = new PromoteActCopywriting();
 	    if (activityCopywriting!=null){
-	        actCopywriting = Util.json2Object(activityCopywriting,promoteActCopywriting.class,false);
+	        actCopywriting = Util.json2Object(activityCopywriting, PromoteActCopywriting.class,false);
         }
 	    return actCopywriting;
     }

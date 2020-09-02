@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalParam;
 import com.vpu.mp.service.pojo.shop.overview.transaction.LabelAnalysisParam;
 import com.vpu.mp.service.pojo.shop.overview.transaction.LabelAnalysisVoo;

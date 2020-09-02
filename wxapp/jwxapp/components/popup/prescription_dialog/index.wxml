@@ -1,0 +1,77 @@
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+	<view class="dialog-content">
+		<view class="prescription-content" bindtap="viewRxSearch">
+			<view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
+				<view class="title">电子处方</view>
+			</view>
+			<view class="prescription-info-content">
+				<view class="prescription-item">
+					<view class="item-title">
+						<text class="list-item-dot"></text>
+						<text class="title">就诊人信息</text>
+					</view>
+					<view class="user-info">
+						<view class="info-item">
+							<text>{{prescriptionData.patientName}}</text>
+							<text>姓名</text>
+						</view>
+						<view class="info-item">
+							<text>{{filter.getSex(prescriptionData.patientSex)}}</text>
+							<text>性别</text>
+						</view>
+						<view class="info-item">
+							<text>{{prescriptionData.patientAge}}岁</text>
+							<text>年龄</text>
+						</view>
+						<view class="info-item">
+							<text>{{prescriptionData.departmentName}}</text>
+							<text>科室</text>
+						</view>
+					</view>
+				</view>
+				<view class="prescription-item" wx:if="{{prescriptionData.diagnosisDetail}}">
+					<view class="item-title">
+						<text class="list-item-dot"></text>
+						<text class="title">诊断</text>
+					</view>
+					<view class="item-info">
+						<text class="title">{{prescriptionData.diagnosisDetail}}</text>
+					</view>
+				</view>
+				<view class="prescription-item" wx:if="{{prescriptionData.itemList.length}}">
+					<view class="item-title">
+						<text class="list-item-dot"></text>
+						<text class="title">治疗建议</text>
+					</view>
+					<view class="item-info">
+						<block wx:for="{{prescriptionData.itemList}}" wx:key="index">
+							<text class="title">{{item.goodsCommonName}}</text>
+							<text>用法用量：{{item.goodsQualityRatio }}</text>
+						</block>
+					</view>
+				</view>
+			</view>
+			<view class="prescription-doctor-info">
+				<view class="doctor-info" wx:if="{{prescriptionData.doctorName}}">
+					<text class="doctor-name">处方医师：</text>
+					<!-- <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image> -->
+					<text>{{prescriptionData.doctorName}}</text>
+					<text class="item-date">日期：{{filter.substring(prescriptionData.prescriptionCreateTime,0,10)}}</text>
+				</view>
+				<!-- <view class="doctor-info">
+          <text class="doctor-name">审核药师：</text>
+          <image class="sign-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200611/RCZBHwH2hM2mMOfX6wwB.png"></image>
+        </view> -->
+				<!-- <view class="doctor-info" wx:if="{{prescriptionData.pharmacistName}}">
+					<text class="doctor-name">发药药师：</text>
+					<text>{{prescriptionData.pharmacistName}}</text>
+					<text class="item-date">日期：{{filter.substring(prescriptionData.prescriptionCreateTime,0,10)}}</text>
+				</view> -->
+			</view>
+		</view>
+		<view class="warn-tips">本处方内容仅供参考，自行下载配药不具有处方效力</view>
+		<view  wx:if="{{!isDoctor}}" class="button" bindtap="viewRepurchase">去买药</view>
+	</view>
+
+</v-popup>

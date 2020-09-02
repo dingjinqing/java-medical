@@ -40,75 +40,6 @@
           />
           <span class="inputTip">{{$t("goodsAddEditInfo.basicInfo.goodsSnTip")}}</span>
         </el-form-item>
-        <!--平台分类-->
-        <!--<el-form-item-->
-          <!--:label="$t('goodsAddEditInfo.basicInfo.catId')"-->
-          <!--prop="catId"-->
-        <!--&gt;-->
-          <!--<el-select-->
-            <!--ref="catSelect"-->
-            <!--v-model="catIdTemp.firstCatId"-->
-            <!--size="small"-->
-            <!--@change="catIdSelectChange(1,$event)"-->
-            <!--style="width:170px;"-->
-          <!--&gt;-->
-            <!--<el-option-->
-              <!--:value="null"-->
-              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
-            <!--/>-->
-            <!--<el-option-->
-              <!--v-for="item in catIdTemp.firstCatData"-->
-              <!--:label="item.catName"-->
-              <!--:value="item.catId"-->
-              <!--:key="item.catId"-->
-            <!--/>-->
-          <!--</el-select>-->
-          <!--<el-select-->
-            <!--v-if="!!catIdTemp.firstCatId"-->
-            <!--v-model="catIdTemp.secondCatId"-->
-            <!--size="small"-->
-            <!--@change="catIdSelectChange(2,$event)"-->
-            <!--style="width:170px;"-->
-          <!--&gt;-->
-            <!--<el-option-->
-              <!--:value="null"-->
-              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
-            <!--/>-->
-            <!--<el-option-->
-              <!--v-for="item in catIdTemp.secondCatData"-->
-              <!--:label="item.catName"-->
-              <!--:value="item.catId"-->
-              <!--:key="item.catId"-->
-            <!--/>-->
-          <!--</el-select>-->
-          <!--<el-select-->
-            <!--v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId"-->
-            <!--v-model="catIdTemp.thirdCatId"-->
-            <!--size="small"-->
-            <!--@change="catIdSelectChange(3,$event)"-->
-            <!--style="width:170px;"-->
-          <!--&gt;-->
-            <!--<el-option-->
-              <!--:value="null"-->
-              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
-            <!--/>-->
-            <!--<el-option-->
-              <!--v-for="item in catIdTemp.thirdCatData"-->
-              <!--:label="item.catName"-->
-              <!--:value="item.catId"-->
-              <!--:key="item.catId"-->
-            <!--/>-->
-          <!--</el-select>-->
-          <!--<span class="inputTip">-->
-            <!--{{$t("goodsAddEditInfo.basicInfo.catIdTip")}}-->
-          <!--</span>-->
-          <!--<el-link-->
-            <!--type="primary"-->
-            <!--:underline="false"-->
-            <!--href="#"-->
-            <!--target="_blank"-->
-          <!--&gt;{{$t("goodsAddEditInfo.basicInfo.catIdGo")}}</el-link>-->
-        <!--</el-form-item>-->
         <!--商品图片-->
         <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsImg')">
           <div style="display: flex;align-items: center;flex-wrap: wrap;">
@@ -119,7 +50,7 @@
             >
               <el-image
                 fit="cover"
-                :src="item.imgUrl"
+                :src="imgHost+'/'+item"
                 style="width: 78px; height: 78px;"
               ></el-image>
               <span
@@ -153,6 +84,12 @@
             </span>
           </div>
         </el-form-item>
+      <el-form-item label="是否药品">
+          <el-radio-group v-model="goodsProductInfo.isMedical">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+      </el-form-item>
       </el-form>
       <!-- 基本信息更多配置 -->
       <div
@@ -181,38 +118,38 @@
         v-show="!arrorFlag"
       >
         <!--商品单位-->
-        <el-form-item
-          :label="$t('goodsAddEditInfo.basicInfoOther.unit')"
-          prop="unit"
-        >
-          <!--商品单位选择框-->
-          <el-select
-            ref="unitSelect"
-            v-model="unitSelectedValue"
-            @change="unitSelectChange"
-            size="small"
-            style="width:170px;"
-          >
-            <el-option
-              v-for="(item,index) in unitSelectOptions"
-              :key="index"
-              :value="item.value"
-              :label="item.label"
-            />
-          </el-select>
-          <!--商品单位用户输入框-->
-          <el-input
-            v-if="unitSelectedValue===null"
-            v-model="unitCustomerValue"
-            @change="unitCustomerChange"
-            size="small"
-            style="width:100px;"
-          />
-          <span
-            v-if="unitSelectedValue===null"
-            class="inputTip"
-          >{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>
-        </el-form-item>
+        <!--<el-form-item-->
+          <!--:label="$t('goodsAddEditInfo.basicInfoOther.unit')"-->
+          <!--prop="unit"-->
+        <!--&gt;-->
+          <!--&lt;!&ndash;商品单位选择框&ndash;&gt;-->
+          <!--<el-select-->
+            <!--ref="unitSelect"-->
+            <!--v-model="unitSelectedValue"-->
+            <!--@change="unitSelectChange"-->
+            <!--size="small"-->
+            <!--style="width:170px;"-->
+          <!--&gt;-->
+            <!--<el-option-->
+              <!--v-for="(item,index) in unitSelectOptions"-->
+              <!--:key="index"-->
+              <!--:value="item.value"-->
+              <!--:label="item.label"-->
+            <!--/>-->
+          <!--</el-select>-->
+          <!--&lt;!&ndash;商品单位用户输入框&ndash;&gt;-->
+          <!--<el-input-->
+            <!--v-if="unitSelectedValue===null"-->
+            <!--v-model="unitCustomerValue"-->
+            <!--@change="unitCustomerChange"-->
+            <!--size="small"-->
+            <!--style="width:100px;"-->
+          <!--/>-->
+          <!--<span-->
+            <!--v-if="unitSelectedValue===null"-->
+            <!--class="inputTip"-->
+          <!--&gt;{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>-->
+        <!--</el-form-item>-->
         <!--商家分类下拉树-->
         <sortCatTreeSelect
           ref="sortTree"
@@ -454,6 +391,109 @@
         </div>
       </el-dialog>
     </div>
+
+    <div class="title" v-if="goodsProductInfo.isMedical">药品信息</div>
+    <div  v-if="goodsProductInfo.isMedical">
+      <el-form ref="medicalInfoForm" label-width="140px">
+          <el-form-item label="药品通用名称:">
+              <el-input v-model="goodsMedicalInfo.goodsCommonName" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="药品别名:">
+              <el-input v-model="goodsMedicalInfo.goodsAliasName" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="规格系数:">
+              <el-input v-model="goodsMedicalInfo.goodsQualityRatio" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="是否处方药:">
+              <el-radio-group v-model="goodsMedicalInfo.isRx">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+          </el-form-item>
+          <el-form-item label="医保类型:">
+              <el-select v-model="goodsMedicalInfo.insuranceFlag" size="small" style="width:170px">
+                  <el-option label="无" :value="0"/>
+                  <el-option label="甲" :value="1"/>
+                  <el-option label="乙" :value="2"/>
+                  <el-option label="丙" :value="3"/>
+                  <el-option label="科研" :value="4"/>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="医保编码:">
+              <el-input v-model="goodsMedicalInfo.insuranceCode" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="医保库内名称:">
+              <el-input v-model="goodsMedicalInfo.insuranceDatabaseName" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="药品基本单位:">
+              <el-input v-model="goodsMedicalInfo.goodsBasicUnit" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="药品包装单位:">
+              <el-input v-model="goodsMedicalInfo.goodsPackageUnit" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="整包转换系数:">
+              <el-input v-model.number="goodsMedicalInfo.goodsUnitConvertFactor" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="等效量:">
+              <el-input v-model.number="goodsMedicalInfo.goodsEquivalentQuantity" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="等效量单位:">
+              <el-input v-model="goodsMedicalInfo.goodsEquivalentUnit" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="药品成分:">
+              <el-input v-model="goodsMedicalInfo.goodsComposition" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="药品性状:">
+              <el-input v-model="goodsMedicalInfo.goodsCharacters" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="功能主治:">
+              <el-input v-model="goodsMedicalInfo.goodsFunction" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="用法用量:">
+              <el-input v-model="goodsMedicalInfo.goodsUseMethod" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="不良反应:">
+              <el-input v-model="goodsMedicalInfo.goodsAdverseReaction" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="药品禁忌:">
+              <el-input v-model="goodsMedicalInfo.goodsTaboos" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="注意事项:">
+              <el-input v-model="goodsMedicalInfo.goodsNoticeEvent" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="相互作用:">
+              <el-input v-model="goodsMedicalInfo.goodsInteraction" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="贮藏方法:">
+              <el-input v-model="goodsMedicalInfo.goodsStoreMethod" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="药品包装:">
+              <el-input v-model="goodsMedicalInfo.goodsPackageMethod" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="有效期:">
+              <el-input v-model="goodsMedicalInfo.goodsValidTime" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="批准文号:">
+              <el-input v-model="goodsMedicalInfo.goodsApprovalNumber" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="生产企业:">
+              <el-input v-model="goodsMedicalInfo.goodsProductionEnterprise" size="small" style="width:170px" />
+          </el-form-item>
+          <el-form-item label="药品最低聘任职务:">
+              <el-select v-model="goodsMedicalInfo.goodsLimitDuty" size="small" style="width:170px">
+                  <el-option label="无" :value="0"/>
+                  <el-option label="正高" :value="5"/>
+                  <el-option label="副高" :value="4"/>
+                  <el-option label="中级" :value="3"/>
+                  <el-option label="助力" :value="2"/>
+                  <el-option label="待聘" :value="1"/>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="抗菌限制:">
+              <el-input v-model="goodsMedicalInfo.goodsLimitAntibacterial" size="small" style="width:170px" />
+          </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 <script>
@@ -512,7 +552,41 @@ export default {
         // 视频大小
         goodsVideoSize: null,
         // 视频id
-        goodsVideoId: null
+        goodsVideoId: null,
+        // 是否药品
+        isMedical: 1
+      },
+      // 药品信息
+      goodsMedicalInfo: {
+        id: null,
+        goodsId: null,
+        goodsCommonName: null,
+        goodsAliasName: null,
+        goodsQualityRatio: null,
+        isRx: 1,
+        insuranceFlag: null,
+        insuranceCode: null,
+        insuranceDatabaseName: null,
+        goodsBasicUnit: null,
+        goodsPackageUnit: null,
+        goodsUnitConvertFactor: null,
+        goodsEquivalentQuantity: null,
+        goodsEquivalentUnit: null,
+        goodsComposition: null,
+        goodsCharacters: null,
+        goodsFunction: null,
+        goodsUseMethod: null,
+        goodsAdverseReaction: null,
+        goodsTaboos: null,
+        goodsNoticeEvent: null,
+        goodsInteraction: null,
+        goodsStoreMethod: null,
+        goodsPackageMethod: null,
+        goodsValidTime: null,
+        goodsApprovalNumber: null,
+        goodsProductionEnterprise: null,
+        goodsLimitDuty: null,
+        goodsLimitAntibacterial: null
       },
       /* 基本信息部分 */
       // 基本信息验证
@@ -730,7 +804,7 @@ export default {
         imgObjs.length = 10
       }
       imgObjs.forEach(imgObj => {
-        this.goodsProductInfo.goodsImgs.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
+        this.goodsProductInfo.goodsImgs.push(imgObj.imgPath)
       })
       let imgLength = this.goodsProductInfo.goodsImgs.length
       if (imgLength > 10) {
@@ -913,10 +987,10 @@ export default {
     /* 初始化图片 */
     _initGoodsImgs (goodsData) {
       // 选择商品图片时第一张图片默认为主图，其他为幅图，数据返回时主图和幅图不在同一个字段中
-      this.goodsProductInfo.goodsImgs = [{ imgUrl: goodsData.goodsImg, imgPath: goodsData.goodsImgPath }]
+      this.goodsProductInfo.goodsImgs = [goodsData.goodsImg]
       if (goodsData.goodsImgs !== null && goodsData.goodsImgs.length > 0) {
         for (let i = 0; i < goodsData.goodsImgs.length; i++) {
-          this.goodsProductInfo.goodsImgs.push({ imgUrl: goodsData.goodsImgs[i], imgPath: goodsData.goodsImgsPath[i] })
+          this.goodsProductInfo.goodsImgs.push(goodsData.goodsImgs[i])
         }
       }
     },
@@ -936,8 +1010,8 @@ export default {
     },
     /* 初始化商品标签 */
     _initGoodsLabel (goodsData) {
-      this.labelNormalItems = goodsData.goodsLabelNormalListVos === null ? [] : goodsData.goodsLabelNormalListVos
-      this.labelSelectedItems = goodsData.goodsLabelPointListVos === null ? [] : goodsData.goodsLabelPointListVos
+      this.labelNormalItems = goodsData.normalLabels === null ? [] : goodsData.normalLabels
+      this.labelSelectedItems = goodsData.pointLabels === null ? [] : goodsData.pointLabels
 
       // 标签下拉框剔除已选中的标签项
       this.labelSelectOptions = this.labelSelectOptions.filter(item => {
@@ -954,6 +1028,15 @@ export default {
       // 异步操作变同步，为了商品标签的回显操作
       return Promise.all([p1, p2])
     },
+    // 初始化药品信息
+    _goodsMedicalInfoInit (goodsData) {
+      if (goodsData.goodsMedicalInfo === null) {
+        return
+      }
+      for (let key in goodsData.goodsMedicalInfoVo) {
+        this.goodsMedicalInfo[key] = goodsData.goodsMedicalInfoVo[key]
+      }
+    },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
       this.isUpdate = true
@@ -967,6 +1050,7 @@ export default {
         this.goodsProductInfo.goodsAd = goodsData.goodsAd
         this.goodsProductInfo.goodsSn = goodsData.goodsSn
         this.goodsProductInfo.goodsSnBak = goodsData.goodsSn
+        this.goodsProductInfo.isMedical = goodsData.isMedical
         // this.goodsProductInfo.catId = goodsData.catId
         // 初始化平台分类
         // this._initCatId(goodsData)
@@ -990,6 +1074,8 @@ export default {
         this.goodsVideoImg = goodsData.goodsVideoImg
         this.goodsVideoSize = goodsData.goodsVideoSize
         this.goodsVideoId = goodsData.goodsVideoId
+        // 初始化药品信息
+        this._goodsMedicalInfoInit(goodsData)
       })
     },
     /* 处理复制操作的数据 */
@@ -1011,23 +1097,17 @@ export default {
         this.$refs.goodsNameInput.focus()
         return false
       }
-      // 平台分类未选中
-      // if (this.goodsProductInfo.catId === null) {
-      //   this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning' })
-      //   this.$refs.catSelect.focus()
-      //   return false
-      // }
       // 未选择商品图片
       if (this.goodsProductInfo.goodsImgs.length === 0) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning' })
         return false
       }
       // 单位未选择
-      if (isStrBlank(this.goodsProductInfo.unit)) {
-        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning' })
-        this.$refs.unitSelect.focus()
-        return false
-      }
+      // if (isStrBlank(this.goodsProductInfo.unit)) {
+      //   this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning' })
+      //   this.$refs.unitSelect.focus()
+      //   return false
+      // }
 
       return true
     },
@@ -1048,15 +1128,20 @@ export default {
       // 处理商品图片
       // 只有一个商品主图此处数组不可能为null
       if (this.goodsProductInfo.goodsImgs.length === 1) {
-        retData.goodsImg = this.goodsProductInfo.goodsImgs[0].imgPath
+        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
         retData.goodsImgs = null
       } else if (this.goodsProductInfo.goodsImgs.length > 1) {
         // 有商品主图和幅图
         // 避免和goodsProductInfo共享同一个数组
         retData.goodsImgs = []
-        retData.goodsImg = this.goodsProductInfo.goodsImgs[0].imgPath
+        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
         for (let i = 1; i < this.goodsProductInfo.goodsImgs.length; i++) {
-          retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i].imgPath)
+          retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i])
+        }
+      }
+      if (retData.isMedical === 1) {
+        retData.goodsMedicalInfo = {
+          ...this.goodsMedicalInfo
         }
       }
       return retData

@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 
 /**
@@ -84,7 +84,8 @@ public class AdminInsteadPayController extends AdminBaseController {
                 //检查用户设置的金额比 范围
                 int ratioNum1 = param.getPayRatioNumber().get(0);
                 int ratioNum2 = param.getPayRatioNumber().get(1);
-                if (ratioNum1 > 100 || ratioNum1 < 0 || ratioNum2 > 100 || ratioNum2 < 0) {
+                int ratioMax = 100;
+                if (ratioNum1 > ratioMax || ratioNum1 < 0 || ratioNum2 > ratioMax || ratioNum2 < 0) {
                     return fail(JsonResultCode.INSTEAD_PAY_VALUE_OVER_RANGE);
                 }
 

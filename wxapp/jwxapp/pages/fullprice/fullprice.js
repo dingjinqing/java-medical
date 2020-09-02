@@ -106,7 +106,7 @@ global.wxPage({
       // }
       util.api('/api/wxapp/cart/add', function (res) {
         if (res.error == 0) {
-          util.toast_success('已加入购物车');
+          util.toast_success('已加入清单');
           money_request(that)
         } else {
           util.showModal("提示", res.message);
@@ -215,7 +215,7 @@ global.wxPage({
     // }
     util.api("/api/wxapp/cart/add", res => {
       if (res.error == 0) {
-        util.toast_success('已加入购物车');
+        util.toast_success('已加入清单');
         money_request(that)
       } else {
         util.showModal("提示", res.message);

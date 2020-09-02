@@ -1073,18 +1073,55 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_471752.b2c_bargain_goods</code>.
      */
     public final BargainGoods BARGAIN_GOODS = com.vpu.mp.db.shop.tables.BargainGoods.BARGAIN_GOODS;
-    
+
     /**
      * The table <code>mini_shop_471752..b2c_card_renew</code>.
      */
     public final CardRenew CARD_RENEW = com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
-    
+
+    public final DoctorDepartmentCouple DOCTOR_DEPARTMENT_COUPLE = com.vpu.mp.db.shop.tables.DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE;
+    /**
+     * The table <code>jmini_shop_224462.b2c_medical_history</code>.
+     */
+    public final MedicalHistory MEDICAL_HISTORY = MedicalHistory.MEDICAL_HISTORY;
+    /**
+     * 充值记录表
+     */
+    public final OrderMedicalHistory ORDER_MEDICAL_HISTORY = com.vpu.mp.db.shop.tables.OrderMedicalHistory.ORDER_MEDICAL_HISTORY;
+    /**
+     * 用户消息表
+     */
+    public final UserMessage USER_MESSAGE = com.vpu.mp.db.shop.tables.UserMessage.USER_MESSAGE;
+    /**
+     * 短信充值记录表
+     */
+    public final SmsRecharge SMS_RECHARGE = com.vpu.mp.db.shop.tables.SmsRecharge.SMS_RECHARGE;
+    /**
+     * 用户公告关联表
+     */
+    public final UserAnnouncement USER_ANNOUNCEMENT = com.vpu.mp.db.shop.tables.UserAnnouncement.USER_ANNOUNCEMENT;
+    /**
+     * 用户关注医师
+     */
+    public final UserDoctorAttention USER_DOCTOR_ATTENTION = UserDoctorAttention.USER_DOCTOR_ATTENTION;
+    /**
+     * 医师上下班记录表
+     */
+    public final DoctorDutyRecord DOCTOR_DUTY_RECORD = com.vpu.mp.db.shop.tables.DoctorDutyRecord.DOCTOR_DUTY_RECORD;
+
+    /**
+     * 医师评价和打分
+     */
+    public final DoctorComment DOCTOR_COMMENT = com.vpu.mp.db.shop.tables.DoctorComment.DOCTOR_COMMENT;
+
+
     /**
      * No further instances allowed
      */
     private MiniShop_471752() {
         super("mini_shop_471752", null);
     }
+
 
 
     /**
@@ -1306,6 +1343,24 @@ public class MiniShop_471752 extends SchemaImpl {
             AttendShareUser.ATTEND_SHARE_USER,
             UserRfmSummary.USER_RFM_SUMMARY,
             BargainGoods.BARGAIN_GOODS,
-            CardRenew.CARD_RENEW);
+            CardRenew.CARD_RENEW,
+            Department.DEPARTMENT,
+            Doctor.DOCTOR,
+            DoctorTitle.DOCTOR_TITLE,
+            GoodsMedicalInfo.GOODS_MEDICAL_INFO,
+            Patient.PATIENT,
+            Pharmacist.PHARMACIST,
+            Prescription.PRESCRIPTION,
+            PrescriptionItem.PRESCRIPTION_ITEM,
+            UserPatientCouple.USER_PATIENT_COUPLE,
+            MedicalHistory.MEDICAL_HISTORY,
+            OrderMedicalHistory.ORDER_MEDICAL_HISTORY,
+            DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE,
+            UserAnnouncement.USER_ANNOUNCEMENT,
+            UserDoctorAttention.USER_DOCTOR_ATTENTION,
+            DoctorDutyRecord.DOCTOR_DUTY_RECORD,
+            DoctorComment.DOCTOR_COMMENT);
+
+
     }
 }

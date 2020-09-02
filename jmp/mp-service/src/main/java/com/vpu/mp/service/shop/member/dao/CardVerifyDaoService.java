@@ -1,13 +1,10 @@
 package com.vpu.mp.service.shop.member.dao;
 
-import com.vpu.mp.db.main.tables.DictProvince;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -26,9 +23,6 @@ import java.util.Set;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
-import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
-import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.*;
 
 /**
@@ -51,8 +45,8 @@ public class CardVerifyDaoService extends ShopBaseService {
 					.orderBy(CARD_EXAMINE.ID.desc())
 					.fetchAnyInto(CardVerifyResultVo.class);
 	}
-	
-	
+
+
 	public PageResult<? extends Record> getVerifyPageList(ActiveAuditParam param) {
 		Field<?>[] fields = CARD_EXAMINE.fields();
 		List<Field<?>> f = new ArrayList<>(Arrays.asList(fields));
@@ -90,13 +84,13 @@ public class CardVerifyDaoService extends ShopBaseService {
 		pageResult.dataList = result.into(clazz);
 		return pageResult;
 	}
-	
+
 	public CardExamineRecord getLastRecord(ActiveAuditParam param) {
 		SelectWhereStep<CardExamineRecord> select = db().selectFrom(CARD_EXAMINE);
 		buildOptions(select,param);
 		return select.orderBy(CARD_EXAMINE.CREATE_TIME.asc()).fetchAny();
 	}
-	
+
 	/**
 	 * 查询审核多条件构建
 	 */
@@ -106,14 +100,14 @@ public class CardVerifyDaoService extends ShopBaseService {
 		if(isNotNull(param.getCardId())) {
 			select.where(CARD_EXAMINE.CARD_ID.eq(param.getCardId()));
 		}
-		
+
 		// 订单id
 		if(isNotNull(param.getIds())) {
 			select.where(CARD_EXAMINE.ID.in(param.getIds()));
 		}else if (isNotNull(param.getId())){
 			select.where(CARD_EXAMINE.ID.eq(param.getId()));
 		}
-			
+
 		// 审核状态
 		if(isNotNull(param.getStatus())) {
 			select.where(CARD_EXAMINE.STATUS.eq(param.getStatus()));
@@ -135,17 +129,17 @@ public class CardVerifyDaoService extends ShopBaseService {
 		if(isNotNull(param.getSecondTime())) {
 			select.where(CARD_EXAMINE.CREATE_TIME.le(param.getSecondTime()));
 		}
-		
+
 		// 审核超时
 		if(isNotNull(param.getExamineOver())) {
 			select.where(CARD_EXAMINE.CREATE_TIME.le(param.getExamineOver()))
 				  .and(CARD_EXAMINE.DEL_FLAG.eq(VDF_NO))
 				  .and(CARD_EXAMINE.STATUS.eq(VSTAT_CHECKING));
-			
+
 		}
-	
+
 	}
-	
+
 	private boolean isNotNull(Object obj) {
 		if(obj instanceof String){
             return !StringUtils.isBlank((String)obj);
@@ -182,7 +176,7 @@ public class CardVerifyDaoService extends ShopBaseService {
 	public void updateCardVerify(Integer id) {
 		db().update(CARD_EXAMINE)
 			.set(CARD_EXAMINE.STATUS,VSTAT_PASS)
-			.set(CARD_EXAMINE.PASS_TIME,DateUtil.getLocalDateTime())
+			.set(CARD_EXAMINE.PASS_TIME, DateUtils.getLocalDateTime())
 			.where(CARD_EXAMINE.ID.eq(id));
 	}
 
@@ -199,5 +193,5 @@ public class CardVerifyDaoService extends ShopBaseService {
                    .orderBy(CARD_EXAMINE.ID.desc())
 				.fetchAny();
 	}
-	
+
 }

@@ -712,22 +712,6 @@
             </div>
           </div>
         </li>
-        <li>
-          <div class="text-prompt">
-            <span class="blue_border"></span>
-            <span>{{$t('storeCommonSettings.smsSettings')}}</span>
-          </div>
-          <div class="text-set">
-            <p>
-              {{$t('storeCommonSettings.currentRecharge')}}： <span class="bold">{{$t('storeCommonSettings.weipubao')}}</span>， {{$t('storeCommonSettings.balance')}}： <span class="bold">￥0.0000</span>， {{$t('storeCommonSettings.numMessages')}}： <span class="bold">0 </span>
-              <a
-                target="_blank"
-                href="http://101.200.202.174/sms/api/alipay/index.php?sms_account=微铺宝电商运营"
-                style="color: #5a8bff; cursor: pointer;"
-              >{{$t('storeCommonSettings.gotoRecharge')}}</a>
-            </p>
-          </div>
-        </li>
       </ul>
     </div>
     <div class="basic-page-footer">
@@ -749,7 +733,7 @@
 </template>
 
 <script>
-import { getCommonInfo, updateCommonInfo } from '@/api/admin/basicConfiguration/shopConfig'
+import { getCommonInfo, updateCommonInfo, setSmsAccount } from '@/api/admin/basicConfiguration/shopConfig'
 import { getCateList } from '@/api/admin/storeManage/storeGoods'
 
 export default {
@@ -792,7 +776,8 @@ export default {
         } // 店铺商品分享配置
       },
       catIds: [],
-      tuneUp: false
+      tuneUp: false,
+      sid: null
     }
   },
   computed: {
@@ -847,6 +832,27 @@ export default {
       console.log('img: ', img)
       this.$set(this.info.share_config, 'share_img', img.imgPath)
     },
+    createSmsAccount () {
+      if (!this.sid) return false
+      setSmsAccount({ sid: this.sid }).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let data = JSON.parse(res.content)
+          console.log(data)
+          if (data.code === 0) {
+            this.$set(this.info, 'sms_account', {
+              smsAccount: this.sid,
+              balance: 0.000,
+              smsNum: 0
+            })
+          } else {
+            this.$message.error({
+              message: data.msg
+            })
+          }
+        }
+      })
+    },
     // 保存
     saveCommonInfoHandle () {
       const that = this
@@ -862,7 +868,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 .store_common_setting_page {
   a {
     text-decoration: none;

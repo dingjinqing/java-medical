@@ -1,18 +1,18 @@
 
 package com.vpu.mp.service.shop.order.action;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.excel.AbstractExcelDisposer;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.excel.AbstractExcelDisposer;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -34,7 +34,6 @@ import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,9 +58,9 @@ import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
  */
 @Component
 public class ShipService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, ShipParam> {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private ShipInfoService shipInfo;
 	@Autowired
@@ -72,7 +71,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 	public OrderGoodsService orderGoods;
     @Autowired
     public OrderOperateSendMessage sendMessage;
-	
+
 	@Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.ADMIN_SHIP;
@@ -108,7 +107,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		//声明存放OrderGoodsRecord的list
 		ArrayList<OrderGoodsRecord> recordList = new ArrayList<OrderGoodsRecord>(shipGoods.length);
 		//发货批次号,同一批次为同一快递
-		String batchNo = canBeShipped.get(0).getOrderSn() + "_" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		String batchNo = canBeShipped.get(0).getOrderSn() + "_" + DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
 		for (ShipGoods oneGoods : shipGoods) {
 			Integer sendNumber = oneGoods.getSendNumber();
 			//校验_商品发货数量
@@ -143,7 +142,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		if(partShipFlag == OrderConstant.PART_SHIP) {
 			orderRecord.setPartShipFlag(OrderConstant.PART_SHIP);
 		}
-		orderRecord.setShippingTime(DateUtil.getSqlTimestamp());
+		orderRecord.setShippingTime(DateUtils.getSqlTimestamp());
 		orderRecord.setShippingNo(param.getShippingNo());
 		orderRecord.setShippingId(param.getShippingId());
 		transaction(()->{
@@ -157,7 +156,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			}
 			//更新主表基本信息 b2c_order_info
 			db().executeUpdate(orderRecord, ORDER_INFO.ORDER_SN.eq(param.getOrderSn()));
-			
+
 		});
 		//action操作
 		orderAction.addRecord(orderRecord, param, OrderConstant.ORDER_WAIT_DELIVERY, orderRecord.getOrderStatus() == OrderConstant.ORDER_SHIPPED ? "全部发货 " : "部分发货");
@@ -168,7 +167,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		logger.info("发货完成");
 		return null;
 	}
-	
+
 	/**
 	 * 发货查询
 	 * @param param
@@ -181,7 +180,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		// 订单信息
 		shipVo = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.MAIN_ORDER_SN,ORDER_INFO.CONSIGNEE, ORDER_INFO.MOBILE, ORDER_INFO.COMPLETE_ADDRESS).from(ORDER_INFO)
 				.where(ORDER_INFO.ORDER_SN.eq(param.getOrderSn()).and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))).fetchOneInto(ShipVo.class);
-		
+
 		if(shipVo == null || shipVo.getOrderSn().equals(shipVo.getMainOrderSn())) {
 			return null;
 		}
@@ -190,14 +189,14 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		logger.info("获取可发货信息完成");
 		return shipVo;
 	}
-	
+
 	/**
 	 * 获取该订单下可发货商品列表
 	 */
 	public List<OrderGoodsVo> canBeShipped(String orderSn) {
 		// TODO 修改select*
 		//该单是否支持发货
-		
+
 		//TODO Short.valueOf("0")正常商品行
 		List<OrderGoodsVo> orderGoods = db().select(ORDER_GOODS.asterisk()).from(ORDER_GOODS)
 				.where(ORDER_GOODS.ORDER_SN.eq(orderSn).and(ORDER_GOODS.SEND_NUMBER.eq(0))).fetchInto(OrderGoodsVo.class);
@@ -222,7 +221,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		}
 		return orderGoods;
 	}
-	
+
 	public boolean setOrderStatus(OrderInfoRecord order) {
 		Result<OrderGoodsRecord> goods = orderGoods.getByOrderId(order.getOrderId());
 		for (OrderGoodsRecord goodsRecord : goods) {

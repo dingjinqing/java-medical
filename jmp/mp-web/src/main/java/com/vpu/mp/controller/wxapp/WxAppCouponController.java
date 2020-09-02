@@ -1,8 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackIdParam;
@@ -60,7 +60,7 @@ public class WxAppCouponController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/detail/byScore")
-    public JsonResult CouponDetailByScore(@RequestBody AvailCouponDetailParam param) {
+    public JsonResult couponDetailByScore(@RequestBody AvailCouponDetailParam param) {
         Integer userId = wxAppAuth.user().getUserId();
         Integer canUseScore = shop().member.score.getTotalAvailableScoreById(userId);
         param.setUserId(userId);

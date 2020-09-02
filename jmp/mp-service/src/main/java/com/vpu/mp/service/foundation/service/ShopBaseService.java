@@ -1,8 +1,15 @@
 package com.vpu.mp.service.foundation.service;
 
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.saas.SaasApplication;
+import com.vpu.mp.service.wechat.OpenPlatform;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Configuration;
 import org.jooq.ContextTransactionalRunnable;
 import org.jooq.Field;
@@ -14,91 +21,58 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.Timestamp;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 
 
 /**
- *
  * @author lixinguo
- *
  */
-public class ShopBaseService extends AbstractCommonBaseService {
-
-	/**
-	 * Shop DB连接事务配置，线程内单例
-	 */
-	private static ThreadLocal<Deque<Configuration>> shopDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
-
-	/**
-	 * 当前登录用户信息，线程单例
-	 */
-	private static ThreadLocal<AdminTokenAuthInfo> currentAdminLoginUser  = new ThreadLocal<>();
-
-	/**
-	 * 当前线程设置当前登录用户
-	 * @param user
-	 */
-	public static void setCurrentAdminLoginUser(AdminTokenAuthInfo user) {
-		currentAdminLoginUser.set(user);
-	}
-
-	/**
-	 * 当前线程得到当前登录用户
-	 * @return
-	 */
-	public static AdminTokenAuthInfo getCurrentAdminLoginUser() {
-		return currentAdminLoginUser.get();
-	}
-
-	/**
-	 * 当前店铺连接
-	 */
-	@Override
-	protected DefaultDSLContext db() {
-		Deque<Configuration> config = shopDbConfiguration.get();
-		if (config.peek() != null) {
-			return (DefaultDSLContext) DSL.using(config.peek());
-		}
-		return databaseManager.currentShopDb();
-	}
-
-	/**
-	 * 事务
-	 * @param transactional
-	 */
-	protected void transaction(ContextTransactionalRunnable transactional) {
-		db().transaction((configuration) -> {
-			Deque<Configuration> config = shopDbConfiguration.get();
-			config.push(configuration);
-			try {
-				transactional.run();
-			} finally {
-				config.pop();
-			}
-		});
-	}
+public class ShopBaseService extends ShopBaseDao {
 
     /**
-	 * 当前店铺Id
+     * Shop DB连接事务配置，线程内单例
+     */
+    private static ThreadLocal<Deque<Configuration>> shopDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
+
+    /**
+     * 当前登录用户信息，线程单例
+     */
+    private static ThreadLocal<AdminTokenAuthInfo> currentAdminLoginUser = new ThreadLocal<>();
+
+    /**
+     * 当前线程设置当前登录用户
      *
-	 * @return
-	 */
-	public Integer getShopId() {
-		return databaseManager.getCurrentShopId();
-	}
+     * @param user
+     */
+    public static void setCurrentAdminLoginUser(AdminTokenAuthInfo user) {
+        currentAdminLoginUser.set(user);
+    }
 
     /**
-	 * 当前店铺对于SysId
-	 * @return
-	 */
-	public Integer getSysId() {
-		ShopRecord shop = saas.shop.getShopById(this.getShopId());
-		return shop == null ? 0 : shop.getSysId();
-	}
+     * 溢出当前登录用户
+     */
+    public static void removeCurrentAdminLoginUser() {
+        currentAdminLoginUser.remove();
+    }
+
+    /**
+     * 当前线程得到当前登录用户
+     *
+     * @return
+     */
+    public static AdminTokenAuthInfo getCurrentAdminLoginUser() {
+        return currentAdminLoginUser.get();
+    }
 
 
-    public Field<String> dateFormat(Field<Timestamp> field, String format) {
-        return DSL.field("date_format({0}, {1})", SQLDataType.VARCHAR,
-            field, DSL.inline(format));
+    /**
+     * 当前店铺对于SysId
+     *
+     * @return
+     */
+    public Integer getSysId() {
+        ShopRecord shop = saas.shop.getShopById(this.getShopId());
+        return shop == null ? 0 : shop.getSysId();
     }
 
     @Autowired
@@ -106,6 +80,28 @@ public class ShopBaseService extends AbstractCommonBaseService {
 
     public String imageUrl(String path) {
         return domainConfig.imageUrl(path);
+    }
+
+    @Autowired
+    protected OpenPlatform open;
+
+    @Autowired
+    protected SaasApplication saas;
+
+
+    protected OpenPlatform open() {
+        return open;
+    }
+
+    protected SaasApplication saas() {
+        return saas;
+    }
+
+    protected <T> Workbook export(List<T> list, Class<T> clazz) {
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(workbook);
+        excelWriter.writeModelList(list, clazz);
+        return workbook;
     }
 
 }

@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -99,7 +99,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         // 定时预告判断
         if (GoodsConstant.ACTIVITY_NOT_PRE.compareTo(activityInfo.get(SEC_KILL_DEFINE.PRE_TIME)) < 0) {
             Integer hours = activityInfo.get(SEC_KILL_DEFINE.PRE_TIME);
-            int timeHourDifference = DateUtil.getTimeHourDifference(activityInfo.get(SEC_KILL_DEFINE.START_TIME), date);
+            int timeHourDifference = DateUtils.getTimeHourDifference(activityInfo.get(SEC_KILL_DEFINE.START_TIME), date);
             if (timeHourDifference > hours) {
                 return null;
             }
@@ -136,9 +136,9 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setLimitAmount(secKill.getLimitAmount());
         seckillVo.setLimitPaytime(secKill.getLimitPaytime());
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(seckillVo.getActState())) {
-            seckillVo.setStartTime((secKill.getStartTime().getTime()- DateUtil.getLocalDateTime().getTime())/1000);
+            seckillVo.setStartTime((secKill.getStartTime().getTime()- DateUtils.getLocalDateTime().getTime())/1000);
         }
-        seckillVo.setEndTime((secKill.getEndTime().getTime()-DateUtil.getLocalDateTime().getTime())/1000);
+        seckillVo.setEndTime((secKill.getEndTime().getTime()- DateUtils.getLocalDateTime().getTime())/1000);
 
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
@@ -288,7 +288,7 @@ public class SecKillProcessorDao extends ShopBaseService {
             }
         }
         //设置订单过期时间
-        order.setExpireTime(DateUtil.getTimeStampPlus(seckill.getLimitPaytime(), ChronoUnit.MINUTES));
+        order.setExpireTime(DateUtils.getTimeStampPlus(seckill.getLimitPaytime(), ChronoUnit.MINUTES));
 
     }
 

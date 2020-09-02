@@ -169,3 +169,35 @@ export function getOrderBrief (data) {
     data: data
   })
 }
+// 咨询订单列表
+export function advisoryOrderList (data) {
+  return service({
+    url: '/api/admin/inquiry/order/list',
+    method: 'post',
+    data: data
+  })
+}
+// 咨询订单详情
+export function advisoryOrderInfo (data) {
+  return service({
+    url: '/api/admin/inquiry/order/detail',
+    method: 'post',
+    data: data
+  })
+}
+// 咨询订单退款
+export function returnAdvisoryOrder (data) {
+  return service({
+    url: '/api/admin/inquiry/order/refund',
+    method: 'post',
+    data: data
+  })
+}
+// 咨询记录
+export function getRecordList (data) {
+  return service({
+    url: '/api/admin/im/session/history',
+    method: 'post',
+    data: data
+  })
+}

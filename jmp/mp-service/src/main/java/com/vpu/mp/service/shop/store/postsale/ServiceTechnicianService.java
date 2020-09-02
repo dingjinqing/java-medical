@@ -1,17 +1,17 @@
 package com.vpu.mp.service.shop.store.postsale;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.ServiceScheduleRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianScheduleRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.technician.*;
 import com.vpu.mp.service.shop.store.schedule.TechnicianScheduleService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
@@ -316,8 +316,8 @@ public class ServiceTechnicianService extends ShopBaseService {
             for(ServiceTechnicianScheduleRecord t:list){
                 ServiceScheduleRecord serviceScheduleRecord = db().fetchAny(SERVICE_SCHEDULE,SERVICE_SCHEDULE.SCHEDULE_ID.eq(t.getScheduleId()));
                 if(serviceScheduleRecord != null){
-                    Timestamp time = DateUtil.convertToTimestamp(serviceDate + " " + servicePeriod);
-                    if(DateUtil.convertToTimestamp(serviceDate + " " + serviceScheduleRecord.getBegcreateTime() + ":00").before(time) && DateUtil.convertToTimestamp(serviceDate + " " + serviceScheduleRecord.getEndTime() + ":00").after(time)){
+                    Timestamp time = DateUtils.convertToTimestamp(serviceDate + " " + servicePeriod);
+                    if(DateUtils.convertToTimestamp(serviceDate + " " + serviceScheduleRecord.getBegcreateTime() + ":00").before(time) && DateUtils.convertToTimestamp(serviceDate + " " + serviceScheduleRecord.getEndTime() + ":00").after(time)){
                         return true;
                     }
                 }

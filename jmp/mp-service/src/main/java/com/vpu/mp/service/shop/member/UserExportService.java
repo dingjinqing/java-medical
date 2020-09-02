@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.shop.member.*;
-import com.vpu.mp.service.pojo.shop.member.userExp.*;
+import com.vpu.mp.service.pojo.shop.member.userexp.*;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.excel.UserExpColNameI18n;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -57,7 +57,7 @@ public class UserExportService extends ShopBaseService{
 	/**
 	 * 	第一行固定的值
 	 */
-	private static final String firstColName;
+	private static final String FIRST_COL_NAME;
 	/**
 	 * 	初始化excel第一列固定的值
 	 */
@@ -71,7 +71,7 @@ public class UserExportService extends ShopBaseService{
 				break;
 			}
 		}
-		firstColName = tmpName;
+		FIRST_COL_NAME = tmpName;
 	}
 	/**
 	 * 	导出用户
@@ -90,9 +90,9 @@ public class UserExportService extends ShopBaseService{
 		}
 		List<String> expCols = param.getColumns();
 		if(expCols==null || expCols.size()==0) {
-			param.setColumns(new ArrayList<String>(Arrays.asList(firstColName)));
-		}else if(!firstColName.equalsIgnoreCase(expCols.get(0))) {
-			expCols.add(0, firstColName);
+			param.setColumns(new ArrayList<String>(Arrays.asList(FIRST_COL_NAME)));
+		}else if(!FIRST_COL_NAME.equalsIgnoreCase(expCols.get(0))) {
+			expCols.add(0, FIRST_COL_NAME);
 		}
 		
 		//	保存用户导出配置
@@ -123,7 +123,7 @@ public class UserExportService extends ShopBaseService{
 			for(String key: columns) {
 				// 	直接获取的数据
 				if(uExpMap.containsKey(key)) {
-					if(firstColName!=null && firstColName.equals(key)){
+					if(FIRST_COL_NAME !=null && FIRST_COL_NAME.equals(key)){
 						//	目前excel默认了userId为第一项固定值
 						Integer userId = (Integer)uExpMap.get(key);
 						model.setUserId(userId);
@@ -249,7 +249,7 @@ public class UserExportService extends ShopBaseService{
 	
 	
 	public String getFirstColName() {
-		return firstColName;
+		return FIRST_COL_NAME;
 	}
 	
 	

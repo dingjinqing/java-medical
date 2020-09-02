@@ -6,8 +6,8 @@ import static com.vpu.mp.db.shop.Tables.TRADES_RECORD;
 
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.operation.builder.TradesRecordRecordBuilder;
 
@@ -18,12 +18,12 @@ import com.vpu.mp.service.pojo.shop.operation.builder.TradesRecordRecordBuilder;
 */
 @Service
 public class TradesRecordDaoService extends ShopBaseService{
-	
+
 	/**
 	 * 插入交易记录
 	 */
 	public void insertTradesRecord(TradeOptParam tradeOpt) {
-		
+
 		int res = TradesRecordRecordBuilder
 			.create(db().newRecord(TRADES_RECORD))
 			.tradeNum(tradeOpt.getTradeNum())
@@ -33,7 +33,7 @@ public class TradesRecordDaoService extends ShopBaseService{
 			.tradeType(tradeOpt.getTradeType())
 			.tradeFlow(tradeOpt.getTradeFlow())
 			.tradeStatus(tradeOpt.getTradeStatus())
-			.tradeTime(DateUtil.getLocalDateTime())
+			.tradeTime(DateUtils.getLocalDateTime())
 			.build()
 			.insert();
 		logger().info(String.format("成功插入%d条交易记录", res));

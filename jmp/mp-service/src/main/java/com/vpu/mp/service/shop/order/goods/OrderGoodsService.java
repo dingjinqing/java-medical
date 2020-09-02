@@ -1,23 +1,31 @@
 package com.vpu.mp.service.shop.order.goods;
 
+import cn.hutool.core.date.DateUtil;
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.dao.foundation.database.DslPlus;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.db.main.tables.records.OrderInfoBakRecord;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.DistributionConstant;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.goods.param.SyncHisMedicalOrderRequestParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
@@ -37,6 +45,7 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableRecordImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -53,6 +62,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.main.Tables.ORDER_INFO_BAK;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
@@ -65,9 +75,11 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
  *
  */
 @Service
-public class OrderGoodsService extends ShopBaseService{
+public class OrderGoodsService extends ShopBaseService {
 
 	public final OrderGoods TABLE = ORDER_GOODS;
+	@Autowired
+	private OrderGoodsDao orderGoodsDao;
 
 	/** 商品数量 发货数量 退款成功数量*/
 	public static byte TOTAL_GOODSNUMBER = 0,TOTAL_SENDNUMBER = 1,TOTAL_SUCCESSRETURNNUMBER = 2;
@@ -283,6 +295,15 @@ public class OrderGoodsService extends ShopBaseService{
 	}
 
 	/**
+	 * 获取订单规格id
+	 * @param orderSn 订单号
+	 * @return 规格ids
+	 */
+	public List<Integer> getProductIdByOrderSn(String orderSn){
+		return orderGoodsDao.getProductIdByOrderSn(orderSn);
+	}
+
+	/**
 	 * 根据订单号查询商品
 	 * @param orderSn
 	 * @return
@@ -343,8 +364,18 @@ public class OrderGoodsService extends ShopBaseService{
             isCardExclusive(goods.getIsCardExclusive() == null ? OrderConstant.NO : goods.getIsCardExclusive()).
             reducePriceId(goods.getReducePriceId()).
             promoteInfo(null).
+			//处方信息
+			prescriptionInfo(goods.getPrescriptionInfo()).
+			prescriptionOldCode(goods.getPrescriptionOldCode()).
+			prescriptionCode(goods.getPrescriptionCode()).
+			medicalAuditStatus(goods.getMedicalAuditStatus()).
+			medicalAuditType(goods.getMedicalAuditType()).
             build();
-
+		if (goods.getMedicalInfo()!=null){
+			bo.setIsRx(goods.getMedicalInfo().getIsRx());
+		}else {
+			bo.setIsRx(BaseConstant.NO);
+		}
         //限时降价的ID和TYPE存入order_goods
         if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsPriceAction()) && goods.getReducePriceId() != null){
             bo.setActivityId(goods.getReducePriceId());
@@ -454,7 +485,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @author kdc
 	 */
     public Result<? extends Record> buyingHistoryGoodsList(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
-		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
+		Timestamp timestamp = DateUtils.getTimeStampPlus(-3, ChronoUnit.MONTHS);
 		SelectConditionStep<? extends Record> select = db().select(TABLE.GOODS_ID, DslPlus.dateFormatDay(TABLE.CREATE_TIME).as("date"))
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
@@ -477,7 +508,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @author kdc
 	 */
 	public Integer buyingHistoryGoodsCount(Integer userId, String keyWord){
-		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
+		Timestamp timestamp = DateUtils.getTimeStampPlus(-3, ChronoUnit.MONTHS);
 		SelectConditionStep<Record1<Integer>> select = db().selectCount()
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
@@ -578,4 +609,38 @@ public class OrderGoodsService extends ShopBaseService{
         }
         return select.fetchAnyInto(int.class);
     }
+    /**
+     * 拉同步药品出库状态
+     * @param
+     * @return
+     */
+    public JsonResult syncMedicalOrderStatus(SyncHisMedicalOrderRequestParam param){
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
+        Integer shopId =getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_SYNC_MEDICAL_ORDER_STATUS;
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+            JsonResult result = new JsonResult();
+            result.setError(apiExternalRequestResult.getError());
+            result.setMessage(apiExternalRequestResult.getMsg());
+            result.setContent(apiExternalRequestResult.getData());
+            return result;
+        }
+        return JsonResult.success();
+
+    }
+
+
+
+    /**
+     * 更改处方号
+     * @param orderId
+     * @param prescriptionCode
+     */
+    public void updatePrescriptionCode(Integer orderId,String prescriptionCode){
+        orderGoodsDao.updatePrescriptionCode(orderId,prescriptionCode);
+    }
+
+
+
 }

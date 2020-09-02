@@ -1,7 +1,7 @@
 package com.vpu.mp.service.saas.region;
 
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import org.apache.commons.lang3.StringUtils;

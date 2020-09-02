@@ -1,17 +1,17 @@
 package com.vpu.mp.service.shop.goods.goodsimport;
 
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelReader;
+import com.vpu.mp.common.foundation.excel.exception.handler.IllegalExcelBinder;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.RegexUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.GoodsImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelReader;
-import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelBinder;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.RegexUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
@@ -59,6 +59,14 @@ import java.util.stream.Collectors;
  */
 @Service
 public class GoodsImportService extends ShopBaseService {
+
+    final static Pattern BODY_PATTERN = Pattern.compile("<body>([\\s\\S]*)</body>");
+    final static Pattern SCRIPT_PATTERN = Pattern.compile("(<script[\\s\\S]*?/>)|(?:<script[^/>]*?>[\\s\\S]*?<(\\s)*?/script(\\s\\S)*?>)");
+    final static Pattern STYLE_PATTERN = Pattern.compile("<style[^>]*>[\\s\\S]*</style>");
+    final static Pattern DOCUMENT_PATTERN = Pattern.compile("<!DOCTYPE[^>]*>");
+    final static Pattern LINE_FEED_PATTERN = Pattern.compile("[\\r\\n]*");
+    final static Pattern MEDIA_PATTERN = Pattern.compile("(<audio[^>]*>[\\s\\S]*</audio>)|(<video[^>]*>[\\s\\S]*</video>)|(<object[^>]*>[\\s\\S]*</object>)|(<embed[^>]*?/>)");
+
 
     @Autowired
     ImageService imageService;
@@ -525,12 +533,6 @@ public class GoodsImportService extends ShopBaseService {
      * @param goodsSnMapBos
      */
     private void disposeGoodsDesc(HashMap<String, List<GoodsVpuExcelImportBo>> goodsSnMapBos) {
-        Pattern bodyPattern = Pattern.compile("<body>([\\s\\S]*)</body>");
-        Pattern scriptPattern = Pattern.compile("(<script[\\s\\S]*?/>)|(?:<script[^/>]*?>[\\s\\S]*?<(\\s)*?/script(\\s\\S)*?>)");
-        Pattern stylePattern = Pattern.compile("<style[^>]*>[\\s\\S]*</style>");
-        Pattern documentPattern = Pattern.compile("<!DOCTYPE[^>]*>");
-        Pattern lineFeedPattern = Pattern.compile("[\\r\\n]*");
-        Pattern mediaPattern = Pattern.compile("(<audio[^>]*>[\\s\\S]*</audio>)|(<video[^>]*>[\\s\\S]*</video>)|(<object[^>]*>[\\s\\S]*</object>)|(<embed[^>]*?/>)");
 
         for (Map.Entry<String, List<GoodsVpuExcelImportBo>> entry : goodsSnMapBos.entrySet()) {
             List<GoodsVpuExcelImportBo> bos = entry.getValue();
@@ -538,17 +540,17 @@ public class GoodsImportService extends ShopBaseService {
             if (StringUtils.isBlank(goodsDesc)) {
                 continue;
             }
-            Matcher matcher = bodyPattern.matcher(goodsDesc);
+            Matcher matcher = BODY_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = scriptPattern.matcher(goodsDesc);
+            matcher = SCRIPT_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = stylePattern.matcher(goodsDesc);
+            matcher = STYLE_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = documentPattern.matcher(goodsDesc);
+            matcher = DOCUMENT_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = lineFeedPattern.matcher(goodsDesc);
+            matcher = LINE_FEED_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
-            matcher = mediaPattern.matcher(goodsDesc);
+            matcher = MEDIA_PATTERN.matcher(goodsDesc);
             goodsDesc = matcher.replaceAll(goodsDesc);
 
             for (GoodsVpuExcelImportBo bo : bos) {
@@ -1161,13 +1163,13 @@ public class GoodsImportService extends ShopBaseService {
         }
 
         // 解析对应的规格组K
-        String[] specKVs = base.getPrdDesc().split(GoodsSpecProductService.PRD_DESC_DELIMITER);
-        if (specKVs.length ==0) {
+        String[] specKvs = base.getPrdDesc().split(GoodsSpecProductService.PRD_DESC_DELIMITER);
+        if (specKvs.length ==0) {
             return goodsSpecs;
         }
 
-        for (String specKV : specKVs) {
-            String[] kvs = specKV.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
+        for (String specKv : specKvs) {
+            String[] kvs = specKv.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
             if (kvs.length != 2) {
                 return goodsSpecs;
             }
@@ -1386,7 +1388,7 @@ public class GoodsImportService extends ShopBaseService {
      */
     private String createFilePath(Integer shopId, String fileName) {
         return new StringBuilder().append("upload/").append("excel/").append(shopId).append("/")
-            .append(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE))
+            .append(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE))
             .append("_").append(fileName).toString();
     }
 

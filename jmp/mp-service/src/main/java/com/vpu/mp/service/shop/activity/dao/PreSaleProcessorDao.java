@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
@@ -136,7 +136,7 @@ public class PreSaleProcessorDao extends PreSaleService {
         // 定时预告判断
         if (GoodsConstant.ACTIVITY_NOT_PRE.compareTo(activityInfo.get(PRESALE.PRE_TIME)) < 0) {
             Integer hours = activityInfo.get(PRESALE.PRE_TIME);
-            int timeHourDifference = DateUtil.getTimeHourDifference(startTime, date);
+            int timeHourDifference = DateUtils.getTimeHourDifference(startTime, date);
             if (timeHourDifference > hours) {
                 return null;
             }
@@ -309,8 +309,9 @@ public class PreSaleProcessorDao extends PreSaleService {
         }
         if (PresaleConstant.PRESALE_MONEY_INTERVAL.equals(activityInfo.getPrePayStep())) {
             //定金期数2
-            if ((param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
-                || param.getDate().after(activityInfo.getPreEndTime2())) {
+            boolean isActivityEnd = (param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
+                || param.getDate().after(activityInfo.getPreEndTime2());
+            if (isActivityEnd) {
                 log.error("活动已结束");
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
             }

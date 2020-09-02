@@ -1,0 +1,118 @@
+.prescription-content{
+  padding: 32rpx 15rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+}
+.prescription-item{
+  border-radius: 16rpx;
+  box-shadow: 0 10rpx 30rpx rgba(13, 19, 24, 0.14),0 0 0rpx rgba(10,16,20,.12);
+  position: relative;
+}
+.prescription-item + .prescription-item{
+  margin-top: 30rpx;
+}
+.prescription-item > .item-title{
+  line-height: 80rpx;
+  color: #fff;
+  font-size: 30rpx;
+  text-align: center;
+  background-color: skyblue;
+  height: 100rpx;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.prescription-item > .item-list-content{
+  padding-left: 30rpx;
+  background-color: #fff;
+  position: relative;
+  border-radius: 16rpx 16rpx 0 0;
+  margin-top: -20rpx;
+}
+.prescription-item > .item-list-content > .item-list{
+  display: flex;
+  flex-direction: column;
+  line-height: 55rpx;
+  padding: 15rpx 0;
+  border-bottom: 2rpx solid #eee;
+}
+.prescription-item > .item-list-content > .item-list > .list-item{
+  display: flex;
+  align-items: center;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-dot{
+  border: 4rpx solid skyblue;
+  border-radius: 50%;
+  height: 10rpx;
+  width: 10rpx;
+  margin-right: 20rpx;
+}
+.prescription-item > .item-list-content > .item-list > .list-item > .list-item-content{
+  color: #666;
+  font-size: 26rpx;
+}
+.prescription-item > .doctor-info{
+  height: 80rpx;
+  padding: 0 30rpx;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  color: #999;
+  position: relative;
+}
+.prescription-item > .doctor-info::after{
+  content: '';
+  position: absolute;
+  height: 16rpx;
+  width: 100%;
+  bottom: -12rpx;
+  left: 0;
+  background-image: radial-gradient(10rpx circle at 24rpx 16rpx, transparent 14rpx, #fff 14rpx);
+  background-size: 40rpx 20rpx;
+}
+.prescription-item > .doctor-info > .doctor-name {
+  margin-right: auto;
+  font-size: 26rpx;
+} 
+.prescription-item > .doctor-info > .item-date {
+  font-size: 26rpx;
+} 
+.prescription-module-title{
+  display: flex;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+.prescription-module-title > image{
+  width: 34rpx;
+  height: 34rpx;
+  margin-right: 24rpx;
+}
+.prescription-module-title > text{
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+.prescription-module-title > text:first-of-type{
+  margin-right: auto;
+}
+.prescription-module-title > text.more{
+  font-size: 26rpx;
+  color: #656565;
+  font-weight: 400;
+}
+.no-content{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100rpx;
+  color: #999;
+  border-radius: 16rpx;
+  background-color: #fff;
+}
+.top-has-radius{
+  padding-top: 50rpx;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.top-is-adver{
+  margin-top:-20rpx;
+  position: relative;
+  z-index: 1;
+}

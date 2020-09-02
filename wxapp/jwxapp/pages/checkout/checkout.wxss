@@ -1,4 +1,5 @@
-@import '../../css/iconfont.wxss';
+@import '/css/iconfont.wxss';
+@import '/components/decorate/prescription/index.wxss';
 .body
 {
   padding-bottom: 120rpx;
@@ -20,6 +21,11 @@
   display: flex;
   flex-direction: column;
   padding: 20rpx;
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: 702rpx;
+  position: relative;
+  z-index: 2;
 }
 .address_info > view{
   margin-bottom: 20rpx;
@@ -53,12 +59,25 @@
   height: 25rpx;
   margin: 6rpx 0 0 20rpx;
 }
-.goods_item{
-  margin-top: 20rpx;
-  padding: 14rpx;
+.goods-list-content{
+  width: 702rpx;
   display: flex;
+  flex-direction: column;
+  margin: 20rpx auto 0;
+  box-sizing: border-box;
+  padding: 0 14rpx;
   background-color: #fff;
+  border-radius: 16rpx;
+  position: relative;
+  z-index: 2;
+}
+.goods_item{
+  padding: 14rpx 0;
+  display: flex;
   color: #353535;
+}
+.goods_item + .goods_item{
+  border-top: 2rpx solid #eee;
 }
 .goods_item > image{
   width: 150rpx;
@@ -102,8 +121,13 @@
 .pay_type{
   background-color: #fff;
   padding:0 20rpx;
-  margin-top: 20rpx;
+  margin: 20rpx auto 0;
+  width: 702rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx;
   overflow: hidden;
+  position: relative;
+  z-index: 2;
 }
 .pay_title{
   line-height: 60rpx;
@@ -117,7 +141,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80rpx;
+  height: 90rpx;
 }
 .pay_type_item:last-of-type{
   justify-content: flex-end;
@@ -137,13 +161,18 @@
   margin-bottom: 20rpx;
 }
 .pay_content{
-  margin-top: 20rpx;
+  margin: 20rpx auto 0;
+  width: 702rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx;
   background-color: #fff;
   padding: 0 20rpx;
+  position: relative;
+  z-index: 2;
 }
 .pay_content > .pay_list_item{
   display: flex;
-  height: 80rpx;
+  height: 90rpx;
   align-items: center;
   font-size: 26rpx;
   justify-content: space-between;
@@ -173,11 +202,16 @@
   flex-direction: column;
   background-color: #fff;
   padding: 0 20rpx;
-  margin-top: 20rpx;
+  margin: 20rpx auto 0;
+  width: 702rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx;
+  position: relative;
+  z-index: 2;
+  line-height: 90rpx;
 }
 .checkout_detail > .detail_item{
   display: flex;
-  height: 60rpx;
   align-items: center;
 }
 .detail_item > .detail_content{
@@ -191,9 +225,9 @@
   background-color: #fff;
   width: 100%;
   z-index: 1;
-}
-.checkout_footer > text{
-  line-height: 100rpx;
+  align-items: center;
+  height: 100rpx;
+  z-index: 2;
 }
 .checkout_footer > .footer_content{
   flex: 1;
@@ -205,6 +239,9 @@
   color:#fff;
   text-align: center;
   min-width: 180rpx;
+  margin-right: 24rpx;
+  line-height: 80rpx;
+  border-radius: 40rpx;
 }
 
 .picker{
@@ -212,9 +249,15 @@
 }
 .shipping_method_content{
   display: flex;
-  line-height: 80rpx;
+  line-height: 90rpx;
   height: 82rpx;
   background-color: #fff;
+  margin: 0 auto;
+  width: 702rpx;
+  border-radius: 16rpx 16rpx 0 0;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 .shipping_method{
   flex: 1;
@@ -312,6 +355,69 @@
   color: #ff6660;
   font-size: 24rpx;
   padding-left: 30rpx;
-  height: 80rpx;
-  line-height: 80rpx;
+  height: 90rpx;
+  line-height: 90rpx;
 }	
+.top-bg-style{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 540rpx;
+  background:linear-gradient(0deg,rgba(245,245,245,1),rgba(38,196,188,1),rgba(38,196,188,1)) ;
+  z-index: 1;
+}
+.prescription-item{
+  width: 702rpx;
+  margin: 20rpx auto 0;
+  margin-bottom: 34rpx;
+  box-shadow: none;
+  position: relative;
+  z-index: 2;
+}
+.prescription-item > .item-title{
+  color: #26C4BC;
+}
+.no-prescription-tips{
+  margin: 20rpx auto 0;
+  width: 702rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx;
+  display: flex;
+  background-color: #FFF4E3;
+  height: 90rpx;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  padding: 0 20rpx;
+}
+.no-prescription-tips > image {
+  height: 31rpx;
+  width: 31rpx;
+  margin-right: 20rpx;
+}  
+.no-prescription-tips > text {
+  color: #FF9F15;
+}
+.patient-info{
+  border-top: 2rpx solid #eee;
+  padding-top: 20rpx;
+  display: flex;
+  align-items: center;
+}
+.patient-info > .title{
+  color: #353535;
+  font-weight: 600;
+}
+.patient-info > .info{
+  color: #333;
+  margin-right: auto;
+}
+.patient-info > .toggle{
+  color: #26c4bc;
+  margin-right: 23rpx;
+}
+.patient-info > image{
+  width: 15rpx;
+  height: 25rpx;
+}

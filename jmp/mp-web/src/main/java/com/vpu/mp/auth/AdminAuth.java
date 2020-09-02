@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 import com.vpu.mp.service.saas.SaasApplication;
@@ -216,7 +216,6 @@ public class AdminAuth {
 	 * @return
 	 */
 	public int insert(AdminTokenAuthInfo info, ShopRecord shop) {
-		//saas.userLoginService.userLoginRecord(info, shop, Util.getCleintIp(request));
 		UserLoginRecordRecord record = new UserLoginRecordRecord();
 		record.setUserName(info.getUserName());
 		record.setUserId(info.getSysId());

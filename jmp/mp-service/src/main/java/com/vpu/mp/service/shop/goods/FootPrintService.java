@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Page;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.FootprintRecordRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
@@ -69,7 +69,7 @@ public class FootPrintService extends ShopBaseService {
 	 *
 	 */
 	public void addFootprint(Integer userId,Integer goodsId){
-		String nowDate = DateUtil.getLocalDateTime().toString().substring(0,10);
+		String nowDate = DateUtils.getLocalDateTime().toString().substring(0,10);
 
 		Integer count = db().selectCount().from(Tables.FOOTPRINT_RECORD)
 				.where(Tables.FOOTPRINT_RECORD.USER_ID.eq(userId)).and(Tables.FOOTPRINT_RECORD.GOODS_ID.eq(goodsId))
@@ -99,7 +99,7 @@ public class FootPrintService extends ShopBaseService {
 		FootprintListVo footprintListVo =new FootprintListVo();
 		List<FootprintDayVo> footprintDaylist =new ArrayList<>();
 		footprintListVo.setDay(footprintDaylist);
-		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
+		Timestamp timestamp = DateUtils.getTimeStampPlus(-3, ChronoUnit.MONTHS);
 		SelectConditionStep<? extends Record> select = db().select(GOODS.GOODS_ID, DslPlus.dateFormatDay(FOOTPRINT_RECORD.CREATE_TIME).as("date"))
 				.from(FOOTPRINT_RECORD)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(FOOTPRINT_RECORD.GOODS_ID))

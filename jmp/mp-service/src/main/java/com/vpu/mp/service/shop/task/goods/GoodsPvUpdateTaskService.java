@@ -1,7 +1,8 @@
 package com.vpu.mp.service.shop.task.goods;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
+
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -29,8 +30,8 @@ public class GoodsPvUpdateTaskService extends ShopBaseService {
      * 统计截至今天0点之前SAVE_DAYS天的商品访问量
      */
     public void updateGoodsPv(){
-        Timestamp today = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_BEGIN,DateUtil.getLocalDateTime()));
-        Timestamp daysAgo = DateUtil.getTimeStampPlus(today,-SAVE_DAYS, ChronoUnit.DAYS);
+        Timestamp today = Timestamp.valueOf(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_BEGIN, DateUtils.getLocalDateTime()));
+        Timestamp daysAgo = DateUtils.getTimeStampPlus(today,-SAVE_DAYS, ChronoUnit.DAYS);
         Result<Record2<Integer, BigDecimal>> res = db().select(USER_GOODS_RECORD.GOODS_ID, DSL.sum(USER_GOODS_RECORD.COUNT)).from(USER_GOODS_RECORD).
             where(USER_GOODS_RECORD.CREATE_TIME.ge(daysAgo)).
             and(USER_GOODS_RECORD.CREATE_TIME.le(today)).

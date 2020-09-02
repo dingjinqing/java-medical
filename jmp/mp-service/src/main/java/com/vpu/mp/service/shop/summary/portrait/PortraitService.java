@@ -15,19 +15,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.db.shop.tables.MpUserPortrait;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.portrait.Portrait;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitDeviceItem;
@@ -211,15 +210,15 @@ public class PortraitService extends ShopBaseService {
 		switch (type) {
 		case 0:
 			// 昨天
-			time = DateUtil.getTimeStampPlus(-1, ChronoUnit.DAYS);
+			time = DateUtils.getTimeStampPlus(-1, ChronoUnit.DAYS);
 			break;
 		case 1:
 			// 最近七天
-			time = DateUtil.getTimeStampPlus(-7, ChronoUnit.DAYS);
+			time = DateUtils.getTimeStampPlus(-7, ChronoUnit.DAYS);
 			break;
 		case 2:
 			// 最近三十天
-			time = DateUtil.getTimeStampPlus(-30, ChronoUnit.DAYS);
+			time = DateUtils.getTimeStampPlus(-30, ChronoUnit.DAYS);
 			break;
 		default:
 			time = Timestamp.valueOf(LocalDateTime.now());
@@ -231,8 +230,12 @@ public class PortraitService extends ShopBaseService {
 		return format2;
 
 	}
-	
-	//移除省份中的省字，地图匹配用
+
+    /**
+     * 移除省份中的省字，地图匹配用
+     * @param portrait
+     * @return
+     */
 	private List<PortraitItem> remove(Portrait portrait) {
 		List<PortraitItem> provinceList = portrait.getProvince();
 		Boolean flag = true;
@@ -249,7 +252,11 @@ public class PortraitService extends ShopBaseService {
 		}
 		return provinceList;
 	}
-	//删除省市中数量为0的值
+
+    /**
+     * 删除省市中数量为0的值
+     * @param portrait
+     */
 	private void removeZero(Portrait portrait) {
 		Iterator<PortraitItem> iterator = portrait.getProvince().iterator();
 		while (iterator.hasNext()) {
@@ -265,7 +272,10 @@ public class PortraitService extends ShopBaseService {
 		}
 	}
 
-	// 删除设备中数量为0的值
+    /**
+     * 删除设备中数量为0的值
+     * @param portrait
+     */
 	private void removeZeroByDevices(Portrait portrait) {
 		Iterator<PortraitDeviceItem> iterator = portrait.getDevices().iterator();
 		while (iterator.hasNext()) {
@@ -274,7 +284,7 @@ public class PortraitService extends ShopBaseService {
 			}
 		}
 	}
-	
+
 	/**
 	 * 获取最大值
 	 * @param items
@@ -284,7 +294,7 @@ public class PortraitService extends ShopBaseService {
         return items.parallelStream().mapToInt(PortraitItem::getValue).max().getAsInt();
     }
 
-    
+
 	/**
 	 * 获取最小值
 	 * @param items
@@ -293,7 +303,7 @@ public class PortraitService extends ShopBaseService {
     private Integer portraitMin(List<PortraitItem> items) {
         return items.parallelStream().mapToInt(PortraitItem::getValue).min().getAsInt();
     }
-    
+
 	private PortraitMaxAndMin setMaxAndMin(Portrait portrait) {
 		List<PortraitItem> province = portrait.getProvince();
 		int size = province.size();

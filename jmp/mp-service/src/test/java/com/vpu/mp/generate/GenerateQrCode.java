@@ -14,9 +14,9 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.qrcode.QrCodeGenerator;
 import com.vpu.mp.service.foundation.util.ImageUtil;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.foundation.util.qrcode.QrCodeGenerator;
 
 /**
 * @author 黄壮壮
@@ -75,7 +75,7 @@ public class GenerateQrCode {
     	// 会员卡二维码
     	BufferedImage cardQrCode = null;
     	try {
-			byte[] qrCodeByte = QrCodeGenerator.generateQRCodeImg(cardNo, 450, 450);
+			byte[] qrCodeByte = QrCodeGenerator.generateQrCodeImg(cardNo, 450, 450);
 			ByteArrayInputStream bais = new ByteArrayInputStream(qrCodeByte);
 			cardQrCode = ImageIO.read(bais);
 		} catch (Exception e) {

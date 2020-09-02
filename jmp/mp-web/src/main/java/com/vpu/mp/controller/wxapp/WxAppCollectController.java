@@ -6,14 +6,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.wxapp.collection.CancleCollectParam;
 import com.vpu.mp.service.pojo.wxapp.collection.CollectListParam;
 import com.vpu.mp.service.pojo.wxapp.collection.CollectListVo;
 
 
 
+/**
+ * @author changle
+ */
 @RestController
 @RequestMapping("/api/wxapp")
 public class WxAppCollectController extends WxAppBaseController{

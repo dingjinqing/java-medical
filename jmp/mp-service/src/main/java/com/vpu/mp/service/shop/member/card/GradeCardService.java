@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
-import org.jooq.Record1;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
@@ -24,7 +23,7 @@ import static com.vpu.mp.db.shop.Tables.USER;
 
 
 /**
- * 
+ *
  * @author 黄壮壮
  * 等级会员卡服务
  */
@@ -84,7 +83,7 @@ public class GradeCardService extends ShopBaseService{
 
                 int execute1 = db().update(CARD_EXAMINE)
                     .set(CARD_EXAMINE.REFUSE_DESC, desc.toString())
-                    .set(CARD_EXAMINE.REFUSE_TIME, DateUtil.getLocalDateTime())
+                    .set(CARD_EXAMINE.REFUSE_TIME, DateUtils.getLocalDateTime())
                     .set(CARD_EXAMINE.STATUS, CardVerifyConstant.VSTAT_REFUSED)
                     .set(CARD_EXAMINE.DEL_FLAG,CardVerifyConstant.VDF_YES)
                     .where(CARD_EXAMINE.CARD_ID.in(cardIds).and(CARD_EXAMINE.USER_ID.eq(userId)))

@@ -1,0 +1,55 @@
+/* pages1/medicalrecordinfo/medicalrecordinfo.wxss */
+page{
+  background: #f5f5f5;
+}
+.mian-container{
+  padding-top: 20rpx;
+  font-family: SimSun;
+  color: #000;
+}
+.record_detail{
+  background: #fff;
+  width: 652rpx;
+  margin: 0 auto;
+  border-radius: 16rpx;
+  padding: 44rpx 24rpx 60rpx;
+}
+.record_title{
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #000;
+  text-align: center;
+  margin-bottom: 48rpx;
+}
+.patient_info{
+  padding-bottom: 28rpx;
+  border-bottom: 4rpx solid #ccc;
+  margin-bottom: 6rpx;
+}
+.patient_info .pf_line{
+  margin-bottom: 30rpx;
+}
+.patient_info .pf_line:last-of-type{
+  margin-bottom: 0;
+}
+.patient_info .pf_line1{
+  display: flex;
+  justify-content: space-between;
+}
+.medical_info{
+  border-top: 2rpx solid #ccc;
+  padding: 28rpx 0;
+  border-bottom: 4rpx solid #ccc;
+}
+.medical_info > view{
+  margin-bottom: 30rpx;
+}
+.medical_info > .has_bottom_line{
+  margin-bottom: 85rpx;
+}
+.doctor_info{
+  padding: 28rpx 0 8rpx;
+}
+.doctor_info > view{
+  margin-bottom: 30rpx;
+}

@@ -513,7 +513,33 @@ public class Indexes {
     public static final Index CHECKED_GOODS_CART_PRIMARY = Indexes0.CHECKED_GOODS_CART_PRIMARY;
     public static final Index CHECKED_GOODS_CART_PRODUCT_ID = Indexes0.CHECKED_GOODS_CART_PRODUCT_ID;
     public static final Index CHECKED_GOODS_CART_USER_ID = Indexes0.CHECKED_GOODS_CART_USER_ID;
-    
+    public static final Index DEPARTMENT_PRIMARY = Indexes0.DEPARTMENT_PRIMARY;
+    public static final Index DOCTOR_PRIMARY = Indexes0.DOCTOR_PRIMARY;
+    public static final Index DOCTOR_TITLE_PRIMARY = Indexes0.DOCTOR_TITLE_PRIMARY;
+    public static final Index GOODS_MEDICAL_INFO_PRIMARY = Indexes0.GOODS_MEDICAL_INFO_PRIMARY;
+    public static final Index PATIENT_PRIMARY = Indexes0.PATIENT_PRIMARY;
+    public static final Index PHARMACIST_PRIMARY = Indexes0.PHARMACIST_PRIMARY;
+    public static final Index PRESCRIPTION_PRIMARY = Indexes0.PRESCRIPTION_PRIMARY;
+    public static final Index PRESCRIPTION_ITEM_PRIMARY = Indexes0.PRESCRIPTION_ITEM_PRIMARY;
+    public static final Index USER_PATIENT_COUPLE_PRIMARY = Indexes0.USER_PATIENT_COUPLE_PRIMARY;
+    public static final Index DOCTOR_ADVICE_PRIMARY = Indexes0.DOCTOR_ADVICE_PRIMARY;
+    public static final Index DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Indexes0.DOCTOR_DEPARTMENT_COUPLE_PRIMARY;
+    public static final Index MEDICAL_HISTORY_PRIMARY = Indexes0.MEDICAL_HISTORY_PRIMARY;
+    public static final Index MEDICAL_ADVICE_PRIMARY = Indexes0.MEDICAL_ADVICE_PRIMARY;
+    public static final Index INQUIRY_ORDER_PRIMARY = Indexes0.INQUIRY_ORDER_PRIMARY;
+    public static final Index IM_SESSION_PRIMARY = Indexes0.IM_SESSION_PRIMARY;
+    public static final Index IM_SESSION_ITEM_PRIMARY = Indexes0.IM_SESSION_ITEM_PRIMARY;
+    public static final Index INQUIRY_ORDER_REFUND_LIST_ORDER_SN = Indexes0.INQUIRY_ORDER_REFUND_LIST_ORDER_SN;
+    public static final Index INQUIRY_ORDER_REFUND_LIST_PRIMARY = Indexes0.INQUIRY_ORDER_REFUND_LIST_PRIMARY;
+    public static final Index INQUIRY_ORDER_REFUND_LIST_USER_ID = Indexes0.INQUIRY_ORDER_REFUND_LIST_USER_ID;
+    public static final Index USER_MESSAGE_PRIMARY = Indexes0.USER_MESSAGE_PRIMARY;
+    public static final Index SMS_RECHARGE_PRIMARY = Indexes0.SMS_RECHARGE_PRIMARY;
+    public static final Index ORDER_MEDICAL_HISTORY_PRIMARY = Indexes0.ORDER_MEDICAL_HISTORY_PRIMARY;
+    public static final Index USER_ANNOUNCEMENT_PRIMARY = Indexes0.USER_ANNOUNCEMENT_PRIMARY;
+    public static final Index USER_DOCTOR_ATTENTION_PRIMARY = Indexes0.USER_DOCTOR_ATTENTION_PRIMARY;
+    public static final Index DOCTOR_DUTY_RECORD_PRIMARY = Indexes0.DOCTOR_DUTY_RECORD_PRIMARY;
+    public static final Index DOCTOR_COMMENT_PRIMARY = Indexes0.DOCTOR_COMMENT_PRIMARY;
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -1003,5 +1029,32 @@ public class Indexes {
         public static Index CHECKED_GOODS_CART_PRIMARY = Internal.createIndex("PRIMARY", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.ID }, true);
         public static Index CHECKED_GOODS_CART_PRODUCT_ID = Internal.createIndex("product_id", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.PRODUCT_ID }, false);
         public static Index CHECKED_GOODS_CART_USER_ID = Internal.createIndex("user_id", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.USER_ID }, false);
+        public static Index DEPARTMENT_PRIMARY = Internal.createIndex("PRIMARY", Department.DEPARTMENT, new OrderField[] { Department.DEPARTMENT.ID }, true);
+        public static Index DOCTOR_PRIMARY = Internal.createIndex("PRIMARY", Doctor.DOCTOR, new OrderField[] { Doctor.DOCTOR.ID }, true);
+        public static Index DOCTOR_TITLE_PRIMARY = Internal.createIndex("PRIMARY", DoctorTitle.DOCTOR_TITLE, new OrderField[] { DoctorTitle.DOCTOR_TITLE.ID }, true);
+        public static Index GOODS_MEDICAL_INFO_PRIMARY = Internal.createIndex("PRIMARY", GoodsMedicalInfo.GOODS_MEDICAL_INFO, new OrderField[] { GoodsMedicalInfo.GOODS_MEDICAL_INFO.ID }, true);
+        public static Index PATIENT_PRIMARY = Internal.createIndex("PRIMARY", Patient.PATIENT, new OrderField[] { Patient.PATIENT.ID }, true);
+        public static Index PHARMACIST_PRIMARY = Internal.createIndex("PRIMARY", Pharmacist.PHARMACIST, new OrderField[] { Pharmacist.PHARMACIST.ID }, true);
+        public static Index PRESCRIPTION_PRIMARY = Internal.createIndex("PRIMARY", Prescription.PRESCRIPTION, new OrderField[] { Prescription.PRESCRIPTION.ID }, true);
+        public static Index PRESCRIPTION_ITEM_PRIMARY = Internal.createIndex("PRIMARY", PrescriptionItem.PRESCRIPTION_ITEM, new OrderField[] { PrescriptionItem.PRESCRIPTION_ITEM.ID }, true);
+        public static Index USER_PATIENT_COUPLE_PRIMARY = Internal.createIndex("PRIMARY", UserPatientCouple.USER_PATIENT_COUPLE, new OrderField[] { UserPatientCouple.USER_PATIENT_COUPLE.ID }, true);
+        public static Index DOCTOR_ADVICE_PRIMARY = Internal.createIndex("PRIMARY", DoctorAdvice.DOCTOR_ADVICE, new OrderField[] { DoctorAdvice.DOCTOR_ADVICE.ID }, true);
+        public static Index DOCTOR_DEPARTMENT_COUPLE_PRIMARY = Internal.createIndex("PRIMARY", DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE, new OrderField[] { DoctorDepartmentCouple.DOCTOR_DEPARTMENT_COUPLE.ID }, true);
+        public static Index MEDICAL_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", MedicalHistory.MEDICAL_HISTORY, new OrderField[] { MedicalHistory.MEDICAL_HISTORY.ID }, true);
+        public static Index MEDICAL_ADVICE_PRIMARY = Internal.createIndex("PRIMARY", MedicalAdvice.MEDICAL_ADVICE, new OrderField[] { MedicalAdvice.MEDICAL_ADVICE.ID }, true);
+        public static Index INQUIRY_ORDER_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.ORDER_ID }, true);
+        public static Index IM_SESSION_PRIMARY = Internal.createIndex("PRIMARY", ImSession.IM_SESSION, new OrderField[] { ImSession.IM_SESSION.ID }, true);
+        public static Index IM_SESSION_ITEM_PRIMARY = Internal.createIndex("PRIMARY", ImSessionItem.IM_SESSION_ITEM, new OrderField[] { ImSessionItem.IM_SESSION_ITEM.ID }, true);
+        public static Index INQUIRY_ORDER_REFUND_LIST_ORDER_SN = Internal.createIndex("order_sn", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, new OrderField[] { InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ORDER_SN }, false);
+        public static Index INQUIRY_ORDER_REFUND_LIST_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, new OrderField[] { InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.ID }, true);
+        public static Index INQUIRY_ORDER_REFUND_LIST_USER_ID = Internal.createIndex("user_id", InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST, new OrderField[] { InquiryOrderRefundList.INQUIRY_ORDER_REFUND_LIST.USER_ID }, false);
+        public static Index USER_MESSAGE_PRIMARY = Internal.createIndex("PRIMARY", UserMessage.USER_MESSAGE, new OrderField[] { UserMessage.USER_MESSAGE.MESSAGE_ID }, true);
+        public static Index SMS_RECHARGE_PRIMARY = Internal.createIndex("PRIMARY", SmsRecharge.SMS_RECHARGE, new OrderField[] { SmsRecharge.SMS_RECHARGE.RECHARGE_ID }, true);
+        public static Index ORDER_MEDICAL_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", OrderMedicalHistory.ORDER_MEDICAL_HISTORY, new OrderField[] { OrderMedicalHistory.ORDER_MEDICAL_HISTORY.ID }, true);
+        public static Index USER_ANNOUNCEMENT_PRIMARY = Internal.createIndex("PRIMARY", UserAnnouncement.USER_ANNOUNCEMENT, new OrderField[] { UserAnnouncement.USER_ANNOUNCEMENT.ANNOUNCEMENT_ID }, true);
+        public static Index USER_DOCTOR_ATTENTION_PRIMARY = Internal.createIndex("PRIMARY", UserDoctorAttention.USER_DOCTOR_ATTENTION, new OrderField[] { UserDoctorAttention.USER_DOCTOR_ATTENTION.ID }, true);
+        public static Index DOCTOR_DUTY_RECORD_PRIMARY = Internal.createIndex("PRIMARY", DoctorDutyRecord.DOCTOR_DUTY_RECORD, new OrderField[] { DoctorDutyRecord.DOCTOR_DUTY_RECORD.ID }, true);
+        public static Index DOCTOR_COMMENT_PRIMARY = Internal.createIndex("PRIMARY", DoctorComment.DOCTOR_COMMENT, new OrderField[] { DoctorComment.DOCTOR_COMMENT.ID }, true);
     }
+
 }

@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.coupon;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -25,7 +25,6 @@ import org.jooq.Record5;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -81,7 +80,7 @@ public class CouponMpService extends ShopBaseService {
                     couponVo.setStatus((byte)4);
                 }
                 if(couponVo.getValidityType().equals(BaseConstant.COUPON_VALIDITY_TYPE_FIXED)){
-                    if(DateUtil.getLocalDateTime().after(couponVo.getEndTime())){
+                    if(DateUtils.getLocalDateTime().after(couponVo.getEndTime())){
                         //已过期
                         couponVo.setStatus((byte)2);
                     }
@@ -186,7 +185,8 @@ public class CouponMpService extends ShopBaseService {
         couponParam.setAccessMode((byte) 1);
         couponParam.setGetSource((byte) 5);
         //判断优惠券领取限制
-        if(couponData.getReceivePerPerson().intValue() != 0){//有限制领取
+        if(couponData.getReceivePerPerson().intValue() != 0){
+            //有限制领取
             Integer alreadyGet = this.couponAlreadyGet(userId, couponData.getId());
             if(couponData.getReceivePerPerson() > alreadyGet){
                 //添加优惠券到用户，调用定向发券通用方法
@@ -207,14 +207,14 @@ public class CouponMpService extends ShopBaseService {
      * @return
      */
     public Byte couponGetStatus(MpGetCouponParam param){
-        Timestamp nowDate = DateUtil.getLocalDateTime();
+        Timestamp nowDate = DateUtils.getLocalDateTime();
         //判断领取限制
         CouponListVo couponData = this.getCouponData(param);
         Byte couponGetStatus;
         //通过alias_code查看优惠券是否存在
         if (null==couponData) {
            couponGetStatus = 1;
-        }else if(couponData.getValidityType() == 0 && couponData.getEndTime().before(nowDate)){//是否过期
+        }else if(couponData.getValidityType() == 0 && couponData.getEndTime().before(nowDate)){
             //是否过期
             couponGetStatus = 2;
         } else if (couponData.getEnabled() == 0) {
@@ -248,8 +248,9 @@ public class CouponMpService extends ShopBaseService {
         MrkingVoucherRecord couponRecord = coupon.couponGiveService.getInfoById(param.getCouponId());
         Result<Record5<Integer, String, String, Timestamp, BigDecimal>> receiveInfo = getReceiveInfo(param.getCouponSn(), param.getShareUserId());
         long count = receiveInfo.stream().filter(info -> info.get(DIVISION_RECEIVE_RECORD.USER_ID).equals(param.getUserId())).count();
-        if ((couponRecord.getReceivePerNum()==1&&couponRecord.getReceiveNum()<=receiveInfo.size())
-                ||(couponRecord.getLimitSurplusFlag()==0&&couponRecord.getSurplus()<=0)){
+        boolean isCouponOver = (couponRecord.getReceivePerNum() == 1 && couponRecord.getReceiveNum() <= receiveInfo.size())
+            || (couponRecord.getLimitSurplusFlag() == 0 && couponRecord.getSurplus() <= 0);
+        if (isCouponOver){
             logger().info("已经领完");
             vo.setStatus((byte)2);
             return vo;
@@ -312,14 +313,14 @@ public class CouponMpService extends ShopBaseService {
     public MpGetCouponVo getSplitCouponDetail(MpGetSplitCouponParam param) {
         logger().info("分裂优惠券详情");
         MpGetCouponVo vo =new MpGetCouponVo();
-        Timestamp time = DateUtil.getLocalDateTime();
+        Timestamp time = DateUtils.getLocalDateTime();
         MrkingVoucherRecord couponRecord = coupon.couponGiveService.getInfoById(param.getCouponId());
         //分享优惠券用户信息
         Result<Record5<Integer, String, String, Timestamp, BigDecimal>> receiveInfo = getReceiveInfo(param.getCouponSn(), param.getShareUserId());
         List<MpGetCouponVo.UserInfo> userInfos =new ArrayList<>();
         receiveInfo.forEach(userRecord->{
             MpGetCouponVo.UserInfo userInfo = userRecord.into(MpGetCouponVo.UserInfo.class);
-            Integer[] timeDifference = DateUtil.getTimeDifference(time, userRecord.get(DIVISION_RECEIVE_RECORD.CREATE_TIME));
+            Integer[] timeDifference = DateUtils.getTimeDifference(time, userRecord.get(DIVISION_RECEIVE_RECORD.CREATE_TIME));
             userInfo.setTime(timeDifference);
             userInfo.setUsername(userInfo.getUsername()==null?"神秘小伙伴":userInfo.getUsername());
             userInfos.add(userInfo);
@@ -332,18 +333,21 @@ public class CouponMpService extends ShopBaseService {
             if (count>0){
                 logger().info("领取过改优惠券");
                 vo.setStatus((byte)2);
-            }else if ((couponRecord.getReceivePerNum()==1&&couponRecord.getReceiveNum()<=userInfos.size())
-                    ||(couponRecord.getLimitSurplusFlag()==0&&couponRecord.getSurplus()<=0)){
-                logger().info("已经领完");
-                vo.setStatus((byte)3);
             }else {
-                if (couponRecord.getValidity()>0){
-                    logger().info("优惠卷已过期");
-                    vo.setStatus((byte)4);
-                }
-                if (couponRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
-                    logger().info("优惠券已经删除");
-                    vo.setStatus((byte)5);
+                boolean isCouponOver = (couponRecord.getReceivePerNum() == 1 && couponRecord.getReceiveNum() <= userInfos.size())
+                    || (couponRecord.getLimitSurplusFlag() == 0 && couponRecord.getSurplus() <= 0);
+                if (isCouponOver){
+                    logger().info("已经领完");
+                    vo.setStatus((byte)3);
+                }else {
+                    if (couponRecord.getValidity()>0){
+                        logger().info("优惠卷已过期");
+                        vo.setStatus((byte)4);
+                    }
+                    if (couponRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+                        logger().info("优惠券已经删除");
+                        vo.setStatus((byte)5);
+                    }
                 }
             }
         }

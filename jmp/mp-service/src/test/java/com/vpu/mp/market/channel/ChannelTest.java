@@ -1,9 +1,9 @@
 package com.vpu.mp.market.channel;
 
 import com.vpu.mp.App;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelConstant;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageParam;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageVo;

@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
@@ -42,7 +42,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
      */
     public  Map<Byte, List<Integer>> getExclusiveInfo(List<Integer> goodsIds,List<Integer> catIds,List<Integer> sortIds,List<Integer> brandIds){
 
-        Timestamp now = DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
 
         Condition condition = (GOODS_CARD_COUPLE.GCTA_ID.in(goodsIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_GOODS)))
                                 .or(GOODS_CARD_COUPLE.GCTA_ID.in(catIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_PLAT)))
@@ -73,7 +73,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * @return  List<MemberCardRecord>
      */
     public List<MemberCardRecord> getExclusiveInfo(Integer goodsId, Integer catId, Integer sortId, Integer brandId) {
-        Timestamp now =DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
 
         Condition condition = (GOODS_CARD_COUPLE.GCTA_ID.eq(goodsId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_GOODS)))
                 .or(GOODS_CARD_COUPLE.GCTA_ID.eq(catId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_PLAT)))

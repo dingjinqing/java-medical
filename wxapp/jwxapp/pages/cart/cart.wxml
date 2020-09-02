@@ -5,7 +5,7 @@
   <block wx:if='{{!fullList && !purchaseList && !cartGoodsList && !invalidCartList}}'>
     <view class="con_img" style='height:{{has_reco_goods == 1?"400rpx":"72%"}};background:{{has_reco_goods == 1?"#fff":"#f5f5f5"}}'>
       <image src="{{imageUrl}}image/wxapp/common_cart_no.png" mode='widthFix' />
-      <view class="p">购物车竟然是空的</view>
+      <view class="p">清单是空的</view>
       <view class='btn_to_index' bindtap='toIndex' style='background:{{comColor}}'>随便逛逛</view>
     </view>
   </block>
@@ -273,14 +273,14 @@
     </view>
     <!-- 失效商品 -->
     <view class='normal_goods_container putong' wx:if="{{invalidCartList && invalidCartList.length > 0}}">
-      <view style="display:flex; justify-content:space-between; padding: 0 20rpx; line-height: 90rpx;margin-top:20rpx;" class='invalid_goods_header'>
+      <view style="display:flex; justify-content:space-between; padding: 0 20rpx; line-height: 90rpx;" class='invalid_goods_header'>
         <view>失效商品
           <text style='color:{{comColor}}'>{{ invalidCartList.length }}</text>件</view>
         <text style='color:{{comColor}}' bindtap='clearCart'>清空</text>
       </view>
       <view wx:for='{{invalidCartList}}' wx:key='key' class='enen' style="{{index == 0 ? 'margin-top:0px' : ''}};margin-left:10rpx;">
         <view class='normal_goods clearfix' bindtouchstart="drawStart"  bindtouchmove="drawMove" bindtouchend="drawEnd" data-id="{{item.cartId}}" data-check_action='{{99}}' style="margin-left:{{item.right}}px">
-          <view class="btn_check" style="width:60rpx;margin-right:10rpx;"><view class="shixiao_icon">失效</view></view>
+          <view class="btn_check" style="width:76rpx;"><view class="shixiao_icon">失效</view></view>
           <view class='n_goods_info' style="margin-right:18rpx;">
             <view class='ng_left' bindtap='to_goods' data-goods_id='{{item.goodsId}}' data-tips='{{item.tip}}'>
               <image src='{{item.goodsImg}}'></image>
@@ -306,7 +306,7 @@
   </block>
   <!-- 底部 -->
   <block wx:if='{{fullList || purchaseList || cartGoodsList}}'>
-    <view class="footer_fixed" style="bottom:{{show_bottom?'100rpx':'0'}};padding-bottom:{{isIpx == 1?'60rpx':'0'}}">
+    <view class="footer_fixed" style="bottom:{{show_bottom?'110rpx':'0'}};padding-bottom:{{isIpx == 1?'60rpx':'0'}}">
       <view class="ff_left" bindtap="changeAllChecked">
         <image src="{{imageUrl}}/image/wxapp/icon_rectangle.png" wx:if='{{isAllCheck == 0}}'></image>
         <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx;margin-left:20rpx;margin-right:10rpx;' wx:if='{{isAllCheck == 1}}'></text> 全选
@@ -371,7 +371,7 @@
 </view>
 
 <!-- 推荐商品 -->
-<v-recommend id="recommend" pageName="item" />
+<v-recommend id="recommend" pageName="cart" />
 <!-- 优惠券礼包弹窗 -->
 <v-coupon-package-dialog show="{{showCouponPackageDialog}}" coupon-package-list="{{couponPackage.packList}}" />
 <include src="../common/footer.wxml" />

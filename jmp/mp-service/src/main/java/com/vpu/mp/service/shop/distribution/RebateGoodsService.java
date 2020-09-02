@@ -12,8 +12,8 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
@@ -121,8 +121,8 @@ public class RebateGoodsService extends ShopBaseService{
 			select.where(ORDER_INFO.FINISHED_TIME.le(param.getEndRebateTme()));
 		}
 		//返利订单号
-		if(param.getRebateORderSn() != null) {
-			select.where(ORDER_GOODS_REBATE.ORDER_SN.contains(param.getRebateORderSn()));
+		if(param.getRebateOrderSn() != null) {
+			select.where(ORDER_GOODS_REBATE.ORDER_SN.contains(param.getRebateOrderSn()));
 		}
 		//返利状态
 		if(param.getRebateStatus() != null) {

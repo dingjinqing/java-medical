@@ -1,11 +1,11 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.*;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
@@ -31,7 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value="/api/admin/member")
 public class AdminMemberController extends AdminBaseController{
-	
+
 	/**
 	 * 返回所有行业信息
 	 */
@@ -41,7 +41,7 @@ public class AdminMemberController extends AdminBaseController{
 		allIndustryInfo.stream().forEach(item->this.i18nSuccess(item));
 		return success(allIndustryInfo);
 	}
-	
+
 	/**
 	 * 通用会员列表弹窗分页查询
 	 * @return
@@ -51,7 +51,7 @@ public class AdminMemberController extends AdminBaseController{
 		PageResult<CommonMemberPageListQueryVo> pageResult = this.shop().member.getCommonPageList(param);
 		return this.success(pageResult);
 	}
-	
+
 	/**
 	 * 会员列表分页查询
 	 * @param param
@@ -63,11 +63,11 @@ public class AdminMemberController extends AdminBaseController{
 		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param,getLang());
 		return this.success(pageResult);
 	}
-	
+
 	/**
 	 * 会员列表导出
 	 * @param param
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@PostMapping("/list/export")
 	public void exportUser(@RequestBody MemberPageListParam param,HttpServletResponse response) throws IOException {
@@ -79,7 +79,7 @@ public class AdminMemberController extends AdminBaseController{
 		response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 		workBook.write(response.getOutputStream());
 	}
-	
+
 	/**
 	 * 	用户列表导出新接口
 	 */
@@ -88,12 +88,12 @@ public class AdminMemberController extends AdminBaseController{
 		logger().info("会员导出");
 		Workbook workbook = shop().member.userExpSvc.userExport(param,getLang());
 		String fileName = Util.translateMessage(getLang(), JsonResultMessage.USER_EXPORT, "excel","messages");
-		String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);
+		String dateFormat = DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
 		export2Excel(workbook, fileName + dateFormat, response);
 		logger().info("会员导出完毕");
 	}
-	
-	/**	
+
+	/**
 	 * 会员卡-弹窗
 	 */
 	@PostMapping("/card/all/list")
@@ -102,7 +102,7 @@ public class AdminMemberController extends AdminBaseController{
 		MemberCardVo vo  = shop().member.card.getAllCardList(param);
 		return success(vo);
 	}
-	
+
 	/**
 	 * 会员-添加会员卡
 	 */
@@ -113,8 +113,8 @@ public class AdminMemberController extends AdminBaseController{
 		shop().member.card.addCardForMember(param);
 		return success();
 	}
-	
-	
+
+
 	/**
 	 * 批量禁止登录-恢复登录
 	 */
@@ -124,8 +124,8 @@ public class AdminMemberController extends AdminBaseController{
 		shop().member.changeLoginStatus(param);
 		return success();
 	}
-	
-	
+
+
 	/**
 	 * 打标签，为用户设置标签
 	 */
@@ -135,7 +135,7 @@ public class AdminMemberController extends AdminBaseController{
 		shop().member.setTagForMember(param);
 		return success();
 	}
-	
+
 	/**
 	 * 查询某个用户的标签列表
 	 * @param param
@@ -147,21 +147,21 @@ public class AdminMemberController extends AdminBaseController{
 		List<TagVo> tagList = shop().member.getTagForMember(param.getUserId());
 		return success(tagList);
 	}
-	
-	
+
+
 	/**
 	 * 会员信息详情
 	 */
 	@PostMapping("/manager/center/{userId}")
 	public JsonResult getMemberInfo(@PathVariable Integer userId) {
 		logger().info("获取会员用户id为 " + userId + " 详情信息");
-		
+
 		MemberDetailsVo vo = shop().member.getMemberInfoById(userId,getLang());
-		
+
 		return i18nSuccess(vo);
 	}
-	
-	
+
+
 	/**
 	 * 	更新会员信息
 	 */
@@ -171,7 +171,7 @@ public class AdminMemberController extends AdminBaseController{
 		shop().member.updateMemberInfo(param);
 		return success();
 	}
-	
+
 	/**
 	 * 获取用户目前持有的所有可用会员卡
 	 * @param userId
@@ -196,7 +196,7 @@ public class AdminMemberController extends AdminBaseController{
 		List<UserCardDetailVo> allUserCardDetail = shop().member.getAllUserCardDetail(param);
 		return success(allUserCardDetail);
 	}
-	
+
 	/**
 	 * 	获取用户导出配置信息
 	 */
@@ -205,5 +205,5 @@ public class AdminMemberController extends AdminBaseController{
 		logger().info("获取用户导出配置信息");
 		return success(shop().member.userExpSvc.getExportCfg(param));
 	}
-	
+
 }

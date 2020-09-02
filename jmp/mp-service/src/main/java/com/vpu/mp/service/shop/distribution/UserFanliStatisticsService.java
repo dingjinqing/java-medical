@@ -1,10 +1,11 @@
 package com.vpu.mp.service.shop.distribution;
 
 
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.db.shop.tables.UserFanliStatistics;
 import com.vpu.mp.db.shop.tables.records.UserFanliStatisticsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 @Service
 public class UserFanliStatisticsService extends ShopBaseService {
 
-    UserFanliStatistics TABLE = UserFanliStatistics.USER_FANLI_STATISTICS;
+    final static UserFanliStatistics TABLE = UserFanliStatistics.USER_FANLI_STATISTICS;
 
     public void update(Integer userId, Integer inviteId, Byte level, BigDecimal currentMoney, BigDecimal totalMoney) {
         UserFanliStatisticsRecord record = db().selectFrom(TABLE).where(TABLE.USER_ID.eq(userId).and(TABLE.REBATE_LEVEL.eq(level).and(TABLE.FANLI_USER_ID.eq(inviteId)))).fetchOne();

@@ -1,7 +1,7 @@
 <wxs src="../../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='product-item two_column' wx:if="{{m.col_type =='1'}}" style='{{m.goods_module_style == 1 ? "width:720rpx;padding: 0 15rpx;" : ""}}background:{{m.goods_module_bg == 0 ? "": m.goods_bg_color}}'>
     <block wx:for="{{m.goodsListData}}" wx:key="key" wx:for-item="item" wx:for-index="index">
-      <view class='each_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindJumpLink"
+      <view class='each_module' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="bindJumpLink"
         data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.cur_idx}}' data-url="pages/item/item?gid={{item.goodsId}}&atp={{item.activityType}}&aid={{item.activityId}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.activityType}}'>
         <view class='product-image'>
           <include src="../goodscommon/labelcommon.wxml" />
@@ -11,7 +11,7 @@
           <view class='top_title' wx:if='{{m.hide_name != 0}}'>
             <view class="{{(item.activityLabelData.length)?'van-ellipsis':'van-two-ellipsis'}}">{{item.goodsName}}</view>
           </view>
-           <view class='title_label_container' style="bottom:54rpx">
+           <view class='title_label_container' wx:if="{{!item.activityLabelData.length}}">
               <view style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}" class='title_label' wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
             {{itemC.text}}</view>
             </view>

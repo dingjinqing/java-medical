@@ -1,5 +1,4 @@
 var util = require('../../utils/util.js')
-const livePlayer = requirePlugin('live-player-plugin')
 const actBaseInfo = {
   1: {
     actName: '拼团',
@@ -392,7 +391,7 @@ global.wxPage({
             // [1,5,6,10] 会展示活动预告的活动
             if (res.content.activityAnnounceMpVo) this.getAnnounce(res.content.activityAnnounceMpVo, res.content.defaultPrd)
             this.getShareData() //获取分享内容
-            this.setShareButtonData() //获取好物推荐信息
+            if(res.content.showMall) this.setShareButtonData() //获取好物推荐信息
             resolve(res.content)
             // 购买记录
             this.setData({
@@ -1330,7 +1329,7 @@ global.wxPage({
       deliverTemplateId: that.data.deliverTemplateId,
       goodsNum: this.data.productInfo.goodsNum,
       goodsPrice: this.data.productInfo.prdRealPrice,
-      goodsWeight: this.data.productInfo.prdWeight || ''
+      goodsWeight: this.data.productInfo.prdWeight || 1
     })
   },
 

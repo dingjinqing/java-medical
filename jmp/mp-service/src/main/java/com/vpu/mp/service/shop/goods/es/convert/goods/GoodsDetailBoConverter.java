@@ -3,12 +3,12 @@ package com.vpu.mp.service.shop.goods.es.convert.goods;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.foundation.es.pojo.goods.EsGoods;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -81,7 +81,8 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
     private void assemblyGrdPrice(EsGoods esGoods,GoodsDetailMpBo bo){
         List<GoodsDetailMpBo.GradePrd> gradePrdList = Lists.newArrayList();
         String vipGeneral = "v";
-        for (int i = 1; i < 10; i++) {
+        int max = 10;
+        for (int i = 1; i < max; i++) {
             try {
                 String vipLevel = vipGeneral + i;
                 Field f = EsGoods.class.getDeclaredField(vipLevel);

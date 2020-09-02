@@ -76,6 +76,7 @@ export default {
     },
     displayLeftNav () {
       let flag = true
+      console.log(this.$route)
       switch (this.$route.name) {
         case 'version_upgrade':
           flag = false

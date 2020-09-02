@@ -103,7 +103,6 @@
             <text>￥</text>
             <text class="price">{{goodsInfo.prdRealPrice}}</text>
           </block>
-          <share-button btn-class="share-button" wx:if="{{showMall}}" product="{{shareButtonData}}" bind:error="on_error" type="3" >推荐好物</share-button>
         </view>
         <view class="marking_price" wx:if="{{goodsInfo.prdLinePrice}}">
           ￥
@@ -164,6 +163,12 @@
           <view class="act-type">{{announceData.priceName}}：</view>
           <view class="act-price">￥{{announceData.price}}</view>
           <view class="act-time">{{announceData.startTime}}开始</view>
+        </view>
+      </view>
+      <view class="flex-wrap">
+        <view class="prescription-tips">
+          <image src="{{imageUrl}}image/wxapp/warn.png"></image>
+          <text>本品为处方药，请在医师指导下使用</text>
         </view>
       </view>
     </view>

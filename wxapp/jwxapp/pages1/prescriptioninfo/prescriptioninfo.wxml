@@ -1,0 +1,60 @@
+<!--pages1/prescriptioninfo/prescriptioninfo.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="mian-container">
+  <view class="prescription-content">
+    <view class="prescription-item">
+      <view class="top_info">
+        <view class="item-title">{{prescriptionInfo.prescriptionCode}}</view>
+      </view>
+      <view class="item-list-content">
+        <view class="item-list">
+          <view class="list-item">
+            <text class="list-item-dot"></text>
+            <view class="list-item-content">就诊人信息</view>
+          </view>
+          <view class="list_content list_patient_info">
+            <view class="each_patient_column">
+              <view class="dark_one">{{prescriptionInfo.patientName}}</view>
+              <view>姓名</view>
+            </view>
+            <view class="each_patient_column">
+              <view class="dark_one">{{prescriptionInfo.patientSexName}}</view>
+              <view>性别</view>
+            </view>
+            <view class="each_patient_column">
+              <view class="dark_one">{{prescriptionInfo.patientAge}}岁</view>
+              <view>年龄</view>
+            </view>
+            <view class="each_patient_column">
+              <view class="dark_one">{{prescriptionInfo.departmentName}}</view>
+              <view>科室</view>
+            </view>
+          </view>
+          <view class="list-item">
+            <text class="list-item-dot"></text>
+            <view class="list-item-content">诊断</view>
+          </view>
+          <view class="list_content">{{prescriptionInfo.diagnosisName}}</view>
+          <view class="list-item">
+            <text class="list-item-dot"></text>
+            <view class="list-item-content">治疗建议</view>
+          </view>
+          <view class="list_content" wx:for='{{prescriptionInfo.itemList}}' wx:key='key'>
+            <view class="medicine_name">{{item.goodsCommonName}}</view>
+            <view class="medicine_spec">用法用量：</view>
+          </view>
+        </view>
+      </view>
+      <view class="doctor-info">
+        <view class="doctor-name">
+          <view>处方医师： {{prescriptionInfo.doctorName}}</view>
+          <!-- <view>审核医师： {{prescriptionInfo.pharmacistName}}</view>
+          <view>发药医师： {{prescriptionInfo.pharmacistName}}</view> -->
+        </view>
+        <text class="item-date">日期：{{prescriptionInfo.prescriptionCreateTime}}</text>
+      </view>
+    </view>
+    <view class="pre_tips">本处方内容仅供参考，自行下载配药不具有处方效力</view>
+    <view class="button" bindtap="viewRepurchase">去买药</view>
+  </view>
+</view>

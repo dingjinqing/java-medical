@@ -132,7 +132,10 @@ export default {
     collapseIconClicked (row, $index) {
       row.open = !row.open
       if (row.open) {
+        console.log(this.goodsSortData)
+        console.log(this.goodsSortData[$index].children)
         this.goodsSortData.splice($index + 1, 0, ...this.goodsSortData[$index].children)
+        console.log(this.goodsSortData)
       } else {
         this.goodsSortData.splice($index + 1, this.goodsSortData[$index].children.length)
       }
@@ -180,7 +183,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 .allGoodsSort {
   .goodsSortForm {
     margin: 10px 0px;

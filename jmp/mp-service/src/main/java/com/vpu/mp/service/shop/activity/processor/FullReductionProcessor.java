@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
@@ -83,7 +83,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType())).collect(Collectors.toList());
 
-        Timestamp now =DateUtil.getLocalDateTime();
+        Timestamp now = DateUtils.getLocalDateTime();
         availableCapsules.forEach(capsule->{
             boolean has = fullReductionProcessorDao.getIsFullReductionListInfo(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), capsule.getBrandId(), now);
             if (has) {
@@ -97,7 +97,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        List<FullReductionPromotion> promotions = fullReductionProcessorDao.getFullReductionInfoForDetail(capsule.getGoodsId(), capsule.getCatId(), capsule.getBrandId(), capsule.getSortId(), DateUtil.getLocalDateTime());
+        List<FullReductionPromotion> promotions = fullReductionProcessorDao.getFullReductionInfoForDetail(capsule.getGoodsId(), capsule.getCatId(), capsule.getBrandId(), capsule.getSortId(), DateUtils.getLocalDateTime());
         if (promotions != null && promotions.size() > 0) {
             capsule.getPromotions().put(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,promotions);
         }
@@ -249,7 +249,11 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
      * 订单处理end
      **/
 
-    //*******************购物车--满折满减
+
+    /**
+     * 购物车--满折满减
+     * @param cartBo 业务数据类
+     */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
         log.info("购物车-满折满减");

@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.config.trade.third.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,7 +112,7 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
             Integer sysId = getSysId();
             AppAuthRecord appAuthInfo = saas.shop.shopApp.getAppAuthInfo(sysId, shopId, action);
             if (appAuthInfo==null){
-               return saas.shop.shopApp.AddAppAuthInfo(sysId,shopId,action);
+               return saas.shop.shopApp.addAppAuthInfo(sysId,shopId,action);
             }
             return appAuthInfo;
         }
@@ -130,14 +130,12 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
         if (i>0&& param.getAction().equals(CRM_ACTION)&& BaseConstant.YES.equals(param.getStatus())){
             logger().info("授权crm-同步");
             AppAuthRecord appAuthRecord = saas.shop.shopApp.getAppAuthInfo(getSysId(), getShopId(), param.getAction());
-            if (appAuthRecord!=null&&appAuthRecord.getIsSync().equals(BaseConstant.YES)){
                 //TODO
                 /**
                  *   queue_job(function () use ($shopId){
                  *    shop($shopId)->serviceRequest->crmApi->startSyncAllData();
                  *      });
                  */
-            }
         }
         return i;
     }
@@ -147,7 +145,7 @@ public class ThirdAuthConfigService extends  BaseShopConfigService {
         if (appAuthRecord!=null){
             String s = saas.shop.shopApp.generateUniqueSessionKey(getShopId());
             appAuthRecord.setSessionKey(s);
-            appAuthRecord.setUpdateTime(DateUtil.getLocalDateTime());
+            appAuthRecord.setUpdateTime(DateUtils.getLocalDateTime());
            return appAuthRecord.update();
         }
         return 0;

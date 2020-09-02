@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.market.coopen;
 
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.COUPON;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.CUSTOMIZE;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.DRAW;
@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Record4;
 import org.jooq.Record5;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectSeekStep1;
@@ -20,14 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.CoopenActivity;
 import com.vpu.mp.db.shop.tables.records.CoopenActivityRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListVo;
@@ -82,7 +81,7 @@ public class CoopenService extends ShopBaseService {
                     break;
                 case BaseConstant.NAVBAR_TYPE_FINISHED:
                     select.and(TABLE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                            .and(TABLE.END_DATE.lt(Util.currentTimeStamp()));
+                            .and(TABLE.END_DATE.lt(Util.currentTimeStamp())).and(TABLE.IS_FOREVER.eq(BaseConstant.ACTIVITY_NOT_FOREVER.intValue()));
                     break;
                 case BaseConstant.NAVBAR_TYPE_DISABLED:
                     select.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
@@ -121,7 +120,7 @@ public class CoopenService extends ShopBaseService {
         validateTimeRange(param);
         CoopenActivityRecord coopenRecord =db().newRecord(TABLE,param);
         if (param.getStartDate()==null){
-            Timestamp localDateTime = DateUtil.getLocalDateTime();
+            Timestamp localDateTime = DateUtils.getLocalDateTime();
             coopenRecord.setStartDate(localDateTime);
             coopenRecord.setEndDate(localDateTime);
         }
@@ -207,7 +206,7 @@ public class CoopenService extends ShopBaseService {
 		return db().select(TABLE.ID, TABLE.NAME.as(CalendarAction.ACTNAME), TABLE.START_DATE.as(CalendarAction.STARTTIME),
 				TABLE.END_DATE.as(CalendarAction.ENDTIME),TABLE.IS_FOREVER.as(CalendarAction.ISPERMANENT)).from(TABLE).where(TABLE.ID.eq(id)).fetchAnyInto(MarketVo.class);
     }
-    
+
     /**
      * 营销日历用查询目前正常的活动
      * @param param
@@ -219,7 +218,7 @@ public class CoopenService extends ShopBaseService {
 						TABLE.END_DATE.as(CalendarAction.ENDTIME),TABLE.IS_FOREVER.as(CalendarAction.ISPERMANENT))
 				.from(TABLE)
 				.where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(TABLE.STATUS
-						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_DATE.gt(DateUtil.getSqlTimestamp()))))
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_DATE.gt(DateUtils.getSqlTimestamp()))))
 				.orderBy(TABLE.ID.desc());
 		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				MarketVo.class);

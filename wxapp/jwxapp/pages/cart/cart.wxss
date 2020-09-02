@@ -45,7 +45,7 @@ page{
 }
 .main_container{
   min-height: 850rpx;
-  overflow-x: hidden
+  overflow-x: hidden;
 }
 .clearfix::after{
   content: "";
@@ -108,8 +108,11 @@ page{
 }
 /* 普通商品 */
 .normal_goods_container{
-  /* margin-top: 20rpx; */
   background: #fff;
+  width: 702rpx;
+  margin: 20rpx auto 0;
+  overflow: hidden;
+  border-radius: 16rpx;
 }
 .putong .enen{
   border-top:1px solid #eee;
@@ -119,7 +122,6 @@ page{
 .putong .enen:first-of-type{
   border-top: none;
   margin-top: 0;
-  padding-top: 20rpx;
 }
 .putong .enen:first-of-type .sec_kill_area{
   margin-top: 0
@@ -148,8 +150,9 @@ page{
 }
 .n_goods_info{
   float: left;
-  width: 640rpx;
+  width: 598rpx;
   margin-right:30rpx;
+
 }
 
 .ng_left{
@@ -175,7 +178,7 @@ page{
 .ng_right{
   float: right;
   height: 180rpx;
-  width: 440rpx;
+  width: 400rpx;
   position: relative;
 }
 .ng_goods_name{
@@ -444,13 +447,14 @@ page{
    background: #f66;
    color: #fff;
    text-align: center;
-   height: 100rpx;
-   line-height: 100rpx;
+   line-height: 80rpx;
    border-radius: 0;
    margin: 0;
    padding: 0;
    font-size: 26rpx;
    margin-left: 40rpx;
+   margin-right: 24rpx;
+   border-radius: 40rpx;
 }
 .ff_right button::after{
   border: none;
@@ -678,7 +682,7 @@ page{
 }
 .normal_goods .del_btn{
   width: 120rpx;
-  height: 220rpx;
+  height: 180rpx;
   color: #fff;
   background: #f66;
   font-size: 26rpx;
@@ -725,8 +729,7 @@ page{
   margin-top: 40rpx;
 }
 .con_img image{
-	width: 250rpx;
-	margin-top: 0px;
+	width: 750rpx;
   border:none;
   vertical-align:middle;
 }

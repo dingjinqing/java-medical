@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.market.channel;
 
+import static com.vpu.mp.common.foundation.util.Util.translateMessage;
 import static com.vpu.mp.db.shop.Tables.CHANNEL_STATISTICAL;
-import static com.vpu.mp.service.foundation.util.Util.translateMessage;
 
 import java.sql.Date;
 import java.util.Calendar;
@@ -17,10 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelStatisticalRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelConstant;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelStatisticalChartVo;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelStatisticalConstant;

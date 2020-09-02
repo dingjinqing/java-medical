@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
@@ -19,7 +19,7 @@ import com.vpu.mp.service.pojo.shop.auth.ShopMenuParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopPriPassParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopVersionListVo;
 import com.vpu.mp.service.pojo.shop.auth.ShopVersionParam;
-import com.vpu.mp.service.pojo.shop.auth.shopMenuList;
+import com.vpu.mp.service.pojo.shop.auth.ShopMenuList;
 
 /**
  * 
@@ -67,7 +67,7 @@ public class ShopMenuService extends MainBaseService {
 		//Util.loadResource(authorityJson);
 		String json = getCacheInfo(AuthConstant.KEY_AUTHORITY,AuthConstant.FILE_AUTHORITYJSON);
 
-		ArrayList<ShopPriPassParam> list = Util.parseJson(json, new TypeReference<List<ShopPriPassParam>>() {
+		List<ShopPriPassParam> list = Util.parseJson(json, new TypeReference<List<ShopPriPassParam>>() {
 		});
 		ShopPriPassParam sPassParam = list.get(0);
 		String preName = sPassParam.getPrName();
@@ -157,7 +157,7 @@ public class ShopMenuService extends MainBaseService {
 		//Util.loadResource(menuJson);
 		String json = getCacheInfo(AuthConstant.KEY_MENU, AuthConstant.FILE_MENUJSON);
 
-		ArrayList<ShopMenuParam> list = Util.parseJson(json, new TypeReference<List<ShopMenuParam>>() {
+		List<ShopMenuParam> list = Util.parseJson(json, new TypeReference<List<ShopMenuParam>>() {
 		});
 
 		ShopMenuParam sParam = list.get(0);
@@ -245,7 +245,7 @@ public class ShopMenuService extends MainBaseService {
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
 		//Util.loadResource(versionJson);
 		String json = getCacheInfo(AuthConstant.KEY_VERSION, AuthConstant.FILE_VERSIONJSON);
-		ArrayList<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
+		List<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
 		});
 		List<String> versionJson = (List<String>) list.get(0).getIncludeApi();
 
@@ -287,7 +287,7 @@ public class ShopMenuService extends MainBaseService {
 	 * 返回所有权限信息
 	 * @return
 	 */
-	public shopMenuList getAuthority() {
+	public ShopMenuList getAuthority() {
 		logger().info("查询Json");
 		String json = Util.loadResource(menuJson);
 		
@@ -308,7 +308,7 @@ public class ShopMenuService extends MainBaseService {
 		logger().info("查询pwdJson");
 		String pwdJson = Util.loadResource(authorityJson);
 
-		ArrayList<ShopPriPassParam> pwdlist = Util.parseJson(pwdJson, new TypeReference<List<ShopPriPassParam>>() {
+		List<ShopPriPassParam> pwdlist = Util.parseJson(pwdJson, new TypeReference<List<ShopPriPassParam>>() {
 		});
 		List<List<ShopPriPassParam>> outPwdList=new ArrayList<List<ShopPriPassParam>>();
 		for(int i=0;i<=pwdlist.get(pwdlist.size()-1).getTopIndex()+1;i++) {
@@ -322,7 +322,7 @@ public class ShopMenuService extends MainBaseService {
 				outPwdList.add(innerList);				
 			}
 		}
-		shopMenuList vo=new shopMenuList();
+		ShopMenuList vo=new ShopMenuList();
 		vo.setShopMenuList(outList);
 		vo.setShopPriPassList(outPwdList);
 		
@@ -336,7 +336,7 @@ public class ShopMenuService extends MainBaseService {
 	 */
 	public ShopVersionListVo getVersion() {
 		String json = Util.loadResource(versionJson);
-		ArrayList<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
+		List<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
 		});
 		ShopVersionListVo vo=new ShopVersionListVo();
 		for(int i=0;i<=list.get(list.size()-1).getTopIndex()+1;i++) {

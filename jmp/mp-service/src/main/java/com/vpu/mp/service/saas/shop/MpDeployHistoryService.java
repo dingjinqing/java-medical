@@ -7,10 +7,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MpDeployHistoryService extends MainBaseService {
 		

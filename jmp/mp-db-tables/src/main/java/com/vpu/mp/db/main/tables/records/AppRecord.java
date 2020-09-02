@@ -5,15 +5,13 @@ package com.vpu.mp.db.main.tables.records;
 
 
 import com.vpu.mp.db.main.tables.App;
-
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.TableRecordImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
 
 
 /**
@@ -29,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AppRecord extends TableRecordImpl<AppRecord> implements Record4<String, String, String, Timestamp> {
 
-    private static final long serialVersionUID = 1341875860;
+    private static final long serialVersionUID = -1866989996;
 
     /**
      * Setter for <code>mini_main.b2c_app.app_id</code>.
@@ -74,16 +72,16 @@ public class AppRecord extends TableRecordImpl<AppRecord> implements Record4<Str
     }
 
     /**
-     * Setter for <code>mini_main.b2c_app.add_time</code>.
+     * Setter for <code>mini_main.b2c_app.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_app.add_time</code>.
+     * Getter for <code>mini_main.b2c_app.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(3);
     }
 
@@ -136,7 +134,7 @@ public class AppRecord extends TableRecordImpl<AppRecord> implements Record4<Str
      */
     @Override
     public Field<Timestamp> field4() {
-        return App.APP.ADD_TIME;
+        return App.APP.CREATE_TIME;
     }
 
     /**
@@ -168,7 +166,7 @@ public class AppRecord extends TableRecordImpl<AppRecord> implements Record4<Str
      */
     @Override
     public Timestamp component4() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -200,7 +198,7 @@ public class AppRecord extends TableRecordImpl<AppRecord> implements Record4<Str
      */
     @Override
     public Timestamp value4() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -235,7 +233,7 @@ public class AppRecord extends TableRecordImpl<AppRecord> implements Record4<Str
      */
     @Override
     public AppRecord value4(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -265,12 +263,12 @@ public class AppRecord extends TableRecordImpl<AppRecord> implements Record4<Str
     /**
      * Create a detached, initialised AppRecord
      */
-    public AppRecord(String appId, String appName, String appSecret, Timestamp addTime) {
+    public AppRecord(String appId, String appName, String appSecret, Timestamp createTime) {
         super(App.APP);
 
         set(0, appId);
         set(1, appName);
         set(2, appSecret);
-        set(3, addTime);
+        set(3, createTime);
     }
 }

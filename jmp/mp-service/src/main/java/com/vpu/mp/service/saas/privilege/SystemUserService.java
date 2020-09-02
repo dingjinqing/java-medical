@@ -4,9 +4,9 @@ import static com.vpu.mp.db.main.tables.SystemUser.SYSTEM_USER;
 
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 
 /**
  * 

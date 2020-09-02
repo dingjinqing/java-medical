@@ -31,7 +31,12 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
-    public static final Identity<OrderInfoNewRecord, Integer> IDENTITY_ORDER_INFO_NEW = Identities0.IDENTITY_ORDER_INFO_NEW;
+    public static final Identity<ReturnOrderBakRecord, Integer> IDENTITY_RETURN_ORDER_BAK = Identities0.IDENTITY_RETURN_ORDER_BAK;
+    public static final Identity<ReturnOrderGoodsBakRecord, Integer> IDENTITY_RETURN_ORDER_GOODS_BAK = Identities0.IDENTITY_RETURN_ORDER_GOODS_BAK;
+
+    public static final Identity<OrderInfoBakRecord, Long> IDENTITY_ORDER_INFO_BAK = Identities0.IDENTITY_ORDER_INFO_BAK;
+    public static final Identity<OrderGoodsBakRecord, Long> IDENTITY_ORDER_GOODS_BAK = Identities0.IDENTITY_ORDER_GOODS_BAK;
+
     public static final Identity<CronDefineRecord, Integer> IDENTITY_CRON_DEFINE = Identities0.IDENTITY_CRON_DEFINE;
     public static final Identity<CronRecordRecord, Integer> IDENTITY_CRON_RECORD = Identities0.IDENTITY_CRON_RECORD;
 
@@ -42,7 +47,7 @@ public class Keys {
     public static final Identity<AliMiniAppVersionRecord, Integer> IDENTITY_ALI_MINI_APP_VERSION = Identities0.IDENTITY_ALI_MINI_APP_VERSION;
     public static final Identity<AliMyOrderRecord, Integer> IDENTITY_ALI_MY_ORDER = Identities0.IDENTITY_ALI_MY_ORDER;
     public static final Identity<AliUserTokenRecord, Integer> IDENTITY_ALI_USER_TOKEN = Identities0.IDENTITY_ALI_USER_TOKEN;
-    public static final Identity<AppAuthRecord, Short> IDENTITY_APP_AUTH = Identities0.IDENTITY_APP_AUTH;
+    public static final Identity<AppAuthRecord, Integer> IDENTITY_APP_AUTH = Identities0.IDENTITY_APP_AUTH;
     public static final Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Identities0.IDENTITY_ARTICLE;
     public static final Identity<ArticleCategoryRecord, Integer> IDENTITY_ARTICLE_CATEGORY = Identities0.IDENTITY_ARTICLE_CATEGORY;
     public static final Identity<ArticleRecordRecord, Integer> IDENTITY_ARTICLE_RECORD = Identities0.IDENTITY_ARTICLE_RECORD;
@@ -64,8 +69,7 @@ public class Keys {
     public static final Identity<MpJumpVersionRecord, Integer> IDENTITY_MP_JUMP_VERSION = Identities0.IDENTITY_MP_JUMP_VERSION;
     public static final Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Identities0.IDENTITY_MP_OFFICIAL_ACCOUNT_USER;
     public static final Identity<MpOperateLogRecord, Integer> IDENTITY_MP_OPERATE_LOG = Identities0.IDENTITY_MP_OPERATE_LOG;
-    public static final Identity<OrderGoodsRecord, Long> IDENTITY_ORDER_GOODS = Identities0.IDENTITY_ORDER_GOODS;
-    public static final Identity<OrderInfoRecord, Long> IDENTITY_ORDER_INFO = Identities0.IDENTITY_ORDER_INFO;
+
     public static final Identity<QfImgRecord, Integer> IDENTITY_QF_IMG = Identities0.IDENTITY_QF_IMG;
     public static final Identity<ShopRecord, Integer> IDENTITY_SHOP = Identities0.IDENTITY_SHOP;
     public static final Identity<ShopAccountRecord, Integer> IDENTITY_SHOP_ACCOUNT = Identities0.IDENTITY_SHOP_ACCOUNT;
@@ -101,12 +105,21 @@ public class Keys {
     public static final Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Identities0.IDENTITY_STORE_ACCOUNT;
     public static final Identity<MarketCalendarRecord, Integer> IDENTITY_MARKET_CALENDAR = Identities0.IDENTITY_MARKET_CALENDAR;
     public static final Identity<MarketCalendarActivityRecord, Integer> IDENTITY_MARKET_CALENDAR_ACTIVITY = Identities0.IDENTITY_MARKET_CALENDAR_ACTIVITY;
-    
+    public static final Identity<ExternalRequestHistoryRecord, Integer> IDENTITY_EXTERNAL_REQUEST_HISTORY = Identities0.IDENTITY_EXTERNAL_REQUEST_HISTORY;
+    public static final Identity<InquiryOrderRecord, Long> IDENTITY_INQUIRY_ORDER = Identities0.IDENTITY_INQUIRY_ORDER;
+    public static final Identity<ShopSmsConfigRecord, Integer> IDENTITY_SHOP_SMS_CONFIG = Identities0.IDENTITY_SHOP_SMS_CONFIG;
+
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
-    public static final UniqueKey<OrderInfoNewRecord> KEY_B2C_ORDER_INFO_NEW_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_INFO_NEW_PRIMARY;
-    public static final UniqueKey<OrderInfoNewRecord> KEY_B2C_ORDER_INFO_NEW_ORDER_SN = UniqueKeys0.KEY_B2C_ORDER_INFO_NEW_ORDER_SN;
+
+    public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_BAK_PRIMARY;
+    public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY;
+
+    public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_INFO_BAK_PRIMARY;
+    public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_ORDER_SN = UniqueKeys0.KEY_B2C_ORDER_INFO_BAK_ORDER_SN;
+    public static final UniqueKey<OrderGoodsBakRecord> KEY_B2C_ORDER_GOODS_BAK_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_BAK_PRIMARY;
+
     public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_CRON_DEFINE_PRIMARY;
     public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_CRON_KEY = UniqueKeys0.KEY_B2C_CRON_DEFINE_CRON_KEY;
     public static final UniqueKey<CronRecordRecord> KEY_B2C_CRON_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_CRON_RECORD_PRIMARY;
@@ -166,9 +179,6 @@ public class Keys {
     public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID = UniqueKeys0.KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID;
     public static final UniqueKey<MpOperateLogRecord> KEY_B2C_MP_OPERATE_LOG_PRIMARY = UniqueKeys0.KEY_B2C_MP_OPERATE_LOG_PRIMARY;
     public static final UniqueKey<MpVersionRecord> KEY_B2C_MP_VERSION_PRIMARY = UniqueKeys0.KEY_B2C_MP_VERSION_PRIMARY;
-    public static final UniqueKey<OrderGoodsRecord> KEY_B2C_ORDER_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_PRIMARY;
-    public static final UniqueKey<OrderInfoRecord> KEY_B2C_ORDER_INFO_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_INFO_PRIMARY;
-    public static final UniqueKey<OrderInfoRecord> KEY_B2C_ORDER_INFO_ORDER_SN = UniqueKeys0.KEY_B2C_ORDER_INFO_ORDER_SN;
     public static final UniqueKey<QfImgRecord> KEY_B2C_QF_IMG_PRIMARY = UniqueKeys0.KEY_B2C_QF_IMG_PRIMARY;
     public static final UniqueKey<ShopRecord> KEY_B2C_SHOP_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_PRIMARY;
     public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_ACCOUNT_PRIMARY;
@@ -210,7 +220,9 @@ public class Keys {
     public static final UniqueKey<StoreAccountRecord> KEY_B2C_STORE_ACCOUNT_PRIMARY = UniqueKeys0.KEY_B2C_STORE_ACCOUNT_PRIMARY;
     public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = UniqueKeys0.KEY_B2C_MARKET_CALENDAR_PRIMARY;
     public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY;
-    
+    public static final UniqueKey<ExternalRequestHistoryRecord> KEY_B2C_EXTERNAL_REQUEST_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_EXTERNAL_REQUEST_HISTORY_PRIMARY;
+    public static final UniqueKey<InquiryOrderRecord> KEY_B2C_INQUIRY_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_INQUIRY_ORDER_PRIMARY;
+    public static final UniqueKey<ShopSmsConfigRecord> KEY_B2C_SHOP_SMS_CONFIG_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_SMS_CONFIG_PRIMARY;
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -221,7 +233,12 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-        public static Identity<OrderInfoNewRecord, Integer> IDENTITY_ORDER_INFO_NEW = Internal.createIdentity(OrderInfoNew.ORDER_INFO_NEW, OrderInfoNew.ORDER_INFO_NEW.ORDER_ID);
+        public static Identity<ReturnOrderBakRecord, Integer> IDENTITY_RETURN_ORDER_BAK = Internal.createIdentity(ReturnOrderBak.RETURN_ORDER_BAK, ReturnOrderBak.RETURN_ORDER_BAK.RET_ID);
+        public static Identity<ReturnOrderGoodsBakRecord, Integer> IDENTITY_RETURN_ORDER_GOODS_BAK = Internal.createIdentity(ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID);
+
+        public static Identity<OrderInfoBakRecord, Long> IDENTITY_ORDER_INFO_BAK = Internal.createIdentity(OrderInfoBak.ORDER_INFO_BAK, OrderInfoBak.ORDER_INFO_BAK.ID);
+        public static Identity<OrderGoodsBakRecord, Long> IDENTITY_ORDER_GOODS_BAK = Internal.createIdentity(OrderGoodsBak.ORDER_GOODS_BAK, OrderGoodsBak.ORDER_GOODS_BAK.ID);
+
         public static Identity<CronDefineRecord, Integer> IDENTITY_CRON_DEFINE = Internal.createIdentity(CronDefine.CRON_DEFINE, CronDefine.CRON_DEFINE.ID);
         public static Identity<CronRecordRecord, Integer> IDENTITY_CRON_RECORD = Internal.createIdentity(CronRecord.CRON_RECORD, CronRecord.CRON_RECORD.ID);
 
@@ -233,7 +250,7 @@ public class Keys {
         public static Identity<AliMiniAppVersionRecord, Integer> IDENTITY_ALI_MINI_APP_VERSION = Internal.createIdentity(AliMiniAppVersion.ALI_MINI_APP_VERSION, AliMiniAppVersion.ALI_MINI_APP_VERSION.REC_ID);
         public static Identity<AliMyOrderRecord, Integer> IDENTITY_ALI_MY_ORDER = Internal.createIdentity(AliMyOrder.ALI_MY_ORDER, AliMyOrder.ALI_MY_ORDER.REC_ID);
         public static Identity<AliUserTokenRecord, Integer> IDENTITY_ALI_USER_TOKEN = Internal.createIdentity(AliUserToken.ALI_USER_TOKEN, AliUserToken.ALI_USER_TOKEN.REC_ID);
-        public static Identity<AppAuthRecord, Short> IDENTITY_APP_AUTH = Internal.createIdentity(AppAuth.APP_AUTH, AppAuth.APP_AUTH.ID);
+        public static Identity<AppAuthRecord, Integer> IDENTITY_APP_AUTH = Internal.createIdentity(AppAuth.APP_AUTH, AppAuth.APP_AUTH.ID);
         public static Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Internal.createIdentity(Article.ARTICLE, Article.ARTICLE.ARTICLE_ID);
         public static Identity<ArticleCategoryRecord, Integer> IDENTITY_ARTICLE_CATEGORY = Internal.createIdentity(ArticleCategory.ARTICLE_CATEGORY, ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID);
         public static Identity<ArticleRecordRecord, Integer> IDENTITY_ARTICLE_RECORD = Internal.createIdentity(com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD, com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD.ID);
@@ -255,8 +272,6 @@ public class Keys {
         public static Identity<MpJumpVersionRecord, Integer> IDENTITY_MP_JUMP_VERSION = Internal.createIdentity(MpJumpVersion.MP_JUMP_VERSION, MpJumpVersion.MP_JUMP_VERSION.ID);
         public static Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Internal.createIdentity(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID);
         public static Identity<MpOperateLogRecord, Integer> IDENTITY_MP_OPERATE_LOG = Internal.createIdentity(MpOperateLog.MP_OPERATE_LOG, MpOperateLog.MP_OPERATE_LOG.OPERATE_ID);
-        public static Identity<OrderGoodsRecord, Long> IDENTITY_ORDER_GOODS = Internal.createIdentity(OrderGoods.ORDER_GOODS, OrderGoods.ORDER_GOODS.ID);
-        public static Identity<OrderInfoRecord, Long> IDENTITY_ORDER_INFO = Internal.createIdentity(OrderInfo.ORDER_INFO, OrderInfo.ORDER_INFO.ID);
         public static Identity<QfImgRecord, Integer> IDENTITY_QF_IMG = Internal.createIdentity(QfImg.QF_IMG, QfImg.QF_IMG.IMG_ID);
         public static Identity<ShopRecord, Integer> IDENTITY_SHOP = Internal.createIdentity(Shop.SHOP, Shop.SHOP.SHOP_ID);
         public static Identity<ShopAccountRecord, Integer> IDENTITY_SHOP_ACCOUNT = Internal.createIdentity(ShopAccount.SHOP_ACCOUNT, ShopAccount.SHOP_ACCOUNT.SYS_ID);
@@ -291,11 +306,20 @@ public class Keys {
         public static Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Internal.createIdentity(StoreAccount.STORE_ACCOUNT, StoreAccount.STORE_ACCOUNT.ACCOUNT_ID);
         public static Identity<MarketCalendarRecord, Integer> IDENTITY_MARKET_CALENDAR = Internal.createIdentity(MarketCalendar.MARKET_CALENDAR, MarketCalendar.MARKET_CALENDAR.ID);
         public static Identity<MarketCalendarActivityRecord, Integer> IDENTITY_MARKET_CALENDAR_ACTIVITY = Internal.createIdentity(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
+        public static Identity<ExternalRequestHistoryRecord, Integer> IDENTITY_EXTERNAL_REQUEST_HISTORY = Internal.createIdentity(ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY, ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY.ID);
+        public static Identity<InquiryOrderRecord, Long> IDENTITY_INQUIRY_ORDER = Internal.createIdentity(InquiryOrder.INQUIRY_ORDER, InquiryOrder.INQUIRY_ORDER.ID);
+        public static Identity<ShopSmsConfigRecord, Integer> IDENTITY_SHOP_SMS_CONFIG = Internal.createIdentity(ShopSmsConfig.SHOP_SMS_CONFIG, ShopSmsConfig.SHOP_SMS_CONFIG.ID);
+
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<OrderInfoNewRecord> KEY_B2C_ORDER_INFO_NEW_PRIMARY = Internal.createUniqueKey(OrderInfoNew.ORDER_INFO_NEW, "KEY_b2c_order_info_new_PRIMARY", OrderInfoNew.ORDER_INFO_NEW.ORDER_ID);
-        public static final UniqueKey<OrderInfoNewRecord> KEY_B2C_ORDER_INFO_NEW_ORDER_SN = Internal.createUniqueKey(OrderInfoNew.ORDER_INFO_NEW, "KEY_b2c_order_info_new_order_sn", OrderInfoNew.ORDER_INFO_NEW.ORDER_SN);
+        public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderBak.RETURN_ORDER_BAK, "KEY_b2c_return_order_bak_PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK.RET_ID);
+        public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, "KEY_b2c_return_order_goods_bak_PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID);
+
+        public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_PRIMARY = Internal.createUniqueKey(OrderInfoBak.ORDER_INFO_BAK, "KEY_b2c_order_info_bak_PRIMARY", OrderInfoBak.ORDER_INFO_BAK.ID);
+        public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_ORDER_SN = Internal.createUniqueKey(OrderInfoBak.ORDER_INFO_BAK, "KEY_b2c_order_info_bak_order_sn", OrderInfoBak.ORDER_INFO_BAK.ORDER_SN);
+        public static final UniqueKey<OrderGoodsBakRecord> KEY_B2C_ORDER_GOODS_BAK_PRIMARY = Internal.createUniqueKey(OrderGoodsBak.ORDER_GOODS_BAK, "KEY_b2c_order_goods_bak_PRIMARY", OrderGoodsBak.ORDER_GOODS_BAK.ID);
+
         public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_PRIMARY = Internal.createUniqueKey(CronDefine.CRON_DEFINE, "KEY_b2c_cron_define_PRIMARY", CronDefine.CRON_DEFINE.ID);
         public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_CRON_KEY = Internal.createUniqueKey(CronDefine.CRON_DEFINE, "KEY_b2c_cron_define_cron_key", CronDefine.CRON_DEFINE.CLASS_NAME);
         public static final UniqueKey<CronRecordRecord> KEY_B2C_CRON_RECORD_PRIMARY = Internal.createUniqueKey(CronRecord.CRON_RECORD, "KEY_b2c_cron_record_PRIMARY", CronRecord.CRON_RECORD.ID);
@@ -355,9 +379,6 @@ public class Keys {
         public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID = Internal.createUniqueKey(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, "KEY_b2c_mp_official_account_user_openid", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.OPENID, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.APP_ID);
         public static final UniqueKey<MpOperateLogRecord> KEY_B2C_MP_OPERATE_LOG_PRIMARY = Internal.createUniqueKey(MpOperateLog.MP_OPERATE_LOG, "KEY_b2c_mp_operate_log_PRIMARY", MpOperateLog.MP_OPERATE_LOG.OPERATE_ID);
         public static final UniqueKey<MpVersionRecord> KEY_B2C_MP_VERSION_PRIMARY = Internal.createUniqueKey(MpVersion.MP_VERSION, "KEY_b2c_mp_version_PRIMARY", MpVersion.MP_VERSION.TEMPLATE_ID);
-        public static final UniqueKey<OrderGoodsRecord> KEY_B2C_ORDER_GOODS_PRIMARY = Internal.createUniqueKey(OrderGoods.ORDER_GOODS, "KEY_b2c_order_goods_PRIMARY", OrderGoods.ORDER_GOODS.ID);
-        public static final UniqueKey<OrderInfoRecord> KEY_B2C_ORDER_INFO_PRIMARY = Internal.createUniqueKey(OrderInfo.ORDER_INFO, "KEY_b2c_order_info_PRIMARY", OrderInfo.ORDER_INFO.ID);
-        public static final UniqueKey<OrderInfoRecord> KEY_B2C_ORDER_INFO_ORDER_SN = Internal.createUniqueKey(OrderInfo.ORDER_INFO, "KEY_b2c_order_info_order_sn", OrderInfo.ORDER_INFO.ORDER_SN);
         public static final UniqueKey<QfImgRecord> KEY_B2C_QF_IMG_PRIMARY = Internal.createUniqueKey(QfImg.QF_IMG, "KEY_b2c_qf_img_PRIMARY", QfImg.QF_IMG.IMG_ID);
         public static final UniqueKey<ShopRecord> KEY_B2C_SHOP_PRIMARY = Internal.createUniqueKey(Shop.SHOP, "KEY_b2c_shop_PRIMARY", Shop.SHOP.SHOP_ID);
         public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_PRIMARY = Internal.createUniqueKey(ShopAccount.SHOP_ACCOUNT, "KEY_b2c_shop_account_PRIMARY", ShopAccount.SHOP_ACCOUNT.SYS_ID);
@@ -399,5 +420,8 @@ public class Keys {
         public static final UniqueKey<StoreAccountRecord> KEY_B2C_STORE_ACCOUNT_PRIMARY = Internal.createUniqueKey(StoreAccount.STORE_ACCOUNT, "KEY_b2c_store_account_PRIMARY", StoreAccount.STORE_ACCOUNT.ACCOUNT_ID);
         public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = Internal.createUniqueKey(MarketCalendar.MARKET_CALENDAR, "KEY_b2c_market_calendar_PRIMARY", MarketCalendar.MARKET_CALENDAR.ID);
         public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createUniqueKey(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, "KEY_b2c_market_calendar_activity_PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
+        public static final UniqueKey<ExternalRequestHistoryRecord> KEY_B2C_EXTERNAL_REQUEST_HISTORY_PRIMARY = Internal.createUniqueKey(ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY, "KEY_b2c_external_request_history_PRIMARY", ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY.ID);
+        public static final UniqueKey<InquiryOrderRecord> KEY_B2C_INQUIRY_ORDER_PRIMARY = Internal.createUniqueKey(InquiryOrder.INQUIRY_ORDER, "KEY_b2c_inquiry_order_PRIMARY", InquiryOrder.INQUIRY_ORDER.ID);
+        public static final UniqueKey<ShopSmsConfigRecord> KEY_B2C_SHOP_SMS_CONFIG_PRIMARY = Internal.createUniqueKey(ShopSmsConfig.SHOP_SMS_CONFIG, "KEY_b2c_shop_sms_config_PRIMARY", ShopSmsConfig.SHOP_SMS_CONFIG.ID);
     }
 }

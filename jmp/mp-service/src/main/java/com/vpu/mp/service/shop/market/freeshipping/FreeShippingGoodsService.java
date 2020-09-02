@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.market.freeshipping;
 
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
 import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingConstant;
@@ -25,10 +25,10 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
 
 /**
  * 满包邮商品列表业务

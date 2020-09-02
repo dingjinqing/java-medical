@@ -1,14 +1,14 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FpRewardContent;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
@@ -29,12 +29,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_GIFT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MY_PRIZE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PAY_AWARD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.YES;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_GIFT;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_MY_PRIZE;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_PAY_AWARD;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER;
+import static com.vpu.mp.common.foundation.data.BaseConstant.YES;
 import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_EVALUATION;
 import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_FRIEND_POWER;
 import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_LOTTERY;
@@ -90,7 +90,7 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
             logger().info("奖品已经领取过了");
             throw new MpException(JsonResultCode.MY_PRIZE_ACTIVITY_RECEIVED, null);
         }
-        if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_EXPIRE)||prizeRecord.getExpiredTime().compareTo(DateUtil.getLocalDateTime())<=0) {
+        if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_EXPIRE)||prizeRecord.getExpiredTime().compareTo(DateUtils.getLocalDateTime())<=0) {
             logger().info("奖品过期了");
             throw new MpException(JsonResultCode.MY_PRIZE_ACTIVITY_EXPIRED, null);
         }

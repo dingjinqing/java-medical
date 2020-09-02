@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.coupon;
 
+import static com.vpu.mp.common.foundation.util.Util.listToString;
+import static com.vpu.mp.common.foundation.util.Util.stringToList;
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
@@ -8,8 +10,6 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
-import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,20 +40,20 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAllParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAllVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
@@ -458,10 +457,11 @@ public class CouponService extends ShopBaseService {
                 .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)));
 
         //根据优惠券使用状态、过期状态条件筛选
-        MpBuildOptions(select, param);
+        mpBuildOptions(select, param);
         PageResult<AvailCouponVo> lists = getPageResult(select, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
-            list.setCanShare(0); //0不可以分享；1可以分享
+            //0不可以分享；1可以分享
+            list.setCanShare(0);
             //分裂优惠券属性
             if(list.getCouponType() == 1){
                 Record record = db().select().from(DIVISION_RECEIVE_RECORD).where(DIVISION_RECEIVE_RECORD.USER.eq(param.getUserId()))
@@ -469,11 +469,14 @@ public class CouponService extends ShopBaseService {
                     .fetchOne();
                 if(record != null){
                     DivisionReceiveRecordRecord into = record.into(DivisionReceiveRecordRecord.class);
-                    list.setIsGrant(1); //发放人
-                    list.setIsShare(into.getIsShare());  //0:未分享；1：已分享
+                    //发放人
+                    list.setIsGrant(1);
+                    //0:未分享；1：已分享
+                    list.setIsShare(into.getIsShare());
                 }else{
                     list.setIsShare((byte)0);
-                    list.setIsGrant(0); //被发放
+                    //被发放
+                    list.setIsGrant(0);
                 }
 
                 int hasReceive = hasReceive(param.getUserId(), list.getCouponSn());
@@ -500,7 +503,7 @@ public class CouponService extends ShopBaseService {
      */
     public ExpireTimeVo getExpireTime(Timestamp endDate){
         //当前时间戳
-        long time = new Date().getTime();
+        long time = System.currentTimeMillis();
         //优惠券到期时间戳
         long time1 = endDate.getTime();
         //还剩总过期秒数
@@ -536,7 +539,7 @@ public class CouponService extends ShopBaseService {
      * @param select
      * @param param
      */
-    public void MpBuildOptions(SelectJoinStep<? extends Record> select, AvailCouponParam param) {
+    public void mpBuildOptions(SelectJoinStep<? extends Record> select, AvailCouponParam param) {
     	Byte isUsed = param.getNav();
     	Timestamp now = Timestamp.valueOf(LocalDateTime.now());
     	if(isUsed == 0 || isUsed == 1) {  //未使用、已使用状态
@@ -599,7 +602,8 @@ public class CouponService extends ShopBaseService {
                 //优惠券规则
                 Integer perNum = db().select(MRKING_VOUCHER.RECEIVE_PER_PERSON).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(param.couponId)).fetchOne().into(Integer.class);
                 Integer hasNum = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.couponId)).fetchOne().into(Integer.class);
-                if(perNum == 0 || (perNum != 0 && hasNum<perNum)){
+                boolean canReceive = perNum == 0 || (perNum != 0 && hasNum < perNum);
+                if(canReceive){
                     list.setCanReceive(1);
                 }
                 list.setLinkSource(1);
@@ -608,10 +612,11 @@ public class CouponService extends ShopBaseService {
                 list.setCanShare(0); //0不可以分享；1可以分享
                 if (list.getCouponType() == 1) {
                     DivisionReceiveRecordRecord canShare = isCanShare(list.getCouponSn());
-                    if(canShare != null)
+                    if(canShare != null) {
                         list.setIsShare(canShare.getIsShare());
-                    else
+                    } else {
                         list.setIsShare((byte)0);
+                    }
                     int hasReceive = hasReceive(param.getUserId(), param.couponSn);
                     if (!(list.getReceivePerNum() == 1 && hasReceive >= list.getReceiveNum())) {
                         list.setCanShare(1);
@@ -679,7 +684,8 @@ public class CouponService extends ShopBaseService {
         if(record != null){
             AvailCouponDetailVo info = record.into(AvailCouponDetailVo.class);
             List<Integer> cardIds = stringToList(info.getCardId());
-            int cardStatus = 0; //0：不能直接领取；1：可以直接领取
+            //0：不能直接领取；1：可以直接领取
+            int cardStatus = 0;
             //判断用户-会员卡详情
             for(Integer cardId : cardIds){
                 MemberCardRecord cardInfo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchOne().into(MemberCardRecord.class);
@@ -757,7 +763,7 @@ public class CouponService extends ShopBaseService {
         Result<Record1<Integer>> record = db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
             .where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)
             		.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+                .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(DateUtils.getSqlTimestamp()))))
             .fetch();
         return record.get(0).into(Integer.class);
     }
@@ -942,7 +948,7 @@ public class CouponService extends ShopBaseService {
     public void use(Integer id, String orderSn){
         db().update(CUSTOMER_AVAIL_COUPONS)
             .set(CUSTOMER_AVAIL_COUPONS.IS_USED, COUPON_IS_USED_STATUS_USED)
-            .set(CUSTOMER_AVAIL_COUPONS.USED_TIME, DateUtil.getSqlTimestamp())
+            .set(CUSTOMER_AVAIL_COUPONS.USED_TIME, DateUtils.getSqlTimestamp())
             .set(CUSTOMER_AVAIL_COUPONS.ORDER_SN, orderSn)
             .where(CUSTOMER_AVAIL_COUPONS.ID.eq(id))
             .execute();
@@ -1102,7 +1108,7 @@ public class CouponService extends ShopBaseService {
 				.from(CUSTOMER_AVAIL_COUPONS, MRKING_VOUCHER, USER)
 				.where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)
 						.and(USER.USER_ID.eq(CUSTOMER_AVAIL_COUPONS.USER_ID))
-						.and(CUSTOMER_AVAIL_COUPONS.START_TIME.lt(DateUtil.getLocalDateTime())
+						.and(CUSTOMER_AVAIL_COUPONS.START_TIME.lt(DateUtils.getLocalDateTime())
 								.and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(time)).and(CUSTOMER_AVAIL_COUPONS.END_TIME
 										.le(time2).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)))))
 				.fetch();
@@ -1132,7 +1138,7 @@ public class CouponService extends ShopBaseService {
 	 * @return
 	 * @return
 	 */
-	public CouponWxUserImportVo getOneMVById(Integer couponId,String lang) {
+	public CouponWxUserImportVo getOneMvById(Integer couponId, String lang) {
 		MrkingVoucherRecord record = db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne();
 		if (record == null) {
 			return null;
@@ -1142,7 +1148,7 @@ public class CouponService extends ShopBaseService {
 		Integer hour = record.getValidityHour();
 		Integer minute = record.getValidityMinute();
 		if (day > 0 || hour > 0 || minute > 0) {
-			into.setStartTime(DateUtil.getSqlTimestamp());
+			into.setStartTime(DateUtils.getSqlTimestamp());
 			Timestamp endTime = Timestamp.valueOf(LocalDateTime.now().plus(day, ChronoUnit.DAYS)
 					.plus(hour, ChronoUnit.HOURS).plus(minute, ChronoUnit.MINUTES));
 			into.setEndTime(endTime);

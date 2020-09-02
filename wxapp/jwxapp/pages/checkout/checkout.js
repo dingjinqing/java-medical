@@ -34,7 +34,8 @@ global.wxPage({
       balance: null, //余额抵扣金额
       cardBalance: null, //会员卡抵扣金额
       orderPayWay: null, //支付方式
-      isCart: 0
+      isCart: 0,
+      patientId:null //患者id
     },
     usePayInfo: {
       moneyPaid: 0, //订单可支付的金额
@@ -54,7 +55,9 @@ global.wxPage({
       consigneeCid: '',
       custom: ''
     },
-    options: {}
+    options: {},
+    title_bgColor:'#26C4BC',
+    patientDiagnose:null
   },
 
   /**
@@ -62,7 +65,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId, preSaleInfo = null, roomId = null, inviteId = null, memberCardNo = 0, addressId } = options
+    let { goodsList, activityType=null, activityId=null, recordId=null, preSaleInfo = null, roomId = null, inviteId = null, memberCardNo = 0, addressId, isPrescription = null, prescriptionCode = null } = options
     console.log(options)
     wx.setStorage({
       data: options,
@@ -101,8 +104,11 @@ global.wxPage({
       'params.recordId': recordId,
       'params.roomId':roomId,
       'params.memberCardNo':memberCardNo,
+      'params.prescriptionCode':prescriptionCode,
+      'params.isPrescription':Number(isPrescription),
       preSaleInfo,
-      inviteId
+      inviteId,
+      isPrescription:Number(isPrescription)
     })
     if (options.groupid) {
       this.setData({
@@ -118,11 +124,13 @@ global.wxPage({
         if (res.error === 0) {
           let orderInfo = res.content
           this.setCardData(orderInfo)
-          console.log(orderEvent)
           this.setData({
             orderInfo,
             isAward:res.content.activityType === 24, //是否奖品订单
-            isCardExchange:res.content.activityType === 13 //是否限次卡兑换
+            isCardExchange:res.content.activityType === 13, //是否限次卡兑换
+          })
+          this.setData({
+            submitButtonStatus:this.getSubmitButtonStatus()
           })
           if(orderInfo.activityType === 4){ //积分兑换数据
             this.setScoreRedeemData(orderInfo)
@@ -661,6 +669,22 @@ global.wxPage({
       return false
     }
 
+    if(!this.getSubmitButtonStatus()){
+      if(!this.data.orderInfo.patientInfo || !this.data.orderInfo.patientInfo.id ){
+        this.setData({
+          noPrescriptionType:2
+        })
+      } else {
+        this.setData({
+          noPrescriptionType:1
+        })
+      }
+      this.setData({
+        showNoPrescription:true
+      })
+      return false
+    }
+
     return true
   },
   // 关闭弹窗
@@ -714,7 +738,12 @@ global.wxPage({
       }
       if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
       if (this.data.inviteId) addParams.inviteId = Number(this.data.inviteId)
-      console.log(addParams)
+      if (this.data.orderInfo.patientInfo && this.data.orderInfo.patientInfo.patientId) addParams.patientId = Number(this.data.orderInfo.patientInfo.patientId)
+      if (this.data.isPrescription && this.data.orderInfo.prescriptionList.length){
+        addParams.isPrescription = 1
+        addParams.prescriptionCode = this.data.orderInfo.prescriptionList[0].prescriptionCode
+      }
+      if (this.data.patientDiagnose) addParams.patientDiagnose = this.data.patientDiagnose
       let params = {
         goods,
         action: 10,
@@ -809,6 +838,7 @@ global.wxPage({
     }, '?')
   },
   showShareFriend () {
+    if(!this.canSubmit()) return
     this.setData({
       showFriendPayDialog: true
     })
@@ -875,6 +905,29 @@ global.wxPage({
       preSaleRuleShow:true
     })
   },
+  handleShowDialog(e){
+    let {prescriptionCode} = e.currentTarget.dataset
+    util.api('/api/wxapp/prescription/details',res=>{
+      if(res.error === 0){
+        this.setData({
+          showPrescription:true,
+          prescriptionData:res.content
+        })
+      }
+    },{
+      prescriptionCode
+    })
+    
+  },
+  getSubmitButtonStatus(){
+    let {checkPrescriptionStatus:status} = this.data.orderInfo
+    if(status === 2) return false
+    return true
+  },
+  togglePatient(){
+    if(this.data.isPrescription) return
+    util.jumpLink('pages1/familylist/familylist?source=checkout')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -884,9 +937,11 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if (this.data.addressId && this.data.params.addressId) {
-      this.requestOrder()
+    if(this.data.patientDiagnose){
+      this.confirm()
+      return
     }
+    this.requestOrder()
   },
 
   /**

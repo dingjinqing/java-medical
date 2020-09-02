@@ -1,9 +1,10 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.config.UpYunConfig;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
@@ -80,6 +81,9 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             // 销量处理
             capsule.setGoodsSaleNum(capsule.getGoodsSaleNum()+capsule.getBaseSale());
             // 图片处理
+            if (StringUtils.isBlank(capsule.getGoodsImg())) {
+                capsule.setGoodsImg(MedicalGoodsConstant.MEDICAL_GOODS_WXAPP_DEFAULT_IMG);
+            }
             capsule.setGoodsImg(imageService.getImgFullUrl(capsule.getGoodsImg()));
             // 商品最后活动信息设置
             Optional<GoodsActivityBaseMp> first = capsule.getGoodsActivities().stream().filter(x -> GoodsConstant.isNeedReturnActivity(x.getActivityType())).findFirst();
@@ -115,6 +119,10 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         products.forEach(prd-> prd.setPrdImg(imageService.getImgFullUrl(prd.getPrdImg())));
         // 商品图片和视频路径地址处理
         List<String> goodsImgs = new ArrayList<>(goodsDetailMpBo.getGoodsImgs().size()+1);
+
+        if (StringUtils.isBlank(goodsDetailMpBo.getGoodsImg())) {
+            goodsDetailMpBo.setGoodsImg(MedicalGoodsConstant.MEDICAL_GOODS_WXAPP_DEFAULT_IMG);
+        }
         goodsDetailMpBo.getGoodsImgs().add(0,goodsDetailMpBo.getGoodsImg());
         goodsDetailMpBo.getGoodsImgs().forEach(img-> goodsImgs.add(imageService.getImgFullUrl(img)));
         goodsDetailMpBo.setGoodsImgs(goodsImgs);
@@ -186,9 +194,10 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
                 isAllCheck=0;
             }
         }
-        //减去折扣
-        totalPrice= totalPrice.subtract(cartBo.getFullReductionPrice());
-
+        if (cartBo.getFullReductionPrice()!=null){
+            //减去折扣
+            totalPrice= totalPrice.subtract(cartBo.getFullReductionPrice());
+        }
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
 

@@ -1,12 +1,10 @@
 package com.vpu.mp.service.shop.config;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParamVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -15,7 +13,7 @@ import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
-import com.vpu.mp.service.pojo.wxapp.collectGift.SetCollectGiftVo;
+import com.vpu.mp.service.pojo.wxapp.collectgift.SetCollectGiftVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -54,7 +52,7 @@ public class CollectGiftConfigService extends BaseShopConfigService{
     public CouponService coupon;
 	/**	收藏有礼K值 */
 	private static final String K_COLLECT_GIFT = "collect_gift";
-	
+
 	/**
 	 * 	返回收藏有礼配置信息
 	 *	返回开关配置状态，默认为关
@@ -111,12 +109,12 @@ public class CollectGiftConfigService extends BaseShopConfigService{
 			this.setJsonObject(K_COLLECT_GIFT, param);
 		}
 	}
-	
+
 	/**
 	 *	修改收藏有礼配置信息
 	 * @param param 收藏有礼配置
 	 */
-	
+
 	public void updateCollectGiftConfig(CollectGiftParam param) {
 		this.setJsonObject(K_COLLECT_GIFT, param);
 	}
@@ -134,14 +132,15 @@ public class CollectGiftConfigService extends BaseShopConfigService{
             this.setJsonObject(K_COLLECT_GIFT, param);
         }
         //判断活动是否生效
-        Timestamp nowDate = DateUtil.getLocalDateTime();
+        Timestamp nowDate = DateUtils.getLocalDateTime();
         if(param.getOnOff() == 1) {
             if (!(param.getStartTime().before(nowDate) && nowDate.before(param.getEndTime()))) {
                 param.setOnOff(0);
             }
             //判断当前用户是否第一次参与收藏有礼活动
             Integer into = db().select(USER.GET_COLLECT_GIFT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
-            if (into == 1) {//已参与，不展示支付有礼图标
+            if (into == 1) {
+                //已参与，不展示支付有礼图标
                 param.setOnOff(0);
             }
             //获取店铺名称

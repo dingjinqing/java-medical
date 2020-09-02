@@ -14,7 +14,9 @@ const orderStatusList = [
   [10, "退款完成"],
   [11, "拼团中"],
   [12, "已成团"],
-  [13, "送礼完成"]
+  [13, "送礼完成"],
+  [14, "待审核"],
+  [15, "待审核"]
 ];
 var order = {
   // 好友代付
@@ -84,7 +86,7 @@ var order = {
       res => {
         console.log(res)
         if (res.error == 0) {
-          util.toast_success("已加入购物车");
+          util.toast_success("已加入清单");
         } else {
           util.showModal("提示", res.message);
         }
@@ -96,7 +98,9 @@ var order = {
   // 删除订单
   delOrder({
     order_sn: orderSn,
-    order_id: orderId
+    order_id: orderId,
+    page = null,
+    self = null
   }) {
     util.showModal(
       "提示",
@@ -105,7 +109,9 @@ var order = {
         util.api(
           "/api/wxapp/order/operation",
           function (res) {
-            if (res.error == 0) {}
+            if (res.error == 0) {
+              if(page === 'orderList') self.requestList()
+            }
           }, {
             orderId: orderId,
             orderSn: orderSn,
@@ -139,7 +145,9 @@ var order = {
   // 取消订单
   cancelOrder({
     order_sn: orderSn,
-    order_id: orderId
+    order_id: orderId,
+    page = null,
+    self = null
   }) {
     util.showModal(
       "提示",
@@ -149,9 +157,7 @@ var order = {
           "/api/wxapp/order/operation",
           function (res) {
             if (res.error == 0) {
-              util.navigateTo({
-                url: "/pages/orderlist/orderlist"
-              });
+              if(page === 'orderList') self.requestList()
             }
           }, {
             orderId: orderId,

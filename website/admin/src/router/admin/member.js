@@ -86,7 +86,10 @@ const routes = [
       meta: 'user_manager',
       category: 'user_import'
     },
-    component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/inactiveMembersList')
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/inactiveMembersList'
+      )
   },
   {
     path: '/admin/home/main/user_card',
@@ -317,6 +320,47 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/user_manger/memberValueAdded/memberValueAddedHome'
+      )
+  },
+  // 患者列表
+  {
+    path: '/admin/home/main/patientList',
+    name: 'patient_list',
+    meta: {
+      crumbTitle: 'router.patientList',
+      meta: 'user_manger'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/patientManagement/patientList'
+      )
+  },
+  // 患者信息
+  {
+    path: '/admin/home/main/patientManagement',
+    name: 'patient_message',
+    meta: {
+      crumbTitle: 'router.patientMessage',
+      meta: 'user_manger',
+      category: 'patient_list'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/patientManagement/patientManage'
+      )
+  },
+  // 处方详情
+  {
+    path: '/admin/home/main/patientManagement/prescriptionMessage',
+    name: 'prescription_message',
+    meta: {
+      crumbTitle: 'router.prescriptionMessage',
+      meta: 'user_manger',
+      category: 'patient_list'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/patientManagement/prescriptionMessage'
       )
   }
 ]

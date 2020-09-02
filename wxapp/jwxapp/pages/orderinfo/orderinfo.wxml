@@ -9,10 +9,21 @@
     if (arr.length === 0) return false
     return arr.indexOf(target) === -1 ? false : true
   }
+  getReturnName = function(type){
+    var returnName = {
+      '0':'仅退款',
+      '1':'退货/退款',
+      '2':'仅退运费',
+      '3':'手动退款',
+      '4':'换货'
+    }
+    return returnName[''+type]
+  }
   module.exports = {
     substring:substring,
     includes:includes,
-    isEmptyObj:isEmptyObj
+    isEmptyObj:isEmptyObj,
+    getReturnName:getReturnName
   }
 </wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
@@ -156,7 +167,7 @@
         <text class="goods-tag" wx:if="{{goodsItem.isGift}}" style="color:{{comColor}};border-color:{{comColor}}">赠品</text>
         <text class="goods-tag" wx:elif="{{isAward}}" style="color:{{comColor}};border-color:{{comColor}}">奖品</text>
         {{goodsItem.goodsName}}</view>
-        <view class="goods_spec"><text>{{goodsItem.goodsAttr}}</text><share-button wx:if="{{orderInfo.showMall}}" btn-class="share-button" product="{{goodsItem.shareButtonData}}" bind:error="on_error" type="3" >推荐好物</share-button></view>
+        <view class="goods_spec"><text>{{goodsItem.goodsAttr}}</text></view>
         <view class="goods_price_num">
           <view class="goods_price" style="color:{{comColor}}" wx:if="{{!filter.includes(orderInfo.orderType,4)}}">
             ￥{{goodsItem.goodsPrice}}
@@ -279,6 +290,51 @@
       </view>
     </view>
 
+    <view class="prescription-item" bindtap="handleShowDialog" data-prescription-code="{{item.prescriptionCode}}" wx:if="{{orderInfo.prescriptionList.length}}" wx:for="{{orderInfo.prescriptionList}}" wx:key="prescriptionCode">
+			<view class="item-title" style="background: #DBEFEE url({{imageUrl}}image/wxapp/order-prescription-bg.png) no-repeat left top/100% 80rpx;">电子处方</view>
+			<view class="item-list-content">
+				<view class="item-list">
+					<view class="list-item">
+						<text class="list-item-dot"></text>
+						<view class="list-item-content">
+							诊断：{{item.diagnosisName}}
+						</view>
+					</view>
+					<view class="list-item">
+						<text class="list-item-dot"></text>
+						<view class="list-item-content">
+							科室：{{item.departmentName}}
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="doctor-info">
+				<text class="doctor-name">医师：{{item.doctorName}}</text>
+				<text class="item-date">日期：{{filter.substring(item.prescriptionCreateTime,0,10)}}</text>
+			</view>
+		</view>
+
+    <block wx:if="{{orderInfo.returnOrderList.length}}">
+      <view class="order_info" wx:for="{{orderInfo.returnOrderList}}">
+        <view class="title">售后详情</view>
+        <view class="order_item">
+          售后类型：{{filter.getReturnName(item.returnType)}}
+        </view>
+        <view class="order_item">
+          退款金额：{{item.money}}元
+        </view>
+        <view class="order_item" wx:if="{{item.shippingFee}}">
+          参考运费：{{item.shippingFee}}元
+        </view>
+        <view class="order_item" wx:if="{{item.reasonTypeDesc}}">
+          退款原因：{{item.reasonTypeDesc}}
+        </view>
+        <view class="order_item" wx:if="{{item.reasonDesc}}">
+          退款备注：{{item.reasonDesc}}
+        </view>
+      </view>
+    </block>
+
     <view class="checkout_detail presale-info" wx:if="{{isPreSaleOrder}}">
         <view class="detail_item">
           <text class="dotted" style="background-color:{{comColor}}"></text>
@@ -333,3 +389,5 @@
 </view>
 
 <v-pre-sale-rule show="{{preSaleRuleShow}}" />
+<!-- 处方详情展示弹窗 -->
+<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>

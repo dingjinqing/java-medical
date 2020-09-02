@@ -1,16 +1,19 @@
 package com.vpu.mp.service.shop.user.cart;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppBatchAddGoodsToCartParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartGoodsResultVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -22,7 +25,6 @@ import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.live.LiveGoodsService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.recommend.CollectionMallService;
-import jodd.util.CollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
@@ -115,7 +117,7 @@ public class CartService extends ShopBaseService {
         WxAppCartBo cartBo = WxAppCartBo.builder()
                 .totalPrice(BigDecimal.ZERO)
                 .totalGoodsNum(appCartGoods.size())
-                .userId(userId).date(DateUtil.getLocalDateTime())
+                .userId(userId).date(DateUtils.getLocalDateTime())
                 .activityId(activityId).activityType(activityType)
                 .productIdList(productIdList).goodsIdList(goodsIdList)
                 .cartGoodsList(appCartGoods).invalidCartList(new ArrayList<>()).build();
@@ -143,7 +145,8 @@ public class CartService extends ShopBaseService {
                 }
             }
         });
-        if (CollectionUtils.isNotEmpty(goodsIds) || (activityId != null && activityId > 0)) {
+        boolean hasActivityGoods = CollectionUtils.isNotEmpty(goodsIds) || (activityId != null && activityId > 0);
+        if (hasActivityGoods) {
             cartBo.setCartGoodsList(activityGoods);
         }
         return cartBo;
@@ -639,5 +642,27 @@ public class CartService extends ShopBaseService {
 
     private boolean isLimitValid(Integer limitNum) {
         return limitNum != null && !limitNum.equals(0);
+    }
+
+    /**
+     * 修改购物车商品数量
+     *
+     * @param param
+     * @return
+     */
+    public WxAppCartGoodsResultVo addBatchGoodsToCart(WxAppBatchAddGoodsToCartParam param, Integer userId) {
+        ResultMessage s = ResultMessage.builder().build();
+        WxAppCartGoodsResultVo cartGoodsResultVo = new WxAppCartGoodsResultVo();
+        for (WxAppAddGoodsToCartParam addGoodsToCartParam : param.getWxAppAddGoodsToCartParams()) {
+            s = addGoodsToCart(addGoodsToCartParam);
+            if (!s.getFlag()){
+                cartGoodsResultVo.setResultMessage(s);
+                cartGoodsResultVo.setPrdId(addGoodsToCartParam.getPrdId());
+                return cartGoodsResultVo;
+            }
+        }
+        cartGoodsResultVo.setResultMessage(s);
+        cartGoodsResultVo.setPrdId(0);
+        return cartGoodsResultVo;
     }
 }

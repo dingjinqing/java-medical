@@ -1,8 +1,9 @@
 package com.vpu.mp.service.shop.task.overview;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -20,10 +21,10 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.db.shop.tables.Tag.TAG;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.*;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -149,7 +150,7 @@ public class UserSummaryTaskService extends ShopBaseService {
         BigDecimal totalMoney = BIGDECIMAL_ZERO;
         Map<Integer, BigDecimal> userMoney = payUserMoney(startTime, endTime);
         // 拿到历史成交用户集合
-        Set<Integer> users = payUserCollection(DateUtil.get1970TimeStamp(), startTime);
+        Set<Integer> users = payUserCollection(DateUtils.get1970TimeStamp(), startTime);
         for (Map.Entry<Integer, BigDecimal> entry : userMoney.entrySet()) {
             if (!users.contains(entry.getKey())) {
                 totalMoney = totalMoney.add(entry.getValue());
@@ -170,7 +171,7 @@ public class UserSummaryTaskService extends ShopBaseService {
         BigDecimal totalMoney = BIGDECIMAL_ZERO;
         Map<Integer, BigDecimal> userMoney = payUserMoney(startTime, endTime);
         // 拿到历史成交用户集合
-        Set<Integer> users = payUserCollection(DateUtil.get1970TimeStamp(), startTime);
+        Set<Integer> users = payUserCollection(DateUtils.get1970TimeStamp(), startTime);
         for (Map.Entry<Integer, BigDecimal> entry : userMoney.entrySet()) {
             if (users.contains(entry.getKey())) {
                 totalMoney = totalMoney.add(entry.getValue());
@@ -195,7 +196,7 @@ public class UserSummaryTaskService extends ShopBaseService {
             return userMoney.values().stream().reduce(BIGDECIMAL_ZERO, BigDecimal::add);
         }
         // 拿到历史成交用户集合
-        Set<Integer> users = virtualUserCollection(DateUtil.get1970TimeStamp(), startTime);
+        Set<Integer> users = virtualUserCollection(DateUtils.get1970TimeStamp(), startTime);
         Predicate<Integer> newOrOld = users::contains;
         if (flag) {
             newOrOld = newOrOld.negate();
@@ -269,7 +270,7 @@ public class UserSummaryTaskService extends ShopBaseService {
         int totalNum = INTEGER_ZERO;
         Map<Integer, Integer> userMoney = payUserGoodsNum(startTime, endTime);
         // 拿到历史成交用户集合
-        Set<Integer> users = payUserCollection(DateUtil.get1970TimeStamp(), startTime);
+        Set<Integer> users = payUserCollection(DateUtils.get1970TimeStamp(), startTime);
         for (Map.Entry<Integer, Integer> entry : userMoney.entrySet()) {
             if (!users.contains(entry.getKey())) {
                 totalNum += entry.getValue();
@@ -289,7 +290,7 @@ public class UserSummaryTaskService extends ShopBaseService {
         int totalNum = INTEGER_ZERO;
         Map<Integer, Integer> userMoney = payUserGoodsNum(startTime, endTime);
         // 拿到历史成交用户集合
-        Set<Integer> users = payUserCollection(DateUtil.get1970TimeStamp(), startTime);
+        Set<Integer> users = payUserCollection(DateUtils.get1970TimeStamp(), startTime);
         for (Map.Entry<Integer, Integer> entry : userMoney.entrySet()) {
             if (users.contains(entry.getKey())) {
                 totalNum += entry.getValue();
@@ -416,7 +417,7 @@ public class UserSummaryTaskService extends ShopBaseService {
             put(4, new Tuple2<>(Timestamp.valueOf(time.minusDays(90)), Timestamp.valueOf(time.minusDays(30))));
             put(5, new Tuple2<>(Timestamp.valueOf(time.minusDays(180)), Timestamp.valueOf(time.minusDays(90))));
             put(6, new Tuple2<>(Timestamp.valueOf(time.minusDays(365)), Timestamp.valueOf(time.minusDays(180))));
-            put(7, new Tuple2<>(DateUtil.get1970TimeStamp(), Timestamp.valueOf(time.minusDays(365))));
+            put(7, new Tuple2<>(DateUtils.get1970TimeStamp(), Timestamp.valueOf(time.minusDays(365))));
         }};
     }
 
@@ -427,7 +428,7 @@ public class UserSummaryTaskService extends ShopBaseService {
      * @param end   the end
      * @return the rfm data
      */
-    public Map<Integer, Record3<Integer, Integer, BigDecimal>> getRFMData(Timestamp start, Timestamp end) {
+    public Map<Integer, Record3<Integer, Integer, BigDecimal>> getRrmData(Timestamp start, Timestamp end) {
         return db().select(ORDER_I.USER_ID, DSL.count(ORDER_I.USER_ID), DSL.sum(ORDER_I.MONEY_PAID).add(DSL.sum(ORDER_I.USE_ACCOUNT)).add(DSL.sum(ORDER_I.MEMBER_CARD_BALANCE)))
             .from(ORDER_I)
             .where(STATUS_CONDITION).and(ORDER_SN_CONDITION)

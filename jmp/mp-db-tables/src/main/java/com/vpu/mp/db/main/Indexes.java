@@ -28,14 +28,33 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
-    public static final Index ORDER_INFO_NEW_MAIN_ORDER_SN = Indexes0.ORDER_INFO_NEW_MAIN_ORDER_SN;
-    public static final Index ORDER_INFO_NEW_ORDER_SN = Indexes0.ORDER_INFO_NEW_ORDER_SN;
-    public static final Index ORDER_INFO_NEW_ORDER_STATUS = Indexes0.ORDER_INFO_NEW_ORDER_STATUS;
-    public static final Index ORDER_INFO_NEW_PRIMARY = Indexes0.ORDER_INFO_NEW_PRIMARY;
-    public static final Index ORDER_INFO_NEW_SHIPPING_ID = Indexes0.ORDER_INFO_NEW_SHIPPING_ID;
-    public static final Index ORDER_INFO_NEW_SHOP_ID = Indexes0.ORDER_INFO_NEW_SHOP_ID;
-    public static final Index ORDER_INFO_NEW_USER_ID = Indexes0.ORDER_INFO_NEW_USER_ID;
-    public static final Index ORDER_INFO_NEW_USER_OPENID = Indexes0.ORDER_INFO_NEW_USER_OPENID;
+    public static final Index RETURN_ORDER_BAK_ORDER_SN = Indexes0.RETURN_ORDER_BAK_ORDER_SN;
+    public static final Index RETURN_ORDER_BAK_PRIMARY = Indexes0.RETURN_ORDER_BAK_PRIMARY;
+    public static final Index RETURN_ORDER_GOODS_BAK_GOODS_ID = Indexes0.RETURN_ORDER_GOODS_BAK_GOODS_ID;
+    public static final Index RETURN_ORDER_GOODS_BAK_ORDER_SN = Indexes0.RETURN_ORDER_GOODS_BAK_ORDER_SN;
+    public static final Index RETURN_ORDER_GOODS_BAK_PRIMARY = Indexes0.RETURN_ORDER_GOODS_BAK_PRIMARY;
+    public static final Index RETURN_ORDER_GOODS_BAK_REC_ID = Indexes0.RETURN_ORDER_GOODS_BAK_REC_ID;
+    public static final Index RETURN_ORDER_GOODS_BAK_RET_ID = Indexes0.RETURN_ORDER_GOODS_BAK_RET_ID;
+    public static final Index RETURN_ORDER_GOODS_BAK_SHOP_ID = Indexes0.RETURN_ORDER_GOODS_BAK_SHOP_ID;
+
+
+    public static final Index ORDER_INFO_BAK_MAIN_ORDER_SN = Indexes0.ORDER_INFO_BAK_MAIN_ORDER_SN;
+    public static final Index ORDER_INFO_BAK_ORDER_SN = Indexes0.ORDER_INFO_BAK_ORDER_SN;
+    public static final Index ORDER_INFO_BAK_ORDER_STATUS = Indexes0.ORDER_INFO_BAK_ORDER_STATUS;
+    public static final Index ORDER_INFO_BAK_PRIMARY = Indexes0.ORDER_INFO_BAK_PRIMARY;
+    public static final Index ORDER_INFO_BAK_SHIPPING_ID = Indexes0.ORDER_INFO_BAK_SHIPPING_ID;
+    public static final Index ORDER_INFO_BAK_SHOP_ID = Indexes0.ORDER_INFO_BAK_SHOP_ID;
+    public static final Index ORDER_INFO_BAK_USER_ID = Indexes0.ORDER_INFO_BAK_USER_ID;
+    public static final Index ORDER_INFO_BAK_USER_OPENID = Indexes0.ORDER_INFO_BAK_USER_OPENID;
+
+    public static final Index ORDER_GOODS_BAK_GOODS_ID = Indexes0.ORDER_GOODS_BAK_GOODS_ID;
+    public static final Index ORDER_GOODS_BAK_ORDER_ID = Indexes0.ORDER_GOODS_BAK_ORDER_ID;
+    public static final Index ORDER_GOODS_BAK_ORDER_SN = Indexes0.ORDER_GOODS_BAK_ORDER_SN;
+    public static final Index ORDER_GOODS_BAK_PRIMARY = Indexes0.ORDER_GOODS_BAK_PRIMARY;
+    public static final Index ORDER_GOODS_BAK_REC_ID = Indexes0.ORDER_GOODS_BAK_REC_ID;
+    public static final Index ORDER_GOODS_BAK_SHOP_ID = Indexes0.ORDER_GOODS_BAK_SHOP_ID;
+
+
 
 
     public static final Index CRON_DEFINE_CRON_KEY = Indexes0.CRON_DEFINE_CRON_KEY;
@@ -141,19 +160,7 @@ public class Indexes {
     public static final Index MP_VISIT_PAGE_PAGE_PATH = Indexes0.MP_VISIT_PAGE_PAGE_PATH;
     public static final Index MP_VISIT_PAGE_PAGE_VISIT_PV = Indexes0.MP_VISIT_PAGE_PAGE_VISIT_PV;
     public static final Index MP_VISIT_PAGE_REF_DATE = Indexes0.MP_VISIT_PAGE_REF_DATE;
-    public static final Index ORDER_GOODS_GOODS_ID = Indexes0.ORDER_GOODS_GOODS_ID;
-    public static final Index ORDER_GOODS_ORDER_ID = Indexes0.ORDER_GOODS_ORDER_ID;
-    public static final Index ORDER_GOODS_ORDER_SN = Indexes0.ORDER_GOODS_ORDER_SN;
-    public static final Index ORDER_GOODS_PRIMARY = Indexes0.ORDER_GOODS_PRIMARY;
-    public static final Index ORDER_GOODS_SHOP_ID = Indexes0.ORDER_GOODS_SHOP_ID;
-    public static final Index ORDER_INFO_MAIN_ORDER_SN = Indexes0.ORDER_INFO_MAIN_ORDER_SN;
-    public static final Index ORDER_INFO_ORDER_SN = Indexes0.ORDER_INFO_ORDER_SN;
-    public static final Index ORDER_INFO_ORDER_STATUS = Indexes0.ORDER_INFO_ORDER_STATUS;
-    public static final Index ORDER_INFO_PRIMARY = Indexes0.ORDER_INFO_PRIMARY;
-    public static final Index ORDER_INFO_SHIPPING_ID = Indexes0.ORDER_INFO_SHIPPING_ID;
-    public static final Index ORDER_INFO_SHOP_ID = Indexes0.ORDER_INFO_SHOP_ID;
-    public static final Index ORDER_INFO_USER_ID = Indexes0.ORDER_INFO_USER_ID;
-    public static final Index ORDER_INFO_USER_OPENID = Indexes0.ORDER_INFO_USER_OPENID;
+
     public static final Index QF_IMG_PRIMARY = Indexes0.QF_IMG_PRIMARY;
     public static final Index QF_IMG_QUESTION_FEEDBACK_ID = Indexes0.QF_IMG_QUESTION_FEEDBACK_ID;
     public static final Index SHOP_MOBILE = Indexes0.SHOP_MOBILE;
@@ -227,19 +234,43 @@ public class Indexes {
     public static final Index MARKET_CALENDAR_PRIMARY = Indexes0.MARKET_CALENDAR_PRIMARY;
     public static final Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Indexes0.MARKET_CALENDAR_ACTIVITY_CALENDAR_ID;
     public static final Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Indexes0.MARKET_CALENDAR_ACTIVITY_PRIMARY;
+    public static final Index EXTERNAL_REQUEST_HISTORY_PRIMARY = Indexes0.EXTERNAL_REQUEST_HISTORY_PRIMARY;
+    public static final Index INQUIRY_ORDER_PRIMARY = Indexes0.INQUIRY_ORDER_PRIMARY;
+    public static final Index INQUIRY_ORDER_ORDER_SN = Indexes0.INQUIRY_ORDER_ORDER_SN;
+    public static final Index INQUIRY_ORDER_SHOP_ID = Indexes0.INQUIRY_ORDER_SHOP_ID;
+    public static final Index SHOP_SMS_CONFIG_PRIMARY = Indexes0.SHOP_SMS_CONFIG_PRIMARY;
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-        public static Index ORDER_INFO_NEW_MAIN_ORDER_SN = Internal.createIndex("main_order_sn", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.MAIN_ORDER_SN }, false);
-        public static Index ORDER_INFO_NEW_ORDER_SN = Internal.createIndex("order_sn", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.ORDER_SN }, true);
-        public static Index ORDER_INFO_NEW_ORDER_STATUS = Internal.createIndex("order_status", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.ORDER_STATUS }, false);
-        public static Index ORDER_INFO_NEW_PRIMARY = Internal.createIndex("PRIMARY", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.ORDER_ID }, true);
-        public static Index ORDER_INFO_NEW_SHIPPING_ID = Internal.createIndex("shipping_id", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.SHIPPING_ID }, false);
-        public static Index ORDER_INFO_NEW_SHOP_ID = Internal.createIndex("shop_id", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.SHOP_ID }, false);
-        public static Index ORDER_INFO_NEW_USER_ID = Internal.createIndex("user_id", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.USER_ID }, false);
-        public static Index ORDER_INFO_NEW_USER_OPENID = Internal.createIndex("user_openid", OrderInfoNew.ORDER_INFO_NEW, new OrderField[] { OrderInfoNew.ORDER_INFO_NEW.USER_OPENID }, false);
+
+        public static Index RETURN_ORDER_BAK_ORDER_SN = Internal.createIndex("order_sn", ReturnOrderBak.RETURN_ORDER_BAK, new OrderField[] { ReturnOrderBak.RETURN_ORDER_BAK.ORDER_SN }, false);
+        public static Index RETURN_ORDER_BAK_PRIMARY = Internal.createIndex("PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK, new OrderField[] { ReturnOrderBak.RETURN_ORDER_BAK.RET_ID }, true);
+        public static Index RETURN_ORDER_GOODS_BAK_GOODS_ID = Internal.createIndex("goods_id", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.GOODS_ID }, false);
+        public static Index RETURN_ORDER_GOODS_BAK_ORDER_SN = Internal.createIndex("order_sn", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ORDER_SN }, false);
+        public static Index RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createIndex("PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID }, true);
+        public static Index RETURN_ORDER_GOODS_BAK_REC_ID = Internal.createIndex("rec_id", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.REC_ID }, false);
+        public static Index RETURN_ORDER_GOODS_BAK_RET_ID = Internal.createIndex("ret_id", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.RET_ID }, false);
+        public static Index RETURN_ORDER_GOODS_BAK_SHOP_ID = Internal.createIndex("shop_id", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.SHOP_ID }, false);
+
+        public static Index ORDER_INFO_BAK_MAIN_ORDER_SN = Internal.createIndex("main_order_sn", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.MAIN_ORDER_SN }, false);
+        public static Index ORDER_INFO_BAK_ORDER_SN = Internal.createIndex("order_sn", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.ORDER_SN }, true);
+        public static Index ORDER_INFO_BAK_ORDER_STATUS = Internal.createIndex("order_status", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.ORDER_STATUS }, false);
+        public static Index ORDER_INFO_BAK_PRIMARY = Internal.createIndex("PRIMARY", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.ID }, true);
+        public static Index ORDER_INFO_BAK_SHIPPING_ID = Internal.createIndex("shipping_id", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.SHIPPING_ID }, false);
+        public static Index ORDER_INFO_BAK_SHOP_ID = Internal.createIndex("shop_id", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.SHOP_ID }, false);
+        public static Index ORDER_INFO_BAK_USER_ID = Internal.createIndex("user_id", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.USER_ID }, false);
+        public static Index ORDER_INFO_BAK_USER_OPENID = Internal.createIndex("user_openid", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.USER_OPENID }, false);
+
+        public static Index ORDER_GOODS_BAK_GOODS_ID = Internal.createIndex("goods_id", OrderGoodsBak.ORDER_GOODS_BAK, new OrderField[] { OrderGoodsBak.ORDER_GOODS_BAK.GOODS_ID }, false);
+        public static Index ORDER_GOODS_BAK_ORDER_ID = Internal.createIndex("order_id", OrderGoodsBak.ORDER_GOODS_BAK, new OrderField[] { OrderGoodsBak.ORDER_GOODS_BAK.ORDER_ID }, false);
+        public static Index ORDER_GOODS_BAK_ORDER_SN = Internal.createIndex("order_sn", OrderGoodsBak.ORDER_GOODS_BAK, new OrderField[] { OrderGoodsBak.ORDER_GOODS_BAK.ORDER_SN }, false);
+        public static Index ORDER_GOODS_BAK_PRIMARY = Internal.createIndex("PRIMARY", OrderGoodsBak.ORDER_GOODS_BAK, new OrderField[] { OrderGoodsBak.ORDER_GOODS_BAK.ID }, true);
+        public static Index ORDER_GOODS_BAK_REC_ID = Internal.createIndex("rec_id", OrderGoodsBak.ORDER_GOODS_BAK, new OrderField[] { OrderGoodsBak.ORDER_GOODS_BAK.REC_ID }, false);
+        public static Index ORDER_GOODS_BAK_SHOP_ID = Internal.createIndex("shop_id", OrderGoodsBak.ORDER_GOODS_BAK, new OrderField[] { OrderGoodsBak.ORDER_GOODS_BAK.SHOP_ID }, false);
+
 
         public static Index CRON_DEFINE_CRON_KEY = Internal.createIndex("cron_key", CronDefine.CRON_DEFINE, new OrderField[]{CronDefine.CRON_DEFINE.CLASS_NAME}, true);
         public static Index CRON_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", CronDefine.CRON_DEFINE, new OrderField[]{CronDefine.CRON_DEFINE.ID}, true);
@@ -343,19 +374,6 @@ public class Indexes {
         public static Index MP_VISIT_PAGE_PAGE_PATH = Internal.createIndex("page_path", MpVisitPage.MP_VISIT_PAGE, new OrderField[] { MpVisitPage.MP_VISIT_PAGE.PAGE_PATH }, false);
         public static Index MP_VISIT_PAGE_PAGE_VISIT_PV = Internal.createIndex("page_visit_pv", MpVisitPage.MP_VISIT_PAGE, new OrderField[] { MpVisitPage.MP_VISIT_PAGE.PAGE_VISIT_PV }, false);
         public static Index MP_VISIT_PAGE_REF_DATE = Internal.createIndex("ref_date", MpVisitPage.MP_VISIT_PAGE, new OrderField[] { MpVisitPage.MP_VISIT_PAGE.REF_DATE }, false);
-        public static Index ORDER_GOODS_GOODS_ID = Internal.createIndex("goods_id", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.GOODS_ID }, false);
-        public static Index ORDER_GOODS_ORDER_ID = Internal.createIndex("order_id", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.ORDER_ID }, false);
-        public static Index ORDER_GOODS_ORDER_SN = Internal.createIndex("order_sn", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.ORDER_SN }, false);
-        public static Index ORDER_GOODS_PRIMARY = Internal.createIndex("PRIMARY", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.ID }, true);
-        public static Index ORDER_GOODS_SHOP_ID = Internal.createIndex("shop_id", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.SHOP_ID }, false);
-        public static Index ORDER_INFO_MAIN_ORDER_SN = Internal.createIndex("main_order_sn", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.MAIN_ORDER_SN }, false);
-        public static Index ORDER_INFO_ORDER_SN = Internal.createIndex("order_sn", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.ORDER_SN }, true);
-        public static Index ORDER_INFO_ORDER_STATUS = Internal.createIndex("order_status", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.ORDER_STATUS }, false);
-        public static Index ORDER_INFO_PRIMARY = Internal.createIndex("PRIMARY", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.ID }, true);
-        public static Index ORDER_INFO_SHIPPING_ID = Internal.createIndex("shipping_id", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.SHIPPING_ID }, false);
-        public static Index ORDER_INFO_SHOP_ID = Internal.createIndex("shop_id", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.SHOP_ID }, false);
-        public static Index ORDER_INFO_USER_ID = Internal.createIndex("user_id", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.USER_ID }, false);
-        public static Index ORDER_INFO_USER_OPENID = Internal.createIndex("user_openid", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.USER_OPENID }, false);
         public static Index QF_IMG_PRIMARY = Internal.createIndex("PRIMARY", QfImg.QF_IMG, new OrderField[] { QfImg.QF_IMG.IMG_ID }, true);
         public static Index QF_IMG_QUESTION_FEEDBACK_ID = Internal.createIndex("question_feedback_id", QfImg.QF_IMG, new OrderField[] { QfImg.QF_IMG.QUESTION_FEEDBACK_ID }, false);
         public static Index SHOP_MOBILE = Internal.createIndex("mobile", Shop.SHOP, new OrderField[] { Shop.SHOP.MOBILE }, false);
@@ -430,5 +448,10 @@ public class Indexes {
         public static Index MARKET_CALENDAR_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendar.MARKET_CALENDAR, new OrderField[] { MarketCalendar.MARKET_CALENDAR.ID }, true);
         public static Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Internal.createIndex("calendar_id", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.CALENDAR_ID }, false);
         public static Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID }, true);
+        public static Index EXTERNAL_REQUEST_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY, new OrderField[] { ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY.ID }, true);
+        public static Index INQUIRY_ORDER_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.ID }, true);
+        public static Index INQUIRY_ORDER_ORDER_SN = Internal.createIndex("order_sn", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.ORDER_SN }, false);
+        public static Index INQUIRY_ORDER_SHOP_ID = Internal.createIndex("shop_id", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.SHOP_ID }, false);
+        public static Index SHOP_SMS_CONFIG_PRIMARY = Internal.createIndex("PRIMARY", ShopSmsConfig.SHOP_SMS_CONFIG, new OrderField[] { ShopSmsConfig.SHOP_SMS_CONFIG.ID }, true);
     }
 }

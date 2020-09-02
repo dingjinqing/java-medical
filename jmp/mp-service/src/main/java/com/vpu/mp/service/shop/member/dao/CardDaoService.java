@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import com.vpu.mp.service.foundation.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +47,13 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.MemberCard;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.UserCard;
@@ -57,10 +62,6 @@ import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
@@ -124,16 +125,16 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 构建查询参数
-	 * 
+	 *
 	 * @param param
 	 * @param select
 	 */
 	private void buildOptions(CardHolderParam param, SelectJoinStep<?> select) {
-		/** - 会员id */
+        /* - 会员id */
 		if (param.getUserId() != null) {
 			select.where(USER_CARD.USER_ID.eq(param.getUserId()));
 		}
-		/** - 昵称 */
+        /* - 昵称 */
 		if (!StringUtils.isBlank(param.getUsername())) {
 			String likeValue = likeValue(param.getUsername().trim());
 			select.where(USER.USERNAME.like(likeValue));
@@ -149,26 +150,10 @@ public class CardDaoService extends ShopBaseService {
 			select.where(USER_CARD.CARD_NO.like(likeValue));
 		}
 		/** - 卡状态 */
-		if (param.getFlag() != null && !NumberUtils.BYTE_MINUS_ONE.equals(param.getFlag())) {
-			/** - 状态为过期 */
-			Condition condition = DSL.noCondition();
-			if (param.getFlag().equals(UCARD_FG_EXPIRED)) {
-				
-				condition = condition.and(USER_CARD.EXPIRE_TIME.le(DateUtil.getLocalDateTime()));
-				select.where(condition);
-			} else if (param.getFlag().equals(UCARD_FG_USING)) {
-				condition = condition.and(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
-									.and(USER_CARD.FLAG.eq(param.getFlag()));
-				select.where(condition);
-			}else if(param.getFlag().equals(UCARD_FG_STOP)) {
-				condition = condition.and(USER_CARD.FLAG.eq(param.getFlag()));
-				select.where(condition);
-			}else {
-				//	转赠中或已转赠
-				select.where(USER_CARD.FLAG.eq(param.getFlag()));
-			}
-		}
-		/** - 领卡时间 开始范围 */
+        buildCardFlagOption(param, select);
+
+
+        /** - 领卡时间 开始范围 */
 		if (param.getFirstDateTime() != null) {
 			select.where(USER_CARD.CREATE_TIME.ge(param.getFirstDateTime()));
 		}
@@ -218,7 +203,35 @@ public class CardDaoService extends ShopBaseService {
 
 	}
 
-	/**
+    /**
+     * 卡状态选项
+     *
+     * @param param
+     * @param select
+     */
+    private void buildCardFlagOption(CardHolderParam param, SelectJoinStep<?> select) {
+        if (param.getFlag() != null && !NumberUtils.BYTE_MINUS_ONE.equals(param.getFlag())) {
+            /** - 状态为过期 */
+            Condition condition = DSL.noCondition();
+            if (param.getFlag().equals(UCARD_FG_EXPIRED)) {
+
+                condition = condition.and(USER_CARD.EXPIRE_TIME.le(DateUtils.getLocalDateTime()));
+                select.where(condition);
+            } else if (param.getFlag().equals(UCARD_FG_USING)) {
+                condition = condition.and(USER_CARD.EXPIRE_TIME.ge(DateUtils.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
+                                    .and(USER_CARD.FLAG.eq(param.getFlag()));
+                select.where(condition);
+            }else if(param.getFlag().equals(UCARD_FG_STOP)) {
+                condition = condition.and(USER_CARD.FLAG.eq(param.getFlag()));
+                select.where(condition);
+            }else {
+                //	转赠中或已转赠
+                select.where(USER_CARD.FLAG.eq(param.getFlag()));
+            }
+        }
+    }
+
+    /**
 	 * 分页查询会员卡领取详情
 	 */
 	public PageResult<CodeReceiveVo> getReceiveListSql(CodeReceiveParam param) {
@@ -288,7 +301,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 会员卡领取详情构建多条件查询参数
-	 * 
+	 *
 	 * @param param
 	 * @param select
 	 */
@@ -337,7 +350,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 设置del_flag为删除状态
-	 * 
+	 *
 	 * @param id
 	 */
 	public Integer deleteCardBatchSql(Integer id) {
@@ -347,7 +360,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 会员卡充值明细
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -370,7 +383,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 充值明细多条件构建
-	 * 
+	 *
 	 * @param param
 	 * @param select
 	 */
@@ -379,12 +392,12 @@ public class CardDaoService extends ShopBaseService {
 		if (param.getCardId() != null) {
 			select.where(CHARGE_MONEY.CARD_ID.eq(param.getCardId()));
 		}
-		
+
 		// 会员Id
 		if(param.getUserId() != null) {
 			select.where(CHARGE_MONEY.USER_ID.eq(param.getUserId()));
 		}
-		
+
 		// 会员卡类型
 		if (param.getCardType() != null) {
 			select.where(CHARGE_MONEY.TYPE.eq(param.getCardType()));
@@ -414,7 +427,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 	会员卡消费明细
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -436,7 +449,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 消费明细多条件查询构建
-	 * 
+	 *
 	 * @param param
 	 * @param select
 	 */
@@ -475,7 +488,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 更新审核会员卡表
-	 * 
+	 *
 	 * @param record
 	 */
 	public int updateCardExamine(CardExamineRecord record) {
@@ -489,7 +502,7 @@ public class CardDaoService extends ShopBaseService {
 	}
 	/**
 	 * 更新user_card 激活时间
-	 * 
+	 *
 	 * @param cardNo
 	 * @param now
 	 */
@@ -499,7 +512,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 获取会员卡订单信息
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -517,7 +530,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 会员卡查询获取参数s
-	 * 
+	 *
 	 * @param select
 	 * @param param
 	 */
@@ -557,7 +570,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 插入card_batch 批次记录
-	 * 
+	 *
 	 * @param param
 	 * @return 批次id
 	 */
@@ -580,7 +593,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 生成分组ID
-	 * 
+	 *
 	 * @param batchId
 	 */
 	public Integer generateGroupId(Integer batchId) {
@@ -595,7 +608,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * code是否存在，是返回true，否返回false
-	 * 
+	 *
 	 * @param code
 	 * @return
 	 */
@@ -606,10 +619,10 @@ public class CardDaoService extends ShopBaseService {
 
 		return r != null;
 	}
-	
+
 	/**
 	 * 限制的batchId里code是否存在，是返回true，否返回false
-	 * 
+	 *
 	 * @param code
 	 * @return
 	 */
@@ -617,14 +630,14 @@ public class CardDaoService extends ShopBaseService {
 		if(batchIds!=null&&batchIds.length>0) {
 			CardReceiveCodeRecord r = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.CODE.eq(code))
 					.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO)).and(CARD_RECEIVE_CODE.ERROR_MSG.isNull().and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds))).fetchAny();
-			return r != null;			
+			return r != null;
 		}
 		return false;
 
 	}
 	/**
 	 * 限制的batchId里code是否存在，是返回true，否返回false
-	 * 
+	 *
 	 * @param code
 	 * @return
 	 */
@@ -632,14 +645,14 @@ public class CardDaoService extends ShopBaseService {
 		if(batchIds!=null&&batchIds.length>0) {
 			CardReceiveCodeRecord r = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.CARD_NO.eq(code))
 					.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO)).and(CARD_RECEIVE_CODE.ERROR_MSG.isNull().and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds))).fetchAny();
-			return r != null;			
+			return r != null;
 		}
 		return false;
 
 	}
 	/**
 	 * 将领取批次的生成码存入数据库
-	 * 
+	 *
 	 * @param param
 	 * @param codeList
 	 */
@@ -656,12 +669,12 @@ public class CardDaoService extends ShopBaseService {
 		logger().info("成功生成领取码" + res + "条");
 
 	}
-	
+
 	/**
 	 * 导入文件的插入
 	 * @param param
 	 * @param codeList
-	 * @return 
+	 * @return
 	 */
 	public int insertCardReceiveCodeByCheck(CardBatchParam param, List<String> codeList) {
 		InsertValuesStep4<CardReceiveCodeRecord, Integer, Integer, String, String> insert = db().insertInto(CARD_RECEIVE_CODE)
@@ -695,11 +708,11 @@ public class CardDaoService extends ShopBaseService {
 		logger().info("成功生成领取码" + res + "条");
 		return res;
 	}
-	
+
 
 	/**
 	 * 卡号存在 是 true, 否 false
-	 * 
+	 *
 	 * @param cardNo
 	 * @return
 	 */
@@ -711,7 +724,7 @@ public class CardDaoService extends ShopBaseService {
 
 	/**
 	 * 插入数据
-	 * 
+	 *
 	 * @param param
 	 * @param cardNoList
 	 * @param pwdList
@@ -809,7 +822,7 @@ public class CardDaoService extends ShopBaseService {
         }
 
 		return mCard;
-		
+
 	}
 
 	public MemberCardRecord getInfoByCardId(Integer cardId) {
@@ -825,8 +838,8 @@ public class CardDaoService extends ShopBaseService {
 				.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING)).orderBy(MEMBER_CARD.GRADE.asc())
 				.fetchInto(MemberCardRecord.class);
 	}
-	
-	
+
+
 	/**
 	 * 将数据放入到数据库
 	 */
@@ -850,7 +863,7 @@ public class CardDaoService extends ShopBaseService {
 				 .where(CARD_BATCH.ID.eq(batchId))
 				 .fetchInto(CardBatchDetailVo.class);
 	}
-	
+
 	public List<CardHolderExcelVo> getAllCardHolderAll(CardHolderParam param) {
 		User invitedUser = USER.as("a");
         Field<Timestamp> cardExamineCreateTime = CARD_EXAMINE.CREATE_TIME.as("card_examine_create_time");
@@ -882,7 +895,7 @@ public class CardDaoService extends ShopBaseService {
 		}
 		return list;
 	}
-	
+
 	public List<CodeReceiveVo> getBatchGroupList(Integer batchId) {
 		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.BATCH_ID.eq(batchId).and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO))).fetch();
 		List<CodeReceiveVo> list = new ArrayList<CodeReceiveVo>();
@@ -891,7 +904,7 @@ public class CardDaoService extends ShopBaseService {
 		}
 		return list;
 	}
-	
+
 	public Result<CardReceiveCodeRecord> getBatchGroupListByMsg(Integer batchId,Boolean success) {
 		SelectConditionStep<CardReceiveCodeRecord> where = db().selectFrom(CARD_RECEIVE_CODE).where(CARD_RECEIVE_CODE.BATCH_ID.eq(batchId).and(CARD_RECEIVE_CODE.DEL_FLAG.eq(MCARD_DF_NO)));
 		if(success) {
@@ -902,7 +915,7 @@ public class CardDaoService extends ShopBaseService {
 		Result<CardReceiveCodeRecord> fetch = where.fetch();
 		return fetch;
 	}
-	
+
 	public CardBatchRecord  getBatch(Integer batchId) {
 		return db().selectFrom(CARD_BATCH).where(CARD_BATCH.ID.eq(batchId)).fetchAny();
 	}
@@ -923,7 +936,7 @@ public class CardDaoService extends ShopBaseService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * code是否已经被定义，重复的返回true
 	 * @param code
@@ -940,14 +953,14 @@ public class CardDaoService extends ShopBaseService {
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * 	根据会员卡ID获取会员卡的名称
 	 * @return cardId和cardName的对象List
 	 */
 	public List<CardBasicVo> getCardBasicInfoById(Integer ...ids){
-		
+
 		return db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME)
 			.from(MEMBER_CARD)
 			.where(MEMBER_CARD.ID.in(ids))
@@ -974,7 +987,7 @@ public class CardDaoService extends ShopBaseService {
 				MemberCardRecord.class);
 	}
 
-	
+
 	/**
 	 * 获取卡号-会员卡详情
 	 * @param nos
@@ -986,9 +999,9 @@ public class CardDaoService extends ShopBaseService {
 			.innerJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
 			.where(USER_CARD.CARD_NO.in(nos))
 			.fetchMap(USER_CARD.CARD_NO, MemberCardRecord.class);
-			
+
 	}
-	
+
 	public CardFullDetail getCardDetailByNo(String cardNo) {
 		logger().info("根据卡号获取卡的详细信息");
 		MemberCard memberCard = MEMBER_CARD.as("memberCardd");
@@ -1000,7 +1013,7 @@ public class CardDaoService extends ShopBaseService {
 			.fetchSingle(recordMapToCardFullDetail(userCard,memberCard));
 		return res;
 	}
-	
+
 
 	private RecordMapper<? super Record, CardFullDetail> recordMapToCardFullDetail(UserCard uCard,MemberCard mCard) {
 		return record->{

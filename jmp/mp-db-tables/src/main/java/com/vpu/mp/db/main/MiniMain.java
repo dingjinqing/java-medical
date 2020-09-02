@@ -35,7 +35,26 @@ public class MiniMain extends SchemaImpl {
      */
     public static final MiniMain MINI_MAIN = new MiniMain();
 
-    public final OrderInfoNew ORDER_INFO_NEW = com.vpu.mp.db.main.tables.OrderInfoNew.ORDER_INFO_NEW;
+    /**
+     * 退回订单表
+     */
+    public final ReturnOrderBak RETURN_ORDER_BAK = com.vpu.mp.db.main.tables.ReturnOrderBak.RETURN_ORDER_BAK;
+
+    /**
+     * 退货商品表
+     */
+    public final ReturnOrderGoodsBak RETURN_ORDER_GOODS_BAK = com.vpu.mp.db.main.tables.ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK;
+
+    /**
+     * 订单商品表  b2c_order_goods
+     */
+    public final OrderGoodsBak ORDER_GOODS_BAK = com.vpu.mp.db.main.tables.OrderGoodsBak.ORDER_GOODS_BAK;
+
+    /**
+     * 订单
+     */
+    public final OrderInfoBak ORDER_INFO_BAK = com.vpu.mp.db.main.tables.OrderInfoBak.ORDER_INFO_BAK;
+
 
     /**
      * 定时任务定义表
@@ -282,15 +301,6 @@ public class MiniMain extends SchemaImpl {
      */
     public final MpWeeklyVisit MP_WEEKLY_VISIT = com.vpu.mp.db.main.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 
-    /**
-     * The table <code>mini_main.b2c_order_goods</code>.
-     */
-    public final OrderGoods ORDER_GOODS = com.vpu.mp.db.main.tables.OrderGoods.ORDER_GOODS;
-
-    /**
-     * The table <code>mini_main.b2c_order_info</code>.
-     */
-    public final OrderInfo ORDER_INFO = com.vpu.mp.db.main.tables.OrderInfo.ORDER_INFO;
 
     /**
      * The table <code>mini_main.b2c_qf_img</code>.
@@ -531,8 +541,6 @@ public class MiniMain extends SchemaImpl {
             MpVisitPage.MP_VISIT_PAGE,
             MpWeeklyRetain.MP_WEEKLY_RETAIN,
             MpWeeklyVisit.MP_WEEKLY_VISIT,
-            OrderGoods.ORDER_GOODS,
-            OrderInfo.ORDER_INFO,
             QfImg.QF_IMG,
             Shop.SHOP,
             ShopAccount.SHOP_ACCOUNT,
@@ -570,6 +578,7 @@ public class MiniMain extends SchemaImpl {
             TaskJobMain.TASK_JOB_MAIN,
             CronDefine.CRON_DEFINE,
             CronRecord.CRON_RECORD,
-            OrderInfoNew.ORDER_INFO_NEW);
+            ReturnOrderBak.RETURN_ORDER_BAK,
+            ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK);
     }
 }

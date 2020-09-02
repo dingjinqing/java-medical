@@ -3,10 +3,10 @@ package com.vpu.mp.service.foundation.jedis.data;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
@@ -23,6 +23,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author luguangyao
+ */
 @Component
 public class SortDataHelper extends ShopBaseService implements DataHelperInterface<GoodsSortCacheInfo> {
 

@@ -5,7 +5,6 @@ import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +14,11 @@ import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.StoreAccountRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountEditParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
@@ -32,9 +31,9 @@ import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListPage;
  */
 @Service
 public class StoreAccountService extends MainBaseService {
-	private static final Byte ISDEL = 1;
-	private static final Byte NODEL = 0;
-	private static final String dot = ",";
+	private static final Byte IS_DEL = 1;
+	private static final Byte NO_DEL = 0;
+	private static final String DOT = ",";
 
 	/**
 	 * 获取用户列表
@@ -47,7 +46,7 @@ public class StoreAccountService extends MainBaseService {
 	 */
 	public PageResult<StoreAccountVo> accountList(StoreAuthListPage param, Integer sysId, Integer shopId) {
 		SelectConditionStep<StoreAccountRecord> where = db().selectFrom(STORE_ACCOUNT).where(STORE_ACCOUNT.DEL_FLAG
-				.eq(NODEL).and(STORE_ACCOUNT.SYS_ID.eq(sysId).and(STORE_ACCOUNT.SHOP_ID.eq(shopId))));
+				.eq(NO_DEL).and(STORE_ACCOUNT.SYS_ID.eq(sysId).and(STORE_ACCOUNT.SHOP_ID.eq(shopId))));
 		if (!StringUtils.isEmpty(param.getAccountName())) {
 			where.and(STORE_ACCOUNT.ACCOUNT_NAME.like(likeValue(param.getAccountName())));
 		}
@@ -99,7 +98,7 @@ public class StoreAccountService extends MainBaseService {
 	 * @return
 	 */
 	public int delStoreAccount(Integer accountId) {
-		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.DEL_FLAG, ISDEL)
+		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.DEL_FLAG, IS_DEL)
 				.where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
 	}
 
@@ -118,8 +117,8 @@ public class StoreAccountService extends MainBaseService {
 	protected List<Integer> changeToArray(String stores) {
 		List<Integer> list = new ArrayList<Integer>();
 		if (stores != null) {
-			if (stores.contains(dot)) {
-				String[] split = stores.split(dot);
+			if (stores.contains(DOT)) {
+				String[] split = stores.split(DOT);
 				for (String string : split) {
 					list.add(Integer.valueOf(string));						
 				}
@@ -185,7 +184,7 @@ public class StoreAccountService extends MainBaseService {
 
 	public StoreAccountRecord findInfo(String accountName, String mobile, Integer accountId) {
 		SelectConditionStep<StoreAccountRecord> where = db().selectFrom(STORE_ACCOUNT)
-				.where(STORE_ACCOUNT.ACCOUNT_NAME.eq(accountName).or(STORE_ACCOUNT.MOBILE.eq(mobile)).and(STORE_ACCOUNT.DEL_FLAG.eq(NODEL)));
+				.where(STORE_ACCOUNT.ACCOUNT_NAME.eq(accountName).or(STORE_ACCOUNT.MOBILE.eq(mobile)).and(STORE_ACCOUNT.DEL_FLAG.eq(NO_DEL)));
 		if (accountId != null) {
 			where.and(STORE_ACCOUNT.ACCOUNT_ID.ne(accountId));
 		}

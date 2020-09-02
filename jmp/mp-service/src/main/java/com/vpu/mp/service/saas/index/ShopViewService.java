@@ -1,8 +1,8 @@
 package com.vpu.mp.service.saas.index;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.saas.index.cache.ThreadLocalCache;
 import com.vpu.mp.service.saas.index.param.ShopViewParam;
@@ -16,19 +16,17 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.OrderInfoNew.ORDER_INFO_NEW;
+import static com.vpu.mp.db.main.tables.OrderInfoBak.ORDER_INFO_BAK;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.User.USER;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
+
 /**
  * @author luguangyao
  */
@@ -107,12 +105,12 @@ public class ShopViewService extends MainBaseService {
      * @return 支付代号，微信支付金额，账户支付金额，会员卡支付，积分支付金额
      */
     private OrderMoneyInfo  getOrderMoneyStatistics(){
-        return db().select(ORDER_INFO_NEW.PAY_CODE,DSL.sum(ORDER_INFO_NEW.MONEY_PAID).as("wxPayed"),
-                DSL.sum(ORDER_INFO_NEW.USE_ACCOUNT).as("balancePayed"),
-                DSL.sum(ORDER_INFO_NEW.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
-                DSL.sum(ORDER_INFO_NEW.SCORE_DISCOUNT).as("integralPayed")).
-            from(ORDER_INFO_NEW).where(ORDER_INFO_NEW.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
-            groupBy(ORDER_INFO_NEW.PAY_CODE).
+        return db().select(ORDER_INFO_BAK.PAY_CODE,DSL.sum(ORDER_INFO_BAK.MONEY_PAID).as("wxPayed"),
+                DSL.sum(ORDER_INFO_BAK.USE_ACCOUNT).as("balancePayed"),
+                DSL.sum(ORDER_INFO_BAK.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
+                DSL.sum(ORDER_INFO_BAK.SCORE_DISCOUNT).as("integralPayed")).
+            from(ORDER_INFO_BAK).where(ORDER_INFO_BAK.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
+            groupBy(ORDER_INFO_BAK.PAY_CODE).
             fetchAnyInto(OrderMoneyInfo.class);
 
     }
@@ -122,8 +120,8 @@ public class ShopViewService extends MainBaseService {
      * @return 统计数量
      */
     private Integer getAllOrderNum(){
-        return db().selectCount().from(ORDER_INFO_NEW).
-            where(ORDER_INFO_NEW.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
+        return db().selectCount().from(ORDER_INFO_BAK).
+            where(ORDER_INFO_BAK.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
             fetchOne(0,Integer.class);
     }
 
@@ -237,21 +235,21 @@ public class ShopViewService extends MainBaseService {
      * @return {@link BaseInfo}
      */
     private List<BaseMoneyInfo> getOrderMoneyByDay(ShopViewParam param){
-        List<LocalDate> localDates = DateUtil.getAllDatesBetweenTwoDates(
+        List<LocalDate> localDates = DateUtils.getAllDatesBetweenTwoDates(
             param.getStartTime().toLocalDateTime().toLocalDate(),param.getEndTime().toLocalDateTime().toLocalDate());
         Map<String,OrderMoneyInfo> dateMap = localDates.stream().
-            map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
+            map(x-> DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
             collect(Collectors.toMap(x->x,y->new OrderMoneyInfo(),(oldValue,newValue)->oldValue,LinkedHashMap::new));
-        Field<String> time = dateFormat(ORDER_INFO_NEW.PAY_TIME,DateUtil.DATE_MYSQL_SIMPLE).as("time");
-        List<OrderMoneyInfo> moneyInfos = db().select(time,ORDER_INFO_NEW.PAY_CODE,DSL.sum(ORDER_INFO_NEW.MONEY_PAID).as("wxPayed"),
-            DSL.sum(ORDER_INFO_NEW.USE_ACCOUNT).as("balancePayed"),
-            DSL.sum(ORDER_INFO_NEW.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
-            DSL.sum(ORDER_INFO_NEW.SCORE_DISCOUNT).as("integralPayed")).
-            from(ORDER_INFO_NEW).
-            where(ORDER_INFO_NEW.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
-                and(ORDER_INFO_NEW.IS_COD.eq((byte)0)).and(ORDER_INFO_NEW.PAY_TIME.greaterOrEqual(param.getStartTime())).
-            and(ORDER_INFO_NEW.PAY_TIME.lessOrEqual(param.getEndTime())).
-            groupBy(time,ORDER_INFO_NEW.PAY_CODE).fetchInto(OrderMoneyInfo.class);
+        Field<String> time = dateFormat(ORDER_INFO_BAK.PAY_TIME, DateUtils.DATE_MYSQL_SIMPLE).as("time");
+        List<OrderMoneyInfo> moneyInfos = db().select(time,ORDER_INFO_BAK.PAY_CODE,DSL.sum(ORDER_INFO_BAK.MONEY_PAID).as("wxPayed"),
+            DSL.sum(ORDER_INFO_BAK.USE_ACCOUNT).as("balancePayed"),
+            DSL.sum(ORDER_INFO_BAK.MEMBER_CARD_REDUCE).as("cardBalancePayed"),
+            DSL.sum(ORDER_INFO_BAK.SCORE_DISCOUNT).as("integralPayed")).
+            from(ORDER_INFO_BAK).
+            where(ORDER_INFO_BAK.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).
+                and(ORDER_INFO_BAK.IS_COD.eq((byte)0)).and(ORDER_INFO_BAK.PAY_TIME.greaterOrEqual(param.getStartTime())).
+            and(ORDER_INFO_BAK.PAY_TIME.lessOrEqual(param.getEndTime())).
+            groupBy(time,ORDER_INFO_BAK.PAY_CODE).fetchInto(OrderMoneyInfo.class);
 
 
         return getBaseInfoList(moneyInfos,dateMap);
@@ -262,18 +260,18 @@ public class ShopViewService extends MainBaseService {
      * @return {@link BaseInfo}
      */
     private List<BaseInfo> getOrderNumByDay(ShopViewParam param){
-        List<LocalDate> localDates = DateUtil.getAllDatesBetweenTwoDates(
+        List<LocalDate> localDates = DateUtils.getAllDatesBetweenTwoDates(
             param.getStartTime().toLocalDateTime().toLocalDate(),param.getEndTime().toLocalDateTime().toLocalDate());
         Map<String,Integer> dateMap = localDates.stream().
-            map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
+            map(x-> DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
             collect(Collectors.toMap(x->x,y->0,(oldValue,newValue)->oldValue,LinkedHashMap::new));
-        Field<String> time = dateFormat(ORDER_INFO_NEW.PAY_TIME,DateUtil.DATE_MYSQL_SIMPLE).as("time");
+        Field<String> time = dateFormat(ORDER_INFO_BAK.PAY_TIME, DateUtils.DATE_MYSQL_SIMPLE).as("time");
         Result<Record2<String,Integer>> result =db().
-            select(time,DSL.count(ORDER_INFO_NEW.ORDER_ID)).
-            from(ORDER_INFO_NEW).
+            select(time,DSL.count(ORDER_INFO_BAK.ORDER_ID)).
+            from(ORDER_INFO_BAK).
             where(
-                ORDER_INFO_NEW.PAY_TIME.greaterOrEqual(param.getStartTime())).
-            and(ORDER_INFO_NEW.PAY_TIME.lessOrEqual(param.getEndTime())
+                ORDER_INFO_BAK.PAY_TIME.greaterOrEqual(param.getStartTime())).
+            and(ORDER_INFO_BAK.PAY_TIME.lessOrEqual(param.getEndTime())
             ).groupBy(time).fetch();
         return getBaseInfoList(result,dateMap);
     }
@@ -283,18 +281,18 @@ public class ShopViewService extends MainBaseService {
      * @return {@link BaseInfo}
      */
     private List<BaseInfo> getUserNumByDay(ShopViewParam param){
-        List<LocalDate> localDates = DateUtil.getAllDatesBetweenTwoDates(
+        List<LocalDate> localDates = DateUtils.getAllDatesBetweenTwoDates(
             param.getStartTime().toLocalDateTime().toLocalDate(),param.getEndTime().toLocalDateTime().toLocalDate());
         Map<String,Integer> dateMap = localDates.stream()
-            .map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay())))
+            .map(x-> DateUtils.dateFormat(DateUtils.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay())))
             .collect(Collectors.toMap(x->x,y->0,(oldValue,newValue)->oldValue,LinkedHashMap::new));
         Result<Record2<String,Integer>> result =db().
-            select(dateFormat(USER.CREATE_TIME,DateUtil.DATE_MYSQL_SIMPLE),DSL.count(USER.ID))
+            select(dateFormat(USER.CREATE_TIME, DateUtils.DATE_MYSQL_SIMPLE),DSL.count(USER.ID))
             .from(USER)
             .where(USER.CREATE_TIME.greaterOrEqual(param.getStartTime())).
                 and(USER.CREATE_TIME.lessOrEqual(param.getEndTime()))
-            .groupBy(dateFormat(USER.CREATE_TIME,DateUtil.DATE_MYSQL_SIMPLE))
-            .orderBy(dateFormat(USER.CREATE_TIME,DateUtil.DATE_MYSQL_SIMPLE).asc())
+            .groupBy(dateFormat(USER.CREATE_TIME, DateUtils.DATE_MYSQL_SIMPLE))
+            .orderBy(dateFormat(USER.CREATE_TIME, DateUtils.DATE_MYSQL_SIMPLE).asc())
             .fetch();
         return getBaseInfoList(result,dateMap);
     }

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.payment;
 
+import cn.hutool.json.JSONUtil;
 import com.github.binarywang.wxpay.bean.entpay.EntPayRequest;
 import com.github.binarywang.wxpay.bean.entpay.EntPayResult;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
@@ -13,19 +14,20 @@ import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.util.SignUtils;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.WxSerMchConfig;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.pay.jsapi.JsApiVo;
 import com.vpu.mp.service.wechat.WxPayment;
+import com.vpu.mp.service.wechat.WxPaymentAttachParam;
 import com.vpu.mp.support.PemToPkcs12;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ import java.util.Objects;
 
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 
+/**
+ * @author lixinguo
+ */
 @Service
 public class MpPaymentService extends ShopBaseService {
 
@@ -277,12 +282,12 @@ public class MpPaymentService extends ShopBaseService {
 	 * @return
 	 * @throws WxPayException
 	 */
-	public WxPayRefundResult refundByTransactionId(String transactionId, String outRefundNo, Integer refundFee, Integer totalFee) throws WxPayException {
+	public WxPayRefundResult refundByTransactionId(String transactionId, String outRefundNo, Integer totalFee, Integer refundFee) throws WxPayException {
         if(Boolean.FALSE) {
             //TODO 扩展微信支付类型（国际、通联、子商账户）
             return null;
         }else {
-            return refund(null, transactionId, outRefundNo, refundFee, totalFee);
+            return refund(null, transactionId, outRefundNo, totalFee, refundFee);
         }
 
 	}
@@ -313,8 +318,8 @@ public class MpPaymentService extends ShopBaseService {
 	 * @return WxPayRefundResult
 	 * @throws WxPayException
 	 */
-	public WxPayRefundResult refund(String outTradeNo, String transactionId, String outRefundNo, Integer refundFee,
-			Integer totalFee)
+	public WxPayRefundResult refund(String outTradeNo, String transactionId, String outRefundNo, Integer totalFee,
+			Integer refundFee)
 			throws WxPayException {
 		WxPayment wxPayment = this.getMpPay();
 		WxPayRefundRequest request = WxPayRefundRequest.newBuilder()
@@ -368,9 +373,9 @@ public class MpPaymentService extends ShopBaseService {
 				.totalFee(BaseWxPayResult.fenToYuan(orderResult.getTotalFee()))
 				.buyerId(orderResult.getOpenid())
 				.sellerId(orderResult.getMchId())
-                .gmtCreate(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
-                .notifyTime(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
-                .gmtCloseTime(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
+                .gmtCreate(DateUtils.dateFormatToTimeStamp(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
+                .notifyTime(DateUtils.dateFormatToTimeStamp(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
+                .gmtCloseTime(DateUtils.dateFormatToTimeStamp(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
 				.created(Timestamp.valueOf(LocalDateTime.now()))
 				.remark2(orderResult.toString())
 				.build();

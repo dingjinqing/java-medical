@@ -3,7 +3,7 @@ import service from '@/util/request.js'
 // 全部商品查询
 export function getGoodsList (data) {
   return service({
-    url: `/api/admin/goods/list`,
+    url: `/api/admin/medical/goods/page/list`,
     method: 'post',
     data: data
   })
@@ -30,6 +30,13 @@ export function deleteGoods (data) {
     url: `/api/admin/goods/delete`,
     method: 'post',
     data: data
+  })
+}
+// 删除单个商品
+export function deleteGoodsById (goodsId) {
+  return service({
+    url: `/api/admin/medical/goods/delete/${goodsId}`,
+    method: 'get'
   })
 }
 // 商品批量处理

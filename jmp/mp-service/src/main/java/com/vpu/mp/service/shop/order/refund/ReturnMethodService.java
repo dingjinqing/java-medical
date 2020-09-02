@@ -2,17 +2,17 @@ package com.vpu.mp.service.shop.order.refund;
 
 import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil.BigDecimalPlus;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -264,7 +264,7 @@ public class ReturnMethodService extends ShopBaseService{
             }
             //该次退款曾经执行记录
             OrderRefundRecordRecord returnRecord = orderRefundRecord.getReturnRecord(retId, payRecord.getPaySn(), money);
-            if(returnRecord != null && OrderRefundRecordService.success.equals(returnRecord.getDealStatus())){
+            if(returnRecord != null && OrderRefundRecordService.SUCCESS.equals(returnRecord.getDealStatus())){
                 return;
             }
             //微信退款结果
@@ -278,7 +278,7 @@ public class ReturnMethodService extends ShopBaseService{
                     BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue());
                 if(returnRecord != null){
                     //二次退款恢复记录状态
-                    orderRefundRecord.updateStatus(returnRecord, OrderRefundRecordService.success, StringUtils.EMPTY);
+                    orderRefundRecord.updateStatus(returnRecord, OrderRefundRecordService.SUCCESS, StringUtils.EMPTY);
                 }else {
                     //退款记录
                     orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId, money, StringUtils.EMPTY);
@@ -288,7 +288,7 @@ public class ReturnMethodService extends ShopBaseService{
                 logger().warn("微信退款异常（refundMoneyPaid）,错误信息表ORDER_REFUND_RECORD");
                 if(returnRecord != null){
                     //二次退款依然失败
-                    orderRefundRecord.updateStatus(returnRecord, OrderRefundRecordService.fail, e.getCodeParam() == null ? StringUtils.EMPTY : e.getCodeParam().length == 0 ? StringUtils.EMPTY : e.getCodeParam()[0]);
+                    orderRefundRecord.updateStatus(returnRecord, OrderRefundRecordService.FAIL, e.getCodeParam() == null ? StringUtils.EMPTY : e.getCodeParam().length == 0 ? StringUtils.EMPTY : e.getCodeParam()[0]);
                 }else {
                     //退款记录
                     orderRefundRecord.addRecord(refundSn, payRecord, refundResult, retId, money, e.getCodeParam() == null ? StringUtils.EMPTY : e.getCodeParam().length == 0 ? StringUtils.EMPTY : e.getCodeParam()[0]);

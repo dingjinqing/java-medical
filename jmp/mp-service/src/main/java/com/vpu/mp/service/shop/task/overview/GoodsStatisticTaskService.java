@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.task.overview;
 
+import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.GoodsOverviewSummaryRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
@@ -20,10 +20,10 @@ import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.db.shop.tables.Cart.CART;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
-import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 import static org.jooq.impl.DSL.min;
@@ -209,8 +209,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     public int addCartUserNum(ProductOverviewParam param) {
         logger().info("开始计算加购人数");
         Map<Integer,Integer> addCartUser = addSingleCartUserNum(param);
-        Integer addCartUserNum = addCartUser.values().stream().reduce(INTEGER_ZERO, Integer::sum);
-        return addCartUserNum;
+        return addCartUser.values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -415,7 +414,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     public GoodsOverviewSummaryRecord createOverviewRecord(ProductOverviewParam param) {
         return new GoodsOverviewSummaryRecord() {{
-            setRefDate(DateUtil.yyyyMmDdDate(LocalDate.now()));
+            setRefDate(DateUtils.yyyyMmDdDate(LocalDate.now()));
             setType(param.getDynamicDate());
             setOnShelfGoodsNum(getSaleGoodsNumber(param));
             setSoldGoodsNum(getDySoldGoodsNum(param));
@@ -700,7 +699,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     public void insertGoodsSummary() {
         TYPE_LIST.forEach((e) -> {
-            Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
+            Date nowDate = DateUtils.yyyyMmDdDate(LocalDate.now());
             Timestamp startTimeStamp = Timestamp.valueOf(LocalDate.now().minusDays(e).atStartOfDay());
             Timestamp endTimeStamp = Timestamp.valueOf(LocalDate.now().atStartOfDay());
             ProductOverviewParam param = new ProductOverviewParam() {{
@@ -709,52 +708,52 @@ public class GoodsStatisticTaskService extends ShopBaseService {
                 setEndTime(endTimeStamp);
             }};
             // 商品UV数
-            getSingleGoodsUv(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.UV, v);
+            getSingleGoodsUv(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.UV, v);
             });
             // 新成交客户数
-            singleNewCustomerTranNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.NEW_USER_NUMBER, v);
+            singleNewCustomerTranNum(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.NEW_USER_NUMBER, v);
             });
             // 旧成交客户数
-            singleOldCustomerTranNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.OLD_USER_NUMBER, v);
+            singleOldCustomerTranNum(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.OLD_USER_NUMBER, v);
             });
             // 商品PV数
-            getSingleGoodsPv(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PV, v);
+            getSingleGoodsPv(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.PV, v);
             });
             // 加购人数
-            addSingleCartUserNum(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.CART_UV, v);
+            addSingleCartUserNum(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.CART_UV, v);
             });
             // 付款人数
-            singlePaidUv(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PAID_UV, v);
+            singlePaidUv(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.PAID_UV, v);
             });
             // 付款商品数
-            singlePaidGoodsNum(param).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PAID_GOODS_NUMBER, v);
+            singlePaidGoodsNum(param).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.PAID_GOODS_NUMBER, v);
             });
             // 销售额
-            singleGoodsSales(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODS_SALES, v);
+            singleGoodsSales(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.GOODS_SALES, v);
             });
             // 推荐人数
-            singleRecommendUserNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.RECOMMEND_USER_NUM, v);
+            singleRecommendUserNum(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.RECOMMEND_USER_NUM, v);
             });
             // 收藏人数
-            singleCollectUserNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.COLLECT_USE_NUM, v);
+            singleCollectUserNum(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.COLLECT_USE_NUM, v);
             });
             // 商品分享pv
-            getSingleShareGoodsPv(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.SHARE_PV, v);
+            getSingleShareGoodsPv(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.SHARE_PV, v);
             });
             // 商品分享uv
-            getSingleShareGoodsUv(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.SHARE_UV, v);
+            getSingleShareGoodsUv(startTimeStamp, endTimeStamp).forEach((k, v) -> {
+                createGoodsSummaryRecord(nowDate, e, k, GOODS_SUMMARY.SHARE_UV, v);
             });
         });
     }

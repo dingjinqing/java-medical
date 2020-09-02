@@ -53,4 +53,5 @@ module.exports = {
   activationFail: "激活失败",
   knowIt: "知道啦",
   needPhone: "您需要绑定手机号才可以激活",
+  viewAllPatients: "查看全部就诊人"
 }

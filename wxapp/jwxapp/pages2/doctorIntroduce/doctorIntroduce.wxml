@@ -1,0 +1,103 @@
+<include src="/pages/common/header.wxml" />
+<view class="container">
+	<view class="doctor_content">
+		<view>
+			<view class="doctor_item">
+				<view class="d_left">
+					<image src="{{imageUrl}}{{con.url}}" wx:if='{{con.url != ""}}'></image>
+					<image src='{{imageUrl}}image/wxapp/doctor_default_icon.png' wx:else></image>
+				</view>
+				<view class="d_right">
+					<view class="d_r_top">
+						<text>{{con.name}}</text>
+						<text wx:if='{{con.titleName}}'>{{con.titleName}}</text>
+					</view>
+					<view class="d_r_m_t">
+						<text>{{con.hospitalName}}</text>
+						<text style="margin-left:10rpx" wx:if='{{con.departmentName}}'>{{con.departmentName}}</text>
+					</view>
+					<view class="d_r_m_b" wx:if='{{con.treatDisease}}'>
+						<view>擅长：{{con.treatDisease}}</view>
+					</view>
+				<view class="focus {{isAttention == true ? 'have_focus' :''}}" catchtap="choose_focus">
+					{{isAttention == 0 ? '关注' : '已关注'}}
+				</view>
+				</view>
+			</view>
+			<view class="doctor_introduce">
+				<view>
+					<view>{{con.attentionNumber}}</view>
+					<view>关注量</view>
+				</view>
+				<view>
+					<view>{{con.consultationNumber}}</view>
+					<view>接诊量</view>
+				</view>
+				<view>
+					<view>{{answerType == 1 ? '10分钟内' : (answerType == 2 ? '半小时内' : ( answerType == 3 ? '1小时内' : '1小时以上'))}}</view>
+					<view>平均响应时间</view>
+				</view>
+				<view>
+					<view>{{con.avgCommentStar}}</view>
+					<view>患者评分</view>
+				</view>
+			</view>
+			<image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>
+		</view>
+	</view>
+
+	<view class="mid_con">
+		<view class="comment_title">用户评价（{{pageParams.totalRows}}）</view>
+		<view class="commentList">
+			<block wx:for='{{dataList}}' wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+				<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+					<view class="comment_item">
+						<view class="c_top">
+							<view class="c_t_name">{{item.userName}}</view>
+							<view class="c_t_star">
+							   <block wx:for='{{item.stars - 0}}' wx:key=''>
+								 		<text class='iconfont iconshoucang star'></text>
+								 </block>
+							</view>
+						</view>
+						<view class="c_mid">
+							<view class="c_m_text">
+							 {{  item.need_expand  ? ( item.zk ? item.new_comm_note : item.commNote) : item.commNote}}
+							</view>
+							<view class="expand" wx:if='{{item.need_expand == true}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' catchtap="zk_sq">
+								{{item.zk ? '展开' : '收起'}}
+							</view>
+						</view>
+						<view class="c_bot">
+							<text>{{item.createTime}}</text>
+						</view>
+					</view>
+				</block>
+			</block>
+	    <view class="is-null" wx:if='{{dataList[0].length <= 0}}'>	
+      <image src="{{imageUrl}}/image/wxapp/no_focus_doctor.png"></image>	
+      <text>暂无评价记录</text>	
+    </view>
+		</view>
+	</view>
+	<view class="bot_footer">
+	  <block wx:if='{{con.isOnDuty == 1}}'>
+			<view class="to_chat" data-doctor_id='{{con.id}}'  data-price='{{con.consultationPrice}}' catchtap="toChat">
+ {{con.hasUndoneOrder == false ? '在线咨询￥' + con.consultationPrice + '/次' : '继续问诊'}} 
+			  
+			</view>
+		<view class="tell_patient" catchtap="patient_announce">患者须知 ></view>
+		</block>
+		<block wx:else>
+			<view class="to_chat no_chat">暂不接诊</view>
+		</block>
+	
+	</view>
+	<pop-announce show='{{show_announce}}' title='问诊须知'>
+		<view>1.在线问诊暂不支持医保报销，产生的一切费用全部为自费。</view>
+		<view>2.请您详细描述病情并上传既往处方、最新化验结果、舌像等，以便医生诊断。</view>
+		<view>3.下单24小时后如果医生未接诊，系统将自动退款。</view>
+		<view>4.医生接诊后，24小时后系统将自动结束服务，请尽快提问。</view>
+		<view>5.线上诊断仅供参考，若病情严重请至线下医院问诊。</view>
+	</pop-announce>
+</view>

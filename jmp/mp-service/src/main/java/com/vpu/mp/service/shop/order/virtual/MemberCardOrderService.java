@@ -1,16 +1,16 @@
 package com.vpu.mp.service.shop.order.virtual;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
@@ -68,7 +68,7 @@ public class MemberCardOrderService extends VirtualOrderService {
         PageResult<MemberCardOrderVo> pageResult = getPageResult(select, param, MemberCardOrderVo.class);
         pageResult.getDataList().forEach(cardOrderVo->{
             //超过一年不能退款
-            if (cardOrderVo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&cardOrderVo.getPayTime()!=null&&DateUtil.getLocalDateTime().after(DateUtil.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
+            if (cardOrderVo.getMoneyPaid().compareTo(BigDecimal.ZERO)>0&&cardOrderVo.getPayTime()!=null&& DateUtils.getLocalDateTime().after(DateUtils.getTimeStampPlus(cardOrderVo.getPayTime(),1, ChronoUnit.YEARS))){
                 cardOrderVo.setCanReturn(BaseConstant.NO);
             }else {
                 cardOrderVo.setCanReturn(BaseConstant.YES);
@@ -175,7 +175,8 @@ public class MemberCardOrderService extends VirtualOrderService {
             if (o.getUseScore() != null && o.getUseScore() > 0) {
                 o.setPrice(o.getUseScore().toString() + Util.translateMessage(lang, JsonResultMessage.UEXP_SCORE, OrderConstant.LANGUAGE_TYPE_EXCEL));
             } else {
-                if ("CNY".equals(o.getCurrency())) {
+                String cny = "CNY";
+                if (cny.equals(o.getCurrency())) {
                     o.setPrice("￥" + o.getOrderAmount().toString());
                 } else {
                     o.setPrice("$" + o.getOrderAmount().toString());

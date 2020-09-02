@@ -13,6 +13,9 @@ import java.security.GeneralSecurityException;
 import java.util.Objects;
 import java.util.Properties;
 
+/**
+ * @author luguangyao
+ */
 @Configuration
 public class EmailConfig {
 
@@ -33,7 +36,7 @@ public class EmailConfig {
     @Value(value="${email.send.ssl.enable:true}")
     private Boolean sslEnable;
 
-    // 初始化连接邮件服务器的会话信息
+    /** 初始化连接邮件服务器的会话信息 */
     private static Properties props = null;
 
     @Bean

@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
 import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;

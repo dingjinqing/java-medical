@@ -18,7 +18,6 @@ var init = {
     // console.log(this.loading, this.bottom.status)
     //暂时注释
 
-
     if (this._options.scene && this.currentUrl.indexOf('index/index') === -1) {
       let scene = util.resetScene(this._options.scene)
       delete options.scene
@@ -64,6 +63,7 @@ var init = {
         util.jumpLink(url, "reLaunch");
       }
     });
+    
     // 分享进入记录分享信息
     this._initRequest(options);
     this._initSetCommonData();
@@ -155,6 +155,11 @@ var init = {
         channel: options.channel
       })
     }
+    // 医师首页
+    // if(this.bottom.user_type == 1 && util.getCurrentPage().route.indexOf('pages2') == -1){
+    //   util.jumpLink('pages2/doctorIndex/doctorIndex','reLaunch')
+    //   return false
+    // }
   },
 
   _needGetUserInfoBtn () {

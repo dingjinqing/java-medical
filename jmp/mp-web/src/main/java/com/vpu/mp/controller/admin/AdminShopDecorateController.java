@@ -1,10 +1,10 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.validator.ValidList;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.validator.ValidList;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
@@ -165,7 +165,10 @@ public class AdminShopDecorateController extends AdminBaseController {
      */
     @PostMapping(value = "/admin/decorate/page/save")
     public JsonResult saveDecoration(@RequestBody @Valid PageStoreParam param) {
-        if(param.getPageState() == 2){
+        int previewState = 2;
+        // 新增系统公告
+        shop().userMessageService.addAnnouncement(param);
+        if(param.getPageState() == previewState){
             //预览，返回太阳码的图片链接
             return this.success(shop().adminDecoration.getPreviewCode(param));
         }else{
@@ -252,11 +255,13 @@ public class AdminShopDecorateController extends AdminBaseController {
     public JsonResult updateSearchCfg(@RequestBody SearchConfig config){
     	List<String> hotWords = config.getHotWords();
     	if(null!=hotWords) {
-    		if(hotWords.size()>11) {
+            int maxHotWordsNumber = 11;
+            if(hotWords.size()> maxHotWordsNumber) {
     			return fail(JsonResultCode.SEARCHCFG_HOTWORDS_LIMIT);
     		}
     	}
-    	if(config.getTitleAction().equals(3)&&StringUtils.isEmpty(config.getTitleCustom())) {
+        int customSearchAction = 3;
+        if(config.getTitleAction().equals(customSearchAction)&&StringUtils.isEmpty(config.getTitleCustom())) {
     		//自定义，titleCustom不能为空
     		return fail(JsonResultCode.SEARCHCFG_TITLECUSTOM_NOTNULL);
     	}
