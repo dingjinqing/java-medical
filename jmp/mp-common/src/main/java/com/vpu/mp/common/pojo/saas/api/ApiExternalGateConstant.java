@@ -57,6 +57,7 @@ public class ApiExternalGateConstant {
     public static final String APP_ID_POS = "200001";
     public static final String APP_ID_CRM = "200002";
     public static final String APP_ID_HIS = "200003";
+    public static final String APP_ID_STORE = "200004";
     public static final Map<String, String> APP_NAMES = new HashMap<>(3);
 
     static {
