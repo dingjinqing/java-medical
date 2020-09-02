@@ -61,6 +61,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.comparator.Comparators;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -244,14 +245,13 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             //实际返利数量
             int rebateNumber = one.getGoodsNumber() - one.getReturnNumber();
             for (OrderGoodsRebateRecord record : records) {
-                if(one.getReturnNumber() > 0) {
-                    record.setRealRebateMoney(BigDecimalUtil.multiply(record.getRebateMoney(), new BigDecimal(rebateNumber)));
-                    updateRecords.add(record);
-                    realRebateMoney = realRebateMoney.add(record.getRealRebateMoney());
-                }else {
-                    record.setRealRebateMoney(record.getRebateMoney());
-                    realRebateMoney = realRebateMoney.add(record.getTotalRebateMoney());
-                }
+                record.setRealRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                    BigDecimalUtil.BigDecimalPlus.create(record.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(one.getGoodsNumber())))
+                );
+                realRebateMoney = realRebateMoney.add(record.getRealRebateMoney());
+                updateRecords.add(record);
                 collect.putIfAbsent(record.getRebateUserId(), BIGDECIMAL_ZERO);
                 collect.computeIfPresent(record.getRebateUserId(), (k, v) -> v.add(record.getRealRebateMoney()));
             }
