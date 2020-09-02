@@ -695,4 +695,14 @@ public class StoreService extends ShopBaseService {
             .and(STORE.STORE_ID.in(storeIds))
             .fetchInto(StoreBasicVo.class);
     }
+
+    /**
+     * 查询门店商品是否充足
+     * @param goodsId 商品id
+     * @param storeId 门店id
+     * @return Integer
+     */
+    public Integer checkOrderGoodsIsEnough(Integer goodsId, Integer storeId) {
+        return storeDao.checkOrderGoodsIsEnough(goodsId, storeId);
+    }
 }

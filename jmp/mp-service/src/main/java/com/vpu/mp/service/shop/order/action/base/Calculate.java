@@ -434,7 +434,7 @@ public class Calculate extends ShopBaseService {
     public BigDecimal calculateShippingFee(Integer districtCode, List<OrderGoodsBo> bos, Integer storeId) {
         logger().info("计算运费start");
         BigDecimal result = BigDecimal.ZERO;
-        //处理过程中局部内部类
+        /**处理过程中局部内部类*/
         @Getter
         @Setter
         @ToString
@@ -618,8 +618,9 @@ public class Calculate extends ShopBaseService {
      * @return map<goodsid, no / ys>
      */
     public void getGoodsReturnCfg(List<OrderGoodsBo> orderGoods) {
+        byte allGoods = 2;
         Byte returnChangeGoodsStatus = returnCfg.getReturnChangeGoodsStatus();
-        if (2 == returnChangeGoodsStatus) {
+        if (allGoods == returnChangeGoodsStatus) {
             //全部支持
             orderGoods.forEach(goods -> {
                 goods.setIsCanReturn(OrderConstant.IS_CAN_RETURN_Y);
@@ -942,12 +943,12 @@ public class Calculate extends ShopBaseService {
                 }
                 ArrayList<OrderGoodsRebateRecord> records = orderGoodsRebate.create(rebateRecords, bo, canRebateMoney, check, order.getOrderSn());
                 //赋值
-                bo.setFanliMoney(records.stream().map(OrderGoodsRebateRecord::getRealRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_100, BigDecimalUtil::add));
                 bo.setFanliPercent(BigDecimalUtil.multiply(records.get(0).getRebatePercent(), BigDecimalUtil.BIGDECIMAL_100));
                 bo.setFanliType(rebateRecords.get(rebateRecords.size()-1).getRebateLevel());
-                bo.setTotalFanliMoney(records.stream().map(OrderGoodsRebateRecord::getTotalRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_100, BigDecimalUtil::add));
+                bo.setTotalFanliMoney(records.stream().map(OrderGoodsRebateRecord::getTotalRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_ZERO, BigDecimalUtil::add));
                 bo.setFanliStrategy(Util.toJson(strategy));
-                bo.setCanCalculateMoney(BigDecimalUtil.divide(canRebateMoney, new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_DOWN));
+                //商品参与返利金额
+                bo.setCanCalculateMoney(bo.getCanCalculateMoney() == null ? canRebateMoney : bo.getCanCalculateMoney());
                 bo.setRebateList(records);
                 rebateMoney = BigDecimalUtil.add(bo.getTotalFanliMoney(), rebateMoney);
                 flag = true;

@@ -5,6 +5,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailExportVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
@@ -81,15 +82,15 @@ public class OrderGoodsRebateDao extends ShopBaseDao {
     private void buildOptionDetail(SelectJoinStep<? extends Record> select, RebateGoodsDetailParam param) {
         select.where(ORDER_INFO.FANLI_TYPE.eq((byte) 1).and(ORDER_GOODS_REBATE.GOODS_ID.eq(param.getGoodsId())));
         // 被邀请人手机号
-        if (param.getMobile() != null) {
+        if (StringUtils.isNotBlank(param.getMobile()) ) {
             select.where(USER.MOBILE.contains(param.getMobile()));
         }
         // 被邀请人用户名
-        if(param.getUsername() != null) {
+        if(StringUtils.isNotBlank(param.getUsername())) {
             select.where(USER.USERNAME.contains(param.getUsername()));
         }
         // 分销员真实姓名
-        if (param.getDistributorRealName() != null) {
+        if (StringUtils.isNotBlank(param.getDistributorRealName()) ) {
             select.where(USER_DETAIL.REAL_NAME.contains(param.getDistributorRealName()));
         }
         // 分销员返利关系
@@ -97,11 +98,11 @@ public class OrderGoodsRebateDao extends ShopBaseDao {
             select.where(ORDER_GOODS_REBATE.REBATE_LEVEL.eq(param.getRebateLevel()));
         }
         // 分销员手机号
-        if (param.getDistributorMobile() != null) {
+        if (StringUtils.isNotBlank(param.getDistributorMobile())) {
             select.where(USER.as(INVITE).MOBILE.contains(param.getDistributorMobile()));
         }
         // 分销员用户名
-        if (param.getDistributorName() != null) {
+        if (StringUtils.isNotBlank(param.getDistributorName())) {
             select.where(USER.as(INVITE).USERNAME.contains(param.getDistributorName()));
         }
         // 返利开始时间
