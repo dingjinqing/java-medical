@@ -705,14 +705,17 @@ public class MpDistributionService extends ShopBaseService{
     }
 
     private void processInviteUserStatusOption(SelectConditionStep<? extends Record> select, InviteUserListParam param, Timestamp nowdate, Timestamp failureDate) {
+        Date foreverDate = new Date(946656000);
+        Timestamp forever = Util.getEarlyTimeStamp(foreverDate, 1);
+
         if(param.getInviteUserStatus() != null && param.getInviteUserStatus().equals(USER_EFFECTIVE)){
-            select.and(USER.INVITE_PROTECT_DATE.ge(nowdate));
+            select.and(USER.INVITE_PROTECT_DATE.ge(nowdate).or(USER.INVITE_PROTECT_DATE.eq(forever)));
         }
         if(param.getInviteUserStatus() != null && param.getInviteUserStatus().equals(USER_WILL_EXPIRE)){
             select.and(USER.INVITE_PROTECT_DATE.ge(nowdate).and(USER.INVITE_PROTECT_DATE.le(failureDate)));
         }
         if(param.getInviteUserStatus() != null && param.getInviteUserStatus().equals(USER_HAS_EXPIRE)){
-            select.and(USER.INVITE_PROTECT_DATE.le(nowdate));
+            select.and(USER.INVITE_PROTECT_DATE.le(nowdate)).and(USER.INVITE_PROTECT_DATE.ne(forever));
         }
     }
 
