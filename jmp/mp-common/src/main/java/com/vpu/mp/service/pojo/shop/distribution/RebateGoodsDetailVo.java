@@ -55,7 +55,7 @@ public class RebateGoodsDetailVo {
     /**
      * 返利比例
      */
-    private Integer rebatePercent;
+    private BigDecimal rebatePercent;
     /**
      * 返利状态
      */

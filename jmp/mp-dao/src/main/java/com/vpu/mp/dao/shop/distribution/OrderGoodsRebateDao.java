@@ -57,11 +57,12 @@ public class OrderGoodsRebateDao extends ShopBaseDao {
      * @return
      */
     private SelectJoinStep<? extends Record> buildDetail(RebateGoodsDetailParam param) {
+        int hundred=100;
         SelectJoinStep<? extends Record> select =
             db().select(ORDER_GOODS.GOODS_IMG, ORDER_GOODS.GOODS_NAME, ORDER_GOODS.GOODS_NUMBER, ORDER_GOODS.CAN_CALCULATE_MONEY,
                 ORDER_GOODS_REBATE.ORDER_SN, USER.USERNAME, USER.MOBILE, USER.USER_ID, ORDER_GOODS_REBATE.REBATE_LEVEL, USER.as(INVITE).USER_ID.as("distributorId"),
                 USER.as(INVITE).USERNAME.as("distributorName"), USER_DETAIL.REAL_NAME.as("distributorRealName"), USER.as(INVITE).MOBILE.as("distributorMobile"),
-                ORDER_GOODS_REBATE.REBATE_PERCENT, ORDER_GOODS_REBATE.REAL_REBATE_MONEY, ORDER_INFO.SETTLEMENT_FLAG, ORDER_INFO.FINISHED_TIME)
+                (ORDER_GOODS_REBATE.REBATE_PERCENT).multiply(hundred).as("rebatePercent"), ORDER_GOODS_REBATE.REAL_REBATE_MONEY, ORDER_INFO.SETTLEMENT_FLAG, ORDER_INFO.FINISHED_TIME)
                 .from(ORDER_GOODS_REBATE
                     .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
                     .leftJoin(USER.as(INVITE)).on(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(USER.as(INVITE).USER_ID))
