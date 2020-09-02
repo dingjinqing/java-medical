@@ -25,31 +25,8 @@ public class ApiExternalGateConfig {
     /**
      * 服务名称定义
      */
-    public static final String SERVICE_GOODS_LIST = "goods_list";
-    public static final String SERVICE_SINGLE_GOODS = "single_goods";
-    public static final String SERVICE_ORDER_LIST = "order_list";
-    public static final String SERVICE_SINGLE_ORDER = "single_order";
-    public static final String SERVICE_SYNC_STOCK = "sync_stock";
-    public static final String SERVICE_SYNC_LOGISTICS = "sync_logistics";
-    public static final String SERVICE_SEND_MESSAGE_BATCH = "send_message_batch";
-    public static final String SERVICE_SEND_MESSAGE = "send_message";
-    public static final String SERVICE_MOBILE_LIST = "mobile_list";
-    public static final String SERVICE_REFUND_ORDER_LIST = "refund_order_list";
-    public static final String SERVICE_REFUND_ORDER = "refund_order";
-    public static final String SERVICE_SYNC_REFUND_ORDER_RESULT = "sync_refund_result";
-    public static final String SERVICE_DELIVER_EXCHANGE_GOODS = "deliver_exchange_goods";
-    public static final String SERVICE_POS_SYNC_STOCK = "pos_sync_stock";
-    public static final String SERVICE_POS_SYNC_PRODUCT = "pos_sync_product";
-    public static final String SERVICE_POS_VERIFY_ORDER = "pos_verify_order";
-    public static final String SERVICE_POS_RETURN_GOODS = "pos_return_goods";
-    public static final String SERVICE_CRM_SYNC_SCORE = "crm_sync_score";
-    public static final String SERVICE_SYNC_USER = "sync_user";
-    public static final String SERVICE_CRM_GOODS_SHARE_CODE = "goods_share_code";
-    public static final String SERVICE_OPEN_APP_ID = "open_app_id";
-    public static final String SERVICE_CREATE_COUPON = "create_coupon";
-    public static final String SERVICE_GRANT_COUPON = "grant_coupon";
-    public static final String SERVICE_SYNC_COUPON = "sync_coupon";
-    public static final String SERVICE_QUERY_COUPON = "query_coupon";
+    public static final String SYNC_ORDER_STATUS = "syncOrderStatus";
+
 
     /**
      * 服务名成集合
@@ -95,6 +72,7 @@ public class ApiExternalGateConfig {
     public static final String APP_ID_POS = "200001";
     public static final String APP_ID_CRM = "200002";
     public static final String APP_ID_HIS = "200003";
+    public static final String APP_ID_STORE = "200004";
     public static final Map<String, String> APP_NAMES = new HashMap<>(3);
 
     static {
@@ -103,38 +81,10 @@ public class ApiExternalGateConfig {
         APP_NAMES.put(APP_ID_POS, "POS");
         APP_NAMES.put(APP_ID_CRM, "CRM");
         APP_NAMES.put(APP_ID_HIS, "HIS");
+        APP_NAMES.put(APP_ID_STORE, "STORE");
 
         // 初始化服务名集合
-        SERVICE_NAMES.add(SERVICE_GOODS_LIST);
-        SERVICE_NAMES.add(SERVICE_SINGLE_GOODS);
-        SERVICE_NAMES.add(SERVICE_ORDER_LIST);
-        SERVICE_NAMES.add(SERVICE_SINGLE_ORDER);
-        SERVICE_NAMES.add(SERVICE_SYNC_STOCK);
-        SERVICE_NAMES.add(SERVICE_SYNC_LOGISTICS);
-        SERVICE_NAMES.add(SERVICE_SEND_MESSAGE_BATCH);
-        SERVICE_NAMES.add(SERVICE_SEND_MESSAGE);
-        SERVICE_NAMES.add(SERVICE_MOBILE_LIST);
-        SERVICE_NAMES.add(SERVICE_REFUND_ORDER_LIST);
-        SERVICE_NAMES.add(SERVICE_REFUND_ORDER);
-        SERVICE_NAMES.add(SERVICE_SYNC_REFUND_ORDER_RESULT);
-        SERVICE_NAMES.add(SERVICE_DELIVER_EXCHANGE_GOODS);
-        SERVICE_NAMES.add(SERVICE_POS_SYNC_STOCK);
-        SERVICE_NAMES.add(SERVICE_POS_SYNC_PRODUCT);
-        SERVICE_NAMES.add(SERVICE_POS_VERIFY_ORDER);
-        SERVICE_NAMES.add(SERVICE_POS_RETURN_GOODS);
-        SERVICE_NAMES.add(SERVICE_CRM_SYNC_SCORE);
-        SERVICE_NAMES.add(SERVICE_SYNC_USER);
-        SERVICE_NAMES.add(SERVICE_CRM_GOODS_SHARE_CODE);
-        SERVICE_NAMES.add(SERVICE_OPEN_APP_ID);
-        SERVICE_NAMES.add(SERVICE_CREATE_COUPON);
-        SERVICE_NAMES.add(SERVICE_GRANT_COUPON);
-        SERVICE_NAMES.add(SERVICE_SYNC_COUPON);
-        SERVICE_NAMES.add(SERVICE_QUERY_COUPON);
-
-        //易快帮许屏蔽服务初始化
-        E_INTERCEPTOR_SERVICE_NAMES.add(SERVICE_SEND_MESSAGE_BATCH);
-        E_INTERCEPTOR_SERVICE_NAMES.add(SERVICE_SEND_MESSAGE);
-        E_INTERCEPTOR_SERVICE_NAMES.add(SERVICE_MOBILE_LIST);
+        SERVICE_NAMES.add(SYNC_ORDER_STATUS);
     }
 
 }

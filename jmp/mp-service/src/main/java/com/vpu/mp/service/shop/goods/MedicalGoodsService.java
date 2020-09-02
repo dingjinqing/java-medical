@@ -11,11 +11,11 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.medical.DateFormatStr;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
+import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.sort.SortDao;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
@@ -323,7 +323,7 @@ public class MedicalGoodsService extends ShopBaseService {
 
     @SuppressWarnings("all")
     public JsonResult fetchExternalMedicalInfo() {
-        String appId = ApiExternalGateConstant.APP_ID_HIS;
+        String appId = ApiExternalGateConfig.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS;
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS);
