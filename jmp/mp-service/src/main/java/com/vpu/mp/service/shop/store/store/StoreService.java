@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.GoodsInfo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -655,7 +656,7 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 查询当前在营业的门店列表(不传地址)
-     * @return Map<Double       ,               StoreDo>
+     * @return Map<Double, StoreDo>
      */
     public Map<Double, StoreDo> getStoreListOpen() {
         List<StoreDo> stores = storeDao.getStoreOpen();
@@ -664,6 +665,14 @@ public class StoreService extends ShopBaseService {
             map.put(0D, e);
         });
         return map;
+    }
+
+    /**
+     * 调取药房接口查询库存是否充足 供getStoreListOpen方法调用
+     * @param goodsInfos 药品列表
+     */
+    public void checkStoreGoods(List<GoodsInfo> goodsInfos) {
+        // TODO：调取药房接口检验库存
     }
 
     /**
