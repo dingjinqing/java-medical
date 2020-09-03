@@ -119,7 +119,7 @@ public class OrderGoodsBo {
 
 	/**处方详情*/
 	private PrescriptionVo prescriptionInfo;
-	/**
+	/**getDoctorByHospitalCode
 	 * 处方号
 	 */
 	private String prescriptionOldCode;
