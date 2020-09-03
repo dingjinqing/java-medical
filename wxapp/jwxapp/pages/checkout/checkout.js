@@ -938,6 +938,9 @@ global.wxPage({
    */
   onShow: function () {
     if(this.data.patientDiagnose){
+      if(this.data.choosePayType === 2){
+        this.showShareFriend()
+      }
       this.confirm()
       return
     }
