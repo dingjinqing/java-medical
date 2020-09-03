@@ -40,9 +40,10 @@
 </template>
 
 <script>
-import {
-  getShowMenu
-} from '@/api/store/store'
+// import {
+//   getShowMenu
+// } from '@/api/store/store'
+import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
@@ -181,44 +182,41 @@ export default {
       console.log(this[meta])
     },
     filterNavShow () {
-      getShowMenu().then((res) => {
-        if (res.error === 0) {
-          let souceArray = res.content
-          souceArray.forEach((item) => {
-            if (item.sub.length) {
-              this[item.enName] = item.sub.reduce((newArray, subItem) => {
-                if (subItem.check === 1) {
-                  let objItem = this[item.enName].find(leftItem => {
-                    return leftItem.name === subItem.enName
-                  })
-                  newArray = [...newArray, objItem]
-                }
-                return newArray
-              }, [])
-            } else {
+      console.log(this.showMenuData)
+      let souceArray = this.showMenuData
+      souceArray.forEach((item) => {
+        if (item.sub.length) {
+          this[item.enName] = item.sub.reduce((newArray, subItem) => {
+            if (subItem.check === 1) {
               let objItem = this[item.enName].find(leftItem => {
-                return leftItem.name === item.enName
+                return leftItem.name === subItem.enName
               })
-              this[item.enName] = [objItem]
+              newArray = [...newArray, objItem]
             }
+            return newArray
+          }, [])
+        } else {
+          let objItem = this[item.enName].find(leftItem => {
+            return leftItem.name === item.enName
           })
+          this[item.enName] = [objItem]
         }
-        // this.menuParam = menuParam
-        // Object.keys(menuParam).forEach(keyItem => {
-        //   if (!this.hasOwnProperty(keyItem)) return
-        //   this[keyItem] = this[keyItem].reduce((defaultData, item) => {
-        //     if (item.children && item.children.length) {
-        //       item.children = item.children.reduce((childrenDefault, childrenItem) => {
-        //         if (menuParam[keyItem].includes(childrenItem.name)) childrenDefault.push(childrenItem)
-        //         return childrenDefault
-        //       }, [])
-        //     }
-        //     if (menuParam[keyItem].includes(item.name)) defaultData.push(item)
-        //     return defaultData
-        //   }, [])
-        // })
-        // resolve()
       })
+      // this.menuParam = menuParam
+      // Object.keys(menuParam).forEach(keyItem => {
+      //   if (!this.hasOwnProperty(keyItem)) return
+      //   this[keyItem] = this[keyItem].reduce((defaultData, item) => {
+      //     if (item.children && item.children.length) {
+      //       item.children = item.children.reduce((childrenDefault, childrenItem) => {
+      //         if (menuParam[keyItem].includes(childrenItem.name)) childrenDefault.push(childrenItem)
+      //         return childrenDefault
+      //       }, [])
+      //     }
+      //     if (menuParam[keyItem].includes(item.name)) defaultData.push(item)
+      //     return defaultData
+      //   }, [])
+      // })
+      // resolve()
     }
   },
   computed: {
@@ -251,6 +249,7 @@ export default {
     //   return activePath
     //   return this.$route.path
     // }
+    ...mapGetters(['showMenuData'])
   },
   filters: {
     getNavName (name) {

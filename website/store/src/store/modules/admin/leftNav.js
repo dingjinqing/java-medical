@@ -1,18 +1,27 @@
 const leftNav = {
   state: {
-    admin_leftVav_flag: null
+    admin_leftVav_flag: null,
+    showMenuData: null
   },
   mutations: {
     // 切换admin左侧导航
     TOCHANGE_LEFTNAV: (state, params) => {
       state.admin_leftVav_flag = params
       console.log(state.admin_leftVav_flag)
+    },
+    MENU_DATA: (state, params) => {
+      console.log(params)
+      state.showMenuData = params
     }
   },
   actions: {
     changeNavLeft ({ commit }, params) {
       console.log(params)
       commit('TOCHANGE_LEFTNAV', params)
+    },
+    getShowMenuData ({ commit }, params) {
+      console.log(params)
+      commit('MENU_DATA', params)
     }
   }
 }
