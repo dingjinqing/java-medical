@@ -1,13 +1,15 @@
 package com.vpu.mp.service.saas.api;
 
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateResult;
-import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.pojo.shop.order.api.ApiSyncOrderStatusParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,6 @@ public class ApiExternalGateService extends MainBaseService {
 
     @Autowired
     private ApiExternalBaseService apiExternalBaseService;
-    @Autowired
-    private ApiExternalGateConfig config;
 
     /**
      * 验证系统级参数
@@ -39,18 +39,18 @@ public class ApiExternalGateService extends MainBaseService {
     public String checkSystemParam(ApiExternalGateParam param) {
         String nullKey = null;
         if (StringUtils.isBlank(param.getAppId())) {
-            nullKey = "app_id";
+            nullKey = "appId";
         } else if (StringUtils.isBlank(param.getAppSecret())) {
-            nullKey = "app_secret";
+            nullKey = "appSecret";
         } else if (StringUtils.isBlank(param.getSessionKey())) {
-            nullKey = "session_key";
+            nullKey = "sessionKey";
         } else if (StringUtils.isBlank(param.getServiceName())) {
-            nullKey = "service_name";
+            nullKey = "serviceName";
         } else {
             nullKey = null;
         }
         if (nullKey != null) {
-            logPrinter(param.getAppId(), ApiExternalGateConfig.ERROR_LACK_PARAM_MSG + ":" + nullKey);
+            logPrinter(param.getAppId(), ApiExternalGateConstant.ERROR_LACK_PARAM_MSG + ":" + nullKey);
         }
         return nullKey;
     }
@@ -71,7 +71,7 @@ public class ApiExternalGateService extends MainBaseService {
         } catch (NumberFormatException e) {
             return false;
         }
-        Timestamp timestamp = new Timestamp(curSecond*1000);
+        Timestamp timestamp = new Timestamp(curSecond * 1000);
         Timestamp now = DateUtils.getLocalDateTime();
         // 大于30秒
         int timeout = 30000;
@@ -88,7 +88,7 @@ public class ApiExternalGateService extends MainBaseService {
      * @return true合法 false 错误
      */
     public boolean checkSign(ApiExternalGateParam param) {
-        String s = apiExternalBaseService.generateSign(param.getAppId(),param.getAppSecret(),param.getSessionKey(),param.getServiceName(), param.getContent(),param.getCurSecond());
+        String s = apiExternalBaseService.generateSign(param.getAppId(), param.getAppSecret(), param.getSessionKey(), param.getServiceName(), param.getContent(), param.getCurSecond());
         if (!s.equals(param.getSign())) {
             logPrinter(param.getAppId(), "签名错误");
             return false;
@@ -106,13 +106,13 @@ public class ApiExternalGateService extends MainBaseService {
         String sessionKey = param.getSessionKey();
         boolean ok = Pattern.matches(".*s\\d+", sessionKey);
         if (!ok) {
-            return -1;
+            return null;
         }
         int si = sessionKey.lastIndexOf('s');
         String shopIdStr = sessionKey.substring(si + 1);
-        Integer shopId= -1;
+        Integer shopId = null;
         try {
-            shopId =  Integer.parseInt(shopIdStr);
+            shopId = Integer.parseInt(shopIdStr);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -162,12 +162,8 @@ public class ApiExternalGateService extends MainBaseService {
      * @return true有效服务 false无效服务
      */
     public boolean checkService(ApiExternalGateParam param) {
-        if (ApiExternalGateConfig.E_INTERCEPTOR_SERVICE_NAMES.contains(param.getServiceName())
-            && !config.getSmsPlatformKey().equals(param.getSessionKey())) {
-            return false;
-        }
 
-        if (!ApiExternalGateConfig.SERVICE_NAMES.contains(param.getServiceName())) {
+        if (!ApiExternalGateConstant.SERVICE_NAMES.contains(param.getServiceName())) {
             return false;
         }
         return true;
@@ -183,23 +179,50 @@ public class ApiExternalGateService extends MainBaseService {
         String serviceName = param.getServiceName();
         ApiExternalGateResult apiExternalGateResult = null;
         switch (serviceName) {
+            case ApiExternalGateConstant.SYNC_ORDER_STATUS:
+
+                break;
             default:
                 apiExternalGateResult = new ApiExternalGateResult();
-                apiExternalGateResult.setCode(ApiExternalGateConfig.ERROR_CODE_INVALID_SERVICE);
-                apiExternalGateResult.setMsg(ApiExternalGateConfig.ERROR_CODE_INVALID_SERVICE_MSG);
+                apiExternalGateResult.setCode(ApiExternalGateConstant.ERROR_CODE_INVALID_SERVICE);
+                apiExternalGateResult.setMsg(ApiExternalGateConstant.ERROR_CODE_INVALID_SERVICE_MSG);
         }
         return apiExternalGateResult;
     }
 
+    /**
+     * 药房同步订单状态
+     * @param apiExternalGateParam
+     * @return
+     */
+    private ApiExternalGateResult syncOrderStatus(ApiExternalGateParam apiExternalGateParam) {
+        ApiSyncOrderStatusParam apiSyncOrderStatusParam = Util.parseJson(apiExternalGateParam.getContent(), ApiSyncOrderStatusParam.class);
+        if (apiSyncOrderStatusParam == null) {
+            return contentErrorResult();
+        }
+        ApiExternalGateResult result = new ApiExternalGateResult();
+        if (StringUtils.isBlank(apiSyncOrderStatusParam.getOrderSn())) {
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
+            result.setMsg("参数orderSn为空");
+            return result;
+        }
+        if (apiSyncOrderStatusParam.getOrderStatus() == null) {
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
+            result.setMsg("参数orderStatus非法");
+            return result;
+        }
+
+        return null;
+    }
+
     private ApiExternalGateResult contentErrorResult() {
         ApiExternalGateResult apiJsonResult = new ApiExternalGateResult();
-        apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+        apiJsonResult.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
         apiJsonResult.setMsg("content 内容参数错误");
         return apiJsonResult;
     }
 
     private void logPrinter(String appId, String msg) {
-        log.error("数据同步接口：" + ApiExternalGateConfig.APP_NAMES.get(appId) + "：" + msg);
+        log.error("数据同步接口：" + ApiExternalGateConstant.APP_NAMES.get(appId) + "：" + msg);
     }
-
 }

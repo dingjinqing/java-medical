@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
 
 /**
@@ -61,9 +61,11 @@ public class PrescriptionRebateDao extends ShopBaseDao {
      */
     public PageResult<PrescriptionRebateVo> getPageList(PrescriptionRebateListParam param){
         SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,PRESCRIPTION_REBATE.asterisk())
+            .select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,USER.USERNAME.as("userName"),PRESCRIPTION_REBATE.asterisk())
             .from(PRESCRIPTION_REBATE);
-        select.leftJoin(DOCTOR).on(DOCTOR.ID.eq(PRESCRIPTION_REBATE.DOCTOR_ID));
+        select.leftJoin(DOCTOR).on(DOCTOR.ID.eq(PRESCRIPTION_REBATE.DOCTOR_ID))
+            .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_REBATE.PRESCRIPTION_CODE))
+        .leftJoin(USER).on(USER.USER_ID.eq(PRESCRIPTION.USER_ID));
         select.where(PRESCRIPTION_REBATE.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         select=buildOptions(select,param);
         select.orderBy(PRESCRIPTION_REBATE.CREATE_TIME.desc());

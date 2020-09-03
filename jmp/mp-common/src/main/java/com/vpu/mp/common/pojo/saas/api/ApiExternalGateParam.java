@@ -20,6 +20,8 @@ public class ApiExternalGateParam {
      *         appId: 200002  appSecret:2b7212759813c4c03ccc316f8cb1c654
      * 4> HIS服务
      *         appId: 200003  appSecret:7472c1efe6ca4215af1353317938b50a
+     * 5> STORE服务
+     *         appId: 200004  appSecret:8482c1efe6ca4215af1353317938a51c
      * */
     private String appId;
     private String appSecret;

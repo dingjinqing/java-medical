@@ -28,17 +28,13 @@ import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RECEIVED;
 
 /**
  * 	订单模块
@@ -347,9 +343,9 @@ public class AdminOrderController extends AdminBaseController {
     @PostMapping("/checkVerifyCode")
     public JsonResult checkVerifyCode(@RequestBody CheckVerifyCodeParam checkVerifyCodeParam) {
         boolean b = shop().readOrder.checkVerifyCode(checkVerifyCodeParam.getVerifyCode(), checkVerifyCodeParam.getOrderSn());
-        // 核销码验证成功，订单转为已完成状态
+        // 核销码验证成功，订单转为已收货状态
         if (b) {
-            shop().orderInfoService.setOrderstatus(checkVerifyCodeParam.getOrderSn(), ORDER_FINISHED);
+            shop().orderInfoService.setOrderstatus(checkVerifyCodeParam.getOrderSn(), ORDER_RECEIVED);
             return success();
         }
         return fail();

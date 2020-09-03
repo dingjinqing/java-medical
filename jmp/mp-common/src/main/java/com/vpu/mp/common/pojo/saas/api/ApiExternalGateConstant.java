@@ -1,8 +1,6 @@
-package com.vpu.mp.config;
+package com.vpu.mp.common.pojo.saas.api;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,15 +11,8 @@ import java.util.Set;
  * @author 李晓冰
  * @date 2020年03月30日
  */
-@Configuration
 @Data
-public class ApiExternalGateConfig {
-
-    @Value(value = "${api.external.service.sign.key}")
-    private String signKey;
-    @Value(value = "${api.external.service.sms.platform.key}")
-    private String smsPlatformKey;
-
+public class ApiExternalGateConstant {
     /**
      * 服务名称定义
      */
@@ -32,10 +23,6 @@ public class ApiExternalGateConfig {
      * 服务名成集合
      */
     public static final Set<String> SERVICE_NAMES = new HashSet<>(25);
-    /**
-     * 易快帮需要特殊拦截的服务
-     */
-    public static final Set<String> E_INTERCEPTOR_SERVICE_NAMES = new HashSet<>(3);
 
     /**
      * 响应码

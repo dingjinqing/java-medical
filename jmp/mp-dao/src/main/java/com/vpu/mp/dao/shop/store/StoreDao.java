@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
@@ -16,6 +17,9 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.*;
+import static java.util.Calendar.SATURDAY;
+import static java.util.Calendar.SUNDAY;
 
 /**
  * @author chenjie
@@ -23,31 +27,6 @@ import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
  */
 @Repository
 public class StoreDao extends ShopBaseDao {
-
-    /**
-     * 已关店
-     */
-    private static final Byte STORE_BUSINESS_CLOSE = 0;
-    /**
-     * 在营业
-     */
-    private static final Byte STORE_BUSINESS_OPENING = 1;
-    /**
-     * 每天营业
-     */
-    private static final Byte STORE_BUSINESS_OPEN_EVERYDAY = 1;
-    /**
-     * 工作日营业
-     */
-    private static final Byte STORE_BUSINESS_WORKDAY = 0;
-    /**
-     * 周六
-     */
-    private static final int SATURDAY = 7;
-    /**
-     * 周日
-     */
-    private static final int SUNDAY = 1;
 
     public StoreBasicVo getStoreByNo(String storeNo) {
         return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).fetchAnyInto(StoreBasicVo.class);
@@ -59,35 +38,34 @@ public class StoreDao extends ShopBaseDao {
     }
 
     /**
-     * 查询当前在营业门店列表
-     * @return StoreDo
+     * 根据有货门店storeCode获取门店列表
+     * @param stores 有货门店storeCode
+     * @return List<StoreDo>
      */
-    public List<StoreDo> getStoreOpen() {
+    public List<StoreDo> getStoreOpen(List<String> stores) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        try {
-            Date date = new Date();
-            String dateStringParse = sdf.format(date);
-            System.out.println(dateStringParse);
-            Date today = new Date();
-            Calendar c = Calendar.getInstance();
-            c.setTime(today);
-            int weekday = c.get(Calendar.DAY_OF_WEEK);
-            SelectConditionStep<Record> select = db().select().from(STORE)
-                .where(STORE.BUSINESS_STATE.eq(STORE_BUSINESS_OPENING));
-            // 如果不是工作日，查询每天营业的门店
-            if (weekday == SATURDAY || weekday == SUNDAY) {
-                select.and(STORE.BUSINESS_TYPE.eq(STORE_BUSINESS_WORKDAY));
-            }
-            // 查询未打烊门店
-            select.and(STORE.OPENING_TIME.lt(dateStringParse));
-            select.and(STORE.CLOSE_TIME.gt(dateStringParse));
-            // TODO: 添加门店库存校验、门店是否支持自提
-            select.limit(15);
-            return select.fetchInto(StoreDo.class);
-        } catch (Exception e) {
-            e.printStackTrace();
+        Date date = new Date();
+        String dateStringParse = sdf.format(date);
+        Date today = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        int weekday = c.get(Calendar.DAY_OF_WEEK);
+        SelectConditionStep<Record> select = db().select().from(STORE)
+            .where(STORE.BUSINESS_STATE.eq(STORE_BUSINESS_OPENING));
+        // 如果不是工作日，查询每天营业的门店
+        if (weekday == SATURDAY || weekday == SUNDAY) {
+            select.and(STORE.BUSINESS_TYPE.eq(STORE_BUSINESS_WORKDAY));
         }
-        return null;
+        // 查询未打烊门店
+        select.and(STORE.OPENING_TIME.lt(dateStringParse));
+        select.and(STORE.CLOSE_TIME.gt(dateStringParse));
+        if (stores != null) {
+            logger().info("门店库存校验");
+            select.and(STORE.STORE_CODE.in(stores));
+        }
+        select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
+        select.limit(15);
+        return select.fetchInto(StoreDo.class);
     }
 
     /**

@@ -18,8 +18,8 @@ public class AnchorPointsDo {
     private Byte      eventType;
     private String    page;
     private String    module;
-    private Byte      platform;
-    private Byte      device;
+    private String    platform;
+    private String    device;
     private Integer   storeId;
     private Integer   userId;
     private String    key;

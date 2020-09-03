@@ -12,13 +12,11 @@ import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.pay.record.CheckVerifyCodeParam;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionAuditParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.verify.VerifyParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
@@ -30,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RECEIVED;
 
 /**
  * @author chenjie
@@ -282,9 +280,9 @@ public class StoreOrderController extends StoreBaseController {
     @PostMapping("/checkVerifyCode")
     public JsonResult checkVerifyCode(@RequestBody CheckVerifyCodeParam checkVerifyCodeParam) {
         boolean b = shop().readOrder.checkVerifyCode(checkVerifyCodeParam.getVerifyCode(), checkVerifyCodeParam.getOrderSn());
-        // 核销码验证成功，订单转为已完成状态
+        // 核销码验证成功，订单转为已收货状态
         if (b) {
-            shop().orderInfoService.setOrderstatus(checkVerifyCodeParam.getOrderSn(), ORDER_FINISHED);
+            shop().orderInfoService.setOrderstatus(checkVerifyCodeParam.getOrderSn(), ORDER_RECEIVED);
             return success();
         }
         return fail();

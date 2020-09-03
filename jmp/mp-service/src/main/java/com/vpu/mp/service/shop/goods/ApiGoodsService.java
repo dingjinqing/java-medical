@@ -4,7 +4,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
-import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductBakRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -59,19 +59,19 @@ public class ApiGoodsService extends ShopBaseService {
         ApiJsonResult apiJsonResult = new ApiJsonResult();
         Integer posShopId = posSyncProductParam.getShopId();
         if (posShopId == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("缺少必传参数shop_id");
             return  apiJsonResult;
         }
         StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
         if (storeRecord == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("该店铺没有对应的门店");
             return  apiJsonResult;
         }
 
         if (posSyncProductParam.getGoodsList() == null || posSyncProductParam.getGoodsList().size() == 0) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("缺少商品");
             return  apiJsonResult;
         }
@@ -122,21 +122,21 @@ public class ApiGoodsService extends ShopBaseService {
         ApiJsonResult apiJsonResult = new ApiJsonResult();
         Integer posShopId = param.getPosShopId();
         if (posShopId == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("缺少必传参数shop_id");
             return  apiJsonResult;
         }
 
         StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
         if (storeRecord == null) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("该店铺没有对应的门店");
             return  apiJsonResult;
         }
 
         List<GoodsSpecProductRecord> goodsSpecPrdBySns = goodsSpecProductService.getGoodsSpecPrdBySn(Collections.singleton(param.getPrdSn()));
         if (goodsSpecPrdBySns == null || goodsSpecPrdBySns.size() == 0) {
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
             apiJsonResult.setMsg("该prd_sn没有对应的商品");
             return  apiJsonResult;
         }
@@ -269,7 +269,7 @@ public class ApiGoodsService extends ShopBaseService {
 
         Map<Integer, GoodsSpecProductRecord> skuIdMap = goodsSpecProductService.apiGetGoodsSpecPrdByPrdId(param.getSkuId());
         if (skuIdMap == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
             result.setMsg("同步数据的规格信息不存在");
             return result;
         }
@@ -290,7 +290,7 @@ public class ApiGoodsService extends ShopBaseService {
             });
             goodsService.updateEs(Collections.singletonList(goodsRecord.getGoodsId()));
         } catch (Exception exception) {
-            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setCode(ApiExternalGateConstant.ERROR_CODE_SYNC_FAIL);
             result.setMsg("数据同步错误");
             return result;
         }

@@ -14,5 +14,6 @@ import java.util.List;
 public class PrescriptionRebateVo extends PrescriptionRebateDo {
     private String doctorName;
     private String mobile;
+    private String userName;
     private List<PrescriptionItemDo> medicalList;
 }

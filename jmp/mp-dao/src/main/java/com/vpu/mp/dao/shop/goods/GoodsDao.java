@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 /**
  * 商品dao
@@ -35,6 +36,26 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Repository
 public class GoodsDao extends ShopBaseDao {
+    /**
+     * 通过goodsId获取推广语
+     *
+     * @param goodsId 商品id
+     * @return
+     */
+    public String getPromotionLanguage(Integer goodsId) {
+        return db().select(GOODS.PROMOTION_LANGUAGE).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAnyInto(String.class);
+    }
+    /**
+     * 通过分类id集合获取商品id集合
+     *
+     * @param sortId
+     * @return
+     */
+    public List<Integer> listGoodsId(List<Integer> sortId) {
+
+        return db().select(GOODS.GOODS_ID).from(GOODS)
+            .where(GOODS.SORT_ID.in(sortId)).fetch(GOODS.GOODS_ID);
+    }
     /**
      * 商品新增
      * @param goodsDo 商品数据

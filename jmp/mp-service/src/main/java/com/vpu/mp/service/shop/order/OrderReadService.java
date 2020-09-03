@@ -16,7 +16,7 @@ import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
-import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
@@ -1191,18 +1191,18 @@ showManualReturn(vo);
         ApiOrderQueryParam param = Util.parseJson(gateParam.getContent(), ApiOrderQueryParam.class);
         ApiJsonResult result = new ApiJsonResult();
         if (param == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("content为空");
             return result;
         }
         if (StringUtils.isBlank(param.getOrderSn())) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("参数order_sn为空");
             return result;
         }
         ApiPageResult<ApiOrderListVo> pageResult = getApiOrderListVos(param);
         if(CollectionUtils.isEmpty(pageResult.getDataList())) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("查无此单");
             return result;
         }

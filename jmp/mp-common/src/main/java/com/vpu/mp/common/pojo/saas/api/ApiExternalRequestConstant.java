@@ -64,4 +64,6 @@ public class ApiExternalRequestConstant {
     public static final String SERVICE_NAME_PULL_GOODS_INFOS = "pullGoodsInfos";
     /**批量同步药品信息*/
     public static final String SERVICE_NAME_SYNC_GOODS_INFOS = "syncGoodsInfos";
+    /**请求药品库存足够的药店列表*/
+    public static final String SERVICE_NAME_GET_STOCK_ENOUGH_SHOP_LIST = "getStockEnoughShopList";
 }

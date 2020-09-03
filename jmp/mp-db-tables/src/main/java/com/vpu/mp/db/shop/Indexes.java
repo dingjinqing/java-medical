@@ -127,6 +127,8 @@ public class Indexes {
     public static final Index DISTRIBUTION_WITHDRAW_PRIMARY = Indexes0.DISTRIBUTION_WITHDRAW_PRIMARY;
     public static final Index DISTRIBUTOR_APPLY_PRIMARY = Indexes0.DISTRIBUTOR_APPLY_PRIMARY;
     public static final Index DISTRIBUTOR_APPLY_USER_ID = Indexes0.DISTRIBUTOR_APPLY_USER_ID;
+    public static final Index DISTRIBUTOR_COLLECTION_PRIMARY = Indexes0.DISTRIBUTOR_COLLECTION_PRIMARY;
+    public static final Index DISTRIBUTOR_COLLECTION_DISTRIBUTOR_ID = Indexes0.DISTRIBUTOR_COLLECTION_DISTRIBUTOR_ID;
     public static final Index DISTRIBUTOR_GROUP_PRIMARY = Indexes0.DISTRIBUTOR_GROUP_PRIMARY;
     public static final Index DISTRIBUTOR_LEVEL_LEVEL_ID = Indexes0.DISTRIBUTOR_LEVEL_LEVEL_ID;
     public static final Index DISTRIBUTOR_LEVEL_PRIMARY = Indexes0.DISTRIBUTOR_LEVEL_PRIMARY;
@@ -656,6 +658,8 @@ public class Indexes {
         public static Index DISTRIBUTION_WITHDRAW_PRIMARY = Internal.createIndex("PRIMARY", DistributionWithdraw.DISTRIBUTION_WITHDRAW, new OrderField[] { DistributionWithdraw.DISTRIBUTION_WITHDRAW.ID }, true);
         public static Index DISTRIBUTOR_APPLY_PRIMARY = Internal.createIndex("PRIMARY", DistributorApply.DISTRIBUTOR_APPLY, new OrderField[] { DistributorApply.DISTRIBUTOR_APPLY.ID }, true);
         public static Index DISTRIBUTOR_APPLY_USER_ID = Internal.createIndex("user_id", DistributorApply.DISTRIBUTOR_APPLY, new OrderField[] { DistributorApply.DISTRIBUTOR_APPLY.USER_ID }, false);
+        public static Index DISTRIBUTOR_COLLECTION_PRIMARY = Internal.createIndex("PRIMARY", DistributorCollection.DISTRIBUTOR_COLLECTION, new OrderField[] { DistributorCollection.DISTRIBUTOR_COLLECTION.ID }, true);
+        public static Index DISTRIBUTOR_COLLECTION_DISTRIBUTOR_ID = Internal.createIndex("distributor_id", DistributorCollection.DISTRIBUTOR_COLLECTION, new OrderField[] { DistributorCollection.DISTRIBUTOR_COLLECTION.DISTRIBUTOR_ID }, false);
         public static Index DISTRIBUTOR_GROUP_PRIMARY = Internal.createIndex("PRIMARY", DistributorGroup.DISTRIBUTOR_GROUP, new OrderField[] { DistributorGroup.DISTRIBUTOR_GROUP.ID }, true);
         public static Index DISTRIBUTOR_LEVEL_LEVEL_ID = Internal.createIndex("level_id", DistributorLevel.DISTRIBUTOR_LEVEL, new OrderField[] { DistributorLevel.DISTRIBUTOR_LEVEL.LEVEL_ID }, true);
         public static Index DISTRIBUTOR_LEVEL_PRIMARY = Internal.createIndex("PRIMARY", DistributorLevel.DISTRIBUTOR_LEVEL, new OrderField[] { DistributorLevel.DISTRIBUTOR_LEVEL.ID }, true);
