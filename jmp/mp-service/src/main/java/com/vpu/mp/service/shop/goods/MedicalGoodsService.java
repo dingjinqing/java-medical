@@ -489,6 +489,7 @@ public class MedicalGoodsService extends ShopBaseService {
     public JsonResult fetchExternalStoreGoodsInfo(Long lastRequestTime, StoreBasicVo storeInfo, Timestamp currentPullTime, String appId, Integer shopId, String serviceName) {
         MedicalGoodsExternalStoreRequestParam param = new MedicalGoodsExternalStoreRequestParam();
         param.setStartTime(lastRequestTime);
+        param.setShopSn(storeInfo.getStoreCode());
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
         // 数据拉取错误
         if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
