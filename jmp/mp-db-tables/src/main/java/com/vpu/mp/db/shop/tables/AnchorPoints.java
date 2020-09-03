@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AnchorPoints extends TableImpl<AnchorPointsRecord> {
 
-    private static final long serialVersionUID = -830616041;
+    private static final long serialVersionUID = 718471223;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_anchor_points</code>
@@ -88,14 +88,14 @@ public class AnchorPoints extends TableImpl<AnchorPointsRecord> {
     public final TableField<AnchorPointsRecord, String> MODULE = createField("module", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "功能模块");
 
     /**
-     * The column <code>mini_shop_471752.b2c_anchor_points.platform</code>. 平台 1 wxapp 2admin
+     * The column <code>mini_shop_471752.b2c_anchor_points.platform</code>. 平台  wxapp admin
      */
-    public final TableField<AnchorPointsRecord, Byte> PLATFORM = createField("platform", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "平台 1 wxapp 2admin");
+    public final TableField<AnchorPointsRecord, String> PLATFORM = createField("platform", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "平台  wxapp admin");
 
     /**
-     * The column <code>mini_shop_471752.b2c_anchor_points.device</code>. 设备 1 android 2 ios  3 pc
+     * The column <code>mini_shop_471752.b2c_anchor_points.device</code>. 设备  android  ios   pc
      */
-    public final TableField<AnchorPointsRecord, Byte> DEVICE = createField("device", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "设备 1 android 2 ios  3 pc");
+    public final TableField<AnchorPointsRecord, String> DEVICE = createField("device", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "设备  android  ios   pc");
 
     /**
      * The column <code>mini_shop_471752.b2c_anchor_points.store_id</code>. 门店id
