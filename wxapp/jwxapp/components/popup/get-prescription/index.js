@@ -7,9 +7,9 @@ global.wxComponent({
       type: String,
       value: ''
     },
-    show:{
-      type:Number,
-      value:0,
+    show: {
+      type: Number,
+      value: 0,
       observer: function (newVal, oldVal) {
         let that = this;
         console.log(newVal + '12313123');
@@ -19,13 +19,16 @@ global.wxComponent({
       }
     }
   },
-  methods:{
-    preClose () {
+  methods: {
+    preClose() {
       this.setData({
-        show:false
+        show: false
       })
     },
-    bindGetPre () {
+    bindGetPre() {
+      util.handleBuriedPoint('home_page_syn', 'pages/index/index', [{
+        key: '首页弹窗去同步'
+      }])
       util.jumpLink('/pages1/getprescription/getprescription')
     }
   }

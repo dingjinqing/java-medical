@@ -35,9 +35,9 @@ global.wxPage({
       cardBalance: null, //会员卡抵扣金额
       orderPayWay: null, //支付方式
       isCart: 0,
-      patientId:null, //患者id
-      lat:null,
-      lng:null
+      patientId: null, //患者id
+      lat: null,
+      lng: null
     },
     usePayInfo: {
       moneyPaid: 0, //订单可支付的金额
@@ -58,9 +58,9 @@ global.wxPage({
       custom: ''
     },
     options: {},
-    title_bgColor:'#26C4BC',
-    patientDiagnose:null,
-    selectedStoreInfo:null
+    title_bgColor: '#26C4BC',
+    patientDiagnose: null,
+    selectedStoreInfo: null
   },
 
   /**
@@ -68,7 +68,19 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType=null, activityId=null, recordId=null, preSaleInfo = null, roomId = null, inviteId = null, memberCardNo = 0, addressId, isPrescription = null, prescriptionCode = null } = options
+    let {
+      goodsList,
+      activityType = null,
+      activityId = null,
+      recordId = null,
+      preSaleInfo = null,
+      roomId = null,
+      inviteId = null,
+      memberCardNo = 0,
+      addressId,
+      isPrescription = null,
+      prescriptionCode = null
+    } = options
     console.log(options)
     wx.setStorage({
       data: options,
@@ -88,14 +100,22 @@ global.wxPage({
         prdId: productId,
         isCart = 0
       } = item
-      if(Number(activityType) === 4) {goodsPrice = 0}
-      goods.push({ goodsId, goodsPrice, goodsNumber, productId, isCart })
+      if (Number(activityType) === 4) {
+        goodsPrice = 0
+      }
+      goods.push({
+        goodsId,
+        goodsPrice,
+        goodsNumber,
+        productId,
+        isCart
+      })
     })
     if (preSaleInfo) {
       preSaleInfo = JSON.parse(preSaleInfo)
-      if(preSaleInfo.preSalePrdInfo && (preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice > 0)){
+      if (preSaleInfo.preSalePrdInfo && (preSaleInfo.preSalePrdInfo.discountPrice - preSaleInfo.preSalePrdInfo.depositPrice > 0)) {
         this.setData({
-          preSaleDiscountPrice:(preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice).toFixed(2)
+          preSaleDiscountPrice: (preSaleInfo.preSalePrdInfo.discountPrice - preSaleInfo.preSalePrdInfo.depositPrice).toFixed(2)
         })
       }
     }
@@ -105,13 +125,13 @@ global.wxPage({
       'params.activityType': activityType,
       'params.activityId': activityId,
       'params.recordId': recordId,
-      'params.roomId':roomId,
-      'params.memberCardNo':memberCardNo,
-      'params.prescriptionCode':prescriptionCode,
-      'params.isPrescription':Number(isPrescription),
+      'params.roomId': roomId,
+      'params.memberCardNo': memberCardNo,
+      'params.prescriptionCode': prescriptionCode,
+      'params.isPrescription': Number(isPrescription),
       preSaleInfo,
       inviteId,
-      isPrescription:Number(isPrescription)
+      isPrescription: Number(isPrescription)
     })
     if (options.groupid) {
       this.setData({
@@ -120,22 +140,36 @@ global.wxPage({
     }
     this.requestOrder()
   },
-  requestOrder () {
+  requestOrder() {
     util.api(
       '/api/wxapp/order',
       res => {
         if (res.error === 0) {
           let orderInfo = res.content
           this.setCardData(orderInfo)
+          let orderGoods = orderInfo.orderGoods,
+            rxCount = 0,
+            no_rxcount = 0,
+            goods_num = 0
+          orderGoods.forEach((item) => {
+            if (item.isRx > 0) {
+              rxCount++
+            } else {
+              no_rxcount++
+            }
+            goods_num += item.goodsNumber
+          })
           this.setData({
             orderInfo,
-            isAward:res.content.activityType === 24, //是否奖品订单
-            isCardExchange:res.content.activityType === 13, //是否限次卡兑换
+            goods_num: goods_num,
+            rxKind: (rxCount > 0 && no_rxcount > 0) ? '混合药' : (rxCount == 0 ? '非处方药' : '处方药'),
+            isAward: res.content.activityType === 24, //是否奖品订单
+            isCardExchange: res.content.activityType === 13, //是否限次卡兑换
           })
           this.setData({
-            submitButtonStatus:this.getSubmitButtonStatus()
+            submitButtonStatus: this.getSubmitButtonStatus()
           })
-          if(orderInfo.activityType === 4){ //积分兑换数据
+          if (orderInfo.activityType === 4) { //积分兑换数据
             this.setScoreRedeemData(orderInfo)
           }
           this.getCouponData(orderInfo)
@@ -153,44 +187,45 @@ global.wxPage({
             }
           }, false, '', '确定')
         }
-      },
-      { ...this.data.params }
+      }, {
+        ...this.data.params
+      }
     )
   },
-  getPayType (orderinfo) {
+  getPayType(orderinfo) {
     let payType = this.data.payType
-    if (!payType.includes(0) && (orderinfo.paymentList.wxpay || orderinfo.paymentList.balance || orderinfo.paymentList.score)){
+    if (!payType.includes(0) && (orderinfo.paymentList.wxpay || orderinfo.paymentList.balance || orderinfo.paymentList.score)) {
       payType.push(0)
       this.setData({
-        choosePayType : 0
+        choosePayType: 0
       })
     }
-    if (!payType.includes(1) && orderinfo.paymentList.cod){
+    if (!payType.includes(1) && orderinfo.paymentList.cod) {
       payType.push(1)
-      if(payType.length === 1){
+      if (payType.length === 1) {
         this.setData({
-          choosePayType : 1
+          choosePayType: 1
         })
       }
     }
     if (!payType.includes(2) && orderinfo.insteadPayCfg && orderinfo.insteadPayCfg.status && (orderinfo.insteadPayCfg.singlePay || orderinfo.insteadPayCfg.multiplePay)) {
       payType.push(2)
-      if(payType.length === 1){
+      if (payType.length === 1) {
         this.setData({
-          choosePayType : 2
+          choosePayType: 2
         })
       }
     }
-    if(this.data.scoreRedeemData && this.data.scoreRedeemData.score){
+    if (this.data.scoreRedeemData && this.data.scoreRedeemData.score) {
       payType = [3]
       this.setData({
-        choosePayType : 3
+        choosePayType: 3
       })
     }
-    if(this.data.scoreRedeemData && this.data.scoreRedeemData.money){
+    if (this.data.scoreRedeemData && this.data.scoreRedeemData.money) {
       payType = [0]
       this.setData({
-        choosePayType : 0
+        choosePayType: 0
       })
     }
     this.setData({
@@ -198,12 +233,12 @@ global.wxPage({
     })
   },
   // 选择地址
-  addAddress () {
+  addAddress() {
     let addressId = -1
     if (this.data.orderInfo && this.data.orderInfo.address && this.data.orderInfo.address.addressId) {
       addressId = this.data.orderInfo.address.addressId
     }
-    util.navigateTo('/components/usercenter/useraddress/useraddress?select='+addressId)
+    util.navigateTo('/components/usercenter/useraddress/useraddress?select=' + addressId)
     // wx.chooseAddress({
     //   success: res => {
     //     util.api(
@@ -240,7 +275,7 @@ global.wxPage({
     //   }
     // })
   },
-  requestAddress () {
+  requestAddress() {
     let that = this
     util.api('/api/wxapp/address/get', op => {
       if (op.error === 0) {
@@ -274,10 +309,12 @@ global.wxPage({
         //   } }
         // )
       }
-    }, {addressId: this.data.addressId})
+    }, {
+      addressId: this.data.addressId
+    })
   },
   // 默认填充
-  defaultInput (orderInfo) {
+  defaultInput(orderInfo) {
     let {
       isBalancePay,
       isCardPay,
@@ -326,13 +363,13 @@ global.wxPage({
     if (paymentList.score && isScorePay === 1 && userScore > scorePayNum && userScore > 0) {
       console.log(moneyPaid)
       let useScore =
-        moneyPaid * scoreProportion > scoreMaxDiscount * scoreProportion
-          ? scoreMaxDiscount * scoreProportion > userScore
-            ? userScore
-            : scoreMaxDiscount * scoreProportion
-          : moneyPaid * scoreProportion > userScore
-            ? userScore
-            : moneyPaid * scoreProportion
+        moneyPaid * scoreProportion > scoreMaxDiscount * scoreProportion ?
+        scoreMaxDiscount * scoreProportion > userScore ?
+        userScore :
+        scoreMaxDiscount * scoreProportion :
+        moneyPaid * scoreProportion > userScore ?
+        userScore :
+        moneyPaid * scoreProportion
       moneyPaid -= parseInt(useScore)
       this.setData({
         'usePayInfo.useScore': parseInt(useScore),
@@ -347,7 +384,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 会员卡余额支付事件
-  cardBalanceTap () {
+  cardBalanceTap() {
     if (this.data.cardBalanceStatus) {
       this.setData({
         cardBalanceStatus: 0,
@@ -362,7 +399,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 余额支付事件
-  balanceTap () {
+  balanceTap() {
     if (this.data.balanceStatus) {
       this.setData({
         balanceStatus: 0,
@@ -377,7 +414,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 积分支付事件
-  scoreTap () {
+  scoreTap() {
     if (this.data.scoreStatus) {
       this.setData({
         scoreStatus: 0,
@@ -392,7 +429,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 获得输入的余额数
-  getInputBalance (data) {
+  getInputBalance(data) {
     this.setData({
       'usePayInfo.useBalance': data.detail,
       balanceStatus: 1
@@ -400,7 +437,7 @@ global.wxPage({
     this.getPayMoney()
   },
   //获取输入的积分数
-  getInputScore (data) {
+  getInputScore(data) {
     this.setData({
       'usePayInfo.useScore': parseInt(data.detail),
       scoreStatus: 1
@@ -408,7 +445,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 获取输入的会员卡余额数
-  getInputCardBalance (data) {
+  getInputCardBalance(data) {
     this.setData({
       'usePayInfo.useCardBalance': data.detail,
       cardBalanceStatus: 1
@@ -416,8 +453,11 @@ global.wxPage({
     this.getPayMoney()
   },
   // 获取优惠券数据
-  getCouponData (orderInfo) {
-    let { coupons, defaultCoupon } = orderInfo
+  getCouponData(orderInfo) {
+    let {
+      coupons,
+      defaultCoupon
+    } = orderInfo
     if (coupons === null || coupons.length === 0) {
       this.setData({
         couponArray: null,
@@ -426,7 +466,10 @@ global.wxPage({
       return
     }
     let couponList = coupons.map(item => {
-      let newItem = JSON.parse(JSON.stringify({...item,...item.info}))
+      let newItem = JSON.parse(JSON.stringify({
+        ...item,
+        ...item.info
+      }))
       if (newItem.type === 0) {
         if (newItem.useConsumeRestrict === 1) {
           newItem.text = `${this.$t('components.decorate.full')}${
@@ -452,7 +495,10 @@ global.wxPage({
       }
       return newItem
     })
-    let couponArray = [{ couponSn: null, text: '不使用优惠券' }, ...couponList]
+    let couponArray = [{
+      couponSn: null,
+      text: '不使用优惠券'
+    }, ...couponList]
     let defaultCouponIndex =
       (defaultCoupon && couponArray.findIndex(item => item.couponSn === defaultCoupon.info.couponSn)) ||
       0
@@ -463,8 +509,10 @@ global.wxPage({
   },
 
   // 变更优惠券
-  couponChange (e) {
-    let { couponSn } = this.data.couponArray[parseInt(e.detail.value)]
+  couponChange(e) {
+    let {
+      couponSn
+    } = this.data.couponArray[parseInt(e.detail.value)]
     this.setData({
       defaultCouponIndex: parseInt(e.detail.value)
     })
@@ -483,13 +531,13 @@ global.wxPage({
     this.requestOrder()
   },
   // 选择会员卡事件
-  selectCardTap () {
+  selectCardTap() {
     this.setData({
       showCardDialog: true
     })
   },
   // 得到选择后的会员卡
-  getSelectCard (data) {
+  getSelectCard(data) {
     if (data.detail) {
       this.setData({
         'params.memberCardNo': data.detail
@@ -504,36 +552,36 @@ global.wxPage({
     this.requestOrder()
   },
   // 变更支付类型
-  changePayType (e) {
+  changePayType(e) {
     this.setData({
       choosePayType: e.currentTarget.dataset.payType
     })
   },
   // 变更配送方式
-  selectShippingMethod (e) {
+  selectShippingMethod(e) {
     let that = this
-    if(e.currentTarget.dataset.index !== 0){
-       (async() => {
+    if (e.currentTarget.dataset.index !== 0) {
+      (async () => {
         let res = await this.getLocationData()
         this.data.params.lat = res.latitude
         this.data.params.lng = res.longitude
-        util.api('/api/wxapp/order/get/store',res=>{
-          if(res.error === 0){
+        util.api('/api/wxapp/order/get/store', res => {
+          if (res.error === 0) {
             let keysList = Object.keys(res.content)
-            
+
             this.setData({
-              selectedStoreInfo:{
+              selectedStoreInfo: {
                 ...res.content[keysList[keysList.length - 1]],
-                distance:keysList[keysList.length - 1]
+                distance: keysList[keysList.length - 1]
               },
-              storeList:res.content,
+              storeList: res.content,
               'params.deliverType': e.currentTarget.dataset.index,
               'params.storeId': res.content[keysList[keysList.length - 1]].storeId
             })
           }
-        },{
-          lat:this.data.params.lat,
-          lng:this.data.params.lng
+        }, {
+          lat: this.data.params.lat,
+          lng: this.data.params.lng
         })
         // this.setData({
         //   'params.lat':
@@ -541,24 +589,43 @@ global.wxPage({
         // })
       })()
     }
-    if(e.currentTarget.dataset.index === 0){
+    if (e.currentTarget.dataset.index === 0) {
       this.setData({
         'params.deliverType': e.currentTarget.dataset.index
       })
     }
-    
+
     this.requestOrder()
   },
   // 选择门店
-  selectStore () {
+  selectStore() {
     if (this.data.chooseShippingIndex === 0) return
     let storeDialogData = {}
     storeDialogData.openType = this.data.chooseShippingIndex
-    storeDialogData.data = [
-      { id: 1, storeName: '伊泰大厦', address: '潘家园', distance: '5.46' },
-      { id: 2, storeName: '回龙观大厦', address: '西直门', distance: '0.15' },
-      { id: 3, storeName: '西二旗大厦', address: '西二旗', distance: '15' },
-      { id: 4, storeName: '霍营大厦', address: '蜂鸟社区', distance: '123' }
+    storeDialogData.data = [{
+        id: 1,
+        storeName: '伊泰大厦',
+        address: '潘家园',
+        distance: '5.46'
+      },
+      {
+        id: 2,
+        storeName: '回龙观大厦',
+        address: '西直门',
+        distance: '0.15'
+      },
+      {
+        id: 3,
+        storeName: '西二旗大厦',
+        address: '西二旗',
+        distance: '15'
+      },
+      {
+        id: 4,
+        storeName: '霍营大厦',
+        address: '蜂鸟社区',
+        distance: '123'
+      }
     ]
     this.setData({
       showStoreDialog: true,
@@ -566,7 +633,7 @@ global.wxPage({
     })
   },
   //获取应付总金额
-  getPayMoney () {
+  getPayMoney() {
     let moneyPaid = this.data.orderInfo.moneyPaid,
       useScore = this.data.usePayInfo.useScore,
       useBalance = this.data.usePayInfo.useBalance,
@@ -582,23 +649,26 @@ global.wxPage({
     })
   },
   // 获取门店改变
-  getSelectStore (info) {
+  getSelectStore(info) {
     let selectedStoreInfo = info.detail
     this.setData({
       selectedStoreInfo,
-      'params.storeId':selectedStoreInfo.storeId
+      'params.storeId': selectedStoreInfo.storeId
     })
   },
   // 是否使用发票
-  bindInvoiceChange (e) {
+  bindInvoiceChange(e) {
     this.setData({
       invoiceIndex: parseInt(e.detail.value)
     })
   },
   // 下单必填项
-  mustInput (e) {
-    let { type } = e.currentTarget.dataset,
-      { value } = e.detail
+  mustInput(e) {
+    let {
+      type
+    } = e.currentTarget.dataset, {
+      value
+    } = e.detail
     switch (type) {
       case 'orderRealName':
         this.setData({
@@ -628,16 +698,18 @@ global.wxPage({
     }
   },
   // 添加备注
-  addMsg (e) {
-    let { value: message } = e.detail
+  addMsg(e) {
+    let {
+      value: message
+    } = e.detail
     this.setData({
       message
     })
   },
   // 选择发票
-  chooseInvoice () {
+  chooseInvoice() {
     wx.chooseInvoiceTitle({
-      success (res) {
+      success(res) {
         // util.api('/api/wxapp/invoice/choose', function(e) {
         //   that.data.create_order.invoice_id = e.content;
         //   that.setData({
@@ -648,13 +720,13 @@ global.wxPage({
         // })
         console.log(res)
       },
-      fail () {
+      fail() {
         util.showModal('', '获取发票信息失败')
       }
     })
   },
   // 获取必填项
-  getMust (params) {
+  getMust(params) {
     let must = {}
     if (this.data.orderInfo.must.isShow) {
       if (this.data.orderInfo.must.consigneeCid) {
@@ -678,7 +750,7 @@ global.wxPage({
     }
   },
   // 是否可提交
-  canSubmit () {
+  canSubmit() {
     let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
     if (!addressId) {
       wx.showToast({
@@ -688,32 +760,32 @@ global.wxPage({
       return false
     }
     let mustTips = ''
-    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) mustTips = '收货人身份证为必填项，请输入'
-    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) mustTips = '收货人姓名为必填项，请输入'
-    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) mustTips = '下单人身份证为必填项，请输入'
-    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) mustTips = '下单人姓名为必填项，请输入'
-    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom) mustTips = `${this.data.orderInfo.must.custom}为必填项，请输入`
-    if(mustTips){
-      util.showModal('提示',mustTips)
+    if (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) mustTips = '收货人身份证为必填项，请输入'
+    if (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) mustTips = '收货人姓名为必填项，请输入'
+    if (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) mustTips = '下单人身份证为必填项，请输入'
+    if (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) mustTips = '下单人姓名为必填项，请输入'
+    if (this.data.orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom) mustTips = `${this.data.orderInfo.must.custom}为必填项，请输入`
+    if (mustTips) {
+      util.showModal('提示', mustTips)
       return false
     }
-    if(this.data.orderInfo.term && this.data.orderInfo.term.serviceTerms === 1 && this.data.orderInfo.term.serviceChoose === 0){
-      util.showModal('提示',`请同意${this.data.orderInfo.term.serviceName}后再试`)
+    if (this.data.orderInfo.term && this.data.orderInfo.term.serviceTerms === 1 && this.data.orderInfo.term.serviceChoose === 0) {
+      util.showModal('提示', `请同意${this.data.orderInfo.term.serviceName}后再试`)
       return false
     }
 
-    if(!this.getSubmitButtonStatus()){
-      if(!this.data.orderInfo.patientInfo || !this.data.orderInfo.patientInfo.id ){
+    if (!this.getSubmitButtonStatus()) {
+      if (!this.data.orderInfo.patientInfo || !this.data.orderInfo.patientInfo.id) {
         this.setData({
-          noPrescriptionType:2
+          noPrescriptionType: 2
         })
       } else {
         this.setData({
-          noPrescriptionType:1
+          noPrescriptionType: 1
         })
       }
       this.setData({
-        showNoPrescription:true
+        showNoPrescription: true
       })
       return false
     }
@@ -721,7 +793,7 @@ global.wxPage({
     return true
   },
   // 关闭弹窗
-  closeDialog (target) {
+  closeDialog(target) {
     switch (target.detail) {
       case 'balance':
         this.setData({
@@ -742,13 +814,52 @@ global.wxPage({
   },
   // 提交订单
   confirmOrder() {
-    if(!this.canSubmit()) return
-    util.throttle(this.confirm,5000)()
+    let pages = getCurrentPages(),
+      currPage = null;
+    if (pages.length) currPage = pages[pages.length - 2];
+    let route = currPage.route
+    if (route) {
+      let name = {
+        "title": {
+          'search': '药品列表页',
+          'index': '首页',
+          'item': '药品详情页',
+          'cart': '购物车页',
+          'patientChat': '患者聊天页',
+          'orderinfo': '订单详情页',
+          'repurchaselist': '处方复购页'
+        }
+      }
+      let lastindex = route.lastIndexOf('/');
+      let lastSegment = route.substring(lastindex + 1);
+      let title = name.title[lastSegment]
+      util.handleBuriedPoint('create_order_submit', 'pages/checkout/checkout', [{
+        key: '订单来源',
+        value: title
+      }, {
+        key: '订单金额',
+        value: this.data.usePayInfo.moneyPaid
+      }, {
+        key: '药品数量',
+        value: this.data.goods_num
+      }, {
+        key: '药品种类',
+        value: this.data.rxKind
+      }])
+    }
+    if (!this.canSubmit()) return
+    util.throttle(this.confirm, 5000)()
   },
-  confirm(){
-    util.getNeedTemplateId('add_order',()=>{
-      let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
-        this.data.orderInfo || {}
+  confirm() {
+    util.getNeedTemplateId('add_order', () => {
+      let {
+        orderGoods: goods,
+        orderAmount,
+        paymentList,
+        activityType,
+        activityId
+      } =
+      this.data.orderInfo || {}
       let {
         useBalance: balance,
         useCardBalance: cardBalance,
@@ -772,7 +883,7 @@ global.wxPage({
       if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
       if (this.data.inviteId) addParams.inviteId = Number(this.data.inviteId)
       if (this.data.orderInfo.patientInfo && this.data.orderInfo.patientInfo.patientId) addParams.patientId = Number(this.data.orderInfo.patientInfo.patientId)
-      if (this.data.isPrescription && this.data.orderInfo.prescriptionList.length){
+      if (this.data.isPrescription && this.data.orderInfo.prescriptionList.length) {
         addParams.isPrescription = 1
         addParams.prescriptionCode = this.data.orderInfo.prescriptionList[0].prescriptionCode
       }
@@ -801,96 +912,116 @@ global.wxPage({
       this.getMust(params)
       util.api(
         '/api/wxapp/order/submit',
-       async res => {
-          if (res.error === 0) {
-            let { orderSn } = res.content
-            if (this.data.insteadPayNum !== null && this.data.choosePayType === 2) {
-              util.jumpLink(`/pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`, 'redirectTo')
-            } else if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
-              wx.requestPayment({
-                timeStamp: res.content.webPayVo.timeStamp,
-                nonceStr: res.content.webPayVo.nonceStr,
-                package: res.content.webPayVo.package,
-                signType: 'MD5',
-                paySign: res.content.webPayVo.paySign,
-                success: async res => {
-                  util.toast_success('支付成功')
-                  if(activityType === 8){
-                    let groupInfo = await this.requestGroupDraw(orderSn)
-                    console.log(groupInfo)
-                    if(!groupInfo) return
-                    util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:groupInfo.activityId,group_id:groupInfo.groupId,goods_id:goods[0].goodsId})}`,'redirectTo')
-                  } else {
-                    let scoreRedeemData = this.data.orderInfo.activityType === 4 && this.data.scoreRedeemData.score > 0 ? {useScore:this.data.scoreRedeemData.score} : {}
-                    util.jumpLink(
-                      `pages1/payment/payment${this.getUrlParams({
+        async res => {
+            if (res.error === 0) {
+              let {
+                orderSn
+              } = res.content
+              if (this.data.insteadPayNum !== null && this.data.choosePayType === 2) {
+                util.jumpLink(`/pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`, 'redirectTo')
+              } else if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
+                wx.requestPayment({
+                  timeStamp: res.content.webPayVo.timeStamp,
+                  nonceStr: res.content.webPayVo.nonceStr,
+                  package: res.content.webPayVo.package,
+                  signType: 'MD5',
+                  paySign: res.content.webPayVo.paySign,
+                  success: async res => {
+                    util.toast_success('支付成功')
+                    if (activityType === 8) {
+                      let groupInfo = await this.requestGroupDraw(orderSn)
+                      console.log(groupInfo)
+                      if (!groupInfo) return
+                      util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:groupInfo.activityId,group_id:groupInfo.groupId,goods_id:goods[0].goodsId})}`, 'redirectTo')
+                    } else {
+                      let scoreRedeemData = this.data.orderInfo.activityType === 4 && this.data.scoreRedeemData.score > 0 ? {
+                        useScore: this.data.scoreRedeemData.score
+                      } : {}
+                      util.jumpLink(
+                        `pages1/payment/payment${this.getUrlParams({
                         orderSn,
                         useInfo: JSON.stringify({ ...this.data.usePayInfo,...scoreRedeemData })
                       })}`,
-                      'redirectTo'
-                    )
-                  }
-                },
-                fail: res => {
-                  console.log(res)
-                  util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
-                },
-                complete: res => { }
-              })
-            } else {
-              if(activityType === 8){
-                let groupInfo = await this.requestGroupDraw(orderSn)
-                console.log(groupInfo)
-                if(!groupInfo) return
-                util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:groupInfo.activityId,group_id:groupInfo.groupId,goods_id:goods[0].goodsId})}`,'redirectTo')
+                        'redirectTo'
+                      )
+                    }
+                    let name = '订单结算页'
+                    if(this.data.insteadPayNum) name = '好友代付'
+                    util.handleBuriedPoint('order_pay_success', 'pages/checkout/checkout', [{
+                      key: '路径来源',
+                      value: name
+                    }])
+                  },
+                  fail: res => {
+                    console.log(res)
+                    util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
+                  },
+                  complete: res => {}
+                })
               } else {
-                let scoreRedeemData = this.data.orderInfo.activityType === 4 && this.data.scoreRedeemData.score > 0 ? {useScore:this.data.scoreRedeemData.score} : {}
-                util.jumpLink(
-                  `pages1/payment/payment${this.getUrlParams({
+                if (activityType === 8) {
+                  let groupInfo = await this.requestGroupDraw(orderSn)
+                  console.log(groupInfo)
+                  if (!groupInfo) return
+                  util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:groupInfo.activityId,group_id:groupInfo.groupId,goods_id:goods[0].goodsId})}`, 'redirectTo')
+                } else {
+                  let scoreRedeemData = this.data.orderInfo.activityType === 4 && this.data.scoreRedeemData.score > 0 ? {
+                    useScore: this.data.scoreRedeemData.score
+                  } : {}
+                  util.jumpLink(
+                    `pages1/payment/payment${this.getUrlParams({
                     orderSn,
                     useInfo: JSON.stringify({ ...this.data.usePayInfo, ...scoreRedeemData})
                   })}`,
-                  'redirectTo'
-                )
+                    'redirectTo'
+                  )
+                }
               }
+            } else {
+              util.showModal('提示', res.message, function () {
+                util.jumpLink('/pages/index/index', 'redirectTo')
+              })
             }
-          } else {
-            util.showModal('提示', res.message, function () {
-              util.jumpLink('/pages/index/index', 'redirectTo')
-            })
-          }
-        },
-        params
+          },
+          params
       )
     })
   },
   //整合参数
-  getUrlParams (obj) {
+  getUrlParams(obj) {
     return Object.keys(obj).reduce((UrlStr, item, index) => {
       if (index !== 0) UrlStr += `&`
       return (UrlStr += `${item}=${obj[item]}`)
     }, '?')
   },
-  showShareFriend () {
-    if(!this.canSubmit()) return
+  showShareFriend() {
+    if (!this.canSubmit()) return
     this.setData({
       showFriendPayDialog: true
     })
   },
-  getFriendPayData (e) {
+  getFriendPayData(e) {
     this.setData({
       insteadPayNum: e.detail.type
     })
     this.confirmOrder()
   },
   // 请求拼团抽奖订单详情
-  requestGroupDraw(orderSn){
-    return new Promise(resolve=>{
-      util.api('/api/wxapp/groupdraw/info/ordersn',res=>{
+  requestGroupDraw(orderSn) {
+    return new Promise(resolve => {
+      util.api('/api/wxapp/groupdraw/info/ordersn', res => {
         console.log(res)
-        if(res.error === 0 && res.content){
-          let {activityId,activityType,groupId} = res.content
-          resolve({activityId,activityType,groupId}) 
+        if (res.error === 0 && res.content) {
+          let {
+            activityId,
+            activityType,
+            groupId
+          } = res.content
+          resolve({
+            activityId,
+            activityType,
+            groupId
+          })
         } else {
           util.jumpLink(
             `pages1/payment/payment${this.getUrlParams({
@@ -901,86 +1032,104 @@ global.wxPage({
           )
           resolve(false)
         }
-      },{
+      }, {
         orderSn
       })
     })
   },
-  setCardData(orderInfo){
-    if(orderInfo.defaultMemberCard){
-      orderInfo.defaultMemberCard = {...orderInfo.defaultMemberCard,...orderInfo.defaultMemberCard.info}
+  setCardData(orderInfo) {
+    if (orderInfo.defaultMemberCard) {
+      orderInfo.defaultMemberCard = {
+        ...orderInfo.defaultMemberCard,
+        ...orderInfo.defaultMemberCard.info
+      }
     }
-    if(orderInfo.memberCards){
-      orderInfo.memberCards = orderInfo.memberCards.map(item=>{
-        return {...item,...item.info}
+    if (orderInfo.memberCards) {
+      orderInfo.memberCards = orderInfo.memberCards.map(item => {
+        return {
+          ...item,
+          ...item.info
+        }
       })
     }
   },
   // 积分兑换数据
-  setScoreRedeemData(orderInfo){
-   let scoreRedeemData = orderInfo.orderGoods.reduce((defaultData,item,index)=>{
-      if(item.goodsScore) defaultData.score += item.goodsScore * item.goodsNumber
-      if(item.goodsPrice) defaultData.money += parseFloat(item.goodsPrice * item.goodsNumber).toFixed(2)
+  setScoreRedeemData(orderInfo) {
+    let scoreRedeemData = orderInfo.orderGoods.reduce((defaultData, item, index) => {
+      if (item.goodsScore) defaultData.score += item.goodsScore * item.goodsNumber
+      if (item.goodsPrice) defaultData.money += parseFloat(item.goodsPrice * item.goodsNumber).toFixed(2)
       return defaultData
-    },{score:0,money:0})
-    this.setData({scoreRedeemData})
+    }, {
+      score: 0,
+      money: 0
+    })
+    this.setData({
+      scoreRedeemData
+    })
     console.log(this.data.scoreRedeemData)
   },
-  changeTerm(){
+  changeTerm() {
     this.setData({
-      'orderInfo.term.serviceChoose' : this.data.orderInfo.term.serviceChoose ? 0 : 1
+      'orderInfo.term.serviceChoose': this.data.orderInfo.term.serviceChoose ? 0 : 1
     })
   },
-  goService(){
+  goService() {
     util.jumpToWeb('/wxapp/wxapp/checkout/services')
   },
-  viewPreSaleRule(){
+  viewPreSaleRule() {
     this.setData({
-      preSaleRuleShow:true
+      preSaleRuleShow: true
     })
   },
-  handleShowDialog(e){
-    let {prescriptionCode} = e.currentTarget.dataset
-    util.api('/api/wxapp/prescription/details',res=>{
-      if(res.error === 0){
+  handleShowDialog(e) {
+    let {
+      prescriptionCode
+    } = e.currentTarget.dataset
+    util.api('/api/wxapp/prescription/details', res => {
+      if (res.error === 0) {
         this.setData({
-          showPrescription:true,
-          prescriptionData:res.content
+          showPrescription: true,
+          prescriptionData: res.content
         })
       }
-    },{
+    }, {
       prescriptionCode
     })
-    
+
   },
-  getSubmitButtonStatus(){
-    let {checkPrescriptionStatus:status} = this.data.orderInfo
-    if(status === 2) return false
+  getSubmitButtonStatus() {
+    let {
+      checkPrescriptionStatus: status
+    } = this.data.orderInfo
+    if (status === 2) return false
     return true
   },
-  togglePatient(){
-    if(this.data.isPrescription) return
+  togglePatient() {
+    if (this.data.isPrescription) return
+    util.handleBuriedPoint('create_order_detail_add_patient', 'pages/checkout/checkout', [{
+      key: '订单结算页去添加'
+    }])
     util.jumpLink('pages1/familylist/familylist?source=checkout')
   },
-  getLocationData(){
-    return new Promise((resolve,reject)=>{
+  getLocationData() {
+    return new Promise((resolve, reject) => {
       if (wx.canIUse('wx.getLocation')) {
         console.log('can...')
       }
       wx.getLocation({
-        success (res) {
+        success(res) {
           resolve(res)
         },
-        fail (err) {
-          if (err.errMsg.indexOf('auth')>-1) {
+        fail(err) {
+          if (err.errMsg.indexOf('auth') > -1) {
             wx.getSetting({
-              success (tip) {
+              success(tip) {
                 console.log('getsetting...', tip)
                 if (!tip.authSetting['scope.userLocation']) {
                   wx.showModal({
                     title: '是否授权当前位置',
                     content: '需要获取您的地理位置，请确认授权，否则定位功能将无法使用',
-                    success: function(tip) {
+                    success: function (tip) {
                       if (tip.confirm) {
                         wx.openSetting({
                           success: (res) => {
@@ -991,7 +1140,7 @@ global.wxPage({
                                 icon: 'success'
                               })
                               wx.getLocation({
-                                success (res) {
+                                success(res) {
                                   console.log(res)
                                   resolve(res)
                                 }
@@ -1009,7 +1158,7 @@ global.wxPage({
                   })
                 }
               },
-              fail (err) {
+              fail(err) {
                 console.log('getsetting fail', err)
               }
             })
@@ -1021,13 +1170,13 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () { },
+  onReady: function () {},
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if(this.data.patientDiagnose){
+    if (this.data.patientDiagnose) {
       this.confirm()
       return
     }
@@ -1037,20 +1186,20 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () { },
+  onHide: function () {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () { },
+  onUnload: function () {},
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () { },
+  onPullDownRefresh: function () {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () { }
+  onReachBottom: function () {}
 })
