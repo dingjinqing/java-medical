@@ -15,7 +15,6 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
-import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.sort.SortDao;
 import com.vpu.mp.dao.shop.store.StoreDao;
@@ -335,7 +334,7 @@ public class MedicalGoodsService extends ShopBaseService {
 
     @SuppressWarnings("all")
     public JsonResult fetchExternalMedicalInfo() {
-        String appId = ApiExternalGateConfig.APP_ID_HIS;
+        String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS;
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS);
@@ -463,7 +462,7 @@ public class MedicalGoodsService extends ShopBaseService {
      * @return
      */
     public void fetchExternalStoresGoodsInfo() {
-        String appId = ApiExternalGateConfig.APP_ID_STORE;
+        String appId = ApiExternalRequestConstant.APP_ID_STORE;
         Integer shopId = getShopId();
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(appId, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
         Timestamp now = DateUtils.getLocalDateTime();
