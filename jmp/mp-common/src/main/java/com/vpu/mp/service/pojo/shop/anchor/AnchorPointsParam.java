@@ -23,11 +23,11 @@ public class AnchorPointsParam {
     /**
      * 平台
      */
-    private Byte platform;
+    private String platform;
     /**
      * 终端
      */
-    private Byte device;
+    private String device;
     /**
      * 门店
      */

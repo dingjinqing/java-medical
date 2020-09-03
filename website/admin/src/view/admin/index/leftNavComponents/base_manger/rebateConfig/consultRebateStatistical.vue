@@ -31,18 +31,30 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="filters_item">
-        <el-button type="primary" size="small">搜索</el-button>
-      </div>
-
-      <!-- <div class="filters_item">
-        <span>时间筛选：</span>
-        <el-input
-          v-model=""
+      <div class="filters_item" v-if="timeType === '3'">
+        <el-date-picker
+          v-model="startTime"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          class="middle_input"
+          @change="datePickerChange(true, orderTime)"
           size="small"
-          class="default_input"
-        ></el-input>
-      </div> -->
+        />
+        至
+        <el-date-picker
+          v-model="endTime"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          class="middle_input"
+          @change="datePickerChange(false, orderTime)"
+          :picker-options="orderEndTime"
+          default-time="23:59:59"
+          size="small"
+        />
+      </div>
+      <div class="filters_item" style="margin-left: 15px;">
+        <el-button type="primary" size="small" @click="search">搜索</el-button>
+      </div>
     </div>
     <div class="table-content">
       <el-table
@@ -56,30 +68,69 @@
           padding: '8px 10px',
         }"
       >
-        <el-table-column prop="doctorName" label="医生姓名"></el-table-column>
-        <el-table-column prop="mobile" label="手机号"></el-table-column>
+        <el-table-column
+          prop="doctorName"
+          label="医生姓名"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="手机号"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="orderSn"
           label="返利咨询订单号"
         ></el-table-column>
-        <el-table-column prop="money" label="咨询费总额"></el-table-column>
-        <el-table-column prop="userName" label="下单用户昵称"></el-table-column>
-        <el-table-column prop="rebateMoney" label="返利金额"></el-table-column>
-        <el-table-column prop="rebateStatus" label="返利状态"></el-table-column>
-        <el-table-column prop="createTime" label="返利日期"></el-table-column>
+        <el-table-column
+          prop="totalMoney"
+          label="咨询费总额"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="userName"
+          label="下单用户昵称"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="totalRebateMoney"
+          label="返利金额"
+          align="center"
+        ></el-table-column>
+        <el-table-column prop="status" label="返利状态" align="center">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.status | getStatus }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="返利日期"
+          align="center"
+        ></el-table-column>
       </el-table>
+      <pagination :page-params.sync="pageParams" @pagination="search" />
     </div>
   </div>
 </template>
 
 <script>
+import { getInquiryOrderRebate } from '@/api/admin/basicConfiguration/doctorWithDraw'
 export default {
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
       doctorName: '',
-      rebateStatus: '0',
-      timeType: '0',
+      rebateStatus: '-1',
+      timeType: '-1',
       rebateStatusList: [
+        {
+          value: '-1',
+          label: '全部'
+        },
         {
           value: '0',
           label: '待返利'
@@ -94,6 +145,10 @@ export default {
         }
       ],
       timeTypeList: [
+        {
+          value: '-1',
+          label: '全部'
+        },
         {
           value: '0',
           label: '最近一天'
@@ -142,7 +197,85 @@ export default {
           rebeatStatus: 1,
           createTime: '2018-05-13 14:12:00'
         }
-      ]
+      ],
+      startTime: null,
+      endTime: null,
+      pageParams: {}
+    }
+  },
+  mounted () {
+    this.search()
+  },
+  computed: {
+    timeData () {
+      switch (this.timeType) {
+        case '-1':
+          return {}
+        case '0':
+          return (() => {
+            const endTime = new Date()
+            const startTime = new Date()
+            startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 1)
+            return {
+              startTime,
+              endTime
+            }
+          })()
+        case '1':
+          return (() => {
+            const endTime = new Date()
+            const startTime = new Date()
+            startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 7)
+            return {
+              startTime,
+              endTime
+            }
+          })()
+
+        case '2':
+          return (() => {
+            const endTime = new Date()
+            const startTime = new Date()
+            startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 30)
+            return {
+              startTime,
+              endTime
+            }
+          })()
+        case '3':
+          return (() => {
+            return {
+              startTime: this.startTime,
+              endTime: this.endTime
+            }
+          })()
+      }
+    }
+  },
+  filters: {
+    getStatus (status) {
+      let statusName = {
+        0: '待返利',
+        1: '已返利',
+        2: '未返利'
+      }
+      return statusName[status]
+    }
+  },
+  methods: {
+    search () {
+      let params = {
+        doctorName: this.doctorName,
+        status: this.rebateStatus === '-1' ? null : Number(this.rebateStatus),
+        ...this.timeData,
+        ...this.pageParams
+      }
+      getInquiryOrderRebate(params).then(res => {
+        if (res.error === 0) {
+          this.tableList = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
     }
   }
 
@@ -159,7 +292,6 @@ export default {
     display: flex;
     max-width: 480px;
     min-width: 320px;
-    margin-left: 15px;
     margin-bottom: 10px;
     /deep/ .areaLinkage {
       .el-select {
@@ -170,7 +302,6 @@ export default {
       }
     }
     > span {
-      min-width: 100px;
       font-size: 14px;
       text-align: right;
     }
@@ -181,5 +312,8 @@ export default {
 }
 .table-content {
   margin-bottom: 20px;
+}
+.middle_input {
+  width: 185px;
 }
 </style>

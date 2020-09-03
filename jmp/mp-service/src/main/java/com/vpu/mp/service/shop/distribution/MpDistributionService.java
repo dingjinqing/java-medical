@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.distribution.DistributorCollectionDao;
 import com.vpu.mp.dao.shop.image.UploadedImageDao;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.*;
@@ -23,13 +24,25 @@ import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.withdraw.*;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.goods.mp.GoodsSearchMpService;
+import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.user.user.UserDetailService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,10 +51,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import com.vpu.mp.common.foundation.data.DistributionConstant.*;
 
@@ -78,21 +88,53 @@ public class MpDistributionService extends ShopBaseService{
     @Autowired
     public DistributionConfigService disCfg;
     @Autowired
+    public MpDistributionGoodsService mpds;
+    @Autowired
     public ShopCommonConfigService scs;
     @Autowired
     private UserService us;
     @Autowired
     public MpAuthShopService mss;
+
     @Autowired
-    protected UploadedImageDao uploadedImageDao;
+    private MpDistributionGoodsService mds;
+
     @Autowired
-    protected UserDao userDao;
+    protected UserService userService;
+    @Autowired
+    protected UserDetailService userDetailService;
+
+    @Autowired
+    protected GoodsService goodsService;
     private final static String DEFAULT_USER_AVATAR = "/image/admin/head_icon.png";
     public static Integer ORDER_TYPE_WAIT_FANLI = 1;
     public static Integer ORDER_TYPE_HAS_FANLI = 2;
     public static Integer GOODS_RECOMMEND_NO = 0;
     public static Integer GOODS_RECOMMEND_THREE = 1;
     public static Integer GOODS_RECOMMEND_SELECT = 2;
+    @Autowired
+    private EsGoodsSearchMpService esGoodsSearchMpService;
+
+    @Autowired
+    private GoodsSearchMpService goodsSearchMpService;
+
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
+
+    @Autowired
+    private GoodsMpService goodsMpService;
+
+    @Autowired
+    protected ImageService imageService;
+
+    @Autowired
+    protected DistributorCollectionDao distributorCollectionDao;
+
+    @Autowired
+    protected UploadedImageDao uploadedImageDao;
+
+    @Autowired
+    protected UserDao userDao;
     /**
      * 申请分销员页面信息
      * @param lang
@@ -1104,6 +1146,261 @@ public class MpDistributionService extends ShopBaseService{
          Integer sublayerNumber = db().selectCount().from(USER).where(USER.INVITE_ID.eq(userId)).fetchOne().into(Integer.class);
          db().update(USER_TOTAL_FANLI).set(USER_TOTAL_FANLI.SUBLAYER_NUMBER,sublayerNumber).where(USER_TOTAL_FANLI.USER_ID.eq(userId)).execute();
      }
+    /**
+     * 参与返利策略的商品
+     * @return
+     */
+    public RebateGoodsVo rebateGoods(){
+        /*参与返利商品IDs*/
+        List<Integer> rebateGoods = new ArrayList<Integer>();
+        /*参与返利的商家分类sortIds*/
+        List<Integer> rebateSort = new ArrayList<Integer>();
+        RebateGoodsVo rebateGoodsVo = new RebateGoodsVo();
+        //启用中的返利策略
+        List<DistributionStrategyParam> distributionStrategyParams = mpds.goingStrategy();
+        for (DistributionStrategyParam strategy:distributionStrategyParams){
+            if(DistributionConstant.ALL_GOODS.equals(strategy.getRecommendType())){
+                rebateGoodsVo.setAllGoods(0);
+            }
+            //适用商品判断,适用当前商品
+            if(strategy.getRecommendGoodsId() != null){
+                List<Integer> goodsIds = Util.stringToList(strategy.getRecommendGoodsId());
+                rebateGoods.addAll(goodsIds);
+                rebateGoodsVo.setRebateGoods(rebateGoods);
+            }
+
+            if(strategy.getRecommendSortId() != null){
+                List<Integer> sortIds = Util.stringToList(strategy.getRecommendSortId());
+                rebateSort.addAll(sortIds);
+                rebateGoodsVo.setRebateSort(rebateSort);
+            }
+        }
+        return rebateGoodsVo;
+    }
+    /**
+     * 获取商品最大返利比例
+     * @param recommendGoodsVos
+     * @param userId
+     */
+    public void maxRate(List<RecommendGoodsVo> recommendGoodsVos,Integer userId){
+        Iterator<RecommendGoodsVo> iterator=recommendGoodsVos.iterator();
+        while(iterator.hasNext()){
+            RecommendGoodsVo goods=iterator.next();
+            GoodsRecord info = db().select(GOODS.GOODS_ID, GOODS.SORT_ID, GOODS.CAT_ID,GOODS.SHOP_PRICE).from(GOODS)
+                .where(GOODS.GOODS_ID.eq(goods.getGoodsId())).fetchOne().into(GoodsRecord.class);
+            RebateRatioVo rebateRatioVo = mpds.goodsRebateInfo(info.getGoodsId(), info.getCatId(), info.getSortId(), userId);
+            if(rebateRatioVo == null){
+                iterator.remove();
+            }else {
+                Double max = rebateRatioVo.getFirstRebate() > rebateRatioVo.getFanliRatio() ? rebateRatioVo.getFirstRebate() : rebateRatioVo.getFanliRatio();
+                max = max > rebateRatioVo.getRebateRatio() ? max : rebateRatioVo.getRebateRatio();
+                goods.setMaxRebate(max);
+            }
+        }
+    }
+
+    /**
+     * 分销中心-推广中心商品列表
+     * @param param
+     * @return
+     */
+    public PageResult<RecommendGoodsVo> promoteGoodsList(PromoteGoodsParam param){
+        // PromoteGoodsParam -> GoodsSearchMpParam
+        GoodsSearchMpParam goodsSearchMpParam = convert2GoodsSearchMpParam(param);
+        if (param.getIsPersonal() != null && DistributionConstant.PERSONAL.equals(param.getIsPersonal())) {
+            // 个人推广中心
+            // 处理推广商品id集合
+            String collectionGoodsId = distributorCollectionDao.getCollectionGoodsId(param.getUserId());
+            List<Integer> goodsId = Util.stringToList(collectionGoodsId);
+            goodsSearchMpParam.setRebateGoodsIds(goodsId);
+        } else {
+            // 推广中心
+            RebateGoodsVo rebateGoodsVo = rebateGoods();
+            List<Integer> rebateGoods;
+            if (rebateGoodsVo.getAllGoods() == 0) {
+                // 全部商品
+                rebateGoods = null;
+            } else {
+                // 推广分类
+                goodsSearchMpParam.setSortIds(rebateGoodsVo.getRebateSort());
+                // 推广商品
+                rebateGoods = rebateGoodsVo.getRebateGoods();
+                // 限制推广商品id集合
+                rebateGoods.stream().distinct().collect(Collectors.toList());
+            }
+            goodsSearchMpParam.setRebateGoodsIds(rebateGoods);
+        }
+
+        // es搜索数据并转化为RecommendGoodsVo
+        PageResult<RecommendGoodsVo> pageResult = searchPromoteGoods(goodsSearchMpParam, param.getIsPersonal());
+
+        return pageResult;
+    }
+    public PageResult<RecommendGoodsVo> searchPromoteGoods(GoodsSearchMpParam param, Byte isPersonal) {
+        PageResult<RecommendGoodsVo> result;
+        param.setSoldOutGoodsShow(goodsMpService.canShowSoldOutGoods());
+        // 店铺的默认商品排序规则
+        if (shopCommonConfigService.getSearchSort().equals((byte) 1)) {
+            param.setShopSortItem(goodsMpService.getShopGoodsSortEnum());
+            param.setShopSortDirection(SortDirectionEnum.DESC);
+        }
+        try {
+            logger().debug("小程序-es-搜索商品");
+            logger().info("es搜索排序-" + param.getShopSortItem());
+            result = convert2RecommendGoodsVoPage(esGoodsSearchMpService.queryGoodsByParam(param), param.getUserId(), isPersonal);
+        } catch (Exception e) {
+            logger().error("小程序-es-搜索商error---{}", ExceptionUtils.getStackTrace(e));
+
+            result = convert2RecommendGoodsVoPage(goodsSearchMpService.searchGoodsFromDb(param), param.getUserId(), isPersonal);
+
+            for (RecommendGoodsVo recommendGoodsVo : result.dataList) {
+                recommendGoodsVo.setGoodsImg(imageUrl(recommendGoodsVo.getGoodsImg()));
+                int isMorePrd = mds.isMorePrd(recommendGoodsVo.getGoodsId());
+                recommendGoodsVo.setPrdLinePrice(recommendGoodsVo.getMarketPrice());
+
+                if (isMorePrd == 1) {
+                    recommendGoodsVo.setIsMorePrd((byte)1);
+                    // 划线价
+                    recommendGoodsVo.setPrdLinePrice(mds.highPrdLinePrice(recommendGoodsVo.getGoodsId()));
+                    // 多规格商品最高规格价
+                    recommendGoodsVo.setHighPrdPrice(mds.highPrdPrice(recommendGoodsVo.getGoodsId()));
+                    // 多规格商品最低规格价
+                    recommendGoodsVo.setLowPrdPrice(mds.lowPrdPrice(recommendGoodsVo.getGoodsId()));
+                }
+            }
+
+        }
+
+        return result;
+    }
+
+    /**
+     * PageResult<GoodsListMpBo> -> PageResult<RecommendGoodsVo>
+     * @param pageResult
+     * @param userId
+     * @return
+     */
+    private PageResult<RecommendGoodsVo> convert2RecommendGoodsVoPage(PageResult<GoodsListMpBo> pageResult, Integer userId, Byte isPersonal) {
+        PageResult<RecommendGoodsVo> result = new PageResult<>();
+        // 构造List<RecommendGoodsVo>
+        List<RecommendGoodsVo> recommendGoodsVos = new ArrayList<>(pageResult.dataList.size());
+        for (GoodsListMpBo goodsListMpBo : pageResult.getDataList()) {
+            RecommendGoodsVo recommendGoodsVo = convert2RecommendGoodsVo(goodsListMpBo);
+            // 商品多图处理
+            List<String> goodsImgs = mds.goodsImgs(recommendGoodsVo.getGoodsId());
+            goodsImgs.add(recommendGoodsVo.getGoodsImg());
+            recommendGoodsVo.setGoodsMoreImgs(goodsImgs);
+
+            // 分销推广语处理
+            if (StringUtils.isBlank(recommendGoodsVo.getPromotionLanguage())) {
+                String goodsPromotionLanguage = mds.getGoodsPromotionLanguage(userId, goodsListMpBo.getGoodsId());
+                recommendGoodsVo.setPromotionLanguage(goodsPromotionLanguage);
+            }
+
+            // 返利金额-成本价保护
+            RebateRatioVo rebateRatioVo = mpds.goodsRebateInfo(goodsListMpBo.getGoodsId(), goodsListMpBo.getSortId(), goodsListMpBo.getCatId(), userId);
+            BigDecimal highRebate = rebateRatioVo.getHighFirstRebatePrice();
+            if(rebateRatioVo.getHighDirectlyRebatePrice().compareTo(rebateRatioVo.getHighIndirectRebatePrice()) > 0){
+                if(rebateRatioVo.getHighDirectlyRebatePrice().compareTo(rebateRatioVo.getHighFirstRebatePrice()) > 0){
+                    highRebate = rebateRatioVo.getHighDirectlyRebatePrice();
+                }
+            }else{
+                if(rebateRatioVo.getHighIndirectRebatePrice().compareTo(rebateRatioVo.getHighFirstRebatePrice()) > 0){
+                    highRebate = rebateRatioVo.getHighIndirectRebatePrice();
+                }
+            }
+            recommendGoodsVo.setHighRebate(highRebate);
+
+            // 判断是否当前商品收藏状态
+            recommendGoodsVo.setIsCollection(checkCollection(userId, goodsListMpBo.getGoodsId()));
+
+            // 如果当前是个人推广中心
+            if (DistributionConstant.PERSONAL.equals(isPersonal)) {
+                // 如果商品已经被收藏至个人推广中心
+                if (DistributionConstant.COLLECTION.equals(checkCollection(userId, goodsListMpBo.getGoodsId()))) {
+                    recommendGoodsVos.add(recommendGoodsVo);
+                }
+            } else {
+                recommendGoodsVos.add(recommendGoodsVo);
+            }
+        }
+
+        // 最大返利处理
+        maxRate(recommendGoodsVos, userId);
+
+        result.setDataList(recommendGoodsVos);
+        result.page = pageResult.getPage();
+
+        return result;
+    }
+
+    /**
+     * 判断是否当前商品是否被收藏到分销员个人推广中心
+     * @param userId 分销员id
+     * @param goodsId 商品id
+     * @return 0：否；1：是
+     */
+    private Byte checkCollection(Integer userId, Integer goodsId) {
+        String collectionGoodsId = distributorCollectionDao.getCollectionGoodsId(userId);
+        List<Integer> goodsIdList = Util.stringToList(collectionGoodsId);
+
+        if (goodsIdList.contains(goodsId)) {
+            return DistributionConstant.COLLECTION;
+        } else {
+            return DistributionConstant.NO_COLLECTION;
+        }
+    }
+
+    /**
+     * GoodsListMpBo -> RecommendGoodsVo
+     * @param goodsListMpBo
+     * @return
+     */
+    private RecommendGoodsVo convert2RecommendGoodsVo(GoodsListMpBo goodsListMpBo) {
+        RecommendGoodsVo recommendGoodsVo = new RecommendGoodsVo();
+
+        recommendGoodsVo.setGoodsName(goodsListMpBo.getGoodsName());
+        recommendGoodsVo.setPrdLinePrice(goodsListMpBo.getPrdMaxPrice());
+        recommendGoodsVo.setGoodsId(goodsListMpBo.getGoodsId());
+        recommendGoodsVo.setGoodsImg(goodsListMpBo.getGoodsImg());
+        recommendGoodsVo.setShopPrice(goodsListMpBo.getShopPrice());
+        recommendGoodsVo.setGoodsNumber(goodsListMpBo.getGoodsNumber());
+        recommendGoodsVo.setMarketPrice(goodsListMpBo.getMarketPrice());
+        recommendGoodsVo.setGoodsSaleNum(goodsListMpBo.getGoodsSaleNum());
+        recommendGoodsVo.setGoodsMoreImgs(goodsListMpBo.getGoodsMoreImgs());
+        recommendGoodsVo.setHighPrdPrice(goodsListMpBo.getHighPrdPrice());
+        recommendGoodsVo.setLowPrdPrice(goodsListMpBo.getLowPrdPrice());
+        recommendGoodsVo.setCostPrice(goodsListMpBo.getCostPrice());
+        recommendGoodsVo.setSortId(goodsListMpBo.getSortId());
+        recommendGoodsVo.setCatId(goodsListMpBo.getCatId());
+
+        return recommendGoodsVo;
+    }
+
+    /**
+     * PromoteGoodsParam -> GoodsSearchMpParam
+     * @param promoteGoodsParam
+     * @return
+     */
+    private GoodsSearchMpParam convert2GoodsSearchMpParam(PromoteGoodsParam promoteGoodsParam) {
+        GoodsSearchMpParam goodsSearchMpParam = new GoodsSearchMpParam();
+        goodsSearchMpParam.setUserId(promoteGoodsParam.getUserId());
+        goodsSearchMpParam.setKeyWords(promoteGoodsParam.getSearch());
+        goodsSearchMpParam.setPageRows(promoteGoodsParam.getPageRows());
+        goodsSearchMpParam.setCurrentPage(promoteGoodsParam.getCurrentPage());
+        goodsSearchMpParam.setMinPrice(promoteGoodsParam.getMinPrice());
+        goodsSearchMpParam.setMaxPrice(promoteGoodsParam.getMaxPrice());
+        goodsSearchMpParam.setSortIds(promoteGoodsParam.getSortIds());
+        goodsSearchMpParam.setBrandIds(promoteGoodsParam.getBrandIds());
+        goodsSearchMpParam.setActivityTypes(promoteGoodsParam.getActivityTypes());
+        goodsSearchMpParam.setSortItem(promoteGoodsParam.getSortItem());
+        goodsSearchMpParam.setSortDirection(promoteGoodsParam.getSortDirection());
+        goodsSearchMpParam.setShopSortItem(promoteGoodsParam.getShopSortItem());
+        goodsSearchMpParam.setShopSortDirection(promoteGoodsParam.getShopSortDirection());
+        goodsSearchMpParam.setSoldOutGoodsShow(promoteGoodsParam.getSoldOutGoodsShow());
+
+        return goodsSearchMpParam;
+    }
 
 
     public WithdrawDetailVo withdrawDetail(Integer userId, Integer shopId){
@@ -1336,6 +1633,71 @@ public class MpDistributionService extends ShopBaseService{
         return rebateRankingListVo;
     }
     /**
+     * 分销员推广中心收藏/取消收藏商品
+     * @param param
+     */
+    public void distributorCollect(DistributorCollectionParam param) {
+        if (param.getType().equals(DistributionConstant.ADD_COLLECTION)) {
+            this.addCollection(param);
+        }
+
+        if (param.getType().equals(DistributionConstant.CANCEL_COLLECTION)) {
+            this.cancelCollection(param);
+        }
+    }
+    /**
+     * 分销员推广中心收藏商品
+     * @param param
+     */
+    private void addCollection(DistributorCollectionParam param) {
+        String collectionGoodsId = distributorCollectionDao.getCollectionGoodsId(param.getDistributorId());
+
+        if (collectionGoodsId == null) {
+            // 插入操作
+            DistributorCollectionRecord record = new DistributorCollectionRecord();
+            record.setDistributorId(param.getDistributorId());
+            record.setCollectionGoodsId(String.valueOf(param.getGoodsId()));
+            this.transaction(() -> {
+                distributorCollectionDao.insertDistributorCollection(record);
+            });
+        } else if (StringUtils.isBlank(collectionGoodsId)) {
+            // 更新操作
+            this.transaction(() -> {
+                distributorCollectionDao.updateDistributorCollection(param.getDistributorId(), String.valueOf(param.getGoodsId()));
+            });
+        } else {
+            Set<Integer> goodsIdSet = Arrays.stream(collectionGoodsId.split(",")).map(Integer::valueOf).collect(Collectors.toSet());
+            if (goodsIdSet.contains(param.getGoodsId())) {
+                // 商品已收藏，直接返回
+                return;
+            }
+            // 更新操作
+            this.transaction(() -> {
+                distributorCollectionDao.updateDistributorCollection(param.getDistributorId(), collectionGoodsId + "," + param.getGoodsId());
+            });
+        }
+    }
+    /**
+     * 分销员推广中心取消收藏商品
+     * @param param
+     */
+    private void cancelCollection(DistributorCollectionParam param) {
+        String collectionGoodsId = distributorCollectionDao.getCollectionGoodsId(param.getDistributorId());
+
+        if (StringUtils.isNotBlank(collectionGoodsId)) {
+            Set<Integer> goodsIdSet = Arrays.stream(collectionGoodsId.split(",")).map(Integer::valueOf).collect(Collectors.toSet());
+            if (goodsIdSet.contains(param.getGoodsId())) {
+                // 取消收藏商品id
+                goodsIdSet.remove(param.getGoodsId());
+                String finalCollectionGoodsId = goodsIdSet.stream().map(String::valueOf).collect(Collectors.joining(","));
+                this.transaction(() -> {
+                    distributorCollectionDao.updateDistributorCollection(param.getDistributorId(), finalCollectionGoodsId);
+                });
+            }
+        }
+    }
+
+    /**
      * 获取分销员上传的微信二维码
      * @param distributorId 分销员id
      * @return 如果返回null说明当前分销员不存在微信二维码
@@ -1351,6 +1713,26 @@ public class MpDistributionService extends ShopBaseService{
 
         return null;
     }
+    /**
+     * 保存图片到数据库
+     * @return 图片信息
+     */
+    public UploadedImageDo saveDistributorImage(DistributorImageParam param) {
+        if (param.getImageId() == null) {
+            // 新增图片信息到数据库
+            return uploadedImageDao.addImageToDb(param.getImageId(), param.getUploadImageParam(),
+                DistributionConstant.DISTRIBUTOR_IMAGE_PREFIX + param.getSubmittedFileName(),
+                param.getContentType(), param.getSize(), param.getUploadPath());
+        } else {
+            // 1.删除缓存中缓存的海报信息
+            imageService.deleteQrCodeUrlByRedisKey(String.valueOf(param.getDistributorId()));
+            // 2.更新数据库中图片信息
+            return uploadedImageDao.updateImageToDb(param.getImageId(), param.getUploadImageParam(),
+                DistributionConstant.DISTRIBUTOR_IMAGE_PREFIX + param.getSubmittedFileName(),
+                param.getContentType(), param.getSize(), param.getUploadPath());
+        }
+    }
+
 
 
 

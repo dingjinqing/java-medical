@@ -4,19 +4,20 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.*;
 import static java.util.Calendar.SATURDAY;
 import static java.util.Calendar.SUNDAY;
 
@@ -26,28 +27,6 @@ import static java.util.Calendar.SUNDAY;
  */
 @Repository
 public class StoreDao extends ShopBaseDao {
-
-    /**
-     * 已关店
-     */
-    private static final Byte STORE_BUSINESS_CLOSE = 0;
-    /**
-     * 在营业
-     */
-    private static final Byte STORE_BUSINESS_OPENING = 1;
-    /**
-     * 每天营业
-     */
-    private static final Byte STORE_BUSINESS_OPEN_EVERYDAY = 1;
-    /**
-     * 工作日营业
-     */
-    private static final Byte STORE_BUSINESS_WORKDAY = 0;
-    /**
-     * 开启自提
-     */
-    private static final Short STORE_AUTO_PICK_ENABLE = 1;
-
 
     public StoreBasicVo getStoreByNo(String storeNo) {
         return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).fetchAnyInto(StoreBasicVo.class);

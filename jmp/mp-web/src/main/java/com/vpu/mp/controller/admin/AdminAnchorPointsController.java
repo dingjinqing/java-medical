@@ -23,7 +23,7 @@ public class AdminAnchorPointsController  extends AdminBaseController {
      * 锚点
      * @return
      */
-    @PostMapping("/api/admin/anchor/Points")
+    @PostMapping("/api/admin/anchor/points")
     public JsonResult anchorPoints(@RequestBody @Validated AnchorPointsParam param){
         anchorPointsService.add(param);
         return success();

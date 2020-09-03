@@ -79,6 +79,8 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 23;
     /** 我的奖品 */
     public final static Byte ACTIVITY_TYPE_MY_PRIZE = 24;
+    /** 分销员推广的商品 */
+    public final static Byte ACTIVITY_TYPE_DISTRIBUTOR_GOODS = 26;
     /** 药方 */
     public final static Byte ACTIVITY_TYPE_PRESCRIPTION = 30;
     /** 加价购商品*/

@@ -51,7 +51,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	protected String[] accountLoginExcept = { "/api/admin/login", "/api/admin/login/*", "/api/admin/logout", "/region/*",
 			"/wechat/notify/*", "/api/admin/notice/*", "/api/admin/subPasswordModify", "/api/admin/password", "/api/admin/official/*",
 			"/api/admin/public/service/auth/list", "/api/admin/public/service/auth/detail", "/api/admin/public/image/account/*",
-			"/api/admin/authority/*", "/api/admin/message","/api/admin/anchor/Points" };
+			"/api/admin/authority/*", "/api/admin/message","/api/admin/anchor/points" };
 
 	/**
 	 * 账号登录后，店铺未登录例外URL
