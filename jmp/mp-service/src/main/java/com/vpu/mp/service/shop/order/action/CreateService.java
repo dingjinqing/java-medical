@@ -271,8 +271,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             transaction(()->{
                 //初始化订单（赋值部分数据）
                 OrderInfoRecord order = orderInfo.addRecord(orderSn, param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
-                //处方返利信息入库
-                addPrescriptionRebate(param);
                 //普通营销活动处理
                 processNormalActivity(order, orderBo, orderBeforeVo);
                 //计算其他数据（需关联去其他模块）
