@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.pojo.wxapp.distribution.withdraw.WithdrawDetailVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.withdraw.WithdrawRecordParam;
 import com.vpu.mp.service.pojo.wxapp.distribution.withdraw.WithdrawRecordVo;
+import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,6 +93,17 @@ public class WxAppDistributionController extends WxAppBaseController{
         Integer userId = wxAppAuth.user().getUserId();
         RebateCenterVo rebateCenter = shop().mpDistribution.rebateCenter(userId);
         return this.success(rebateCenter);
+    }
+    /**
+     * 分销中心-推广中心商品列表
+     * @return
+     */
+    @PostMapping("promoteGoods")
+    public JsonResult promoteGoodsList(@RequestBody PromoteGoodsParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        PageResult<RecommendGoodsVo> promoteGoodsList = shop().mpDistribution.promoteGoodsList(param);
+        return this.success(promoteGoodsList);
     }
     /**
      * 推广语列表

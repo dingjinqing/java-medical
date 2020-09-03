@@ -1,6 +1,9 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * @Author 常乐
@@ -32,4 +35,17 @@ public class RebateRatioVo {
      * 首单返利开关
      */
     private Byte firstRebate;
+    /**
+     * 成本价保护
+     */
+    private BigDecimal costPriceProtect;
+    /**最高直接返利金额*/
+    private BigDecimal highDirectlyRebatePrice;
+    /**最高间接返利金额*/
+    private BigDecimal highIndirectRebatePrice;
+    /**最高首单返利金额*/
+    private BigDecimal highFirstRebatePrice;
+    /**佣金计算方式 0:实际支付金额*返利比例；1：实际利润*返利比例*/
+    @JsonIgnore
+    private Byte strategyType;
 }
