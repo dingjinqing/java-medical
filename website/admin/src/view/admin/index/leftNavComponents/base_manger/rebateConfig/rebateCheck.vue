@@ -11,9 +11,9 @@
       </div>
       <div class="filters_item">
         <span>处理状态：</span>
-        <el-select v-model="rebateStatus" size="small" class="default_input">
+        <el-select v-model="checkStatus" size="small" class="default_input">
           <el-option
-            v-for="item in rebateStatusList"
+            v-for="item in checkStatusList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -31,8 +31,29 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="filters_item">
-        <el-button type="primary" size="small">搜索</el-button>
+      <div class="filters_item" v-if="timeType === '3'">
+        <el-date-picker
+          v-model="startTime"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          class="middle_input"
+          @change="datePickerChange(true, orderTime)"
+          size="small"
+        />
+        至
+        <el-date-picker
+          v-model="endTime"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          class="middle_input"
+          @change="datePickerChange(false, orderTime)"
+          :picker-options="orderEndTime"
+          default-time="23:59:59"
+          size="small"
+        />
+      </div>
+      <div class="filters_item" style="margin-left: 15px;">
+        <el-button type="primary" size="small" @click="search">搜索</el-button>
       </div>
 
       <!-- <div class="filters_item">
@@ -56,44 +77,108 @@
           padding: '8px 10px',
         }"
       >
-        <el-table-column prop="doctorName" label="医生姓名"></el-table-column>
-        <el-table-column prop="mobile" label="手机号"></el-table-column>
+        <el-table-column
+          prop="doctorName"
+          label="医生姓名"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="手机号"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="申请时间"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="orderSn"
-          label="返利咨询订单号"
+          label="提现单号"
+          align="center"
         ></el-table-column>
-        <el-table-column prop="money" label="咨询费总额"></el-table-column>
-        <el-table-column prop="userName" label="下单用户昵称"></el-table-column>
-        <el-table-column prop="rebateMoney" label="返利金额"></el-table-column>
-        <el-table-column prop="rebateStatus" label="返利状态"></el-table-column>
-        <el-table-column prop="createTime" label="返利日期"></el-table-column>
+        <el-table-column
+          prop="withdrawCash"
+          label="提现金额"
+          align="center"
+        ></el-table-column>
+        <el-table-column prop="status" label="处理状态" align="center">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.status | getStatus }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="refuseDesc"
+          label="驳回原因"
+          align="center"
+        ></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <div class="operate">
+              <span
+                v-if="scope.row.status === 3"
+                @click="changeStatus(scope, 'chargeOff')"
+                >出账</span
+              >
+              <span
+                v-if="scope.row.status === 1"
+                @click="changeStatus(scope, 'pass')"
+                >通过</span
+              >
+              <span
+                v-if="scope.row.status === 1 || scope.row.status === 3"
+                @click="changeStatus(scope, 'reject')"
+                >驳回</span
+              >
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
+      <pagination :page-params.sync="pageParams" @pagination="search" />
     </div>
   </div>
 </template>
 
 <script>
+import { getDoctorWithdrawList, changeWithdrawStatus } from '@/api/admin/basicConfiguration/doctorWithDraw'
 export default {
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
       doctorName: '',
-      rebateStatus: '0',
-      timeType: '0',
-      rebateStatusList: [
+      checkStatus: '-1',
+      timeType: '-1',
+      checkStatusList: [
         {
-          value: '0',
-          label: '待返利'
+          value: '-1',
+          label: '全部'
         },
         {
           value: '1',
-          label: '已返利'
+          label: '待审核'
         },
         {
           value: '2',
-          label: '未返利'
+          label: '拒绝'
+        },
+        {
+          value: '3',
+          label: '待出账'
+        },
+        {
+          value: '4',
+          label: '出账成功'
         }
       ],
       timeTypeList: [
+        {
+          value: '-1',
+          label: '全部'
+        },
         {
           value: '0',
           label: '最近一天'
@@ -142,7 +227,134 @@ export default {
           rebeatStatus: 1,
           createTime: '2018-05-13 14:12:00'
         }
-      ]
+      ],
+      startTime: null,
+      endTime: null,
+      pageParams: {}
+    }
+  },
+  mounted () {
+    this.search()
+  },
+  computed: {
+    timeData () {
+      switch (this.timeType) {
+        case '-1':
+          return {}
+        case '0':
+          return (() => {
+            const endTime = new Date()
+            const startTime = new Date()
+            startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 1)
+            return {
+              startTime,
+              endTime
+            }
+          })()
+        case '1':
+          return (() => {
+            const endTime = new Date()
+            const startTime = new Date()
+            startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 7)
+            return {
+              startTime,
+              endTime
+            }
+          })()
+
+        case '2':
+          return (() => {
+            const endTime = new Date()
+            const startTime = new Date()
+            startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 30)
+            return {
+              startTime,
+              endTime
+            }
+          })()
+        case '3':
+          return (() => {
+            return {
+              startTime: this.startTime,
+              endTime: this.endTime
+            }
+          })()
+      }
+    }
+  },
+  filters: {
+    getStatus (status) {
+      let statusName = {
+        1: '待审核',
+        2: '已驳回',
+        3: '待出账',
+        4: '已出账'
+      }
+      return statusName[status]
+    }
+  },
+  methods: {
+    search () {
+      let params = {
+        doctorName: this.doctorName,
+        status: this.checkStatus === '-1' ? null : this.checkStatus,
+        ...this.timeData,
+        ...this.pageParams
+      }
+      getDoctorWithdrawList(params).then(res => {
+        if (res.error === 0) {
+          this.tableList = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
+    },
+    changeStatus ({ row: data }, actions) {
+      switch (actions) {
+        case 'pass':
+          this.$confirm('确认通过提现审核吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            changeWithdrawStatus({ checkStatus: 3, orderSn: data.orderSn }).then(res => {
+              this.$message.success({
+                message: '已通过'
+              })
+              this.search()
+            })
+          })
+          break
+        case 'chargeOff':
+          this.$confirm('确认出账吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            changeWithdrawStatus({ checkStatus: 4, orderSn: data.orderSn }).then(res => {
+              this.$message.success({
+                message: '已出账'
+              })
+              this.search()
+            })
+          })
+          break
+
+        default:
+          this.$prompt('请输入驳回理由', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          }).then(({ value }) => {
+            changeWithdrawStatus({ checkStatus: 2, orderSn: data.orderSn, refuseDesc: value }).then(res => {
+              this.$message.success({
+                message: '已驳回请求'
+              })
+              this.search()
+            })
+          }).catch(() => {
+          })
+
+          break
+      }
     }
   }
 
@@ -159,7 +371,6 @@ export default {
     display: flex;
     max-width: 480px;
     min-width: 320px;
-    margin-left: 15px;
     margin-bottom: 10px;
     /deep/ .areaLinkage {
       .el-select {
@@ -170,10 +381,16 @@ export default {
       }
     }
     > span {
-      min-width: 100px;
       font-size: 14px;
       text-align: right;
     }
+  }
+}
+.operate {
+  text-align: center;
+  color: #66b1ff;
+  > span {
+    cursor: pointer;
   }
 }
 .default_input {
@@ -181,5 +398,8 @@ export default {
 }
 .table-content {
   margin-bottom: 20px;
+}
+.middle_input {
+  width: 185px;
 }
 </style>
