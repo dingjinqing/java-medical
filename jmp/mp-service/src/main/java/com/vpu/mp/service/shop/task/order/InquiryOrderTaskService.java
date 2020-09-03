@@ -51,6 +51,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
         orderList.forEach(order -> {
             order.setOrderStatus(InquiryOrderConstant.ORDER_CANCELED);
             order.setCancelledTime(DateUtils.getLocalDateTime());
+            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FAILED);
             inquiryOrderDao.update(order);
         });
         logger().info("问诊订单关闭定时任务end");
@@ -78,6 +79,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
         orderList.forEach(order -> {
             if(order.getOrderAmount().compareTo(BigDecimal.ZERO)<=0){
                 order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
+                order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FAILED);
                 inquiryOrderDao.update(order);
                 List<String> orderSns=new ArrayList<>();
                 orderSns.add(order.getOrderSn());
@@ -93,7 +95,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
                 }
             }
             //问诊退款，更改返利状态
-            inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL);
+            inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OVERTIME);
             //超时自动退款消息提醒
             List<Integer> useIdrList=new ArrayList<>();
             useIdrList.add(order.getUserId());
@@ -122,12 +124,13 @@ public class InquiryOrderTaskService extends ShopBaseService {
         list.forEach(order -> {
             order.setOrderStatus(InquiryOrderConstant.ORDER_FINISHED);
             order.setFinishedTime(DateUtils.getLocalDateTime());
+            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FINISH);
             inquiryOrderDao.update(order);
             List<String> orderSnList=new ArrayList<>();
             orderSnList.add(order.getOrderSn());
             imSessionService.batchCloseSession(orderSnList);
             //完成问诊，更改返利状态
-            inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATED);
+            inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATED,null);
             //统计医师返利金额
             ImSessionDo im=imSessionService.getSessionInfoByOrderSn(order.getOrderSn());
             if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){

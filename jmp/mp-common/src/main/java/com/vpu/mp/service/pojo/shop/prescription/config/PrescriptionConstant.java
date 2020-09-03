@@ -62,5 +62,6 @@ public interface PrescriptionConstant {
      */
     public final static Byte SETTLEMENT_WAIT=0;
     public final static Byte SETTLEMENT_FINISH=1;
+    public final static Byte SETTLEMENT_FAILED=2;
 
 }

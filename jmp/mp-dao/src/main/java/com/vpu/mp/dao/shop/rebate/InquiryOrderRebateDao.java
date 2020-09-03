@@ -9,6 +9,8 @@ import com.vpu.mp.service.pojo.shop.rebate.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.UpdateSetFirstStep;
+import org.jooq.UpdateSetMoreStep;
 import org.springframework.stereotype.Repository;
 
 import static com.vpu.mp.db.shop.Tables.DOCTOR;
@@ -38,9 +40,12 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      * 更改返利状态
      * @param orderSn
      */
-    public void updateStatus(String orderSn,Byte status){
-        db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, status).where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn))
-        .execute();
+    public void updateStatus(String orderSn,Byte status,String reason){
+        UpdateSetMoreStep<InquiryOrderRebateRecord> update= db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, status);
+        if(StringUtils.isNotBlank(reason)){
+            update.set(INQUIRY_ORDER_REBATE.REASON,reason);
+        }
+        update.where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn)).execute();
     }
 
     /**

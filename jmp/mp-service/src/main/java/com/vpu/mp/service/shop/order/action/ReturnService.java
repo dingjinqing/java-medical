@@ -13,6 +13,7 @@ import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -34,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
@@ -135,6 +137,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     private PrescriptionRebateDao prescriptionRebateDao;
     @Autowired
     private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -202,6 +206,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             for(String preCode:preCodeList){
                 //更改处方返利状态
                 prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATE_FAIL);
+                prescriptionDao.updateSettlementFlag(preCode, PrescriptionConstant.SETTLEMENT_FAILED);
             }
         }
 
