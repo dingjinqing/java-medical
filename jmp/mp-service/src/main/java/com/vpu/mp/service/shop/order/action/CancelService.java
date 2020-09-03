@@ -242,6 +242,8 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
             //下单流程或者下单前已经扣减库存，需恢复设配库存销量
             atomicOperation.updateStockAndSales(goods, order, true);
         }
+        //处方
+        orderCreateMpProcessorFactory.processReturnOrder(null,BaseConstant.ACTIVITY_TYPE_PRESCRIPTION,null,goods);
         //订单类型
         List<Byte> orderType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
         //活动更新状态或库存(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
