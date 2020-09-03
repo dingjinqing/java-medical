@@ -115,6 +115,34 @@ public class WxAppDistributionController extends WxAppBaseController{
         List<PromotionLanguageListVo> promotionLanguageList = shop().mpDistribution.promotionLanguagelist(userId);
         return this.success(promotionLanguageList);
     }
+    /**
+     * 分销员推广中心收藏商品
+     * @return
+     */
+    @PostMapping("distributor/collect")
+    public JsonResult distributorCollect(@RequestBody DistributorCollectionParam param) {
+        shop().mpDistribution.distributorCollect(param);
+        return this.success();
+    }
+
+    /**
+     * 获取分销员上传的微信二维码
+     * @param param 分销员微信二维码入参
+     * @return
+     */
+    @PostMapping("distributor/image/get")
+    public JsonResult getDistributorImage(@RequestBody DistributorImageParam param) {
+        return this.success(shop().mpDistribution.getDistributorImage(param.getDistributorId()));
+    }
+
+    /**
+     * 保存分销员上传的微信二维码
+     */
+    @PostMapping("distributor/image/add")
+    public JsonResult saveDistributorImage(@RequestBody DistributorImageParam param) {
+        shop().mpDistribution.saveDistributorImage(param);
+        return this.success();
+    }
 
     /**
      * 设置默认推广语
