@@ -16,3 +16,35 @@ export function setWithDrawConfig (data) {
     data: data
   })
 }
+// 处方返利统计
+export function getPrescriptionRebate (data) {
+  return service({
+    url: '/api/admin/doctor/rebate/prescription/list',
+    method: 'post',
+    data: data
+  })
+}
+// 咨询返利统计
+export function getInquiryOrderRebate (data) {
+  return service({
+    url: '/api/admin/doctor/rebate/inquiryOrder/list',
+    method: 'post',
+    data: data
+  })
+}
+// 返利审核列表
+export function getDoctorWithdrawList (data) {
+  return service({
+    url: '/api/admin/doctor/withdraw/list',
+    method: 'post',
+    data: data
+  })
+}
+// 提现状态操作
+export function changeWithdrawStatus (data) {
+  return service({
+    url: '/api/admin/doctor/withdraw/audit',
+    method: 'post',
+    data: data
+  })
+}

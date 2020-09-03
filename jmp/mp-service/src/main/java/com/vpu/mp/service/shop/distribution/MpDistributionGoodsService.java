@@ -3,6 +3,9 @@ package com.vpu.mp.service.shop.distribution;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.dao.shop.distribution.PromotionLanguageDao;
+import com.vpu.mp.dao.shop.distribution.UserPromotionLanguageDao;
+import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.RebatePriceRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
@@ -28,16 +31,20 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.DistributionConstant.*;
 import static com.vpu.mp.db.shop.Tables.*;
 
 /**
@@ -61,6 +68,12 @@ public class MpDistributionGoodsService extends ShopBaseService {
 
     @Autowired
     protected CouponMpService mpCoupon;
+    @Autowired
+    protected PromotionLanguageDao promotionLanguageDao;
+    @Autowired
+    protected UserPromotionLanguageDao userPromotionLanguageDao;
+    @Autowired
+    protected GoodsDao goodsDao;
 
     public RebateRatioVo goodsRebateInfo(Integer goodsId,Integer catId,Integer sortId,Integer userId){
         //获取用户分销等级
@@ -195,31 +208,31 @@ public class MpDistributionGoodsService extends ShopBaseService {
     }
 
     private void getRebateRatio(DistributionStrategyParam goodsRebateStrategy, RebateRatioVo rebateRatio, Byte level) {
-        if(level.equals(DistributionConstant.level_1)){
+        if(level.equals(LEVEL_1)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio());
         }
-        if(level.equals(DistributionConstant.level_2)){
+        if(level.equals(DistributionConstant.LEVEL_2)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio2());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio2());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio2());
         }
-        if(level.equals(DistributionConstant.level_3)){
+        if(level.equals(DistributionConstant.LEVEL_3)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio3());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio3());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio3());
         }
-        if(level.equals(DistributionConstant.level_4)){
+        if(level.equals(DistributionConstant.LEVEL_4)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio4());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio4());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio4());
         }
-        if(level.equals(DistributionConstant.level_5)){
+        if(level.equals(DistributionConstant.LEVEL_5)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio5());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio5());
@@ -244,8 +257,8 @@ public class MpDistributionGoodsService extends ShopBaseService {
             return null;
         }
         //异常分销等级重置
-        if(userInfo.getDistributorLevel() < 1 || userInfo.getDistributorLevel() > 5) {
-            userInfo.setDistributorLevel(DistributionConstant.level_1);
+        if(userInfo.getDistributorLevel() < LEVEL_1 || userInfo.getDistributorLevel() > LEVEL_5) {
+            userInfo.setDistributorLevel(LEVEL_1);
         }
         //等级详情
         DistributorLevelVo levelInfo = distributorLevel.getOneLevelInfo(userInfo.getDistributorLevel());
@@ -440,10 +453,82 @@ public class MpDistributionGoodsService extends ShopBaseService {
      * @param goodsId
      * @return
      */
-    public String getGoodsPromotionLanguage(Integer goodsId){
-        Record1<String> record = db().select(GOODS.PROMOTION_LANGUAGE).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOne();
-        if(record != null){
-            return record.into(String.class);
+    public String getGoodsPromotionLanguage(Integer userId, Integer goodsId){
+        // 1.获取商品推广语
+        String promotionLanguage = goodsDao.getPromotionLanguage(goodsId);
+
+        if (StringUtils.isNotEmpty(promotionLanguage)) {
+            return promotionLanguage;
+        }
+
+        // 2.获取分销中心默认推广语
+        Integer languageId = userPromotionLanguageDao.getLanIdByUserId(userId);
+        if (languageId != null) {
+            promotionLanguage = promotionLanguageDao.getPromotionLanguage(languageId);
+        }
+
+        return promotionLanguage;
+    }
+    /**
+     * 是否为多规格商品
+     * @param goodsId
+     * @return
+     */
+    public int isMorePrd(Integer goodsId){
+        Integer into = db().selectCount().from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOne().into(Integer.class);
+        //多规格
+        if(into.compareTo(1)>0){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    /**
+     * 多规格商品最高规格价
+     * @param goodsId
+     * @return
+     */
+    public BigDecimal highPrdPrice(Integer goodsId){
+        BigDecimal price = db().select(GOODS_SPEC_PRODUCT.PRD_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+            .orderBy(GOODS_SPEC_PRODUCT.PRD_PRICE.desc()).limit(1).fetchOne().into(BigDecimal.class);
+        return price;
+    }
+
+    /**
+     * 多规格商品最低规格价
+     * @param goodsId
+     * @return
+     */
+    public BigDecimal lowPrdPrice(Integer goodsId){
+        BigDecimal price = db().select(GOODS_SPEC_PRODUCT.PRD_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+            .orderBy(GOODS_SPEC_PRODUCT.PRD_PRICE.asc()).limit(1).fetchOne().into(BigDecimal.class);
+        return price;
+    }
+
+    /**
+     * 多规格商品最高划线价
+     * @param goodsId
+     * @return
+     */
+    public BigDecimal highPrdLinePrice(Integer goodsId){
+        BigDecimal linePrice = db().select(GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+            .orderBy(GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE.desc()).limit(1).fetchOne().into(BigDecimal.class);
+        return linePrice;
+    }
+    /**
+     * 获取商品多图
+     * @param goodsId
+     * @return
+     */
+    public List<String> goodsImgs(Integer goodsId){
+        Result<Record1<String>> fetch = db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch();
+        if(fetch != null){
+            List<String> imgs = fetch.into(String.class);
+            List<String> googsMoreImgs = new ArrayList<String>();
+            for (String img:imgs){
+                googsMoreImgs.add(imageUrl(img));
+            }
+            return googsMoreImgs;
         }else{
             return null;
         }

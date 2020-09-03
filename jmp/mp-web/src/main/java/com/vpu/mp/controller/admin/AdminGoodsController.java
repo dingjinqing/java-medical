@@ -9,6 +9,7 @@ import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionRecommendGoodsParam;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
@@ -338,6 +339,22 @@ public class AdminGoodsController extends AdminBaseController {
 
 
         return success(goodsVo);
+    }
+    /**
+     * 根据id值集合分页查询商品信息
+     *
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/goods/selectPage")
+    public JsonResult selectPage(@RequestBody DistributionRecommendGoodsParam param) {
+        if (StringUtils.isBlank(param.getRecommendGoodsId())) {
+            return fail(JsonResultCode.GOODS_ID_IS_NULL);
+        }
+
+        PageResult<GoodsVo> result = shop().goods.selectPage(param);
+
+        return success(result);
     }
 
     /**

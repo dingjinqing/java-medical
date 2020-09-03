@@ -18,8 +18,10 @@ import java.util.List;
 @Setter
 public class GoodsSearchMpParam extends BasePageParam {
 
+
     /**用户id，controller 层获取*/
     private Integer userId;
+
 
     /**搜索输入的关键字*/
     private String keyWords;
@@ -29,6 +31,9 @@ public class GoodsSearchMpParam extends BasePageParam {
 
     /**商品最高价格*/
     private BigDecimal maxPrice;
+
+    /**商品类型：实物商品 OR 非实物商品*/
+    private Byte goodsType;
 
     /**商家分类id集合，为了满足从商品分组处跳转时使用*/
     private List<Integer> sortIds;
@@ -67,6 +72,25 @@ public class GoodsSearchMpParam extends BasePageParam {
      * 外面搜索条件限制的商品范围，null表示不限制，长度为0的数组表示没有合法商品
      */
     private List<Integer> goodsIds;
+    /**
+     * 需要排除的商品id
+     */
+    private List<Integer> excludeGoodsIds;
+
+    // =========分销推广商品相关========= start
+    /**
+     * 分销员id
+     */
+    private Integer distributorId;
+    /**
+     * 推广商品集合-分销推广页使用
+     */
+    private List<Integer> rebateGoodsIds;
+    /**
+     * 从分销员分享的推广商品链接跳转至商品搜索页面，展示其关联的商品信息 pageFrom=26
+     */
+    public static final Byte PAGE_FROM_DISTRIBUTOR_GOODS = BaseConstant.ACTIVITY_TYPE_DISTRIBUTOR_GOODS;
+    // =========分销推广商品相关========= end
 
     /**
      * 从商品分组页面跳转至此
