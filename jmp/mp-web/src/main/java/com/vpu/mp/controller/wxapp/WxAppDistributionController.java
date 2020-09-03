@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.pojo.wxapp.distribution.withdraw.WithdrawDetailVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.withdraw.WithdrawRecordParam;
 import com.vpu.mp.service.pojo.wxapp.distribution.withdraw.WithdrawRecordVo;
+import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -94,6 +95,17 @@ public class WxAppDistributionController extends WxAppBaseController{
         return this.success(rebateCenter);
     }
     /**
+     * 分销中心-推广中心商品列表
+     * @return
+     */
+    @PostMapping("promoteGoods")
+    public JsonResult promoteGoodsList(@RequestBody PromoteGoodsParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        PageResult<RecommendGoodsVo> promoteGoodsList = shop().mpDistribution.promoteGoodsList(param);
+        return this.success(promoteGoodsList);
+    }
+    /**
      * 推广语列表
      * @return
      */
@@ -102,6 +114,34 @@ public class WxAppDistributionController extends WxAppBaseController{
         Integer userId = wxAppAuth.user().getUserId();
         List<PromotionLanguageListVo> promotionLanguageList = shop().mpDistribution.promotionLanguagelist(userId);
         return this.success(promotionLanguageList);
+    }
+    /**
+     * 分销员推广中心收藏商品
+     * @return
+     */
+    @PostMapping("distributor/collect")
+    public JsonResult distributorCollect(@RequestBody DistributorCollectionParam param) {
+        shop().mpDistribution.distributorCollect(param);
+        return this.success();
+    }
+
+    /**
+     * 获取分销员上传的微信二维码
+     * @param param 分销员微信二维码入参
+     * @return
+     */
+    @PostMapping("distributor/image/get")
+    public JsonResult getDistributorImage(@RequestBody DistributorImageParam param) {
+        return this.success(shop().mpDistribution.getDistributorImage(param.getDistributorId()));
+    }
+
+    /**
+     * 保存分销员上传的微信二维码
+     */
+    @PostMapping("distributor/image/add")
+    public JsonResult saveDistributorImage(@RequestBody DistributorImageParam param) {
+        shop().mpDistribution.saveDistributorImage(param);
+        return this.success();
     }
 
     /**

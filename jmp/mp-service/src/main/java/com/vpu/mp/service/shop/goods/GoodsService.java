@@ -9,6 +9,7 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.UpYunConfig;
@@ -18,6 +19,7 @@ import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionRecommendGoodsParam;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
@@ -2728,8 +2730,45 @@ public class GoodsService extends ShopBaseService {
         }
     }
 
+    /**
+     * 根据推荐商品id集合分页获取商品
+     * @param param
+     * @return
+     */
+    public PageResult<GoodsVo> selectPage(DistributionRecommendGoodsParam param) {
+        if (param.getCurrentPage() <= 0) {
+            param.setCurrentPage(1);
+        }
 
+        String[] split = param.getRecommendGoodsId().split(",");
 
+        PageResult<GoodsVo> result = new PageResult<>();
+        Integer currentPage = param.getCurrentPage();
+        Integer pageRows = param.getPageRows();
+        result.page = Page.getPage(split.length, currentPage, pageRows);
+
+        List<GoodsVo> goodsVoList = new ArrayList<>();
+        GoodsVo goodsVo;
+
+        //分页处理-优化性能
+        for (int i = (currentPage - 1) * pageRows, j = 0;
+             (currentPage - 1) * pageRows < split.length && j < split.length - (currentPage - 1) * pageRows && j < pageRows;
+             i ++, j ++) {
+            goodsVo = this.select(Integer.parseInt(split[i]));
+            goodsVoList.add(goodsVo);
+        }
+
+        result.setDataList(goodsVoList);
+        return result;
+    }
+    /**
+     * 通过分类id集合获取商品id集合
+     * @param sortId
+     * @return
+     */
+    public List<Integer> listGoodsId(List<Integer> sortId) {
+        return goodsDao.listGoodsId(sortId);
+    }
     /**
      * 根据prdId获取商品名称
      * @param prdId

@@ -157,6 +157,14 @@
         注：未在指定时间内支付尾款，则定金不予退还!
       </view>
     </view>
+
+    <view class="pay_info" wx:if="{{orderInfo.deliverType && filter.includes([3,5],orderInfo.orderStatus)}}">
+      <view class="pay_item">
+        <text>核销码：{{orderInfo.verifyCode}}</text>
+        <view>{{orderInfo.orderStatus === 3 ? '待核销' : '已自提'}}</view>
+      </view>
+    </view>
+
     <view class="order_top">
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{i18n.$t(localePack,"pages.checkout.deliverType["+orderInfo.deliverType+"]")}}</text>
     </view>

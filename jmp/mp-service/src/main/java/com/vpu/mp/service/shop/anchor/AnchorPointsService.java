@@ -25,6 +25,19 @@ public class AnchorPointsService extends ShopBaseService {
                 AnchorPointsDo anchorPointsDo = event.getDo();
                 anchorPointsDo.setDevice(param.getDevice());
                 anchorPointsDo.setValue(item.getValue());
+                anchorPointsDo.setKey(item.getKey());
+                anchorPointsDo.setPage(param.getPage());
+                anchorPointsDo.setPlatform(param.getPlatform());
+                anchorPointsDo.setStoreId(param.getStoreId());
+                anchorPointsDo.setUserId(param.getUserId());
+                anchorPointsDao.save(anchorPointsDo);
+            }else {
+                AnchorPointsDo anchorPointsDo =new AnchorPointsDo();
+                anchorPointsDo.setEvent(param.getEvent());
+                anchorPointsDo.setStoreId(param.getStoreId());
+                anchorPointsDo.setKey(item.getKey());
+                anchorPointsDo.setDevice(param.getDevice());
+                anchorPointsDo.setValue(item.getValue());
                 anchorPointsDo.setPage(param.getPage());
                 anchorPointsDo.setPlatform(param.getPlatform());
                 anchorPointsDo.setStoreId(param.getStoreId());

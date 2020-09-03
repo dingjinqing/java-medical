@@ -17,4 +17,10 @@ public class InquiryOrderRebateConstant {
      * 未返利
      */
     public static final Byte REBATE_FAIL=2;
+
+    /**
+     *未返利原因
+     */
+    public final static String REASON_OVERTIME="超时自动退款";
+    public final static String REASON_DOCTOR_REFUND="医师退款";
 }

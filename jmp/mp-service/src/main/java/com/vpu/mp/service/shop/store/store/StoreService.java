@@ -5,6 +5,8 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.db.shop.tables.records.ArticleRecord;
@@ -21,6 +23,9 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
 import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
 import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsBaseCheckInfo;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsCheckQueryParam;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsCheckQueryVo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.*;
@@ -37,12 +42,7 @@ import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -637,10 +637,11 @@ public class StoreService extends ShopBaseService {
     /**
      * 查询当前在营业的门店列表(传地址)
      * @param orderAddressParam 地址经纬度
-     * @return Map<Double       ,               StoreDo>
+     * @return Map<Double, StoreDo>
      */
     public Map<Double, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
-        List<StoreDo> stores = storeDao.getStoreOpen();
+        List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
         Map<Double, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
             double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
@@ -655,15 +656,43 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 查询当前在营业的门店列表(不传地址)
-     * @return Map<Double       ,               StoreDo>
+     * @return Map<Double, StoreDo>
      */
-    public Map<Double, StoreDo> getStoreListOpen() {
-        List<StoreDo> stores = storeDao.getStoreOpen();
+    public Map<Double, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+        List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
         Map<Double, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
             map.put(0D, e);
         });
         return map;
+    }
+
+    /**
+     * 调取药房接口查询库存是否充足 供getStoreListOpen方法调用
+     * @param storeGoodsBaseCheckInfoList 药品列表
+     * @return List<String> 返回null表示接口校验异常，否则表示可用的药店编码集合
+     */
+    private List<String> checkStoreGoods(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+        StoreGoodsCheckQueryParam param = new StoreGoodsCheckQueryParam();
+        param.setGoodsItems(storeGoodsBaseCheckInfoList);
+
+        String appId = ApiExternalRequestConstant.APP_ID_STORE;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_GET_STOCK_ENOUGH_SHOP_LIST;
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+        // 数据拉取错误
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            logger().debug("获取药品库存足够门店接口异常：error " + apiExternalRequestResult.getError() + ",msg " + apiExternalRequestResult.getMsg());
+            return null;
+        }
+        String dataJson = apiExternalRequestResult.getData();
+        StoreGoodsCheckQueryVo storeGoodsCheckQueryVo = Util.parseJson(dataJson, StoreGoodsCheckQueryVo.class);
+        if (storeGoodsCheckQueryVo == null) {
+            return null;
+        } else {
+            return storeGoodsCheckQueryVo.getShopList();
+        }
     }
 
     /**

@@ -7,7 +7,10 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.statistics.InquiryOrderStatistics;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
@@ -20,10 +23,12 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.avg;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.currentTimestamp;
+import static org.jooq.impl.DSL.date;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * @author yangpengcheng
@@ -64,6 +69,10 @@ public class InquiryOrderDao extends ShopBaseDao {
         }
         if(StringUtils.isNotBlank(param.getPatientName())) {
             select.where(INQUIRY_ORDER.PATIENT_NAME.like(this.likeValue(param.getPatientName())));
+        }
+        if (param.getStartTime()!=null&&param.getEndTime()!=null){
+            select.where(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()))
+                    .and(INQUIRY_ORDER.CREATE_TIME.le(param.getEndTime()));
         }
         return select;
     }
@@ -259,4 +268,5 @@ public class InquiryOrderDao extends ShopBaseDao {
         InquiryOrderTotalVo inquiryOrderTotalVo=select.fetchOneInto(InquiryOrderTotalVo.class);
         return inquiryOrderTotalVo;
     }
+
 }

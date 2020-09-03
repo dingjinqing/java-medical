@@ -76,7 +76,11 @@
 </template>
 <script>
 import { loginRequest } from '@/api/index/login.js'
+import {
+  getShowMenu
+} from '@/api/store/store'
 import Cookies from 'js-cookie'
+import { mapActions } from 'vuex'
 export default {
   data () {
     var validateUserName = (rule, value, callback) => {
@@ -172,6 +176,7 @@ export default {
     // window.addEventListener('keyup', this.keyupEnter, false)
   },
   methods: {
+    ...mapActions(['getShowMenuData']),
     onSubmit (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -190,13 +195,19 @@ export default {
               localStorage.setItem('V-Username', res.content.storeAccountName)
               localStorage.setItem('V-isSubLogin', this.isSubLogin)
               localStorage.setItem('V-AccountName', res.content.storeAccountName)
-              this.$message.success({
-                showClose: true,
-                message: res.message,
-                type: 'success'
-              })
-              this.$router.push({
-                name: 'overView'
+              getShowMenu().then((res) => {
+                if (res.error === 0) {
+                  let souceArray = res.content
+                  this.getShowMenuData(souceArray)
+                  this.$message.success({
+                    showClose: true,
+                    message: res.message,
+                    type: 'success'
+                  })
+                  this.$router.push({
+                    name: 'overView'
+                  })
+                }
               })
             }
           })

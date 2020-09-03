@@ -1,6 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.order.address;
 
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsBaseCheckInfo;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author 赵晓东
@@ -13,4 +16,6 @@ public class OrderAddressParam {
     private String lat;
 
     private String lng;
+
+    private List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList;
 }

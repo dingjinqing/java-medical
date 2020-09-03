@@ -1,6 +1,5 @@
 package com.vpu.mp.common.pojo.saas.api;
 
-import com.vpu.mp.config.ApiExternalGateConfig;
 import lombok.Data;
 
 /**
@@ -10,8 +9,8 @@ import lombok.Data;
  */
 @Data
 public class ApiJsonResult {
-    private Integer code = ApiExternalGateConfig.ERROR_CODE_SUCCESS;
-    private String msg = ApiExternalGateConfig.ERROR_CODE_SUCCESS_MSG;
+    private Integer code = ApiExternalGateConstant.ERROR_CODE_SUCCESS;
+    private String msg = ApiExternalGateConstant.ERROR_CODE_SUCCESS_MSG;
     /**Object[]{} 为目前php文档定义的默认值，当没有数据的时候返php返回的是一个[](对于返回单个对象但是该对象查询失败时返回的也是[],如果成功则data就是该Json对象)*/
     private Object data = new Object[]{};
 

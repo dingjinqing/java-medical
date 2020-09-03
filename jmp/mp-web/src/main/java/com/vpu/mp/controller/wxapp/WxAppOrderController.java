@@ -390,11 +390,10 @@ public class WxAppOrderController extends WxAppBaseController{
     @PostMapping("/get/store")
     public JsonResult getClosestStoreInformation(@RequestBody OrderAddressParam orderAddressParam) {
         if ("".equals(orderAddressParam.getLat()) || "".equals(orderAddressParam.getLng())) {
-            return success(storeService.getStoreListOpen());
+            return success(storeService.getStoreListOpen(orderAddressParam.getStoreGoodsBaseCheckInfoList()));
         }
         Map<Double, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
         return success(storeListOpen);
     }
-
 
 }

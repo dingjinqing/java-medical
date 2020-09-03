@@ -179,7 +179,7 @@ public class InquiryOrderService extends ShopBaseService {
         }
         if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
             //完成问诊，更改返利状态
-            inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(),InquiryOrderRebateConstant.REBATED);
+            inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(),InquiryOrderRebateConstant.REBATED,null);
 
             //第一次正常结束的时候统计返利金额
             setDoctorTotalRebate(inquiryOrderDo);
@@ -352,6 +352,7 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientBirthday(patientOneParam.getBirthday());
         inquiryOrderDo.setPatientIdentityCode(patientOneParam.getIdentityCode());
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
+        inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
         List<ImageSimpleVo> imageList=payParam.getImageList();
         String imageUrl=Util.toJson(imageList);
 //        String imageUrl=imageList.stream().collect(Collectors.joining(","));
@@ -378,9 +379,13 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void doctorRefund(InquiryOrderOnParam inquiryOrderOnParam)throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
-        //问诊退款，更改返利状态
-        inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL);
+        transaction(()->{
+            refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
+            //问诊退款，更改返利状态
+            inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_DOCTOR_REFUND);
+            inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FAILED);
+        });
+
     }
 
     /**

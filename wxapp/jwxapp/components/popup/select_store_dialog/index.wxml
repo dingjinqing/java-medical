@@ -1,6 +1,5 @@
 <wxs module="tool">
 var getSelected = function(stordId,selectedId){
-  console.log(stordId,selectedId)
   if(stordId-0 === selectedId-0) return true
   return false
 }

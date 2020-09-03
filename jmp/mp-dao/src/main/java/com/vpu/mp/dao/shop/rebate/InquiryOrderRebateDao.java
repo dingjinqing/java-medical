@@ -9,10 +9,11 @@ import com.vpu.mp.service.pojo.shop.rebate.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.UpdateSetFirstStep;
+import org.jooq.UpdateSetMoreStep;
 import org.springframework.stereotype.Repository;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
-import static com.vpu.mp.db.shop.Tables.INQUIRY_ORDER;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
 import static com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
 
@@ -38,9 +39,12 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      * 更改返利状态
      * @param orderSn
      */
-    public void updateStatus(String orderSn,Byte status){
-        db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, status).where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn))
-        .execute();
+    public void updateStatus(String orderSn,Byte status,String reason){
+        UpdateSetMoreStep<InquiryOrderRebateRecord> update= db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, status);
+        if(StringUtils.isNotBlank(reason)){
+            update.set(INQUIRY_ORDER_REBATE.REASON,reason);
+        }
+        update.where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn)).execute();
     }
 
     /**
@@ -50,10 +54,11 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      */
     public PageResult<InquiryOrderRebateVo> getPageList(InquiryOrderRebateListParam param){
         SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR.NAME.as("doctorName"),INQUIRY_ORDER.ORDER_STATUS,INQUIRY_ORDER.PATIENT_NAME,DOCTOR.MOBILE,INQUIRY_ORDER_REBATE.asterisk())
+            .select(DOCTOR.NAME.as("doctorName"),INQUIRY_ORDER.ORDER_STATUS,INQUIRY_ORDER.PATIENT_NAME,DOCTOR.MOBILE,USER.USERNAME.as("userName"),INQUIRY_ORDER_REBATE.asterisk())
             .from(INQUIRY_ORDER_REBATE);
         select.leftJoin(DOCTOR).on(DOCTOR.ID.eq(INQUIRY_ORDER_REBATE.DOCTOR_ID))
-            .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.ORDER_SN.eq(INQUIRY_ORDER_REBATE.ORDER_SN));
+            .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.ORDER_SN.eq(INQUIRY_ORDER_REBATE.ORDER_SN))
+            .leftJoin(USER).on(USER.USER_ID.eq(INQUIRY_ORDER.USER_ID));
         select.where(INQUIRY_ORDER_REBATE.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         select=buildOptions(select,param);
         select.orderBy(INQUIRY_ORDER_REBATE.CREATE_TIME.desc());

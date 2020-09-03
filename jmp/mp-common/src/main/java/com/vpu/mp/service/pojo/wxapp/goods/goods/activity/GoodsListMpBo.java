@@ -40,6 +40,26 @@ public class GoodsListMpBo extends GoodsListMpVo {
     /**商品最大规格价格（用于活动商品的划线价）*/
     @JsonIgnore
     private BigDecimal prdMaxPrice;
+    /**商品图片集合*/
+    @JsonIgnore
+    private List<String> goodsMoreImgs;
+    /**最高规格价*/
+    @JsonIgnore
+    private BigDecimal highPrdPrice;
+    /**最低规格价*/
+    @JsonIgnore
+    private BigDecimal lowPrdPrice;
+    /**成本价*/
+    @JsonIgnore
+    private BigDecimal costPrice;
+    /**商品跟活动会员等级计算后的价格*/
+    @JsonIgnore
+    private BigDecimal showPrice;
+    /**
+     * 这个商品参加了首单特惠对应的活动的价格
+     */
+    @JsonIgnore
+    private BigDecimal speciallyGoodsPrice;
     //************ElasticSearch中的数据**************end
 
 
