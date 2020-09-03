@@ -21,25 +21,7 @@
         "topIndex": 1,
         "includeApi": [],
         "check": 1,
-        "isOnly": 2
-      },
-      {
-        "enName": "storeGroupConfig",
-        "name": "分组管理",
-        "linkUrl": "/admin/store/group/config",
-        "topIndex": 1,
-        "includeApi": [],
-        "check": 1,
-        "isOnly": 2
-      },
-      {
-        "enName": "storeInfo",
-        "name": "门店信息",
-        "linkUrl": "/store/info",
-        "topIndex": 1,
-        "includeApi": ["/api/store/store/*"],
-        "check": 1,
-        "isOnly": 1
+        "isOnly": 0
       }
     ]
   },
