@@ -24,7 +24,8 @@ const getters = {
   picSpaceCropperFlag: state => state.util.picSpaceCropperFlag,
   Micropage: state => state.smallProcedures.Micropage,
   // getUserName: state => state.getUserName
-  dialogVisible: state => state.brandDialog.dialogVisible
+  dialogVisible: state => state.brandDialog.dialogVisible,
+  showMenuData: state => state.leftnav.showMenuData
 }
 
 export default getters

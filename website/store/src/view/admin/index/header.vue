@@ -13,7 +13,7 @@
               ? 'active_bg'
               : ''
           "
-          @click="headerNavClick(index, item.name)"
+          @click="headerNavClick(index, item.url)"
           @mouseover="header_nav_over(index)"
           @mouseleave="header_nav_leave(index)"
         >
@@ -78,7 +78,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Cookies from 'js-cookie'
 import { loginRequestOut } from '@/api/index/login.js'
 import { loadLanguageAsync } from '@/i18n/i18n.js'
@@ -106,7 +106,11 @@ export default {
       accountName: '',
       menu_width: '',
       header_navData: [
-
+        { title: '门店概况', index: '', meta: 'overView', name: 'overView' },
+        { title: '全部门店', index: '', meta: 'storeList', name: 'storeList' },
+        { title: '门店商品', index: '', meta: 'storeGoods', name: 'storeGoods' },
+        { title: '门店订单', index: '', meta: 'storeOrder', name: 'storeOrder' },
+        { title: '店员管理', index: '', meta: 'storeMember', name: 'storeMember' }
       ],
       active_bg: 'active_bg',
       nav_index: '',
@@ -135,18 +139,12 @@ export default {
     // 初始化语言
     console.log(1)
     this.langDefault()
+    this.filterHeaderData()
   },
 
   watch: {
     lang (newData) {
       console.log(newData)
-      this.header_navData = [
-        { title: '门店概况', index: '', meta: 'overView', name: 'overView' },
-        { title: '全部门店', index: '', meta: 'storeList', name: 'storeList' },
-        { title: '门店商品', index: '', meta: 'storeGoods', name: 'storeGoods' },
-        { title: '门店订单', index: '', meta: 'storeOrder', name: 'storeOrder' },
-        { title: '店员管理', index: '', meta: 'storeMember', name: 'storeMember' }
-      ]
       let data = JSON.parse(JSON.stringify(this.$t('shopData')))
       // this.hiddle_menu_list = this.$t('shopData')
       // this.$t('shopData').forEach((item, index) => {
@@ -276,24 +274,14 @@ export default {
       this.click_nav_index = null
     },
     // 顶部导航点击
-    headerNavClick (index, name) {
+    headerNavClick (index, url) {
       console.log(this.$route)
       this.$http.$emit('resit', false)
       this.click_nav_index = index
       console.log(name)
-      if (name === 'config_list') {
-        console.log(123)
-        this.$router.push({
-          name: name,
-          params: {
-            isAuth: '-1'
-          }
-        })
-      } else {
-        this.$router.push({
-          name: name
-        })
-      }
+      this.$router.push({
+        path: url
+      })
 
       this.judgeActiveMeunAll(name)
       // console.log(name)
@@ -325,7 +313,20 @@ export default {
       })
 
       console.log(this.lang)
+    },
+    filterHeaderData () {
+      this.header_navData = this.showMenuData.reduce((defaultData, item) => {
+        let target = this.header_navData.find(navItem => { return item.enName === navItem.meta })
+        if (item.check) {
+          target.url = item.linkUrl
+          defaultData.push(target)
+        }
+        return defaultData
+      }, [])
     }
+  },
+  computed: {
+    ...mapGetters(['showMenuData'])
   }
 }
 </script>
