@@ -259,4 +259,5 @@ public class InquiryOrderDao extends ShopBaseDao {
         InquiryOrderTotalVo inquiryOrderTotalVo=select.fetchOneInto(InquiryOrderTotalVo.class);
         return inquiryOrderTotalVo;
     }
+
 }
