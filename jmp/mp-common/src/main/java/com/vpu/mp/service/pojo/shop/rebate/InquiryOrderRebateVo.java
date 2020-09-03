@@ -11,6 +11,7 @@ import lombok.Data;
 public class InquiryOrderRebateVo extends InquiryOrderRebateDo {
     private String doctorName;
     private String mobile;
+    private String userName;
     /**
      * 问诊订单状态
      */

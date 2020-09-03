@@ -767,6 +767,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         if (!isRestore) {
             return;
         }
+        orderCreateMpProcessorFactory.processReturnOrder(returnOrderRecord, BaseConstant.ACTIVITY_TYPE_PRESCRIPTION, null, returnGoods);
         //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
         goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
         for (Byte type : goodsType) {

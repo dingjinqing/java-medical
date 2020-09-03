@@ -637,10 +637,11 @@ public class StoreService extends ShopBaseService {
     /**
      * 查询当前在营业的门店列表(传地址)
      * @param orderAddressParam 地址经纬度
-     * @return Map<Double       ,               StoreDo>
+     * @return Map<Double, StoreDo>
      */
     public Map<Double, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
-        List<StoreDo> stores = storeDao.getStoreOpen();
+        List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
         Map<Double, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
             double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
@@ -657,8 +658,9 @@ public class StoreService extends ShopBaseService {
      * 查询当前在营业的门店列表(不传地址)
      * @return Map<Double, StoreDo>
      */
-    public Map<Double, StoreDo> getStoreListOpen() {
-        List<StoreDo> stores = storeDao.getStoreOpen();
+    public Map<Double, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+        List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
         Map<Double, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
             map.put(0D, e);
@@ -669,9 +671,9 @@ public class StoreService extends ShopBaseService {
     /**
      * 调取药房接口查询库存是否充足 供getStoreListOpen方法调用
      * @param storeGoodsBaseCheckInfoList 药品列表
-     * @return null 表示接口校验异常，否则表示可用的药店编码集合
+     * @return List<String> 返回null表示接口校验异常，否则表示可用的药店编码集合
      */
-    public List<String> checkStoreGoods(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+    private List<String> checkStoreGoods(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
         StoreGoodsCheckQueryParam param = new StoreGoodsCheckQueryParam();
         param.setGoodsItems(storeGoodsBaseCheckInfoList);
 
