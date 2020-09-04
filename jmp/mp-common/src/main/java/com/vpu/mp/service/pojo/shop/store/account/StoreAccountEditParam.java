@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  * 编辑的入参
- * 
+ *
  * @author zhaojianqiang
  * @time 下午3:36:35
  */
@@ -25,8 +25,9 @@ public class StoreAccountEditParam {
 	private String accountName;
 	@NotNull
 	private Byte accountType;
-	
+
 	private String accountPasswd;
 	@NotNull
 	private Integer[] storeList;
+    private Integer userId=0;
 }
