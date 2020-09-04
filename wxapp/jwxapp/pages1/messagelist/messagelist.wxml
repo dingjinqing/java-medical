@@ -54,7 +54,7 @@
           <view class="lt_bold">我的咨询</view>
           <view>{{item.messageTime}}<text class="iconfont iconshanchu2" bindtap="delete_this" data-mes_id='{{item.messageId}}' data-form='advi'></text></view>
         </view>
-        <view class="line_bottom" bindtap="to_query" data-order_sn='{{item.messageRelevanceOrderSn}}' data-status='{{item.messageStatus}}'>
+        <view class="line_bottom" data-mes_id='{{item.messageId}}' bindtap="to_query" data-order_sn='{{item.messageRelevanceOrderSn}}' data-status='{{item.messageStatus}}'>
           <view class="lt_text">{{item.messageContent}}</view>
           <image src="{{imageUrl}}image/wxapp/right_into.png" mode="widthFix"></image>
         </view>
