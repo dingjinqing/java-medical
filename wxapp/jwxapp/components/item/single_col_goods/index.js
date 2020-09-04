@@ -15,7 +15,7 @@ global.wxComponent({
     goodsData: {
       type: Object,
       value: null,
-      observer(val){
+      observer(val) {
         this.resetlimitData()
       }
     },
@@ -27,17 +27,17 @@ global.wxComponent({
       type: Object,
       value: null
     },
-    customDelete:{
-      type:Boolean,
-      value:false
+    customDelete: {
+      type: Boolean,
+      value: false
     },
-    customControlNum:{
-      type:Boolean,
-      value:false
+    customControlNum: {
+      type: Boolean,
+      value: false
     },
-    isSelect:{
-      type:Boolean,
-      value:false
+    isSelect: {
+      type: Boolean,
+      value: false
     }
   },
 
@@ -110,8 +110,10 @@ global.wxComponent({
     },
     // 删除购物车
     delCartGoods(e) {
-      if(this.data.customDelete){
-        this.triggerEvent('deletCart',{...this.data.goodsData})
+      if (this.data.customDelete) {
+        this.triggerEvent('deletCart', {
+          ...this.data.goodsData
+        })
         return
       }
       util.api(
@@ -121,55 +123,87 @@ global.wxComponent({
           if (res.error === 0) {
             this.triggerEvent('cartChange') //购物车改变触发
           }
-        },
-        { cartId: e.currentTarget.dataset.cartId }
+        }, {
+          cartId: e.currentTarget.dataset.cartId
+        }
       )
     },
     // 更改购物车商品数量
     changeGoodsNum(e) {
-      let { type } = e.currentTarget.dataset
-      let { cartNumber, productId, activityType, activityId } = this.data.goodsData
-      if(this.data.customControlNum){
-        this.triggerEvent('cartNumChange',{type,...this.data.goodsData})
+      let {
+        type
+      } = e.currentTarget.dataset
+      let {
+        cartNumber,
+        productId,
+        activityType,
+        activityId
+      } = this.data.goodsData
+      if (this.data.customControlNum) {
+        this.triggerEvent('cartNumChange', {
+          type,
+          ...this.data.goodsData
+        })
         return
       }
       util.api('/api/wxapp/cart/add', res => {
         if (res.error == 0) {
           this.triggerEvent('cartChange') //购物车改变触发
+          util.handleBuriedPoint('add_cart', 'pages1/repurchaselist/repurchaselist', [{
+            key: '路径来源',
+            value: '处方复购页'
+          }, {
+            key: '药品数量',
+            value: type === 'plus' ? cartNumber + 1 : cartNumber - 1
+          }])
         } else {
           util.showModal('提示', res.message)
           return false
         }
       }, {
-          goodsNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1,
-          prdId: productId,
-          activityType: activityType,
-          activityId: activityId,
-          type: 1
+        goodsNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1,
+        prdId: productId,
+        activityType: activityType,
+        activityId: activityId,
+        type: 1
       })
     },
-    changeCartInput(e){
+    changeCartInput(e) {
       let cartNumber = parseInt(e.detail.value)
-      let { productId, activityType, activityId } = this.data.goodsData
-      if(this.data.customControlNum){
-        this.triggerEvent('customCartNum',{...this.data.goodsData,goodsNumber:cartNumber})
+      let {
+        productId,
+        activityType,
+        activityId
+      } = this.data.goodsData
+      if (this.data.customControlNum) {
+        this.triggerEvent('customCartNum', {
+          ...this.data.goodsData,
+          goodsNumber: cartNumber
+        })
         return
       }
-      if(!isNaN(cartNumber)){
+      if (!isNaN(cartNumber)) {
         util.api('/api/wxapp/cart/add', res => {
           if (res.error == 0) {
             this.triggerEvent('cartChange') //购物车改变触发
+            util.handleBuriedPoint('add_cart', 'pages1/repurchaselist/repurchaselist', [{
+              key: '路径来源',
+              value: '处方复购页'
+            }, {
+              key: '药品数量',
+              value: cartNumber
+            }])
           } else {
             util.showModal('提示', res.message)
             return false
           }
         }, {
-            goodsNumber: cartNumber,
-            prdId: productId,
-            activityType: activityType,
-            activityId: activityId,
-            type: 1
-          })
+          goodsNumber: cartNumber,
+          prdId: productId,
+          activityType: activityType,
+          activityId: activityId,
+          type: 1
+        })
       }
     },
     // 打开规格弹窗
@@ -178,47 +212,60 @@ global.wxComponent({
     },
     // 去商品详情页
     goItem() {
-      let { goodsId, activityId, activityType } = this.data.goodsData
+      let {
+        goodsId,
+        activityId,
+        activityType
+      } = this.data.goodsData
       util.jumpLink(
         `pages/item/item?gid=${goodsId}&atp=${activityType}&aid=${activityId}`,
         'navigateTo'
       )
     },
-    setGoodsActShow(){
-      if(!this.data.goodsData || !this.data.goodsData.activityType) return
-      console.log(this.data.goodsData,this.data.goodsData.activityType)
+    setGoodsActShow() {
+      if (!this.data.goodsData || !this.data.goodsData.activityType) return
+      console.log(this.data.goodsData, this.data.goodsData.activityType)
       let actInfo = {}
       switch (this.data.goodsData.activityType) {
         case 6:
-          actInfo.actName="限时降价，立即查看"
+          actInfo.actName = "限时降价，立即查看"
           break;
         case 18:
-          actInfo.actName="首单特惠，新人专享"
+          actInfo.actName = "首单特惠，新人专享"
           break;
         case 22:
-          actInfo.isVipPrice=true
+          actInfo.isVipPrice = true
           break;
         case 98:
-          actInfo.actName="限时降价，立即查看"
-          actInfo.isVipPrice=true
+          actInfo.actName = "限时降价，立即查看"
+          actInfo.isVipPrice = true
           break;
       }
       this.setData({
         actInfo
       })
     },
-    resetlimitData(){
-      let { prdNumber,limitBuyNum, limitMaxNum, cartNumber } = this.data.goodsData;
-      limitBuyNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
+    resetlimitData() {
+      let {
+        prdNumber,
+        limitBuyNum,
+        limitMaxNum,
+        cartNumber
+      } = this.data.goodsData;
+      limitBuyNum = (limitBuyNum && limitBuyNum > 0) ? limitBuyNum : 1;
       limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
       this.setData({
         canMinus: cartNumber <= limitBuyNum ? false : true,
         canPlus: cartNumber < limitMaxNum ? true : false,
       })
     },
-    toggleSelect(e){
-      let {goodsId} = e.currentTarget.dataset
-      this.triggerEvent('toggleSelect',{goodsId})
+    toggleSelect(e) {
+      let {
+        goodsId
+      } = e.currentTarget.dataset
+      this.triggerEvent('toggleSelect', {
+        goodsId
+      })
     }
   }
 })

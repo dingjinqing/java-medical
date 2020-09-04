@@ -197,6 +197,10 @@ global.wxPage({
                 paySign: res.content.paySign,
                 success: async res => {
                   util.toast_success('支付成功', () => {
+                    util.handleBuriedPoint('order_pay_success', 'pages2/doctorPatientMessage/doctorPatientMessage', [{
+                      key: '路径来源',
+                      value: '患者咨询信息页'
+                    }])
                     util.jumpLink(
                       `/pages2/patientChat/patientChat${this.getUrlParams({
                       orderSn:orderSn,

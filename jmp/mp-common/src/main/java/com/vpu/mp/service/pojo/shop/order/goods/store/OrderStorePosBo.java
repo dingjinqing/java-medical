@@ -19,6 +19,7 @@ public class OrderStorePosBo {
     private String userPhone;
     private String orderAddress;
     private String orderMemo;
+    private Byte isPickUp;
     private BigDecimal goodsSumPrice;
     private List<OrderStoreGoodsBo> goodsInfos;
 }

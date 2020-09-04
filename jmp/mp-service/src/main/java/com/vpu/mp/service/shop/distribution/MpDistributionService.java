@@ -1633,6 +1633,71 @@ public class MpDistributionService extends ShopBaseService{
         return rebateRankingListVo;
     }
     /**
+     * 分销员推广中心收藏/取消收藏商品
+     * @param param
+     */
+    public void distributorCollect(DistributorCollectionParam param) {
+        if (param.getType().equals(DistributionConstant.ADD_COLLECTION)) {
+            this.addCollection(param);
+        }
+
+        if (param.getType().equals(DistributionConstant.CANCEL_COLLECTION)) {
+            this.cancelCollection(param);
+        }
+    }
+    /**
+     * 分销员推广中心收藏商品
+     * @param param
+     */
+    private void addCollection(DistributorCollectionParam param) {
+        String collectionGoodsId = distributorCollectionDao.getCollectionGoodsId(param.getDistributorId());
+
+        if (collectionGoodsId == null) {
+            // 插入操作
+            DistributorCollectionRecord record = new DistributorCollectionRecord();
+            record.setDistributorId(param.getDistributorId());
+            record.setCollectionGoodsId(String.valueOf(param.getGoodsId()));
+            this.transaction(() -> {
+                distributorCollectionDao.insertDistributorCollection(record);
+            });
+        } else if (StringUtils.isBlank(collectionGoodsId)) {
+            // 更新操作
+            this.transaction(() -> {
+                distributorCollectionDao.updateDistributorCollection(param.getDistributorId(), String.valueOf(param.getGoodsId()));
+            });
+        } else {
+            Set<Integer> goodsIdSet = Arrays.stream(collectionGoodsId.split(",")).map(Integer::valueOf).collect(Collectors.toSet());
+            if (goodsIdSet.contains(param.getGoodsId())) {
+                // 商品已收藏，直接返回
+                return;
+            }
+            // 更新操作
+            this.transaction(() -> {
+                distributorCollectionDao.updateDistributorCollection(param.getDistributorId(), collectionGoodsId + "," + param.getGoodsId());
+            });
+        }
+    }
+    /**
+     * 分销员推广中心取消收藏商品
+     * @param param
+     */
+    private void cancelCollection(DistributorCollectionParam param) {
+        String collectionGoodsId = distributorCollectionDao.getCollectionGoodsId(param.getDistributorId());
+
+        if (StringUtils.isNotBlank(collectionGoodsId)) {
+            Set<Integer> goodsIdSet = Arrays.stream(collectionGoodsId.split(",")).map(Integer::valueOf).collect(Collectors.toSet());
+            if (goodsIdSet.contains(param.getGoodsId())) {
+                // 取消收藏商品id
+                goodsIdSet.remove(param.getGoodsId());
+                String finalCollectionGoodsId = goodsIdSet.stream().map(String::valueOf).collect(Collectors.joining(","));
+                this.transaction(() -> {
+                    distributorCollectionDao.updateDistributorCollection(param.getDistributorId(), finalCollectionGoodsId);
+                });
+            }
+        }
+    }
+
+    /**
      * 获取分销员上传的微信二维码
      * @param distributorId 分销员id
      * @return 如果返回null说明当前分销员不存在微信二维码
@@ -1648,6 +1713,26 @@ public class MpDistributionService extends ShopBaseService{
 
         return null;
     }
+    /**
+     * 保存图片到数据库
+     * @return 图片信息
+     */
+    public UploadedImageDo saveDistributorImage(DistributorImageParam param) {
+        if (param.getImageId() == null) {
+            // 新增图片信息到数据库
+            return uploadedImageDao.addImageToDb(param.getImageId(), param.getUploadImageParam(),
+                DistributionConstant.DISTRIBUTOR_IMAGE_PREFIX + param.getSubmittedFileName(),
+                param.getContentType(), param.getSize(), param.getUploadPath());
+        } else {
+            // 1.删除缓存中缓存的海报信息
+            imageService.deleteQrCodeUrlByRedisKey(String.valueOf(param.getDistributorId()));
+            // 2.更新数据库中图片信息
+            return uploadedImageDao.updateImageToDb(param.getImageId(), param.getUploadImageParam(),
+                DistributionConstant.DISTRIBUTOR_IMAGE_PREFIX + param.getSubmittedFileName(),
+                param.getContentType(), param.getSize(), param.getUploadPath());
+        }
+    }
+
 
 
 
