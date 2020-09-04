@@ -1,15 +1,14 @@
 package com.vpu.mp.service.saas.region;
 
-import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
-
+import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.main.tables.records.DictCityRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-
 import java.util.List;
 import java.util.Map;
+
+import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
 
 /**
  * 市
@@ -57,7 +56,12 @@ public class CityService extends MainBaseService {
 				.where(DICT_CITY.PROVINCE_ID.eq(provinceId))
 				.orderBy(DICT_CITY.CITY_ID.desc())
 				.fetchAny();
-		Integer cityId = record.getCityId() + 100;
+		Integer cityId =null;
+		if (record==null){
+			cityId = provinceId + 100;
+		}else{
+			cityId = record.getCityId() + 100;
+		}
 		while (getCityName(cityId) != null) {
 			cityId += 100;
 		}

@@ -273,12 +273,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 //订单入库,以上只有orderSn，无法获取orderId
                 // 自提订单生成核销码
-                if (param.getDeliverType() == 1) {
-                    String s = generateShortUuid();
-                    order.setVerifyCode(s);
-                    order.setStoreId(param.getStoreId());
-                    order.setDeliverType((byte) 1);
-                }
+                noutoasiakasCode(param, order);
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
@@ -329,6 +324,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
+        }
+    }
+
+    private void noutoasiakasCode(CreateParam param, OrderInfoRecord order) {
+        if (param.getDeliverType() == 1) {
+            String s = generateShortUuid();
+            order.setVerifyCode(s);
+            order.setStoreId(param.getStoreId());
+            order.setDeliverType((byte) 1);
         }
     }
 
