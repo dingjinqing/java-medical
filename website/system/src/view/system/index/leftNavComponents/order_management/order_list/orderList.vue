@@ -33,6 +33,8 @@
               size="small"
               @change="getShop"
               class="timeSelect"
+              filterable
+              clearable
             >
               <el-option
                 v-for="item in shopList"
@@ -186,7 +188,7 @@ export default {
         pinStatus: '',
         orderStatus2: '-1',
         goodsType: [],
-        userName:'',
+        userName: ''
       },
       tabsOrderStatus: [
         { value: '-1', label: '全部' },
@@ -197,7 +199,7 @@ export default {
         { value: '6', label: '已完成' },
         { value: '10', label: '退款' }
       ],
-      deliver:['快递','自提'],
+      deliver: ['快递', '自提'],
       tableData: null,
       filterOrderStatus: null,
       notesOrderSn: null,
@@ -236,7 +238,7 @@ export default {
         }
       },
       immediate: true
-    },
+    }
   },
   methods: {
     handleClick (data) {
@@ -278,16 +280,17 @@ export default {
         { value: '-1', label: '全部' },
         { value: '0', label: '待付款' },
         { value: '14', label: '待审核' },
+        { value: '15', label: '已审核' },
         { value: '3', label: '待发货' },
         { value: '4', label: '已发货' },
         { value: '6', label: '已完成' },
+        { value: '1', label: '客户已取消' },
         { value: '10', label: '退款' }
       ]
       let news = allStatus.filter(item =>
         Number(item.value) === val
       )
       if (news[0]) return news[0].label
-
     }
   }
 }

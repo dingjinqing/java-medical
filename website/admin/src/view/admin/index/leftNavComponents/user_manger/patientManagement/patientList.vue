@@ -77,6 +77,10 @@
             prop='allergyHistory'
             label='过敏史'
           ></el-table-column>
+          <el-table-column
+            prop='countPrescription'
+            label='处方数量'
+          ></el-table-column>
           <el-table-column label='操作'>
             <template v-slot="scope">
               <div class="operation">

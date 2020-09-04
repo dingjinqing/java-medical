@@ -45,6 +45,30 @@
           ></el-input>
         </div>
         <div class="filters_item">
+          <span>提交时间：</span>
+          <el-date-picker
+            v-model="queryParams.startTime"
+            type="datetime"
+            placeholder="开始时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            class="default_input"
+            @change="datePickerChange(true,applyTime)"
+            size="small"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endTime"
+            type="datetime"
+            placeholder="结束时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            class="default_input"
+            @change="datePickerChange(false,applyTime)"
+            :picker-options="applyEndTime"
+            default-time="23:59:59"
+            size="small"
+          />
+        </div>
+        <div class="filters_item">
           <span class="fil_span">订单状态：</span>
           <el-select
             size="small"
@@ -161,7 +185,9 @@ export default {
         doctorName: '',
         patientName: '',
         departmentId: '',
-        orderStatus: ''
+        orderStatus: '',
+        startTime: null,
+        endTime: null
       },
       pageParams: {},
       tableData: [],
@@ -259,6 +285,19 @@ export default {
     returnOrder ({ refundMoney, orderAmount, orderSn }) {
       this.refundInfo = { orderAmount, refundMoney, orderSn }
       this.showRefund = true
+    },
+    datePickerChange (isStart, target) {
+      if (target.startTime === null || target.endTime === null) {
+        return
+      }
+      if (new Date(target.startTime).getTime() <= new Date(target.endTime).getTime()) {
+        return
+      }
+      if (isStart) {
+        target.startTime = null
+      } else {
+        target.endTime = null
+      }
     }
   }
 }
