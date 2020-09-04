@@ -58,16 +58,16 @@ public class DoctorDao extends ShopBaseDao {
     private void doctorFiledSorted(SelectJoinStep<? extends Record> select, DoctorListParam param) {
         if (ASC.equals(param.getOrderDirection())) {
             switch (param.getOrderField()) {
-                case "avgCommentStar":
+                case AVG_COMMENT_STAR:
                     select.orderBy(DOCTOR.AVG_COMMENT_STAR.asc());
                     break;
-                case "avgAnswerTime":
+                case AVG_ANSWER_TIME:
                     select.orderBy(DOCTOR.AVG_ANSWER_TIME.asc());
                     break;
-                case "attentionNumber":
+                case ATTENTION_NUMBER:
                     select.orderBy(DOCTOR.ATTENTION_NUMBER.asc());
                     break;
-                case "consultationNumber":
+                case CONSULTATION_NUMBER:
                     select.orderBy(DOCTOR.CONSULTATION_NUMBER.asc());
                     break;
                 default:
