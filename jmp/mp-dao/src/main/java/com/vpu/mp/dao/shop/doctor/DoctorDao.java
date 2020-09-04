@@ -21,8 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.ASC;
-import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.AVG_COMMENT_STAR;
+import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.*;
 
 /**
  * @author chenjie
@@ -76,16 +75,16 @@ public class DoctorDao extends ShopBaseDao {
             }
         } else {
             switch (param.getOrderField()) {
-                case "avgCommentStar":
+                case AVG_COMMENT_STAR:
                     select.orderBy(DOCTOR.AVG_COMMENT_STAR.desc());
                     break;
-                case "avgAnswerTime":
+                case AVG_ANSWER_TIME:
                     select.orderBy(DOCTOR.AVG_ANSWER_TIME.desc());
                     break;
-                case "attentionNumber":
+                case ATTENTION_NUMBER:
                     select.orderBy(DOCTOR.ATTENTION_NUMBER.desc());
                     break;
-                case "consultationNumber":
+                case CONSULTATION_NUMBER:
                     select.orderBy(DOCTOR.CONSULTATION_NUMBER.desc());
                     break;
                 default:
