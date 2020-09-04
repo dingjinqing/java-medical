@@ -405,7 +405,7 @@ var helper = {
 
   // 埋点
   handleBuriedPoint(event, page, list = []) {
-    util.api('/api/admin/anchor/Points', (res) => {
+    util.api('/api/admin/anchor/points', (res) => {
       console.log(res)
     }, {
       event: event,
