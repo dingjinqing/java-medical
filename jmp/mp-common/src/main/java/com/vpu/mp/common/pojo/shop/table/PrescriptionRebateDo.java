@@ -15,6 +15,7 @@ public class PrescriptionRebateDo {
     private String     prescriptionCode;
     private Integer    doctorId;
     private BigDecimal totalMoney;
+    private BigDecimal canCalculateMoney;
     private BigDecimal totalRebateMoney;
     private Byte       status;
     private String     reason;

@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.prescription;
 
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
@@ -91,10 +92,7 @@ public class PrescriptionItemDao extends ShopBaseDao {
      * @return
      */
     public List<PrescriptionItemDo>  listOrderGoodsByPrescriptionCode(String prescriptionCode){
-        return db().select(PRESCRIPTION_ITEM.GOODS_ID,PRESCRIPTION_ITEM.PRD_ID,
-                PRESCRIPTION_ITEM.MEDICINE_PRICE,
-                PRESCRIPTION_ITEM.DRAG_SUM_NUM,PRESCRIPTION_ITEM.TOTAL_REBATE_MONEY,PRESCRIPTION_ITEM.REBATE_PROPORTION,PRESCRIPTION_ITEM.GOODS_SHARING_PROPORTION,PRESCRIPTION_ITEM.CREATE_TIME,
-            PRESCRIPTION_ITEM.GOODS_COMMON_NAME)
+        return db().select()
                 .from(PRESCRIPTION_ITEM)
                 .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionCode))
                 .fetchInto(PrescriptionItemDo.class);
@@ -126,6 +124,13 @@ public class PrescriptionItemDao extends ShopBaseDao {
             .fetchOneInto(PrescriptionItemRecord.class);
         prescriptionItemRecord.update();
         fetchPrescriptionItemVo.setId(prescriptionItemRecord.getId());
+
+    }
+    public void updatePrescriptionItem(PrescriptionItemDo prescriptionItemDo){
+        PrescriptionItemRecord prescriptionItemRecord = db().newRecord(PRESCRIPTION_ITEM);
+        FieldsUtil.assign(prescriptionItemDo,prescriptionItemRecord);
+        db().executeUpdate(prescriptionItemRecord);
+
 
     }
 }

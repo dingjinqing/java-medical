@@ -136,6 +136,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -1090,21 +1091,20 @@ showManualReturn(vo);
                     vo.setCanRebateTotalMoney(BigDecimalUtil.BIGDECIMAL_ZERO);
                 }else {
                     vo.setRebateTotalMoney(BigDecimalUtil.multiply(vo.getGoodsPrice(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                    vo.setRealRebateMoney(BigDecimalUtil.multiply(vo.getRebateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                    vo.setCanRebateTotalMoney(BigDecimalUtil.multiply(vo.getCanCalculateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                }
-                vo.setCanRebateMoney(vo.getCanRebateTotalMoney());
-                vo.setCostPrice(vo.getCostPrice() == null ? BigDecimalUtil.BIGDECIMAL_ZERO : vo.getCostPrice());
-                DistributionStrategyParam strategy = Util.parseJson(vo.getFanliStrategy(), DistributionStrategyParam.class);
-                if(strategy != null) {
-                    if(strategy.getCostProtection() == YES) {
-                        BigDecimal temp;
-                        vo.setCanRebateMoney(
-                            (temp = BigDecimalUtil.subtrac(vo.getCanCalculateMoney(), vo.getCostPrice())).compareTo(BigDecimal.ZERO) > -1 ?
-                                BigDecimalUtil.multiply(temp, new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())) :
-                                BigDecimalUtil.BIGDECIMAL_ZERO);
+                    vo.setCanRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(vo.getCanCalculateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber()), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber())))
+                    );
+                    if(vo.getRealRebateMoney() != null) {
+                        vo.setRealRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                            BigDecimalUtil.BigDecimalPlus.create(vo.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber()), BigDecimalUtil.Operator.divide),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber())))
+                        );
                     }
                 }
+                vo.setCostPrice(BigDecimalUtil.multiply(vo.getCostPrice(), BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber())));
             }
             List<Integer> rebateUserIds = rebateVos.stream().map(OrderRebateVo::getRebateUserId).distinct().collect(Collectors.toList());
             //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息
