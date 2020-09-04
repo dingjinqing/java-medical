@@ -131,6 +131,8 @@ public class OrderListInfoVo {
 	private String storeName;
 	/**门店信息**/
 	private StoreOrderVo storeOrderVo;
+	/**自提时间**/
+	private String pickupdateTime;
 
 
 }
