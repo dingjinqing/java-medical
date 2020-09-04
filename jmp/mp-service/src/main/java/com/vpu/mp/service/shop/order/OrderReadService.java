@@ -7,10 +7,7 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.Page;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
@@ -67,6 +64,8 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreOrderVo;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -319,10 +318,25 @@ public class OrderReadService extends ShopBaseService {
 				OrderOperationJudgment.operationSet(order,returningCount.get(order.getOrderId()),ship.canBeShipped(order.getOrderSn()));
 			}
 		}
+		// 获取订单门店信息
+        getStoreInfo(mainOrderList);
         pageResult.setDataList(mainOrderList);
 		logger.info("订单综合查询结束");
 		return result;
 	}
+
+    /**
+     * 获取当前订单所属门店信息
+     * @param mainOrderList
+     */
+	private void getStoreInfo(ArrayList<OrderListInfoVo> mainOrderList) {
+	    mainOrderList.forEach(orderListInfoVo -> {
+            StorePojo store = this.store.getStore(orderListInfoVo.getStoreId());
+            StoreOrderVo storeOrderVo = new StoreOrderVo();
+            FieldsUtil.assign(store, storeOrderVo);
+            orderListInfoVo.setStoreOrderVo(storeOrderVo);
+        });
+    }
 
 
 	/**
