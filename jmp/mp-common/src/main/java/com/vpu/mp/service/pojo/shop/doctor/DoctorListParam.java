@@ -8,6 +8,20 @@ import java.util.List;
  */
 @Data
 public class DoctorListParam {
+
+    /**
+     * 前台传入的控制排序方向
+     */
+    public static final String ASC = "asc";
+    public static final String DESC = "desc";
+    /**
+     * 待排序字段
+     */
+    public static final String AVG_COMMENT_STAR = "avgCommentStar";
+    public static final String AVG_ANSWER_TIME = "avgAnswerTime";
+    public static final String ATTENTION_NUMBER = "attentionNumber";
+    public static final String CONSULTATION_NUMBER = "consultationNumber";
+
     private Integer nav;
     private Integer currentPage;
     private Integer pageRows;
@@ -28,4 +42,13 @@ public class DoctorListParam {
             ", doctorIds=" + doctorIds +
             '}';
     }
+
+    /**
+     * 排序字段
+     */
+    private String orderField;
+    /**
+     * 排序方式
+     */
+    private String orderDirection;
 }

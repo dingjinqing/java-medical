@@ -26,7 +26,7 @@ global.wxComponent({
    * 组件的初始数据
    */
   data: {
-    goodsNum:1
+    goodsNum: 1
   },
 
   /**
@@ -34,8 +34,12 @@ global.wxComponent({
    */
   methods: {
     init() {
-      let { limitBuyNum,limitMaxNum,prdNumber } = this.data.limitInfo
-      let goodsNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
+      let {
+        limitBuyNum,
+        limitMaxNum,
+        prdNumber
+      } = this.data.limitInfo
+      let goodsNum = (limitBuyNum && limitBuyNum > 0) ? limitBuyNum : 1;
       limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
       let canMinus = false;
       let canPlus = goodsNum < limitMaxNum ? true : false
@@ -44,41 +48,97 @@ global.wxComponent({
         canMinus,
         canPlus
       });
-      this.triggerEvent("goodsNumData", { goodsNum });
+      this.triggerEvent("goodsNumData", {
+        goodsNum
+      });
     },
     setNum(e) {
-        let d = this.eventData(e);
-        let { prdNumber, limitBuyNum, limitMaxNum } = this.data.limitInfo;
-        let goodsNum = d.type === "plus" ? this.data.goodsNum + 1 : this.data.goodsNum - 1
-        limitBuyNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
-        limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
-        console.log(goodsNum,limitMaxNum,limitBuyNum)
-        this.setData({
-          canMinus: goodsNum <= limitBuyNum ? false : true,
-          canPlus: goodsNum < limitMaxNum ? true : false,
-          goodsNum
-        })
-        this.triggerEvent("goodsNumData", { goodsNum: this.data.goodsNum });
-    },
-    goodsNumChange(e){
-      let {value:num} = e.detail
-      let {limitBuyNum, limitMaxNum, prdNumber} = this.data.limitInfo
-      limitBuyNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
+      let d = this.eventData(e);
+      let {
+        prdNumber,
+        limitBuyNum,
+        limitMaxNum
+      } = this.data.limitInfo;
+      let goodsNum = d.type === "plus" ? this.data.goodsNum + 1 : this.data.goodsNum - 1
+      limitBuyNum = (limitBuyNum && limitBuyNum > 0) ? limitBuyNum : 1;
       limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
-      if(num < limitBuyNum){
-        util.showModal('提示','商品数量低于最小可购买数量')
+      console.log(goodsNum, limitMaxNum, limitBuyNum)
+      this.setData({
+        canMinus: goodsNum <= limitBuyNum ? false : true,
+        canPlus: goodsNum < limitMaxNum ? true : false,
+        goodsNum
+      })
+      this.triggerEvent("goodsNumData", {
+        goodsNum: this.data.goodsNum
+      });
+      let page = util.getCurrentPage();
+      if (page.route) {
+        let name = {
+          "title": {
+            'search': '药品列表页',
+            'index': '首页',
+            'item': '药品详情页'
+          }
+        }
+        let lastindex = page.route.lastIndexOf('/');
+        var lastSegment = page.route.substring(lastindex + 1);
+        var title = name.title[lastSegment]
+        util.handleBuriedPoint('add_cart', page.route, [{
+          key: '路径来源',
+          value: title
+        }, {
+          key: '药品数量',
+          value: this.data.goodsNum
+        }])
+      }
+    },
+    goodsNumChange(e) {
+      let {
+        value: num
+      } = e.detail
+      let {
+        limitBuyNum,
+        limitMaxNum,
+        prdNumber
+      } = this.data.limitInfo
+      limitBuyNum = (limitBuyNum && limitBuyNum > 0) ? limitBuyNum : 1;
+      limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
+      if (num < limitBuyNum) {
+        util.showModal('提示', '商品数量低于最小可购买数量')
         num = limitBuyNum
       }
-      if(num > limitMaxNum){
-        util.showModal('提示','商品数量高于最高可购买数量')
+      if (num > limitMaxNum) {
+        util.showModal('提示', '商品数量高于最高可购买数量')
         num = limitMaxNum
       }
       this.setData({
         canMinus: num <= limitBuyNum ? false : true,
         canPlus: num < limitMaxNum ? true : false,
-        goodsNum:Number(num)
+        goodsNum: Number(num)
       })
-      this.triggerEvent("goodsNumData", { goodsNum: this.data.goodsNum });
+      this.triggerEvent("goodsNumData", {
+        goodsNum: this.data.goodsNum
+      });
+      let page = util.getCurrentPage();
+      if (page.route) {
+        let name = {
+          "title": {
+            'search': '药品列表页',
+            'index': '首页',
+            'item': '药品详情页'
+          }
+        }
+        let lastindex = page.route.lastIndexOf('/');
+        var lastSegment = page.route.substring(lastindex + 1);
+        var title = name.title[lastSegment]
+        util.handleBuriedPoint('add_cart', page.route, [{
+          key: '路径来源',
+          value: title
+        }, {
+          key: '药品数量',
+          value: this.data.goodsNum
+        }])
+      }
     }
   }
 });

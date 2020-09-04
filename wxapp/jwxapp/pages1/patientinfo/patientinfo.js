@@ -281,6 +281,9 @@ global.wxPage({
     util.api('/api/wxapp/user/patient/add', res => {
       if(res.error == 0){
         util.toast_success('成功')
+        util.handleBuriedPoint('create_patient_success', 'pages1/patientinfo/patientinfo', [{
+          key: '添加就诊人'
+        }])
         if(this.data.list == 1){
           util.jumpLink('/pages2/doctorConsultation/doctorConsultation','redirectTo');
         }else{

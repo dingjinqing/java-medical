@@ -19,6 +19,7 @@ global.wxComponent({
 
     },
     bindSearchConfirm (e) {
+      util.handleBuriedPoint('into_search','/pages/newsearch/newsearch',[{'key':'路径来源','value':'首页'}])
       util.jumpLink('/pages/newsearch/newsearch');
     },
     toSort (e) {
