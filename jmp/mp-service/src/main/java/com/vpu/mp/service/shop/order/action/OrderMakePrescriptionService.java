@@ -146,7 +146,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
      * @return
      */
     @Override
-    @RedisLock(prefix = JedisKeyConstant.PRESCRIPTION_LOCK)
+    @RedisLock(prefix = JedisKeyConstant.MAKE_PRESCRIPTION_LOCK)
     public ExecuteResult execute(@RedisLockKeys PrescriptionMakeParam obj) {
         logger().info("医师开方-开始");
         OrderInfoDo orderInfoDo=orderInfoService.getByOrderId(obj.getOrderId(),OrderInfoDo.class);
@@ -167,7 +167,7 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
                 PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
                 if(prescription!=null){
                     //处方返利入库
-                    prescriptionRebateService.addPrescriptionRebate(prescription,prescription.getList());
+                    prescriptionRebateService.addPrescriptionRebate(prescription,orderInfoDo);
 
                 }
                 //更新状态
