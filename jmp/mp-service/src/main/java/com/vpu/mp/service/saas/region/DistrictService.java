@@ -1,18 +1,18 @@
 package com.vpu.mp.service.saas.region;
 
-import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
-import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
-import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
-
-import org.jooq.Record;
-import org.jooq.Result;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
+import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
+import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 
 /**
  * 区县
@@ -22,6 +22,9 @@ import java.util.Map;
 @Service
 
 public class DistrictService extends MainBaseService {
+
+	@Autowired
+	private CityService cityService;
 
 	/**
 	 * 得到城市的区县列表
@@ -119,8 +122,12 @@ public class DistrictService extends MainBaseService {
 				.where(DICT_DISTRICT.CITY_ID.eq(cityId))
 				.orderBy(DICT_DISTRICT.DISTRICT_ID.desc())
 				.fetchAny();
-
-		Integer districtId = record.getDistrictId() + 1;
+		Integer districtId =null;
+		if (record==null){
+			 districtId = cityId + 1;
+		}else {
+			 districtId = record.getDistrictId() + 1;
+		}
 		while (this.getDistrictName(districtId) != null) {
 			districtId += 1;
 		}
