@@ -1,7 +1,10 @@
 package com.vpu.mp.service.pojo.shop.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreOrderVo;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -122,6 +125,14 @@ public class OrderListInfoVo {
     private Timestamp auditTime;
     /**患者id*/
 	private Integer patientId;
+    /**门店id**/
+	private Integer storeId;
+	/**门店名称**/
+	private String storeName;
+	/**门店信息**/
+	private StoreOrderVo storeOrderVo;
+	/**自提时间**/
+	private String pickupdateTime;
 
 
 }

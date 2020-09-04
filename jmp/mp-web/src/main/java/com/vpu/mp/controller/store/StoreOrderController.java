@@ -282,6 +282,7 @@ public class StoreOrderController extends StoreBaseController {
         boolean b = shop().readOrder.checkVerifyCode(checkVerifyCodeParam.getVerifyCode(), checkVerifyCodeParam.getOrderSn());
         // 核销码验证成功，订单转为已收货状态
         if (b) {
+            // 修改订单核销时间
             shop().orderInfoService.setOrderstatus(checkVerifyCodeParam.getOrderSn(), ORDER_RECEIVED);
             return success();
         }

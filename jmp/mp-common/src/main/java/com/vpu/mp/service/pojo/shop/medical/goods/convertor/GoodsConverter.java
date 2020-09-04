@@ -52,6 +52,8 @@ public class GoodsConverter {
         goodsDo.setMarketPrice(bo.getGoodsPrice());
         goodsDo.setGoodsNumber(bo.getGoodsNumber());
         goodsDo.setIsMedical(bo.getIsMedical());
+        goodsDo.setUnit(bo.getGoodsBasicUnit());
+        goodsDo.setStoreCode(bo.getStoreCode());
 
         if (BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.equals(bo.getState())) {
             goodsDo.setIsOnSale(MedicalGoodsConstant.ON_SALE);

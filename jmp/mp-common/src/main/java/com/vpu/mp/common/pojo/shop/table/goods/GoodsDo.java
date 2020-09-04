@@ -68,4 +68,5 @@ public class GoodsDo {
     private Integer    pv;
     private Integer    commentNum;
     private Integer    roomId;
+    private String storeCode;
 }

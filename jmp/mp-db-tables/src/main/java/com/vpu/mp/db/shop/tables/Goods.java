@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Goods extends TableImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = 1190133248;
+    private static final long serialVersionUID = -1089863660;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods</code>
@@ -88,14 +88,14 @@ public class Goods extends TableImpl<GoodsRecord> {
     public final TableField<GoodsRecord, Integer> GOODS_NUMBER = createField("goods_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "库存");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.goods_weight</code>.
+     * The column <code>mini_shop_471752.b2c_goods.goods_weight</code>. 商品重量，默认规格重量或自定义规格中的最小重量
      */
-    public final TableField<GoodsRecord, BigDecimal> GOODS_WEIGHT = createField("goods_weight", org.jooq.impl.SQLDataType.DECIMAL(10, 3).nullable(false).defaultValue(DSL.inline("0.000", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
+    public final TableField<GoodsRecord, BigDecimal> GOODS_WEIGHT = createField("goods_weight", org.jooq.impl.SQLDataType.DECIMAL(10, 3), this, "商品重量，默认规格重量或自定义规格中的最小重量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.market_price</code>.
+     * The column <code>mini_shop_471752.b2c_goods.market_price</code>. 市场价格，多规格时取最高
      */
-    public final TableField<GoodsRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
+    public final TableField<GoodsRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "市场价格，多规格时取最高");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods.shop_price</code>.
@@ -301,6 +301,11 @@ public class Goods extends TableImpl<GoodsRecord> {
      * The column <code>mini_shop_471752.b2c_goods.room_id</code>. 直播间id
      */
     public final TableField<GoodsRecord, Integer> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGER, this, "直播间id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.store_code</code>. 药房药品唯一标识
+     */
+    public final TableField<GoodsRecord, String> STORE_CODE = createField("store_code", org.jooq.impl.SQLDataType.VARCHAR(128), this, "药房药品唯一标识");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods</code> table reference
