@@ -6,7 +6,7 @@
           <div class="filters_item">
             <span>买家昵称：</span>
             <el-input
-              v-model="params.username"
+              v-model="params.userName"
               placeholder="请输入"
               size="small"
               class="default_input"
@@ -186,7 +186,7 @@ export default {
         pinStatus: '',
         orderStatus2: '-1',
         goodsType: [],
-        username:'',
+        userName:'',
       },
       tabsOrderStatus: [
         { value: '-1', label: '全部' },

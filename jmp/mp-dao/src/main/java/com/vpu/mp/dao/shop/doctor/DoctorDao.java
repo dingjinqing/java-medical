@@ -15,11 +15,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.*;
 
 /**
  * @author chenjie
@@ -39,10 +41,56 @@ public class DoctorDao extends ShopBaseDao {
             .from(DOCTOR);
         select.where(DOCTOR.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
-        select.orderBy(DOCTOR.ID.desc());
-        PageResult<DoctorOneParam> doctorList = this.getPageResult(select, param.getCurrentPage(),
+        if (param.getOrderField() != null) {
+            doctorFiledSorted(select, param);
+        } else {
+            select.orderBy(DOCTOR.ID.desc());
+        }
+        return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), DoctorOneParam.class);
-        return doctorList;
+    }
+
+    /**
+     * 对医师按指定字段进行排序
+     * @param select 查询实体
+     * @param param 排序参数
+     */
+    private void doctorFiledSorted(SelectJoinStep<? extends Record> select, DoctorListParam param) {
+        if (ASC.equals(param.getOrderDirection())) {
+            switch (param.getOrderField()) {
+                case AVG_COMMENT_STAR:
+                    select.orderBy(DOCTOR.AVG_COMMENT_STAR.asc());
+                    break;
+                case AVG_ANSWER_TIME:
+                    select.orderBy(DOCTOR.AVG_ANSWER_TIME.asc());
+                    break;
+                case ATTENTION_NUMBER:
+                    select.orderBy(DOCTOR.ATTENTION_NUMBER.asc());
+                    break;
+                case CONSULTATION_NUMBER:
+                    select.orderBy(DOCTOR.CONSULTATION_NUMBER.asc());
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (param.getOrderField()) {
+                case AVG_COMMENT_STAR:
+                    select.orderBy(DOCTOR.AVG_COMMENT_STAR.desc());
+                    break;
+                case AVG_ANSWER_TIME:
+                    select.orderBy(DOCTOR.AVG_ANSWER_TIME.desc());
+                    break;
+                case ATTENTION_NUMBER:
+                    select.orderBy(DOCTOR.ATTENTION_NUMBER.desc());
+                    break;
+                case CONSULTATION_NUMBER:
+                    select.orderBy(DOCTOR.CONSULTATION_NUMBER.desc());
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /**

@@ -176,6 +176,7 @@ global.wxComponent({
       this.triggerEvent("showSpecDialog", this.data.goodsData);
     },
     toItem() {
+      util.handleBuriedPoint('into_goods_detail','/pages/item/item',[{'key':'路径来源','value':'药品列表页'}])
       util.jumpLink(
         `pages/item/item?gid=${this.data.goodsData.goodsId}&atp=${this.data.goodsData.activityType}&aid=${this.data.goodsData.activityId}`,
         'navigateTo'
