@@ -117,6 +117,7 @@ public class PrescriptionRebateService extends ShopBaseService {
         rebateParam.setTotalMoney(totalMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_HALF_UP));
         rebateParam.setTotalRebateMoney(totalRebateMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_HALF_UP));
         rebateParam.setCanCalculateMoney(canRebateMoneyTotal);
+        rebateParam.setRealRebateMoney(rebateParam.getTotalRebateMoney());
         prescriptionRebateDao.addPrescriptionRebate(rebateParam);
     }
     /**
