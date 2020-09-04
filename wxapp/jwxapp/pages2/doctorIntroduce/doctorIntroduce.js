@@ -223,7 +223,7 @@ global.wxPage({
   },
   toChat(e) {
     util.handleBuriedPoint('doctor_online_chat', 'pages2/doctorIntroduce/doctorIntroduce', [{
-      key: '医师在线咨询'
+      key: '点击'
     }])
     let doctor_id = e.currentTarget.dataset.doctor_id;
     let price = e.currentTarget.dataset.price;

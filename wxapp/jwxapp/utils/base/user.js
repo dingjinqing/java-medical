@@ -21,7 +21,7 @@ var user = {
           api.api("/api/wxapp/login", function (d) {
             console.log('返回信息', d)
             util.handleBuriedPoint('login_wxapp', '', [{
-              key: '登录小程序'
+              key: '点击'
             }])
             if (d.error == 0) {
               cache.setCache("openid", d.content.res.openid);

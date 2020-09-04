@@ -27,7 +27,7 @@ global.wxComponent({
     },
     bindGetPre() {
       util.handleBuriedPoint('home_page_syn', 'pages/index/index', [{
-        key: '首页弹窗去同步'
+        key: '点击'
       }])
       util.jumpLink('/pages1/getprescription/getprescription')
     }

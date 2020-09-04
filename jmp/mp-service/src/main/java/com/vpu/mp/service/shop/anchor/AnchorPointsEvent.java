@@ -26,13 +26,13 @@ public enum AnchorPointsEvent {
     ORDER_PAY_SUCCESS("order_pay_success","支付成功","路径来源","药品购买"),
 
 
-    LOGIN_WXAPP("login_wxapp","登录小程序","count","1"),
-    HOME_PAGE_SYN("home_page_syn","首页弹窗去同步","num","1"),
-    HOME_PAGE_SYN_MY_MEDICAL("home_page_syn_my_medical","首页我的病历","money","1"),
-    MY_FAMILY_ADD_PATIENT("my_family_add_patient","我的家人-去添加","money","1"),
-    CREATE_ORDER_DETAIL_ADD_PATIENT("create_order_detail_add_patient","订单结算页-去添加","money","1"),
-    DOCTOR_ONLINE_CHAT("doctor_online_chat","医师咨询-在线咨询","money","1"),
-    CREATE_PATIENT_SUCCESS("create_patient_success","添加就诊人成功","money","1");
+    LOGIN_WXAPP("login_wxapp","登录小程序","点击","1"),
+    HOME_PAGE_SYN("home_page_syn","首页弹窗去同步","点击","1"),
+    HOME_PAGE_SYN_MY_MEDICAL("home_page_syn_my_medical","首页我的病历","点击","1"),
+    MY_FAMILY_ADD_PATIENT("my_family_add_patient","我的家人-去添加","点击","1"),
+    CREATE_ORDER_DETAIL_ADD_PATIENT("create_order_detail_add_patient","订单结算页-去添加","点击","1"),
+    DOCTOR_ONLINE_CHAT("doctor_online_chat","医师咨询-在线咨询","点击","1"),
+    CREATE_PATIENT_SUCCESS("create_patient_success","添加就诊人成功","点击","1");
 
     /**
      * 埋点事件
