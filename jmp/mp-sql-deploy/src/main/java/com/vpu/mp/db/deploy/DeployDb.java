@@ -74,7 +74,8 @@ public class DeployDb {
 
         checkSqlGrammar(dryRunDbConfig(false));
 
-        if (needUpdateSqlVersion(true)) {
+        if (needUpdateSqlVersion(true))
+        {
             migrateDb(mainDbConfig());
         }
 
