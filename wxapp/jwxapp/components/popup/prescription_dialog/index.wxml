@@ -6,7 +6,8 @@
 				<view class="title">电子处方</view>
 			</view>
 			<view class="prescription-info-content">
-				<view class="prescription-item">
+			  <view>
+					<view class="prescription-item">
 					<view class="item-title">
 						<text class="list-item-dot"></text>
 						<text class="title">就诊人信息</text>
@@ -30,13 +31,13 @@
 						</view>
 					</view>
 				</view>
-				<view class="prescription-item" wx:if="{{prescriptionData.diagnosisDetail}}">
+				<view class="prescription-item" wx:if="{{prescriptionData.diagnosisName}}">
 					<view class="item-title">
 						<text class="list-item-dot"></text>
 						<text class="title">诊断</text>
 					</view>
 					<view class="item-info">
-						<text class="title">{{prescriptionData.diagnosisDetail}}</text>
+						<text class="title">{{prescriptionData.diagnosisName}}</text>
 					</view>
 				</view>
 				<view class="prescription-item" wx:if="{{prescriptionData.itemList.length}}">
@@ -50,6 +51,7 @@
 							<text>用法用量：{{item.goodsQualityRatio }}</text>
 						</block>
 					</view>
+				</view>
 				</view>
 			</view>
 			<view class="prescription-doctor-info">
