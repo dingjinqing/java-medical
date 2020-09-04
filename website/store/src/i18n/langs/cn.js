@@ -43,6 +43,8 @@ import { cn as serviceConfig } from './views/admin_new/cn/index/storeManagement/
 import { cn as storePermission } from './views/admin_new/cn/index/storeManagement/storePermission/storePermissionCn'
 // 门店公告
 import { cn as storeAnnouncement } from './views/admin_new/cn/index/storeManagement/storeAnnouncement/storeAnnouncementCn'
+// 订单
+import { cn as order } from './views/admin_new/cn/index/storeManagement/order/orderListCn'
 const cn = {
   messages: {
     lang: '中文'
@@ -133,6 +135,7 @@ const cn = {
   serviceConfig, // 门店服务
   reservationManage, // 预约管理
   marketCommon,
+  order,
   ...zhLocale,
   messageHint
 }
