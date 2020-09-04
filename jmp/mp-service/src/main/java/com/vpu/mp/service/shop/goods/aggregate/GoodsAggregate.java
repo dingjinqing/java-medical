@@ -145,14 +145,6 @@ public class GoodsAggregate {
         goodsMedicalInfoDao.deleteByGoodsId(goodId);
     }
 
-    /**
-     * 列举出已有的药品goodsCode
-     * @param goodsCodes
-     * @return
-     */
-    public Map<String,Integer> mapGoodsCodeToGoodsId(List<String> goodsCodes) {
-        return goodsDao.mapGoodsSnToGoodsId(goodsCodes, MedicalGoodsConstant.GOODS_IS_MEDICAL);
-    }
 
     public Map<Integer, BigDecimal> mapGoodsIdToGoodsPrice(Collection<Integer> goodsIds) {
         return goodsDao.mapGoodsIdToGoodsPrice(goodsIds);
@@ -163,7 +155,7 @@ public class GoodsAggregate {
      * @param goodsKeys
      * @return
      */
-    public Map<String, Integer> mapGoodsHisKeyToGoodsId(List<String> goodsKeys) {
+    public Map<String, Integer> mapMedicalKeyToGoodsId(List<String> goodsKeys) {
         return goodsMedicalInfoDao.mapGoodsHisKeyToGoodsId(goodsKeys);
     }
     /**

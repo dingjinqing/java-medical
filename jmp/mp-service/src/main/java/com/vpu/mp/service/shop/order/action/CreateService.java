@@ -6,7 +6,9 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
@@ -283,12 +285,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 //订单入库,以上只有orderSn，无法获取orderId
                 // 自提订单生成核销码
-                if (param.getDeliverType() == 1) {
-                    String s = generateShortUuid();
-                    order.setVerifyCode(s);
-                    order.setStoreId(param.getStoreId());
-                    order.setDeliverType((byte) 1);
-                }
+                noutoasiakasCode(param, order);
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
@@ -342,6 +339,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
+    private void noutoasiakasCode(CreateParam param, OrderInfoRecord order) {
+        if (param.getDeliverType() == 1) {
+            String s = generateShortUuid();
+            order.setVerifyCode(s);
+            order.setStoreId(param.getStoreId());
+            order.setDeliverType((byte) 1);
+        }
+    }
+
     private void addPatientDiagnose(CreateParam param, OrderInfoRecord order) throws MpException {
         if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
             logger().info("待开方订单保存患者信息");
@@ -371,7 +377,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * 处方返利信息入库
      * @param param
      */
-    public void addPrescriptionRebate(CreateParam param){
+    public void addPrescriptionRebate(CreateParam param,OrderInfoRecord order){
         RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
         if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
             //根据处方下单
@@ -379,8 +385,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
                 //处方药品
                 List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
+                OrderInfoDo orderInfoDo=new OrderInfoDo();
+                FieldsUtil.assign(order,orderInfoDo);
                 //处方返利信息入库
-                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,prescriptionItemDos);
+                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,orderInfoDo);
             }
         }
 

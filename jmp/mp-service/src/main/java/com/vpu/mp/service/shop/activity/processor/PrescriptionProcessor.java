@@ -305,7 +305,6 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             param.setGoodsItemList(list);
             orderGoodsService.syncMedicalOrderStatus(param);
         }
-
         //处方下单的处方恢复未使用状态
         if (returnGoods!=null&&returnGoods.size()>0){
             OrderReturnGoodsVo orderReturnGoodsVo = returnGoods.get(0);

@@ -1676,6 +1676,7 @@ CREATE TABLE `b2c_store_account` (
     `account_passwd` varchar(64)  DEFAULT NULL COMMENT '账号密码',
     `store_list` varchar(191)  DEFAULT NULL COMMENT '可用门店id,逗号隔开',
     `update_time`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '关联用户Id',
     PRIMARY KEY (`account_id`),
     KEY `mobile` (`mobile`),
     KEY `account_name` (`account_name`)

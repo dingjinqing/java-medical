@@ -6,6 +6,9 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -17,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.api.StoreCancelOrderParam;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -96,6 +100,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_NOT_CANCEL, null);
         }
         try {
+
             transaction(()->{
                 //退支付金额
                 returnOrder(order);
@@ -257,5 +262,23 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
                 orderCreateMpProcessorFactory.processReturnOrder(null, type, order.getActivityId(), goods.stream().filter(x->OrderConstant.IS_GIFT_N.equals(x.getIsGift())).collect(Collectors.toList()));
             }
         }
+    }
+
+    /**
+     * 调取药房取消订单接口
+     * @param shopCode 门店编码
+     * @param orderSn 订单编码
+     * @return true 取消订单成功，false 失败
+     */
+    private boolean syncStoreCancelOrder(String shopCode,String orderSn){
+        StoreCancelOrderParam param = new StoreCancelOrderParam(shopCode,orderSn);
+        String appId = ApiExternalRequestConstant.APP_ID_STORE;
+        Integer shopId = getShopId();
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, ApiExternalRequestConstant.SERVICE_NAME_CANCEL_ORDER, Util.toJson(param));
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+            logger().debug("调取药房："+shopCode+"，取消订单接口异常："  + apiExternalRequestResult.getError() + ",msg " + apiExternalRequestResult.getMsg());
+            return false;
+        }
+        return true;
     }
 }

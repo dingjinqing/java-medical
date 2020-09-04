@@ -5,6 +5,8 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.db.main.tables.records.StoreAccountRecord;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.store.account.*;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListPage;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListParam;
@@ -179,5 +181,17 @@ public class StoreAuthManageController extends StoreBaseController{
     public JsonResult getAllStore() {
         List<StoreBasicVo> allStore = shop().store.getAllStoreForLeader(storeAuth.user().getStoreIds());
         return success(allStore);
+    }
+
+    /**
+     * 会员列表分页查询
+     * @param param
+     * @return
+     */
+    @PostMapping("/member/list")
+    public JsonResult getPageList(@RequestBody MemberPageListParam param) {
+        /** 获取语言，用于国际化 */
+        PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param,getLang());
+        return this.success(pageResult);
     }
 }

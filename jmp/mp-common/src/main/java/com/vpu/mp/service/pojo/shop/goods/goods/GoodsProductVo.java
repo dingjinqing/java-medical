@@ -27,6 +27,6 @@ public class GoodsProductVo {
     /**
      * 当前库存
      */
-    private Short prdNumber;
+    private Integer prdNumber;
 
 }
