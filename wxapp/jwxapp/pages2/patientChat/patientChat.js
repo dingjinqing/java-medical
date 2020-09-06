@@ -3,17 +3,6 @@ var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
 var util = require('../../utils/util.js');
 var chatInput = null
-const {
-  orderSn,
-  orderDetail
-} = require('../../utils/i18n/pages/order.js');
-const {
-  theMaximumClaimLimit
-} = require('../../utils/i18n/components/decorate/decorate.js');
-const {
-  all
-} = require('../../utils/i18n/page1/search.js');
-
 
 
 
