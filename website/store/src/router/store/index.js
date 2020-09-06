@@ -111,7 +111,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/store/order/intraCityOrder'
+                '@/view/admin/index/leftNavComponents/store/order/orderList'
               )
           },
           // 售后订单
@@ -132,7 +132,7 @@ const routes = [
             path: '/admin/store/order/afterSale/info',
             name: 'afterSaleInfo',
             meta: {
-              crumbTitle: 'router.orderRefundInfo',
+              crumbTitle: 'router.afterSaleInfo',
               meta: 'storeOrder',
               category: 'afterSale'
             },

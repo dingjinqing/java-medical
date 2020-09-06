@@ -137,18 +137,10 @@
           </div>
           <div class="filters_item">
             <span>{{ $t('order.orderTime') }}：</span>
-            <!-- <el-date-picker
-              v-model="orderTime"
-              :range-separator="$t('membershipIntroduction.to')"
-              :start-placeholder="$t('membershipIntroduction.Starttime')"
-              :end-placeholder="$t('membershipIntroduction.Endtime')"
-              size="small"
-            >
-            </el-date-picker> -->
             <el-date-picker
               v-model="orderTime.startTime"
               type="datetime"
-              :placeholder="$t('membershipIntroduction.Starttime')"
+              placeholder="开始时间"
               value-format="yyyy-MM-dd HH:mm:ss"
               class="middle_input"
               @change="datePickerChange(true, orderTime)"
@@ -158,7 +150,7 @@
             <el-date-picker
               v-model="orderTime.endTime"
               type="datetime"
-              :placeholder="$t('membershipIntroduction.Endtime')"
+              placeholder="结束时间"
               value-format="yyyy-MM-dd HH:mm:ss"
               class="middle_input"
               @change="datePickerChange(false, orderTime)"
@@ -1050,6 +1042,7 @@ export default {
     let roomId = this.$route.query.roomId
     this.searchParams.roomId = roomId || null
     if (this.$route.name === 'selfPickUpOrder') this.searchParams.deliverType = 1
+    if (this.$route.name === 'intraCityOrder') this.searchParams.deliverType = 2
     console.log(userId)
     console.log('mounted-----------------------')
     this.filterOrderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null

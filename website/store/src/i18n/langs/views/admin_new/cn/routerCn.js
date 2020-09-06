@@ -9,5 +9,6 @@ export const cn = {
   selfPickUpOrder: ['门店订单', '自提订单'],
   intraCityOrder: ['门店订单', '同城配送'],
   afterSale: ['门店订单', '售后中心'],
-  orderInfo: ['门店订单', '查看详情']
+  orderInfo: ['门店订单', '查看详情'],
+  afterSaleInfo: ['门店订单', '售后中心', '售后详情']
 }
