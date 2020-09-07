@@ -37,6 +37,8 @@ public class OrderListInfoVo {
 	private String consignee;
 	/** 收件人手机 */
 	private String mobile;
+	/**店铺名称**/
+	private String shopName;
 	/** 主支付方式 */
 	private String payCode;
 	/** 支付方式列表 */
