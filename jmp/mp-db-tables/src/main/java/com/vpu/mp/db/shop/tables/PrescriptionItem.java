@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = 40002784;
+    private static final long serialVersionUID = -1600294303;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_item</code>
@@ -164,6 +164,11 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
     public final TableField<PrescriptionItemRecord, BigDecimal> MEDICINE_PRICE = createField("medicine_price", org.jooq.impl.SQLDataType.DECIMAL(18, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "药品总价");
 
     /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.can_calculate_money</code>. 可计算返利金额
+     */
+    public final TableField<PrescriptionItemRecord, BigDecimal> CAN_CALCULATE_MONEY = createField("can_calculate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "可计算返利金额");
+
+    /**
      * The column <code>mini_shop_471752.b2c_prescription_item.goods_sharing_proportion</code>. 商品分成比例
      */
     public final TableField<PrescriptionItemRecord, BigDecimal> GOODS_SHARING_PROPORTION = createField("goods_sharing_proportion", org.jooq.impl.SQLDataType.DECIMAL(10, 4).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "商品分成比例");
@@ -177,6 +182,11 @@ public class PrescriptionItem extends TableImpl<PrescriptionItemRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_item.total_rebate_money</code>. 返利金额
      */
     public final TableField<PrescriptionItemRecord, BigDecimal> TOTAL_REBATE_MONEY = createField("total_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 4).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_item.real_rebate_money</code>. 实际返利金额
+     */
+    public final TableField<PrescriptionItemRecord, BigDecimal> REAL_REBATE_MONEY = createField("real_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "实际返利金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.

@@ -11,6 +11,7 @@
               size="small"
               class="default_input"
               filterable
+              clearable
             >
               <el-option
                 label="全部"
@@ -44,7 +45,6 @@
             <el-select
               v-model="timeSelect"
               size="small"
-              clearable
               @change="dateChangeHandler"
               class="timeSelect"
             >
@@ -108,7 +108,7 @@
           ></el-table-column>
           <el-table-column
             prop='doctorCode'
-            label='医师Code'
+            label='医师码'
           ></el-table-column>
           <el-table-column
             prop='doctorName'
@@ -234,7 +234,6 @@ export default {
       this.endDate.year = this.timeValue[1].substring(0, 4)
       this.endDate.month = this.timeValue[1].substring(4, 6)
       this.endDate.day = this.timeValue[1].substring(6, 8)
-      this.initData()
     },
     getDateValue (unit) {
       getDate(unit).then(res => {

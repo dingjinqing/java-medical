@@ -1107,7 +1107,7 @@ global.wxPage({
   togglePatient () {
     if (this.data.isPrescription) return
     util.handleBuriedPoint('create_order_detail_add_patient', 'pages/checkout/checkout', [{
-      key: '订单结算页去添加'
+      key: '点击'
     }])
     util.jumpLink('pages1/familylist/familylist?source=checkout')
   },

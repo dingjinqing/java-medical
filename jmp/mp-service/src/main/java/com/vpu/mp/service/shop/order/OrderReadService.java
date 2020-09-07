@@ -7,10 +7,7 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.Page;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
@@ -67,6 +64,8 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreOrderVo;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -136,6 +135,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -319,10 +319,25 @@ public class OrderReadService extends ShopBaseService {
 				OrderOperationJudgment.operationSet(order,returningCount.get(order.getOrderId()),ship.canBeShipped(order.getOrderSn()));
 			}
 		}
+		// 获取订单门店信息
+        getStoreInfo(mainOrderList);
         pageResult.setDataList(mainOrderList);
 		logger.info("订单综合查询结束");
 		return result;
 	}
+
+    /**
+     * 获取当前订单所属门店信息
+     * @param mainOrderList
+     */
+	private void getStoreInfo(ArrayList<OrderListInfoVo> mainOrderList) {
+	    mainOrderList.forEach(orderListInfoVo -> {
+            StorePojo store = this.store.getStore(orderListInfoVo.getStoreId());
+            StoreOrderVo storeOrderVo = new StoreOrderVo();
+            FieldsUtil.assign(store, storeOrderVo);
+            orderListInfoVo.setStoreOrderVo(storeOrderVo);
+        });
+    }
 
 
 	/**
@@ -1090,21 +1105,20 @@ showManualReturn(vo);
                     vo.setCanRebateTotalMoney(BigDecimalUtil.BIGDECIMAL_ZERO);
                 }else {
                     vo.setRebateTotalMoney(BigDecimalUtil.multiply(vo.getGoodsPrice(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                    vo.setRealRebateMoney(BigDecimalUtil.multiply(vo.getRebateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                    vo.setCanRebateTotalMoney(BigDecimalUtil.multiply(vo.getCanCalculateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                }
-                vo.setCanRebateMoney(vo.getCanRebateTotalMoney());
-                vo.setCostPrice(vo.getCostPrice() == null ? BigDecimalUtil.BIGDECIMAL_ZERO : vo.getCostPrice());
-                DistributionStrategyParam strategy = Util.parseJson(vo.getFanliStrategy(), DistributionStrategyParam.class);
-                if(strategy != null) {
-                    if(strategy.getCostProtection() == YES) {
-                        BigDecimal temp;
-                        vo.setCanRebateMoney(
-                            (temp = BigDecimalUtil.subtrac(vo.getCanCalculateMoney(), vo.getCostPrice())).compareTo(BigDecimal.ZERO) > -1 ?
-                                BigDecimalUtil.multiply(temp, new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())) :
-                                BigDecimalUtil.BIGDECIMAL_ZERO);
+                    vo.setCanRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(vo.getCanCalculateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber()), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber())))
+                    );
+                    if(vo.getRealRebateMoney() != null) {
+                        vo.setRealRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                            BigDecimalUtil.BigDecimalPlus.create(vo.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber()), BigDecimalUtil.Operator.divide),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber())))
+                        );
                     }
                 }
+                vo.setCostPrice(BigDecimalUtil.multiply(vo.getCostPrice(), BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber())));
             }
             List<Integer> rebateUserIds = rebateVos.stream().map(OrderRebateVo::getRebateUserId).distinct().collect(Collectors.toList());
             //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息

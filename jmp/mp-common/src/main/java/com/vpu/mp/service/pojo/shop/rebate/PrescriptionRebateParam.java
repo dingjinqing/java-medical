@@ -13,7 +13,9 @@ public class PrescriptionRebateParam {
     private String prescriptionCode;
     private Integer doctorId;
     private BigDecimal totalMoney;
+    private BigDecimal canCalculateMoney;
     private BigDecimal totalRebateMoney;
+    private BigDecimal realRebateMoney;
     /**
      * 返利状态
      */

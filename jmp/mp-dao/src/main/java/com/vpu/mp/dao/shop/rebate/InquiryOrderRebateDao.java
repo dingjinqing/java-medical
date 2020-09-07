@@ -83,4 +83,13 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
         }
         return select;
     }
+
+    /**
+     * 根据订单号获取
+     * @param orderSn
+     * @return
+     */
+    public InquiryOrderRebateVo getRebateByOrderSn(String orderSn){
+        return db().select().from(INQUIRY_ORDER_REBATE).where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn)).fetchOneInto(InquiryOrderRebateVo.class);
+    }
 }

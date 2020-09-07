@@ -273,7 +273,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             //生成处方
             PrescriptionVo prescriptionVo = savePrescriptionInfo(param, orderInfoDo,allGoods,unAuditGoodsId);
             if(prescriptionVo!=null){
-                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,prescriptionVo.getList());
+                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,orderInfoDo);
             }
             //修改状态
             orderGoodsDao.updateAuditedToWaitDelivery(unAuditGoodsId,prescriptionVo.getPrescriptionCode());
@@ -316,23 +316,6 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setDragSumUnit(medicalInfoDo.getGoodsPackageUnit());
                 itemDo.setGoodsImg(goods.getGoodsImg());
                 itemDo.setMedicinePrice(goods.getShopPrice());
-                //计算应返利
-                RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
-                if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
-                    BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-                    BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-                    BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-                    itemDo.setGoodsSharingProportion(sharingProportion);
-                    if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
-                        itemDo.setRebateProportion(rxProportion);
-                    }else {
-                        itemDo.setRebateProportion(noRxProportion);
-                    }
-                    itemDo.setTotalRebateMoney(goods.getShopPrice().multiply(BigDecimal.valueOf(itemDo.getDragSumNum()))
-                        .multiply(itemDo.getGoodsSharingProportion())
-                        .multiply(itemDo.getRebateProportion())
-                        .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_DOWN));
-                }
                 list.add(itemDo);
             }
         });
@@ -381,7 +364,6 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setPrescriptionCreateTime(null);
         prescriptionVo.setCreateTime(null);
         prescriptionVo.setUpdateTime(null);
-        prescriptionVo.setSettlementFlag(PrescriptionConstant.SETTLEMENT_WAIT);
         prescriptionDao.save(prescriptionVo);
         return prescriptionVo;
     }

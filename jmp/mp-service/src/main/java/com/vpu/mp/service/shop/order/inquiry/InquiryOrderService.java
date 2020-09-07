@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateParam;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateVo;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
@@ -137,6 +138,9 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDetailVo.setUserName(userDo.getUsername());
         //退款记录
         inquiryOrderDetailVo.setRefundList(inquiryOrderRefundListDao.getListByOrderSn(inquiryOrderDo.getOrderSn()));
+        //咨询返利详情
+        InquiryOrderRebateVo rebateVo=inquiryOrderRebateDao.getRebateByOrderSn(inquiryOrderDo.getOrderSn());
+        inquiryOrderDetailVo.setRebate(rebateVo);
         return inquiryOrderDetailVo;
     }
 
@@ -276,9 +280,9 @@ public class InquiryOrderService extends ShopBaseService {
     public void addRebate(InquiryOrderDo order){
         RebateConfig rebateConfig=this.rebateConfigService.getRebateConfig();
         if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
-            BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN);
+            BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_UP);
             order.setRebateProportion(proportion);
-            order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_DOWN));
+            order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_UP));
             //返利入库
             InquiryOrderRebateParam param =new InquiryOrderRebateParam();
             FieldsUtil.assign(order,param);

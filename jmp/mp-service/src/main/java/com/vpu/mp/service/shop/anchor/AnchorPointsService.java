@@ -1,8 +1,11 @@
 package com.vpu.mp.service.shop.anchor;
 
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.AnchorPointsDo;
 import com.vpu.mp.dao.shop.anchor.AnchorPointsDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListVo;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +51,7 @@ public class AnchorPointsService extends ShopBaseService {
     }
 
 
-
-
+    public PageResult<AnchorPointsListVo> list(AnchorPointsListParam param) {
+       return anchorPointsDao.list(param);
+    }
 }
