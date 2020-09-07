@@ -235,9 +235,11 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 更新库存与活动状态
      * @param order
+     *
      */
     public void updateStockAndStatus(OrderInfoVo order) throws MpException {
         List<OrderReturnGoodsVo> goods = orderGoods.getByOrderId(order.getOrderId()).into(OrderReturnGoodsVo.class);
+        goods.forEach(orderGoods-> orderGoods.setOrderId(order.getOrderId()));
         if(order.getIsLock().equals(OrderConstant.YES)) {
             //下单流程或者下单前已经扣减库存，需恢复设配库存销量
             atomicOperation.updateStockAndSales(goods, order, true);
