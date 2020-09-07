@@ -37,6 +37,7 @@ import java.util.Map;
 import static com.vpu.mp.db.main.Tables.ORDER_GOODS_BAK;
 import static com.vpu.mp.db.main.Tables.ORDER_INFO_BAK;
 import static com.vpu.mp.db.main.Tables.RETURN_ORDER_BAK;
+import static com.vpu.mp.db.main.Tables.SHOP;
 import static com.vpu.mp.db.main.Tables.USER;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUNDING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
@@ -101,9 +102,11 @@ public class OrderInfoBakDao extends MainBaseDao {
      * @return
      */
     public Map<String, List<OrderListInfoVo>> getOrders(List<String> orderSn) {
-        List<OrderListInfoVo> orders = db().select(ORDER_INFO_BAK.asterisk(), USER.USERNAME, USER.MOBILE.as("userMobile"))
+        List<OrderListInfoVo> orders = db().select(ORDER_INFO_BAK.asterisk(), USER.USERNAME, USER.MOBILE.as("userMobile")
+        ,SHOP.SHOP_NAME)
                 .from(ORDER_INFO_BAK)
                 .leftJoin(USER).on(ORDER_INFO_BAK.USER_ID.eq(USER.USER_ID).and(ORDER_INFO_BAK.SHOP_ID.eq(USER.SHOP_ID)))
+                .leftJoin(SHOP).on(SHOP.SHOP_ID.eq(ORDER_INFO_BAK.SHOP_ID))
                 .where(ORDER_INFO_BAK.MAIN_ORDER_SN.in(orderSn).or(ORDER_INFO_BAK.ORDER_SN.in(orderSn)))
                 .orderBy(ORDER_INFO_BAK.ORDER_ID.desc())
                 .fetchInto(OrderListInfoVo.class);
