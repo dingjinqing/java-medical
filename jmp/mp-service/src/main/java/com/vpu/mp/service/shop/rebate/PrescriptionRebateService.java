@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.*;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.rebate.*;
 import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
@@ -43,17 +45,26 @@ public class PrescriptionRebateService extends ShopBaseService {
     private GoodsMedicalInfoDao medicalInfoDao;
     @Autowired
     private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
 
     /**
      * 处方返利信息入库
      * @param prescription
      */
     public void addPrescriptionRebate(PrescriptionDo prescription,OrderInfoDo order){
-        List<PrescriptionItemDo> itemList=prescriptionItemDao.listOrderGoodsByPrescriptionCode(prescription.getPrescriptionCode());
-        //计算应返利
-        updatePrescriptionItem(itemList,order);
-        //返利信息入库
-        calculatePrescriptionRebate(prescription,itemList);
+        RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+        if(rebateConfig!=null&& RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+            List<PrescriptionItemDo> itemList=prescriptionItemDao.listOrderGoodsByPrescriptionCode(prescription.getPrescriptionCode());
+            //计算应返利
+            updatePrescriptionItem(itemList,order);
+            //返利信息入库
+            calculatePrescriptionRebate(prescription,itemList);
+            prescriptionDao.updateSettlementFlag(prescription.getPrescriptionCode(),PrescriptionConstant.SETTLEMENT_WAIT);
+        }else {
+            prescriptionDao.updateSettlementFlag(prescription.getPrescriptionCode(), PrescriptionConstant.SETTLEMENT_NOT);
+        }
+
     }
 
     /**
@@ -67,29 +78,26 @@ public class PrescriptionRebateService extends ShopBaseService {
 
         for(PrescriptionItemDo item:itemList){
             RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
-            if(rebateConfig!=null&& RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
-                BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-                BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-                BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-                GoodsMedicalInfoDo medicalInfoDo = medicalInfoDao.getByGoodsId(item.getGoodsId());
-                item.setGoodsSharingProportion(sharingProportion);
-                if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
-                    item.setRebateProportion(rxProportion);
-                }else {
-                    item.setRebateProportion(noRxProportion);
-                }
-                OrderGoodsDo orderGoodsDo=orderGoodsDao.getOrderGoodsByOrderIdGoodsId(order.getOrderId(),item.getGoodsId());
-                //可计算返利商品金额
-                BigDecimal canRebateMoney = BigDecimalUtil.subtrac(orderGoodsDo.getDiscountedTotalPrice(), BigDecimalUtil.multiply(avgScoreDiscount, new BigDecimal(orderGoodsDo.getGoodsNumber())));
-                canRebateMoney = BigDecimalUtil.compareTo(canRebateMoney, null) > 0 ? canRebateMoney : BigDecimalUtil.BIGDECIMAL_ZERO;
-                item.setCanCalculateMoney(canRebateMoney);
-                //应返利金额
-                item.setTotalRebateMoney(item.getCanCalculateMoney().multiply(item.getGoodsSharingProportion())
-                    .multiply(item.getRebateProportion())
-                    .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_UP));
-                prescriptionItemDao.updatePrescriptionItem(item);
+            BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+            BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+            BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+            GoodsMedicalInfoDo medicalInfoDo = medicalInfoDao.getByGoodsId(item.getGoodsId());
+            item.setGoodsSharingProportion(sharingProportion);
+            if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
+                item.setRebateProportion(rxProportion);
+            }else {
+                item.setRebateProportion(noRxProportion);
             }
-
+            OrderGoodsDo orderGoodsDo=orderGoodsDao.getOrderGoodsByOrderIdGoodsId(order.getOrderId(),item.getGoodsId());
+            //可计算返利商品金额
+            BigDecimal canRebateMoney = BigDecimalUtil.subtrac(orderGoodsDo.getDiscountedTotalPrice(), BigDecimalUtil.multiply(avgScoreDiscount, new BigDecimal(orderGoodsDo.getGoodsNumber())));
+            canRebateMoney = BigDecimalUtil.compareTo(canRebateMoney, null) > 0 ? canRebateMoney : BigDecimalUtil.BIGDECIMAL_ZERO;
+            item.setCanCalculateMoney(canRebateMoney);
+            //应返利金额
+            item.setTotalRebateMoney(item.getCanCalculateMoney().multiply(item.getGoodsSharingProportion())
+                .multiply(item.getRebateProportion())
+                .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_UP));
+            prescriptionItemDao.updatePrescriptionItem(item);
         }
     }
 

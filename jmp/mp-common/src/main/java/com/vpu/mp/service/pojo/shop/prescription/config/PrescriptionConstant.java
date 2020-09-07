@@ -58,10 +58,10 @@ public interface PrescriptionConstant {
     public static final Byte PRESCRIPTION_AUDIT_TYPE_PRESCRIBE = 2;
     public static final Byte PRESCRIPTION_AUDIT_TYPE_ORDER = 3;
     /**
-     * 结算状态，处方返利使用 0未结算 1已结算
+     * 结算状态，处方返利使用 0未结算 1已结算 2不返利
      */
     public final static Byte SETTLEMENT_WAIT=0;
     public final static Byte SETTLEMENT_FINISH=1;
-    public final static Byte SETTLEMENT_FAILED=2;
+    public final static Byte SETTLEMENT_NOT=2;
 
 }
