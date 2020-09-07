@@ -1,19 +1,27 @@
 <template>
   <div class="picture_setting">
     <div class="picture_settingMain">
-
       <div class="p_top">
         <div class="p_top_left">
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleToNewPage()"
-          >{{$t('pictureSetting.newMicroPage')}}</el-button>
-          <div class="tipsDiv">当前版本为{{shopType==='v1'?'体验版':shopType==='v2'?'基础版':shopType==='v3'?'高级版':shopType==='v4'?'旗舰版':''}}，不限制微页面个数<img :src="iconUrl">
+          <el-button type="primary" size="small" @click="handleToNewPage()">{{
+            $t('pictureSetting.newMicroPage')
+          }}</el-button>
+          <div class="tipsDiv">
+            当前版本为{{
+              shopType === 'v1'
+                ? '体验版'
+                : shopType === 'v2'
+                ? '基础版'
+                : shopType === 'v3'
+                ? '高级版'
+                : shopType === 'v4'
+                ? '旗舰版'
+                : ''
+            }}，不限制微页面个数<img :src="iconUrl" />
             <div class="tipsHidden">
               <div class="tipsTop">
                 <p>
-                  {{$t('pictureSetting.hiddenTips')}}
+                  {{ $t('pictureSetting.hiddenTips') }}
                 </p>
               </div>
               <div class="tipsBottom">
@@ -21,28 +29,25 @@
                   type="primary"
                   size="small"
                   @click="handleToClickMore"
-                >{{$t('pictureSetting.more')}}</el-button>
+                  >{{ $t('pictureSetting.more') }}</el-button
+                >
               </div>
             </div>
           </div>
         </div>
         <div class="p_top_right">
           <div class="topRightDiv">
-            <span>{{$t('pictureSetting.pageName')}}：</span>
+            <span>{{ $t('pictureSetting.pageName') }}：</span>
             <el-input
               size="small"
               v-model="inputPageName"
               :placeholder="$t('pictureSetting.placeholderText')"
-              style="width:170px;"
+              style="width: 170px"
             ></el-input>
           </div>
           <div class="topRightDiv">
-            <span>{{$t('pictureSetting.pageClassify')}}：</span>
-            <el-select
-              v-model="selectValue"
-              size="small"
-              style="width:170px;"
-            >
+            <span>{{ $t('pictureSetting.pageClassify') }}：</span>
+            <el-select v-model="selectValue" size="small" style="width: 170px">
               <el-option
                 v-for="item in pageSetoptions"
                 :key="item.value"
@@ -53,11 +58,9 @@
             </el-select>
           </div>
           <div class="topRightDiv s_btn">
-            <el-button
-              type="primary"
-              size="small"
-              @click="list()"
-            >{{$t('pictureSetting.searchText')}}</el-button>
+            <el-button type="primary" size="small" @click="list()">{{
+              $t('pictureSetting.searchText')
+            }}</el-button>
           </div>
         </div>
       </div>
@@ -69,10 +72,7 @@
           border
           style="width: 100%"
         >
-          <el-table-column
-            label=""
-            align="center"
-          >
+          <el-table-column label="" align="center">
             <template slot-scope="scope">
               <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
             </template>
@@ -95,12 +95,15 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.pageType">{{$t('pictureSetting.yes')}}</span>
+              <span v-if="scope.row.pageType">{{
+                $t('pictureSetting.yes')
+              }}</span>
               <span
-                style="color:#5A8BFF;cursor:pointer"
+                style="color: #5a8bff; cursor: pointer"
                 v-if="!scope.row.pageType"
                 @click="handleSetFirstPage(scope.row.pageId)"
-              >{{$t('pictureSetting.setUpPage')}}</span>
+                >{{ $t('pictureSetting.setUpPage') }}</span
+              >
             </template>
           </el-table-column>
           <el-table-column
@@ -109,11 +112,12 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{scope.row.name}}</span>
+              <span>{{ scope.row.name }}</span>
               <span
                 @click="getPageCate(scope.row)"
-                style="color:#5A8BFF;cursor:pointer"
-              >{{$t('pictureSetting.setUp')}}</span>
+                style="color: #5a8bff; cursor: pointer"
+                >{{ $t('pictureSetting.setUp') }}</span
+              >
             </template>
           </el-table-column>
           <el-table-column
@@ -133,14 +137,11 @@
                     @click="edit(scope.row.pageId)"
                   ></span>
                 </el-tooltip>
-                <el-tooltip
-                  :content="$t('pictureSetting.del')"
-                  placement="top"
-                >
+                <el-tooltip :content="$t('pictureSetting.del')" placement="top">
                   <span
                     @click="del(scope.row.pageId)"
                     class="iconfont iconshanchu2 iconSpn"
-                    v-if="!scope.row.isFirstPage"
+                    v-if="!scope.row.pageType"
                   ></span>
                 </el-tooltip>
                 <el-tooltip
@@ -165,22 +166,20 @@
             </template>
           </el-table-column>
         </el-table>
-
       </div>
       <div class="footer">
         <div class="footer_left">
-          <el-checkbox v-model="allChecked">{{$t('pictureSetting.allChecked')}}</el-checkbox>
+          <el-checkbox v-model="allChecked">{{
+            $t('pictureSetting.allChecked')
+          }}</el-checkbox>
           <span
             @click="batchSetPageCate()"
-            style="color:#5a8bff;cursor:pointer"
-          >{{$t('pictureSetting.batchSettingClassification')}}</span>
+            style="color: #5a8bff; cursor: pointer"
+            >{{ $t('pictureSetting.batchSettingClassification') }}</span
+          >
         </div>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="list"
-        />
+        <pagination :page-params.sync="pageParams" @pagination="list" />
       </div>
-
     </div>
     <!--设置页面分类弹窗-->
     <div class="pageDialog">
@@ -205,19 +204,13 @@
             </el-option>
           </el-select>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="pageSetdialogVisible = false"
-          >{{$t('pictureSetting.cancel')}}</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="savePageCate()"
-          >{{$t('pictureSetting.sure')}}</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="pageSetdialogVisible = false">{{
+            $t('pictureSetting.cancel')
+          }}</el-button>
+          <el-button type="primary" size="small" @click="savePageCate()">{{
+            $t('pictureSetting.sure')
+          }}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -227,37 +220,30 @@
         :title="$t('pictureSetting.scan')"
         :visible.sync="dialogVisibleShare"
         width="25%"
-        :modal='false'
+        :modal="false"
       >
         <div class="shareDialog_">
-          <div class="shareDialog_content_"><img
-              style="height:160px"
-              :src="shareImg"
-            ></div>
-          <div
-            class="shareDialog_bottom_"
-            @click="downs()"
-          >{{$t('pictureSetting.downloadQRCode')}}</div>
+          <div class="shareDialog_content_">
+            <img style="height: 160px" :src="shareImg" />
+          </div>
+          <div class="shareDialog_bottom_" @click="downs()">
+            {{ $t('pictureSetting.downloadQRCode') }}
+          </div>
         </div>
 
         <div class="d_footer">
-          <div
-            slot="footer"
-            class="dialogFooter"
-          >
+          <div slot="footer" class="dialogFooter">
             <el-input
               v-model="pathInput"
               :placeholder="$t('pictureSetting.contentPlace')"
               size="mini"
               ref="copy"
             ></el-input>
-            <span
-              style="cursor:pointer"
-              @click="clickCopy()"
-            >{{$t('pictureSetting.copy')}}</span>
+            <span style="cursor: pointer" @click="clickCopy()">{{
+              $t('pictureSetting.copy')
+            }}</span>
           </div>
         </div>
-
       </el-dialog>
     </div>
     <!--新建微页面弹窗-->
@@ -268,16 +254,14 @@
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <span>{{$t('pictureSetting.dialogContent')}}</span>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogVisible = false">{{$t('pictureSetting.cancel')}}</el-button>
-        <el-button
-          type="primary"
-          @click="delConfirm()"
-        >{{$t('pictureSetting.sure')}}</el-button>
+      <span>{{ $t('pictureSetting.dialogContent') }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">{{
+          $t('pictureSetting.cancel')
+        }}</el-button>
+        <el-button type="primary" @click="delConfirm()">{{
+          $t('pictureSetting.sure')
+        }}</el-button>
       </span>
     </el-dialog>
     <!--分享弹窗-->
@@ -290,29 +274,20 @@
         <img
           :src="shareImageUrl"
           alt=""
-          style="width:160px;height:160px"
+          style="width: 160px; height: 160px"
           class="code_imgs"
-        >
+        />
       </div>
-      <div
-        class="copyContainer"
-        style="color:#999"
-      >
-        下载二维码
-      </div>
+      <div class="copyContainer" style="color: #999">下载二维码</div>
       <div class="copyContainer copyDiv">
         <el-input
           size="small"
           v-model="posterAddress"
           ref="qrCodePageUrlInput"
         ></el-input>
-        <span
-          class="copy"
-          @click="handelToCopy"
-        >复制</span>
+        <span class="copy" @click="handelToCopy">复制</span>
       </div>
     </el-dialog>
-
   </div>
 </template>
 <script>
@@ -639,7 +614,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 .picture_setting {
   padding: 10px;
   min-width: 100%;
