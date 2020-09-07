@@ -131,7 +131,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop='createTime'
+            prop='shopName'
             label='订单来源'
           ></el-table-column>
           <el-table-column
