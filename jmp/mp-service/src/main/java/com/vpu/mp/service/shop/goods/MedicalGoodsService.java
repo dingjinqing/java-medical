@@ -339,6 +339,10 @@ public class MedicalGoodsService extends ShopBaseService {
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS;
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_MEDICAL_INFOS);
         MedicalGoodsExternalRequestParam param = new MedicalGoodsExternalRequestParam();
+        if (lastRequestTime == null) {
+            Timestamp startTime = DateUtils.convertToTimestamp(MedicalGoodsConstant.PULL_START_TIME);
+            lastRequestTime = startTime.getTime()/1000;
+        }
         param.setStartTime(lastRequestTime);
         Timestamp now = DateUtils.getLocalDateTime();
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
@@ -413,6 +417,10 @@ public class MedicalGoodsService extends ShopBaseService {
                     logger().info("同步药品信息错误：" + getShopId() + ":缺少药品生产企业-" + x.toString());
                     return false;
                 }
+                if (x.getGoodsPrice() == null || x.getGoodsPrice().equals(BigDecimal.ZERO)) {
+                    logger().info("同步药品信息错误：" + getShopId() + ":缺少药品价格-" + x.getGoodsPrice());
+                    return false;
+                }
                 x.setGoodsCode(x.getGoodsCode().trim());
                 x.setGoodsCommonName(x.getGoodsCommonName().replaceAll("\\*", "").trim());
                 x.setGoodsQualityRatio(x.getGoodsQualityRatio().trim());
@@ -440,7 +448,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 bo.setGoodsNumber(MedicalGoodsConstant.MEDICAL_GOODS_DEFAULT_NUM);
                 bo.setSource(MedicalGoodsConstant.SOURCE_FROM_HIS);
 
-                if (existMedicalKeys.containsKey(bo.getGoodsCode())) {
+                if (existMedicalKeys.containsKey(bo.getGoodsKeyComposedByNameQualityEnterprise())) {
                     bo.setGoodsId(existMedicalKeys.get(bo.getGoodsCode()));
                     readyForUpdate.add(bo);
                 } else {
