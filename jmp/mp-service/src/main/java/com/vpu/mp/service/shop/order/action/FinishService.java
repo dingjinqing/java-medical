@@ -194,6 +194,10 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
 
         for(String preCode:preCodeList){
+            PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(preCode);
+            if(!PrescriptionConstant.SETTLEMENT_WAIT.equals(prescriptionVo.getSettlementFlag())){
+                continue;
+            }
             List<PrescriptionItemDo> itemList=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);
             itemList.forEach(item -> {
                 OrderGoodsDo orderGoodsDo=orderGoodsDao.getOrderGoodsByPreCodeGoodsId(preCode,item.getGoodsId());
@@ -215,7 +219,6 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney);
             prescriptionDao.updateSettlementFlag(preCode, PrescriptionConstant.SETTLEMENT_FINISH);
             //获取医师id
-            PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(preCode);
             DoctorOneParam doctor=doctorService.getDoctorByCode(prescriptionVo.getDoctorCode());
             if(doctor!=null){
                 //获取处方返利金额，统计医师返利金额

@@ -1,0 +1,21 @@
+package com.vpu.mp.service.pojo.shop.anchor;
+
+import lombok.Data;
+
+/**
+ * @author 孔德成
+ * @date 2020/9/7 14:41
+ */
+@Data
+public class AnchorPotionEventBo {
+
+    /**
+     * 事件
+     */
+    private String event;
+    /**
+     * 事件名称
+     */
+    private String eventName;
+
+}

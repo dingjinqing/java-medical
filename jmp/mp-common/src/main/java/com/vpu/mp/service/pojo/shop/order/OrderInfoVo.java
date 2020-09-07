@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -109,6 +110,6 @@ public class OrderInfoVo extends OrderListInfoVo {
     private List<PrescriptionDo> prescriptionDoList;
     private List<PrescriptionDo> prescriptionOldDoList;
     private UserPatientDetailVo patientInfo;
-    private List<PrescriptionItemDo> prescriptionItemList;
+    private List<PrescriptionItemVo> prescriptionItemList;
 
 }

@@ -1,8 +1,14 @@
 package com.vpu.mp.service.shop.anchor;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.common.pojo.shop.table.AnchorPointsDo;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPotionEventBo;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -19,7 +25,7 @@ public enum AnchorPointsEvent {
     INTO_SEARCH("into_search","进入搜索页","路径来源","药品购买"),
     INTO_GOODS_DETAIL("into_goods_detail","进入详情页","路径来源","药品购买"),
     ADD_CART("add_cart","添加到购物车","路径来源","药品购买"),
-    CREATE_ORDER_SUBMIT_SOURCE("create_order_submit","提交订单","路径来源","药品购买"),
+    CREATE_ORDER_SUBMIT_SOURCE("create_order_submit","提交订单","订单来源","药品购买"),
     CREATE_ORDER_SUBMIT_MONEY("create_order_submit","提交订单","订单金额","药品购买"),
     CREATE_ORDER_SUBMIT_COUNT("create_order_submit","提交订单","药品数量","药品购买"),
     CREATE_ORDER_SUBMIT_KIND("create_order_submit","提交订单","药品种类","药品购买"),
@@ -69,6 +75,25 @@ public enum AnchorPointsEvent {
             }
         }
         return null;
+    }
+
+    public static Map<AnchorPotionEventBo, List<String>> eventKeyMap(){
+        Map<AnchorPotionEventBo,List<String>> map =new HashMap<>();
+        Arrays.stream(AnchorPointsEvent.values()).forEach(anchorPointsEvent -> {
+            if (!map.containsKey(anchorPointsEvent.getEventBo())){
+                map.put(anchorPointsEvent.getEventBo(), Lists.newArrayList(anchorPointsEvent.getKey()));
+            }else {
+                map.get(anchorPointsEvent.getEventBo()).add(anchorPointsEvent.getKey());
+            }
+        });
+        return map;
+    }
+
+    public AnchorPotionEventBo getEventBo(){
+        AnchorPotionEventBo bo =new AnchorPotionEventBo();
+        bo.setEvent(this.event);
+        bo.setEventName(this.eventName);
+        return bo;
     }
 
     public AnchorPointsDo getDo(){

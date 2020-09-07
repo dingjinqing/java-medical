@@ -212,6 +212,9 @@ public class OrderInfoBakDao extends MainBaseDao {
         if (param.getOrderIds() != null && param.getOrderIds().length != 0) {
             select.where(ORDER_INFO_BAK.ORDER_ID.in(param.getOrderIds()));
         }
+        if (param.getShopId()!=null&&param.getShopId()>0){
+            select.where(ORDER_INFO_BAK.SHOP_ID.eq(param.getShopId()));
+        }
 
         //店铺助手操作
         if (param.getShopHelperAction() != null) {

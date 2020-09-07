@@ -23,6 +23,7 @@ import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
@@ -337,7 +338,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         PrescriptionVo prescriptionVo = prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionOldCode());
         Timestamp time = DateUtil.date().toTimestamp();
         prescriptionVo.setId(null);
-        prescriptionVo.setPrescriptionCode(System.currentTimeMillis()+"");
+        prescriptionVo.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
         prescriptionVo.setPosCode("");
         prescriptionVo.setPatientId(orderInfoDo.getPatientId());
         prescriptionVo.setUserId(orderInfoDo.getUserId());
