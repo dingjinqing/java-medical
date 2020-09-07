@@ -204,7 +204,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             for(String preCode:preCodeList){
                 //更改处方返利状态
                 prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATE_FAIL);
-                prescriptionDao.updateSettlementFlag(preCode, PrescriptionConstant.SETTLEMENT_FAILED);
+                prescriptionDao.updateSettlementFlag(preCode, PrescriptionConstant.SETTLEMENT_NOT);
             }
         }
 

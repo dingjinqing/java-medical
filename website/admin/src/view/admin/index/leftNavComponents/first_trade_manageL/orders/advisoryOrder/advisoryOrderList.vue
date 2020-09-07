@@ -55,7 +55,7 @@
             @change="datePickerChange(true,applyTime)"
             size="small"
           />
-          至
+          <span style='width:auto;margin:0 5px'>至</span>
           <el-date-picker
             v-model="queryParams.endTime"
             type="datetime"
@@ -311,7 +311,7 @@ export default {
     display: flex;
     width: 100%;
     background-color: #fff;
-    padding: 15px;
+    padding: 10px 15px;
     .filters {
       flex: 2;
       display: flex;
@@ -321,6 +321,7 @@ export default {
       .filters_item {
         display: flex;
         justify-content: flex-end;
+        margin: 10px 0;
         margin-left: 15px;
         > span {
           width: 80px;
@@ -341,6 +342,9 @@ export default {
       color: #5a8bff;
       text-decoration: none;
     }
+  }
+  .btn_wrap .el-button{
+    margin: 10px 30px;
   }
 }
 </style>
