@@ -135,13 +135,12 @@ public class PrescriptionItemDao extends ShopBaseDao {
 
     /**
      * 根据处方号和goodsId查
-     * @param prescriptionCode
-     * @param goodsId
+     * @param prescriptionCodes
      * @return
      */
-    public PrescriptionItemVo getByPrescriptionAndCodeGoodsId(String prescriptionCode, Integer goodsId){
-        return db().select().from(PRESCRIPTION_ITEM).where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionCode))
-            .and(PRESCRIPTION_ITEM.GOODS_ID.eq(goodsId)).fetchAnyInto(PrescriptionItemVo.class);
+    public List<PrescriptionItemVo> getByPrescriptions(List<String> prescriptionCodes){
+        return db().select().from(PRESCRIPTION_ITEM).where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.in(prescriptionCodes))
+           .fetchInto(PrescriptionItemVo.class);
 
     }
 }
