@@ -151,7 +151,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 			return vo;
 		}
 		ShopAccountRecord shopAccount = account.getAccountInfoForId(shop.getSysId());
-		if (shopAccount.getIsBind().equals(BIND)) {
+		if (BIND.equals(shopAccount.getIsBind())) {
 			canSend = true;
 		}
 		List<ShopChildAccountPojo> subAccountList = subAccount.getAccountByBindThird(shop.getSysId());
