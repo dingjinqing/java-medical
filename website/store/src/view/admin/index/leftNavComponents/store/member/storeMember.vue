@@ -1,259 +1,237 @@
 <template>
-  <div class="list-con">
-    <div class="top">
-      <el-form
-        size="small"
-        :inline="true"
-        class="store-permission-form"
-      >
-        <el-form-item :label="$t('storePermission.storeAccount') + '：'">
-          <el-input
-            class="form-input"
-            v-model="queryParams.accountName"
-            clearable
-          ></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('storePermission.phone') + '：'">
-          <el-input
-            class="form-input"
-            v-model="queryParams.mobile"
-            clearable
-          ></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('storePermission.roles') + '：'">
-          <el-select
-            v-model="queryParams.accountType"
-            class="form-input"
+  <div class="container">
+    <div class="content">
+      <div class="list-con">
+        <div class="top">
+          <el-form size="small" :inline="true" class="store-permission-form">
+            <el-form-item :label="$t('storePermission.storeAccount') + '：'">
+              <el-input
+                class="form-input"
+                v-model="queryParams.accountName"
+                clearable
+              ></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('storePermission.phone') + '：'">
+              <el-input
+                class="form-input"
+                v-model="queryParams.mobile"
+                clearable
+              ></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('storePermission.roles') + '：'">
+              <el-select v-model="queryParams.accountType" class="form-input">
+                <el-option
+                  :label="$t('storePermission.all')"
+                  :value="0"
+                ></el-option>
+                <el-option
+                  :label="$t('storePermission.storeManager')"
+                  :value="2"
+                ></el-option>
+                <el-option
+                  :label="$t('storePermission.clerk')"
+                  :value="1"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item :label="$t('storePermission.accountStatus') + '：'">
+              <el-select v-model="queryParams.status" class="form-input">
+                <el-option
+                  :label="$t('storePermission.all')"
+                  :value="-1"
+                ></el-option>
+                <el-option
+                  :label="$t('storePermission.using')"
+                  :value="1"
+                ></el-option>
+                <el-option
+                  :label="$t('storePermission.terminated')"
+                  :value="0"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-button type="primary" size="small" @click="initDataList">{{
+              $t('storePermission.filter')
+            }}</el-button>
+          </el-form>
+          <div>
+            <el-button type="primary" size="small" @click="addAccountHandle">{{
+              $t('storePermission.addAccount')
+            }}</el-button>
+          </div>
+        </div>
+        <div class="center">
+          <el-table
+            :data="tableData"
+            class="tableClass"
+            header-row-class-name="tableClss"
+            border
           >
-            <el-option
-              :label="$t('storePermission.all')"
-              :value="0"
-            ></el-option>
-            <el-option
-              :label="$t('storePermission.storeManager')"
-              :value="2"
-            ></el-option>
-            <el-option
-              :label="$t('storePermission.clerk')"
-              :value="1"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('storePermission.accountStatus') + '：'">
-          <el-select
-            v-model="queryParams.status"
-            class="form-input"
-          >
-            <el-option
-              :label="$t('storePermission.all')"
-              :value="-1"
-            ></el-option>
-            <el-option
-              :label="$t('storePermission.using')"
-              :value="1"
-            ></el-option>
-            <el-option
-              :label="$t('storePermission.terminated')"
-              :value="0"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-button
-          type="primary"
-          size="small"
-          @click="initDataList"
-        >{{
-          $t('storePermission.filter')
-        }}</el-button>
-      </el-form>
-      <div>
-        <el-button
-          type="primary"
-          size="small"
-          @click="addAccountHandle"
-        >{{
-          $t('storePermission.addAccount')
-        }}</el-button>
-      </div>
-    </div>
-    <div class="center">
-      <el-table
-        :data="tableData"
-        class="tableClass"
-        header-row-class-name="tableClss"
-        border
-      >
-        <el-table-column
-          :label="$t('storePermission.storeAccount')"
-          prop="accountName"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          :label="$t('storePermission.phone')"
-          prop="mobile"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          :label="$t('storePermission.roles')"
-          prop="accountType"
-          :formatter="accountTypeFmt"
-          align="center"
-        ></el-table-column>
-        <el-table-column :label="$t('storePermission.AuthorizedStore')">
-          <template slot-scope="{ row }">
-            <div style="text-align: center;">
-              <span v-text="row.storeLists.length"></span>
-              <el-button
-                type="text"
-                @click="setStoreListDialog(row)"
-              >{{
-                $t('storePermission.settings')
-              }}</el-button>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          :label="$t('storePermission.accountStatus')"
-          :formatter="statusFmt"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          :label="$t('storePermission.operate')"
-          align="center"
-        >
-          <template slot-scope="{ row }">
-            <div>
-              <el-tooltip
-                v-if="row.status === 1 || row.stauts === '1'"
-                :content="$t('storePermission.disable')"
-                effect="light"
-                placement="top"
-              >
-                <i
-                  class="el-icon-circle-close iconSpan"
-                  @click="edit('stop', row)"
-                ></i>
-              </el-tooltip>
-              <el-tooltip
-                v-if="row.status === 0 || row.stauts === '0'"
-                :content="$t('storePermission.enable')"
-                effect="light"
-                placement="top"
-              >
-                <i
-                  class="el-icon-circle-check iconSpan"
-                  @click="edit('start', row)"
-                ></i>
-              </el-tooltip>
-              <el-tooltip
-                :content="$t('storePermission.delete')"
-                effect="light"
-                placement="top"
-              >
-                <i
-                  class="el-icon-delete iconSpan"
-                  @click="edit('del', row)"
-                ></i>
-              </el-tooltip>
-              <el-tooltip
-                :content="$t('storePermission.edit')"
-                effect="light"
-                placement="top"
-              >
-                <i
-                  class="el-icon-edit-outline iconSpan"
-                  @click="edit('edit', row)"
-                ></i>
-              </el-tooltip>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="initDataList"
-      ></pagination>
-    </div>
-    <!-- 添加账户 -->
-    <el-dialog
-      :title="
-        isEdit
-          ? $t('storePermission.editAccount')
-          : $t('storePermission.addAccount')
-      "
-      :visible.sync="accountDialogVisible"
-      width="500px"
-    >
-      <div class="dialog-content">
-        <el-form
-          ref="accountForm"
-          class="account-form"
-          label-width="110px"
-          size="small"
-          :model="accountForm"
-          :rules="accountFormRules"
-        >
-          <el-form-item
-            :label="$t('storePermission.accountRole') + '：'"
-            prop="accountType"
-          >
-            <el-select
-              class="form-input"
-              v-model="accountForm.accountType"
+            <el-table-column
+              :label="$t('storePermission.storeAccount')"
+              prop="accountName"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              :label="$t('storePermission.phone')"
+              prop="mobile"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              :label="$t('storePermission.roles')"
+              prop="accountType"
+              :formatter="accountTypeFmt"
+              align="center"
+            ></el-table-column>
+            <el-table-column :label="$t('storePermission.AuthorizedStore')">
+              <template slot-scope="{ row }">
+                <div style="text-align: center">
+                  <span v-text="row.storeLists.length"></span>
+                  <el-button type="text" @click="setStoreListDialog(row)">{{
+                    $t('storePermission.settings')
+                  }}</el-button>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              :label="$t('storePermission.accountStatus')"
+              :formatter="statusFmt"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              :label="$t('storePermission.operate')"
+              align="center"
             >
-              <el-option
-                :label="$t('storePermission.storeManager')"
-                :value="2"
-              ></el-option>
-              <el-option
-                :label="$t('storePermission.clerk')"
-                :value="1"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            :label="$t('storePermission.storeAccount') + '：'"
-            prop="accountName"
-          >
-            <el-input
-              class="form-input"
-              v-model="accountForm.accountName"
-              maxlength="20"
-              :placeholder="$t('storePermission.storeLimit1')"
-            ></el-input>
-            <p class="form-tip">{{ $t('storePermission.storeLimit2') }}</p>
-          </el-form-item>
-          <el-form-item
-            :label="$t('storePermission.phone') + '：'"
-            prop="mobile"
-          >
-            <el-input
-              type="text"
-              class="form-input"
-              v-model="accountForm.mobile"
-              autocomplete="off"
-              auto-complete="new-password"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            :label="$t('storePermission.pwd') + '：'"
-            prop="accountPasswd"
-          >
-            <el-input
-              type="password"
-              class="form-input"
-              v-model="accountForm.accountPasswd"
-              show-password
-              autocomplete="off"
-              auto-complete="new-password"
-            ></el-input>
-            <p class="form-tip">{{ $t('storePermission.pwdLimit') }}</p>
-          </el-form-item>
-          <el-form-item
-            :label="$t('storePermission.AuthorizedStore') + '：'"
-            prop="storeList"
-          >
-            <!-- <el-select
+              <template slot-scope="{ row }">
+                <div>
+                  <el-tooltip
+                    v-if="row.status === 1 || row.stauts === '1'"
+                    :content="$t('storePermission.disable')"
+                    effect="light"
+                    placement="top"
+                  >
+                    <i
+                      class="el-icon-circle-close iconSpan"
+                      @click="edit('stop', row)"
+                    ></i>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="row.status === 0 || row.stauts === '0'"
+                    :content="$t('storePermission.enable')"
+                    effect="light"
+                    placement="top"
+                  >
+                    <i
+                      class="el-icon-circle-check iconSpan"
+                      @click="edit('start', row)"
+                    ></i>
+                  </el-tooltip>
+                  <el-tooltip
+                    :content="$t('storePermission.delete')"
+                    effect="light"
+                    placement="top"
+                  >
+                    <i
+                      class="el-icon-delete iconSpan"
+                      @click="edit('del', row)"
+                    ></i>
+                  </el-tooltip>
+                  <el-tooltip
+                    :content="$t('storePermission.edit')"
+                    effect="light"
+                    placement="top"
+                  >
+                    <i
+                      class="el-icon-edit-outline iconSpan"
+                      @click="edit('edit', row)"
+                    ></i>
+                  </el-tooltip>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+          <pagination
+            :page-params.sync="pageParams"
+            @pagination="initDataList"
+          ></pagination>
+        </div>
+        <!-- 添加账户 -->
+        <el-dialog
+          :title="
+            isEdit
+              ? $t('storePermission.editAccount')
+              : $t('storePermission.addAccount')
+          "
+          :visible.sync="accountDialogVisible"
+          width="500px"
+        >
+          <div class="dialog-content">
+            <el-form
+              ref="accountForm"
+              class="account-form"
+              label-width="110px"
+              size="small"
+              :model="accountForm"
+              :rules="accountFormRules"
+            >
+              <el-form-item
+                :label="$t('storePermission.accountRole') + '：'"
+                prop="accountType"
+              >
+                <el-select class="form-input" v-model="accountForm.accountType">
+                  <el-option
+                    :label="$t('storePermission.storeManager')"
+                    :value="2"
+                  ></el-option>
+                  <el-option
+                    :label="$t('storePermission.clerk')"
+                    :value="1"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                :label="$t('storePermission.storeAccount') + '：'"
+                prop="accountName"
+              >
+                <el-input
+                  class="form-input"
+                  v-model="accountForm.accountName"
+                  maxlength="20"
+                  :placeholder="$t('storePermission.storeLimit1')"
+                ></el-input>
+                <p class="form-tip">{{ $t('storePermission.storeLimit2') }}</p>
+              </el-form-item>
+              <el-form-item
+                :label="$t('storePermission.phone') + '：'"
+                prop="mobile"
+              >
+                <el-input
+                  type="text"
+                  class="form-input"
+                  v-model="accountForm.mobile"
+                  autocomplete="off"
+                  auto-complete="new-password"
+                ></el-input>
+              </el-form-item>
+              <el-form-item
+                :label="$t('storePermission.pwd') + '：'"
+                prop="accountPasswd"
+              >
+                <el-input
+                  type="password"
+                  class="form-input"
+                  v-model="accountForm.accountPasswd"
+                  show-password
+                  autocomplete="off"
+                  auto-complete="new-password"
+                ></el-input>
+                <p class="form-tip">{{ $t('storePermission.pwdLimit') }}</p>
+              </el-form-item>
+              <el-form-item
+                :label="$t('storePermission.AuthorizedStore') + '：'"
+                prop="storeList"
+              >
+                <!-- <el-select
               v-model="accountForm.storeList"
               class="form-input"
               multiple
@@ -265,39 +243,29 @@
                 :value="item.value"
               ></el-option>
             </el-select> -->
-            <storeMultipleChoice
-              :storeDatas="storeList"
-              :selectedIds.sync="accountForm.storeList"
-            ></storeMultipleChoice>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="primary"
-          size="small"
-          @click="saveAccountHandle"
-        >{{
-          $t('storePermission.save')
-        }}</el-button>
-        <el-button
-          size="small"
-          @click="accountDialogVisible = false"
-        >{{
-          $t('storePermission.cancel')
-        }}</el-button>
-      </div>
-    </el-dialog>
-    <!-- 设置权限门店 -->
-    <el-dialog
-      :title="$t('storePermission.templateSet')"
-      :visible.sync="setStoresVisible"
-      width="500px"
-    >
-      <!-- <div>
+                <storeMultipleChoice
+                  :storeDatas="storeList"
+                  :selectedIds.sync="accountForm.storeList"
+                ></storeMultipleChoice>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" @click="saveAccountHandle">{{
+              $t('storePermission.save')
+            }}</el-button>
+            <el-button size="small" @click="accountDialogVisible = false">{{
+              $t('storePermission.cancel')
+            }}</el-button>
+          </div>
+        </el-dialog>
+        <!-- 设置权限门店 -->
+        <el-dialog
+          :title="$t('storePermission.templateSet')"
+          :visible.sync="setStoresVisible"
+          width="500px"
+        >
+          <!-- <div>
         <span style="width:110px;">{{$t('storePermission.chooseStore')}}：</span>
         <el-select
           v-model="accountStoreList"
@@ -312,27 +280,22 @@
           ></el-option>
         </el-select>
       </div> -->
-      <storeMultipleChoice
-        :storeDatas="storeList"
-        :selectedIds.sync="accountStoreList"
-        showTitle
-      ></storeMultipleChoice>
-      <div slot="footer">
-        <el-button
-          type="primary"
-          size="small"
-          @click="setStoreList"
-        >{{
-          $t('storePermission.yes')
-        }}</el-button>
-        <el-button
-          @click="setStoresVisible = false"
-          size="small"
-        >{{
-          $t('storePermission.cancel')
-        }}</el-button>
+          <storeMultipleChoice
+            :storeDatas="storeList"
+            :selectedIds.sync="accountStoreList"
+            showTitle
+          ></storeMultipleChoice>
+          <div slot="footer">
+            <el-button type="primary" size="small" @click="setStoreList">{{
+              $t('storePermission.yes')
+            }}</el-button>
+            <el-button @click="setStoresVisible = false" size="small">{{
+              $t('storePermission.cancel')
+            }}</el-button>
+          </div>
+        </el-dialog>
       </div>
-    </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -632,6 +595,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.container {
+  padding: 10px;
+  .content {
+    background-color: #fff;
+    padding: 10px;
+  }
+}
 .list-con {
   .tableClass {
     min-height: 300px;
