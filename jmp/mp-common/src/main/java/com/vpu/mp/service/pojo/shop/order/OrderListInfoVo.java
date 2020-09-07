@@ -40,6 +40,8 @@ public class OrderListInfoVo {
 	private String consignee;
 	/** 收件人手机 */
 	private String mobile;
+	/**店铺名称**/
+	private String shopName;
 	/** 主支付方式 */
 	private String payCode;
 	/** 支付方式列表 */
@@ -131,6 +133,8 @@ public class OrderListInfoVo {
 	private String storeName;
 	/**门店信息**/
 	private StoreOrderVo storeOrderVo;
+	/**自提时间**/
+	private String pickupdateTime;
 
 
 }

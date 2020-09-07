@@ -8,8 +8,11 @@ import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
+import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
@@ -17,6 +20,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.address.UserAddressService;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
@@ -38,6 +42,7 @@ import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsBaseCheckInfo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -46,6 +51,7 @@ import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.order.address.OrderAddressParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
@@ -100,12 +106,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -210,6 +211,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public RebateConfigService rebateConfigService;
     @Autowired
     private StoreService storeService;
+    @Autowired
+    private UserAddressService userAddressService;
+    @Autowired
+    private GoodsMedicalInfoDao goodsMedicalInfoDao;
     /**
      * 随机生成核销码位数
      */
@@ -339,6 +344,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
+    /**
+     * 订单添加门店信息、自提码信息
+     * @param param 创建订单信息
+     * @param order 订单入参
+     */
     private void noutoasiakasCode(CreateParam param, OrderInfoRecord order) {
         if (param.getDeliverType() == 1) {
             String s = generateShortUuid();
@@ -346,6 +356,42 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             order.setStoreId(param.getStoreId());
             order.setDeliverType((byte) 1);
         }
+        if (param.getDeliverType() == 0) {
+            UserAddressVo userAddressInfo = userAddressService.getUserAddressByAddressId(param.getAddressId());
+            OrderAddressParam orderAddressParam = new OrderAddressParam();
+            orderAddressParam.setLat(userAddressInfo.getLat());
+            orderAddressParam.setLng(userAddressInfo.getLng());
+            List<StoreGoodsBaseCheckInfo> list = new ArrayList<>();
+            param.getGoods().forEach(goods -> {
+                StoreGoodsBaseCheckInfo goodsMedicalInfo = getGoodsMedicalInfo(goods.getGoodsId());
+                goodsMedicalInfo.setGoodsNumber(goods.getGoodsNumber().toString());
+                list.add(goodsMedicalInfo);
+            });
+            orderAddressParam.setStoreGoodsBaseCheckInfoList(list);
+            Map<Double, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
+            Set<Map.Entry<Double, StoreDo>> entry = storeListOpen.entrySet();
+            for (Map.Entry<Double, StoreDo> value : entry) {
+                StoreDo storeDo = value.getValue();
+                order.setStoreId(storeDo.getStoreId());
+                break;
+            }
+            order.setDeliverType((byte) 0);
+        }
+    }
+
+    /**
+     * 根据商品id查询商品详情
+     * @param goodsId 商品id
+     * @return StoreGoodsBaseCheckInfo
+     */
+    private StoreGoodsBaseCheckInfo getGoodsMedicalInfo(Integer goodsId) {
+        StoreGoodsBaseCheckInfo storeGoodsBaseCheckInfo = new StoreGoodsBaseCheckInfo();
+        GoodsMedicalInfoDo byGoodsId = goodsMedicalInfoDao.getByGoodsId(goodsId);
+        storeGoodsBaseCheckInfo.setGoodsQualityRatio(byGoodsId.getGoodsQualityRatio());
+        storeGoodsBaseCheckInfo.setGoodsProductionEnterprise(byGoodsId.getGoodsProductionEnterprise());
+        storeGoodsBaseCheckInfo.setGoodsCommonName(byGoodsId.getGoodsCommonName());
+        storeGoodsBaseCheckInfo.setGoodsApprovalNumber(byGoodsId.getGoodsApprovalNumber());
+        return storeGoodsBaseCheckInfo;
     }
 
     private void addPatientDiagnose(CreateParam param, OrderInfoRecord order) throws MpException {

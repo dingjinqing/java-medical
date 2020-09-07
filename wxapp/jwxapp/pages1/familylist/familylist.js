@@ -42,7 +42,7 @@ global.wxPage({
   },
   to_pre() {
     util.handleBuriedPoint('my_family_add_patient', 'pages1/familylist/familylist', [{
-      key: '我的家人'
+      key: '点击'
     }])
     util.jumpLink('/pages1/getprescription/getprescription')
   },

@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsParam;
 import com.vpu.mp.service.shop.anchor.AnchorPointsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,15 @@ public class AdminAnchorPointsController  extends AdminBaseController {
     public JsonResult anchorPoints(@RequestBody @Validated AnchorPointsParam param){
         anchorPointsService.add(param);
         return success();
+    }
+
+    /**
+     * 报表列表查询
+     * @return lsit
+     */
+    @PostMapping("/api/admin/anchor/points/list")
+    public JsonResult list(@RequestBody AnchorPointsListParam param){
+        return success(anchorPointsService.list(param));
     }
 
 

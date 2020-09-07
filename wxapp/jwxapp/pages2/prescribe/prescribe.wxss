@@ -262,12 +262,7 @@
   flex: 1;
 }
 .page-dialog-content > .goods-content{
-  overflow-y:scroll;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 200rpx;
-  bottom: 128rpx;
+  height: 676rpx;
   background-color: #fff;
 }
 .dialog-footer-content{

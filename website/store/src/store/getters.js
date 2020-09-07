@@ -25,7 +25,12 @@ const getters = {
   Micropage: state => state.smallProcedures.Micropage,
   // getUserName: state => state.getUserName
   dialogVisible: state => state.brandDialog.dialogVisible,
-  showMenuData: state => state.leftnav.showMenuData
+  showMenuData: state => {
+    if (!state.leftnav.showMenuData) {
+      state.leftnav.showMenuData = JSON.parse(localStorage.getItem('showMenuData'))
+    }
+    return state.leftnav.showMenuData
+  }
 }
 
 export default getters

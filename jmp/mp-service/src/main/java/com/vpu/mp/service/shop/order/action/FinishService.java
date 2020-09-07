@@ -5,10 +5,14 @@ import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
+import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.FanliGoodsStatisticsRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
@@ -135,6 +139,8 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
     private DoctorService doctorService;
     @Autowired
     private OrderOperateSendMessage sendMessage;
+    @Autowired
+    private PrescriptionItemDao prescriptionItemDao;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -168,7 +174,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             //完成返利设置
             orderInfo.setOrderRebateInfo(orderRecord, total);
             //医师返利
-            setDoctorRebate(orderRecord.getOrderSn());
+            setDoctorRebate(orderRecord);
             //新增收支
         });
         //分销升级
@@ -181,14 +187,32 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 
     /**
      * 医师返利
-     * @param orderSn
+     * @param orderRecord
      */
-    public void setDoctorRebate(String orderSn){
-        List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(orderSn);
+    public void setDoctorRebate(OrderInfoRecord orderRecord){
+        List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(orderRecord.getOrderSn());
         preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
+
         for(String preCode:preCodeList){
+            List<PrescriptionItemDo> itemList=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);
+            itemList.forEach(item -> {
+                OrderGoodsDo orderGoodsDo=orderGoodsDao.getOrderGoodsByPreCodeGoodsId(preCode,item.getGoodsId());
+                //实际返利数量
+                int rebateNumber = orderGoodsDo.getGoodsNumber() - orderGoodsDo.getReturnNumber();
+                //实际返利金额
+                item.setRealRebateMoney(
+                    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(item.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsDo.getGoodsNumber())))
+                );
+                prescriptionItemDao.updatePrescriptionItem(item);
+            });
+            BigDecimal realRebateTotalMoney=itemList.stream().map(PrescriptionItemDo::getRealRebateMoney).reduce(BIGDECIMAL_ZERO,BigDecimal::add);
             //更改处方返利状态
             prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATED);
+            //更新实际返利金额
+            prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney);
             prescriptionDao.updateSettlementFlag(preCode, PrescriptionConstant.SETTLEMENT_FINISH);
             //获取医师id
             PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(preCode);
@@ -196,11 +220,10 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             if(doctor!=null){
                 //获取处方返利金额，统计医师返利金额
                 PrescriptionRebateParam rebate= prescriptionRebateDao.getRebateByPrescriptionCode(preCode);
-                doctorTotalRebateDao.updateDoctorTotalRebate(doctor.getId(),rebate.getTotalRebateMoney());
+                doctorTotalRebateDao.updateDoctorTotalRebate(doctor.getId(),rebate.getRealRebateMoney());
 
             }
         }
-
     }
     /**
      * 订单完成时进行返利

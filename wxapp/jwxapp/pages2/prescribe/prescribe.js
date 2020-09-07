@@ -409,6 +409,18 @@ global.wxPage({
       focusStatus: false,
     })
   },
+  changePage(){
+    if (
+      this.data.dialogPageParams &&
+      this.data.dialogPageParams.currentPage === this.data.dialogPageParams.lastPage && this.data.showGoodsListDialog === false
+    ) {
+      return;
+    }
+    this.setData({
+      'dialogPageParams.currentPage': this.data.dialogPageParams.currentPage + 1
+    });
+    this.requestGoodsList();
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

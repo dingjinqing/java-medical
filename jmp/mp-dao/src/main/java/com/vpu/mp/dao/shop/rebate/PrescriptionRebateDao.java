@@ -13,6 +13,7 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -52,6 +53,16 @@ public class PrescriptionRebateDao extends ShopBaseDao {
      */
     public PrescriptionRebateParam getRebateByPrescriptionCode(String prescriptionCode){
         return db().select().from(PRESCRIPTION_REBATE).where(PRESCRIPTION_REBATE.PRESCRIPTION_CODE.eq(prescriptionCode)).fetchAnyInto(PrescriptionRebateParam.class);
+    }
+
+    /**
+     * 更新实际返利金额
+     * @param prescriptionCode
+     * @param realRebateMoney
+     */
+    public void updateRealRebateMoney(String prescriptionCode, BigDecimal realRebateMoney){
+        db().update(PRESCRIPTION_REBATE).set(PRESCRIPTION_REBATE.REAL_REBATE_MONEY,realRebateMoney).where(PRESCRIPTION_REBATE.PRESCRIPTION_CODE.eq(prescriptionCode))
+            .execute();
     }
 
     /**

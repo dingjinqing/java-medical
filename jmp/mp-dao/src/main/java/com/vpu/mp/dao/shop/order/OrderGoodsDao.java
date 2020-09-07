@@ -173,7 +173,7 @@ public class OrderGoodsDao extends ShopBaseDao {
     }
 
     /**
-     * 根据处方号和goodId获取
+     * 根据订单号和goodId获取
      * @param orderId
      * @param goodsId
      * @return
@@ -181,6 +181,18 @@ public class OrderGoodsDao extends ShopBaseDao {
     public OrderGoodsDo getOrderGoodsByOrderIdGoodsId(Integer orderId,Integer goodsId){
         return db().select().from(ORDER_GOODS).where(ORDER_GOODS.GOODS_ID.eq(goodsId))
             .and(ORDER_GOODS.ORDER_ID.eq(orderId))
+            .fetchAnyInto(OrderGoodsDo.class);
+    }
+
+    /**
+     * 根据处方号和goodId获取
+     * @param prescriptionCode
+     * @param goodsId
+     * @return
+     */
+    public OrderGoodsDo getOrderGoodsByPreCodeGoodsId(String prescriptionCode,Integer goodsId){
+        return db().select().from(ORDER_GOODS).where(ORDER_GOODS.GOODS_ID.eq(goodsId))
+            .and(ORDER_GOODS.PRESCRIPTION_CODE.eq(prescriptionCode))
             .fetchAnyInto(OrderGoodsDo.class);
     }
 }

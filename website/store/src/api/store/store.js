@@ -195,3 +195,11 @@ export function getAllStoreList (data) {
     data
   })
 }
+// 获取门店下拉列表数据
+export function getOrderList (data) {
+  return service({
+    url: '/api/store/order/list',
+    method: 'post',
+    data
+  })
+}

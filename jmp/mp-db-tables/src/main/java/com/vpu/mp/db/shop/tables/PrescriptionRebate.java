@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionRebate extends TableImpl<PrescriptionRebateRecord> {
 
-    private static final long serialVersionUID = -719809512;
+    private static final long serialVersionUID = 1950510859;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription_rebate</code>
@@ -87,6 +87,11 @@ public class PrescriptionRebate extends TableImpl<PrescriptionRebateRecord> {
      * The column <code>mini_shop_471752.b2c_prescription_rebate.total_rebate_money</code>. 返利总金额
      */
     public final TableField<PrescriptionRebateRecord, BigDecimal> TOTAL_REBATE_MONEY = createField("total_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利总金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription_rebate.real_rebate_money</code>. 实际返利总金额
+     */
+    public final TableField<PrescriptionRebateRecord, BigDecimal> REAL_REBATE_MONEY = createField("real_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "实际返利总金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription_rebate.status</code>. 0待返利 1已返利 2未返利

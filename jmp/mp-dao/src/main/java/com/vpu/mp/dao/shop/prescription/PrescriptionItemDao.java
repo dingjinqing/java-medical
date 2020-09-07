@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.PrescriptionItemRecord;
 import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import org.springframework.stereotype.Repository;
 
@@ -130,7 +131,17 @@ public class PrescriptionItemDao extends ShopBaseDao {
         PrescriptionItemRecord prescriptionItemRecord = db().newRecord(PRESCRIPTION_ITEM);
         FieldsUtil.assign(prescriptionItemDo,prescriptionItemRecord);
         db().executeUpdate(prescriptionItemRecord);
+    }
 
+    /**
+     * 根据处方号和goodsId查
+     * @param prescriptionCode
+     * @param goodsId
+     * @return
+     */
+    public PrescriptionItemVo getByPrescriptionAndCodeGoodsId(String prescriptionCode, Integer goodsId){
+        return db().select().from(PRESCRIPTION_ITEM).where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionCode))
+            .and(PRESCRIPTION_ITEM.GOODS_ID.eq(goodsId)).fetchAnyInto(PrescriptionItemVo.class);
 
     }
 }

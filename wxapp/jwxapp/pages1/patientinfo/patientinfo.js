@@ -112,7 +112,7 @@ global.wxPage({
         this.data.pat_mobile = this.data.patient_info.mobile;
         this.data.pat_id_num = this.data.patient_info.identityCode;
         if( this.data.patient_info.sex >= 0 && this.data.patient_info.sex != null){
-          this.data.sex_index = this.data.patient_info.sex 
+          this.data.sex_index = this.data.patient_info.sex
         } else{
           this.data.sex_index = -1
         }
@@ -256,11 +256,11 @@ global.wxPage({
     if (!this.data.pat_mobile) {
       util.showModal("提示", "请输入手机号");
       return false;
-    } 
+    }
     if (!/^1[3456789]\d{9}$/.test(this.data.pat_mobile)) {
       util.showModal("提示", "请输入正确的手机号！");
         return false;
-    } 
+    }
     if(!this.data.pat_tip) {
       util.showModal("提示", "请输入备注");
       return false;
@@ -282,7 +282,7 @@ global.wxPage({
       if(res.error == 0){
         util.toast_success('成功')
         util.handleBuriedPoint('create_patient_success', 'pages1/patientinfo/patientinfo', [{
-          key: '添加就诊人'
+          key: '点击'
         }])
         if(this.data.list == 1){
           util.jumpLink('/pages2/doctorConsultation/doctorConsultation','redirectTo');
@@ -455,8 +455,8 @@ global.wxPage({
       return false
     }
     var disText = this.data.disText != "" ? this.data.disText.join(',') + ',' : ''
-    var familyText = this.data.familyText != "" ? this.data.familyText.join(',') + ',' : '' 
-    var gan_ok = this.data.liverFunctionOk == 1 ? "":"肝功能异常," 
+    var familyText = this.data.familyText != "" ? this.data.familyText.join(',') + ',' : ''
+    var gan_ok = this.data.liverFunctionOk == 1 ? "":"肝功能异常,"
     var shen_ok =  this.data.kidneyFunctionOk == 1 ? "":"肾功能异常,"
     var allergyHi = this.data.allergyHistory == "" ? '' : this.data.allergyHistory + ','
     this.data.his_summary = disText + allergyHi + familyText + gan_ok + shen_ok + this.data.feedText
