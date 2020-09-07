@@ -1299,18 +1299,19 @@ public class MpDistributionService extends ShopBaseService{
 
             // 返利金额-成本价保护
             RebateRatioVo rebateRatioVo = mpds.goodsRebateInfo(goodsListMpBo.getGoodsId(), goodsListMpBo.getSortId(), goodsListMpBo.getCatId(), userId);
-            BigDecimal highRebate = rebateRatioVo.getHighFirstRebatePrice();
-            if(rebateRatioVo.getHighDirectlyRebatePrice().compareTo(rebateRatioVo.getHighIndirectRebatePrice()) > 0){
-                if(rebateRatioVo.getHighDirectlyRebatePrice().compareTo(rebateRatioVo.getHighFirstRebatePrice()) > 0){
-                    highRebate = rebateRatioVo.getHighDirectlyRebatePrice();
+            if(rebateRatioVo!=null){
+                BigDecimal highRebate = rebateRatioVo.getHighFirstRebatePrice();
+                if(rebateRatioVo.getHighDirectlyRebatePrice().compareTo(rebateRatioVo.getHighIndirectRebatePrice()) > 0){
+                    if(rebateRatioVo.getHighDirectlyRebatePrice().compareTo(rebateRatioVo.getHighFirstRebatePrice()) > 0){
+                        highRebate = rebateRatioVo.getHighDirectlyRebatePrice();
+                    }
+                }else{
+                    if(rebateRatioVo.getHighIndirectRebatePrice().compareTo(rebateRatioVo.getHighFirstRebatePrice()) > 0){
+                        highRebate = rebateRatioVo.getHighIndirectRebatePrice();
+                    }
                 }
-            }else{
-                if(rebateRatioVo.getHighIndirectRebatePrice().compareTo(rebateRatioVo.getHighFirstRebatePrice()) > 0){
-                    highRebate = rebateRatioVo.getHighIndirectRebatePrice();
-                }
+                recommendGoodsVo.setHighRebate(highRebate);
             }
-            recommendGoodsVo.setHighRebate(highRebate);
-
             // 判断是否当前商品收藏状态
             recommendGoodsVo.setIsCollection(checkCollection(userId, goodsListMpBo.getGoodsId()));
 

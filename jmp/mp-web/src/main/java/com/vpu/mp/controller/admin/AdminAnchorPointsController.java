@@ -39,5 +39,13 @@ public class AdminAnchorPointsController  extends AdminBaseController {
         return success(anchorPointsService.list(param));
     }
 
+    /**
+     * 获取事件和参数
+     * @return
+     */
+    @PostMapping("/api/admin/anchor/points/event/key/map")
+    public JsonResult eventKeyMap(){
+        return success(anchorPointsService.eventKeyMap());
+    }
 
 }

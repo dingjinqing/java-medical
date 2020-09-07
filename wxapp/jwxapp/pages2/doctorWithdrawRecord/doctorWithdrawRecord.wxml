@@ -1,10 +1,10 @@
 <wxs module="tool">
   var getStatus = function(status){
     var statusName = {
-      '1':'待审核',
-      '2':'审核未通过',
-      '3':'审核通过待出账',
-      '4':'已到账'
+      '1':'处理中',
+      '2':'处理中',
+      '3':'处理中',
+      '4':'已提现'
     }
     return statusName[''+status]
   }

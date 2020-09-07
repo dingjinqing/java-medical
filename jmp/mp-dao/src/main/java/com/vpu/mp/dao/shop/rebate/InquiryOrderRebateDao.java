@@ -3,6 +3,7 @@ package com.vpu.mp.dao.shop.rebate;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderRebateDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRebateRecord;
 import com.vpu.mp.service.pojo.shop.rebate.*;
@@ -90,6 +91,8 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      * @return
      */
     public InquiryOrderRebateVo getRebateByOrderSn(String orderSn){
-        return db().select().from(INQUIRY_ORDER_REBATE).where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn)).fetchOneInto(InquiryOrderRebateVo.class);
+        return db().select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,INQUIRY_ORDER_REBATE.asterisk()).from(INQUIRY_ORDER_REBATE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(INQUIRY_ORDER_REBATE.DOCTOR_ID))
+            .where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn)).fetchOneInto(InquiryOrderRebateVo.class);
     }
 }

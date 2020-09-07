@@ -310,7 +310,9 @@ global.wxPage({
               shareAwardId,
               showMall,
               unit,
-              deliverTemplateId // 运费模板
+              deliverTemplateId, // 运费模板
+              isMedical,
+              isRx
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -342,6 +344,8 @@ global.wxPage({
               deliverPrice,
               showSalesNumber,
               customService,
+              isMedical,
+              isRx,
               ...specParams
             }
             this.setData({

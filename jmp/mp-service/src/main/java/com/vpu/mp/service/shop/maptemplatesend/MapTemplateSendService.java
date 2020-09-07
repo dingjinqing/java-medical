@@ -216,4 +216,35 @@ public class MapTemplateSendService extends ShopBaseService {
             .type(MessageTemplateConfigConstant.STATUS_RETURN_MONEY).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
+
+    /**
+     * 新订单提醒
+     * @param param
+     */
+    public void sendNewOrderMessage(OrderNewParam param){
+        // 订阅消息
+        String[][] maData = new String[][] {
+            {param.getOrderSn()},
+            {param.getUserName()},
+            {param.getUserRemark()},
+        };
+
+        MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
+
+        // 公众号消息
+        String[][] mpData = new String[][] {
+            {param.getOrderSn()},
+            {param.getUserName()},
+            {param.getUserRemark()},
+        };
+        RabbitMessageParam param2 = RabbitMessageParam.builder()
+            .maTemplateData(
+                MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_NEW).data(data).build())
+//            .mpTemplateData(
+//                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
+            .page("pages/account/account").shopId(getShopId())
+            .userIdList(param.getUserIds())
+            .type(MessageTemplateConfigConstant.ORDER_NEW).build();
+        saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+    }
 }

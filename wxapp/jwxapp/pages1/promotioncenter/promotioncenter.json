@@ -1,3 +1,7 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "v-share": "/components/item/popup/share/index",
+    "v-poster": "/components/item/popup/poster/index",
+    "v-filter":"/pages/search/filters/index"
+  }
 }

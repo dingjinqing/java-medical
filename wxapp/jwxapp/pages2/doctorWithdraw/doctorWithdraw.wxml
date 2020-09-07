@@ -17,7 +17,7 @@
         <text bindtap="takeAllMoney">全部提现</text>
       </view>
       <view class="button" bindtap="takeMoney">
-        全部提现
+        提现
       </view>
     </view>
     <view class="tips-bottom">

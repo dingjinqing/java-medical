@@ -38,4 +38,7 @@ public class StoreAccountDo implements Serializable {
     private String    accountPasswd;
     private String    storeList;
     private Timestamp updateTime;
+    private Integer   userId;
+    private String    officialOpenId;
+    private Byte      isBind;
 }

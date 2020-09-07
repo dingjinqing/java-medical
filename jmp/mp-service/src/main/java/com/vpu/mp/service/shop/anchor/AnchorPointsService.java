@@ -7,8 +7,12 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListVo;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsParam;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPotionEventBo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 锚点
@@ -53,5 +57,9 @@ public class AnchorPointsService extends ShopBaseService {
 
     public PageResult<AnchorPointsListVo> list(AnchorPointsListParam param) {
        return anchorPointsDao.list(param);
+    }
+
+    public Map<AnchorPotionEventBo, List<String>> eventKeyMap() {
+        return AnchorPointsEvent.eventKeyMap();
     }
 }

@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOaPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.StoreTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.market.message.BindRabbitParam;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
@@ -247,7 +248,7 @@ public class ShopOfficialAccount extends MainBaseService {
 	/**
 	 * 绑定同一主体公众号和小程序到开放平台账号 ,个人账号不支持绑定
      *
-	 * @param appId
+	 * @param principalName
 	 */
 	public void bindAllSamePrincipalOpenAppId(String principalName) throws WxErrorException {
 		logger().info("传入的principalName："+principalName);
@@ -378,7 +379,7 @@ public class ShopOfficialAccount extends MainBaseService {
      *
 	 * @param appId
 	 * @param language
-	 * @param adminTokenAuthInfo
+	 * @param sysId
 	 */
 	public void batchGetUsers(String appId, String language, Integer sysId) {
 		// https://developers.weixin.qq.com/doc/offiaccount/User_Management/Getting_a_User_List.html
@@ -510,4 +511,38 @@ public class ShopOfficialAccount extends MainBaseService {
 		}
 
 	}
+
+    /**
+     * 门店后台获得公众号场景二维码
+     * @param user
+     * @param appId
+     * @return
+     * @throws WxErrorException
+     */
+    public String generateThirdPartCodeForStore(StoreTokenAuthInfo user, String appId) throws WxErrorException {
+        logger().info("传入appid为：{}",appId);
+        // 主账户是1
+        int accountAction = 3;
+        int accountId = user.storeAccountId;
+        int expireSeconds = 24 * 60 * 30 * 60 - 60;
+        //$sceneValue = $shopId.'&'.$accountAction.'&'.$accountId;
+        String sceneValue = user.loginShopId.toString() + "&" + String.valueOf(accountAction) + "&"+ String.valueOf(accountId);
+        //查看缓存中是否存了二维码
+        String key = "official_scene_ticket@"+sceneValue;
+        String string = jedis.get(key);
+        if(StringUtils.isNotEmpty(string)) {
+            logger().info("公众号 " + appId + "创建二维码,缓存中存在" +string);
+            return string;
+        }
+
+        WxMpQrcodeService qrcodeService = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getQrcodeService();
+        WxMpQrCodeTicket qrCodeCreateTmpTicket = qrcodeService.qrCodeCreateTmpTicket(sceneValue, expireSeconds);
+        // 获取的二维码ticket
+        String ticket = qrCodeCreateTmpTicket.getTicket();
+        logger().info("公众号 " + appId + "创建二维码ticket的值" + ticket);
+        String qrCodePictureUrl = qrcodeService.qrCodePictureUrl(ticket);
+        logger().info("公众号 " + appId + "通过ticket换取二维码的结果 " + qrCodePictureUrl);
+        jedis.set(key, qrCodePictureUrl, expireSeconds);
+        return qrCodePictureUrl;
+    }
 }

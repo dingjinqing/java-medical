@@ -44,7 +44,7 @@ public interface PrescriptionConstant {
     /**
      * 处方号前缀
      */
-    public static final String PRESCRIPTION_CODE_PREFIX="P";
+    public static final String PRESCRIPTION_CODE_PREFIX="C";
     /**
      * 默认过期时间
      */

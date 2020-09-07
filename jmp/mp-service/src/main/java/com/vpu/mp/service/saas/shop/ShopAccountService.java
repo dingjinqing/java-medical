@@ -39,6 +39,7 @@ import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 
 public class ShopAccountService extends MainBaseService {
 	private static final String MAIN_ACCOUNT_TYPE = "1";
+	private static final String STORE_ACCOUNT_TYPE = "3";
 	private static final int QR_SCENE_EVENT_ARR_LEN = 3;
 	@Autowired
 	protected JedisManager jedis;
@@ -230,7 +231,12 @@ public class ShopAccountService extends MainBaseService {
 			Integer accountId=Integer.parseInt(split[2]);
 			Record shopInfo = saas.shop.getShop(shopId);
 			if(shopInfo!=null) {
-				if(MAIN_ACCOUNT_TYPE.equals(split[1])) {
+			    if (STORE_ACCOUNT_TYPE.equals(split[1])) {
+                    if(saas.shop.storeAccount.getOneInfo(accountId)!=null) {
+                        saas.shop.storeAccount.upateBind(accountId, openId, (byte)1);
+                        return true;
+                    }
+                } else if(MAIN_ACCOUNT_TYPE.equals(split[1])) {
 					//主账户
 					if(getAccountInfoForId(accountId)!=null) {
 						//数据存在

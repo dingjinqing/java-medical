@@ -13,14 +13,14 @@
       </view>
       <view class="info-content">
         <view class="info-item">
-          <image src="http://medicaldevimg.weipubao.cn/upload/965554/image/20200812/9CVLWuMhA3q0KQAyDUUX.png"></image>
+          <image src="{{imageUrl}}image/wxapp/withdraw_icon1.png"></image>
           <view class="info-text">
             <text class="info-tips">累计提现</text>
             <text class="info-money">{{accruingWithDrawCash}}</text>
           </view>
         </view>
         <view class="info-item">
-          <image src="http://medicaldevimg.weipubao.cn/upload/965554/image/20200812/9CVLWuMhA3q0KQAyDUUX.png"></image>
+          <image src="{{imageUrl}}image/wxapp/withdraw_icon2.png"></image>
           <view class="info-text">
             <text class="info-tips">待提现</text>
             <text class="info-money">{{waitWithDrawCash}}</text>

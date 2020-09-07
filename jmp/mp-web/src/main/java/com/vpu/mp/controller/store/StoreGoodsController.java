@@ -21,6 +21,7 @@ public class StoreGoodsController extends StoreBaseController{
 
     @PostMapping("/api/store/goods/list")
     public JsonResult getGoodsPageList(@RequestBody StoreGoodsListQueryParam param){
+        param.setLimitedStoreIds(storeAuth.user().getStoreIds());
         PageResult<StoreGoodsListQueryVo> goodsPageList = storeGoodsService.getGoodsPageList(param);
         return success(goodsPageList);
     }
