@@ -130,6 +130,7 @@ public class PatientService extends BaseShopConfigService{
         for (PatientOneParam patient : patientList) {
             patient.setId(patient.getPatientId());
             getPatientDiseaseStr(patient,diseaseMap);
+            patient.setCountPrescription(prescriptionDao.countPrescriptionByPatient(patient.getId()));
         }
         return patientList;
     }
