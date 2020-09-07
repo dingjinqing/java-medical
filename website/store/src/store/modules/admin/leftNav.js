@@ -10,7 +10,7 @@ const leftNav = {
       console.log(state.admin_leftVav_flag)
     },
     MENU_DATA: (state, params) => {
-      console.log(params)
+      localStorage.setItem('showMenuData', JSON.stringify(params))
       state.showMenuData = params
     }
   },

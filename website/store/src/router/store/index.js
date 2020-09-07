@@ -57,9 +57,9 @@ const routes = [
               meta: 'saleOutGoods'
             },
             component: () =>
-                import(
-                  '@/view/admin/index/leftNavComponents/store/goods/saleOutGoodsList'
-                )
+              import(
+                '@/view/admin/index/leftNavComponents/store/goods/saleOutGoodsList'
+              )
           },
           // 门店订单
           {
@@ -74,6 +74,20 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/store/order/orderList'
               )
           },
+          // 订单详情
+          {
+            path: '/admin/store/order/info',
+            name: 'orderInfo',
+            meta: {
+              crumbTitle: 'router.orderInfo',
+              meta: 'storeOrder',
+              category: 'storeOrder'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/store/order/orderInfo'
+              )
+          },
           // 自提订单
           {
             path: '/admin/store/order/selfPickUpOrder',
@@ -84,7 +98,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/store/order/selfPickUpOrder'
+                '@/view/admin/index/leftNavComponents/store/order/orderList'
               )
           },
           // 同城配送
@@ -97,7 +111,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/store/order/intraCityOrder'
+                '@/view/admin/index/leftNavComponents/store/order/orderList'
               )
           },
           // 售后订单
@@ -111,6 +125,20 @@ const routes = [
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/store/order/afterSaleOrder'
+              )
+          },
+          // 退款申请详情
+          {
+            path: '/admin/store/order/afterSale/info',
+            name: 'afterSaleInfo',
+            meta: {
+              crumbTitle: 'router.afterSaleInfo',
+              meta: 'storeOrder',
+              category: 'afterSale'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/store/order/afterSaleOrderInfo'
               )
           },
           // 店员列表

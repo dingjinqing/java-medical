@@ -119,14 +119,14 @@ module.exports = {
 				<input class="search-input" placeholder="搜索药品" placeholder-style="color:#999;font-size:28rpx;" bindconfirm="searchDialogGoods" value="{{goodsName}}"></input>
 			</view>
 		</view>
-		<view class="goods-content">
+		<scroll-view class="goods-content" scroll-y bindscrolltolower="changePage">
 			<block wx:for="{{dialogGoodsList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
 				<block wx:for="{{pageItem}}" wx:for-item="goodsItem" wx:key="id" wx:for-index="itemIndex">
 					<v-single-col-goods bindcartChange="cartChange" goods-data="{{goodsItem}}" is-select enable-num-edit custom-control-num="{{true}}"  bindcartNumChange="cartNumChange" bindcustomCartNum="customCartNum" bindtoggleSelect="toggleSelect"/>
-					<view class="line" wx:if="{{index !== goodsList.length - 1}}"></view>
+					<view class="line" wx:if="{{itemIndex !== pageItem.length - 1}}"></view>
 				</block>
 			</block>
-		</view>
+		</scroll-view>
 		<view class="dialog-footer-content">
 			<view class="footer">
 				<view class="button" bindtap="confirmGoods">添加</view>
