@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.order.inquiry.vo;
 
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderRebateDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateVo;
 import lombok.Data;

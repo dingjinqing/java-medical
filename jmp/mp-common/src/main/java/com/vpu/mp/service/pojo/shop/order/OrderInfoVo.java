@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
@@ -108,5 +109,6 @@ public class OrderInfoVo extends OrderListInfoVo {
     private List<PrescriptionDo> prescriptionDoList;
     private List<PrescriptionDo> prescriptionOldDoList;
     private UserPatientDetailVo patientInfo;
+    private List<PrescriptionItemDo> prescriptionItemList;
 
 }
