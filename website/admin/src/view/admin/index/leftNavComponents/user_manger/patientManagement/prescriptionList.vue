@@ -33,13 +33,7 @@
           </div>
           <div class="filters_item">
             <span class="fil_span">时间筛选：</span>
-            <el-select
-              v-model="timeSelect"
-              size="small"
-              clearable
-              @change="dateChangeHandler"
-              class="timeSelect"
-            >
+            <el-select v-model="timeSelect" size="small" class="timeSelect">
               <el-option
                 v-for="item in timeRange"
                 :key="item.value"
@@ -50,10 +44,10 @@
             <el-date-picker
               v-if="timeSelect === 0"
               v-model="timeValue"
-              type="daterange"
+              type="datetimerange"
               size="small"
-              value-format="yyyyMMdd"
-              @change="changeDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']"
               range-separator="-"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -139,7 +133,28 @@ export default {
   components: { pagination },
   watch: {
     lang () {
-      this.timeRange = this.$t('tradesStatistics.timeRange')
+      // this.timeRange = this.$t('tradesStatistics.timeRange')
+    },
+    timeSelect (val) {
+      let end = new Date()
+      let start = new Date()
+      switch (val) {
+        case -1:
+          start = ''
+          end = ''
+          break
+        case 1:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
+          break
+        case 2:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+          break
+        case 3:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+          break
+      }
+      this.queryParams.diagnoseStartTime = start
+      this.queryParams.diagnoseEndTime = end
     }
   },
   data () {
@@ -147,8 +162,14 @@ export default {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      timeSelect: 1,
-      timeRange: this.$t('tradesStatistics.timeRange'),
+      timeSelect: -1,
+      timeRange: [
+        { value: -1, label: '全部' },
+        { value: 1, label: '最新1天' },
+        { value: 2, label: '最新7天' },
+        { value: 3, label: '最新30天' },
+        { value: 4, label: '自定义' }
+      ],
       startDate: {
         year: '',
         month: '',
@@ -202,13 +223,13 @@ export default {
       })
     },
     // 选择时间段
-    dateChangeHandler (time) {
-      console.log(time)
-      if (time !== 0) {
-        this.getDateValue(time)
-        // this.initDataList()
-      }
-    },
+    // dateChangeHandler (time) {
+    //   console.log(time)
+    //   if (time !== 0) {
+    //     this.getDateValue(time)
+    //     // this.initDataList()
+    //   }
+    // },
     // 自定义时间
     changeDate () {
       this.queryParams.diagnoseStartTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
