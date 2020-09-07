@@ -52,6 +52,12 @@
 				</view>
 				<view class="item_text">处方列表</view>
 			</view>
+			<view class="item" bindtap="viewWithdraw">
+				<view class="item_has_num">
+					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_img3.png"></image>
+				</view>
+				<view class="item_text">服务提现</view>
+			</view>
 		</view>
 
 
