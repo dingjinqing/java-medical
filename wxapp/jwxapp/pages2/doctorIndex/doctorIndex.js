@@ -196,6 +196,9 @@ global.wxPage({
       status
     })}`)
   },
+  viewWithdraw(){
+    util.jumpLink(`pages2/serviceWithdraw/serviceWithdraw`)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
