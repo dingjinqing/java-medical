@@ -8,12 +8,12 @@
             <el-input
               v-model="queryParams.prescriptionNos"
               size="small"
-              style="width:190px;"
+              style="width: 190px"
               placeholder="请输入患者处方号"
             >
             </el-input>
           </div>
-          <div class="filters_item ">
+          <div class="filters_item">
             <span class="fil_span">医师姓名：</span>
             <el-select
               v-model="queryParams.doctorName"
@@ -22,10 +22,7 @@
               class="default_input"
               filterable
             >
-              <el-option
-                label="全部"
-                value=" "
-              ></el-option>
+              <el-option label="全部" value=" "></el-option>
               <el-option
                 v-for="item in doctorList"
                 :key="item.name"
@@ -33,7 +30,6 @@
                 :value="item.name"
               ></el-option>
             </el-select>
-
           </div>
           <div class="filters_item">
             <span class="fil_span">时间筛选：</span>
@@ -52,7 +48,7 @@
               ></el-option>
             </el-select>
             <el-date-picker
-              v-if="timeSelect===0"
+              v-if="timeSelect === 0"
               v-model="timeValue"
               type="daterange"
               size="small"
@@ -63,58 +59,59 @@
               end-placeholder="结束日期"
             >
             </el-date-picker>
-            <span class="choosed_time">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+            <span class="choosed_time"
+              >{{ this.startDate.year }}年{{ this.startDate.month }}月{{
+                this.startDate.day
+              }}日 - {{ this.endDate.year }}年{{ this.endDate.month }}月{{
+                this.endDate.day
+              }}日</span
+            >
           </div>
           <div class="btn_wrap">
-            <el-button
-              type='primary'
-              size='small'
-              @click="initDataList"
-            >搜索</el-button>
+            <el-button type="primary" size="small" @click="initDataList"
+              >搜索</el-button
+            >
           </div>
         </div>
       </div>
       <div class="table_box">
         <el-table
-          v-loading='loading'
-          :data='tableData'
-          style="width:100%"
+          v-loading="loading"
+          :data="tableData"
+          style="width: 100%"
           border
           :header-cell-style="{
-              'background-color':'#f5f5f5',
-              'text-align':'center',
-              'border':'none',
-              'color': '#000'
-            }"
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
+            color: '#000',
+          }"
           :cell-style="{
-              'text-align':'center'
-            }"
+            'text-align': 'center',
+          }"
         >
           <el-table-column
-            prop='prescriptionCode'
-            label='处方号'
-          ></el-table-column>
-          <el-table-column
-            prop='departmentName'
-            label='科室名称'
+            prop="prescriptionCode"
+            label="处方号"
           ></el-table-column>
            <el-table-column
             prop='doctorCode'
             label='医师Code'
           ></el-table-column>
           <el-table-column
-            prop='doctorName'
-            label='医师名称'
+            prop="departmentName"
+            label="科室名称"
+          ></el-table-column>
+          <el-table-column prop="doctorName" label="医师名称"></el-table-column>
+          <el-table-column
+            prop="diagnosisName"
+            label="疾病名称"
           ></el-table-column>
           <el-table-column
-            prop='diagnosisName'
-            label='疾病名称'
+            prop="diagnoseTime"
+            label="就诊时间"
           ></el-table-column>
-          <el-table-column
-            prop='diagnoseTime'
-            label='就诊时间'
-          ></el-table-column>
-          <el-table-column label='操作'>
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
@@ -123,16 +120,15 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.prescriptionCode)'>查看详情</a>
+                  <a @click="handleSeeMessage(scope.row.prescriptionCode)"
+                    >查看详情</a
+                  >
                 </el-tooltip>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
+        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
       </div>
     </div>
   </div>
@@ -211,9 +207,10 @@ export default {
     },
     // 选择时间段
     dateChangeHandler (time) {
+      console.log(time)
       if (time !== 0) {
         this.getDateValue(time)
-        this.initDataList()
+        // this.initDataList()
       }
     },
     // 自定义时间
@@ -226,7 +223,6 @@ export default {
       this.endDate.year = this.timeValue[1].substring(0, 4)
       this.endDate.month = this.timeValue[1].substring(4, 6)
       this.endDate.day = this.timeValue[1].substring(6, 8)
-      this.initData()
     },
     getDateValue (unit) {
       getDate(unit).then(res => {
@@ -239,7 +235,6 @@ export default {
           this.endDate.day = res.content.endTime.split('-')[2]
           this.queryParams.diagnoseStartTime = res.content.startTime + ' 00:00:00'
           this.queryParams.diagnoseEndTime = res.content.endTime + ' 00:00:00'
-          this.initData()
         }
       }).catch(err => console.log(err))
     },
