@@ -54,7 +54,7 @@
 			</view>
 			<view class="item" bindtap="viewWithdraw">
 				<view class="item_has_num">
-					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_img1.png"></image>
+					<image class="item_img" src="{{imageUrl}}/image/wxapp/doctor_index_img3.png"></image>
 				</view>
 				<view class="item_text">服务提现</view>
 			</view>
