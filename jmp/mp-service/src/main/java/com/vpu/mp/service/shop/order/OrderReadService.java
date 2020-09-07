@@ -273,7 +273,7 @@ public class OrderReadService extends ShopBaseService {
 		//查询出全部订单按照主订单分组，正常订单的key为orderSn
 		Map<String, List<OrderListInfoVo>> allOrder = orderInfo.getOrders(orderSn.getDataList());
 		//构造展示商品的订单:MainOrderCount.count=1的可能为正常订单或处于未子订单未被拆分,>1的为已经拆分
-		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>();
+		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>(allOrder.size());
 		//主订单或正常订单
 		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(orderSn.getDataList().size());
 		//现子订单数>0的主订单
@@ -801,11 +801,15 @@ showManualReturn(vo);
 		return order;
 	}
 
+    /**
+     * 订单添加退款信息
+     * @param order 订单入参
+     */
 	private void returnOrderInfo(OrderInfoMpVo order) {
 		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)||order.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED)){
 			List<ReturnOrderListMp> returnOrderListMps = returnOrderDao.listByOrderSn(order.getOrderSn());
-			returnOrderListMps.forEach(itme->{
-				itme.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(itme.getReasonType().intValue()));
+			returnOrderListMps.forEach(item->{
+                item.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(item.getReasonType().intValue()));
 			});
 			order.setReturnOrderList(returnOrderListMps);
 		}
@@ -927,7 +931,7 @@ showManualReturn(vo);
 	 * 延长收货
 	 * @return
 	 */
-	public int getExtendReceiveDays() {
+	public Integer getExtendReceiveDays() {
 		Byte switchFlag = trade.getExtendReceiveGoods();
 		if(switchFlag == 0) {
 			return 0;
