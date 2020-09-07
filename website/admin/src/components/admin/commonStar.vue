@@ -16,12 +16,15 @@
         class="star_line"
         :style="blackStyle"
       >
-        <span
-          class="star"
-          :style="starStyle"
-          v-for="star in total"
-          :key="star.index"
-        >★</span>
+      <div style="display:flex;height:auto;">
+              <span
+                class="star"
+                :style="starStyle"
+                v-for="star in total"
+                :key="star.index"
+              >★</span>
+      </div>
+
       </div>
     </div>
   </div>

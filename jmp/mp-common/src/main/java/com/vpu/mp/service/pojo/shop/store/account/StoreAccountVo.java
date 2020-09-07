@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.store.account;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.vpu.mp.common.pojo.main.table.StoreAccountDo;
 import lombok.Data;
 
 /**
@@ -10,19 +11,21 @@ import lombok.Data;
  */
 @Data
 public class StoreAccountVo {
-	private Integer accountId;
-	private Integer shopId;
-	private Integer sysId;
-	private String mobile;
-	private String accountName;
-	private Timestamp createTime;
-	private Byte accountType;
-	private Byte status;
-	private Byte delFlag;
-	private String storeList;
-	private Timestamp updateTime;
-
+    private Integer   accountId;
+    private Integer   shopId;
+    private Integer   sysId;
+    private String    mobile;
+    private String    accountName;
+    private Timestamp createTime;
+    private Byte      accountType;
+    private Byte      status;
+    private Byte      delFlag;
+    private String    accountPasswd;
+    private String    storeList;
+    private Timestamp updateTime;
+    private Integer   userId;
+    private String    officialOpenId;
+    private Byte      isBind;
 	private Integer storeNum;
 	private List<Integer> storeLists;
-	private String accountPasswd;
 }

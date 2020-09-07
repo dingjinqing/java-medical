@@ -8,6 +8,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountEditParam;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +44,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 	public static final Byte NOBIND = 0;
 	public static final Byte ONE = 1;
 	public static final Byte TWO = 2;
+	public static final Byte THREE = 3;
 
 	@Value(value = "${official.appId}")
 	private String bindAppId;
@@ -61,7 +64,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 	 */
 	public void thirdPartService(OrderInfoRecord order) {
 		try {
-			CanSendVo canService = isCanService(order.getShopId());
+			CanSendVo canService = isCanService(order.getShopId(),order.getStoreId());
 			if (canService.getCanSend()) {
 				sendMsg(canService, order);
 			}
@@ -75,6 +78,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		ShopAccountRecord accountInfo = param.getAccountInfo();
 		List<String> bindOpenId = new ArrayList<String>();
 		List<ShopChildAccountPojo> subccountList = param.getSubccountList();
+		List<StoreAccountVo> storeAccountList = param.getStoreAccountList();
 		if (accountInfo != null && accountInfo.getIsBind().equals(BIND)
 				&& !bindOpenId.contains(accountInfo.getOfficialOpenId())) {
 			bindOpenId.add(accountInfo.getOfficialOpenId());
@@ -86,6 +90,11 @@ public class ThirdPartyMsgServices extends MainBaseService {
 			logger().info("子账户发送");
 			sendSingleMessage(order, account.getOfficialOpenId(),TWO,account.getAccountId());
 		}
+
+        for (StoreAccountVo storeAccount : storeAccountList) {
+            logger().info("子账户发送");
+            sendSingleMessage(order, storeAccount.getOfficialOpenId(),THREE,storeAccount.getAccountId());
+        }
 	}
 
 	private boolean sendSingleMessage(OrderInfoRecord order, String officialOpenId,Byte accountAction,Integer accountId) {
@@ -134,7 +143,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		return true;
 	}
 
-	private CanSendVo isCanService(Integer shopId) {
+	private CanSendVo isCanService(Integer shopId,Integer storeId) {
 		CanSendVo vo = new CanSendVo();
 		boolean canSend = false;
 		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
@@ -149,6 +158,10 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		if (subAccountList.size() > 0) {
 			canSend = true;
 		}
+		List<StoreAccountVo> storeAccountList = saas.shop.storeAccount.getStoreAccountByBindThird(shopId,storeId);
+        if (storeAccountList.size() > 0) {
+            canSend = true;
+        }
 		if (canSend) {
 			List<Integer> list = db().select(DSL.count(THIRD_PARTY_SERVICES.ACCOUNT_ID)).from(THIRD_PARTY_SERVICES)
 					.where(THIRD_PARTY_SERVICES.SHOP_ID.eq(shopId)
@@ -164,7 +177,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 				canSend = false;
 			}
 		}
-		vo = new CanSendVo(canSend, shopAccount, subAccountList);
+		vo = new CanSendVo(canSend, shopAccount, subAccountList,storeAccountList);
 		return vo;
 	}
 }

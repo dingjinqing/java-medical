@@ -82,8 +82,11 @@ public enum SubscribeMessageConfig {
     order_deliver_47(SubcribeTemplateCategory.ORDER_DELIVER, 47, 10127, "发货成功提醒",
         "订单编号{{character_string1.DATA}}发货状态{{phrase2.DATA}}发货日期{{time3.DATA}}", new int[] { 1, 2, 3 }),
 
-    order_refund_success_47(SubcribeTemplateCategory.ORDER_DELIVER, 47, 4728, "退款成功通知",
-        "订单号{{character_string1.DATA}}退款时间{{date2.DATA}}退款金额{{amount3.DATA}退款理由{{phrase4.DATA}}", new int[] { 1, 2, 3, 4 });
+    order_refund_success_47(SubcribeTemplateCategory.REFUND_RESULT, 47, 4728, "退款成功通知",
+        "订单号{{character_string1.DATA}}退款时间{{date2.DATA}}退款金额{{amount3.DATA}退款理由{{phrase4.DATA}}", new int[] { 1, 2, 3, 4 }),
+
+    order_new_47(SubcribeTemplateCategory.ORDER_NEW, 47, 5208, "新订单提醒",
+        "订单编号{{character_string1.DATA}}客户昵称{{name2.DATA}}客户备注{{thing3.DATA}}", new int[] { 1, 2, 3 });
     /** 私立医疗机构 47结束 */
 
 	/** 模板名称，小程序端发送名称找对应要用那个 */
