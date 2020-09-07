@@ -1,16 +1,20 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.Tables.SHOP;
-import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
-
-import java.util.*;
-
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.dao.shop.store.StoreDao;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.main.tables.records.StoreAccountRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountEditParam;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountParam;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
+import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListPage;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import jodd.util.StringUtil;
 import org.jooq.Condition;
@@ -20,18 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.main.tables.records.StoreAccountRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.pojo.shop.store.account.StoreAccountEditParam;
-import com.vpu.mp.service.pojo.shop.store.account.StoreAccountParam;
-import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
-import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListPage;
+import java.util.*;
+
+import static com.vpu.mp.db.main.Tables.SHOP;
+import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
 
 /**
- * 
+ *
  * @author zhaojianqiang
  * @time 下午4:58:30
  */
@@ -79,7 +78,7 @@ public class StoreAccountService extends MainBaseService {
 
 	/**
 	 * 根据id获取
-	 * 
+	 *
 	 * @param accountId
 	 * @return
 	 */
@@ -99,7 +98,7 @@ public class StoreAccountService extends MainBaseService {
 		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STORE_LIST, storeList)
 				.where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
 	}
-	
+
 	public int updateStoreList(Integer accountId, Integer[] storeLists) {
 		String string = changeToString(storeLists);
 		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STORE_LIST, string)
@@ -108,7 +107,7 @@ public class StoreAccountService extends MainBaseService {
 
 	/**
 	 * 删除
-	 * 
+	 *
 	 * @param accountId
 	 * @return
 	 */
@@ -119,7 +118,7 @@ public class StoreAccountService extends MainBaseService {
 
 	/**
 	 * 更新状态
-	 * 
+	 *
 	 * @param accountId
 	 * @param status
 	 * @return
@@ -128,14 +127,14 @@ public class StoreAccountService extends MainBaseService {
 		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STATUS, status)
 				.where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
 	}
-	
+
 	protected List<Integer> changeToArray(String stores) {
 		List<Integer> list = new ArrayList<Integer>();
 		if (stores != null) {
 			if (stores.contains(DOT)) {
 				String[] split = stores.split(DOT);
 				for (String string : split) {
-					list.add(Integer.valueOf(string));						
+					list.add(Integer.valueOf(string));
 				}
 			} else {
 				list.add(Integer.valueOf(stores));
@@ -143,7 +142,7 @@ public class StoreAccountService extends MainBaseService {
 		}
 		return list;
 	}
-	
+
 	protected String changeToString(Integer[] storeList) {
 		Set<Integer> set = new LinkedHashSet<Integer>();
 		for (Integer integer : storeList) {
@@ -179,7 +178,7 @@ public class StoreAccountService extends MainBaseService {
 
 	/**
 	 * 编辑
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -245,5 +244,32 @@ public class StoreAccountService extends MainBaseService {
             storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_PW_ERROR);
         }
         return storeAuthInfoVo;
+    }
+
+    /**
+     * 获取门店登录账号信息
+     * @param storeAccountId
+     * @return
+     */
+    public StoreAccountVo getOneInfo(Integer storeAccountId){
+        return storeAccountDao.getOneInfo(storeAccountId);
+    }
+
+    public int upateBind(Integer storeAccountId, String officalOpenId, byte bind) {
+        return storeAccountDao.upateBind(storeAccountId,officalOpenId,bind);
+    }
+
+    public int updateRowBind(Integer storeAccountId,byte bind) {
+        return storeAccountDao.updateRowBind(storeAccountId,bind);
+    }
+
+    /**
+     * 获得绑定第三方公众号的账号
+     * @param shopId
+     * @param storeId
+     * @return
+     */
+    public List<StoreAccountVo> getStoreAccountByBindThird(Integer shopId, Integer storeId) {
+        return storeAccountDao.getStoreAccountByBindThird(shopId,storeId);
     }
 }

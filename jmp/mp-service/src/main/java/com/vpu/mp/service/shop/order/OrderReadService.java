@@ -14,11 +14,13 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -60,6 +62,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFail
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
@@ -242,6 +245,8 @@ public class OrderReadService extends ShopBaseService {
     private ReturnOrderDao returnOrderDao;
     @Autowired
     private OrderInfoDao orderInfoDao;
+    @Autowired
+    private PrescriptionItemDao prescriptionItemDao;
 
 	/**
 	 * 订单查询
@@ -268,7 +273,7 @@ public class OrderReadService extends ShopBaseService {
 		//查询出全部订单按照主订单分组，正常订单的key为orderSn
 		Map<String, List<OrderListInfoVo>> allOrder = orderInfo.getOrders(orderSn.getDataList());
 		//构造展示商品的订单:MainOrderCount.count=1的可能为正常订单或处于未子订单未被拆分,>1的为已经拆分
-		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>();
+		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>(allOrder.size());
 		//主订单或正常订单
 		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(orderSn.getDataList().size());
 		//现子订单数>0的主订单
@@ -430,8 +435,16 @@ public class OrderReadService extends ShopBaseService {
 			UserPatientDetailVo patientInfo = userPatientCoupleDao.getUserPatientInfo(mainOrder.getUserId(), mainOrder.getPatientId());
 			mainOrder.setPatientInfo(patientInfo);
 		}
+        //处方明细，包含处方返利信息
+        mainOrder.setPrescriptionItemList(getPrescriptionItemList(mainOrder));
 		return mainOrder;
 	}
+	private List<PrescriptionItemVo> getPrescriptionItemList(OrderInfoVo order){
+        List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(order.getOrderSn());
+        preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
+        List<PrescriptionItemVo> list=prescriptionItemDao.getByPrescriptions(preCodeList);
+        return list;
+    }
 
     private void buildOrders(List<OrderInfoVo> orders, Map<Integer, List<OrderGoodsVo>> goods, Map<String, List<ShippingInfoVo>> shippingByOrderSn, Map<String, List<OrderConciseRefundInfoVo>> refundByOrderSn, Map<Integer, Integer> returningCount) {
         for (OrderInfoVo vo : orders) {
@@ -788,11 +801,15 @@ showManualReturn(vo);
 		return order;
 	}
 
+    /**
+     * 订单添加退款信息
+     * @param order 订单入参
+     */
 	private void returnOrderInfo(OrderInfoMpVo order) {
 		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)||order.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED)){
 			List<ReturnOrderListMp> returnOrderListMps = returnOrderDao.listByOrderSn(order.getOrderSn());
-			returnOrderListMps.forEach(itme->{
-				itme.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(itme.getReasonType().intValue()));
+			returnOrderListMps.forEach(item->{
+                item.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(item.getReasonType().intValue()));
 			});
 			order.setReturnOrderList(returnOrderListMps);
 		}
@@ -914,7 +931,7 @@ showManualReturn(vo);
 	 * 延长收货
 	 * @return
 	 */
-	public int getExtendReceiveDays() {
+	public Integer getExtendReceiveDays() {
 		Byte switchFlag = trade.getExtendReceiveGoods();
 		if(switchFlag == 0) {
 			return 0;

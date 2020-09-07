@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.store.goods;
 import com.vpu.mp.common.foundation.util.Page;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
 
 /**
@@ -25,6 +25,9 @@ public class StoreGoodsListQueryParam {
 	private String keywords;
 
 	private Integer storeId;
+
+	/**用户有权限的门店id集合*/
+	private List<Integer> limitedStoreIds;
 
 	private Byte isSaleOut;
 	/**

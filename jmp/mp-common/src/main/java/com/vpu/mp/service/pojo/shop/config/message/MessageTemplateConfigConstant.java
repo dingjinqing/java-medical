@@ -79,6 +79,8 @@ public class MessageTemplateConfigConstant {
     public static final Integer CONSULTATION_ANSWER= 4003;
     /** 医生已接诊提醒*/
     public static final Integer CONSULTATION_SUCCESS= 4004;
+    /** 新订单通知*/
+    public static final Integer ORDER_NEW= 4005;
 
     public static final ShopMsgTempConfig MSG_TEMP_CONFIG = new ShopMsgTempConfig() {{
         setA(new String[]{"eZRlu9Y3zSkEi5dSgnVHij2zF-JxwADkXV9Ni_MOB0E",

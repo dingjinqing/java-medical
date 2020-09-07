@@ -11,7 +11,6 @@ import com.vpu.mp.service.pojo.shop.auth.*;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthParam;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreConstant;
 import com.vpu.mp.service.pojo.shop.store.authority.Sub;
-import com.vpu.mp.service.pojo.store.StoreMenuParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -100,7 +99,9 @@ public class StoreMenuService extends MainBaseService {
      */
     private static Boolean includeEname(List<?> eNameList, String reqEnName) {
         for (Object allEname : eNameList) {
-            match(String.valueOf(allEname), reqEnName);
+            if (match(String.valueOf(allEname), reqEnName)) {
+                return true;
+            }
         }
         return false;
     }

@@ -10,12 +10,15 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.overview.LoginRecordVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.StoreTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.saas.shop.ShopChildAccountService;
 import com.vpu.mp.service.saas.shop.ShopOfficialAccount;
+import com.vpu.mp.service.saas.shop.StoreAccountService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +59,9 @@ public class ShopOverviewService extends MainBaseService {
 
     @Autowired
     QrCodeService qrCodeService;
+
+    @Autowired
+    public StoreAccountService storeAccountService;
 
     /**
      * 绑定解绑
@@ -306,5 +312,57 @@ public class ShopOverviewService extends MainBaseService {
     public String getShopVersion(Integer shopId) {
         String level = db().select(SHOP.SHOP_TYPE).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(String.class);
         return level;
+    }
+
+    /**
+     * 绑定解绑
+     */
+    public boolean bindUnBindOfficialForStore(String act, StoreTokenAuthInfo user, Integer accountId) {
+        if (StringUtils.isEmpty(act) || user == null) {
+            return false;
+        }
+        byte isBind = 0;
+        String bind = "bind";
+        if (bind.equals(act)) {
+            // 绑定
+            isBind = 1;
+        }
+        String delBind = "del_bind";
+        if (delBind.equals(act)) {
+            // 解绑
+            isBind = 0;
+        }if(!(bind.equals(act)|| delBind.equals(act))) {
+            logger().debug("绑定解绑传入act参数错误："+act);
+            return false;
+        }
+        int num = 0;
+        //主账户在子账户权限管理处操作子账户解绑绑定
+        num = saas.shop.storeAccount.updateRowBind(accountId, isBind);
+        if (num > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取绑定/解绑状态  概览使用
+     */
+    public BindofficialVo getbindUnBindStatusUseByOverForStore(StoreTokenAuthInfo user,String bindAppId){
+        BindofficialVo bindofficialVo=new BindofficialVo();
+        String officialOpenId = null;
+        String nickname=null;
+        Byte isBind=0;
+        StoreAccountVo storeAccountVo = saas.shop.storeAccount.getOneInfo(user.getStoreAccountId());
+        officialOpenId = storeAccountVo.getOfficialOpenId();
+        if (StringUtils.isNotEmpty(officialOpenId)) {
+            // 绑定过公众号
+            // shopId找auth_shop
+            MpOfficialAccountUserRecord user2 = saas.shop.mpOfficialAccountUserService.getUser(bindAppId,officialOpenId);
+            nickname = user2.getNickname();
+        }
+        bindofficialVo.setOfficialOpenId(officialOpenId);
+        bindofficialVo.setIsBind(isBind);
+        bindofficialVo.setNickName(nickname);
+        return bindofficialVo;
     }
 }

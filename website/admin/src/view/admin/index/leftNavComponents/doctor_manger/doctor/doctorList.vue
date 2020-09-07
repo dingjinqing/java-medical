@@ -61,7 +61,7 @@
           prop="hospitalCode"
           label="医师院内编号"
         ></el-table-column>
-        <el-table-column label="名称">
+        <el-table-column label="姓名">
           <template slot-scope="scope">
             <div
               class="doc_name_url"
@@ -76,9 +76,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="年龄/从业时间">
+        <el-table-column label="年龄">
           <template slot-scope="scope">
-            <span> {{scope.row.age}}/{{scope.row.workTime}}</span>
+            <span> {{scope.row.age}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -123,13 +123,14 @@
         ></el-table-column>
         <el-table-column label="接诊量">
           <template v-slot='scope'>
-            <span>{{scope.row.consultationNumber}}</span>
             <a
               href="javaScript:void(0);"
               class="same_btn"
               style="margin:0px;display:block"
               @click="toAdvistory(scope.row.name)"
-            >查看</a>
+              v-if="scope.row.consultationNumber > 0"
+            >{{scope.row.consultationNumber}}</a>
+            <span v-else>0</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -379,12 +380,12 @@ export default {
       line-height: 32px;
       margin-left: -15px;
       .filters_item {
-        width: 270px;
+        // width: 270px;
         display: flex;
         justify-content: flex-end;
         margin-left: 15px;
         > span {
-          width: 140px;
+          // width: 140px;
           font-size: 14px;
           text-align: right;
         }

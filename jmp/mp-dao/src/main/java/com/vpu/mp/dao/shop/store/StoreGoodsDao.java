@@ -124,6 +124,9 @@ public class StoreGoodsDao extends ShopBaseDao {
         if (param.getStoreId() != null) {
             condition = condition.and(STORE_GOODS.STORE_ID.eq(param.getStoreId()));
         }
+        if (param.getLimitedStoreIds() != null) {
+            condition = condition.and(STORE_GOODS.STORE_ID.in(param.getLimitedStoreIds()));
+        }
         if (param.getIsOnSale() != null) {
             condition = condition.and(STORE_GOODS.IS_ON_SALE.eq(param.getIsOnSale()));
         }
