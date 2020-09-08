@@ -42,7 +42,7 @@
               ></el-option>
             </el-select>
             <el-date-picker
-              v-if="timeSelect === 0"
+              v-if="timeSelect === 4"
               v-model="timeValue"
               type="datetimerange"
               size="small"
@@ -53,7 +53,9 @@
               end-placeholder="结束日期"
             >
             </el-date-picker>
-            <span class="choosed_time"
+            <span
+              class="choosed_time"
+              v-if="timeSelect !== -1 && timeSelect !== 4"
               >{{ this.startDate.year }}年{{ this.startDate.month }}月{{
                 this.startDate.day
               }}日 - {{ this.endDate.year }}年{{ this.endDate.month }}月{{
@@ -127,7 +129,6 @@
 <script>
 import pagination from '@/components/admin/pagination/pagination'
 import { getPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
-import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
 export default {
   components: { pagination },
@@ -152,9 +153,25 @@ export default {
         case 3:
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
           break
+        case 4:
+          start = this.timeValue[0] || ''
+          end = this.timeValue[1] || ''
+          break
       }
-      this.queryParams.diagnoseStartTime = start
-      this.queryParams.diagnoseEndTime = end
+      this.queryParams.diagnoseStartTime = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()} 00:00:00`
+      this.queryParams.diagnoseEndTime = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()} 23:59:59`
+      this.startDate.year = start.getFullYear()
+      this.startDate.month = start.getMonth() + 1
+      this.startDate.day = start.getDate()
+      this.endDate.year = end.getFullYear()
+      this.endDate.month = end.getMonth() + 1
+      this.endDate.day = end.getDate()
+    },
+    timeValue (val) {
+      if (this.timeSelect === 4) {
+        this.queryParams.diagnoseStartTime = val[0]
+        this.queryParams.diagnoseEndTime = val[1]
+      }
     }
   },
   data () {
@@ -222,39 +239,6 @@ export default {
         console.log(error)
       })
     },
-    // 选择时间段
-    // dateChangeHandler (time) {
-    //   console.log(time)
-    //   if (time !== 0) {
-    //     this.getDateValue(time)
-    //     // this.initDataList()
-    //   }
-    // },
-    // 自定义时间
-    changeDate () {
-      this.queryParams.diagnoseStartTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
-      this.queryParams.diagnoseEndTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
-      this.startDate.year = this.timeValue[0].substring(0, 4)
-      this.startDate.month = this.timeValue[0].substring(4, 6)
-      this.startDate.day = this.timeValue[0].substring(6, 8)
-      this.endDate.year = this.timeValue[1].substring(0, 4)
-      this.endDate.month = this.timeValue[1].substring(4, 6)
-      this.endDate.day = this.timeValue[1].substring(6, 8)
-    },
-    getDateValue (unit) {
-      getDate(unit).then(res => {
-        if (res.error === 0) {
-          this.startDate.year = res.content.startTime.split('-')[0]
-          this.startDate.month = res.content.startTime.split('-')[1]
-          this.startDate.day = res.content.startTime.split('-')[2]
-          this.endDate.year = res.content.endTime.split('-')[0]
-          this.endDate.month = res.content.endTime.split('-')[1]
-          this.endDate.day = res.content.endTime.split('-')[2]
-          this.queryParams.diagnoseStartTime = res.content.startTime + ' 00:00:00'
-          this.queryParams.diagnoseEndTime = res.content.endTime + ' 00:00:00'
-        }
-      }).catch(err => console.log(err))
-    },
     handleSeeMessage (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
@@ -288,7 +272,7 @@ export default {
   // },
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
-    this.getDateValue(1)
+    // this.getDateValue(1)
     this.getDoctor({})
     this.initDataList()
   },
