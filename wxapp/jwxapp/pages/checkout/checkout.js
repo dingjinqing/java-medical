@@ -565,18 +565,21 @@ global.wxPage({
         let res = await this.getLocationData()
         this.data.params.lat = res.latitude
         this.data.params.lng = res.longitude
+        console.log(this.data.params.lat,this.data.params.lng)
         util.api('/api/wxapp/order/get/store', res => {
           if (res.error === 0) {
-            let keysList = Object.keys(res.content)
-
+            let keysList = Object.keys(res.content).sort((a,b)=>{
+              return a-b
+            })
+            console.log(keysList)
             this.setData({
               selectedStoreInfo: {
-                ...res.content[keysList[keysList.length - 1]],
-                distance: keysList[keysList.length - 1]
+                ...res.content[keysList[0]],
+                distance: keysList[0]
               },
               storeList: res.content,
               'params.deliverType': e.currentTarget.dataset.index,
-              'params.storeId': res.content[keysList[keysList.length - 1]].storeId
+              'params.storeId': res.content[keysList[0]].storeId
             })
           }
         }, {
