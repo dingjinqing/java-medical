@@ -178,9 +178,9 @@ public class OrderGoodsDao extends ShopBaseDao {
      * @param goodsId
      * @return
      */
-    public OrderGoodsDo getOrderGoodsByOrderIdGoodsId(Integer orderId,Integer goodsId){
+    public OrderGoodsDo getByOrderIdGoodsIdPrdId(Integer orderId,Integer goodsId,Integer prdId){
         return db().select().from(ORDER_GOODS).where(ORDER_GOODS.GOODS_ID.eq(goodsId))
-            .and(ORDER_GOODS.ORDER_ID.eq(orderId))
+            .and(ORDER_GOODS.ORDER_ID.eq(orderId)).and(ORDER_GOODS.PRODUCT_ID.eq(prdId))
             .fetchAnyInto(OrderGoodsDo.class);
     }
 
@@ -190,9 +190,9 @@ public class OrderGoodsDao extends ShopBaseDao {
      * @param goodsId
      * @return
      */
-    public OrderGoodsDo getOrderGoodsByPreCodeGoodsId(String prescriptionCode,Integer goodsId){
+    public OrderGoodsDo getByPreCodeGoodsIdPrdId(String prescriptionCode,Integer goodsId,Integer prdId){
         return db().select().from(ORDER_GOODS).where(ORDER_GOODS.GOODS_ID.eq(goodsId))
-            .and(ORDER_GOODS.PRESCRIPTION_CODE.eq(prescriptionCode))
+            .and(ORDER_GOODS.PRESCRIPTION_CODE.eq(prescriptionCode)).and(ORDER_GOODS.PRODUCT_ID.eq(prdId))
             .fetchAnyInto(OrderGoodsDo.class);
     }
 }

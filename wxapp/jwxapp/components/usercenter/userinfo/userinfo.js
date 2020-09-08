@@ -333,7 +333,7 @@ global.wxComponent({
       );
     },
     to_doc_index () {
-      util.jumpLink('/pages2/doctorIndex/doctorIndex', 'reLaunch')
+      util.jumpLink('/pages2/doctorIndex/doctorIndex', 'redirectTo')
     }
   },
 

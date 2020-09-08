@@ -52,7 +52,7 @@
           size="small"
         />
       </div>
-      <div class="filters_item" style="margin-left: 15px;">
+      <div class="filters_item" style="margin-left: 15px">
         <el-button type="primary" size="small" @click="search">搜索</el-button>
       </div>
 
@@ -115,7 +115,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="createTime"
+          prop="rebateTime"
           label="返利日期"
           align="center"
         ></el-table-column>

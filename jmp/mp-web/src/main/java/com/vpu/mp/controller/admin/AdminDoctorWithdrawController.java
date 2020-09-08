@@ -4,10 +4,9 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawListParam;
-import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawUpdateParam;
-import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawVo;
+import com.vpu.mp.service.pojo.shop.rebate.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +30,17 @@ public class AdminDoctorWithdrawController extends AdminBaseController{
     }
 
     /**
+     * 提现详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/api/admin/doctor/withdraw/detail")
+    public JsonResult getDetail(Integer id){
+        DoctorWithdrawDetailVo detail=shop().doctorWithdrawService.getWithdrawDetail(id);
+        return success(detail);
+    }
+
+    /**
      * 提现审核
      * @param param
      * @return
@@ -43,6 +53,17 @@ public class AdminDoctorWithdrawController extends AdminBaseController{
         } catch (MpException e) {
             return fail(e.getErrorCode());
         }
+        return success();
+    }
+
+    /**
+     * 添加提现备注
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/doctor/withdraw/desc/add")
+    public JsonResult doctorWithdrawDesc(@RequestBody DoctorWithdrawDescParam param){
+        shop().doctorWithdrawService.addDoctorWithdrawDesc(param);
         return success();
     }
 }

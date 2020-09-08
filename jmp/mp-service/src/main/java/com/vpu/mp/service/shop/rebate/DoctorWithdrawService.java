@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author yangpengcheng
@@ -82,7 +83,7 @@ public class DoctorWithdrawService extends ShopBaseService {
         transaction(() -> {
             if(RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getIsAutomaticAudit())){
                 //自动审核
-                automaticAudit(param);
+                automaticAudit(param,doctorTotalRebateVo);
             }else {
                 //手动审核
                 manualAudit(param,doctorTotalRebateVo);
@@ -107,12 +108,14 @@ public class DoctorWithdrawService extends ShopBaseService {
      * @param param
      * @throws MpException
      */
-    public void automaticAudit(DoctorWithdrawParam param) throws MpException {
+    public void automaticAudit(DoctorWithdrawParam param,DoctorTotalRebateVo doctorTotalRebateVo) throws MpException {
         DoctorOneParam doctor=doctorService.getOneInfo(param.getDoctorId());
         //提现出账
         pay2Person(param.getOrderSn(),param.getClientIp(),param.getRealName(),doctor.getUserId(),param.getType(),param.getWithdrawCash());
         param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS);
         doctorWithDrawDao.addDoctorWithdraw(param);
+        //修改可提现金额
+        doctorTotalRebateDao.updateTotalMoneyBlockedMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney());
     }
 
     /**
@@ -195,6 +198,29 @@ public class DoctorWithdrawService extends ShopBaseService {
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EX_ERROR,
                 e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
         }
+    }
+
+    /**
+     * 获取提现详情
+     * @param id
+     * @return
+     */
+    public DoctorWithdrawDetailVo getWithdrawDetail(Integer id){
+        DoctorWithdrawDetailVo detail=doctorWithDrawDao.getWithdrawDetailById(id);
+        DoctorWithdrawListParam param=new DoctorWithdrawListParam();
+        param.setDoctorId(detail.getDoctorId());
+        PageResult<DoctorWithdrawVo> withdrawList=getPageList(param);
+        detail.setWithdrawList(withdrawList);
+        return detail;
+
+    }
+
+    /**
+     * 添加提现备注
+     * @param param
+     */
+    public void addDoctorWithdrawDesc(DoctorWithdrawDescParam param){
+        doctorWithDrawDao.updateDoctorWithdrawDesc(param);
     }
 
 }

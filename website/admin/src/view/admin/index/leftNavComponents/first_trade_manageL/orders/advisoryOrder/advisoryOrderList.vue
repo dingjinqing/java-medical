@@ -344,7 +344,7 @@ export default {
     }
   }
   .btn_wrap .el-button{
-    margin: 10px 30px;
+    margin: 10px 40px;
   }
 }
 </style>

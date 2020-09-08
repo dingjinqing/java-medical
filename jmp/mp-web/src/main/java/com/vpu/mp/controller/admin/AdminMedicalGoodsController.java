@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalStoreRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
@@ -145,6 +146,11 @@ public class AdminMedicalGoodsController extends AdminBaseController{
     public JsonResult fetchExternalStoreMedicalInfo(){
          shop().medicalGoodsService.fetchExternalStoresGoodsInfo();
          return success();
+    }
+
+    @PostMapping("/api/admin/medical/store/goods/pull2")
+    public JsonResult fetchExternalStoreMedicalInfoForTest(@RequestBody MedicalGoodsExternalStoreRequestParam param){
+        return success(shop().medicalGoodsService.fetchExternalStoreTest(param));
     }
 
     @Autowired

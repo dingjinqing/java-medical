@@ -21,5 +21,7 @@ public class GoodsMedicalExternalRequestItemBo extends GoodsMedicalBaseInfo {
     private Integer state;
     private Byte isMedical = MedicalGoodsConstant.GOODS_IS_MEDICAL;
     private Byte source;
+    private Byte hisStatus;
+    private Byte storeStatus;
     private Integer lastUpdateTime;
 }

@@ -172,6 +172,7 @@ public class StoreAccountService extends MainBaseService {
         record.setAccountPasswd(Util.md5(param.getAccountPasswd()));
         record.setSysId(shop.getSysId());
         record.setShopId(shopId);
+        record.setWxNickName("");
         int insert = record.insert();
         return insert;
     }

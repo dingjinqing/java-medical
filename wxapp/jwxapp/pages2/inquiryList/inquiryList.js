@@ -108,7 +108,7 @@ global.wxPage({
       }
     }, {
       ...this.data.pageParams,
-      doctorId: this.data.doctorId
+      doctorId: this.data.filterParams.doctorId
     })
   },
 
@@ -119,7 +119,7 @@ global.wxPage({
     this.setData({
       targetStatus: type,
       'pageParams.currentPage': 1,
-      'filterParams.sessionStatus': type === '1' ? [1] : [2, 4, 5, 6]
+      'filterParams.sessionStatus': type === '1' ? [1] : [2, 3, 4, 5, 6]
     })
     if (this.data.targetStatus == 3) {
       this.getCommentList()

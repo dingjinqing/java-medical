@@ -137,6 +137,19 @@ public class GoodsAggregate {
 
 
     /**
+     * 药房拉取到的药品信息批量修改
+     * @param goodsMedicalExternalRequestItemBos
+     */
+    public void batchUpateStoreGoodsInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos){
+        List<GoodsDo> goodsDos = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
+        for (GoodsMedicalExternalRequestItemBo bo : goodsMedicalExternalRequestItemBos){
+            GoodsDo goodsDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsDoForStore(bo);
+            goodsDos.add(goodsDo);
+        }
+        goodsDao.batchUpdate(goodsDos);
+    }
+
+    /**
      * 商品删除
      * @param goodId
      */
@@ -148,6 +161,10 @@ public class GoodsAggregate {
 
     public Map<Integer, BigDecimal> mapGoodsIdToGoodsPrice(Collection<Integer> goodsIds) {
         return goodsDao.mapGoodsIdToGoodsPrice(goodsIds);
+    }
+
+    public Map<String, Integer> mapGoodsSnToGoodsId(Collection<Integer> goodsIds) {
+        return goodsDao.mapGoodsSnToGoodsId(goodsIds);
     }
 
     /**
