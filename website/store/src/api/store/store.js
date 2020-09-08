@@ -203,3 +203,25 @@ export function getOrderList (data) {
     data
   })
 }
+// 获取绑定状态
+export function getBindStatus () {
+  return service({
+    url: '/api/store/malloverview/getbindUnBindStatus',
+    method: 'get'
+  })
+}
+// 获取绑定二维码
+export function getQrCode () {
+  return service({
+    url: '/api/store/public/service/bind/getOfficialQrCode',
+    method: 'get'
+  })
+}
+// 绑定解绑接口
+export function setBind (data) {
+  return service({
+    url: '/api/store/survey/official/bind',
+    method: 'post',
+    data
+  })
+}
