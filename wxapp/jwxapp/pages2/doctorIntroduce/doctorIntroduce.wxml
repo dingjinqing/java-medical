@@ -39,7 +39,7 @@
 				</view>
 				<view>
 					<view>{{con.avgCommentStar > 0 ? con.avgCommentStar : '暂无评分'}}</view>
-					<view>用户评分</view>
+					<view>综合评分</view>
 				</view>
 			</view>
 			<image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>
