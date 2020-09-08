@@ -459,7 +459,7 @@ public class OrderReadService extends ShopBaseService {
             PrescriptionItemBo prescriptionItemBo=new PrescriptionItemBo();
 
             List<PrescriptionItemDo> list=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);
-            prescriptionItemBo.setPrescriptionItemList(list);
+            prescriptionItemBo.setItemList(list);
             prescriptionItemBo.setPrescriptionCode(preCode);
             boList.add(prescriptionItemBo);
         }
