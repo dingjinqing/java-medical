@@ -158,6 +158,7 @@ var order = {
           function (res) {
             if (res.error == 0) {
               if(page === 'orderList') self.requestList()
+              if(page === 'orderInfo') self.requestOrderInfo()
             }
           }, {
             orderId: orderId,
