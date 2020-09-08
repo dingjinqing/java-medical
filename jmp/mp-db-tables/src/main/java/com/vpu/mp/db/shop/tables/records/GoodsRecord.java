@@ -5,12 +5,14 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Goods;
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -26,7 +28,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = -2077907807;
+    private static final long serialVersionUID = -1988376424;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods.goods_id</code>.
@@ -756,6 +758,34 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         return (String) get(51);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.his_status</code>. his数据状态
+     */
+    public void setHisStatus(Byte value) {
+        set(52, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.his_status</code>. his数据状态
+     */
+    public Byte getHisStatus() {
+        return (Byte) get(52);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.store_status</code>. 药房数据状态
+     */
+    public void setStoreStatus(Byte value) {
+        set(53, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.store_status</code>. 药房数据状态
+     */
+    public Byte getStoreStatus() {
+        return (Byte) get(53);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -782,7 +812,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     /**
      * Create a detached, initialised GoodsRecord
      */
-    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig, Byte isDefaultProduct, Byte isMedical, Integer pv, Integer commentNum, Integer roomId, String storeCode) {
+    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig, Byte isDefaultProduct, Byte isMedical, Integer pv, Integer commentNum, Integer roomId, String storeCode, Byte hisStatus, Byte storeStatus) {
         super(Goods.GOODS);
 
         set(0, goodsId);
@@ -837,5 +867,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         set(49, commentNum);
         set(50, roomId);
         set(51, storeCode);
+        set(52, hisStatus);
+        set(53, storeStatus);
     }
 }
