@@ -28,7 +28,7 @@
               ></el-option>
               <el-option
                 v-for="item in doctorList"
-                :key="item.name"
+                :key="item.id"
                 :label="item.name"
                 :value="item.name"
               ></el-option>
@@ -36,7 +36,7 @@
 
           </div>
           <div class="filters_item">
-            <span class="fil_span">时间筛选：</span>
+            <span class="fil_span">就诊时间：</span>
             <el-select
               v-model="timeSelect"
               size="small"
@@ -52,7 +52,7 @@
               ></el-option>
             </el-select>
             <el-date-picker
-              v-if="timeSelect===0"
+              v-if="timeSelect===-1"
               v-model="timeValue"
               type="daterange"
               size="small"
@@ -141,13 +141,12 @@
 <script>
 import pagination from '@/components/admin/pagination/pagination'
 import { getPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
-import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
+import '@/util/date.js'
 export default {
   components: { pagination },
   watch: {
     lang () {
-      this.timeRange = this.$t('tradesStatistics.timeRange')
     }
   },
   data () {
@@ -155,8 +154,14 @@ export default {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      timeSelect: 1,
-      timeRange: this.$t('tradesStatistics.timeRange'),
+      timeSelect: 0,
+      timeRange: [
+        { value: 0, label: '今日' },
+        { value: 1, label: '昨日' },
+        { value: 7, label: '最近7天' },
+        { value: 30, label: '最近30天' },
+        { value: -1, label: '自定义' }
+      ],
       startDate: {
         year: '',
         month: '',
@@ -211,15 +216,24 @@ export default {
     },
     // 选择时间段
     dateChangeHandler (time) {
-      if (time !== 0) {
+      if (time !== -1) {
         this.getDateValue(time)
         this.initDataList()
+      } else {
+        this.startDate.year = ''
+        this.startDate.month = ''
+        this.startDate.day = ''
+        this.endDate.year = ''
+        this.endDate.month = ''
+        this.endDate.day = ''
+        this.queryParams.diagnoseStartTime = ''
+        this.queryParams.diagnoseEndTime = ''
       }
     },
     // 自定义时间
     changeDate () {
       this.queryParams.diagnoseStartTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
-      this.queryParams.diagnoseEndTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
+      this.queryParams.diagnoseEndTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 23:59:59'
       this.startDate.year = this.timeValue[0].substring(0, 4)
       this.startDate.month = this.timeValue[0].substring(4, 6)
       this.startDate.day = this.timeValue[0].substring(6, 8)
@@ -229,19 +243,22 @@ export default {
       this.initData()
     },
     getDateValue (unit) {
-      getDate(unit).then(res => {
-        if (res.error === 0) {
-          this.startDate.year = res.content.startTime.split('-')[0]
-          this.startDate.month = res.content.startTime.split('-')[1]
-          this.startDate.day = res.content.startTime.split('-')[2]
-          this.endDate.year = res.content.endTime.split('-')[0]
-          this.endDate.month = res.content.endTime.split('-')[1]
-          this.endDate.day = res.content.endTime.split('-')[2]
-          this.queryParams.diagnoseStartTime = res.content.startTime + ' 00:00:00'
-          this.queryParams.diagnoseEndTime = res.content.endTime + ' 00:00:00'
-          this.initData()
-        }
-      }).catch(err => console.log(err))
+      var startTime = new Date()
+      var endTime = new Date()
+      if (unit !== 0) {
+        endTime.setDate(endTime.getDate() - 1)
+        startTime.setDate(endTime.getDate() - unit + 1)
+      }
+      var startTimeStr = startTime.format('yyyy-MM-dd')
+      var endTimeStr = endTime.format('yyyy-MM-dd')
+      this.queryParams.diagnoseStartTime = startTimeStr + ' 00:00:00'
+      this.queryParams.diagnoseEndTime = endTimeStr + ' 23:59:59'
+      this.startDate.year = startTimeStr.split('-')[0]
+      this.startDate.month = startTimeStr.split('-')[1]
+      this.startDate.day = startTimeStr.split('-')[2]
+      this.endDate.year = endTimeStr.split('-')[0]
+      this.endDate.month = endTimeStr.split('-')[1]
+      this.endDate.day = endTimeStr.split('-')[2]
     },
     handleSeeMessage (code) {
       console.log(this.$router)
@@ -276,7 +293,7 @@ export default {
   // },
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
-    this.getDateValue(1)
+    this.getDateValue(0)
     this.getDoctor({})
     this.initDataList()
   },
