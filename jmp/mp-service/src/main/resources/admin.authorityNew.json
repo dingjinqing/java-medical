@@ -9,6 +9,7 @@
       "analysis_basic",
       "situation",
       "sales_report",
+      "anchor_points",
       "analysis_portrait",
       "analysis_visit",
       "analysis_visit_source",
@@ -113,6 +114,13 @@
     "enName": "sales_report",
     "name": "销售报表",
     "linkUrl": "/admin/survey/report",
+    "topIndex": 0,
+    "includeApi": []
+  },
+  {
+    "enName": "anchor_points",
+    "name": "埋点列表",
+    "linkUrl": "/admin/survey/anchor",
     "topIndex": 0,
     "includeApi": []
   },

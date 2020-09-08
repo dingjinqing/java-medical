@@ -1,6 +1,7 @@
 package com.vpu.mp.dao.shop.rebate;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRebateDo;
@@ -44,6 +45,9 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
         UpdateSetMoreStep<InquiryOrderRebateRecord> update= db().update(INQUIRY_ORDER_REBATE).set(INQUIRY_ORDER_REBATE.STATUS, status);
         if(StringUtils.isNotBlank(reason)){
             update.set(INQUIRY_ORDER_REBATE.REASON,reason);
+        }
+        if(InquiryOrderRebateConstant.REBATED.equals(status)){
+            update.set(INQUIRY_ORDER_REBATE.REBATE_TIME, DateUtils.getLocalDateTime());
         }
         update.where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn)).execute();
     }
