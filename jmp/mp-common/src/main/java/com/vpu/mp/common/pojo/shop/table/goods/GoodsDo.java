@@ -69,4 +69,6 @@ public class GoodsDo {
     private Integer    commentNum;
     private Integer    roomId;
     private String storeCode;
+    private Byte hisStatus;
+    private Byte storeStatus;
 }

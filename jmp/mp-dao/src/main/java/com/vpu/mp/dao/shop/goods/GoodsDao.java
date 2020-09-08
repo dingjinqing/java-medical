@@ -295,6 +295,16 @@ public class GoodsDao extends ShopBaseDao {
     }
 
     /**
+     * 查询商品Sn和商品id
+     * @param goodsIds
+     * @return
+     */
+    public Map<String, Integer> mapGoodsSnToGoodsId(Collection<Integer> goodsIds) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_ID.in(goodsIds));
+        return db().select(GOODS.GOODS_SN, GOODS.GOODS_ID).from(GOODS).where(condition).fetchMap(GOODS.GOODS_SN, GOODS.GOODS_ID);
+    }
+
+    /**
      * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品Id
      * @param goodsMatchParam
      * @return

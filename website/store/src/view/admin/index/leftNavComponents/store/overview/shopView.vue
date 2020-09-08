@@ -4,6 +4,16 @@
       <div class="content-item">
         <div class="item-title">
           <span class="title">待办事项</span>
+          <div v-if="bindData.isBind === 0">
+            关注公众号，实时接收消息通知
+            <el-button class="btn_follow" @click="handleBind">关注</el-button>
+          </div>
+          <div v-if="bindData.isBind === 1">
+            {{ bindData.nickName }}已关注公众号，可实时接收消息通知
+            <el-button class="btn_follow" @click="handleCancelBind"
+              >解除绑定</el-button
+            >
+          </div>
         </div>
         <div class="module-content">
           <div
@@ -126,11 +136,22 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      title="关注公众号"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+    >
+      <span>用手机扫下方二维码关注公众号，及时接收新订单提醒</span>
+
+      <div style="text-align: center">
+        <img :src="this.imgsrc" style="width: 100px; padding-top: 23px" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getArticleList, getOrderNum, getUnfilledOrderNum, getAllStoreList } from '@/api/store/store'
+import { getArticleList, getOrderNum, getUnfilledOrderNum, getAllStoreList, getBindStatus, getQrCode, setBind } from '@/api/store/store'
 export default {
   data () {
     return {
@@ -147,13 +168,17 @@ export default {
         { value: '3', label: '近一周' },
         { value: '4', label: '近一个月' },
         { value: '5', label: '近三个月' }
-      ]
+      ],
+      bindData: {},
+      centerDialogVisible: false,
+      imgsrc: null
     }
   },
   mounted () {
     this.getUnfilledNum()
     this.getArticle()
     this.getStoreList()
+    this.getBindStatus()
   },
   methods: {
     getArticle () {
@@ -161,6 +186,40 @@ export default {
         if (res.error === 0) {
           this.articleList = res.content.dataList
         }
+      })
+    },
+    getBindStatus () {
+      getBindStatus().then(res => {
+        if (res.error === 0) {
+          this.bindData = res.content
+        }
+      })
+    },
+    handleBind () {
+      getQrCode().then(res => {
+        if (res.error === 0) {
+          this.imgsrc = res.content
+          this.centerDialogVisible = true
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    handleCancelBind () {
+      this.$confirm('是否确认解除绑定', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        setBind({ act: 0 }).then(res => {
+          if (res.error === 0) {
+            this.bindData.isBind = 0
+          } else {
+            this.$message.error({
+              message: res.message
+            })
+          }
+        })
       })
     },
     getNum () {
@@ -318,6 +377,13 @@ export default {
           font-weight: 600;
           color: #333;
           margin-right: auto;
+        }
+        /deep/ .btn_follow {
+          border: 1px solid #5a8bff;
+          color: #5a8bff;
+          padding: 5px 10px;
+          border-radius: 2px;
+          margin-left: 10px;
         }
       }
       + .content-item {

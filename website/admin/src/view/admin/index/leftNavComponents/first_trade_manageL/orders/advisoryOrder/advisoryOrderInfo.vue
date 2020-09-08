@@ -3,42 +3,49 @@
     <div class="since-info">
       <div class="since-info-top">
         <div class="order_mes">
-          <span>订单号：{{orderContent.orderSn}}</span>
-          <span>订单状态：{{orderContent.orderStatusName}}</span>
+          <span>订单号：{{ orderContent.orderSn }}</span>
+          <span>订单状态：{{ orderContent.orderStatusName }}</span>
         </div>
+        <el-button type="primary" size="small" @click="viewRecord"
+          >咨询详情</el-button
+        >
         <el-button
-          type='primary'
-          size='small'
-          @click="viewRecord"
-        >咨询详情</el-button>
-        <el-button
-          type='primary'
-          size='small'
-          v-if="orderContent.orderAmount - orderContent.refundMoney > 0 && orderContent.orderStatus !== 0 && orderContent.orderStatus !== 5"
+          type="primary"
+          size="small"
+          v-if="
+            orderContent.orderAmount - orderContent.refundMoney > 0 &&
+            orderContent.orderStatus !== 0 &&
+            orderContent.orderStatus !== 5
+          "
           @click="returnOrder"
-        >手动退款</el-button>
+          >手动退款</el-button
+        >
       </div>
       <div class="since-info-detail">
         <div class="order_info">
           <div class="title">订单信息</div>
           <div class="item_box">
-            <div class="item">订单状态：{{orderContent.orderStatusName}}</div>
-            <div class="item">订单金额：{{orderContent.orderAmount}}</div>
-            <div class="item">下单时间：{{orderContent.createTime}}</div>
-            <div class="item">用户：{{orderContent.userName}}</div>
-            <div class="item">订单号：{{orderContent.orderSn}}</div>
-            <div class="item">下单人手机：{{orderContent.userMobile}}</div>
+            <div class="item">订单状态：{{ orderContent.orderStatusName }}</div>
+            <div class="item">订单金额：{{ orderContent.orderAmount }}</div>
+            <div class="item">下单时间：{{ orderContent.createTime }}</div>
+            <div class="item">用户：{{ orderContent.userName }}</div>
+            <div class="item">订单号：{{ orderContent.orderSn }}</div>
+            <div class="item">下单人手机：{{ orderContent.userMobile }}</div>
           </div>
         </div>
         <div class="user_info">
           <div class="title">患者信息</div>
           <div class="item_box">
-            <div class="item">姓名：{{orderContent.patientName}}</div>
-            <div class="item">性别：{{orderContent.patientSexName}}</div>
-            <div class="item">生日：{{orderContent.patientBirthday}}</div>
-            <div class="item">证件类型：{{orderContent.patientIdentityName}}</div>
-            <div class="item">证件号码：{{orderContent.patientIdentityCode}}</div>
-            <div class="item">手机号：{{orderContent.patientMobile}}</div>
+            <div class="item">姓名：{{ orderContent.patientName }}</div>
+            <div class="item">性别：{{ orderContent.patientSexName }}</div>
+            <div class="item">生日：{{ orderContent.patientBirthday }}</div>
+            <div class="item">
+              证件类型：{{ orderContent.patientIdentityName }}
+            </div>
+            <div class="item">
+              证件号码：{{ orderContent.patientIdentityCode }}
+            </div>
+            <div class="item">手机号：{{ orderContent.patientMobile }}</div>
           </div>
         </div>
       </div>
@@ -55,23 +62,39 @@
         border
         style="width: 100%"
       >
+        <el-table-column prop="moneyAmount" label="已退金额" align="center">
+        </el-table-column>
+        <el-table-column prop="refundReason" label="退款原因" align="center">
+        </el-table-column>
+        <el-table-column prop="refundTime" label="退款时间" align="center">
+        </el-table-column>
+      </el-table>
+      <div class="order_mes" v-if="orderContent.rebate">
+        <span>返利详情</span>
+      </div>
+      <el-table
+        v-if="orderContent.rebate"
+        :data="[orderContent.rebate]"
+        header-row-class-name="tableClss"
+        border
+        style="width: 100%"
+      >
+        <el-table-column prop="totalMoney" label="咨询费总额" align="center">
+        </el-table-column>
         <el-table-column
-          prop="moneyAmount"
-          label="已退金额"
+          prop="totalRebateMoney"
+          label="返利金额"
           align="center"
         >
         </el-table-column>
-        <el-table-column
-          prop="refundReason"
-          label="退款原因"
-          align="center"
-        >
+        <el-table-column prop="status" label="返利状态" align="center">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.status | getStatus }}
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column
-          prop="refundTime"
-          label="退款时间"
-          align="center"
-        >
+        <el-table-column prop="rebateTime" label="返利日期" align="center">
         </el-table-column>
       </el-table>
     </div>
@@ -184,11 +207,21 @@ export default {
       })
       window.open(href, '_blank')
     }
+  },
+  filters: {
+    getStatus (status) {
+      let statusName = {
+        0: '待返利',
+        1: '已返利',
+        2: '未返利'
+      }
+      return statusName[status]
+    }
   }
 }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 .main1 {
   margin: 10px;
   min-width: auto !important;

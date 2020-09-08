@@ -45,7 +45,7 @@
         <div class="filters_item">
           <span>审核状态：</span>
           <el-select
-            v-model="param.flag"
+            v-model="param.auditStatus"
             size="small"
             class="mini_select"
             style="width: 170px;"
@@ -391,7 +391,7 @@ export default {
       return val[0]
     },
     status: function (val) {
-      let status = ['未审核', '审核通过', '审核未通过']
+      let status = ['待审核', '审核通过', '审核未通过']
       return status[val]
     }
   }

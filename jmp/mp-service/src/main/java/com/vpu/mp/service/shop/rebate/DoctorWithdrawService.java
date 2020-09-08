@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author yangpengcheng
@@ -195,6 +196,29 @@ public class DoctorWithdrawService extends ShopBaseService {
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EX_ERROR,
                 e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
         }
+    }
+
+    /**
+     * 获取提现详情
+     * @param id
+     * @return
+     */
+    public DoctorWithdrawDetailVo getWithdrawDetail(Integer id){
+        DoctorWithdrawDetailVo detail=doctorWithDrawDao.getWithdrawDetailById(id);
+        DoctorWithdrawListParam param=new DoctorWithdrawListParam();
+        param.setDoctorId(detail.getDoctorId());
+        PageResult<DoctorWithdrawVo> withdrawList=getPageList(param);
+        detail.setWithdrawList(withdrawList);
+        return detail;
+
+    }
+
+    /**
+     * 添加提现备注
+     * @param param
+     */
+    public void addDoctorWithdrawDesc(DoctorWithdrawDescParam param){
+        doctorWithDrawDao.updateDoctorWithdrawDesc(param);
     }
 
 }
