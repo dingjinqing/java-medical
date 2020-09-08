@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorWithdrawRecord;
+import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawDetailVo;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawParam;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawVo;
@@ -133,6 +134,19 @@ public class DoctorWithdrawDao extends ShopBaseDao {
             step.and(DOCTOR_WITHDRAW.CREATE_TIME.le(endTime));
         }
         return step.fetchAnyInto(BigDecimal.class);
+    }
+
+    /**
+     * 根据id查询详情
+     * @param id
+     * @return
+     */
+    public DoctorWithdrawDetailVo getWithdrawDetailById(Integer id){
+        DoctorWithdrawDetailVo detail=db().select(DOCTOR_WITHDRAW.asterisk(),DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE)
+            .from(DOCTOR_WITHDRAW)
+            .leftJoin(DOCTOR).on(DOCTOR_WITHDRAW.DOCTOR_ID.eq(DOCTOR.ID))
+            .where(DOCTOR_WITHDRAW.ID.eq(id)).fetchOneInto(DoctorWithdrawDetailVo.class);
+        return detail;
     }
 
 }
