@@ -192,18 +192,13 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
      * @return
      */
     public List<DoctorConsultationOneParam> listHistoryDoctor(List<Integer> doctorIds) {
-        SelectHavingStep<Record2<Integer, Integer>> table = db().select(DOCTOR.ID, DSL.count(IM_SESSION.ID).as("number"))
-            .from(IM_SESSION)
-            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
-            .and(DOCTOR.ID.gt(0)).groupBy(DOCTOR.ID);
         return db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
             ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
-            .leftJoin(table).on(table.field(DOCTOR.ID).eq(DOCTOR.ID))
             .where(DOCTOR.ID.in(doctorIds))
             .and(DOCTOR.IS_DELETE.eq((byte) 0))
             .and(DOCTOR.STATUS.eq((byte) 1))
-            .orderBy(table.field("number"))
+            .orderBy(DOCTOR.CONSULTATION_NUMBER)
             .limit(10)
             .fetchInto(DoctorConsultationOneParam.class);
     }
@@ -215,18 +210,13 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
      * @return
      */
     public List<DoctorConsultationOneParam> listDoctorMore(List<Integer> doctorDepartments, Integer limit) {
-        SelectHavingStep<Record2<Integer, Integer>> table = db().select(DOCTOR.ID, DSL.count(IM_SESSION.ID).as("number"))
-            .from(IM_SESSION)
-            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(IM_SESSION.DOCTOR_ID))
-            .and(DOCTOR.ID.gt(0)).groupBy(DOCTOR.ID);
         return db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
             ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
-            .leftJoin(table).on(table.field(DOCTOR.ID).eq(DOCTOR.ID))
             .where(DOCTOR.ID.notIn(doctorDepartments))
             .and(DOCTOR.IS_DELETE.eq((byte) 0))
             .and(DOCTOR.STATUS.eq((byte) 1))
-            .orderBy(table.field("number"))
+            .orderBy(DOCTOR.CONSULTATION_NUMBER)
             .limit(limit)
             .fetchInto(DoctorConsultationOneParam.class);
     }
