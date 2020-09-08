@@ -64,6 +64,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipList
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.bo.PrescriptionItemBo;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
@@ -439,11 +441,30 @@ public class OrderReadService extends ShopBaseService {
         mainOrder.setPrescriptionItemList(getPrescriptionItemList(mainOrder));
 		return mainOrder;
 	}
-	private List<PrescriptionItemVo> getPrescriptionItemList(OrderInfoVo order){
+
+    /**
+     * 获取医师处方药品返利信息
+     * @param order
+     * @return
+     */
+	private  List<PrescriptionItemBo> getPrescriptionItemList(OrderInfoVo order){
         List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(order.getOrderSn());
         preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
-        List<PrescriptionItemVo> list=prescriptionItemDao.getByPrescriptions(preCodeList);
-        return list;
+        List<PrescriptionItemBo> boList=new ArrayList<>();
+        for(String preCode:preCodeList){
+            PrescriptionVo prescriptionVo= prescriptionDao.getDoByPrescriptionNo(preCode);
+            if(prescriptionVo==null||PrescriptionConstant.SETTLEMENT_NOT.equals(prescriptionVo.getSettlementFlag())){
+                continue;
+            }
+            PrescriptionItemBo prescriptionItemBo=new PrescriptionItemBo();
+
+            List<PrescriptionItemDo> list=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);
+            prescriptionItemBo.setItemList(list);
+            prescriptionItemBo.setPrescriptionCode(preCode);
+            prescriptionItemBo.setDoctorName(prescriptionVo.getDoctorName());
+            boList.add(prescriptionItemBo);
+        }
+        return boList;
     }
 
     private void buildOrders(List<OrderInfoVo> orders, Map<Integer, List<OrderGoodsVo>> goods, Map<String, List<ShippingInfoVo>> shippingByOrderSn, Map<String, List<OrderConciseRefundInfoVo>> refundByOrderSn, Map<Integer, Integer> returningCount) {

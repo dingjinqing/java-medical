@@ -3,7 +3,7 @@
     <div class="main">
       <div class="nav_box">
         <div class="filters">
-          <div class="filters_item ">
+          <div class="filters_item">
             <span class="fil_span">医师姓名：</span>
             <el-select
               v-model="queryParams.doctorName"
@@ -14,10 +14,7 @@
               clearable
               @change="initDataList"
             >
-              <el-option
-                label="全部"
-                value=""
-              ></el-option>
+              <el-option label="全部" value=" "></el-option>
               <el-option
                 v-for="item in doctorList"
                 :key="item.id"
@@ -25,30 +22,24 @@
                 :value="item.name"
               ></el-option>
             </el-select>
-
           </div>
           <div class="filters_item">
             <span>患者姓名：</span>
             <el-input
               v-model="queryParams.patientName"
               size="small"
-              style="width:190px;"
+              style="width: 190px"
               placeholder="请输入姓名"
             >
             </el-input>
           </div>
         </div>
       </div>
-      <div class="nav_box" style='margin-top:0;padding-top:0'>
+      <div class="nav_box" style="margin-top: 0; padding-top: 0">
         <div class="filters">
           <div class="filters_item">
-            <span class="fil_span">就诊时间：</span>
-            <el-select
-              v-model="timeSelect"
-              size="small"
-              @change="dateChangeHandler"
-              class="timeSelect"
-            >
+            <span class="fil_span">时间筛选：</span>
+            <el-select v-model="timeSelect" size="small" class="timeSelect">
               <el-option
                 v-for="item in timeRange"
                 :key="item.value"
@@ -57,77 +48,75 @@
               ></el-option>
             </el-select>
             <el-date-picker
-              v-if="timeSelect===-1"
+              v-if="timeSelect === 4"
               v-model="timeValue"
-              type="daterange"
+              type="datetimerange"
               size="small"
-              value-format="yyyyMMdd"
-              @change="changeDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']"
               range-separator="-"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
             >
             </el-date-picker>
-            <span class="choosed_time">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+            <span
+              class="choosed_time"
+              v-if="timeSelect !== -1 && timeSelect !== 4"
+              >{{ this.startDate.year }}年{{ this.startDate.month }}月{{
+                this.startDate.day
+              }}日 - {{ this.endDate.year }}年{{ this.endDate.month }}月{{
+                this.endDate.day
+              }}日</span
+            >
           </div>
           <div class="btn_wrap">
-            <el-button
-              type='primary'
-              size='small'
-              @click="initDataList"
-            >查询</el-button>
+            <el-button type="primary" size="small" @click="initDataList"
+              >查询</el-button
+            >
           </div>
         </div>
       </div>
       <div class="table_box">
         <el-table
-          v-loading='loading'
-          :data='tableData'
-          style="width:100%"
+          v-loading="loading"
+          :data="tableData"
+          style="width: 100%"
           border
           :header-cell-style="{
-              'background-color':'#f5f5f5',
-              'text-align':'center',
-              'border':'none',
-              'color': '#000'
-            }"
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
+            color: '#000',
+          }"
           :cell-style="{
-              'text-align':'center'
-            }"
+            'text-align': 'center',
+          }"
         >
+          <el-table-column prop="id" label="患者ID"></el-table-column>
+          <el-table-column prop="name" label="患者姓名"></el-table-column>
           <el-table-column
-            prop='id'
-            label='患者ID'
+            prop="departmentName"
+            label="科室名称"
+          ></el-table-column>
+          <el-table-column prop="doctorName" label="医师名称"></el-table-column>
+          <el-table-column prop="doctorCode" label="医师码"></el-table-column>
+          <el-table-column
+            prop="diagnoseTime"
+            label="就诊时间"
           ></el-table-column>
           <el-table-column
-            prop='name'
-            label='患者姓名'
+            prop="departmentName"
+            label="科室名称"
           ></el-table-column>
           <el-table-column
-            prop='prescriptionCode'
-            label='处方号'
+            prop="diagnosisName"
+            label="疾病名称"
           ></el-table-column>
           <el-table-column
-            prop='doctorCode'
-            label='医师码'
+            prop="diagnoseTime"
+            label="就诊时间"
           ></el-table-column>
-          <el-table-column
-            prop='doctorName'
-            label='医师名称'
-          ></el-table-column>
-          <el-table-column
-            prop='departmentName'
-            label='科室名称'
-          ></el-table-column>
-          <el-table-column
-            prop='diagnosisName'
-            label='疾病名称'
-          ></el-table-column>
-          <el-table-column
-            prop='diagnoseTime'
-            label='就诊时间'
-          ></el-table-column>
-          <el-table-column label='操作'>
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
@@ -136,16 +125,15 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.prescriptionCode)'>查看详情</a>
+                  <a @click="handleSeeMessage(scope.row.prescriptionCode)"
+                    >查看详情</a
+                  >
                 </el-tooltip>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
+        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
       </div>
     </div>
   </div>
@@ -160,7 +148,44 @@ export default {
   components: { pagination },
   watch: {
     lang () {
-
+      // this.timeRange = this.$t('tradesStatistics.timeRange')
+    },
+    timeSelect (val) {
+      let end = new Date()
+      let start = new Date()
+      switch (val) {
+        case -1:
+          start = ''
+          end = ''
+          break
+        case 1:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
+          break
+        case 2:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+          break
+        case 3:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+          break
+        case 4:
+          start = this.timeValue[0] || ''
+          end = this.timeValue[1] || ''
+          break
+      }
+      this.queryParams.diagnoseStartTime = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()} 00:00:00`
+      this.queryParams.diagnoseEndTime = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()} 23:59:59`
+      this.startDate.year = start.getFullYear()
+      this.startDate.month = start.getMonth() + 1
+      this.startDate.day = start.getDate()
+      this.endDate.year = end.getFullYear()
+      this.endDate.month = end.getMonth() + 1
+      this.endDate.day = end.getDate()
+    },
+    timeValue (val) {
+      if (this.timeSelect === 4) {
+        this.queryParams.diagnoseStartTime = val[0]
+        this.queryParams.diagnoseEndTime = val[1]
+      }
     }
   },
   data () {
@@ -168,13 +193,13 @@ export default {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      timeSelect: 0,
+      timeSelect: -1,
       timeRange: [
-        { value: 0, label: '今日' },
-        { value: 1, label: '昨日' },
-        { value: 7, label: '最近7天' },
-        { value: 30, label: '最近30天' },
-        { value: -1, label: '自定义' }
+        { value: -1, label: '全部' },
+        { value: 1, label: '最新1天' },
+        { value: 2, label: '最新7天' },
+        { value: 3, label: '最新30天' },
+        { value: 4, label: '自定义' }
       ],
       startDate: {
         year: '',
@@ -224,51 +249,6 @@ export default {
         console.log(error)
       })
     },
-    // 选择时间段
-    dateChangeHandler (time) {
-      if (time !== -1) {
-        this.getDateValue(time)
-        this.initDataList()
-      } else {
-        this.startDate.year = ''
-        this.startDate.month = ''
-        this.startDate.day = ''
-        this.endDate.year = ''
-        this.endDate.month = ''
-        this.endDate.day = ''
-        this.queryParams.diagnoseStartTime = ''
-        this.queryParams.diagnoseEndTime = ''
-      }
-    },
-    // 自定义时间
-    changeDate () {
-      this.queryParams.diagnoseStartTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
-      this.queryParams.diagnoseEndTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 23:59:59'
-      this.startDate.year = this.timeValue[0].substring(0, 4)
-      this.startDate.month = this.timeValue[0].substring(4, 6)
-      this.startDate.day = this.timeValue[0].substring(6, 8)
-      this.endDate.year = this.timeValue[1].substring(0, 4)
-      this.endDate.month = this.timeValue[1].substring(4, 6)
-      this.endDate.day = this.timeValue[1].substring(6, 8)
-    },
-    getDateValue (unit) {
-      var startTime = new Date()
-      var endTime = new Date()
-      if (unit !== 0) {
-        endTime.setDate(endTime.getDate() - 1)
-        startTime.setDate(endTime.getDate() - unit + 1)
-      }
-      var startTimeStr = startTime.format('yyyy-MM-dd')
-      var endTimeStr = endTime.format('yyyy-MM-dd')
-      this.queryParams.diagnoseStartTime = startTimeStr + ' 00:00:00'
-      this.queryParams.diagnoseEndTime = endTimeStr + ' 23:59:59'
-      this.startDate.year = startTimeStr.split('-')[0]
-      this.startDate.month = startTimeStr.split('-')[1]
-      this.startDate.day = startTimeStr.split('-')[2]
-      this.endDate.year = endTimeStr.split('-')[0]
-      this.endDate.month = endTimeStr.split('-')[1]
-      this.endDate.day = endTimeStr.split('-')[2]
-    },
     handleSeeMessage (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
@@ -293,7 +273,6 @@ export default {
   },
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
-    this.getDateValue(0)
     this.getDoctor({})
     this.initDataList()
   },
