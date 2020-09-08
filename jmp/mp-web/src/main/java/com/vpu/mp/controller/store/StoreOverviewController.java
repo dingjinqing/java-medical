@@ -84,7 +84,7 @@ public class StoreOverviewController extends StoreBaseController {
      */
     @PostMapping("/api/store/survey/official/bind")
     public JsonResult bindUnBindOfficial(@RequestBody BindAndUnParam param){
-        boolean bindUnBindOfficial = saas.overviewService.bindUnBindOfficialForStore(param.getAct(),storeAuth.user(),param.getAccountId());
+        boolean bindUnBindOfficial = saas.overviewService.bindUnBindOfficialForStore(param.getAct(),storeAuth.user(),storeAuth.user().getStoreAccountId());
         return bindUnBindOfficial?success():fail();
     }
 
