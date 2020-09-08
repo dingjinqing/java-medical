@@ -39,7 +39,7 @@
 				</view>
 				<view>
 					<view>{{con.avgCommentStar > 0 ? con.avgCommentStar : '暂无评分'}}</view>
-					<view>用户平均评分</view>
+					<view>用户评分</view>
 				</view>
 			</view>
 			<image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>
@@ -47,7 +47,7 @@
 	</view>
 
 	<view class="mid_con">
-		<view class="comment_title">用户评分（{{pageParams.totalRows}}）</view>
+		<view class="comment_title">用户评价（{{pageParams.totalRows}}）</view>
 		<view class="commentList">
 			<block wx:for='{{dataList}}' wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
 				<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
