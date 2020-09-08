@@ -26,7 +26,7 @@
 
         </div>
         <div class="filters_item ">
-          <span class="fil_span">评价星级：</span>
+          <span class="fil_span">评分星级：</span>
           <el-select
             v-model="param.stars"
             size="small"

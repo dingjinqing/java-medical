@@ -94,7 +94,7 @@
           label="手机号"
         ></el-table-column>
         <el-table-column
-          label="评价星级"
+          label="评分星级"
           align="center"
           width="200px"
         >

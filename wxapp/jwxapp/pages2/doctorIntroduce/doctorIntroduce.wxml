@@ -38,7 +38,7 @@
 					<view>平均响应时间</view>
 				</view>
 				<view>
-					<view>{{con.avgCommentStar}}</view>
+					<view>{{con.avgCommentStar > 0 ? con.avgCommentStar : '暂无评分'}}</view>
 					<view>患者评分</view>
 				</view>
 			</view>
@@ -47,7 +47,7 @@
 	</view>
 
 	<view class="mid_con">
-		<view class="comment_title">用户评价（{{pageParams.totalRows}}）</view>
+		<view class="comment_title">用户评分（{{pageParams.totalRows}}）</view>
 		<view class="commentList">
 			<block wx:for='{{dataList}}' wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
 				<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
