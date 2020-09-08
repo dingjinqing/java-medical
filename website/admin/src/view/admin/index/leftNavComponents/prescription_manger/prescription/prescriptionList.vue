@@ -3,7 +3,7 @@
     <div class="main">
       <div class="nav_box">
         <div class="filters">
-          <div class="filters_item ">
+          <div class="filters_item">
             <span class="fil_span">医师姓名：</span>
             <el-select
               v-model="queryParams.doctorName"
@@ -12,10 +12,7 @@
               class="default_input"
               filterable
             >
-              <el-option
-                label="全部"
-                value=" "
-              ></el-option>
+              <el-option label="全部" value=" "></el-option>
               <el-option
                 v-for="item in doctorList"
                 :key="item.name"
@@ -23,27 +20,20 @@
                 :value="item.name"
               ></el-option>
             </el-select>
-
           </div>
           <div class="filters_item">
             <span>患者姓名：</span>
             <el-input
               v-model="queryParams.patientName"
               size="small"
-              style="width:190px;"
+              style="width: 190px"
               placeholder="请输入姓名"
             >
             </el-input>
           </div>
           <div class="filters_item">
             <span class="fil_span">时间筛选：</span>
-            <el-select
-              v-model="timeSelect"
-              size="small"
-              clearable
-              @change="dateChangeHandler"
-              class="timeSelect"
-            >
+            <el-select v-model="timeSelect" size="small" class="timeSelect">
               <el-option
                 v-for="item in timeRange"
                 :key="item.value"
@@ -52,69 +42,69 @@
               ></el-option>
             </el-select>
             <el-date-picker
-              v-if="timeSelect===0"
+              v-if="timeSelect === 4"
               v-model="timeValue"
-              type="daterange"
+              type="datetimerange"
               size="small"
-              value-format="yyyyMMdd"
-              @change="changeDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']"
               range-separator="-"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
             >
             </el-date-picker>
-            <span class="choosed_time">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+            <span
+              class="choosed_time"
+              v-if="timeSelect !== -1 && timeSelect !== 4"
+              >{{ this.startDate.year }}年{{ this.startDate.month }}月{{
+                this.startDate.day
+              }}日 - {{ this.endDate.year }}年{{ this.endDate.month }}月{{
+                this.endDate.day
+              }}日</span
+            >
           </div>
           <div class="btn_wrap">
-            <el-button
-              type='primary'
-              size='small'
-              @click="initDataList"
-            >查询</el-button>
+            <el-button type="primary" size="small" @click="initDataList"
+              >查询</el-button
+            >
           </div>
         </div>
       </div>
       <div class="table_box">
         <el-table
-          v-loading='loading'
-          :data='tableData'
-          style="width:100%"
+          v-loading="loading"
+          :data="tableData"
+          style="width: 100%"
           border
           :header-cell-style="{
-              'background-color':'#f5f5f5',
-              'text-align':'center',
-              'border':'none',
-              'color': '#000'
-            }"
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
+            color: '#000',
+          }"
           :cell-style="{
-              'text-align':'center'
-            }"
+            'text-align': 'center',
+          }"
         >
+          <el-table-column prop="name" label="患者姓名"></el-table-column>
           <el-table-column
-            prop='name'
-            label='患者姓名'
+            prop="prescriptionCode"
+            label="处方号"
           ></el-table-column>
           <el-table-column
-            prop='prescriptionCode'
-            label='处方号'
+            prop="departmentName"
+            label="科室名称"
+          ></el-table-column>
+          <el-table-column prop="doctorName" label="医师名称"></el-table-column>
+          <el-table-column
+            prop="diagnosisName"
+            label="疾病名称"
           ></el-table-column>
           <el-table-column
-            prop='departmentName'
-            label='科室名称'
+            prop="diagnoseTime"
+            label="就诊时间"
           ></el-table-column>
-          <el-table-column
-            prop='doctorName'
-            label='医师名称'
-          ></el-table-column>
-          <el-table-column
-            prop='diagnosisName'
-            label='疾病名称'
-          ></el-table-column>
-          <el-table-column
-            prop='diagnoseTime'
-            label='就诊时间'
-          ></el-table-column>
-          <el-table-column label='操作'>
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
@@ -123,16 +113,15 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.prescriptionCode)'>查看详情</a>
+                  <a @click="handleSeeMessage(scope.row.prescriptionCode)"
+                    >查看详情</a
+                  >
                 </el-tooltip>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
+        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
       </div>
     </div>
   </div>
@@ -140,14 +129,50 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { getAllPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
 import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
 export default {
   components: { pagination },
   watch: {
     lang () {
-      this.timeRange = this.$t('tradesStatistics.timeRange')
+      // this.timeRange = this.$t('tradesStatistics.timeRange')
+    },
+    timeSelect (val) {
+      let end = new Date()
+      let start = new Date()
+      switch (val) {
+        case -1:
+          start = ''
+          end = ''
+          break
+        case 1:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
+          break
+        case 2:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+          break
+        case 3:
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+          break
+        case 4:
+          start = this.timeValue[0] || ''
+          end = this.timeValue[1] || ''
+          break
+      }
+      this.queryParams.diagnoseStartTime = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()} 00:00:00`
+      this.queryParams.diagnoseEndTime = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()} 23:59:59`
+      this.startDate.year = start.getFullYear()
+      this.startDate.month = start.getMonth() + 1
+      this.startDate.day = start.getDate()
+      this.endDate.year = end.getFullYear()
+      this.endDate.month = end.getMonth() + 1
+      this.endDate.day = end.getDate()
+    },
+    timeValue (val) {
+      if (this.timeSelect === 4) {
+        this.queryParams.diagnoseStartTime = val[0]
+        this.queryParams.diagnoseEndTime = val[1]
+      }
     }
   },
   data () {
@@ -155,8 +180,14 @@ export default {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      timeSelect: 1,
-      timeRange: this.$t('tradesStatistics.timeRange'),
+      timeSelect: -1,
+      timeRange: [
+        { value: -1, label: '全部' },
+        { value: 1, label: '最新1天' },
+        { value: 2, label: '最新7天' },
+        { value: 3, label: '最新30天' },
+        { value: 4, label: '自定义' }
+      ],
       startDate: {
         year: '',
         month: '',
@@ -205,40 +236,6 @@ export default {
         console.log(error)
       })
     },
-    // 选择时间段
-    dateChangeHandler (time) {
-      if (time !== 0) {
-        this.getDateValue(time)
-        this.initDataList()
-      }
-    },
-    // 自定义时间
-    changeDate () {
-      this.queryParams.diagnoseStartTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
-      this.queryParams.diagnoseEndTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
-      this.startDate.year = this.timeValue[0].substring(0, 4)
-      this.startDate.month = this.timeValue[0].substring(4, 6)
-      this.startDate.day = this.timeValue[0].substring(6, 8)
-      this.endDate.year = this.timeValue[1].substring(0, 4)
-      this.endDate.month = this.timeValue[1].substring(4, 6)
-      this.endDate.day = this.timeValue[1].substring(6, 8)
-      this.initData()
-    },
-    getDateValue (unit) {
-      getDate(unit).then(res => {
-        if (res.error === 0) {
-          this.startDate.year = res.content.startTime.split('-')[0]
-          this.startDate.month = res.content.startTime.split('-')[1]
-          this.startDate.day = res.content.startTime.split('-')[2]
-          this.endDate.year = res.content.endTime.split('-')[0]
-          this.endDate.month = res.content.endTime.split('-')[1]
-          this.endDate.day = res.content.endTime.split('-')[2]
-          this.queryParams.diagnoseStartTime = res.content.startTime + ' 00:00:00'
-          this.queryParams.diagnoseEndTime = res.content.endTime + ' 00:00:00'
-          this.initData()
-        }
-      }).catch(err => console.log(err))
-    },
     handleSeeMessage (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
@@ -263,7 +260,6 @@ export default {
   },
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
-    this.getDateValue(1)
     this.getDoctor({})
     this.initDataList()
   },
@@ -311,8 +307,8 @@ export default {
       }
     }
   }
-  .operation a{
-    color:#5a8bff;
+  .operation a {
+    color: #5a8bff;
   }
   .table_box {
     padding: 10px;
