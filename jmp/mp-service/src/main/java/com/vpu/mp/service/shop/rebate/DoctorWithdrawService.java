@@ -213,4 +213,12 @@ public class DoctorWithdrawService extends ShopBaseService {
 
     }
 
+    /**
+     * 添加提现备注
+     * @param param
+     */
+    public void addDoctorWithdrawDesc(DoctorWithdrawDescParam param){
+        doctorWithDrawDao.updateDoctorWithdrawDesc(param);
+    }
+
 }

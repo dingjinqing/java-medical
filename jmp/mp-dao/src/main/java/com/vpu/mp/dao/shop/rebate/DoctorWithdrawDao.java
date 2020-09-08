@@ -6,10 +6,7 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorWithdrawRecord;
-import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawDetailVo;
-import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawListParam;
-import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawParam;
-import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawVo;
+import com.vpu.mp.service.pojo.shop.rebate.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.springframework.stereotype.Repository;
@@ -147,6 +144,16 @@ public class DoctorWithdrawDao extends ShopBaseDao {
             .leftJoin(DOCTOR).on(DOCTOR_WITHDRAW.DOCTOR_ID.eq(DOCTOR.ID))
             .where(DOCTOR_WITHDRAW.ID.eq(id)).fetchOneInto(DoctorWithdrawDetailVo.class);
         return detail;
+    }
+
+    /**
+     *
+     * @param param
+     * @return
+     */
+    public int updateDoctorWithdrawDesc( DoctorWithdrawDescParam param){
+        return db().update(DOCTOR_WITHDRAW).set(DOCTOR_WITHDRAW.DESC,param.getDesc())
+            .where(DOCTOR_WITHDRAW.ID.eq(param.getId())).execute();
     }
 
 }
