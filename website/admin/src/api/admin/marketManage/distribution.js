@@ -76,7 +76,7 @@ export function getDocument (data) {
 // 设置返利规则
 export function setRebateDocument (data) {
   return service({
-    url: '/api/admin/distribution/rebate/document/set',
+    url: '/api/admin/distribution/document/set',
     method: 'post',
     data: data
   })
@@ -85,7 +85,7 @@ export function setRebateDocument (data) {
 // 获取返利规则
 export function getRebateDocument (data) {
   return service({
-    url: '/api/admin/distribution/rebate/document/get',
+    url: '/api/admin/distribution/document/get',
     method: 'get',
     data: data
   })

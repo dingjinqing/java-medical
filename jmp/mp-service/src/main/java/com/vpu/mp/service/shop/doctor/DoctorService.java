@@ -96,6 +96,7 @@ public class DoctorService extends ShopBaseService {
             list.setDepartmentNames(departmentList);
             String titleName = titleService.getTitleName(list.getTitleId());
             list.setTitleName(titleName);
+            list.setAnswerMunite(list.getConsultationNumber()==0 ? -1:(Integer) (list.getAvgAnswerTime()/60));
         }
 
         return doctorList;

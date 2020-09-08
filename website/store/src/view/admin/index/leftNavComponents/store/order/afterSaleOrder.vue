@@ -86,17 +86,17 @@
             <el-date-picker
               v-model="applyTime.startTime"
               type="datetime"
-              :placeholder="$t('membershipIntroduction.Starttime')"
+              placeholder="开始时间"
               value-format="yyyy-MM-dd HH:mm:ss"
               class="default_input"
               @change="datePickerChange(true, applyTime)"
               size="small"
             />
-            至
+             至
             <el-date-picker
               v-model="applyTime.endTime"
               type="datetime"
-              :placeholder="$t('membershipIntroduction.Endtime')"
+              placeholder="结束时间"
               value-format="yyyy-MM-dd HH:mm:ss"
               class="default_input"
               @change="datePickerChange(false, applyTime)"

@@ -26,7 +26,26 @@ global.wxComponent({
   },
   lifetimes:{
     attached(){
-      util.api('/api/wxapp/goods/search/init',res=>{
+      var params = {}
+      var api = ''
+      if (this.data.distributionFlag == true) {
+        // 分销商品独立页
+        api = '/api/wxapp/distribution/promoteGoods/init'
+        if (util.getCache('distributionType') == 1) {
+          params = {
+            userId: util.getCache('user_id'),
+            isPersonal: 1
+          }
+        }
+      } else {
+        api = '/api/wxapp/goods/search/init'
+        if (util.getCache('distributionType') == 2) {
+          params = {
+            rebateGoodsIds: JSON.parse(util.getCache('rebateGoodsIds'))
+          }
+        }
+      }
+      util.api(api,res=>{
         if(res.error === 0){
           let { sorts, goodsBrands, activityTypes, goodsLabels } = res.content
           this.setData({
@@ -37,7 +56,7 @@ global.wxComponent({
             formatGoodsBrands: this.getFormatBrand(goodsBrands)
           })
         }
-      })
+      },{...params})
     }
   },
   /**

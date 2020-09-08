@@ -44,4 +44,5 @@ public class DoctorOneParam extends DoctorDo {
      * 响应时间区间1：10分钟内，2：半小时内，3：1小时内，4：1小时以上
      */
     private Byte answerType;
+    private Integer answerMunite;
 }

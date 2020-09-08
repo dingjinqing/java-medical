@@ -11,7 +11,7 @@
       v-show="pageParams.totalRows>0"
     >
       <!-- 当前页 -->
-      <section class="current">{{$t('membershipIntroduction.currentPage')}} {{pageParams.currentPage}}/{{pageParams.pageCount}}</section>
+      <section class="current">总页码： {{pageParams.currentPage}}/{{pageParams.pageCount}}</section>
       <!-- 分页信息 -->
       <section>
         <!-- el-pagination -->

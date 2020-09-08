@@ -304,12 +304,11 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
             }
             param.setGoodsItemList(list);
             orderGoodsService.syncMedicalOrderStatus(param);
-        }
-        //处方下单的处方恢复未使用状态
-        if (returnGoods!=null&&returnGoods.size()>0){
+        }else if (returnGoods!=null&&returnGoods.size()>0){
+            // 定时任务和取消 处方下单的处方恢复未使用状态
             OrderReturnGoodsVo orderReturnGoodsVo = returnGoods.get(0);
             OrderInfoRecord order = orderInfoService.getByOrderId(orderReturnGoodsVo.getOrderId(), OrderInfoRecord.class);
-            if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION)){
+            if (order!=null&& OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION.equals(order.getOrderAuditType())){
                 List<OrderGoodsSimpleAuditVo> allGoods = orderGoodsDao.listSimpleAuditByOrderId(order.getOrderId());
                 List<String> codes = allGoods.stream().map(OrderGoodsSimpleAuditVo::getPrescriptionCode).collect(Collectors.toList());
                 List<PrescriptionDo> prescriptionDoList = prescriptionDao.listPrescriptionByCode(codes, PrescriptionDo.class);
