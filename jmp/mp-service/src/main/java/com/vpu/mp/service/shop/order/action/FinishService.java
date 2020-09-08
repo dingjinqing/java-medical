@@ -195,7 +195,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 
         for(String preCode:preCodeList){
             PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(preCode);
-            if(!PrescriptionConstant.SETTLEMENT_WAIT.equals(prescriptionVo.getSettlementFlag())){
+            if(prescriptionVo==null||!PrescriptionConstant.SETTLEMENT_WAIT.equals(prescriptionVo.getSettlementFlag())){
                 continue;
             }
             List<PrescriptionItemDo> itemList=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);

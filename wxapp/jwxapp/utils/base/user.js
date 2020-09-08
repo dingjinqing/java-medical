@@ -20,7 +20,7 @@ var user = {
           console.log('登录', data)
           api.api("/api/wxapp/login", function (d) {
             console.log('返回信息', d)
-            util.handleBuriedPoint('login_wxapp', '', [{
+            helper.handleBuriedPoint('login_wxapp', '', [{
               key: '点击'
             }])
             if (d.error == 0) {
