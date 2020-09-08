@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.prescription;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -63,6 +64,10 @@ public class PrescriptionListVo {
      */
     private String    patientSign;
     /**
+     * 总价
+     */
+    private BigDecimal totalPrice;
+    /**
      * 处方来源 0系统内部创建 1医院拉取
      */
     private Byte      source;
@@ -84,6 +89,10 @@ public class PrescriptionListVo {
     private Byte auditType;
     /**
      * 结算标志：0：未结算，1：已结算
+     */
+    private Byte settlementFlag;
+    /**
+     * 是否有效  0无效 1有效，默认1
      */
     private Byte isValid;
     /**
