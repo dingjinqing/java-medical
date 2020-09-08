@@ -134,7 +134,7 @@ public class PrescriptionItemDao extends ShopBaseDao {
     }
 
     /**
-     * 根据处方号和goodsId查
+     * 处方号查询
      * @param prescriptionCodes
      * @return
      */
