@@ -28,6 +28,6 @@ public class StoreAccountParam {
 	private String accountPasswd;
 	@NotNull
 	private Integer[] storeList;
-	private String wxNickName;
+	private String wxNickName = "";
 	private Integer userId=0;
 }
