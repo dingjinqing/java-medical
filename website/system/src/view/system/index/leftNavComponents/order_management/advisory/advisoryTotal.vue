@@ -188,7 +188,6 @@ export default {
     dateChangeHandler (time) {
       if (time !== 0) {
         this.getDateValue(time)
-        this.initData()
       }
     },
     // 自定义时间
@@ -201,7 +200,6 @@ export default {
       this.endDate.year = this.timeValue[1].substring(0, 4)
       this.endDate.month = this.timeValue[1].substring(4, 6)
       this.endDate.day = this.timeValue[1].substring(6, 8)
-      this.initData()
     },
     getDateValue (unit) {
       let date = dateChange(unit)
