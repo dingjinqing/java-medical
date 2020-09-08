@@ -6,24 +6,27 @@
     width="300px"
   >
     <div>
-      <p style="margin-bottom: 10px;">
+      <p style="margin-bottom: 10px">
         退款金额：<el-input-number
           controls-position="right"
           :min="0"
+          :precision="2"
           :max="dataInfo.orderAmount - dataInfo.refundMoney"
           size="small"
           v-model="returnInfo.refundMoney"
         ></el-input-number>
       </p>
       <div>
-        <p style="margin-bottom: 10px;">退款原因</p>
+        <p style="margin-bottom: 10px">退款原因</p>
         <el-input
           type="textarea"
           :rows="2"
           v-model="returnInfo.refundReason"
         ></el-input>
       </div>
-      <div style='margin-top:10px'>剩余退款金额:{{dataInfo.orderAmount - dataInfo.refundMoney}}</div>
+      <div style="margin-top: 10px">
+        剩余退款金额:{{ dataInfo.orderAmount - dataInfo.refundMoney }}
+      </div>
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogShow = false">取消</el-button>
@@ -75,6 +78,10 @@ export default {
       if (newVal === true) {
         this.dialogShow = true
       }
+    },
+    dataInfo (val) {
+      this.returnInfo.refundMoney = val.orderAmount - val.refundMoney
+      this.returnInfo.refundReason = null
     }
   }
 }

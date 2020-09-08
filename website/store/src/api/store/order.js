@@ -11,12 +11,11 @@ export function getOrderList (data) {
 // 标星
 export function star (data) {
   return service({
-    url: 'api/store/order/star',
+    url: '/api/store/order/star',
     method: 'post',
     data
   })
 }
-// 标星
 export function info (data) {
   return service({
     url: '/api/store/order/get',
@@ -52,6 +51,55 @@ export function handleReturnInfo (data) {
 export function getDefaultAddress (data) {
   return service({
     url: '/api/store/config/trade/getdefaultaddress',
+    method: 'post',
+    data: data
+  })
+}
+// 设置订单备注
+export function notes (data) {
+  return service({
+    url: '/api/store/order/sellerRemark',
+    method: 'post',
+    data: data
+  })
+}
+
+// 关闭操作
+export function close (data) {
+  return service({
+    url: '/api/store/order/close',
+    method: 'post',
+    data: data
+  })
+}
+// 完成情操作
+export function finish (data) {
+  return service({
+    url: '/api/store/order/finish',
+    method: 'post',
+    data: data
+  })
+}
+// 核销操作
+export function verify (data) {
+  return service({
+    url: '/api/store/order/checkVerifyCode',
+    method: 'post',
+    data: data
+  })
+}
+// 发货查询
+export function deliveryInfo (data) {
+  return service({
+    url: '/api/store/order/shipGoods',
+    method: 'post',
+    data: data
+  })
+}
+// 发货
+export function delivery (data) {
+  return service({
+    url: '/api/store/order/ship',
     method: 'post',
     data: data
   })

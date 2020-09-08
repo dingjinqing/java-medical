@@ -1,4 +1,5 @@
 <template>
+  <div class="container">
     <div class="goods-list-wrap">
         <div class="goods-list-header">
             <el-form ref="goodsListHeaderForm" :model="goodsFilterModel" :inline="true">
@@ -53,6 +54,7 @@
             </div>
         </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -130,9 +132,10 @@ export default {
 </script>
 
 <style scoped>
+.container{
+  padding: 10px;
+}
     .goods-list-wrap{
-        margin-top: 10px;
-        width: calc(100% - 10px);
         height: 100%;
         overflow: hidden;
     }
