@@ -336,7 +336,7 @@ global.wxPage({
             that.setData({
               sessionId: res.content
             })
-            if (that.data.firstLoad) await that.requestDetail(this.data.orderSn)
+            if (that.data.firstLoad) await that.requestDetail(that.data.orderSn)
             resolve(res)
           }
         }, {
