@@ -349,11 +349,11 @@ public class ShopOverviewService extends MainBaseService {
      */
     public BindofficialVo getbindUnBindStatusUseByOverForStore(StoreTokenAuthInfo user,String bindAppId){
         BindofficialVo bindofficialVo=new BindofficialVo();
-        String officialOpenId = null;
         String nickname=null;
-        Byte isBind=0;
         StoreAccountVo storeAccountVo = saas.shop.storeAccount.getOneInfo(user.getStoreAccountId());
-        officialOpenId = storeAccountVo.getOfficialOpenId();
+        String officialOpenId = storeAccountVo.getOfficialOpenId();
+        Byte isBind = storeAccountVo.getIsBind();
+
         if (StringUtils.isNotEmpty(officialOpenId)) {
             // 绑定过公众号
             // shopId找auth_shop
