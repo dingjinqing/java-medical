@@ -1,16 +1,19 @@
 package com.vpu.mp.dao.shop.rebate;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRebateRecord;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateListParam;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.UpdateSetMoreStep;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -42,8 +45,11 @@ public class PrescriptionRebateDao extends ShopBaseDao {
      * @param status
      */
     public void updateStatus(String prescriptionCode,Byte status){
-        db().update(PRESCRIPTION_REBATE).set(PRESCRIPTION_REBATE.STATUS,status).where(PRESCRIPTION_REBATE.PRESCRIPTION_CODE.eq(prescriptionCode))
-            .execute();
+        UpdateSetMoreStep<PrescriptionRebateRecord> update= db().update(PRESCRIPTION_REBATE).set(PRESCRIPTION_REBATE.STATUS,status);
+        if(PrescriptionRebateConstant.REBATED.equals(status)){
+            update.set(PRESCRIPTION_REBATE.REBATE_TIME, DateUtils.getLocalDateTime());
+        }
+        update.where(PRESCRIPTION_REBATE.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
     }
 
     /**

@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 public class PrescriptionItemBo  {
     private String prescriptionCode;
+    private String doctorName;
     private List<PrescriptionItemDo> itemList;
 
 }
