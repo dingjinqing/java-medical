@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.anchor;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author 孔德成
  * @date 2020/9/7 14:41
@@ -17,5 +19,10 @@ public class AnchorPotionEventBo {
      * 事件名称
      */
     private String eventName;
+
+    /**
+     * 关键字
+     */
+    List<AnchorPotionKeyBo> keys;
 
 }

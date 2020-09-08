@@ -898,17 +898,17 @@
       </div>
     </div>
     <!-- 添加备注弹窗 -->
-    <!-- <nodesDialog
+    <nodesDialog
       :show.sync="showNodes"
       :orderSn="notesOrderSn"
-    /> -->
+    />
     <!-- 发货弹窗 -->
-    <!-- <deliveryDialog
+    <deliveryDialog
       v-if="showDelivery"
       :show.sync="showDelivery"
       :orderData="orderItemInfo"
       @handlerResetData="search"
-    /> -->
+    />
     <!-- 订单导出选择列弹窗 -->
     <!-- <orderExportColumnSelectDialog
       :show.sync="showExportColumnSelect"
@@ -926,12 +926,14 @@
 <script>
 
 import {
-  getOrderList, star
+  getOrderList, star, close, finish, verify
 } from '@/api/store/order'
 
 export default {
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
+    pagination: () => import('@/components/admin/pagination/pagination'),
+    nodesDialog: () => import('./addNotes'),
+    deliveryDialog: () => import('./deliveryDialog')
   },
   data () {
     return {
@@ -1183,24 +1185,24 @@ export default {
       this.showDelivery = true
       this.orderItemInfo = orderInfo
     },
-    // verify (orderInfo) {
-    //   this.$prompt('请输入核销码', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消'
-    //   }).then(({ value }) => {
-    //     let obj = {
-    //       orderSn: orderInfo.orderSn,
-    //       verifyCode: value
-    //     }
-    //     verify(obj).then(res => {
-    //       if (res.error === 0) {
-    //         this.search()
-    //       } else {
-    //         this.$$message.error('提示', res.message)
-    //       }
-    //     })
-    //   })
-    // },
+    verify (orderInfo) {
+      this.$prompt('请输入核销码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(({ value }) => {
+        let obj = {
+          orderSn: orderInfo.orderSn,
+          verifyCode: value
+        }
+        verify(obj).then(res => {
+          if (res.error === 0) {
+            this.search()
+          } else {
+            this.$message.error('提示', res.message)
+          }
+        })
+      })
+    },
     close (orderInfo) {
       let obj = {
         orderId: orderInfo.orderId,
@@ -1221,18 +1223,18 @@ export default {
       }).catch(() => {
       })
     },
-    // finish (orderInfo) {
-    //   let obj = {
-    //     orderId: orderInfo.orderId,
-    //     orderSn: orderInfo.orderSn,
-    //     action: 5
-    //   }
-    //   finish(obj).then(res => {
-    //     if (res.error === 0) {
-    //       this.search()
-    //     }
-    //   })
-    // },
+    finish (orderInfo) {
+      let obj = {
+        orderId: orderInfo.orderId,
+        orderSn: orderInfo.orderSn,
+        action: 5
+      }
+      finish(obj).then(res => {
+        if (res.error === 0) {
+          this.search()
+        }
+      })
+    },
     toggleStar (orderSn, starFlag) {
       let obj = {
         orderSn: [orderSn],

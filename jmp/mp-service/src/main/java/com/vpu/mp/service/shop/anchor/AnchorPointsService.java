@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 锚点
@@ -59,7 +58,7 @@ public class AnchorPointsService extends ShopBaseService {
        return anchorPointsDao.list(param);
     }
 
-    public Map<AnchorPotionEventBo, List<String>> eventKeyMap() {
+    public List<AnchorPotionEventBo> eventKeyMap() {
         return AnchorPointsEvent.eventKeyMap();
     }
 }

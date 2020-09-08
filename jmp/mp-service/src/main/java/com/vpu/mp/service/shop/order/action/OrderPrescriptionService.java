@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.order.action;
 import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
@@ -26,11 +25,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
-import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
-import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -42,12 +38,9 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.Audit
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.AuditOrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
-import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
-import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
 import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -61,7 +54,6 @@ import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -268,19 +260,19 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         }
     }
 
-    private void auditPass(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo, List<OrderGoodsSimpleAuditVo> allGoods, List<Integer> unAuditGoodsId) {
+    private void auditPass(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo, List<OrderGoodsSimpleAuditVo> allGoods, List<Integer> auditGoodsId) {
         if (param.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
             logger().info("orderId:{}审核通过",orderInfoDo.getOrderId());
             //生成处方
-            PrescriptionVo prescriptionVo = savePrescriptionInfo(param, orderInfoDo,allGoods,unAuditGoodsId);
+            PrescriptionVo prescriptionVo = savePrescriptionInfo(param, orderInfoDo,allGoods,auditGoodsId);
             if(prescriptionVo!=null){
                 prescriptionRebateService.addPrescriptionRebate(prescriptionVo,orderInfoDo);
             }
             //修改状态
-            orderGoodsDao.updateAuditedToWaitDelivery(unAuditGoodsId,prescriptionVo.getPrescriptionCode());
-            orderGoodsDao.updateAuditStatusByRecIds(unAuditGoodsId,OrderConstant.MEDICAL_AUDIT_PASS);
+            orderGoodsDao.updateAuditedToWaitDelivery(auditGoodsId,prescriptionVo.getPrescriptionCode());
+            orderGoodsDao.updateAuditStatusByRecIds(auditGoodsId,OrderConstant.MEDICAL_AUDIT_PASS);
             List<Integer> allUnAuditRecIds = getAllUnAuditRecIds(allGoods);
-            if (allUnAuditRecIds.containsAll(unAuditGoodsId)){
+            if (auditGoodsId.containsAll(allUnAuditRecIds)){
                 logger().info("订单处方全部通过");
                 orderInfo.setOrderstatus(orderInfoDo.getOrderSn(), OrderConstant.ORDER_WAIT_DELIVERY);
             }

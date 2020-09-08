@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.anchor;
 import com.google.common.collect.Lists;
 import com.vpu.mp.common.pojo.shop.table.AnchorPointsDo;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPotionEventBo;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPotionKeyBo;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -77,22 +78,29 @@ public enum AnchorPointsEvent {
         return null;
     }
 
-    public static Map<AnchorPotionEventBo, List<String>> eventKeyMap(){
-        Map<AnchorPotionEventBo,List<String>> map =new HashMap<>();
+    public static List<AnchorPotionEventBo> eventKeyMap(){
+        Map<AnchorPotionEventBo,List<AnchorPotionKeyBo>> map =new HashMap<>();
         Arrays.stream(AnchorPointsEvent.values()).forEach(anchorPointsEvent -> {
             if (!map.containsKey(anchorPointsEvent.getEventBo())){
-                map.put(anchorPointsEvent.getEventBo(), Lists.newArrayList(anchorPointsEvent.getKey()));
+                map.put(anchorPointsEvent.getEventBo(), Lists.newArrayList(anchorPointsEvent.getKeyBo()));
             }else {
-                map.get(anchorPointsEvent.getEventBo()).add(anchorPointsEvent.getKey());
+                map.get(anchorPointsEvent.getEventBo()).add(anchorPointsEvent.getKeyBo());
             }
         });
-        return map;
+        map.forEach(AnchorPotionEventBo::setKeys);
+        return Lists.newArrayList(map.keySet());
     }
 
     public AnchorPotionEventBo getEventBo(){
         AnchorPotionEventBo bo =new AnchorPotionEventBo();
         bo.setEvent(this.event);
         bo.setEventName(this.eventName);
+        return bo;
+    }
+
+    public AnchorPotionKeyBo getKeyBo(){
+        AnchorPotionKeyBo bo =new AnchorPotionKeyBo();
+        bo.setKey(this.key);
         return bo;
     }
 

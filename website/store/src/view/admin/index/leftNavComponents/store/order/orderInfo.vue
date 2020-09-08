@@ -951,35 +951,35 @@
         </template>
       </div>
     </div> -->
-    <!-- <nodesDialog
+    <nodesDialog
       :show.sync="showNodes"
       :orderSn="notesOrderSn"
       @handlerResetData="search"
-    /> -->
+    />
     <el-dialog title="收货地址" :visible.sync="showAddress" width="30%">
       <div>{{ $t('order.shippingAddress') }}：{{ itemAddressInfo }}</div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="showAddress = false">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- <deliveryDialog
+    <deliveryDialog
       v-if="showDelivery"
       :show.sync="showDelivery"
       :orderData="orderItemInfo"
       @handlerResetData="search"
-    /> -->
+    />
   </div>
 </template>
 
 <script>
 import {
-  info
+  info, close, finish, verify
 } from '@/api/store/order'
 export default {
-  //   components: {
-  //     nodesDialog: () => import('./addNotes'),
-  //     deliveryDialog: () => import('./deliveryDialog')
-  //   },
+  components: {
+    nodesDialog: () => import('./addNotes'),
+    deliveryDialog: () => import('./deliveryDialog')
+  },
   data () {
     return {
       order: {},
@@ -1116,18 +1116,24 @@ export default {
       this.showDelivery = true
       this.orderItemInfo = orderInfo
     },
-    // verify (orderInfo) {
-    //   let obj = {
-    //     orderId: orderInfo.orderId,
-    //     orderSn: orderInfo.orderSn,
-    //     isCheck: false,
-    //     // TODO
-    //     verifyCode: '',
-    //     action: 4
-    //   }
-    //   verify(obj).then(res => {
-    //   })
-    // },
+    verify (orderInfo) {
+      this.$prompt('请输入核销码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(({ value }) => {
+        let obj = {
+          orderSn: orderInfo.orderSn,
+          verifyCode: value
+        }
+        verify(obj).then(res => {
+          if (res.error === 0) {
+            this.search()
+          } else {
+            this.$message.error('提示', res.message)
+          }
+        })
+      })
+    },
     close (orderInfo) {
       let obj = {
         orderId: orderInfo.orderId,
@@ -1142,20 +1148,20 @@ export default {
         }
       })
     },
-    // finish (orderInfo) {
-    //   let obj = {
-    //     orderId: orderInfo.orderId,
-    //     orderSn: orderInfo.orderSn,
-    //     action: 5
-    //   }
-    //   finish(obj).then(res => {
-    //     if (res.error === 0) {
-    //       this.search()
-    //     } else {
-    //       this.$message.error(res.message)
-    //     }
-    //   })
-    // },
+    finish (orderInfo) {
+      let obj = {
+        orderId: orderInfo.orderId,
+        orderSn: orderInfo.orderSn,
+        action: 5
+      }
+      finish(obj).then(res => {
+        if (res.error === 0) {
+          this.search()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
     goReturnView (orderSn) {
       this.$router.push({
         name: 'afterSale',
