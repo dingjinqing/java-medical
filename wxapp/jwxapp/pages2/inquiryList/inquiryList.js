@@ -108,7 +108,7 @@ global.wxPage({
       }
     }, {
       ...this.data.pageParams,
-      doctorId: this.data.doctorId
+      doctorId: this.data.filterParams.doctorId
     })
   },
 
