@@ -1,6 +1,7 @@
 package com.vpu.mp.dao.shop.goods;
 
 import cn.hutool.core.util.StrUtil;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -26,7 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 /**
@@ -296,11 +298,11 @@ public class GoodsDao extends ShopBaseDao {
 
     /**
      * 查询商品Sn和商品id
-     * @param goodsIds
+     * @param goodsCodes
      * @return
      */
-    public Map<String, Integer> mapGoodsSnToGoodsId(Collection<Integer> goodsIds) {
-        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_ID.in(goodsIds));
+    public Map<String, Integer> mapGoodsSnToGoodsId(Collection<String> goodsCodes) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsCodes));
         return db().select(GOODS.GOODS_SN, GOODS.GOODS_ID).from(GOODS).where(condition).fetchMap(GOODS.GOODS_SN, GOODS.GOODS_ID);
     }
 
@@ -341,5 +343,33 @@ public class GoodsDao extends ShopBaseDao {
             .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchAnyInto(String.class);
+    }
+
+    /**
+     * 批量修改所有商品的上下架状态
+     * @param isOnSale
+     */
+    public void switchSaleStatusAllGoods(Byte isOnSale,Byte source){
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE);
+        // 下架his的所有药品
+        if (MedicalGoodsConstant.SOURCE_FROM_HIS.equals(source)) {
+            condition = condition.and(GOODS.SOURCE.eq(source));
+        }
+        // 下架药房的所有药品
+        if (MedicalGoodsConstant.SOURCE_FROM_STORE.equals(source)) {
+            condition = condition.and(GOODS.STORE_CODE.isNotNull());
+        }
+        db().update(GOODS).set(GOODS.IS_ON_SALE,isOnSale).where(condition).execute();
+    }
+
+    /**
+     * 批量上架可用的商品信息
+     */
+    public void batchUpStoreAndMedicalGoods(){
+        db().update(GOODS).set(GOODS.IS_ON_SALE,MedicalGoodsConstant.ON_SALE)
+            .where(GOODS.STORE_STATUS.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.byteValue())
+                .and(GOODS.HIS_STATUS.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.byteValue()))
+                .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .execute();
     }
 }

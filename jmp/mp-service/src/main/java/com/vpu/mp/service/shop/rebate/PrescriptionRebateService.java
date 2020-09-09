@@ -1,6 +1,9 @@
 package com.vpu.mp.service.shop.rebate;
 
 import cn.hutool.core.date.DateUtil;
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.*;
@@ -18,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.rebate.*;
 import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -134,7 +138,6 @@ public class PrescriptionRebateService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionRebateVo> getPageList(PrescriptionRebateListParam param){
-        beginAndEndOfDay(param);
         PageResult<PrescriptionRebateVo> result=prescriptionRebateDao.getPageList(param);
         List<PrescriptionRebateVo> list=result.getDataList();
         for(PrescriptionRebateVo vo:list){
@@ -143,15 +146,27 @@ public class PrescriptionRebateService extends ShopBaseService {
         }
         return result;
     }
-    public void beginAndEndOfDay(PrescriptionRebateListParam param){
-        Timestamp startDate = param.getStartTime();
-        Timestamp endDate = param.getEndTime();
-        if (startDate != null ) {
-            startDate = DateUtil.beginOfDay(startDate).toTimestamp();
-            param.setStartTime(startDate);
-        }if( endDate != null){
-            endDate = DateUtil.endOfDay(endDate).toTimestamp();
-            param.setEndTime(endDate);
-        }
+
+    /**
+     * 报表导出
+     * @param param
+     * @return
+     */
+    public Workbook listExport(PrescriptionRebateListParam param,String lang){
+        List<PrescriptionRebateReportVo> list=prescriptionRebateDao.getList(param);
+        list.stream().forEach(vo -> {
+            if(PrescriptionRebateConstant.TO_REBATE.equals(vo.getStatus())){
+                vo.setStatusName(RebateReportConstant.WAIT_REBATE);
+            }else if(PrescriptionRebateConstant.REBATED.equals(vo.getStatus())){
+                vo.setStatusName(RebateReportConstant.REBATED);
+            }else if(PrescriptionRebateConstant.REBATE_FAIL.equals(vo.getStatus())){
+                vo.setStatusName(RebateReportConstant.REBATE_FAIL);
+            }
+        });
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(list,PrescriptionRebateReportVo.class);
+        return workbook;
     }
+
 }
