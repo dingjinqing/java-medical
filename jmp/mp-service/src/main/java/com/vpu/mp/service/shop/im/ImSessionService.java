@@ -119,7 +119,7 @@ public class ImSessionService extends ShopBaseService {
             imSessionItemDos = renderSessionFromDb(renderPageParam);
         }
 
-        List<ImSessionItemRenderVo> sessionItemRenderVos = imSessionItemDos.stream().map(item -> {
+        return imSessionItemDos.stream().map(item -> {
             ImSessionItemRenderVo itemVo = new ImSessionItemRenderVo();
             itemVo.setDoctor(doctorId.equals(item.getFromId()));
             itemVo.setMessage(item.getMessage());
@@ -127,7 +127,6 @@ public class ImSessionService extends ShopBaseService {
             itemVo.setSendTime(item.getSendTime());
             return itemVo;
         }).collect(Collectors.toList());
-        return sessionItemRenderVos;
     }
 
     /**
@@ -681,7 +680,7 @@ public class ImSessionService extends ShopBaseService {
         ImSessionDo imSessionDo = imSessionDao.getByOrderSn(param.getOrderSn());
         Integer doctorId = imSessionDo.getDoctorId();
         List<ImSessionItemDo> list = imSessionItemDao.getBySessionId(imSessionDo.getId());
-        List<ImSessionItemRenderVo> sessionItemRenderVos = list.stream().map(item -> {
+        return list.stream().map(item -> {
             ImSessionItemRenderVo itemVo = new ImSessionItemRenderVo();
             itemVo.setDoctor(doctorId.equals(item.getFromId()));
             itemVo.setMessage(item.getMessage());
@@ -689,7 +688,6 @@ public class ImSessionService extends ShopBaseService {
             itemVo.setSendTime(item.getSendTime());
             return itemVo;
         }).collect(Collectors.toList());
-        return sessionItemRenderVos;
     }
 
 }
