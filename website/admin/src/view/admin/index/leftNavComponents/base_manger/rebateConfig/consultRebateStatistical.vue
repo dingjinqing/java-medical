@@ -54,6 +54,7 @@
       </div>
       <div class="filters_item" style="margin-left: 15px">
         <el-button type="primary" size="small" @click="search">搜索</el-button>
+        <el-button size="small" @click="exportData">导出</el-button>
       </div>
     </div>
     <div class="table-content">
@@ -116,7 +117,8 @@
 </template>
 
 <script>
-import { getInquiryOrderRebate } from '@/api/admin/basicConfiguration/doctorWithDraw'
+import { getInquiryOrderRebate, exporTinquiryOrderRebate } from '@/api/admin/basicConfiguration/doctorWithDraw'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -200,7 +202,13 @@ export default {
       ],
       startTime: null,
       endTime: null,
-      pageParams: {}
+      pageParams: {},
+      exportParams: {
+        doctorName: null,
+        status: null,
+        startTime: null,
+        endTime: null
+      }
     }
   },
   mounted () {
@@ -274,7 +282,15 @@ export default {
         if (res.error === 0) {
           this.tableList = res.content.dataList
           this.pageParams = res.content.page
+          this.exportParams = JSON.parse(JSON.stringify(params))
         }
+      })
+    },
+    exportData () {
+      exporTinquiryOrderRebate({ ...this.exportParams }).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
       })
     }
   }
