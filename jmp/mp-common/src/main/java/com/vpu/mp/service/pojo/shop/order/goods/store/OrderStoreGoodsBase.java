@@ -15,5 +15,4 @@ public class OrderStoreGoodsBase {
     private String goodsApprovalNumber;
     /**药房方提供的唯一值*/
     private String goodsCode;
-    private Integer goodsNumber;
 }
