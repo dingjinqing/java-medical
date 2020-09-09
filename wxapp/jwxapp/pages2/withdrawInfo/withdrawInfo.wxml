@@ -1,6 +1,7 @@
 <wxs src="../../utils/wxs/filter.wxs" module="filter" />
 <wxs module="tool">
   var getMedicalName = function(medicalList){
+    if(!medicalList || !medicalList.length) return ''
     var arr =  medicalList.map(function(item){
       return item.goodsCommonName
     })
