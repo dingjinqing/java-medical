@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientMedicineParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,8 +40,30 @@ public class AdminPatientController extends AdminBaseController {
     @GetMapping("/api/admin/patient/info/{patientId}")
     public JsonResult getPatient(@PathVariable  Integer patientId) {
         if (patientId == null) {
-            return fail(JsonResultCode.DOCTOR_DEPARTMENT_ID_IS_NULL);
+            return fail(JsonResultCode.PATIENT_IS_NOT_EXIST);
         }
         return success(shop().patientService.getOneInfo(patientId));
     }
+
+    /**
+     * 根据患者id查询患者购药记录
+     * @param patientMedicineParam 患者id
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/patient/medicine/record")
+    public JsonResult getPatientBuyMedicineRecord(@RequestBody PatientMedicineParam patientMedicineParam) {
+        return success(shop().patientService.getPatientBuyMedicineRecord(patientMedicineParam));
+    }
+
+    /**
+     * 根据患者id查询关联医师
+     * @param patientId 患者id
+     * @return JsonResult
+     */
+    @GetMapping("/api/admin/patient/query/doctor/{patientId}")
+    public JsonResult getPatientRelevanceDoctor(@PathVariable Integer patientId) {
+        return success();
+    }
+
+
 }

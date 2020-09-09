@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = -73317638;
+    private static final long serialVersionUID = -167411034;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
@@ -203,6 +203,11 @@ public class Doctor extends TableImpl<DoctorRecord> {
      * The column <code>mini_shop_471752.b2c_doctor.user_token</code>. 医师关联用户token
      */
     public final TableField<DoctorRecord, String> USER_TOKEN = createField("user_token", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师关联用户token");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.consultation_total_money</code>. 咨询总金额
+     */
+    public final TableField<DoctorRecord, BigDecimal> CONSULTATION_TOTAL_MONEY = createField("consultation_total_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "咨询总金额");
 
     /**
      * Create a <code>mini_shop_471752.b2c_doctor</code> table reference
