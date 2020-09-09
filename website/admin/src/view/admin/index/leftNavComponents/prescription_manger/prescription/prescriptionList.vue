@@ -146,7 +146,7 @@
                     start-placeholder="开始日期"
                     end-placeholder="结束日期">
             </el-date-picker>
-            <span class="choosed_time">{{this.createTime.startDate.year}}年{{this.createTime.startDate.month}}月{{this.createTime.startDate.day}}日 - {{this.createTime.endDate.year}}年{{this.createTime.month}}月{{this.createTime.endDate.day}}日</span>
+            <span class="choosed_time">{{this.createTime.startDate.year}}年{{this.createTime.startDate.month}}月{{this.createTime.startDate.day}}日 - {{this.createTime.endDate.year}}年{{this.createTime.endDate.month}}月{{this.createTime.endDate.day}}日</span>
           </div>
 
           <div class="btn_wrap">
@@ -209,10 +209,6 @@
                   label='科室名称'
           ></el-table-column>
           <el-table-column
-                  prop='diagnosisName'
-                  label='疾病名称'
-          ></el-table-column>
-          <el-table-column
                   prop='createTime'
                   label='开方时间'
           >
@@ -258,7 +254,7 @@
           </el-table-column>
           <el-table-column
                   prop='settlementFlag'
-                  label='是否结算'>
+                  label='是否返利'>
             <template slot-scope="scope">
               {{getLabelValue(settlementFlag,scope.row.settlementFlag)}}
             </template>
@@ -300,15 +296,17 @@ export default {
         {value: 1, label: '有效'}
       ],
       settlementFlag: [
-        {value: 0, label: '未结算'},
-        {value: 1, label: '已结算'}
+        {value: 0, label: '未返利'},
+        {value: 1, label: '已返利'},
+        {value: 2, label: '不返利'},
+        {value: null, label: '不返利'}
       ],
       isUsed: [
         {value: 0, label: '未使用'},
         {value: 1, label: '已使用'}
       ],
       expireType: [
-        {value: 0, label: '未知'},
+        {value: 0, label: '过期'},
         {value: 1, label: '永久有效'},
         {value: 2, label: '时间段内有效'}
       ],
@@ -466,9 +464,9 @@ export default {
     handleSeeOrder (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
-        name: 'orderInfo'
+        name: 'prescription_message'
       })
-      newpage.href = newpage.href + '?orderSn=' + code
+      newpage.href = newpage.href + '?prescriptionCode=' + code
       console.log(newpage.href)
       window.open(newpage.href, '_blank')
     },
