@@ -29,6 +29,7 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -374,6 +375,7 @@ public class ImSessionService extends ShopBaseService {
     private void statisticDoctorSessionState(Integer doctorId) {
         Integer sessionReadyToOnAckAvgTime = imSessionDao.getSessionReadyToOnAckAvgTime(doctorId);
         Integer sessionCount = imSessionDao.getSessionCount(doctorId);
+        BigDecimal sessionMoney = imSessionDao.getSessionTotalMoney(doctorId);
         DoctorSortParam sortParam = new DoctorSortParam();
         sortParam.setDoctorId(doctorId);
         if (sessionReadyToOnAckAvgTime != null) {
@@ -382,6 +384,9 @@ public class ImSessionService extends ShopBaseService {
         }
         sortParam.setConsultationNumber(sessionCount);
         doctorService.updateConsultationNumber(sortParam);
+        sortParam.setConsultationTotalMoney(sessionMoney);
+        doctorService.updateConsultationTotalMoney(sortParam);
+
     }
 
     /**

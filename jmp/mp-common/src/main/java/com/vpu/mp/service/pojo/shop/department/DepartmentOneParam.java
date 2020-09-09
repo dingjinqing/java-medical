@@ -37,4 +37,9 @@ public class DepartmentOneParam {
      * 删除状态
      */
     private Byte isDelete=0;
+
+    /**
+     * 优先级
+     */
+    private Integer   first=0;
 }
