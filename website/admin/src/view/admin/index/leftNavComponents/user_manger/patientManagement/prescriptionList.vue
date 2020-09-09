@@ -291,7 +291,10 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="initDataList"
+        />
       </div>
     </div>
   </div>
@@ -351,7 +354,7 @@ export default {
       },
       pageParams: {
         currentPage: 1,
-        pageRows: 20
+        pageRows: 5
       },
       tableData: [],
       storeGroup: [],
@@ -554,37 +557,42 @@ export default {
     .filters {
       flex: 2;
       display: flex;
-      flex-wrap: wrap;
-      line-height: 32px;
-      margin-left: -15px;
-      .filters_item {
+      background-color: #fff;
+      padding: 0px 20px;
+      .filters {
+        flex: 2;
         display: flex;
-        justify-content: flex-end;
-        margin-left: 15px;
-        .fil_span {
-          font-size: 14px;
-          text-align: right;
+        flex-wrap: wrap;
+        line-height: 32px;
+        margin-left: -15px;
+        .filters_item {
+          display: flex;
+          justify-content: flex-end;
+          margin-left: 15px;
+          .fil_span {
+            font-size: 14px;
+            text-align: right;
+          }
+          .timeSelect {
+            width: 140px;
+            margin: 0 10px 0 10px;
+          }
+          .choosed_time {
+            margin-left: 20px;
+          }
         }
-        .timeSelect {
-          width: 140px;
-          margin: 0 10px 0 10px;
-        }
-        .choosed_time {
+        .btn_wrap {
           margin-left: 20px;
         }
       }
-      .btn_wrap {
-        margin-left: 20px;
-      }
     }
-  }
-  .table_box {
-    padding: 10px;
-    background: #fff;
-    margin-top: 10px;
-    a {
-      color: #5a8bff;
-      cursor: pointer;
+    .table_box {
+      padding: 10px;
+      background: #fff;
+      a {
+        color: #5a8bff;
+        cursor: pointer;
+      }
     }
   }
   .default_input {
