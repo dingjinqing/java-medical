@@ -1,81 +1,180 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="titleEdit"><span>处方列表</span></div>
-      <div class="navBox">
+      <div class="nav_box">
         <div class="filters">
+          <div class="filters_item ">
+            <span class="fil_span">医师姓名：</span>
+            <el-select
+                    v-model="queryParams.doctorName"
+                    placeholder="全部"
+                    size="small"
+                    class="default_input"
+                    filterable
+                    clearable
+                    @change="initDataList">
+              <el-option label="全部" value=""></el-option>
+              <el-option
+                      v-for="item in doctorList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.name"></el-option>
+            </el-select>
+          </div>
           <div class="filters_item">
-            <span>处方号：</span>
+            <span>患者姓名：</span>
             <el-input
-              v-model="queryParams.prescriptionNos"
-              size="small"
-              style="width: 190px"
-              placeholder="请输入患者处方号"
+                    v-model="queryParams.patientName"
+                    size="small"
+                    style="width:190px;"
+                    placeholder="请输入姓名"
             >
             </el-input>
           </div>
           <div class="filters_item">
-            <span class="fil_span">医师姓名：</span>
-            <el-select
-              v-model="queryParams.doctorName"
-              placeholder="请输入医师姓名"
-              size="small"
-              class="default_input"
-              filterable
+            <span>处方号：</span>
+            <el-input
+                    v-model="queryParams.prescriptionCode"
+                    size="small"
+                    style="width:190px;"
+                    placeholder="请输入处方号"
             >
+            </el-input>
+          </div>
+          <div class="filters_item">
+            <span>订单号：</span>
+            <el-input
+                    v-model="queryParams.orderSn"
+                    size="small"
+                    style="width:190px;"
+                    placeholder="请输入订单号"
+            >
+            </el-input>
+          </div>
+
+        </div>
+      </div>
+      <div class="nav_box" style='margin-top:0;padding-top:0'>
+        <div class="filters">
+          <div class="filters_item">
+            <span class="fil_span">开方类型：</span>
+            <el-select
+                    v-model="queryParams.auditType"
+                    placeholder="全部"
+                    size="small"
+                    class="default_input"
+                    @change="initDataList">
+              <el-option label="全部" value=null></el-option>
               <el-option
-                label="全部"
-                value=" "
-              ></el-option>
-              <el-option
-                v-for="item in doctorList"
-                :key="item.name"
-                :label="item.name"
-                :value="item.name"
-              ></el-option>
+                      v-for="item in auditTypes"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"></el-option>
             </el-select>
           </div>
           <div class="filters_item">
-            <span class="fil_span">时间筛选：</span>
+            <span class="fil_span">是否使用：</span>
             <el-select
-              v-model="timeSelect"
-              size="small"
-              class="timeSelect"
+                    v-model="queryParams.isUsed"
+                    placeholder="全部"
+                    size="small"
+                    class="default_input"
+                    @change="initDataList">
+              <el-option label="全部" value=null></el-option>
+              <el-option
+                      v-for="item in isUsed"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">过期类型：</span>
+            <el-select
+                    v-model="queryParams.expireType"
+                    placeholder="全部"
+                    size="small"
+                    class="default_input"
+                    @change="initDataList">
+              <el-option label="全部" value=null></el-option>
+              <el-option
+                      v-for="item in expireType"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">是否有效：</span>
+            <el-select
+                    v-model="queryParams.isValid"
+                    placeholder="全部"
+                    size="small"
+                    class="default_input"
+                    @change="initDataList">
+              <el-option label="全部" value=null></el-option>
+              <el-option
+                      v-for="item in isValid"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">是否返利：</span>
+            <el-select
+                    v-model="queryParams.settlementFlag"
+                    placeholder="全部"
+                    size="small"
+                    class="default_input"
+                    @change="initDataList">
+              <el-option label="全部" value=null></el-option>
+              <el-option
+                      v-for="item in settlementFlag"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"></el-option>
+            </el-select>
+          </div>
+        </div>
+      </div>
+      <div class="nav_box" style='margin-top:0;padding-top:0'>
+        <div class="filters">
+          <div class="filters_item">
+            <span class="fil_span">开方时间：</span>
+            <el-select
+                    v-model="createTimeSelect"
+                    size="small"
+                    @change="createDateChangeHandler"
+                    class="timeSelect"
             >
               <el-option
-                v-for="item in timeRange"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                      v-for="item in timeRange"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
               ></el-option>
             </el-select>
             <el-date-picker
-              v-if="timeSelect === 4"
-              v-model="timeValue"
-              type="datetimerange"
-              size="small"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :default-time="['00:00:00', '23:59:59']"
-              range-separator="-"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            >
+                    v-if="createTimeSelect===-1"
+                    v-model="createTimeValue"
+                    type="daterange"
+                    size="small"
+                    value-format="yyyyMMdd"
+                    @change="createChangeDate"
+                    range-separator="-"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
             </el-date-picker>
-            <span
-              class="choosed_time"
-              v-if="timeSelect !== -1 && timeSelect !== 4"
-            >{{ this.startDate.year }}年{{ this.startDate.month }}月{{
-                this.startDate.day
-              }}日 - {{ this.endDate.year }}年{{ this.endDate.month }}月{{
-                this.endDate.day
-              }}日</span>
+            <span class="choosed_time">{{this.createTime.startDate.year}}年{{this.createTime.startDate.month}}月{{this.createTime.startDate.day}}日 - {{this.createTime.endDate.year}}年{{this.createTime.endDate.month}}月{{this.createTime.endDate.day}}日</span>
           </div>
+
           <div class="btn_wrap">
             <el-button
-              type="primary"
-              size="small"
-              @click="initDataList"
-            >搜索</el-button>
+                    type='primary'
+                    size='small'
+                    @click="initDataList"
+            >查询</el-button>
           </div>
         </div>
       </div>
@@ -96,41 +195,99 @@
           }"
         >
           <el-table-column
-            prop="prescriptionCode"
-            label="处方号"
-          ></el-table-column>
-          <el-table-column
-            prop='doctorCode'
-            label='医师Code'
-          ></el-table-column>
-          <el-table-column
-            prop="departmentName"
-            label="科室名称"
-          ></el-table-column>
-          <el-table-column
-            prop="doctorName"
-            label="医师名称"
-          ></el-table-column>
-          <el-table-column
-            prop="diagnosisName"
-            label="疾病名称"
-          ></el-table-column>
-          <el-table-column
-            prop="diagnoseTime"
-            label="就诊时间"
-          ></el-table-column>
-          <el-table-column label="操作">
+                  prop='name'
+                  label='患者姓名'
+          >
             <template slot-scope="scope">
               <div class="operation">
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="查看详情"
-                  placement="top"
-                >
-                  <a @click="handleSeeMessage(scope.row.prescriptionCode)">查看详情</a>
-                </el-tooltip>
+                <a @click="handleSeePatient(scope.row.id)">{{scope.row.name}}({{scope.row.patientId}})</a>
               </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='prescriptionCode'
+                  label='处方号'
+          >
+            <template slot-scope="scope">
+              <div class="operation">
+                <a @click="handleSeeMessage(scope.row.prescriptionCode)">{{scope.row.prescriptionCode}}</a>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='prescriptionCode'
+                  label='处方号'
+          >
+            <template slot-scope="scope">
+              <div class="operation">
+                <a @click="handleSeeOrder(scope.row.prescriptionCode)">{{scope.row.prescriptionCode}}</a>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='doctorName'
+                  label='医师名称'
+          >
+            <template slot-scope="scope">
+              <div class="operation">
+                <a @click="handleSeeDoctor(scope.row.doctorCode)">{{scope.row.doctorName}}({{scope.row.doctorCode}})</a>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='departmentName'
+                  label='科室名称'
+          ></el-table-column>
+          <el-table-column
+                  prop='createTime'
+                  label='开方时间'
+          >
+            <template slot-scope="scope">
+              {{scope.row.createTime.substring(0, 10)}}
+              <br />
+              {{scope.row.createTime.substring(11, 20)}}
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='auditType'
+                  label='处方类型'>
+            <template slot-scope="scope">
+              {{getLabelValue(auditTypes,scope.row.auditType)}}
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='totalPrice'
+                  label='处方金额'
+          >
+          </el-table-column>
+          <el-table-column
+                  prop='isUsed'
+                  label='是否使用'>
+            <template slot-scope="scope">
+              {{getLabelValue(isUsed,scope.row.isUsed)}}
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='expireType'
+                  label='过期类型'>
+            <template slot-scope="scope">
+              {{expireTypeTime(scope.row)}}
+              <br>
+              ({{getLabelValue(expireType,scope.row.expireType)}})
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='isValid'
+                  label='是否有效'>
+            <template slot-scope="scope">
+              {{getLabelValue(isValid,scope.row.isValid)}}
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='settlementFlag'
+                  label='是否结算'>
+            <template slot-scope="scope">
+              {{getLabelValue(settlementFlag,scope.row.settlementFlag)}}
             </template>
           </el-table-column>
         </el-table>
@@ -145,7 +302,7 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
+import { getAllPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
 import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
 export default {
   components: { pagination },
@@ -153,57 +310,38 @@ export default {
     lang () {
       // this.timeRange = this.$t('tradesStatistics.timeRange')
     },
-    timeSelect (val) {
-      let end = new Date()
-      let start = new Date()
-      switch (val) {
-        case -1:
-          start = ''
-          end = ''
-          break
-        case 1:
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
-          break
-        case 2:
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-          break
-        case 3:
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-          break
-        case 4:
-          start = this.timeValue[0] || ''
-          end = this.timeValue[1] || ''
-          break
+    // 选择时间段
+    createDateChangeHandler (time) {
+      if (time !== -1) {
+        this.createGetDateValue(time)
+        this.initDataList()
+      } else {
+        this.createTime.startDate.year = ''
+        this.createTime.startDate.month = ''
+        this.createTime.startDate.day = ''
+        this.createTime.endDate.year = ''
+        this.createTime.month = ''
+        this.createTime.endDate.day = ''
+        this.queryParams.createTimeStartTime = ''
+        this.queryParams.createTimeEndTime = ''
       }
-      this.queryParams.diagnoseStartTime = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()} 00:00:00`
-      this.queryParams.diagnoseEndTime = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()} 23:59:59`
-      this.startDate.year = start.getFullYear()
-      this.startDate.month = start.getMonth() + 1
-      this.startDate.day = start.getDate()
-      this.endDate.year = end.getFullYear()
-      this.endDate.month = end.getMonth() + 1
-      this.endDate.day = end.getDate()
     },
-    timeValue (val) {
-      if (this.timeSelect === 4) {
-        this.queryParams.diagnoseStartTime = val[0]
-        this.queryParams.diagnoseEndTime = val[1]
-      }
+    // 自定义时间
+    createChangeDate () {
+      this.queryParams.diagnoseStartTime = this.createTimeValue[0].substring(0, 4) + '-' + this.createTimeValue[0].substring(4, 6) + '-' + this.createTimeValue[0].substring(6, 8) + ' 00:00:00'
+      this.queryParams.diagnoseEndTime = this.createTimeValue[1].substring(0, 4) + '-' + this.createTimeValue[1].substring(4, 6) + '-' + this.createTimeValue[1].substring(6, 8) + ' 23:59:59'
+      this.createTime.startDate.year = this.createTimeValue[0].substring(0, 4)
+      this.createTime.startDate.month = this.createTimeValue[0].substring(4, 6)
+      this.createTime.startDate.day = this.createTimeValue[0].substring(6, 8)
+      this.createTime.endDate.year = this.createTimeValue[1].substring(0, 4)
+      this.createTime.endDate.month = this.createTimeValue[1].substring(4, 6)
+      this.createTime.endDate.day = this.createTimeValue[1].substring(6, 8)
     }
   },
   data () {
     return {
-      loading: false,
-      langDefaultFlag: false,
       timeValue: [],
       timeSelect: -1,
-      timeRange: [
-        { value: -1, label: '全部' },
-        { value: 1, label: '最新1天' },
-        { value: 2, label: '最新7天' },
-        { value: 3, label: '最新30天' },
-        { value: 4, label: '自定义' }
-      ],
       startDate: {
         year: '',
         month: '',
@@ -221,14 +359,82 @@ export default {
       tableData: [],
       storeGroup: [],
       queryParams: {
-        prescriptionNos: null,
+        patientName: '',
+        prescriptionCode: '',
+        orderSn: '',
         diagnoseStartTime: '',
         diagnoseEndTime: '',
-        doctorName: ''
+        doctorName: '',
+        auditType: null,
+        settlementFlag: null,
+        isUsed: null,
+        expireType: null,
+        isValid: null
       },
       // 表格原始数据
       originalData: [],
-      doctorList: []
+      doctorList: [],
+      loading: false,
+      langDefaultFlag: false,
+      auditTypes: [
+        {value: 0, label: '不审核'},
+        {value: 1, label: '续方'},
+        {value: 2, label: '开方'},
+        {value: 3, label: '会话开方'}
+      ],
+      isValid: [
+        {value: 0, label: '无效'},
+        {value: 1, label: '有效'}
+      ],
+      settlementFlag: [
+        {value: 0, label: '未返利'},
+        {value: 1, label: '已返利'},
+        {value: 2, label: '不返利'},
+        {value: null, label: '不返利'}
+      ],
+      isUsed: [
+        {value: 0, label: '未使用'},
+        {value: 1, label: '已使用'}
+      ],
+      expireType: [
+        {value: 0, label: '过期'},
+        {value: 1, label: '永久有效'},
+        {value: 2, label: '未过期'}
+      ],
+      createTimeValue: [],
+      createTimeSelect: 30,
+      timeRange: [
+        { value: 0, label: '今日' },
+        { value: 1, label: '昨日' },
+        { value: 7, label: '最近7天' },
+        { value: 30, label: '最近30天' },
+        { value: -1, label: '自定义' }
+      ],
+      diagnoseTime: {
+        startDate: {
+          year: '',
+          month: '',
+          day: ''
+        },
+        endDate: {
+          year: '',
+          month: '',
+          day: ''
+        }
+      },
+      createTime: {
+        startDate: {
+          year: '',
+          month: '',
+          day: ''
+        },
+        endDate: {
+          year: '',
+          month: '',
+          day: ''
+        }
+      }
+
     }
   },
   methods: {
@@ -241,7 +447,7 @@ export default {
         ...this.queryParams
       }
       params.prescriptionNos = this.queryParams.prescriptionNos ? [this.queryParams.prescriptionNos] : null
-      getPrescriptionList(params).then((res) => {
+      getAllPrescriptionList(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -265,6 +471,36 @@ export default {
       console.log(newpage.href)
       window.open(newpage.href, '_blank')
     },
+    // 跳转患者详情
+    handleSeePatient (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'patient_message'
+      })
+      newpage.href = newpage.href + '?id=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
+    // 跳转医师列表
+    handleSeeDoctor (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'addDoctor'
+      })
+      newpage.href = newpage.href + '?id=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
+    // 处方列表
+    handleSeeOrder (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'orderInfo'
+      })
+      newpage.href = newpage.href + '?orderSn=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
     handleData (data) {
       this.tableData = data
       this.langDefaultFlag = true
@@ -276,20 +512,27 @@ export default {
           this.doctorList = res.content
         }
       })
+    },
+    getLabelValue (map, value) {
+      let label = '无'
+      map.forEach(item => {
+        if (item.value === value) {
+          label = item.label
+        }
+      })
+      return label
+    },
+    // 过期时间和类型
+    expireTypeTime (row) {
+      if (row.expireType === 2) {
+      // 有过期时间
+        return row.prescriptionExpireTime
+      }
+      return ''
     }
   },
-  // watch: {
-  //   lang () {
-  //     if (this.langDefaultFlag) {
-  //       // 重新渲染表格数据
-  //       let originalData = JSON.parse(JSON.stringify(this.originalData))
-  //       this.handleData(originalData)
-  //     }
-  //   }
-  // },
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
-    // this.getDateValue(1)
     this.getDoctor({})
     this.initDataList()
   },
@@ -304,23 +547,15 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-.content {
-  margin-top: 10px;
-  background: #fff;
-  .main {
-    .titleEdit{
-      padding: 0 20px;
-      height: 50px;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      align-items: center;
-      border-bottom: 1px solid #e6e9f0;
-      margin-bottom: 10px;
-    }
-    .navBox {
+.main {
+  padding: 10px;
+  .nav_box {
+    display: flex;
+    background-color: #fff;
+    padding: 0px 15px 10px;
+    margin: 0px 10px 0;
+    .filters {
+      flex: 2;
       display: flex;
       background-color: #fff;
       padding: 0px 20px;
@@ -360,5 +595,21 @@ export default {
       }
     }
   }
+  .default_input {
+    width: 150px;
+  }
+  .total_amount {
+    background: #fff;
+    padding: 10px 0;
+    div {
+      text-align: center;
+      font-size: 15px;
+      color: #333;
+      span {
+        margin-right: 20px;
+      }
+    }
+  }
+
 }
 </style>

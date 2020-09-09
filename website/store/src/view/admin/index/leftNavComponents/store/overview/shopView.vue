@@ -211,7 +211,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        setBind({ act: 0 }).then(res => {
+        setBind({ act: 'del_bind' }).then(res => {
           if (res.error === 0) {
             this.bindData.isBind = 0
           } else {

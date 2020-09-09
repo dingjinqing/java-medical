@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.IM_SESSION;
+import static com.vpu.mp.db.shop.Tables.INQUIRY_ORDER;
 
 /**
  * 会话处理Dao
@@ -195,10 +196,6 @@ public class ImSessionDao extends ShopBaseDao {
             condition = condition.and(IM_SESSION.USER_ID.eq(imSessionCondition.getUserId()));
         }
 
-        if (imSessionCondition.getUpdateTimeLine() != null) {
-            condition = condition.and(IM_SESSION.UPDATE_TIME.le(imSessionCondition.getUpdateTimeLine()));
-        }
-
         return db().selectFrom(IM_SESSION).where(condition).fetchInto(ImSessionDo.class);
     }
 
@@ -230,6 +227,17 @@ public class ImSessionDao extends ShopBaseDao {
     }
 
     public Integer getSessionCount(Integer doctorId) {
-        return db().fetchCount(IM_SESSION, IM_SESSION.DOCTOR_ID.eq(doctorId).and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
+        return db().fetchCount(IM_SESSION, IM_SESSION.DOCTOR_ID.eq(doctorId)
+            .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_CANCEL)));
+    }
+
+    public BigDecimal getSessionTotalMoney(Integer doctorId) {
+        return db().select(DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("consultation_money")).from(IM_SESSION)
+            .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.ORDER_SN.eq(IM_SESSION.ORDER_SN))
+            .where(IM_SESSION.DOCTOR_ID.eq(doctorId))
+            .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_CANCEL))
+            .fetchAnyInto(BigDecimal.class);
     }
 }

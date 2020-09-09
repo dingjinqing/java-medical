@@ -172,6 +172,13 @@ export default {
             flag: true
           },
           {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/sales_report.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/sale_report_h.png',
+            span: '',
+            name: 'anchor_points',
+            flag: true
+          },
+          {
             imgUrl: this.$imageHost + '/image/admin/icon_left/new_analysis_portrait.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/new_analtsis_portrait_h.png',
             span: '',

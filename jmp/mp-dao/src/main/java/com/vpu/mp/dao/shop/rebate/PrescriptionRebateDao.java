@@ -1,15 +1,13 @@
 package com.vpu.mp.dao.shop.rebate;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRebateRecord;
-import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
-import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateListParam;
-import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
-import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateVo;
+import com.vpu.mp.service.pojo.shop.rebate.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -77,20 +75,23 @@ public class PrescriptionRebateDao extends ShopBaseDao {
      * @return
      */
     public PageResult<PrescriptionRebateVo> getPageList(PrescriptionRebateListParam param){
-        SelectJoinStep<? extends Record> select = db()
-            .select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,USER.USERNAME.as("userName"),PRESCRIPTION_REBATE.asterisk())
-            .from(PRESCRIPTION_REBATE);
-        select.leftJoin(DOCTOR).on(DOCTOR.ID.eq(PRESCRIPTION_REBATE.DOCTOR_ID))
-            .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_REBATE.PRESCRIPTION_CODE))
-        .leftJoin(USER).on(USER.USER_ID.eq(PRESCRIPTION.USER_ID));
-        select.where(PRESCRIPTION_REBATE.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
+        SelectJoinStep<? extends Record> select = selectOptions();
         select=buildOptions(select,param);
         select.orderBy(PRESCRIPTION_REBATE.CREATE_TIME.desc());
         PageResult<PrescriptionRebateVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),PrescriptionRebateVo.class);
         return result;
 
     }
+    public SelectJoinStep<? extends Record> selectOptions(){
+        SelectJoinStep<? extends Record> select=db().select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,USER.USERNAME.as("userName"),PRESCRIPTION_REBATE.asterisk())
+            .from(PRESCRIPTION_REBATE);
+        select.leftJoin(DOCTOR).on(DOCTOR.ID.eq(PRESCRIPTION_REBATE.DOCTOR_ID))
+            .leftJoin(PRESCRIPTION).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_REBATE.PRESCRIPTION_CODE))
+            .leftJoin(USER).on(USER.USER_ID.eq(PRESCRIPTION.USER_ID));
+        return select;
+    }
     protected SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select,PrescriptionRebateListParam param){
+        select.where(PRESCRIPTION_REBATE.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         if(StringUtils.isNotBlank(param.getDoctorName())){
             select.where(DOCTOR.NAME.like(this.likeValue(param.getDoctorName())));
         }
@@ -101,12 +102,24 @@ public class PrescriptionRebateDao extends ShopBaseDao {
             select.where(PRESCRIPTION_REBATE.STATUS.eq(param.getStatus()));
         }
         if(param.getStartTime()!=null){
-            select.where(PRESCRIPTION_REBATE.CREATE_TIME.ge(param.getStartTime()));
+            select.where(PRESCRIPTION_REBATE.CREATE_TIME.ge(DateUtil.beginOfDay(param.getStartTime()).toTimestamp()));
         }
         if(param.getEndTime()!=null){
-            select.where(PRESCRIPTION_REBATE.CREATE_TIME.ge(param.getEndTime()));
+            select.where(PRESCRIPTION_REBATE.CREATE_TIME.le(DateUtil.endOfDay(param.getEndTime()).toTimestamp()));
         }
         return select;
+    }
+
+    /**
+     * 获取List
+     * @param param
+     * @return
+     */
+    public List<PrescriptionRebateReportVo> getList(PrescriptionRebateListParam param){
+        SelectJoinStep<? extends Record> select = selectOptions();
+        select=buildOptions(select,param);
+        select.orderBy(PRESCRIPTION_REBATE.CREATE_TIME.desc());
+        return select.fetchInto(PrescriptionRebateReportVo.class);
     }
 
 }

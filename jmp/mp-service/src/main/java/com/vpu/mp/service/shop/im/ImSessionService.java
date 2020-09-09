@@ -29,6 +29,7 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -118,7 +119,7 @@ public class ImSessionService extends ShopBaseService {
             imSessionItemDos = renderSessionFromDb(renderPageParam);
         }
 
-        List<ImSessionItemRenderVo> sessionItemRenderVos = imSessionItemDos.stream().map(item -> {
+        return imSessionItemDos.stream().map(item -> {
             ImSessionItemRenderVo itemVo = new ImSessionItemRenderVo();
             itemVo.setDoctor(doctorId.equals(item.getFromId()));
             itemVo.setMessage(item.getMessage());
@@ -126,7 +127,6 @@ public class ImSessionService extends ShopBaseService {
             itemVo.setSendTime(item.getSendTime());
             return itemVo;
         }).collect(Collectors.toList());
-        return sessionItemRenderVos;
     }
 
     /**
@@ -303,6 +303,9 @@ public class ImSessionService extends ShopBaseService {
         return imSessionDao.getByOrderSn(orderSn);
     }
 
+    private Timestamp calculateSessionLimitTime(){
+        return DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS);
+    }
     /**
      * 新增待接诊会话
      * @param param 新增会话信息
@@ -344,7 +347,7 @@ public class ImSessionService extends ShopBaseService {
             return;
         }
         Byte prevStatus = imSessionDo.getSessionStatus();
-        imSessionDo.setLimitTime(DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS));
+        imSessionDo.setLimitTime(calculateSessionLimitTime());
 
         if (ImSessionConstant.SESSION_READY_TO_START.equals(prevStatus)) {
             // 状态从1->2
@@ -352,6 +355,7 @@ public class ImSessionService extends ShopBaseService {
             imSessionDo.calculateReadyToOnAckTime();
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_ON);
             imSessionDo.setWeightFactor(ImSessionConstant.SESSION_ON_WEIGHT);
+            imSessionDo.setReceiveStartTime(DateUtils.getLocalDateTime());
             imSessionDao.update(imSessionDo);
             statisticDoctorSessionState(imSessionDo.getDoctorId());
         } else {
@@ -374,6 +378,7 @@ public class ImSessionService extends ShopBaseService {
     private void statisticDoctorSessionState(Integer doctorId) {
         Integer sessionReadyToOnAckAvgTime = imSessionDao.getSessionReadyToOnAckAvgTime(doctorId);
         Integer sessionCount = imSessionDao.getSessionCount(doctorId);
+        BigDecimal sessionMoney = imSessionDao.getSessionTotalMoney(doctorId);
         DoctorSortParam sortParam = new DoctorSortParam();
         sortParam.setDoctorId(doctorId);
         if (sessionReadyToOnAckAvgTime != null) {
@@ -382,6 +387,9 @@ public class ImSessionService extends ShopBaseService {
         }
         sortParam.setConsultationNumber(sessionCount);
         doctorService.updateConsultationNumber(sortParam);
+        sortParam.setConsultationTotalMoney(sessionMoney);
+        doctorService.updateConsultationTotalMoney(sortParam);
+
     }
 
     /**
@@ -411,26 +419,32 @@ public class ImSessionService extends ShopBaseService {
         cancelCondition.setOrderSns(orderSns);
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(cancelCondition);
         Integer shopId = getShopId();
-        List<Integer> sessionDeadIds = new ArrayList<>(imSessionDos.size());
-        List<Integer> sessionEndIds = new ArrayList<>(imSessionDos.size());
+        List<ImSessionDo> sessionDeads = new ArrayList<>(imSessionDos.size());
+        List<ImSessionDo> sessionEnds = new ArrayList<>(imSessionDos.size());
         // 需要添加默认评价的会话集合
         List<ImSessionDo> canAddDefaultCommentSession = new ArrayList<>(0);
 
         for (ImSessionDo imSessionDo : imSessionDos) {
             if (imSessionDo.getContinueSessionCount() == 0) {
-                sessionDeadIds.add(imSessionDo.getId());
+                imSessionDo.setSessionStatus(ImSessionConstant.SESSION_DEAD);
+                imSessionDo.setWeightFactor(ImSessionConstant.SESSION_DEAD_WEIGHT);
+                sessionDeads.add(imSessionDo);
                 clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
             } else {
                 if (ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus())) {
                     canAddDefaultCommentSession.add(imSessionDo);
                 }
-                sessionEndIds.add(imSessionDo.getId());
+                imSessionDo.setLimitTime(calculateSessionLimitTime());
+                imSessionDo.setSessionStatus(ImSessionConstant.SESSION_END);
+                imSessionDo.setWeightFactor(ImSessionConstant.SESSION_END_WEIGHT);
+                sessionEnds.add(imSessionDo);
                 updateSessionRedisStatusValue(imSessionDo.getId(), ImSessionConstant.SESSION_END);
             }
         }
-        imSessionDao.batchUpdateSessionStatus(sessionDeadIds, ImSessionConstant.SESSION_DEAD, ImSessionConstant.SESSION_DEAD_WEIGHT);
-        imSessionDao.batchUpdateSessionStatus(sessionEndIds, ImSessionConstant.SESSION_END, ImSessionConstant.SESSION_END_WEIGHT);
+        imSessionDao.batchUpdate(imSessionDos);
         // 修改评价状态
+        List<Integer> sessionDeadIds = sessionDeads.stream().map(ImSessionDo::getId).collect(Collectors.toList());
+        List<Integer> sessionEndIds = sessionEnds.stream().map(ImSessionDo::getId).collect(Collectors.toList());
         imSessionDao.batchUpdateSessionEvaluateStatus(sessionDeadIds, ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS, ImSessionConstant.SESSION_EVALUATE_CAN_STATUS);
         imSessionDao.batchUpdateSessionEvaluateStatus(sessionEndIds, ImSessionConstant.SESSION_EVALUATE_CAN_STATUS, ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
 
@@ -469,10 +483,10 @@ public class ImSessionService extends ShopBaseService {
      */
     public void timingDeadReadyToContinueSession() {
         logger().debug("定时任务调用，结束已经超时的可继续问诊项");
-        Timestamp updateTimeLine = DateUtils.getTimeStampPlus(-1, ChronoUnit.DAYS);
+        Timestamp limitTime = DateUtils.getTimeStampPlus(-1, ChronoUnit.DAYS);
         ImSessionCondition imSessionCondition = new ImSessionCondition();
         imSessionCondition.setStatus(ImSessionConstant.SESSION_END);
-        imSessionCondition.setUpdateTimeLine(updateTimeLine);
+        imSessionCondition.setLimitTime(limitTime);
         List<ImSessionDo> imSessionDos = imSessionDao.listImSession(imSessionCondition);
         for (ImSessionDo imSessionDo : imSessionDos) {
             imSessionDo.setSessionStatus(ImSessionConstant.SESSION_DEAD);
@@ -666,7 +680,7 @@ public class ImSessionService extends ShopBaseService {
         ImSessionDo imSessionDo = imSessionDao.getByOrderSn(param.getOrderSn());
         Integer doctorId = imSessionDo.getDoctorId();
         List<ImSessionItemDo> list = imSessionItemDao.getBySessionId(imSessionDo.getId());
-        List<ImSessionItemRenderVo> sessionItemRenderVos = list.stream().map(item -> {
+        return list.stream().map(item -> {
             ImSessionItemRenderVo itemVo = new ImSessionItemRenderVo();
             itemVo.setDoctor(doctorId.equals(item.getFromId()));
             itemVo.setMessage(item.getMessage());
@@ -674,7 +688,6 @@ public class ImSessionService extends ShopBaseService {
             itemVo.setSendTime(item.getSendTime());
             return itemVo;
         }).collect(Collectors.toList());
-        return sessionItemRenderVos;
     }
 
 }

@@ -22,6 +22,7 @@ public class ImSessionDo {
     private Byte weightFactor;
     private Byte evaluateStatus;
     private String    orderSn;
+    private Timestamp receiveStartTime;
     private Timestamp limitTime;
     private Integer readyToOnAkcTime;
     private Byte      isDelete;

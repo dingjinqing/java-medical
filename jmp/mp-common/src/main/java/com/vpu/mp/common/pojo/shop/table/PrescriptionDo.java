@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.annotation.Generated;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 
@@ -29,45 +30,46 @@ public class PrescriptionDo implements Serializable {
 
     private static final long serialVersionUID = 2035851394;
 
-    private Integer   id;
-    private String    prescriptionCode;
-    private String    posCode;
-    private Integer   patientId;
-    private Integer   userId;
-    private String    patientTreatmentCode;
-    private String    identityCode;
-    private Byte      identityType;
-    private String    patientName;
-    private Integer   patientAge;
-    private Byte      patientSex;
-    private String    patientDiseaseHistory;
-    private String    patientAllergyHistory;
-    private String    registerHospital;
-    private String    departmentCode;
-    private String    departmentName;
-    private String    doctorCode;
-    private String    doctorName;
-    private Timestamp diagnoseTime;
-    private String    pharmacistName;
-    private String    pharmacistCode;
-    private String    diagnosisName;
-    private String    diagnosisDetail;
-    private String    doctorAdvice;
-    private String    patientComplain;
-    private String    patientSign;
-    private Byte      source;
-    private Byte      auditType;
-    private Byte      status;
-    private String    statusMemo;
-    private Byte      expireType;
-    private Timestamp prescriptionCreateTime;
-    private Timestamp prescriptionExpireTime;
-    private Byte      isDelete;
-    private Byte      isUsed;
-    private Byte      isValid;
+    private Integer    id;
+    private String     prescriptionCode;
+    private String     posCode;
+    private String     orderSn;
+    private Integer    patientId;
+    private Integer    userId;
+    private String     patientTreatmentCode;
+    private String     identityCode;
+    private Byte       identityType;
+    private String     patientName;
+    private Integer    patientAge;
+    private Byte       patientSex;
+    private String     patientDiseaseHistory;
+    private String     patientAllergyHistory;
+    private String     registerHospital;
+    private String     departmentCode;
+    private String     departmentName;
+    private String     doctorCode;
+    private String     doctorName;
+    private Timestamp  diagnoseTime;
+    private String     pharmacistName;
+    private String     pharmacistCode;
+    private String     diagnosisName;
+    private String     diagnosisDetail;
+    private String     doctorAdvice;
+    private String     patientComplain;
+    private String     patientSign;
+    private BigDecimal totalPrice;
+    private Byte       source;
+    private Byte       auditType;
+    private Byte       status;
+    private String     statusMemo;
+    private Byte       expireType;
+    private Timestamp  prescriptionCreateTime;
+    private Timestamp  prescriptionExpireTime;
+    private Byte       isDelete;
+    private Byte       isUsed;
+    private Byte       isValid;
     private Byte       settlementFlag;
-    private Timestamp createTime;
-    private Timestamp updateTime;
-
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
 }

@@ -162,29 +162,31 @@ public class InquiryOrderService extends ShopBaseService {
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(param.getOrderSn());
         FieldsUtil.assign(param,inquiryOrderDo);
         inquiryOrderDo.setOrderStatus(param.getOrderStatus());
-        //更新会话状态修改为进行中
-        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            inquiryOrderDo.setLimitTime(DateUtils.getTimeStampPlus(InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS));
-            imSessionService.updateSessionToGoingOn(param.getSessionId());
-        }
-        //更新会话状态为关闭
-        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
-            inquiryOrderDo.setFinishedTime(DateUtils.getLocalDateTime());
-            inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FINISH);
-            imSessionService.closeImSession(param.getSessionId());
-        }
-        inquiryOrderDao.update(inquiryOrderDo);
-        //接诊发送提醒
-        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            sendConsultationMessage(inquiryOrderDo);
-        }
-        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
-            //完成问诊，更改返利状态
-            inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(),InquiryOrderRebateConstant.REBATED,null);
+        transaction(() ->{
+            //更新会话状态修改为进行中
+            if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
+                inquiryOrderDo.setLimitTime(DateUtils.getTimeStampPlus(InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS));
+                imSessionService.updateSessionToGoingOn(param.getSessionId());
+                //接诊发送提醒
+                sendConsultationMessage(inquiryOrderDo);
 
-            //第一次正常结束的时候统计返利金额
-            setDoctorTotalRebate(inquiryOrderDo);
-        }
+            }
+            //更新会话状态为关闭
+            if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
+                inquiryOrderDo.setFinishedTime(DateUtils.getLocalDateTime());
+                //未结算返利的更改状态
+                if(InquiryOrderConstant.SETTLEMENT_WAIT.equals(inquiryOrderDo.getSettlementFlag())){
+                    inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FINISH);
+                    //完成问诊，更改返利状态
+                    inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(),InquiryOrderRebateConstant.REBATED,null);
+                    //第一次正常结束的时候统计返利金额
+                    setDoctorTotalRebate(inquiryOrderDo);
+                }
+                imSessionService.closeImSession(param.getSessionId());
+            }
+            inquiryOrderDao.update(inquiryOrderDo);
+        });
+
     }
 
     /**
@@ -280,6 +282,7 @@ public class InquiryOrderService extends ShopBaseService {
             BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_UP);
             order.setRebateProportion(proportion);
             order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_UP));
+            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
             //返利入库
             InquiryOrderRebateParam param =new InquiryOrderRebateParam();
             FieldsUtil.assign(order,param);
@@ -287,6 +290,8 @@ public class InquiryOrderService extends ShopBaseService {
             param.setTotalMoney(order.getTotalRebateMoney());
             param.setTotalMoney(order.getOrderAmount());
             inquiryOrderRebateDao.addInquiryOrderRebate(param);
+        }else {
+            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
         }
     }
 
@@ -353,7 +358,6 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientBirthday(patientOneParam.getBirthday());
         inquiryOrderDo.setPatientIdentityCode(patientOneParam.getIdentityCode());
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
-        inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
         List<ImageSimpleVo> imageList=payParam.getImageList();
         String imageUrl=Util.toJson(imageList);
 //        String imageUrl=imageList.stream().collect(Collectors.joining(","));
@@ -384,7 +388,6 @@ public class InquiryOrderService extends ShopBaseService {
             refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
             //问诊退款，更改返利状态
             inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_DOCTOR_REFUND);
-            inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FAILED);
         });
 
     }

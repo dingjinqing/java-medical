@@ -11,8 +11,10 @@ import com.vpu.mp.common.foundation.util.RandomUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
@@ -20,18 +22,7 @@ import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientExternalVo;
-import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientMoreInfoParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
-import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckNumParam;
-import com.vpu.mp.service.pojo.shop.patient.PrescriptionShowPatientDetailsParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.sms.SmsCheckParam;
@@ -426,5 +417,14 @@ public class PatientService extends BaseShopConfigService{
      */
     public Integer countPatientByUser(Integer userId) {
         return patientDao.countPatientByUser(userId);
+    }
+
+    /**
+     * 根据患者id查询用户购药记录
+     * @param patientMedicineParam 用户查询购药记录入参
+     * @return List<GoodsDo>
+     */
+    public PageResult<PatientMedicineVo> getPatientBuyMedicineRecord(PatientMedicineParam patientMedicineParam) {
+        return patientDao.getPatientMedicine(patientMedicineParam);
     }
 }

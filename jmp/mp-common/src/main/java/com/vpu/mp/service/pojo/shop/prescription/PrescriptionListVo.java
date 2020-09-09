@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.prescription;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -13,10 +14,11 @@ import java.sql.Timestamp;
 
 public class PrescriptionListVo {
 
+
     /**
      * 患者id
      */
-    private Integer id;
+    private Integer patientId;
     /**
      * 患者名称
      */
@@ -26,9 +28,9 @@ public class PrescriptionListVo {
      */
     private String    prescriptionCode;
     /**
-     * 注册医院
+     * 订单号
      */
-    private String    registerHospital;
+    private String     orderSn;
     /**
      * 科室名称
      */
@@ -66,6 +68,10 @@ public class PrescriptionListVo {
      */
     private String    patientSign;
     /**
+     * 总价
+     */
+    private BigDecimal totalPrice;
+    /**
      * 处方来源 0系统内部创建 1医院拉取
      */
     private Byte      source;
@@ -82,6 +88,22 @@ public class PrescriptionListVo {
      */
     private Byte      expireType;
     /**
+     * 审核类型 处方审核类型 ''药品审核类型, 0不审核,1审核,2开方,3根据处方下单
+     */
+    private Byte auditType;
+    /**
+     * 结算标志：0：未结算，1：已结算
+     */
+    private Byte settlementFlag;
+    /**
+     * 是否有效  0无效 1有效，默认1
+     */
+    private Byte isValid;
+    /**
+     * 是否有效  0无效 1有效，默认1
+     */
+    private Byte isUsed;
+    /**
      * 开方时间
      */
     private Timestamp prescriptionCreateTime;
@@ -89,4 +111,8 @@ public class PrescriptionListVo {
      * 处方过期时间
      */
     private Timestamp prescriptionExpireTime;
+    /**
+     * 开方时间
+     */
+    private Timestamp createTime;
 }

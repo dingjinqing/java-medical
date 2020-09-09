@@ -54,6 +54,7 @@ import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -286,13 +287,13 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      * @return
      */
     private PrescriptionVo savePrescriptionInfo(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo,List<OrderGoodsSimpleAuditVo> allGoods,List<Integer> unAuditGoodsId) {
-        PrescriptionVo prescriptionVo = savePrescription(param, orderInfoDo);
+        PrescriptionVo prescriptionVo = buildPrescription(param, orderInfoDo);
         List<PrescriptionItemDo> list =new ArrayList<>();
-        allGoods.forEach(goods->{
-            //处方详情
-            if (unAuditGoodsId.contains(goods.getRecId())){
+        BigDecimal totalPrize =BigDecimal.ZERO;
+        for (OrderGoodsSimpleAuditVo goods : allGoods) {//处方详情
+            if (unAuditGoodsId.contains(goods.getRecId())) {
                 GoodsMedicalInfoDo medicalInfoDo = medicalInfoDao.getByGoodsId(goods.getGoodsId());
-                PrescriptionItemDo itemDo =new PrescriptionItemDo();
+                PrescriptionItemDo itemDo = new PrescriptionItemDo();
                 itemDo.setPrescriptionCode(prescriptionVo.getPrescriptionCode());
                 itemDo.setPrescriptionDetailCode(prescriptionVo.getPrescriptionCode());
                 itemDo.setGoodsId(goods.getGoodsId());
@@ -305,15 +306,18 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setPerTimeDosage(1.0);
                 itemDo.setPerTimeDosageUnit(medicalInfoDo.getGoodsBasicUnit());
                 itemDo.setFrequency(3.0);
-                itemDo.setDragSumNum((double)goods.getGoodsNumber());
+                itemDo.setDragSumNum((double) goods.getGoodsNumber());
                 itemDo.setDragSumUnit(medicalInfoDo.getGoodsPackageUnit());
                 itemDo.setGoodsImg(goods.getGoodsImg());
                 itemDo.setMedicinePrice(goods.getShopPrice());
+                totalPrize = totalPrize.add(goods.getShopPrice());
                 list.add(itemDo);
             }
-        });
+        }
+        prescriptionVo.setTotalPrice(totalPrize);
         prescriptionItemDao.batchSave(list);
         prescriptionVo.setList(list);
+        prescriptionDao.save(prescriptionVo);
         return prescriptionVo;
     }
 
@@ -323,7 +327,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
      * @param orderInfoDo
      * @return
      */
-    private PrescriptionVo savePrescription(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo) {
+    private PrescriptionVo buildPrescription(AuditOrderGoodsParam param, OrderInfoDo orderInfoDo) {
         DoctorOneParam doctor = doctorDao.getOneInfo(param.getDoctorId());
         DepartmentCodeVo departmentOne = doctorDepartmentCoupleDao.getOneCodeByByDoctorId(param.getDoctorId());
         PatientOneParam patient = patientDao.getOneInfo(orderInfoDo.getPatientId());
@@ -332,6 +336,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setId(null);
         prescriptionVo.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
         prescriptionVo.setPosCode("");
+        prescriptionVo.setOrderSn(orderInfoDo.getOrderSn());
         prescriptionVo.setPatientId(orderInfoDo.getPatientId());
         prescriptionVo.setUserId(orderInfoDo.getUserId());
         prescriptionVo.setPatientAge(DateUtil.ageOfNow(patient.getBirthday()));
@@ -340,8 +345,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setDoctorCode(doctor.getHospitalCode());
         prescriptionVo.setDoctorName(doctor.getName());
         prescriptionVo.setDiagnoseTime(time);
-        prescriptionVo.setPharmacistCode("007");
-        prescriptionVo.setPharmacistName("张三");
+        prescriptionVo.setPharmacistCode("");
+        prescriptionVo.setPharmacistName("");
         prescriptionVo.setDoctorAdvice(param.getDoctorAdvice());
         prescriptionVo.setPatientComplain("");
         prescriptionVo.setPatientSign("");
@@ -357,7 +362,6 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setPrescriptionCreateTime(null);
         prescriptionVo.setCreateTime(null);
         prescriptionVo.setUpdateTime(null);
-        prescriptionDao.save(prescriptionVo);
         return prescriptionVo;
     }
 

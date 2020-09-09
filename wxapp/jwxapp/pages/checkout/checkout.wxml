@@ -16,7 +16,7 @@
 				<view class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{i18n.$t(localePack,"pages.checkout.deliverType["+shipIndex+"]")}}</view>
 			</block>
 		</view>
-		<view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;border-radius:{{orderInfo.expressList[1]||orderInfo.expressList[2] ? '0 0 16rpx 16rpx' : '16rpx'}};">
+		<view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;">
 			<view class="address-user_info">
 				<text class="user_name">{{selectedStoreInfo.storeName}}</text>
 			</view>

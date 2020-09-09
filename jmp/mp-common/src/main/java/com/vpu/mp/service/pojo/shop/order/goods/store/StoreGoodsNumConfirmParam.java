@@ -9,7 +9,7 @@ import java.util.List;
  * @date 2020年08月27日
  */
 @Data
-public class StoreGoodsConfirmParam {
+public class StoreGoodsNumConfirmParam {
     private String shopSn;
-    private List<OrderStoreGoodsBo> goodsItems;
+    private List<OrderStoreGoodsBase> goodsItems;
 }

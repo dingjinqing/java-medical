@@ -1,6 +1,7 @@
 <wxs src="../../utils/wxs/filter.wxs" module="filter" />
 <wxs module="tool">
   var getMedicalName = function(medicalList){
+    if(!medicalList || !medicalList.length) return ''
     var arr =  medicalList.map(function(item){
       return item.goodsCommonName
     })
@@ -38,9 +39,9 @@ module.exports = {
   <view class="main-container">
     <view class="top-bg-style"></view>
     <view class="tab-content">
-      <view data-type="0" bindtap="toggleStatus"><text class="{{targetStatus === '0' ? 'active' : ''}}">全部</text></view>
-			<view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === '1' ? 'active' : ''}}">待返利</text></view>
-			<view data-type="2" bindtap="toggleStatus"><text class="{{targetStatus === '2' ? 'active' : ''}}">已返利</text></view>
+      <view data-type="-1" bindtap="toggleStatus"><text class="{{targetStatus === '-1' ? 'active' : ''}}">全部</text></view>
+			<view data-type="0" bindtap="toggleStatus"><text class="{{targetStatus === '0' ? 'active' : ''}}">待返利</text></view>
+			<view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === '1' ? 'active' : ''}}">已返利</text></view>
     </view>
     <view class="type-contennt" style="{{typeBgStyle}}">
       <view class="type-item" bindtap="changeType" data-type="1" style="{{activeStyle1}}">处方列表</view>

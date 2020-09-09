@@ -124,40 +124,67 @@ public class PrescriptionDao extends ShopBaseDao {
      * @return
      */
     public PageResult<PrescriptionListVo> listPageResult(PrescriptionListParam param) {
-        SelectOnConditionStep<? extends Record> record = db().select(PRESCRIPTION.PRESCRIPTION_CODE, PRESCRIPTION.DOCTOR_NAME,
-                PRESCRIPTION.DOCTOR_CODE,
-                PRESCRIPTION.DIAGNOSIS_NAME, PRESCRIPTION.DEPARTMENT_NAME, PRESCRIPTION.DIAGNOSE_TIME,
-                PATIENT.NAME,PATIENT.ID).from(PRESCRIPTION)
+        SelectOnConditionStep<? extends Record> record = db().select(PRESCRIPTION.asterisk(),
+                PATIENT.NAME,PATIENT.ID.as("patientId")).from(PRESCRIPTION)
                 .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID));
-        if (!Strings.isEmpty(param.getPatientName())){
+        buildSelect(param, record);
+        record.orderBy(PRESCRIPTION.DIAGNOSE_TIME.desc());
+        return getPageResult(record, param, PrescriptionListVo.class);
+    }
+
+    private void buildSelect(PrescriptionListParam param, SelectOnConditionStep<? extends Record> record) {
+        if (param.getPatientId()!=null&&param.getPatientId()>0){
+            record.where(PRESCRIPTION.PATIENT_ID.eq(param.getPatientId()));
+        }
+        if (param.getPatientName()!=null&&param.getPatientName().trim().length()> 0){
             record.where(PRESCRIPTION.PATIENT_NAME.like(likeValue(param.getPatientName().trim())));
         }
-        if (!Strings.isEmpty(param.getDoctorCode())){
+        if (param.getDoctorCode()!=null&&param.getDoctorCode().trim().length()>0){
             record.where(PRESCRIPTION.DOCTOR_CODE.eq(param.getDoctorCode().trim()));
         }
-        if (!Strings.isEmpty(param.getPatientMobile())){
-            record.leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID));
+        if (param.getPatientMobile()!=null&&param.getPatientMobile().trim().length()>0){
             record.where(PATIENT.MOBILE.eq(param.getPatientMobile()));
         }
-        if (!Strings.isEmpty(param.getPrescriptionCode())){
+        if (param.getPrescriptionCode()!=null&&param.getPrescriptionCode().trim().length()>0){
             record.where(PRESCRIPTION.PRESCRIPTION_CODE.eq(param.getPrescriptionCode().trim()));
         }
-        if (!Strings.isEmpty(param.getDepartmentName())){
+        if (param.getOrderSn()!=null&&param.getOrderSn().trim().length()>0){
+            record.where(PRESCRIPTION.ORDER_SN.eq(param.getOrderSn().trim()));
+        }
+        if (param.getDepartmentName()!=null&&param.getDepartmentName().trim().length()>0){
             record.where(PRESCRIPTION.DEPARTMENT_NAME.eq(param.getDepartmentName()));
         }
         if (param.getDoctorName()!=null&&param.getDoctorName().trim().length()>0){
             record.where(PRESCRIPTION.DOCTOR_NAME.like(likeValue(param.getDoctorName().trim())));
         }
-        if (!Strings.isEmpty(param.getDiagnosisName())){
+        if (param.getDiagnosisName()!=null&&!Strings.isEmpty(param.getDiagnosisName().trim())){
             record.where(PRESCRIPTION.DIAGNOSIS_NAME.eq(param.getDiagnosisName().trim()));
         }
         if (param.getDiagnoseEndTime()!=null&&param.getDiagnoseStartTime()!=null){
             record.where(PRESCRIPTION.DIAGNOSE_TIME.ge(param.getDiagnoseStartTime()))
                     .and(PRESCRIPTION.DIAGNOSE_TIME.le(param.getDiagnoseEndTime()));
         }
-        record.orderBy(PRESCRIPTION.DIAGNOSE_TIME.desc());
-        return getPageResult(record, param, PrescriptionListVo.class);
+        if (param.getCreateEndTime()!=null&&param.getCreateStartTime()!=null){
+            record.where(PRESCRIPTION.DIAGNOSE_TIME.ge(param.getCreateStartTime()))
+                    .and(PRESCRIPTION.DIAGNOSE_TIME.le(param.getCreateEndTime()));
+        }
+        if (param.getAuditType()!=null){
+            record.where(PRESCRIPTION.AUDIT_TYPE.eq(param.getAuditType()));
+        }
+        if (param.getIsUsed()!=null){
+            record.where(PRESCRIPTION.IS_USED.eq(param.getIsUsed()));
+        }
+        if (param.getIsValid()!=null){
+            record.where(PRESCRIPTION.IS_VALID.eq(param.getIsValid()));
+        }
+        if (param.getSettlementFlag()!=null){
+            record.where(PRESCRIPTION.SETTLEMENT_FLAG.eq(param.getSettlementFlag()));
+        }
+        if (param.getExpireType()!=null){
+            record.where(PRESCRIPTION.EXPIRE_TYPE.eq(param.getExpireType()));
+        }
     }
+
     /**
      * 分页
       @param param
@@ -458,12 +485,15 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
-     * 更新处方为已使用状态
+     * 更新处方使用状态和订单号
      * @param prescriptionCode
+     * @param orderSn
      * @return
      */
-    public int updatePrescriprionIsUsered(String prescriptionCode) {
-      return  db().update(PRESCRIPTION).set(PRESCRIPTION.IS_USED,BaseConstant.YES).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
+    public int updatePrescriprionIsUseredAndOrderSn(String prescriptionCode, String orderSn) {
+      return  db().update(PRESCRIPTION).set(PRESCRIPTION.IS_USED,BaseConstant.YES)
+              .set(PRESCRIPTION.ORDER_SN,orderSn)
+              .where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
     }
 
     /**

@@ -7,6 +7,7 @@
           class="page-check-all"
           v-model="selectAll"
           @change="selectAllChangeHandle($event)"
+          :disabled="true"
           >{{ $t('storePermission.selectAll') }}</el-checkbox
         >
         <table class="page-table">
@@ -17,6 +18,7 @@
                   v-model="trs.checked"
                   @change="changeCheckHandle(index, $event)"
                   :checked="trs.checked"
+                  :disabled="true"
                   >{{ trs.name }}</el-checkbox
                 >
               </td>
@@ -27,6 +29,7 @@
                     :key="td.enName + i"
                     :label="td.enName"
                     :checked="td.check == 1"
+                    :disabled="true"
                     >{{ td.name }}</el-checkbox
                   >
                 </el-checkbox-group>
@@ -36,17 +39,14 @@
         </table>
         <h2>{{ $t('storePermission.functionP') }}</h2>
         <el-checkbox-group v-model="functionalAuthority">
-          <el-checkbox label="after_sale_process">{{
+          <el-checkbox label="after_sale_process" :disabled="true">{{
             $t('storePermission.afsale')
           }}</el-checkbox>
-          <el-checkbox label="evaluation_review">{{
+          <el-checkbox label="evaluation_review" :disabled="true">{{
             $t('storePermission.evReview')
           }}</el-checkbox>
-          <el-checkbox label="evaluation_del">{{
+          <el-checkbox label="evaluation_del" :disabled="true">{{
             $t('storePermission.evDelete')
-          }}</el-checkbox>
-          <el-checkbox label="order_modify_price">{{
-            $t('storePermission.orderPriceChange')
           }}</el-checkbox>
         </el-checkbox-group>
         <div class="footer">

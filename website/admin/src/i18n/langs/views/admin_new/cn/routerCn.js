@@ -29,6 +29,8 @@ export const cn = {
   situation: ['概况', '实时概况'],
   // 概况 销售报表
   sales_report: ['销售统计', '销售报表'],
+  // 概况 销售报表
+  anchor_points: ['埋点列表', '埋点列表'],
   // 小程序管理 页面分类
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间
@@ -167,12 +169,7 @@ export const cn = {
   // 营销管理 砍价 - 活动效果数据
   bargain_effect_data: ['营销管理', '砍价', '活动效果数据'],
   // 营销管理 砍价 - 帮忙砍价用户列表
-  bargain_record_detail: [
-    '营销管理',
-    '砍价',
-    '发起砍价用户列表',
-    '帮忙砍价用户列表'
-  ],
+  bargain_record_detail: ['营销管理', '砍价', '发起砍价用户列表', '帮忙砍价用户列表'],
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
   // 营销管理 添加好友助力活动
@@ -440,5 +437,7 @@ export const cn = {
   // 医师管理 添加医师
   addDoctor: ['医师管理', '添加医师'],
   // 咨询订单 订单统计
-  advisoryTotal: ['销售统计', '咨询订单统计']
+  advisoryTotal: ['销售统计', '咨询订单统计'],
+  // 提现审核 提现详情
+  doctorWithdrawInfo: ['提现审核', '提现详情']
 }

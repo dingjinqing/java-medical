@@ -32,7 +32,7 @@
         </view>
       </view>
       <view class="add_tips"> <image src="{{imageUrl}}image/wxapp/pre_add_tip_icon.png"></image> 若您有本院的就诊记录，可填写以上信息获取</view>
-      <view class="btn_add" bindtap="getPrescription">获取病历</view>
+      <view class="btn_add" bindtap="getPrescription">获取就诊人</view>
       <view class="btn_get" bindtap="addFamily">手动添加就诊人</view>
     </view>
   </view>

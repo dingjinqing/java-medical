@@ -5112,6 +5112,7 @@ create table b2c_department(
     `is_delete`     tinyint(1)   not null default '0',
     `create_time`   timestamp    not null default current_timestamp,
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
+    `first` int(11) not null default 0 comment '优先级',
     primary key (`id`)
 )comment '科室';
 
@@ -5158,6 +5159,7 @@ create table b2c_doctor(
     `avg_comment_star` decimal(10,2) not null default 0 comment '平均评分',
     `attention_number` int(11) not null default 0 comment '关注数',
     `user_token` varchar(256) not null default '' comment '医师关联用户token',
+    `consultation_total_money` decimal(10,2) not null default 0 comment '咨询总金额',
     primary key (`id`)
 )comment ='医师表';
 

@@ -619,4 +619,12 @@ public class DoctorService extends ShopBaseService {
             .type(MessageTemplateConfigConstant.NEW_CONSULTATION).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
+
+    /**
+     * 更新医师咨询总金额
+     * @param param
+     */
+    public void updateConsultationTotalMoney(DoctorSortParam param){
+        doctorDao.updateConsultationTotalMoney(param);
+    }
 }
