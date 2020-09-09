@@ -49,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
@@ -639,16 +640,16 @@ public class StoreService extends ShopBaseService {
      * @param orderAddressParam 地址经纬度
      * @return Map<Double, StoreDo>
      */
-    public Map<Double, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
+    public Map<String, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
         List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
-        Map<Double, StoreDo> map = new HashMap<>(15);
+        Map<String, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
             double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
                 Double.parseDouble(orderAddressParam.getLat()),
                 Double.parseDouble(e.getLongitude()),
                 Double.parseDouble(e.getLatitude()));
-            map.put(distance, e);
+            map.put(formatDouble(distance), e);
         });
         sortByKey(map, false);
         return map;
@@ -658,14 +659,23 @@ public class StoreService extends ShopBaseService {
      * 查询当前在营业的门店列表(不传地址)
      * @return Map<Double, StoreDo>
      */
-    public Map<Double, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+    public Map<String, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
         List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
-        Map<Double, StoreDo> map = new IdentityHashMap<>(15);
+        Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
-            map.put(0D, e);
+            map.put(new String("0.00"), e);
         });
         return map;
+    }
+
+    /**
+     * @param d double值
+     * @return String
+     */
+    public static String formatDouble(double d) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(d);
     }
 
     /**

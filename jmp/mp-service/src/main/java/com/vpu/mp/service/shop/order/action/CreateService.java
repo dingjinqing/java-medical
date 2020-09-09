@@ -368,9 +368,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 list.add(goodsMedicalInfo);
             });
             orderAddressParam.setStoreGoodsBaseCheckInfoList(list);
-            Map<Double, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
-            Set<Map.Entry<Double, StoreDo>> entry = storeListOpen.entrySet();
-            for (Map.Entry<Double, StoreDo> value : entry) {
+            Map<String, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
+            Set<Map.Entry<String, StoreDo>> entry = storeListOpen.entrySet();
+            for (Map.Entry<String, StoreDo> value : entry) {
                 StoreDo storeDo = value.getValue();
                 order.setStoreId(storeDo.getStoreId());
                 break;

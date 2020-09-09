@@ -30,4 +30,8 @@ public class DoctorSortParam {
      * 关注数
      */
     private Integer attentionNumber;
+    /**
+     * 总咨询金额
+     */
+    private BigDecimal consultationTotalMoney;
 }
