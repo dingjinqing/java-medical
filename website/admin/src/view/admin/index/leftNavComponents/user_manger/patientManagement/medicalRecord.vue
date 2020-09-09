@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="titleEdit"><span>处方列表</span></div>
+      <div class="titleEdit"><span>购药记录</span></div>
       <div class="navBox">
         <div class="filters">
           <div class="filters_item">

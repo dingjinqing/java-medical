@@ -20,7 +20,7 @@
               v-for="item in doctorList"
               :key="item.id"
               :label="item.name"
-              :value="item.id"
+              :value="item.name"
             ></el-option>
           </el-select>
 
