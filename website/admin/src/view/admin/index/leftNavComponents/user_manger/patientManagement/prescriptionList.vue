@@ -271,8 +271,9 @@
                   prop='expireType'
                   label='过期类型'>
             <template slot-scope="scope">
-              {{getLabelValue(expireType,scope.row.expireType)}}
-              <br>{{expireTypeTime(scope.row)}}
+              {{expireTypeTime(scope.row)}}
+              <br>
+              ({{getLabelValue(expireType,scope.row.expireType)}})
             </template>
           </el-table-column>
           <el-table-column
@@ -395,7 +396,7 @@ export default {
       expireType: [
         {value: 0, label: '过期'},
         {value: 1, label: '永久有效'},
-        {value: 2, label: '时间段内有效'}
+        {value: 2, label: '未过期'}
       ],
       createTimeValue: [],
       createTimeSelect: 30,
