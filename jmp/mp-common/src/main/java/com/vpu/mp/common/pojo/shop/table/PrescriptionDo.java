@@ -33,6 +33,7 @@ public class PrescriptionDo implements Serializable {
     private Integer    id;
     private String     prescriptionCode;
     private String     posCode;
+    private String     orderSn;
     private Integer    patientId;
     private Integer    userId;
     private String     patientTreatmentCode;
@@ -70,6 +71,5 @@ public class PrescriptionDo implements Serializable {
     private Byte       settlementFlag;
     private Timestamp  createTime;
     private Timestamp  updateTime;
-
 
 }

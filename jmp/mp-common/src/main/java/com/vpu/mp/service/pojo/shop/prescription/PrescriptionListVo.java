@@ -28,6 +28,10 @@ public class PrescriptionListVo {
      */
     private String    prescriptionCode;
     /**
+     * 订单号
+     */
+    private String     orderSn;
+    /**
      * 科室名称
      */
     private String    departmentName;

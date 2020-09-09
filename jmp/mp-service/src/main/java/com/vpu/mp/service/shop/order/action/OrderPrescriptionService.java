@@ -336,6 +336,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setId(null);
         prescriptionVo.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
         prescriptionVo.setPosCode("");
+        prescriptionVo.setOrderSn(orderInfoDo.getOrderSn());
         prescriptionVo.setPatientId(orderInfoDo.getPatientId());
         prescriptionVo.setUserId(orderInfoDo.getUserId());
         prescriptionVo.setPatientAge(DateUtil.ageOfNow(patient.getBirthday()));

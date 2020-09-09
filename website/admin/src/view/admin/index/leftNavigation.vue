@@ -162,6 +162,23 @@ export default {
               flag: true
             }
           ]
+        }, {
+          imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points.png',
+          imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_h.png',
+          path: '/admin/home/main/anchorPoints',
+          span: '',
+          name: 'anchor_points',
+          flag: true,
+          children: [
+            {
+              imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points.png',
+              imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_h.png',
+              path: '/admin/home/main/anchorPoints/list',
+              span: '',
+              name: 'anchor_points',
+              flag: true
+            }
+          ]
         }
       ],
       first_web_decoration: [
