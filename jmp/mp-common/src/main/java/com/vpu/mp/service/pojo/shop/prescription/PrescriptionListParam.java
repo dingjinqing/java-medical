@@ -72,5 +72,13 @@ public class PrescriptionListParam extends BasePageParam {
      * 是否有效  0无效 1有效，默认1
      */
     private Byte isUsed;
+    /**
+     * 结算标志：0：未结算，1：已结算
+     */
+    private Byte settlementFlag;
+    /**
+     * 处方有效期类型 0:未知（默认过期），1:永久有效，2:时间段内有效
+     */
+    private Byte      expireType;
 
 }

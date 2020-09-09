@@ -174,6 +174,12 @@ public class PrescriptionDao extends ShopBaseDao {
         if (param.getIsValid()!=null){
             record.where(PRESCRIPTION.IS_VALID.eq(param.getIsValid()));
         }
+        if (param.getSettlementFlag()!=null){
+            record.where(PRESCRIPTION.SETTLEMENT_FLAG.eq(param.getSettlementFlag()));
+        }
+        if (param.getExpireType()!=null){
+            record.where(PRESCRIPTION.EXPIRE_TYPE.eq(param.getExpireType()));
+        }
     }
 
     /**
