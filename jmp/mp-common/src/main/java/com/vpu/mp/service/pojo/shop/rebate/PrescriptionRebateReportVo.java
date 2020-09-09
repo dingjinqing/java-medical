@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.common.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -23,13 +24,13 @@ public class PrescriptionRebateReportVo {
     @ExcelColumn(columnName = "处方号", columnIndex = 2)
     private String prescriptionCode;
     @ExcelColumn(columnName = "处方总金额", columnIndex = 3)
-    private String totalMoney;
+    private BigDecimal totalMoney;
     @ExcelColumn(columnName = "下单用户名称", columnIndex = 4)
     private String userName;
     @ExcelColumn(columnName = "返利金额", columnIndex = 5)
-    private String totalRebateMoney;
+    private BigDecimal totalRebateMoney;
     @ExcelIgnore
-    private String status;
+    private Byte status;
     @ExcelColumn(columnName = "返利状态", columnIndex = 6)
     private String statusName;
     @ExcelColumn(columnName = "返利时间", columnIndex = 7)
