@@ -1056,6 +1056,18 @@ const routes = [
               import(
                 '@/view/admin/index/leftNavComponents/base_manger/rebateConfig/rebateConfig'
               )
+          },
+          {
+            path: '/admin/home/main/basicConfig/rebateConfig/doctorWithdrawInfo',
+            name: 'doctorWithdrawInfo',
+            meta: {
+              crumbTitle: 'router.doctorWithdrawInfo',
+              meta: 'base_manger'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/rebateConfig/doctorWithdrawInfo'
+              )
           }
         ].concat(
           marketing,

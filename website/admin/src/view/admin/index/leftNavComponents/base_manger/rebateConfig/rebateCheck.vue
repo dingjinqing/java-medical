@@ -52,7 +52,7 @@
           size="small"
         />
       </div>
-      <div class="filters_item" style="margin-left: 15px;">
+      <div class="filters_item" style="margin-left: 15px">
         <el-button type="primary" size="small" @click="search">搜索</el-button>
       </div>
 
@@ -132,6 +132,7 @@
                 @click="changeStatus(scope, 'reject')"
                 >驳回</span
               >
+              <span @click="viewDetail(scope.row.id)">查看详情</span>
             </div>
           </template>
         </el-table-column>
@@ -355,9 +356,17 @@ export default {
 
           break
       }
+    },
+    viewDetail (id) {
+      let newpage = this.$router.resolve({
+        name: 'doctorWithdrawInfo',
+        query: {
+          id
+        }
+      })
+      window.open(newpage.href, '_blank')
     }
   }
-
 }
 </script>
 
