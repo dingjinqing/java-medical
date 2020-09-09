@@ -148,6 +148,9 @@ public class PrescriptionDao extends ShopBaseDao {
         if (param.getPrescriptionCode()!=null&&param.getPrescriptionCode().trim().length()>0){
             record.where(PRESCRIPTION.PRESCRIPTION_CODE.eq(param.getPrescriptionCode().trim()));
         }
+        if (param.getOrderSn()!=null&&param.getOrderSn().trim().length()>0){
+            record.where(PRESCRIPTION.ORDER_SN.eq(param.getOrderSn().trim()));
+        }
         if (param.getDepartmentName()!=null&&param.getDepartmentName().trim().length()>0){
             record.where(PRESCRIPTION.DEPARTMENT_NAME.eq(param.getDepartmentName()));
         }
