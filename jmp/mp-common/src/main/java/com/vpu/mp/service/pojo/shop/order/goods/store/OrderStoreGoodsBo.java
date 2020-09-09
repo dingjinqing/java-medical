@@ -13,4 +13,5 @@ import java.math.BigDecimal;
 @Setter
 public class OrderStoreGoodsBo extends OrderStoreGoodsBase{
     private BigDecimal goodsPrice;
+    private Integer goodsNumber;
 }

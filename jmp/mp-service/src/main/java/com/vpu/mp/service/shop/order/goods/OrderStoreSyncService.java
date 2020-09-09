@@ -6,7 +6,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.goods.store.OrderStorePosBo;
-import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsConfirmParam;
+import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsNumConfirmParam;
 import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsConfirmVo;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class OrderStoreSyncService extends ShopBaseService {
      * @return true推送成功，推送失败
      */
     public boolean pushOrderInfoToStore(OrderStorePosBo param){
-        String appId = ApiExternalGateConstant.APP_ID_POS;
+        String appId = ApiExternalGateConstant.APP_ID_STORE;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_SYNC_ORDER_POS_INFO;
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
@@ -41,8 +41,8 @@ public class OrderStoreSyncService extends ShopBaseService {
      * @param param
      * @return
      */
-    public StoreGoodsConfirmVo syncGoodsInfosFromStore(StoreGoodsConfirmParam param){
-        String appId = ApiExternalGateConstant.APP_ID_POS;
+    public StoreGoodsConfirmVo syncGoodsInfosFromStore(StoreGoodsNumConfirmParam param){
+        String appId = ApiExternalGateConstant.APP_ID_STORE;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_SYNC_GOODS_INFOS;
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));

@@ -393,6 +393,7 @@ public class PrescriptionService extends ShopBaseService {
         FieldsUtil.assign(param,prescriptionParam);
         prescriptionParam.setDoctorCode(doctor.getHospitalCode());
         prescriptionParam.setDoctorName(doctor.getName());
+        prescriptionParam.setOrderSn(param.getOrderSn());
         //映射patient信息
         buildPrescriptionPatientInfo(prescriptionParam,param);
         prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));

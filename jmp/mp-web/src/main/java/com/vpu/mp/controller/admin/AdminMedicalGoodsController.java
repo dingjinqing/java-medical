@@ -10,7 +10,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListPara
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.order.goods.store.OrderStorePosBo;
-import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsConfirmParam;
+import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsNumConfirmParam;
 import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsConfirmVo;
 import com.vpu.mp.service.shop.order.goods.OrderStoreSyncService;
 import lombok.extern.slf4j.Slf4j;
@@ -163,7 +163,7 @@ public class AdminMedicalGoodsController extends AdminBaseController{
     }
 
     @PostMapping("/api/admin/medical/test2")
-    public JsonResult fetchTest(@RequestBody StoreGoodsConfirmParam param){
+    public JsonResult fetchTest(@RequestBody StoreGoodsNumConfirmParam param){
         StoreGoodsConfirmVo vo = orderStoreSyncService.syncGoodsInfosFromStore(param);
         return success(vo);
     }

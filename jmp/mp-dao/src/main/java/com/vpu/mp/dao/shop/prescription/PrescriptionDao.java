@@ -174,6 +174,12 @@ public class PrescriptionDao extends ShopBaseDao {
         if (param.getIsValid()!=null){
             record.where(PRESCRIPTION.IS_VALID.eq(param.getIsValid()));
         }
+        if (param.getSettlementFlag()!=null){
+            record.where(PRESCRIPTION.SETTLEMENT_FLAG.eq(param.getSettlementFlag()));
+        }
+        if (param.getExpireType()!=null){
+            record.where(PRESCRIPTION.EXPIRE_TYPE.eq(param.getExpireType()));
+        }
     }
 
     /**
@@ -476,12 +482,15 @@ public class PrescriptionDao extends ShopBaseDao {
     }
 
     /**
-     * 更新处方为已使用状态
+     * 更新处方使用状态和订单号
      * @param prescriptionCode
+     * @param orderSn
      * @return
      */
-    public int updatePrescriprionIsUsered(String prescriptionCode) {
-      return  db().update(PRESCRIPTION).set(PRESCRIPTION.IS_USED,BaseConstant.YES).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
+    public int updatePrescriprionIsUseredAndOrderSn(String prescriptionCode, String orderSn) {
+      return  db().update(PRESCRIPTION).set(PRESCRIPTION.IS_USED,BaseConstant.YES)
+              .set(PRESCRIPTION.ORDER_SN,orderSn)
+              .where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
     }
 
     /**
