@@ -51,7 +51,6 @@ public class InquiryOrderTaskService extends ShopBaseService {
         orderList.forEach(order -> {
             order.setOrderStatus(InquiryOrderConstant.ORDER_CANCELED);
             order.setCancelledTime(DateUtils.getLocalDateTime());
-            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FAILED);
             inquiryOrderDao.update(order);
         });
         logger().info("问诊订单关闭定时任务end");
@@ -79,7 +78,6 @@ public class InquiryOrderTaskService extends ShopBaseService {
         orderList.forEach(order -> {
             if(order.getOrderAmount().compareTo(BigDecimal.ZERO)<=0){
                 order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
-                order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FAILED);
                 inquiryOrderDao.update(order);
                 List<String> orderSns=new ArrayList<>();
                 orderSns.add(order.getOrderSn());

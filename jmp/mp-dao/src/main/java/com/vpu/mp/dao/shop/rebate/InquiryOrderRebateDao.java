@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.rebate;
 
+import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
@@ -81,10 +82,10 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
             select.where(INQUIRY_ORDER_REBATE.STATUS.eq(param.getStatus()));
         }
         if(param.getStartTime()!=null){
-            select.where(INQUIRY_ORDER_REBATE.CREATE_TIME.ge(param.getStartTime()));
+            select.where(INQUIRY_ORDER_REBATE.CREATE_TIME.ge(DateUtil.beginOfDay(param.getStartTime()).toTimestamp()));
         }
         if(param.getEndTime()!=null){
-            select.where(INQUIRY_ORDER_REBATE.CREATE_TIME.le(param.getEndTime()));
+            select.where(INQUIRY_ORDER_REBATE.CREATE_TIME.le(DateUtil.endOfDay(param.getEndTime()).toTimestamp()));
         }
         return select;
     }

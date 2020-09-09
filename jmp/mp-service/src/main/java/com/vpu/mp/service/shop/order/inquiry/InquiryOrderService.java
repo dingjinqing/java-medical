@@ -280,6 +280,7 @@ public class InquiryOrderService extends ShopBaseService {
             BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_UP);
             order.setRebateProportion(proportion);
             order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_UP));
+            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
             //返利入库
             InquiryOrderRebateParam param =new InquiryOrderRebateParam();
             FieldsUtil.assign(order,param);
@@ -287,6 +288,8 @@ public class InquiryOrderService extends ShopBaseService {
             param.setTotalMoney(order.getTotalRebateMoney());
             param.setTotalMoney(order.getOrderAmount());
             inquiryOrderRebateDao.addInquiryOrderRebate(param);
+        }else {
+            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
         }
     }
 
@@ -353,7 +356,6 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientBirthday(patientOneParam.getBirthday());
         inquiryOrderDo.setPatientIdentityCode(patientOneParam.getIdentityCode());
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
-        inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
         List<ImageSimpleVo> imageList=payParam.getImageList();
         String imageUrl=Util.toJson(imageList);
 //        String imageUrl=imageList.stream().collect(Collectors.joining(","));
@@ -384,7 +386,6 @@ public class InquiryOrderService extends ShopBaseService {
             refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
             //问诊退款，更改返利状态
             inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_DOCTOR_REFUND);
-            inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FAILED);
         });
 
     }
