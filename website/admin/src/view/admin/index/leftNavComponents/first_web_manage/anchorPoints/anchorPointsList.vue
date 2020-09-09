@@ -199,6 +199,7 @@ export default {
   },
   mounted () {
     this.getDateValue(-1)
+    this.initEvent()
   },
   data () {
     return {
@@ -209,6 +210,7 @@ export default {
         currentPage: 1,
         pageRows: 20
       },
+      // 事件
       eventList: [],
       tableData: [],
       timeRange: [
@@ -231,7 +233,7 @@ export default {
       param: {
         startTime: '',
         endTime: '',
-        event: 1
+        event: null
       },
       originalData: [],
       analyRange: [
@@ -241,9 +243,15 @@ export default {
         { value: 4, label: '每季度' },
         { value: 5, label: '每年' }
       ]
+
     }
   },
   methods: {
+    initEvent () {
+      getEventKeyMap().then(res => {
+        this.eventList = res.content
+      }).catch(err => console.log(err))
+    },
     eventChangeHandler (event) {
       console.log(event)
     },
@@ -267,10 +275,6 @@ export default {
       this.initData()
     },
     initData () {
-      getEventKeyMap().then(res => {
-
-      }).catch(err => console.log(err))
-
       let params = Object.assign({}, this.param, this.pageParams)
       getAnchorPointsList(params).then(res => {
         console.log(res)
