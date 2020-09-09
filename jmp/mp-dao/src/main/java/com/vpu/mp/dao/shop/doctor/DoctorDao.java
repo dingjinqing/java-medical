@@ -399,4 +399,14 @@ public class DoctorDao extends ShopBaseDao {
                 .where(DOCTOR.ID.eq(doctorId)).execute();
         }
     }
+
+    /**
+     * 更新医师咨询总金额
+     * @param param
+     */
+    public void updateConsultationTotalMoney(DoctorSortParam param){
+        db().update(DOCTOR).set(DOCTOR.CONSULTATION_TOTAL_MONEY, param.getConsultationTotalMoney())
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+            .execute();
+    }
 }
