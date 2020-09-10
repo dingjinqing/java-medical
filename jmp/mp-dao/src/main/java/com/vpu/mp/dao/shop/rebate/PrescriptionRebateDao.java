@@ -42,10 +42,13 @@ public class PrescriptionRebateDao extends ShopBaseDao {
      * @param prescriptionCode
      * @param status
      */
-    public void updateStatus(String prescriptionCode,Byte status){
+    public void updateStatus(String prescriptionCode,Byte status,String reason){
         UpdateSetMoreStep<PrescriptionRebateRecord> update= db().update(PRESCRIPTION_REBATE).set(PRESCRIPTION_REBATE.STATUS,status);
         if(PrescriptionRebateConstant.REBATED.equals(status)){
             update.set(PRESCRIPTION_REBATE.REBATE_TIME, DateUtils.getLocalDateTime());
+        }
+        if(StringUtils.isNotBlank(reason)){
+            update.set(PRESCRIPTION_REBATE.REASON,reason);
         }
         update.where(PRESCRIPTION_REBATE.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
     }
