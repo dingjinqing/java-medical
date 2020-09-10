@@ -17,4 +17,6 @@ public class PrescriptionRebateConstant {
      * 未返利
      */
     public static final Byte REBATE_FAIL=2;
+
+    public static  final String REASON_RETURNED="已退款";
 }
