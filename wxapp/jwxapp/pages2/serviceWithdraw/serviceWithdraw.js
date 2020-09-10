@@ -17,11 +17,11 @@ global.wxPage({
   requestWithDrawInfo(){
     util.api('/api/wxapp/doctor/rebate/total',res=>{
       if(res.error === 0){
-        let {totalMoney,accruingWithDrawCash,waitWithDrawCash,withdrawCashMax,withdrawCashMix} = res.content
+        let {totalMoney,accruingWithdrawCash,waitWithdrawCash,withdrawCashMax,withdrawCashMix} = res.content
         this.setData({
           totalMoney:totalMoney || '0.00',
-          accruingWithDrawCash:accruingWithDrawCash || '0.00',
-          waitWithDrawCash:waitWithDrawCash || '0.00',
+          accruingWithdrawCash:accruingWithdrawCash || '0.00',
+          waitWithdrawCash:waitWithdrawCash || '0.00',
           withdrawCashMin:withdrawCashMix || '0.00',
           withdrawCashMax:withdrawCashMax || '0.00'
         })
@@ -36,7 +36,7 @@ global.wxPage({
   },
   viewRecord(){
     util.jumpLink(`pages2/doctorWithdrawRecord/doctorWithdrawRecord${util.getUrlParams({
-      accruingWithDrawCash:this.data.accruingWithDrawCash
+      accruingWithdrawCash:this.data.accruingWithdrawCash
     })}`)
   },
   /**

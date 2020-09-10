@@ -74,6 +74,14 @@ module.exports = {
                 <text class="tips">返利状态</text>
               </view>
             </view>
+            <view class="price-status-content" wx:if="{{activeType === '1'}}">
+              <view wx:if="{{item.status !== 2}}">服务费：<text>{{item.totalRebateMoney}}</text></view>
+              <view wx:if="{{item.status !== 2}}">处方商品总额：<text>{{item.totalMoney}}</text></view>
+              <view class="reason" wx:if="{{activeType === '1' && item.status === 2}}">
+                <image src="{{imageUrl}}image/wxapp/icon_warning.png"></image>
+                <text>未返利原因：{{item.reason}}</text>
+              </view>
+            </view>
           </view>
       </block>
     </block>

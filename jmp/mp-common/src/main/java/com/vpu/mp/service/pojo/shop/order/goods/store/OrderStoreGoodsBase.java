@@ -16,4 +16,5 @@ public class OrderStoreGoodsBase {
     private String goodsQualityRatio;
     private String goodsProductionEnterprise;
     private String goodsApprovalNumber;
+    private Integer goodsNumber;
 }

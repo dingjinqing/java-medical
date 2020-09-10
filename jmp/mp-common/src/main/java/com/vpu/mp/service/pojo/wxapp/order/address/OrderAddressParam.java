@@ -18,4 +18,6 @@ public class OrderAddressParam {
     private String lng;
 
     private List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList;
+
+    private Integer deliveryType;
 }

@@ -349,7 +349,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param param 创建订单信息
      * @param order 订单入参
      */
-    private void noutoasiakasCode(CreateParam param, OrderInfoRecord order) {
+    private void noutoasiakasCode(CreateParam param, OrderInfoRecord order) throws MpException{
         if (param.getDeliverType() == 1) {
             String s = generateShortUuid();
             order.setVerifyCode(s);
@@ -361,6 +361,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             OrderAddressParam orderAddressParam = new OrderAddressParam();
             orderAddressParam.setLat(userAddressInfo.getLat());
             orderAddressParam.setLng(userAddressInfo.getLng());
+            orderAddressParam.setDeliveryType(0);
             List<StoreGoodsBaseCheckInfo> list = new ArrayList<>();
             param.getGoods().forEach(goods -> {
                 StoreGoodsBaseCheckInfo goodsMedicalInfo = getGoodsMedicalInfo(goods.getGoodsId());
@@ -370,6 +371,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             orderAddressParam.setStoreGoodsBaseCheckInfoList(list);
             Map<String, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
             Set<Map.Entry<String, StoreDo>> entry = storeListOpen.entrySet();
+            if (entry.size() == 0) {
+                throw new MpException(JsonResultCode.CODE_NO_STORE_OPEN);
+            }
             for (Map.Entry<String, StoreDo> value : entry) {
                 StoreDo storeDo = value.getValue();
                 order.setStoreId(storeDo.getStoreId());
@@ -470,8 +474,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         orderBo = initCreateOrderBo(param);
         //校验
         checkCreateOrderBo(orderBo, param);
-        // 校验门店商品是否充足 TODO:拉取校验药房库存
-        checkStoreGoodsIsEnough(param);
         //设置规格和商品信息、基础校验规格与商品
         processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
         //TODO 营销相关 活动校验或活动参数初始化
@@ -621,27 +623,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 校验门店商品是否充足
-     * @param param 订单商品
-     * @throws MpException 门店商品不足
-     */
-    private void checkStoreGoodsIsEnough(CreateParam param) throws MpException {
-        logger().info("校验门店商品是否充足");
-        List<Goods> goods = param.getGoods();
-        Integer storeId = param.getStoreId();
-        goods.forEach(e -> {
-            Integer integer = storeService.checkOrderGoodsIsEnough(e.getGoodsId(), storeId);
-            if (integer <= 0) {
-                try {
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK);
-                } catch (MpException mpException) {
-                    mpException.printStackTrace();
-                }
-            }
-        });
-    }
-
-    /**
      * 获取默认地址
      *  规则:默认地址>上次下单地址>null
      *
@@ -659,8 +640,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //先查默认地址
             defaultAddress = address.getefaultAddress(userId);
             if(defaultAddress == null) {
-                //上次下单地址
-//                defaultAddress = orderInfo.getLastOrderAddress(userId);
             }
         }
         return defaultAddress;
@@ -678,8 +657,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         // 自提
         expressList[OrderConstant.DELIVER_TYPE_SELF] = tradeCfg.getFetch();
         //TODO 同城配送
-        // expressList[OrderConstant.DELIVER_TYPE_COURIER] =
-        // trade.getCityExpressService();
         return expressList;
     }
 
@@ -1308,7 +1285,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void setOtherValue(CreateParam param, OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         Timestamp currentTime = DateUtils.getSqlTimestamp();
         //TODO 订单类型拼接(支付有礼)
-        orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
+        //支付信息
+        orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));
         if(BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(beforeVo.getMoneyPaid(), BigDecimalUtil.Operator.add),
             BigDecimalUtil.BigDecimalPlus.create(beforeVo.getBkOrderMoney(), BigDecimalUtil.Operator.add),

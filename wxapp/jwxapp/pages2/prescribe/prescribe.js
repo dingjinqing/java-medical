@@ -243,6 +243,10 @@ global.wxPage({
       util.showModal('提示', '请输入医嘱')
       return
     }
+    if (!this.data.goodsIdNum.length){
+      util.showModal('提示', '请选择药品')
+      return
+    }
     let params = {
       patientId: this.data.patientId,
       doctorId: util.getCache('doctor_id') || util.getCache('bottom').doctor_id,

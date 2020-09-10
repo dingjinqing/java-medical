@@ -17,9 +17,9 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {accruingWithDrawCash = null} = options
+    let {accruingWithdrawCash = null} = options
     this.setData({
-      accruingWithDrawCash:accruingWithDrawCash || '0.00'
+      accruingWithdrawCash:accruingWithdrawCash || '0.00'
     })
     this.requestWithdrawRecord()
   },
