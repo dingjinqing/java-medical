@@ -74,7 +74,7 @@ public class AnchorPointsDao extends ShopBaseDao {
      */
     public Map<Date, List<AnchorPointsReportVo>> countReport(AnchorPointsListParam param) {
        return db().select(DSL.date(ANCHOR_POINTS.CREATE_TIME).as("date"), ANCHOR_POINTS.EVENT,ANCHOR_POINTS.KEY,
-               ANCHOR_POINTS.VALUE,ANCHOR_POINTS.DEVICE,ANCHOR_POINTS.PLATFORM,DSL.count(ANCHOR_POINTS.ID).as("count"))
+               ANCHOR_POINTS.VALUE,DSL.count(ANCHOR_POINTS.ID).as("count"))
                 .from(ANCHOR_POINTS)
                 .where(ANCHOR_POINTS.EVENT.eq(param.getEvent()))
                 .and(ANCHOR_POINTS.KEY.eq(param.getKey()))
