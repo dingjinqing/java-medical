@@ -17,7 +17,7 @@
   <view class="main-container">
     <view class="top-content" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
       <view class="top-tops">已提现</view>
-      <view class="total-money">￥<text>{{accruingWithDrawCash}}</text></view>
+      <view class="total-money">￥<text>{{accruingWithdrawCash}}</text></view>
     </view>
     <view class="record-list">
     <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">

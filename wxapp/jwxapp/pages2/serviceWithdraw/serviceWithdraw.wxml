@@ -16,7 +16,7 @@
           <image src="{{imageUrl}}image/wxapp/withdraw_icon1.png"></image>
           <view class="info-text">
             <text class="info-tips">累计提现</text>
-            <text class="info-money">{{accruingWithDrawCash}}</text>
+            <text class="info-money">{{accruingWithdrawCash}}</text>
           </view>
         </view>
         <view class="info-item">

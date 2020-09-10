@@ -109,6 +109,7 @@ page{
   padding: 30rpx 24rpx; 
   border-radius: 16rpx;
   color: #333;
+  margin-bottom: 24rpx;
 }
 .prescription-content + .prescription-content{
   margin-top: 24rpx;
@@ -165,4 +166,27 @@ page{
 .is-null text {
   margin-top: -60rpx;
   color: #999;
+}
+.price-status-content{
+  display: flex;
+  justify-content: space-between;
+}
+.price-status-content > view{
+  color: #333;
+}
+.price-status-content > view > text{
+  font-weight: 600;
+}
+.price-status-content > view.reason{
+  color: #ff9f15;
+}
+.price-status-content > view.reason > text{
+  font-weight: 200;
+  vertical-align: middle;
+}
+.price-status-content > view.reason > image{
+  width: 31rpx;
+  height: 31rpx;
+  margin-right: 16rpx;
+  vertical-align: middle;
 }
