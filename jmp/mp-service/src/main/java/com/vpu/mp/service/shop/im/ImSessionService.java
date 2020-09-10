@@ -143,7 +143,7 @@ public class ImSessionService extends ShopBaseService {
             sessionMsgKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
         }
         Integer unreadMsgLength = jedisManager.getListSize(sessionMsgKey).intValue();
-        renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() - unreadMsgLength);
+        renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() + unreadMsgLength);
 
         // redis 超过长度
         Integer totalRows = jedisManager.getListSize(sessionBakKey).intValue();
