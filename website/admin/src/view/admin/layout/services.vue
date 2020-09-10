@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="main-container"
-    v-html="data"
-  >
-
-  </div>
+  <div class="main-container" v-html="data"></div>
 </template>
 
 <script>
@@ -34,7 +29,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .main-container {
   height: 100%;
   background-color: #fff;

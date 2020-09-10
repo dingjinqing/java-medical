@@ -1,13 +1,11 @@
 package com.vpu.mp.service.shop.order.goods;
 
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.order.goods.store.OrderStorePosBo;
-import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsNumConfirmParam;
-import com.vpu.mp.service.pojo.shop.order.goods.store.StoreGoodsConfirmVo;
+import com.vpu.mp.service.pojo.shop.order.goods.store.*;
 import org.springframework.stereotype.Service;
 
 /**
@@ -54,4 +52,29 @@ public class OrderStoreSyncService extends ShopBaseService {
         return Util.parseJson(apiExternalRequestResult.getData(), StoreGoodsConfirmVo.class);
     }
 
+    public OrderStockEnoughQueryVo getStockEnoughShopList(OrderStockEnoughQueryParam param){
+        String appId = ApiExternalGateConstant.APP_ID_STORE;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_GET_STOCK_ENOUGH_SHOP_LIST;
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())){
+            logger().error("请求信息："+param.toString()+",错误信息："+apiExternalRequestResult.getMsg());
+            return null;
+        }
+
+        return Util.parseJson(apiExternalRequestResult.getData(), OrderStockEnoughQueryVo.class);
+    }
+
+    public boolean cancelOrder(OrderStoreCancelParam param){
+        String appId = ApiExternalGateConstant.APP_ID_STORE;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_CANCEL_ORDER;
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            logger().error("请求信息：" + param.toString() + ",错误信息：" + apiExternalRequestResult.getMsg());
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

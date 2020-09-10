@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientMedicineParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.PatientPrescriptionParam;
 import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,7 +51,7 @@ public class AdminPatientController extends AdminBaseController {
      * @param patientMedicineParam 患者id
      * @return JsonResult
      */
-    @PostMapping("/api/admin/patient/medicine/record")
+    @PostMapping("/api/admin/patient/query/medicine")
     public JsonResult getPatientBuyMedicineRecord(@RequestBody PatientMedicineParam patientMedicineParam) {
         return success(shop().patientService.getPatientBuyMedicineRecord(patientMedicineParam));
     }
@@ -65,5 +66,25 @@ public class AdminPatientController extends AdminBaseController {
         return success();
     }
 
+
+    /**
+     * 根据患者id查询关联处方
+     * @param patientPrescriptionParam 查询处方入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/patient/query/prescription")
+    public JsonResult getPatientPrescription(@RequestBody PatientPrescriptionParam patientPrescriptionParam) {
+        return success(shop().patientService.getPatientPrescription(patientPrescriptionParam));
+    }
+
+    /**
+     * 根据患者id查询关联问诊
+     * @param patientPrescriptionParam 查询问诊入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/patient/query/inquiry")
+    public JsonResult getPatientInquiry(@RequestBody PatientPrescriptionParam patientPrescriptionParam) {
+        return success(shop().patientService.getPatientInquiry(patientPrescriptionParam));
+    }
 
 }

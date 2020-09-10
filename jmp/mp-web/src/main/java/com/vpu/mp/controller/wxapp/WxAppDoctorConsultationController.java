@@ -53,7 +53,7 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
     @PostMapping("/api/wxapp/recommend/doctor/list")
     public JsonResult getDoctorList(@RequestBody UserPatientParam doctorParam) {
         doctorParam.setPatientId(shop().patientService.defaultPatientId(doctorParam.getUserId()));
-        List<DepartmentIdNameVo> recommendDepartment = shop().departmentService.listRecommendDepartment();
+        List<DepartmentOneParam> recommendDepartment = shop().departmentService.listRecommendDepartment();
         List<DoctorConsultationOneParam> doctorList = shop().doctorService.listRecommendDoctorForConsultation(doctorParam);
         DoctorRecommendVo data = new DoctorRecommendVo();
         data.setDoctorList(doctorList);
