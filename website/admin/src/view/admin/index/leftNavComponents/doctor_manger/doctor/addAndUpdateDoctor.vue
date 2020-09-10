@@ -213,7 +213,7 @@ export default {
         hospitalCode: '',
         certificateCode: '',
         professionalCode: '',
-        titleId: 0,
+        titleId: null,
         duty: '',
         departmentIdsStr: [],
         sex: 0,

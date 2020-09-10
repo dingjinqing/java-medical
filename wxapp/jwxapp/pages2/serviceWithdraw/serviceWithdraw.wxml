@@ -23,7 +23,7 @@
           <image src="{{imageUrl}}image/wxapp/withdraw_icon2.png"></image>
           <view class="info-text">
             <text class="info-tips">待提现</text>
-            <text class="info-money">{{waitWithDrawCash}}</text>
+            <text class="info-money">{{waitWithdrawCash}}</text>
           </view>
         </view>
       </view>

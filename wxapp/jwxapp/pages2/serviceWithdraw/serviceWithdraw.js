@@ -17,11 +17,11 @@ global.wxPage({
   requestWithDrawInfo(){
     util.api('/api/wxapp/doctor/rebate/total',res=>{
       if(res.error === 0){
-        let {totalMoney,accruingWithDrawCash,waitWithDrawCash,withdrawCashMax,withdrawCashMix} = res.content
+        let {totalMoney,accruingWithDrawCash,waitWithdrawCash,withdrawCashMax,withdrawCashMix} = res.content
         this.setData({
           totalMoney:totalMoney || '0.00',
           accruingWithDrawCash:accruingWithDrawCash || '0.00',
-          waitWithDrawCash:waitWithDrawCash || '0.00',
+          waitWithdrawCash:waitWithdrawCash || '0.00',
           withdrawCashMin:withdrawCashMix || '0.00',
           withdrawCashMax:withdrawCashMax || '0.00'
         })

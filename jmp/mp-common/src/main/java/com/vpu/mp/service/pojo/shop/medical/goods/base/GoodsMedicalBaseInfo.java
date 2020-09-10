@@ -11,6 +11,7 @@ import lombok.Data;
 public class GoodsMedicalBaseInfo {
     private String goodsCommonName;
     private String goodsCode;
+    private String goodsBarCode;
     private String goodsAliasName;
     private String goodsQualityRatio;
     private Byte isRx;
