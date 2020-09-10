@@ -9,12 +9,12 @@ Vue.use(Router)
 
 const baseRoutes = [
   {
-    path: '/index',
-    redirect: '/store/login'
+    path: '/store/login',
+    redirect: '/index/login'
   },
   {
-    path: '/store/login',
-    name: 'storeLogin',
+    path: '/index/login',
+    name: 'indexLogin',
     component: () => import('@/components/index/login')
   },
   {
