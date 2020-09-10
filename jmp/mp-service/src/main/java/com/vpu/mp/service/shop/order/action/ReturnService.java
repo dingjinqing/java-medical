@@ -239,7 +239,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 int returnNums=orderGoodsDoList.stream().collect(Collectors.summingInt(OrderGoodsDo::getReturnNumber));
                 int goodsNums=orderGoodsDoList.stream().collect(Collectors.summingInt(OrderGoodsDo::getGoodsNumber));
                 //商品退完
-                if(goodsNums==returnNums&&!PrescriptionConstant.SETTLEMENT_FINISH.equals(prescriptionVo.getSettlementFlag())){
+                if(goodsNums==returnNums){
                     //更改处方返利状态
                     prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATE_FAIL,PrescriptionRebateConstant.REASON_RETURNED);
                     prescriptionDao.updateSettlementFlag(preCode,PrescriptionConstant.SETTLEMENT_NOT);
