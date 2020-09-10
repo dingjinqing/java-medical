@@ -61,7 +61,7 @@ public class PrescriptionRebateService extends ShopBaseService {
         if(rebateConfig!=null&& RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
             List<PrescriptionItemDo> itemList=prescriptionItemDao.listOrderGoodsByPrescriptionCode(prescription.getPrescriptionCode());
             //计算应返利
-            updatePrescriptionItem(itemList,order);
+            updatePrescriptionItem(itemList,order,rebateConfig);
             //返利信息入库
             calculatePrescriptionRebate(prescription,itemList);
             prescriptionDao.updateSettlementFlag(prescription.getPrescriptionCode(),PrescriptionConstant.SETTLEMENT_WAIT);
@@ -76,12 +76,11 @@ public class PrescriptionRebateService extends ShopBaseService {
      * @param itemList
      * @param order
      */
-    public void updatePrescriptionItem( List<PrescriptionItemDo> itemList,OrderInfoDo order){
+    public void updatePrescriptionItem( List<PrescriptionItemDo> itemList,OrderInfoDo order,RebateConfig rebateConfig){
         Double sums=itemList.stream().collect(Collectors.summingDouble(PrescriptionItemDo::getDragSumNum));
         BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), BigDecimal.valueOf(sums), RoundingMode.HALF_UP);
 
         for(PrescriptionItemDo item:itemList){
-            RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
             BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
             BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
             BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
