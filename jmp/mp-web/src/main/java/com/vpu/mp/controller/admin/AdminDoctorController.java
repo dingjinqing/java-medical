@@ -88,7 +88,11 @@ public class AdminDoctorController extends AdminBaseController {
         if (doctorId == null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
-        return success(shop().doctorService.getOneInfo(doctorId));
+        DoctorOneParam doctorInfo = shop().doctorService.getOneInfo(doctorId);
+        if (doctorInfo.getTitleId() == 0) {
+            doctorInfo.setTitleId(null);
+        }
+        return success();
     }
 
     /**
