@@ -125,6 +125,11 @@
                 <el-table-column
                         prop='userId'
                         label='用户id'>
+                    <template slot-scope="scope">
+                        <div class="operation">
+                            <a @click="handleSeePatient(scope.row.id)">{{scope.row.patientId}}</a>
+                        </div>
+                    </template>
                 </el-table-column>
             </el-table>
             <pagination
@@ -283,6 +288,16 @@ export default {
     },
     handleData (data) {
       this.tableData = data
+    },
+    // 跳转患者详情
+    handleSeePatient (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'patient_message'
+      })
+      newpage.href = newpage.href + '?id=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
     }
   },
   filters: {
