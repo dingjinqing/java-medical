@@ -143,19 +143,21 @@ public class ImSessionService extends ShopBaseService {
             sessionMsgKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
         }
         Integer unreadMsgLength = jedisManager.getListSize(sessionMsgKey).intValue();
-        renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() + unreadMsgLength);
+        if (Boolean.FALSE.equals(renderPageParam.getIsFirstTime())) {
+            renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() + unreadMsgLength);
+        }
 
         // redis 超过长度
-        Integer totalRows = jedisManager.getListSize(sessionBakKey).intValue();
+        int totalRows = jedisManager.getListSize(sessionBakKey).intValue();
         List<ImSessionItemDo> imSessionItemDos = null;
         // 分页的开始下标已经超过redis中存的会话条目，则从数据库中查找对应的历史信息
-        if (renderPageParam.getStartLineIndex() >= totalRows ) {
-            renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex()-totalRows);
+        if (renderPageParam.getStartLineIndex() >= totalRows) {
+            renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() - totalRows);
             imSessionItemDos = renderSessionFromDb(renderPageParam);
         } else {
-            Integer endIndex = renderPageParam.getStartLineIndex()+renderPageParam.getPageRows();
-            List<String> jsonStrs = jedisManager.lrange(sessionBakKey, renderPageParam.getStartLineIndex(), endIndex);
-            imSessionItemDos = jsonStrs.stream().map(x->Util.parseJson(x, ImSessionItemDo.class)).filter(Objects::nonNull).collect(Collectors.toList());
+            int startIndex =totalRows - renderPageParam.getStartLineIndex()-1;
+            List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex-renderPageParam.getPageRows(), startIndex);
+                imSessionItemDos = jsonStrs.stream().map(x -> Util.parseJson(x, ImSessionItemDo.class)).filter(Objects::nonNull).collect(Collectors.toList());
         }
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
         if (renderPageParam.getIsFirstTime()) {
@@ -291,9 +293,10 @@ public class ImSessionService extends ShopBaseService {
         return imSessionDao.getByOrderSn(orderSn);
     }
 
-    private Timestamp calculateSessionLimitTime(){
+    private Timestamp calculateSessionLimitTime() {
         return DateUtils.getTimeStampPlus(ImSessionConstant.CLOSE_LIMIT_TIME, ChronoUnit.HOURS);
     }
+
     /**
      * 新增待接诊会话
      * @param param 新增会话信息
