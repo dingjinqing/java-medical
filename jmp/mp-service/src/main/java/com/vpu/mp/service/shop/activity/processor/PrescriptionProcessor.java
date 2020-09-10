@@ -262,7 +262,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         //更新处方状态
         if (OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION.equals(order.getOrderAuditType())){
-            prescriptionDao.updatePrescriprionIsUsered(param.getPrescriptionCode());
+            prescriptionDao.updatePrescriprionIsUseredAndOrderSn(param.getPrescriptionCode(),order.getOrderSn());
         }
     }
 

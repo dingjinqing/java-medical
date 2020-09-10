@@ -2,62 +2,6 @@
   <!-- 店铺基础信息 -->
   <el-container>
     <el-main class="patientConfig">
-      <!-- <ul class="program_details">
-        <li class="details_item">
-          <span class="item_label">患者姓名：</span>
-          <div class="item_content">
-            <span>{{data.name}}</span>
-          </div>
-        </li>
-        <li class="details_item">
-          <span class="item_label">患者编号：</span>
-          <div class="item_content">
-            <span>{{data.id}}</span>
-          </div>
-        </li>
-        <li class="details_item">
-          <span class="item_label">手机号：</span>
-          <div class="item_content">
-            <span>{{data.mobile}}</span>
-          </div>
-        </li>
-        <li class="details_item">
-          <span class="item_label">性别：</span>
-          <div class="item_content">
-            <span>{{data.sex == 0 ? '男' : (data.sex == 1 ? '女' : '未知')}}</span>
-          </div>
-        </li>
-        <li class="details_item">
-          <span class="item_label">证件类型：</span>
-          <div class="item_content">
-            <span>{{data.identityType == 1 ? '身份证' : (data.identityType == 1 ? '军人证' : ( data.identityType == 3 ?  '护照' : '社保卡'))}}</span>
-          </div>
-        </li>
-        <li class="details_item">
-          <span class="item_label">证件号：</span>
-          <div class="item_content">
-            <span>{{data.identityCode}}</span>
-          </div>
-        </li>
-        <li class="details_item">
-          <span class="item_label">生日：</span>
-          <div class="item_content">
-            <span>{{data.birthday}}</span>
-          </div>
-        </li>
-        <li class="details_item">
-          <span class="item_label">疾病史：</span>
-          <div class="item_content">
-            <span>{{data.diseaseHistoryNameStr}}</span>
-          </div>
-        </li>
-        <li class="details_item">
-          <span class="item_label">过敏史：</span>
-          <div class="item_content">
-            <span>{{data.allergyHistory}}</span>
-          </div>
-        </li>
-      </ul> -->
       <div class="user-info">
         <div class="user-info-content">
           <div class="title">患者信息</div>
@@ -110,6 +54,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-container{
+  padding: 10px 20px;
+  background: #fff;
+}
 .patientConfig {
   padding: 0;
   background: #fff;

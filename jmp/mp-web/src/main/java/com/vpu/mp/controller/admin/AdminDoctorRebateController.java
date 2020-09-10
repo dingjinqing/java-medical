@@ -54,4 +54,16 @@ public class AdminDoctorRebateController extends AdminBaseController{
         String fileName = PrescriptionRebateReportVo.EXPORT_FILE_NAME+ DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
         export2Excel(workbook,fileName,response);
     }
+
+    /**
+     * 咨询返利报表导出
+     * @param param
+     * @param response
+     */
+    @PostMapping("/doctor/rebate/inquiryOrder/export")
+    public void inquiryOrderRebateReport(@RequestBody InquiryOrderRebateListParam param, HttpServletResponse response){
+        Workbook workbook=shop().inquiryOrderRebateService.listExport(param,getLang());
+        String fileName =InquiryOrderRebateReportVo.EXPORT_FILE_NAME+DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
+    }
 }

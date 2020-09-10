@@ -48,3 +48,36 @@ export function changeWithdrawStatus (data) {
     data: data
   })
 }
+// 获取返利详情接口
+export function getWithdrawDetail (data) {
+  return service({
+    url: `/api/admin/doctor/withdraw/detail?id=${data}`,
+    method: 'get'
+  })
+}
+// 添加备注信息
+export function addDesc (data) {
+  return service({
+    url: `/api/admin/doctor/withdraw/desc/add`,
+    method: 'post',
+    data
+  })
+}
+// 处方返利信息导出
+export function exportPrescriptionRebate (data) {
+  return service({
+    url: `/api/admin/doctor/rebate/prescription/export`,
+    method: 'post',
+    data,
+    responseType: 'blob'
+  })
+}
+// 咨询订单返利信息导出
+export function exporTinquiryOrderRebate (data) {
+  return service({
+    url: `/api/admin/doctor/rebate/inquiryOrder/export`,
+    method: 'post',
+    data,
+    responseType: 'blob'
+  })
+}

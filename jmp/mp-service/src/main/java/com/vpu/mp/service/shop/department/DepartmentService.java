@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.DepartmentSummaryTrendDo;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -278,5 +279,60 @@ public class DepartmentService extends BaseShopConfigService {
             param.setDepartmentIds(departmentIds);
         }
         return departmentDao.listDepartmentsByOptions(param);
+    }
+
+    /**
+     * 获取所有科室的信息
+     *
+     * @return
+     */
+    public List<DepartmentOneParam> getAllDepartment() {
+        return departmentDao.getAllDepartment();
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DepartmentStatisticOneParam getDepartmentInquiryData(DepartmentStatisticParam param) {
+        return departmentDao.getDepartmentInquiryData(param);
+    }
+
+    /**
+     * 获取科室接诊统计数据
+     * @param param
+     * @return
+     */
+    public Integer getDepartmentConsultationData(DepartmentStatisticParam param) {
+        return departmentDao.getDepartmentConsultationData(param);
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DepartmentStatisticOneParam getDepartmentPrescriptionData(DepartmentStatisticParam param) {
+        return departmentDao.getDepartmentPrescriptionData(param);
+    }
+
+    /**
+     * 获取科室统计信息
+     * @param param
+     * @return
+     */
+    public DepartmentSummaryTrendDo getDepartmentStatisData(DepartmentStatisticParam param){
+        DepartmentSummaryTrendDo data = new DepartmentSummaryTrendDo();
+        data.setConsultationNumber(getDepartmentConsultationData(param));
+
+        DepartmentStatisticOneParam inquiryData = getDepartmentInquiryData(param);
+        data.setInquiryMoney(inquiryData.getInquiryMoney());
+        data.setInquiryNumber(inquiryData.getInquiryNumber());
+
+        DepartmentStatisticOneParam prescriptionData = getDepartmentPrescriptionData(param);
+        data.setPrescriptionMoney(prescriptionData.getPrescriptionMoney());
+        data.setPrescriptionNum(prescriptionData.getPrescriptionNum());
+        return data;
     }
 }

@@ -9,7 +9,7 @@ global.wxPage({
     activeStyle1:'border-radius:16rpx 16rpx 0 0;background-color:#fff',
     activeStyle2:'border-radius:0 16rpx 0 16rpx;background-color:#f5f5f5',
     activeType:'1',
-    targetStatus:'0',
+    targetStatus:'-1',
     pageParams: {
       currentPage: 1,
       pageRows: 20
@@ -52,7 +52,7 @@ global.wxPage({
     let apiStr = this.data.activeType === '1' ? '/api/wxapp/doctor/rebate/prescription/list' : '/api/wxapp/doctor/rebate/inquiryOrder/list'
     let params = {
       doctorId:util.getCache('doctor_id') || util.getCache('bottom').doctor_id,
-      status:Number(this.data.targetStatus) === 0 ? null : Number(this.data.targetStatus),
+      status:Number(this.data.targetStatus) === -1 ? null : Number(this.data.targetStatus),
       ...this.pageParams
     }
     util.api(apiStr,res=>{

@@ -6,7 +6,7 @@ package com.vpu.mp.service.pojo.shop.store.statistic;
  */
 public class StatisticConstant {
     public static final Byte TYPE_TODAY=0;
-    public static final Byte TYPE_YESTODAY=0;
+    public static final Byte TYPE_YESTODAY=1;
     public static final Byte TYPE_WEEK=7;
     public static final Byte TYPE_MONTH=30;
     public static final Byte TYPE_QUARTER=90;

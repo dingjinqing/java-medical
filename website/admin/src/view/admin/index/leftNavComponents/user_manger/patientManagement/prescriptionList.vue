@@ -31,6 +31,26 @@
             >
             </el-input>
           </div>
+          <div class="filters_item">
+            <span>处方号：</span>
+            <el-input
+                    v-model="queryParams.prescriptionCode"
+                    size="small"
+                    style="width:190px;"
+                    placeholder="请输入处方号"
+            >
+            </el-input>
+          </div>
+          <div class="filters_item">
+            <span>订单号：</span>
+            <el-input
+                    v-model="queryParams.orderSn"
+                    size="small"
+                    style="width:190px;"
+                    placeholder="请输入订单号"
+            >
+            </el-input>
+          </div>
 
         </div>
       </div>
@@ -190,6 +210,16 @@
           >
             <template slot-scope="scope">
               <div class="operation">
+                <a @click="handleSeeMessage(scope.row.prescriptionCode)">{{scope.row.prescriptionCode}}</a>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='prescriptionCode'
+                  label='处方号'
+          >
+            <template slot-scope="scope">
+              <div class="operation">
                 <a @click="handleSeeOrder(scope.row.prescriptionCode)">{{scope.row.prescriptionCode}}</a>
               </div>
             </template>
@@ -241,8 +271,9 @@
                   prop='expireType'
                   label='过期类型'>
             <template slot-scope="scope">
-              {{getLabelValue(expireType,scope.row.expireType)}}
-              <br>{{expireTypeTime(scope.row)}}
+              {{expireTypeTime(scope.row)}}
+              <br>
+              ({{getLabelValue(expireType,scope.row.expireType)}})
             </template>
           </el-table-column>
           <el-table-column
@@ -260,7 +291,10 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="initDataList"
+        />
       </div>
     </div>
   </div>
@@ -320,12 +354,14 @@ export default {
       },
       pageParams: {
         currentPage: 1,
-        pageRows: 20
+        pageRows: 5
       },
       tableData: [],
       storeGroup: [],
       queryParams: {
         patientName: '',
+        prescriptionCode: '',
+        orderSn: '',
         diagnoseStartTime: '',
         diagnoseEndTime: '',
         doctorName: '',
@@ -363,7 +399,7 @@ export default {
       expireType: [
         {value: 0, label: '过期'},
         {value: 1, label: '永久有效'},
-        {value: 2, label: '时间段内有效'}
+        {value: 2, label: '未过期'}
       ],
       createTimeValue: [],
       createTimeSelect: 30,
@@ -459,9 +495,9 @@ export default {
     handleSeeOrder (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
-        name: 'prescription_message'
+        name: 'orderInfo'
       })
-      newpage.href = newpage.href + '?prescriptionCode=' + code
+      newpage.href = newpage.href + '?orderSn=' + code
       console.log(newpage.href)
       window.open(newpage.href, '_blank')
     },
@@ -521,37 +557,42 @@ export default {
     .filters {
       flex: 2;
       display: flex;
-      flex-wrap: wrap;
-      line-height: 32px;
-      margin-left: -15px;
-      .filters_item {
+      background-color: #fff;
+      padding: 0px 20px;
+      .filters {
+        flex: 2;
         display: flex;
-        justify-content: flex-end;
-        margin-left: 15px;
-        .fil_span {
-          font-size: 14px;
-          text-align: right;
+        flex-wrap: wrap;
+        line-height: 32px;
+        margin-left: -15px;
+        .filters_item {
+          display: flex;
+          justify-content: flex-end;
+          margin-left: 15px;
+          .fil_span {
+            font-size: 14px;
+            text-align: right;
+          }
+          .timeSelect {
+            width: 140px;
+            margin: 0 10px 0 10px;
+          }
+          .choosed_time {
+            margin-left: 20px;
+          }
         }
-        .timeSelect {
-          width: 140px;
-          margin: 0 10px 0 10px;
-        }
-        .choosed_time {
+        .btn_wrap {
           margin-left: 20px;
         }
       }
-      .btn_wrap {
-        margin-left: 20px;
-      }
     }
-  }
-  .table_box {
-    padding: 10px;
-    background: #fff;
-    margin-top: 10px;
-    a {
-      color: #5a8bff;
-      cursor: pointer;
+    .table_box {
+      padding: 10px;
+      background: #fff;
+      a {
+        color: #5a8bff;
+        cursor: pointer;
+      }
     }
   }
   .default_input {

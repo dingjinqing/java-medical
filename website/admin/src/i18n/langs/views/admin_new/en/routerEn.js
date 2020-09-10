@@ -34,6 +34,8 @@ export const en = {
   situation: ['Overview', 'Real Time Profile'],
   // 概况 销售报表
   sales_report: ['Overview', 'Sales Report'],
+  // 概况 销售报表
+  anchor_points: ['埋点列表', '埋点列表'],
   // 会员管理 会员卡
   userCard: ['Membership', 'Normal Card'],
   // 会员管理 限次

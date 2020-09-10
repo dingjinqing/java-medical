@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Prescription extends TableImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = -1423937119;
+    private static final long serialVersionUID = 1405675377;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription</code>
@@ -72,6 +72,11 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
      * The column <code>mini_shop_471752.b2c_prescription.pos_code</code>. 医嘱单号
      */
     public final TableField<PrescriptionRecord, String> POS_CODE = createField("pos_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医嘱单号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.order_sn</code>. 订单号
+     */
+    public final TableField<PrescriptionRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单号");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription.patient_id</code>. 患者id
