@@ -67,20 +67,4 @@ public class StoreDao extends ShopBaseDao {
         select.limit(15);
         return select.fetchInto(StoreDo.class);
     }
-
-    /**
-     * 查询门店商品是否充足
-     * @param goodsId 商品id
-     * @param storeId 门店id
-     * @return Integer
-     */
-    public Integer checkOrderGoodsIsEnough(Integer goodsId, Integer storeId) {
-        return db().selectCount().from(STORE_GOODS)
-            .where(STORE_GOODS.GOODS_ID.eq(goodsId))
-            .and(STORE_GOODS.STORE_ID.eq(storeId))
-            .and(STORE_GOODS.PRODUCT_NUMBER.gt(0))
-            .and(STORE_GOODS.IS_ON_SALE.eq((byte) 1))
-            .and(STORE_GOODS.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
-            .fetchAnyInto(Integer.class);
-    }
 }
