@@ -100,7 +100,10 @@
         >
           <template slot-scope="scope">
             <div class="evaluation-info">
-              <div class="evaluation-info_item" v-if="scope.row.avgCommentStar > 0">
+              <div
+                class="evaluation-info_item"
+                v-if="scope.row.avgCommentStar > 0"
+              >
                 <star :value="scope.row.avgCommentStar" />
                 <a
                   href="javaScript:void(0);"
@@ -116,7 +119,7 @@
         </el-table-column>
         <el-table-column label="平均响应时间">
           <template v-slot="scope">
-            <span>{{scope.row.answerType == 1 ? '10分钟内' : (scope.row.answerType == 2 ? '半小时内' : ( scope.row.answerType == 3 ? '1小时内' : '1小时以上'))}}</span>
+            <span>{{scope.row.answerHourInt > 0 ?  scope.row.answerHourInt + '小时' : ''}}</span><span>{{scope.row.answerMunite != -1 ?  scope.row.answerMunite + '分钟' : '暂无接诊'}}</span>
           </template>
         </el-table-column>
         <el-table-column
