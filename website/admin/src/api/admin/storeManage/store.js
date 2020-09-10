@@ -107,13 +107,13 @@ export function shareStore (data) {
   })
 }
 
-// 请求第三方配送列表
-export function getDeliverys () {
-  return service({
-    url: '/api/admin/store/account/get',
-    method: 'get'
-  })
-}
+// // 请求第三方配送列表
+// export function getDeliverys () {
+//   return service({
+//     url: '/api/admin/store/account/get',
+//     method: 'get'
+//   })
+// }
 
 // 请求基础配置中的设置
 export function getDeliveryConfig () {
