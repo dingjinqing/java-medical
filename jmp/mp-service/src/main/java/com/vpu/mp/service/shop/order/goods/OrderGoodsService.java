@@ -10,6 +10,7 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.db.main.tables.records.OrderInfoBakRecord;
@@ -105,6 +106,15 @@ public class OrderGoodsService extends ShopBaseService {
 	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
+
+    /**
+     * 根据处方号查药品列表
+     * @param prescriptionCode 处方号
+     * @return List<OrderGoodsDo>
+     */
+	public List<OrderGoodsDo> getByPrescription(String prescriptionCode) {
+	    return orderGoodsDao.getByPrescription(prescriptionCode);
+    }
 
 	/**
 	 * 单个订单商品

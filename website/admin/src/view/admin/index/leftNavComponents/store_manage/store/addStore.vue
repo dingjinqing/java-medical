@@ -1,23 +1,10 @@
 <template>
   <div class="storeWrap">
-    <div
-      v-if="reload"
-      id="storeDiv"
-      class="storeContent"
-    >
+    <div v-if="reload" id="storeDiv" class="storeContent">
       <!-- 头部导航 headerSteps-->
-      <el-steps
-        :active="stepData.currentStep"
-        simple
-      >
-        <el-step
-          :title="step1"
-          icon="el-icon-edit"
-        ></el-step>
-        <el-step
-          :title="step2"
-          icon="el-icon-edit"
-        ></el-step>
+      <el-steps :active="stepData.currentStep" simple>
+        <el-step :title="step1" icon="el-icon-edit"></el-step>
+        <el-step :title="step2" icon="el-icon-edit"></el-step>
       </el-steps>
 
       <!-- 主要内容区 -->
@@ -27,58 +14,46 @@
         :model="storeFormInfo"
         :rules="storeFormRules"
         label-width="120px"
-        style="margin-top: 20px;"
+        style="margin-top: 20px"
         size="small"
         label-suffix="："
       >
-        <el-form-item
-          :label="$t('addStore.storeName') "
-          prop="storeName"
-        >
+        <el-form-item :label="$t('addStore.storeName')" prop="storeName">
           <el-input
             v-model="storeFormInfo.storeName"
             :placeholder="$t('addStore.storeNameTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          :label="$t('addStore.principal') "
-          prop="manager"
-        >
+        <el-form-item :label="$t('addStore.principal')" prop="manager">
           <el-input
             v-model="storeFormInfo.manager"
             :placeholder="$t('addStore.principalTip')"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          :label="$t('addStore.contactNum') "
-          prop="mobile"
-        >
+        <el-form-item :label="$t('addStore.contactNum')" prop="mobile">
           <el-input
             v-model="storeFormInfo.mobile"
             :placeholder="$t('addStore.contactNumTip')"
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.businessStatus') "
+          :label="$t('addStore.businessStatus')"
           prop="businessState"
         >
           <el-radio-group v-model="storeFormInfo.businessState">
-            <el-radio :label="1">{{$t('addStore.open')}}</el-radio>
-            <el-radio :label="0">{{$t('addStore.close')}}</el-radio>
+            <el-radio :label="1">{{ $t('addStore.open') }}</el-radio>
+            <el-radio :label="0">{{ $t('addStore.close') }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item
-          :label="$t('addStore.BusinessHours') "
-          prop="businessType"
-        >
+        <el-form-item :label="$t('addStore.BusinessHours')" prop="businessType">
           <el-radio-group v-model="storeFormInfo.businessType">
-            <el-radio :label="1">{{$t('addStore.everyDay')}}</el-radio>
-            <el-radio :label="0">{{$t('addStore.workDay')}}</el-radio>
+            <el-radio :label="1">{{ $t('addStore.everyDay') }}</el-radio>
+            <el-radio :label="0">{{ $t('addStore.workDay') }}</el-radio>
           </el-radio-group>
           <el-time-picker
             v-model="storeFormInfo.openingTime"
             :placeholder="$t('addStore.startTime')"
-            style="width: 12%;margin-left: 20px;"
+            style="width: 12%; margin-left: 20px"
             format="HH:mm"
             value-format="HH:mm"
           ></el-time-picker>
@@ -86,24 +61,20 @@
           <el-time-picker
             v-model="storeFormInfo.closeTime"
             :placeholder="$t('addStore.endTime')"
-            style="width: 12%;"
+            style="width: 12%"
             format="HH:mm"
             value-format="HH:mm"
           ></el-time-picker>
-          <p style="margin-left: 172px; color: #a0a0a0;">{{$t('addStore.timeTip')}} 9:00-21:00</p>
+          <p style="margin-left: 172px; color: #a0a0a0">
+            {{ $t('addStore.timeTip') }} 9:00-21:00
+          </p>
         </el-form-item>
-        <el-form-item
-          :label="$t('addStore.ownedGroup') "
-          prop="group"
-        >
+        <el-form-item :label="$t('addStore.ownedGroup')" prop="group">
           <el-select
             v-model="storeFormInfo.group"
             :placeholder="$t('addStore.groupTip')"
           >
-            <el-option
-              :label="$t('addStore.selectGroup')"
-              value=""
-            ></el-option>
+            <el-option :label="$t('addStore.selectGroup')" value=""></el-option>
             <el-option
               v-for="item in storeGroups"
               :key="item.groupId"
@@ -111,15 +82,13 @@
               :value="item.groupId"
             ></el-option>
           </el-select>
-          <el-button
-            type="text"
-            @click="refreshGroups"
-          >{{$t('addStore.refresh')}}</el-button>
+          <el-button type="text" @click="refreshGroups">{{
+            $t('addStore.refresh')
+          }}</el-button>
           <span>|</span>
-          <el-button
-            type="text"
-            @click="addGroups"
-          >{{$t('addStore.addNewGroup')}}</el-button>
+          <el-button type="text" @click="addGroups">{{
+            $t('addStore.addNewGroup')
+          }}</el-button>
         </el-form-item>
         <!-- <el-form-item
           :label="$t('addStore.storeNum') "
@@ -134,10 +103,7 @@
             show-word-limit
           ></hc-input-number>
         </el-form-item> -->
-        <el-form-item
-          :label="$t('addStore.location') "
-          prop="provinceCode"
-        >
+        <el-form-item :label="$t('addStore.location')" prop="provinceCode">
           <div>
             <areaLinkage
               ref="areaLink"
@@ -146,25 +112,18 @@
             />
           </div>
         </el-form-item>
-        <el-form-item
-          :label="$t('addStore.mapLocation') "
-          prop="address"
-        >
+        <el-form-item :label="$t('addStore.mapLocation')" prop="address">
           <el-input
             :placeholder="$t('addStore.locationTip')"
             v-model="storeFormInfo.address"
           ></el-input>
-          <el-button
-            type="text"
-            @click="codeAddress"
-          >{{$t('addStore.mapLocation')}}</el-button>
-          <div
-            class="store-map"
-            ref="storemap"
-          ></div>
+          <el-button type="text" @click="codeAddress">{{
+            $t('addStore.mapLocation')
+          }}</el-button>
+          <div class="store-map" ref="storemap"></div>
         </el-form-item>
         <el-form-item
-          :label="$t('addStore.specialService') "
+          :label="$t('addStore.specialService')"
           prop="storeService"
         >
           <el-checkbox-group v-model="storeService">
@@ -179,49 +138,50 @@
             :placeholder="$t('addStore.serviceTip')"
             v-model="addService"
           ></el-input>
-          <el-button
-            type="text"
-            @click="addServeHandler"
-          >{{$t('addStore.add')}}</el-button>
+          <el-button type="text" @click="addServeHandler">{{
+            $t('addStore.add')
+          }}</el-button>
         </el-form-item>
-        <el-form-item
-          :label="$t('addStore.storePhoto') "
-          prop="storeImgs"
-        >
-          <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
+        <el-form-item :label="$t('addStore.storePhoto')" prop="storeImgs">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              flex-wrap: wrap;
+              overflow: hidden;
+            "
+          >
             <div
-              v-for="(item,index) in storeFormInfo.storeImgs"
+              v-for="(item, index) in storeFormInfo.storeImgs"
               :key="index"
               class="storeImgWrap"
             >
               <el-image
                 fit="cover"
-                :src="$imageHost +'/'+ item"
-                style="width: 78px; height: 78px;"
+                :src="$imageHost + '/' + item"
+                style="width: 78px; height: 78px"
               ></el-image>
-              <span
-                class="deleteIcon"
-                @click="deleteStoreImg(index)"
-              >×</span>
+              <span class="deleteIcon" @click="deleteStoreImg(index)">×</span>
             </div>
             <div
               class="storeImgWrap"
               @click="addStoreImg"
-              v-if="storeFormInfo.storeImgs && storeFormInfo.storeImgs.length < 5"
+              v-if="
+                storeFormInfo.storeImgs && storeFormInfo.storeImgs.length < 5
+              "
             >
               <el-image
                 fit="scale-down"
-                :src="imgHost+'/image/admin/add_img.png'"
-                style="width: 78px; height: 78px; cursor: pointer;"
+                :src="imgHost + '/image/admin/add_img.png'"
+                style="width: 78px; height: 78px; cursor: pointer"
               />
             </div>
-            <p style="width:100%; color: #999;margin-bottom:15px;">{{$t('addStore.storePhotoTip')}}</p>
+            <p style="width: 100%; color: #999; margin-bottom: 15px">
+              {{ $t('addStore.storePhotoTip') }}
+            </p>
           </div>
         </el-form-item>
-        <el-form-item
-          :label="$t('addStore.storeDetails') "
-          prop="storeDetail"
-        >
+        <el-form-item :label="$t('addStore.storeDetails')" prop="storeDetail">
           <div class="edit-wrap">
             <TinymceEditor
               v-model="storeFormInfo.content"
@@ -233,8 +193,8 @@
       <!--图片dialog-->
       <ImageDalog
         :tuneUp="selfImgDialogShow"
-        pageIndex='pictureSpace'
-        @handleSelectImg='imgDialogSelectedCallback'
+        pageIndex="pictureSpace"
+        @handleSelectImg="imgDialogSelectedCallback"
         isDraggable
         :imageSize="[750, 520]"
       />
@@ -243,53 +203,69 @@
       <div
         v-show="this.stepData.currentStep == 1"
         class="create_content"
-        style="display: block;"
+        style="display: block"
       >
         <div class="containter">
           <div class="content_left">
-            <img
-              src="@/assets/image/admin/left_bg.png"
-              alt=""
-            >
+            <img src="@/assets/image/admin/left_bg.png" alt="" />
             <div class="line1">
-              <span>{{$t('addStore.storeSelfRaising')}}</span>
-              <a href="javascript:void(0);">{{$t('addStore.viewSelfRaisingTip')}}</a>
+              <span>{{ $t('addStore.storeSelfRaising') }}</span>
+              <a href="javascript:void(0);">{{
+                $t('addStore.viewSelfRaisingTip')
+              }}</a>
             </div>
-            <div class="line2">{{$t('addStore.selfopenTip')}}</div>
+            <div class="line2">{{ $t('addStore.selfopenTip') }}</div>
             <div class="line3">
               <el-switch
-                :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude) || (deliverConfig && deliverConfig.fetch === 0 && storeFormInfo.autoPick === 0)"
+                :disabled="
+                  !(storeFormInfo.latitude && storeFormInfo.longitude) ||
+                  (deliverConfig &&
+                    deliverConfig.fetch === 0 &&
+                    storeFormInfo.autoPick === 0)
+                "
                 v-model="storeFormInfo.autoPick"
                 active-color="#E6A23C"
                 inactive-color="#ccc"
                 :active-value="1"
                 :inactive-value="0"
-              ></el-switch>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span v-if="this.storeFormInfo.autoPick == 1">{{$t('addStore.turnedOn')}}</span>
-              <span v-if="this.storeFormInfo.autoPick == 0">{{$t('addStore.closed')}}</span>
+              ></el-switch
+              >&nbsp;&nbsp;&nbsp;&nbsp;
+              <span v-if="this.storeFormInfo.autoPick == 1">{{
+                $t('addStore.turnedOn')
+              }}</span>
+              <span v-if="this.storeFormInfo.autoPick == 0">{{
+                $t('addStore.closed')
+              }}</span>
             </div>
           </div>
           <div class="content_right">
-            <img
-              src="@/assets/image/admin/right_bg.png"
-              alt=""
-            >
+            <img src="@/assets/image/admin/right_bg.png" alt="" />
             <div class="line1">
-              <span>{{$t('addStore.Town')}}</span>
-              <a href="javascript:void(0);">{{$t('addStore.viewTownLan')}}</a>
+              <span>{{ $t('addStore.Town') }}</span>
+              <a href="javascript:void(0);">{{ $t('addStore.viewTownLan') }}</a>
             </div>
-            <div class="line2">{{$t('addStore.townOpenTip')}}</div>
+            <div class="line2">{{ $t('addStore.townOpenTip') }}</div>
             <div class="line3">
               <el-switch
-                :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude) || (deliverConfig && deliverConfig.cityService === 0 && storeFormInfo.cityService === 0)"
+                :disabled="
+                  !(storeFormInfo.latitude && storeFormInfo.longitude) ||
+                  (deliverConfig &&
+                    deliverConfig.cityService === 0 &&
+                    storeFormInfo.cityService === 0)
+                "
                 v-model="storeFormInfo.cityService"
                 active-color="#E6A23C"
                 inactive-color="#ccc"
                 :active-value="1"
                 :inactive-value="0"
-              ></el-switch>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span v-if="storeFormInfo.cityService == 1">{{$t('addStore.turnedOn')}}</span>
-              <span v-if="storeFormInfo.cityService == 0">{{$t('addStore.closed')}}</span>
+              ></el-switch
+              >&nbsp;&nbsp;&nbsp;&nbsp;
+              <span v-if="storeFormInfo.cityService == 1">{{
+                $t('addStore.turnedOn')
+              }}</span>
+              <span v-if="storeFormInfo.cityService == 0">{{
+                $t('addStore.closed')
+              }}</span>
             </div>
           </div>
         </div>
@@ -304,8 +280,11 @@
           label-suffix="："
         >
           <el-form-item :label="$t('addStore.receiptAddress')">
-            <span>{{address + storeFormInfo.address}}</span><br />
-            <span style="color: #999; font-size: 14px; ">{{$t('addStore.pickUpTip')}}</span>
+            <span>{{ address + storeFormInfo.address }}</span
+            ><br />
+            <span style="color: #999; font-size: 14px">{{
+              $t('addStore.pickUpTip')
+            }}</span>
           </el-form-item>
           <div v-if="storeFormInfo.autoPick == 1">
             <el-form-item
@@ -318,7 +297,7 @@
                     v-model="storeFormInfo.pickTimeAction"
                     :label="1"
                   ></el-radio>
-                  <span>{{$t('addStore.storeOpeningTime')}}</span>
+                  <span>{{ $t('addStore.storeOpeningTime') }}</span>
                   <el-popover
                     placement="top"
                     width="300"
@@ -327,7 +306,7 @@
                   >
                     <i
                       slot="reference"
-                      style="color:#ccc;"
+                      style="color: #ccc"
                       class="el-icon-question"
                     ></i>
                   </el-popover>
@@ -337,12 +316,12 @@
                     v-model="storeFormInfo.pickTimeAction"
                     :label="2"
                   ></el-radio>
-                  <span>{{$t('addStore.submitOrder')}}</span>
+                  <span>{{ $t('addStore.submitOrder') }}</span>
                   <hcInputNumber
                     type="integer"
                     v-model.number="storeFormInfo.pickDetail.duration"
                     controls-position="right"
-                    style="width:100px;"
+                    style="width: 100px"
                     inline
                   />
                   <!-- <el-input
@@ -352,7 +331,7 @@
                   ></el-input> -->
                   <el-select
                     v-model="storeFormInfo.pickDetail.type"
-                    style="width:80px;"
+                    style="width: 80px"
                   >
                     <el-option
                       :label="$t('addStore.hour')"
@@ -363,7 +342,7 @@
                       :value="2"
                     ></el-option>
                   </el-select>
-                  <span>{{$t('addStore.afterPickup')}}</span>
+                  <span>{{ $t('addStore.afterPickup') }}</span>
                   <el-popover
                     placement="top"
                     width="300"
@@ -372,68 +351,67 @@
                   >
                     <i
                       slot="reference"
-                      style="color:#ccc;"
+                      style="color: #ccc"
                       class="el-icon-question"
                     ></i>
                   </el-popover>
                 </div>
-
               </div>
             </el-form-item>
           </div>
           <div v-if="storeFormInfo.cityService == 1">
             <el-form-item
-              :label="$t('addStore.deliveryArea') "
+              :label="$t('addStore.deliveryArea')"
               prop="deliveryArea"
             >
-              {{$t('addStore.aroundTheStore')}}&nbsp;&nbsp;
+              {{ $t('addStore.aroundTheStore') }}&nbsp;&nbsp;
               <hcInputNumber
                 type="price"
                 v-model.number="deliveryMessage.deliveryArea"
-                style="width: 80px;"
+                style="width: 80px"
                 inline
               />
               <!-- <el-input
                 v-model.number="deliveryMessage.deliveryArea"
                 style="width: 80px;"
               ></el-input> -->
-              &nbsp;&nbsp;{{$t('addStore.withinKilo')}}
+              &nbsp;&nbsp;{{ $t('addStore.withinKilo') }}
             </el-form-item>
             <el-form-item
-              :label="$t('addStore.distributionPrice') "
+              :label="$t('addStore.distributionPrice')"
               prop="deliveryPrice"
             >
               <hcInputNumber
                 type="price"
                 v-model.number="deliveryMessage.deliveryPrice"
-                style="width: 80px;"
+                style="width: 80px"
                 inline
               />
               <!-- <el-input
                 v-model.number="deliveryMessage.deliveryPrice"
                 style="width: 80px;"
               ></el-input> -->
-              &nbsp;&nbsp;{{$t('addStore.yuan')}}
+              &nbsp;&nbsp;{{ $t('addStore.yuan') }}
             </el-form-item>
             <el-form-item
-              :label="$t('addStore.mailStrategy') "
+              :label="$t('addStore.mailStrategy')"
               prop="deliveryPolicy"
             >
-              {{$t('addStore.fullPayTip')}}&nbsp;&nbsp;
+              {{ $t('addStore.fullPayTip') }}&nbsp;&nbsp;
               <hcInputNumber
                 type="price"
                 v-model.number="deliveryMessage.deliveryPolicy"
-                style="width: 80px;"
+                style="width: 80px"
                 inline
               />
               <!-- <el-input
                 v-model.number="deliveryMessage.deliveryPolicy"
                 style="width: 80px;"
               ></el-input> -->
-              &nbsp;&nbsp;{{$t('addStore.fullPayTip2')}}
+              &nbsp;&nbsp;{{ $t('addStore.fullPayTip2') }}
             </el-form-item>
             <el-form-item
-              :label="$t('addStore.deliveryMethod') "
+              :label="$t('addStore.deliveryMethod')"
               prop="deliveryType"
             >
               <el-checkbox
@@ -441,14 +419,22 @@
                 v-model="deliveryMessage.deliveryTypeStore"
                 :true-label="1"
                 :false-label="0"
-              >{{$t('addStore.businessSelfDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.bs_Tip')}})</span></el-checkbox><br />
+                >{{ $t('addStore.businessSelfDelivery') }}&nbsp;&nbsp;<span
+                  style="color: #999"
+                  >({{ $t('addStore.bs_Tip') }})</span
+                ></el-checkbox
+              ><br />
               <el-checkbox
                 name="deliveryType"
                 v-model="deliveryMessage.deliveryTypeThird"
                 @change="selectedDistribution = []"
                 :true-label="1"
                 :false-label="0"
-              >{{$t('addStore.thridDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.thridPremise')}})</span></el-checkbox>
+                >{{ $t('addStore.thridDelivery') }}&nbsp;&nbsp;<span
+                  style="color: #999"
+                  >({{ $t('addStore.thridPremise') }})</span
+                ></el-checkbox
+              >
               <div v-if="deliveryMessage.deliveryTypeThird === 1">
                 <!-- <el-select v-model="deliveryMessage.delivery">
                   <el-option
@@ -466,21 +452,20 @@
                 ></selectLabel>
               </div>
             </el-form-item>
-            <el-form-item
-              label="定时起送"
-              prop="regularDeliveryType"
-            >
+            <el-form-item label="定时起送" prop="regularDeliveryType">
               <el-radio-group v-model="deliveryMessage.regularDeliveryType">
                 <el-radio :label="0">关闭</el-radio>
                 <el-radio :label="1">开启</el-radio>
               </el-radio-group>
-              <span style="color:#999;margin-left:20px;">由下单用户选择起送（发货）时间</span>
+              <span style="color: #999; margin-left: 20px"
+                >由下单用户选择起送（发货）时间</span
+              >
               <div v-if="deliveryMessage.regularDeliveryType === 1">
                 支持用户选择下单
                 <hcInputNumber
                   type="integer"
                   v-model.number="deliveryMessage.regularTimeDetail.duration"
-                  style="width:100px;"
+                  style="width: 100px"
                   inline
                 />
                 <!-- <el-input
@@ -490,16 +475,10 @@
                 <el-select
                   v-model="deliveryMessage.regularTimeDetail.type"
                   size="small"
-                  style="width:80px;"
+                  style="width: 80px"
                 >
-                  <el-option
-                    label="小时"
-                    :value="1"
-                  ></el-option>
-                  <el-option
-                    label="天"
-                    :value="2"
-                  ></el-option>
+                  <el-option label="小时" :value="1"></el-option>
+                  <el-option label="天" :value="2"></el-option>
                 </el-select>
                 后的指定时段内配送
               </div>
@@ -513,18 +492,21 @@
           size="small"
           v-if="this.stepData.currentStep == 0"
           @click="nextClickHandler"
-        >{{$t('addStore.next')}}</el-button>
+          >{{ $t('addStore.next') }}</el-button
+        >
         <el-button
           size="small"
           v-if="this.stepData.currentStep == 1"
           @click="prevClickHandler"
-        >{{$t('addStore.previous')}}</el-button>
+          >{{ $t('addStore.previous') }}</el-button
+        >
         <el-button
           type="primary"
           size="small"
           v-if="this.stepData.currentStep == 1"
           @click="saveClickHandler"
-        >{{$t('addStore.save')}}</el-button>
+          >{{ $t('addStore.save') }}</el-button
+        >
       </div>
     </div>
   </div>
@@ -532,7 +514,7 @@
 <!-- 腾讯地图 -->
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
-import { addStore, getStore, updateStore, allStoreGroup, getDeliverys, getDeliveryConfig } from '@/api/admin/storeManage/store'
+import { addStore, getStore, updateStore, allStoreGroup, getDeliveryConfig } from '@/api/admin/storeManage/store'
 /* 组件导入 */
 import { delayJudgment } from '@/util/pageName'
 export default {
@@ -754,7 +736,7 @@ export default {
     }
     delayJudgment(this, this.$route.query.id, this.$t('pageName.editStore'))
     this.initGroup()
-    this.initDelivery()
+    // this.initDelivery()
     this.langDefault()
   },
   methods: {
@@ -863,15 +845,15 @@ export default {
       })
     },
     // 初始化第三方配送接口
-    initDelivery () {
-      getDeliverys().then(res => {
-        if (res.error === 0) {
-          this.thirdDistributionData = res.content
-        } else {
-          this.$message.error(res.message)
-        }
-      })
-    },
+    // initDelivery () {
+    //   getDeliverys().then(res => {
+    //     if (res.error === 0) {
+    //       this.thirdDistributionData = res.content
+    //     } else {
+    //       this.$message.error(res.message)
+    //     }
+    //   })
+    // },
     // 刷新分组
     refreshGroups () {
       this.initGroup()
