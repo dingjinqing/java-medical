@@ -21,6 +21,7 @@ public class DoctorListParam {
     public static final String AVG_ANSWER_TIME = "avgAnswerTime";
     public static final String ATTENTION_NUMBER = "attentionNumber";
     public static final String CONSULTATION_NUMBER = "consultationNumber";
+    public static final String CONSULTATION_PRICE = "consultationPrice";
 
     private Integer nav;
     private Integer currentPage;
