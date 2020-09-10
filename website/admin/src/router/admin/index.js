@@ -220,6 +220,19 @@ const routes = [
                   '@/view/admin/index/leftNavComponents/first_web_manage/anchorPoints/anchorPointsList'
                 )
           },
+          // 埋点报表
+          {
+            path: '/admin/home/main/anchorPoints/report',
+            name: 'anchor_points_report',
+            meta: {
+              crumbTitle: 'router.anchor_points_report',
+              meta: 'first_web_manage'
+            },
+            component: () =>
+                import(
+                  '@/view/admin/index/leftNavComponents/first_web_manage/anchorPoints/anchorPointsReport'
+                )
+          },
           // 用户画像
           {
             path: '/admin/home/main/userportrait',

@@ -106,6 +106,7 @@ export const cn = {
     situation: '实时概况',
     sales_report: '销售报表',
     anchor_points: '埋点列表',
+    anchor_points_report: '埋点报表',
     analysis_portrait: '用户画像',
     analysis_visit: '访问分析',
     analysis_visit_source: '来源分析',

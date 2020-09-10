@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 锚点
@@ -83,7 +82,6 @@ public class AnchorPointsService extends ShopBaseService {
     public AnchorPointsChartReportVo countReport(AnchorPointsListParam param) {
         Map<Date, List<AnchorPointsReportVo>> countMap = anchorPointsDao.countReport(param);
         //时间轴
-        List<String> datalist = countMap.keySet().stream().map(DateUtil::formatDate).collect(Collectors.toList());
         List<String> datalist1 =new ArrayList<>();
         AnchorPointsChartReportVo option =new AnchorPointsChartReportVo();
         Set<String> valueSet =new HashSet<>();
@@ -93,7 +91,9 @@ public class AnchorPointsService extends ShopBaseService {
         // 初始化 legend-data
         countMap.forEach((k,v)->{
             v.forEach(item->{
-                valueSet.add(item.getValue());
+                if (!Strings.isEmpty(item.getValue())){
+                    valueSet.add(item.getValue());
+                }
             });
         });
         // 初始化 series
