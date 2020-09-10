@@ -9,7 +9,7 @@ Vue.use(Router)
 
 const baseRoutes = [
   {
-    path: '/',
+    path: '/store/login',
     redirect: '/index/login'
   },
   {
