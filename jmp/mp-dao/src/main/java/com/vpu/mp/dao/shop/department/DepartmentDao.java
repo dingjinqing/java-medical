@@ -259,8 +259,8 @@ public class DepartmentDao extends ShopBaseDao {
             .leftJoin(DEPARTMENT_SUMMARY_TREND).on(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID.eq(DEPARTMENT.ID))
             .leftJoin(doctorTable).on(doctorTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT.ID));
         select.where(condition)
-            .and(DEPARTMENT_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY))
-            .and(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(Date.valueOf(today.minusDays(1).toLocalDate())))
+//            .and(DEPARTMENT_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY))
+//            .and(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(Date.valueOf(today.minusDays(1).toLocalDate())))
             .orderBy(DEPARTMENT.FIRST.desc(),doctorTable.field("doctor_number").desc(),DEPARTMENT_SUMMARY_TREND.CONSULTATION_NUMBER.desc());
         if (param.getLimitNum() != null){
             select.limit(param.getLimitNum());
