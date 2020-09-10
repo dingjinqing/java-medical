@@ -45,6 +45,7 @@ public class GoodsConverter {
         GoodsDo goodsDo = new GoodsDo();
         goodsDo.setGoodsId(bo.getGoodsId());
         goodsDo.setGoodsSn(bo.getGoodsCode());
+        goodsDo.setGoodsBarCode(bo.getGoodsBarCode());
         goodsDo.setGoodsName(bo.getGoodsCommonName());
         goodsDo.setShopPrice(bo.getGoodsPrice());
         goodsDo.setCostPrice(bo.getGoodsPrice());

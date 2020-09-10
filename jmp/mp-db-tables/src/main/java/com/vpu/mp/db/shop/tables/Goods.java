@@ -8,15 +8,26 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +43,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Goods extends TableImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = -1159891187;
+    private static final long serialVersionUID = 1664470100;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods</code>
@@ -66,6 +77,11 @@ public class Goods extends TableImpl<GoodsRecord> {
      * The column <code>mini_shop_471752.b2c_goods.goods_sn</code>.
      */
     public final TableField<GoodsRecord, String> GOODS_SN = createField("goods_sn", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.goods_bar_code</code>.
+     */
+    public final TableField<GoodsRecord, String> GOODS_BAR_CODE = createField("goods_bar_code", org.jooq.impl.SQLDataType.VARCHAR(128), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods.goods_name</code>.
