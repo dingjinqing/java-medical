@@ -4,9 +4,7 @@ import Cookies from 'js-cookie'
 // import store from '../store' // 引入vuex实例对象
 // 引入其他路由文件
 import adminRoutes from '@/router/store/index'
-import {
-  loadLanguageAsync
-} from '@/i18n/i18n.js'
+import { loadLanguageAsync } from '@/i18n/i18n.js'
 Vue.use(Router)
 
 const baseRoutes = [
@@ -25,10 +23,7 @@ const baseRoutes = [
     component: () => import('@/view/admin/layout/notFound')
   }
 ]
-const routes = baseRoutes.concat(
-  adminRoutes,
-  baseRoutes
-)
+const routes = baseRoutes.concat(adminRoutes, baseRoutes)
 
 const router = new Router({
   base: 'store',
@@ -78,7 +73,7 @@ router.beforeEach((to, from, next) => {
     next()
   })
 })
-router.onError((error) => {
+router.onError(error => {
   const pattern = /Loading chunk (\d)+ failed/g
   const isChunkLoadFailed = error.message.match(pattern)
   const targetPath = router.history.pending.fullPath
