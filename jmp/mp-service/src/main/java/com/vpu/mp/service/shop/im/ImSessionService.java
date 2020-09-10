@@ -144,7 +144,7 @@ public class ImSessionService extends ShopBaseService {
         }
         Integer unreadMsgLength = jedisManager.getListSize(sessionMsgKey).intValue();
         if (Boolean.FALSE.equals(renderPageParam.getIsFirstTime())) {
-            renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() + unreadMsgLength);
+            renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() - unreadMsgLength);
         }
 
         // redis 超过长度
