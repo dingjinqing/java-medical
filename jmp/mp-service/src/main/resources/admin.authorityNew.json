@@ -125,6 +125,13 @@
     "includeApi": []
   },
   {
+    "enName": "anchor_points_report",
+    "name": "埋点报表",
+    "linkUrl": "/admin/survey/anchor/report",
+    "topIndex": 0,
+    "includeApi": []
+  },
+  {
     "enName": "analysis_portrait",
     "name": "用户画像",
     "linkUrl": "/admin/survey/portrait",
