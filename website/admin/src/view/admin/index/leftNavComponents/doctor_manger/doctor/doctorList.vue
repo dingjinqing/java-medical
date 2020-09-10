@@ -76,11 +76,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="年龄">
+        <!-- <el-table-column label="年龄">
           <template slot-scope="scope">
             <span> {{scope.row.age}}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="departmentNames"
           label="职称/科室"
