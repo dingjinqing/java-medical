@@ -122,7 +122,9 @@ public class AnchorPointsService extends ShopBaseService {
             }
             if (Strings.isEmpty(data.getName())){
                 data.setName(param.getKey());
+                datalist.add(param.getKey());
             }
+            data.setDataList(new ArrayList<>(data.getDataMap().values()));
         }
         option.setXAxisData(datalist);
         option.setSeriesList(seriesDataList);
