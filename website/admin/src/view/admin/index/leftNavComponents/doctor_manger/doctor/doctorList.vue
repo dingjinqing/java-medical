@@ -100,7 +100,7 @@
         >
           <template slot-scope="scope">
             <div class="evaluation-info">
-              <div class="evaluation-info_item">
+              <div class="evaluation-info_item" v-if="scope.row.avgCommentStar > 0">
                 <star :value="scope.row.avgCommentStar" />
                 <a
                   href="javaScript:void(0);"
@@ -108,7 +108,9 @@
                   style="margin-top:10px"
                   @click="toComment(scope.row.name)"
                 >查看</a>
+                <div>{{scope.row.avgCommentStar}}</div>
               </div>
+              <div v-else>暂无评价</div>
             </div>
           </template>
         </el-table-column>
@@ -420,7 +422,6 @@ export default {
       font-size: 12px;
       text-decoration: none;
       cursor: pointer;
-      margin-right: 8px;
       color: #5a8bff;
     }
   }
