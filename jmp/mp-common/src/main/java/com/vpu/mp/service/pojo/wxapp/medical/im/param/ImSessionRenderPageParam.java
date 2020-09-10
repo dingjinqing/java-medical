@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.medical.im.param;
 
+import com.vpu.mp.common.foundation.util.Page;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +17,5 @@ public class ImSessionRenderPageParam{
     private Boolean isFirstTime = false;
     /**分页开始行下标*/
     private Integer startLineIndex;
-    private Integer pageRows;
+    private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }
