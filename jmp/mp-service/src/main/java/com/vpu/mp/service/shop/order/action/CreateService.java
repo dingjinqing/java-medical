@@ -371,12 +371,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             orderAddressParam.setStoreGoodsBaseCheckInfoList(list);
             Map<String, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
             Set<Map.Entry<String, StoreDo>> entry = storeListOpen.entrySet();
+            if (entry.size() == 0) {
+                throw new MpException(JsonResultCode.CODE_NO_STORE_OPEN);
+            }
             for (Map.Entry<String, StoreDo> value : entry) {
                 StoreDo storeDo = value.getValue();
                 order.setStoreId(storeDo.getStoreId());
-                if (order.getStoreId() == 0) {
-                    throw new MpException(JsonResultCode.CODE_NO_STORE_OPEN);
-                }
                 break;
             }
             order.setDeliverType((byte) 0);
