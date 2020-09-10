@@ -353,6 +353,11 @@ global.wxPage({
   },
   historyChatApi() {
     return new Promise((resolve, reject) => {
+      let oldchatContent = this.data.chatContent;
+      let count = 0;
+      oldchatContent.forEach(item => {
+        if(item.status) count++
+      })
       util.api('/api/wxapp/im/session/render', res => {
         console.log(res)
         if (res.error === 0 && res.content.length) {
@@ -378,7 +383,6 @@ global.wxPage({
           this.setData({
             chatContent: [...newChatContent, ...this.data.chatContent],
             firstLoad: false,
-            ['pageParams.currentPage']: currentPage
           })
         }
         resolve(res)
@@ -386,7 +390,7 @@ global.wxPage({
         sessionId: this.data.sessionId,
         isDoctor: false,
         isFirstTime: this.data.firstLoad,
-        ...this.data.pageParams
+        startLineIndex:this.data.chatContent.length - count
       })
     })
   },

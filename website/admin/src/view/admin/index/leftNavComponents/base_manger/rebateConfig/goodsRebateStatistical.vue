@@ -104,7 +104,7 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="totalRebateMoney"
+          prop="realRebateMoney"
           label="返利金额"
           align="center"
         ></el-table-column>
