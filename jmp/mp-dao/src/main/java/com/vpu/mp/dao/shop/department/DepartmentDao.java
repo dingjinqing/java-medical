@@ -14,7 +14,10 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -249,7 +252,20 @@ public class DepartmentDao extends ShopBaseDao {
         if (param.getDepartmentIds() != null) {
             condition = condition.and(DEPARTMENT.ID.in(param.getDepartmentIds()));
         }
-        return db().select().from(DEPARTMENT).where(condition).fetchInto(DepartmentOneParam.class);
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+//        SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> statisticTable = getDepartmentStatisticTable();
+        SelectHavingStep<Record2<Integer, Integer>> doctorTable = getDoctorNumberTable();
+        SelectJoinStep<? extends Record> select = db().select(DEPARTMENT.ID,DEPARTMENT.NAME,doctorTable.field("doctor_number")).from(DEPARTMENT)
+            .leftJoin(DEPARTMENT_SUMMARY_TREND).on(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID.eq(DEPARTMENT.ID))
+            .leftJoin(doctorTable).on(doctorTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT.ID));
+        select.where(condition)
+            .and(DEPARTMENT_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY))
+            .and(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(Date.valueOf(today.minusDays(1).toLocalDate())))
+            .orderBy(DEPARTMENT.FIRST.desc(),doctorTable.field("doctor_number").desc(),DEPARTMENT_SUMMARY_TREND.CONSULTATION_NUMBER.desc());
+        if (param.getLimitNum() != null){
+            select.limit(param.getLimitNum());
+        }
+        return select.fetchInto(DepartmentOneParam.class);
     }
 
     /**

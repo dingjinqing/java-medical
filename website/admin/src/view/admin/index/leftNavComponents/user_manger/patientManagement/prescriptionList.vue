@@ -15,7 +15,7 @@
             </el-input>
           </div>
           <div class="filters_item">
-            <span class="fil_span">医师姓名：</span>
+            <span class="fil_span">医师名称：</span>
             <el-select
               v-model="queryParams.doctorName"
               placeholder="请输入医师姓名"

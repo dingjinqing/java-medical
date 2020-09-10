@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.doctor;
 
 import com.vpu.mp.service.pojo.shop.department.DepartmentIdNameVo;
+import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
 import lombok.Data;
 
 import java.util.List;
@@ -11,6 +12,6 @@ import java.util.List;
  */
 @Data
 public class DoctorRecommendVo {
-    private List<DepartmentIdNameVo> recommendDepartment;
+    private List<DepartmentOneParam> recommendDepartment;
     private List<DoctorConsultationOneParam> doctorList;
 }

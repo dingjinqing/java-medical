@@ -246,13 +246,15 @@ public class DepartmentService extends BaseShopConfigService {
     }
 
     /**
-     * 获取疾病史选中List
+     * 获取推荐科室list
      * @return
      */
-    public List<DepartmentIdNameVo> listRecommendDepartment() {
-        List<DepartmentIdNameVo> departmentList = Util.parseJson(get("recommendDepartments"), new TypeReference<List<DepartmentIdNameVo>>() {
-        });
-        return departmentList;
+    public List<DepartmentOneParam> listRecommendDepartment() {
+//        List<DepartmentIdNameVo> departmentList = Util.parseJson(get("recommendDepartments"), new TypeReference<List<DepartmentIdNameVo>>() {
+//        });
+        DepartmentListParam departmentListParam = new DepartmentListParam();
+        departmentListParam.setLimitNum(7);
+        return listDepartmentsByOptions(departmentListParam);
     }
 
     /**
@@ -260,7 +262,8 @@ public class DepartmentService extends BaseShopConfigService {
      * @return
      */
     public List<DepartmentOneParam> listDepartmentsSelect() {
-        List<DepartmentOneParam> departmentList = departmentDao.listDepartmentsByName(null);
+        DepartmentListParam departmentListParam = new DepartmentListParam();
+        List<DepartmentOneParam> departmentList = listDepartmentsByOptions(departmentListParam);
         DepartmentOneParam allItem = new DepartmentOneParam();
         allItem.setId(0);
         allItem.setName("全部科室");
