@@ -64,4 +64,8 @@ public interface PrescriptionConstant {
     public final static Byte SETTLEMENT_FINISH=1;
     public final static Byte SETTLEMENT_NOT=2;
 
+    /**
+     * 已使用
+     */
+    public final static Byte HAS_USED=1;
 }

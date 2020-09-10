@@ -1235,4 +1235,8 @@ public class Tables {
      * 门店数据概览
      */
     public static final StoreOrderSummaryTrend STORE_ORDER_SUMMARY_TREND = com.vpu.mp.db.shop.tables.StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND;
+    /**
+     * 科室信息统计
+     */
+    public static final DepartmentSummaryTrend DEPARTMENT_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND;
 }
