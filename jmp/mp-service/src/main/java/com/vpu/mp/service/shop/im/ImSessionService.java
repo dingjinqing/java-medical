@@ -155,9 +155,10 @@ public class ImSessionService extends ShopBaseService {
             renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() - totalRows);
             imSessionItemDos = renderSessionFromDb(renderPageParam);
         } else {
-            int startIndex =totalRows - renderPageParam.getStartLineIndex()-1;
-            List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex-renderPageParam.getPageRows(), startIndex);
-                imSessionItemDos = jsonStrs.stream().map(x -> Util.parseJson(x, ImSessionItemDo.class)).filter(Objects::nonNull).collect(Collectors.toList());
+            int endIndex = totalRows - renderPageParam.getStartLineIndex() - 1;
+            int startIndex = endIndex > renderPageParam.getPageRows() ? endIndex - renderPageParam.getPageRows() + 1 : 0;
+            List<String>  jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
+            imSessionItemDos = jsonStrs.stream().map(x -> Util.parseJson(x, ImSessionItemDo.class)).filter(Objects::nonNull).collect(Collectors.toList());
         }
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
         if (renderPageParam.getIsFirstTime()) {
