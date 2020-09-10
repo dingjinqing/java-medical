@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.wxapp.medical.im.param;
 
-import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +10,11 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ImSessionRenderPageParam extends BasePageParam {
+public class ImSessionRenderPageParam{
     private Integer sessionId;
     private Boolean isDoctor = false;
     private Boolean isFirstTime = false;
+    /**分页开始行下标*/
+    private Integer startLineIndex;
+    private Integer pageRows;
 }

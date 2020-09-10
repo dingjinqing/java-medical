@@ -37,9 +37,7 @@ public class ImSessionItemDao extends ShopBaseDao {
      */
     public List<ImSessionItemDo> getRelevantSessionItemPageList(ImSessionRenderPageParam pageParam,List<Integer> relevantIds){
         Condition condition = IM_SESSION_ITEM.IM_SESSION_ID.in(relevantIds);
-        Integer limitStart = (pageParam.getCurrentPage()-1)*pageParam.getPageRows();
-
-        return db().selectFrom(IM_SESSION_ITEM).where(condition).orderBy(IM_SESSION_ITEM.SEND_TIME.desc()).limit(limitStart, pageParam.getPageRows())
+        return db().selectFrom(IM_SESSION_ITEM).where(condition).orderBy(IM_SESSION_ITEM.SEND_TIME.desc()).limit(pageParam.getStartLineIndex().intValue(), pageParam.getPageRows())
             .fetchInto(ImSessionItemDo.class);
     }
 

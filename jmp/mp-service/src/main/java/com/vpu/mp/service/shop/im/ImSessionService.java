@@ -135,42 +135,31 @@ public class ImSessionService extends ShopBaseService {
      * @return
      */
     private List<ImSessionItemDo> renderSessionFromRedis(ImSessionRenderPageParam renderPageParam, ImSessionDo imSessionDo) {
-
-        Integer pageRows = renderPageParam.getPageRows();
         String sessionBakKey = getSessionRedisKeyBak(getShopId(), renderPageParam.getSessionId());
+        String sessionMsgKey = null;
+        if (renderPageParam.getIsDoctor()) {
+            sessionMsgKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
+        } else {
+            sessionMsgKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
+        }
+        Integer unreadMsgLength = jedisManager.getListSize(sessionMsgKey).intValue();
+        renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex() - unreadMsgLength);
 
         // redis 超过长度
-        Long totalRows = jedisManager.getListSize(sessionBakKey);
-        Integer pageCount = (Integer) (int) Math.ceil(Double.valueOf(totalRows) / Double.valueOf(pageRows));
-
+        Integer totalRows = jedisManager.getListSize(sessionBakKey).intValue();
         List<ImSessionItemDo> imSessionItemDos = null;
-
-        if (renderPageParam.getCurrentPage() > pageCount) {
-            renderPageParam.setCurrentPage(renderPageParam.getCurrentPage() - pageCount);
+        // 分页的开始下标已经超过redis中存的会话条目，则从数据库中查找对应的历史信息
+        if (renderPageParam.getStartLineIndex() >= totalRows ) {
+            renderPageParam.setStartLineIndex(renderPageParam.getStartLineIndex()-totalRows);
             imSessionItemDos = renderSessionFromDb(renderPageParam);
         } else {
-            Integer curPage = renderPageParam.getCurrentPage() - 1;
-            Integer endIndex = -curPage * pageRows - 1;
-            // redis list 包含两端，所以要去掉一个元素
-            Integer startIndex = endIndex - pageRows + 1;
-            List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
-            imSessionItemDos = new ArrayList<>(jsonStrs.size());
-
-            for (String jsonStr : jsonStrs) {
-                ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
-                imSessionItemDos.add(imSessionItemDo);
-            }
+            Integer endIndex = renderPageParam.getStartLineIndex()+renderPageParam.getPageRows();
+            List<String> jsonStrs = jedisManager.lrange(sessionBakKey, renderPageParam.getStartLineIndex(), endIndex);
+            imSessionItemDos = jsonStrs.stream().map(x->Util.parseJson(x, ImSessionItemDo.class)).filter(Objects::nonNull).collect(Collectors.toList());
         }
-
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
         if (renderPageParam.getIsFirstTime()) {
-            String redisKey = null;
-            if (renderPageParam.getIsDoctor()) {
-                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getDoctorId(), imSessionDo.getUserId());
-            } else {
-                redisKey = getSessionRedisKey(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
-            }
-            List<String> list = jedisManager.getList(redisKey);
+            List<String> list = jedisManager.getList(sessionMsgKey);
             for (String jsonStr : list) {
                 ImSessionItemDo imSessionItemDo = Util.parseJson(jsonStr, ImSessionItemDo.class);
                 if (imSessionItemDo == null) {
@@ -197,7 +186,6 @@ public class ImSessionService extends ShopBaseService {
      */
     private List<ImSessionItemDo> renderSessionFromDb(ImSessionRenderPageParam renderPageParam) {
         List<Integer> sessionIds = imSessionDao.getRelevantSessionIds(renderPageParam.getSessionId());
-
         List<ImSessionItemDo> retList = imSessionItemDao.getRelevantSessionItemPageList(renderPageParam, sessionIds);
         Collections.reverse(retList);
         return retList;
