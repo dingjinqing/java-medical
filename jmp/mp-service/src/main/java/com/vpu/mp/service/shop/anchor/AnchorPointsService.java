@@ -84,6 +84,7 @@ public class AnchorPointsService extends ShopBaseService {
         Map<Date, List<AnchorPointsReportVo>> countMap = anchorPointsDao.countReport(param);
         //时间轴
         List<String> datalist = countMap.keySet().stream().map(DateUtil::formatDate).collect(Collectors.toList());
+        List<String> datalist1 =new ArrayList<>();
         AnchorPointsChartReportVo option =new AnchorPointsChartReportVo();
         Set<String> valueSet =new HashSet<>();
         AnchorPointsChartReportVo.SeriesData seriesData;
@@ -107,6 +108,7 @@ public class AnchorPointsService extends ShopBaseService {
             Timestamp startDate = param.getStartTime();
             Timestamp endDate = param.getEndTime();
             Integer count =0;
+            datalist1 =new ArrayList<>();
             while (endDate.compareTo(startDate) >= 0) {
                 List<AnchorPointsReportVo> list = countMap.get(DateUtil.date(startDate).toSqlDate());
                 count =0;
@@ -118,6 +120,7 @@ public class AnchorPointsService extends ShopBaseService {
                     }
                 }
                 data.getDataMap().put(DateUtil.formatDate(startDate),count.toString());
+                datalist1.add(DateUtil.formatDate(startDate));
                 startDate = DateUtil.offset(startDate, DateField.DAY_OF_YEAR, 1).toTimestamp();
             }
             if (Strings.isEmpty(data.getName())){
@@ -126,7 +129,7 @@ public class AnchorPointsService extends ShopBaseService {
             }
             data.setDataList(new ArrayList<>(data.getDataMap().values()));
         }
-        option.setXAxisData(datalist);
+        option.setXAxisData(datalist1);
         option.setSeriesList(seriesDataList);
         option.setLegendData(new ArrayList<>(valueSet));
         return option;
