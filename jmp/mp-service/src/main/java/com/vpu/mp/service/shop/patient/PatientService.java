@@ -11,10 +11,7 @@ import com.vpu.mp.common.foundation.util.RandomUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
-import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
-import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
-import com.vpu.mp.common.pojo.shop.table.PatientDo;
-import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
+import com.vpu.mp.common.pojo.shop.table.*;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
@@ -445,5 +442,14 @@ public class PatientService extends BaseShopConfigService{
             patientPrescriptionVo.setGoodsList(byPrescription);
         });
         return patientPrescription;
+    }
+
+    /**
+     * 根据患者id查询咨询订单
+     * @param patientPrescriptionParam 咨询查询入参
+     * @return PageResult<InquiryOrderDo>
+     */
+    public PageResult<InquiryOrderDo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
+        return patientDao.getPatientInquiry(patientPrescriptionParam);
     }
 }

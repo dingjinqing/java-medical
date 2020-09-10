@@ -3,10 +3,7 @@ package com.vpu.mp.dao.shop.patient;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
-import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
-import com.vpu.mp.common.pojo.shop.table.PatientDo;
-import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
+import com.vpu.mp.common.pojo.shop.table.*;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PatientRecord;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
@@ -286,5 +283,21 @@ public class PatientDao extends ShopBaseDao{
                 .and(PRESCRIPTION.CREATE_TIME.le(patientPrescriptionParam.getEndTime()));
         }
         select.orderBy(PRESCRIPTION.CREATE_TIME.desc());
+    }
+
+    public PageResult<InquiryOrderDo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
+        SelectConditionStep<Record> where = db().select()
+            .from(INQUIRY_ORDER)
+            .where(INQUIRY_ORDER.PATIENT_ID.eq(patientPrescriptionParam.getPatientId()));
+        if (patientPrescriptionParam.getDoctorName() != null && patientPrescriptionParam.getDoctorName().trim().length() > 0) {
+            where.and(INQUIRY_ORDER.DOCTOR_NAME.like(likeValue(patientPrescriptionParam.getDoctorName().trim())));
+        }
+        if (patientPrescriptionParam.getStartTime() != null || patientPrescriptionParam.getEndTime() != null) {
+            where.and(INQUIRY_ORDER.CREATE_TIME.ge(patientPrescriptionParam.getStartTime()))
+                .and(INQUIRY_ORDER.CREATE_TIME.le(patientPrescriptionParam.getEndTime()));
+        }
+        where.orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
+        return this.getPageResult(where, patientPrescriptionParam.getCurrentPage(),
+            patientPrescriptionParam.getPageRows(), InquiryOrderDo.class);
     }
 }

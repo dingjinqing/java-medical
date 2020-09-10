@@ -77,5 +77,14 @@ public class AdminPatientController extends AdminBaseController {
         return success(shop().patientService.getPatientPrescription(patientPrescriptionParam));
     }
 
+    /**
+     * 根据患者id查询关联问诊
+     * @param patientPrescriptionParam 查询问诊入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/patient/query/inquiry")
+    public JsonResult getPatientInquiry(@RequestBody PatientPrescriptionParam patientPrescriptionParam) {
+        return success(shop().patientService.getPatientInquiry(patientPrescriptionParam));
+    }
 
 }
