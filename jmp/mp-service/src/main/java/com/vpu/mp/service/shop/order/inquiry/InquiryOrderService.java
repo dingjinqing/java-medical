@@ -285,9 +285,10 @@ public class InquiryOrderService extends ShopBaseService {
             order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
             //返利入库
             InquiryOrderRebateParam param =new InquiryOrderRebateParam();
-            FieldsUtil.assign(order,param);
+            param.setOrderSn(order.getOrderSn());
+            param.setDoctorId(order.getDoctorId());
+            param.setTotalRebateMoney(order.getTotalRebateMoney());
             param.setStatus(InquiryOrderRebateConstant.TO_REBATE);
-            param.setTotalMoney(order.getTotalRebateMoney());
             param.setTotalMoney(order.getOrderAmount());
             inquiryOrderRebateDao.addInquiryOrderRebate(param);
         }else {
