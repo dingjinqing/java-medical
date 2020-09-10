@@ -6,11 +6,19 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.AnchorPointsRecord;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListVo;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsReportVo;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.List;
+import java.util.Map;
+
 import static com.vpu.mp.db.shop.Tables.ANCHOR_POINTS;
+import static org.jooq.impl.DSL.date;
 
 /**
  * @author 孔德成
@@ -32,7 +40,7 @@ public class AnchorPointsDao extends ShopBaseDao {
         return getPageResult(select, param, AnchorPointsListVo.class);
     }
 
-    private void buildSelect(AnchorPointsListParam param, SelectJoinStep<Record> select) {
+    private void buildSelect(AnchorPointsListParam param, SelectJoinStep<? extends Record> select) {
         if (param.getDevice()!=null&&param.getDevice().trim().length()>0) {
             select.where(ANCHOR_POINTS.DEVICE.eq(param.getDevice()));
         }
@@ -58,4 +66,33 @@ public class AnchorPointsDao extends ShopBaseDao {
             select.where(ANCHOR_POINTS.VALUE.eq(param.getValue()));
         }
     }
+
+    /**
+     * 计数报表
+     * @param param
+     * @return
+     */
+    public Map<Date, List<AnchorPointsReportVo>> countReport(AnchorPointsListParam param) {
+       return db().select(DSL.date(ANCHOR_POINTS.CREATE_TIME).as("date"), ANCHOR_POINTS.EVENT,ANCHOR_POINTS.KEY,
+               ANCHOR_POINTS.VALUE,ANCHOR_POINTS.DEVICE,ANCHOR_POINTS.PLATFORM,DSL.count(ANCHOR_POINTS.ID).as("count"))
+                .from(ANCHOR_POINTS)
+                .where(ANCHOR_POINTS.EVENT.eq(param.getEvent()))
+                .and(ANCHOR_POINTS.KEY.eq(param.getKey()))
+                .groupBy(date(ANCHOR_POINTS.CREATE_TIME), ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY, ANCHOR_POINTS.VALUE)
+                .fetchGroups(date(ANCHOR_POINTS.CREATE_TIME).as("date"), AnchorPointsReportVo.class);
+    }
+
+    /**
+     *金额报表
+     */
+    public Map<Date, AnchorPointsReportVo>  moneyReport(AnchorPointsListParam param){
+        return  db().select(date(ANCHOR_POINTS.CREATE_TIME).as("date"), ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY,
+                        DSL.cast(ANCHOR_POINTS.VALUE, BigDecimal.class).as("money"),ANCHOR_POINTS.DEVICE,ANCHOR_POINTS.PLATFORM)
+                .from(ANCHOR_POINTS)
+                .where(ANCHOR_POINTS.EVENT.eq(param.getEvent()))
+                .and(ANCHOR_POINTS.KEY.eq(param.getKey()))
+                .groupBy(date(ANCHOR_POINTS.CREATE_TIME), ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY,ANCHOR_POINTS.DEVICE,ANCHOR_POINTS.PLATFORM)
+                .fetchMap(date(ANCHOR_POINTS.CREATE_TIME).as("date"), AnchorPointsReportVo.class);
+    }
+
 }
