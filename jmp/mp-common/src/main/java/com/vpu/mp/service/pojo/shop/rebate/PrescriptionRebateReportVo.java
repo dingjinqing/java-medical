@@ -28,7 +28,7 @@ public class PrescriptionRebateReportVo {
     @ExcelColumn(columnName = "下单用户名称", columnIndex = 4)
     private String userName;
     @ExcelColumn(columnName = "返利金额", columnIndex = 5)
-    private BigDecimal totalRebateMoney;
+    private BigDecimal realTotalRebateMoney;
     @ExcelIgnore
     private Byte status;
     @ExcelColumn(columnName = "返利状态", columnIndex = 6)
