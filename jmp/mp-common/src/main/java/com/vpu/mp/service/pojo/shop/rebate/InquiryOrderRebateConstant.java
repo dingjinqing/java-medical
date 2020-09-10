@@ -23,4 +23,5 @@ public class InquiryOrderRebateConstant {
      */
     public final static String REASON_OVERTIME="超时自动退款";
     public final static String REASON_DOCTOR_REFUND="医师退款";
+    public final static String REASON_OPERATE_REFUND="手动退款";
 }
