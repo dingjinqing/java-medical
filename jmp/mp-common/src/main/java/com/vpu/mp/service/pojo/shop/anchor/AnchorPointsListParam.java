@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.anchor;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author 孔德成
  * @date 2020/9/4 17:48
@@ -43,5 +45,13 @@ public class AnchorPointsListParam  extends BasePageParam {
      * 值
      */
     private String value;
+    /**
+     * 开始时间
+     */
+    private Timestamp startTime;
+    /**
+     * 结束时间
+     */
+    private Timestamp endTime;
 
 }
