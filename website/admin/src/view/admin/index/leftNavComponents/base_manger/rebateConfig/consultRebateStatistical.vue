@@ -225,8 +225,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 1)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
         case '1':
@@ -235,8 +235,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 7)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
 
@@ -246,8 +246,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 30)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
         case '3':
