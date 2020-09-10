@@ -6,10 +6,9 @@ import java.util.List;
 
 /**
  * @author 李晓冰
- * @date 2020年08月27日
+ * @date 2020年09月09日
  */
 @Data
-public class StoreGoodsConfirmVo {
-    private String shopSn;
-    private List<OrderStoreGoodsBo> goodsItems;
+public class OrderStockEnoughQueryVo {
+    List<String> shopList;
 }

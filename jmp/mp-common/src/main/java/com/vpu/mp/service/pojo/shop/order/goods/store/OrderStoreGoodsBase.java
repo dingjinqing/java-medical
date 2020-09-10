@@ -9,10 +9,11 @@ import lombok.Data;
  */
 @Data
 public class OrderStoreGoodsBase {
+    /**药房方提供的唯一值*/
+    private String goodsCode;
+    private String goodsBarCode;
     private String goodsCommonName;
     private String goodsQualityRatio;
     private String goodsProductionEnterprise;
     private String goodsApprovalNumber;
-    /**药房方提供的唯一值*/
-    private String goodsCode;
 }

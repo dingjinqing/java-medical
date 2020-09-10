@@ -18,6 +18,7 @@ public class DepartmentListParam {
     private String keyword;
     private Integer doctorId;
     private List<Integer> departmentIds;
+    private Integer limitNum;
 
     @Override
     public String toString() {
@@ -28,6 +29,7 @@ public class DepartmentListParam {
             ", keyword='" + keyword + '\'' +
             ", doctorId=" + doctorId +
             ", departmentIds=" + departmentIds +
+            ", limitNum=" + limitNum +
             '}';
     }
 }

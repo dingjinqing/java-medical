@@ -2,14 +2,13 @@ package com.vpu.mp.service.pojo.shop.order.goods.store;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @author 李晓冰
- * @date 2020年08月27日
+ * @date 2020年09月09日
  */
 @Data
-public class StoreGoodsConfirmVo {
+public class OrderStoreCancelParam {
     private String shopSn;
-    private List<OrderStoreGoodsBo> goodsItems;
+    private String orderSn;
+    private String memo;
 }
