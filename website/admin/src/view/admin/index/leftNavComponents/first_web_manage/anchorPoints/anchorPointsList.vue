@@ -11,28 +11,28 @@
                             v-model="param.event"
                             size="small"
                             @change="eventChangeHandler"
-                            class="timeSelect"
-                    >
+                            class="timeSelect">
+                        <el-option label="全部" value="null"></el-option>
                         <el-option
                                 v-for="item in eventList"
                                 :key="item.event"
                                 :label="item.eventName"
-                                :value="item.event"
-                        ></el-option>
+                                :value="item.event">
+                        </el-option>
                     </el-select>
                 </div>
                 <div class="filters_item">
                     <span class="fil_span">关键词：</span>
                     <el-select
-                            v-model="param.event"
+                            v-model="param.key"
                             size="small"
-                            @change="eventChangeHandler"
+                            @change="keyChangeHandler"
                             class="timeSelect">
                         <el-option
-                                v-for="item in eventList"
-                                :key="item.event"
-                                :label="item.eventName"
-                                :value="item.event"></el-option>
+                                v-for="item in keyList"
+                                :key="item.key"
+                                :label="item.key"
+                                :value="item.key"></el-option>
                     </el-select>
                 </div>
                 <div class="filters_item">
@@ -73,7 +73,7 @@
                     <el-button
                             type="primary"
                             size="small"
-                            @click='exportData'
+                            @click='initData'
                     >导出</el-button>
                 </div>
             </div>
@@ -95,87 +95,37 @@
           }"
             >
                 <el-table-column
-                        prop='time'
+                        prop='createTime'
                         label='日期'
                 ></el-table-column>
-                <el-table-column>
-                    <template slot="header">
-                        <span>销售金额</span>
-                        <el-tooltip
-                                class="item"
-                                effect="light"
-                                content="订单成交总金额"
-                                placement="top"
-                        >
-                            <img
-                                    class="icon_img"
-                                    :src="$imageHost + '/image/admin/system_icon.png'"
-                            >
-                        </el-tooltip>
-
-                    </template>
-                    <template v-slot="scope">
-                        <span>{{scope.row.orderAmount}}</span>
-                    </template>
+                <el-table-column
+                        prop='device'
+                        label='设备'
+                ></el-table-column>
+                <el-table-column
+                        prop='eventName'
+                        label='事件'
+                ></el-table-column>
+                <el-table-column
+                        prop='key'
+                        label='关键字'
+                ></el-table-column>
+                <el-table-column
+                        prop='value'
+                        label='值'
+                ></el-table-column>
+                <el-table-column
+                        prop='page'
+                        label='页面'>
                 </el-table-column>
                 <el-table-column
-                        prop='shippingFee'
-                        label='运费'
-                ></el-table-column>
+                        prop='platform'
+                        label='平台'>
+                </el-table-column>
                 <el-table-column
-                        prop='useAccount'
-                        label='余额支付'
-                ></el-table-column>
-                <el-table-column
-                        prop='moneyPaid'
-                        label='实付金额'
-                ></el-table-column>
-                <el-table-column
-                        prop='returnAmount'
-                        label='退款金额'
-                ></el-table-column>
-                <el-table-column
-                        prop='returnNumber'
-                        label='退款单数'
-                ></el-table-column>
-                <el-table-column>
-                    <template slot="header">
-                        <span>净销售额</span>
-                        <el-tooltip
-                                class="item"
-                                effect="light"
-                                content="销售金额-退款金额"
-                                placement="top"
-                        >
-                            <img
-                                    class="icon_img"
-                                    :src="$imageHost + '/image/admin/system_icon.png'"
-                            >
-                        </el-tooltip>
-
-                    </template>
-                    <template v-slot="scope">
-                        <span>{{scope.row.netSales}}</span>
-                    </template></el-table-column>
-                <el-table-column>
-                    <template slot="header">
-                        <span>笔单价</span>
-                        <el-tooltip
-                                class="item"
-                                effect="light"
-                                content="净销售额/销售单数"
-                                placement="top"
-                        >
-                            <img
-                                    class="icon_img"
-                                    :src="$imageHost + '/image/admin/system_icon.png'"
-                            >
-                        </el-tooltip>
-
-                    </template>
-                    <template v-slot="scope">
-                        <span>{{scope.row.orderAvg}}</span>
-                    </template></el-table-column>
+                        prop='userId'
+                        label='用户id'>
+                </el-table-column>
             </el-table>
             <pagination
                     :page-params.sync="pageParams"
@@ -186,9 +136,9 @@
 </template>
 
 <script>
-import { dateChange } from '@/util/date.js'
 import { getEventKeyMap, getAnchorPointsList } from '@/api/admin/basicConfiguration/anchorPoints.js'
 import pagination from '@/components/admin/pagination/pagination'
+import '@/util/date.js'
 export default {
   components: {
     pagination
@@ -212,6 +162,7 @@ export default {
       },
       // 事件
       eventList: [],
+      keyList: [],
       tableData: [],
       timeRange: [
         { value: 0, label: '今天' },
@@ -233,7 +184,8 @@ export default {
       param: {
         startTime: '',
         endTime: '',
-        event: null
+        event: null,
+        key: null
       },
       originalData: [],
       analyRange: [
@@ -253,13 +205,35 @@ export default {
       }).catch(err => console.log(err))
     },
     eventChangeHandler (event) {
-      console.log(event)
+      if (event === 'null') {
+        this.keyList = []
+        this.param.key = null
+      } else {
+        this.eventList.forEach(item => {
+          if (item.event === event) {
+            this.keyList = item.keys
+          }
+        })
+      }
+    },
+    keyChangeHandler (key) {
+      console.log(key)
+      this.param.key = key
     },
     // 选择时间段
-    dateChangeHandler (time, type = 0) {
-      if (time !== 0) {
-        if (type === 0) this.getDateValue(time)
-        this.initData()
+    dateChangeHandler (time) {
+      if (time !== -1) {
+        this.createGetDateValue(time)
+        this.initDataList()
+      } else {
+        this.startDate.year = ''
+        this.startDate.month = ''
+        this.startDate.day = ''
+        this.endDate.year = ''
+        this.month = ''
+        this.endDate.day = ''
+        this.createTimeStartTime = ''
+        this.createTimeEndTime = ''
       }
     },
     // 自定义时间
@@ -289,15 +263,22 @@ export default {
       }).catch(err => console.log(err))
     },
     getDateValue (unit) {
-      let date = dateChange(unit)
-      this.startDate.year = date[1].split('-')[0]
-      this.startDate.month = date[1].split('-')[1]
-      this.startDate.day = date[1].split('-')[2]
-      this.endDate.year = date[0].split('-')[0]
-      this.endDate.month = date[0].split('-')[1]
-      this.endDate.day = date[0].split('-')[2]
-      this.param.startTime = date[1] + ' 00:00:00'
-      this.param.endTime = date[0] + ' 00:00:00'
+      var startTime = new Date()
+      var endTime = new Date()
+      if (unit !== 0) {
+        endTime.setDate(endTime.getDate() - 1)
+        startTime.setDate(endTime.getDate() - unit + 1)
+      }
+      var startTimeStr = startTime.format('yyyy-MM-dd')
+      var endTimeStr = endTime.format('yyyy-MM-dd')
+      this.param.startTime = startTimeStr + ' 00:00:00'
+      this.param.endTime = endTimeStr + ' 23:59:59'
+      this.startDate.year = startTimeStr.split('-')[0]
+      this.startDate.month = startTimeStr.split('-')[1]
+      this.startDate.day = startTimeStr.split('-')[2]
+      this.endDate.year = endTimeStr.split('-')[0]
+      this.endDate.month = endTimeStr.split('-')[1]
+      this.endDate.day = endTimeStr.split('-')[2]
       this.initData()
     },
     handleData (data) {

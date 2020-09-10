@@ -287,7 +287,6 @@ public class InquiryOrderService extends ShopBaseService {
             InquiryOrderRebateParam param =new InquiryOrderRebateParam();
             FieldsUtil.assign(order,param);
             param.setStatus(InquiryOrderRebateConstant.TO_REBATE);
-            param.setTotalMoney(order.getTotalRebateMoney());
             param.setTotalMoney(order.getOrderAmount());
             inquiryOrderRebateDao.addInquiryOrderRebate(param);
         }else {

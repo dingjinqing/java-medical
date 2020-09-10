@@ -563,6 +563,8 @@ public class Indexes {
     public static final Index STORE_ORDER_SUMMARY_TREND_PRIMARY = Indexes0.STORE_ORDER_SUMMARY_TREND_PRIMARY;
     public static final Index STORE_ORDER_SUMMARY_TREND_REF_TYPE = Indexes0.STORE_ORDER_SUMMARY_TREND_REF_TYPE;
     public static final Index ANCHOR_POINTS_PRIMARY = Indexes0.ANCHOR_POINTS_PRIMARY;
+    public static final Index DEPARTMENT_SUMMARY_TREND_PRIMARY = Indexes0.DEPARTMENT_SUMMARY_TREND_PRIMARY;
+    public static final Index DEPARTMENT_SUMMARY_TREND_REF_TYPE = Indexes0.DEPARTMENT_SUMMARY_TREND_REF_TYPE;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -1104,6 +1106,8 @@ public class Indexes {
         public static Index DOCTOR_WITHDRAW_PRIMARY = Internal.createIndex("PRIMARY", DoctorWithdraw.DOCTOR_WITHDRAW, new OrderField[] { DoctorWithdraw.DOCTOR_WITHDRAW.ID }, true);
         public static Index STORE_ORDER_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND, new OrderField[] { StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.ID }, true);
         public static Index STORE_ORDER_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND, new OrderField[] { StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.REF_DATE, StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.TYPE }, false);
+        public static Index DEPARTMENT_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND, new OrderField[] { DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.ID }, true);
+        public static Index DEPARTMENT_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND, new OrderField[] { DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.REF_DATE, DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.TYPE }, false);
     }
 
 }
