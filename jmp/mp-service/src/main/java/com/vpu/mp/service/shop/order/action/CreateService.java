@@ -361,6 +361,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             OrderAddressParam orderAddressParam = new OrderAddressParam();
             orderAddressParam.setLat(userAddressInfo.getLat());
             orderAddressParam.setLng(userAddressInfo.getLng());
+            orderAddressParam.setDeliveryType(0);
             List<StoreGoodsBaseCheckInfo> list = new ArrayList<>();
             param.getGoods().forEach(goods -> {
                 StoreGoodsBaseCheckInfo goodsMedicalInfo = getGoodsMedicalInfo(goods.getGoodsId());
@@ -639,8 +640,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //先查默认地址
             defaultAddress = address.getefaultAddress(userId);
             if(defaultAddress == null) {
-                //上次下单地址
-//                defaultAddress = orderInfo.getLastOrderAddress(userId);
             }
         }
         return defaultAddress;
@@ -658,8 +657,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         // 自提
         expressList[OrderConstant.DELIVER_TYPE_SELF] = tradeCfg.getFetch();
         //TODO 同城配送
-        // expressList[OrderConstant.DELIVER_TYPE_COURIER] =
-        // trade.getCityExpressService();
         return expressList;
     }
 
@@ -1288,7 +1285,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void setOtherValue(CreateParam param, OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         Timestamp currentTime = DateUtils.getSqlTimestamp();
         //TODO 订单类型拼接(支付有礼)
-        orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
+        //支付信息
+        orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));
         if(BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(beforeVo.getMoneyPaid(), BigDecimalUtil.Operator.add),
             BigDecimalUtil.BigDecimalPlus.create(beforeVo.getBkOrderMoney(), BigDecimalUtil.Operator.add),

@@ -642,7 +642,7 @@ public class StoreService extends ShopBaseService {
      */
     public Map<String, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
         List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, orderAddressParam.getDeliveryType());
         Map<String, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
             double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
@@ -661,7 +661,7 @@ public class StoreService extends ShopBaseService {
      */
     public Map<String, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
         List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, 1);
         Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
             map.put(new String("0.00"), e);
