@@ -3,6 +3,7 @@ package com.vpu.mp.dao.shop.order;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
@@ -194,5 +195,16 @@ public class OrderGoodsDao extends ShopBaseDao {
         return db().select().from(ORDER_GOODS).where(ORDER_GOODS.GOODS_ID.eq(goodsId))
             .and(ORDER_GOODS.PRESCRIPTION_CODE.eq(prescriptionCode)).and(ORDER_GOODS.PRODUCT_ID.eq(prdId))
             .fetchAnyInto(OrderGoodsDo.class);
+    }
+
+    /**
+     * 根据处方号查药品
+     * @param prescriptionCode 处方号
+     * @return List<OrderGoodsDo>
+     */
+    public List<OrderGoodsDo> getByPrescription(String prescriptionCode) {
+        return db().select().from(ORDER_GOODS)
+            .where(ORDER_GOODS.PRESCRIPTION_CODE.eq(prescriptionCode))
+            .fetchInto(OrderGoodsDo.class);
     }
 }

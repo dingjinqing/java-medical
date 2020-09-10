@@ -12,6 +12,7 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
@@ -29,6 +30,8 @@ import com.vpu.mp.service.pojo.shop.sms.SmsCheckParam;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +69,8 @@ public class PatientService extends BaseShopConfigService{
     protected JedisManager jedisManager;
     @Autowired
     protected PrescriptionDao prescriptionDao;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
 
     public static final int ZERO = 0;
 
@@ -426,5 +431,19 @@ public class PatientService extends BaseShopConfigService{
      */
     public PageResult<PatientMedicineVo> getPatientBuyMedicineRecord(PatientMedicineParam patientMedicineParam) {
         return patientDao.getPatientMedicine(patientMedicineParam);
+    }
+
+    /**
+     * 根据患者id查询关联处方
+     * @param patientPrescriptionParam
+     * @return PageResult<PatientPrescriptionVo>
+     */
+    public PageResult<PatientPrescriptionVo> getPatientPrescription(PatientPrescriptionParam patientPrescriptionParam) {
+        PageResult<PatientPrescriptionVo> patientPrescription = patientDao.getPatientPrescription(patientPrescriptionParam);
+        patientPrescription.getDataList().forEach(patientPrescriptionVo -> {
+            List<OrderGoodsDo> byPrescription = orderGoodsService.getByPrescription(patientPrescriptionVo.getPrescriptionCode());
+            patientPrescriptionVo.setGoodsList(byPrescription);
+        });
+        return patientPrescription;
     }
 }
