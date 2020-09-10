@@ -378,7 +378,6 @@ global.wxPage({
           this.setData({
             chatContent: [...newChatContent, ...this.data.chatContent],
             firstLoad: false,
-            ['pageParams.currentPage']: currentPage
           })
         }
         resolve(res)
@@ -386,7 +385,7 @@ global.wxPage({
         sessionId: this.data.sessionId,
         isDoctor: false,
         isFirstTime: this.data.firstLoad,
-        ...this.data.pageParams
+        startLineIndex:this.data.chatContent.length 
       })
     })
   },

@@ -17,14 +17,14 @@
 			<view class="p_item">
 				<view class="item_dot"></view>
 				<view class="item_con">
-					<text>疾病史：<block wx:for='{{patientMessage.diseaseHistoryList}}' wx:key='id'>{{item.name}}  </block>
+					<text>疾病史：<block wx:for='{{patientMessage.diseaseHistoryList}}' wx:key='id'><block wx:if='{{item.checked === 1}}'>{{item.name}} </block></block>
           </text>
 				</view>
 			</view>
 			<view class="p_item">
 				<view class="item_dot"></view>
 				<view class="item_con">
-					<text>家族病史：<block wx:for='{{patientMessage.familyDiseaseHistoryList}}' wx:key='id'>{{item.name}}  </block></text>
+					<text>家族病史：<block wx:for='{{patientMessage.familyDiseaseHistoryList}}' wx:key='id'><block wx:if='{{item.checked === 1}}'>{{item.name}} </block></block></text>
 				</view>
 			</view>
 			<view class="p_item">

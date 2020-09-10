@@ -285,13 +285,12 @@ global.wxPage({
           let currentPage = 1 + this.data.pageParams.currentPage
           this.setData({
             chatContent: [...newChatContent, ...this.data.chatContent],
-            firstLoad: false,
-            ['pageParams.currentPage']: currentPage
+            firstLoad: false
           })
         }
         resolve(res)
       }, {
-        ...this.data.pageParams,
+        startLineIndex:this.data.chatContent.length,
         sessionId: this.data.targetUserInfo.id,
         isDoctor: true,
         isFirstTime: this.data.firstLoad,
