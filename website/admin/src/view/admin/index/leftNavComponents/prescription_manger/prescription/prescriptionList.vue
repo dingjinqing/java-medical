@@ -31,7 +31,26 @@
             >
             </el-input>
           </div>
-
+          <div class="filters_item">
+            <span>处方号：</span>
+            <el-input
+                    v-model="queryParams.prescriptionCode"
+                    size="small"
+                    style="width:190px;"
+                    placeholder="请输入处方号"
+            >
+            </el-input>
+          </div>
+            <div class="filters_item">
+              <span>订单号：</span>
+              <el-input
+                      v-model="queryParams.orderSn"
+                      size="small"
+                      style="width:190px;"
+                      placeholder="请输入订单号"
+              >
+              </el-input>
+            </div>
         </div>
       </div>
       <div class="nav_box" style='margin-top:0;padding-top:0'>
@@ -190,7 +209,17 @@
           >
             <template slot-scope="scope">
               <div class="operation">
-                <a @click="handleSeeOrder(scope.row.prescriptionCode)">{{scope.row.prescriptionCode}}</a>
+                <a @click="handleSeeMessage(scope.row.prescriptionCode)">{{scope.row.prescriptionCode}}</a>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+                  prop='orderSn'
+                  label='订单号'
+          >
+            <template slot-scope="scope">
+              <div class="operation">
+                <a @click="handleSeeOrder(scope.row.orderSn)">{{scope.row.orderSn}}</a>
               </div>
             </template>
           </el-table-column>
@@ -241,8 +270,9 @@
                   prop='expireType'
                   label='过期类型'>
             <template slot-scope="scope">
-              {{getLabelValue(expireType,scope.row.expireType)}}
-              <br>{{expireTypeTime(scope.row)}}
+              {{expireTypeTime(scope.row)}}
+              <br>
+              ({{getLabelValue(expireType,scope.row.expireType)}})
             </template>
           </el-table-column>
           <el-table-column
@@ -308,7 +338,7 @@ export default {
       expireType: [
         {value: 0, label: '过期'},
         {value: 1, label: '永久有效'},
-        {value: 2, label: '时间段内有效'}
+        {value: 2, label: '未过期'}
       ],
       createTimeValue: [],
       createTimeSelect: 30,
@@ -351,6 +381,8 @@ export default {
       storeGroup: [],
       queryParams: {
         patientName: '',
+        prescriptionCode: '',
+        orderSn: '',
         diagnoseStartTime: '',
         diagnoseEndTime: '',
         doctorName: '',
@@ -464,9 +496,9 @@ export default {
     handleSeeOrder (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
-        name: 'prescription_message'
+        name: 'orderInfo'
       })
-      newpage.href = newpage.href + '?prescriptionCode=' + code
+      newpage.href = newpage.href + '?orderSn=' + code
       console.log(newpage.href)
       window.open(newpage.href, '_blank')
     },

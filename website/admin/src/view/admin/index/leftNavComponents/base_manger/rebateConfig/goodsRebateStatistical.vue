@@ -54,6 +54,7 @@
       </div>
       <div class="filters_item" style="margin-left: 15px">
         <el-button type="primary" size="small" @click="search">搜索</el-button>
+        <el-button size="small" @click="exportData">导出</el-button>
       </div>
 
       <!-- <div class="filters_item">
@@ -126,7 +127,8 @@
 </template>
 
 <script>
-import { getPrescriptionRebate } from '@/api/admin/basicConfiguration/doctorWithDraw'
+import { getPrescriptionRebate, exportPrescriptionRebate } from '@/api/admin/basicConfiguration/doctorWithDraw'
+import { download } from '@/util/excelUtil.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -210,7 +212,13 @@ export default {
       ],
       startTime: null,
       endTime: null,
-      pageParams: {}
+      pageParams: {},
+      exportParams: {
+        doctorName: null,
+        status: null,
+        startTime: null,
+        endTime: null
+      }
     }
   },
   mounted () {
@@ -227,8 +235,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 1)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
         case '1':
@@ -237,8 +245,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 7)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
 
@@ -248,8 +256,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 30)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
         case '3':
@@ -284,7 +292,15 @@ export default {
         if (res.error === 0) {
           this.tableList = res.content.dataList
           this.pageParams = res.content.page
+          this.exportParams = JSON.parse(JSON.stringify(params))
         }
+      })
+    },
+    exportData () {
+      exportPrescriptionRebate({ ...this.exportParams }).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
       })
     }
   }

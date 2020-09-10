@@ -44,9 +44,9 @@
 	<block wx:else>
 		<view class="no-content">
 			<image src="http://medicaldevimg.weipubao.cn/image/wxapp/no-case-content.png"></image>
-			<text class="no-content-tips">您需要同步病历才可查看</text>
+			<text class="no-content-tips">您需要添加就诊人才可查看</text>
 			<view class="update-case" bindtap="updatePage">
-				<text>去同步</text>
+				<text>添加就诊人</text>
 				<text class="iconfont iconjiantou"></text>
 			</view>
 		</view>

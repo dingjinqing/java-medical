@@ -63,3 +63,21 @@ export function addDesc (data) {
     data
   })
 }
+// 处方返利信息导出
+export function exportPrescriptionRebate (data) {
+  return service({
+    url: `/api/admin/doctor/rebate/prescription/export`,
+    method: 'post',
+    data,
+    responseType: 'blob'
+  })
+}
+// 咨询订单返利信息导出
+export function exporTinquiryOrderRebate (data) {
+  return service({
+    url: `/api/admin/doctor/rebate/inquiryOrder/export`,
+    method: 'post',
+    data,
+    responseType: 'blob'
+  })
+}

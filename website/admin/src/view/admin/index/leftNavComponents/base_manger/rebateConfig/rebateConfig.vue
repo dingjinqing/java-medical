@@ -5,7 +5,7 @@
         <el-tab-pane label="返利策略配置" name="first">
           <policySettings />
         </el-tab-pane>
-        <el-tab-pane label="商品订单返利统计" name="second">
+        <el-tab-pane label="处方返利统计" name="second">
           <goodsRebateStatistical />
         </el-tab-pane>
         <el-tab-pane label="咨询订单返利统计" name="third">
