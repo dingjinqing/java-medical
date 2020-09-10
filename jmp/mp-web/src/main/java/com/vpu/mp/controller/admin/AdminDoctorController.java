@@ -92,7 +92,7 @@ public class AdminDoctorController extends AdminBaseController {
         if (doctorInfo.getTitleId() == 0) {
             doctorInfo.setTitleId(null);
         }
-        return success();
+        return success(doctorInfo);
     }
 
     /**

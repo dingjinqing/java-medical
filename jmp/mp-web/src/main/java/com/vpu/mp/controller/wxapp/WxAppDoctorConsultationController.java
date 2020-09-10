@@ -38,9 +38,7 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
     @PostMapping("/api/wxapp/doctor/list")
     public JsonResult getDoctorList(@RequestBody DoctorConsultationParam doctorParam) {
         PageResult<DoctorConsultationOneParam> doctorList = shop().doctorService.listDoctorForConsultation(doctorParam);
-        DepartmentListParam departmentListParam = new DepartmentListParam();
-        departmentListParam.setLimitNum(7);
-        List<DepartmentOneParam> departmentList = shop().departmentService.listDepartmentsByOptions(departmentListParam);
+        List<DepartmentOneParam> departmentList = shop().departmentService.listDepartmentsSelect();
         List<TitleOneParam> titleList = shop().titleService.listTitlesSelect();
         DoctorConsultationVo data = new DoctorConsultationVo();
         data.setDepartmentList(departmentList);
@@ -55,7 +53,7 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
     @PostMapping("/api/wxapp/recommend/doctor/list")
     public JsonResult getDoctorList(@RequestBody UserPatientParam doctorParam) {
         doctorParam.setPatientId(shop().patientService.defaultPatientId(doctorParam.getUserId()));
-        List<DepartmentIdNameVo> recommendDepartment = shop().departmentService.listRecommendDepartment();
+        List<DepartmentOneParam> recommendDepartment = shop().departmentService.listRecommendDepartment();
         List<DoctorConsultationOneParam> doctorList = shop().doctorService.listRecommendDoctorForConsultation(doctorParam);
         DoctorRecommendVo data = new DoctorRecommendVo();
         data.setDoctorList(doctorList);
