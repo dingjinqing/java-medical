@@ -516,4 +516,13 @@ public class InquiryOrderService extends ShopBaseService {
             param.setEndTime(endDate);
         }
     }
+
+    /**
+     * 查询患者关联问诊订单数量
+     * @param patientId 患者id
+     * @return Integer
+     */
+    public Integer getInquiryNumberByPatient(Integer patientId, Integer doctorId) {
+        return inquiryOrderDao.getInquiryNumberByPatientId(patientId, doctorId);
+    }
 }
