@@ -80,7 +80,18 @@ public class AnchorPointsService extends ShopBaseService {
      * @return
      */
     public AnchorPointsChartReportVo countReport(AnchorPointsListParam param) {
-        Map<Date, List<AnchorPointsReportVo>> countMap = anchorPointsDao.countReport(param);
+        Map<Date, List<AnchorPointsReportVo>> countMap;
+        if (AnchorPointsEvent.CREATE_ORDER_SUBMIT_MONEY.getKey().equals(param.getKey())){
+            countMap = anchorPointsDao.moneyReport(param);
+            countMap.forEach((k,v)-> {
+                v.forEach(item -> {
+                    item.setValue(item.getDevice());
+                });
+            });
+        }else {
+            countMap = anchorPointsDao.countReport(param);
+        }
+
         //时间轴
         List<String> datalist1 =new ArrayList<>();
         AnchorPointsChartReportVo option =new AnchorPointsChartReportVo();
@@ -93,6 +104,8 @@ public class AnchorPointsService extends ShopBaseService {
             v.forEach(item->{
                 if (!Strings.isEmpty(item.getValue())){
                     valueSet.add(item.getValue());
+                }else if (AnchorPointsEvent.LOGIN_WXAPP.getKey().equals(item.getKey())){
+                    valueSet.add(item.getKey());
                 }
             });
         });
@@ -107,19 +120,24 @@ public class AnchorPointsService extends ShopBaseService {
         for (AnchorPointsChartReportVo.SeriesData data : seriesDataList) {
             Timestamp startDate = param.getStartTime();
             Timestamp endDate = param.getEndTime();
-            Integer count =0;
+            String count ="0";
             datalist1 =new ArrayList<>();
             while (endDate.compareTo(startDate) >= 0) {
                 List<AnchorPointsReportVo> list = countMap.get(DateUtil.date(startDate).toSqlDate());
-                count =0;
+                count ="0";
                 if (list!=null){
                     for (AnchorPointsReportVo report : list) {
                         if (data.getName().equals(report.getValue())) {
-                            count = report.getCount();
+                            if (AnchorPointsEvent.CREATE_ORDER_SUBMIT_MONEY.getKey().equals(param.getKey())){
+                                count = report.getMoney().toString();
+                            }else {
+                                count = report.getCount()+"";
+                            }
+
                         }
                     }
                 }
-                data.getDataMap().put(DateUtil.formatDate(startDate),count.toString());
+                data.getDataMap().put(DateUtil.formatDate(startDate),count);
                 datalist1.add(DateUtil.formatDate(startDate));
                 startDate = DateUtil.offset(startDate, DateField.DAY_OF_YEAR, 1).toTimestamp();
             }
@@ -136,7 +154,7 @@ public class AnchorPointsService extends ShopBaseService {
     }
 
     public AnchorPointsChartReportVo moneyReport(AnchorPointsListParam param){
-        Map<Date, AnchorPointsReportVo> countMap = anchorPointsDao.moneyReport(param);
+        Map<Date, List<AnchorPointsReportVo>> moneyMap = anchorPointsDao.moneyReport(param);
         AnchorPointsChartReportVo option =new AnchorPointsChartReportVo();
 
 

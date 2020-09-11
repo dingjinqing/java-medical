@@ -50,6 +50,16 @@ public class AdminAnchorPointsController  extends AdminBaseController {
     }
 
     /**
+     * 埋点报表
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/anchor/points/report/money")
+    public JsonResult moneyReport(@RequestBody AnchorPointsListParam param){
+        return success(anchorPointsService.moneyReport(param));
+    }
+
+    /**
      * 获取事件和参数
      * @return
      */
