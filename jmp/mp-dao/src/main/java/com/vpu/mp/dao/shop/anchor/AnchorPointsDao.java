@@ -86,14 +86,14 @@ public class AnchorPointsDao extends ShopBaseDao {
     /**
      *金额报表
      */
-    public Map<Date, AnchorPointsReportVo>  moneyReport(AnchorPointsListParam param){
+    public Map<Date, List<AnchorPointsReportVo>>   moneyReport(AnchorPointsListParam param){
         return  db().select(date(ANCHOR_POINTS.CREATE_TIME).as("date"), ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY,
-                        DSL.cast(ANCHOR_POINTS.VALUE, BigDecimal.class).as("money"))
+                ANCHOR_POINTS.DEVICE,DSL.sum(DSL.cast(ANCHOR_POINTS.VALUE, BigDecimal.class)).as("money"))
                 .from(ANCHOR_POINTS)
                 .where(ANCHOR_POINTS.EVENT.eq(param.getEvent()))
                 .and(ANCHOR_POINTS.KEY.eq(param.getKey()))
                 .groupBy(date(ANCHOR_POINTS.CREATE_TIME), ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY, ANCHOR_POINTS.DEVICE)
-                .fetchMap(date(ANCHOR_POINTS.CREATE_TIME).as("date"), AnchorPointsReportVo.class);
+                .fetchGroups(date(ANCHOR_POINTS.CREATE_TIME).as("date"), AnchorPointsReportVo.class);
     }
 
 }

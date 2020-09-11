@@ -767,7 +767,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //返利金额重新计算
         calculate.recalculationRebate(returnGoods, orderGoods.getOrderGoods(order.getOrderSn(), returnGoods.stream().map(OrderReturnGoodsVo::getRecId).collect(Collectors.toList())), order.getOrderSn());
         //医师处方返利金额重新计算
-//        updatePrescriptionRebateStatus(returnGoods,returnOrderRecord,order.getOrderSn());
+        updatePrescriptionRebateStatus(returnGoods,returnOrderRecord,order.getOrderSn());
         // 发送退款成功模板消息
         // 自动同步订单微信购物单
         returnStatusChange.addRecord(returnOrderRecord, param.getIsMp(), "当前退款订单正常结束：" + OrderConstant.RETURN_TYPE_CN[returnOrderRecord.getReturnType()]);
