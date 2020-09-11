@@ -455,7 +455,7 @@ public class StoreService extends ShopBaseService {
      * @param expressList 配送方式list
      * @param productIds  规格ids
      * @param address     地址
-     * @param isFormStore ??
+     * @param isFormStore 是否门店下单（暂时未用）
      * @return
      */
     public List<StorePojo>[] filterExpressList(Byte[] expressList, List<Integer> productIds, UserAddressVo address, byte isFormStore) {
