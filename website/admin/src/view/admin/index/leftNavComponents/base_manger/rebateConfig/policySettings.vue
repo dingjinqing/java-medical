@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <el-form ref="smsSetting" :model="formData" label-width="80px">
+    <el-form
+      ref="smsSetting"
+      :model="formData"
+      label-width="80px"
+      :rules="rules"
+    >
       <div class="main-title">
         <span>返利开关</span>
       </div>
@@ -14,7 +19,7 @@
             >
             </el-switch>
           </el-form-item>
-          <el-form-item prop="isAutomaticAudit" style="margin-left: 200px;">
+          <el-form-item prop="isAutomaticAudit" style="margin-left: 200px">
             自动审核：<el-switch
               v-model="formData.isAutomaticAudit"
               active-color="#F7931E"
@@ -27,7 +32,7 @@
           <el-form-item prop="withdrawCashMax">
             每人每日最多提现金额：<el-input-number
               controls-position="right"
-              :min="0"
+              :min="1"
               size="small"
               v-model="formData.withdrawCashMax"
             ></el-input-number
@@ -36,7 +41,7 @@
           <el-form-item prop="withdrawCashMix">
             每人每次最少提现金额：<el-input-number
               controls-position="right"
-              :min="0"
+              :min="1"
               size="small"
               v-model="formData.withdrawCashMix"
             ></el-input-number
@@ -53,6 +58,7 @@
             分成比例：<el-input-number
               controls-position="right"
               :min="0"
+              :max="100"
               size="small"
               v-model="formData.goodsSharingProportion"
             ></el-input-number
@@ -64,6 +70,7 @@
             处方药医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
+              :max="100"
               size="small"
               v-model="formData.rxMedicalDoctorProportion"
             ></el-input-number
@@ -73,6 +80,7 @@
             处方药平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
+              :max="100"
               size="small"
               v-model="formData.rxMedicalPlatformProportion"
             ></el-input-number
@@ -84,6 +92,7 @@
             非处方药医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
+              :max="100"
               size="small"
               v-model="formData.noRxMedicalDoctorProportion"
             ></el-input-number
@@ -93,6 +102,7 @@
             非处方药平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
+              :max="100"
               size="small"
               v-model="formData.noRxMedicalPlatformProportion"
             ></el-input-number
@@ -114,6 +124,7 @@
             医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
+              :max="100"
               size="small"
               v-model="formData.inquiryOrderDoctorProportion"
             ></el-input-number
@@ -123,6 +134,7 @@
             平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
+              :max="100"
               size="small"
               v-model="formData.inquiryOrderPlatformProportion"
             ></el-input-number
@@ -130,9 +142,7 @@
           </el-form-item>
         </div>
         <div class="item">
-          <el-form-item>
-            返利提现金额 = 咨询费*佣金比例
-          </el-form-item>
+          <el-form-item> 返利提现金额 = 咨询费*佣金比例 </el-form-item>
         </div>
       </div>
     </el-form>
@@ -148,6 +158,35 @@ export default {
   data () {
     return {
       formData: {
+      },
+      rules: {
+        withdrawCashMax: [
+          { required: true, message: '请输入最多提现', trigger: 'blur' }
+        ],
+        withdrawCashMix: [
+          { required: true, message: '请输入最少提现', trigger: 'change' }
+        ],
+        goodsSharingProportion: [
+          { required: true, message: '请输入分成比例', trigger: 'change' }
+        ],
+        rxMedicalDoctorProportion: [
+          { required: true, message: '请输入医生佣金比例', trigger: 'change' }
+        ],
+        rxMedicalPlatformProportion: [
+          { required: true, message: '请输入平台佣金比例', trigger: 'change' }
+        ],
+        noRxMedicalDoctorProportion: [
+          { required: true, message: '请输入医生佣金比例', trigger: 'change' }
+        ],
+        noRxMedicalPlatformProportion: [
+          { required: true, message: '请输入平台佣金比例', trigger: 'blur' }
+        ],
+        inquiryOrderDoctorProportion: [
+          { required: true, message: '请输入医生佣金比例', trigger: 'blur' }
+        ],
+        inquiryOrderPlatformProportion: [
+          { required: true, message: '请输入平台佣金比例', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -166,13 +205,19 @@ export default {
       })
     },
     setSetting () {
-      let params = { ...this.formData, status: this.formData.status ? 1 : 0, isAutomaticAudit: this.formData.isAutomaticAudit ? 1 : 0 }
-      setWithDrawConfig(params).then(res => {
-        console.log(params)
-        if (res.error === 0) {
-          this.$message.success({ message: '保存成功' })
+      this.$refs['smsSetting'].validate((valid) => {
+        if (valid) {
+          let params = { ...this.formData, status: this.formData.status ? 1 : 0, isAutomaticAudit: this.formData.isAutomaticAudit ? 1 : 0 }
+          setWithDrawConfig(params).then(res => {
+            console.log(params)
+            if (res.error === 0) {
+              this.$message.success({ message: '保存成功' })
+            } else {
+              this.$message.error({ message: '保存失败' })
+            }
+          })
         } else {
-          this.$message.error({ message: '保存失败' })
+          return false
         }
       })
     }

@@ -177,6 +177,13 @@ export default {
               span: '',
               name: 'anchor_points',
               flag: true
+            }, {
+              imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points_report.png',
+              imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_report_h.png',
+              path: '/admin/home/main/anchorPoints/report',
+              span: '',
+              name: 'anchor_points_report',
+              flag: true
             }
           ]
         }

@@ -100,6 +100,7 @@ public class PrescriptionRebateService extends ShopBaseService {
             item.setTotalRebateMoney(item.getCanCalculateMoney().multiply(item.getGoodsSharingProportion())
                 .multiply(item.getRebateProportion())
                 .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_UP));
+            item.setRealRebateMoney(item.getTotalRebateMoney());
             prescriptionItemDao.updatePrescriptionItem(item);
         }
     }

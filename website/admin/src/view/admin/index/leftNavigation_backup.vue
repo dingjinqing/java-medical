@@ -172,10 +172,17 @@ export default {
             flag: true
           },
           {
-            imgUrl: this.$imageHost + '/image/admin/icon_left/sales_report.png',
-            imgUrl_h: this.$imageHost + '/image/admin/icon_left/sale_report_h.png',
+            imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_h.png',
             span: '',
             name: 'anchor_points',
+            flag: true
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points_report.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_report_h.png',
+            span: '',
+            name: 'anchor_points_report',
             flag: true
           },
           {
