@@ -10,10 +10,14 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.patient.*;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -263,7 +267,7 @@ public class PatientDao extends ShopBaseDao{
             .on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
             .where(PRESCRIPTION.PATIENT_ID.eq(patientPrescriptionParam.getPatientId()));
         patientPrescriptionBuildOptions(patientPrescriptionParam, where);
-        List<PrescriptionDo> prescriptionDos = where.fetchInto(PrescriptionDo.class);
+        patientPrescriptionParam.setPageRows(5);
         return this.getPageResult(where, patientPrescriptionParam.getCurrentPage(),
             patientPrescriptionParam.getPageRows(), PatientPrescriptionVo.class);
     }
@@ -297,7 +301,75 @@ public class PatientDao extends ShopBaseDao{
                 .and(INQUIRY_ORDER.CREATE_TIME.le(patientPrescriptionParam.getEndTime()));
         }
         where.orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
+        patientPrescriptionParam.setPageRows(5);
         return this.getPageResult(where, patientPrescriptionParam.getCurrentPage(),
             patientPrescriptionParam.getPageRows(), InquiryOrderDo.class);
+    }
+
+    /**
+     * select
+     * 	b2c_prescription.doctor_name,
+     * 	b2c_prescription.doctor_code,
+     * 	b2c_prescription.department_name,
+     * 	b2c_doctor.id,
+     * 	sum(b2c_prescription.total_price),
+     * 	count(b2c_prescription.id)
+     * 	from
+     * 		b2c_doctor
+     * 	left join
+     * 		b2c_prescription
+     * 	on
+     * 		b2c_prescription.doctor_code = b2c_doctor.hospital_code
+     * 	where
+     * 		b2c_prescription.patient_id = 10
+     * 	and
+     * 		b2c_prescription.doctor_name like '%%'
+     * 	and
+     * 		b2c_prescription.department_name like '%%'
+     * 	group by
+     * 		b2c_prescription.patient_id,
+     * 		b2c_prescription.doctor_code,
+     * 		b2c_prescription.doctor_name,
+     * 		b2c_prescription.department_name,
+     * 		b2c_doctor.id
+     * 	order by
+     * 		b2c_prescription.create_time desc;
+     *
+     *
+     * 根据患者id查询关联医师信息
+     * @param patientQueryDoctorParam 用户查询关联医师入参
+     * @return PageResult<PatientQueryDoctorVo>
+     */
+    public PageResult<PatientQueryDoctorVo> getPatientQueryDoctor(PatientQueryDoctorParam patientQueryDoctorParam) {
+        SelectConditionStep<Record6<String, String, String, Integer, BigDecimal, Integer>> select = db().select(
+            PRESCRIPTION.DOCTOR_CODE
+            , PRESCRIPTION.DOCTOR_NAME.as("doctorName")
+            , PRESCRIPTION.DEPARTMENT_NAME.as("departmentName")
+            , DOCTOR.ID.as("doctorId")
+            , DSL.sum(PRESCRIPTION.TOTAL_PRICE).as("consumptionAmount")
+            , DSL.count(PRESCRIPTION.DOCTOR_NAME).as("prescriptionNumber"))
+            .from(DOCTOR)
+            .join(PRESCRIPTION)
+            .on(PRESCRIPTION.DOCTOR_CODE.eq(DOCTOR.HOSPITAL_CODE))
+            .where(PRESCRIPTION.PATIENT_ID.eq(patientQueryDoctorParam.getPatientId()));
+        patientPrescriptionBuildOptions(select, patientQueryDoctorParam);
+        select.groupBy(PRESCRIPTION.PATIENT_ID
+            , PRESCRIPTION.DOCTOR_CODE
+            , PRESCRIPTION.DOCTOR_NAME
+            , PRESCRIPTION.DEPARTMENT_NAME
+            , DOCTOR.ID)
+            .orderBy(PRESCRIPTION.CREATE_TIME.desc());
+        patientQueryDoctorParam.setPageRows(5);
+        return this.getPageResult(select, patientQueryDoctorParam.getCurrentPage(),
+            patientQueryDoctorParam.getPageRows(), PatientQueryDoctorVo.class);
+    }
+
+    private void patientPrescriptionBuildOptions(SelectConditionStep<Record6<String, String, String, Integer, BigDecimal, Integer>> select, PatientQueryDoctorParam patientQueryDoctorParam) {
+        if (patientQueryDoctorParam.getDoctorName() != null && patientQueryDoctorParam.getDoctorName().trim().length() > 0) {
+            select.and(PRESCRIPTION.DOCTOR_NAME.like(likeValue(patientQueryDoctorParam.getDoctorName().trim())));
+        }
+        if (patientQueryDoctorParam.getDepartmentName() != null && patientQueryDoctorParam.getDepartmentName().trim().length() > 0) {
+            select.and(PRESCRIPTION.DEPARTMENT_NAME.like(likeValue(patientQueryDoctorParam.getDepartmentName().trim())));
+        }
     }
 }

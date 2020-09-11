@@ -534,6 +534,15 @@ public class StoreService extends ShopBaseService {
     }
 
     /**
+     * 根据id列表获取店铺
+     * @param storeIds
+     * @return
+     */
+    public List<StoreOrderVo> getStoreInfoByIds(List<Integer> storeIds) {
+        return db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StoreOrderVo.class);
+    }
+
+    /**
      * 获取所有门店id和名称
      */
     public List<StoreInfo> getAllStores() {
