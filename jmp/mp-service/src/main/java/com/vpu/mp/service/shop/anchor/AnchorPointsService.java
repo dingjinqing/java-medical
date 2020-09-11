@@ -82,7 +82,7 @@ public class AnchorPointsService extends ShopBaseService {
     public AnchorPointsChartReportVo countReport(AnchorPointsListParam param) {
         Map<Date, List<AnchorPointsReportVo>> countMap;
         if (AnchorPointsEvent.CREATE_ORDER_SUBMIT_MONEY.getKey().equals(param.getKey())){
-            countMap = anchorPointsDao.moneyReport(param);
+            countMap = anchorPointsDao.moneyDateReport(param);
             countMap.forEach((k,v)-> {
                 v.forEach(item -> {
                     item.setValue(item.getDevice());
@@ -153,13 +153,8 @@ public class AnchorPointsService extends ShopBaseService {
         return option;
     }
 
-    public AnchorPointsChartReportVo moneyReport(AnchorPointsListParam param){
-        Map<Date, List<AnchorPointsReportVo>> moneyMap = anchorPointsDao.moneyReport(param);
-        AnchorPointsChartReportVo option =new AnchorPointsChartReportVo();
-
-
-
-        return option;
+    public  List<AnchorPointsReportVo>  moneyReport(AnchorPointsListParam param){
+        return anchorPointsDao.moneyReport(param);
     }
 
 
