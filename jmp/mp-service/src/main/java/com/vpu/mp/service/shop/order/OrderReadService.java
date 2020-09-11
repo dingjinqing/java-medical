@@ -15,6 +15,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
@@ -66,6 +67,7 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.bo.PrescriptionItemBo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
@@ -337,13 +339,13 @@ public class OrderReadService extends ShopBaseService {
      * 获取当前订单所属门店信息
      * @param mainOrderList
      */
-	private void getStoreInfo(ArrayList<OrderListInfoVo> mainOrderList) {
-	    mainOrderList.forEach(orderListInfoVo -> {
-            StorePojo store = this.store.getStore(orderListInfoVo.getStoreId());
-            StoreOrderVo storeOrderVo = new StoreOrderVo();
-            FieldsUtil.assign(store, storeOrderVo);
-            orderListInfoVo.setStoreOrderVo(storeOrderVo);
-        });
+    private void getStoreInfo(ArrayList<OrderListInfoVo> mainOrderList) {
+        List<Integer> storeIds = mainOrderList.stream().map(OrderListInfoVo::getStoreId).collect(Collectors.toList());
+        List<StoreOrderVo> storeInfoByIds = store.getStoreInfoByIds(storeIds);
+        for (OrderListInfoVo orderListInfoVo : mainOrderList) {
+            storeInfoByIds.stream().filter(storeInfo -> storeInfo.getStoreId()
+                .equals(orderListInfoVo.getStoreId())).forEach(orderListInfoVo::setStoreOrderVo);
+        }
     }
 
 
