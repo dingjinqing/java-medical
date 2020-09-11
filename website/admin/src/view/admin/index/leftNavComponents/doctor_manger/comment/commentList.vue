@@ -172,15 +172,6 @@
         >
           <template slot-scope="scope">
             <el-tooltip
-              content="删除"
-              placement="top"
-            >
-              <span
-                class="el-icon-delete operateSpan"
-                @click="delComment(scope.row.id)"
-              ></span>
-            </el-tooltip>
-            <el-tooltip
               content="通过"
               placement="top"
               v-if="scope.row.auditStatus == 0"
@@ -213,11 +204,20 @@
             <el-tooltip
               content="取消置顶"
               placement="top"
-              v-if="scope.row.top === 1"
+              v-if="scope.row.top > 0"
             >
               <span
                 class="el-icon-bottom operateSpan"
                 @click="evaluationTop(scope.row.id,0)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              content="删除"
+              placement="top"
+            >
+              <span
+                class="el-icon-delete operateSpan"
+                @click="delComment(scope.row.id)"
               ></span>
             </el-tooltip>
           </template>

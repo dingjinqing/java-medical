@@ -67,6 +67,9 @@ public class DoctorDao extends ShopBaseDao {
                 case CONSULTATION_NUMBER:
                     select.orderBy(DOCTOR.CONSULTATION_NUMBER.asc());
                     break;
+                case CONSULTATION_PRICE:
+                    select.orderBy(DOCTOR.CONSULTATION_PRICE.asc());
+                    break;
                 default:
                     break;
             }
@@ -83,6 +86,9 @@ public class DoctorDao extends ShopBaseDao {
                     break;
                 case CONSULTATION_NUMBER:
                     select.orderBy(DOCTOR.CONSULTATION_NUMBER.desc());
+                    break;
+                case CONSULTATION_PRICE:
+                    select.orderBy(DOCTOR.CONSULTATION_PRICE.desc());
                     break;
                 default:
                     break;

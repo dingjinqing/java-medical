@@ -17,3 +17,12 @@ export function getAnchorPointsList (data) {
     data: data
   })
 }
+
+// 查询埋点报表
+export function getAnchorPointsReport (data) {
+  return service({
+    url: '/api/admin/anchor/points/report',
+    method: 'post',
+    data: data
+  })
+}

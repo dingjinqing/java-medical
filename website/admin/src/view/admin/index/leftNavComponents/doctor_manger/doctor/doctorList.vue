@@ -105,13 +105,14 @@
                 v-if="scope.row.avgCommentStar > 0"
               >
                 <star :value="scope.row.avgCommentStar" />
+                <div style='margin-top:10px'>{{scope.row.avgCommentStar}}</div>
                 <a
                   href="javaScript:void(0);"
                   class="same_btn"
                   style="margin-top:10px"
                   @click="toComment(scope.row.name)"
                 >查看</a>
-                <div>{{scope.row.avgCommentStar}}</div>
+
               </div>
               <div v-else>暂无评价</div>
             </div>

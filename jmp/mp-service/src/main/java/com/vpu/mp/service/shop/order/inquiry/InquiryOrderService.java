@@ -375,7 +375,15 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
+        transaction(()->{
+            refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
+            //问诊退款，更改返利状态
+            if(!InquiryOrderConstant.ORDER_FINISHED.equals(inquiryOrderDo.getOrderStatus())){
+                inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OPERATE_REFUND);
+
+            }
+        });
+
     }
 
     /**

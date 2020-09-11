@@ -455,7 +455,7 @@ public class StoreService extends ShopBaseService {
      * @param expressList 配送方式list
      * @param productIds  规格ids
      * @param address     地址
-     * @param isFormStore ??
+     * @param isFormStore 是否门店下单（暂时未用）
      * @return
      */
     public List<StorePojo>[] filterExpressList(Byte[] expressList, List<Integer> productIds, UserAddressVo address, byte isFormStore) {
@@ -642,7 +642,7 @@ public class StoreService extends ShopBaseService {
      */
     public Map<String, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
         List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, orderAddressParam.getDeliveryType());
         Map<String, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
             double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
@@ -661,7 +661,7 @@ public class StoreService extends ShopBaseService {
      */
     public Map<String, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
         List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes);
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, 1);
         Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
             map.put(new String("0.00"), e);
@@ -735,13 +735,4 @@ public class StoreService extends ShopBaseService {
             .fetchInto(StoreBasicVo.class);
     }
 
-    /**
-     * 查询门店商品是否充足
-     * @param goodsId 商品id
-     * @param storeId 门店id
-     * @return Integer
-     */
-    public Integer checkOrderGoodsIsEnough(Integer goodsId, Integer storeId) {
-        return storeDao.checkOrderGoodsIsEnough(goodsId, storeId);
-    }
 }

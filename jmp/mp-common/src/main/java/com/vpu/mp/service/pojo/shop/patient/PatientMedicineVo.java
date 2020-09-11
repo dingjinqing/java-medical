@@ -19,6 +19,7 @@ public class PatientMedicineVo {
     private String goodsApprovalNumber;
     private Integer goodsNumber;
     private BigDecimal goodsPrice;
+    private String prescriptionCode;
     private String orderSn;
     private BigDecimal discountedTotalPrice;
     private Timestamp createTime;

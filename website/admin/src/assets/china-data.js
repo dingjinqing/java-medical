@@ -1,5 +1,5 @@
 export default [
-  { provinceId: 1, provinceName: '全部' },
+  // { provinceId: 1, provinceName: '全部' },
   {
     provinceId: 110000,
     provinceName: '北京市',
