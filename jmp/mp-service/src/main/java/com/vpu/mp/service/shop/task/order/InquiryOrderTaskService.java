@@ -93,7 +93,9 @@ public class InquiryOrderTaskService extends ShopBaseService {
                 }
             }
             //问诊退款，更改返利状态
-            inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OVERTIME);
+            if(InquiryOrderConstant.SETTLEMENT_WAIT.equals(order.getSettlementFlag())){
+                inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OVERTIME);
+            }
             //超时自动退款消息提醒
             List<Integer> useIdrList=new ArrayList<>();
             useIdrList.add(order.getUserId());
@@ -110,6 +112,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
      * @return
      */
     public void refundExecute(InquiryOrderDo order) throws MpException {
+        order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
         inquiryOrderService.refundInquiryOrder(order,order.getRefundMoney(),InquiryOrderConstant.REFUND_REASON_OVERTIME);
     }
 
