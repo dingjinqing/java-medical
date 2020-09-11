@@ -9,11 +9,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
-import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -26,6 +22,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
@@ -62,6 +59,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Result;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -76,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -1105,5 +1104,28 @@ public class Calculate extends ShopBaseService {
             return null;
         }
         return packageSaleProcessor.calculate(param, bos, totalNumberAndPrice, vo);
+    }
+    public void recalculationRebate(List<OrderReturnGoodsVo> returnGoods, Result<OrderGoodsRecord> orderGoods, String orderSn) {
+        if(CollectionUtils.isEmpty(returnGoods)) {
+            return;
+        }
+        Map<Integer, OrderGoodsRecord> goodsMap = orderGoods.stream().collect(Collectors.toMap(OrderGoodsRecord::getRecId, Function.identity()));
+        //需要更新的记录
+        ArrayList<OrderGoodsRebateRecord> updateRecords = new ArrayList<>();
+        for (OrderReturnGoodsVo returnGoodsVo : returnGoods) {
+            if(returnGoodsVo.getGoodsNumber() != null && returnGoodsVo.getGoodsNumber() > 0) {
+                OrderGoodsRecord orderGoodsRecord = goodsMap.get(returnGoodsVo.getRecId());
+                Result<OrderGoodsRebateRecord> rebateRecords = orderGoodsRebate.get(orderSn, returnGoodsVo.getRecId());
+                for (OrderGoodsRebateRecord rebateRecord : rebateRecords) {
+                    rebateRecord.setRealRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(rebateRecord.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsRecord.getGoodsNumber() - orderGoodsRecord.getReturnNumber()), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsRecord.getGoodsNumber())))
+                    );
+                    updateRecords.add(rebateRecord);
+                }
+            }
+        }
+        db().batchUpdate(updateRecords).execute();
     }
 }

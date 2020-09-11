@@ -69,7 +69,7 @@ public class AdminDoctorCommentController extends AdminBaseController {
      */
     @PostMapping("/api/admin/doctor/comment/top")
     public JsonResult top(@RequestBody DoctorCommentIdParam param) {
-        if (!BaseConstant.YES.equals(param.getStatus())){
+        if (BaseConstant.YES.equals(param.getStatus())){
             doctorCommentService.topComment(param.getId());
         }else {
             doctorCommentService.unTopComment(param.getId());

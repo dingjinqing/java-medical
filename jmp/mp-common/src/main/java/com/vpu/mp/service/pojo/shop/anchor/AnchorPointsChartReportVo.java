@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.anchor;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,6 @@ public class AnchorPointsChartReportVo {
      */
     private List<String> xAxisData;
 
-    private Map<String,SeriesData> seriesMap;
     private List<SeriesData> seriesList;
 
     @Data
@@ -30,6 +30,7 @@ public class AnchorPointsChartReportVo {
         private String type;
         private String stack;
         private List<String> dataList =new ArrayList<>();
+        private Map<String,String> dataMap =new LinkedHashMap (16);
 
     }
 }

@@ -42,7 +42,7 @@ public class StoreDao extends ShopBaseDao {
      * @param stores 有货门店storeCode
      * @return List<StoreDo>
      */
-    public List<StoreDo> getStoreOpen(List<String> stores) {
+    public List<StoreDo> getStoreOpen(List<String> stores, Integer deliveryType) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date date = new Date();
         String dateStringParse = sdf.format(date);
@@ -63,7 +63,9 @@ public class StoreDao extends ShopBaseDao {
             logger().info("门店库存校验");
             select.and(STORE.STORE_CODE.in(stores));
         }
-        select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
+        if (deliveryType != 0) {
+            select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
+        }
         select.limit(15);
         return select.fetchInto(StoreDo.class);
     }

@@ -209,6 +209,18 @@ export default {
                   })
                 }
               })
+            } else {
+              let errorMessage = {
+                shopAccountNotExist: '店铺账号不存在',
+                accountNotExist: '门店账号不存在',
+                accountIsDelete: '门店账号已删除',
+                accountIsForbidden: '门店账号已禁用',
+                storeIsEmpty: '门店账号下门店为空',
+                storeSwitchClose: '门店开关未打开',
+                storeNotExist: '门店不在该门店账号下',
+                accountPwError: '账号密码错误'
+              }
+              this.$message.error({ message: errorMessage[res.content.storeAuthInfoVo.msg] })
             }
           })
         } else {

@@ -213,10 +213,11 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                 prescriptionItemDao.updatePrescriptionItem(item);
             });
             BigDecimal realRebateTotalMoney=itemList.stream().map(PrescriptionItemDo::getRealRebateMoney).reduce(BIGDECIMAL_ZERO,BigDecimal::add);
-            //更改处方返利状态
-            prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATED);
             //更新实际返利金额
             prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney);
+
+            //更改处方返利状态
+            prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATED,null);
             prescriptionDao.updateSettlementFlag(preCode, PrescriptionConstant.SETTLEMENT_FINISH);
             //获取医师id
             DoctorOneParam doctor=doctorService.getDoctorByCode(prescriptionVo.getDoctorCode());
