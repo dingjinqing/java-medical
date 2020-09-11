@@ -174,6 +174,7 @@
             <el-tooltip
               content="删除"
               placement="top"
+              v-if="scope.row.isDelete == 0"
             >
               <span
                 class="el-icon-delete operateSpan"
