@@ -215,10 +215,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             BigDecimal realRebateTotalMoney=itemList.stream().map(PrescriptionItemDo::getRealRebateMoney).reduce(BIGDECIMAL_ZERO,BigDecimal::add);
             //更新实际返利金额
             prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney);
-            //不返利跳过
-            if(PrescriptionConstant.SETTLEMENT_NOT.equals(prescriptionVo.getSettlementFlag())){
-                continue;
-            }
+
             //更改处方返利状态
             prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATED,null);
             prescriptionDao.updateSettlementFlag(preCode, PrescriptionConstant.SETTLEMENT_FINISH);
