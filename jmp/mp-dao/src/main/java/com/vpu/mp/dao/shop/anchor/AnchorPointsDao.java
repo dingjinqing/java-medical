@@ -106,7 +106,7 @@ public class AnchorPointsDao extends ShopBaseDao {
                 .where(ANCHOR_POINTS.EVENT.eq(param.getEvent()))
                 .and(ANCHOR_POINTS.KEY.eq(param.getKey()))
                 .and(ANCHOR_POINTS.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
-                .groupBy(date(ANCHOR_POINTS.CREATE_TIME), ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY, ANCHOR_POINTS.DEVICE)
+                .groupBy(ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY, ANCHOR_POINTS.DEVICE)
                 .fetchInto( AnchorPointsReportVo.class);
     }
 

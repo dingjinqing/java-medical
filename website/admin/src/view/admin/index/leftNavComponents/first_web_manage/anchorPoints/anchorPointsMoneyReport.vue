@@ -160,6 +160,11 @@ export default {
             position: 'insideRight'
           }
           item.data = item.dataList
+          let value = 0
+          item.dataList.forEach(item => {
+            value = value + item
+          })
+          item.value = value
           item.tyoe = 'bar'
           item.dataList = []
           item.dataMap = {}
