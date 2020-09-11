@@ -20,10 +20,10 @@ global.wxPage({
         let {totalMoney,accruingWithdrawCash,waitWithdrawCash,withdrawCashMax,withdrawCashMix} = res.content
         this.setData({
           totalMoney:totalMoney || '0.00',
-          accruingWithdrawCash:accruingWithdrawCash || '0.00',
-          waitWithdrawCash:waitWithdrawCash || '0.00',
-          withdrawCashMin:withdrawCashMix || '0.00',
-          withdrawCashMax:withdrawCashMax || '0.00'
+          accruingWithdrawCash: accruingWithdrawCash.toFixed(2) || '0.00',
+          waitWithdrawCash:waitWithdrawCash.toFixed(2) || '0.00',
+          withdrawCashMin:withdrawCashMix.toFixed(2) || '0.00',
+          withdrawCashMax:withdrawCashMax.toFixed(2) || '0.00'
         })
       }
     })

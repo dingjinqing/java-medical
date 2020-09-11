@@ -778,7 +778,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //配送方式支持的门店列表（自提、同城配送）
         List<StorePojo>[] storeLists = store.filterExpressList(vo.getExpressList(), param.getProductIds(), vo.getAddress(), NO);
         //处理配送方式及门店信息;设置门店列表
-//        processExpressList(storeLists, vo);
+        processExpressList(storeLists, vo);
         //计算金额相关、vo赋值
         processOrderBeforeVo(param, vo, vo.getOrderGoods());
         //赠品活动

@@ -8,8 +8,12 @@
     }
     return statusName[''+status]
   }
+  var getFixed = function(num) {
+    return num.toFixed(2)
+  }
   module.exports = {
-    getStatus:getStatus
+    getStatus:getStatus,
+    getFixed:getFixed
   }
 </wxs>
 <view class="body">
@@ -24,7 +28,7 @@
 			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
         <view class="record-item">
         <view class="item-top">
-          <view class="money">￥{{item.withdrawCash}}</view>
+          <view class="money">￥{{tool.getFixed(item.withdrawCash)}}</view>
           <!-- <view class="point">到微信钱包</view> -->
           <view class="status">{{tool.getStatus(item.status)}}</view>
         </view>
