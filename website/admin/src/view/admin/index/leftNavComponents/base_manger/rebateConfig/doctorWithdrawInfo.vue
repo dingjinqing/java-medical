@@ -64,13 +64,23 @@
           </tr>
           <tr>
             <td>手机号：{{ tableData[0].mobile }}</td>
-            <td>处理状态：{{ tableData[0].status }}</td>
+            <td>处理状态：{{ tableData[0].status | getWithdrawStatus }}</td>
           </tr>
           <tr>
-            <td colspan="2">备注信息：（{{ tableData[0].desc }}）</td>
+            <td colspan="2">
+              备注信息：{{
+                tableData[0].desc ? '(' + tableData[0].desc + ')' : ''
+              }}
+            </td>
           </tr>
           <tr>
-            <td colspan="2">驳回申请原因：（{{ tableData[0].refuseDesc }}）</td>
+            <td colspan="2">
+              驳回申请原因：{{
+                tableData[0].refuseDesc
+                  ? '(' + tableData[0].refuseDesc + ')'
+                  : ''
+              }}
+            </td>
           </tr>
         </table>
       </div>
