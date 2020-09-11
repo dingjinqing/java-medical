@@ -127,7 +127,7 @@ public class DoctorCommentDao extends ShopBaseDao {
     }
 
     public Integer getTop() {
-       return db().select(DOCTOR_COMMENT.TOP).from(DOCTOR_COMMENT).fetchAny(DOCTOR_COMMENT.TOP);
+       return db().select(DOCTOR_COMMENT.TOP).from(DOCTOR_COMMENT).orderBy(DOCTOR_COMMENT.TOP.desc()).fetchAny(DOCTOR_COMMENT.TOP);
     }
 
     public void updateAudit(Integer id, Byte status) {
