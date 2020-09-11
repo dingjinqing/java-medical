@@ -80,18 +80,7 @@ public class AnchorPointsService extends ShopBaseService {
      * @return
      */
     public AnchorPointsChartReportVo countReport(AnchorPointsListParam param) {
-        Map<Date, List<AnchorPointsReportVo>> countMap;
-        if (AnchorPointsEvent.CREATE_ORDER_SUBMIT_MONEY.getKey().equals(param.getKey())){
-            countMap = anchorPointsDao.moneyDateReport(param);
-            countMap.forEach((k,v)-> {
-                v.forEach(item -> {
-                    item.setValue(item.getDevice());
-                });
-            });
-        }else {
-            countMap = anchorPointsDao.countReport(param);
-        }
-
+        Map<Date, List<AnchorPointsReportVo>> countMap = getDateListMap(param);
         //时间轴
         List<String> datalist1 =new ArrayList<>();
         AnchorPointsChartReportVo option =new AnchorPointsChartReportVo();
@@ -153,8 +142,33 @@ public class AnchorPointsService extends ShopBaseService {
         return option;
     }
 
+    private Map<Date, List<AnchorPointsReportVo>> getDateListMap(AnchorPointsListParam param) {
+        Map<Date, List<AnchorPointsReportVo>> countMap;
+        if (AnchorPointsEvent.CREATE_ORDER_SUBMIT_MONEY.getKey().equals(param.getKey())){
+            //金额 计算方式累计sum 设备分类
+            countMap = anchorPointsDao.moneyDateDeviceReport(param);
+            countMap.forEach((k,v)-> {
+                v.forEach(item -> {
+                    item.setValue(item.getDevice());
+                });
+            });
+        }else if (AnchorPointsEvent.LOGIN_WXAPP.getKey().equals(param.getKey())){
+            // 点击事件 count 设备分类
+            countMap = anchorPointsDao.countDateDeviceReport(param);
+            countMap.forEach((k,v)-> {
+                v.forEach(item -> {
+                    item.setValue(item.getDevice());
+                });
+            });
+        }else {
+            // key value分类
+            countMap = anchorPointsDao.countReport(param);
+        }
+        return countMap;
+    }
+
     public  List<AnchorPointsReportVo>  moneyReport(AnchorPointsListParam param){
-        return anchorPointsDao.moneyReport(param);
+        return anchorPointsDao.moneyDeviceReport(param);
     }
 
 

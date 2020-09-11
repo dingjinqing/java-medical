@@ -3,10 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.patient.PatientListParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientMedicineParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.patient.PatientPrescriptionParam;
+import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,12 +55,12 @@ public class AdminPatientController extends AdminBaseController {
 
     /**
      * 根据患者id查询关联医师
-     * @param patientId 患者id
+     * @param patientQueryDoctorParam 患者查询关联医师入参
      * @return JsonResult
      */
-    @GetMapping("/api/admin/patient/query/doctor/{patientId}")
-    public JsonResult getPatientRelevanceDoctor(@PathVariable Integer patientId) {
-        return success();
+    @PostMapping("/api/admin/patient/query/doctor")
+    public JsonResult getPatientRelevanceDoctor(@RequestBody PatientQueryDoctorParam patientQueryDoctorParam) {
+        return success(shop().patientService.getPatientQueryDoctorInfo(patientQueryDoctorParam));
     }
 
 

@@ -30,6 +30,7 @@ public enum AnchorPointsEvent {
     CREATE_ORDER_SUBMIT_MONEY("create_order_submit","提交订单","订单金额","药品购买"),
     CREATE_ORDER_SUBMIT_COUNT("create_order_submit","提交订单","药品数量","药品购买"),
     CREATE_ORDER_SUBMIT_KIND("create_order_submit","提交订单","药品种类","药品购买"),
+    CREATE_ORDER_SUBMIT_USER_MONEY("create_order_submit","提交订单","使用余额","药品购买"),
     ORDER_PAY_SUCCESS("order_pay_success","支付成功","路径来源","药品购买"),
 
 

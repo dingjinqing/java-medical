@@ -16,7 +16,6 @@
                             size="small"
                             @change="eventChangeHandler"
                             class="timeSelect">
-                        <el-option label="全部" value="null"></el-option>
                         <el-option
                                 v-for="item in eventList"
                                 :key="item.event"
@@ -160,11 +159,6 @@ export default {
             position: 'insideRight'
           }
           item.data = item.dataList
-          let value = 0
-          item.dataList.forEach(item => {
-            value = value + item
-          })
-          item.value = value
           item.tyoe = 'bar'
           item.dataList = []
           item.dataMap = {}
@@ -239,33 +233,22 @@ export default {
           trigger: 'item',
           formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
+        title: {
+          text: '设备和处方药来源',
+          subtext: '纯属虚构',
+          left: 'center'
+        },
         legend: {
           orient: 'vertical',
           left: 10,
-          data: ['安卓', '苹果']
+          data: ['ios', 'android']
+
         },
         series: [
           {
             name: '处方药',
             type: 'pie',
-            selectedMode: 'single',
-            radius: [0, '30%'],
-
-            label: {
-              position: 'inner'
-            },
-            labelLine: {
-              show: false
-            },
-            data: [
-              {value: 335, name: '处方药', selected: true},
-              {value: 679, name: '非处方药'}
-            ]
-          },
-          {
-            name: '访问来源',
-            type: 'pie',
-            radius: ['40%', '55%'],
+            center: ['75%', '50%'],
             label: {
               formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
               backgroundColor: '#eee',
@@ -297,9 +280,45 @@ export default {
               }
             },
             data: [
-              {value: 1048, name: '安卓'},
-              {value: 251, name: '苹果'}
+              {value: 335, name: '处方药', selected: true},
+              {value: 679, name: '非处方药'}
             ]
+          },
+          {
+            name: '访问来源',
+            type: 'pie',
+            center: ['25%', '50%'],
+            label: {
+              formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+              backgroundColor: '#eee',
+              borderColor: '#aaa',
+              borderWidth: 1,
+              borderRadius: 4,
+              rich: {
+                a: {
+                  color: '#999',
+                  lineHeight: 22,
+                  align: 'center'
+                },
+                hr: {
+                  borderColor: '#aaa',
+                  width: '100%',
+                  borderWidth: 0.5,
+                  height: 0
+                },
+                b: {
+                  fontSize: 16,
+                  lineHeight: 33
+                },
+                per: {
+                  color: '#eee',
+                  backgroundColor: '#334455',
+                  padding: [2, 4],
+                  borderRadius: 2
+                }
+              }
+            },
+            data: dataList
           }
         ]
       }
