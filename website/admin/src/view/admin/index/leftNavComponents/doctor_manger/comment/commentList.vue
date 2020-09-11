@@ -214,7 +214,7 @@
             <el-tooltip
               content="取消置顶"
               placement="top"
-              v-if="scope.row.top === 1"
+              v-if="scope.row.top > 0"
             >
               <span
                 class="el-icon-bottom operateSpan"
