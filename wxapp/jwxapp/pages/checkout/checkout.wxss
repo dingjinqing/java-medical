@@ -421,3 +421,8 @@
   width: 15rpx;
   height: 25rpx;
 }
+.close-container .image {
+  display: block;
+  width: 80rpx;
+  height: 80rpx;
+}

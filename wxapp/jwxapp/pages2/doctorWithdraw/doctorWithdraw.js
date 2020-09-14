@@ -77,30 +77,28 @@ global.wxPage({
         this.setData({
           showRealNameDialog:false
         })
-        if (res.error == 0) {
-          wx.showModal({
-            title: '提示',
-            content: '提现申请已提交，请等待管理员审核',
-            cancelText: "确定",
-            cancelColor: "#333333",
-            confirmText: "回到首页",
-            confirmColor: "#ff6666",
-            success(res) {
-              if (res.confirm) {
-                util.reLaunch({
-                  url: '/pages/index/index',
-                })
-              } else if (res.cancel) {
-                wx.navigateBack({
-                  delta: 2
-                })
-              }
+        wx.showModal({
+          title: '提示',
+          content: '提现申请已提交，请等待管理员审核',
+          cancelText: "确定",
+          cancelColor: "#333333",
+          confirmText: "回到首页",
+          confirmColor: "#ff6666",
+          success(res) {
+            if (res.confirm) {
+              util.reLaunch({
+                url: '/pages/index/index',
+              })
+            } else if (res.cancel) {
+              wx.navigateBack({
+                delta: 2
+              })
             }
-          })
-        } else {
-          util.showModal("提示", res.message);
-          return false;
-        }
+          }
+        })
+      } else {
+        util.showModal("提示", res.message);
+        return false;
       }
     },{
       doctorId:this.data.doctorId,

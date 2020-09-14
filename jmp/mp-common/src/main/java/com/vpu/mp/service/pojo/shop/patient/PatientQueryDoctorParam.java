@@ -4,15 +4,14 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 
 /**
  * @author 赵晓东
  * @description
- * @create 2020-09-10 10:20
+ * @create 2020-09-09 11:28
  **/
 @Data
-public class PatientPrescriptionParam {
+public class PatientQueryDoctorParam {
 
     @NotNull(message = JsonResultMessage.PATIENT_IS_NOT_EXIST)
     private Integer patientId;
@@ -21,15 +20,6 @@ public class PatientPrescriptionParam {
 
     private String departmentName;
 
-    private Byte prescriptionType;
-    /**
-     * 时间上界
-     */
-    private Timestamp startTime;
-    /**
-     * 时间下届
-     */
-    private Timestamp endTime;
     /**
      * 分页查询参数
      */

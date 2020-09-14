@@ -27,8 +27,8 @@ public class WxAppDoctorCommentController extends WxAppBaseController {
      * 患者医师评价 列表
      * @return
      */
-    @PostMapping("/api//api/wxapp/patient/doctor/comment/list")
-    public JsonResult listDoctorComment(@RequestBody DoctorCommentListParam param){
+    @PostMapping("/api/wxapp/patient/doctor/comment/list")
+    public JsonResult listDoctorComment(@RequestBody @Validated  DoctorCommentListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
         return success(doctorCommentService.listDoctorComment(param));

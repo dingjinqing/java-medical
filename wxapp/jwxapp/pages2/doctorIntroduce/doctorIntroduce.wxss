@@ -227,7 +227,7 @@ label {
 }
 .rp_expand{
   right: 18rpx;
-  bottom: 16rpx;
+  bottom: 24rpx;
 }
 .no_chat{
   background: #CBCBCB !important;
@@ -272,7 +272,7 @@ bottom: 10px;
 .d_reply{
   background:rgba(245,245,245,1);
   margin-top: 20rpx;
-  padding:15rpx;
+  padding:15rpx 24rpx;
   position: relative;
   border-radius: 16rpx;
 }
@@ -291,7 +291,7 @@ bottom: 10px;
   color: #333;
   font-size: 28rpx;
   font-weight: 500;
-  margin-bottom: 10rpx;
+  margin-bottom: 4rpx;
 }
 .re_text{
   color: #333;

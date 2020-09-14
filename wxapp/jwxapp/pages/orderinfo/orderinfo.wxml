@@ -30,7 +30,7 @@
 <view class="body">
   <include src="../common/header.wxml" />
   <view class="main-container" wx:if="{{orderInfo}}">
-    <view class="order-status_bg" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
+    <view class="order-status_bg" style='background:#26C4BC'></view>
     <view class="order-status">
       <view class="status-name">
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/status_success.png"></image>

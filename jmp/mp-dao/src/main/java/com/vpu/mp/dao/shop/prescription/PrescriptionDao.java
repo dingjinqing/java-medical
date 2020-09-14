@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.Tables.PATIENT;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION_ITEM;
@@ -125,8 +126,9 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public PageResult<PrescriptionListVo> listPageResult(PrescriptionListParam param) {
         SelectOnConditionStep<? extends Record> record = db().select(PRESCRIPTION.asterisk(),
-                PATIENT.NAME,PATIENT.ID.as("patientId")).from(PRESCRIPTION)
-                .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID));
+                PATIENT.NAME,PATIENT.ID.as("patientId"),DOCTOR.ID.as("doctorId")).from(PRESCRIPTION)
+                .leftJoin(PATIENT).on(PATIENT.ID.eq(PRESCRIPTION.PATIENT_ID))
+                .leftJoin(DOCTOR).on(DOCTOR.HOSPITAL_CODE.eq(PRESCRIPTION.DOCTOR_CODE));
         buildSelect(param, record);
         record.orderBy(PRESCRIPTION.DIAGNOSE_TIME.desc());
         return getPageResult(record, param, PrescriptionListVo.class);

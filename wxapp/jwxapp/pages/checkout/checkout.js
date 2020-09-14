@@ -848,6 +848,9 @@ global.wxPage({
       }, {
         key: '药品种类',
         value: this.data.rxKind
+      },{
+        key: '使用余额',
+        value: Number(this.data.usePayInfo.useBalance)
       }])
     }
     if (!this.canSubmit()) return

@@ -8,6 +8,7 @@ import org.jooq.impl.SQLDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 
@@ -159,4 +160,14 @@ public class DslPlus {
         return DSL.field("JSON_EXTRACT({0}, {1})", field, args);
     }
 
+    /**
+     * cast DECIMAL 转换
+     * @param field 字段
+     * @param i 有效位数
+     * @param j 小数位数
+     * @return the field
+     */
+    public static  Field<? extends Number> castDecimal(Field<?> field,  int i, int j) {
+        return DSL.field("cast( {0} AS DECIMAL({1},{2}) )", BigDecimal.class,field,i,j);
+    }
 }

@@ -214,6 +214,7 @@
             <el-tooltip
               content="删除"
               placement="top"
+              v-if="scope.row.isDelete === 0 "
             >
               <span
                 class="el-icon-delete operateSpan"
@@ -330,14 +331,22 @@ export default {
       })
     },
     delComment (id) {
-      deleteComment({ id: id }).then(res => {
-        this.tableData = this.tableData.filter(item => item.id !== id)
-        if (res.error === 0) {
-          this.$message.success({
-            message: '删除成功',
-            duration: '2000'
-          })
-        }
+      this.$confirm(this.$t('pageClassification.deleteConfirm'), {
+        confirmButtonText: this.$t('pageClassification.confirm'),
+        cancelButtonText: this.$t('pageClassification.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deleteComment({ id: id }).then(res => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: '删除成功',
+              duration: '2000'
+            })
+            let targetData = this.tableData.find(item => item.id === id)
+            targetData.isDelete = 1
+          }
+        })
+      }).catch(() => {
       })
     },
     evaluationTop (id, status) {
@@ -363,7 +372,7 @@ export default {
       })
     },
     passComment (id, status) {
-      aduitComment({ id: id }).then(res => {
+      aduitComment({ id: id, status: status}).then(res => {
         if (res.error === 0) {
           if (status === 1) {
             this.$message.success({
