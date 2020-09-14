@@ -15,7 +15,7 @@
         border
         style="width: 100%;"
       >
-        <el-table-column align="left" label="科室名称">
+        <el-table-column align="left" label="科室名称" width="200">
           <template v-slot="{ row, $index }">
             <template v-if="row.isLeaf === 0 && row.level === 1">
               <span
@@ -41,7 +41,12 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="科室代码" prop="code" />
+        <el-table-column align="center" label="医生人数" prop="doctor_number" />
+         <el-table-column align="center" label="处方数" prop="prescription_num" />
+          <el-table-column align="center" label="处方金额" prop="prescription_money" />
+           <el-table-column align="center" label="咨询单数" prop="inquiry_number" />
+            <el-table-column align="center" label="接诊人数" prop="consultation_number" />
+             <el-table-column align="center" label="咨询金额" prop="inquiry_money" />
         <el-table-column align="center" label="操作">
           <template v-slot="scope">
             <el-tooltip content="编辑" placement="top">
@@ -172,7 +177,7 @@ export default {
   }
   .collapseTab {
     display: inline-block;
-    width: 120px;
+    width: 70px;
   }
   .operateSpan {
     font-size: 22px;

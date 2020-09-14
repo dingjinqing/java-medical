@@ -372,7 +372,7 @@ export default {
       })
     },
     passComment (id, status) {
-      aduitComment({ id: id, status: status}).then(res => {
+      aduitComment({ id: id, status: status }).then(res => {
         if (res.error === 0) {
           if (status === 1) {
             this.$message.success({
