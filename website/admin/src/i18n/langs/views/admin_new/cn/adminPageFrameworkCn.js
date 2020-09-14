@@ -175,6 +175,7 @@ export const cn = {
     doctorProfessionalTitle: '医师职称',
     officesList: '科室管理',
     commentList: '评价列表',
+    recommendStrategy: '推荐策略',
     advisoryTotal: '咨询统计',
     prescriptionList: '处方列表',
     rebateConfig: '返利配置'
