@@ -10,8 +10,10 @@ import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticOrderWaitVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersParam;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -40,7 +42,7 @@ public class StoreOverviewController extends StoreBaseController {
     }
 
     /**
-     * 门店下单和支付统计数据
+     * 门店下单和支付统计数据 **
      * @return
      */
     @PostMapping(value = "/api/store/overview/statistic/data")
@@ -97,5 +99,15 @@ public class StoreOverviewController extends StoreBaseController {
     public JsonResult getbindUnBindStatus(){
         BindofficialVo getbindUnBindStatusUseByOver = saas.overviewService.getbindUnBindStatusUseByOverForStore(storeAuth.user(),bindAppId);
         return success(getbindUnBindStatusUseByOver);
+    }
+
+    /**
+     * 查询门店热销商品报表
+     * @param storeBestSellersParam 热销商品入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/store/view/bestsellers")
+    public JsonResult getBestSellers(@Validated @RequestBody StoreBestSellersParam storeBestSellersParam) {
+        return success(saas.overviewService.getBestSellers(storeBestSellersParam));
     }
 }
