@@ -72,9 +72,13 @@
 }
 .popup .outer-bottom {
   top: auto;
-  bottom: -100rpx;
+  bottom: -140rpx;
   right: 50%;
   transform: translateX(50%);
+}
+.popup .outer-bottom .image{
+  width: 90rpx;
+  height: 90rpx;
 }
 
 .vertical-line {

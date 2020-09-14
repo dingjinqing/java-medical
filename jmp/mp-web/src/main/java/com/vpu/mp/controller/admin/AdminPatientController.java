@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.patient.*;
 import com.vpu.mp.service.shop.ShopApplication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,10 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @RestController
 public class AdminPatientController extends AdminBaseController {
-//    @Override
-//    protected ShopApplication shop() {
-//        return saas.getShopApp(471752);
-//    }
+
     /**
      * 患者列表
      * @param param
@@ -49,7 +47,7 @@ public class AdminPatientController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/api/admin/patient/query/medicine")
-    public JsonResult getPatientBuyMedicineRecord(@RequestBody PatientMedicineParam patientMedicineParam) {
+    public JsonResult getPatientBuyMedicineRecord(@Validated @RequestBody PatientMedicineParam patientMedicineParam) {
         return success(shop().patientService.getPatientBuyMedicineRecord(patientMedicineParam));
     }
 
@@ -59,7 +57,7 @@ public class AdminPatientController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/api/admin/patient/query/doctor")
-    public JsonResult getPatientRelevanceDoctor(@RequestBody PatientQueryDoctorParam patientQueryDoctorParam) {
+    public JsonResult getPatientRelevanceDoctor(@Validated @RequestBody PatientQueryDoctorParam patientQueryDoctorParam) {
         return success(shop().patientService.getPatientQueryDoctorInfo(patientQueryDoctorParam));
     }
 
@@ -70,7 +68,7 @@ public class AdminPatientController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/api/admin/patient/query/prescription")
-    public JsonResult getPatientPrescription(@RequestBody PatientPrescriptionParam patientPrescriptionParam) {
+    public JsonResult getPatientPrescription(@Validated @RequestBody PatientPrescriptionParam patientPrescriptionParam) {
         return success(shop().patientService.getPatientPrescription(patientPrescriptionParam));
     }
 
@@ -80,7 +78,7 @@ public class AdminPatientController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/api/admin/patient/query/inquiry")
-    public JsonResult getPatientInquiry(@RequestBody PatientPrescriptionParam patientPrescriptionParam) {
+    public JsonResult getPatientInquiry(@Validated @RequestBody PatientPrescriptionParam patientPrescriptionParam) {
         return success(shop().patientService.getPatientInquiry(patientPrescriptionParam));
     }
 

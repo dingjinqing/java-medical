@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsChartReportVo;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListVo;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsParam;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsPerReportVo;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsReportVo;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPotionEventBo;
 import org.elasticsearch.common.Strings;
@@ -162,13 +163,19 @@ public class AnchorPointsService extends ShopBaseService {
             });
         }else {
             // key value分类
-            countMap = anchorPointsDao.countReport(param);
+            countMap = anchorPointsDao.countDateReport(param);
         }
         return countMap;
     }
 
-    public  List<AnchorPointsReportVo>  moneyReport(AnchorPointsListParam param){
-        return anchorPointsDao.moneyDeviceReport(param);
+
+    public  AnchorPointsPerReportVo moneyReport(AnchorPointsListParam param){
+        List<AnchorPointsReportVo> countReport = anchorPointsDao.countReport(param);
+        List<AnchorPointsReportVo> deviceReport = anchorPointsDao.moneyDeviceReport(param);
+        AnchorPointsPerReportVo vo =new AnchorPointsPerReportVo();
+        vo.setDeviceReport(deviceReport);
+        vo.setPrescriptionReport(countReport);
+        return vo;
     }
 
 

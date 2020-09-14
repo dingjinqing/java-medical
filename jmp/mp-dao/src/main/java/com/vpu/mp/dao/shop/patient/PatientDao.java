@@ -307,35 +307,6 @@ public class PatientDao extends ShopBaseDao{
     }
 
     /**
-     * select
-     * 	b2c_prescription.doctor_name,
-     * 	b2c_prescription.doctor_code,
-     * 	b2c_prescription.department_name,
-     * 	b2c_doctor.id,
-     * 	sum(b2c_prescription.total_price),
-     * 	count(b2c_prescription.id)
-     * 	from
-     * 		b2c_doctor
-     * 	left join
-     * 		b2c_prescription
-     * 	on
-     * 		b2c_prescription.doctor_code = b2c_doctor.hospital_code
-     * 	where
-     * 		b2c_prescription.patient_id = 10
-     * 	and
-     * 		b2c_prescription.doctor_name like '%%'
-     * 	and
-     * 		b2c_prescription.department_name like '%%'
-     * 	group by
-     * 		b2c_prescription.patient_id,
-     * 		b2c_prescription.doctor_code,
-     * 		b2c_prescription.doctor_name,
-     * 		b2c_prescription.department_name,
-     * 		b2c_doctor.id
-     * 	order by
-     * 		b2c_prescription.create_time desc;
-     *
-     *
      * 根据患者id查询关联医师信息
      * @param patientQueryDoctorParam 用户查询关联医师入参
      * @return PageResult<PatientQueryDoctorVo>
@@ -346,7 +317,7 @@ public class PatientDao extends ShopBaseDao{
             , PRESCRIPTION.DOCTOR_NAME.as("doctorName")
             , PRESCRIPTION.DEPARTMENT_NAME.as("departmentName")
             , DOCTOR.ID.as("doctorId")
-            , DSL.sum(PRESCRIPTION.TOTAL_PRICE).as("consumptionAmount")
+            , DSL.sum(PRESCRIPTION.TOTAL_PRICE).as("prescriptionConsumptionAmount")
             , DSL.count(PRESCRIPTION.DOCTOR_NAME).as("prescriptionNumber"))
             .from(DOCTOR)
             .join(PRESCRIPTION)

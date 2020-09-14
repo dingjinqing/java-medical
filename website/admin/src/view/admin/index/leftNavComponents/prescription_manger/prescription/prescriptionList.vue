@@ -199,7 +199,7 @@
           >
             <template slot-scope="scope">
               <div class="operation">
-                <a @click="handleSeePatient(scope.row.id)">{{scope.row.name}}({{scope.row.patientId}})</a>
+                <a @click="handleSeePatient(scope.row.patientId)">{{scope.row.name}}({{scope.row.patientId}})</a>
               </div>
             </template>
           </el-table-column>
@@ -229,7 +229,7 @@
           >
             <template slot-scope="scope">
               <div class="operation">
-                <a @click="handleSeeDoctor(scope.row.doctorCode)">{{scope.row.doctorName}}({{scope.row.doctorCode}})</a>
+                <a @click="handleSeeDoctor(scope.row.doctorId)">{{scope.row.doctorName}}({{scope.row.doctorCode}})</a>
               </div>
             </template>
           </el-table-column>

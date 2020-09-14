@@ -34,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateParam;
@@ -361,7 +362,6 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
         List<ImageSimpleVo> imageList=payParam.getImageList();
         String imageUrl=Util.toJson(imageList);
-//        String imageUrl=imageList.stream().collect(Collectors.joining(","));
         inquiryOrderDo.setImageUrl(imageUrl);
         inquiryOrderDo.setDescriptionDisease(payParam.getDescriptionDisease());
         inquiryOrderDao.save(inquiryOrderDo);
@@ -525,7 +525,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param patientId 患者id
      * @return Integer
      */
-    public Integer getInquiryNumberByPatient(Integer patientId, Integer doctorId) {
+    public PatientInquiryOrderVo getInquiryNumberByPatient(Integer patientId, Integer doctorId) {
         return inquiryOrderDao.getInquiryNumberByPatientId(patientId, doctorId);
     }
 }

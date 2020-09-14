@@ -1,5 +1,5 @@
 <wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
-<v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose' close_img_url="{{imageUrl}}image/wxapp/big_close_icon.png">
 	<view class='patient_content'>
 		<view class="p_top">
 			<view class="p_title">患者信息</view>

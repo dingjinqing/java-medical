@@ -21,17 +21,25 @@ public class PatientQueryDoctorVo {
      */
     private String departmentName;
     /**
+     * 处方消费金额
+     */
+    private BigDecimal prescriptionConsumptionAmount = new BigDecimal(0);
+    /**
+     * 问诊消费金额
+     */
+    private BigDecimal inquiryConsumptionAmount = new BigDecimal(0);
+    /**
      * 消费金额
      */
-    private BigDecimal consumptionAmount;
+    private BigDecimal consumptionAmount = new BigDecimal(0);
     /**
      * 处方数量
      */
-    private Integer prescriptionNumber;
+    private Integer prescriptionNumber = 0;
     /**
      * 问诊数量
      */
-    private Integer inquiryNumber;
+    private Integer inquiryNumber = 0;
     /**
      * 医师code
      */
