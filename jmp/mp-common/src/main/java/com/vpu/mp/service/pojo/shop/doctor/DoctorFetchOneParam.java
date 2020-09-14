@@ -23,4 +23,5 @@ public class DoctorFetchOneParam {
     private Date lastUpdateTime;
     private Long    consultationPrice;
     private String  treatDisease;
+    private Byte  isFetch;
 }

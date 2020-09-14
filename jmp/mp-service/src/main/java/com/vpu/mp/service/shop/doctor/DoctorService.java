@@ -222,6 +222,12 @@ public class DoctorService extends ShopBaseService {
             if (StringUtils.isBlank(departmentStr)) {
                 doctor.setStatus((byte) 0);
             }
+            //是否拉取
+            doctor.setIsFetch(DoctorConstant.IS_FETCH);
+            //默认不接诊
+            doctor.setCanConsultation(DoctorConstant.CAN_NOT_CONSULTATION);
+            //默认不上班
+            doctor.setIsOnDuty(DoctorConstant.NOT_ON_DUTY);
             synchroDoctor(doctor);
         }
     }
@@ -310,6 +316,8 @@ public class DoctorService extends ShopBaseService {
                 // 修改doctor表中userId为当前用户
                 doctorDo.setUserId(doctorAuthParam.getUserId());
                 doctorDao.updateUserId(doctorDo);
+                //更新是否接诊
+                doctorDao.updateCanConsultation(doctorDo.getId(),DoctorConstant.CAN_CONSULTATION);
             });
             return doctorDo.getId();
         } else {
