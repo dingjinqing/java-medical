@@ -379,7 +379,7 @@ public class InquiryOrderService extends ShopBaseService {
         transaction(()->{
             refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
             //问诊退款，更改返利状态
-            if(!InquiryOrderConstant.ORDER_FINISHED.equals(inquiryOrderDo.getOrderStatus())){
+            if(InquiryOrderConstant.SETTLEMENT_WAIT.equals(inquiryOrderDo.getSettlementFlag())){
                 inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OPERATE_REFUND);
                 inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
                 inquiryOrderDao.update(inquiryOrderDo);
