@@ -10,7 +10,6 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
-import com.vpu.mp.common.pojo.shop.table.OrderMedicalHistoryDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
@@ -54,6 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -503,5 +503,10 @@ public class PrescriptionService extends ShopBaseService {
             return result;
         }
         return null;
+    }
+
+
+    public Integer countDateByDoctor(String doctorCode, Timestamp startTime, Timestamp endTime) {
+       return prescriptionDao.countDateByDoctor(doctorCode,startTime,endTime);
     }
 }

@@ -147,4 +147,16 @@ public class AnchorPointsDao extends ShopBaseDao {
     }
 
 
+    public Map<Date, List<AnchorPointsReportVo>>  getDoctorAttendance(AnchorPointsListParam param) {
+        return db().select(date(ANCHOR_POINTS.CREATE_TIME).as(DATE),ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY,
+                DSL.count(ANCHOR_POINTS.ID).as(COUNT))
+                .from(ANCHOR_POINTS)
+                .where(ANCHOR_POINTS.USER_ID.eq(param.getUserId()))
+                .and(ANCHOR_POINTS.EVENT.eq(param.getEvent()))
+                .and(ANCHOR_POINTS.KEY.eq(param.getKey()))
+                .and(ANCHOR_POINTS.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
+                .groupBy(date(ANCHOR_POINTS.CREATE_TIME), ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY)
+                .fetchGroups(date(ANCHOR_POINTS.CREATE_TIME).as(DATE), AnchorPointsReportVo.class);
+
+    }
 }

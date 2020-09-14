@@ -29,6 +29,11 @@ import static com.vpu.mp.db.shop.tables.DoctorComment.DOCTOR_COMMENT;
 @Repository
 public class DoctorCommentDao extends ShopBaseDao {
 
+    /**
+     * 创建时间
+     */
+    private final static String  CREATE_TIME ="createTime";
+
 
     /**
      * 保存评价
@@ -84,11 +89,15 @@ public class DoctorCommentDao extends ShopBaseDao {
         }
          if (param.getUserId()!=null) {
              records.where(DOCTOR_COMMENT.AUDIT_STATUS.eq(DoctorCommentConstant.CHECK_COMMENT_PASS).or(DOCTOR_COMMENT.USER_ID.eq(param.getUserId())));
-        }
+         }
         if (!Objects.equals(BaseConstant.YES,param.getHasDelete())){
             records.where(DOCTOR_COMMENT.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         }
-        records.orderBy(DOCTOR_COMMENT.TOP.desc(), DOCTOR_COMMENT.CREATE_TIME.desc());
+        if (param.getSort()==null||Strings.isEmpty(param.getSort().trim())){
+            records.orderBy(DOCTOR_COMMENT.TOP.desc(), DOCTOR_COMMENT.CREATE_TIME.desc());
+        }else if (CREATE_TIME.equals(param.getSort())){
+            records.orderBy(DOCTOR_COMMENT.CREATE_TIME.desc());
+        }
         return getPageResult(records, param, DoctorCommentListVo.class);
     }
 

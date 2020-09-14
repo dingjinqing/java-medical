@@ -22,4 +22,5 @@ public class DoctorCommentListParam extends BasePageParam {
 
     private Byte hasDelete;
     private Integer userId;
+    private String sort;
 }
