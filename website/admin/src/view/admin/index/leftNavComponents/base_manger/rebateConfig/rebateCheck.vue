@@ -152,7 +152,7 @@ export default {
     return {
       doctorName: '',
       checkStatus: '-1',
-      timeType: '-1',
+      timeType: '2',
       checkStatusList: [
         {
           value: '-1',
@@ -164,7 +164,7 @@ export default {
         },
         {
           value: '2',
-          label: '拒绝'
+          label: '已驳回'
         },
         {
           value: '3',
@@ -172,7 +172,11 @@ export default {
         },
         {
           value: '4',
-          label: '出账成功'
+          label: '已出账'
+        },
+        {
+          value: '5',
+          label: '出账失败'
         }
       ],
       timeTypeList: [
@@ -197,38 +201,7 @@ export default {
           label: '自定义'
         }
       ],
-      tableList: [
-        {
-          doctorName: '张三',
-          mobile: '17600236996',
-          orderSn: 'ksjdkj4564646545644',
-          money: '100.00',
-          userName: '666',
-          rebeatMoney: '666.00',
-          rebeatStatus: 1,
-          createTime: '2018-05-13 14:12:00'
-        },
-        {
-          doctorName: '张三',
-          mobile: '17600236996',
-          orderSn: 'ksjdkj4564646545644',
-          money: '100.00',
-          userName: '666',
-          rebeatMoney: '666.00',
-          rebeatStatus: 1,
-          createTime: '2018-05-13 14:12:00'
-        },
-        {
-          doctorName: '张三',
-          mobile: '17600236996',
-          orderSn: 'ksjdkj4564646545644',
-          money: '100.00',
-          userName: '666',
-          rebeatMoney: '666.00',
-          rebeatStatus: 1,
-          createTime: '2018-05-13 14:12:00'
-        }
-      ],
+      tableList: [],
       startTime: null,
       endTime: null,
       pageParams: {}
@@ -248,8 +221,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 1)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
         case '1':
@@ -258,8 +231,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 7)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
 
@@ -269,8 +242,8 @@ export default {
             const startTime = new Date()
             startTime.setTime(startTime.getTime() - 3600 * 1000 * 24 * 30)
             return {
-              startTime,
-              endTime
+              startTime: `${startTime.getFullYear()}-${startTime.getMonth() + 1}-${startTime.getDate() + 1} 00:00:00`,
+              endTime: `${endTime.getFullYear()}-${endTime.getMonth() + 1}-${endTime.getDate()} 23:59:59`
             }
           })()
         case '3':
@@ -289,7 +262,8 @@ export default {
         1: '待审核',
         2: '已驳回',
         3: '待出账',
-        4: '已出账'
+        4: '已出账',
+        5: '出账失败'
       }
       return statusName[status]
     }
@@ -318,10 +292,16 @@ export default {
             type: 'warning'
           }).then(() => {
             changeWithdrawStatus({ checkStatus: 3, orderSn: data.orderSn }).then(res => {
-              this.$message.success({
-                message: '已通过'
-              })
-              this.search()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已通过'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           })
           break
@@ -332,10 +312,16 @@ export default {
             type: 'warning'
           }).then(() => {
             changeWithdrawStatus({ checkStatus: 4, orderSn: data.orderSn }).then(res => {
-              this.$message.success({
-                message: '已出账'
-              })
-              this.search()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已出账'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           })
           break
@@ -346,10 +332,16 @@ export default {
             cancelButtonText: '取消'
           }).then(({ value }) => {
             changeWithdrawStatus({ checkStatus: 2, orderSn: data.orderSn, refuseDesc: value }).then(res => {
-              this.$message.success({
-                message: '已驳回请求'
-              })
-              this.search()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已驳回请求'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           }).catch(() => {
           })

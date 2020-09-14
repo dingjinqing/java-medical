@@ -94,7 +94,7 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="totalMoney"
+          prop="canCalculateMoney"
           label="处方总金额"
           align="center"
         ></el-table-column>
@@ -137,7 +137,7 @@ export default {
     return {
       doctorName: '',
       rebateStatus: '-1',
-      timeType: '-1',
+      timeType: '2',
       rebateStatusList: [
         {
           value: '-1',
@@ -178,38 +178,7 @@ export default {
           label: '自定义'
         }
       ],
-      tableList: [
-        {
-          doctorName: '张三',
-          mobile: '17600236996',
-          orderSn: 'ksjdkj4564646545644',
-          money: '100.00',
-          userName: '666',
-          rebeatMoney: '666.00',
-          rebeatStatus: 1,
-          createTime: '2018-05-13 14:12:00'
-        },
-        {
-          doctorName: '张三',
-          mobile: '17600236996',
-          orderSn: 'ksjdkj4564646545644',
-          money: '100.00',
-          userName: '666',
-          rebeatMoney: '666.00',
-          rebeatStatus: 1,
-          createTime: '2018-05-13 14:12:00'
-        },
-        {
-          doctorName: '张三',
-          mobile: '17600236996',
-          orderSn: 'ksjdkj4564646545644',
-          money: '100.00',
-          userName: '666',
-          rebeatMoney: '666.00',
-          rebeatStatus: 1,
-          createTime: '2018-05-13 14:12:00'
-        }
-      ],
+      tableList: [],
       startTime: null,
       endTime: null,
       pageParams: {},
