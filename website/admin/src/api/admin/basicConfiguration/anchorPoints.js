@@ -26,3 +26,12 @@ export function getAnchorPointsReport (data) {
     data: data
   })
 }
+
+// 查询埋点报表
+export function getAnchorPointsReportMoney (data) {
+  return service({
+    url: '/api/admin/anchor/points/report/money',
+    method: 'post',
+    data: data
+  })
+}

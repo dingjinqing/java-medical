@@ -154,7 +154,7 @@
             <el-tooltip
               content="通过"
               placement="top"
-              v-if="scope.row.auditStatus == 0"
+              v-if="scope.row.auditStatus == 0||scope.row.auditStatus == 2"
             >
               <span
                 class="el-icon-success operateSpan"
@@ -164,11 +164,11 @@
             <el-tooltip
               content="拒绝"
               placement="top"
-              v-if="scope.row.auditStatus == 0"
+              v-if="scope.row.auditStatus == 0||scope.row.auditStatus == 1"
             >
               <span
                 class="el-icon-error operateSpan"
-                @click="passComment(scope.row.id, 0)"
+                @click="passComment(scope.row.id, 2)"
               ></span>
             </el-tooltip>
             <el-tooltip
@@ -189,16 +189,6 @@
               <span
                 class="el-icon-bottom operateSpan"
                 @click="evaluationTop(scope.row.id, 0)"
-              ></span>
-            </el-tooltip>
-            <el-tooltip
-              content="删除"
-              placement="top"
-              v-if="scope.row.isDelete === 0"
-            >
-              <span
-                class="el-icon-delete operateSpan"
-                @click="delComment(scope.row.id)"
               ></span>
             </el-tooltip>
           </template>
@@ -251,6 +241,7 @@ export default {
       param: {
         stars: 0,
         flag: -1,
+        sort: 'createTime',
         doctorName: ''
       },
       autoReview: false,
