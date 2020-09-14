@@ -720,15 +720,15 @@ export default {
           span: '',
           name: 'commentList',
           flag: true
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/icon_left/comment_man.png',
-          imgUrl_h: this.$imageHost + '/image/admin/icon_left/comment_man_h.png',
-          path: '/admin/home/main/doctor/recommend/strategy',
-          span: '',
-          name: 'recommendStrategy',
-          flag: true
         }
+        // {
+        //   imgUrl: this.$imageHost + '/image/admin/icon_left/comment_man.png',
+        //   imgUrl_h: this.$imageHost + '/image/admin/icon_left/comment_man_h.png',
+        //   path: '/admin/home/main/doctor/recommend/strategy',
+        //   span: '',
+        //   name: 'recommendStrategy',
+        //   flag: true
+        // }
       ],
       prescription_manger: [
         {
