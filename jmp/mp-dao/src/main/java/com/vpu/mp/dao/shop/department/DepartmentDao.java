@@ -286,7 +286,7 @@ public class DepartmentDao extends ShopBaseDao {
             ,DSL.sum(DEPARTMENT_SUMMARY_TREND.INQUIRY_MONEY).as("inquiry_money"),DSL.sum(DEPARTMENT_SUMMARY_TREND.INQUIRY_NUMBER).as("inquiry_number")
             ,DSL.sum(DEPARTMENT_SUMMARY_TREND.PRESCRIPTION_MONEY).as("prescription_money"),DSL.sum(DEPARTMENT_SUMMARY_TREND.PRESCRIPTION_NUM).as("prescription_num")
         )
-            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .from(DEPARTMENT_SUMMARY_TREND)
             .where(DEPARTMENT_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY))
             .groupBy(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID);
     }

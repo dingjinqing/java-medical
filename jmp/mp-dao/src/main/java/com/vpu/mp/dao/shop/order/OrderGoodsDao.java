@@ -207,4 +207,26 @@ public class OrderGoodsDao extends ShopBaseDao {
             .where(ORDER_GOODS.PRESCRIPTION_CODE.eq(prescriptionCode))
             .fetchInto(OrderGoodsDo.class);
     }
+
+    /**
+     * 根据处方明细号查
+     * @param prescriptionDetailCode
+     * @return
+     */
+    public OrderGoodsDo getByPrescriptionDetailCode(String prescriptionDetailCode){
+        return db().select()
+            .from(ORDER_GOODS).where(ORDER_GOODS.PRESCRIPTION_DETAIL_CODE.eq(prescriptionDetailCode))
+            .fetchAnyInto(OrderGoodsDo.class);
+
+    }
+    /**
+     * 更新处方明细号
+     * @param recId
+     * @param prescriptionDetailCode
+     */
+    public void updatePrescriptionDetailCode(Integer recId,String prescriptionDetailCode){
+        db().update(ORDER_GOODS).set(ORDER_GOODS.PRESCRIPTION_DETAIL_CODE,prescriptionDetailCode)
+            .where(ORDER_GOODS.REC_ID.eq(recId)).execute();
+    }
+
 }
