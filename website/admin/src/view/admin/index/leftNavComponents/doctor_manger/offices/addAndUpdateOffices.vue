@@ -49,13 +49,12 @@
           label="科室优先级："
           prop="first"
         >
-          <el-input
-            ref="officeFirst"
-            v-model="departmentDataFirst.first"
+          <el-input-number
+            controls-position="right"
+            :min="0"
             size="small"
-            style="width: 170px;"
-            type='number'
-          />
+            v-model="departmentDataFirst.first"
+          ></el-input-number>
         </el-form-item>
       </el-form>
       <!-- 二级科室表单 -->
@@ -114,12 +113,12 @@
           label="科室优先级："
           prop="first"
         >
-          <el-input
-            ref="officeSecond"
-            v-model="departmentDataFirst.first"
+          <el-input-number
+            controls-position="right"
+            :min="0"
             size="small"
-            style="width: 170px;"
-          />
+            v-model="departmentDataSecond.first"
+          ></el-input-number>
         </el-form-item>
       </el-form>
     </div>
@@ -265,14 +264,14 @@ export default {
         formData.level = this.level
         formData.parentId = 0
         formData.isLeaf = this.departmentDataFirst.isLeaf
-        formData.first = this.departmentDataFirst.first === '' ? 0 : this.departmentDataFirst.first
+        formData.first = this.departmentDataFirst.first
       } else {
         formData.parentId = this.departmentDataSecond.firstDepartmentId
         formData.name = this.departmentDataSecond.name
         formData.code = this.departmentDataSecond.code
         formData.level = this.level
         formData.isLeaf = this.departmentDataSecond.isLeaf
-        formData.first = this.departmentDataSecond.first === '' ? 0 : this.departmentDataSecond.first
+        formData.first = this.departmentDataSecond.first
       }
       return formData
     },
