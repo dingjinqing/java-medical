@@ -415,4 +415,7 @@ public class DoctorDao extends ShopBaseDao {
             .where(DOCTOR.ID.eq(param.getDoctorId()))
             .execute();
     }
+
+    public void countDateByDoctor(Integer doctorCode) {
+    }
 }
