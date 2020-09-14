@@ -441,7 +441,12 @@ public class PatientService extends BaseShopConfigService{
     public PageResult<PatientQueryDoctorVo> getPatientQueryDoctorInfo(PatientQueryDoctorParam patientQueryDoctorParam) {
         PageResult<PatientQueryDoctorVo> patientQueryDoctor = patientDao.getPatientQueryDoctor(patientQueryDoctorParam);
         patientQueryDoctor.getDataList().forEach(patientQueryDoctorVo -> {
-            patientQueryDoctorVo.setInquiryNumber(inquiryOrderService.getInquiryNumberByPatient(patientQueryDoctorParam.getPatientId(), patientQueryDoctorVo.getDoctorId()));
+            PatientInquiryOrderVo inquiryNumberByPatient = inquiryOrderService.getInquiryNumberByPatient(patientQueryDoctorParam.getPatientId(), patientQueryDoctorVo.getDoctorId());
+            if (inquiryNumberByPatient != null) {
+                patientQueryDoctorVo.setInquiryNumber(inquiryNumberByPatient.getInquiryCount());
+                patientQueryDoctorVo.setInquiryConsumptionAmount(inquiryNumberByPatient.getTotalAmount());
+                patientQueryDoctorVo.setConsumptionAmount(patientQueryDoctorVo.getInquiryConsumptionAmount().add(patientQueryDoctorVo.getPrescriptionConsumptionAmount()));
+            }
         });
         return patientQueryDoctor;
     }

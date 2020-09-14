@@ -7,6 +7,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
+import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderParam;
@@ -17,6 +18,7 @@ import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -274,10 +276,15 @@ public class InquiryOrderDao extends ShopBaseDao {
      * @param patientId 患者id
      * @return Integer
      */
-    public Integer getInquiryNumberByPatientId(Integer patientId, Integer doctorId) {
-        return db().selectCount().from(INQUIRY_ORDER)
+    public PatientInquiryOrderVo getInquiryNumberByPatientId(Integer patientId, Integer doctorId) {
+        return db().select(
+            DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("totalAmount"),
+            DSL.count(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiryCount"))
+            .from(INQUIRY_ORDER)
             .where(INQUIRY_ORDER.PATIENT_ID.eq(patientId))
             .and(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
-            .and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(Integer.class);
+            .and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .groupBy(INQUIRY_ORDER.PATIENT_ID)
+            .fetchAnyInto(PatientInquiryOrderVo.class);
     }
 }
