@@ -91,7 +91,8 @@ public class PrescriptionRebateService extends ShopBaseService {
             }else {
                 item.setRebateProportion(noRxProportion);
             }
-            OrderGoodsDo orderGoodsDo=orderGoodsDao.getByOrderIdGoodsIdPrdId(order.getOrderId(),item.getGoodsId(),item.getPrdId());
+//            OrderGoodsDo orderGoodsDo=orderGoodsDao.getByOrderIdGoodsIdPrdId(order.getOrderId(),item.getGoodsId(),item.getPrdId());
+            OrderGoodsDo orderGoodsDo=orderGoodsDao.getByPrescriptionDetailCode(item.getPrescriptionDetailCode());
             //可计算返利商品金额
             BigDecimal canRebateMoney = BigDecimalUtil.subtrac(orderGoodsDo.getDiscountedTotalPrice(), BigDecimalUtil.multiply(avgScoreDiscount, new BigDecimal(orderGoodsDo.getGoodsNumber())));
             canRebateMoney = BigDecimalUtil.compareTo(canRebateMoney, null) > 0 ? canRebateMoney : BigDecimalUtil.BIGDECIMAL_ZERO;

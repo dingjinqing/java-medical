@@ -36,10 +36,18 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public PageResult<DepartmentListVo> getDepartmentList(DepartmentListParam param) {
+        SelectHavingStep<Record2<Integer, Integer>> doctorTable = getDoctorNumberTable();
+        SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> departmentDataTable = getDepartmentStatisticTable();
         SelectJoinStep<? extends Record> select = db()
             .select(DEPARTMENT.ID, DEPARTMENT.CODE, DEPARTMENT.CREATE_TIME,
-                DEPARTMENT.NAME, DEPARTMENT.PARENT_ID, DEPARTMENT.PARENT_IDS,DEPARTMENT.LEVEL,DEPARTMENT.IS_LEAF)
-            .from(DEPARTMENT);
+                DEPARTMENT.NAME, DEPARTMENT.PARENT_ID, DEPARTMENT.PARENT_IDS,DEPARTMENT.LEVEL,DEPARTMENT.IS_LEAF
+                ,doctorTable.field("doctor_number"),departmentDataTable.field("consultation_number")
+                ,departmentDataTable.field("inquiry_money"),departmentDataTable.field("inquiry_number")
+                ,departmentDataTable.field("prescription_money"),departmentDataTable.field("prescription_num"))
+            .from(DEPARTMENT)
+            .leftJoin(doctorTable).on(doctorTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT.ID))
+            .leftJoin(departmentDataTable).on(departmentDataTable.field(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID).eq(DEPARTMENT.ID));
+//        SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> statisticTable = getDepartmentStatisticTable();
         select.where(DEPARTMENT.IS_DELETE.eq((byte) 0)).and(DEPARTMENT.LEVEL.eq((Integer) 1));
         buildOptions(select, param);
         select.orderBy(DEPARTMENT.ID.desc());
@@ -278,7 +286,7 @@ public class DepartmentDao extends ShopBaseDao {
             ,DSL.sum(DEPARTMENT_SUMMARY_TREND.INQUIRY_MONEY).as("inquiry_money"),DSL.sum(DEPARTMENT_SUMMARY_TREND.INQUIRY_NUMBER).as("inquiry_number")
             ,DSL.sum(DEPARTMENT_SUMMARY_TREND.PRESCRIPTION_MONEY).as("prescription_money"),DSL.sum(DEPARTMENT_SUMMARY_TREND.PRESCRIPTION_NUM).as("prescription_num")
         )
-            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .from(DEPARTMENT_SUMMARY_TREND)
             .where(DEPARTMENT_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY))
             .groupBy(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID);
     }
