@@ -254,7 +254,7 @@
   font-weight: 600;
 }
 .rp_expand {
-  right: 18rpx;
+  right: 24rpx;
   bottom: 16rpx;
 }
 
@@ -280,7 +280,7 @@
 .d_reply {
   background: rgba(245, 245, 245, 1);
   margin-top: 20rpx;
-  padding: 15rpx;
+  padding: 15rpx 24rpx;
   position: relative;
   border-radius: 16rpx;
 }
