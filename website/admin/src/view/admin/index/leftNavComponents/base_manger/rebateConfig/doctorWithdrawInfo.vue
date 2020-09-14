@@ -24,14 +24,14 @@
         <el-button
           type="primary"
           size="small"
-          v-if="tableData[0].status === 3"
+          v-if="tableData[0].status === 1"
           @click="changeStatus(tableData[0], 'pass')"
           >通过</el-button
         >
         <el-button
           type="primary"
           size="small"
-          v-if="tableData[0].status === 1"
+          v-if="tableData[0].status === 3"
           @click="changeStatus(tableData[0], 'chargeOff')"
           >确认出账</el-button
         >
