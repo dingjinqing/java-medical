@@ -168,6 +168,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/doctor_manger/comment/commentList'
       )
+  },
+  //   推荐策略
+  {
+    path: '/admin/home/main/doctor/recommend/strategy',
+    name: 'recommendStrategy',
+    meta: {
+      crumbTitle: 'router.recommendStrategy',
+      meta: 'doctor_manger'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/doctor_manger/recommendStrategy/recommendStrategy'
+      )
   }
 ]
 
