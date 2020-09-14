@@ -520,4 +520,20 @@ public class PrescriptionDao extends ShopBaseDao {
         db().update(PRESCRIPTION).set(PRESCRIPTION.SETTLEMENT_FLAG,settlementFlag).where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode))
         .execute();
     }
+
+    /**
+     * 医师时间段内的处方数量
+     * @param doctorCode 医师编号
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    public Integer countDateByDoctor(String doctorCode, Timestamp startTime, Timestamp endTime) {
+        return db().selectCount().from(PRESCRIPTION)
+                .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorCode))
+                .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+                .and(PRESCRIPTION.IS_VALID.eq(BaseConstant.YES))
+                .and(PRESCRIPTION.CREATE_TIME.between(startTime,endTime))
+                .fetchAnyInto(Integer.class);
+    }
 }

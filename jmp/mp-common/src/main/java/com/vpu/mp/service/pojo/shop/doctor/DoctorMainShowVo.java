@@ -1,9 +1,7 @@
 package com.vpu.mp.service.pojo.shop.doctor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -40,6 +38,10 @@ public class DoctorMainShowVo {
      * 医师科室名称
      */
     private List<String> departmentName;
+    /**
+     * 本月数据
+     */
+    private DoctorAttendanceVo doctorMonthData;
 
 
 }

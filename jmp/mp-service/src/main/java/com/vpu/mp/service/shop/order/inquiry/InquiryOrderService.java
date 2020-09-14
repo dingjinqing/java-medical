@@ -1,15 +1,21 @@
 package com.vpu.mp.service.shop.order.inquiry;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.db.sql.Order;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.*;
-import com.vpu.mp.common.pojo.shop.table.*;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
+import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
@@ -22,16 +28,10 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
-import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.maptemplate.*;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
-import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.maptemplate.ConsultationSuccessParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
@@ -39,11 +39,14 @@ import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateParam;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateVo;
-import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
@@ -59,7 +62,6 @@ import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.eval.BlankEval;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,7 +70,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -527,5 +528,16 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public PatientInquiryOrderVo getInquiryNumberByPatient(Integer patientId, Integer doctorId) {
         return inquiryOrderDao.getInquiryNumberByPatientId(patientId, doctorId);
+    }
+
+    /**
+     * 查找时间段内医师的接诊量
+     * @param doctorId
+     * @param startTime
+     * @param endTime
+     */
+    public Integer countByDateDoctor(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+        return inquiryOrderDao.countByDateDoctorId(doctorId,startTime,endTime);
+
     }
 }
