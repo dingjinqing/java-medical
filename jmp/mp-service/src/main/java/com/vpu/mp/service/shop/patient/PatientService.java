@@ -29,6 +29,7 @@ import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,8 @@ public class PatientService extends BaseShopConfigService{
     protected PrescriptionDao prescriptionDao;
     @Autowired
     private OrderGoodsService orderGoodsService;
+    @Autowired
+    private InquiryOrderService inquiryOrderService;
 
     public static final int ZERO = 0;
 
@@ -424,10 +427,23 @@ public class PatientService extends BaseShopConfigService{
     /**
      * 根据患者id查询用户购药记录
      * @param patientMedicineParam 用户查询购药记录入参
-     * @return List<GoodsDo>
+     * @return PageResult<PatientMedicineVo>
      */
     public PageResult<PatientMedicineVo> getPatientBuyMedicineRecord(PatientMedicineParam patientMedicineParam) {
         return patientDao.getPatientMedicine(patientMedicineParam);
+    }
+
+    /**
+     * 根据患者id查询关联医师信息
+     * @param patientQueryDoctorParam 用户查询关联医师入参
+     * @return PageResult<PatientQueryDoctorVo>
+     */
+    public PageResult<PatientQueryDoctorVo> getPatientQueryDoctorInfo(PatientQueryDoctorParam patientQueryDoctorParam) {
+        PageResult<PatientQueryDoctorVo> patientQueryDoctor = patientDao.getPatientQueryDoctor(patientQueryDoctorParam);
+        patientQueryDoctor.getDataList().forEach(patientQueryDoctorVo -> {
+            patientQueryDoctorVo.setInquiryNumber(inquiryOrderService.getInquiryNumberByPatient(patientQueryDoctorParam.getPatientId(), patientQueryDoctorVo.getDoctorId()));
+        });
+        return patientQueryDoctor;
     }
 
     /**

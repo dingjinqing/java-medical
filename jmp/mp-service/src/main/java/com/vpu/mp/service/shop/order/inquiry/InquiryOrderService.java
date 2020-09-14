@@ -380,7 +380,8 @@ public class InquiryOrderService extends ShopBaseService {
             //问诊退款，更改返利状态
             if(!InquiryOrderConstant.ORDER_FINISHED.equals(inquiryOrderDo.getOrderStatus())){
                 inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OPERATE_REFUND);
-
+                inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
+                inquiryOrderDao.update(inquiryOrderDo);
             }
         });
 
@@ -397,6 +398,8 @@ public class InquiryOrderService extends ShopBaseService {
             refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
             //问诊退款，更改返利状态
             inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_DOCTOR_REFUND);
+            inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
+            inquiryOrderDao.update(inquiryOrderDo);
         });
 
     }
@@ -515,5 +518,14 @@ public class InquiryOrderService extends ShopBaseService {
             endDate = DateUtil.endOfDay(endDate).toTimestamp();
             param.setEndTime(endDate);
         }
+    }
+
+    /**
+     * 查询患者关联问诊订单数量
+     * @param patientId 患者id
+     * @return Integer
+     */
+    public Integer getInquiryNumberByPatient(Integer patientId, Integer doctorId) {
+        return inquiryOrderDao.getInquiryNumberByPatientId(patientId, doctorId);
     }
 }

@@ -392,6 +392,7 @@ public class WxAppOrderController extends WxAppBaseController{
         if ("".equals(orderAddressParam.getLat()) || "".equals(orderAddressParam.getLng())) {
             return success(storeService.getStoreListOpen(orderAddressParam.getStoreGoodsBaseCheckInfoList()));
         }
+        orderAddressParam.setDeliveryType(1);
         Map<String, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
         return success(storeListOpen);
     }

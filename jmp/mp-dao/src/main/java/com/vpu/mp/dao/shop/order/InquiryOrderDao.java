@@ -269,4 +269,15 @@ public class InquiryOrderDao extends ShopBaseDao {
         return inquiryOrderTotalVo;
     }
 
+    /**
+     * 查询患者问诊数量
+     * @param patientId 患者id
+     * @return Integer
+     */
+    public Integer getInquiryNumberByPatientId(Integer patientId, Integer doctorId) {
+        return db().selectCount().from(INQUIRY_ORDER)
+            .where(INQUIRY_ORDER.PATIENT_ID.eq(patientId))
+            .and(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
+            .and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(Integer.class);
+    }
 }

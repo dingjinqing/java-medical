@@ -155,10 +155,6 @@ export default {
         }
         res.content.seriesList.forEach(item => {
           item.type = 'bar'
-          item.label = {
-            show: true,
-            position: 'insideRight'
-          }
           item.data = item.dataList
           item.tyoe = 'bar'
           item.dataList = []
@@ -254,7 +250,7 @@ export default {
         },
         series: dataList.seriesList
       }
-      this.myChart.setOption(this.option)
+      this.myChart.setOption(this.option, true)
     }
   },
   filters: {

@@ -52,7 +52,7 @@ module.exports = {
           <view class="card-item">
             <view class="card-item-title">
               <view class="status-title" wx:if="{{activeType === '1'}}">返利状态：<text>{{tool.getStatusName(item.status)}}</text></view>
-              <view class="username-title" wx:if="{{activeType === '2'}}">{{item.patientName}} <view>{{tool.getReceiveStatus(item.orderStatus)}}</view></view>
+              <view class="username-title" wx:if="{{activeType === '2'}}"><text>{{item.patientName}}</text> <view>{{tool.getReceiveStatus(item.orderStatus)}}</view></view>
               <view class="date" wx:if="{{activeType === '2'}}">{{filter.substring(item.createTime,0,10)}}</view>
             </view>
             <view class="prescription-content" wx:if="{{activeType === '1'}}">

@@ -529,6 +529,9 @@ public class MedicalGoodsService extends ShopBaseService {
         List<StoreBasicVo> storeInfos = storeDao.listStoreCodes();
 
         for (StoreBasicVo storeInfo : storeInfos) {
+            if (StringUtils.isBlank(storeInfo.getStoreCode())) {
+                continue;
+            }
             JsonResult jsonResult = fetchExternalStoreGoodsInfo(lastRequestTime, storeInfo, now, appId, shopId, ApiExternalRequestConstant.SERVICE_NAME_PULL_GOODS_INFOS);
             if (!JsonResult.success().equals(jsonResult)) {
                 logger().info("门店：" + storeInfo.getStoreCode() + " 药品同步数据失败");

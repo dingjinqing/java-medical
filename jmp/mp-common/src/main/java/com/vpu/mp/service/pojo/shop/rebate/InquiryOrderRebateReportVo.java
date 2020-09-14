@@ -24,7 +24,7 @@ public class InquiryOrderRebateReportVo {
     @ExcelColumn(columnName = "咨询订单号", columnIndex = 2)
     private String orderSn;
     @ExcelColumn(columnName = "咨询费", columnIndex = 3)
-    private BigDecimal orderAmount;
+    private BigDecimal totalMoney;
     @ExcelColumn(columnName = "下单用户昵称", columnIndex = 4)
     private String userName;
     @ExcelColumn(columnName = "返利金额", columnIndex = 5)
