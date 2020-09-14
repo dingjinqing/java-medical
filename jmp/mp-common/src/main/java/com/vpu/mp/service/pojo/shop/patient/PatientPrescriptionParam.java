@@ -1,7 +1,9 @@
 package com.vpu.mp.service.pojo.shop.patient;
 
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -12,6 +14,7 @@ import java.sql.Timestamp;
 @Data
 public class PatientPrescriptionParam {
 
+    @NotNull(message = JsonResultMessage.PATIENT_IS_NOT_EXIST)
     private Integer patientId;
 
     private String doctorName;

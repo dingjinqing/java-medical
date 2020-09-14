@@ -453,7 +453,7 @@ public class PatientService extends BaseShopConfigService{
 
     /**
      * 根据患者id查询关联处方
-     * @param patientPrescriptionParam
+     * @param patientPrescriptionParam 用户查询关联处方入参
      * @return PageResult<PatientPrescriptionVo>
      */
     public PageResult<PatientPrescriptionVo> getPatientPrescription(PatientPrescriptionParam patientPrescriptionParam) {
