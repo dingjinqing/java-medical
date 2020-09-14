@@ -162,21 +162,13 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         if(!orderInfoDo.getOrderStatus().equals(OrderConstant.ORDER_TO_AUDIT_OPEN)){
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_STATUS_ALREADY_CHANGE,null);
         }
-//        List<OrderGoodsDo> orderGoodsDoList=orderGoodsService.getByOrderId(obj.getOrderId()).into(OrderGoodsDo.class);
         List<OrderGoodsSimpleAuditVo> allGoods = orderGoodsDao.listSimpleAuditByOrderId(orderInfoDo.getOrderId());
 
         List<Integer> recIds=getUnAuditAllRecIds(allGoods);
         if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_PASS)){
             logger().info("orderId:{}开方通过",orderInfoDo.getOrderId());
-//            PrescriptionOneParam prescriptionOneParam=new PrescriptionOneParam();
-//            FieldsUtil.assign(obj,prescriptionOneParam);
-//            prescriptionOneParam.setUserId(orderInfoDo.getUserId());
-//            prescriptionOneParam.setIsUsed(BaseConstant.YES);
-//            prescriptionOneParam.setOrderSn(orderInfoDo.getOrderSn());
-//            prescriptionOneParam.setAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
             transaction(() -> {
                 //生成处方，处方明细
-//                PrescriptionParam prescription=prescriptionService.insertPrescription(prescriptionOneParam);
                 PrescriptionVo prescription=savePrescription(obj,orderInfoDo,allGoods,recIds);
                 if(prescription!=null){
                     //处方返利入库
