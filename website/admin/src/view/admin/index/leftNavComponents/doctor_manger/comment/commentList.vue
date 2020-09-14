@@ -2,7 +2,7 @@
   <div class="main">
     <div class="nav_box">
       <div class="filters">
-        <div class="filters_item ">
+        <div class="filters_item">
           <span class="fil_span">医师姓名：</span>
           <el-select
             v-model="param.doctorName"
@@ -12,10 +12,7 @@
             filterable
             clearable
           >
-            <el-option
-              label="全部"
-              value=" "
-            ></el-option>
+            <el-option label="全部" value=" "></el-option>
             <el-option
               v-for="item in doctorList"
               :key="item.id"
@@ -23,9 +20,8 @@
               :value="item.name"
             ></el-option>
           </el-select>
-
         </div>
-        <div class="filters_item ">
+        <div class="filters_item">
           <span class="fil_span">评分星级：</span>
           <el-select
             v-model="param.stars"
@@ -40,7 +36,6 @@
               :value="item.key"
             ></el-option>
           </el-select>
-
         </div>
         <div class="filters_item">
           <span>审核状态：</span>
@@ -48,7 +43,7 @@
             v-model="param.auditStatus"
             size="small"
             class="mini_select"
-            style="width: 170px;"
+            style="width: 170px"
           >
             <el-option
               v-for="item in auditFlag"
@@ -63,80 +58,67 @@
           <el-switch
             v-model="autoReview"
             active-color="#f7931e"
-            @change='changeAudit'
+            @change="changeAudit"
           ></el-switch>
-          <span style="margin-left:10px">{{autoReview ? '已开启':'已关闭'}}</span>
+          <span style="margin-left: 10px">{{
+            autoReview ? '已开启' : '已关闭'
+          }}</span>
         </div>
         <div class="btn_wrap">
-          <el-button
-            type='primary'
-            size='small'
-            @click="initData"
-          >查询</el-button>
-
+          <el-button type="primary" size="small" @click="initData"
+            >查询</el-button
+          >
         </div>
       </div>
     </div>
     <div class="table_box">
       <el-table
-        v-loading='loading'
-        :data='tableData'
-        style="width:100%"
+        v-loading="loading"
+        :data="tableData"
+        style="width: 100%"
         border
         :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none',
-            'color': '#000'
-          }"
+          'background-color': '#f5f5f5',
+          'text-align': 'center',
+          border: 'none',
+          color: '#000',
+        }"
         :cell-style="{
-            'text-align':'center'
-          }"
+          'text-align': 'center',
+        }"
       >
-        <el-table-column
-          prop='name'
-          label='医生姓名'
-        ></el-table-column>
-        <el-table-column
-          prop='userName'
-          label='用户昵称'
-        ></el-table-column>
-        <el-table-column
-          prop='orderSn'
-          label='咨询订单号'
-        ></el-table-column>
-        <el-table-column
-          label="评价内容"
-          align="center"
-          width="200px"
-        >
+        <el-table-column prop="name" label="医生姓名"></el-table-column>
+        <el-table-column prop="userName" label="用户昵称"></el-table-column>
+        <el-table-column prop="orderSn" label="咨询订单号"></el-table-column>
+        <el-table-column label="评价内容" align="center" width="200px">
           <template slot-scope="scope">
             <div class="evaluation-info">
               <div class="evaluation-info_item">
-                <span class="evaluation-info_title">评分：</span><span><i
+                <span class="evaluation-info_title">评分：</span
+                ><span
+                  ><i
                     class="el-icon-star-on"
                     v-for="index in scope.row.stars"
                     :key="index"
-                  ></i></span>
+                  ></i
+                ></span>
               </div>
               <div class="evaluation-info_item">
-                <span class="evaluation-info_title">评价：</span><span>{{
-                  scope.row.commNote || '此用户没有评价'
-                }}</span>
+                <span class="evaluation-info_title">评价：</span
+                ><span>{{ scope.row.commNote || '此用户没有评价' }}</span>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="评价回复"
-          align="center"
-          width="200px"
-        >
+        <el-table-column label="评价回复" align="center" width="200px">
           <template slot-scope="scope">
             <div class="evaluation-info">
               <div class="evaluation-info_item">
-                <span class="evaluation-info_title"></span><span style="text-align:center">{{
-                  scope.row.replylist ? '回复：' + scope.row.replylist[0].replyNote : '暂无回复'
+                <span class="evaluation-info_title"></span
+                ><span style="text-align: center">{{
+                  scope.row.replylist
+                    ? '回复：' + scope.row.replylist[0].replyNote
+                    : '暂无回复'
                 }}</span>
               </div>
               <div class="evaluation_response">
@@ -145,31 +127,29 @@
                   v-if="scope.row.replylist"
                   size="mini"
                   @click="delDoctorComment(scope.row.replylist[0].id)"
-                >删除回复</el-button>
+                  >删除回复</el-button
+                >
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label='评价时间'>
-          <template v-slot='scope'>
-            <span>{{scope.row.createTime | timeDate}}</span>
+        <el-table-column label="评价时间">
+          <template v-slot="scope">
+            <span>{{ scope.row.createTime | timeDate }}</span>
           </template>
         </el-table-column>
-        <el-table-column label='匿名评价'>
-          <template v-slot='scope'>
-            <span>{{scope.row.isAnonymou == 0 ? '否' : '是'}}</span>
+        <el-table-column label="匿名评价">
+          <template v-slot="scope">
+            <span>{{ scope.row.isAnonymou == 0 ? '否' : '是' }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label='审核状态'>
-          <template v-slot='scope'>
-            <span>{{scope.row.auditStatus | status}}</span>
+        <el-table-column label="审核状态">
+          <template v-slot="scope">
+            <span>{{ scope.row.auditStatus | status }}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="操作"
-          align="center"
-        >
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-tooltip
               content="通过"
@@ -178,7 +158,7 @@
             >
               <span
                 class="el-icon-success operateSpan"
-                @click="passComment(scope.row.id,1)"
+                @click="passComment(scope.row.id, 1)"
               ></span>
             </el-tooltip>
             <el-tooltip
@@ -188,7 +168,7 @@
             >
               <span
                 class="el-icon-error operateSpan"
-                @click="passComment(scope.row.id,0)"
+                @click="passComment(scope.row.id, 0)"
               ></span>
             </el-tooltip>
             <el-tooltip
@@ -198,7 +178,7 @@
             >
               <span
                 class="el-icon-top operateSpan"
-                @click="evaluationTop(scope.row.id,1)"
+                @click="evaluationTop(scope.row.id, 1)"
               ></span>
             </el-tooltip>
             <el-tooltip
@@ -208,13 +188,13 @@
             >
               <span
                 class="el-icon-bottom operateSpan"
-                @click="evaluationTop(scope.row.id,0)"
+                @click="evaluationTop(scope.row.id, 0)"
               ></span>
             </el-tooltip>
             <el-tooltip
               content="删除"
               placement="top"
-              v-if="scope.row.isDelete === 0 "
+              v-if="scope.row.isDelete === 0"
             >
               <span
                 class="el-icon-delete operateSpan"
@@ -224,13 +204,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="initData"
-      />
-
+      <pagination :page-params.sync="pageParams" @pagination="initData" />
     </div>
-
   </div>
 </template>
 
@@ -372,7 +347,7 @@ export default {
       })
     },
     passComment (id, status) {
-      aduitComment({ id: id, status: status}).then(res => {
+      aduitComment({ id: id, status: status }).then(res => {
         if (res.error === 0) {
           if (status === 1) {
             this.$message.success({

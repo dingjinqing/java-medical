@@ -55,16 +55,15 @@
             <td>申请金额：{{ tableData[0].withdrawCash }}</td>
           </tr>
           <tr>
-            <td>用户ID：{{ tableData[0].withdrawCash }}</td>
-            <td>注册时间：{{ tableData[0].orderSn }}</td>
-          </tr>
-          <tr>
-            <td>用户昵称：{{ tableData[0].username }}</td>
+            <td>医师ID：{{ tableData[0].doctorId }}</td>
             <td>真实姓名：{{ tableData[0].realName }}</td>
           </tr>
           <tr>
-            <td>手机号：{{ tableData[0].mobile }}</td>
+            <td>用户昵称：{{ tableData[0].username }}</td>
             <td>处理状态：{{ tableData[0].status | getWithdrawStatus }}</td>
+          </tr>
+          <tr>
+            <td>手机号：{{ tableData[0].mobile }}</td>
           </tr>
           <tr>
             <td colspan="2">
@@ -295,10 +294,16 @@ export default {
             type: 'warning'
           }).then(() => {
             changeWithdrawStatus({ checkStatus: 3, orderSn: data.orderSn }).then(res => {
-              this.$message.success({
-                message: '已通过'
-              })
-              this.detail()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已通过'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           })
           break
@@ -309,10 +314,16 @@ export default {
             type: 'warning'
           }).then(() => {
             changeWithdrawStatus({ checkStatus: 4, orderSn: data.orderSn }).then(res => {
-              this.$message.success({
-                message: '已出账'
-              })
-              this.detail()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已出账'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           })
           break
@@ -323,10 +334,16 @@ export default {
             cancelButtonText: '取消'
           }).then(({ value }) => {
             changeWithdrawStatus({ checkStatus: 2, orderSn: data.orderSn, refuseDesc: value }).then(res => {
-              this.$message.success({
-                message: '已驳回请求'
-              })
-              this.detail()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已驳回请求'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           }).catch(() => {
           })
