@@ -413,6 +413,7 @@ public class PrescriptionService extends ShopBaseService {
             PrescriptionItemParam item=new PrescriptionItemParam();
             //药品信息映射
             FieldsUtil.assignWithIgnoreField(info,item,getPrescriptionIgnoreFields());
+            item.setPrescriptionDetailCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_DETAIL_CODE_PREFIX));
             item.setUseMethod(info.getGoodsUseMethod());
             item.setPrescriptionCode(prescriptionParam.getPrescriptionCode());
             GoodsDo goods=goodsDao.getByGoodsId(info.getGoodsId());
@@ -449,31 +450,18 @@ public class PrescriptionService extends ShopBaseService {
      * @param param
      */
     public void buildPrescriptionPatientInfo(PrescriptionParam prescriptionParam,PrescriptionOneParam param){
-        if(param.getOrderId()!=null){
-            //从订单患者病例中获取
-            OrderMedicalHistoryDo orderMedicalHistoryDo=orderMedicalHistoryDao.getByOrderId(param.getOrderId());
-            prescriptionParam.setPatientName(orderMedicalHistoryDo.getPatientName());
-            prescriptionParam.setPatientSex(orderMedicalHistoryDo.getSex());
-            prescriptionParam.setPatientAge(orderMedicalHistoryDo.getAge());
-            prescriptionParam.setPatientDiseaseHistory(orderMedicalHistoryDo.getDiseaseHistory());
-            prescriptionParam.setPatientAllergyHistory(orderMedicalHistoryDo.getAllergyHistory());
-            prescriptionParam.setIdentityType(orderMedicalHistoryDo.getIdentityType());
-            prescriptionParam.setIdentityCode(orderMedicalHistoryDo.getIdentityCode());
-            prescriptionParam.setPatientTreatmentCode(orderMedicalHistoryDo.getPatientTreatmentCode());
-        }else {
-            //从患者信息中获取
-            UserPatientParam userPatientParam = new UserPatientParam();
-            userPatientParam.setPatientId(param.getPatientId());
-            userPatientParam.setUserId(param.getUserId());
-            UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
-            prescriptionParam.setPatientName(patient.getName());
-            prescriptionParam.setPatientSex(patient.getSex());
-            prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
-            prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistoryStr());
-            prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
-            prescriptionParam.setIdentityCode(patient.getIdentityCode());
-            prescriptionParam.setPatientTreatmentCode(patient.getTreatmentCode());
-        }
+        //从患者信息中获取
+        UserPatientParam userPatientParam = new UserPatientParam();
+        userPatientParam.setPatientId(param.getPatientId());
+        userPatientParam.setUserId(param.getUserId());
+        UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
+        prescriptionParam.setPatientName(patient.getName());
+        prescriptionParam.setPatientSex(patient.getSex());
+        prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
+        prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistoryStr());
+        prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
+        prescriptionParam.setIdentityCode(patient.getIdentityCode());
+        prescriptionParam.setPatientTreatmentCode(patient.getTreatmentCode());
 
     }
     /**

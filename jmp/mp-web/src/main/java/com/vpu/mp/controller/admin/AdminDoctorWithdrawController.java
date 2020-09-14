@@ -51,7 +51,7 @@ public class AdminDoctorWithdrawController extends AdminBaseController{
             param.setClientIp(RequestUtil.getIp(request));
             shop().doctorWithdrawService.audit(param);
         } catch (MpException e) {
-            return fail(e.getErrorCode());
+            return fail(e.getErrorCode(),e.getCodeParam());
         }
         return success();
     }

@@ -219,7 +219,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             }
             List<PrescriptionItemDo> itemList=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);
             itemList.forEach(item -> {
-                OrderGoodsDo orderGoodsDo=orderGoodsDao.getByPreCodeGoodsIdPrdId(preCode,item.getGoodsId(),item.getPrdId());
+                OrderGoodsDo orderGoodsDo=orderGoodsDao.getByPrescriptionDetailCode(item.getPrescriptionDetailCode());
                 //实际返利数量
                 int rebateNumber = orderGoodsDo.getGoodsNumber() - orderGoodsDo.getReturnNumber();
                 //实际返利金额
