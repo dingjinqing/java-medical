@@ -272,20 +272,20 @@ export default {
             if (item.status === 1) {
               item.status = '待审核'
             } else if (item.status === 2) {
-              item.status = '拒绝'
+              item.status = '已驳回'
             } else if (item.status === 3) {
-              item.status = '已审核待出账'
+              item.status = '待出账'
             } else if (item.status === 4) {
-              item.status = '出账成功'
-            } else {
-              item.status = '失败'
+              item.status = '已出账'
+            } else if (item.status === 5) {
+              item.status = '出账失败'
             }
           })
         }
         console.log(this.otherRecord)
       })
     },
-    changeStatus ({ row: data }, actions) {
+    changeStatus (data, actions) {
       switch (actions) {
         case 'pass':
           this.$confirm('确认通过提现审核吗？', '提示', {
@@ -370,11 +370,11 @@ export default {
   filters: {
     getWithdrawStatus (status) {
       let statusName = {
-        'default': '失败',
+        'default': '出账失败',
         1: '待审核',
-        2: '拒绝',
-        3: '已审核待出账',
-        4: '出账成功'
+        2: '已驳回',
+        3: '待出账',
+        4: '已出账'
       }
       return statusName[status] || statusName['default']
     }

@@ -24,9 +24,13 @@ var getGestation = function (type){
   }
   return getGestationData[''+type]
 }
+var getFixed = function(num) {
+  return num.toFixed(2)
+}
 module.exports = {
   includes: includes,
   substring: substring,
   getSex:getSex,
-  getGestation:getGestation
+  getGestation:getGestation,
+  getFixed:getFixed
 }
