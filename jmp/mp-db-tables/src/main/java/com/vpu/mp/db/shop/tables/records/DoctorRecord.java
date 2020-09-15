@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = -1985810343;
+    private static final long serialVersionUID = 64162617;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.id</code>.
@@ -451,6 +451,20 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
         return (BigDecimal) get(29);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_doctor.is_fetch</code>. 是否拉取过
+     */
+    public void setIsFetch(Byte value) {
+        set(30, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_doctor.is_fetch</code>. 是否拉取过
+     */
+    public Byte getIsFetch() {
+        return (Byte) get(30);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -477,7 +491,7 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
     /**
      * Create a detached, initialised DoctorRecord
      */
-    public DoctorRecord(Integer id, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation, Integer avgAnswerTime, Integer consultationNumber, BigDecimal avgCommentStar, Integer attentionNumber, String userToken, BigDecimal consultationTotalMoney) {
+    public DoctorRecord(Integer id, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation, Integer avgAnswerTime, Integer consultationNumber, BigDecimal avgCommentStar, Integer attentionNumber, String userToken, BigDecimal consultationTotalMoney, Byte isFetch) {
         super(Doctor.DOCTOR);
 
         set(0, id);
@@ -510,5 +524,6 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
         set(27, attentionNumber);
         set(28, userToken);
         set(29, consultationTotalMoney);
+        set(30, isFetch);
     }
 }

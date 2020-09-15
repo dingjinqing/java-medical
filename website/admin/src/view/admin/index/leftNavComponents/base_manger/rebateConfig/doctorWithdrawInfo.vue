@@ -55,16 +55,15 @@
             <td>申请金额：{{ tableData[0].withdrawCash }}</td>
           </tr>
           <tr>
-            <td>用户ID：{{ tableData[0].withdrawCash }}</td>
-            <td>注册时间：{{ tableData[0].orderSn }}</td>
-          </tr>
-          <tr>
-            <td>用户昵称：{{ tableData[0].username }}</td>
+            <td>医师ID：{{ tableData[0].doctorId }}</td>
             <td>真实姓名：{{ tableData[0].realName }}</td>
           </tr>
           <tr>
-            <td>手机号：{{ tableData[0].mobile }}</td>
+            <td>用户昵称：{{ tableData[0].username }}</td>
             <td>处理状态：{{ tableData[0].status | getWithdrawStatus }}</td>
+          </tr>
+          <tr>
+            <td>手机号：{{ tableData[0].mobile }}</td>
           </tr>
           <tr>
             <td colspan="2">
@@ -273,20 +272,20 @@ export default {
             if (item.status === 1) {
               item.status = '待审核'
             } else if (item.status === 2) {
-              item.status = '拒绝'
+              item.status = '已驳回'
             } else if (item.status === 3) {
-              item.status = '已审核待出账'
+              item.status = '待出账'
             } else if (item.status === 4) {
-              item.status = '出账成功'
-            } else {
-              item.status = '失败'
+              item.status = '已出账'
+            } else if (item.status === 5) {
+              item.status = '出账失败'
             }
           })
         }
         console.log(this.otherRecord)
       })
     },
-    changeStatus ({ row: data }, actions) {
+    changeStatus (data, actions) {
       switch (actions) {
         case 'pass':
           this.$confirm('确认通过提现审核吗？', '提示', {
@@ -295,10 +294,16 @@ export default {
             type: 'warning'
           }).then(() => {
             changeWithdrawStatus({ checkStatus: 3, orderSn: data.orderSn }).then(res => {
-              this.$message.success({
-                message: '已通过'
-              })
-              this.detail()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已通过'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           })
           break
@@ -309,10 +314,16 @@ export default {
             type: 'warning'
           }).then(() => {
             changeWithdrawStatus({ checkStatus: 4, orderSn: data.orderSn }).then(res => {
-              this.$message.success({
-                message: '已出账'
-              })
-              this.detail()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已出账'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           })
           break
@@ -323,10 +334,16 @@ export default {
             cancelButtonText: '取消'
           }).then(({ value }) => {
             changeWithdrawStatus({ checkStatus: 2, orderSn: data.orderSn, refuseDesc: value }).then(res => {
-              this.$message.success({
-                message: '已驳回请求'
-              })
-              this.detail()
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '已驳回请求'
+                })
+                this.detail()
+              } else {
+                this.$message.error({
+                  message: res.message
+                })
+              }
             })
           }).catch(() => {
           })
@@ -353,11 +370,11 @@ export default {
   filters: {
     getWithdrawStatus (status) {
       let statusName = {
-        'default': '失败',
+        'default': '出账失败',
         1: '待审核',
-        2: '拒绝',
-        3: '已审核待出账',
-        4: '出账成功'
+        2: '已驳回',
+        3: '待出账',
+        4: '已出账'
       }
       return statusName[status] || statusName['default']
     }

@@ -415,4 +415,16 @@ public class DoctorDao extends ShopBaseDao {
             .where(DOCTOR.ID.eq(param.getDoctorId()))
             .execute();
     }
+
+    public void countDateByDoctor(Integer doctorCode) {
+    }
+
+    /**
+     * 更改是否接诊状态
+     * @param doctorId
+     * @param canConsultation
+     */
+    public void updateCanConsultation(Integer doctorId,Byte canConsultation){
+        db().update(DOCTOR).set(DOCTOR.CAN_CONSULTATION,canConsultation).where(DOCTOR.ID.eq(doctorId)).execute();
+    }
 }

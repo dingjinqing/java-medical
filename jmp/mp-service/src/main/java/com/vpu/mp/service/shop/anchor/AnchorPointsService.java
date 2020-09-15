@@ -17,6 +17,7 @@ import org.elasticsearch.common.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -179,4 +180,12 @@ public class AnchorPointsService extends ShopBaseService {
     }
 
 
+    public String getDoctorAttendanceRate(AnchorPointsListParam param) {
+        Map<Date, List<AnchorPointsReportVo>> doctorAttendanceMap= anchorPointsDao.getDoctorAttendance(param);
+        long  dueAttendanceDay = DateUtil.betweenDay(param.getStartTime(), param.getEndTime(),true)+1;
+        int attendanceDay = doctorAttendanceMap.keySet().size();
+        String attendanceRate = BigDecimal.valueOf(attendanceDay).divide(BigDecimal.valueOf(dueAttendanceDay))
+                .multiply(BigDecimal.valueOf(100)).setScale(3, BigDecimal.ROUND_HALF_UP).toString();
+        return attendanceRate;
+    }
 }

@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.IM_SESSION;
 import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
 import static org.jooq.impl.DSL.avg;
 import static org.jooq.impl.DSL.count;
@@ -286,5 +287,22 @@ public class InquiryOrderDao extends ShopBaseDao {
             .and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
             .groupBy(INQUIRY_ORDER.PATIENT_ID)
             .fetchAnyInto(PatientInquiryOrderVo.class);
+    }
+
+    /**
+     * 医师时间段内接诊数量
+     * @param doctorId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public Integer countByDateDoctorId(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+       return db().selectCount().from(INQUIRY_ORDER)
+                .innerJoin(IM_SESSION).on(IM_SESSION.ORDER_SN.eq(INQUIRY_ORDER.ORDER_SN))
+                .where(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
+                .and(IM_SESSION.RECEIVE_START_TIME.between(startTime,endTime))
+                .and(INQUIRY_ORDER.ORDER_STATUS.in(InquiryOrderConstant.REFUND_FAILED,InquiryOrderConstant.ORDER_FINISHED,InquiryOrderConstant.ORDER_REFUND,
+                        InquiryOrderConstant.ORDER_TO_REFUND,InquiryOrderConstant.ORDER_PART_REFUND))
+                .fetchAnyInto(Integer.class);
     }
 }

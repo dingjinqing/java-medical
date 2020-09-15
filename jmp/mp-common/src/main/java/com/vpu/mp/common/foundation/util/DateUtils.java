@@ -571,4 +571,21 @@ public final class DateUtils {
         return age;
 
     }
+
+    /**
+     *得到之前的某一天(字符串类型)
+     *@param days N天前
+     *@return preDay(String)
+     */
+    public static String getDate(Integer days) {
+        //格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //获取当前时间
+        Calendar c = Calendar.getInstance();
+        //计算指定日期
+        c.add(Calendar.DATE, - days);
+        Date time = c.getTime();
+        //返回格式化后的String日期
+        return sdf.format(time);
+    }
 }

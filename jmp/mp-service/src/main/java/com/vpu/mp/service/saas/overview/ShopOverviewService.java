@@ -15,6 +15,8 @@ import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersParam;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersVo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.saas.shop.ShopChildAccountService;
 import com.vpu.mp.service.saas.shop.ShopOfficialAccount;
@@ -22,6 +24,7 @@ import com.vpu.mp.service.saas.shop.StoreAccountService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +32,12 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.common.foundation.util.DateUtils.getDate;
 import static com.vpu.mp.db.main.tables.Article.ARTICLE;
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
@@ -62,6 +68,9 @@ public class ShopOverviewService extends MainBaseService {
 
     @Autowired
     public StoreAccountService storeAccountService;
+
+    /** 日期标识符 */
+    private static final Integer CUSTOM_DAYS = 0;
 
     /**
      * 绑定解绑
@@ -365,4 +374,19 @@ public class ShopOverviewService extends MainBaseService {
         bindofficialVo.setNickName(nickname);
         return bindofficialVo;
     }
+
+    /**
+     * 查询门店热销商品
+     * @param storeBestSellersParam 门店热销商品查询入参
+     * @return PageResult<StoreBestSellersVo>
+     */
+    public PageResult<StoreBestSellersVo> getBestSellers(StoreBestSellersParam storeBestSellersParam) {
+        //得到时间
+        if (!storeBestSellersParam.getType().equals(CUSTOM_DAYS)) {
+            storeBestSellersParam.setStartDate(getDate(storeBestSellersParam.getType()));
+            storeBestSellersParam.setEndDate(getDate(NumberUtils.INTEGER_ZERO));
+        }
+        return storeAccountService.storeDao.getBestSellers(storeBestSellersParam);
+    }
+
 }
