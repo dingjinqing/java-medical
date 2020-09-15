@@ -427,4 +427,13 @@ public class DoctorDao extends ShopBaseDao {
     public void updateCanConsultation(Integer doctorId,Byte canConsultation){
         db().update(DOCTOR).set(DOCTOR.CAN_CONSULTATION,canConsultation).where(DOCTOR.ID.eq(doctorId)).execute();
     }
+
+    /**
+     * 更新医师签名
+     * @param doctorId
+     * @param signature
+     */
+    public void updateSignature(Integer doctorId,String signature){
+        db().update(DOCTOR).set(DOCTOR.SIGNATURE,signature).where(DOCTOR.ID.eq(doctorId)).execute();
+    }
 }
