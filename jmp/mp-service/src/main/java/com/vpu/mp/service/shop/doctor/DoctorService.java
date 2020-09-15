@@ -318,6 +318,8 @@ public class DoctorService extends ShopBaseService {
                 doctorDao.updateUserId(doctorDo);
                 //更新是否接诊
                 doctorDao.updateCanConsultation(doctorDo.getId(),DoctorConstant.CAN_CONSULTATION);
+                //更新医师签名
+                doctorDao.updateSignature(doctorDo.getId(),doctorAuthParam.getSignature());
             });
             return doctorDo.getId();
         } else {

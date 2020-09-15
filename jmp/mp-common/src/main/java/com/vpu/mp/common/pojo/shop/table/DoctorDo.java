@@ -60,4 +60,5 @@ public class DoctorDo   {
     private String     userToken;
     private BigDecimal consultationTotalMoney;
     private Byte       isFetch;
+    private String     signature;
 }
