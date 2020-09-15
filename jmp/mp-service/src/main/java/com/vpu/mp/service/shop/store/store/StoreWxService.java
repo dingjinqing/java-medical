@@ -1,19 +1,29 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.config.SmsApiConfig;
+import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
@@ -37,6 +47,7 @@ import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,6 +200,12 @@ public class StoreWxService extends ShopBaseService {
 
     @Autowired
     public BaseScoreCfgService baseScoreCfgService;
+    @Autowired
+    private StoreAccountDao storeAccountDao;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private JedisManager jedisManager;
 
     /**
      * The constant BYTE_TWO.
@@ -309,8 +326,9 @@ public class StoreWxService extends ShopBaseService {
      * @return the store by custom condition
      */
     public List<StorePojo> getStoreByCustomCondition(Map<String, ?> condition, List<TableField<StoreRecord, ?>> fields) {
-        if (condition.get("scan_stores") != null) {
-            Byte scanStore = (Byte) condition.get("scan_stores");
+        String scanStores="scan_stores";
+        if (condition.get(scanStores) != null) {
+            Byte scanStore = (Byte) condition.get(scanStores);
             SelectConditionStep<StoreRecord> conditionStep = db()
                 .selectFrom(STORE).where(DEL_CONDITION);
             if (!BYTE_ZERO.equals(scanStore)) {
@@ -504,6 +522,38 @@ public class StoreWxService extends ShopBaseService {
             }
         });
         return webPayVo.get();
+    }
+
+    /**
+     * 店员认证
+     * @param param
+     * @return
+     */
+    public Integer salesclerkAuth(StoreSalesclerkAuthParam param)throws MpException {
+        if(!checkMobileCode(param)){
+            throw new MpException(JsonResultCode.SALESCLERK_AUTH_INFO_SMS_ERROR);
+        }
+        StoreAccountVo storeAccountVo=storeAccountDao.storeAccountAuth(param);
+        if(storeAccountVo==null||!Util.md5(param.getPassword()).equals(storeAccountVo.getAccountPasswd())){
+            throw new MpException(JsonResultCode.SALESCLERK_AUTH_INFO_ERROR);
+        }
+        transaction(()->{
+            userDao.updateUserType(param.getUserId(), AuthConstant.AUTH_TYPE_SALESCLERK_USER);
+            storeAccountDao.updateUserId(storeAccountVo.getAccountId(),param.getUserId());
+        });
+        return storeAccountVo.getAccountId();
+    }
+    /**
+     * 短信验证码校验
+     * @return
+     */
+    private boolean checkMobileCode(StoreSalesclerkAuthParam param) {
+        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_SALESCLERK_MOBILE, getShopId(), param.getUserId(), param.getMobile());
+        String s = jedisManager.get(key);
+        if (!Strings.isBlank(s) && !Strings.isBlank(param.getMobileCheckCode())) {
+            return s.equals(param.getMobileCheckCode());
+        }
+        return false;
     }
 
 }

@@ -1,7 +1,6 @@
 package com.vpu.mp.dao.shop;
 
 import com.vpu.mp.common.foundation.data.DistributionConstant;
-import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.patient.PatientQueryDoctorVo;
@@ -65,6 +64,16 @@ public class UserDao extends ShopBaseDao {
      */
     public void unbundlingUserType(Integer userId) {
         db().update(USER).set(USER.USER_TYPE, (byte)0)
+            .where(USER.USER_ID.eq(userId)).execute();
+    }
+
+    /**
+     * 更新用户类型
+     * @param userId
+     * @param userType
+     */
+    public void updateUserType(Integer userId,Byte userType) {
+        db().update(USER).set(USER.USER_TYPE, userType)
             .where(USER.USER_ID.eq(userId)).execute();
     }
 

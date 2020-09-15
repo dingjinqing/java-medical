@@ -48,6 +48,9 @@ public class GoodsEntity {
     private Byte delFlag;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private String storeCode;
+    private Byte hisStatus;
+    private Byte storeStatus;
 
     /**
      * 药品信息

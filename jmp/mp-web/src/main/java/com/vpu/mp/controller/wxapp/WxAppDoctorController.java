@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceVo;
@@ -12,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
+import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.message.UserMessageService;
@@ -75,7 +77,7 @@ public class WxAppDoctorController extends WxAppBaseController {
             if (!jsonResultCode.equals(CODE_SUCCESS)){
                 return fail(jsonResultCode);
             }
-            smsService.sendCheckSms(param);
+            smsService.sendCheckSms(param, SmsTemplate.DOCTOR_CHECK_MOBILE, SmsApiConfig.REDIS_KEY_SMS_CHECK_DOCTOR_MOBILE);
         } catch (MpException e) {
             return fail();
         }
