@@ -1129,7 +1129,7 @@ export default {
           if (res.error === 0) {
             this.search()
           } else {
-            this.$message.error('提示', res.message)
+            this.$message.error(res.message)
           }
         })
       })
