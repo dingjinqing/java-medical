@@ -50,6 +50,10 @@ public class ImSessionConstant {
     /**会话终止权重*/
     public static final Byte SESSION_DEAD_WEIGHT = 1;
 
+    /**会话接诊后退款*/
+    public static final Byte SESSION_REFUND = 7;
+    public static final Byte SESSION_REFUND_WEIGHT = 2;
+
     /**
      * 会话取消等待时间 24小时
      */
