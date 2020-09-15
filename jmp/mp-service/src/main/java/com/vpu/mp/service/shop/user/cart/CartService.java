@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.user.cart;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
-import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
@@ -35,17 +34,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.Cart.CART;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
 
 
@@ -79,6 +78,8 @@ public class CartService extends ShopBaseService {
      */
     @Autowired
     private UserCardService userCardService;
+    @Autowired
+    private UserCartService userCartService;
     @Autowired
     private LiveGoodsService liveGoodsService;
 
@@ -558,6 +559,8 @@ public class CartService extends ShopBaseService {
         		liveGoodsService.incrementAddCartNum(param.getRoomId(), record.getGoodsId());
         	}
         }
+        GoodsRecord goodsProduct = goodsService.getGoodsByProductId(param.getPrdId()).into(GoodsRecord.class);;
+        userCartService.addRecord(goodsProduct.getGoodsId(),param.getPrdId(),param.getUserId(),param.getGoodsNumber());
         return resultMessage;
     }
 
