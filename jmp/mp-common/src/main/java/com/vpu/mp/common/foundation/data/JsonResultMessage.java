@@ -875,6 +875,8 @@ public class JsonResultMessage {
      * 订单状态
      */
     public static final String CODE_ORDER_STATUS_ALREADY_CHANGE = "order.status.is.already.change";
+    public static final String ORDER_CHECK_VERIFY_CODE_FAILD = "order.check.verify.code.faild";
+
 
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
