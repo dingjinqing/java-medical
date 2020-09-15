@@ -4,7 +4,9 @@
       <div class="search_box">
         <div class="filters">
           <div class="filters_item">
-            <span @click="handleShowPrescriptionCheck">{{$t('order.goodsName')}}：</span>
+            <span @click="handleShowPrescriptionCheck"
+              >{{ $t('order.goodsName') }}：</span
+            >
             <el-input
               v-model="searchParams.goodsName"
               :placeholder="$t('order.goodsName')"
@@ -13,7 +15,7 @@
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.orderSn')}}：</span>
+            <span>{{ $t('order.orderSn') }}：</span>
             <el-input
               v-model="searchParams.orderSn"
               :placeholder="$t('order.orderSn')"
@@ -22,7 +24,7 @@
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.shippingNo')}}：</span>
+            <span>{{ $t('order.shippingNo') }}：</span>
             <el-input
               v-model="searchParams.shippingNo"
               :placeholder="$t('order.shippingNo')"
@@ -31,7 +33,7 @@
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.orderStatusText')}}：</span>
+            <span>{{ $t('order.orderStatusText') }}：</span>
             <el-select
               v-model="filterOrderStatus"
               :placeholder="$t('order.defaultSelect')"
@@ -48,7 +50,7 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.goodsTypeText')}}：</span>
+            <span>{{ $t('order.goodsTypeText') }}：</span>
             <el-select
               v-model="searchParams.goodsType"
               :placeholder="$t('order.defaultSelect')"
@@ -65,7 +67,7 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.consigneeName')}}：</span>
+            <span>{{ $t('order.consigneeName') }}：</span>
             <el-input
               v-model="searchParams.consignee"
               :placeholder="$t('order.consigneeName')"
@@ -74,7 +76,7 @@
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.mobile')}}：</span>
+            <span>{{ $t('order.mobile') }}：</span>
             <el-input
               v-model="searchParams.mobile"
               :placeholder="$t('order.mobile')"
@@ -83,7 +85,7 @@
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.deliverTypeText')}}：</span>
+            <span>{{ $t('order.deliverTypeText') }}：</span>
             <el-select
               v-model="searchParams.deliverType"
               :placeholder="$t('order.defaultSelect')"
@@ -100,7 +102,7 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.userName')}}：</span>
+            <span>{{ $t('order.userName') }}：</span>
             <el-input
               v-model="searchParams.userName"
               :placeholder="$t('order.userName')"
@@ -109,7 +111,7 @@
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>{{$t('order.userSource')}}：</span>
+            <span>{{ $t('order.userSource') }}：</span>
             <el-select
               v-model="searchParams.source"
               :placeholder="$t('order.defaultSelect')"
@@ -125,11 +127,8 @@
               ></el-option>
             </el-select>
           </div>
-          <div
-            class="filters_item"
-            v-show="moreFilters"
-          >
-            <span>{{$t('order.verifyCode')}}：</span>
+          <div class="filters_item" v-show="moreFilters">
+            <span>{{ $t('order.verifyCode') }}：</span>
             <el-input
               v-model="searchParams.verifyCode"
               :placeholder="$t('order.verifyCode')"
@@ -137,11 +136,8 @@
               class="default_input"
             ></el-input>
           </div>
-          <div
-            class="filters_item"
-            v-show="moreFilters"
-          >
-            <span>{{$t('order.store')}}：</span>
+          <div class="filters_item" v-show="moreFilters">
+            <span>{{ $t('order.store') }}：</span>
             <el-select
               v-model="searchParams.storeId"
               :placeholder="$t('order.defaultSelect')"
@@ -157,11 +153,8 @@
               ></el-option>
             </el-select>
           </div>
-          <div
-            class="filters_item"
-            v-show="moreFilters"
-          >
-            <span>{{$t('order.paymentType')}}：</span>
+          <div class="filters_item" v-show="moreFilters">
+            <span>{{ $t('order.paymentType') }}：</span>
             <el-select
               v-model="searchParams.payWay"
               :placeholder="$t('order.defaultSelect')"
@@ -177,11 +170,8 @@
               ></el-option>
             </el-select>
           </div>
-          <div
-            class="filters_item"
-            v-show="moreFilters"
-          >
-            <span>{{$t('order.tag')}}：</span>
+          <div class="filters_item" v-show="moreFilters">
+            <span>{{ $t('order.tag') }}：</span>
             <el-select
               v-model="searchParams.tagIds"
               multiple
@@ -191,7 +181,7 @@
               :placeholder="$t('order.tagDescribe')"
               :multiple-limit="3"
               size="small"
-              style="width:auto"
+              style="width: auto"
             >
               <el-option
                 v-for="item in tagList"
@@ -202,22 +192,16 @@
               </el-option>
             </el-select>
           </div>
-          <div
-            class="filters_item"
-            v-show="moreFilters"
-          >
-            <span>{{$t('order.shippingAddress')}}：</span>
+          <div class="filters_item" v-show="moreFilters">
+            <span>{{ $t('order.shippingAddress') }}：</span>
             <areaLinkage
               :areaCode="areaLinkage"
               @areaData="handleAreaData"
-              style="width:365px;"
+              style="width: 365px"
             />
           </div>
-          <div
-            class="filters_item"
-            v-show="moreFilters"
-          >
-            <span>{{$t('order.specCode')}}：</span>
+          <div class="filters_item" v-show="moreFilters">
+            <span>{{ $t('order.specCode') }}：</span>
             <el-input
               v-model="searchParams.specCode"
               :placeholder="$t('order.specCode')"
@@ -225,11 +209,8 @@
               class="default_input"
             ></el-input>
           </div>
-          <div
-            class="filters_item"
-            v-show="moreFilters"
-          >
-            <span>{{$t('order.orderTime')}}：</span>
+          <div class="filters_item" v-show="moreFilters">
+            <span>{{ $t('order.orderTime') }}：</span>
             <!-- <el-date-picker
               v-model="orderTime"
               :range-separator="$t('membershipIntroduction.to')"
@@ -244,7 +225,7 @@
               :placeholder="$t('membershipIntroduction.Starttime')"
               value-format="yyyy-MM-dd HH:mm:ss"
               class="middle_input"
-              @change="datePickerChange(true,orderTime)"
+              @change="datePickerChange(true, orderTime)"
               size="small"
             />
             至
@@ -254,17 +235,14 @@
               :placeholder="$t('membershipIntroduction.Endtime')"
               value-format="yyyy-MM-dd HH:mm:ss"
               class="middle_input"
-              @change="datePickerChange(false,orderTime)"
+              @change="datePickerChange(false, orderTime)"
               :picker-options="orderEndTime"
               default-time="23:59:59"
               size="small"
             />
           </div>
-          <div
-            class="filters_item"
-            v-show="moreFilters"
-          >
-            <span>{{$t('order.completeTime')}}：</span>
+          <div class="filters_item" v-show="moreFilters">
+            <span>{{ $t('order.completeTime') }}：</span>
             <!-- <el-date-picker
               v-model="completeTime"
               type="daterange"
@@ -281,7 +259,7 @@
               type="datetime"
               :placeholder="$t('membershipIntroduction.Starttime')"
               value-format="yyyy-MM-dd HH:mm:ss"
-              @change="datePickerChange(true,completeTime)"
+              @change="datePickerChange(true, completeTime)"
               class="middle_input"
               size="small"
             />
@@ -291,7 +269,7 @@
               type="datetime"
               :placeholder="$t('membershipIntroduction.Endtime')"
               value-format="yyyy-MM-dd HH:mm:ss"
-              @change="datePickerChange(false,completeTime)"
+              @change="datePickerChange(false, completeTime)"
               :picker-options="completeEndTime"
               class="middle_input"
               default-time="23:59:59"
@@ -302,26 +280,24 @@
       </div>
 
       <div class="search_button_box">
-        <span @click="moreFilters = !moreFilters">{{moreFilters ? $t('order.collapse') : $t('order.more')}}</span>
+        <span @click="moreFilters = !moreFilters">{{
+          moreFilters ? $t('order.collapse') : $t('order.more')
+        }}</span>
         <div class="button_box">
-          <el-button
-            type="primary"
-            size="small"
-            @click="search"
-          >{{$t('order.filter')}}</el-button>
+          <el-button type="primary" size="small" @click="search">{{
+            $t('order.filter')
+          }}</el-button>
           <el-button
             type="default"
             size="small"
             @click="showExportColumnSelect = true"
-          >{{$t('order.export')}}</el-button>
+            >{{ $t('order.export') }}</el-button
+          >
         </div>
       </div>
       <div class="table_box">
         <div class="tab-content">
-          <el-tabs
-            v-model="searchParams.orderStatus2"
-            @tab-click="handleClick"
-          >
+          <el-tabs v-model="searchParams.orderStatus2" @tab-click="handleClick">
             <template v-for="item in tabsOrderStatus">
               <el-tab-pane
                 :label="item.label"
@@ -330,7 +306,11 @@
                 v-if="item.value === '3'"
               >
                 <span slot="label">
-                  <span>待发货<span class="wait_num">{{count['1']}}</span></span>/<span>待核销<span class="wait_num">{{count['2']}}</span></span>
+                  <span
+                    >待发货<span class="wait_num">{{ count['1'] }}</span></span
+                  >/<span
+                    >待核销<span class="wait_num">{{ count['2'] }}</span></span
+                  >
                 </span>
               </el-tab-pane>
               <el-tab-pane
@@ -344,7 +324,10 @@
           </el-tabs>
           <div
             class="return-sort-module"
-            v-show="searchParams.orderStatus2 === '7' || searchParams.orderStatus2 === '8'"
+            v-show="
+              searchParams.orderStatus2 === '7' ||
+              searchParams.orderStatus2 === '8'
+            "
           >
             <el-select
               v-model="sortRule"
@@ -365,15 +348,15 @@
         <table>
           <thead>
             <tr>
-              <th width="300px">{{$t('order.goods')}}</th>
-              <th width="10%">{{$t('order.goodsSnAndProductSn')}}</th>
-              <th width="10%">{{$t('order.goodsPrice')}}</th>
-              <th width="10%">{{$t('order.goodsNumber')}}</th>
+              <th width="300px">{{ $t('order.goods') }}</th>
+              <th width="10%">{{ $t('order.goodsSnAndProductSn') }}</th>
+              <th width="10%">{{ $t('order.goodsPrice') }}</th>
+              <th width="10%">{{ $t('order.goodsNumber') }}</th>
               <th width="10%">下单人</th>
-              <th width="10%">{{$t('order.consignee')}}</th>
-              <th>{{$t('order.orderTime')}}</th>
-              <th width="10%">{{$t('order.orderStatusText')}}</th>
-              <th width="10%">{{$t('order.moneyPaid')}}</th>
+              <th width="10%">{{ $t('order.consignee') }}</th>
+              <th>{{ $t('order.orderTime') }}</th>
+              <th width="10%">{{ $t('order.orderStatusText') }}</th>
+              <th width="10%">{{ $t('order.moneyPaid') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -381,7 +364,7 @@
               <td colspan="8"></td>
             </tr>
           </tbody>
-          <template v-for="(orderItem,orderIndex) in orderList">
+          <template v-for="(orderItem, orderIndex) in orderList">
             <!-- $set(orderItem,'goodsTypeArray',orderItem.goodsType.split(',')) 为该对象设置新属性 -->
             <tbody
               :key="orderItem.orderSn"
@@ -395,16 +378,28 @@
                       <el-tooltip
                         class="item"
                         effect="light"
-                        :content="$t('order.orderSn')+'：'+orderItem.orderSn"
+                        :content="
+                          $t('order.orderSn') + '：' + orderItem.orderSn
+                        "
                         placement="top-start"
                       >
-                        <span>{{(orderItem.mainOrderSn == '' ? $t('order.orderSn') : orderItem.mainOrderSn == orderItem.orderSn ? $t('order.mainOrderSn') : $t('order.childOrderSn')) + '：'+orderItem.orderSn}}
+                        <span
+                          >{{
+                            (orderItem.mainOrderSn == ''
+                              ? $t('order.orderSn')
+                              : orderItem.mainOrderSn == orderItem.orderSn
+                              ? $t('order.mainOrderSn')
+                              : $t('order.childOrderSn')) +
+                            '：' +
+                            orderItem.orderSn
+                          }}
                         </span>
                       </el-tooltip>
-                      <span class="paymentType">{{$t('order.paymentType')}}：
+                      <span class="paymentType"
+                        >{{ $t('order.paymentType') }}：
 
                         <el-tooltip
-                          v-for="(payCode,index) in orderItem.payCodeList"
+                          v-for="(payCode, index) in orderItem.payCodeList"
                           :key="index"
                           class="item"
                           effect="light"
@@ -414,16 +409,24 @@
                           <img
                             :src="payCodeIconClassMap[payCode]"
                             :alt="paymentTypeMap[payCode]"
-                          >
+                          />
                         </el-tooltip>
                       </span>
                       <el-tooltip
                         class="item"
                         effect="light"
-                        :content="$t('order.deliverTypeText')+'：'+deliverTypeMap.get(orderItem.deliverType)"
+                        :content="
+                          $t('order.deliverTypeText') +
+                          '：' +
+                          deliverTypeMap.get(orderItem.deliverType)
+                        "
                         placement="top-start"
                       >
-                        <span>{{$t('order.deliverTypeText')}}：{{deliverTypeMap.get(orderItem.deliverType)}}</span>
+                        <span
+                          >{{ $t('order.deliverTypeText') }}：{{
+                            deliverTypeMap.get(orderItem.deliverType)
+                          }}</span
+                        >
                       </el-tooltip>
                       <el-tooltip
                         class="item"
@@ -431,31 +434,46 @@
                         :content="goodsTypeFilter(orderItem.goodsTypeArray)"
                         placement="top-start"
                       >
-                        <span>{{$t('order.goodsTypeText')}}：
+                        <span
+                          >{{ $t('order.goodsTypeText') }}：
                           <span
-                            v-for="(goodsType,index) in orderItem.goodsTypeArray"
+                            v-for="(goodsType,
+                            index) in orderItem.goodsTypeArray"
                             :key="index"
                           >
                             <template v-if="index != 0">,</template>
-                            {{goodsTypeMap.get(Number(goodsType))}}
+                            {{ goodsTypeMap.get(Number(goodsType)) }}
                           </span>
                         </span>
                       </el-tooltip>
                     </div>
                     <div class="right">
-                      <span class="icon_collect"><i
-                          :class="{'el-icon-star-off':!orderItem.starFlag,'el-icon-star-on':orderItem.starFlag}"
-                          @click="toggleStar(orderItem.orderSn,orderItem.starFlag)"
-                        ></i></span>
-                      <span @click="addNodes(orderItem.orderSn)">{{$t('order.remark')}}</span>
-                      <span @click="seeDetails(orderItem.orderSn)">{{$t('order.details')}}</span>
-                      <span @click="goComment(orderItem.orderSn)">{{$t('order.comment')}}</span>
+                      <span class="icon_collect"
+                        ><i
+                          :class="{
+                            'el-icon-star-off': !orderItem.starFlag,
+                            'el-icon-star-on': orderItem.starFlag,
+                          }"
+                          @click="
+                            toggleStar(orderItem.orderSn, orderItem.starFlag)
+                          "
+                        ></i
+                      ></span>
+                      <span @click="addNodes(orderItem.orderSn)">{{
+                        $t('order.remark')
+                      }}</span>
+                      <span @click="seeDetails(orderItem.orderSn)">{{
+                        $t('order.details')
+                      }}</span>
+                      <span @click="goComment(orderItem.orderSn)">{{
+                        $t('order.comment')
+                      }}</span>
                     </div>
                   </div>
                 </td>
               </tr>
               <tr
-                v-if="orderItem.goodsTypeArray.indexOf('10') != -1 "
+                v-if="orderItem.goodsTypeArray.indexOf('10') != -1"
                 class="order-tb-head"
               >
                 <td colspan="9">
@@ -464,102 +482,151 @@
                       <el-tooltip
                         class="item"
                         effect="light"
-                        :content="$t('order.deposit')+'：' + currencyPool[orderItem.currency][lang][1] +(orderItem.moneyPaid + orderItem.memberCardBalance + orderItem.scoreDiscount + orderItem.useAccount).toFixed(2)"
+                        :content="
+                          $t('order.deposit') +
+                          '：' +
+                          currencyPool[orderItem.currency][lang][1] +
+                          (
+                            orderItem.moneyPaid +
+                            orderItem.memberCardBalance +
+                            orderItem.scoreDiscount +
+                            orderItem.useAccount
+                          ).toFixed(2)
+                        "
                         placement="top-start"
                       >
-                        <span>{{$t('order.deposit')+'：' + currencyPool[orderItem.currency][lang][1] +(orderItem.moneyPaid + orderItem.memberCardBalance + orderItem.scoreDiscount + orderItem.useAccount).toFixed(2)}}</span>
+                        <span>{{
+                          $t('order.deposit') +
+                          '：' +
+                          currencyPool[orderItem.currency][lang][1] +
+                          (
+                            orderItem.moneyPaid +
+                            orderItem.memberCardBalance +
+                            orderItem.scoreDiscount +
+                            orderItem.useAccount
+                          ).toFixed(2)
+                        }}</span>
                       </el-tooltip>
                       <el-tooltip
                         v-if="orderItem.bkOrderMoney != 0"
                         class="item"
                         effect="light"
-                        :content="$t('order.tail')+'：' + currencyPool[orderItem.currency][lang][1] + (orderItem.bkOrderMoney).toFixed(2)"
+                        :content="
+                          $t('order.tail') +
+                          '：' +
+                          currencyPool[orderItem.currency][lang][1] +
+                          orderItem.bkOrderMoney.toFixed(2)
+                        "
                         placement="top-start"
                       >
-                        <span>{{$t('order.tail')+'：' + currencyPool[orderItem.currency][lang][1] + (orderItem.bkOrderMoney).toFixed(2)}}</span>
+                        <span>{{
+                          $t('order.tail') +
+                          '：' +
+                          currencyPool[orderItem.currency][lang][1] +
+                          orderItem.bkOrderMoney.toFixed(2)
+                        }}</span>
                       </el-tooltip>
                       <el-tooltip
                         class="item"
                         effect="light"
-                        :content="orderItem.deliverType == 1 ? ($t('order.collectGoodsTime') + '：' + orderItem.pickupTime) : ($t('order.shippingTimeText') + '：' + orderItem.bkShippingTime)"
+                        :content="
+                          orderItem.deliverType == 1
+                            ? $t('order.collectGoodsTime') +
+                              '：' +
+                              orderItem.pickupTime
+                            : $t('order.shippingTimeText') +
+                              '：' +
+                              orderItem.bkShippingTime
+                        "
                         placement="top-start"
                       >
-                        <span>{{orderItem.deliverType == 1 ? ($t('order.collectGoodsTime') + '：' + orderItem.pickupTime) : ($t('order.shippingTimeText') + '：' + orderItem.bkShippingTime)}}</span>
+                        <span>{{
+                          orderItem.deliverType == 1
+                            ? $t('order.collectGoodsTime') +
+                              '：' +
+                              orderItem.pickupTime
+                            : $t('order.shippingTimeText') +
+                              '：' +
+                              orderItem.bkShippingTime
+                        }}</span>
                       </el-tooltip>
                     </div>
                   </div>
                 </td>
               </tr>
-              <template v-for="(goodsItem,goodsIndex) in orderItem.goods">
-                <tr
-                  class="order-tb-body"
-                  :key="goodsIndex"
-                >
+              <template v-for="(goodsItem, goodsIndex) in orderItem.goods">
+                <tr class="order-tb-body" :key="goodsIndex">
                   <td>
                     <div class="goods_info">
                       <img
-                        :src="$imageHost+'/'+goodsItem.goodsImg"
+                        :src="$imageHost + '/' + goodsItem.goodsImg"
                         alt=""
-                      >
+                      />
                       <div class="right_info">
                         <div class="goods_name">
                           <span>
                             <span
                               class="tags red"
                               v-if="goodsItem.activityType"
-                            >{{$t('order.activityTypeList')[goodsItem.activityType].name}}</span>
+                              >{{
+                                $t('order.activityTypeList')[
+                                  goodsItem.activityType
+                                ].name
+                              }}</span
+                            >
                             <span
                               class="tags red"
                               v-if="goodsItem.isCardExclusive === 1"
-                            >会员专享</span>
-                            <span
-                              class="tags red"
-                              v-if="goodsItem.isGift === 1"
-                            >赠品</span>
-                            {{goodsItem.goodsName}}
+                              >会员专享</span
+                            >
+                            <span class="tags red" v-if="goodsItem.isGift === 1"
+                              >赠品</span
+                            >
+                            {{ goodsItem.goodsName }}
                           </span>
                         </div>
-                        <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
+                        <div class="goods_spec">{{ goodsItem.goodsAttr }}</div>
                       </div>
                     </div>
                   </td>
-                  <td>{{goodsItem.goodsSn}}
-                    <template v-if="goodsItem.productSn != '' && goodsItem.productSn != null">
-                      /{{goodsItem.productSn}}
+                  <td>
+                    {{ goodsItem.goodsSn }}
+                    <template
+                      v-if="
+                        goodsItem.productSn != '' && goodsItem.productSn != null
+                      "
+                    >
+                      /{{ goodsItem.productSn }}
                     </template>
                   </td>
-                  <td>{{goodsItem.goodsPrice.toFixed(2)}}</td>
-                  <td>{{goodsItem.goodsNumber}}</td>
-                  <td
-                    v-if="goodsIndex === 0"
-                    :rowspan="orderItem.goods.length"
-                  >
+                  <td>{{ goodsItem.goodsPrice.toFixed(2) }}</td>
+                  <td>{{ goodsItem.goodsNumber }}</td>
+                  <td v-if="goodsIndex === 0" :rowspan="orderItem.goods.length">
                     <div
                       class="pointer"
                       @click="viewUserCenter(orderItem.userId)"
                     >
-                      <p>{{orderItem.username}}</p>
-                      <p>{{orderItem.userMobile}}</p>
+                      <p>{{ orderItem.username }}</p>
+                      <p>{{ orderItem.userMobile }}</p>
                     </div>
                   </td>
-                  <td
-                    v-if="goodsIndex === 0"
-                    :rowspan="orderItem.goods.length"
-                  >
-                    <p>{{orderItem.consignee}}</p>
-                    <p>{{orderItem.mobile}}</p>
+                  <td v-if="goodsIndex === 0" :rowspan="orderItem.goods.length">
+                    <p>{{ orderItem.consignee }}</p>
+                    <p>{{ orderItem.mobile }}</p>
                   </td>
-                  <td
-                    v-if="goodsIndex === 0"
-                    :rowspan="orderItem.goods.length"
-                  >
-
-                    {{orderItem.createTime}}
+                  <td v-if="goodsIndex === 0" :rowspan="orderItem.goods.length">
+                    {{ orderItem.createTime }}
                     <br />
-                    <div v-if="(searchParams.orderStatus2 === '7' || searchParams.orderStatus2 === '8') && getReturnTime(orderItem)">
+                    <div
+                      v-if="
+                        (searchParams.orderStatus2 === '7' ||
+                          searchParams.orderStatus2 === '8') &&
+                        getReturnTime(orderItem)
+                      "
+                    >
                       申请售后时间
                       <br />
-                      {{getReturnTime(orderItem)}}
+                      {{ getReturnTime(orderItem) }}
                     </div>
                   </td>
                   <td
@@ -567,58 +634,112 @@
                     :rowspan="orderItem.goods.length"
                     class="order-status"
                   >
-                    <template v-if="orderItem.goodsTypeArray.indexOf('17') != -1 && orderItem.orderSn == orderItem.mainOrderSn && [8,10,13].indexOf(orderItem.orderStatus)">
-                      {{$t('order.waitReceive')}}
+                    <template
+                      v-if="
+                        orderItem.goodsTypeArray.indexOf('17') != -1 &&
+                        orderItem.orderSn == orderItem.mainOrderSn &&
+                        [8, 10, 13].indexOf(orderItem.orderStatus)
+                      "
+                    >
+                      {{ $t('order.waitReceive') }}
                     </template>
                     <template v-else>
-                      <template v-if="orderItem.orderStatus != 3 && orderItem.orderStatus != 5">
-                        <template v-if="orderItem.orderStatus == 0 && orderItem.goodsTypeArray.indexOf('10') != -1">
+                      <template
+                        v-if="
+                          orderItem.orderStatus != 3 &&
+                          orderItem.orderStatus != 5
+                        "
+                      >
+                        <template
+                          v-if="
+                            orderItem.orderStatus == 0 &&
+                            orderItem.goodsTypeArray.indexOf('10') != -1
+                          "
+                        >
                           <template v-if="orderItem.bkOrderPaid == 0">
-                            {{$t('order.waitDeposit')}}
+                            {{ $t('order.waitDeposit') }}
                           </template>
                           <template v-else>
-                            {{$t('order.waitTail')}}
+                            {{ $t('order.waitTail') }}
                           </template>
                         </template>
                         <template v-else>
-                          {{showOrderStatusMap.get(orderItem.orderStatus)}}
+                          {{ showOrderStatusMap.get(orderItem.orderStatus) }}
                         </template>
                       </template>
                       <template v-else>
-                        <template v-if="orderItem.deliverType == 1 && orderItem.orderStatus == 3">
-                          {{$t('order.waitverify')}}
+                        <template
+                          v-if="
+                            orderItem.deliverType == 1 &&
+                            orderItem.orderStatus == 3
+                          "
+                        >
+                          {{ $t('order.waitverify') }}
                         </template>
-                        <template v-else-if="orderItem.deliverType == 0 && orderItem.orderStatus == 3 && searchParams.pinStatus.length == 0">
-                          {{$t('order.waitShip')}}
+                        <template
+                          v-else-if="
+                            orderItem.deliverType == 0 &&
+                            orderItem.orderStatus == 3 &&
+                            searchParams.pinStatus.length == 0
+                          "
+                        >
+                          {{ $t('order.waitShip') }}
                           <template v-if="orderItem.orderRemindTime">
                             <el-tooltip
                               class="item"
                               effect="dark"
-                              :content="$t('order.remindTime') + orderItem.orderRemindTime"
+                              :content="
+                                $t('order.remindTime') +
+                                orderItem.orderRemindTime
+                              "
                               placement="top"
                             >
-                              <i class="el-icon-question"></i> </el-tooltip>
+                              <i class="el-icon-question"></i>
+                            </el-tooltip>
                           </template>
                         </template>
-                        <template v-else-if="orderItem.deliverType == 1 && orderItem.orderStatus == 5">
-                          {{$t('order.takeByself')}}
+                        <template
+                          v-else-if="
+                            orderItem.deliverType == 1 &&
+                            orderItem.orderStatus == 5
+                          "
+                        >
+                          {{ $t('order.takeByself') }}
                         </template>
-                        <template v-else-if="orderItem.deliverType == 0 && orderItem.orderStatus == 5">
-                          {{$t('order.received')}}
+                        <template
+                          v-else-if="
+                            orderItem.deliverType == 0 &&
+                            orderItem.orderStatus == 5
+                          "
+                        >
+                          {{ $t('order.received') }}
                         </template>
                       </template>
-                      <template v-if="orderItem.orderStatus == 3 && orderItem.partShipFlag == 1">
+                      <template
+                        v-if="
+                          orderItem.orderStatus == 3 &&
+                          orderItem.partShipFlag == 1
+                        "
+                      >
                         <br />
-                        ({{$t('order.partShip')}})
+                        ({{ $t('order.partShip') }})
                       </template>
-                      <template v-if="orderItem.orderStatus == 3 && orderItem.deliverType != 1 && orderItem.canDeliver == true && searchParams.pinStatus.length == 0">
+                      <template
+                        v-if="
+                          orderItem.orderStatus == 3 &&
+                          orderItem.deliverType != 1 &&
+                          orderItem.canDeliver == true &&
+                          searchParams.pinStatus.length == 0
+                        "
+                      >
                         <!-- 非自提且待发货自提 -->
                         <br />
                         <el-button
                           type="primary"
                           size="small"
                           @click="deliver(orderItem)"
-                        >{{$t('order.delivery')}}</el-button>
+                          >{{ $t('order.delivery') }}</el-button
+                        >
                       </template>
                       <template v-if="orderItem.canVerify == true">
                         <!-- 核销 -->
@@ -627,22 +748,27 @@
                           type="primary"
                           size="small"
                           @click="verify(orderItem)"
-                        >{{$t('order.verify')}}</el-button>
+                          >{{ $t('order.verify') }}</el-button
+                        >
                       </template>
                     </template>
                     <template v-if="orderItem.refundStatus > 0">
                       <br />
-                      <template v-if="[1,2,4].indexOf(orderItem.refundStatus) != -1">
+                      <template
+                        v-if="[1, 2, 4].indexOf(orderItem.refundStatus) != -1"
+                      >
                         <el-button
                           type="text"
                           @click="goReturnView(orderItem.orderSn)"
-                        >{{$t('order.applyRetrunView')}}</el-button>
+                          >{{ $t('order.applyRetrunView') }}</el-button
+                        >
                       </template>
                       <template v-else>
                         <el-button
                           @click="goReturnView(orderItem.orderSn)"
                           type="text"
-                        >{{$t('order.retrunView')}}</el-button>
+                          >{{ $t('order.retrunView') }}</el-button
+                        >
                       </template>
                     </template>
                     <template v-if="orderItem.canClose == true">
@@ -652,7 +778,8 @@
                         type="primary"
                         size="small"
                         @click="close(orderItem)"
-                      >{{$t('order.close')}}</el-button>
+                        >{{ $t('order.close') }}</el-button
+                      >
                     </template>
                     <template v-if="orderItem.canFinish == true">
                       <!-- 完成 -->
@@ -661,142 +788,204 @@
                         type="primary"
                         size="small"
                         @click="finish(orderItem)"
-                      >{{$t('order.finish')}}</el-button>
+                        >{{ $t('order.finish') }}</el-button
+                      >
                     </template>
                   </td>
-                  <td
-                    v-if="goodsIndex === 0"
-                    :rowspan="orderItem.goods.length"
-                  >
-                    <template v-if="orderItem.goodsTypeArray.indexOf('17') != -1">
+                  <td v-if="goodsIndex === 0" :rowspan="orderItem.goods.length">
+                    <template
+                      v-if="orderItem.goodsTypeArray.indexOf('17') != -1"
+                    >
                       <span>
-                        {{currencyPool[orderItem.currency][lang][1]}}
-                        {{childOrder.subGoodsPrice.toFixed(2)}}
+                        {{ currencyPool[orderItem.currency][lang][1] }}
+                        {{ childOrder.subGoodsPrice.toFixed(2) }}
                       </span>
                       <br />
-                      <span>
-                        ({{
-                        $t('order.freeShipping')
-                      }})
-                      </span>
+                      <span> ({{ $t('order.freeShipping') }}) </span>
                     </template>
                     <template v-else>
-                      <template v-if="orderItem.goodsTypeArray.indexOf('4') == -1">
+                      <template
+                        v-if="orderItem.goodsTypeArray.indexOf('4') == -1"
+                      >
                         <span>
-                          {{currencyPool[orderItem.currency][lang][1] +
-                             (orderItem.bkOrderPaid > 1 ? (orderItem.moneyPaid + orderItem.bkOrderMoney) : orderItem.moneyPaid).toFixed(2)
+                          {{
+                            currencyPool[orderItem.currency][lang][1] +
+                            (orderItem.bkOrderPaid > 1
+                              ? orderItem.moneyPaid + orderItem.bkOrderMoney
+                              : orderItem.moneyPaid
+                            ).toFixed(2)
                           }}
                         </span>
                         <br />
                         <span v-if="orderItem.deliverType != 1">
                           ({{
-                             currencyPool[orderItem.currency][lang][1] + $t('order.includeExpress') + '：' + orderItem.shippingFee.toFixed(2)
+                            currencyPool[orderItem.currency][lang][1] +
+                            $t('order.includeExpress') +
+                            '：' +
+                            orderItem.shippingFee.toFixed(2)
                           }})
                         </span>
                       </template>
                       <template v-else>
                         <span>
-                          {{currencyPool[orderItem.currency][lang][1] + orderItem.moneyPaid.toFixed(2) + ' + ' + (orderItem.scoreDiscount * orderItem.scoreProportion) + $t('order.score')}}
+                          {{
+                            currencyPool[orderItem.currency][lang][1] +
+                            orderItem.moneyPaid.toFixed(2) +
+                            ' + ' +
+                            orderItem.scoreDiscount *
+                              orderItem.scoreProportion +
+                            $t('order.score')
+                          }}
                         </span>
                         <br />
-                        <span>
-                          ({{
-                           $t('order.freeShipping')
-                         }})
-                        </span>
+                        <span> ({{ $t('order.freeShipping') }}) </span>
                       </template>
                     </template>
                   </td>
                 </tr>
               </template>
               <template v-for="childOrder in orderItem.childOrders">
-                <template v-for="(childGoods,childGoodsIndex) in childOrder.goods">
+                <template
+                  v-for="(childGoods, childGoodsIndex) in childOrder.goods"
+                >
                   <tr
                     class="order-tb-body"
                     :key="orderItem.orderId + '' + childGoods.recId"
                   >
                     <td>
                       <p
-                        style="text-align:left; margin-bottom:6px;"
+                        style="text-align: left; margin-bottom: 6px"
                         v-if="childGoodsIndex == 0"
-                      >{{$t('order.childOrderSn') + '：' + childOrder.orderSn}}</p>
+                      >
+                        {{
+                          $t('order.childOrderSn') + '：' + childOrder.orderSn
+                        }}
+                      </p>
                       <div class="goods_info">
                         <img
-                          :src="$imageHost+'/'+childGoods.goodsImg"
+                          :src="$imageHost + '/' + childGoods.goodsImg"
                           alt=""
-                        >
+                        />
                         <div class="right_info">
                           <div class="goods_name">
                             <span>
                               <span
                                 class="tags red"
                                 v-if="goodsItem.activityType"
-                              >{{$t('order.activityTypeList')[goodsItem.activityType].name}}</span>
+                                >{{
+                                  $t('order.activityTypeList')[
+                                    goodsItem.activityType
+                                  ].name
+                                }}</span
+                              >
                               <span
                                 class="tags red"
                                 v-if="goodsItem.isCardExclusive === 1"
-                              >会员专享</span>
+                                >会员专享</span
+                              >
                               <span
                                 class="tags red"
                                 v-if="goodsItem.isGift === 1"
-                              >赠品</span>
-                              {{childGoods.goodsName}}
+                                >赠品</span
+                              >
+                              {{ childGoods.goodsName }}
                             </span>
                           </div>
-                          <div class="goods_spec">{{childGoods.goodsAttr}}</div>
+                          <div class="goods_spec">
+                            {{ childGoods.goodsAttr }}
+                          </div>
                         </div>
                       </div>
                     </td>
-                    <td>{{childGoods.goodsSn}}</td>
-                    <td>{{childGoods.goodsPrice.toFixed(2)}}</td>
-                    <td>{{childGoods.goodsNumber}}</td>
+                    <td>{{ childGoods.goodsSn }}</td>
+                    <td>{{ childGoods.goodsPrice.toFixed(2) }}</td>
+                    <td>{{ childGoods.goodsNumber }}</td>
                     <td
                       v-if="childGoodsIndex === 0"
                       :rowspan="childOrder.goods.length"
                     >
-                      <p>{{childOrder.consignee}}</p>
-                      <p>{{childOrder.mobile}}</p>
+                      <p>{{ childOrder.consignee }}</p>
+                      <p>{{ childOrder.mobile }}</p>
                     </td>
                     <td
                       v-if="childGoodsIndex === 0"
                       :rowspan="childOrder.goods.length"
                     >
-                      {{orderItem.createTime}}
+                      {{ orderItem.createTime }}
                     </td>
                     <td
                       v-if="childGoodsIndex === 0"
                       :rowspan="childOrder.goods.length"
                     >
                       <template>
-                        <template v-if="childOrder.orderStatus != 3 && childOrder.orderStatus != 5">
-                          {{showOrderStatusMap.get(childOrder.orderStatus)}}
+                        <template
+                          v-if="
+                            childOrder.orderStatus != 3 &&
+                            childOrder.orderStatus != 5
+                          "
+                        >
+                          {{ showOrderStatusMap.get(childOrder.orderStatus) }}
                         </template>
                         <template v-else>
-                          <template v-if="childOrder.deliverType == 1 && childOrder.orderStatus == 3">
-                            {{$t('order.waitverify')}}
+                          <template
+                            v-if="
+                              childOrder.deliverType == 1 &&
+                              childOrder.orderStatus == 3
+                            "
+                          >
+                            {{ $t('order.waitverify') }}
                           </template>
-                          <template v-else-if="childOrder.deliverType == 0 && childOrder.orderStatus == 3 && searchParams.pinStatus.length == 0">
-                            {{$t('order.waitShip')}}
+                          <template
+                            v-else-if="
+                              childOrder.deliverType == 0 &&
+                              childOrder.orderStatus == 3 &&
+                              searchParams.pinStatus.length == 0
+                            "
+                          >
+                            {{ $t('order.waitShip') }}
                           </template>
-                          <template v-else-if="childOrder.deliverType == 1 && childOrder.orderStatus == 5">
-                            {{$t('order.takeByself')}}
+                          <template
+                            v-else-if="
+                              childOrder.deliverType == 1 &&
+                              childOrder.orderStatus == 5
+                            "
+                          >
+                            {{ $t('order.takeByself') }}
                           </template>
-                          <template v-else-if="childOrder.deliverType == 0 && childOrder.orderStatus == 5">
-                            {{$t('order.received')}}
+                          <template
+                            v-else-if="
+                              childOrder.deliverType == 0 &&
+                              childOrder.orderStatus == 5
+                            "
+                          >
+                            {{ $t('order.received') }}
                           </template>
                         </template>
-                        <template v-if="childOrder.orderStatus == 3 && childOrder.partShipFlag == 1">
+                        <template
+                          v-if="
+                            childOrder.orderStatus == 3 &&
+                            childOrder.partShipFlag == 1
+                          "
+                        >
                           <br />
-                          ({{$t('order.partShip')}})
+                          ({{ $t('order.partShip') }})
                         </template>
-                        <template v-if="childOrder.orderStatus == 3 && childOrder.deliverType != 1 && childOrder.canDeliver == true && searchParams.pinStatus.length == 0">
+                        <template
+                          v-if="
+                            childOrder.orderStatus == 3 &&
+                            childOrder.deliverType != 1 &&
+                            childOrder.canDeliver == true &&
+                            searchParams.pinStatus.length == 0
+                          "
+                        >
                           <!-- 非自提且待发货自提 -->
                           <br />
                           <el-button
                             type="primary"
                             size="small"
                             @click="deliver(childOrder)"
-                          >{{$t('order.delivery')}}</el-button>
+                            >{{ $t('order.delivery') }}</el-button
+                          >
                         </template>
                         <template v-if="childOrder.canVerify == true">
                           <!-- 核销 -->
@@ -805,19 +994,27 @@
                             type="primary"
                             size="small"
                             @click="verify(childOrder)"
-                          >{{$t('order.verify')}}</el-button>
+                            >{{ $t('order.verify') }}</el-button
+                          >
                         </template>
                       </template>
                       <template v-if="childOrder.refundStatus > 0">
                         <br />
-                        <template v-if="[1,2,4].indexOf(childOrder.refundStatus) != -1">
+                        <template
+                          v-if="
+                            [1, 2, 4].indexOf(childOrder.refundStatus) != -1
+                          "
+                        >
                           <el-button
                             type="text"
                             @click="goReturnView(orderItem.orderSn)"
-                          >{{$t('order.applyRetrunView')}}</el-button>
+                            >{{ $t('order.applyRetrunView') }}</el-button
+                          >
                         </template>
                         <template v-else>
-                          <el-button type="text">{{$t('order.retrunView')}}</el-button>
+                          <el-button type="text">{{
+                            $t('order.retrunView')
+                          }}</el-button>
                         </template>
                       </template>
                       <template v-if="childOrder.canClose == true">
@@ -827,7 +1024,8 @@
                           type="primary"
                           size="small"
                           @click="close(childOrder)"
-                        >{{$t('order.close')}}</el-button>
+                          >{{ $t('order.close') }}</el-button
+                        >
                       </template>
                       <template v-if="childOrder.canFinish == true">
                         <!-- 完成 -->
@@ -836,7 +1034,8 @@
                           type="primary"
                           size="small"
                           @click="finish(childOrder)"
-                        >{{$t('order.finish')}}</el-button>
+                          >{{ $t('order.finish') }}</el-button
+                        >
                       </template>
                     </td>
                     <td
@@ -844,15 +1043,11 @@
                       :rowspan="childOrder.goods.length"
                     >
                       <span>
-                        {{currencyPool[orderItem.currency][lang][1]}}
-                        {{childOrder.subGoodsPrice.toFixed(2)}}
+                        {{ currencyPool[orderItem.currency][lang][1] }}
+                        {{ childOrder.subGoodsPrice.toFixed(2) }}
                       </span>
                       <br />
-                      <span>
-                        ({{
-                        $t('order.freeShipping')
-                      }})
-                      </span>
+                      <span> ({{ $t('order.freeShipping') }}) </span>
                     </td>
                   </tr>
                 </template>
@@ -864,19 +1059,12 @@
               </tr>
             </tbody>
           </template>
-
         </table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
+        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
       </div>
     </div>
     <!-- 添加备注弹窗 -->
-    <nodesDialog
-      :show.sync="showNodes"
-      :orderSn="notesOrderSn"
-    />
+    <nodesDialog :show.sync="showNodes" :orderSn="notesOrderSn" />
     <!-- 发货弹窗 -->
     <deliveryDialog
       v-if="showDelivery"
@@ -1027,6 +1215,12 @@ export default {
     this.filterOrderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
     if (this.$route.params.flag === 0 || this.$route.params.flag) { this.$set(this.shopHelperParams, 'shopHelperAction', this.$route.params.flag) }
     if (this.$route.params.IntegerDays) { this.$set(this.shopHelperParams, 'shopHelperActionDays', this.$route.params.IntegerDays) }
+    console.log(this.$route)
+    if (this.$route.name === 'order_wait') {
+      this.searchParams.orderStatus2 = '3'
+      this.filterOrderStatus = 3
+    }
+    if (this.$route.name === 'shop_setting') this.searchParams.deliverType = 1
     // 初始化数据
     this.langDefault()
     this.initDataList()
