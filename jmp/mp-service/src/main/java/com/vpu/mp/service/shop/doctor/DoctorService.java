@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.doctor;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.JsonResult;
@@ -11,7 +13,6 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorDutyRecordDo;
-import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.UserDao;
@@ -23,30 +24,50 @@ import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
 import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.*;
-import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorConstant;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorDutyParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorDutyRecordParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorFetchOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorUnbundlingParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.shop.anchor.AnchorPointsService;
 import com.vpu.mp.service.shop.department.DepartmentService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
-import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.service.shop.anchor.AnchorPointsEvent.DOCTOR_ENTER_IN;
 
 /**
  * @author chenjie
@@ -82,6 +103,13 @@ public class DoctorService extends ShopBaseService {
     protected DoctorDutyRecordDao doctorDutyRecordDao;
     @Autowired
     public DoctorCommentService doctorCommentService;
+    @Autowired
+    private AnchorPointsService anchorPointsService;
+    @Autowired
+    private PrescriptionService prescriptionService;
+    @Autowired
+    private InquiryOrderService inquiryOrderService;
+
     public static final int ZERO = 0;
 
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
@@ -194,6 +222,12 @@ public class DoctorService extends ShopBaseService {
             if (StringUtils.isBlank(departmentStr)) {
                 doctor.setStatus((byte) 0);
             }
+            //是否拉取
+            doctor.setIsFetch(DoctorConstant.IS_FETCH);
+            //默认不接诊
+            doctor.setCanConsultation(DoctorConstant.CAN_NOT_CONSULTATION);
+            //默认不上班
+            doctor.setIsOnDuty(DoctorConstant.NOT_ON_DUTY);
             synchroDoctor(doctor);
         }
     }
@@ -282,6 +316,10 @@ public class DoctorService extends ShopBaseService {
                 // 修改doctor表中userId为当前用户
                 doctorDo.setUserId(doctorAuthParam.getUserId());
                 doctorDao.updateUserId(doctorDo);
+                //更新是否接诊
+                doctorDao.updateCanConsultation(doctorDo.getId(),DoctorConstant.CAN_CONSULTATION);
+                //更新医师签名
+                doctorDao.updateSignature(doctorDo.getId(),doctorAuthParam.getSignature());
             });
             return doctorDo.getId();
         } else {
@@ -629,5 +667,30 @@ public class DoctorService extends ShopBaseService {
      */
     public void updateConsultationTotalMoney(DoctorSortParam param){
         doctorDao.updateConsultationTotalMoney(param);
+    }
+
+    /**
+     * 获取考勤
+     * @return
+     */
+    public DoctorAttendanceVo getAttendance(Integer userId, String doctorCode, Integer doctorId){
+        DateTime date = DateUtil.date();
+        AnchorPointsListParam param =new AnchorPointsListParam();
+        param.setStartTime(DateUtil.beginOfMonth(date).toTimestamp());
+        param.setEndTime(DateUtil.endOfMonth(date).toTimestamp());
+        param.setEvent(DOCTOR_ENTER_IN.getEvent());
+        param.setKey(DOCTOR_ENTER_IN.getKey());
+        param.setUserId(1);
+        String doctorAttendanceRate = anchorPointsService.getDoctorAttendanceRate(param);
+        logger().info("医师userId:{},出勤率{}",userId,doctorAttendanceRate);
+        Integer prescriptionNum = prescriptionService.countDateByDoctor(doctorCode, param.getStartTime(), param.getEndTime());
+        logger().info("医师code:{},处方数量{}",doctorCode,prescriptionNum);
+        Integer receivingNumber = inquiryOrderService.countByDateDoctor(doctorId, param.getStartTime(), param.getEndTime());
+        logger().info("医师id:{},接诊数{}",doctorId,receivingNumber);
+        DoctorAttendanceVo vo =new DoctorAttendanceVo();
+        vo.setDoctorAttendanceRate(doctorAttendanceRate);
+        vo.setPrescriptionNum(prescriptionNum);
+        vo.setReceivingNumber(receivingNumber);
+        return vo;
     }
 }

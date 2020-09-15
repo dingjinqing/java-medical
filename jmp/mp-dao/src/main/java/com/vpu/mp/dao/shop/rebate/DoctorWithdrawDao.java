@@ -54,6 +54,9 @@ public class DoctorWithdrawDao extends ShopBaseDao {
             case (byte)4:
                 update.set(DOCTOR_WITHDRAW.STATUS,status).set(DOCTOR_WITHDRAW.BILLING_TIME, DateUtils.getSqlTimestamp());
                 break;
+            case (byte)5:
+                update.set(DOCTOR_WITHDRAW.STATUS,status).set(DOCTOR_WITHDRAW.FAIL_TIME, DateUtils.getSqlTimestamp());
+                break;
                 default:
         }
         update.set(DOCTOR_WITHDRAW.REFUSE_DESC, refuseDesc).where(DOCTOR_WITHDRAW.ID.eq(id)).execute();
@@ -108,7 +111,7 @@ public class DoctorWithdrawDao extends ShopBaseDao {
             select.where(DOCTOR_WITHDRAW.CREATE_TIME.ge(DateUtil.beginOfDay(param.getStartTime()).toTimestamp()));
         }
         if(param.getEndTime()!=null){
-            select.where(DOCTOR_WITHDRAW.CREATE_TIME.le(DateUtil.beginOfDay(param.getEndTime()).toTimestamp()));
+            select.where(DOCTOR_WITHDRAW.CREATE_TIME.le(DateUtil.endOfDay(param.getEndTime()).toTimestamp()));
         }
         return select;
     }

@@ -51,7 +51,7 @@ module.exports = {
 			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
           <view class="card-item">
             <view class="card-item-title">
-              <view class="status-title" wx:if="{{activeType === '1'}}">返利状态：<text>{{tool.getStatusName(item.status)}}</text></view>
+              <view class="status-title" wx:if="{{activeType === '1'}}">返利状态：<text>{{tool.getStatusName(item.status)}}</text><text wx:if="{{item.status === 1 && (item.realRebateMoney !== item.totalRebateMoney)}}">(部分返利)</text></view>
               <view class="username-title" wx:if="{{activeType === '2'}}"><text>{{item.patientName}}</text> <view>{{tool.getReceiveStatus(item.orderStatus)}}</view></view>
               <view class="date" wx:if="{{activeType === '2'}}">{{filter.substring(item.createTime,0,10)}}</view>
             </view>
@@ -62,11 +62,11 @@ module.exports = {
             </view>
             <view class="money-content" wx:if="{{activeType === '2'}}">
               <view class="money-item">
-                <text class="money">{{item.totalMoney}}</text>
+                <text class="money">{{filter.getFixed(item.totalMoney)}}</text>
                 <text class="tips">咨询费总额</text>
               </view>
               <view class="money-item">
-                <text class="money">{{item.totalRebateMoney}}</text>
+                <text class="money">{{filter.getFixed(item.totalRebateMoney)}}</text>
                 <text class="tips">服务费</text>
               </view>
               <view class="money-item">
@@ -75,8 +75,8 @@ module.exports = {
               </view>
             </view>
             <view class="price-status-content" wx:if="{{activeType === '1'}}">
-              <view wx:if="{{item.status !== 2}}">服务费：<text>{{item.totalRebateMoney}}</text></view>
-              <view wx:if="{{item.status !== 2}}">处方商品总额：<text>{{item.totalMoney}}</text></view>
+              <view wx:if="{{item.status !== 2}}">服务费：<text>{{filter.getFixed(item.realRebateMoney)}}</text></view>
+              <view wx:if="{{item.status !== 2}}">处方商品总额：<text>{{filter.getFixed(item.canCalculateMoney)}}</text></view>
               <view class="reason" wx:if="{{activeType === '1' && item.status === 2}}">
                 <image src="{{imageUrl}}image/wxapp/icon_warning.png"></image>
                 <text>未返利原因：{{item.reason}}</text>

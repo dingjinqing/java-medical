@@ -42,18 +42,29 @@
                 :key="1"
               >
                 <el-form-item label="商家账户" prop="username">
-                  <el-input v-model="ruleForm.username"></el-input>
+                  <el-input
+                    v-model="ruleForm.username"
+                    auto-complete="new-password"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="门店编码" prop="storeNo" v-if="isSubLogin">
-                  <el-input v-model="ruleForm.storeNo"></el-input>
+                  <el-input
+                    v-model="ruleForm.storeNo"
+                    auto-complete="new-password"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="门店员工账户" prop="storeUsername">
-                  <el-input v-model="ruleForm.storeUsername"></el-input>
+                  <el-input
+                    v-model="ruleForm.storeUsername"
+                    auto-complete="new-password"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
                   <el-input
+                    type="password"
                     show-password
                     v-model="ruleForm.password"
+                    auto-complete="new-password"
                   ></el-input>
                 </el-form-item>
                 <el-form-item>

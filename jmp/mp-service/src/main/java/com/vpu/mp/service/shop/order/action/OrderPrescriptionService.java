@@ -295,7 +295,7 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 GoodsMedicalInfoDo medicalInfoDo = medicalInfoDao.getByGoodsId(goods.getGoodsId());
                 PrescriptionItemDo itemDo = new PrescriptionItemDo();
                 itemDo.setPrescriptionCode(prescriptionVo.getPrescriptionCode());
-                itemDo.setPrescriptionDetailCode(prescriptionVo.getPrescriptionCode());
+                itemDo.setPrescriptionDetailCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_DETAIL_CODE_PREFIX));
                 itemDo.setGoodsId(goods.getGoodsId());
                 itemDo.setGoodsCommonName(medicalInfoDo.getGoodsCommonName());
                 itemDo.setGoodsQualityRatio(medicalInfoDo.getGoodsQualityRatio());
@@ -312,6 +312,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setMedicinePrice(goods.getShopPrice());
                 totalPrize = totalPrize.add(goods.getShopPrice());
                 list.add(itemDo);
+                orderGoodsDao.updatePrescriptionDetailCode(goods.getRecId(),itemDo.getPrescriptionDetailCode());
+
             }
         }
         prescriptionVo.setTotalPrice(totalPrize);

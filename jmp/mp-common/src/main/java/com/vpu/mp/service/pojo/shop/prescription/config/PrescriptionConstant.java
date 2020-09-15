@@ -46,6 +46,10 @@ public interface PrescriptionConstant {
      */
     public static final String PRESCRIPTION_CODE_PREFIX="C";
     /**
+     * 处方明细号前缀
+     */
+    public static final String PRESCRIPTION_DETAIL_CODE_PREFIX="M";
+    /**
      * 默认过期时间
      */
     public static final int PRESCRIPTION_EXPIRE_DAY=3;

@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorMainShowVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
@@ -119,6 +120,8 @@ public class WxAppDoctorController extends WxAppBaseController {
             list.add(departmentListVo.getName());
         }
         doctorMainShowVo.setDepartmentName(list);
+        DoctorAttendanceVo attendance = doctorService.getAttendance(user.getUserId(), oneInfo.getHospitalCode(), user.getDoctorId());
+        doctorMainShowVo.setDoctorMonthData(attendance);
         return super.success(doctorMainShowVo);
     }
 }

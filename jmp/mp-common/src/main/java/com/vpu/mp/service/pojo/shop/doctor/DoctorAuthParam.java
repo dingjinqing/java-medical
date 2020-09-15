@@ -36,5 +36,9 @@ public class DoctorAuthParam {
      */
     @NotNull
     private String mobileCheckCode;
+    /**
+     * 医师签名
+     */
+    private String signature;
 
 }
