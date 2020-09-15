@@ -62,4 +62,14 @@ public class UserDao extends ShopBaseDao {
             .where(USER.USER_ID.eq(userId)).execute();
     }
 
+    /**
+     * 更新用户类型
+     * @param userId
+     * @param userType
+     */
+    public void updateUserType(Integer userId,Byte userType) {
+        db().update(USER).set(USER.USER_TYPE, userType)
+            .where(USER.USER_ID.eq(userId)).execute();
+    }
+
 }

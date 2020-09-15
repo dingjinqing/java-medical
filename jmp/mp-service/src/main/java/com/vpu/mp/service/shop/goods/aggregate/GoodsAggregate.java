@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequest
 import com.vpu.mp.service.pojo.shop.medical.goods.convertor.GoodsConverter;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsMedicalInfoEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,7 +152,7 @@ public class GoodsAggregate {
 
 
     /**
-     * 根据his数据状态和药房数据状态更新药品的上
+     * 根据his数据状态和药房数据状态更新药品的上下架状态
      */
     public void batchUpStoreAndMedicalGoods(){
         goodsDao.switchSaleStatusAllGoods(MedicalGoodsConstant.OFF_SALE,null);
@@ -297,5 +298,9 @@ public class GoodsAggregate {
         goodsMatchParam.setGoodsQualityRatio(null);
         goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
         return goodsId;
+    }
+
+    public void batchOperate(MedicalGoodsBatchOperateParam param){
+        goodsDao.batchOperate(param);
     }
 }

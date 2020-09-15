@@ -53,7 +53,7 @@ public class StoreBaseService extends StoreBaseDao {
      *
      * @return
      */
-    public static StoreTokenAuthInfo getCurrentAdminLoginUser() {
+    public static StoreTokenAuthInfo getCurrentStoreLoginUser() {
         return currentStoreLoginUser.get();
     }
 
