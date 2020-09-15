@@ -28,9 +28,16 @@
             <span slot="title">{{ childrenItem.name | getNavName }}</span>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item :index="listItem.path" :key="listIndex" v-else>
+        <el-menu-item
+          :index="listItem.path"
+          :key="listIndex"
+          v-else
+        >
           <img :src="listItem.imgUrl" />
-          <span slot="title" v-if="!listItem.onlyPic">{{
+          <span
+            slot="title"
+            v-if="!listItem.onlyPic"
+          >{{
             listItem.name | getNavName
           }}</span>
         </el-menu-item>
@@ -714,6 +721,14 @@ export default {
           name: 'commentList',
           flag: true
         }
+        // {
+        //   imgUrl: this.$imageHost + '/image/admin/icon_left/comment_man.png',
+        //   imgUrl_h: this.$imageHost + '/image/admin/icon_left/comment_man_h.png',
+        //   path: '/admin/home/main/doctor/recommend/strategy',
+        //   span: '',
+        //   name: 'recommendStrategy',
+        //   flag: true
+        // }
       ],
       prescription_manger: [
         {

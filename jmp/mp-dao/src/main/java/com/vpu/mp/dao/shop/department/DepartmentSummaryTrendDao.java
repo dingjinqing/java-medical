@@ -50,8 +50,8 @@ public class DepartmentSummaryTrendDao extends ShopBaseDao {
     public DepartmentSummaryTrendDo getDepartmentStatistic(DepartmentStatisticParam param) {
         return db().selectFrom(DEPARTMENT_SUMMARY_TREND)
             .where(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID.eq(param.getDepartmentId()))
-            .and(STORE_ORDER_SUMMARY_TREND.TYPE.eq(param.getType()))
-            .and(STORE_ORDER_SUMMARY_TREND.REF_DATE.eq(param.getRefDate()))
+            .and(DEPARTMENT_SUMMARY_TREND.TYPE.eq(param.getType()))
+            .and(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(param.getRefDate()))
             .fetchAnyInto(DepartmentSummaryTrendDo.class);
     }
 }

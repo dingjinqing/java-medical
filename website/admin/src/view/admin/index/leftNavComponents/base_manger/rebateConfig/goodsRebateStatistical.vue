@@ -94,7 +94,7 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="totalMoney"
+          prop="canCalculateMoney"
           label="处方总金额"
           align="center"
         ></el-table-column>

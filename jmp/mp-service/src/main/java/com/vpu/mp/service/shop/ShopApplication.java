@@ -688,5 +688,6 @@ public class ShopApplication {
     /**
      * 科室信息统计
      */
+    @Autowired
     public DepartmentTaskService departmentTaskService;
 }

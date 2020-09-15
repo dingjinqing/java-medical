@@ -27,8 +27,8 @@ global.wxComponent({
   methods: {
     _initData(data) {
       let storeInfo = JSON.parse(JSON.stringify(data));
-      // console.log(Object.keys(storeInfo).map(item=>{return parseFloat(item)}))
-      let newArray = Object.keys(storeInfo).map(item=>parseFloat(item)).sort((a,b)=>{return a - b}).map(item=>{
+      let newArray = Object.keys(storeInfo).sort((a,b)=>{return a - b}).map(item=>{
+        console.log(item)
         storeInfo[item].distance = item
         return storeInfo[item]
       })
