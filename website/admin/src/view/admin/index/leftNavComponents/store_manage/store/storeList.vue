@@ -5,11 +5,7 @@
         <div class="filters">
           <div class="filters_item">
             <span>{{ $t('storeList.storeGroup') }}：</span>
-            <el-select
-              v-model="queryParams.groupId"
-              size="small"
-              @change="initDataList"
-            >
+            <el-select v-model="queryParams.groupId" size="small">
               <el-option
                 :label="$t('storeCommon.all')"
                 :value="null"
@@ -45,11 +41,7 @@
           </div> -->
           <div class="filters_item">
             <span>{{ $t('storeList.businessState') }}：</span>
-            <el-select
-              v-model="queryParams.businessState"
-              size="small"
-              @change="initDataList"
-            >
+            <el-select v-model="queryParams.businessState" size="small">
               <el-option
                 selected
                 :label="$t('storeCommon.all')"
@@ -63,28 +55,18 @@
             </el-select>
           </div>
           <div class="filters_item">
+            <span>门店信息：</span>
             <el-input
               v-model="queryParams.keywords"
               size="small"
-              style="width: 190px"
+              style="width: 160px"
               :placeholder="$t('storeList.storeInfoPlaceholder')"
-              @change="initDataList"
             >
-              <i
-                slot="suffix"
-                class="el-input__icon el-icon-search"
-                style="cursor: pointer"
-                @click="initDataList"
-              ></i>
             </el-input>
           </div>
           <div class="filters_item">
             <span>{{ $t('storeList.storePickup') }}：</span>
-            <el-select
-              v-model="queryParams.autoPick"
-              size="small"
-              @change="initDataList"
-            >
+            <el-select v-model="queryParams.autoPick" size="small">
               <el-option
                 :label="$t('storeCommon.all')"
                 :value="null"
@@ -101,11 +83,7 @@
           </div>
           <div class="filters_item">
             <span>{{ $t('storeList.sameCityDelivery') }}：</span>
-            <el-select
-              v-model="queryParams.cityService"
-              size="small"
-              @change="initDataList"
-            >
+            <el-select v-model="queryParams.cityService" size="small">
               <el-option
                 :label="$t('storeCommon.all')"
                 :value="null"
@@ -119,6 +97,11 @@
                 :value="0"
               ></el-option>
             </el-select>
+          </div>
+          <div class="filters_item">
+            <el-button type="primary" size="small" @click="initDataList"
+              >搜索</el-button
+            >
           </div>
         </div>
         <div class="navBox-right">
@@ -663,13 +646,12 @@ export default {
       .filters_item {
         width: 250px;
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-start;
         margin-left: 15px;
         margin-bottom: 10px;
         > span {
-          width: 120px;
           font-size: 14px;
-          text-align: right;
+          text-align: left;
         }
         .el-select {
           width: 120px;
