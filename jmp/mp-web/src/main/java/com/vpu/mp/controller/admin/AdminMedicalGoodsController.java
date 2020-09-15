@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalStoreRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
@@ -52,6 +53,12 @@ public class AdminMedicalGoodsController extends AdminBaseController {
             return fail(JsonResultCode.MEDICAL_GOODS_SKU_CONTENT_ILLEGAL, e.getMessage());
         }
 
+        return success();
+    }
+
+    @PostMapping("/api/admin/medical/goods/batch")
+    public JsonResult batchOperate(@RequestBody MedicalGoodsBatchOperateParam param) {
+        shop().medicalGoodsService.batchOperate(param);
         return success();
     }
 

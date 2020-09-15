@@ -38,14 +38,6 @@
                 class="nameItem"
                 :title="scope.row.goodsName"
               >
-                <!--<span-->
-                <!--v-if="scope.row.sourceName !== null"-->
-                <!--class="goodsTypeSpanWrap"-->
-                <!--&gt;{{scope.row.sourceName}}</span>-->
-                <!--<span-->
-                <!--v-if="scope.row.goodsTypeName !== null"-->
-                <!--class="goodsSourceSpanWrap"-->
-                <!--&gt;{{scope.row.goodsTypeName}}</span>-->
                 <span v-html="scope.row.goodsName"></span>
                 <br />
                 {{scope.row.goodsQualityRatio}}
@@ -199,6 +191,33 @@
           width="100"
           :label="$t('allGoods.allGoodsData.saleNumber')"
         />
+        <!--his状态-->
+        <el-table-column
+          align="center"
+          width="150"
+          label="药品his状态"
+        >
+          <template slot-scope="{row}">
+            {{row.hisStatus === 1 ? '上架':(row.hisStatus === 2 ? '下架': '')}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          width="150"
+          label="药品来源"
+        >
+          <template slot-scope="{row}">
+            <span v-if="row.hisStatus!==null && row.storeCode!==null">
+              his+药房
+            </span>
+            <span v-if="row.hisStatus===null && row.storeCode!==null">
+              药房数据
+            </span>
+            <span v-if="row.hisStatus !==null && row.storeCode === null">
+              his数据
+            </span>
+          </template>
+        </el-table-column>
         <!--标签-->
         <el-table-column
           align="center"
@@ -281,7 +300,7 @@
             plain
             size="small"
             @click="handleToClickBottomBtn(0)"
-          >{{$t('allGoods.bottomOptions.lowerShelf')}}</el-button>
+          >{{initFilterData.isOnSale ===1 ? '下架':'上架'}}</el-button>
           <el-button
             type="primary"
             plain
@@ -441,7 +460,7 @@
       <div
         class="bottomTip"
         :style="isBottomClickIndex===2 || isBottomClickIndex===3?'text-align:left':''"
-      >{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${screenNum}条数据,是否确认导出？`:`根据以下条件筛选出${checkScreenNum}条数据,是否确认导出？`}}</div>
+      >{{isBottomClickIndex===0?'确认操作吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${screenNum}条数据,是否确认导出？`:`根据以下条件筛选出${checkScreenNum}条数据,是否确认导出？`}}</div>
       <div
         style="margin-top:10px"
         v-if="isBottomClickIndex===2 || isBottomClickIndex===3"
@@ -533,6 +552,7 @@ import goodsExportConfirmDialog from './goodsExportConfirmDialog'
 
 export default {
   name: 'saleOnAndInStock',
+  props: ['initFilterData'],
   components: {
     pagination,
     goodsExportConfirmDialog,
@@ -637,22 +657,11 @@ export default {
         this.nowCheckAll.forEach((item, index) => {
           arr.push(item.goodsId)
         })
-        // let params = {}
-        // this.filterData.exportRowStart = 1
-        // params = Object.assign(this.filterData, { goodsIds: arr })
         this.filterData.goodsIds = arr
-        // this.filterData.exportRowEnd = 5000
-        // getExportTotalRows(params).then(res => {
-        //   console.log(res)
-        //   if (res.error === 0) {
-        //     this.checkScreenNum = res.content
-        //   }
-        // })
+
         this.showExportConfirm = true
         this.isBottomClickIndex = 3 // 当前选中的批量导出勾选结果
       }
-      // let formFilterDataString = this.$refs.allGoodsHeaderCmp.getFormDataString()
-      console.log(this.$refs.allGoodsHeaderCmp)
     },
     lang () {
       this.paginationFetchGoodsData()
@@ -984,15 +993,6 @@ export default {
         })
         this.$set(this, 'goodsData', dataList)
       })
-      // 筛选导出
-      // this.filterData.exportRowStart = 1
-      // this.filterData.exportRowEnd = 5000
-      // getExportTotalRows(this.filterData).then(res => {
-      //   console.log(res)
-      //   if (res.error === 0) {
-      //     this.screenNum = res.content
-      //   }
-      // })
     },
     showExportDialog (filterData, filterDataString) {
       if (filterData !== undefined) {
@@ -1024,7 +1024,6 @@ export default {
         case 2:
 
           this.batchSetupVisible = true
-          console.log(this.batchSetupVisible)
           break
       }
     },
@@ -1043,7 +1042,7 @@ export default {
           this.nowCheckAll.forEach((item, index) => {
             arr.push(item.goodsId)
           })
-          batchOperateGoods({ goodsIds: arr, isOnSale: 0 }).then((res) => {
+          batchOperateGoods({ goodsIds: arr, isOnSale: this.initFilterData.isOnSale === 1 ? 0 : 1 }).then((res) => {
             if (res.error === 0) {
               this.fetchGoodsData(this.filterData)
             }

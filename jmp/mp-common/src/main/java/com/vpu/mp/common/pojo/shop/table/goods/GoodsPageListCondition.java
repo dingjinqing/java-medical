@@ -33,4 +33,6 @@ public class GoodsPageListCondition {
     private Byte isMedical;
 
     private List<GoodsSortItem> pageSortItems;
+
+    private Byte source;
 }

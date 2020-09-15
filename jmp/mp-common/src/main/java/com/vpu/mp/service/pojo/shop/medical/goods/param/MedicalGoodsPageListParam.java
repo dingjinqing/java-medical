@@ -41,6 +41,7 @@ public class MedicalGoodsPageListParam extends BasePageParam {
 
     private Byte isOnSale;
     private Byte isSaleOut;
+    private Byte source;
 
     /**
      * 排序字段

@@ -37,6 +37,9 @@ public class GoodsPageListVo {
     private String goodsAliasName;
     private String goodsQualityRatio;
     private Byte isRx;
+    private String storeCode;
+    private Byte hisStatus;
+    private Byte storeStatus;
     private String goodsProductionEnterprise;
 
     private List<GoodsSpecProductGoodsPageListVo> goodsSpecProducts;
@@ -56,6 +59,9 @@ public class GoodsPageListVo {
         isMedical = goodsEntity.getIsMedical();
         isDefaultProduct = goodsEntity.getIsDefaultProduct();
         shopPrice=goodsEntity.getShopPrice();
+        storeCode = goodsEntity.getStoreCode();
+        hisStatus = goodsEntity.getHisStatus();
+        storeStatus = goodsEntity.getStoreStatus();
         if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(isMedical)) {
             GoodsMedicalInfoEntity goodsMedicalInfo = goodsEntity.getGoodsMedicalInfo();
             goodsCommonName = goodsMedicalInfo.getGoodsCommonName();

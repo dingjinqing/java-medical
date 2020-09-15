@@ -33,11 +33,27 @@
           size="small"
           @click="addGoodsData"
         >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
+        <el-button
+                type="primary"
+                size="small"
+                @click="batchUpOrDownGoods(1)"
+        >批量上架his独有数据</el-button>
+        <el-button
+                type="primary"
+                size="small"
+                @click="batchUpOrDownGoods(2)"
+        >批量上架store独有数据</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="batchUpOrDownGoods(3)"
+        >批量上架已匹配数据</el-button>
       </div>
     </div>
 
     <saleOnAndInStockContent
       ref="saleOnAndInStockContentCmp"
+      :initFilterData="initFilterData"
       @sortChange="sortChange"
     />
   </div>
@@ -47,6 +63,9 @@
 /* 组件引入 */
 import allGoodsHeader from '../allGoodsHeader'
 import saleOnAndInStockContent from '../saleOnAndInStockContent'
+
+// api导入
+import { batchOperateGoods } from '@/api/admin/goodsManage/allGoods/allGoods'
 
 export default {
   name: 'allGoodsInStock',
@@ -116,6 +135,32 @@ export default {
     /* 添加商品跳转 */
     addGoodsData () {
       this.$router.push({ name: 'goods_add' })
+    },
+    /* 批量上架双方已经匹配的数据 */
+    batchUpOrDownGoods (type) {
+      let param = {}
+      switch (type) {
+        case 1:
+          param.batchUpOrDownHisGoods = 1
+          break
+        case 2:
+          param.batchUpOrDownStoreGoods = 1
+          break
+        case 3:
+          param.batchUpOrDownBothInGoods = 1
+          break
+        default:
+          break
+      }
+
+      batchOperateGoods(param).then(res => {
+        if (res.error !== 0) {
+          this.$message.warning({message: '操作失败'})
+        } else {
+          this.$message.success({message: '操作成功'})
+          this.searchGoodsData()
+        }
+      })
     }
   },
   mounted () {
