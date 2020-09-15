@@ -311,6 +311,7 @@ public class Keys {
     public static final Identity<StoreOrderSummaryTrendRecord, Integer> IDENTITY_STORE_ORDER_SUMMARY_TREND = Identities0.IDENTITY_STORE_ORDER_SUMMARY_TREND;
     public static final Identity<DistributorCollectionRecord, Integer> IDENTITY_DISTRIBUTOR_COLLECTION = Identities0.IDENTITY_DISTRIBUTOR_COLLECTION;
     public static final Identity<DepartmentSummaryTrendRecord, Integer> IDENTITY_DEPARTMENT_SUMMARY_TREND = Identities0.IDENTITY_DEPARTMENT_SUMMARY_TREND;
+    public static final Identity<DoctorSummaryTrendRecord, Integer> IDENTITY_DOCTOR_SUMMARY_TREND = Identities0.IDENTITY_DOCTOR_SUMMARY_TREND;
 
 
     // -------------------------------------------------------------------------
@@ -614,6 +615,7 @@ public class Keys {
     public static final UniqueKey<AnchorPointsRecord> KEY_B2C_ANCHOR_POINTS_PRIMARY = UniqueKeys0.KEY_B2C_ANCHOR_POINTS_PRIMARY;
     public static final UniqueKey<DistributorCollectionRecord> KEY_B2C_DISTRIBUTOR_COLLECTION_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTOR_COLLECTION_PRIMARY;
     public static final UniqueKey<DepartmentSummaryTrendRecord> KEY_B2C_DEPARTMENT_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_DEPARTMENT_SUMMARY_TREND_PRIMARY;
+    public static final UniqueKey<DoctorSummaryTrendRecord> KEY_B2C_DOCTOR_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_SUMMARY_TREND_PRIMARY;
 
 
 
@@ -894,6 +896,7 @@ public class Keys {
         public static Identity<AnchorPointsRecord, Integer> IDENTITY_ANCHOR_POINTS = Internal.createIdentity(AnchorPoints.ANCHOR_POINTS, AnchorPoints.ANCHOR_POINTS.ID);
         public static Identity<DistributorCollectionRecord, Integer> IDENTITY_DISTRIBUTOR_COLLECTION = Internal.createIdentity(DistributorCollection.DISTRIBUTOR_COLLECTION, DistributorCollection.DISTRIBUTOR_COLLECTION.ID);
         public static Identity<DepartmentSummaryTrendRecord, Integer> IDENTITY_DEPARTMENT_SUMMARY_TREND = Internal.createIdentity(DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND, DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.ID);
+        public static Identity<DoctorSummaryTrendRecord, Integer> IDENTITY_DOCTOR_SUMMARY_TREND = Internal.createIdentity(DoctorSummaryTrend.DOCTOR_SUMMARY_TREND, DoctorSummaryTrend.DOCTOR_SUMMARY_TREND.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1198,5 +1201,6 @@ public class Keys {
         public static final UniqueKey<AnchorPointsRecord> KEY_B2C_ANCHOR_POINTS_PRIMARY = Internal.createUniqueKey(AnchorPoints.ANCHOR_POINTS, "KEY_b2c_anchor_points_PRIMARY", AnchorPoints.ANCHOR_POINTS.ID);
         public static final UniqueKey<DistributorCollectionRecord> KEY_B2C_DISTRIBUTOR_COLLECTION_PRIMARY = Internal.createUniqueKey(DistributorCollection.DISTRIBUTOR_COLLECTION, "KEY_b2c_distributor_collection_PRIMARY", DistributorCollection.DISTRIBUTOR_COLLECTION.ID);
         public static final UniqueKey<DepartmentSummaryTrendRecord> KEY_B2C_DEPARTMENT_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND, "KEY_b2c_department_summary_trend_PRIMARY", DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.ID);
+        public static final UniqueKey<DoctorSummaryTrendRecord> KEY_B2C_DOCTOR_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(DoctorSummaryTrend.DOCTOR_SUMMARY_TREND, "KEY_b2c_doctor_summary_trend_PRIMARY", DoctorSummaryTrend.DOCTOR_SUMMARY_TREND.ID);
     }
 }
