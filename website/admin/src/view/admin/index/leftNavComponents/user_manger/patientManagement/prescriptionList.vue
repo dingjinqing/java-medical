@@ -5,54 +5,46 @@
       <div class="navBox">
         <div class="filters">
           <div class="filters_item">
-            <span>处方号：</span>
+            <span>医师姓名：</span>
             <el-input
-              v-model="queryParams.prescriptionNos"
+              v-model="queryParams.doctorName"
               size="small"
-              style="width: 190px"
-              placeholder="请输入患者处方号"
+              style="width: 150px"
+              placeholder="请输入药品名称"
             >
             </el-input>
           </div>
           <div class="filters_item">
-            <span class="fil_span">医师名称：</span>
-            <el-select
-              v-model="queryParams.doctorName"
-              placeholder="请输入医师姓名"
+            <span class="fil_span">科室：</span>
+            <el-input
+              v-model="queryParams.departmentName"
               size="small"
-              class="default_input"
-              filterable
+              style="width: 150px"
+              placeholder="请输入批准文号"
             >
-              <el-option
-                label="全部"
-                value=" "
-              ></el-option>
-              <el-option
-                v-for="item in doctorList"
-                :key="item.name"
-                :label="item.name"
-                :value="item.name"
-              ></el-option>
-            </el-select>
+            </el-input>
           </div>
           <div class="filters_item">
-            <span class="fil_span">时间筛选：</span>
+            <span class="fil_span">就诊类型：</span>
             <el-select
-              v-model="timeSelect"
+              v-model="queryParams.prescriptionType"
               size="small"
-              class="timeSelect"
+              class="default_input"
+              style="width:150px"
             >
               <el-option
-                v-for="item in timeRange"
+                v-for="item in prescriptionTypes"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
             </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">时间筛选：</span>
             <el-date-picker
-              v-if="timeSelect === 4"
               v-model="timeValue"
-              type="datetimerange"
+              type="daterange"
               size="small"
               value-format="yyyy-MM-dd HH:mm:ss"
               :default-time="['00:00:00', '23:59:59']"
@@ -61,21 +53,13 @@
               end-placeholder="结束日期"
             >
             </el-date-picker>
-            <span
-              class="choosed_time"
-              v-if="timeSelect !== -1 && timeSelect !== 4"
-            >{{ this.startDate.year }}年{{ this.startDate.month }}月{{
-                this.startDate.day
-              }}日 - {{ this.endDate.year }}年{{ this.endDate.month }}月{{
-                this.endDate.day
-              }}日</span>
           </div>
           <div class="btn_wrap">
             <el-button
               type="primary"
               size="small"
               @click="initDataList"
-            >搜索</el-button>
+            >查询</el-button>
           </div>
         </div>
       </div>
@@ -100,23 +84,43 @@
             label="处方号"
           ></el-table-column>
           <el-table-column
-            prop='doctorCode'
-            label='医师Code'
+            label='就诊类型'
+          >
+          <template v-slot='scope'>
+              {{getLabelValue(prescriptionTypes,scope.row.auditType)}}
+          </template>
+          </el-table-column>
+          <el-table-column
+            prop="doctorName"
+            label="医师姓名"
           ></el-table-column>
           <el-table-column
             prop="departmentName"
-            label="科室名称"
+            label="科室"
           ></el-table-column>
           <el-table-column
-            prop="doctorName"
-            label="医师名称"
+            prop="orderSnByOrderInfo"
+            label="订单号"
           ></el-table-column>
           <el-table-column
-            prop="diagnosisName"
-            label="疾病名称"
+            prop="totalPrice"
+            label="处方金额"
           ></el-table-column>
           <el-table-column
-            prop="diagnoseTime"
+            label="处方药品"
+          >
+            <template v-slot="scope">
+              <span
+                v-for="(item,index) in scope.row.goodsList"
+                :key='index'
+                style="margin-right:5px;"
+              >
+                {{item.goodsName}}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
             label="就诊时间"
           ></el-table-column>
           <el-table-column label="操作">
@@ -150,44 +154,13 @@ import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory
 export default {
   components: { pagination },
   watch: {
-    lang () {
-      // this.timeRange = this.$t('tradesStatistics.timeRange')
-    },
-    timeSelect (val) {
-      let end = new Date()
-      let start = new Date()
-      switch (val) {
-        case -1:
-          start = ''
-          end = ''
-          break
-        case 1:
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
-          break
-        case 2:
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-          break
-        case 3:
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-          break
-        case 4:
-          start = this.timeValue[0] || ''
-          end = this.timeValue[1] || ''
-          break
-      }
-      this.queryParams.diagnoseStartTime = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()} 00:00:00`
-      this.queryParams.diagnoseEndTime = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()} 23:59:59`
-      this.startDate.year = start.getFullYear()
-      this.startDate.month = start.getMonth() + 1
-      this.startDate.day = start.getDate()
-      this.endDate.year = end.getFullYear()
-      this.endDate.month = end.getMonth() + 1
-      this.endDate.day = end.getDate()
-    },
     timeValue (val) {
-      if (this.timeSelect === 4) {
-        this.queryParams.diagnoseStartTime = val[0]
-        this.queryParams.diagnoseEndTime = val[1]
+      if (val !== null) {
+        this.queryParams.startTime = val[0]
+        this.queryParams.endTime = val[1]
+      } else {
+        this.queryParams.startTime = ''
+        this.queryParams.endTime = ''
       }
     }
   },
@@ -196,35 +169,24 @@ export default {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      timeSelect: -1,
-      timeRange: [
-        { value: -1, label: '全部' },
-        { value: 1, label: '最新1天' },
-        { value: 2, label: '最新7天' },
-        { value: 3, label: '最新30天' },
-        { value: 4, label: '自定义' }
-      ],
-      startDate: {
-        year: '',
-        month: '',
-        day: ''
-      },
-      endDate: {
-        year: '',
-        month: '',
-        day: ''
-      },
       pageParams: {
         currentPage: 1,
         pageRows: 5
       },
+      prescriptionTypes: [
+        { value: null, label: '全部' },
+        { value: 0, label: '不审核' },
+        { value: 1, label: '续方' },
+        { value: 2, label: '开方' },
+        { value: 3, label: '会话开方' }
+      ],
       tableData: [],
-      storeGroup: [],
       queryParams: {
-        prescriptionNos: null,
-        diagnoseStartTime: '',
-        diagnoseEndTime: '',
-        doctorName: ''
+        startTime: '',
+        endTime: '',
+        doctorName: '',
+        departmentName: '',
+        prescriptionType: null
       },
       // 表格原始数据
       originalData: [],
@@ -240,7 +202,6 @@ export default {
       let params = {
         ...this.queryParams
       }
-      params.prescriptionNos = this.queryParams.prescriptionNos ? [this.queryParams.prescriptionNos] : null
       getPrescriptionList(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
@@ -276,6 +237,15 @@ export default {
           this.doctorList = res.content
         }
       })
+    },
+    getLabelValue (map, value) {
+      let label = ''
+      map.forEach(item => {
+        if (item.value === value) {
+          label = item.label
+        }
+      })
+      return label
     }
   },
   // watch: {
@@ -308,7 +278,7 @@ export default {
   margin-top: 10px;
   background: #fff;
   .main {
-    .titleEdit{
+    .titleEdit {
       padding: 0 20px;
       height: 50px;
       display: -webkit-box;
@@ -358,6 +328,9 @@ export default {
         color: #5a8bff;
         cursor: pointer;
       }
+    }
+    .el-button + .el-button {
+      margin-left: 10px !important;
     }
   }
 }

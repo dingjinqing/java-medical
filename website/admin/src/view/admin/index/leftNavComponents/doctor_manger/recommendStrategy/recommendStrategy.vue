@@ -7,147 +7,121 @@
       :rules="rules"
     >
       <div class="main-title">
-        <span>返利开关</span>
+        <span>医师推荐权重配置</span>
       </div>
       <div class="item-setting-content">
         <div class="item">
           <el-form-item prop="status">
-            开启返利：<el-switch
-              v-model="formData.status"
-              active-color="#F7931E"
-              inactive-color="#ccc"
+            <span class="fil_span">时间筛选：</span>
+            <el-select
+              v-model="timeSelect"
+              size="small"
+              @change="dateChangeHandler"
+              class="timeSelect"
+              style="width:120px;"
             >
-            </el-switch>
-          </el-form-item>
-          <el-form-item prop="isAutomaticAudit" style="margin-left: 200px">
-            自动审核：<el-switch
-              v-model="formData.isAutomaticAudit"
-              active-color="#F7931E"
-              inactive-color="#ccc"
-            >
-            </el-switch>
+              <el-option
+                v-for="item in timeRange"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </div>
         <div class="item">
           <el-form-item prop="withdrawCashMax">
-            每人每日最多提现金额：<el-input-number
+            接诊量权重<el-input-number
               controls-position="right"
               :min="1"
               size="small"
               v-model="formData.withdrawCashMax"
-            ></el-input-number
-            >元
+            ></el-input-number>元
           </el-form-item>
           <el-form-item prop="withdrawCashMix">
-            每人每次最少提现金额：<el-input-number
+            咨询费用权重：<el-input-number
               controls-position="right"
               :min="1"
               size="small"
               v-model="formData.withdrawCashMix"
-            ></el-input-number
-            >元
-          </el-form-item>
-        </div>
-      </div>
-      <div class="main-title">
-        <span>商品订单返利策略</span>
-      </div>
-      <div class="item-setting-content">
-        <div class="item">
-          <el-form-item prop="goodsSharingProportion">
-            分成比例：<el-input-number
-              controls-position="right"
-              :min="0"
-              :max="100"
-              size="small"
-              v-model="formData.goodsSharingProportion"
-            ></el-input-number
-            >%
-          </el-form-item>
-        </div>
-        <div class="item">
-          <el-form-item prop="rxMedicalDoctorProportion">
-            处方药医生佣金比例：<el-input-number
-              controls-position="right"
-              :min="0"
-              :max="100"
-              size="small"
-              v-model="formData.rxMedicalDoctorProportion"
-            ></el-input-number
-            >%，
-          </el-form-item>
-          <el-form-item prop="rxMedicalPlatformProportion">
-            处方药平台佣金比例：<el-input-number
-              controls-position="right"
-              :min="0"
-              :max="100"
-              size="small"
-              v-model="formData.rxMedicalPlatformProportion"
-            ></el-input-number
-            >%
-          </el-form-item>
-        </div>
-        <div class="item">
-          <el-form-item prop="noRxMedicalDoctorProportion">
-            非处方药医生佣金比例：<el-input-number
-              controls-position="right"
-              :min="0"
-              :max="100"
-              size="small"
-              v-model="formData.noRxMedicalDoctorProportion"
-            ></el-input-number
-            >%，
-          </el-form-item>
-          <el-form-item prop="noRxMedicalPlatformProportion">
-            非处方药平台佣金比例：<el-input-number
-              controls-position="right"
-              :min="0"
-              :max="100"
-              size="small"
-              v-model="formData.noRxMedicalPlatformProportion"
-            ></el-input-number
-            >%
+            ></el-input-number>元
           </el-form-item>
         </div>
         <div class="item">
           <el-form-item>
-            返利提现金额 = 已完成订单该品类药品总金额*分成比例*佣金比例
+            推荐指数 = 接诊量指数*接诊量权重 + 咨询费用指数*咨询金额权重
+          </el-form-item>
+        </div>
+        <div class="item">
+          <el-form-item>
+            （接诊量/咨询金额）指数* = （接诊量/咨询费用）/（接诊量/咨询金额）平均数
           </el-form-item>
         </div>
       </div>
       <div class="main-title">
-        <span>咨询订单返利策略</span>
+        <span>科室推荐权重配置</span>
       </div>
       <div class="item-setting-content">
         <div class="item">
-          <el-form-item prop="inquiryOrderDoctorProportion">
-            医生佣金比例：<el-input-number
-              controls-position="right"
-              :min="0"
-              :max="100"
+          <el-form-item prop="status">
+            <span class="fil_span">时间筛选：</span>
+            <el-select
+              v-model="timeSelect"
               size="small"
-              v-model="formData.inquiryOrderDoctorProportion"
-            ></el-input-number
-            >%，
-          </el-form-item>
-          <el-form-item prop="inquiryOrderPlatformProportion">
-            平台佣金比例：<el-input-number
-              controls-position="right"
-              :min="0"
-              :max="100"
-              size="small"
-              v-model="formData.inquiryOrderPlatformProportion"
-            ></el-input-number
-            >%
+              @change="dateChangeHandler"
+              class="timeSelect"
+              style="width:120px;"
+            >
+              <el-option
+                v-for="item in timeRange"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </div>
         <div class="item">
-          <el-form-item> 返利提现金额 = 咨询费*佣金比例 </el-form-item>
+          <el-form-item prop="withdrawCashMax">
+            接诊量权重<el-input-number
+              controls-position="right"
+              :min="1"
+              size="small"
+              v-model="formData.withdrawCashMax"
+            ></el-input-number>元
+          </el-form-item>
+          <el-form-item prop="withdrawCashMix">
+            咨询金额权重：<el-input-number
+              controls-position="right"
+              :min="1"
+              size="small"
+              v-model="formData.withdrawCashMix"
+            ></el-input-number>元
+          </el-form-item>
+          <el-form-item prop="withdrawCashMix">
+            医生人数权重：<el-input-number
+              controls-position="right"
+              :min="1"
+              size="small"
+              v-model="formData.withdrawCashMix"
+            ></el-input-number>元
+          </el-form-item>
+        </div>
+        <div class="item">
+          <el-form-item>
+            推荐指数 = 接诊量指数*接诊量权重 + 咨询金额指数*咨询金额权重 = 医生人数指数*医生人数权重
+          </el-form-item>
         </div>
       </div>
     </el-form>
-    <el-row type="flex" justify="center">
-      <el-button type="primary" @click="setSetting">保存</el-button>
+    <el-row
+      type="flex"
+      justify="center"
+    >
+      <el-button
+        type="primary"
+        @click="setSetting"
+      >保存</el-button>
     </el-row>
   </div>
 </template>
@@ -159,6 +133,12 @@ export default {
     return {
       formData: {
       },
+      timeRange: [
+        { value: 1, label: '最近1天' },
+        { value: 7, label: '最近7天' },
+        { value: 30, label: '最近30天' },
+        { value: 90, label: '最近90天' }
+      ],
       rules: {
         withdrawCashMax: [
           { required: true, message: '请输入最多提现', trigger: 'blur' }
@@ -297,6 +277,12 @@ export default {
     line-height: 80px;
     border-radius: 8px;
     color: #fff;
+  }
+
+  .fil_span {
+    width: 100px;
+    font-size: 14px;
+    text-align: right;
   }
 }
 </style>
