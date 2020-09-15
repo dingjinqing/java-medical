@@ -436,10 +436,7 @@
                   <td>{{ goodsItem.goodsPrice.toFixed(2) }}</td>
                   <td>{{ goodsItem.goodsNumber }}</td>
                   <td v-if="goodsIndex === 0" :rowspan="orderItem.goods.length">
-                    <div
-                      class="pointer"
-                      @click="viewUserCenter(orderItem.userId)"
-                    >
+                    <div>
                       <p>{{ orderItem.username }}</p>
                       <p>{{ orderItem.userMobile }}</p>
                     </div>
