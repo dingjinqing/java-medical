@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
@@ -202,5 +203,20 @@ public class WxAppStoreController extends WxAppBaseController{
     @GetMapping("/service/getStoreMobile/{storeId}")
     public JsonResult cancelReservation(@PathVariable @NotEmpty Integer storeId) {
         return this.success(shop().store.reservation.getStoreMobile(storeId));
+    }
+
+    @PostMapping("/salesclerk/auth")
+    public JsonResult salesclerkAuth(@RequestBody StoreSalesclerkAuthParam param){
+        param.setUserId(wxAppAuth.user().getUserId());
+        param.setShopId(wxAppAuth.user().getShopId());
+        try {
+            Integer accountId=shop().store.wxService.salesclerkAuth(param);
+            if(accountId!=null){
+                wxAppAuth.updateSalesclerkUserType(accountId);
+            }
+        } catch (MpException e) {
+           return fail(e.getErrorCode());
+        }
+        return success();
     }
 }

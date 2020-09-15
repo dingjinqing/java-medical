@@ -5,6 +5,7 @@ import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
+import com.vpu.mp.service.pojo.wxapp.store.StoreSalesclerkAuthParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -64,5 +65,38 @@ public class StoreAccountDao extends MainBaseDao {
             .where(STORE_ACCOUNT.SHOP_ID.eq(shopId).and(STORE_ACCOUNT.IS_BIND.eq((byte) 1)))
             .and(DslPlus.findInSet(storeId, STORE_ACCOUNT.STORE_LIST))
             .fetchInto(StoreAccountVo.class);
+    }
+
+    /**
+     * 店员认证
+     * @param param
+     * @return
+     */
+    public StoreAccountVo storeAccountAuth(StoreSalesclerkAuthParam param){
+        return db().select().from(STORE_ACCOUNT).where(STORE_ACCOUNT.ACCOUNT_NAME.eq(param.getAccountName()))
+            .and(STORE_ACCOUNT.DEL_FLAG.eq(StoreAuthConstant.DEL_NORMAL))
+            .and(STORE_ACCOUNT.MOBILE.eq(param.getMobile()))
+            .and(STORE_ACCOUNT.SHOP_ID.eq(param.getShopId()))
+            .fetchAnyInto(StoreAccountVo.class);
+    }
+
+    /**
+     * 更新用户id
+     * @param accountId
+     * @param userId
+     */
+    public void updateUserId(Integer accountId,Integer userId){
+        db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.USER_ID,userId).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
+            .execute();
+    }
+
+    /**
+     * 更新用户token
+     * @param accountId
+     * @param userToken
+     */
+    public void updateUserToken(Integer accountId,String userToken){
+        db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.USER_TOKEN,userToken).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
+            .execute();
     }
 }

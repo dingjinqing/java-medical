@@ -71,11 +71,15 @@ public class WxAppSessionUser {
 	@JsonProperty(value = "doctor_id")
     Integer doctorId;
     /**
-     * 医师ID 如果当前用户不是医师那么为空
+     * 药师ID 如果当前用户不是药师那么为空
      */
 	@JsonProperty(value = "pharmacist_id")
     Integer pharmacistId;
-
+    /**
+     * 店员account_id
+     */
+    @JsonProperty(value = "salesclerk_id")
+    Integer salesclerkId;
 	/**
 	 * 用户登录session信息
 	 * @author lixinguo
