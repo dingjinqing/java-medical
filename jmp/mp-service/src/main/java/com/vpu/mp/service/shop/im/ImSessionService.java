@@ -157,7 +157,7 @@ public class ImSessionService extends ShopBaseService {
         } else {
             int endIndex = totalRows - renderPageParam.getStartLineIndex() - 1;
             int startIndex = endIndex > renderPageParam.getPageRows() ? endIndex - renderPageParam.getPageRows() + 1 : 0;
-            List<String>  jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
+            List<String> jsonStrs = jedisManager.lrange(sessionBakKey, startIndex, endIndex);
             imSessionItemDos = jsonStrs.stream().map(x -> Util.parseJson(x, ImSessionItemDo.class)).filter(Objects::nonNull).collect(Collectors.toList());
         }
         // 如果是从第一次打开会话内容，需要查询是否有自己已发送，但是对方未读取的消息
@@ -385,21 +385,27 @@ public class ImSessionService extends ShopBaseService {
     }
 
     /**
-     * 批量取消未接诊过期的会话
+     * 批量取消未接诊或关闭已接诊且退款的会话
      */
     public void batchCancelSession(List<String> orderSns) {
-        ImSessionCondition cancelCondition = new ImSessionCondition();
-        cancelCondition.setOrderSns(orderSns);
-        List<ImSessionDo> imSessionDos = imSessionDao.listImSession(cancelCondition);
-        List<Integer> sessionIds = new ArrayList<>(imSessionDos.size());
+        ImSessionCondition condition = new ImSessionCondition();
+        condition.setOrderSns(orderSns);
+        List<ImSessionDo> imSessionDos = imSessionDao.listImSession(condition);
+        List<Integer> cancelSessionIds = new ArrayList<>(imSessionDos.size());
+        List<Integer> refundSessionIds = new ArrayList<>(imSessionDos.size());
         Integer shopId = getShopId();
+
 
         for (ImSessionDo imSessionDo : imSessionDos) {
             clearSessionRedisInfoAndDumpToDb(shopId, imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
-            sessionIds.add(imSessionDo.getId());
+            if (ImSessionConstant.SESSION_READY_TO_START.equals(imSessionDo.getSessionStatus())) {
+                cancelSessionIds.add(imSessionDo.getId());
+            } else {
+                refundSessionIds.add(imSessionDo.getId());
+            }
         }
-
-        imSessionDao.batchUpdateSessionStatus(sessionIds, ImSessionConstant.SESSION_CANCEL, ImSessionConstant.SESSION_CANCEL_WEIGHT);
+        imSessionDao.batchUpdateSessionStatus(cancelSessionIds, ImSessionConstant.SESSION_CANCEL, ImSessionConstant.SESSION_CANCEL_WEIGHT);
+        imSessionDao.batchUpdateSessionStatus(refundSessionIds, ImSessionConstant.SESSION_REFUND, ImSessionConstant.SESSION_REFUND_WEIGHT);
     }
 
     /**
