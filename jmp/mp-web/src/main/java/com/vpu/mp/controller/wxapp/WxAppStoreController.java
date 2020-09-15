@@ -1,17 +1,27 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.RequestUtil;
+import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
+import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.store.*;
+import com.vpu.mp.service.saas.shop.StoreAccountService;
+import com.vpu.mp.service.shop.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
 import static com.vpu.mp.common.foundation.excel.AbstractExcelDisposer.DEFAULT_LANGUAGE;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +37,10 @@ import javax.validation.constraints.NotEmpty;
 @RestController
 @RequestMapping("/api/wxapp/store")
 public class WxAppStoreController extends WxAppBaseController{
+    @Autowired
+    private SmsService smsService;
+    @Autowired
+    private StoreAccountService storeAccountService;
     /**
      * 门店列表
      */
@@ -205,6 +219,11 @@ public class WxAppStoreController extends WxAppBaseController{
         return this.success(shop().store.reservation.getStoreMobile(storeId));
     }
 
+    /**
+     * 店员认证
+     * @param param
+     * @return
+     */
     @PostMapping("/salesclerk/auth")
     public JsonResult salesclerkAuth(@RequestBody StoreSalesclerkAuthParam param){
         param.setUserId(wxAppAuth.user().getUserId());
@@ -218,5 +237,36 @@ public class WxAppStoreController extends WxAppBaseController{
            return fail(e.getErrorCode());
         }
         return success();
+    }
+
+    /**
+     * 发送验证码
+     * @param param
+     * @return
+     */
+    @PostMapping("/salesclerk/send/check/code")
+    public JsonResult sendCheckSms(@RequestBody @Validated PatientSmsCheckParam param){
+        param.setUserId(wxAppAuth.user().getUserId());
+        try {
+            JsonResultCode jsonResultCode = smsService.checkIsOutOfSmsNum(wxAppAuth.user().getUserId(), "");
+            if (!jsonResultCode.equals(CODE_SUCCESS)){
+                return fail(jsonResultCode);
+            }
+            smsService.sendCheckSms(param, SmsTemplate.SALESCLERK_CHECK_MOBILE, SmsApiConfig.REDIS_KEY_SMS_CHECK_SALESCLERK_MOBILE);
+        } catch (MpException e) {
+            return fail();
+        }
+        return success();
+    }
+
+    /**
+     *首页
+     * @return
+     */
+    @PostMapping("/salesclerk/main")
+    public JsonResult storeMainShow(){
+        WxAppSessionUser user = wxAppAuth.user();
+        StoreAccountVo storeAccountVo=storeAccountService.getOneInfo(user.getSalesclerkId());
+        return success(storeAccountVo);
     }
 }

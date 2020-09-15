@@ -108,6 +108,7 @@ public class ConfigService extends ShopBaseService {
         config.setUserType(user.getUserType());
         config.setDoctorId(user.getDoctorId());
         config.setPharmacistId(user.getPharmacistId());
+        config.setSalesclerkId(user.getSalesclerkId());
         ShowPoster showPoster = new ShowPoster();
         // TODO: 取ShowPoster数据
         config.setShowPoster(showPoster);
