@@ -42,7 +42,7 @@ export function deleteGoodsById (goodsId) {
 // 商品批量处理
 export function batchOperateGoods (data) {
   return service({
-    url: `/api/admin/goods/batch`,
+    url: `/api/admin/medical/goods/batch`,
     method: 'post',
     data: data
   })
