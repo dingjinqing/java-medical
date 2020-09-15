@@ -673,7 +673,7 @@ public class StoreService extends ShopBaseService {
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, 1);
         Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
-            map.put(new String("0.00"), e);
+            map.put(formatDouble(0D), e);
         });
         return map;
     }
@@ -683,7 +683,7 @@ public class StoreService extends ShopBaseService {
      * @return String
      */
     public static String formatDouble(double d) {
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("0.00");
         return df.format(d);
     }
 
