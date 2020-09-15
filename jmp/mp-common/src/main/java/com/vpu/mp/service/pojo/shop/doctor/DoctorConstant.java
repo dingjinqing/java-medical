@@ -75,4 +75,14 @@ public class DoctorConstant {
      * 超过1小时
      */
     public static final Byte ONE_HOUR_OUT = 4;
+    /**
+     * 是否拉取过 1是0否
+     */
+    public static final Byte IS_FETCH=1;
+    public static final Byte IS_NOT_FETCH=0;
+    /**
+     * 是否接诊
+     */
+    public static final Byte CAN_CONSULTATION=1;
+    public static final Byte CAN_NOT_CONSULTATION=0;
 }
