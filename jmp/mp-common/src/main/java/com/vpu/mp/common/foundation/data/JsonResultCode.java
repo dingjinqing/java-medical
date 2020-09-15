@@ -278,6 +278,7 @@ public enum JsonResultCode {
      * 订单状态
      */
     CODE_ORDER_STATUS_ALREADY_CHANGE(124001,JsonResultMessage.CODE_ORDER_STATUS_ALREADY_CHANGE),
+    ORDER_CHECK_VERIFY_CODE_FAILD(124002, JsonResultMessage.ORDER_CHECK_VERIFY_CODE_FAILD),
 
     // 商品
     GOODS_ID_IS_NULL(130001,JsonResultMessage.GOODS_ID_IS_NULL),
