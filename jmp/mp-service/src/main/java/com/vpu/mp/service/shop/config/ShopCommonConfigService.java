@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.department.DepartmentRecommendCfgParam;
 import com.vpu.mp.service.pojo.shop.sms.account.SmsAccountInfoVo;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
 import jodd.util.StringUtil;
@@ -206,6 +207,36 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * 后台商品搜索设置
      */
     final public static String K_ACCURATE_SEARCH = "accurate_search";
+    /**
+     * 医师推荐时间类型
+     */
+    final public static String K_DOCTOR_RECOMMEND_TYPE = "doctor_recommend_type";
+    /**
+     * 医师推荐接诊量权重
+     */
+    final public static String K_DOCTOR_RECOMMEND_CONSULTATION_RATE = "doctor_recommend_consultation_rate";
+    /**
+     * 医师推荐咨询费用权重
+     */
+    final public static String K_DOCTOR_RECOMMEND_INQUIRY_RATE = "doctor_recommend_inquiry_rate";
+
+    /**
+     * 科室推荐时间类型
+     */
+    final public static String K_DEPARTMENT_RECOMMEND_TYPE = "department_recommend_type";
+    /**
+     * 科室推荐接诊量权重
+     */
+    final public static String K_DEPARTMENT_RECOMMEND_CONSULTATION_RATE = "department_recommend_consultation_rate";
+    /**
+     * 科室推荐咨询费用权重
+     */
+    final public static String K_DEPARTMENT_RECOMMEND_INQUIRY_RATE = "department_recommend_inquiry_rate";
+    /**
+     * 科室推荐医生人数权重
+     */
+    final public static String K_DEPARTMENT_RECOMMEND_DOCTOR_RATE = "department_recommend_doctor_rate";
+
     /**
 	 * 是否显示Logo配置
 	 * @return
@@ -915,6 +946,83 @@ public class ShopCommonConfigService extends BaseShopConfigService{
         jedisManager.set(JedisKeyConstant.CONFIG_SHARE_CONFIG + getShopId(), Util.toJson(commonCfg.getShareConfig()), ShopCommonConfigCacheService.MAX_TIME_OUT);
     }
 
+    /**
+     * 医师推荐时间类型
+     * @param value
+     * @return
+     */
+    public int setDoctorRecommendType(Byte value) {
+        return this.set(K_DOCTOR_RECOMMEND_TYPE, value,Byte.class);
+    }
 
+    /**
+     * 医师推荐时间类型
+     * @param value
+     * @return
+     */
+    public int setDepartmentRecommendType(Byte value) {
+        return this.set(K_DEPARTMENT_RECOMMEND_TYPE, value,Byte.class);
+    }
 
+    /**
+     * 医师推荐接诊量权重
+     * @param value
+     * @return
+     */
+    public int setDoctorRecommendConsultationRate(Integer value) {
+        return this.set(K_DOCTOR_RECOMMEND_CONSULTATION_RATE, value,Integer.class);
+    }
+
+    /**
+     * 医师推荐咨询费用权重
+     * @param value
+     * @return
+     */
+    public int setDoctorRecommendInquiryRate(Integer value) {
+        return this.set(K_DOCTOR_RECOMMEND_INQUIRY_RATE, value,Integer.class);
+    }
+
+    /**
+     * 科室推荐接诊量权重
+     * @param value
+     * @return
+     */
+    public int setDepartmentRecommendConsultationRate(Integer value) {
+        return this.set(K_DEPARTMENT_RECOMMEND_CONSULTATION_RATE, value,Integer.class);
+    }
+
+    /**
+     * 科室推荐咨询费用权重
+     * @param value
+     * @return
+     */
+    public int setDepartmentRecommendInquiryRate(Integer value) {
+        return this.set(K_DEPARTMENT_RECOMMEND_INQUIRY_RATE, value,Integer.class);
+    }
+
+    /**
+     * 科室推荐医生人数权重
+     * @param value
+     * @return
+     */
+    public int setDepartmentRecommendDoctorRate(Integer value) {
+        return this.set(K_DEPARTMENT_RECOMMEND_DOCTOR_RATE, value,Integer.class);
+    }
+
+    /**
+     * 更新店铺医生科室推荐配置
+     *
+     */
+    public Boolean updateDoctorDepartmentCfg(DepartmentRecommendCfgParam commonCfg) {
+        this.transaction(()->{
+            this.setDoctorRecommendType(commonCfg.getDoctorRecommendType());
+            this.setDoctorRecommendConsultationRate(commonCfg.getDoctorRecommendConsultationRate());
+            this.setDoctorRecommendInquiryRate(commonCfg.getDoctorRecommendInquiryRate());
+            this.setDepartmentRecommendType(commonCfg.getDepartmentRecommendType());
+            this.setDepartmentRecommendConsultationRate(commonCfg.getDepartmentRecommendConsultationRate());
+            this.setDepartmentRecommendInquiryRate(commonCfg.getDepartmentRecommendInquiryRate());
+            this.setDepartmentRecommendDoctorRate(commonCfg.getDepartmentRecommendDoctorRate());
+        });
+        return true;
+    }
 }
