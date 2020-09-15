@@ -15,6 +15,7 @@ import java.util.List;
 public class DoctorWithdrawDetailVo {
     private Integer doctorId;
     private String doctorName;
+    private String userName;
     private String mobile;
     private String realName;
     private Timestamp createTime;
