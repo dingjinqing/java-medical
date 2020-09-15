@@ -66,7 +66,11 @@ public class WxAppConfigVo {
      */
     @JsonProperty(value = "pharmacist_id")
     Integer pharmacistId;
-
+    /**
+     * 店员account_id
+     */
+    @JsonProperty(value = "salesclerk_id")
+    Integer salesclerkId;
 	@Data
 	public static final class ShowPoster{
 		/**

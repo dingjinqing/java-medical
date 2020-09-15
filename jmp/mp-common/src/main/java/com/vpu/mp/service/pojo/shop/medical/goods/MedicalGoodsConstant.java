@@ -71,4 +71,10 @@ public class MedicalGoodsConstant {
     public static final Byte IS_NO_RX=0;
     public static final Byte IS_RX=1;
 
+    /**his独有药品*/
+    public static final Byte ONLY_IN_HIS=1;
+    /**store独有药品*/
+    public static final Byte ONLY_IN_STORE=2;
+    /**双方都有药品*/
+    public static final Byte IN_BOTH=3;
 }

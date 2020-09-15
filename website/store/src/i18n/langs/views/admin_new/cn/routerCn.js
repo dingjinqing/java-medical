@@ -10,5 +10,6 @@ export const cn = {
   intraCityOrder: ['门店订单', '同城配送'],
   afterSale: ['门店订单', '售后中心'],
   orderInfo: ['门店订单', '查看详情'],
-  afterSaleInfo: ['门店订单', '售后中心', '售后详情']
+  afterSaleInfo: ['门店订单', '售后中心', '售后详情'],
+  manualRefund: ['门店订单', '售后中心', '手动退款退货']
 }

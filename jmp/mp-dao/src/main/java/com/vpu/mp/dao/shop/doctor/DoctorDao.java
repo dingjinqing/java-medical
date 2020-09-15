@@ -114,6 +114,18 @@ public class DoctorDao extends ShopBaseDao {
         if (param.getDoctorIds() != null) {
             select.where(DOCTOR.ID.in(param.getDoctorIds()));
         }
+        if(param.getTitleId()!=null){
+            select.where(DOCTOR.TITLE_ID.eq(param.getTitleId()));
+        }
+        if(param.getSex()!=null){
+            select.where(DOCTOR.SEX.eq(param.getSex()));
+        }
+        if(param.getConsultationMoneyMix()!=null){
+            select.where(DOCTOR.CONSULTATION_TOTAL_MONEY.ge(param.getConsultationMoneyMix()));
+        }
+        if(param.getConsultationMoneyMax()!=null){
+            select.where(DOCTOR.CONSULTATION_TOTAL_MONEY.le(param.getConsultationMoneyMax()));
+        }
     }
 
     /**

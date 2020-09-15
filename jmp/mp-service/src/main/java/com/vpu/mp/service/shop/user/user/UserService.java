@@ -6,7 +6,10 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
+import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
@@ -31,7 +34,10 @@ import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDoctorVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.user.detail.UserAssociatedDoctorParam;
+import com.vpu.mp.service.pojo.shop.user.detail.UserAssociatedDoctorVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
@@ -44,6 +50,7 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser.WxUserInfo;
 import com.vpu.mp.service.saas.shop.ShopImageManageService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -51,6 +58,8 @@ import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.wxapp.WxUserCardService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
+import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.user.collection.UserCollectionService;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -62,6 +71,7 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -135,6 +145,14 @@ public class UserService extends ShopBaseService {
 	private UserPatientCoupleDao userPatientCoupleDao;
 	@Autowired
 	protected PatientDao patientDao;
+	@Autowired
+	private UserDao userDao;
+	@Autowired
+	private DepartmentService departmentService;
+	@Autowired
+	private PrescriptionService prescriptionService;
+	@Autowired
+	private InquiryOrderService inquiryOrderService;
 
 
     private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
@@ -1211,5 +1229,31 @@ public class UserService extends ShopBaseService {
      */
     public int getInviteCount(Integer userId) {
         return db().select(DSL.count(USER.USER_ID)).from(USER).where(USER.INVITE_ID.eq(userId)).fetchOneInto(int.class);
+    }
+
+    /**
+     * 获取用户关联医师列表
+     * @param userAssociatedDoctorParam 关联医师入参
+     * @return PageResult<UserAssociatedDoctorVo>
+     */
+    public PageResult<UserAssociatedDoctorVo> getUserAssociatedDoctor(UserAssociatedDoctorParam userAssociatedDoctorParam) {
+        //获取医师信息
+        PageResult<UserAssociatedDoctorVo> userAssociatedDoctor = userDao.getUserAssociatedDoctor(userAssociatedDoctorParam);
+        // 如果没有查询科室那么查询出医师所属全部科室
+        if (userAssociatedDoctorParam.getDepartmentName() == null || "".equals(userAssociatedDoctorParam.getDepartmentName())) {
+            userAssociatedDoctor.getDataList().forEach(userAssociatedDoctorVo -> {
+                List<String> departmentNameByDoctor = departmentService.getDepartmentNameByDoctor(userAssociatedDoctorVo.getDoctorId());
+                userAssociatedDoctorVo.setDepartmentName(departmentNameByDoctor.toString());
+            });
+        }
+        // 查询该医师处方信息
+        userAssociatedDoctor.getDataList().forEach(userAssociatedDoctorVo -> {
+            PrescriptionDoctorVo prescriptionDoctorVo = prescriptionService.getDoctorPrescription(userAssociatedDoctorVo.getDoctorCode(), userAssociatedDoctorParam.getUserId());
+            userAssociatedDoctorVo.setPrescriptionNum(prescriptionDoctorVo.getTotalCount());
+            PrescriptionDoctorVo doctorInquiry = inquiryOrderService.getDoctorInquiry(userAssociatedDoctorVo.getDoctorId(), userAssociatedDoctorParam.getUserId());
+            userAssociatedDoctorVo.setInquiryNum(doctorInquiry.getTotalCount());
+            userAssociatedDoctorVo.setTotalCost(prescriptionDoctorVo.getTotalPrice().add(doctorInquiry.getTotalPrice()));
+        });
+        return userAssociatedDoctor;
     }
 }

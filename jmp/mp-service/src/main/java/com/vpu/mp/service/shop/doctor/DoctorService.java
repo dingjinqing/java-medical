@@ -172,6 +172,10 @@ public class DoctorService extends ShopBaseService {
      */
     public void synchroDoctor(DoctorOneParam doctor) {
         if(getDoctorByCode(doctor.getHospitalCode()) == null) {
+            //默认不接诊
+            doctor.setCanConsultation(DoctorConstant.CAN_NOT_CONSULTATION);
+            //默认不上班
+            doctor.setIsOnDuty(DoctorConstant.NOT_ON_DUTY);
             insertDoctor(doctor);
         } else {
             DoctorOneParam oldDepartment = getDoctorByCode(doctor.getHospitalCode());
@@ -211,10 +215,7 @@ public class DoctorService extends ShopBaseService {
             }
             //是否拉取
             doctor.setIsFetch(DoctorConstant.IS_FETCH);
-            //默认不接诊
-            doctor.setCanConsultation(DoctorConstant.CAN_NOT_CONSULTATION);
-            //默认不上班
-            doctor.setIsOnDuty(DoctorConstant.NOT_ON_DUTY);
+
             synchroDoctor(doctor);
         }
     }

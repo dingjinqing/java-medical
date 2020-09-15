@@ -393,4 +393,17 @@ public class DepartmentDao extends ShopBaseDao {
             .and(PRESCRIPTION.CREATE_TIME.le(param.getEndTime()))
             .fetchAnyInto(DepartmentStatisticOneParam.class);
     }
+
+    /**
+     * 查询医师所属科室名称
+     * @param doctorId 医师id
+     * @return List<String>
+     */
+    public List<String> getDepartmentNameByDoctor(Integer doctorId) {
+        return db().select(DEPARTMENT.NAME)
+            .from(DEPARTMENT)
+            .leftJoin(DOCTOR_DEPARTMENT_COUPLE)
+            .on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).fetchInto(String.class);
+    }
 }

@@ -179,9 +179,10 @@ public class DoctorWithdrawService extends ShopBaseService {
                 doctorWithDrawDao.update(doctorWithdrawVo.getId(),param.getCheckStatus(),param.getRefuseDesc());
             });
 
+        }else {
+            doctorWithDrawDao.update(doctorWithdrawVo.getId(),param.getCheckStatus(),param.getRefuseDesc());
+
         }
-
-
 
     }
 

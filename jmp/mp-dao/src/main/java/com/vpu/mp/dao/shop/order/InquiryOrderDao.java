@@ -8,6 +8,7 @@ import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
 import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDoctorVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderParam;
@@ -21,6 +22,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -304,5 +306,20 @@ public class InquiryOrderDao extends ShopBaseDao {
                 .and(INQUIRY_ORDER.ORDER_STATUS.in(InquiryOrderConstant.REFUND_FAILED,InquiryOrderConstant.ORDER_FINISHED,InquiryOrderConstant.ORDER_REFUND,
                         InquiryOrderConstant.ORDER_TO_REFUND,InquiryOrderConstant.ORDER_PART_REFUND))
                 .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 查询用户关联医师处方
+     * @param doctorId 医师id
+     * @param userId 用户id
+     * @return PrescriptionDoctorVo
+     */
+    public PrescriptionDoctorVo getDoctorInquiry(Integer doctorId, Integer userId){
+        return db().select(DSL.ifnull(DSL.count(INQUIRY_ORDER.ORDER_AMOUNT), 0).as("totalCount")
+        , DSL.ifnull(DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT), new BigDecimal(0)).as("totalPrice"))
+            .from(INQUIRY_ORDER)
+            .where(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
+            .and(INQUIRY_ORDER.USER_ID.eq(userId))
+            .fetchAnyInto(PrescriptionDoctorVo.class);
     }
 }

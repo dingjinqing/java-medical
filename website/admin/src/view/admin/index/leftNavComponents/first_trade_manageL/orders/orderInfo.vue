@@ -1132,7 +1132,7 @@ export default {
           if (res.error === 0) {
             this.search()
           } else {
-            this.$$message.error({ message: res.message })
+            this.$message.error({ message: res.message })
           }
         })
       })

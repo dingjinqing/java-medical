@@ -104,3 +104,19 @@ export function delivery (data) {
     data: data
   })
 }
+// 手动退货退款详情
+export function manualReturnInfo (data) {
+  return service({
+    url: '/api/store/order/refund/list',
+    method: 'post',
+    data: data
+  })
+}
+// 手动退货退款
+export function manualReturn (data) {
+  return service({
+    url: '/api/store/order/refund',
+    method: 'post',
+    data: data
+  })
+}

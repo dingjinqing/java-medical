@@ -154,9 +154,10 @@ export default {
           return
         }
         res.content.seriesList.forEach(item => {
-          item.type = 'bar'
+          item.type = 'line'
           item.data = item.dataList
-          item.tyoe = 'bar'
+          item.tyoe = 'line'
+          item.areaStyle = {}
           item.dataList = []
           item.dataMap = {}
         })

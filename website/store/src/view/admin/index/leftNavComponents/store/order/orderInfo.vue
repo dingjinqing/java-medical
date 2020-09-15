@@ -299,11 +299,7 @@
       <div class="module-title">历史处方信息</div>
       <div class="prescription-content">
         <template v-for="item in order.prescriptionOldDoList">
-          <div
-            class="prescription-item"
-            :key="item.id"
-            @click="handlePrescriptionInfo(item.prescriptionCode)"
-          >
+          <div class="prescription-item" :key="item.id">
             <div
               class="item-title"
               :style="
@@ -347,11 +343,7 @@
       <div class="module-title">新开处方信息</div>
       <div class="prescription-content">
         <template v-for="item in order.prescriptionDoList">
-          <div
-            class="prescription-item"
-            :key="item.id"
-            @click="handlePrescriptionInfo(item.prescriptionCode)"
-          >
+          <div class="prescription-item" :key="item.id">
             <div
               class="item-title"
               :style="
@@ -1129,7 +1121,7 @@ export default {
           if (res.error === 0) {
             this.search()
           } else {
-            this.$message.error('提示', res.message)
+            this.$message.error(res.message)
           }
         })
       })
@@ -1193,15 +1185,6 @@ export default {
           userId
         }
       })
-    },
-    handlePrescriptionInfo (prescriptionCode) {
-      let newpage = this.$router.resolve({
-        name: 'prescription_message',
-        query: {
-          prescriptionCode
-        }
-      })
-      window.open(newpage.href, '_blank')
     }
   },
   computed: {

@@ -22,13 +22,6 @@
             clearable
           />
         </el-form-item>
-        <!--平台分类树-->
-        <!--<sortCatTreeSelect-->
-        <!--ref="catTree"-->
-        <!--:filterGoodsInfo="initSortCatParams"-->
-        <!--treeType="cat"-->
-        <!--:selectedId.sync="goodsFilterFormData.catId"-->
-        <!--/>-->
         <!--商家分类树-->
         <sortCatTreeSelect
           ref="sortTree"
@@ -101,7 +94,7 @@
         </el-form-item>
         <!--商品来源-->
         <el-form-item
-          :label="$t('allGoods.allGoodsHeaderData.goodsSource')+'：'"
+          label="药品来源："
           prop="source"
         >
           <el-select
@@ -109,12 +102,10 @@
             :style="goodsFilterInputStyle"
             size="small"
           >
-            <el-option
-              v-for="(item,index) in goodsSourceOptions"
-              :label="item.label"
-              :value="item.value"
-              :key="index"
-            />
+            <el-option :value="null" label="选择药品来源"/>
+            <el-option :value="1" label="医院独有数据"/>
+            <el-option :value="2" label="药房独有数据"/>
+            <el-option :value="3" label="双方匹配数据"/>
           </el-select>
         </el-form-item>
         <!--活动类型-->

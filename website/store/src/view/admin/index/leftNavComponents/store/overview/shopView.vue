@@ -159,15 +159,15 @@ export default {
       articleList: [],
       waitDeliverNum: 0,
       waitVerifyNum: 0,
-      searchTimeType: '1',
+      searchTimeType: '-1',
       searchStoreId: null,
       totalNum: {},
       timeList: [
-        { value: '1', label: '今日' },
-        { value: '2', label: '昨日' },
-        { value: '3', label: '近一周' },
-        { value: '4', label: '近一个月' },
-        { value: '5', label: '近三个月' }
+        { value: '-1', label: '今日' },
+        { value: '1', label: '昨日' },
+        { value: '7', label: '近一周' },
+        { value: '30', label: '近一个月' },
+        { value: '90', label: '近三个月' }
       ],
       bindData: {},
       centerDialogVisible: false,

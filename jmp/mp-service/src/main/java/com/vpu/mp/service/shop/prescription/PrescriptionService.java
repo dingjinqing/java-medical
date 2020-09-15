@@ -31,20 +31,7 @@ import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionOneParam;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDrugVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
@@ -508,5 +495,15 @@ public class PrescriptionService extends ShopBaseService {
 
     public Integer countDateByDoctor(String doctorCode, Timestamp startTime, Timestamp endTime) {
        return prescriptionDao.countDateByDoctor(doctorCode,startTime,endTime);
+    }
+
+    /**
+     * 查询用户关联医师处方
+     * @param doctorCode 医师code
+     * @param userId 用户id
+     * @return List<PrescriptionDo>
+     */
+    public PrescriptionDoctorVo getDoctorPrescription(String doctorCode, Integer userId) {
+        return prescriptionDao.getDoctorPrescription(doctorCode, userId);
     }
 }

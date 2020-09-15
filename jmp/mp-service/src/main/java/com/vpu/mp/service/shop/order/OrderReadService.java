@@ -773,7 +773,7 @@ showManualReturn(vo);
 		//是否退过款
 		order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? YES : NO);
 		//门店信息
-		order.setStoreInfo(order.getStoreId() > 0 ? store.getStore(order.getOrderId()) : null);
+		order.setStoreInfo(order.getStoreId() > 0 ? store.getStore(order.getStoreId()) : null);
 		//发票
 		order.setInvoiceInfo(order.getInvoiceId() > 0 ? invoice.get(order.getInvoiceId()) : null);
 

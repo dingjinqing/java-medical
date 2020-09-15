@@ -30,6 +30,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequest
 import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalStoreRequestBo;
 import com.vpu.mp.service.pojo.shop.medical.goods.convertor.GoodsConverter;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalStoreRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
@@ -321,6 +322,10 @@ public class MedicalGoodsService extends ShopBaseService {
     }
 
 
+    public void batchOperate(MedicalGoodsBatchOperateParam param){
+        goodsAggregate.batchOperate(param);
+    }
+
     /**
      * 获取商品医药信息
      * @param goodsId 商品id
@@ -350,6 +355,14 @@ public class MedicalGoodsService extends ShopBaseService {
         return result;
     }
 
+    /**
+     * 药品上下架控制方式
+     * 如果store_code不为null，则表明是从药房拉取到了的数据，
+     * 如果his_staus不为null,则表明是从his拉取到了的数据，
+     * 两者都不为null，则表明从药房和his都拉取到了数据并匹配上，
+     * store_status字段暂时未使用，具体药房商品状态在门店商品表内存储。
+     * @return
+     */
     @SuppressWarnings("all")
     public JsonResult fetchExternalMedicalInfo() {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
@@ -403,7 +416,7 @@ public class MedicalGoodsService extends ShopBaseService {
             totalCount = goodsMedicalExternalRequestBo.getTotalCount();
         }
         //控制药品的可上架状态
-        goodsAggregate.batchUpStoreAndMedicalGoods();
+//        goodsAggregate.batchUpStoreAndMedicalGoods();
         logger().debug("拉取药品信息结束：共处理" + pullCount + "条");
         return JsonResult.success();
     }
@@ -596,7 +609,7 @@ public class MedicalGoodsService extends ShopBaseService {
             totalCount = goodsMedicalExternalStoreRequestBo.getTotalCount();
         }
         //控制药品的可上架状态
-        goodsAggregate.batchUpStoreAndMedicalGoods();
+//        goodsAggregate.batchUpStoreAndMedicalGoods();
         logger().debug("拉取药店：" + storeInfo.getStoreCode() + " 商品信息结束：共处理" + pullCount + "条");
         return JsonResult.success();
     }
@@ -624,7 +637,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 String key = externalStoreRequestItemBo.getGoodsKeyComposedByNameQualityEnterprise();
                 Integer goodsId = goodsMedicalKeyToGoodsId.get(key);
                 // 转换为药房商品自身状态字段
-                externalStoreRequestItemBo.setStoreStatus(externalStoreRequestItemBo.getState() == null ? null : externalStoreRequestItemBo.getState().byteValue());
+//                externalStoreRequestItemBo.setStoreStatus(externalStoreRequestItemBo.getState() == null ? null : externalStoreRequestItemBo.getState().byteValue());
                 if (goodsId == null) {
                     // 肯定是医院没有，而药房存在的药品，如果是新增的药品，则来源设置为药房，对于修改不处理来源字段（保持之前的状态）
                     externalStoreRequestItemBo.setSource(MedicalGoodsConstant.SOURCE_FROM_STORE);
