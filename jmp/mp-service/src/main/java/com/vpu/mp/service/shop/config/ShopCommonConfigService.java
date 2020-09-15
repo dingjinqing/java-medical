@@ -956,6 +956,14 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     }
 
     /**
+     * 获取医师推荐时间类型
+     * @return
+     */
+    public Byte getDoctorRecommendType() {
+        return this.get(K_DOCTOR_RECOMMEND_TYPE, Byte.class, (byte)0);
+    }
+
+    /**
      * 医师推荐时间类型
      * @param value
      * @return
