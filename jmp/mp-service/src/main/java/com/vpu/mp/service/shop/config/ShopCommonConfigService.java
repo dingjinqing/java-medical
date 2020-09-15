@@ -951,16 +951,16 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @param value
      * @return
      */
-    public int setDoctorRecommendType(Byte value) {
-        return this.set(K_DOCTOR_RECOMMEND_TYPE, value,Byte.class);
+    public int setDoctorRecommendType(Integer value) {
+        return this.set(K_DOCTOR_RECOMMEND_TYPE, value,Integer.class);
     }
 
     /**
      * 获取医师推荐时间类型
      * @return
      */
-    public Byte getDoctorRecommendType() {
-        return this.get(K_DOCTOR_RECOMMEND_TYPE, Byte.class, (byte)0);
+    public Integer getDoctorRecommendType() {
+        return this.get(K_DOCTOR_RECOMMEND_TYPE, Integer.class, 1);
     }
 
     /**
@@ -968,8 +968,16 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * @param value
      * @return
      */
-    public int setDepartmentRecommendType(Byte value) {
-        return this.set(K_DEPARTMENT_RECOMMEND_TYPE, value,Byte.class);
+    public int setDepartmentRecommendType(Integer value) {
+        return this.set(K_DEPARTMENT_RECOMMEND_TYPE, value,Integer.class);
+    }
+
+    /**
+     * 获取科室推荐时间类型
+     * @return
+     */
+    public Integer getDepartmentRecommendType() {
+        return this.get(K_DEPARTMENT_RECOMMEND_TYPE, Integer.class, 1);
     }
 
     /**
@@ -982,12 +990,28 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     }
 
     /**
+     * 获取医师推荐接诊量权重
+     * @return
+     */
+    public Integer getDoctorRecommendConsultationRate() {
+        return this.get(K_DOCTOR_RECOMMEND_CONSULTATION_RATE, Integer.class, 100);
+    }
+
+    /**
      * 医师推荐咨询费用权重
      * @param value
      * @return
      */
     public int setDoctorRecommendInquiryRate(Integer value) {
         return this.set(K_DOCTOR_RECOMMEND_INQUIRY_RATE, value,Integer.class);
+    }
+
+    /**
+     * 获取医师推荐咨询费用权重
+     * @return
+     */
+    public Integer getDoctorRecommendInquiryRate() {
+        return this.get(K_DOCTOR_RECOMMEND_INQUIRY_RATE, Integer.class, 0);
     }
 
     /**
@@ -1000,6 +1024,14 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     }
 
     /**
+     * 获取科室推荐接诊量权重
+     * @return
+     */
+    public Integer getDepartmentRecommendConsultationRate() {
+        return this.get(K_DEPARTMENT_RECOMMEND_CONSULTATION_RATE, Integer.class, 100);
+    }
+
+    /**
      * 科室推荐咨询费用权重
      * @param value
      * @return
@@ -1009,12 +1041,28 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     }
 
     /**
+     * 获取科室推荐咨询费用权重
+     * @return
+     */
+    public Integer getDepartmentRecommendInquiryRate() {
+        return this.get(K_DEPARTMENT_RECOMMEND_INQUIRY_RATE, Integer.class, 0);
+    }
+
+    /**
      * 科室推荐医生人数权重
      * @param value
      * @return
      */
     public int setDepartmentRecommendDoctorRate(Integer value) {
         return this.set(K_DEPARTMENT_RECOMMEND_DOCTOR_RATE, value,Integer.class);
+    }
+
+    /**
+     * 获取科室推荐医生人数权重
+     * @return
+     */
+    public Integer getDepartmentRecommendDoctorRate() {
+        return this.get(K_DEPARTMENT_RECOMMEND_DOCTOR_RATE, Integer.class, 0);
     }
 
     /**
@@ -1032,5 +1080,21 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             this.setDepartmentRecommendDoctorRate(commonCfg.getDepartmentRecommendDoctorRate());
         });
         return true;
+    }
+
+    /**
+     * 获取店铺医生科室推荐配置
+     *
+     */
+    public DepartmentRecommendCfgParam getDoctorDepartmentCfg() {
+        DepartmentRecommendCfgParam recommendCfg = new DepartmentRecommendCfgParam();
+        recommendCfg.setDoctorRecommendType(this.getDoctorRecommendType());
+        recommendCfg.setDoctorRecommendConsultationRate(this.getDoctorRecommendConsultationRate());
+        recommendCfg.setDoctorRecommendInquiryRate(this.getDoctorRecommendInquiryRate());
+        recommendCfg.setDepartmentRecommendType(this.getDepartmentRecommendType());
+        recommendCfg.setDepartmentRecommendConsultationRate(this.getDepartmentRecommendConsultationRate());
+        recommendCfg.setDepartmentRecommendInquiryRate(this.getDepartmentRecommendInquiryRate());
+        recommendCfg.setDepartmentRecommendDoctorRate(this.getDepartmentRecommendDoctorRate());
+        return recommendCfg;
     }
 }
