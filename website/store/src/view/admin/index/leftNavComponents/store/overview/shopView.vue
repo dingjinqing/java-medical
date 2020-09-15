@@ -118,7 +118,7 @@
         </div>
       </div>
     </div>
-    <div class="right-content">
+    <div class="right-content" v-if="articleList.length">
       <div class="content-item">
         <div class="item-title">
           <span class="title">公告</span>
@@ -337,7 +337,7 @@ export default {
     }
   }
   .right-content {
-    width: 30%;
+    flex: 0.4;
     margin-left: 10px;
     .list-content {
       display: flex;
