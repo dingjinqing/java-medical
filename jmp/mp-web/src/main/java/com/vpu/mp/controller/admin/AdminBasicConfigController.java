@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.config.pledge.PledgeStateUpdateParam;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeVo;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.PledgeStateUpdateGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
+import com.vpu.mp.service.pojo.shop.department.DepartmentRecommendCfgParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
 import org.springframework.beans.factory.annotation.Value;
@@ -493,5 +494,18 @@ public class AdminBasicConfigController extends AdminBaseController{
 		return true;
 
 	}
+
+    /**
+     * 更新店铺医生科室推荐配置
+     * @return
+     */
+    @PostMapping(value = "/shop/doctor/recommend/update")
+    public JsonResult updateDoctorDepartmentCfg(@RequestBody @Valid DepartmentRecommendCfgParam commonCfg) {
+        if(shop().config.shopCommonConfigService.updateDoctorDepartmentCfg(commonCfg)) {
+            return this.success();
+        }else {
+            return this.fail(JsonResultCode.CODE_FAIL);
+        }
+    }
 
 }
