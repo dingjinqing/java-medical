@@ -6,15 +6,14 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorTitleRecord;
 import com.vpu.mp.service.pojo.shop.title.TitleListParam;
 import com.vpu.mp.service.pojo.shop.title.TitleOneParam;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.Tables.DOCTOR_TITLE;
 
 /**
@@ -26,15 +25,42 @@ public class TitleDao extends ShopBaseDao{
     /**
      * 职称列表
      *
+     * select
+     * 	b2c_doctor_title.*
+     * 	, count(b2c_doctor.title_id)
+     * from
+     * 	b2c_doctor_title
+     * left join
+     * 	b2c_doctor
+     * on
+     * 	b2c_doctor.title_id = b2c_doctor_title.id
+     * GROUP BY
+     * 	b2c_doctor.title_id
+     * ORDER BY
+     * 	b2c_doctor_title.id asc
      * @param param
      * @return
      */
     public PageResult<TitleOneParam> getTitleList(TitleListParam param) {
-        SelectConditionStep<DoctorTitleRecord> where = db().selectFrom(DOCTOR_TITLE).where(DOCTOR_TITLE.IS_DELETE.eq((byte) 0));
-        where.orderBy(DOCTOR_TITLE.ID.desc());
-        PageResult<TitleOneParam> titleList = this.getPageResult(where, param.getCurrentPage(),
+        SelectSeekStep1<Record6<Integer, Integer, String, String, Timestamp, Integer>, Integer> select = db().select(
+            DOCTOR_TITLE.ID,
+            DOCTOR_TITLE.FIRST,
+            DOCTOR_TITLE.NAME,
+            DOCTOR_TITLE.CODE,
+            DOCTOR_TITLE.CREATE_TIME
+            , DSL.count(DOCTOR.TITLE_ID).as("doctorNum"))
+            .from(DOCTOR_TITLE)
+            .leftJoin(DOCTOR)
+            .on(DOCTOR.TITLE_ID.eq(DOCTOR_TITLE.ID))
+            .groupBy(DOCTOR.TITLE_ID,
+                DOCTOR_TITLE.ID,
+                DOCTOR_TITLE.NAME,
+                DOCTOR_TITLE.FIRST,
+                DOCTOR_TITLE.CODE,
+                DOCTOR_TITLE.CREATE_TIME)
+            .orderBy(DOCTOR_TITLE.ID.asc());
+        return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), TitleOneParam.class);
-        return titleList;
     }
 
     /**
