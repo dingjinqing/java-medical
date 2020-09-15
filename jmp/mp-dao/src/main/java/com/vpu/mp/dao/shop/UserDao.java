@@ -1,8 +1,14 @@
 package com.vpu.mp.dao.shop;
 
 import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.service.pojo.shop.patient.PatientQueryDoctorVo;
+import com.vpu.mp.service.pojo.shop.user.detail.UserAssociatedDoctorParam;
+import com.vpu.mp.service.pojo.shop.user.detail.UserAssociatedDoctorVo;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -60,6 +66,64 @@ public class UserDao extends ShopBaseDao {
     public void unbundlingUserType(Integer userId) {
         db().update(USER).set(USER.USER_TYPE, (byte)0)
             .where(USER.USER_ID.eq(userId)).execute();
+    }
+
+    /**
+     * 查询用户关联医师
+     * @param userAssociatedDoctorParam 查询关联医师入参
+     * @return PageResult<UserAssociatedDoctorVo>
+     */
+    public PageResult<UserAssociatedDoctorVo> getUserAssociatedDoctor(UserAssociatedDoctorParam userAssociatedDoctorParam) {
+        Condition condition1 = PRESCRIPTION.USER_ID.eq(userAssociatedDoctorParam.getUserId()).or(INQUIRY_ORDER.USER_ID.eq(userAssociatedDoctorParam.getUserId()));
+        SelectSelectStep<? extends Record> select1 = db().select(DOCTOR.NAME.as("doctorName"),
+            DOCTOR.HOSPITAL_CODE.as("doctorCode"),
+            DOCTOR.ID.as("doctorId"),
+            DSL.ifnull(DSL.count(USER_DOCTOR_ATTENTION.DOCTOR_ID), 0).as("isFav"));
+        if (userAssociatedDoctorParam.getDepartmentName() != null) {
+            select1.select(DEPARTMENT.NAME.as("departmentName"));
+        }
+        SelectConditionStep<? extends Record> select =
+            select1
+            .from(DOCTOR)
+            .leftJoin(PRESCRIPTION)
+            .on(DOCTOR.HOSPITAL_CODE.eq(PRESCRIPTION.DOCTOR_CODE))
+            .leftJoin(INQUIRY_ORDER)
+            .on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID))
+            .leftJoin(DOCTOR_DEPARTMENT_COUPLE)
+            .on(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(DOCTOR.ID))
+            .leftJoin(DEPARTMENT)
+            .on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
+            .leftJoin(USER_DOCTOR_ATTENTION)
+            .on(USER_DOCTOR_ATTENTION.DOCTOR_ID.eq(DOCTOR.ID))
+            .where(condition1);
+        buildOption(select, userAssociatedDoctorParam);
+        select.groupBy(DOCTOR.NAME, DOCTOR.HOSPITAL_CODE, DOCTOR.ID);
+        if (userAssociatedDoctorParam.getDepartmentName() != null) {
+            select.groupBy(DEPARTMENT.NAME);
+        }
+            select.orderBy(DOCTOR.NAME.asc());
+        return this.getPageResult(select, userAssociatedDoctorParam.getCurrentPage(),
+            userAssociatedDoctorParam.getPageRows(), UserAssociatedDoctorVo.class);
+    }
+
+    /**
+     * 用户查询关联医师条件查询
+     * @param select 查询实体
+     * @param userAssociatedDoctorParam 查询参数
+     */
+    private void buildOption(SelectConditionStep<? extends Record> select, UserAssociatedDoctorParam userAssociatedDoctorParam){
+        if (userAssociatedDoctorParam.getIsFavorite() != null && userAssociatedDoctorParam.getIsFavorite()) {
+            select.and(USER_DOCTOR_ATTENTION.USER_ID.eq(userAssociatedDoctorParam.getUserId()));
+        }
+        if (userAssociatedDoctorParam.getIsFavorite() != null && !userAssociatedDoctorParam.getIsFavorite()) {
+            select.and(USER_DOCTOR_ATTENTION.USER_ID.isNull());
+        }
+        if (userAssociatedDoctorParam.getDoctorName() != null && userAssociatedDoctorParam.getDoctorName().trim().length() > 0) {
+            select.and(DOCTOR.NAME.like(likeValue(userAssociatedDoctorParam.getDoctorName())));
+        }
+        if (userAssociatedDoctorParam.getDepartmentName() != null && userAssociatedDoctorParam.getDepartmentName().trim().length() > 0) {
+            select.and(DEPARTMENT.NAME.like(likeValue(userAssociatedDoctorParam.getDepartmentName())));
+        }
     }
 
 }

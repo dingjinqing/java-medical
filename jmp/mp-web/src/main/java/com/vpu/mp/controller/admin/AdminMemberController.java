@@ -16,7 +16,11 @@ import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
+import com.vpu.mp.service.pojo.shop.user.detail.UserAssociatedDoctorParam;
+import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +35,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value="/api/admin/member")
 public class AdminMemberController extends AdminBaseController{
+
+    @Autowired
+    private UserService userService;
 
 	/**
 	 * 返回所有行业信息
@@ -205,5 +212,15 @@ public class AdminMemberController extends AdminBaseController{
 		logger().info("获取用户导出配置信息");
 		return success(shop().member.userExpSvc.getExportCfg(param));
 	}
+
+    /**
+     * 获取用户关联医师列表
+     * @param userAssociatedDoctorParam 关联医师入参
+     * @return JsonResult
+     */
+    @PostMapping("/query/doctor")
+	public JsonResult getUserAssociatedDoctor(@Validated @RequestBody UserAssociatedDoctorParam userAssociatedDoctorParam) {
+        return success(userService.getUserAssociatedDoctor(userAssociatedDoctorParam));
+    }
 
 }

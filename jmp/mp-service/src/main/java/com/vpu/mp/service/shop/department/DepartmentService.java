@@ -338,4 +338,13 @@ public class DepartmentService extends BaseShopConfigService {
         data.setPrescriptionNum(prescriptionData.getPrescriptionNum());
         return data;
     }
+
+    /**
+     * 查询医师所属科室名称
+     * @param doctorId 医师id
+     * @return List<String>
+     */
+    public List<String> getDepartmentNameByDoctor(Integer doctorId) {
+        return departmentDao.getDepartmentNameByDoctor(doctorId);
+    }
 }

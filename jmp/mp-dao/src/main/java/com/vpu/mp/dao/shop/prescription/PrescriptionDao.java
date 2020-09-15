@@ -12,21 +12,16 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import org.elasticsearch.common.Strings;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
@@ -535,5 +530,21 @@ public class PrescriptionDao extends ShopBaseDao {
                 .and(PRESCRIPTION.IS_VALID.eq(BaseConstant.YES))
                 .and(PRESCRIPTION.CREATE_TIME.between(startTime,endTime))
                 .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 查询用户关联医师处方
+     * @param doctorCode 医师code
+     * @param userId 用户id
+     * @return List<PrescriptionDo>
+     */
+    public PrescriptionDoctorVo getDoctorPrescription(String doctorCode, Integer userId) {
+        return db().select(
+              DSL.ifnull(DSL.count(PRESCRIPTION.TOTAL_PRICE), 0).as("totalCount")
+            , DSL.ifnull(DSL.sum(PRESCRIPTION.TOTAL_PRICE), new BigDecimal(0)).as("totalPrice"))
+            .from(PRESCRIPTION)
+            .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorCode))
+            .and(PRESCRIPTION.USER_ID.eq(userId))
+            .fetchAnyInto(PrescriptionDoctorVo.class);
     }
 }
