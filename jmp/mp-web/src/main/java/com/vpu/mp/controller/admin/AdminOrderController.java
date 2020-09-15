@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -347,8 +348,9 @@ public class AdminOrderController extends AdminBaseController {
         if (b) {
             shop().orderInfoService.setOrderstatus(checkVerifyCodeParam.getOrderSn(), ORDER_RECEIVED);
             return success();
+        } else {
+            return fail(JsonResultCode.ORDER_CHECK_VERIFY_CODE_FAILD);
         }
-        return fail();
     }
 
 }
