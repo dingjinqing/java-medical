@@ -202,7 +202,7 @@ export default {
             console.log(res)
             if (res.content.storeAuthInfoVo.isOk) {
               document.onkeydown = undefined
-              Cookies.set('V-Index-Token', res.content.token)
+              Cookies.set('V-Store-Token', res.content.token)
               localStorage.setItem('V-Username', res.content.storeAccountName)
               localStorage.setItem('V-isSubLogin', this.isSubLogin)
               localStorage.setItem('V-AccountName', res.content.storeAccountName)
