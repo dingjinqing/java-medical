@@ -9,10 +9,12 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -111,6 +113,18 @@ public class DoctorDao extends ShopBaseDao {
         }
         if (param.getDoctorIds() != null) {
             select.where(DOCTOR.ID.in(param.getDoctorIds()));
+        }
+        if(param.getTitleId()!=null){
+            select.where(DOCTOR.TITLE_ID.eq(param.getTitleId()));
+        }
+        if(param.getSex()!=null){
+            select.where(DOCTOR.SEX.eq(param.getSex()));
+        }
+        if(param.getConsultationMoneyMix()!=null){
+            select.where(DOCTOR.CONSULTATION_TOTAL_MONEY.ge(param.getConsultationMoneyMix()));
+        }
+        if(param.getConsultationMoneyMax()!=null){
+            select.where(DOCTOR.CONSULTATION_TOTAL_MONEY.le(param.getConsultationMoneyMax()));
         }
     }
 
@@ -426,5 +440,68 @@ public class DoctorDao extends ShopBaseDao {
      */
     public void updateCanConsultation(Integer doctorId,Byte canConsultation){
         db().update(DOCTOR).set(DOCTOR.CAN_CONSULTATION,canConsultation).where(DOCTOR.ID.eq(doctorId)).execute();
+    }
+
+    /**
+     * 更新医师签名
+     * @param doctorId
+     * @param signature
+     */
+    public void updateSignature(Integer doctorId,String signature){
+        db().update(DOCTOR).set(DOCTOR.SIGNATURE,signature).where(DOCTOR.ID.eq(doctorId)).execute();
+    }
+
+    /**
+     * 获取所有医师的信息
+     *
+     * @return
+     */
+    public List<DoctorOneParam> getAllDoctor() {
+        return db().select().from(DOCTOR)
+            .fetchInto(DoctorOneParam.class);
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DoctorStatisticOneParam getDoctorInquiryData(DoctorStatisticParam param) {
+        return db().select(DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiry_num"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
+            .from(INQUIRY_ORDER)
+            .where(INQUIRY_ORDER.ORDER_STATUS.notIn(InquiryOrderConstant.ORDER_TO_PAID,InquiryOrderConstant.ORDER_CANCELED))
+            .and(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId()))
+            .and(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()))
+            .and(INQUIRY_ORDER.CREATE_TIME.le(param.getEndTime()))
+            .fetchAnyInto(DoctorStatisticOneParam.class);
+    }
+
+    /**
+     * 获取科室接诊统计数据
+     * @param param
+     * @return
+     */
+    public Integer getDoctorConsultationData(DoctorStatisticParam param) {
+        return db().select(DSL.sum(DOCTOR.CONSULTATION_NUMBER).as("consultation_number"))
+            .from(DOCTOR)
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+            .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DoctorStatisticOneParam getDoctorPrescriptionData(DoctorStatisticParam param) {
+        return db().select(DSL.count(PRESCRIPTION.ID).as("prescription_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
+            .from(DOCTOR)
+            .leftJoin(PRESCRIPTION ).on(PRESCRIPTION.DOCTOR_CODE.eq(DOCTOR.HOSPITAL_CODE))
+            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.POS_CODE.eq(PRESCRIPTION.POS_CODE))
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+//            .and(PRESCRIPTION.STATUS.eq(PrescriptionConstant.STATUS_PASS))
+            .and(PRESCRIPTION.CREATE_TIME.ge(param.getStartTime()))
+            .and(PRESCRIPTION.CREATE_TIME.le(param.getEndTime()))
+            .fetchAnyInto(DoctorStatisticOneParam.class);
     }
 }

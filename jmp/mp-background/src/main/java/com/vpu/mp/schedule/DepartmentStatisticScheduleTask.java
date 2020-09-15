@@ -27,7 +27,7 @@ public class DepartmentStatisticScheduleTask {
      * 每天凌晨零点过后8秒开始统计前一天的数据
      */
     @Scheduled(cron = "8 0 0 * * ?")
-    public void storeOrderStatistics() {
+    public void departmentStatistics() {
         List<ShopListInfoVo> result = saas.shopService.getShopListInfo();
         result.forEach((r) -> {
             ShopApplication shop = saas.getShopApp(r.getShopId());

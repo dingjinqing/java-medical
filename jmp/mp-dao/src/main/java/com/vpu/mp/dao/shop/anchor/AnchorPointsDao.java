@@ -94,7 +94,7 @@ public class AnchorPointsDao extends ShopBaseDao {
      * @return
      */
     public List<AnchorPointsReportVo> countReport(AnchorPointsListParam param) {
-        return db().select(ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY, ANCHOR_POINTS.VALUE, DSL.count(ANCHOR_POINTS.ID).as(COUNT))
+        return db().select(ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY, ANCHOR_POINTS.VALUE.as(NAME), DSL.count(ANCHOR_POINTS.ID).as(VALUE))
                 .from(ANCHOR_POINTS)
                 .where(ANCHOR_POINTS.EVENT.eq(param.getEvent()))
                 .and(ANCHOR_POINTS.KEY.eq(param.getKey()))
@@ -136,8 +136,8 @@ public class AnchorPointsDao extends ShopBaseDao {
      *金额报表 设备
      */
     public List<AnchorPointsReportVo>  moneyDeviceReport(AnchorPointsListParam param){
-        return  db().select(ANCHOR_POINTS.EVENT.as(NAME), ANCHOR_POINTS.KEY, ANCHOR_POINTS.DEVICE
-                ,DSL.sum(ANCHOR_POINTS.VALUE.cast(SQLDataType.DECIMAL(10,2))).as(VALUE))
+        return  db().select(ANCHOR_POINTS.EVENT, ANCHOR_POINTS.KEY, ANCHOR_POINTS.DEVICE.as(NAME)
+                ,DSL.sum(ANCHOR_POINTS.VALUE.cast(SQLDataType.DECIMAL(10,2))).as(MONEY),DSL.count(ANCHOR_POINTS.ID).as(VALUE))
                 .from(ANCHOR_POINTS)
                 .where(ANCHOR_POINTS.EVENT.eq(param.getEvent()))
                 .and(ANCHOR_POINTS.KEY.eq(param.getKey()))

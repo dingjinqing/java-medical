@@ -8,8 +8,8 @@ import lombok.Data;
  */
 @Data
 public class DepartmentRecommendCfgParam {
-    private Byte doctorRecommendType;
-    private Byte departmentRecommendType;
+    private Integer doctorRecommendType;
+    private Integer departmentRecommendType;
     private Integer doctorRecommendConsultationRate;
     private Integer doctorRecommendInquiryRate;
     private Integer departmentRecommendConsultationRate;

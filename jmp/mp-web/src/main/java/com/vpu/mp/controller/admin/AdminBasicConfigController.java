@@ -42,10 +42,10 @@ import java.util.List;
 @RequestMapping(value = "/api/admin/config")
 public class AdminBasicConfigController extends AdminBaseController{
 	private static int TWENTYFIVE=25;
-	
+
 	@Value(value = "${official.appId}")
 	private String bindAppId;
-	
+
     /**
      * 服务承诺--列表
      * @return JsonResult
@@ -141,12 +141,12 @@ public class AdminBasicConfigController extends AdminBaseController{
         PageResult<RecordAdminActionInfo> storeGroupPageResult = shop().record.getRecordPage(param,language);
         return success(storeGroupPageResult);
 	}
-    
-    
-    
+
+
+
 	/**
 	 * 基础配置 / 权限组管理/ 添加权限组
-	 * 
+	 *
 	 * @return
 	 */
 	@PostMapping(value = "/role/group/add")
@@ -173,7 +173,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 
 	/**
 	 * 基础配置 / 权限组管理/ 添加权限组 ->查询
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -184,7 +184,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 
 	/**
 	 * 基础配置 / 权限组管理/ 添加权限组 ->删除
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -210,7 +210,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
 
-	
+
 	/**
 	 * 基础配置 / 权限组管理/ 添加权限组 ->编辑，先返回角色对应的权限
 	 * @param param
@@ -232,7 +232,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 
 	/**
 	 * 基础配置 / 权限组管理/ 添加权限组 ->编辑，编辑后提交
-	 * 
+	 *
 	 * @param upParam
 	 * @return
 	 */
@@ -263,7 +263,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
-	
+
 	/**
 	 * 店铺基础配置-取店铺通用设置信息
 	 * @return
@@ -272,7 +272,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	public JsonResult getShopCommonInfo()   {
 		return success(shop().config.shopCommonConfigService.getShopCommonCfg());
 	}
-	
+
 	/**
 	 * 店铺基础配置-取店铺基础信息
 	 * @return
@@ -281,7 +281,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	public JsonResult getShopBaseInfo() {
 		return this.success(saas.shop.getShopBaseInfoById(this.shopId()));
 	}
-	
+
 	/**
 	 * 店铺基础配置-店铺基础信息更新
 	 * @return
@@ -291,7 +291,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 		saas.shop.updateShopBaseInfo(shop,shopId());
 		return this.success();
 	}
-	
+
 	/**
 	 * 店铺基础配置-店铺通用配置更新
 	 * @return
@@ -308,10 +308,10 @@ public class AdminBasicConfigController extends AdminBaseController{
 	public JsonResult openGoodsWeightConfig(){
 	    return success(shop().config.shopCommonConfigService.setGoodsWeightCfg((byte) 1));
     }
-	
+
 	/**
 	 * 店铺子账户管理-查询
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping(value = "/role/query")
@@ -337,7 +337,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 
 	/**
 	 * 店铺子账户管理-保存/编辑
-	 * 
+	 *
 	 * @param sAddParam
 	 * @return
 	 */
@@ -377,7 +377,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 
 	/**
 	 * 店铺子账户管理-保存/删除
-	 * 
+	 *
 	 * @param sUpdateParam
 	 * @return
 	 */
@@ -400,7 +400,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 
 	/**
 	 * 校验
-	 * 
+	 *
 	 * @param roleId
 	 * @param accountId
 	 * @return
@@ -425,7 +425,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 		return JsonResultCode.CODE_SUCCESS;
 	}
 
-	
+
 	/**
 	 * 模板消息查询
 	 * @return
@@ -442,7 +442,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 		return success(shopTempConfig);
 	}
 
-	
+
 	/**
 	 * 模板消息更新
 	 * @param sConfig
@@ -465,7 +465,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 		}
 		return success(sConfig);
 	}
-	
+
 	/**
 	 * 获取所有默认权限集
 	 * @return
@@ -508,4 +508,12 @@ public class AdminBasicConfigController extends AdminBaseController{
         }
     }
 
+    /**
+     * 获取店铺医生科室推荐配置
+     * @return
+     */
+    @GetMapping(value = "/shop/doctor/recommend/get")
+    public JsonResult getDoctorDepartmentCfg() {
+        return success(shop().config.shopCommonConfigService.getDoctorDepartmentCfg());
+    }
 }

@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = 319818749;
+    private static final long serialVersionUID = 1687019236;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
@@ -213,6 +213,11 @@ public class Doctor extends TableImpl<DoctorRecord> {
      * The column <code>mini_shop_471752.b2c_doctor.is_fetch</code>. 是否拉取过
      */
     public final TableField<DoctorRecord, Byte> IS_FETCH = createField("is_fetch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否拉取过");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.signature</code>. 医师签名
+     */
+    public final TableField<DoctorRecord, String> SIGNATURE = createField("signature", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师签名");
 
     /**
      * Create a <code>mini_shop_471752.b2c_doctor</code> table reference

@@ -875,6 +875,8 @@ public class JsonResultMessage {
      * 订单状态
      */
     public static final String CODE_ORDER_STATUS_ALREADY_CHANGE = "order.status.is.already.change";
+    public static final String ORDER_CHECK_VERIFY_CODE_FAILD = "order.check.verify.code.faild";
+
 
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
@@ -1445,6 +1447,9 @@ public class JsonResultMessage {
     public static final String DOCTOR_LOGIN_AUTH_ERROR = "认证失败";
     public static final String DOCTOR_LOGIN_AUTH_ALREADY_LOGIN="医师信息已被认证";
 
+    public static final String SALESCLERK_AUTH_INFO_ERROR="店员认证失败，认证信息有误";
+    public static final String SALESCLERK_AUTH_INFO_SMS_ERROR="店员认证失败，验证码有误";
+
     public static final String FETCH_HIS_ERROR = "拉取信息时错误";
     public static final String FETCH_HIS_NO_PATIENT = "无此患者信息";
     public static final String FETCH_HIS_NULL = "暂无信息";
@@ -1454,7 +1459,7 @@ public class JsonResultMessage {
     public static final String DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY = "医师提现金额超出可提现金额";
     public static final String DOCTOR_WITHDRAW_IS_NOT_EXIST = "不存在医师可提现金额";
     public static final String NO_LINK_WECHAT_OFFICIAL_ACCOUNTS = "小程序未绑定微信公众号";
-    public static final String DOCTOR_WITHDRAW_EX_ERROR = "医师提现wx出现错误";
+    public static final String DOCTOR_WITHDRAW_EX_ERROR = "医师提现微信出现错误";
     public static final String DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "医师提现未关注微信公众号";
     public static final String DOCTOR_WITHDRAW_EXCEED_DAY_MAX_LIMIT_MONEY = "医师提现超出每日可提现最大额度限制";
     public static final String DOCTOR_WITHDRAW_LESS_MINIMUM = "医师提现不满足单次最小额度限制";

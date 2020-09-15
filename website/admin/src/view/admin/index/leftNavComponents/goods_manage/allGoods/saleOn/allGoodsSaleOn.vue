@@ -41,12 +41,28 @@
           @click="pullMedicalGoods">
           拉取商品数据
         </el-button>
+        <el-button
+                type="primary"
+                size="small"
+                @click="batchUpOrDownGoods(1)"
+        >批量下架his独有数据</el-button>
+        <el-button
+                type="primary"
+                size="small"
+                @click="batchUpOrDownGoods(2)"
+        >批量下架store独有数据</el-button>
+        <el-button
+                type="primary"
+                size="small"
+                @click="batchUpOrDownGoods(3)"
+        >批量下架已匹配数据</el-button>
       </div>
     </div>
 
     <!-- 表格 -->
     <saleOnAndInStockContent
       ref="saleOnAndInStockContentCmp"
+      :initFilterData="initFilterData"
       @sortChange="sortChange"
     />
   </div>
@@ -60,6 +76,8 @@ import saleOnAndInStockContent from '../saleOnAndInStockContent'
 
 /* 导入js api */
 import { pullMedicalGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+// api导入
+import { batchOperateGoods } from '@/api/admin/goodsManage/allGoods/allGoods'
 export default {
   name: 'allGoodsSaleOn',
   components: {
@@ -133,6 +151,32 @@ export default {
     /* 拉取药品信息 */
     pullMedicalGoods () {
       pullMedicalGoodsApi()
+    },
+    /* 批量上架双方已经匹配的数据 */
+    batchUpOrDownGoods (type) {
+      let param = {}
+      switch (type) {
+        case 1:
+          param.batchUpOrDownHisGoods = 0
+          break
+        case 2:
+          param.batchUpOrDownStoreGoods = 0
+          break
+        case 3:
+          param.batchUpOrDownBothInGoods = 0
+          break
+        default:
+          break
+      }
+
+      batchOperateGoods(param).then(res => {
+        if (res.error !== 0) {
+          this.$message.warning({message: '操作失败'})
+        } else {
+          this.$message.success({message: '操作成功'})
+          this.searchGoodsData()
+        }
+      })
     }
   },
   mounted () {

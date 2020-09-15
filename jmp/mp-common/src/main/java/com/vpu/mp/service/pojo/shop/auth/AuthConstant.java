@@ -32,4 +32,9 @@ public class AuthConstant {
      * 药师
      */
 	public static final Byte AUTH_TYPE_PHARMACIST_USER = 2;
+    /**
+     * 店员
+     */
+    public static final Byte AUTH_TYPE_SALESCLERK_USER = 3;
+
 }

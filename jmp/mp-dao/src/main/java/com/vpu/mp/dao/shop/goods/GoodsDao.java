@@ -13,6 +13,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.SelectSeekStepN;
@@ -40,16 +41,15 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 public class GoodsDao extends ShopBaseDao {
     /**
      * 通过goodsId获取推广语
-     *
      * @param goodsId 商品id
      * @return
      */
     public String getPromotionLanguage(Integer goodsId) {
         return db().select(GOODS.PROMOTION_LANGUAGE).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAnyInto(String.class);
     }
+
     /**
      * 通过分类id集合获取商品id集合
-     *
      * @param sortId
      * @return
      */
@@ -58,6 +58,7 @@ public class GoodsDao extends ShopBaseDao {
         return db().select(GOODS.GOODS_ID).from(GOODS)
             .where(GOODS.SORT_ID.in(sortId)).fetch(GOODS.GOODS_ID);
     }
+
     /**
      * 商品新增
      * @param goodsDo 商品数据
@@ -85,13 +86,13 @@ public class GoodsDao extends ShopBaseDao {
      * @param goodsDos
      */
     public void batchInsert(List<GoodsDo> goodsDos) {
-        List<String> goodsSns =new ArrayList<>(goodsDos.size());
-        List<GoodsRecord> goodsRecords =new ArrayList<>(goodsDos.size());
+        List<String> goodsSns = new ArrayList<>(goodsDos.size());
+        List<GoodsRecord> goodsRecords = new ArrayList<>(goodsDos.size());
 
         for (GoodsDo goodsDo : goodsDos) {
             goodsSns.add(goodsDo.getGoodsSn());
             GoodsRecord goodsRecord = new GoodsRecord();
-            FieldsUtil.assign(goodsDo,goodsRecord);
+            FieldsUtil.assign(goodsDo, goodsRecord);
             // 临时添加
             goodsRecord.setShareConfig("{\"shareAction\":1,\"shareDoc\":null,\"shareImgAction\":1,\"shareImgUrl\":null,\"shareImgPath\":null}");
             goodsRecords.add(goodsRecord);
@@ -109,11 +110,11 @@ public class GoodsDao extends ShopBaseDao {
      * 批量更新
      * @param goodsDos
      */
-    public void batchUpdate(List<GoodsDo> goodsDos){
-        List<GoodsRecord> goodsRecords =new ArrayList<>(goodsDos.size());
-        for (GoodsDo goodsDo : goodsDos){
+    public void batchUpdate(List<GoodsDo> goodsDos) {
+        List<GoodsRecord> goodsRecords = new ArrayList<>(goodsDos.size());
+        for (GoodsDo goodsDo : goodsDos) {
             GoodsRecord goodsRecord = new GoodsRecord();
-            FieldsUtil.assign(goodsDo,goodsRecord);
+            FieldsUtil.assign(goodsDo, goodsRecord);
             goodsRecords.add(goodsRecord);
         }
         db().batchUpdate(goodsRecords).execute();
@@ -144,8 +145,8 @@ public class GoodsDao extends ShopBaseDao {
     /**
      * 商品列表分页查询（以商品为维度）
      * @param goodsPageListCondition 分页查询条件
-     * @param curPage 当前页 1开始
-     * @param pageRows 展示数量
+     * @param curPage                当前页 1开始
+     * @param pageRows               展示数量
      * @return 分页结果
      */
     public PageResult<GoodsDo> getGoodsPageList(GoodsPageListCondition goodsPageListCondition, Integer curPage, Integer pageRows) {
@@ -207,6 +208,18 @@ public class GoodsDao extends ShopBaseDao {
         if (goodsPageListCondition.getGoodsIdsLimit() != null) {
             condition = condition.and(GOODS.GOODS_ID.in(goodsPageListCondition.getGoodsIdsLimit()));
         }
+        // 查询his独有药品
+        if (MedicalGoodsConstant.ONLY_IN_HIS.equals(goodsPageListCondition.getSource())) {
+            condition = condition.and(GOODS.HIS_STATUS.isNotNull().and(GOODS.STORE_CODE.isNull()));
+        }
+        // 查询药店独有药品
+        if (MedicalGoodsConstant.ONLY_IN_STORE.equals(goodsPageListCondition.getSource())) {
+            condition = condition.and(GOODS.HIS_STATUS.isNull().and(GOODS.STORE_CODE.isNotNull()));
+        }
+        // 查询双方匹配成功的药品
+        if (MedicalGoodsConstant.IN_BOTH.equals(goodsPageListCondition.getSource())) {
+            condition = condition.and(GOODS.HIS_STATUS.isNotNull().and(GOODS.STORE_CODE.isNotNull()));
+        }
 
         return condition;
     }
@@ -256,7 +269,7 @@ public class GoodsDao extends ShopBaseDao {
      * @param goodsSn
      * @return true 是 false 否
      */
-    public boolean isGoodsSnExist(String goodsSn,Integer goodsId) {
+    public boolean isGoodsSnExist(String goodsSn, Integer goodsId) {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.eq(goodsSn));
         if (goodsId != null) {
             condition = condition.and(GOODS.GOODS_ID.ne(goodsId));
@@ -279,12 +292,12 @@ public class GoodsDao extends ShopBaseDao {
      * @param isMedical
      * @return
      */
-   public Map<String,Integer> mapGoodsSnToGoodsId(List<String> goodsSn,Byte isMedical){
+    public Map<String, Integer> mapGoodsSnToGoodsId(List<String> goodsSn, Byte isMedical) {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsSn));
-       List<GoodsDo> goodsDos = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN).from(GOODS).where(condition).fetchInto(GoodsDo.class);
+        List<GoodsDo> goodsDos = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN).from(GOODS).where(condition).fetchInto(GoodsDo.class);
 
-       return goodsDos.stream().collect(Collectors.toMap(GoodsDo::getGoodsSn, GoodsDo::getGoodsId, (x1, x2) -> x1));
-   }
+        return goodsDos.stream().collect(Collectors.toMap(GoodsDo::getGoodsSn, GoodsDo::getGoodsId, (x1, x2) -> x1));
+    }
 
     /**
      * 查询商品id和价格的映射
@@ -349,7 +362,7 @@ public class GoodsDao extends ShopBaseDao {
      * 批量修改所有商品的上下架状态
      * @param isOnSale
      */
-    public void switchSaleStatusAllGoods(Byte isOnSale,Byte source){
+    public void switchSaleStatusAllGoods(Byte isOnSale, Byte source) {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE);
         // 下架his的所有药品
         if (MedicalGoodsConstant.SOURCE_FROM_HIS.equals(source)) {
@@ -359,17 +372,56 @@ public class GoodsDao extends ShopBaseDao {
         if (MedicalGoodsConstant.SOURCE_FROM_STORE.equals(source)) {
             condition = condition.and(GOODS.STORE_CODE.isNotNull());
         }
-        db().update(GOODS).set(GOODS.IS_ON_SALE,isOnSale).where(condition).execute();
+        db().update(GOODS).set(GOODS.IS_ON_SALE, isOnSale).where(condition).execute();
     }
 
     /**
      * 批量上架可用的商品信息
      */
-    public void batchUpStoreAndMedicalGoods(){
-        db().update(GOODS).set(GOODS.IS_ON_SALE,MedicalGoodsConstant.ON_SALE)
-            .where(GOODS.STORE_STATUS.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.byteValue())
+    public void batchUpStoreAndMedicalGoods() {
+        db().update(GOODS).set(GOODS.IS_ON_SALE, MedicalGoodsConstant.ON_SALE)
+            .where(GOODS.STORE_CODE.isNotNull()
                 .and(GOODS.HIS_STATUS.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.byteValue()))
                 .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .execute();
+    }
+
+    public void batchOperate(MedicalGoodsBatchOperateParam param) {
+        if (param.getIsOnSale() != null) {
+            db().update(GOODS).set(GOODS.IS_ON_SALE, param.getIsOnSale()).where(GOODS.GOODS_ID.in(param.getGoodsIds())).execute();
+        }
+
+        if (param.getBatchUpOrDownHisGoods() != null) {
+            db().update(GOODS).set(GOODS.IS_ON_SALE, param.getBatchUpOrDownHisGoods())
+                .where(getHisGoodsCondition())
+                .execute();
+            return;
+        }
+
+        if (param.getBatchUpOrDownStoreGoods() != null) {
+            db().update(GOODS).set(GOODS.IS_ON_SALE, param.getBatchUpOrDownStoreGoods())
+                .where(getStoreGoodsCondition())
+                .execute();
+            return;
+        }
+
+        if (param.getBatchUpOrDownBothInGoods() != null) {
+            db().update(GOODS).set(GOODS.IS_ON_SALE, param.getBatchUpOrDownBothInGoods())
+                .where(getBothInGoodsCondition())
+                .execute();
+            return;
+        }
+    }
+
+    private Condition getHisGoodsCondition(){
+        return GOODS.HIS_STATUS.isNotNull().and(GOODS.STORE_CODE.isNull());
+    }
+
+    private Condition getStoreGoodsCondition(){
+        return GOODS.HIS_STATUS.isNull().and(GOODS.STORE_CODE.isNotNull());
+    }
+
+    private Condition getBothInGoodsCondition(){
+        return GOODS.HIS_STATUS.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.byteValue()).and(GOODS.STORE_CODE.isNotNull());
     }
 }

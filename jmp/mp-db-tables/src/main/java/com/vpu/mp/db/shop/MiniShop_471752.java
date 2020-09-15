@@ -1142,8 +1142,10 @@ public class MiniShop_471752 extends SchemaImpl {
      * 科室信息统计
      */
     public final DepartmentSummaryTrend DEPARTMENT_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND;
-
-
+    /**
+     * 医师信息统计
+     */
+    public final DoctorSummaryTrend DOCTOR_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DoctorSummaryTrend.DOCTOR_SUMMARY_TREND;
 
     /**
      * No further instances allowed
@@ -1396,7 +1398,8 @@ public class MiniShop_471752 extends SchemaImpl {
             StoreAccount.STORE_ACCOUNT,
             AnchorPoints.ANCHOR_POINTS,
             StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND,
-            DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND);
+            DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND,
+            DoctorSummaryTrend.DOCTOR_SUMMARY_TREND);
 
 
     }

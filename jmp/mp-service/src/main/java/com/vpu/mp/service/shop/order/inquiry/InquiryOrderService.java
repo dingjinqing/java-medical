@@ -36,6 +36,7 @@ import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDoctorVo;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateParam;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateVo;
@@ -539,5 +540,15 @@ public class InquiryOrderService extends ShopBaseService {
     public Integer countByDateDoctor(Integer doctorId, Timestamp startTime, Timestamp endTime) {
         return inquiryOrderDao.countByDateDoctorId(doctorId,startTime,endTime);
 
+    }
+
+    /**
+     * 查询用户关联医师处方
+     * @param doctorId 医师id
+     * @param userId 用户id
+     * @return PrescriptionDoctorVo
+     */
+    public PrescriptionDoctorVo getDoctorInquiry(Integer doctorId, Integer userId){
+        return inquiryOrderDao.getDoctorInquiry(doctorId, userId);
     }
 }

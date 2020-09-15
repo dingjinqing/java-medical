@@ -227,6 +227,10 @@ public class StoreAccountService extends MainBaseService {
                 if (storeInfo == null || !list.contains(storeInfo.getStoreId())) {
                     storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_NOT_EXIST);
                     isOk = false;
+                } else {
+                    List<Integer> storeListNew = new ArrayList<>();
+                    storeListNew.add(storeInfo.getStoreId());
+                    storeAccountInfo.setStoreLists(storeListNew);
                 }
             }
             storeAuthInfoVo.setIsOk(isOk);

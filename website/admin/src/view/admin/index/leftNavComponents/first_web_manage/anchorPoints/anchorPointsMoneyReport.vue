@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { getEventKeyMap, getAnchorPointsReport } from '@/api/admin/basicConfiguration/anchorPoints.js'
+import { getEventKeyMap, getAnchorPointsReportMoney } from '@/api/admin/basicConfiguration/anchorPoints.js'
 import echarts from 'echarts'
 import '@/util/date.js'
 export default {
@@ -146,23 +146,12 @@ export default {
     },
     initEcharts () {
       this.myChart = echarts.init(document.getElementById('moneyCharts'))
-      getAnchorPointsReport(this.param).then(res => {
+      getAnchorPointsReportMoney(this.param).then(res => {
         console.log(res)
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
         }
-        res.content.seriesList.forEach(item => {
-          item.type = 'bar'
-          item.label = {
-            show: true,
-            position: 'insideRight'
-          }
-          item.data = item.dataList
-          item.tyoe = 'bar'
-          item.dataList = []
-          item.dataMap = {}
-        })
         this.handleEcharts(res.content)
       }).catch(err => console.log(err))
     },
@@ -234,15 +223,13 @@ export default {
           formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         title: {
-          text: '设备和处方药来源',
-          subtext: '纯属虚构',
+          text: '设备和来源',
           left: 'center'
         },
         legend: {
           orient: 'vertical',
           left: 10,
           data: ['ios', 'android']
-
         },
         series: [
           {
@@ -279,46 +266,22 @@ export default {
                 }
               }
             },
-            data: [
-              {value: 335, name: '处方药', selected: true},
-              {value: 679, name: '非处方药'}
-            ]
+            data: dataList.prescriptionReport
           },
           {
             name: '访问来源',
             type: 'pie',
             center: ['25%', '50%'],
             label: {
-              formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+              formatter: function (p) {
+                return p.money
+              },
               backgroundColor: '#eee',
               borderColor: '#aaa',
               borderWidth: 1,
-              borderRadius: 4,
-              rich: {
-                a: {
-                  color: '#999',
-                  lineHeight: 22,
-                  align: 'center'
-                },
-                hr: {
-                  borderColor: '#aaa',
-                  width: '100%',
-                  borderWidth: 0.5,
-                  height: 0
-                },
-                b: {
-                  fontSize: 16,
-                  lineHeight: 33
-                },
-                per: {
-                  color: '#eee',
-                  backgroundColor: '#334455',
-                  padding: [2, 4],
-                  borderRadius: 2
-                }
-              }
+              borderRadius: 4
             },
-            data: dataList
+            data: dataList.deviceReport
           }
         ]
       }

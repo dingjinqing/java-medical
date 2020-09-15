@@ -2,6 +2,7 @@ package com.vpu.mp.auth;
 
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.AuthConfig;
+import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
+import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_SALESCLERK_USER;
 
 /**
  *
@@ -62,6 +64,8 @@ public class WxAppAuth {
 
 	@Autowired
 	protected DoctorService doctorService;
+	@Autowired
+    private StoreAccountDao storeAccountDao;
 
 	public static final String TOKEN = "V-Token";
 
@@ -231,6 +235,23 @@ public class WxAppAuth {
             wxAppSessionUser.setDoctorId(doctorId);
             jedis.set(getToken(), Util.toJson(wxAppSessionUser));
             doctorService.updateUserToken(doctorId,getToken());
+        }
+    }
+
+    /**
+     * 更新店员缓存信息
+     * @param accountId
+     */
+    public void updateSalesclerkUserType(Integer accountId){
+        String json = jedis.get(getToken());
+        if (!StringUtils.isBlank(json)) {
+            WxAppSessionUser wxAppSessionUser = Util.parseJson(json, WxAppSessionUser.class);
+            if(wxAppSessionUser!=null){
+                wxAppSessionUser.setUserType(AUTH_TYPE_SALESCLERK_USER);
+                wxAppSessionUser.setSalesclerkId(accountId);
+                jedis.set(getToken(), Util.toJson(wxAppSessionUser));
+                storeAccountDao.updateUserToken(accountId,getToken());
+            }
         }
     }
 }

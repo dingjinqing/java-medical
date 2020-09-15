@@ -251,13 +251,13 @@ public class SmsService extends BaseShopConfigService {
      * 发送短信校验码
      * @param param
      */
-    public void sendCheckSms(PatientSmsCheckParam param) throws MpException {
+    public void sendCheckSms(PatientSmsCheckParam param,String checkMobileFormat,String keysSms) throws MpException {
         //0000-9999
         Integer intRandom = RandomUtil.getIntRandom(RandomUtil.MIN_RANDOM_100000, RandomUtil.MAX_RANDOM_999999);
         MpAuthShopRecord mpAuthShopRecord = mpAuthShopService.getAuthShopByShopId(getShopId());
-        String smsContent = String.format(SmsTemplate.DOCTOR_CHECK_MOBILE, mpAuthShopRecord.getNickName(), intRandom);
+        String smsContent = String.format(checkMobileFormat, mpAuthShopRecord.getNickName(), intRandom);
         sendSms(param.getUserId(), param.getMobile(), smsContent);
-        String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_DOCTOR_MOBILE, getShopId(), param.getUserId(), param.getMobile());
+        String key = String.format(keysSms, getShopId(), param.getUserId(), param.getMobile());
         jedisManager.set(key, intRandom.toString(), 600);
     }
 

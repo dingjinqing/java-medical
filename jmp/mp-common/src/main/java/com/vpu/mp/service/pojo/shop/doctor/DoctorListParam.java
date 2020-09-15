@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.doctor;
 
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -30,6 +32,10 @@ public class DoctorListParam {
     private String doctorNo;
     private String departmentName;
     private List<Integer> doctorIds;
+    private Integer titleId;
+    private Byte sex;
+    private BigDecimal consultationMoneyMix;
+    private BigDecimal consultationMoneyMax;
 
     @Override
     public String toString() {
