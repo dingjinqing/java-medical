@@ -1,9 +1,9 @@
 package com.vpu.mp.dao.shop;
 
 import com.vpu.mp.common.foundation.data.DistributionConstant;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.service.pojo.shop.patient.PatientQueryDoctorVo;
 import com.vpu.mp.service.pojo.shop.user.detail.UserAssociatedDoctorParam;
 import com.vpu.mp.service.pojo.shop.user.detail.UserAssociatedDoctorVo;
 import org.jooq.*;
