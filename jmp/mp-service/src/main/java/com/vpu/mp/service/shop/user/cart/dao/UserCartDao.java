@@ -1,15 +1,13 @@
 package com.vpu.mp.service.shop.user.cart.dao;
 
-import static com.vpu.mp.db.shop.Tables.USER_CART_RECORD;
+import com.vpu.mp.common.pojo.shop.table.UserCartRecordDo;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-import org.jooq.Result;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.UserCartRecordRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
+import static com.vpu.mp.db.shop.Tables.USER_CART_RECORD;
 
 /**
 * @author 黄壮壮
@@ -31,4 +29,14 @@ public class UserCartDao extends ShopBaseService {
 		 return db().select(USER_CART_RECORD.USER_ID).from(USER_CART_RECORD).where(USER_CART_RECORD.CREATE_TIME.le(time))
 				.groupBy(USER_CART_RECORD.USER_ID).fetchInto(Integer.class);
 	}
+
+	/**
+	 *
+	 * @param param
+	 * @return
+	 */
+	public Integer save(UserCartRecordDo param){
+		return db().newRecord(USER_CART_RECORD,param).insert();
+	}
+
 }
