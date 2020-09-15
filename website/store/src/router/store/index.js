@@ -141,6 +141,20 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/store/order/afterSaleOrderInfo'
               )
           },
+          // 手动退货退款
+          {
+            path: '/admin/store/order/afterSale/manual',
+            name: 'manualRefund',
+            meta: {
+              crumbTitle: 'router.manualRefund',
+              meta: 'storeOrder',
+              category: 'afterSale'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/store/order/manualRefund'
+              )
+          },
           // 店员列表
           {
             path: '/admin/store/member',
