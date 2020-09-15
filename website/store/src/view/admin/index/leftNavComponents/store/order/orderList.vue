@@ -925,7 +925,7 @@
 import {
   getOrderList, star, close, finish, verify
 } from '@/api/store/order'
-
+import { getAllStoreList } from '@/api/store/store'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
@@ -1050,6 +1050,7 @@ export default {
     // 初始化数据
     this.langDefault()
     this.initDataList()
+    this.getStoreList()
   },
   watch: {
     lang () {
@@ -1279,6 +1280,13 @@ export default {
     handleShowPrescriptionCheck () {
       console.log(111)
       this.showPrescriptionCheck = true
+    },
+    getStoreList () {
+      getAllStoreList().then(res => {
+        if (res.error === 0) {
+          this.storeList = res.content
+        }
+      })
     }
   }
 }

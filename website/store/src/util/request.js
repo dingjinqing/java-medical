@@ -12,18 +12,20 @@ const service = axios.create({
   timeout: 50000, // 请求超时时间
   // `transformResponse` allows changes to the response data to be made before
   // it is passed to then/catch
-  transformResponse: [function (data) {
-    // Do whatever you want to transform the data
-    if (typeof data === 'string' && data.charAt(0) === '{') {
-      let imagePrefix = '//' + process.env.IMAGE_DOMAIN + '/'
-      var oldPrefix = 'http:' + imagePrefix
-      oldPrefix = oldPrefix.replace(/\./g, '\\.').replace(/\//g, '\\/')
-      var reg = new RegExp(oldPrefix, 'g')
-      data = data.replace(reg, imagePrefix)
-      data = JSON.parse(data)
+  transformResponse: [
+    function (data) {
+      // Do whatever you want to transform the data
+      if (typeof data === 'string' && data.charAt(0) === '{') {
+        let imagePrefix = '//' + process.env.IMAGE_DOMAIN + '/'
+        var oldPrefix = 'http:' + imagePrefix
+        oldPrefix = oldPrefix.replace(/\./g, '\\.').replace(/\//g, '\\/')
+        var reg = new RegExp(oldPrefix, 'g')
+        data = data.replace(reg, imagePrefix)
+        data = JSON.parse(data)
+      }
+      return data
     }
-    return data
-  }]
+  ]
 })
 // request拦截器
 service.interceptors.request.use(
@@ -36,7 +38,7 @@ service.interceptors.request.use(
     }
 
     if (config.url.split('/')[2] === 'store') {
-      config.headers['V-Token'] = Cookies.get('V-Index-Token')
+      config.headers['V-Token'] = Cookies.get('V-Store-Token')
     } else if (config.url.split('/')[2] === 'system') {
       config.headers['V-Token'] = Cookies.get('V-System-Token')
     }
