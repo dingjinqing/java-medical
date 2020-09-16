@@ -76,10 +76,10 @@ public class WxAppSessionUser {
 	@JsonProperty(value = "pharmacist_id")
     Integer pharmacistId;
     /**
-     * 店员account_id
+     * 门店account_id
      */
-    @JsonProperty(value = "salesclerk_id")
-    Integer salesclerkId;
+    @JsonProperty(value = "store_account_id")
+    Integer storeAccountId;
 	/**
 	 * 用户登录session信息
 	 * @author lixinguo

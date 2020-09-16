@@ -1,6 +1,5 @@
 package com.vpu.mp.common.foundation.data;
 
-import com.vpu.mp.db.shop.tables.Doctor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -752,8 +751,9 @@ public enum JsonResultCode {
     DOCTOR_LOGIN_AUTH_ERROR(400031,JsonResultMessage.DOCTOR_LOGIN_AUTH_ERROR),
     DOCTOR_LOGIN_AUTH_ALREADY_LOGIN(400032,JsonResultMessage.DOCTOR_LOGIN_AUTH_ALREADY_LOGIN),
 
-    SALESCLERK_AUTH_INFO_ERROR(400041,JsonResultMessage.SALESCLERK_AUTH_INFO_ERROR),
-    SALESCLERK_AUTH_INFO_SMS_ERROR(400041,JsonResultMessage.SALESCLERK_AUTH_INFO_SMS_ERROR),
+    STORE_CLERK_AUTH_INFO_ERROR(400041,JsonResultMessage.STORE_CLERK_AUTH_INFO_ERROR),
+    STORE_CLERK_AUTH_AlREADY_ERROR(400042,JsonResultMessage.STORE_CLERK_AUTH_ALREADY_ERROR),
+    STORE_CLERK_AUTH_INFO_SMS_ERROR(400043,JsonResultMessage.STORE_CLERK_AUTH_INFO_SMS_ERROR),
     // 拉取his信息
     FETCH_HIS_ERROR(400052, JsonResultMessage.FETCH_HIS_ERROR),
     FETCH_HIS_NULL(400053, JsonResultMessage.FETCH_HIS_NULL),
