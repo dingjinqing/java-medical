@@ -436,10 +436,7 @@
                   <td>{{ goodsItem.goodsPrice.toFixed(2) }}</td>
                   <td>{{ goodsItem.goodsNumber }}</td>
                   <td v-if="goodsIndex === 0" :rowspan="orderItem.goods.length">
-                    <div
-                      class="pointer"
-                      @click="viewUserCenter(orderItem.userId)"
-                    >
+                    <div>
                       <p>{{ orderItem.username }}</p>
                       <p>{{ orderItem.userMobile }}</p>
                     </div>
@@ -898,10 +895,7 @@
       </div>
     </div>
     <!-- 添加备注弹窗 -->
-    <nodesDialog
-      :show.sync="showNodes"
-      :orderSn="notesOrderSn"
-    />
+    <nodesDialog :show.sync="showNodes" :orderSn="notesOrderSn" />
     <!-- 发货弹窗 -->
     <deliveryDialog
       v-if="showDelivery"
@@ -928,7 +922,7 @@
 import {
   getOrderList, star, close, finish, verify
 } from '@/api/store/order'
-
+import { getAllStoreList } from '@/api/store/store'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
@@ -1053,6 +1047,7 @@ export default {
     // 初始化数据
     this.langDefault()
     this.initDataList()
+    this.getStoreList()
   },
   watch: {
     lang () {
@@ -1198,7 +1193,7 @@ export default {
           if (res.error === 0) {
             this.search()
           } else {
-            this.$message.error('提示', res.message)
+            this.$message.error(res.message)
           }
         })
       })
@@ -1282,6 +1277,13 @@ export default {
     handleShowPrescriptionCheck () {
       console.log(111)
       this.showPrescriptionCheck = true
+    },
+    getStoreList () {
+      getAllStoreList().then(res => {
+        if (res.error === 0) {
+          this.storeList = res.content
+        }
+      })
     }
   }
 }

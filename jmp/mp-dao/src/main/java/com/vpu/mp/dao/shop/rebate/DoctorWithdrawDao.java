@@ -14,10 +14,9 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
 import static org.jooq.impl.DSL.*;
-import static com.vpu.mp.db.shop.Tables.DOCTOR_WITHDRAW;
 
 /**
  * @author yangpengcheng
@@ -142,9 +141,10 @@ public class DoctorWithdrawDao extends ShopBaseDao {
      * @return
      */
     public DoctorWithdrawDetailVo getWithdrawDetailById(Integer id){
-        DoctorWithdrawDetailVo detail=db().select(DOCTOR_WITHDRAW.asterisk(),DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE)
+        DoctorWithdrawDetailVo detail=db().select(DOCTOR_WITHDRAW.asterisk(),USER.USERNAME.as("userName"),DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE)
             .from(DOCTOR_WITHDRAW)
             .leftJoin(DOCTOR).on(DOCTOR_WITHDRAW.DOCTOR_ID.eq(DOCTOR.ID))
+            .leftJoin(USER).on(DOCTOR.USER_ID.eq(USER.USER_ID))
             .where(DOCTOR_WITHDRAW.ID.eq(id)).fetchOneInto(DoctorWithdrawDetailVo.class);
         return detail;
     }

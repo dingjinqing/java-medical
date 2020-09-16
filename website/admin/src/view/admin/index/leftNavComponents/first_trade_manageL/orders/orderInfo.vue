@@ -392,21 +392,19 @@
       <div class="table_box">
         <table width="100%">
           <thead>
-            <thead>
-              <tr>
-                <th width="270px">{{ $t('order.goods') }}</th>
-                <th width="100px">{{ $t('order.goodsSn') }}</th>
-                <th width="100px">{{ $t('order.goodsPrice') }}</th>
-                <th width="100px">{{ $t('order.goodsNumber') }}</th>
-                <th>{{ $t('order.consigneeInfo') }}</th>
-                <th>{{ $t('order.orderTime') }}</th>
-                <th>{{ $t('order.orderStatusText') }}</th>
-                <th>{{ $t('order.moneyPaid') }}</th>
-              </tr>
-              <tr class="jiange">
-                <th :colspan="order.fanliType > 0 ? 9 : 8"></th>
-              </tr>
-            </thead>
+            <tr>
+              <th width="270px">{{ $t('order.goods') }}</th>
+              <th width="100px">{{ $t('order.goodsSn') }}</th>
+              <th width="100px">{{ $t('order.goodsPrice') }}</th>
+              <th width="100px">{{ $t('order.goodsNumber') }}</th>
+              <th>{{ $t('order.consigneeInfo') }}</th>
+              <th>{{ $t('order.orderTime') }}</th>
+              <th>{{ $t('order.orderStatusText') }}</th>
+              <th>{{ $t('order.moneyPaid') }}</th>
+            </tr>
+            <tr class="jiange">
+              <th :colspan="order.fanliType > 0 ? 9 : 8"></th>
+            </tr>
           </thead>
 
           <tbody>
@@ -1132,7 +1130,7 @@ export default {
           if (res.error === 0) {
             this.search()
           } else {
-            this.$$message.error({ message: res.message })
+            this.$message.error({ message: res.message })
           }
         })
       })
