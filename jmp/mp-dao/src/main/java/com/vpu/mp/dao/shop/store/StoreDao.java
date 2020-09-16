@@ -3,6 +3,7 @@ package com.vpu.mp.dao.shop.store;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant;
 import org.jooq.Condition;
@@ -63,7 +64,7 @@ public class StoreDao extends ShopBaseDao {
             logger().info("门店库存校验");
             select.and(STORE.STORE_CODE.in(stores));
         }
-        if (deliveryType != 0) {
+        if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
             select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
         }
         select.limit(15);
