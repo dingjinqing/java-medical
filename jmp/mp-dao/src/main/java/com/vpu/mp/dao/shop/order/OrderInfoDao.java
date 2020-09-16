@@ -221,8 +221,19 @@ public class OrderInfoDao extends ShopBaseDao {
      * @param orderStatusList
      * @return
      */
-    public Integer countNumByStoreIdOrderStatus(Integer storeId, List<Byte> orderStatusList, Timestamp startTime, Timestamp endTime){
+    public Integer countNumByStoreIdOrderStatus(Integer storeId, List<Byte> orderStatusList){
         SelectConditionStep<? extends Record> select = db().selectCount().from(ORDER_INFO).where(ORDER_INFO.STORE_ID.eq(storeId))
+            .and(ORDER_INFO.ORDER_STATUS.in(orderStatusList));
+        return select.fetchAnyInto(Integer.class);
+    }
+    /**
+     * 时间查询获取订单数量
+     * @param storeId
+     * @param orderStatusList
+     * @return
+     */
+    public Integer countNumByStoreIdOrderStatusAndTime(List<Integer> storeId, List<Byte> orderStatusList, Timestamp startTime, Timestamp endTime){
+        SelectConditionStep<? extends Record> select = db().selectCount().from(ORDER_INFO).where(ORDER_INFO.STORE_ID.in(storeId))
             .and(ORDER_INFO.ORDER_STATUS.in(orderStatusList));
         if(startTime!=null){
             select.and(ORDER_INFO.CREATE_TIME.ge(startTime));

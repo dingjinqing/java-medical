@@ -597,14 +597,16 @@ public class StoreWxService extends ShopBaseService {
         orderStatusList.add(OrderConstant.ORDER_WAIT_DELIVERY);
         orderStatusList.add(OrderConstant.ORDER_SHIPPED);
         orderStatusList.add(OrderConstant.ORDER_RECEIVED);
+        //门店待处理订单数
         for(StoreOrderStatisticVo statisticVo:list){
-            Integer waitReceiveOrderNum= orderInfoDao.countNumByStoreIdOrderStatus(storeAccountVo.getShopId(), orderStatusList,null,null);
+            Integer waitReceiveOrderNum= orderInfoDao.countNumByStoreIdOrderStatus(statisticVo.getStoreId(), orderStatusList);
             statisticVo.setWaitHandleOrderNum(waitReceiveOrderNum);
         }
+        //本月数据
         StoreMonthStatisticVo monthVo=new StoreMonthStatisticVo();
         Timestamp startTime=DateUtil.beginOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
         Timestamp endTime=DateUtil.endOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
-        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatus(storeAccountVo.getShopId(), orderStatusList,startTime,endTime);
+        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeAccountVo.getStoreLists(), orderStatusList,startTime,endTime);
         monthVo.setWaitHandleNum(waitHandleNum);
         storeMainShowVo.setStoreAccount(storeAccountVo);
         return storeMainShowVo;

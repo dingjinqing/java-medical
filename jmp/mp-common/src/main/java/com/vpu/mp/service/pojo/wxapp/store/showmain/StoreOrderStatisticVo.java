@@ -8,7 +8,7 @@ import lombok.Data;
  **/
 @Data
 public class StoreOrderStatisticVo {
-    private String storeId;
+    private Integer storeId;
     private String storeName;
     /**
      * 经度
