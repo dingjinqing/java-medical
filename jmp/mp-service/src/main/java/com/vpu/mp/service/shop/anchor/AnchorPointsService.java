@@ -185,7 +185,7 @@ public class AnchorPointsService extends ShopBaseService {
         long  dueAttendanceDay = DateUtil.betweenDay(param.getStartTime(), param.getEndTime(),true)+1;
         int attendanceDay = doctorAttendanceMap.keySet().size();
         String attendanceRate = BigDecimal.valueOf(attendanceDay).divide(BigDecimal.valueOf(dueAttendanceDay))
-                .multiply(BigDecimal.valueOf(100)).setScale(3, BigDecimal.ROUND_HALF_UP).toString();
+                .multiply(BigDecimal.valueOf(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString();
         return attendanceRate;
     }
 }

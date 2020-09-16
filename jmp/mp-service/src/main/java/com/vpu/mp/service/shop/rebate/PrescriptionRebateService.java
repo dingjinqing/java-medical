@@ -1,12 +1,15 @@
 package com.vpu.mp.service.shop.rebate;
 
-import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.pojo.shop.table.*;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
@@ -18,7 +21,12 @@ import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
-import com.vpu.mp.service.pojo.shop.rebate.*;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateListParam;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateReportVo;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateVo;
+import com.vpu.mp.service.pojo.shop.rebate.RebateReportConstant;
 import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -170,4 +178,7 @@ public class PrescriptionRebateService extends ShopBaseService {
         return workbook;
     }
 
+    public BigDecimal getRealRebateByDoctorDate(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+       return prescriptionRebateDao.getRealRebateByDoctorDate(doctorId,startTime,endTime);
+    }
 }

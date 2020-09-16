@@ -12,9 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -26,6 +28,8 @@ import static com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
  **/
 @Repository
 public class PrescriptionRebateDao extends ShopBaseDao {
+
+    private final static String REBATE_MONEY  ="rebateMoney";
 
     /**
      * 处方返利入库
@@ -125,4 +129,17 @@ public class PrescriptionRebateDao extends ShopBaseDao {
         return select.fetchInto(PrescriptionRebateReportVo.class);
     }
 
+    /**
+     * 获取指定时间段内的处方返利
+     * @param doctorId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public BigDecimal getRealRebateByDoctorDate(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+        return db().select(DSL.sum(PRESCRIPTION_REBATE.REAL_REBATE_MONEY).as(REBATE_MONEY)).from(PRESCRIPTION_REBATE).where(PRESCRIPTION_REBATE.DOCTOR_ID.eq(doctorId))
+                .and(PRESCRIPTION_REBATE.STATUS.eq(PrescriptionRebateConstant.REBATE_FAIL))
+                .and(PRESCRIPTION_REBATE.REBATE_TIME.between(startTime,endTime))
+                .fetchAnyInto(BigDecimal.class);
+    }
 }
