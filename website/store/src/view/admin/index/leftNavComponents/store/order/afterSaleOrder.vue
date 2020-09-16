@@ -92,7 +92,7 @@
               @change="datePickerChange(true, applyTime)"
               size="small"
             />
-             至
+            至
             <el-date-picker
               v-model="applyTime.endTime"
               type="datetime"
@@ -261,10 +261,7 @@
                       }})
                     </td>
                     <td v-if="index === 0" :rowspan="orderItem.goods.length">
-                      <div
-                        class="high-light"
-                        @click="viewUserCenter(orderItem.userId)"
-                      >
+                      <div>
                         {{ orderItem.orderUserName }}
                         <br />
                         {{ orderItem.orderMobile }}
@@ -332,10 +329,7 @@
                     }})
                   </td>
                   <td>
-                    <div
-                      class="high-light"
-                      @click="viewUserCenter(orderItem.userId)"
-                    >
+                    <div>
                       {{ orderItem.orderUserName }}
                       <br />
                       {{ orderItem.orderMobile }}
@@ -628,14 +622,6 @@ export default {
       } else {
         target.endTime = null
       }
-    },
-    viewUserCenter (userId) {
-      this.$router.push({
-        name: 'membershipInformation',
-        query: {
-          userId
-        }
-      })
     }
   }
 }
