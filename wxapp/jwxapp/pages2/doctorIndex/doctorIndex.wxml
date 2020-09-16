@@ -18,7 +18,7 @@
 		</view>
 		<view class="total-data-content">
 			<view class="data-item">
-				<view>10</view>
+				<view>{{doctorInfo.doctorMonthData.prescriptionNum || '0'}}</view>
 				<text>处方数</text>
 			</view>
 			<view class="data-item">
@@ -30,7 +30,7 @@
 			  <text>服务费</text>
 			</view>
 			<view class="data-item">
-
+        <view>{{doctorInfo.doctorMonthData.receivingNumber || '0'}}</view>
 			  <text>接诊数</text>
 			</view>
 		</view>
