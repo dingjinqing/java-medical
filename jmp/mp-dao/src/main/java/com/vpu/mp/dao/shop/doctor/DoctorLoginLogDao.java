@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 
-import static com.vpu.mp.db.shop.Tables.ANCHOR_POINTS;
 import static com.vpu.mp.db.shop.Tables.DOCTOR_LOGIN_LOG;
 import static org.jooq.impl.DSL.date;
 
@@ -27,7 +26,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
         Integer count = db().selectCount().from(DOCTOR_LOGIN_LOG)
                 .where(DOCTOR_LOGIN_LOG.DOCTOR_ID.eq(doctorId))
                 .and(DOCTOR_LOGIN_LOG.CREATE_TIME.between(startTime, endTime))
-                .groupBy(date(ANCHOR_POINTS.CREATE_TIME))
+                .groupBy(date(DOCTOR_LOGIN_LOG.CREATE_TIME))
                 .fetchAnyInto(Integer.class);
         return count==null?0:count;
 
