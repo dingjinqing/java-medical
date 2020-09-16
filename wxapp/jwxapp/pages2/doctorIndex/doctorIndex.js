@@ -199,6 +199,16 @@ global.wxPage({
   viewWithdraw(){
     util.jumpLink(`pages2/serviceWithdraw/serviceWithdraw`)
   },
+  showTipsDialog(){
+    this.setData({
+      tipShowDialog:true
+    })
+  },
+  bindCloseTipsDialog(){
+    this.setData({
+      tipShowDialog:false
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

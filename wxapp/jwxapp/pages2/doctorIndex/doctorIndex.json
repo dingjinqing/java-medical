@@ -1,4 +1,6 @@
 {
   "enablePullDownRefresh": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "v-popup":"/components/popup/popup/index"
+  }
 }

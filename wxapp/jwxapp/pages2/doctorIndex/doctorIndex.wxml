@@ -18,20 +18,20 @@
 		</view>
 		<view class="total-data-content">
 			<view class="data-item">
-				<view>{{doctorInfo.doctorMonthData.prescriptionNum || '0'}}</view>
-				<text>处方数</text>
+				<view class="data-num">{{doctorInfo.doctorMonthData.prescriptionNum || '0'}}</view>
+				<view class="data-desc"><text>处方数</text></view>
 			</view>
 			<view class="data-item">
-				<view>{{doctorInfo.doctorMonthData.doctorAttendanceRate || '0'}}%</view>
-			  <text>出勤率</text>
+				<view class="data-num">{{doctorInfo.doctorMonthData.doctorAttendanceRate || '0'}}%</view>
+				<view class="data-desc" bindtap="showTipsDialog"><text>出勤率</text><image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
 			</view>
 			<view class="data-item">
-				<view>{{doctorInfo.doctorMonthData.serviceCharge || '0'}}</view>
-			  <text>服务费</text>
+				<view class="data-num">{{doctorInfo.doctorMonthData.serviceCharge || '0'}}</view>
+				<view class="data-desc"><text>服务费</text></view>
 			</view>
 			<view class="data-item">
-        <view>{{doctorInfo.doctorMonthData.receivingNumber || '0'}}</view>
-			  <text>接诊数</text>
+        <view class="data-num">{{doctorInfo.doctorMonthData.receivingNumber || '0'}}</view>
+				<view class="data-desc"><text>接诊数</text></view>
 			</view>
 		</view>
 	</view>
@@ -140,3 +140,10 @@
 		</view>
 	</view>
 </view>
+
+<v-popup show="{{tipShowDialog}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="center" bindtap='bindCloseTipsDialog'>
+	<view class="tips-dialog-content">
+		<text>出勤率 = 本月应出勤天数/应出勤天数</text>
+		<view class="tips-button" bindtap="bindCloseTipsDialog">确定</view>
+	</view>
+</v-popup>
