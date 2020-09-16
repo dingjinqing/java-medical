@@ -206,7 +206,7 @@ public class DoctorService extends ShopBaseService {
             doctor.setProfessionalCode(list.getProfessionalCode());
             doctor.setUrl(list.getDocUrl());
             doctor.setMobile(list.getDocPhone());
-            doctor.setSex((list.getDoctorSex() == 1) ? (byte)0:(byte)1);
+            doctor.setSex((list.getDoctorSex() == 0) ? (byte)0:(byte)1);
             doctor.setTitleId(titleService.getTitleIdNew(list.getPositionCode()));
 
             List<String> result = Arrays.asList(list.getDepartCode().split(","));

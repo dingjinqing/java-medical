@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersVo;
@@ -45,7 +46,7 @@ public class StoreDao extends ShopBaseDao {
     private static final String GOODS_NUMBER = "goodsNumber";
 
     public StoreBasicVo getStoreByNo(String storeNo) {
-        return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).fetchAnyInto(StoreBasicVo.class);
+        return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(StoreBasicVo.class);
     }
 
     public List<StoreBasicVo> listStoreCodes() {
@@ -75,11 +76,11 @@ public class StoreDao extends ShopBaseDao {
         // 查询未打烊门店
         select.and(STORE.OPENING_TIME.lt(dateStringParse));
         select.and(STORE.CLOSE_TIME.gt(dateStringParse));
-        if (stores != null) {
+        if (stores != null && stores.size() != 0) {
             logger().info("门店库存校验");
             select.and(STORE.STORE_CODE.in(stores));
         }
-        if (deliveryType != 0) {
+        if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
             select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
         }
         select.limit(15);

@@ -650,7 +650,9 @@ public class StoreService extends ShopBaseService {
      * @return Map<Double, StoreDo>
      */
     public Map<String, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
-        List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
+        // 三方库拉取可用门店列表 **
+        // List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
+        List<String> storeCodes = new ArrayList<>();
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, orderAddressParam.getDeliveryType());
         Map<String, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
@@ -669,7 +671,9 @@ public class StoreService extends ShopBaseService {
      * @return Map<Double, StoreDo>
      */
     public Map<String, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
-        List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
+        // 三方库拉取可用门店列表 **
+        // List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
+        List<String> storeCodes = new ArrayList<>();
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, 1);
         Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
