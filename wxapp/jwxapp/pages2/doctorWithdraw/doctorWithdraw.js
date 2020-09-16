@@ -62,12 +62,9 @@ global.wxPage({
       util.showModal('提示','提现金额不得大于可提现余额')
       return false
     }
-    if(this.data.realName === ''){
-      this.setData({
-        showRealNameDialog:true
-      })
-      return false
-    }
+    this.setData({
+      showRealNameDialog:true
+    })
   },
   getRealName(e){
     this.data.realName = e.detail.realName
