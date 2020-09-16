@@ -47,7 +47,7 @@ public class WxAppDoctorWithdrawController extends WxAppBaseController{
             param.setClientIp(RequestUtil.getIp(request));
             doctorWithdrawService.addDoctorWithdraw(param);
         } catch (MpException e) {
-            return fail(e.getErrorCode());
+            return fail(e.getErrorCode(),e.getCodeParam());
         }
         return success();
     }

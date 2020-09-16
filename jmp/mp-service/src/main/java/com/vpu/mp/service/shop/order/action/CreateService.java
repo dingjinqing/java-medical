@@ -16,10 +16,7 @@ import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.address.UserAddressService;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -369,6 +366,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 list.add(goodsMedicalInfo);
             });
             orderAddressParam.setStoreGoodsBaseCheckInfoList(list);
+            // 调取接口校验门店库存
             Map<String, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
             Set<Map.Entry<String, StoreDo>> entry = storeListOpen.entrySet();
             if (entry.size() == 0) {
@@ -721,8 +719,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException
      */
     private void checkGoodsIsOnSale(List<Goods> goodsList) throws MpException {
+        logger().info("校验商品上下架");
         for (Goods goods: goodsList) {
             if (!GoodsConstant.ON_SALE.equals(goods.getGoodsInfo().getIsOnSale())) {
+                logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
+            }
+            if (goods.getStoreGoods() == null) {
                 logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
             }
@@ -742,10 +745,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
         //goods type,key goodsId
         Map<Integer, GoodsRecord> goods = goodsService.getGoodsToOrder(param.getGoodsIds());
+        // 门店商品
+        Map<Integer, StoreGoodsRecord> storeGoods = goodsService.getStoreGoodsToOrder(param.getGoodsIds(), param.getStoreId());
         //赋值
         for (Goods temp : param.getGoods()) {
             temp.setProductInfo(productInfo.get(temp.getProductId()));
             temp.setGoodsInfo(goods.get(temp.getGoodsId()));
+            temp.setStoreGoods(storeGoods.get(temp.getGoodsId()));
             //校验
             checkGoodsAndProduct(temp);
             //初始化商品价格
@@ -917,17 +923,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException
      */
     public void checkGoodsAndProduct(Goods goods) throws MpException {
-        if (goods.getGoodsInfo() == null || goods.getProductInfo() == null || goods.getGoodsInfo().getDelFlag() == DelFlag.DISABLE.getCode()) {
-            logger().error("checkGoodsAndProduct,商品不存在");
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, Util.toJson(goods));
-        }
         if (goods.getGoodsNumber() == null || goods.getGoodsNumber() <= 0) {
             logger().error("checkGoodsAndProduct,商品数量不能为0,id:" + goods.getProductId());
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_ZERO, null, goods.getGoodsInfo().getGoodsName());
-        }
-        if (goods.getGoodsNumber() > goods.getProductInfo().getPrdNumber()) {
-            logger().error("checkGoodsAndProduct,库存不足,id:" + goods.getProductId());
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, null, goods.getGoodsInfo().getGoodsName());
         }
     }
 
