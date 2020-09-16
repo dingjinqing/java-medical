@@ -156,7 +156,8 @@
         "serviceWithdraw/serviceWithdraw",
         "withdrawInfo/withdrawInfo",
         "doctorWithdrawRecord/doctorWithdrawRecord",
-        "doctorWithdraw/doctorWithdraw"
+        "doctorWithdraw/doctorWithdraw",
+        "doctorCenter/doctorCenter.js"
       ]
     }
   ],
