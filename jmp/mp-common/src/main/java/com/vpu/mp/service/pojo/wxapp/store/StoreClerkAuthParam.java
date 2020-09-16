@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2020/9/15
  **/
 @Data
-public class StoreSalesclerkAuthParam {
+public class StoreClerkAuthParam {
     /**
      * 账户名
      */
@@ -29,5 +29,17 @@ public class StoreSalesclerkAuthParam {
      */
     private Integer userId;
     private Integer shopId;
+    /**
+     * 账户类型 1店员 2店长
+     */
+    private Byte accountType;
+    /**
+     * 是否是药师
+     */
+    private Byte isPharmacist;
+    /**
+     * 药师签名
+     */
+    private String signature;
 
 }

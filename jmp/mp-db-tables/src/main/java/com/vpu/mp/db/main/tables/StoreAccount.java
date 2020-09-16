@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreAccount extends TableImpl<StoreAccountRecord> {
 
-    private static final long serialVersionUID = -701767607;
+    private static final long serialVersionUID = -1988267766;
 
     /**
      * The reference instance of <code>jmini_main.b2c_store_account</code>
@@ -141,6 +141,11 @@ public class StoreAccount extends TableImpl<StoreAccountRecord> {
      * The column <code>jmini_main.b2c_store_account.is_bind</code>. 是否已绑定
      */
     public final TableField<StoreAccountRecord, Byte> IS_BIND = createField("is_bind", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已绑定");
+
+    /**
+     * The column <code>jmini_main.b2c_store_account.pharmacist_id</code>. 药师id
+     */
+    public final TableField<StoreAccountRecord, Integer> PHARMACIST_ID = createField("pharmacist_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "药师id");
 
     /**
      * Create a <code>jmini_main.b2c_store_account</code> table reference

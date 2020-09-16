@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -33,8 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.Objects;
 
-import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
-import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_SALESCLERK_USER;
+import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.*;
 
 /**
  *
@@ -173,19 +173,19 @@ public class WxAppAuth {
 		sessionUser.setUserAvatar(userDetail == null ? null : userDetail.getUserAvatar());
 		sessionUser.setUsername(userDetail == null ? null : userDetail.getUsername());
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
-        WxAppSessionUser wxAppSessionUser = setDoctorAuth(sessionUser, user);
+        WxAppSessionUser wxAppSessionUser = setAuth(sessionUser, user);
         jedis.set(token, Util.toJson(wxAppSessionUser));
         wxAppSessionUser.setImageHost(imageService.getImageHost());
         return wxAppSessionUser;
 	}
 
     /**
-     * 向Token中添加医师认证相关字段
+     * 向Token中添加认证相关字段
      * @param wxAppSessionUser Token
      * @param userRecord       user
      * @return WxAppSessionUser
      */
-    private WxAppSessionUser setDoctorAuth(WxAppSessionUser wxAppSessionUser, UserRecord userRecord) {
+    private WxAppSessionUser setAuth(WxAppSessionUser wxAppSessionUser, UserRecord userRecord) {
         // 如果有认证医师查看是否禁用
         Byte userType = userRecord.getUserType();
         //添加用户个人角色信息
@@ -193,15 +193,29 @@ public class WxAppAuth {
         if (Objects.equals(userType, 0)) {
             wxAppSessionUser.setDoctorId(0);
             wxAppSessionUser.setPharmacistId(0);
+            wxAppSessionUser.setStoreAccountId(0);
         }
         //如果当前用户是医师，那么直接进入医师界面
-        if (userType == 1) {
+        if (AUTH_TYPE_DOCTOR_USER.equals(userType)) {
             // 查询该医师是否禁用，如果禁用禁止登录
             Integer doctorId = adminUserService.getDoctorId(userRecord.getUserId());
             wxAppSessionUser.setDoctorId(doctorId);
             DoctorOneParam oneInfo = doctorService.getOneInfo(doctorId);
             if (oneInfo.getStatus() == 0) {
-                wxAppSessionUser.setUserType((byte) -1);
+                wxAppSessionUser.setDoctorId(STATUS_DISABLE);
+            }
+        }else if(AUTH_TYPE_STORE_ACCOUNT_USER.equals(userType)){
+            StoreAccountVo storeAccountVo=storeAccountDao.getByUserId(userRecord.getUserId());
+            wxAppSessionUser.setStoreAccountId(storeAccountVo.getAccountId());
+            if(storeAccountVo.getStatus()==0){
+                wxAppSessionUser.setStoreAccountId( STATUS_DISABLE);
+            }
+        }else if(AUTH_TYPE_PHARMACIST_USER.equals(userType)){
+            StoreAccountVo storeAccountVo=storeAccountDao.getByUserId(userRecord.getUserId());
+            wxAppSessionUser.setStoreAccountId(storeAccountVo.getAccountId());
+            wxAppSessionUser.setPharmacistId(storeAccountVo.getPharmacistId());
+            if(storeAccountVo.getStatus()==0){
+                wxAppSessionUser.setStoreAccountId( STATUS_DISABLE);
             }
         }
         return wxAppSessionUser;
@@ -242,15 +256,23 @@ public class WxAppAuth {
      * 更新店员缓存信息
      * @param accountId
      */
-    public void updateSalesclerkUserType(Integer accountId){
+    public void updateStoreClerkUserType(Integer accountId){
         String json = jedis.get(getToken());
         if (!StringUtils.isBlank(json)) {
             WxAppSessionUser wxAppSessionUser = Util.parseJson(json, WxAppSessionUser.class);
             if(wxAppSessionUser!=null){
-                wxAppSessionUser.setUserType(AUTH_TYPE_SALESCLERK_USER);
-                wxAppSessionUser.setSalesclerkId(accountId);
+                StoreAccountVo storeAccountVo=storeAccountDao.getOneInfo(accountId);
+                if(storeAccountVo.getPharmacistId()!=null&&storeAccountVo.getPharmacistId()>0){
+                    //药师
+                    wxAppSessionUser.setUserType(AUTH_TYPE_PHARMACIST_USER);
+                }else {
+                    //门店用户
+                    wxAppSessionUser.setUserType(AUTH_TYPE_STORE_ACCOUNT_USER);
+                }
+                wxAppSessionUser.setStoreAccountId(accountId);
+                wxAppSessionUser.setPharmacistId(storeAccountVo.getPharmacistId());
                 jedis.set(getToken(), Util.toJson(wxAppSessionUser));
-                storeAccountDao.updateUserToken(accountId,getToken());
+                storeAccountDao.updateUserToken(storeAccountVo.getAccountId(),getToken());
             }
         }
     }

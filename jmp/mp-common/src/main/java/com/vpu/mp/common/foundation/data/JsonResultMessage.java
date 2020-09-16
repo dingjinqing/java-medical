@@ -1447,8 +1447,9 @@ public class JsonResultMessage {
     public static final String DOCTOR_LOGIN_AUTH_ERROR = "认证失败";
     public static final String DOCTOR_LOGIN_AUTH_ALREADY_LOGIN="医师信息已被认证";
 
-    public static final String SALESCLERK_AUTH_INFO_ERROR="店员认证失败，认证信息有误";
-    public static final String SALESCLERK_AUTH_INFO_SMS_ERROR="店员认证失败，验证码有误";
+    public static final String STORE_CLERK_AUTH_INFO_ERROR ="店员认证失败，认证信息有误";
+    public static final String STORE_CLERK_AUTH_ALREADY_ERROR ="店员认证失败，该身份已经认证";
+    public static final String STORE_CLERK_AUTH_INFO_SMS_ERROR ="店员认证失败，验证码有误";
 
     public static final String FETCH_HIS_ERROR = "拉取信息时错误";
     public static final String FETCH_HIS_NO_PATIENT = "无此患者信息";
