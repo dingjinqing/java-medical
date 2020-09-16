@@ -904,15 +904,15 @@
       @handlerResetData="search"
     />
     <!-- 订单导出选择列弹窗 -->
-    <!-- <orderExportColumnSelectDialog
+    <orderExportColumnSelectDialog
       :show.sync="showExportColumnSelect"
       @exportColumnSelectConfirm="handleExportColumnSelect"
-    /> -->
+    />
     <!-- 订单导出确认弹窗 -->
-    <!-- <orderExportConfirmDialog
+    <orderExportConfirmDialog
       :show.sync="showExportConfirm"
       :param="this.exportCopySearchParams"
-    /> -->
+    />
     <!-- 发货 -->
     <!-- <prescriptionCheck :show.sync="showPrescriptionCheck" /> -->
   </div>
@@ -927,7 +927,9 @@ export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
     nodesDialog: () => import('./addNotes'),
-    deliveryDialog: () => import('./deliveryDialog')
+    deliveryDialog: () => import('./deliveryDialog'),
+    orderExportColumnSelectDialog: () => import('./orderExportColumnSelect.vue'),
+    orderExportConfirmDialog: () => import('./orderExportConfirmDialog.vue')
   },
   data () {
     return {

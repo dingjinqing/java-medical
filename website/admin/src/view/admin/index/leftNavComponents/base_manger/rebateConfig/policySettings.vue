@@ -70,7 +70,7 @@
             处方药医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
-              :max="100"
+              :max="100 - formData.rxMedicalPlatformProportion"
               size="small"
               v-model="formData.rxMedicalDoctorProportion"
             ></el-input-number
@@ -80,7 +80,7 @@
             处方药平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
-              :max="100"
+              :max="100 - formData.rxMedicalDoctorProportion"
               size="small"
               v-model="formData.rxMedicalPlatformProportion"
             ></el-input-number
@@ -92,7 +92,7 @@
             非处方药医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
-              :max="100"
+              :max="100 - formData.noRxMedicalPlatformProportion"
               size="small"
               v-model="formData.noRxMedicalDoctorProportion"
             ></el-input-number
@@ -102,7 +102,7 @@
             非处方药平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
-              :max="100"
+              :max="100 - formData.noRxMedicalDoctorProportion"
               size="small"
               v-model="formData.noRxMedicalPlatformProportion"
             ></el-input-number
@@ -124,7 +124,7 @@
             医生佣金比例：<el-input-number
               controls-position="right"
               :min="0"
-              :max="100"
+              :max="100 - formData.inquiryOrderPlatformProportion"
               size="small"
               v-model="formData.inquiryOrderDoctorProportion"
             ></el-input-number
@@ -134,7 +134,7 @@
             平台佣金比例：<el-input-number
               controls-position="right"
               :min="0"
-              :max="100"
+              :max="100 - formData.inquiryOrderDoctorProportion"
               size="small"
               v-model="formData.inquiryOrderPlatformProportion"
             ></el-input-number

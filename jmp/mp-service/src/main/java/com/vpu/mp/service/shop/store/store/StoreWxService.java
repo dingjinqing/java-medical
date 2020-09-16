@@ -1,15 +1,19 @@
 package com.vpu.mp.service.shop.store.store;
 
+import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.PharmacistDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.pharmacist.PharmacistDao;
+import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -22,6 +26,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
@@ -29,6 +34,9 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryV
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMainShowVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMonthStatisticVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderStatisticVo;
 import com.vpu.mp.service.saas.region.ProvinceService;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -208,6 +216,10 @@ public class StoreWxService extends ShopBaseService {
     private JedisManager jedisManager;
     @Autowired
     private PharmacistDao pharmacistDao;
+    @Autowired
+    private StoreDao storeDao;
+    @Autowired
+    private OrderInfoDao orderInfoDao;
 
     /**
      * The constant BYTE_TWO.
@@ -546,7 +558,6 @@ public class StoreWxService extends ShopBaseService {
             Byte userType=AuthConstant.AUTH_TYPE_STORE_ACCOUNT_USER;
             if(param.getIsPharmacist().equals((byte)1)){
                 //是否药师
-                userType=AuthConstant.AUTH_TYPE_PHARMACIST_USER;
                 int pharmacistId=savePharmacist(storeAccountVo,param);
                 storeAccountDao.updatePharmacistId(storeAccountVo.getAccountId(),pharmacistId);
             }
@@ -572,6 +583,33 @@ public class StoreWxService extends ShopBaseService {
             return s.equals(param.getMobileCheckCode());
         }
         return false;
+    }
+
+    /**
+     * 店员端首页
+     * @param storeAccountVo
+     * @return
+     */
+    public StoreMainShowVo storeMainShow(StoreAccountVo storeAccountVo){
+        StoreMainShowVo storeMainShowVo=new StoreMainShowVo();
+        List<StoreOrderStatisticVo> list=storeDao.getListByStoreIds(storeAccountVo.getStoreLists());
+        List<Byte> orderStatusList=new ArrayList<>();
+        orderStatusList.add(OrderConstant.ORDER_WAIT_DELIVERY);
+        orderStatusList.add(OrderConstant.ORDER_SHIPPED);
+        orderStatusList.add(OrderConstant.ORDER_RECEIVED);
+        //门店待处理订单数
+        for(StoreOrderStatisticVo statisticVo:list){
+            Integer waitReceiveOrderNum= orderInfoDao.countNumByStoreIdOrderStatus(statisticVo.getStoreId(), orderStatusList);
+            statisticVo.setWaitHandleOrderNum(waitReceiveOrderNum);
+        }
+        //本月数据
+        StoreMonthStatisticVo monthVo=new StoreMonthStatisticVo();
+        Timestamp startTime=DateUtil.beginOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
+        Timestamp endTime=DateUtil.endOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
+        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeAccountVo.getStoreLists(), orderStatusList,startTime,endTime);
+        monthVo.setWaitHandleNum(waitHandleNum);
+        storeMainShowVo.setStoreAccount(storeAccountVo);
+        return storeMainShowVo;
     }
 
 }

@@ -182,7 +182,7 @@ public class StoreService extends ShopBaseService {
             return select;
         }
         if (!StringUtils.isEmpty(param.getKeywords())) {
-            select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.POS_SHOP_ID.like(param.getKeywords())));
+            select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.STORE_CODE.like(param.getKeywords())));
         }
         //查询条件-营业状态
         if (param.getBusinessState() != null) {
