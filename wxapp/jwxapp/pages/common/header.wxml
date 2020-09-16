@@ -1,4 +1,3 @@
 
-<wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <v-navigation has_bottom="{{show_bottom}}" page_name="{{page_name}}" bg-color="{{title_bgColor}}" is_first_page="{{is_first_page}}"/>
 <v-toast id="toast" />
