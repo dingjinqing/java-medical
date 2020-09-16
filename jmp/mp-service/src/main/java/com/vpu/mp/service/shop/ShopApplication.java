@@ -94,6 +94,7 @@ import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.task.department.DepartmentTaskService;
+import com.vpu.mp.service.shop.task.doctor.DoctorTaskService;
 import com.vpu.mp.service.shop.task.order.InquiryOrderTaskService;
 import com.vpu.mp.service.shop.task.prescription.PrescriptionTaskService;
 import com.vpu.mp.service.shop.task.store.StoreTaskService;
@@ -690,4 +691,10 @@ public class ShopApplication {
      */
     @Autowired
     public DepartmentTaskService departmentTaskService;
+
+    /**
+     * 医师业绩统计
+     */
+    @Autowired
+    public DoctorTaskService doctorTaskService;
 }

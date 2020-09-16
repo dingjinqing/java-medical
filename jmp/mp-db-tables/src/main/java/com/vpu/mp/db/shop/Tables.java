@@ -1239,4 +1239,8 @@ public class Tables {
      * 科室信息统计
      */
     public static final DepartmentSummaryTrend DEPARTMENT_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND;
+    /**
+     * 医师信息统计
+     */
+    public static final DoctorSummaryTrend DOCTOR_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DoctorSummaryTrend.DOCTOR_SUMMARY_TREND;
 }

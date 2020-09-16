@@ -19,7 +19,7 @@
         "name": "门店列表",
         "linkUrl": "/admin/store/list",
         "topIndex": 1,
-        "includeApi": [],
+        "includeApi": ["/api/store/store/*"],
         "check": 1,
         "isOnly": 0
       }

@@ -339,7 +339,7 @@ public class DepartmentDao extends ShopBaseDao {
     }
     /**
      * 获取所有科室的信息
-     *
+     *d
      * @return
      */
     public List<DepartmentOneParam> getAllDepartment() {

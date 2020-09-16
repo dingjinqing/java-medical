@@ -36,6 +36,12 @@
             :placeholder="$t('addStore.contactNumTip')"
           ></el-input>
         </el-form-item>
+        <el-form-item label="门店编码" prop="storeCode">
+          <el-input
+            v-model="storeFormInfo.storeCode"
+            placeholder="请输入门店编码"
+          ></el-input>
+        </el-form-item>
         <el-form-item
           :label="$t('addStore.businessStatus')"
           prop="businessState"
@@ -630,7 +636,8 @@ export default {
         pickDetail: {
           duration: '',
           type: 1
-        }
+        },
+        storeCode: ''
       },
       storeFormRules: {
         storeName: [{ required: true, message: this.$t('addStore.enterStoreName'), trigger: 'blur' }],

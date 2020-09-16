@@ -360,7 +360,7 @@ export default {
           this.loading = false
         } else if (res.error === 120060) {
           this.$router.push({
-            name: 'orderRefundInfo',
+            name: 'afterSaleInfo',
             query: {
               returnOrderSn: res.content
             }
@@ -406,7 +406,7 @@ export default {
             message: '退款成功',
             onClose: () => {
               this.$router.push({
-                name: 'order_return',
+                name: 'afterSale',
                 query: {
                   orderSn: this.$route.query.orderSn
                 }

@@ -13,6 +13,7 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorDutyRecordDo;
+import com.vpu.mp.common.pojo.shop.table.DoctorSummaryTrendDo;
 import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.UserDao;
@@ -28,21 +29,7 @@ import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
 import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorConstant;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorConsultationParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorDepartmentOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorDutyParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorDutyRecordParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorFetchOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorSimpleVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorUnbundlingParam;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
@@ -704,5 +691,62 @@ public class DoctorService extends ShopBaseService {
         vo.setReceivingNumber(receivingNumber);
         vo.setServiceCharge(inquiryOrderRebate.add(prescriptionRebate).toString());
         return vo;
+    }
+
+    /**
+     * 获取所有医师的信息
+     *
+     * @return
+     */
+    public List<DoctorOneParam> getAllDoctor() {
+        return doctorDao.getAllDoctor();
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DoctorStatisticOneParam getDoctorInquiryData(DoctorStatisticParam param) {
+        return doctorDao.getDoctorInquiryData(param);
+    }
+
+    /**
+     * 获取科室接诊统计数据
+     * @param param
+     * @return
+     */
+    public Integer getDoctorConsultationData(DoctorStatisticParam param) {
+        return doctorDao.getDoctorConsultationData(param);
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DoctorStatisticOneParam getDoctorPrescriptionData(DoctorStatisticParam param) {
+        return doctorDao.getDoctorPrescriptionData(param);
+    }
+
+    /**
+     * 获取科室统计信息
+     * @param param
+     * @return
+     */
+    public DoctorSummaryTrendDo getDoctorStatisData(DoctorStatisticParam param){
+        DoctorSummaryTrendDo data = new DoctorSummaryTrendDo();
+        data.setConsultationNumber(getDoctorConsultationData(param));
+
+        DoctorStatisticOneParam inquiryData = getDoctorInquiryData(param);
+        data.setInquiryMoney(inquiryData.getInquiryMoney());
+        data.setInquiryNumber(inquiryData.getInquiryNumber());
+
+        DoctorStatisticOneParam prescriptionData = getDoctorPrescriptionData(param);
+        data.setPrescriptionMoney(prescriptionData.getPrescriptionMoney());
+        data.setPrescriptionNum(prescriptionData.getPrescriptionNum());
+
+        data.setConsumeMoney(inquiryData.getInquiryMoney().add(prescriptionData.getPrescriptionMoney()));
+        return data;
     }
 }

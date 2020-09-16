@@ -18,4 +18,8 @@ public class TitleOneParam {
     private Byte isDelete=0;
     private Timestamp createTime;
     private Integer first=0;
+    /**
+     * 该职称人数
+     */
+    private Integer doctorNum;
 }
