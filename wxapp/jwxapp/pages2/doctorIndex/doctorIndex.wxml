@@ -14,6 +14,29 @@
 	</view>
 	<view class="list">
 		<view class='ma_title'>
+			<view>本月数据</view>
+		</view>
+		<view class="total-data-content">
+			<view class="data-item">
+				<view>10</view>
+				<text>处方数</text>
+			</view>
+			<view class="data-item">
+				<view>100%</view>
+			  <text>出勤率</text>
+			</view>
+			<view class="data-item">
+				<view>10</view>
+			  <text>服务费</text>
+			</view>
+			<view class="data-item">
+
+			  <text>接诊数</text>
+			</view>
+		</view>
+	</view>
+	<view class="list">
+		<view class='ma_title'>
 			<view>待处理</view>
 		</view>
 		<view class="list_content">

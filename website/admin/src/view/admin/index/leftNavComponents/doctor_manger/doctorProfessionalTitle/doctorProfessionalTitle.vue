@@ -67,11 +67,13 @@
           :data="tableData"
           v-loading="loading"
           border
-          style="width: 100%;"
+          style="width: 100%"
         >
           <el-table-column prop="name" label="医师职称" align="center">
           </el-table-column>
           <el-table-column prop="code" label="职称代码" align="center">
+          </el-table-column>
+          <el-table-column prop="doctorNum" label="医师数量" align="center">
           </el-table-column>
           <el-table-column
             prop="createTime"

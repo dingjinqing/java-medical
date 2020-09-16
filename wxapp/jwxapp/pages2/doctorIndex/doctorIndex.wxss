@@ -290,3 +290,11 @@
   font-size: 30rpx;
   color: #333;
 }
+.total-data-content{
+  padding: 20rpx 0;
+}
+.total-data-content >  .data-item{
+  width: 25%;
+  text-align: center;
+  display: inline-block;
+}
