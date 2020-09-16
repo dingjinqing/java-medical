@@ -68,6 +68,10 @@ public class StorePojo implements Comparable<StorePojo> {
     public Double distance;
     /** 自提取货时间类型 1门店营业时间 2自定义时间 */
     private Byte pickTimeAction;
+    /**
+     * 门店编码
+     */
+    private String storeCode;
     /** 自提时间明细 */
     @JsonIgnore
     private String pickTimeDetail;
