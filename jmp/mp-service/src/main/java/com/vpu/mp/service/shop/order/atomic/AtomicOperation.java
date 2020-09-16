@@ -152,11 +152,14 @@ public class AtomicOperation extends ShopBaseService {
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_EXIST , null, order.getOrderSn());
             }
             //商品库存
-            int goodsStock = goods.getGoodsNumber() - num;
+//            int goodsStock = goods.getGoodsNumber() - num;
+            logger().info("不减商品库存 **");
+            int goodsStock = goods.getGoodsNumber();
             //商品销量
             int goodsSales = goods.getGoodsSaleNum() + num;
             //规格库存
-            int productStock = product.getPrdNumber() - num;
+//            int productStock = product.getPrdNumber() - num;
+            int productStock = product.getPrdNumber();
             log.info("规格原库存；{}，扣减库存：{}", product.getPrdNumber(), productStock);
             if(product.getPrdNumber() < num) {
                 //库存不足
