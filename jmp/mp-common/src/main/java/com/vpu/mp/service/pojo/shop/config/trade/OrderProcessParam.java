@@ -21,6 +21,11 @@ public class OrderProcessParam {
      */
     @JsonProperty(value = "fetch")
     public Byte fetch;
+    /**
+     * 门店配送
+     */
+    @JsonProperty(value = "store_express")
+    public Byte storeExpress;
     @JsonProperty(value = "is_lock")
     public Byte isLock;
     /**
