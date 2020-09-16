@@ -210,7 +210,10 @@ global.wxPage({
     })
   },
   changeDoctorData(){
-    util.jumpLink('/pages2/doctorCenter/doctorCenter')
+    util.jumpLink(`/pages2/doctorCenter/doctorCenter${util.getUrlParams({
+      doctorAvatar:this.data.doctorInfo.url ? this.data.doctorInfo.url : 'image/wxapp/doctor_default_icon.png',
+      treatDisease:this.data.doctorInfo.treatDisease
+    })}`)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
