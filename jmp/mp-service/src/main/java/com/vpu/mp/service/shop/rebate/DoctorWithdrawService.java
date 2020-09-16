@@ -115,10 +115,10 @@ public class DoctorWithdrawService extends ShopBaseService {
         DoctorWithdrawVo doctorWithdrawVo= doctorWithDrawDao.getWithdrawByOrderSn(param.getOrderSn());
 
         //提现出账
-        pay2Person(param.getOrderSn(),param.getClientIp(),param.getRealName(),doctor.getUserId(),param.getType(),param.getWithdrawCash(),doctorWithdrawVo,doctorTotalRebateVo);
+        pay2Person(param.getOrderSn(),param.getClientIp(),param.getRealName(),doctor.getUserId(),param.getType(),param.getWithdrawCash(),doctorWithdrawVo,doctorTotalRebateVo,false);
 
         //修改可提现金额
-        doctorTotalRebateDao.updateTotalMoneyBlockedMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney());
+        doctorTotalRebateDao.updateTotalMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()));
     }
 
     /**
@@ -165,7 +165,7 @@ public class DoctorWithdrawService extends ShopBaseService {
         DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(doctorWithdrawVo.getDoctorId());
         if(DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS.equals(param.getCheckStatus())){
             //出账,暂时注释掉
-            pay2Person(param.getOrderSn(),param.getClientIp(),doctorWithdrawVo.getRealName(),doctor.getUserId(),doctorWithdrawVo.getType(),doctorWithdrawVo.getWithdrawCash(),doctorWithdrawVo,doctorTotalRebateVo);
+            pay2Person(param.getOrderSn(),param.getClientIp(),doctorWithdrawVo.getRealName(),doctor.getUserId(),doctorWithdrawVo.getType(),doctorWithdrawVo.getWithdrawCash(),doctorWithdrawVo,doctorTotalRebateVo,true);
             transaction(()->{
                 //释放冻结金额
                 doctorTotalRebateDao.updateBlockMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
@@ -196,7 +196,7 @@ public class DoctorWithdrawService extends ShopBaseService {
      * @param money
      * @throws MpException
      */
-    public void pay2Person(String orderSn, String ip, String realName, Integer userId, Byte type, BigDecimal money,DoctorWithdrawVo doctorWithdrawVo,DoctorTotalRebateVo doctorTotalRebateVo) throws MpException {
+    public void pay2Person(String orderSn, String ip, String realName, Integer userId, Byte type, BigDecimal money,DoctorWithdrawVo doctorWithdrawVo,DoctorTotalRebateVo doctorTotalRebateVo,boolean isAudit) throws MpException {
         logger().info("pay2Person start");
         MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
         try {
@@ -206,7 +206,9 @@ public class DoctorWithdrawService extends ShopBaseService {
             }
         } catch (WxPayException e) {
             doctorWithDrawDao.update(doctorWithdrawVo.getId(),DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL,e.getErrCodeDes());
-            doctorTotalRebateDao.updateTotalMoneyBlockedMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getTotalMoney().add(doctorWithdrawVo.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
+            if(isAudit){
+                doctorTotalRebateDao.updateTotalMoneyBlockedMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getTotalMoney().add(doctorWithdrawVo.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
+            }
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EX_ERROR,
                 e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
         }
