@@ -689,7 +689,7 @@ public class DoctorService extends ShopBaseService {
         vo.setDoctorAttendanceRate(doctorAttendanceRate);
         vo.setPrescriptionNum(prescriptionNum);
         vo.setReceivingNumber(receivingNumber);
-        vo.setServiceCharge(inquiryOrderRebate.add(prescriptionRebate).toString());
+        vo.setServiceCharge(inquiryOrderRebate.add(prescriptionRebate).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
         return vo;
     }
 

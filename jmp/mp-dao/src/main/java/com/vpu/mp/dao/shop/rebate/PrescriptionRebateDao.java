@@ -137,7 +137,7 @@ public class PrescriptionRebateDao extends ShopBaseDao {
      * @return
      */
     public BigDecimal getRealRebateByDoctorDate(Integer doctorId, Timestamp startTime, Timestamp endTime) {
-        return db().select(DSL.sum(PRESCRIPTION_REBATE.REAL_REBATE_MONEY).as(REBATE_MONEY)).from(PRESCRIPTION_REBATE).where(PRESCRIPTION_REBATE.DOCTOR_ID.eq(doctorId))
+        return db().select(DSL.ifnull(DSL.sum(PRESCRIPTION_REBATE.REAL_REBATE_MONEY),BigDecimal.ZERO).as(REBATE_MONEY)).from(PRESCRIPTION_REBATE).where(PRESCRIPTION_REBATE.DOCTOR_ID.eq(doctorId))
                 .and(PRESCRIPTION_REBATE.STATUS.eq(PrescriptionRebateConstant.REBATE_FAIL))
                 .and(PRESCRIPTION_REBATE.REBATE_TIME.between(startTime,endTime))
                 .fetchAnyInto(BigDecimal.class);

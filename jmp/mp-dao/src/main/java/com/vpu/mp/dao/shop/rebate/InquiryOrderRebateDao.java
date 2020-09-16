@@ -136,7 +136,7 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
      * @return
      */
     public BigDecimal getRealRebateByDoctorDate(Integer doctorId, Timestamp startTime, Timestamp endTime) {
-       return db().select(DSL.sum(INQUIRY_ORDER_REBATE.TOTAL_REBATE_MONEY).as(REBATE_MONEY)).from(INQUIRY_ORDER_REBATE)
+       return db().select(DSL.ifnull(DSL.sum(INQUIRY_ORDER_REBATE.TOTAL_REBATE_MONEY),BigDecimal.ZERO).as(REBATE_MONEY)).from(INQUIRY_ORDER_REBATE)
                 .where(INQUIRY_ORDER_REBATE.DOCTOR_ID.eq(doctorId))
                 .and(INQUIRY_ORDER_REBATE.STATUS.eq(InquiryOrderRebateConstant.REBATED))
                 .and(INQUIRY_ORDER_REBATE.REBATE_TIME.between(startTime,endTime))

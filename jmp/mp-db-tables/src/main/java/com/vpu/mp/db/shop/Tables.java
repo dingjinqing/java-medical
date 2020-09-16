@@ -1243,4 +1243,8 @@ public class Tables {
      * 医师信息统计
      */
     public static final DoctorSummaryTrend DOCTOR_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DoctorSummaryTrend.DOCTOR_SUMMARY_TREND;
+    /**
+     * 医师登录记录
+     */
+    public static final DoctorLoginLog DOCTOR_LOGIN_LOG = com.vpu.mp.db.shop.tables.DoctorLoginLog.DOCTOR_LOGIN_LOG;
 }
