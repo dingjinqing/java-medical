@@ -148,7 +148,8 @@ public class StoreService extends ShopBaseService {
      */
     public StoreVo getPageList(StoreListQueryParam param) {
         SelectWhereStep<? extends Record> select = db().select(
-            STORE.STORE_ID, STORE.STORE_NAME,STORE.STORE_CODE ,STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,
+            STORE.STORE_ID, STORE.STORE_NAME,STORE.STORE_CODE ,STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE,
+                STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,STORE.STORE_EXPRESS,
             STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE, STORE.CITY_SERVICE
         ).from(STORE)
             .leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
@@ -263,7 +264,7 @@ public class StoreService extends ShopBaseService {
      * @return
      */
     public Boolean delStore(Integer storeId) {
-        return db().update(STORE).set(STORE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(STORE.STORE_ID.eq(storeId)).execute() > 0 ? true : false;
+        return db().update(STORE).set(STORE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(STORE.STORE_ID.eq(storeId)).execute() > 0;
     }
 
     /**

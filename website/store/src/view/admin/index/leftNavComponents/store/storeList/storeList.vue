@@ -83,13 +83,13 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="同城配送" align="center">
+          <el-table-column label="门店配送" align="center">
             <template slot-scope="{ row }">
               <el-checkbox
-                v-model="row.cityService"
+                v-model="row.storeExpress"
                 :true-label="1"
                 :false-label="0"
-                @change="storeFunctionChange(row, 'cityService')"
+                @change="storeFunctionChange(row, 'storeExpress')"
               />
             </template>
           </el-table-column>
