@@ -59,7 +59,7 @@
             <td>真实姓名：{{ tableData[0].realName }}</td>
           </tr>
           <tr>
-            <td>用户昵称：{{ tableData[0].username }}</td>
+            <td>用户昵称：{{ tableData[0].userName }}</td>
             <td>处理状态：{{ tableData[0].status | getWithdrawStatus }}</td>
           </tr>
           <tr>

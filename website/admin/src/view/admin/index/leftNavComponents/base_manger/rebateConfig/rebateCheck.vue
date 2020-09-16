@@ -296,7 +296,7 @@ export default {
                 this.$message.success({
                   message: '已通过'
                 })
-                this.detail()
+                this.search()
               } else {
                 this.$message.error({
                   message: res.message
@@ -316,7 +316,7 @@ export default {
                 this.$message.success({
                   message: '已出账'
                 })
-                this.detail()
+                this.search()
               } else {
                 this.$message.error({
                   message: res.message
@@ -336,7 +336,7 @@ export default {
                 this.$message.success({
                   message: '已驳回请求'
                 })
-                this.detail()
+                this.search()
               } else {
                 this.$message.error({
                   message: res.message
