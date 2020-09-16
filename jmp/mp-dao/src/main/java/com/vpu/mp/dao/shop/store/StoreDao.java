@@ -61,7 +61,7 @@ public class StoreDao extends ShopBaseDao {
         select.and(STORE.OPENING_TIME.lt(dateStringParse));
         select.and(STORE.CLOSE_TIME.gt(dateStringParse));
         if (stores != null && stores.size() != 0) {
-            logger().info("门店库存校验");
+            logger().info("门店库存校验{}",stores);
             select.and(STORE.STORE_CODE.in(stores));
         }
         if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
