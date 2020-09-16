@@ -3,6 +3,8 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.DoctorLoginLogDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
@@ -15,17 +17,22 @@ import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.shop.doctor.DoctorLoginLogService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.message.UserMessageService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.common.foundation.data.JsonResultCode.*;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.DOCTOR_LOGIN_AUTH_ERROR;
+import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
 
 /**
  * @Description 医师端
@@ -45,6 +52,9 @@ public class WxAppDoctorController extends WxAppBaseController {
 
     @Autowired
     private SmsService smsService;
+
+    @Autowired
+    private DoctorLoginLogService doctorLoginLogService;
 
     /**
      * 医师认证接口
@@ -125,5 +135,23 @@ public class WxAppDoctorController extends WxAppBaseController {
         DoctorAttendanceVo attendance = doctorService.getAttendance(user.getUserId(), oneInfo.getHospitalCode(), user.getDoctorId());
         doctorMainShowVo.setDoctorMonthData(attendance);
         return super.success(doctorMainShowVo);
+    }
+
+    /**
+     * 医师登录记录
+     * -每次切换到医师端就增加记录
+     * @return
+     */
+    @PostMapping("/api/wxapp/doctor/main/log")
+    public JsonResult doctorLoginLog(){
+        WxAppSessionUser user = wxAppAuth.user();
+        if (user.getUserType().equals(AUTH_TYPE_DOCTOR_USER)){
+            DoctorLoginLogDo param =new DoctorLoginLogDo();
+            param.setDoctorId(user.getDoctorId());
+            param.setUserId(user.getUserId());
+            param.setIp(Util.getCleintIp(request));
+            doctorLoginLogService.save(param);
+        }
+        return success();
     }
 }

@@ -158,6 +158,10 @@ public class GoodsService extends ShopBaseService {
     private EsDataUpdateMqService esDataUpdateMqService;
     @Autowired
     private ShopCommonConfigCacheService shopCommonConfigCacheService;
+    /**
+     * 商品在售
+     */
+    private static final Byte IS_ON_SALE = 1;
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
@@ -1960,6 +1964,40 @@ public class GoodsService extends ShopBaseService {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
             fetchMap(GOODS.GOODS_ID);
     }
+
+    /**
+     * 通过商品id数组查询门店商品
+     * @return
+     */
+    public Map<Integer, StoreGoodsRecord> getStoreGoodsByIds(List<Integer> goodsIds, Integer storeId) {
+        List<StoreGoodsRecord> storeGoodsRecords = db().selectFrom(STORE_GOODS).where(STORE_GOODS.PRD_ID.in(goodsIds)).
+            and(STORE_GOODS.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).
+            and(STORE_GOODS.STORE_ID.eq(storeId)).
+            and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE)).
+            fetchInto(StoreGoodsRecord.class);
+        Map<Integer, StoreGoodsRecord> map = new HashMap<>();
+        storeGoodsRecords.forEach(storeGoodsRecord -> {
+            map.put((Integer) storeGoodsRecord.get("prd_id"), storeGoodsRecord);
+        });
+        return map;
+    }
+
+    /**
+     * 通过商品id数组查询门店商品
+     * @return
+     */
+    public Map<Integer, StoreGoodsRecord> getStoreGoodsByIds(List<Integer> goodsIds) {
+        List<StoreGoodsRecord> storeGoodsRecords = db().selectFrom(STORE_GOODS).where(STORE_GOODS.PRD_ID.in(goodsIds)).
+            and(STORE_GOODS.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).
+            and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE)).
+            fetchInto(StoreGoodsRecord.class);
+        Map<Integer, StoreGoodsRecord> map = new HashMap<>();
+        storeGoodsRecords.forEach(storeGoodsRecord -> {
+            map.put((Integer) storeGoodsRecord.get("prd_id"), storeGoodsRecord);
+        });
+        return map;
+    }
+
     /**
      * 通过商品id数组查询商品
      */
@@ -2255,6 +2293,21 @@ public class GoodsService extends ShopBaseService {
     public Map<Integer, GoodsRecord> getGoodsToOrder(List<Integer> goodsIds) {
         Map<Integer, GoodsRecord> goods = getGoodsByIds(goodsIds);
         return goods;
+    }
+
+    /**
+     * 下单时校验门店库存
+     * @param goodsIds 商品id列表
+     * @return Map<Integer, StoreGoodsRecord>
+     */
+    public Map<Integer, StoreGoodsRecord> getStoreGoodsToOrder(List<Integer> goodsIds, Integer storeId) {
+        if (storeId == null) {
+            logger().info("结算页校验门店库存");
+            return getStoreGoodsByIds(goodsIds);
+        } else {
+            logger().info("下单时校验门店库存");
+            return getStoreGoodsByIds(goodsIds, storeId);
+        }
     }
 
     /**
