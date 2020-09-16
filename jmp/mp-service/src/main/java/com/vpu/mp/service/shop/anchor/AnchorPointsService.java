@@ -181,11 +181,6 @@ public class AnchorPointsService extends ShopBaseService {
 
 
     public String getDoctorAttendanceRate(AnchorPointsListParam param) {
-        Map<Date, List<AnchorPointsReportVo>> doctorAttendanceMap= anchorPointsDao.getDoctorAttendance(param);
-        long  dueAttendanceDay = DateUtil.betweenDay(param.getStartTime(), param.getEndTime(),true)+1;
-        int attendanceDay = doctorAttendanceMap.keySet().size();
-        String attendanceRate = BigDecimal.valueOf(attendanceDay).divide(BigDecimal.valueOf(dueAttendanceDay))
-                .multiply(BigDecimal.valueOf(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString();
-        return attendanceRate;
+        return null;
     }
 }
