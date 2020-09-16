@@ -25,19 +25,6 @@ public class TitleDao extends ShopBaseDao{
     /**
      * 职称列表
      *
-     * select
-     * 	b2c_doctor_title.*
-     * 	, count(b2c_doctor.title_id)
-     * from
-     * 	b2c_doctor_title
-     * left join
-     * 	b2c_doctor
-     * on
-     * 	b2c_doctor.title_id = b2c_doctor_title.id
-     * GROUP BY
-     * 	b2c_doctor.title_id
-     * ORDER BY
-     * 	b2c_doctor_title.id asc
      * @param param
      * @return
      */
