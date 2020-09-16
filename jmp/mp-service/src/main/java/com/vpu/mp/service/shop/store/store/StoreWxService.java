@@ -1,14 +1,15 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.PharmacistDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.pharmacist.PharmacistDao;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -17,7 +18,6 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
@@ -206,6 +206,8 @@ public class StoreWxService extends ShopBaseService {
     private UserDao userDao;
     @Autowired
     private JedisManager jedisManager;
+    @Autowired
+    private PharmacistDao pharmacistDao;
 
     /**
      * The constant BYTE_TWO.
@@ -529,25 +531,41 @@ public class StoreWxService extends ShopBaseService {
      * @param param
      * @return
      */
-    public Integer salesclerkAuth(StoreSalesclerkAuthParam param)throws MpException {
-        if(!checkMobileCode(param)){
-            throw new MpException(JsonResultCode.SALESCLERK_AUTH_INFO_SMS_ERROR);
-        }
+    public Integer storeClerkAuth(StoreClerkAuthParam param)throws MpException {
+//        if(!checkMobileCode(param)){
+//            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_SMS_ERROR);
+//        }
         StoreAccountVo storeAccountVo=storeAccountDao.storeAccountAuth(param);
         if(storeAccountVo==null||!Util.md5(param.getPassword()).equals(storeAccountVo.getAccountPasswd())){
-            throw new MpException(JsonResultCode.SALESCLERK_AUTH_INFO_ERROR);
+            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_ERROR);
+        }
+        if(storeAccountVo.getUserId()>0){
+            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_AlREADY_ERROR);
         }
         transaction(()->{
-            userDao.updateUserType(param.getUserId(), AuthConstant.AUTH_TYPE_SALESCLERK_USER);
+            Byte userType=AuthConstant.AUTH_TYPE_STORE_ACCOUNT_USER;
+            if(param.getIsPharmacist().equals((byte)1)){
+                //是否药师
+                userType=AuthConstant.AUTH_TYPE_PHARMACIST_USER;
+                int pharmacistId=savePharmacist(storeAccountVo,param);
+                storeAccountDao.updatePharmacistId(storeAccountVo.getAccountId(),pharmacistId);
+            }
+            userDao.updateUserType(param.getUserId(), userType);
             storeAccountDao.updateUserId(storeAccountVo.getAccountId(),param.getUserId());
         });
         return storeAccountVo.getAccountId();
+    }
+    public int savePharmacist(StoreAccountVo storeAccountVo, StoreClerkAuthParam param){
+        PharmacistDo pharmacistDo=new PharmacistDo();
+        pharmacistDo.setMobile(storeAccountVo.getMobile());
+        pharmacistDo.setSignature(param.getSignature());
+        return pharmacistDao.savePharmacist(pharmacistDo);
     }
     /**
      * 短信验证码校验
      * @return
      */
-    private boolean checkMobileCode(StoreSalesclerkAuthParam param) {
+    private boolean checkMobileCode(StoreClerkAuthParam param) {
         String key = String.format(SmsApiConfig.REDIS_KEY_SMS_CHECK_SALESCLERK_MOBILE, getShopId(), param.getUserId(), param.getMobile());
         String s = jedisManager.get(key);
         if (!Strings.isBlank(s) && !Strings.isBlank(param.getMobileCheckCode())) {

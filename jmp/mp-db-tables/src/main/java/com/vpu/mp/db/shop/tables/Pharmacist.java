@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pharmacist extends TableImpl<PharmacistRecord> {
 
-    private static final long serialVersionUID = 1933046839;
+    private static final long serialVersionUID = -1065103711;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pharmacist</code>
@@ -65,42 +65,47 @@ public class Pharmacist extends TableImpl<PharmacistRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_pharmacist.sex</code>. 0位置 1男 2 女
      */
-    public final TableField<PharmacistRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0位置 1男 2 女");
+    public final TableField<PharmacistRecord, Byte> SEX = createField("sex", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0位置 1男 2 女");
 
     /**
      * The column <code>mini_shop_471752.b2c_pharmacist.certificate_code</code>. 药师资格编码
      */
-    public final TableField<PharmacistRecord, String> CERTIFICATE_CODE = createField("certificate_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药师资格编码");
+    public final TableField<PharmacistRecord, String> CERTIFICATE_CODE = createField("certificate_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药师资格编码");
 
     /**
      * The column <code>mini_shop_471752.b2c_pharmacist.professional_code</code>. 药师职业编码
      */
-    public final TableField<PharmacistRecord, String> PROFESSIONAL_CODE = createField("professional_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药师职业编码");
+    public final TableField<PharmacistRecord, String> PROFESSIONAL_CODE = createField("professional_code", org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药师职业编码");
 
     /**
      * The column <code>mini_shop_471752.b2c_pharmacist.mobile</code>. 手机号
      */
-    public final TableField<PharmacistRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "手机号");
+    public final TableField<PharmacistRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "手机号");
 
     /**
      * The column <code>mini_shop_471752.b2c_pharmacist.status</code>. 是否启用 1启用 0禁用
      */
-    public final TableField<PharmacistRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否启用 1启用 0禁用");
+    public final TableField<PharmacistRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否启用 1启用 0禁用");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pharmacist.signature</code>. 药师签名
+     */
+    public final TableField<PharmacistRecord, String> SIGNATURE = createField("signature", org.jooq.impl.SQLDataType.CLOB, this, "药师签名");
 
     /**
      * The column <code>mini_shop_471752.b2c_pharmacist.is_delete</code>.
      */
-    public final TableField<PharmacistRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<PharmacistRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_pharmacist.create_time</code>.
      */
-    public final TableField<PharmacistRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<PharmacistRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_pharmacist.update_time</code>. 最后修改时间
      */
-    public final TableField<PharmacistRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<PharmacistRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_pharmacist</code> table reference

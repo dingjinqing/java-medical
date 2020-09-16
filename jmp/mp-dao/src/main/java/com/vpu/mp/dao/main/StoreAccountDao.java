@@ -5,7 +5,7 @@ import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
-import com.vpu.mp.service.pojo.wxapp.store.StoreSalesclerkAuthParam;
+import com.vpu.mp.service.pojo.wxapp.store.StoreClerkAuthParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -72,10 +72,11 @@ public class StoreAccountDao extends MainBaseDao {
      * @param param
      * @return
      */
-    public StoreAccountVo storeAccountAuth(StoreSalesclerkAuthParam param){
+    public StoreAccountVo storeAccountAuth(StoreClerkAuthParam param){
         return db().select().from(STORE_ACCOUNT).where(STORE_ACCOUNT.ACCOUNT_NAME.eq(param.getAccountName()))
             .and(STORE_ACCOUNT.DEL_FLAG.eq(StoreAuthConstant.DEL_NORMAL))
             .and(STORE_ACCOUNT.MOBILE.eq(param.getMobile()))
+            .and(STORE_ACCOUNT.ACCOUNT_TYPE.eq(param.getAccountType()))
             .and(STORE_ACCOUNT.SHOP_ID.eq(param.getShopId()))
             .fetchAnyInto(StoreAccountVo.class);
     }
@@ -89,6 +90,15 @@ public class StoreAccountDao extends MainBaseDao {
         db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.USER_ID,userId).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
             .execute();
     }
+    /**
+     * 更新药师id
+     * @param accountId
+     * @param pharmacistId
+     */
+    public void updatePharmacistId(Integer accountId,Integer pharmacistId){
+        db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.PHARMACIST_ID,pharmacistId).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
+            .execute();
+    }
 
     /**
      * 更新用户token
@@ -98,5 +108,15 @@ public class StoreAccountDao extends MainBaseDao {
     public void updateUserToken(Integer accountId,String userToken){
         db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.USER_TOKEN,userToken).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
             .execute();
+    }
+
+
+    /**
+     * 通过用户id查账号id
+     * @param userId
+     * @return
+     */
+    public StoreAccountVo getByUserId(Integer userId){
+        return db().select(STORE_ACCOUNT.ACCOUNT_ID).from(STORE_ACCOUNT).where(STORE_ACCOUNT.USER_ID.eq(userId)).fetchAnyInto(StoreAccountVo.class);
     }
 }

@@ -26,6 +26,7 @@ public class StoreAccountVo {
     private Integer   userId;
     private String    officialOpenId;
     private Byte      isBind;
+    private Integer   pharmacistId;
 	private Integer storeNum;
 	private List<Integer> storeLists;
 }

@@ -33,8 +33,13 @@ public class AuthConstant {
      */
 	public static final Byte AUTH_TYPE_PHARMACIST_USER = 2;
     /**
-     * 店员
+     * 门店用户
      */
-    public static final Byte AUTH_TYPE_SALESCLERK_USER = 3;
+    public static final Byte AUTH_TYPE_STORE_ACCOUNT_USER = 3;
+
+    /**
+     * 禁用
+     */
+    public static final Integer STATUS_DISABLE=-1;
 
 }
