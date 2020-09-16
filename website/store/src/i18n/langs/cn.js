@@ -45,10 +45,9 @@ import { cn as storePermission } from './views/admin_new/cn/index/storeManagemen
 import { cn as storeAnnouncement } from './views/admin_new/cn/index/storeManagement/storeAnnouncement/storeAnnouncementCn'
 // 订单
 import { cn as order } from './views/admin_new/cn/index/storeManagement/order/orderListCn'
+import { cn as orderCommon } from './views/admin_new/cn/index/storeManagement/order/orderCommonCn'
 // 快递信息
-import {
-  cn as expressList
-} from './views/admin_new/cn/index/storeManagement/order/expressListCn'
+import { cn as expressList } from './views/admin_new/cn/index/storeManagement/order/expressListCn'
 const cn = {
   messages: {
     lang: '中文'
@@ -142,7 +141,8 @@ const cn = {
   order,
   ...zhLocale,
   messageHint,
-  expressList
+  expressList,
+  orderCommon
 }
 
 export default cn

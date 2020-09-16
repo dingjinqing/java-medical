@@ -12,6 +12,7 @@ export const cn = {
   store: '门店',
   paymentType: '支付方式',
   tag: '标签',
+  userTag: '下单人标签',
   shippingAddress: '收货地址',
   specCode: '规格编码',
   orderTime: '下单时间',
@@ -43,18 +44,21 @@ export const cn = {
   verifierName: '核销人',
   confirmTime: '核销时间',
   partShipText: '发货类型：部分发货',
+  point: '提货点',
   userInfoText: '用户信息',
   shippingTimeText: '发货时间',
+  bkShippingTime: '预发货时间',
   receivingCustomer: '收货客户',
   customerMessage: '买家留言',
   sellerMessage: '卖家备注',
   shippingInfoText: '快递信息',
   specText: '规格',
   shippingNum: '发货数量',
-  collectGoodsNum: '提货数量',
+  collectGoodsNum: '配送数量',
   shippingCompany: '物流公司',
   shippingNo: '物流单号',
   confirmTimeText: '确认收货时间',
+  pickupdateTime: '预约配送时间',
   collectGoodsTime: '自提时间',
   returnInfoText: '退货/退款信息',
   returnRefundType: '退货/退款类型',
@@ -74,8 +78,7 @@ export const cn = {
   goodsAmount: '商品金额',
   shipping: '运费',
   packageDiscount: '一口价优惠',
-  limitedCard:
-    '限次卡-{cardName}-{cardNo} 抵扣金额：-{currency}{reduceMoney} * {goodsAmount} 次',
+  limitedCard: '限次卡-{cardName}-{cardNo} 抵扣金额：-{currency}{reduceMoney} * {goodsAmount} 次',
   memberCard: '会员卡优惠',
   promotionReduce: '满折满减优惠',
   couponDiscount: '优惠券优惠',
@@ -106,6 +109,7 @@ export const cn = {
   clientMessages: '客户留言',
   invoiceType: '发票类型',
   InvoiceTitle: '发票抬头',
+  headUpType: '抬头类型',
   CompanyTaxNumber: '公司税号',
   companyAddress: '公司地址',
   payInfo: '支付明细',
@@ -129,8 +133,7 @@ export const cn = {
   refundBalanceMoney: '退余额',
   refundScoreMoney: '退积分抵扣',
   refundPayMoney: '退支付金额',
-  refundTips:
-    '注：总退款金额 = 退商品金额 + 退运费金额，扣款优先级： 会员卡余额，余额，积分，支付金额',
+  refundTips: '注：总退款金额 = 退商品金额 + 退运费金额，扣款优先级： 会员卡余额，余额，积分，支付金额',
   refundReason: '退款/退货原因',
   refundReasonDescription: '退款/退货原因说明',
   description: '说明',
@@ -163,11 +166,9 @@ export const cn = {
   refusedReason: '拒绝理由',
   returnSuccessNote: '注：退款将在3个工作日内到达买家账户，本次维权结束。',
   passReturnApplyNote: '您已同意退货退款，请等待买家处理',
-  passReturnApplyNote1:
-    '退货地址：{returnAddress}； 联系人：{consignee}； 电话：{merchantTelephone}',
+  passReturnApplyNote1: '退货地址：{returnAddress}； 联系人：{consignee}； 电话：{merchantTelephone}',
   refusedReturngoodsApply: '您已拒绝退货退款',
-  autoCancelNote:
-    '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
+  autoCancelNote: '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
   submitLogisticsNote: '买家已退货，等待商家确认收货并退款',
   phone: '联系电话',
   logisticsVoucherImages: '物流凭证',
@@ -180,15 +181,13 @@ export const cn = {
   refundNote_1_1_1: '等待商家处理退货退款申请',
   refundNote_1_1_2: '如果您同意，需要您发送退货地址给买家。',
   refundNote_1_1_3: '如果您拒绝，将需要您填写拒绝理由。',
-  refundNote_1_1_4:
-    '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动发送您的默认退货地址。',
+  refundNote_1_1_4: '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动发送您的默认退货地址。',
   refundBtn_1_1_1: '同意退货，发送退货地址',
   refundBtn_1_1_2: '拒绝退货退款申请',
   // 1_2_1
   refundNote_1_2_1: '商家同意退货退款',
   refundNote_1_2_2: '您已同意退货退款，请等待买家处理。',
-  refundNote_1_2_3:
-    '买家在<span style="color:#ff785f;">{0}</span>内未响应，且商家未确认收货并退款，退款申请将自动完成。',
+  refundNote_1_2_3: '买家在<span style="color:#ff785f;">{0}</span>内未响应，且商家未确认收货并退款，退款申请将自动完成。',
   refundBtn_1_2_1: '确认收货并退款',
   refundBtn_1_2_2: '拒绝确认收货',
   // 1_3_1
@@ -196,8 +195,7 @@ export const cn = {
   // 1_4_1
   refundNote_1_4_1: '买家已退货，等待商家确认收货并退款',
   refundNote_1_4_2: '买家已退货，物流公司：{0}；物流单号：{1}',
-  refundNote_1_4_3:
-    '请在<span style="color:#ff785f;">{0}</span>内确认，如逾期未处理，将自动退款给买家。',
+  refundNote_1_4_3: '请在<span style="color:#ff785f;">{0}</span>内确认，如逾期未处理，将自动退款给买家。',
   refundBtn_1_4_1: '确认收货并退款',
   refundBtn_1_4_2: '拒绝确认收货',
   // 1_5_1
@@ -208,14 +206,12 @@ export const cn = {
   refundNote_1_7_1: '买家主动撤销退款申请',
   // 1_8_1
   refundNote_1_8_1: '撤销退款申请（系统自动处理）',
-  refundNote_1_8_2:
-    '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
+  refundNote_1_8_2: '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
   // 4_1 非退货退款，status;序号
   refundNote_4_1: '等待商家处理退款申请',
   refundNote_4_2: '如果您同意，需要您退款给买家。',
   refundNote_4_3: '如果您拒绝，将需要您填写拒绝理由。',
-  refundNote_4_4:
-    '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动退款。',
+  refundNote_4_4: '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动退款。',
   refundBtn_4_1: '同意买家{0}',
   refundBtn_4_2: '拒绝{0}',
   // 5_1 非退货退款，status;序号
@@ -226,8 +222,7 @@ export const cn = {
   refundNote_7_1: '买家主动撤销{0}申请',
   // 8_1 非退货退款，status;序号
   refundNote_8_1: '撤销退款申请（系统自动处理）',
-  refundNote_8_2:
-    '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
+  refundNote_8_2: '买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销',
   deposit: '定金',
   tail: '尾款',
   goodsSnAndProductSn: '货号/规格编码',
@@ -239,10 +234,11 @@ export const cn = {
   waitTail: '待付尾款',
   waitverify: '待核销',
   waitShip: '待发货',
-  takeByself: '已自提',
+  takeByself: '已核销',
   received: '已收货',
   close: '关闭',
   finish: '完成',
+  refundFailed: '退款失败',
   verify: '核销',
   returned: '已退金额',
   returnMostAmount: '最多可退金额',
@@ -287,7 +283,11 @@ export const cn = {
   otherInfo: '其他信息',
   orderRealName: '真实姓名',
   rebate: '返利金额',
+  rebateUserName: '获佣金分销员姓名',
+  rebateFlag: '返利状态',
+  communityRebateInfo: '社区团购返利佣金及返利状态',
   orderCid: '身份证号',
+  orderInvoice: '发票信息',
   custom: '自定义下单必填信息',
   orderExportConfirmTip_1: '根据以下条件筛选出',
   orderExportConfirmTip_2: '条数据,是否确认导出？',
@@ -330,32 +330,14 @@ export const cn = {
     [4, '已发货'],
     [5, '已收货/已自提'],
     [6, '订单完成'],
-    [7, '售后中'],
-    [8, '售后完成'],
+    [7, '退货中'],
+    [8, '退货完成'],
     [11, '拼团中'],
     [12, '已成团'],
     [13, '送礼完成'],
-    [14, '待审核'],
-    [15, '待开方']
-  ],
-  showOrderStatus: [
-    [null, '全部订单'],
-    [0, '待付款'],
-    [1, '订单取消'],
-    [2, '订单关闭'],
-    [3, '待发货/待核销'],
-    [4, '已发货'],
-    [5, '已收货/已自提'],
-    [6, '订单完成'],
-    [7, '售后中'],
-    [8, '售后完成'],
-    [9, '售后中'],
-    [10, '售后完成'],
-    [11, '拼团中'],
-    [12, '已成团'],
-    [13, '送礼完成'],
-    [14, '待审核'],
-    [15, '待开方']
+    [14, '待接单'],
+    [15, '已接单-取件中'],
+    [16, '已取件-配送中']
   ],
   orderStatus: [
     [null, '全部订单'],
@@ -368,9 +350,7 @@ export const cn = {
     [6, '订单完成'],
     [7, '售后中'],
     [8, '售后完成'],
-    [9, '待接单'],
-    [10, '已接单-取件中'],
-    [11, '已取件-配送中']
+    [11, '拼团中']
   ],
   goodsTypeList: [
     [null, '全部订单'],
@@ -396,7 +376,10 @@ export const cn = {
     [99, '代付订单'],
     [100, '扫码购订单'],
     [19, '支付有礼订单'],
-    [24, '奖品订单']
+    [24, '奖品订单'],
+    [25, '社区团购订单'],
+    [27, '直播订单'],
+    [29, '非实物商品订单']
   ],
   deliverTypeList: [
     [null, '全部'],
@@ -421,14 +404,17 @@ export const cn = {
     closedTime: '订单已关闭',
     pinStartTime: '拼团中',
     pinEndTime: '已成团',
-    confirmTime: '买家已自提',
+    confirmTime: '商家已核销',
     shippingTime: '卖家已发货',
     refundFinishTime: '退款完成',
     returnFinishTime: '退货完成',
     giftGiving: '送礼进行',
     giveCompletion: '送礼完成',
     finishedTime: '订单完成',
-    affirmTime: '买家确认收货'
+    affirmTime: '买家确认收货',
+    shippingTime2: '店铺发货',
+    confirmTime2: '团长确认收货',
+    handlerConfirmTime: '买家已自提'
   },
   returnStatusList: [
     [null, '全部'],
@@ -448,13 +434,7 @@ export const cn = {
     [2, '仅退运费'],
     [3, '手动退款']
   ],
-  reasonTypeList: [
-    '协商一致退款',
-    '未按约定时间发货',
-    '缺货',
-    '拍错/多拍/不想要',
-    '其他'
-  ],
+  reasonTypeList: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'],
   storeStatusList: [
     [null, '全部'],
     [1, '已支付'],
@@ -470,16 +450,40 @@ export const cn = {
   },
   remindTime: '用户提醒发货：',
   returnSortList: [
-    { value: 1, label: '按下单时间排序' },
-    { value: 2, label: '按申请售后时间排序' }
+    {
+      value: 1,
+      label: '按下单时间排序'
+    },
+    {
+      value: 2,
+      label: '按申请售后时间排序'
+    }
   ],
   returnWaysList: [
-    { value: -1, label: '全部' },
-    { value: 0, label: '商家主动售后' },
-    { value: 1, label: '下单人申请售后' },
-    { value: 2, label: '系统自动售后' }
-    // {value: 3, label: '旺店通ERP主动售后'},
-    // {value: 4, label: '旺店通POS主动售后'}
+    {
+      value: -1,
+      label: '全部'
+    },
+    {
+      value: 0,
+      label: '商家主动售后'
+    },
+    {
+      value: 1,
+      label: '下单人申请售后'
+    },
+    {
+      value: 2,
+      label: '系统自动售后'
+    },
+    {
+      value: 3,
+      label: '旺店通ERP主动售后'
+    },
+    {
+      value: 4,
+      label: '旺店通POS主动售后'
+    }
   ],
   activityTypeList: {
     1: { name: '拼团' },
@@ -491,6 +495,24 @@ export const cn = {
     8: { name: '拼团抽奖' },
     9: { name: '一口价' },
     10: { name: '预售' },
-    18: { name: '首单特惠' }
-  }
+    11: { name: '赠品' },
+    18: { name: '首单特惠' },
+    22: { name: '会员价' },
+    23: { name: '会员专享' }
+  },
+  rebateLevel: ['自购返利', '直接邀请', '间接邀请'],
+  settlementName: ['待返利', '返利完成', '不返利'],
+  invoiceContent: ['普通发票', '增值税普通发票', '增值税专用发票'],
+  extendReceive: '延长收货',
+  extendReceiveTime: '延长收货时间',
+  shoperExtendReceive: '商家延长收货',
+  buyerExtendReceive: '买家延长收货',
+  shoperExtendReceiveAfter: '商家延长收货',
+  autoConfirmReceiveTime: '自动确认收货时间',
+  apiSuccess: '成功',
+  edit: '修改',
+  defaultAddress: '设置为默认收货地址',
+  teamName: '团长名称',
+  communityName: '社区团购活动',
+  scheduleTime: '预约配送时间'
 }
