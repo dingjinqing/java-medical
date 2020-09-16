@@ -30,7 +30,7 @@ import static java.util.Calendar.SUNDAY;
 public class StoreDao extends ShopBaseDao {
 
     public StoreBasicVo getStoreByNo(String storeNo) {
-        return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).fetchAnyInto(StoreBasicVo.class);
+        return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(StoreBasicVo.class);
     }
 
     public List<StoreBasicVo> listStoreCodes() {
