@@ -103,6 +103,8 @@ public class DoctorService extends ShopBaseService {
     private InquiryOrderRebateService inquiryOrderRebateService;
     @Autowired
     private PrescriptionRebateService prescriptionRebateService;
+    @Autowired
+    private DoctorLoginLogService doctorLoginLogService;
 
     public static final int ZERO = 0;
 
@@ -676,7 +678,7 @@ public class DoctorService extends ShopBaseService {
         param.setEvent(DOCTOR_ENTER_IN.getEvent());
         param.setKey(DOCTOR_ENTER_IN.getKey());
         param.setUserId(1);
-        String doctorAttendanceRate = anchorPointsService.getDoctorAttendanceRate(param);
+        String doctorAttendanceRate = doctorLoginLogService.getDoctorAttendanceRate(doctorId, param.getStartTime(), param.getEndTime());
         logger().info("医师userId:{},出勤率{}",userId,doctorAttendanceRate);
         Integer prescriptionNum = prescriptionService.countDateByDoctor(doctorCode, param.getStartTime(), param.getEndTime());
         logger().info("医师code:{},处方数量{}",doctorCode,prescriptionNum);
