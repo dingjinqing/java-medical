@@ -660,7 +660,8 @@ export default {
     lang () {
       this.deliverMethods = [
         { code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false },
-        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false }
+        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false },
+        { code: 'store_express', name: '门店配送', title: '启用后，买家下单可以选择门店配送，由你安排门店送货上门', value: false }
       ]
       this.isRequiredInfo = [
         {
@@ -772,7 +773,8 @@ export default {
       flag: 0,
       deliverMethods: [
         { code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false },
-        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false }
+        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false },
+        { code: 'store_express', name: '门店配送', title: '启用后，买家下单可以选择门店配送，由你安排门店送货上门', value: false }
       ],
       isRequiredInfo: [
         {
@@ -934,6 +936,9 @@ export default {
               case 'fetch':
                 item.value = Boolean(res.content.trade_process_config.fetch)
                 break
+              case 'store_express':
+                item.value = Boolean(res.content.trade_process_config.store_express)
+                break
             }
           })
           this.isRequiredInfo.map((item, index) => {
@@ -986,6 +991,9 @@ export default {
             break
           case 'fetch':
             this.tradeProcessConfig.fetch = Number(item.value)
+            break
+          case 'store_express':
+            this.tradeProcessConfig.store_express = Number(item.value)
             break
         }
       })

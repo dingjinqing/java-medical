@@ -5736,3 +5736,34 @@ create table `b2c_doctor_summary_trend` (
   primary key (`id`),
   key `ref_type` (`ref_date`, `type`) using btree
 )comment ='医师信息统计';
+
+CREATE TABLE `b2c_doctor_login_log` (
+	`id` INT ( 11 ) NOT NULL auto_increment,
+	`doctor_id` INT ( 8 ) DEFAULT NULL COMMENT '医师ID',
+	`user_id` INT ( 8 ) DEFAULT NULL COMMENT '用户ID',
+	`ip` VARCHAR ( 64 ) DEFAULT NULL COMMENT '用户登录ip',
+	`lat` VARCHAR ( 64 ) DEFAULT NULL COMMENT '经度',
+	`lng` VARCHAR ( 64 ) DEFAULT NULL COMMENT '纬度',
+	`update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+	`create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+PRIMARY KEY ( `id` )
+) COMMENT = '医师登录记录';
+
+-- 埋点表
+create table if not exists `b2c_anchor_points` (
+    `id`          int(11)      not null auto_increment comment 'id',
+    `event`       varchar(255) not null default '' comment '事件',
+    `event_name`       varchar(255) not null default '' comment '事件名称',
+    `event_type`       tinyint(1) not null default  0 comment '事件类型 0前段 1后端',
+    `page`        varchar(255) not null default '' comment '页面',
+    `module`    varchar(255) not null default '' comment '功能模块',
+    `platform`    tinyint(1)   not null default 0 comment '平台 1 wxapp 2admin',
+    `device`      tinyint(1)   not null default 0 comment '设备 1 android 2 ios  3 pc',
+    `store_id`    int(11)      not null default 0 comment '门店id',
+    `user_id`     int(11)      not null default 0 comment '用户id',
+    `key`         varchar(255) not null default '' comment '参数',
+    `value`       varchar(255) not null default '' comment '参数值',
+    `update_time` datetime     not null default current_timestamp on update current_timestamp comment '更新时间',
+    `create_time` datetime     not null default current_timestamp comment '添加时间',
+    primary key (`id`)
+) comment ='埋点';
