@@ -40,12 +40,15 @@ import com.vpu.mp.service.shop.anchor.AnchorPointsService;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import com.vpu.mp.service.shop.rebate.InquiryOrderRebateService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,6 +99,10 @@ public class DoctorService extends ShopBaseService {
     private PrescriptionService prescriptionService;
     @Autowired
     private InquiryOrderService inquiryOrderService;
+    @Autowired
+    private InquiryOrderRebateService inquiryOrderRebateService;
+    @Autowired
+    private PrescriptionRebateService prescriptionRebateService;
 
     public static final int ZERO = 0;
 
@@ -675,10 +682,14 @@ public class DoctorService extends ShopBaseService {
         logger().info("医师code:{},处方数量{}",doctorCode,prescriptionNum);
         Integer receivingNumber = inquiryOrderService.countByDateDoctor(doctorId, param.getStartTime(), param.getEndTime());
         logger().info("医师id:{},接诊数{}",doctorId,receivingNumber);
+        BigDecimal inquiryOrderRebate = inquiryOrderRebateService.getRealRebateByDoctorDate(doctorId, param.getStartTime(), param.getEndTime());
+        BigDecimal prescriptionRebate = prescriptionRebateService.getRealRebateByDoctorDate(doctorId, param.getStartTime(), param.getEndTime());
+        logger().info("医师id:{},服务费{}",doctorId,receivingNumber);
         DoctorAttendanceVo vo =new DoctorAttendanceVo();
         vo.setDoctorAttendanceRate(doctorAttendanceRate);
         vo.setPrescriptionNum(prescriptionNum);
         vo.setReceivingNumber(receivingNumber);
+        vo.setServiceCharge(inquiryOrderRebate.add(prescriptionRebate).toString());
         return vo;
     }
 

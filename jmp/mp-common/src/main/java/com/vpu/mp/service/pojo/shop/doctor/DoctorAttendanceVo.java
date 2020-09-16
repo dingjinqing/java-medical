@@ -18,6 +18,10 @@ public class DoctorAttendanceVo {
      */
     private String doctorAttendanceRate;
     /**
+     * 服务费
+     */
+    private String serviceCharge;
+    /**
      * 处方数
      */
     private Integer prescriptionNum;

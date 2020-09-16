@@ -5,22 +5,28 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.pojo.shop.table.InquiryOrderRebateDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRebateRecord;
-import com.vpu.mp.service.pojo.shop.rebate.*;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateListParam;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateParam;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateReportVo;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
-import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DOCTOR;
+import static com.vpu.mp.db.shop.Tables.INQUIRY_ORDER;
+import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
-import static com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
 
 
 /**
@@ -29,6 +35,8 @@ import static com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
  **/
 @Repository
 public class InquiryOrderRebateDao extends ShopBaseDao {
+
+    private final static String REBATE_MONEY ="rebateMoney";
 
     /**
      * 问诊返利add
@@ -118,5 +126,20 @@ public class InquiryOrderRebateDao extends ShopBaseDao {
         return db().select(DOCTOR.NAME.as("doctorName"),DOCTOR.MOBILE,INQUIRY_ORDER_REBATE.asterisk()).from(INQUIRY_ORDER_REBATE)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(INQUIRY_ORDER_REBATE.DOCTOR_ID))
             .where(INQUIRY_ORDER_REBATE.ORDER_SN.eq(orderSn)).fetchOneInto(InquiryOrderRebateVo.class);
+    }
+
+    /**
+     * 获取指定时间段内的问诊返利
+     * @param doctorId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public BigDecimal getRealRebateByDoctorDate(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+       return db().select(DSL.sum(INQUIRY_ORDER_REBATE.TOTAL_REBATE_MONEY).as(REBATE_MONEY)).from(INQUIRY_ORDER_REBATE)
+                .where(INQUIRY_ORDER_REBATE.DOCTOR_ID.eq(doctorId))
+                .and(INQUIRY_ORDER_REBATE.STATUS.eq(InquiryOrderRebateConstant.REBATED))
+                .and(INQUIRY_ORDER_REBATE.REBATE_TIME.between(startTime,endTime))
+                .fetchAnyInto(BigDecimal.class);
     }
 }

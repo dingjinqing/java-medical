@@ -4,13 +4,14 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersVo;
-import com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -21,14 +22,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.tables.GoodsMedicalInfo.GOODS_MEDICAL_INFO;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
-import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.ASC;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.*;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_AUTO_PICK_ENABLE;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_BUSINESS_OPENING;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_BUSINESS_WORKDAY;
 import static java.util.Calendar.SATURDAY;
 import static java.util.Calendar.SUNDAY;
 

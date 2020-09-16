@@ -651,16 +651,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @return
      */
     public Byte[] getExpressList() {
-        Byte[] expressList = new Byte[]{0 , 0 , 0};
+        Byte[] expressList = new Byte[]{0 , 0 , 0, 0};
         // 快递
         expressList[DELIVER_TYPE_COURIER] = tradeCfg.getExpress();
         // 自提
         expressList[OrderConstant.DELIVER_TYPE_SELF] = tradeCfg.getFetch();
-        //TODO 同城配送
+        //同城配送
+        expressList[OrderConstant.CITY_EXPRESS_SERVICE] = tradeCfg.getCityService();
+        //配送
+        expressList[OrderConstant.STORE_EXPRESS] = tradeCfg.getStoreExpress();
         return expressList;
     }
 
-    /**
+    /**admin.storeTop.json
      * init param goods
      * @param param
      */
