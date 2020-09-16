@@ -166,13 +166,13 @@
             :label="$t('storeList.storeName')"
           ></el-table-column>
           <el-table-column
-            prop="storeNumber"
+            prop="storeCode"
             :label="$t('storeList.posShopId')"
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="posShopId"
             label="POS门店编号"
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column prop="groupName" :label="$t('storeList.groupName')">
           </el-table-column>
           <el-table-column
