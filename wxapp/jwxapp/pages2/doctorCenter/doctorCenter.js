@@ -1,5 +1,5 @@
-// pages2/doctorCenter/doctorCenter.js.js
-Page({
+var util = require('../../utils/util.js');
+global.wxPage({
 
   /**
    * 页面的初始数据
@@ -12,7 +12,21 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    console.log(options)
+    let {doctorAvatar = null , treatDisease = null} = options
+    this.setData({
+      doctorAvatar,
+      treatDisease
+    })
+  },
+  changeAvatar(){
+    util.uploadImage(1, (con) => {
+      var data = JSON.parse(con.data);
+      console.log(data)
+      this.setData({
+        doctorAvatar:data.content.imgPath
+      })
+    });
   },
 
   /**
