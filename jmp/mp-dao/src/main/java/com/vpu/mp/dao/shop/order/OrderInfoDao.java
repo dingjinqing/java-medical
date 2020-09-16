@@ -12,7 +12,9 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPres
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
+import org.bouncycastle.util.Times;
 import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
@@ -211,5 +213,23 @@ public class OrderInfoDao extends ShopBaseDao {
             .and(ORDER_INFO.DEL_FLAG.eq(OrderConstant.NORMAL_DEL))
             .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))
             .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 获取订单数量
+     * @param storeId
+     * @param orderStatusList
+     * @return
+     */
+    public Integer countNumByStoreIdOrderStatus(Integer storeId, List<Byte> orderStatusList, Timestamp startTime, Timestamp endTime){
+        SelectConditionStep<? extends Record> select = db().selectCount().from(ORDER_INFO).where(ORDER_INFO.STORE_ID.eq(storeId))
+            .and(ORDER_INFO.ORDER_STATUS.in(orderStatusList));
+        if(startTime!=null){
+            select.and(ORDER_INFO.CREATE_TIME.ge(startTime));
+        }
+        if(startTime!=null){
+            select.and(ORDER_INFO.CREATE_TIME.le(endTime));
+        }
+        return select.fetchAnyInto(Integer.class);
     }
 }
