@@ -3,16 +3,16 @@
     <div class="base_mangerMain">
       <el-tabs v-model="activeName">
         <el-tab-pane label="返利策略配置" name="first">
-          <policySettings />
+          <policySettings v-if="activeName === 'first'" />
         </el-tab-pane>
         <el-tab-pane label="处方返利统计" name="second">
-          <goodsRebateStatistical />
+          <goodsRebateStatistical v-if="activeName === 'second'" />
         </el-tab-pane>
         <el-tab-pane label="咨询订单返利统计" name="third">
-          <consultRebateStatistical />
+          <consultRebateStatistical v-if="activeName === 'third'" />
         </el-tab-pane>
         <el-tab-pane label="返利提现审核" name="fouth">
-          <rebateCheck />
+          <rebateCheck v-if="activeName === 'fouth'" />
         </el-tab-pane>
       </el-tabs>
     </div>

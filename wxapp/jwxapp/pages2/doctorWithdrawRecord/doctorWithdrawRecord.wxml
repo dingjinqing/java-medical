@@ -4,7 +4,8 @@
       '1':'处理中',
       '2':'处理中',
       '3':'处理中',
-      '4':'已提现'
+      '4':'已提现',
+      '5':'处理中'
     }
     return statusName[''+status]
   }
@@ -12,6 +13,7 @@
     getStatus:getStatus
   }
 </wxs>
+<wxs src="../../utils/wxs/filter.wxs" module="filter" />
 <view class="body">
 <include src="/pages/common/header.wxml"/>
   <view class="main-container">
@@ -26,7 +28,7 @@
         <view class="item-top">
           <view class="money">￥{{filter.getFixed(item.withdrawCash)}}</view>
           <!-- <view class="point">到微信钱包</view> -->
-          <view class="status">{{filter.getStatus(item.status)}}</view>
+          <view class="status">{{tool.getStatus(item.status)}}</view>
         </view>
         <view class="item-bottom">{{item.createTime}}</view>
       </view>
