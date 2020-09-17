@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
 
-    private static final long serialVersionUID = 959549071;
+    private static final long serialVersionUID = 1846708879;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store.store_id</code>.
@@ -408,16 +408,16 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store.store_express</code>. 门店配送 1支持
+     * Setter for <code>mini_shop_471752.b2c_store.store_type</code>. 门店类型 0、普通门店 1、医院
      */
-    public void setStoreExpress(Byte value) {
+    public void setStoreType(Byte value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store.store_express</code>. 门店配送 1支持
+     * Getter for <code>mini_shop_471752.b2c_store.store_type</code>. 门店类型 0、普通门店 1、医院
      */
-    public Byte getStoreExpress() {
+    public Byte getStoreType() {
         return (Byte) get(27);
     }
 
@@ -447,7 +447,7 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
     /**
      * Create a detached, initialised StoreRecord
      */
-    public StoreRecord(Integer storeId, String storeName, String storeCode, String manager, String mobile, String storeImgs, Byte businessState, Byte businessType, String openingTime, String closeTime, String provinceCode, String cityCode, String districtCode, String latitude, String longitude, String address, Integer group, String service, String content, Integer posShopId, Timestamp createTime, Timestamp updateTime, Short autoPick, Byte delFlag, Byte cityService, Byte pickTimeAction, String pickTimeDetail, Byte storeExpress) {
+    public StoreRecord(Integer storeId, String storeName, String storeCode, String manager, String mobile, String storeImgs, Byte businessState, Byte businessType, String openingTime, String closeTime, String provinceCode, String cityCode, String districtCode, String latitude, String longitude, String address, Integer group, String service, String content, Integer posShopId, Timestamp createTime, Timestamp updateTime, Short autoPick, Byte delFlag, Byte cityService, Byte pickTimeAction, String pickTimeDetail, Byte storeType) {
         super(Store.STORE);
 
         set(0, storeId);
@@ -477,6 +477,6 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
         set(24, cityService);
         set(25, pickTimeAction);
         set(26, pickTimeDetail);
-        set(27, storeExpress);
+        set(27, storeType);
     }
 }

@@ -6,9 +6,10 @@ package com.vpu.mp.common.pojo.shop.table;
 
 import lombok.Data;
 
-import javax.annotation.Generated;
 import java.io.Serializable;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -25,7 +26,7 @@ import java.sql.Timestamp;
 @Data
 public class StoreDo implements Serializable {
 
-    private static final long serialVersionUID = -720502193;
+    private static final long serialVersionUID = 1929086858;
 
     private Integer   storeId;
     private String    storeName;
@@ -54,6 +55,6 @@ public class StoreDo implements Serializable {
     private Byte      cityService;
     private Byte      pickTimeAction;
     private String    pickTimeDetail;
-    private Byte      storeExpress;
+    private Byte      storeType;
 
 }
