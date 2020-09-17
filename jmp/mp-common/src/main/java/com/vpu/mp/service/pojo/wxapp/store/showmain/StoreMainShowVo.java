@@ -18,7 +18,7 @@ public class StoreMainShowVo {
     /**
      * 门店订单数统计
      */
-    private List<StoreOrderStatisticVo> statisticList;
+    private List<StoreStatisticVo> statisticList;
     /**
      * 月度数据
      */

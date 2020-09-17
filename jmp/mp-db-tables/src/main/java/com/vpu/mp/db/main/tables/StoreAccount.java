@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreAccount extends TableImpl<StoreAccountRecord> {
 
-    private static final long serialVersionUID = -1988267766;
+    private static final long serialVersionUID = -590002489;
 
     /**
      * The reference instance of <code>jmini_main.b2c_store_account</code>
@@ -143,9 +143,19 @@ public class StoreAccount extends TableImpl<StoreAccountRecord> {
     public final TableField<StoreAccountRecord, Byte> IS_BIND = createField("is_bind", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已绑定");
 
     /**
-     * The column <code>jmini_main.b2c_store_account.pharmacist_id</code>. 药师id
+     * The column <code>jmini_main.b2c_store_account.is_pharmacist</code>. 是否是药师
      */
-    public final TableField<StoreAccountRecord, Integer> PHARMACIST_ID = createField("pharmacist_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "药师id");
+    public final TableField<StoreAccountRecord, Byte> IS_PHARMACIST = createField("is_pharmacist", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是药师");
+
+    /**
+     * The column <code>jmini_main.b2c_store_account.signature</code>. 药师签名
+     */
+    public final TableField<StoreAccountRecord, String> SIGNATURE = createField("signature", org.jooq.impl.SQLDataType.CLOB, this, "药师签名");
+
+    /**
+     * The column <code>jmini_main.b2c_store_account.auth_time</code>. 认证时间
+     */
+    public final TableField<StoreAccountRecord, Timestamp> AUTH_TIME = createField("auth_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "认证时间");
 
     /**
      * Create a <code>jmini_main.b2c_store_account</code> table reference

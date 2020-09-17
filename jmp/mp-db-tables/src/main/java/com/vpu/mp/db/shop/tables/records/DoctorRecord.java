@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = -138273218;
+    private static final long serialVersionUID = 1699727486;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.id</code>.
@@ -438,45 +438,59 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_doctor.auth_time</code>. 认证时间
+     */
+    public void setAuthTime(Timestamp value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_doctor.auth_time</code>. 认证时间
+     */
+    public Timestamp getAuthTime() {
+        return (Timestamp) get(29);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_doctor.consultation_total_money</code>. 咨询总金额
      */
     public void setConsultationTotalMoney(BigDecimal value) {
-        set(29, value);
+        set(30, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.consultation_total_money</code>. 咨询总金额
      */
     public BigDecimal getConsultationTotalMoney() {
-        return (BigDecimal) get(29);
+        return (BigDecimal) get(30);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.is_fetch</code>. 是否拉取过
      */
     public void setIsFetch(Byte value) {
-        set(30, value);
+        set(31, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.is_fetch</code>. 是否拉取过
      */
     public Byte getIsFetch() {
-        return (Byte) get(30);
+        return (Byte) get(31);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.signature</code>. 医师签名
      */
     public void setSignature(String value) {
-        set(31, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.signature</code>. 医师签名
      */
     public String getSignature() {
-        return (String) get(31);
+        return (String) get(32);
     }
 
     // -------------------------------------------------------------------------
@@ -505,7 +519,7 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
     /**
      * Create a detached, initialised DoctorRecord
      */
-    public DoctorRecord(Integer id, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation, Integer avgAnswerTime, Integer consultationNumber, BigDecimal avgCommentStar, Integer attentionNumber, String userToken, BigDecimal consultationTotalMoney, Byte isFetch, String signature) {
+    public DoctorRecord(Integer id, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation, Integer avgAnswerTime, Integer consultationNumber, BigDecimal avgCommentStar, Integer attentionNumber, String userToken, Timestamp authTime, BigDecimal consultationTotalMoney, Byte isFetch, String signature) {
         super(Doctor.DOCTOR);
 
         set(0, id);
@@ -537,8 +551,9 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
         set(26, avgCommentStar);
         set(27, attentionNumber);
         set(28, userToken);
-        set(29, consultationTotalMoney);
-        set(30, isFetch);
-        set(31, signature);
+        set(29, authTime);
+        set(30, consultationTotalMoney);
+        set(31, isFetch);
+        set(32, signature);
     }
 }

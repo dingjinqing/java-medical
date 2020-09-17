@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.store.*;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreClerkAuthParam;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMainShowVo;
 import com.vpu.mp.service.saas.shop.StoreAccountService;
 import com.vpu.mp.service.shop.sms.SmsService;

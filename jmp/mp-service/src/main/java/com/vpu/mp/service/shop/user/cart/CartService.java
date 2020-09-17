@@ -559,8 +559,8 @@ public class CartService extends ShopBaseService {
         		liveGoodsService.incrementAddCartNum(param.getRoomId(), record.getGoodsId());
         	}
         }
-        GoodsRecord goodsProduct = goodsService.getGoodsByProductId(param.getPrdId()).into(GoodsRecord.class);;
-        userCartService.addRecord(goodsProduct.getGoodsId(),param.getPrdId(),param.getUserId(),param.getGoodsNumber());
+        GoodsRecord goodsProduct = goodsService.getGoodsByProductId(param.getPrdId()).into(GoodsRecord.class);
+        userCartService.addRecord(goodsProduct.getGoodsId(),param.getPrdId(),param.getUserId(),param.getGoodsNumber(),inCartFlag);
         return resultMessage;
     }
 

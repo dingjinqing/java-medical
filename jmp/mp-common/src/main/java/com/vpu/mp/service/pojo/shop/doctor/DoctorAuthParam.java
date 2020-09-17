@@ -15,17 +15,17 @@ public class DoctorAuthParam {
     /**
      * 医师姓名
      */
-    @NotNull
+    @NotNull(message = "医师姓名不能为空")
     private String doctorName;
     /**
      * 医师电话
      */
-    @NotNull
+    @NotNull(message = "手机号不能为空")
     private String mobile;
     /**
      * 医师医院唯一编码
      */
-    @NotNull
+    @NotNull(message = "院内编码不能为空")
     private String hospitalCode;
     /**
      * 当前用户id
@@ -34,7 +34,7 @@ public class DoctorAuthParam {
     /**
      * 验证码
      */
-    @NotNull
+    @NotNull(message = "验证码不能为空")
     private String mobileCheckCode;
     /**
      * 医师签名

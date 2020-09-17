@@ -34,12 +34,13 @@ public class UserCartService extends ShopBaseService {
 		return userCartDao.save(param);
 	}
 
-	public Integer addRecord(Integer goodsId,Integer prdId,Integer userId,Integer num){
+	public Integer addRecord(Integer goodsId, Integer prdId, Integer userId, Integer num, boolean inCartFlag){
 		UserCartRecordDo param =new UserCartRecordDo();
 		param.setGoodsId(goodsId);
 		param.setPrdId(prdId);
 		param.setUserId(userId);
 		param.setNum(num.shortValue());
+		param.setDelFlag((short) (inCartFlag?1:0));
 		return save(param);
 	}
 }

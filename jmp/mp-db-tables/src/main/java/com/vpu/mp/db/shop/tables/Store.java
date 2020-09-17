@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Store extends TableImpl<StoreRecord> {
 
-    private static final long serialVersionUID = -1249396143;
+    private static final long serialVersionUID = 1301522201;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store</code>
@@ -196,6 +196,11 @@ public class Store extends TableImpl<StoreRecord> {
      * The column <code>mini_shop_471752.b2c_store.store_express</code>. 门店配送 1支持
      */
     public final TableField<StoreRecord, Byte> STORE_EXPRESS = createField("store_express", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "门店配送 1支持");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_store.store_type</code>. 门店类型 0、普通门店 1、医院
+     */
+    public final TableField<StoreRecord, Byte> STORE_TYPE = createField("store_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "门店类型 0、普通门店 1、医院");
 
     /**
      * Create a <code>mini_shop_471752.b2c_store</code> table reference
