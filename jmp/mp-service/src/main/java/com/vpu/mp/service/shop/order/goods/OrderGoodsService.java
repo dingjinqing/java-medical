@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.order.goods;
 
-import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
@@ -14,7 +13,6 @@ import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
-import com.vpu.mp.db.main.tables.records.OrderInfoBakRecord;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
@@ -65,7 +63,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.main.Tables.ORDER_INFO_BAK;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
@@ -326,78 +323,6 @@ public class OrderGoodsService extends ShopBaseService {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
 	}
 
-    /**
-     * 初始化数据
-     * @param goods 输入参数
-     */
-    public OrderGoodsBo initOrderGoods(OrderBeforeParam.Goods goods) {
-        logger().info("initOrderGoods初始化数据开始");
-        OrderGoodsBo bo = OrderGoodsBo.builder().
-            goodsId(goods.getGoodsId()).
-            goodsName(goods.getGoodsInfo().getGoodsName()).
-            goodsSn(goods.getGoodsInfo().getGoodsSn()).
-            productId(goods.getProductId()).
-            productSn(goods.getProductInfo().getPrdSn()).
-            goodsNumber(goods.getGoodsNumber()).
-            marketPrice(goods.getProductInfo().getPrdMarketPrice()).
-            goodsPrice(goods.getGoodsPrice() == null ? goods.getProductInfo().getPrdPrice() : goods.getGoodsPrice()).
-            goodsAttr(goods.getProductInfo().getPrdDesc()).
-            //TODO 需要考虑
-            goodsAttrId(StringUtils.EMPTY).
-            goodsImg(StringUtils.isBlank(goods.getProductInfo().getPrdImg()) ? goods.getGoodsInfo().getGoodsImg() : goods.getProductInfo().getPrdImg()).
-            //满折满减
-            straId(goods.getStraId()).
-            perDiscount(goods.getPerDiscount()).
-            //当前非赠品（赠品后续初始化）
-            isGift(OrderConstant.IS_GIFT_N).
-            //TODO 需要考虑 赠品的关联商品
-            rGoods(StringUtils.EMPTY).
-            //商品积分(积分兑换当前商品需要的积分)
-            goodsScore(goods.getGoodsScore()).
-            //TODO 需要考虑 商品成长值
-            goodsGrowth(0).
-            goodsType(goods.getGoodsInfo().getGoodsType()).
-            discountedGoodsPrice(goods.getProductPrice()).
-            discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductPrice(), new BigDecimal(goods.getGoodsNumber()))).
-            costPrice(goods.getProductInfo().getPrdCostPrice()).
-            //TODO 逐级计算折扣
-            discountDetail(StringUtils.EMPTY).
-            deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
-            //商品质量
-            goodsWeight(goods.getProductInfo().getPrdWeight()).
-            //TODO 后续处理
-            userCoupon(null).
-            catId(goods.getGoodsInfo().getCatId()).
-            sortId(goods.getGoodsInfo().getSortId()).
-            brandId(goods.getGoodsInfo().getBrandId()).
-            goodsPriceAction(goods.getGoodsPriceAction()).
-            reducePriceId(goods.getReducePriceId() == null ? NumberUtils.INTEGER_ZERO : goods.getReducePriceId()).
-            purchasePriceId(goods.getPurchasePriceId()).
-            purchasePriceRuleId(goods.getPurchasePriceRuleId()).
-            firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
-            isCardExclusive(goods.getIsCardExclusive() == null ? OrderConstant.NO : goods.getIsCardExclusive()).
-            reducePriceId(goods.getReducePriceId()).
-            promoteInfo(null).
-			//处方信息
-			prescriptionInfo(goods.getPrescriptionInfo()).
-			prescriptionOldCode(goods.getPrescriptionOldCode()).
-			prescriptionCode(goods.getPrescriptionCode()).
-			medicalAuditStatus(goods.getMedicalAuditStatus()).
-			medicalAuditType(goods.getMedicalAuditType()).
-            build();
-		if (goods.getMedicalInfo()!=null){
-			bo.setIsRx(goods.getMedicalInfo().getIsRx());
-		}else {
-			bo.setIsRx(BaseConstant.NO);
-		}
-        //限时降价的ID和TYPE存入order_goods
-        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsPriceAction()) && goods.getReducePriceId() != null){
-            bo.setActivityId(goods.getReducePriceId());
-            bo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
-        }
-        logger().info("initOrderGoods初始化数据结束，参数为：{}",bo.toString());
-        return bo;
-    }
 
     /**
      * 商品入库
@@ -660,5 +585,72 @@ public class OrderGoodsService extends ShopBaseService {
     }
 
 
-
+	public OrderGoodsBo goodsToOrderGoodsBo(OrderBeforeParam.Goods goods) {
+		logger().info("initOrderGoods初始化数据开始");
+		OrderGoodsBo bo = OrderGoodsBo.builder().
+				goodsId(goods.getGoodsId()).
+				goodsName(goods.getGoodsInfo().getGoodsName()).
+				goodsSn(goods.getGoodsInfo().getGoodsSn()).
+				productId(goods.getProductId()).
+				productSn(goods.getProductInfo().getPrdSn()).
+				goodsNumber(goods.getGoodsNumber()).
+				marketPrice(goods.getProductInfo().getPrdMarketPrice()).
+				goodsPrice(goods.getGoodsPrice() == null ? goods.getProductInfo().getPrdPrice() : goods.getGoodsPrice()).
+				goodsAttr(goods.getProductInfo().getPrdDesc()).
+				//TODO 需要考虑
+						goodsAttrId(StringUtils.EMPTY).
+						goodsImg(StringUtils.isBlank(goods.getProductInfo().getPrdImg()) ? goods.getGoodsInfo().getGoodsImg() : goods.getProductInfo().getPrdImg()).
+				//满折满减
+						straId(goods.getStraId()).
+						perDiscount(goods.getPerDiscount()).
+				//当前非赠品（赠品后续初始化）
+						isGift(OrderConstant.IS_GIFT_N).
+				//TODO 需要考虑 赠品的关联商品
+						rGoods(StringUtils.EMPTY).
+				//商品积分(积分兑换当前商品需要的积分)
+						goodsScore(goods.getGoodsScore()).
+				//TODO 需要考虑 商品成长值
+						goodsGrowth(0).
+						goodsType(goods.getGoodsInfo().getGoodsType()).
+						discountedGoodsPrice(goods.getProductPrice()).
+						discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductPrice(), new BigDecimal(goods.getGoodsNumber()))).
+						costPrice(goods.getProductInfo().getPrdCostPrice()).
+				//TODO 逐级计算折扣
+						discountDetail(StringUtils.EMPTY).
+						deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
+				//商品质量
+						goodsWeight(goods.getProductInfo().getPrdWeight()).
+				//TODO 后续处理
+						userCoupon(null).
+						catId(goods.getGoodsInfo().getCatId()).
+						sortId(goods.getGoodsInfo().getSortId()).
+						brandId(goods.getGoodsInfo().getBrandId()).
+						goodsPriceAction(goods.getGoodsPriceAction()).
+						reducePriceId(goods.getReducePriceId() == null ? NumberUtils.INTEGER_ZERO : goods.getReducePriceId()).
+						purchasePriceId(goods.getPurchasePriceId()).
+						purchasePriceRuleId(goods.getPurchasePriceRuleId()).
+						firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
+						isCardExclusive(goods.getIsCardExclusive() == null ? OrderConstant.NO : goods.getIsCardExclusive()).
+						reducePriceId(goods.getReducePriceId()).
+						promoteInfo(null).
+				//处方信息
+						prescriptionInfo(goods.getPrescriptionInfo()).
+						prescriptionOldCode(goods.getPrescriptionOldCode()).
+						prescriptionCode(goods.getPrescriptionCode()).
+						medicalAuditStatus(goods.getMedicalAuditStatus()).
+						medicalAuditType(goods.getMedicalAuditType()).
+						build();
+		if (goods.getMedicalInfo()!=null){
+			bo.setIsRx(goods.getMedicalInfo().getIsRx());
+		}else {
+			bo.setIsRx(BaseConstant.NO);
+		}
+		//限时降价的ID和TYPE存入order_goods
+		if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsPriceAction()) && goods.getReducePriceId() != null){
+			bo.setActivityId(goods.getReducePriceId());
+			bo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+		}
+		logger().info("initOrderGoods初始化数据结束，参数为：{}",bo.toString());
+		return bo;
+	}
 }

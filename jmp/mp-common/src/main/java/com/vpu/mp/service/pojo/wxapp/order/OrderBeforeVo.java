@@ -169,7 +169,7 @@ public class OrderBeforeVo {
 
 
     /**
-     * 默认配送方式 0 ，1 ，2
+     * 默认配送方式 0 ，1 ，2, 3
      * @return
      */
     public Byte getDefaultDeliverType(){

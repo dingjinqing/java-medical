@@ -192,7 +192,6 @@ public class WxAppAuth {
         wxAppSessionUser.setUserType(userRecord.getUserType());
         if (Objects.equals(userType, 0)) {
             wxAppSessionUser.setDoctorId(0);
-            wxAppSessionUser.setPharmacistId(0);
             wxAppSessionUser.setStoreAccountId(0);
         }
         //如果当前用户是医师，那么直接进入医师界面
