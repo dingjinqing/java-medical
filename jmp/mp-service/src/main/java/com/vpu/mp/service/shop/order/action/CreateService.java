@@ -656,7 +656,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         expressList[OrderConstant.DELIVER_TYPE_SELF] = tradeCfg.getFetch();
         //同城配送
         expressList[OrderConstant.CITY_EXPRESS_SERVICE] = tradeCfg.getCityService();
-        //配送
+        //门店配送
         expressList[OrderConstant.STORE_EXPRESS] = tradeCfg.getStoreExpress();
         return expressList;
     }

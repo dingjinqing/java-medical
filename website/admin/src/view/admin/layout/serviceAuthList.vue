@@ -97,8 +97,8 @@
             </el-table-column>
           </el-table>
         </div>
-        <div class="footer">
-          <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.totle}}</div>
+        <!-- <div class="footer">
+          <div>当前页：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录：{{this.totle}}</div>
           <el-pagination
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
@@ -107,7 +107,7 @@
             :total="totle"
           >
           </el-pagination>
-        </div>
+        </div> -->
       </div>
     </div>
     <!--设置页面分类弹窗-->

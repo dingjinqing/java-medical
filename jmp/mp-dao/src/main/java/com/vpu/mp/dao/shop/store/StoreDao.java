@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderStatisticVo;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -77,7 +78,7 @@ public class StoreDao extends ShopBaseDao {
         select.and(STORE.OPENING_TIME.lt(dateStringParse));
         select.and(STORE.CLOSE_TIME.gt(dateStringParse));
         if (stores != null && stores.size() != 0) {
-            logger().info("门店库存校验");
+            logger().info("门店库存校验{}",stores);
             select.and(STORE.STORE_CODE.in(stores));
         }
         if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
@@ -158,6 +159,17 @@ public class StoreDao extends ShopBaseDao {
                     break;
             }
         }
+    }
+
+    /**
+     * 根据storeIds查询list
+     * @param storeIds
+     * @return
+     */
+    public List<StoreOrderStatisticVo> getListByStoreIds(List<Integer> storeIds){
+        return db().select().from(STORE).where(STORE.STORE_ID.in(storeIds))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .fetchInto(StoreOrderStatisticVo.class);
     }
 
 }

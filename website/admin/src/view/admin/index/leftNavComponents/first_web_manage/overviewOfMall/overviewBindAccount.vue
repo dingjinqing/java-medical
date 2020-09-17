@@ -3,7 +3,7 @@
     <div class="one_piece">
       <el-row>
         <div v-if="act==='del_bind'">
-          <span>{{this.nickName!==null ?this.nickName: $t('overview.bindButtonDelMsg')}}{{$t('overview.bindButtonDelBindMessage')}}</span>
+          <span>{{this.nickName!==null ? '微信昵称:'+this.nickName : $t('overview.bindButtonDelMsg')}}{{$t('overview.bindButtonDelBindMessage')}}</span>
           <el-button
             class="btn_follow"
             @click="handleSubmit()"

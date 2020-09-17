@@ -58,6 +58,7 @@ public class DoctorDo   {
     private BigDecimal avgCommentStar;
     private Integer    attentionNumber;
     private String     userToken;
+    private Timestamp  authTime;
     private BigDecimal consultationTotalMoney;
     private Byte       isFetch;
     private String     signature;

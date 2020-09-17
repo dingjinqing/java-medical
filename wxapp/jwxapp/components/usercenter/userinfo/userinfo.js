@@ -130,8 +130,7 @@ global.wxComponent({
               user_avatar: that.data.user_avatar
             });
           }
-        },
-        {}
+        }, {}
       );
     },
     toSave: function (e) {
@@ -210,7 +209,7 @@ global.wxComponent({
                 }, 2000);
               });
             } else {
-              util.toast_success("保存成功", function () { });
+              util.toast_success("保存成功", function () {});
             }
           } else {
             util.toast_fail(res.message);
@@ -266,7 +265,7 @@ global.wxComponent({
             user_info: user_info,
             user_avatar: that.data.user_avatar
           });
-          util.api("/api/wxapp/account/updateUser", function (res) { }, {
+          util.api("/api/wxapp/account/updateUser", function (res) {}, {
             iv: e.detail.iv,
             encrypted_data: e.detail.encryptedData,
             username: user_name,
@@ -287,7 +286,7 @@ global.wxComponent({
                 user_info: user_info,
                 user_avatar: that.data.user_avatar
               });
-              util.api("/api/wxapp/account/updateUser", function (res) { }, {
+              util.api("/api/wxapp/account/updateUser", function (res) {}, {
                 encrypted_data: e.detail.encryptedData,
                 iv: e.detail.iv,
                 username: user_name,
@@ -324,16 +323,27 @@ global.wxComponent({
               mobile: mobile
             });
           } else if (res.error == 41001) {
-            util.wxLogin(function () { });
+            util.wxLogin(function () {});
           } else {
-            util.showModal("提示", "授权失败，请重试！", function () { }, false);
+            util.showModal("提示", "授权失败，请重试！", function () {}, false);
           }
-        },
-        { iv: iv, encrypted_data: data }
+        }, {
+          iv: iv,
+          encrypted_data: data
+        }
       );
     },
-    to_doc_index () {
-      util.handleBuriedPoint('doctor_enter_in','pages/personalcenter/personalcenter',[{'key':'打卡','value':'个人中心'}])
+    to_doc_index() {
+      util.handleBuriedPoint('doctor_enter_in', 'pages/personalcenter/personalcenter', [{
+        'key': '打卡',
+        'value': '个人中心'
+      }])
+      util.api(
+        "/api/wxapp/doctor/main/log",
+        function (res) {
+          console.log(res)
+        }
+      )
       util.jumpLink('/pages2/doctorIndex/doctorIndex', 'redirectTo')
     }
   },

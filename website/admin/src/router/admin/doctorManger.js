@@ -181,6 +181,20 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/doctor_manger/recommendStrategy/recommendStrategy'
       )
+  },
+
+  // 医师详情
+  {
+    path: '/admin/home/main/doctor/detail',
+    name: 'doctor_detail',
+    meta: {
+      crumbTitle: 'router.doctorDetail',
+      meta: 'doctor_manger'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/doctor_manger/doctor/doctorDetail'
+      )
   }
 ]
 

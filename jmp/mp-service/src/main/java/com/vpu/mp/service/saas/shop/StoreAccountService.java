@@ -257,6 +257,8 @@ public class StoreAccountService extends MainBaseService {
      * @return
      */
     public StoreAccountVo getOneInfo(Integer storeAccountId){
+        StoreAccountVo storeAccountVo=storeAccountDao.getOneInfo(storeAccountId);
+        storeAccountVo.setStoreLists(changeToArray(storeAccountVo.getStoreList()));
         return storeAccountDao.getOneInfo(storeAccountId);
     }
 

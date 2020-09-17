@@ -8,6 +8,8 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.DeleteGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
@@ -95,6 +97,7 @@ public class AdminStoreController extends AdminBaseController{
      * 门店-新增
      * @return
      */
+    @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
     @PostMapping(value = "/api/admin/store/add")
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
        if(shop().store.addStore(store)) {

@@ -3,6 +3,7 @@ package com.vpu.mp.auth;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.AuthConfig;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
@@ -112,7 +113,10 @@ public class StoreAuth {
         if(user!=null && user.getSysId().equals(info.getSysId()) && user.getSubAccountId().equals(info.getSubAccountId())) {
             info.setToken(user.getToken());
         }
-
+        //小程序信息
+        MpAuthShopRecord record=saas.shop.mp.getAuthShopByShopIdAddURL(storeAuthInfoVoNew.getStoreAccountInfo().getShopId());
+        info.setQrcodeUrl(record.getQrcodeUrl());
+        info.setNickName(record.getNickName());
         this.saveTokenInfo(info);
         return info;
     }

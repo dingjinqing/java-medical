@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.main;
 
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.dao.foundation.base.MainBaseDao;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
@@ -87,16 +88,20 @@ public class StoreAccountDao extends MainBaseDao {
      * @param userId
      */
     public void updateUserId(Integer accountId,Integer userId){
-        db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.USER_ID,userId).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
+        db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.USER_ID,userId)
+            .set(STORE_ACCOUNT.AUTH_TIME, DateUtils.getLocalDateTime())
+            .where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
             .execute();
     }
     /**
-     * 更新药师id
+     * 更新签名
      * @param accountId
-     * @param pharmacistId
+     * @param signature
      */
-    public void updatePharmacistId(Integer accountId,Integer pharmacistId){
-        db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.PHARMACIST_ID,pharmacistId).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
+    public void updateSignature(Integer accountId,String signature){
+        db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.SIGNATURE,signature)
+            .set(STORE_ACCOUNT.IS_PHARMACIST,(byte)1)
+            .where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
             .execute();
     }
 

@@ -1,0 +1,21 @@
+<view class="body">
+  <include src="/pages/common/header.wxml"/>
+  <view class="main-container">
+    <view class="list-content">
+      <view class="list-item">
+        <view class="list-title">头像</view>
+        <image class="avatar" bindtap="changeAvatar" src="{{imageUrl + doctorAvatar}}"></image>
+      </view>
+      <view class="list-item" wx:if="{{treatDisease}}">
+        <view class="list-title">擅长疾病</view>
+        <view class="list-item-content">
+          <view class="text">
+            {{treatDisease}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="save" style="background-color:{{comColor}};">保存</view>
+  </view>
+</view>

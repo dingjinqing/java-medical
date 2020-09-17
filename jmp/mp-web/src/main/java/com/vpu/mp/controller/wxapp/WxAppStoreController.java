@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.store.*;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMainShowVo;
 import com.vpu.mp.service.saas.shop.StoreAccountService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
@@ -267,6 +268,7 @@ public class WxAppStoreController extends WxAppBaseController{
     public JsonResult storeMainShow(){
         WxAppSessionUser user = wxAppAuth.user();
         StoreAccountVo storeAccountVo=storeAccountService.getOneInfo(user.getStoreAccountId());
-        return success(storeAccountVo);
+        StoreMainShowVo storeMainShowVo=shop().store.wxService.storeMainShow(storeAccountVo);
+        return success(storeMainShowVo);
     }
 }

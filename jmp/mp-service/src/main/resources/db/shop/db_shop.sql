@@ -5133,7 +5133,7 @@ create table b2c_doctor(
     `id`   int(11)      not null auto_increment,
     `age` int(11) not null default 0 comment '年龄',
     `work_time` int(11) not null default 0 comment '从业时间',
-    `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
+    `sex` tinyint(1) not null default 0 comment '性别 0：男 1：女',
     `name` varchar(32) not null default 0 comment '医师姓名',
     `url` varchar(128) not null default '' comment '医师头像',
     `duty` tinyint(2) not null default 0 comment '聘任职务',
@@ -5166,7 +5166,7 @@ create table b2c_doctor(
 -- 药师表
 create table b2c_pharmacist(
     `id`   int(11)      not null auto_increment,
-    `sex` tinyint(1) not null default 0 comment '0未知 1男 2 女',
+    `sex` tinyint(1) not null default 0 comment '性别 0：男 1：女',
     `certificate_code` varchar(64) not null default '' comment '药师资格编码',
     `professional_code` varchar(64) not null default '' comment '药师职业编码',
     `mobile` varchar(32) not null default '' comment '手机号',

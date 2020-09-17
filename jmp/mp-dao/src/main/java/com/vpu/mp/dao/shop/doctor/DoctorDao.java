@@ -2,6 +2,7 @@ package com.vpu.mp.dao.shop.doctor;
 
 import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
@@ -17,6 +18,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -217,7 +219,8 @@ public class DoctorDao extends ShopBaseDao {
     public DoctorDo doctorAuth(DoctorAuthParam doctorAuthParam) {
         return db().select().from(DOCTOR)
             .where(DOCTOR.NAME.eq(doctorAuthParam.getDoctorName()))
-            .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile()))
+            // 不校验手机号 2020-9-16
+//            .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile()))
             .and(DOCTOR.HOSPITAL_CODE.eq(doctorAuthParam.getHospitalCode()))
             .fetchAnyInto(DoctorDo.class);
     }
@@ -227,8 +230,10 @@ public class DoctorDao extends ShopBaseDao {
      * @param doctorDo 当前用户
      * @return int
      */
-    public int updateUserId(DoctorDo doctorDo){
+    public int updateUserId(DoctorDo doctorDo, String mobile){
         return db().update(DOCTOR).set(DOCTOR.USER_ID, doctorDo.getUserId())
+            .set(DOCTOR.MOBILE, mobile)
+            .set(DOCTOR.AUTH_TIME, DateUtils.getLocalDateTime())
             .where(DOCTOR.NAME.eq(doctorDo.getName())
                 .and(DOCTOR.MOBILE.eq(doctorDo.getMobile()))).execute();
     }
@@ -401,6 +406,7 @@ public class DoctorDao extends ShopBaseDao {
      */
     public void unbundlingDoctorToken(Integer doctorId) {
         db().update(DOCTOR).set(DOCTOR.USER_TOKEN, "")
+            .set(DOCTOR.AUTH_TIME, Timestamp.valueOf(DateUtils.DATE_FORMAT_ZERO))
             .where(DOCTOR.ID.eq(doctorId)).execute();
     }
 

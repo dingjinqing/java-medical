@@ -148,7 +148,8 @@ public class StoreService extends ShopBaseService {
      */
     public StoreVo getPageList(StoreListQueryParam param) {
         SelectWhereStep<? extends Record> select = db().select(
-            STORE.STORE_ID, STORE.STORE_NAME,STORE.STORE_CODE ,STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,
+            STORE.STORE_ID, STORE.STORE_NAME,STORE.STORE_CODE ,STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE,
+                STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,STORE.STORE_EXPRESS,
             STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE, STORE.CITY_SERVICE
         ).from(STORE)
             .leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
@@ -181,7 +182,7 @@ public class StoreService extends ShopBaseService {
             return select;
         }
         if (!StringUtils.isEmpty(param.getKeywords())) {
-            select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.POS_SHOP_ID.like(param.getKeywords())));
+            select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.STORE_CODE.like(param.getKeywords())));
         }
         //查询条件-营业状态
         if (param.getBusinessState() != null) {
@@ -263,7 +264,7 @@ public class StoreService extends ShopBaseService {
      * @return
      */
     public Boolean delStore(Integer storeId) {
-        return db().update(STORE).set(STORE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(STORE.STORE_ID.eq(storeId)).execute() > 0 ? true : false;
+        return db().update(STORE).set(STORE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(STORE.STORE_ID.eq(storeId)).execute() > 0;
     }
 
     /**
@@ -459,7 +460,7 @@ public class StoreService extends ShopBaseService {
      * @return
      */
     public List<StorePojo>[] filterExpressList(Byte[] expressList, List<Integer> productIds, UserAddressVo address, byte isFormStore) {
-        List<StorePojo>[] result = new List[3];
+        List<StorePojo>[] result = new List[4];
         //自提
         if (expressList[OrderConstant.DELIVER_TYPE_SELF] == OrderConstant.YES) {
             result[OrderConstant.DELIVER_TYPE_SELF] = getCanBuyStoreList(productIds, OrderConstant.DELIVER_TYPE_SELF, address, isFormStore);
