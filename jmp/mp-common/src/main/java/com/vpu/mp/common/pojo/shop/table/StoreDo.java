@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @Data
 public class StoreDo implements Serializable {
 
-    private static final long serialVersionUID = 1929086858;
+    private static final long serialVersionUID = 1047163101;
 
     private Integer   storeId;
     private String    storeName;
@@ -55,6 +55,7 @@ public class StoreDo implements Serializable {
     private Byte      cityService;
     private Byte      pickTimeAction;
     private String    pickTimeDetail;
+    private Byte      storeExpress;
     private Byte      storeType;
 
 }
