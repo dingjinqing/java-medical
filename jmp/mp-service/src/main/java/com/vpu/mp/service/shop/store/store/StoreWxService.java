@@ -3,13 +3,12 @@ package com.vpu.mp.service.shop.store.store;
 import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.address.UserAddressDao;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.pharmacist.PharmacistDao;
 import com.vpu.mp.dao.shop.store.StoreDao;
@@ -22,10 +21,12 @@ import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
@@ -33,10 +34,7 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryV
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
-import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreClerkAuthParam;
-import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMainShowVo;
-import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMonthStatisticVo;
-import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreStatisticVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.*;
 import com.vpu.mp.service.saas.region.ProvinceService;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -223,6 +221,10 @@ public class StoreWxService extends ShopBaseService {
     private OrderInfoDao orderInfoDao;
     @Autowired
     private OrderActionService orderActionService;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private UserAddressDao userAddressDao;
 
     /**
      * The constant BYTE_TWO.
@@ -601,7 +603,8 @@ public class StoreWxService extends ShopBaseService {
             Integer waitReceiveOrderNum= orderInfoDao.countNumByStoreIdOrderStatus(statisticVo.getStoreId(), orderStatusList);
             statisticVo.setWaitHandleOrderNum(waitReceiveOrderNum);
             //已完成数
-            orderActionService.getCountNumByUserIdOrderStatus(statisticVo.getStoreId(),OrderConstant.ORDER_RECEIVED,statisticVo.getStoreId());
+            Integer finishedNum=orderActionService.getCountNumByUserIdOrderStatus(storeAccountVo.getAccountId(),OrderConstant.ORDER_RECEIVED,statisticVo.getStoreId());
+            statisticVo.setFinishedOrderNum(finishedNum);
         }
         //本月数据
         StoreMonthStatisticVo monthVo=new StoreMonthStatisticVo();
@@ -610,7 +613,7 @@ public class StoreWxService extends ShopBaseService {
         Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeAccountVo.getStoreLists(), orderStatusList,startTime,endTime);
         monthVo.setWaitHandleNum(waitHandleNum);
         //已完成的数量
-        Integer finishedNum=orderActionService.getCountNumByUserIdOrderStatusAndTime(storeAccountVo.getUserId(),OrderConstant.ORDER_RECEIVED,storeAccountVo.getStoreLists(),startTime,endTime);
+        Integer finishedNum=orderActionService.getCountNumByUserIdOrderStatusAndTime(storeAccountVo.getAccountId(),OrderConstant.ORDER_RECEIVED,storeAccountVo.getStoreLists(),startTime,endTime);
         monthVo.setFinishedNum(finishedNum);
         storeMainShowVo.setStoreAccount(storeAccountVo);
         storeMainShowVo.setStatisticList(storeList);
@@ -618,4 +621,35 @@ public class StoreWxService extends ShopBaseService {
         return storeMainShowVo;
     }
 
+    /**
+     * 获取待处理订单和已完成订单列表
+     * @param param
+     * @return
+     */
+    public PageResult<StoreOrderListVo> getStoreClerkOrderList(StoreOrderListParam param){
+        PageResult<StoreOrderListVo> orderInfoList=new PageResult<>();
+        //已完成的
+        if(StoreOrderConstant.FINISHED.equals(param.getStatus())){
+            orderInfoList=orderActionService.getStoreClerkOrderFinishedList(param);
+        }else if(StoreOrderConstant.WAIT_HANDLE.equals(param.getStatus())){
+            //待处理的
+            List<Byte> orderStatusList=new ArrayList<>();
+            //待处理的订单状态
+            orderStatusList.add(OrderConstant.ORDER_WAIT_DELIVERY);
+            orderStatusList.add(OrderConstant.ORDER_SHIPPED);
+            orderStatusList.add(OrderConstant.ORDER_RECEIVED);
+            param.setOrderStatusList(orderStatusList);
+            orderInfoList = orderInfoDao.getStoreClerkOrderList(param);
+        }
+
+        List<StoreOrderListVo> dataList=orderInfoList.getDataList();
+        //orderGoods
+        for(StoreOrderListVo orderInfo:dataList){
+            List<OrderGoodsVo> orderGoodsList = orderGoodsDao.getOrderGoodsListByOrderId(orderInfo.getOrderId());
+            orderInfo.setOrderGoodsList(orderGoodsList);
+            UserAddressVo userAddressVo = userAddressDao.getUserAddressInfoByAddressId(orderInfo.getAddressId());
+            orderInfo.setUserAddress(userAddressVo);
+        }
+        return orderInfoList;
+    }
 }

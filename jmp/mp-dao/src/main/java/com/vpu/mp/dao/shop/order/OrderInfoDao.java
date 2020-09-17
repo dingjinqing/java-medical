@@ -12,6 +12,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPres
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListVo;
 import org.bouncycastle.util.Times;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
@@ -25,6 +27,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.Tables.ORDER_ACTION;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
@@ -243,4 +246,19 @@ public class OrderInfoDao extends ShopBaseDao {
         }
         return select.fetchAnyInto(Integer.class);
     }
+
+    /**
+     * 订单状态门店id查询
+     * @param param
+     * @return
+     */
+    public PageResult<StoreOrderListVo> getStoreClerkOrderList(StoreOrderListParam param){
+        SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.ORDER_ID,ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.MOBILE,ORDER_INFO.ADDRESS_ID,ORDER_INFO.COMPLETE_ADDRESS)
+            .from(ORDER_INFO);
+        select.where(ORDER_INFO.STORE_ID.eq(param.getStoreId())).and(ORDER_INFO.ORDER_STATUS.in(param.getOrderStatusList()))
+            .orderBy(ORDER_INFO.CREATE_TIME.desc());
+        return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreOrderListVo.class);
+    }
+
+
 }

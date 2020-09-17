@@ -17,7 +17,7 @@ public class StoreOrderListVo {
     private String  mobile;
     private Byte  orderStatus;
     private String  completeAddress;
-    private String  addressId;
+    private Integer  addressId;
     private UserAddressVo userAddress;
     /**
      * 订单商品
