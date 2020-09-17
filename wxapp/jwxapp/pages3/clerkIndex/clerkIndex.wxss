@@ -1,0 +1,122 @@
+.main-container{
+  background-color: #fff;
+}
+.desc-info{
+  height: 386rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+}
+.desc-info > image{
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-right: 34rpx;
+}
+.clerk-name{
+  font-weight: bold;
+  font-size: 36rpx;
+  color: #fff;
+  margin-right: 22rpx;
+}
+.permission{
+  font-size: 22rpx;
+  color: #fff;
+  border: 2rpx solid #fff;
+  width: 90rpx;
+  line-height: 36rpx;
+  border-radius: 18rpx;
+  text-align: center;
+}
+.data-panel{
+  height: 260rpx;
+  margin-top: -80rpx;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 16rpx;
+}
+.panel-title{
+  height: 80rpx;
+  display: flex;
+  padding: 0 24rpx;
+  align-items: center;
+}
+.panel-title > text{
+  color: #343434;
+  font-weight: 600;
+  font-size: 30rpx;
+  padding-left: 19rpx;
+  border-left: 4rpx solid #26C4BC;
+  line-height: 1;
+}
+.panel-content{
+  display: flex;
+  align-items: center;
+  height: 180rpx;
+  box-shadow: 1rpx 6rpx 26rpx 5rpx rgba(204, 204, 204, 0.2);
+  border-radius: 0 0 16rpx 16rpx;
+}
+.panel-item{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.panel-item + .panel-item{
+  border-left: 2rpx solid #eee;
+}
+.panel-item > text:first-of-type{
+  font-size: 48rpx;
+  font-weight: bold;
+}
+.panel-item > text:last-of-type{
+  font-size: 26rpx;
+  margin-top: 10rpx;
+}
+.default-content{
+  max-width: 702rpx;
+  margin: 0 auto;
+}
+.title{
+  height: 80rpx;
+  display: flex;
+  padding: 0 24rpx;
+  align-items: center;
+}
+.title > text{
+  color: #343434;
+  font-weight: 600;
+  font-size: 30rpx;
+  padding-left: 19rpx;
+  border-left: 4rpx solid #26C4BC;
+  line-height: 1;
+}
+.shop-item{
+  background-color: #fff;
+  border-radius: 0 0 16rpx 16rpx;
+  box-shadow: 1px 6px 26px 5px rgba(204, 204, 204, 0.2);
+  padding: 0 24rpx 24rpx;
+}
+.shop-item + .shop-item{
+  margin-top: 20rpx;
+}
+.shop-title{
+  line-height: 80rpx;
+  color: #343434;
+}
+.list-item{
+  height: 80rpx;
+  padding: 0 24rpx;
+  display: flex;
+  justify-content: space-between;
+  background: #DCF6F4;
+  box-sizing: border-box;
+  align-items: center;
+}
+.list-item > text:first-of-type{
+  color: 343434;
+}
+.list-item > text:last-of-type{
+  color: #27C4BC;
+  font-weight: bold;
+}

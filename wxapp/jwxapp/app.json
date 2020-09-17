@@ -169,7 +169,8 @@
     {
       "root": "pages3",
       "pages": [
-        "clerkOrderList/clerkOrderList"
+        "clerkOrderList/clerkOrderList",
+        "clerkIndex/clerkIndex"
       ]
     }
   ],
