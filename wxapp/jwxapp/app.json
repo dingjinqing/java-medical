@@ -59,6 +59,12 @@
       "desc": "以便向您推荐距离您最近的门店！"
     }
   },
+  "plugins": {
+    "routePlan": {
+      "version": "1.0.8",
+      "provider": "wx50b5593e81dd937a"
+    }
+  },
   "usingComponents": {
     "v-navigation": "/components/custom-navigation/index",
     "v-popup-get-phone-number": "/components/popup/get-phone-number/index",
@@ -158,6 +164,12 @@
         "doctorWithdrawRecord/doctorWithdrawRecord",
         "doctorWithdraw/doctorWithdraw",
         "doctorCenter/doctorCenter"
+      ]
+    },
+    {
+      "root": "pages3",
+      "pages": [
+        "clerkOrderList/clerkOrderList"
       ]
     }
   ],

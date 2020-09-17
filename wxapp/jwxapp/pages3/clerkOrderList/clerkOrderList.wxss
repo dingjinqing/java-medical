@@ -1,0 +1,123 @@
+.filter{
+  display: flex;
+  height: 90rpx;
+  background-color: #fff;
+}
+.filter-item{
+  flex: 1;
+  text-align: center;
+  line-height: 80rpx;
+}
+.filter-item > text{
+  color: #333;
+  font-size: 28rpx;
+  position: relative;
+}
+.filter-item.active > text{
+  font-weight: bold;
+}
+.filter-item.active > text::after{
+  content: '';
+  width: 80%;
+  height: 4rpx;
+  border-radius: 2rpx;
+  background-color: #25C3BB;
+  position: absolute;
+  bottom: -10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.card-item{
+  width: 702rpx;
+  background-color: #fff;
+  margin: 24rpx auto 0;
+  padding-left: 20rpx;
+  border-radius: 16rpx;
+  color: #333;
+  overflow: hidden;
+  padding-bottom: 20rpx;
+}
+.order-sn{
+  line-height: 90rpx;
+  border-bottom: 2rpx solid #ededed;
+  font-weight: 500;
+}
+.consignee-info{
+  padding: 28rpx 24rpx 28rpx 0;
+  font-weight: 500;
+  line-height: 48rpx
+}
+.consignee-info > view{
+  display: flex;
+  align-items: center;
+}
+.consignee-info > view > text{
+  margin-right: auto;
+}
+.consignee-info > view > image{
+  width: 44rpx;
+  height: 48rpx;
+}
+.goods-content{
+  margin-right: 24rpx;
+  background-color: #f5f5f5;
+  border-radius: 16rpx;
+  padding: 0 24rpx 24rpx;
+  overflow:hidden;
+}
+.goods-item{
+  display: flex;
+  margin-top: 24rpx;
+}
+.goods-item > .goods-image{
+  width: 160rpx;
+  height: 160rpx;
+}
+.goods-item > .goods-info{
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-left: 24rpx;
+}
+.goods-item > .goods-info > .goods-name{
+  line-height: 42rpx;
+}
+.goods-item > .goods-info > .goods-price{
+  display: flex;
+  justify-content: space-between;
+}
+.goods-price > .price{
+  font-size: 30rpx;
+  color: #FF9E14;
+}
+.goods-price > .num{
+  color: #999;
+}
+.button-content{
+  margin-top: 20rpx;
+  padding-right: 24rpx;
+  display: flex;
+  flex-direction: row-reverse;
+}
+.button-content > view{
+  box-sizing: border-box;
+  line-height: 60rpx;
+  width: 150rpx;
+  border-radius: 30rpx;
+  text-align: center;
+}
+.button-content > view + view{
+  margin-right: 24px;
+}
+.button-content > view.return{
+  border: 2rpx solid #cbcbcb;
+  color: #333;
+  font-weight: 500;
+}
+.button-content > view.deliver{
+  color: #fff;
+  font-weight: 500;
+  background-color: #25C3BB;
+}

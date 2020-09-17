@@ -120,7 +120,7 @@ public class StoreOrderController extends StoreBaseController {
      */
     @PostMapping("/ship")
     public JsonResult ship(@RequestBody @Valid ShipParam param ) {
-        param.setIsMp(OrderConstant.IS_MP_ADMIN);
+        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
         param.setStoreInfo(storeAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
@@ -148,7 +148,7 @@ public class StoreOrderController extends StoreBaseController {
      */
     @PostMapping("/refund")
     public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
-        param.setIsMp(OrderConstant.IS_MP_ADMIN);
+        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
         param.setStoreInfo(storeAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
@@ -163,7 +163,7 @@ public class StoreOrderController extends StoreBaseController {
      */
     @PostMapping("/close")
     public JsonResult close(@RequestBody @Valid OrderOperateQueryParam param) {
-        param.setIsMp(OrderConstant.IS_MP_ADMIN);
+        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
         param.setStoreInfo(storeAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
@@ -178,7 +178,7 @@ public class StoreOrderController extends StoreBaseController {
      */
     @PostMapping("/finish")
     public JsonResult finish(@RequestBody @Valid OrderOperateQueryParam param) {
-        param.setIsMp(OrderConstant.IS_MP_ADMIN);
+        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
         param.setStoreInfo(storeAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
