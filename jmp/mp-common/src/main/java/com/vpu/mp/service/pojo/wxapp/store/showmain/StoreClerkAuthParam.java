@@ -1,10 +1,10 @@
-package com.vpu.mp.service.pojo.wxapp.store;
+package com.vpu.mp.service.pojo.wxapp.store.showmain;
 
 import lombok.Data;
 
 /**
  * @author yangpengcheng
- * @date 2020/9/15
+ * @date 2020/9/17
  **/
 @Data
 public class StoreClerkAuthParam {
@@ -41,5 +41,4 @@ public class StoreClerkAuthParam {
      * 药师签名
      */
     private String signature;
-
 }

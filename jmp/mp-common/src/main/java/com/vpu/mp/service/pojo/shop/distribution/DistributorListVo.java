@@ -31,6 +31,10 @@ public class DistributorListVo {
      */
     private Timestamp createTime;
     /**
+     * 分销员申请表最终更新时间，若审核通过，即成为分销员时间
+     */
+    private Timestamp updateTime;
+    /**
      * 真实姓名
      */
     private String realName;

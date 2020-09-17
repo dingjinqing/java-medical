@@ -14,6 +14,10 @@ import lombok.Data;
 @Data
 public class DistributorListParam {
     /**
+     * 分销员Id
+     */
+    private Integer distributorId;
+    /**
      *分销员手机号
      */
 	private String mobile;
