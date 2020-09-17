@@ -170,6 +170,11 @@
                 class="same_btn"
                 @click="setConsultation(scope.row)"
               >{{ scope.row.canConsultation ? '禁止问诊' : '允许问诊' }}</a>
+              <a
+                href="javaScript:void(0);"
+                class="same_btn"
+                @click="toDetail(scope.row.id)"
+              >查看详情</a>
             </div>
           </template>
         </el-table-column>
@@ -351,6 +356,15 @@ export default {
         path: '/admin/home/main/doctor/comment/list',
         query: {
           name: name
+        }
+      })
+      window.open(href, '_blank')
+    },
+    toDetail (id) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/detail',
+        query: {
+          id: id
         }
       })
       window.open(href, '_blank')
