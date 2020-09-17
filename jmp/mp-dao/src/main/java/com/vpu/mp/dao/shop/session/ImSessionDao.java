@@ -34,9 +34,9 @@ public class ImSessionDao extends ShopBaseDao {
      * 新增会话
      * @param imSessionDo 会话信息
      */
-    public void insert(ImSessionDo imSessionDo){
+    public void insert(ImSessionDo imSessionDo) {
         ImSessionRecord imSessionRecord = db().newRecord(IM_SESSION);
-        FieldsUtil.assign(imSessionDo,imSessionRecord);
+        FieldsUtil.assign(imSessionDo, imSessionRecord);
         imSessionRecord.insert();
         imSessionDo.setId(imSessionRecord.getId());
     }
@@ -45,9 +45,9 @@ public class ImSessionDao extends ShopBaseDao {
      * 修改会话
      * @param imSessionDo 会话信息
      */
-    public void update(ImSessionDo imSessionDo){
+    public void update(ImSessionDo imSessionDo) {
         ImSessionRecord imSessionRecord = db().newRecord(IM_SESSION);
-        FieldsUtil.assign(imSessionDo,imSessionRecord);
+        FieldsUtil.assign(imSessionDo, imSessionRecord);
         imSessionRecord.update();
     }
 
@@ -59,10 +59,23 @@ public class ImSessionDao extends ShopBaseDao {
         List<ImSessionRecord> imSessionRecords = new ArrayList<>();
         for (ImSessionDo imSessionDo : imSessionDos) {
             ImSessionRecord imSessionRecord = new ImSessionRecord();
-            FieldsUtil.assign(imSessionDo,imSessionRecord);
+            FieldsUtil.assign(imSessionDo, imSessionRecord);
             imSessionRecords.add(imSessionRecord);
         }
         db().batchUpdate(imSessionRecords).execute();
+    }
+
+    /**
+     * 找相关的end状态会话信息
+     * @param doctorId
+     * @param userId
+     * @param patientId
+     * @return
+     */
+    public ImSessionDo getByAllInfo(Integer doctorId, Integer userId, Integer patientId) {
+        return db().selectFrom(IM_SESSION)
+            .where(IM_SESSION.DOCTOR_ID.eq(doctorId).and(IM_SESSION.USER_ID.eq(userId)).and(IM_SESSION.PATIENT_ID.eq(patientId)).and(IM_SESSION.SESSION_STATUS.eq(ImSessionConstant.SESSION_END)))
+            .fetchAnyInto(ImSessionDo.class);
     }
 
     /**
@@ -89,23 +102,23 @@ public class ImSessionDao extends ShopBaseDao {
      * 关闭会话session
      * @param imSessionId
      */
-    public void updateSessionStatus(Integer imSessionId,Byte status,Byte weightFactor) {
+    public void updateSessionStatus(Integer imSessionId, Byte status, Byte weightFactor) {
         db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS, status)
-            .set(IM_SESSION.WEIGHT_FACTOR,weightFactor)
+            .set(IM_SESSION.WEIGHT_FACTOR, weightFactor)
             .where(IM_SESSION.ID.eq(imSessionId))
             .execute();
     }
 
 
     public void batchUpdateSessionEvaluateStatus(List<Integer> imSessionIds, Byte status) {
-        db().update(IM_SESSION).set(IM_SESSION.EVALUATE_STATUS,status)
+        db().update(IM_SESSION).set(IM_SESSION.EVALUATE_STATUS, status)
             .where(IM_SESSION.ID.in(imSessionIds))
             .execute();
     }
 
-    public void batchUpdateSessionEvaluateStatus(List<Integer> imSessionIds, Byte newStatus,Byte oldStatus) {
+    public void batchUpdateSessionEvaluateStatus(List<Integer> imSessionIds, Byte newStatus, Byte oldStatus) {
         db().update(IM_SESSION)
-            .set(IM_SESSION.EVALUATE_STATUS,newStatus)
+            .set(IM_SESSION.EVALUATE_STATUS, newStatus)
             .where(IM_SESSION.ID.in(imSessionIds).and(IM_SESSION.EVALUATE_STATUS.eq(oldStatus)))
             .execute();
     }
@@ -113,11 +126,11 @@ public class ImSessionDao extends ShopBaseDao {
     /**
      * 批量更新状态
      * @param imSessionIds 会话ids
-     * @param status 状态
+     * @param status       状态
      */
-    public void batchUpdateSessionStatus(List<Integer> imSessionIds, Byte status,Byte weightFactor) {
-        db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS,status)
-            .set(IM_SESSION.WEIGHT_FACTOR,weightFactor)
+    public void batchUpdateSessionStatus(List<Integer> imSessionIds, Byte status, Byte weightFactor) {
+        db().update(IM_SESSION).set(IM_SESSION.SESSION_STATUS, status)
+            .set(IM_SESSION.WEIGHT_FACTOR, weightFactor)
             .where(IM_SESSION.ID.in(imSessionIds))
             .execute();
     }
@@ -136,12 +149,12 @@ public class ImSessionDao extends ShopBaseDao {
             condition = condition.and(IM_SESSION.SESSION_STATUS.in(pageListParam.getSessionStatus()));
         }
         if (pageListParam.getUserId() != null) {
-            condition =condition.and(IM_SESSION.USER_ID.eq(pageListParam.getUserId()));
+            condition = condition.and(IM_SESSION.USER_ID.eq(pageListParam.getUserId()));
         }
 
         SelectSeekStep2<ImSessionRecord, Byte, Timestamp> select = db().selectFrom(IM_SESSION).where(condition)
             .orderBy(IM_SESSION.WEIGHT_FACTOR.desc(), IM_SESSION.UPDATE_TIME.desc());
-        return getPageResult(select,pageListParam.getCurrentPage(),pageListParam.getPageRows(),ImSessionListVo.class);
+        return getPageResult(select, pageListParam.getCurrentPage(), pageListParam.getPageRows(), ImSessionListVo.class);
     }
 
     /**
@@ -170,10 +183,10 @@ public class ImSessionDao extends ShopBaseDao {
      * @param imSessionCondition 会话过滤条件
      * @return 会话列表
      */
-    public List<ImSessionDo> listImSession(ImSessionCondition imSessionCondition){
+    public List<ImSessionDo> listImSession(ImSessionCondition imSessionCondition) {
         Condition condition = IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
         if (imSessionCondition.getStatus() != null) {
-            condition =condition.and(IM_SESSION.SESSION_STATUS.eq(imSessionCondition.getStatus()));
+            condition = condition.and(IM_SESSION.SESSION_STATUS.eq(imSessionCondition.getStatus()));
         }
 
         if (imSessionCondition.getLessCreateTime() != null) {
@@ -214,7 +227,7 @@ public class ImSessionDao extends ShopBaseDao {
      * @param doctorId 医师id
      * @return 平均响应时间 秒
      */
-    public Integer getSessionReadyToOnAckAvgTime(Integer doctorId){
+    public Integer getSessionReadyToOnAckAvgTime(Integer doctorId) {
         Record1<BigDecimal> bigDecimalRecord1 = db().select(DSL.avg(IM_SESSION.READY_TO_ON_AKC_TIME)).from(IM_SESSION)
             .where(IM_SESSION.DOCTOR_ID.eq(doctorId)
                 .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_READY_TO_START, ImSessionConstant.SESSION_CANCEL)))
@@ -223,13 +236,13 @@ public class ImSessionDao extends ShopBaseDao {
             return null;
         }
         BigDecimal bigDecimal = bigDecimalRecord1.get(0, BigDecimal.class);
-        return  bigDecimal.intValue();
+        return bigDecimal.intValue();
     }
 
     public Integer getSessionCount(Integer doctorId) {
         return db().fetchCount(IM_SESSION, IM_SESSION.DOCTOR_ID.eq(doctorId)
             .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
-            .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_CANCEL)));
+            .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS, ImSessionConstant.SESSION_EVALUATE_CAN_STATUS, ImSessionConstant.SESSION_CANCEL)));
     }
 
     public BigDecimal getSessionTotalMoney(Integer doctorId) {
@@ -237,7 +250,7 @@ public class ImSessionDao extends ShopBaseDao {
             .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.ORDER_SN.eq(IM_SESSION.ORDER_SN))
             .where(IM_SESSION.DOCTOR_ID.eq(doctorId))
             .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
-            .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_CANCEL))
+            .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS, ImSessionConstant.SESSION_EVALUATE_CAN_STATUS, ImSessionConstant.SESSION_CANCEL))
             .fetchAnyInto(BigDecimal.class);
     }
 }

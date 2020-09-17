@@ -35,6 +35,10 @@ public class MiniShop_471752 extends SchemaImpl {
      */
     public final DoctorLoginLog DOCTOR_LOGIN_LOG = com.vpu.mp.db.shop.tables.DoctorLoginLog.DOCTOR_LOGIN_LOG;
     /**
+     * 用户收藏药品记录
+     */
+    public final UserCollectionAction USER_COLLECTION_ACTION = com.vpu.mp.db.shop.tables.UserCollectionAction.USER_COLLECTION_ACTION;
+    /**
      * 埋点
      */
     public final AnchorPoints ANCHOR_POINTS = com.vpu.mp.db.shop.tables.AnchorPoints.ANCHOR_POINTS;
@@ -1404,7 +1408,8 @@ public class MiniShop_471752 extends SchemaImpl {
             StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND,
             DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND,
             DoctorSummaryTrend.DOCTOR_SUMMARY_TREND,
-            DoctorLoginLog.DOCTOR_LOGIN_LOG);
+            DoctorLoginLog.DOCTOR_LOGIN_LOG,
+            UserCollectionAction.USER_COLLECTION_ACTION);
 
 
     }

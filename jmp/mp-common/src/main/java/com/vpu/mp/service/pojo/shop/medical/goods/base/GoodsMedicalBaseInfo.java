@@ -15,6 +15,7 @@ public class GoodsMedicalBaseInfo {
     private String goodsAliasName;
     private String goodsQualityRatio;
     private Byte isRx;
+    private Byte medicalType;
     private Byte insuranceFlag;
     private String insuranceCode;
     private String insuranceDatabaseName;
@@ -23,21 +24,9 @@ public class GoodsMedicalBaseInfo {
     private Double goodsUnitConvertFactor;
     private Double goodsEquivalentQuantity;
     private String goodsEquivalentUnit;
-    private String goodsComposition;
-    private String goodsCharacters;
-    private String goodsFunction;
-    private String goodsUseMethod;
-    private String goodsAdverseReaction;
-    private String goodsTaboos;
-    private String goodsNoticeEvent;
-    private String goodsInteraction;
-    private String goodsStoreMethod;
-    private String goodsPackageMethod;
-    private String goodsValidTime;
     private String goodsApprovalNumber;
     private String goodsProductionEnterprise;
-    private Byte    goodsLimitDuty;
-    private Byte    goodsLimitAntibacterial;
+    private String goodsMedicalInstruction;
 
     /**我方程序计算生产的字段*/
     /**名称+规格系数+药企组成的唯一值*/

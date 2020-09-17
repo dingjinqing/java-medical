@@ -568,6 +568,7 @@ public class Indexes {
     public static final Index DOCTOR_SUMMARY_TREND_PRIMARY = Indexes0.DOCTOR_SUMMARY_TREND_PRIMARY;
     public static final Index DOCTOR_SUMMARY_TREND_REF_TYPE = Indexes0.DOCTOR_SUMMARY_TREND_REF_TYPE;
     public static final Index DOCTOR_LOGIN_LOG_PRIMARY = Indexes0.DOCTOR_LOGIN_LOG_PRIMARY;
+    public static final Index USER_COLLECTION_ACTION_PRIMARY = Indexes0.USER_COLLECTION_ACTION_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -1114,6 +1115,7 @@ public class Indexes {
         public static Index DOCTOR_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", DoctorSummaryTrend.DOCTOR_SUMMARY_TREND, new OrderField[] { DoctorSummaryTrend.DOCTOR_SUMMARY_TREND.ID }, true);
         public static Index DOCTOR_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", DoctorSummaryTrend.DOCTOR_SUMMARY_TREND, new OrderField[] { DoctorSummaryTrend.DOCTOR_SUMMARY_TREND.REF_DATE, DoctorSummaryTrend.DOCTOR_SUMMARY_TREND.TYPE }, false);
         public static Index DOCTOR_LOGIN_LOG_PRIMARY = Internal.createIndex("PRIMARY", DoctorLoginLog.DOCTOR_LOGIN_LOG, new OrderField[] { DoctorLoginLog.DOCTOR_LOGIN_LOG.ID }, true);
+        public static Index USER_COLLECTION_ACTION_PRIMARY = Internal.createIndex("PRIMARY", UserCollectionAction.USER_COLLECTION_ACTION, new OrderField[] { UserCollectionAction.USER_COLLECTION_ACTION.ID }, true);
     }
 
 }
