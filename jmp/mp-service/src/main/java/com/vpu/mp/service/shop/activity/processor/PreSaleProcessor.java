@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.beust.jcommander.internal.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -32,6 +34,8 @@ import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.jooq.Record3;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +53,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
 
 /**
  * 预售
@@ -164,6 +169,24 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         PreSaleVo activityInfo = preSaleProcessorDao.getDetail(param.getActivityId());
         preSaleProcessorDao.orderCheck(param, activityInfo);
         preSaleProcessorDao.orderInit(param, activityInfo);
+        //检测预售
+        for (OrderBeforeParam.Goods temp : param.getGoods()) {// key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE
+            Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(Lists.newArrayList(temp.getGoodsId()), DateUtils.getLocalDateTime());
+            if (MapUtils.isNotEmpty(goodsPreSaleListInfo)) {
+                //当前商品对应的预售信息
+                List<Record3<Integer, Integer, BigDecimal>> preSaleInfos = goodsPreSaleListInfo.get(temp.getGoodsId());
+                if (CollectionUtils.isNotEmpty(preSaleInfos)) {
+                    for (Record3<Integer, Integer, BigDecimal> info : preSaleInfos) {
+                        PreSaleVo detail = preSaleProcessorDao.getDetail(info.get(1, Integer.class));
+                        if (detail.getBuyType().equals(NO)) {
+                            throw new MpException(JsonResultCode.CODE_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY, "为预售商品，不支持现购", temp.getGoodsInfo().getGoodsName());
+                        }
+                    }
+                }
+
+            }
+        }
+
     }
 
 

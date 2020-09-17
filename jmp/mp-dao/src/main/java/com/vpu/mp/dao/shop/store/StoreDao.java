@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.store;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
@@ -83,6 +84,9 @@ public class StoreDao extends ShopBaseDao {
         }
         if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
             select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
+        }
+        if (deliveryType == OrderConstant.STORE_EXPRESS) {
+            select.and(STORE.STORE_EXPRESS.eq(BaseConstant.YES));
         }
         select.limit(15);
         return select.fetchInto(StoreDo.class);

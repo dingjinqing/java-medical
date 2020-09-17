@@ -6,7 +6,6 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
-import com.vpu.mp.db.shop.tables.StoreGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
@@ -158,7 +157,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private String prescriptionCode;
 
     /**
-	 * 商品参数
+	 * 商品参数计算使用
 	 * @author 王帅
 	 *
 	 */
