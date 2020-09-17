@@ -730,55 +730,55 @@ const cn = {
     right_count_2: '应付总额：0元',
     right_submit: '提交订单',
     saveText: '保存',
-    topTitleList: [{
-      title: '配色1',
-      colorLeft: 'background: #ff6666;',
-      colorRight: 'background: #fee7e7',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色2',
-      colorLeft: 'background: #e53e24;',
-      colorRight: 'background: #f2ad3c',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色3',
-      colorLeft: 'background: #7e56c5;',
-      colorRight: 'background: #333333',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色4',
-      colorLeft: 'background: #09bb07;',
-      colorRight: 'background: #333333',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色5',
-      colorLeft: 'background: #4a90e2;',
-      colorRight: 'background: #dbe9f9',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '配色6',
-      colorLeft: 'background: #feb609;',
-      colorRight: 'background: #333333',
-      id: '',
-      choiseId: ''
-    },
-    {
-      title: '自定义',
-      colorLeft: 'background: #fff;',
-      colorRight: 'background: #fff',
-      id: 6,
-      choiseId: ''
-    }
+    topTitleList: [
+      {
+        title: '配色1',
+        colorLeft: 'background: #26C4BC;',
+        colorRight: 'background:#FF9F15',
+        id: '',
+        choiseId: ''
+      }, {
+        title: '配色2',
+        colorLeft: 'background: #ff6666;',
+        colorRight: 'background: #fee7e7',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色3',
+        colorLeft: 'background: #e53e24;',
+        colorRight: 'background: #f2ad3c',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色4',
+        colorLeft: 'background: #7e56c5;',
+        colorRight: 'background: #333333',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色5',
+        colorLeft: 'background: #09bb07;',
+        colorRight: 'background: #333333',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '配色6',
+        colorLeft: 'background: #4a90e2;',
+        colorRight: 'background: #dbe9f9',
+        id: '',
+        choiseId: ''
+      },
+      {
+        title: '自定义',
+        colorLeft: 'background: #fff;',
+        colorRight: 'background: #fff',
+        id: 6,
+        choiseId: ''
+      }
     ]
   },
   router, // 路由信息

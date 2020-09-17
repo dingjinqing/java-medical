@@ -9,7 +9,11 @@ import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import static com.vpu.mp.db.shop.tables.OrderAction.ORDER_ACTION;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 ;
 
@@ -72,4 +76,33 @@ public class OrderActionService extends ShopBaseService{
         }
 		record.insert();
 	}
+
+    /**
+     * 数量单数
+     * @param userId
+     * @param orderStatus
+     * @return
+     */
+	public Integer getCountNumByUserIdOrderStatus(Integer userId, Byte orderStatus, Integer storesId){
+	    return db().selectCount().from(TABLE)
+            .leftJoin(ORDER_INFO).on(TABLE.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+            .where(TABLE.USER_ID.eq(userId)).and(TABLE.ORDER_STATUS.eq(orderStatus))
+            .and(ORDER_INFO.STORE_ID.eq(storesId))
+            .fetchAnyInto(Integer.class);
+    }
+    /**
+     * 时间查询数量单数
+     * @param userId
+     * @param orderStatus
+     * @return
+     */
+    public Integer getCountNumByUserIdOrderStatusAndTime(Integer userId, Byte orderStatus, List<Integer> storesIds, Timestamp startTime,Timestamp endTime){
+        return db().selectCount().from(TABLE)
+            .leftJoin(ORDER_INFO).on(TABLE.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+            .where(TABLE.USER_ID.eq(userId)).and(TABLE.ORDER_STATUS.eq(orderStatus))
+            .and(ORDER_INFO.STORE_ID.in(storesIds))
+            .and(ORDER_INFO.CREATE_TIME.ge(startTime))
+            .and(ORDER_INFO.CREATE_TIME.le(endTime))
+            .fetchAnyInto(Integer.class);
+    }
 }
