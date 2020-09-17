@@ -423,19 +423,19 @@
                       </span>
                       <span class="paymentType"
                         >{{ $t('order.paymentType') }}：
-                        <el-tooltip
+                        <!-- <el-tooltip
                           v-for="(payCode, index) in oneOrder.payCodeList"
                           :key="index"
                           class="item"
                           effect="light"
-                          :content="paymentTypeMap.get(payCode)"
+                          :content="paymentTypeMap[payCode]"
                           placement="top-start"
                         >
                           <img
                             :src="payCodeIconClassMap[payCode]"
                             :alt="paymentTypeMap[payCode]"
                           />
-                        </el-tooltip>
+                        </el-tooltip> -->
                       </span>
                       <span
                         >{{ $t('order.deliverTypeText') }}：{{
@@ -1063,7 +1063,8 @@ export default {
       this.showOrderStatusMap = new Map(this.$t('order.showOrderStatus'))
       this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
       this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
-      this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
+      // this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
+      // console.log(this.paymentTypeMap)
       this.returnStatusToShowMapping = {
         '1': this.$t('order.returnStatusMapping_1'),
         '2': this.$t('order.returnStatusList')[3][1],
