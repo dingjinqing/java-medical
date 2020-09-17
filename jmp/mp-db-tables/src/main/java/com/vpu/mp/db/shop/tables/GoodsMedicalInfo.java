@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
 
-    private static final long serialVersionUID = 367917406;
+    private static final long serialVersionUID = 57666658;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_medical_info</code>
@@ -80,6 +80,11 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
      * The column <code>mini_shop_471752.b2c_goods_medical_info.is_rx</code>. 是否处方药 0否 1是 默认0
      */
     public final TableField<GoodsMedicalInfoRecord, Byte> IS_RX = createField("is_rx", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否处方药 0否 1是 默认0");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_medical_info.medical_type</code>. null 未知  1西药 2中成药 3中草药
+     */
+    public final TableField<GoodsMedicalInfoRecord, Byte> MEDICAL_TYPE = createField("medical_type", org.jooq.impl.SQLDataType.TINYINT, this, "null 未知  1西药 2中成药 3中草药");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_medical_info.insurance_flag</code>. 医保类型 1:甲 2:乙 3:丙 4:科研
