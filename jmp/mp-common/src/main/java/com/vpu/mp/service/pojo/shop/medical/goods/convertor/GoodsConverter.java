@@ -71,6 +71,7 @@ public class GoodsConverter {
         GoodsDo goodsDo = new GoodsDo();
         goodsDo.setGoodsId(bo.getGoodsId());
         goodsDo.setStoreStatus(bo.getStoreStatus());
+        goodsDo.setMarketPrice(bo.getStorePrice());
         if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
             goodsDo.setDelFlag(DelFlag.DISABLE_VALUE);
         }

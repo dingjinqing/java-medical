@@ -27,7 +27,9 @@ public class  GoodsBaseMp {
     protected Integer goodsNumber;
     private Byte isMedical;
     private Byte isRx;
+    private String goodsMedicalInstruction;
     //************ElasticSearch中的数据**************end
+
 
     @Override
     public String toString() {
@@ -38,6 +40,9 @@ public class  GoodsBaseMp {
             ", goodsSaleNum=" + goodsSaleNum +
             ", defaultPrd=" + defaultPrd +
             ", goodsNumber=" + goodsNumber +
+            ", isMedical=" + isMedical +
+            ", isRx=" + isRx +
+            ", goodsMedicalInstruction='" + goodsMedicalInstruction + '\'' +
             '}';
     }
 }

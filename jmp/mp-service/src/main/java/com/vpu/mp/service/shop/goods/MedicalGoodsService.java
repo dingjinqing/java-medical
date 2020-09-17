@@ -638,6 +638,8 @@ public class MedicalGoodsService extends ShopBaseService {
                 Integer goodsId = goodsMedicalKeyToGoodsId.get(key);
                 // 转换为药房商品自身状态字段
 //                externalStoreRequestItemBo.setStoreStatus(externalStoreRequestItemBo.getState() == null ? null : externalStoreRequestItemBo.getState().byteValue());
+
+                externalStoreRequestItemBo.setStorePrice(externalStoreRequestItemBo.getGoodsPrice());
                 if (goodsId == null) {
                     // 肯定是医院没有，而药房存在的药品，如果是新增的药品，则来源设置为药房，对于修改不处理来源字段（保持之前的状态）
                     externalStoreRequestItemBo.setSource(MedicalGoodsConstant.SOURCE_FROM_STORE);
@@ -679,7 +681,7 @@ public class MedicalGoodsService extends ShopBaseService {
         storeGoods.setGoodsQualityRatio(bo.getGoodsQualityRatio());
         storeGoods.setGoodsApprovalNumber(bo.getGoodsApprovalNumber());
         storeGoods.setGoodsProductionEnterprise(bo.getGoodsProductionEnterprise());
-        storeGoods.setIsOnSale(MedicalGoodsConstant.OFF_SALE);
+        storeGoods.setIsOnSale(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.equals(bo.getState())?MedicalGoodsConstant.ON_SALE:MedicalGoodsConstant.OFF_SALE);
         storeGoods.setGoodsStoreSn(bo.getGoodsCode());
         storeGoods.setProductNumber(bo.getGoodsNumber());
         storeGoods.setProductPrice(bo.getGoodsPrice());
