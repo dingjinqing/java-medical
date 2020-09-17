@@ -7,3 +7,6 @@ create table `b2c_user_collection_action`(
     `update_time`   timestamp    not null default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key(`id`)
 )comment ='用户收藏药品记录';
+
+
+ALTER TABLE b2c_goods_medical_info add COLUMN medical_type TINYINT(1) COMMENT 'null 未知  1西药 2中成药 3中草药' AFTER is_rx;
