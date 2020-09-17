@@ -219,6 +219,8 @@ export default {
             this.colorRight = RightColor
             console.log(leftColor, RightColor)
             // 配色选项初始化
+            leftColor = this.rgb2hex(leftColor)
+            RightColor = this.rgb2hex(RightColor)
             this.defaultColorleft = leftColor
             this.defaultColorright = RightColor
             this.colorLeft_color = 'color:' + leftColor
@@ -321,7 +323,7 @@ export default {
       this.colorLeft = 'background:' + this.ToRgba(this.colorLeft_, 0.2) + ';color:' + this.colorLeft_ + ';border:1px solid ' + this.ToRgba(this.colorLeft_, 0.4)
       this.middleLeft = 'color:' + this.colorLeft_ + ';border: 1px solid' + this.ToRgba(this.colorLeft_, 0.4)
       this.rightBorder = 'border-bottom: 1px solid ' + this.ToRgba(this.colorLeft_, 0.4) + '; color:' + this.colorLeft_
-      this.btnRight_background = 'background:' + this.colorLeft_
+      this.btnRight_background = 'background:' + this.ToRgba(this.colorLeft_, 1)
       // 自定义颜色存储
       this.custom_colorLeft_color = this.colorLeft_color
       this.custom_colorLeft = this.colorLeft
@@ -336,7 +338,7 @@ export default {
     headleChangeColorRight () {
       console.log(this.colorRight)
       if (!this.colorRight) return
-      this.btnLeft_background = 'background:' + this.colorRight
+      this.btnLeft_background = 'background:' + this.ToRgba(this.colorRight, 1)
       this.custom_btnLeft_background = this.btnLeft_background
       this.choiseId = 6
     },
@@ -366,8 +368,8 @@ export default {
     },
     // 保存
     saveShopStyle () {
-      let saveLeftColor = this.btnLeft_background.split(':')[1]
-      let saveRightColor = this.btnRight_background.split(':')[1]
+      let saveLeftColor = this.btnRight_background.split(':')[1]
+      let saveRightColor = this.btnLeft_background.split(':')[1]
       console.log(saveLeftColor, saveRightColor)
       if (!saveLeftColor || !saveRightColor) {
         this.$message.error({
@@ -394,6 +396,17 @@ export default {
       }).catch(() => {
         this.$message.error('保存失败')
       })
+    },
+    zero_fill_hex (num, digits) {
+      var s = num.toString(16)
+      if (s.length < digits) s = '0' + s
+      return s
+    },
+    rgb2hex (rgb) {
+      if (rgb.charAt(0) === '#') return rgb
+      var ds = rgb.split(/\D+/)
+      var decimal = Number(ds[1]) * 65536 + Number(ds[2]) * 256 + Number(ds[3])
+      return '#' + this.zero_fill_hex(decimal, 6)
     }
   }
 }
