@@ -203,7 +203,8 @@ public class DoctorDao extends ShopBaseDao {
     public DoctorDo doctorAuth(DoctorAuthParam doctorAuthParam) {
         return db().select().from(DOCTOR)
             .where(DOCTOR.NAME.eq(doctorAuthParam.getDoctorName()))
-            .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile()))
+            // 不校验手机号 2020-9-16
+//            .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile()))
             .and(DOCTOR.HOSPITAL_CODE.eq(doctorAuthParam.getHospitalCode()))
             .fetchAnyInto(DoctorDo.class);
     }
@@ -213,8 +214,9 @@ public class DoctorDao extends ShopBaseDao {
      * @param doctorDo 当前用户
      * @return int
      */
-    public int updateUserId(DoctorDo doctorDo){
+    public int updateUserId(DoctorDo doctorDo, String mobile){
         return db().update(DOCTOR).set(DOCTOR.USER_ID, doctorDo.getUserId())
+            .set(DOCTOR.MOBILE, mobile)
             .where(DOCTOR.NAME.eq(doctorDo.getName())
                 .and(DOCTOR.MOBILE.eq(doctorDo.getMobile()))).execute();
     }

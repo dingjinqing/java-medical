@@ -309,7 +309,8 @@ public class DoctorService extends ShopBaseService {
                 userDao.updateDoctorAuth(doctorAuthParam.getUserId());
                 // 修改doctor表中userId为当前用户
                 doctorDo.setUserId(doctorAuthParam.getUserId());
-                doctorDao.updateUserId(doctorDo);
+                // 修改医师表用户id为当前验证用户，修改医师手机号为用户验证时填写手机号
+                doctorDao.updateUserId(doctorDo, doctorAuthParam.getMobile());
             });
             return doctorDo.getId();
         } else {
