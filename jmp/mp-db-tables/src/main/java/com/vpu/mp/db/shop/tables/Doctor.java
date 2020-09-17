@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Doctor extends TableImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = 1687019236;
+    private static final long serialVersionUID = -1355695510;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor</code>
@@ -203,6 +203,11 @@ public class Doctor extends TableImpl<DoctorRecord> {
      * The column <code>mini_shop_471752.b2c_doctor.user_token</code>. 医师关联用户token
      */
     public final TableField<DoctorRecord, String> USER_TOKEN = createField("user_token", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医师关联用户token");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor.auth_time</code>. 认证时间
+     */
+    public final TableField<DoctorRecord, Timestamp> AUTH_TIME = createField("auth_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "认证时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor.consultation_total_money</code>. 咨询总金额

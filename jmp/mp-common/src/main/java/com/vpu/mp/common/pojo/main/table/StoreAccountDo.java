@@ -42,5 +42,7 @@ public class StoreAccountDo implements Serializable {
     private String    userToken;
     private String    officialOpenId;
     private Byte      isBind;
-    private Integer   pharmacistId;
+    private Byte      isPharmacist;
+    private String    signature;
+    private Timestamp authTime;
 }

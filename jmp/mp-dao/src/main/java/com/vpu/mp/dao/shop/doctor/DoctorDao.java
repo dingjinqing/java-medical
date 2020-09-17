@@ -2,6 +2,7 @@ package com.vpu.mp.dao.shop.doctor;
 
 import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
@@ -17,6 +18,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -231,6 +233,7 @@ public class DoctorDao extends ShopBaseDao {
     public int updateUserId(DoctorDo doctorDo, String mobile){
         return db().update(DOCTOR).set(DOCTOR.USER_ID, doctorDo.getUserId())
             .set(DOCTOR.MOBILE, mobile)
+            .set(DOCTOR.AUTH_TIME, DateUtils.getLocalDateTime())
             .where(DOCTOR.NAME.eq(doctorDo.getName())
                 .and(DOCTOR.MOBILE.eq(doctorDo.getMobile()))).execute();
     }
@@ -403,6 +406,7 @@ public class DoctorDao extends ShopBaseDao {
      */
     public void unbundlingDoctorToken(Integer doctorId) {
         db().update(DOCTOR).set(DOCTOR.USER_TOKEN, "")
+            .set(DOCTOR.AUTH_TIME, Timestamp.valueOf(DateUtils.DATE_FORMAT_ZERO))
             .where(DOCTOR.ID.eq(doctorId)).execute();
     }
 

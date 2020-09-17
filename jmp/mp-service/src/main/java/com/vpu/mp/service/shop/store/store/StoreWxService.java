@@ -558,20 +558,14 @@ public class StoreWxService extends ShopBaseService {
             Byte userType=AuthConstant.AUTH_TYPE_STORE_ACCOUNT_USER;
             if(param.getIsPharmacist().equals((byte)1)){
                 //是否药师
-                int pharmacistId=savePharmacist(storeAccountVo,param);
-                storeAccountDao.updatePharmacistId(storeAccountVo.getAccountId(),pharmacistId);
+                storeAccountDao.updateSignature(storeAccountVo.getAccountId(),param.getSignature());
             }
             userDao.updateUserType(param.getUserId(), userType);
             storeAccountDao.updateUserId(storeAccountVo.getAccountId(),param.getUserId());
         });
         return storeAccountVo.getAccountId();
     }
-    public int savePharmacist(StoreAccountVo storeAccountVo, StoreClerkAuthParam param){
-        PharmacistDo pharmacistDo=new PharmacistDo();
-        pharmacistDo.setMobile(storeAccountVo.getMobile());
-        pharmacistDo.setSignature(param.getSignature());
-        return pharmacistDao.savePharmacist(pharmacistDo);
-    }
+
     /**
      * 短信验证码校验
      * @return

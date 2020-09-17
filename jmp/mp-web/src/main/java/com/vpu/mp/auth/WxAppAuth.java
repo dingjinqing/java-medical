@@ -207,7 +207,6 @@ public class WxAppAuth {
         }else if(AUTH_TYPE_STORE_ACCOUNT_USER.equals(userType)){
             StoreAccountVo storeAccountVo=storeAccountDao.getByUserId(userRecord.getUserId());
             wxAppSessionUser.setStoreAccountId(storeAccountVo.getAccountId());
-            wxAppSessionUser.setPharmacistId(storeAccountVo.getPharmacistId());
             if(storeAccountVo.getStatus()==0){
                 wxAppSessionUser.setStoreAccountId( STATUS_DISABLE);
             }
@@ -259,7 +258,6 @@ public class WxAppAuth {
                 //门店用户
                 wxAppSessionUser.setUserType(AUTH_TYPE_STORE_ACCOUNT_USER);
                 wxAppSessionUser.setStoreAccountId(accountId);
-                wxAppSessionUser.setPharmacistId(storeAccountVo.getPharmacistId());
                 jedis.set(getToken(), Util.toJson(wxAppSessionUser));
                 storeAccountDao.updateUserToken(storeAccountVo.getAccountId(),getToken());
             }

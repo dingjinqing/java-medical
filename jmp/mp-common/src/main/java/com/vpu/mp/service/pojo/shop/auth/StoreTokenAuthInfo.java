@@ -40,4 +40,9 @@ public class StoreTokenAuthInfo {
      */
     public Byte accountType;
     public StoreAuthInfoVo storeAuthInfoVo;
+    /**
+     * 小程序信息
+     */
+    public String qrcodeUrl;
+    public String nickName;
 }
