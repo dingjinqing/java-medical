@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.UserCollectionRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.collection.*;
+import com.vpu.mp.service.shop.goods.UserCollectionActionService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.jooq.Record;
@@ -24,11 +25,16 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Service
 public class CollectService extends ShopBaseService{
-	@Autowired
+    public static final Byte COLLECTION_TYPE = 1;
+    public static final Byte COLLECTION_CANCEL_TYPE = -1;
+    @Autowired
     ImageService imageService;
 
 	@Autowired
     GoodsMpService goodsMpService;
+
+	@Autowired
+	UserCollectionActionService userCollectionActionService;
 	/**
 	 * 商品收藏列表
 	 * @param param
@@ -73,7 +79,7 @@ public class CollectService extends ShopBaseService{
 		}
 		return lists;
 	}
-	
+
 	/**
 	 * 取消收藏
 	 * @param param
@@ -110,6 +116,9 @@ public class CollectService extends ShopBaseService{
      */
     public void cancelCollection(AddAndCancelCollectionParam param, Integer userId) {
         transaction(()->{
+            if (!isCollectedDao(userId, param.getGoodsId())) {
+                return;
+            }
             int i = deleteCollectionDao(param.getGoodsId(), userId);
             if (i > 0) {
                 GoodsRecord goodsInfo = goodsMpService.getGoodsCollectionInfoDao(param.getGoodsId());
@@ -144,10 +153,12 @@ public class CollectService extends ShopBaseService{
     private void addCollectionDao(Integer goodsId,BigDecimal shopPrice,Integer userId,String userName) {
         UserCollectionRecord userCollectionRecord = db().newRecord(USER_COLLECTION);
         userCollectionRecord.setGoodsId(goodsId);
+
         userCollectionRecord.setCollectPrice(shopPrice);
         userCollectionRecord.setUserId(userId);
         userCollectionRecord.setUsername(userName);
         userCollectionRecord.insert();
+        userCollectionActionService.insertRecord(userId,goodsId,COLLECTION_TYPE);
     }
 
     /**
@@ -157,6 +168,7 @@ public class CollectService extends ShopBaseService{
      * @return 受影响行数
      */
     private int deleteCollectionDao(Integer goodsId, Integer userId) {
+        userCollectionActionService.insertRecord(userId,goodsId,COLLECTION_CANCEL_TYPE);
        return db().delete(USER_COLLECTION).where(USER_COLLECTION.GOODS_ID.eq(goodsId).and(USER_COLLECTION.USER_ID.eq(userId))).execute();
     }
 }
