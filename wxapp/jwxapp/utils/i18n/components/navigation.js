@@ -148,6 +148,8 @@ module.exports = {
     "serviceWithdraw":"服务提现",
     "withdrawInfo":"提现详情",
     "doctorWidthdrawRecord":'医师返利记录',
-    "doctorWithdraw":'返利提现'
+    "doctorWithdraw":'返利提现',
+    "clerkOrderList":'订单列表',
+    "clerkMap":'地址'
   }
 }

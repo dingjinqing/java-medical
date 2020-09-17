@@ -1,0 +1,113 @@
+<view class="body">
+  <include src="/pages/common/header.wxml"/>
+  <view class="main-container">
+    <view class="filter">
+      <view class="filter-item active">
+        <text>待处理</text>
+      </view>
+      <view class="filter-item">
+        <text>已完成</text>
+      </view>
+    </view>
+    <view class="card-item">
+      <view class="order-sn">
+        订单编号：P202009141643170527
+      </view>
+      <view class="consignee-info">
+        <view class="consignee-name" bindtap="call"><text>收货人手机号：13788746472</text><image src="{{imageUrl}}image/wxapp/clerk_phone.png"></image></view>
+        <view class="consignee-address" bindtap="viewMap"><text>收货地址：北京市海淀区伊泰大厦</text><image src="{{imageUrl}}image/wxapp/clerk_position.png"></image></view>
+      </view>
+      <view class="goods-content">
+        <view class="goods-item">
+          <image src="http://medicaldevimg.weipubao.cn//image/wxapp/go_back_home.png" class="goods-image"></image>
+          <view class="goods-info">
+            <view class="goods-name">敖东安神补脑液口服液10支治多梦神 经衰弱安眠药失眠中药调理安神</view>
+            <view class="goods-price">
+              <view class="price">￥23.00</view>
+              <view class="num">X1</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="button-content">
+        <view class="deliver">发货</view>
+        <view class="return">退款</view>
+      </view>
+    </view>
+    <view class="card-item">
+      <view class="order-sn">
+        订单编号：P202009141643170527
+      </view>
+      <view class="consignee-info">
+        <view class="consignee-name"><text>收货人手机号：13788746472</text></view>
+        <view class="consignee-address"><text>收货地址：北京市海淀区伊泰大厦</text></view>
+      </view>
+      <view class="goods-content">
+        <view class="goods-item">
+          <image src="http://medicaldevimg.weipubao.cn//image/wxapp/go_back_home.png" class="goods-image"></image>
+          <view class="goods-info">
+            <view class="goods-name">敖东安神补脑液口服液10支治多梦神 经衰弱安眠药失眠中药调理安神</view>
+            <view class="goods-price">
+              <view class="price">￥23.00</view>
+              <view class="num">X1</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="button-content">
+        <view class="deliver">发货</view>
+        <view class="return">退款</view>
+      </view>
+    </view>
+    <view class="card-item">
+      <view class="order-sn">
+        订单编号：P202009141643170527
+      </view>
+      <view class="consignee-info">
+        <view class="consignee-name"><text>收货人手机号：13788746472</text></view>
+        <view class="consignee-address"><text>收货地址：北京市海淀区伊泰大厦</text> <image src=""></image></view>
+      </view>
+      <view class="goods-content">
+        <view class="goods-item">
+          <image src="http://medicaldevimg.weipubao.cn//image/wxapp/go_back_home.png" class="goods-image"></image>
+          <view class="goods-info">
+            <view class="goods-name">敖东安神补脑液口服液10支治多梦神 经衰弱安眠药失眠中药调理安神</view>
+            <view class="goods-price">
+              <view class="price">￥23.00</view>
+              <view class="num">X1</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="button-content">
+        <view class="deliver">发货</view>
+        <view class="return">退款</view>
+      </view>
+    </view>
+    <view class="card-item">
+      <view class="order-sn">
+        订单编号：P202009141643170527
+      </view>
+      <view class="consignee-info">
+        <view class="consignee-name"><text>收货人手机号：13788746472</text></view>
+        <view class="consignee-address"><text>收货地址：北京市海淀区伊泰大厦</text></view>
+      </view>
+      <view class="goods-content">
+        <view class="goods-item">
+          <image src="http://medicaldevimg.weipubao.cn//image/wxapp/go_back_home.png" class="goods-image"></image>
+          <view class="goods-info">
+            <view class="goods-name">敖东安神补脑液口服液10支治多梦神 经衰弱安眠药失眠中药调理安神</view>
+            <view class="goods-price">
+              <view class="price">￥23.00</view>
+              <view class="num">X1</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="button-content">
+        <view class="deliver">发货</view>
+        <view class="return">退款</view>
+      </view>
+    </view>
+  </view>
+</view>
