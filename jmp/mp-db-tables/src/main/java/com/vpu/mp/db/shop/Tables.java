@@ -1247,4 +1247,8 @@ public class Tables {
      * 医师登录记录
      */
     public static final DoctorLoginLog DOCTOR_LOGIN_LOG = com.vpu.mp.db.shop.tables.DoctorLoginLog.DOCTOR_LOGIN_LOG;
+    /**
+     * 用户收藏药品记录
+     */
+    public static final UserCollectionAction USER_COLLECTION_ACTION = com.vpu.mp.db.shop.tables.UserCollectionAction.USER_COLLECTION_ACTION;
 }

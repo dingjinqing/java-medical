@@ -313,6 +313,8 @@ public class Keys {
     public static final Identity<DepartmentSummaryTrendRecord, Integer> IDENTITY_DEPARTMENT_SUMMARY_TREND = Identities0.IDENTITY_DEPARTMENT_SUMMARY_TREND;
     public static final Identity<DoctorSummaryTrendRecord, Integer> IDENTITY_DOCTOR_SUMMARY_TREND = Identities0.IDENTITY_DOCTOR_SUMMARY_TREND;
     public static final Identity<DoctorLoginLogRecord, Integer> IDENTITY_DOCTOR_LOGIN_LOG = Identities0.IDENTITY_DOCTOR_LOGIN_LOG;
+    public static final Identity<UserCollectionActionRecord, Integer> IDENTITY_USER_COLLECTION_ACTION = Identities0.IDENTITY_USER_COLLECTION_ACTION;
+
 
 
     // -------------------------------------------------------------------------
@@ -618,6 +620,7 @@ public class Keys {
     public static final UniqueKey<DepartmentSummaryTrendRecord> KEY_B2C_DEPARTMENT_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_DEPARTMENT_SUMMARY_TREND_PRIMARY;
     public static final UniqueKey<DoctorSummaryTrendRecord> KEY_B2C_DOCTOR_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_SUMMARY_TREND_PRIMARY;
     public static final UniqueKey<DoctorLoginLogRecord> KEY_B2C_DOCTOR_LOGIN_LOG_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_LOGIN_LOG_PRIMARY;
+    public static final UniqueKey<UserCollectionActionRecord> KEY_B2C_USER_COLLECTION_ACTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_COLLECTION_ACTION_PRIMARY;
 
 
 
@@ -900,6 +903,7 @@ public class Keys {
         public static Identity<DepartmentSummaryTrendRecord, Integer> IDENTITY_DEPARTMENT_SUMMARY_TREND = Internal.createIdentity(DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND, DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.ID);
         public static Identity<DoctorSummaryTrendRecord, Integer> IDENTITY_DOCTOR_SUMMARY_TREND = Internal.createIdentity(DoctorSummaryTrend.DOCTOR_SUMMARY_TREND, DoctorSummaryTrend.DOCTOR_SUMMARY_TREND.ID);
         public static Identity<DoctorLoginLogRecord, Integer> IDENTITY_DOCTOR_LOGIN_LOG = Internal.createIdentity(DoctorLoginLog.DOCTOR_LOGIN_LOG, DoctorLoginLog.DOCTOR_LOGIN_LOG.ID);
+        public static Identity<UserCollectionActionRecord, Integer> IDENTITY_USER_COLLECTION_ACTION = Internal.createIdentity(UserCollectionAction.USER_COLLECTION_ACTION, UserCollectionAction.USER_COLLECTION_ACTION.ID);
 
     }
 
@@ -1207,6 +1211,7 @@ public class Keys {
         public static final UniqueKey<DepartmentSummaryTrendRecord> KEY_B2C_DEPARTMENT_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND, "KEY_b2c_department_summary_trend_PRIMARY", DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.ID);
         public static final UniqueKey<DoctorSummaryTrendRecord> KEY_B2C_DOCTOR_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(DoctorSummaryTrend.DOCTOR_SUMMARY_TREND, "KEY_b2c_doctor_summary_trend_PRIMARY", DoctorSummaryTrend.DOCTOR_SUMMARY_TREND.ID);
         public static final UniqueKey<DoctorLoginLogRecord> KEY_B2C_DOCTOR_LOGIN_LOG_PRIMARY = Internal.createUniqueKey(DoctorLoginLog.DOCTOR_LOGIN_LOG, "KEY_b2c_doctor_login_log_PRIMARY", DoctorLoginLog.DOCTOR_LOGIN_LOG.ID);
+        public static final UniqueKey<UserCollectionActionRecord> KEY_B2C_USER_COLLECTION_ACTION_PRIMARY = Internal.createUniqueKey(UserCollectionAction.USER_COLLECTION_ACTION, "KEY_b2c_user_collection_action_PRIMARY", UserCollectionAction.USER_COLLECTION_ACTION.ID);
 
     }
 }
