@@ -178,13 +178,15 @@
           <thead>
             <tr>
               <th width="300px">{{ $t('order.goodsName') }}</th>
-              <th width="100px">{{ $t('order.specText') }}</th>
+              <th>{{ $t('order.specText') }}</th>
               <th>{{ $t('order.returnNumText') }}</th>
-              <th>{{ $t('order.returnType') }}</th>
-              <th>{{ $t('order.returnStatus') }}</th>
-              <th width="100px">{{ $t('order.returnMoney') }}</th>
-              <th width="100px">{{ $t('order.applyTime') }}</th>
-              <th width="100px">{{ $t('order.finishTime') }}</th>
+              <template v-if="order.deliverType == 0">
+                <th>{{ $t('order.returnType') }}</th>
+                <th>{{ $t('order.returnStatus') }}</th>
+                <th width="100px">{{ $t('order.returnMoney') }}</th>
+                <th width="100px">{{ $t('order.applyTime') }}</th>
+                <th width="100px">{{ $t('order.finishTime') }}</th>
+              </template>
             </tr>
           </thead>
           <tbody>
