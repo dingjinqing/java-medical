@@ -30,7 +30,6 @@
 
             <el-color-picker
               v-model="colorLeft_"
-              show-alpha
               :predefine="predefineColors"
               v-if="index===6?true:false"
               size='small'
@@ -39,7 +38,6 @@
             </el-color-picker>
             <el-color-picker
               v-model="colorRight"
-              show-alpha
               :predefine="predefineColors"
               v-if="index===6?true:false"
               size='small'
@@ -157,12 +155,12 @@ export default {
       colorRight: '',
       colorDataList: [],
       choiseId: '',
-      colorLeft_color: 'color: rgba(255, 102, 102,1)',
-      colorLeft: 'background:rgba(255, 102, 102, 0.2);color: rgba(255, 102, 102,1);border: 1px solid rgba(255, 102, 102, 0.4)',
-      middleLeft: 'color: rgba(255, 102, 102,1);border: 1px solid rgba(255, 102, 102, 0.4)',
-      rightBorder: 'border-bottom: 1px solid rgba(255, 102, 102, 0.4); color: rgba(255, 102, 102,1)',
-      btnLeft_background: 'background: rgba(255, 209, 209,1)',
-      btnRight_background: 'background: rgba(255, 102, 102,1)',
+      colorLeft_color: 'color: rgba(38,196,188,1)',
+      colorLeft: 'background:rgba(38,196,188, 0.2);color: rgba(38,196,188,1);border: 1px solid rgba(38,196,188, 0.4)',
+      middleLeft: 'color: rgba(38,196,188,1);border: 1px solid rgba(38,196,188, 0.4)',
+      rightBorder: 'border-bottom: 1px solid rgba(38,196,188, 0.4); color: rgba(38,196,188,1)',
+      btnLeft_background: 'background: rgba(255, 159, 21,1)',
+      btnRight_background: 'background: rgba(38,196,188,1)',
       // 自定义颜色
       custom_colorLeft_color: '',
       custom_colorLeft: '',
@@ -256,6 +254,14 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
+          this.colorLeft_color = 'color: rgb(38,196,188)'
+          this.colorLeft = 'background:rgba(38,196,188, 0.2);color: rgb(38,196,188);border: 1px solid rgba(38,196,188, 0.4)'
+          this.middleLeft = 'color: rgb(38,196,188);border: 1px solid rgba(38,196,188, 0.4)'
+          this.btnLeft_background = 'background: rgb(255, 159, 21)'
+          this.btnRight_background = 'background: rgb(38,196,188)'
+          this.rightBorder = 'border-bottom: 1px solid rgba(38,196,188, 0.4); color: rgb(38,196,188)'
+          break
+        case 1:
           this.colorLeft_color = 'color: rgb(255, 102, 102)'
           this.colorLeft = 'background:rgba(255, 102, 102, 0.2);color: rgb(255, 102, 102);border: 1px solid rgba(255, 102, 102, 0.4)'
           this.middleLeft = 'color: rgb(255, 102, 102);border: 1px solid rgba(255, 102, 102, 0.4)'
@@ -263,7 +269,7 @@ export default {
           this.btnRight_background = 'background: rgb(255, 102, 102)'
           this.rightBorder = 'border-bottom: 1px solid rgba(255, 102, 102, 0.4); color: rgb(255, 102, 102)'
           break
-        case 1:
+        case 2:
           this.colorLeft_color = 'color: rgb(229, 62, 36)'
           this.colorLeft = 'background:rgba(229, 62, 36, 0.2);color: rgb(229, 62, 36);border: 1px solid rgba(229, 62, 36, 0.4)'
           this.middleLeft = 'color: rgb(229, 62, 36);border: 1px solid rgba(229, 62, 36, 0.4)'
@@ -271,7 +277,7 @@ export default {
           this.btnRight_background = 'background: rgb(229, 62, 36)'
           this.rightBorder = 'border-bottom: 1px solid rgba(229, 62, 36, 0.4); color: rgb(229, 62, 36)'
           break
-        case 2:
+        case 3:
           this.colorLeft_color = 'color: rgb(126, 86, 197)'
           this.colorLeft = 'background:rgba(126, 86, 197, 0.2);color: rgb(126, 86, 197);border: 1px solid rgba(126, 86, 197, 0.4)'
           this.middleLeft = 'color: rgb(126, 86, 197);border: 1px solid rgba(126, 86, 197, 0.4)'
@@ -279,7 +285,7 @@ export default {
           this.btnRight_background = 'background: rgb(126, 86, 197)'
           this.rightBorder = 'border-bottom: 1px solid rgba(126, 86, 197, 0.4); color: rgb(126, 86, 197)'
           break
-        case 3:
+        case 4:
           this.colorLeft_color = 'color: rgb(9, 187, 7)'
           this.colorLeft = 'background:rgba(9, 187, 7, 0.2);color: rgb(9, 187, 7);border: 1px solid rgba(9, 187, 7, 0.4)'
           this.middleLeft = 'color: rgb(9, 187, 7);border: 1px solid rgba(9, 187, 7, 0.4)'
@@ -287,21 +293,13 @@ export default {
           this.btnRight_background = 'background: rgb(9, 187, 7)'
           this.rightBorder = 'border-bottom: 1px solid rgba(9, 187, 7, 0.4); color: rgb(9, 187, 7)'
           break
-        case 4:
+        case 5:
           this.colorLeft_color = 'color: rgb(74, 144, 226)'
           this.colorLeft = 'background:rgba(74, 144, 226, 0.2);color: rgb(74, 144, 226);border: 1px solid rgba(74, 144, 226, 0.4)'
           this.middleLeft = 'color: rgb(74, 144, 226);border: 1px solid rgba(74, 144, 226, 0.4)'
           this.btnLeft_background = 'background: rgb(183, 211, 243)'
           this.btnRight_background = 'background: rgb(74, 144, 226)'
           this.rightBorder = 'border-bottom: 1px solid rgba(74, 144, 226, 0.4); color: rgb(74, 144, 226)'
-          break
-        case 5:
-          this.colorLeft_color = 'color: rgb(254, 182, 9)'
-          this.colorLeft = 'background:rgba(254, 182, 9, 0.2);color: rgb(254, 182, 9);border: 1px solid rgba(254, 182, 9, 0.4)'
-          this.middleLeft = 'color: rgb(254, 182, 9);border: 1px solid rgba(254, 182, 9, 0.4)'
-          this.btnLeft_background = 'background: rgb(51, 51, 51)'
-          this.btnRight_background = 'background: rgb(254, 182, 9)'
-          this.rightBorder = 'border-bottom: 1px solid rgba(254, 182, 9, 0.4); color: rgb(254, 182, 9)'
           break
         case 6:
           this.colorLeft_color = this.custom_colorLeft_color
