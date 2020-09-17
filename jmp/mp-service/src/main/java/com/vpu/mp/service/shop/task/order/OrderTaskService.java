@@ -98,14 +98,14 @@ public class OrderTaskService extends ShopBaseService {
      */
     public void serviceOrderClose(){
 
-        List<ServiceOrderRecord> orders = saas.getShopApp(getShopId()).store.reservation.getExpiredUnpaidOrders();
+        List<ServiceOrderRecord> orders = saas.getShopApp(getShopId()).storeService.reservation.getExpiredUnpaidOrders();
         ReservationDetail param = new ReservationDetail();
         param.setCancelReason("定时任务自动取消");
         logger().info("门店服务订单自动关闭定时任务start,shop:{},orderIds:{}", getShopId(),orders);
         orders.forEach(order->{
             param.setOrderId(order.getOrderId());
             param.setOrderSn(order.getOrderSn());
-            saas.getShopApp(getShopId()).store.reservation.cancelWaitToPayReservation(param);
+            saas.getShopApp(getShopId()).storeService.reservation.cancelWaitToPayReservation(param);
         });
     }
 }

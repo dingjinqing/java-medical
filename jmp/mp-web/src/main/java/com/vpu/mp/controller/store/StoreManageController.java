@@ -60,7 +60,7 @@ public class StoreManageController extends StoreBaseController{
      */
     @PostMapping(value = "/api/store/store/add")
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
-        if(shop().store.addStore(store)) {
+        if(shop().store.addStore(shopId(), store)) {
             return success();
         }else {
             return fail();

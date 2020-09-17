@@ -13,7 +13,10 @@ import com.vpu.mp.db.shop.tables.records.ArticleRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -208,16 +211,18 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 新增门店
+     * @param shopId
      * @param store
      * @return
      */
-    public Boolean addStore(StorePojo store) {
+    @RedisLock(prefix = JedisKeyConstant.ADD_STORE_LOCK)
+    public Boolean addStore(@RedisLockKeys Integer shopId, StorePojo store) {
         if (store.getPickDetail() != null) {
             store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
         }
         StoreRecord record = new StoreRecord();
         this.assign(store, record);
-        return db().executeInsert(record) > 0 ? true : false;
+        return db().executeInsert(record) > 0;
     }
 
     /**

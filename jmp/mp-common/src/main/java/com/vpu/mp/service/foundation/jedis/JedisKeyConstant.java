@@ -28,7 +28,7 @@ public class JedisKeyConstant {
      */
     public static final String GOODS_LOCK = "lock:goods:";
 
-    public static final String ADD_STORE_LOCK = "lock:store:";
+    public static final String ADD_STORE_LOCK = "lock:store:add:";
     /**
      * prescription lock(库存、销量)
      */
