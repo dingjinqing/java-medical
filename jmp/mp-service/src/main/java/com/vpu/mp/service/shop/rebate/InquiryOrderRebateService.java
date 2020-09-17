@@ -1,17 +1,21 @@
 package com.vpu.mp.service.shop.rebate;
 
-import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.shop.rebate.InquiryOrderRebateDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.rebate.*;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateListParam;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateReportVo;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateVo;
+import com.vpu.mp.service.pojo.shop.rebate.RebateReportConstant;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -59,4 +63,7 @@ public class InquiryOrderRebateService extends ShopBaseService {
     }
 
 
+    public BigDecimal getRealRebateByDoctorDate(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+        return inquiryOrderRebateDao.getRealRebateByDoctorDate(doctorId,startTime,endTime);
+    }
 }

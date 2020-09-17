@@ -96,6 +96,10 @@ public class TradeService extends BaseShopConfigService {
      * 是否启用自提
      */
     final public static String K_FETCH = "fetch";
+    /**
+     * 是否启门店家配送
+     */
+    final public static String K_STORE_EXPRESS= "store_express";
 
     /**
      * 商品库存扣减设置（注：秒杀、拼团抽奖活动除外）
@@ -254,6 +258,23 @@ public class TradeService extends BaseShopConfigService {
     public int setFetch(Byte fetch) {
         Assert.isTrue(fetch == (byte) 0 || fetch == (byte) 1,"setFetch need value equal one or zero");
         return this.set(K_FETCH, fetch, Byte.class);
+    }
+    /**
+     * 门店配送
+     * @return
+     */
+    public Byte getStoreExpress(){
+        return this.get(K_STORE_EXPRESS,Byte.class,BYTE_ZERO);
+    }
+
+    /**
+     * 门店配送
+     * @param fetch
+     * @return
+     */
+    public int setStoreExpress(Byte fetch) {
+        Assert.isTrue(fetch == (byte) 0 || fetch == (byte) 1,"setFetch need value equal one or zero");
+        return this.set(K_STORE_EXPRESS, fetch, Byte.class);
     }
 
     public Byte getIsLock() {

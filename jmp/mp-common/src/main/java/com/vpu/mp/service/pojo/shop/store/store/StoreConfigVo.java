@@ -11,4 +11,6 @@ public class StoreConfigVo {
     private Byte fetch;
     /**是否启用同城配送*/
     private Byte cityService;
+    /**门店配送*/
+    private Byte storeExpress;
 }

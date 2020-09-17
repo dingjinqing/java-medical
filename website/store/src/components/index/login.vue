@@ -202,7 +202,7 @@ export default {
             console.log(res)
             if (res.content.storeAuthInfoVo.isOk) {
               document.onkeydown = undefined
-              Cookies.set('V-Index-Token', res.content.token)
+              Cookies.set('V-Store-Token', res.content.token)
               localStorage.setItem('V-Username', res.content.storeAccountName)
               localStorage.setItem('V-isSubLogin', this.isSubLogin)
               localStorage.setItem('V-AccountName', res.content.storeAccountName)
@@ -223,12 +223,12 @@ export default {
             } else {
               let errorMessage = {
                 shopAccountNotExist: '店铺账号不存在',
-                accountNotExist: '门店账号不存在',
-                accountIsDelete: '门店账号已删除',
-                accountIsForbidden: '门店账号已禁用',
-                storeIsEmpty: '门店账号下门店为空',
+                accountNotExist: '门店员工账号不存在',
+                accountIsDelete: '门店员工账号已删除',
+                accountIsForbidden: '门店员工账号已禁用',
+                storeIsEmpty: '门店员工账号下门店为空',
                 storeSwitchClose: '门店开关未打开',
-                storeNotExist: '门店不在该门店账号下',
+                storeNotExist: '门店不在该门店员工账号下',
                 accountPwError: '账号密码错误'
               }
               this.$message.error({ message: errorMessage[res.content.storeAuthInfoVo.msg] })

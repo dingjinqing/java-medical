@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.store.*;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMainShowVo;
 import com.vpu.mp.service.saas.shop.StoreAccountService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
@@ -224,14 +225,14 @@ public class WxAppStoreController extends WxAppBaseController{
      * @param param
      * @return
      */
-    @PostMapping("/salesclerk/auth")
-    public JsonResult salesclerkAuth(@RequestBody StoreSalesclerkAuthParam param){
+    @PostMapping("/storeClerk/auth")
+    public JsonResult salesclerkAuth(@RequestBody StoreClerkAuthParam param){
         param.setUserId(wxAppAuth.user().getUserId());
         param.setShopId(wxAppAuth.user().getShopId());
         try {
-            Integer accountId=shop().store.wxService.salesclerkAuth(param);
+            Integer accountId=shop().store.wxService.storeClerkAuth(param);
             if(accountId!=null){
-                wxAppAuth.updateSalesclerkUserType(accountId);
+                wxAppAuth.updateStoreClerkUserType(accountId);
             }
         } catch (MpException e) {
            return fail(e.getErrorCode());
@@ -244,7 +245,7 @@ public class WxAppStoreController extends WxAppBaseController{
      * @param param
      * @return
      */
-    @PostMapping("/salesclerk/send/check/code")
+    @PostMapping("/storeClerk/send/check/code")
     public JsonResult sendCheckSms(@RequestBody @Validated PatientSmsCheckParam param){
         param.setUserId(wxAppAuth.user().getUserId());
         try {
@@ -263,10 +264,11 @@ public class WxAppStoreController extends WxAppBaseController{
      *首页
      * @return
      */
-    @PostMapping("/salesclerk/main")
+    @PostMapping("/storeClerk/main")
     public JsonResult storeMainShow(){
         WxAppSessionUser user = wxAppAuth.user();
-        StoreAccountVo storeAccountVo=storeAccountService.getOneInfo(user.getSalesclerkId());
-        return success(storeAccountVo);
+        StoreAccountVo storeAccountVo=storeAccountService.getOneInfo(user.getStoreAccountId());
+        StoreMainShowVo storeMainShowVo=shop().store.wxService.storeMainShow(storeAccountVo);
+        return success(storeMainShowVo);
     }
 }

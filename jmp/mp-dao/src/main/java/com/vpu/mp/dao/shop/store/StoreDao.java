@@ -4,13 +4,16 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersVo;
-import com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant;
-import org.jooq.*;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderStatisticVo;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -21,14 +24,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.tables.GoodsMedicalInfo.GOODS_MEDICAL_INFO;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
-import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.ASC;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.*;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_AUTO_PICK_ENABLE;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_BUSINESS_OPENING;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_BUSINESS_WORKDAY;
 import static java.util.Calendar.SATURDAY;
 import static java.util.Calendar.SUNDAY;
 
@@ -44,7 +47,7 @@ public class StoreDao extends ShopBaseDao {
     private static final String GOODS_NUMBER = "goodsNumber";
 
     public StoreBasicVo getStoreByNo(String storeNo) {
-        return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).fetchAnyInto(StoreBasicVo.class);
+        return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(StoreBasicVo.class);
     }
 
     public List<StoreBasicVo> listStoreCodes() {
@@ -74,11 +77,11 @@ public class StoreDao extends ShopBaseDao {
         // 查询未打烊门店
         select.and(STORE.OPENING_TIME.lt(dateStringParse));
         select.and(STORE.CLOSE_TIME.gt(dateStringParse));
-        if (stores != null) {
-            logger().info("门店库存校验");
+        if (stores != null && stores.size() != 0) {
+            logger().info("门店库存校验{}",stores);
             select.and(STORE.STORE_CODE.in(stores));
         }
-        if (deliveryType != 0) {
+        if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
             select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
         }
         select.limit(15);
@@ -156,6 +159,17 @@ public class StoreDao extends ShopBaseDao {
                     break;
             }
         }
+    }
+
+    /**
+     * 根据storeIds查询list
+     * @param storeIds
+     * @return
+     */
+    public List<StoreOrderStatisticVo> getListByStoreIds(List<Integer> storeIds){
+        return db().select().from(STORE).where(STORE.STORE_ID.in(storeIds))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .fetchInto(StoreOrderStatisticVo.class);
     }
 
 }

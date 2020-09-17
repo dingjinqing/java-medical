@@ -82,8 +82,8 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <span>{{ $t('storeList.sameCityDelivery') }}：</span>
-            <el-select v-model="queryParams.cityService" size="small">
+            <span>门店配送：</span>
+            <el-select v-model="queryParams.storeExpress" size="small">
               <el-option
                 :label="$t('storeCommon.all')"
                 :value="null"
@@ -166,13 +166,13 @@
             :label="$t('storeList.storeName')"
           ></el-table-column>
           <el-table-column
-            prop="storeNumber"
+            prop="storeCode"
             :label="$t('storeList.posShopId')"
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="posShopId"
             label="POS门店编号"
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column prop="groupName" :label="$t('storeList.groupName')">
           </el-table-column>
           <el-table-column
@@ -230,17 +230,17 @@
             </template>
           </el-table-column>
           <el-table-column
-            :label="$t('storeList.sameCityDelivery')"
-            prop="cityService"
+            :label="门店配送"
+            prop="storeExpress"
           >
             <template slot-scope="{ row, $index }">
               <div>
                 <el-checkbox
-                  v-model="row.cityService"
-                  @change="changeState(row, 'cityService', $index)"
+                  v-model="row.storeExpress"
+                  @change="changeState(row, 'storeExpress', $index)"
                   :true-label="1"
                   :false-label="0"
-                  :disabled="row.cityService === 0"
+                  :disabled="row.storeExpress === 0"
                 ></el-checkbox>
               </div>
             </template>
@@ -503,12 +503,18 @@ export default {
           this.$set(this.tableData[index], 'cityService', 0)
           return false
         }
+        if (operate === 'storeExpress' && this.deliveryConfig.storeExpress === 0 && row.storeExpress === 1) {
+          this.$message.warning('基础配置中同城配送功能未开启，门店不能开启同城配送功能')
+          this.$set(this.tableData[index], 'cityService', 0)
+          return false
+        }
       }
       let params = {
         storeId: row.storeId,
         businessState: row.businessState,
         autoPick: row.autoPick,
         cityService: row.cityService,
+        storeExpress: row.storeExpress,
         cityAccountIds: []
       }
       updateStore(params).then((res) => {

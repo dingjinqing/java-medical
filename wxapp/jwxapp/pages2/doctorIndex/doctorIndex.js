@@ -199,6 +199,22 @@ global.wxPage({
   viewWithdraw(){
     util.jumpLink(`pages2/serviceWithdraw/serviceWithdraw`)
   },
+  showTipsDialog(){
+    this.setData({
+      tipShowDialog:true
+    })
+  },
+  bindCloseTipsDialog(){
+    this.setData({
+      tipShowDialog:false
+    })
+  },
+  changeDoctorData(){
+    util.jumpLink(`/pages2/doctorCenter/doctorCenter${util.getUrlParams({
+      doctorAvatar:this.data.doctorInfo.url ? this.data.doctorInfo.url : 'image/wxapp/doctor_default_icon.png',
+      treatDisease:this.data.doctorInfo.treatDisease
+    })}`)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

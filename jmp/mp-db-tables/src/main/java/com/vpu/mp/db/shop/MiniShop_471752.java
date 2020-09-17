@@ -31,6 +31,10 @@ public class MiniShop_471752 extends SchemaImpl {
     private static final long serialVersionUID = -390755599;
 
     /**
+     * 医师登录记录
+     */
+    public final DoctorLoginLog DOCTOR_LOGIN_LOG = com.vpu.mp.db.shop.tables.DoctorLoginLog.DOCTOR_LOGIN_LOG;
+    /**
      * 埋点
      */
     public final AnchorPoints ANCHOR_POINTS = com.vpu.mp.db.shop.tables.AnchorPoints.ANCHOR_POINTS;
@@ -1399,7 +1403,8 @@ public class MiniShop_471752 extends SchemaImpl {
             AnchorPoints.ANCHOR_POINTS,
             StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND,
             DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND,
-            DoctorSummaryTrend.DOCTOR_SUMMARY_TREND);
+            DoctorSummaryTrend.DOCTOR_SUMMARY_TREND,
+            DoctorLoginLog.DOCTOR_LOGIN_LOG);
 
 
     }

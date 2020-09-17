@@ -120,3 +120,36 @@ export function manualReturn (data) {
     data: data
   })
 }
+// 获取当前表格导出列表头
+export function getExportColumns (data) {
+  return service({
+    url: '/api/store/order/export/columns/get',
+    method: 'post',
+    data: data
+  })
+}
+// 设置表格导出列表头
+export function setExportColumns (data) {
+  return service({
+    url: '/api/store/order/export/columns/set',
+    method: 'post',
+    data: data
+  })
+}
+// 取将要导出的列数
+export function getExportTotalRows (data) {
+  return service({
+    url: '/api/store/order/export/rows',
+    method: 'post',
+    data: data
+  })
+}
+// 订单导出
+export function orderExport (data) {
+  return service({
+    url: '/api/store/order/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}

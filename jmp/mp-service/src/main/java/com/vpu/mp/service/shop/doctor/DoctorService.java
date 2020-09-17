@@ -40,12 +40,15 @@ import com.vpu.mp.service.shop.anchor.AnchorPointsService;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
+import com.vpu.mp.service.shop.rebate.InquiryOrderRebateService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,6 +99,12 @@ public class DoctorService extends ShopBaseService {
     private PrescriptionService prescriptionService;
     @Autowired
     private InquiryOrderService inquiryOrderService;
+    @Autowired
+    private InquiryOrderRebateService inquiryOrderRebateService;
+    @Autowired
+    private PrescriptionRebateService prescriptionRebateService;
+    @Autowired
+    private DoctorLoginLogService doctorLoginLogService;
 
     public static final int ZERO = 0;
 
@@ -197,7 +206,7 @@ public class DoctorService extends ShopBaseService {
             doctor.setProfessionalCode(list.getProfessionalCode());
             doctor.setUrl(list.getDocUrl());
             doctor.setMobile(list.getDocPhone());
-            doctor.setSex((list.getDoctorSex() == 1) ? (byte)0:(byte)1);
+            doctor.setSex((list.getDoctorSex() == 0) ? (byte)0:(byte)1);
             doctor.setTitleId(titleService.getTitleIdNew(list.getPositionCode()));
 
             List<String> result = Arrays.asList(list.getDepartCode().split(","));
@@ -669,16 +678,20 @@ public class DoctorService extends ShopBaseService {
         param.setEvent(DOCTOR_ENTER_IN.getEvent());
         param.setKey(DOCTOR_ENTER_IN.getKey());
         param.setUserId(1);
-        String doctorAttendanceRate = anchorPointsService.getDoctorAttendanceRate(param);
+        String doctorAttendanceRate = doctorLoginLogService.getDoctorAttendanceRate(doctorId, param.getStartTime(), param.getEndTime());
         logger().info("医师userId:{},出勤率{}",userId,doctorAttendanceRate);
         Integer prescriptionNum = prescriptionService.countDateByDoctor(doctorCode, param.getStartTime(), param.getEndTime());
         logger().info("医师code:{},处方数量{}",doctorCode,prescriptionNum);
         Integer receivingNumber = inquiryOrderService.countByDateDoctor(doctorId, param.getStartTime(), param.getEndTime());
         logger().info("医师id:{},接诊数{}",doctorId,receivingNumber);
+        BigDecimal inquiryOrderRebate = inquiryOrderRebateService.getRealRebateByDoctorDate(doctorId, param.getStartTime(), param.getEndTime());
+        BigDecimal prescriptionRebate = prescriptionRebateService.getRealRebateByDoctorDate(doctorId, param.getStartTime(), param.getEndTime());
+        logger().info("医师id:{},服务费{}",doctorId,receivingNumber);
         DoctorAttendanceVo vo =new DoctorAttendanceVo();
         vo.setDoctorAttendanceRate(doctorAttendanceRate);
         vo.setPrescriptionNum(prescriptionNum);
         vo.setReceivingNumber(receivingNumber);
+        vo.setServiceCharge(inquiryOrderRebate.add(prescriptionRebate).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
         return vo;
     }
 
