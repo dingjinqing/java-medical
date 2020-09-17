@@ -259,7 +259,7 @@ public class StoreAccountService extends MainBaseService {
     public StoreAccountVo getOneInfo(Integer storeAccountId){
         StoreAccountVo storeAccountVo=storeAccountDao.getOneInfo(storeAccountId);
         storeAccountVo.setStoreLists(changeToArray(storeAccountVo.getStoreList()));
-        return storeAccountDao.getOneInfo(storeAccountId);
+        return storeAccountVo;
     }
 
     public int upateBind(Integer storeAccountId, String officalOpenId, byte bind) {

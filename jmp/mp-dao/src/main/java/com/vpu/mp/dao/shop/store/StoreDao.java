@@ -8,7 +8,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersVo;
-import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderStatisticVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreStatisticVo;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -166,10 +166,10 @@ public class StoreDao extends ShopBaseDao {
      * @param storeIds
      * @return
      */
-    public List<StoreOrderStatisticVo> getListByStoreIds(List<Integer> storeIds){
+    public List<StoreStatisticVo> getListByStoreIds(List<Integer> storeIds){
         return db().select().from(STORE).where(STORE.STORE_ID.in(storeIds))
             .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .fetchInto(StoreOrderStatisticVo.class);
+            .fetchInto(StoreStatisticVo.class);
     }
 
 }

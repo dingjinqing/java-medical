@@ -6,7 +6,7 @@ import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
-import com.vpu.mp.service.pojo.wxapp.store.StoreClerkAuthParam;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreClerkAuthParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

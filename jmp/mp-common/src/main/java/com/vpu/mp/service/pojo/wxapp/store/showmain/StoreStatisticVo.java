@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2020/9/16
  **/
 @Data
-public class StoreOrderStatisticVo {
+public class StoreStatisticVo {
     private Integer storeId;
     private String storeName;
     /**
@@ -38,5 +38,9 @@ public class StoreOrderStatisticVo {
      * 待接订单数量
      */
     private Integer waitHandleOrderNum;
+    /**
+     * 已完成订单数量
+     */
+    private Integer finishedOrderNum;
 
 }
