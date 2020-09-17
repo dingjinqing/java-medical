@@ -47,6 +47,8 @@ public class StoreDao extends ShopBaseDao {
 
     private static final String GOODS_NUMBER = "goodsNumber";
 
+    public static final Byte STORE_TYPE_HOSPITAL = 1;
+
     public StoreBasicVo getStoreByNo(String storeNo) {
         return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(StoreBasicVo.class);
     }
@@ -174,6 +176,18 @@ public class StoreDao extends ShopBaseDao {
         return db().select().from(STORE).where(STORE.STORE_ID.in(storeIds))
             .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchInto(StoreStatisticVo.class);
+    }
+
+    /**
+     * 查询是否存在医院类型门店
+     * @return Boolean
+     */
+    public Boolean isExistHospitalStore() {
+        return db().selectCount()
+            .from(STORE)
+            .where(STORE.STORE_TYPE.eq(STORE_TYPE_HOSPITAL))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .fetchAnyInto(Integer.class) == 1;
     }
 
 }

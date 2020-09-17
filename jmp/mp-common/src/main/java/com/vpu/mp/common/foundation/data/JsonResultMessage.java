@@ -507,6 +507,7 @@ public class JsonResultMessage {
     public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
     public static final String MSF_STORE_NEED_HAVE = "store.need.have";
     public static final String CODE_NO_STORE_OPEN = "当前无营业门店";
+    public static final String CODE_IS_EXIST_HOSPITAL = "store.is.exist.hospital";
 
     /**
      * 门店技师管理

@@ -102,11 +102,16 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/add")
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
-       if(shop().store.addStore(shopId(), store)) {
-    	   return success();
-       }else {
-    	   return fail();
-       }
+        try {
+            if(shop().store.addStore(shopId(), store)) {
+                return success();
+            }else {
+                return fail();
+            }
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
+        return fail();
     }
 
     /**

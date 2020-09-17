@@ -13,6 +13,7 @@ import com.vpu.mp.db.shop.tables.records.ArticleRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
@@ -55,6 +56,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_HOSPITAL;
 import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
 import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
@@ -153,12 +155,13 @@ public class StoreService extends ShopBaseService {
         SelectWhereStep<? extends Record> select = db().select(
             STORE.STORE_ID, STORE.STORE_NAME,STORE.STORE_CODE ,STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE,
                 STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,STORE.STORE_EXPRESS,
-            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE, STORE.CITY_SERVICE
+            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE, STORE.CITY_SERVICE,
+            STORE.STORE_TYPE
         ).from(STORE)
             .leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 
         select = this.buildOptions(select, param);
-        select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc());
+        select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc(), STORE.STORE_TYPE.desc());
         PageResult<StorePageListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StorePageListVo.class);
         Integer totalNum = 0;
         String shopVersion = shopOverviewService.getShopVersion(getShopId());
@@ -216,7 +219,11 @@ public class StoreService extends ShopBaseService {
      * @return
      */
     @RedisLock(prefix = JedisKeyConstant.ADD_STORE_LOCK)
-    public Boolean addStore(@RedisLockKeys Integer shopId, StorePojo store) {
+    public Boolean addStore(@RedisLockKeys Integer shopId, StorePojo store) throws MpException{
+        // 判断是否存在医院类型门店
+        if (storeDao.isExistHospitalStore() && STORE_TYPE_HOSPITAL.equals(store.getStoreType())) {
+            throw MpException.initErrorResult(JsonResultCode.CODE_CARD_RECEIVE_NOCODE, store.getStoreType(), null);
+        }
         if (store.getPickDetail() != null) {
             store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
         }

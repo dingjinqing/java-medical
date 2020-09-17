@@ -61,6 +61,10 @@ public class StorePojo implements Comparable<StorePojo> {
      * The Scan buy.是否支持扫码购.1是,0否
      */
     public Byte scanBuy;
+    /**
+     * 门店类型 0、普通门店 1、医院
+     */
+    private Byte storeType;
 
     /**
      * The Distance.门店距离 单位KM
