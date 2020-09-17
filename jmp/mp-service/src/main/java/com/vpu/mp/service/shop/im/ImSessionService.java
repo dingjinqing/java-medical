@@ -313,8 +313,9 @@ public class ImSessionService extends ShopBaseService {
         imSessionDo.setWeightFactor(ImSessionConstant.SESSION_READY_TO_START_WEIGHT);
         // 可从结束状态转变为继续问诊次数
         imSessionDo.setContinueSessionCount(ImSessionConstant.CONTINUE_SESSION_TIME);
+        ImSessionDo readyToDead = imSessionDao.getByAllInfo(param.getDoctorId(), param.getUserId(), param.getPatientId());
+        deadImSession(readyToDead.getId());
         imSessionDao.insert(imSessionDo);
-
         String sessionRedisStatusKey = getSessionRedisStatusKey(getShopId(), imSessionDo.getId());
         jedisManager.set(sessionRedisStatusKey, ImSessionConstant.SESSION_READY_TO_START.toString());
         return imSessionDo.getId();
@@ -476,6 +477,18 @@ public class ImSessionService extends ShopBaseService {
 
     }
 
+    /**
+     * 终止会话
+     * @param sessionId
+     */
+    public void deadImSession(Integer sessionId) {
+        ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
+        clearSessionRedisInfoAndDumpToDb(getShopId(), imSessionDo.getId(), imSessionDo.getUserId(), imSessionDo.getDoctorId());
+        imSessionDo.setSessionStatus(ImSessionConstant.SESSION_DEAD);
+        imSessionDo.setWeightFactor(ImSessionConstant.SESSION_DEAD_WEIGHT);
+        imSessionDo.setEvaluateStatus(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS);
+        imSessionDao.update(imSessionDo);
+    }
     /**
      * 定时任务调用，结束已经超时的可继续问诊项
      */
