@@ -201,10 +201,18 @@ public class DistributorLevelService extends ShopBaseService{
 				DISTRIBUTOR_LEVEL.INVITE_NUMBER, DISTRIBUTOR_LEVEL.LEVEL_UP_ROUTE)
 				.from(DISTRIBUTOR_LEVEL).fetch().into(DistributorLevelParam.class);
 		DistributorLevelListVo level = new DistributorLevelListVo();
-		for(DistributorLevelParam list : lists){
-			int userNum = db().selectCount().from(USER).where(USER.DISTRIBUTOR_LEVEL.eq(list.getLevelId())).fetchOne().into(Integer.class);
-			list.setUsers(userNum);
-		}
+        DistributionParam distributionCfg = dcs.getDistributionCfg();
+        for(DistributorLevelParam list : lists){
+            SelectConditionStep<Record1<Integer>> sql = db().selectCount().from(USER).where(USER.DISTRIBUTOR_LEVEL.eq(list.getLevelId()));
+            if(distributionCfg.getJudgeStatus()!=null && distributionCfg.getJudgeStatus() == 1){
+                sql = sql.and(USER.IS_DISTRIBUTOR.eq((byte)1));
+            }
+            int userNum = sql.fetchOne().into(Integer.class);
+            list.setUsers(userNum);
+            //获取当前等级分销员ID
+            List<Integer> userIds = db().select(USER.USER_ID).from(USER).where(USER.DISTRIBUTOR_LEVEL.eq(list.getLevelId())).fetch().into(Integer.class);
+            list.setLevelUserIds(Util.listToString(userIds));
+        }
 		level.setLevelList(lists);
 		return level;
 	}
