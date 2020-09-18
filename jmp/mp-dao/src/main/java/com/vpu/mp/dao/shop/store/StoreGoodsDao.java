@@ -87,6 +87,7 @@ public class StoreGoodsDao extends ShopBaseDao {
             storeGoodsRecord.setPrdId(x.getPrdId());
             storeGoodsRecord.setIsOnSale(x.getIsOnSale());
             storeGoodsRecord.setProductPrice(x.getProductPrice());
+            storeGoodsRecord.setProductNumber(x.getProductNumber());
             return storeGoodsRecord;
         }).collect(Collectors.toList());
     }
