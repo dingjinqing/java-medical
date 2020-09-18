@@ -161,13 +161,13 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
         BigDecimal differ = doctorStatisticMinMax.getMaxInquiryMoney().subtract(doctorStatisticMinMax.getMinInquiryMoney());
         if(BigDecimal.ZERO.equals(differ)) {
             db().update(DOCTOR_SUMMARY_TREND)
-                .set(DOCTOR_SUMMARY_TREND.CONSUME_MONEY, BigDecimal.ZERO)
+                .set(DOCTOR_SUMMARY_TREND.INQUIRY_SCORE, BigDecimal.ZERO)
                 .where(DOCTOR_SUMMARY_TREND.TYPE.eq(type))
                 .and(DOCTOR_SUMMARY_TREND.REF_DATE.eq(refDate))
                 .execute();
         } else {
             db().update(DOCTOR_SUMMARY_TREND)
-                .set(DOCTOR_SUMMARY_TREND.CONSUME_MONEY,
+                .set(DOCTOR_SUMMARY_TREND.INQUIRY_SCORE,
                     (DOCTOR_SUMMARY_TREND.INQUIRY_MONEY.sub(doctorStatisticMinMax.getMinInquiryMoney())).multiply(differ))
                 .where(DOCTOR_SUMMARY_TREND.TYPE.eq(type))
                 .and(DOCTOR_SUMMARY_TREND.REF_DATE.eq(refDate))
@@ -182,14 +182,14 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
         BigDecimal differDecimal = new BigDecimal(differ);
         if(INTEGER_ZERO.equals(differ)) {
             db().update(DOCTOR_SUMMARY_TREND)
-                .set(DOCTOR_SUMMARY_TREND.CONSUME_MONEY, BigDecimal.ZERO)
+                .set(DOCTOR_SUMMARY_TREND.CONSULTATION_SCORE, BigDecimal.ZERO)
                 .where(DOCTOR_SUMMARY_TREND.TYPE.eq(type))
                 .and(DOCTOR_SUMMARY_TREND.REF_DATE.eq(refDate))
                 .execute();
         } else {
             db().update(DOCTOR_SUMMARY_TREND)
-                .set(DOCTOR_SUMMARY_TREND.CONSUME_MONEY,
-                    (DOCTOR_SUMMARY_TREND.CONSULTATION_NUMBER.cast(SQLDataType.DECIMAL(10,2)).subtract(minConsultation)).multiply(differDecimal))
+                .set(DOCTOR_SUMMARY_TREND.CONSULTATION_SCORE,
+                    (DOCTOR_SUMMARY_TREND.CONSULTATION_NUMBER.cast(SQLDataType.DECIMAL(10,2)).sub(minConsultation)).multiply(differDecimal))
                 .where(DOCTOR_SUMMARY_TREND.TYPE.eq(type))
                 .and(DOCTOR_SUMMARY_TREND.REF_DATE.eq(refDate))
                 .execute();

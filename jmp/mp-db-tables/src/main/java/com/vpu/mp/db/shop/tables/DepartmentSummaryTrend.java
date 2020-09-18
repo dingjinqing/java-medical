@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DepartmentSummaryTrend extends TableImpl<DepartmentSummaryTrendRecord> {
 
-    private static final long serialVersionUID = -52568687;
+    private static final long serialVersionUID = -1083252605;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_department_summary_trend</code>
@@ -103,6 +103,16 @@ public class DepartmentSummaryTrend extends TableImpl<DepartmentSummaryTrendReco
      * The column <code>mini_shop_471752.b2c_department_summary_trend.prescription_num</code>. 处方数
      */
     public final TableField<DepartmentSummaryTrendRecord, Integer> PRESCRIPTION_NUM = createField("prescription_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "处方数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_department_summary_trend.consultation_score</code>. 接诊分数
+     */
+    public final TableField<DepartmentSummaryTrendRecord, BigDecimal> CONSULTATION_SCORE = createField("consultation_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "接诊分数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_department_summary_trend.inquiry_score</code>. 咨询分数
+     */
+    public final TableField<DepartmentSummaryTrendRecord, BigDecimal> INQUIRY_SCORE = createField("inquiry_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "咨询分数");
 
     /**
      * The column <code>mini_shop_471752.b2c_department_summary_trend.create_time</code>.

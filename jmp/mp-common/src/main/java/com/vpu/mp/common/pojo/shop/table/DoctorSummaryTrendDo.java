@@ -35,5 +35,7 @@ public class DoctorSummaryTrendDo {
     private BigDecimal prescriptionMoney;
     private Integer    prescriptionNum;
     private BigDecimal consumeMoney;
+    private BigDecimal consultationScore;
+    private BigDecimal inquiryScore;
     private Timestamp  createTime;
 }
