@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsMedicalInfoRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
 
-    private static final long serialVersionUID = -1530434253;
+    private static final long serialVersionUID = 57666658;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_medical_info</code>
@@ -93,6 +82,11 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
     public final TableField<GoodsMedicalInfoRecord, Byte> IS_RX = createField("is_rx", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否处方药 0否 1是 默认0");
 
     /**
+     * The column <code>mini_shop_471752.b2c_goods_medical_info.medical_type</code>. null 未知  1西药 2中成药 3中草药
+     */
+    public final TableField<GoodsMedicalInfoRecord, Byte> MEDICAL_TYPE = createField("medical_type", org.jooq.impl.SQLDataType.TINYINT, this, "null 未知  1西药 2中成药 3中草药");
+
+    /**
      * The column <code>mini_shop_471752.b2c_goods_medical_info.insurance_flag</code>. 医保类型 1:甲 2:乙 3:丙 4:科研
      */
     public final TableField<GoodsMedicalInfoRecord, Byte> INSURANCE_FLAG = createField("insurance_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "医保类型 1:甲 2:乙 3:丙 4:科研");
@@ -133,61 +127,6 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
     public final TableField<GoodsMedicalInfoRecord, String> GOODS_EQUIVALENT_UNIT = createField("goods_equivalent_unit", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "等效单位");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_composition</code>. 药品成分
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_COMPOSITION = createField("goods_composition", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药品成分");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_characters</code>. 药品性状
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_CHARACTERS = createField("goods_characters", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药品性状");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_function</code>. 功能主治
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_FUNCTION = createField("goods_function", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "功能主治");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_use_method</code>. 用法用量
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_USE_METHOD = createField("goods_use_method", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用法用量");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_adverse_reaction</code>. 不良反应
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_ADVERSE_REACTION = createField("goods_adverse_reaction", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "不良反应");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_taboos</code>. 药品禁忌
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_TABOOS = createField("goods_taboos", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药品禁忌");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_notice_event</code>. 注意事项
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_NOTICE_EVENT = createField("goods_notice_event", org.jooq.impl.SQLDataType.VARCHAR(2048).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "注意事项");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_interaction</code>. 相互作用
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_INTERACTION = createField("goods_interaction", org.jooq.impl.SQLDataType.VARCHAR(1024).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "相互作用");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_store_method</code>. 贮藏方法
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_STORE_METHOD = createField("goods_store_method", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "贮藏方法");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_package_method</code>. 药品包装
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_PACKAGE_METHOD = createField("goods_package_method", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "药品包装");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_valid_time</code>. 有效期
-     */
-    public final TableField<GoodsMedicalInfoRecord, String> GOODS_VALID_TIME = createField("goods_valid_time", org.jooq.impl.SQLDataType.VARCHAR(128).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "有效期");
-
-    /**
      * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_approval_number</code>. 批准文号
      */
     public final TableField<GoodsMedicalInfoRecord, String> GOODS_APPROVAL_NUMBER = createField("goods_approval_number", org.jooq.impl.SQLDataType.VARCHAR(128).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "批准文号");
@@ -198,14 +137,9 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
     public final TableField<GoodsMedicalInfoRecord, String> GOODS_PRODUCTION_ENTERPRISE = createField("goods_production_enterprise", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "生产企业");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_limit_duty</code>. 药品最低聘任职务（限制对应医师开方）
+     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_medical_instruction</code>.
      */
-    public final TableField<GoodsMedicalInfoRecord, Byte> GOODS_LIMIT_DUTY = createField("goods_limit_duty", org.jooq.impl.SQLDataType.TINYINT, this, "药品最低聘任职务（限制对应医师开方）");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_medical_info.goods_limit_antibacterial</code>. 抗菌限制
-     */
-    public final TableField<GoodsMedicalInfoRecord, Byte> GOODS_LIMIT_ANTIBACTERIAL = createField("goods_limit_antibacterial", org.jooq.impl.SQLDataType.TINYINT, this, "抗菌限制");
+    public final TableField<GoodsMedicalInfoRecord, String> GOODS_MEDICAL_INSTRUCTION = createField("goods_medical_instruction", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_medical_info.is_delete</code>.
