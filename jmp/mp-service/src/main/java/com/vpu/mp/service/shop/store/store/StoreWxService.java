@@ -556,6 +556,9 @@ public class StoreWxService extends ShopBaseService {
         if(storeAccountVo==null||!Util.md5(param.getPassword()).equals(storeAccountVo.getAccountPasswd())){
             throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_ERROR);
         }
+        if(storeAccountVo.getStatus()==0){
+            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_IS_DISABLED);
+        }
         if(storeAccountVo.getUserId()>0){
             throw new MpException(JsonResultCode.STORE_CLERK_AUTH_AlREADY_ERROR);
         }
