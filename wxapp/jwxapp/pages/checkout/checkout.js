@@ -172,6 +172,7 @@ global.wxPage({
           if (orderInfo.activityType === 4) { //积分兑换数据
             this.setScoreRedeemData(orderInfo)
           }
+          this.getDefaultDeliverType(orderInfo.expressList)
           this.getCouponData(orderInfo)
           this.defaultInput(orderInfo)
           this.getPayType(orderInfo)
@@ -561,36 +562,7 @@ global.wxPage({
   selectShippingMethod (e) {
     let that = this
     if (e.currentTarget.dataset.index !== 0) {
-      (async () => {
-        let res = await this.getLocationData()
-        this.data.params.lat = res.latitude
-        this.data.params.lng = res.longitude
-        console.log(this.data.params.lat,this.data.params.lng)
-        util.api('/api/wxapp/order/get/store', res => {
-          if (res.error === 0) {
-            let keysList = Object.keys(res.content).sort((a,b)=>{
-              return a-b
-            })
-            console.log(keysList)
-            this.setData({
-              selectedStoreInfo: {
-                ...res.content[keysList[0]],
-                distance: keysList[0]
-              },
-              storeList: res.content,
-              'params.deliverType': e.currentTarget.dataset.index,
-              'params.storeId': res.content[keysList[0]].storeId
-            })
-          }
-        }, {
-          lat: this.data.params.lat,
-          lng: this.data.params.lng
-        })
-        // this.setData({
-        //   'params.lat':
-        //   'params.lng':
-        // })
-      })()
+      this.requestStore(e.currentTarget.dataset.index)
     }
     if (e.currentTarget.dataset.index === 0) {
       this.setData({
@@ -599,6 +571,39 @@ global.wxPage({
     }
 
     this.requestOrder()
+  },
+  requestStore(deliverType){
+    (async () => {
+      let res = await this.getLocationData()
+      this.data.params.lat = res.latitude
+      this.data.params.lng = res.longitude
+      console.log(this.data.params.lat,this.data.params.lng)
+      util.api('/api/wxapp/order/get/store', res => {
+        if (res.error === 0) {
+          let keysList = Object.keys(res.content).sort((a,b)=>{
+            return a-b
+          })
+          console.log(keysList)
+          this.setData({
+            selectedStoreInfo: {
+              ...res.content[keysList[0]],
+              distance: keysList[0]
+            },
+            storeList: res.content,
+            'params.deliverType': deliverType,
+            'params.storeId': res.content[keysList[0]].storeId
+          })
+        }
+      }, {
+        lat: this.data.params.lat,
+        lng: this.data.params.lng,
+        storeGoodsBaseCheckInfoList:this.data.orderInfo.orderGoods
+      })
+      // this.setData({
+      //   'params.lat':
+      //   'params.lng':
+      // })
+    })()
   },
   // 选择门店
   selectStore () {
@@ -1172,6 +1177,20 @@ global.wxPage({
         }
       })
     })
+  },
+  getDefaultDeliverType(expressList){
+    try {
+      expressList.forEach((item,index) => {
+        if(item) {
+          this.setData({
+            'params.deliverType': index
+          })
+          if(index !== 0) this.requestStore(index)
+          throw Error();
+        }
+      })
+    } catch (error) {
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -1,5 +1,5 @@
 module.exports = {
-  "deliverType": ["快递","自提","同城配送"],
+  "deliverType": ["快递","自提","同城配送","门店配送"],
   "payType":["微信支付","货到付款","好友代付",'积分支付'],
   "createAddress":"请创建收货地址",
   "paymentMethod":"支付方式",

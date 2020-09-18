@@ -11,12 +11,12 @@
         </block>
       </view> -->
 	
-		<view class="shipping_method_content" wx:if="{{orderInfo.expressList[1]||orderInfo.expressList[2]}}">
+		<view class="shipping_method_content" wx:if="{{orderInfo.expressList[1]||orderInfo.expressList[2]||orderInfo.expressList[3]}}">
 			<block wx:for="{{orderInfo.expressList}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="shipIndex">
 				<view class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{i18n.$t(localePack,"pages.checkout.deliverType["+shipIndex+"]")}}</view>
 			</block>
 		</view>
-		<view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;">
+		<view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0 && params.deliverType !== 3}}" style="background:#fff;border-bottom:2rpx solid #eee;">
 			<view class="address-user_info">
 				<text class="user_name">{{selectedStoreInfo.storeName}}</text>
 			</view>
@@ -36,7 +36,7 @@
 				<text class="user_name">{{orderInfo.address.consignee}}</text>
 				<text class="user_mobile">{{orderInfo.address.mobile}}</text>
 			</view>
-			<view class="address-address_info" wx:if="{{orderInfo.address && params.deliverType !== 1}}">
+			<view class="address-address_info" wx:if="{{orderInfo.address && params.deliverType !== 1 && params.deliverType !== 2}}">
 				<image src="{{imageUrl}}image/wxapp/address.png"></image>
 				<text class="address">{{orderInfo.address.provinceName+orderInfo.address.cityName+orderInfo.address.districtName+orderInfo.address.address}}</text>
 				<image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
