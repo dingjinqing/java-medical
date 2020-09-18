@@ -1,0 +1,42 @@
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="outer-bottom" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+  <view class="dialog-content">
+    <view class="dialog-title" style="background:url({{imageUrl}}image/wxapp/case-history-top-bg.png) no-repeat left top/100% 107rpx , linear-gradient(#d0edeb, #ffffff);">
+      <text style="background: url({{imageUrl}}image/wxapp/medical_history_bg2.png) no-repeat center 64rpx/110% 14rpx;">身份验证</text>
+    </view>
+    <view class="default-width">
+      <view class="form-item">
+        <view class="form-title">门店账户<text class="required">*</text></view>
+        <input placeholder="请输入门店账户"></input>
+      </view>
+      <view class="form-item">
+        <view class="form-title">账户密码<text class="required">*</text></view>
+        <input placeholder="请输入门店账户"></input>
+      </view>
+      <view class="form-item">
+        <view class="form-title">手机号码</view>
+        <input placeholder="请输入手机号"></input>
+        <view class="mobile {{countDown ? 'gray' : ''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
+      </view>
+      <view class="form-item">
+        <view class="form-title">验证码</view>
+        <input placeholder="请输入验证码"></input>
+      </view>
+      <view class="form-item">
+        <view class="form-title">是否药师</view>
+        <view class="radio-content">
+          <text class="iconfont {{isDoctor ? 'icondanxuan' : 'icondanxuanbiankuang'}}"></text>
+          <text>是</text>
+        </view>
+        <view class="radio-content">
+          <text class="iconfont {{!isDoctor ? 'icondanxuan' : 'icondanxuanbiankuang'}}"></text>
+          <text>否</text>
+        </view>
+      </view>
+      <view class="sign-button">
+        <image src="{{imageUrl}}image/wxapp/sign_icon.png"></image><text>点击此处签名</text>
+      </view>
+      <view class="confirm-button">确定</view>
+    </view>
+  </view>
+</v-popup>
