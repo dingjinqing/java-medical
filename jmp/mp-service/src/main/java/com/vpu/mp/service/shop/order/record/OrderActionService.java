@@ -47,6 +47,8 @@ public class OrderActionService extends ShopBaseService{
 			record.setUserOpenid(param.getWxUserInfo().getWxUser().getOpenId());
 			if(param.getIsMp()!=null&&OrderConstant.IS_MP_STORE_CLERK==param.getIsMp()){
                 record.setAccountId(param.getWxUserInfo().getStoreAccountId());
+                record.setUserId(param.getWxUserInfo().getUserId());
+
             }
 		}
         if(param.getStoreInfo()!=null){
@@ -79,6 +81,7 @@ public class OrderActionService extends ShopBaseService{
             record.setUserOpenid(param.getWxUserInfo().getWxUser().getOpenId());
             if(param.getIsMp()!=null&&OrderConstant.IS_MP_STORE_CLERK==param.getIsMp()){
                 record.setAccountId(param.getWxUserInfo().getStoreAccountId());
+                record.setUserId(param.getWxUserInfo().getUserId());
             }
         }
         if(param.getStoreInfo()!=null){
