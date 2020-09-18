@@ -8,6 +8,7 @@ import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequestItemBo;
@@ -17,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsMedicalInfoEntity;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalInfoVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsStatusVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -280,24 +282,38 @@ public class GoodsAggregate {
      * @return
      */
     public Integer matchGoodsMedical(GoodsMatchParam goodsMatchParam) {
-        Integer goodsId;
-        goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
-        if (goodsId != null) {
-            return goodsId;
+        GoodsStatusVo goodsInfo = goodsDao.getGoodsIdByInfo(goodsMatchParam);
+        if (goodsInfo != null && DelFlag.NORMAL_VALUE.equals(goodsInfo.getDelFlag()) && GoodsConstant.ON_SALE.equals(goodsInfo.getIsOnSale())) {
+            return goodsInfo.getGoodsId();
         }
         goodsMatchParam.setGoodsId(null);
-        goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
-        if (goodsId != null) {
-            return goodsId;
+        GoodsStatusVo goodsInfo1 = goodsDao.getGoodsIdByInfo(goodsMatchParam);
+        if (goodsInfo1 != null && DelFlag.NORMAL_VALUE.equals(goodsInfo1.getDelFlag()) && GoodsConstant.ON_SALE.equals(goodsInfo1.getIsOnSale())) {
+            return goodsInfo1.getGoodsId();
         }
         goodsMatchParam.setProductionEnterprise(null);
-        goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
-        if (goodsId != null) {
-            return goodsId;
+        GoodsStatusVo goodsInfo2 = goodsDao.getGoodsIdByInfo(goodsMatchParam);
+        if (goodsInfo2 != null && DelFlag.NORMAL_VALUE.equals(goodsInfo2.getDelFlag()) && GoodsConstant.ON_SALE.equals(goodsInfo2.getIsOnSale())) {
+            return goodsInfo2.getGoodsId();
         }
         goodsMatchParam.setGoodsQualityRatio(null);
-        goodsId = goodsDao.getGoodsIdByInfo(goodsMatchParam);
-        return goodsId;
+        GoodsStatusVo goodsInfo3 = goodsDao.getGoodsIdByInfo(goodsMatchParam);
+        if (goodsInfo3 != null && DelFlag.NORMAL_VALUE.equals(goodsInfo3.getDelFlag()) && GoodsConstant.ON_SALE.equals(goodsInfo3.getIsOnSale())) {
+            return goodsInfo3.getGoodsId();
+        }
+        if (goodsInfo != null) {
+            return  goodsInfo.getGoodsId();
+        }
+        if (goodsInfo1 != null) {
+            return  goodsInfo1.getGoodsId();
+        }
+        if (goodsInfo2 != null) {
+            return  goodsInfo2.getGoodsId();
+        }
+        if (goodsInfo3 != null) {
+            return  goodsInfo3.getGoodsId();
+        }
+        return null;
     }
 
     public void batchOperate(MedicalGoodsBatchOperateParam param){
