@@ -1098,12 +1098,11 @@ public class MpDistributionService extends ShopBaseService{
          Timestamp nowDate = Util.currentTimeStamp();
          Date foreverDate = new Date(946656000);
          Timestamp protectDate = Util.getEarlyTimeStamp(foreverDate,3650);
-         if(nowDate.compareTo(info.getInviteProtectDate()) > 0 && info.getInviteProtectDate().compareTo(protectDate)>0) {
-             //邀请保护失效
-             return 0;
+         boolean flag = (info.getInviteProtectDate() != null && nowDate.compareTo(info.getInviteProtectDate()) > 0 && info.getInviteProtectDate().compareTo(protectDate)>0);
+         if(flag) {
+             return 0; //邀请保护失效
          } else {
-             //邀请保护有效
-             return 1;
+             return 1;  //邀请保护有效
          }
      }
 

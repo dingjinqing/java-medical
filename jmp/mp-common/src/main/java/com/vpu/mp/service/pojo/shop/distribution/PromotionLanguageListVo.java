@@ -14,7 +14,6 @@ import lombok.Data;
 public class PromotionLanguageListVo {
 	private Integer id;
 	private String title;
-	@JsonProperty("PromotionLanguage")
 	private String promotionLanguage;
 	private Byte isBlock;
 	private Byte delFlag;
