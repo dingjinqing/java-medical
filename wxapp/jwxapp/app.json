@@ -170,7 +170,8 @@
       "root": "pages3",
       "pages": [
         "clerkOrderList/clerkOrderList",
-        "clerkIndex/clerkIndex"
+        "clerkIndex/clerkIndex",
+        "clerkSign/clerkSign"
       ]
     }
   ],
