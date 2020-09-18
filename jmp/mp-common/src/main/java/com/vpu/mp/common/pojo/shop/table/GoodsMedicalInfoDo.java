@@ -52,4 +52,5 @@ public class GoodsMedicalInfoDo {
     private Byte      isDelete;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer hisLastUpdateTime;
 }

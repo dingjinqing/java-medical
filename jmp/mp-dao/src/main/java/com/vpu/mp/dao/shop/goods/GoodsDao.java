@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsStatusVo;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.SelectSeekStepN;
@@ -324,9 +325,8 @@ public class GoodsDao extends ShopBaseDao {
      * @param goodsMatchParam
      * @return
      */
-    public Integer getGoodsIdByInfo(GoodsMatchParam goodsMatchParam) {
-        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
-            .and(GOODS.IS_ON_SALE.eq((byte) 1));
+    public GoodsStatusVo getGoodsIdByInfo(GoodsMatchParam goodsMatchParam) {
+        Condition condition = DSL.noCondition();
         if (goodsMatchParam.getGoodsId() != null && goodsMatchParam.getGoodsId() > 0) {
             condition = condition.and(GOODS_MEDICAL_INFO.GOODS_ID.eq(goodsMatchParam.getGoodsId()));
         } else {
@@ -343,7 +343,7 @@ public class GoodsDao extends ShopBaseDao {
         return db().select(GOODS.GOODS_ID).from(GOODS)
             .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_ID.eq(GOODS.GOODS_ID))
             .where(condition)
-            .fetchAnyInto(Integer.class);
+            .fetchAnyInto(GoodsStatusVo.class);
     }
 
     /**

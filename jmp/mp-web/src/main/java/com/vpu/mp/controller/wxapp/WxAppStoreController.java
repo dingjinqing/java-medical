@@ -24,11 +24,8 @@ import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMainShowVo;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListVo;
 import com.vpu.mp.service.saas.shop.StoreAccountService;
-import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.sms.SmsService;
-import com.vpu.mp.service.shop.store.store.StoreService;
-import com.vpu.mp.service.shop.store.store.StoreWxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -280,9 +277,6 @@ public class WxAppStoreController extends WxAppBaseController{
     public JsonResult storeMainShow(){
         WxAppSessionUser user = wxAppAuth.user();
         StoreAccountVo storeAccountVo=storeAccountService.getOneInfo(user.getStoreAccountId());
-        ShopApplication shop = shop();
-        StoreService store = shop.store;
-        StoreWxService wxService = store.wxService;
         StoreMainShowVo storeMainShowVo=shop().store.wxService.storeMainShow(storeAccountVo);
         return success(storeMainShowVo);
     }
@@ -299,46 +293,5 @@ public class WxAppStoreController extends WxAppBaseController{
         PageResult<StoreOrderListVo> result = shop().store.wxService.getStoreClerkOrderList(param);
         return success(result);
     }
-    /**
-     * 	发货
-     */
-    @PostMapping("/storeClerk/order/ship")
-    public JsonResult ship(@RequestBody @Valid ShipParam param ) {
-        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
-        param.setWxUserInfo(wxAppAuth.user());
-        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult == null || executeResult.isSuccess()) {
-            return success(executeResult == null ? null : executeResult.getResult());
-        }else {
-            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
-        }
-    }
-    /**
-     * 订单完成
-     */
-    @PostMapping("/finish")
-    public JsonResult finish(@RequestBody @Valid OrderOperateQueryParam param) {
-        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
-        param.setWxUserInfo(wxAppAuth.user());
-        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult == null || executeResult.isSuccess()) {
-            return success(executeResult == null ? null : executeResult.getResult());
-        }else {
-            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
-        }
-    }
-    /**
-     * 退款
-     */
-    @PostMapping("/refund")
-    public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
-        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
-        param.setWxUserInfo(wxAppAuth.user());
-        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult == null || executeResult.isSuccess()) {
-            return success(executeResult == null ? null : executeResult.getResult());
-        }else {
-            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
-        }
-    }
+
 }

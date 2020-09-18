@@ -77,7 +77,6 @@ public class StoreAccountDao extends MainBaseDao {
         return db().select().from(STORE_ACCOUNT).where(STORE_ACCOUNT.ACCOUNT_NAME.eq(param.getAccountName()))
             .and(STORE_ACCOUNT.DEL_FLAG.eq(StoreAuthConstant.DEL_NORMAL))
             .and(STORE_ACCOUNT.MOBILE.eq(param.getMobile()))
-            .and(STORE_ACCOUNT.ACCOUNT_TYPE.eq(param.getAccountType()))
             .and(STORE_ACCOUNT.SHOP_ID.eq(param.getShopId()))
             .fetchAnyInto(StoreAccountVo.class);
     }

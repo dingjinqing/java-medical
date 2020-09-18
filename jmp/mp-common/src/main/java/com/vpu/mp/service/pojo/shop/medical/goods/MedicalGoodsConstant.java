@@ -64,7 +64,7 @@ public class MedicalGoodsConstant {
     public static final String STORE_GOODS_CODE_PREFIX= "STORE_";
 
     /**拉取对方数据的开始时间*/
-    public static final String PULL_START_TIME = "2020-10-01 00:00:00";
+    public static final String PULL_START_TIME = "2020-01-01 00:00:00";
     /**
      * 是否处方药 0不是 1是
      */

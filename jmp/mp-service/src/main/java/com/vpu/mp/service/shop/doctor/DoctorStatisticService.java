@@ -5,11 +5,14 @@ import com.vpu.mp.common.pojo.shop.table.DoctorSummaryTrendDo;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.dao.shop.doctor.DoctorSummaryTrendDao;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticListVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticMinMaxVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -107,5 +110,18 @@ public class DoctorStatisticService {
         }
 
         return doctorList;
+    }
+
+    public DoctorStatisticMinMaxVo getMinMaxStatisticData(Date refDate, Byte type){
+        return doctorSummaryTrendDao.getMinMaxStatisticData(refDate,type);
+    }
+
+    public DoctorSummaryTrendDo getOneInfo(Date refDate, Byte type, Integer doctorId){
+        return doctorSummaryTrendDao.getOneInfo(refDate,type,doctorId);
+    }
+
+    public void updateDoctorStatisticScore(Byte type,Date refDate, DoctorStatisticMinMaxVo doctorStatisticMinMax) {
+        doctorSummaryTrendDao.updateDoctorStatisticConsultationScore(type,refDate,doctorStatisticMinMax);
+        doctorSummaryTrendDao.updateDoctorStatisticInquiryScore(type,refDate,doctorStatisticMinMax);
     }
 }

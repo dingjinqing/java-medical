@@ -270,4 +270,13 @@ public class StoreGoodsService extends ShopBaseService{
     public PageResult<StoreGoodsListQueryVo> getGoodsPageList(StoreGoodsListQueryParam param) {
         return storeGoodsDao.getGoodsPageList(param);
     }
+
+    /**
+     * 查询该商品在哪家门店上架
+     * @param storeGoodsBaseCheckInfoList 商品列表
+     * @return List<Integer>
+     */
+    public List<String> checkStoreGoodsIsOnSale(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+        return storeGoodsDao.checkStoreGoodsIsOnSale(storeGoodsBaseCheckInfoList);
+    }
 }

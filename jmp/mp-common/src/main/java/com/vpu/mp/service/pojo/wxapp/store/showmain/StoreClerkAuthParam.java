@@ -30,10 +30,6 @@ public class StoreClerkAuthParam {
     private Integer userId;
     private Integer shopId;
     /**
-     * 账户类型 1店员 2店长
-     */
-    private Byte accountType;
-    /**
      * 是否是药师
      */
     private Byte isPharmacist;

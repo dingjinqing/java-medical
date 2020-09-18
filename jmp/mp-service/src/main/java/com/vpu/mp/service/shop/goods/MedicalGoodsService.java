@@ -853,6 +853,9 @@ public class MedicalGoodsService extends ShopBaseService {
         medicalGoodsSpecProductService.batchSkuUpdate(goodsSpecProductEntities);
     }
 
+
+
+
     /**
      * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品信息
      * @param goodsMatchParam

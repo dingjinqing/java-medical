@@ -101,9 +101,10 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/add")
+    @RedisLock(prefix = JedisKeyConstant.NotResubmit.ADD_STORE_LOCK, noResubmit = true)
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
         try {
-            if(shop().store.addStore(shopId(), store)) {
+            if(shop().store.addStore(store)) {
                 return success();
             }else {
                 return fail();

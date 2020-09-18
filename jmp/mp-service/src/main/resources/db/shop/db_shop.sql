@@ -5715,6 +5715,8 @@ create table `b2c_department_summary_trend` (
   `inquiry_number`        int(11) default 0  null comment '咨询单数',
   `prescription_money`     decimal(10, 2)      default null comment '处方金额',
   `prescription_num`       int(11) default 0  null comment '处方数',
+  `consultation_score`     decimal(10, 2)      default '0.00' comment '接诊分数',
+  `inquiry_score`     decimal(10, 2)      default '0.00' comment '咨询分数',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   primary key (`id`),
   key `ref_type` (`ref_date`, `type`) using btree
@@ -5732,6 +5734,8 @@ create table `b2c_doctor_summary_trend` (
   `prescription_money`     decimal(10, 2)      default null comment '处方金额',
   `prescription_num`       int(11) default 0  null comment '处方数',
   `consume_money`     decimal(10, 2)      default null comment '总消费金额',
+  `consultation_score`     decimal(10, 2)      default '0.00' comment '接诊分数',
+  `inquiry_score`     decimal(10, 2)      default '0.00' comment '咨询分数',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   primary key (`id`),
   key `ref_type` (`ref_date`, `type`) using btree
