@@ -139,17 +139,6 @@ public class StoreGoodsDao extends ShopBaseDao {
     }
 
     /**
-     *
-     * select
-     * 	b2c_store_goods.store_id
-     * from
-     * 	b2c_store_goods
-     * where
-     * 	goods_id = 10
-     * and
-     * 	b2c_store_goods.product_number >= 0
-     * and
-     * 	b2c_store_goods.is_on_sale = 1
      * 查询该商品在哪家门店上架
      * @param storeGoodsBaseCheckInfoList 商品列表
      * @return List<Integer>
@@ -160,8 +149,8 @@ public class StoreGoodsDao extends ShopBaseDao {
             .from(STORE)
             .leftJoin(STORE_GOODS)
             .on(STORE.STORE_ID.eq(STORE_GOODS.STORE_ID))
-            .where(STORE_GOODS.PRD_ID.in(prdId))
-            .and(STORE_GOODS.PRODUCT_NUMBER.gt(0))
+//            .where(STORE_GOODS.PRD_ID.in(prdId))
+            .where(STORE_GOODS.PRODUCT_NUMBER.gt(0))
             .and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE))
             .fetchInto(String.class);
     }
