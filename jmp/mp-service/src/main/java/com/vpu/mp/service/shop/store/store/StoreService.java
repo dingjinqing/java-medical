@@ -666,8 +666,10 @@ public class StoreService extends ShopBaseService {
     public Map<String, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
         // 三方库拉取可用门店列表 **
         // List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
-        List<String> storeCodes = new ArrayList<>();
+        // 不拉取三方库，校验本地可用门店
+        List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(orderAddressParam.getStoreGoodsBaseCheckInfoList());
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, orderAddressParam.getDeliveryType());
+        logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
             double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
@@ -687,8 +689,10 @@ public class StoreService extends ShopBaseService {
     public Map<String, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
         // 三方库拉取可用门店列表 **
         // List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
-        List<String> storeCodes = new ArrayList<>();
+        // 不拉取三方库，校验本地可用门店
+        List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(storeGoodsBaseCheckInfoList);
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, 1);
+        logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
             map.put(formatDouble(0D), e);

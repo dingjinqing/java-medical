@@ -80,10 +80,7 @@ public class StoreDao extends ShopBaseDao {
         // 查询未打烊门店
         select.and(STORE.OPENING_TIME.lt(dateStringParse));
         select.and(STORE.CLOSE_TIME.gt(dateStringParse));
-        if (stores != null && stores.size() != 0) {
-            logger().info("门店库存校验{}",stores);
-            select.and(STORE.STORE_CODE.in(stores));
-        }
+        select.and(STORE.STORE_CODE.in(stores));
         if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
             select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
         }

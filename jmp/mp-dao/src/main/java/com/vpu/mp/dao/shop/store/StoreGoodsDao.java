@@ -5,10 +5,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateTimeParam;
+import com.vpu.mp.service.pojo.shop.store.goods.*;
 import org.jooq.*;
 import org.springframework.stereotype.Repository;
 
@@ -29,6 +26,11 @@ import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
  **/
 @Repository
 public class StoreGoodsDao extends ShopBaseDao {
+
+    /**
+     * 商品在售
+     */
+    private static final Byte IS_ON_SALE = 1;
 
     /**
      * 查询商品主表中需要同步至门店的信息
@@ -134,5 +136,33 @@ public class StoreGoodsDao extends ShopBaseDao {
             condition = condition.and(STORE_GOODS.PRODUCT_NUMBER.eq(0));
         }
         return condition;
+    }
+
+    /**
+     *
+     * select
+     * 	b2c_store_goods.store_id
+     * from
+     * 	b2c_store_goods
+     * where
+     * 	goods_id = 10
+     * and
+     * 	b2c_store_goods.product_number >= 0
+     * and
+     * 	b2c_store_goods.is_on_sale = 1
+     * 查询该商品在哪家门店上架
+     * @param storeGoodsBaseCheckInfoList 商品列表
+     * @return List<Integer>
+     */
+    public List<String> checkStoreGoodsIsOnSale(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+        List<Integer> prdId = storeGoodsBaseCheckInfoList.stream().map(StoreGoodsBaseCheckInfo::getPrdId).collect(Collectors.toList());
+        return db().select(STORE.STORE_CODE)
+            .from(STORE)
+            .leftJoin(STORE_GOODS)
+            .on(STORE.STORE_ID.eq(STORE_GOODS.STORE_ID))
+            .where(STORE_GOODS.PRD_ID.in(prdId))
+            .and(STORE_GOODS.PRODUCT_NUMBER.gt(0))
+            .and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE))
+            .fetchInto(String.class);
     }
 }
