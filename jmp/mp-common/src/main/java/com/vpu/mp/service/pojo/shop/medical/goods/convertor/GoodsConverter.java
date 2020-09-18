@@ -56,6 +56,7 @@ public class GoodsConverter {
         goodsDo.setStoreCode(bo.getStoreCode());
         goodsDo.setHisStatus(bo.getHisStatus());
         goodsDo.setStoreStatus(bo.getStoreStatus());
+        goodsDo.setLastUpdateTime(bo.getLastUpdateTime());
         if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
             goodsDo.setDelFlag(DelFlag.DISABLE_VALUE);
         }
@@ -81,7 +82,6 @@ public class GoodsConverter {
     public static GoodsMedicalInfoDo convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(GoodsMedicalExternalRequestItemBo bo) {
         GoodsMedicalInfoDo goodsMedicalInfoDo =new GoodsMedicalInfoDo();
         FieldsUtil.assign(bo,goodsMedicalInfoDo);
-        goodsMedicalInfoDo.setHisLastUpdateTime(bo.getLastUpdateTime());
         if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
             goodsMedicalInfoDo.setIsDelete(DelFlag.DISABLE_VALUE);
         }

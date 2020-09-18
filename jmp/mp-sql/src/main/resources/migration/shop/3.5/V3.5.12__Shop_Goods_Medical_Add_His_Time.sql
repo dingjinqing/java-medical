@@ -1,1 +1,1 @@
-ALTER TABLE b2c_goods_medical_info ADD COLUMN his_last_update_time int AFTER is_delete;
+ALTER TABLE b2c_goods ADD COLUMN last_update_time int ;
