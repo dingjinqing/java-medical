@@ -54,6 +54,7 @@ public class OrderActionService extends ShopBaseService{
         if(param.getStoreInfo()!=null){
             if(param.getIsMp()!=null&&OrderConstant.IS_MP_STORE_CLERK==param.getIsMp()){
                 record.setAccountId(param.getStoreInfo().getStoreAccountId());
+                record.setUserId(param.getStoreInfo().getStoreAuthInfoVo().getStoreAccountInfo().getUserId());
             }
         }
         if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
@@ -87,6 +88,7 @@ public class OrderActionService extends ShopBaseService{
         if(param.getStoreInfo()!=null){
             if(param.getIsMp()!=null&&OrderConstant.IS_MP_STORE_CLERK==param.getIsMp()){
                 record.setAccountId(param.getStoreInfo().getStoreAccountId());
+                record.setUserId(param.getStoreInfo().getStoreAuthInfoVo().getStoreAccountInfo().getUserId());
             }
         }
         if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
