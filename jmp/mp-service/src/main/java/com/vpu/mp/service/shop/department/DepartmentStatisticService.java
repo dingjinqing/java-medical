@@ -3,10 +3,12 @@ package com.vpu.mp.service.shop.department;
 import com.vpu.mp.common.pojo.shop.table.DepartmentSummaryTrendDo;
 import com.vpu.mp.dao.shop.department.DepartmentSummaryTrendDao;
 import com.vpu.mp.service.pojo.shop.department.DepartmentStatisticParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticMinMaxVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -81,5 +83,14 @@ public class DepartmentStatisticService {
      */
     public void updateDepartmentStatistic(DepartmentSummaryTrendDo param) {
         departmentSummaryTrendDao.updateDepartmentStatistic(param);
+    }
+
+    public DoctorStatisticMinMaxVo getMinMaxStatisticData(Date refDate, Byte type){
+        return departmentSummaryTrendDao.getMinMaxStatisticData(refDate,type);
+    }
+
+    public void updateDepartmentStatisticScore(Byte type,Date refDate, DoctorStatisticMinMaxVo doctorStatisticMinMax) {
+        departmentSummaryTrendDao.updateDepartmentStatisticConsultationScore(type,refDate,doctorStatisticMinMax);
+        departmentSummaryTrendDao.updateDepartmentStatisticInquiryScore(type,refDate,doctorStatisticMinMax);
     }
 }

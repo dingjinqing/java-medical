@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorSummaryTrend extends TableImpl<DoctorSummaryTrendRecord> {
 
-    private static final long serialVersionUID = 308529970;
+    private static final long serialVersionUID = 69993230;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor_summary_trend</code>
@@ -108,6 +108,16 @@ public class DoctorSummaryTrend extends TableImpl<DoctorSummaryTrendRecord> {
      * The column <code>mini_shop_471752.b2c_doctor_summary_trend.consume_money</code>. 总消费金额
      */
     public final TableField<DoctorSummaryTrendRecord, BigDecimal> CONSUME_MONEY = createField("consume_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "总消费金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor_summary_trend.consultation_score</code>. 接诊分数
+     */
+    public final TableField<DoctorSummaryTrendRecord, BigDecimal> CONSULTATION_SCORE = createField("consultation_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "接诊分数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor_summary_trend.inquiry_score</code>. 咨询分数
+     */
+    public final TableField<DoctorSummaryTrendRecord, BigDecimal> INQUIRY_SCORE = createField("inquiry_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "咨询分数");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor_summary_trend.create_time</code>.

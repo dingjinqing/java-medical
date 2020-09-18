@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 public class DepartmentSummaryTrendDo {
 
     private Integer    id;
-    private Date refDate;
+    private Date       refDate;
     private Byte       type;
     private Integer    departmentId;
     private Integer    consultationNumber;
@@ -34,5 +34,7 @@ public class DepartmentSummaryTrendDo {
     private Integer    inquiryNumber;
     private BigDecimal prescriptionMoney;
     private Integer    prescriptionNum;
+    private BigDecimal consultationScore;
+    private BigDecimal inquiryScore;
     private Timestamp  createTime;
 }

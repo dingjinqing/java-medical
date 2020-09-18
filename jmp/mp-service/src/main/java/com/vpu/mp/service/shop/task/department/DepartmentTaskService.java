@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.task.department;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.DepartmentStatisticParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticMinMaxVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.department.DepartmentStatisticService;
@@ -29,11 +30,15 @@ public class DepartmentTaskService extends ShopBaseService {
         TYPE_LIST_1.forEach((e) -> {
             DepartmentStatisticParam param = new DepartmentStatisticParam();
             param.setDepartmentId(departmentId);
-            param.setStartTime(Timestamp.valueOf(today.minusDays(e+1)));
-            param.setEndTime(Timestamp.valueOf(today.minusDays(1)));
+            param.setStartTime(Timestamp.valueOf(today.minusDays(e)));
+            param.setEndTime(Timestamp.valueOf(today));
             param.setType(e);
             param.setRefDate(Date.valueOf(today.minusDays(1).toLocalDate()));
             departmentStatisticService.statisticDepartment(param);
         });
+    }
+
+    public void updateDepartmentStatisticScore(Byte type,Date refDate, DoctorStatisticMinMaxVo doctorStatisticMinMax) {
+        departmentStatisticService.updateDepartmentStatisticScore(type,refDate,doctorStatisticMinMax);
     }
 }

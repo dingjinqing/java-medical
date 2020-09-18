@@ -165,8 +165,8 @@ public class OrderInfoDao extends ShopBaseDao {
         ).from(ORDER_INFO)
             .where(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
             .and(ORDER_INFO.STORE_ID.eq(param.getStoreId()))
-            .and(ORDER_INFO.CREATE_TIME.ge(param.getStartTime()))
-            .and(ORDER_INFO.CREATE_TIME.le(param.getEndTime()))
+            .and(ORDER_INFO.PAY_TIME.ge(param.getStartTime()))
+            .and(ORDER_INFO.PAY_TIME.le(param.getEndTime()))
             .fetchAnyInto(StatisticPayVo.class);
     }
 

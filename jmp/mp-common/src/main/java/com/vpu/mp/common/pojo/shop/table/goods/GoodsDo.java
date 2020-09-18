@@ -72,4 +72,5 @@ public class GoodsDo {
     private String storeCode;
     private Byte hisStatus;
     private Byte storeStatus;
+    private Integer lastUpdateTime;
 }

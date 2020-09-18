@@ -68,6 +68,19 @@ public class WxAppStoreController extends WxAppBaseController{
     }
 
     /**
+     * 医院信息
+     * @return
+     */
+    @PostMapping("/hospital/info")
+    public JsonResult hospitalInfo() {
+        StoreInfoVo hospitalInfo = shop().store.wxService.getHospitalInfo();
+        if (hospitalInfo != null) {
+            return this.success(hospitalInfo);
+        }
+        return fail(JsonResultCode.CODE_IS_NOT_EXIST_HOSPITAL);
+    }
+
+    /**
      * 门店买单
      */
     @PostMapping("/payOrder")
@@ -267,6 +280,15 @@ public class WxAppStoreController extends WxAppBaseController{
             return fail();
         }
         return success();
+    }
+
+    /**
+     *校验当前用户身份
+     * @return
+     */
+    @PostMapping("/storeClerk/auth/check")
+    public JsonResult checkAuth(){
+        return success(wxAppAuth.user());
     }
 
     /**

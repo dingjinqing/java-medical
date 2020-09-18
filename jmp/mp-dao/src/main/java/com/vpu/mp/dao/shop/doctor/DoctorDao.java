@@ -12,12 +12,11 @@ import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -509,5 +508,31 @@ public class DoctorDao extends ShopBaseDao {
             .and(PRESCRIPTION.CREATE_TIME.ge(param.getStartTime()))
             .and(PRESCRIPTION.CREATE_TIME.le(param.getEndTime()))
             .fetchAnyInto(DoctorStatisticOneParam.class);
+    }
+
+    public List<DoctorConsultationOneParam> listRecommendDoctors(){
+
+        return  db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
+            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
+            .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
+            .where(DOCTOR.IS_DELETE.eq((byte) 0))
+            .and(DOCTOR.STATUS.eq((byte) 1))
+            .orderBy(DOCTOR.CONSULTATION_NUMBER)
+            .limit(10)
+            .fetchInto(DoctorConsultationOneParam.class);
+    }
+
+    /**
+     * 科室医师数量子查询（小程序）
+     * @return
+     */
+    public SelectHavingStep<Record2<Integer, BigDecimal>> getDoctorStatisticScore(Integer consultationRate,Integer inquiryRate){
+        return db().select(DOCTOR_SUMMARY_TREND.DOCTOR_ID,DSL.sum(DOCTOR.ID).as("doctor_number"))
+            .from(DOCTOR_SUMMARY_TREND)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_SUMMARY_TREND.DOCTOR_ID))
+            .where(DOCTOR.IS_DELETE.eq((byte) 0))
+            .and(DOCTOR.STATUS.eq((byte) 1))
+            .and(DOCTOR.CAN_CONSULTATION.eq((byte) 1))
+            .groupBy(DOCTOR_SUMMARY_TREND.DOCTOR_ID);
     }
 }

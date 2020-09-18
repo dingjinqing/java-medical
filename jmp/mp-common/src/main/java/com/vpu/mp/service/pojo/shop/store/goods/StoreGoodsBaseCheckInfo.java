@@ -14,5 +14,5 @@ public class StoreGoodsBaseCheckInfo {
     private String goodsApprovalNumber;
     private String goodsProductionEnterprise;
     private String goodsNumber;
-    private Integer prdId;
+    private Integer productId;
 }

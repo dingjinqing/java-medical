@@ -62,7 +62,7 @@
           border
           class="tableClass"
         >
-          <el-table-column type="index" width="50" align="center" />
+          <!-- <el-table-column type="index" width="50" align="center" /> -->
           <el-table-column prop="storeName" label="门店名称" />
           <el-table-column prop="storeCode" label="门店编码" />
           <el-table-column prop="addressBak" label="门店地址" />

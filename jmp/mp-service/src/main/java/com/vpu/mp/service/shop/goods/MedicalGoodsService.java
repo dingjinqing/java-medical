@@ -854,7 +854,9 @@ public class MedicalGoodsService extends ShopBaseService {
     }
 
 
+    public void batchSyncStoreGoodsNumberAndStatus(String storeCode){
 
+    }
 
     /**
      * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品信息
