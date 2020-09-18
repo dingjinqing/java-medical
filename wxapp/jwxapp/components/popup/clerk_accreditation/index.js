@@ -2,11 +2,13 @@ var util = require("../../../utils/util.js");
 var base = require("../base/base.js")
 global.wxComponent({
   mixins: [base],
-  data:{
-    mobile:'',
-    isDoctor:true
+  data: {
+    mobile: '',
+    isDoctor: true,
+    showCanvas: false
   },
-  methods:{
+  lifetimes: {},
+  methods: {
     getVerificationCode() {
       if (this.data.countDown) return false
       if (!this.data.mobile) {
@@ -36,11 +38,16 @@ global.wxComponent({
             }, 1000)
           }
         } else {
-          util.showModal('提示',res.message)
+          util.showModal('提示', res.message)
         }
       }, {
         mobile: this.data.mobile
       })
     },
+    showCanvasContent() {
+      this.setData({
+        showCanvas: true
+      })
+    }
   }
 });

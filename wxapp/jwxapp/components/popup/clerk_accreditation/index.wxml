@@ -33,9 +33,10 @@
           <text>否</text>
         </view>
       </view>
-      <view class="sign-button">
+      <view class="sign-button" wx:if="{{!showCanvas}}" bindtap="showCanvasContent">
         <image src="{{imageUrl}}image/wxapp/sign_icon.png"></image><text>点击此处签名</text>
       </view>
+      <v-sign wx:if="{{showCanvas}}"/>
       <view class="confirm-button">确定</view>
     </view>
   </view>

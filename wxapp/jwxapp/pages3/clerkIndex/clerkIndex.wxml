@@ -43,4 +43,4 @@
   </view>
 </view>
 
-<v-accreditation />
+<v-accreditation show="{{true}}"/>

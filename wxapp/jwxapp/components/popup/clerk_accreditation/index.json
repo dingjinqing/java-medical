@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "v-popup": "../popup/index"
+    "v-popup": "../popup/index",
+    "v-sign": "/components/sign_canvas/index"
   }
 }
