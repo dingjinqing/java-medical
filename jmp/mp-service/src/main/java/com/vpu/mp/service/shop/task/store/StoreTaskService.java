@@ -27,8 +27,8 @@ public class StoreTaskService  extends ShopBaseService {
         TYPE_LIST_1.forEach((e) -> {
             StatisticParam statisticParam = new StatisticParam();
             statisticParam.setStoreId(storeId);
-            statisticParam.setStartTime(Timestamp.valueOf(today.minusDays(e+1)));
-            statisticParam.setEndTime(Timestamp.valueOf(today.minusDays(1)));
+            statisticParam.setStartTime(Timestamp.valueOf(today.minusDays(e)));
+            statisticParam.setEndTime(Timestamp.valueOf(today));
             statisticParam.setType(e);
             statisticParam.setRefDate(Date.valueOf(today.minusDays(1).toLocalDate()));
             storeOrderSummaryTrendService.statisticStore(statisticParam);
