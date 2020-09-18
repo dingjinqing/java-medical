@@ -6,13 +6,17 @@
           <span class="title">待办事项</span>
           <div v-if="bindData.isBind === 0">
             关注公众号，实时接收消息通知
-            <el-button class="btn_follow" @click="handleBind">关注</el-button>
+            <el-button
+              class="btn_follow"
+              @click="handleBind"
+            >关注</el-button>
           </div>
           <div v-if="bindData.isBind === 1">
             {{ bindData.nickName }}已关注公众号，可实时接收消息通知
-            <el-button class="btn_follow" @click="handleCancelBind"
-              >解除绑定</el-button
-            >
+            <el-button
+              class="btn_follow"
+              @click="handleCancelBind"
+            >解除绑定</el-button>
           </div>
         </div>
         <div class="module-content">
@@ -56,7 +60,10 @@
           <span class="title">数据看板</span>
           <div>
             查询时间：
-            <el-select v-model="searchTimeType" @change="selectChange">
+            <el-select
+              v-model="searchTimeType"
+              @change="selectChange"
+            >
               <el-option
                 v-for="item in timeList"
                 :key="item.value"
@@ -68,7 +75,10 @@
           </div>
           <div>
             门店：
-            <el-select v-model="searchStoreId" @change="selectChange">
+            <el-select
+              v-model="searchStoreId"
+              @change="selectChange"
+            >
               <el-option
                 v-for="item in storeList"
                 :key="item.label"
@@ -81,35 +91,50 @@
         </div>
         <div class="data-content">
           <div class="data-item">
-            <img :src="$imageHost + '/image/store/overview/so2.png'" alt="" />
+            <img
+              :src="$imageHost + '/image/store/overview/so2.png'"
+              alt=""
+            />
             <div class="desc">
               <span class="title">下单人数</span>
               <span class="num">{{ totalNum.orderUserNum || 0 }}</span>
             </div>
           </div>
           <div class="data-item">
-            <img :src="$imageHost + '/image/store/overview/so3.png'" alt="" />
+            <img
+              :src="$imageHost + '/image/store/overview/so3.png'"
+              alt=""
+            />
             <div class="desc">
               <span class="title">付款人数</span>
               <span class="num">{{ totalNum.orderPayUserNum || 0 }}</span>
             </div>
           </div>
           <div class="data-item">
-            <img :src="$imageHost + '/image/store/overview/so4.png'" alt="" />
+            <img
+              :src="$imageHost + '/image/store/overview/so4.png'"
+              alt=""
+            />
             <div class="desc">
               <span class="title">下单数</span>
               <span class="num">{{ totalNum.orderNum || 0 }}</span>
             </div>
           </div>
           <div class="data-item">
-            <img :src="$imageHost + '/image/store/overview/so5.png'" alt="" />
+            <img
+              :src="$imageHost + '/image/store/overview/so5.png'"
+              alt=""
+            />
             <div class="desc">
               <span class="title">支付单数</span>
               <span class="num">{{ totalNum.orderPayNum || 0 }}</span>
             </div>
           </div>
           <div class="data-item">
-            <img :src="$imageHost + '/image/store/overview/so6.png'" alt="" />
+            <img
+              :src="$imageHost + '/image/store/overview/so6.png'"
+              alt=""
+            />
             <div class="desc">
               <span class="title">消费金额</span>
               <span class="num">{{ totalNum.totalPaidMoney || '0.00' }}</span>
@@ -118,16 +143,26 @@
         </div>
       </div>
     </div>
-    <div class="right-content" v-if="articleList.length">
+    <div
+      class="right-content"
+      v-if="articleList.length"
+    >
       <div class="content-item">
         <div class="item-title">
           <span class="title">公告</span>
+          <a class="gengduo"><span @click="toList">更多</span>
+            <img
+              :src="image + '/image/admin/new_ov/go.png'"
+              alt=""
+            >
+          </a>
         </div>
         <div class="list-content">
           <div
             class="list-item"
             v-for="articleItem in articleList"
             :key="articleItem.articleId"
+            @click="noticeDetail(articleItem.articleId)"
           >
             <span class="dot"></span>
             <span class="text">{{ articleItem.title }}</span>
@@ -144,7 +179,10 @@
       <span>用手机扫下方二维码关注公众号，及时接收新订单提醒</span>
 
       <div style="text-align: center">
-        <img :src="this.imgsrc" style="width: 100px; padding-top: 23px" />
+        <img
+          :src="this.imgsrc"
+          style="width: 100px; padding-top: 23px"
+        />
       </div>
     </el-dialog>
   </div>
@@ -249,6 +287,20 @@ export default {
     },
     selectChange () {
       this.getNum()
+    },
+    // 公告详情
+    noticeDetail (id) {
+      let routeUrl = this.$router.resolve({ path: '/admin/home/shopMain', query: { id: id, change_components: '8' } })
+      window.open(routeUrl.href, '_blank')
+    },
+    toList () {
+      let routeUrl = this.$router.resolve({
+        path: '/admin/home/shopMain',
+        query: {
+          change_components: '7'
+        }
+      })
+      window.open(routeUrl.href, '_blank')
     }
   }
 }
@@ -348,6 +400,7 @@ export default {
         display: flex;
         align-items: center;
         border-bottom: 1px solid #eee;
+        cursor: pointer;
         .dot {
           width: 6px;
           height: 6px;
@@ -372,6 +425,14 @@ export default {
       > .item-title {
         margin-bottom: 10px;
         display: flex;
+        .gengduo {
+          font-size: 12px;
+          color: #666;
+          display: inline-block;
+          float: right;
+          font-weight: 400;
+          cursor: pointer;
+        }
         > .title {
           font-size: 16px;
           font-weight: 600;

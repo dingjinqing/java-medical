@@ -5,6 +5,11 @@ const routes = [
     component: () => import('@/view/admin/home'),
     children: [
       {
+        path: '/admin/home/shopMain',
+        name: 'shopMain',
+        component: () => import('@/view/admin/layout/shopMain')
+      },
+      {
         path: '/admin/home/main',
         name: 'adminMain',
         component: () => import('@/view/admin/index/main'),
