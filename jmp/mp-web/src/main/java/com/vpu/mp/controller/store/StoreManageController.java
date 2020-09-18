@@ -4,6 +4,8 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
@@ -60,9 +62,10 @@ public class StoreManageController extends StoreBaseController{
      * @return
      */
     @PostMapping(value = "/api/store/store/add")
+    @RedisLock(prefix = JedisKeyConstant.NotResubmit.ADD_STORE_LOCK, noResubmit = true)
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
         try {
-            if(shop().store.addStore(shopId(), store)) {
+            if(shop().store.addStore(store)) {
                 return success();
             }else {
                 return fail();

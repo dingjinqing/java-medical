@@ -28,7 +28,6 @@ public class JedisKeyConstant {
      */
     public static final String GOODS_LOCK = "lock:goods:";
 
-    public static final String ADD_STORE_LOCK = "lock:store:add:";
     /**
      * prescription lock(库存、销量)
      */
@@ -83,6 +82,10 @@ public class JedisKeyConstant {
          * 医师提现申请锁+shopId+userid
          */
         public static final String DOCTOR_WITHDRAW_APPLY = "lock:doctorWithdrawApply";
+        /**
+         * 创建门店锁
+         */
+        public static final String ADD_STORE_LOCK = "lock:store:add:";
     }
 
     /**会话未读信息表*/

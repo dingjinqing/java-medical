@@ -214,12 +214,10 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 新增门店
-     * @param shopId
      * @param store
      * @return
      */
-    @RedisLock(prefix = JedisKeyConstant.ADD_STORE_LOCK)
-    public Boolean addStore(@RedisLockKeys Integer shopId, StorePojo store) throws MpException{
+    public Boolean addStore(StorePojo store) throws MpException{
         // 判断是否存在医院类型门店
         if (storeDao.isExistHospitalStore() && STORE_TYPE_HOSPITAL.equals(store.getStoreType())) {
             throw MpException.initErrorResult(JsonResultCode.CODE_CARD_RECEIVE_NOCODE, store.getStoreType(), null);
