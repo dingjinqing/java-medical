@@ -283,6 +283,15 @@ public class WxAppStoreController extends WxAppBaseController{
     }
 
     /**
+     *校验当前用户身份
+     * @return
+     */
+    @PostMapping("/storeClerk/auth/check")
+    public JsonResult checkAuth(){
+        return success(wxAppAuth.user());
+    }
+
+    /**
      *首页
      * @return
      */
