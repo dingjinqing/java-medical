@@ -314,7 +314,7 @@ public class Keys {
     public static final Identity<DoctorSummaryTrendRecord, Integer> IDENTITY_DOCTOR_SUMMARY_TREND = Identities0.IDENTITY_DOCTOR_SUMMARY_TREND;
     public static final Identity<DoctorLoginLogRecord, Integer> IDENTITY_DOCTOR_LOGIN_LOG = Identities0.IDENTITY_DOCTOR_LOGIN_LOG;
     public static final Identity<UserCollectionActionRecord, Integer> IDENTITY_USER_COLLECTION_ACTION = Identities0.IDENTITY_USER_COLLECTION_ACTION;
-
+    public static final Identity<StoreGoodsRecord, Integer> IDENTITY_STORE_GOODS = Identities0.IDENTITY_STORE_GOODS;
 
 
     // -------------------------------------------------------------------------
@@ -905,6 +905,7 @@ public class Keys {
         public static Identity<DoctorLoginLogRecord, Integer> IDENTITY_DOCTOR_LOGIN_LOG = Internal.createIdentity(DoctorLoginLog.DOCTOR_LOGIN_LOG, DoctorLoginLog.DOCTOR_LOGIN_LOG.ID);
         public static Identity<UserCollectionActionRecord, Integer> IDENTITY_USER_COLLECTION_ACTION = Internal.createIdentity(UserCollectionAction.USER_COLLECTION_ACTION, UserCollectionAction.USER_COLLECTION_ACTION.ID);
 
+        public static Identity<StoreGoodsRecord, Integer> IDENTITY_STORE_GOODS = Internal.createIdentity(StoreGoods.STORE_GOODS, StoreGoods.STORE_GOODS.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1088,7 +1089,7 @@ public class Keys {
         public static final UniqueKey<SpecValsRecord> KEY_B2C_SPEC_VALS_PRIMARY = Internal.createUniqueKey(SpecVals.SPEC_VALS, "KEY_b2c_spec_vals_PRIMARY", SpecVals.SPEC_VALS.SPEC_VAL_ID);
         public static final UniqueKey<SpecValsRecord> KEY_B2C_SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME = Internal.createUniqueKey(SpecVals.SPEC_VALS, "KEY_b2c_spec_vals_unique_spec_id_spec_val_name", SpecVals.SPEC_VALS.SPEC_ID, SpecVals.SPEC_VALS.SPEC_VAL_NAME);
         public static final UniqueKey<StoreRecord> KEY_B2C_STORE_PRIMARY = Internal.createUniqueKey(Store.STORE, "KEY_b2c_store_PRIMARY", Store.STORE.STORE_ID);
-        public static final UniqueKey<StoreGoodsRecord> KEY_B2C_STORE_GOODS_PRIMARY = Internal.createUniqueKey(StoreGoods.STORE_GOODS, "KEY_b2c_store_goods_PRIMARY", StoreGoods.STORE_GOODS.STORE_ID, StoreGoods.STORE_GOODS.GOODS_ID, StoreGoods.STORE_GOODS.PRD_ID, StoreGoods.STORE_GOODS.IS_ON_SALE);
+        public static final UniqueKey<StoreGoodsRecord> KEY_B2C_STORE_GOODS_PRIMARY = Internal.createUniqueKey(StoreGoods.STORE_GOODS, "KEY_b2c_store_goods_PRIMARY", StoreGoods.STORE_GOODS.ID);
         public static final UniqueKey<StoreGroupRecord> KEY_B2C_STORE_GROUP_PRIMARY = Internal.createUniqueKey(StoreGroup.STORE_GROUP, "KEY_b2c_store_group_PRIMARY", StoreGroup.STORE_GROUP.GROUP_ID);
         public static final UniqueKey<StoreGroupRecord> KEY_B2C_STORE_GROUP_GROUP_NAME = Internal.createUniqueKey(StoreGroup.STORE_GROUP, "KEY_b2c_store_group_group_name", StoreGroup.STORE_GROUP.GROUP_NAME);
         public static final UniqueKey<StoreOrderRecord> KEY_B2C_STORE_ORDER_PRIMARY = Internal.createUniqueKey(StoreOrder.STORE_ORDER, "KEY_b2c_store_order_PRIMARY", StoreOrder.STORE_ORDER.ORDER_ID);
