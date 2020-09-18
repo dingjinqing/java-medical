@@ -277,8 +277,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         /**
          * 订单同步到his
          */
-        Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
-        uploadPrescriptionService.uploadPrescription(order.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
+//        Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
+//        uploadPrescriptionService.uploadPrescription(order.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
     }
 
     @Override
