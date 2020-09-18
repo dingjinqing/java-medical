@@ -419,8 +419,11 @@ public class GoodsSpecProductService extends ShopBaseService {
         Map<Integer, StoreGoodsListQueryVo> storeProducts = db().
             select(STORE_GOODS.PRODUCT_PRICE, STORE_GOODS.PRODUCT_NUMBER, STORE_GOODS.PRD_ID).
             from(STORE_GOODS).
-            where(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE)).and(STORE_GOODS.IS_SYNC.eq((byte) 1)).and(STORE_GOODS.STORE_ID.eq(storeId)).and(STORE_GOODS.PRD_ID.in(proIds)).
-            fetchMap(STORE_GOODS.PRD_ID, StoreGoodsListQueryVo.class);
+            where(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE))
+                .and(STORE_GOODS.IS_SYNC.eq((byte) 1))
+                .and(STORE_GOODS.STORE_ID.eq(storeId))
+                .and(STORE_GOODS.PRD_ID.in(proIds))
+                .fetchMap(STORE_GOODS.PRD_ID, StoreGoodsListQueryVo.class);
         for (GoodsSpecProductRecord product : products.values()) {
             StoreGoodsListQueryVo storeProduct = storeProducts.get(product.getPrdId());
             if (storeProduct != null) {

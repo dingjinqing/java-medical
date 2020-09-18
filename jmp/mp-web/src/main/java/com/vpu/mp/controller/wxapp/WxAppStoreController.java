@@ -2,12 +2,17 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
@@ -16,7 +21,10 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreClerkAuthParam;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMainShowVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListVo;
 import com.vpu.mp.service.saas.shop.StoreAccountService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -272,4 +280,18 @@ public class WxAppStoreController extends WxAppBaseController{
         StoreMainShowVo storeMainShowVo=shop().store.wxService.storeMainShow(storeAccountVo);
         return success(storeMainShowVo);
     }
+
+    /**
+     * 订单列表
+     * @param param
+     * @return
+     */
+    @PostMapping("/storeClerk/order/list")
+    public JsonResult getStoreClerkOrderList(@RequestBody StoreOrderListParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setStoreAccountId(user.getStoreAccountId());
+        PageResult<StoreOrderListVo> result = shop().store.wxService.getStoreClerkOrderList(param);
+        return success(result);
+    }
+
 }

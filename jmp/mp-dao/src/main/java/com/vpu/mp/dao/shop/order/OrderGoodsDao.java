@@ -5,6 +5,7 @@ import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
@@ -227,6 +228,16 @@ public class OrderGoodsDao extends ShopBaseDao {
     public void updatePrescriptionDetailCode(Integer recId,String prescriptionDetailCode){
         db().update(ORDER_GOODS).set(ORDER_GOODS.PRESCRIPTION_DETAIL_CODE,prescriptionDetailCode)
             .where(ORDER_GOODS.REC_ID.eq(recId)).execute();
+    }
+
+    /**
+     * 获取订单的orderGoods
+     * @param orderId
+     * @return
+     */
+    public List<OrderGoodsVo> getOrderGoodsListByOrderId(Integer orderId){
+        return db().select().from(ORDER_GOODS).where(ORDER_GOODS.ORDER_ID.eq(orderId))
+            .fetchInto(OrderGoodsVo.class);
     }
 
 }

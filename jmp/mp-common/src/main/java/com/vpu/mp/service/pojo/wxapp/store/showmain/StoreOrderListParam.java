@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.wxapp.store.showmain;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author yangpengcheng
  * @date 2020/9/17
@@ -10,8 +12,16 @@ import lombok.Data;
 @Data
 public class StoreOrderListParam extends BasePageParam {
     /**
-     * 待处理 已完成
+     * 0待处理 1已完成
      */
     private Byte status;
-    private Integer userId;
+    /**
+     * 订单状态
+     */
+    private List<Byte> orderStatusList;
+    private Integer storeId;
+    /**
+     * 门店账户id
+     */
+    private Integer storeAccountId;
 }

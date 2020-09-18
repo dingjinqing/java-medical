@@ -507,6 +507,7 @@ public class JsonResultMessage {
     public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
     public static final String MSF_STORE_NEED_HAVE = "store.need.have";
     public static final String CODE_NO_STORE_OPEN = "当前无营业门店";
+    public static final String CODE_IS_EXIST_HOSPITAL = "store.is.exist.hospital";
 
     /**
      * 门店技师管理
@@ -1450,6 +1451,7 @@ public class JsonResultMessage {
     public static final String STORE_CLERK_AUTH_INFO_ERROR ="店员认证失败，认证信息有误";
     public static final String STORE_CLERK_AUTH_ALREADY_ERROR ="店员认证失败，该身份已经认证";
     public static final String STORE_CLERK_AUTH_INFO_SMS_ERROR ="店员认证失败，验证码有误";
+    public static final String STORE_CLERK_AUTH_IS_DISABLED ="店员认证失败，账户已被禁用";
 
     public static final String FETCH_HIS_ERROR = "拉取信息时错误";
     public static final String FETCH_HIS_NO_PATIENT = "无此患者信息";

@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.order.record;
 
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.OrderAction;
 import com.vpu.mp.db.shop.tables.records.OrderActionRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -7,6 +9,10 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListVo;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -39,7 +45,17 @@ public class OrderActionService extends ShopBaseService{
 		}
 		if(param.getWxUserInfo() != null){
 			record.setUserOpenid(param.getWxUserInfo().getWxUser().getOpenId());
+			if(param.getIsMp()!=null&&OrderConstant.IS_MP_STORE_CLERK==param.getIsMp()){
+                record.setAccountId(param.getWxUserInfo().getStoreAccountId());
+                record.setUserId(param.getWxUserInfo().getUserId());
+
+            }
 		}
+        if(param.getStoreInfo()!=null){
+            if(param.getIsMp()!=null&&OrderConstant.IS_MP_STORE_CLERK==param.getIsMp()){
+                record.setAccountId(param.getStoreInfo().getStoreAccountId());
+            }
+        }
         if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
             record.setActionUser("cron");
             record.setActionNote("自动任务," + record.getActionNote());
@@ -63,6 +79,15 @@ public class OrderActionService extends ShopBaseService{
         }
         if(param.getWxUserInfo() != null){
             record.setUserOpenid(param.getWxUserInfo().getWxUser().getOpenId());
+            if(param.getIsMp()!=null&&OrderConstant.IS_MP_STORE_CLERK==param.getIsMp()){
+                record.setAccountId(param.getWxUserInfo().getStoreAccountId());
+                record.setUserId(param.getWxUserInfo().getUserId());
+            }
+        }
+        if(param.getStoreInfo()!=null){
+            if(param.getIsMp()!=null&&OrderConstant.IS_MP_STORE_CLERK==param.getIsMp()){
+                record.setAccountId(param.getStoreInfo().getStoreAccountId());
+            }
         }
         if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
             record.setActionUser("cron");
@@ -79,30 +104,48 @@ public class OrderActionService extends ShopBaseService{
 
     /**
      * 数量单数
-     * @param userId
+     * @param accountId
      * @param orderStatus
+     * @param storesId
      * @return
      */
-	public Integer getCountNumByUserIdOrderStatus(Integer userId, Byte orderStatus, Integer storesId){
+	public Integer getCountNumByUserIdOrderStatus(Integer accountId, Byte orderStatus, Integer storesId){
 	    return db().selectCount().from(TABLE)
             .leftJoin(ORDER_INFO).on(TABLE.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
-            .where(TABLE.USER_ID.eq(userId)).and(TABLE.ORDER_STATUS.eq(orderStatus))
+            .where(TABLE.ACCOUNT_ID.eq(accountId)).and(TABLE.ORDER_STATUS.eq(orderStatus))
             .and(ORDER_INFO.STORE_ID.eq(storesId))
             .fetchAnyInto(Integer.class);
     }
     /**
      * 时间查询数量单数
-     * @param userId
+     * @param accountId
      * @param orderStatus
+     * @param storesIds
+     * @param startTime
+     * @param endTime
      * @return
      */
-    public Integer getCountNumByUserIdOrderStatusAndTime(Integer userId, Byte orderStatus, List<Integer> storesIds, Timestamp startTime,Timestamp endTime){
+    public Integer getCountNumByUserIdOrderStatusAndTime(Integer accountId, Byte orderStatus, List<Integer> storesIds, Timestamp startTime,Timestamp endTime){
         return db().selectCount().from(TABLE)
             .leftJoin(ORDER_INFO).on(TABLE.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
-            .where(TABLE.USER_ID.eq(userId)).and(TABLE.ORDER_STATUS.eq(orderStatus))
+            .where(TABLE.ACCOUNT_ID.eq(accountId)).and(TABLE.ORDER_STATUS.eq(orderStatus))
             .and(ORDER_INFO.STORE_ID.in(storesIds))
-            .and(ORDER_INFO.CREATE_TIME.ge(startTime))
-            .and(ORDER_INFO.CREATE_TIME.le(endTime))
+            .and(TABLE.CREATE_TIME.ge(startTime))
+            .and(TABLE.CREATE_TIME.le(endTime))
             .fetchAnyInto(Integer.class);
+    }
+    /**
+     * 获取门店用户完成的订单操作
+     * @param param
+     * @return
+     */
+    public PageResult<StoreOrderListVo> getStoreClerkOrderFinishedList(StoreOrderListParam param){
+        SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.ORDER_ID,ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.MOBILE,ORDER_INFO.ADDRESS_ID,ORDER_INFO.COMPLETE_ADDRESS)
+            .from(Tables.ORDER_ACTION)
+            .leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_ID.eq(Tables.ORDER_ACTION.ORDER_ID));
+        select.where(ORDER_INFO.STORE_ID.eq(param.getStoreId())).and(Tables.ORDER_ACTION.ACCOUNT_ID.eq(param.getStoreAccountId()))
+            .and(Tables.ORDER_ACTION.ORDER_STATUS.eq(OrderConstant.ORDER_RECEIVED))
+            .orderBy(Tables.ORDER_ACTION.CREATE_TIME.desc());
+        return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreOrderListVo.class);
     }
 }

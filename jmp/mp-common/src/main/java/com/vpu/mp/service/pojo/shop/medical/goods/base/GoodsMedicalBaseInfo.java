@@ -15,6 +15,7 @@ public class GoodsMedicalBaseInfo {
     private String goodsAliasName;
     private String goodsQualityRatio;
     private Byte isRx;
+    private Byte medicalType;
     private Byte insuranceFlag;
     private String insuranceCode;
     private String insuranceDatabaseName;

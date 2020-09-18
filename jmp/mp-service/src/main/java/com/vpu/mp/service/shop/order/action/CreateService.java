@@ -16,7 +16,10 @@ import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.address.UserAddressService;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -103,7 +106,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -239,10 +248,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     @Override
     public Object query(OrderBeforeParam param) throws MpException {
-        OrderBeforeVo result = init(param);
-        // process
-        processQueryParam(param, result);
-        return result;
+        return queryProcessParam(param);
     }
 
     @Override
@@ -467,30 +473,22 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private CreateOrderBo processPrepairCreateOrder(CreateParam param, OrderBeforeVo orderBeforeVo) throws MpException {
         CreateOrderBo orderBo;
         List<OrderGoodsBo> orderGoodsBos;//初始化paramGoods
-        initParamGoods(param);
+        queryAndExecuteInitParamGoods(param);
         //init
         orderBo = initCreateOrderBo(param);
         //校验
         checkCreateOrderBo(orderBo, param);
         //设置规格和商品信息、基础校验规格与商品
-        processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
+        queryAndExecuteProcessParamGoods(param);
         //TODO 营销相关 活动校验或活动参数初始化
         marketProcessorFactory.processInitCheckedOrderCreate(param);
-        //下架商品校验
-        checkGoodsIsOnSale(param.getGoods());
-        if(null != param.getActivityId() && null != param.getActivityType()) {
-            //活动生成ordergodos;
-            orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
-        }else {
-            //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
-            //初始化订单商品
-            orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId());
-        }
+        //处理营销活动后校验(因为有些活动下架仍可以下单)
+        queryAndExecuteCheckGoodsIsOnSale(param.getGoods());
+        //初始化 goodsBo 活动后价格
+        initOrderGoods(param, orderBeforeVo);
         //生成订单商品后校验必填项
-        checkMust(orderGoodsBos, param);
-
-        orderBo.setOrderGoodsBo(orderGoodsBos);
-
+        checkMust(param.getBos(), param);
+        orderBo.setOrderGoodsBo(param.getBos());
         //处理orderBeforeVo
         orderBeforeVo.setAddress(orderBo.getAddress());
         processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
@@ -499,16 +497,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         return orderBo;
     }
 
-    private OrderBeforeVo init(OrderBeforeParam param) throws MpException {
-        OrderBeforeVo result = OrderBeforeVo.builder().build();
-        // 地址
-        result.setAddress(getDefaultAddress(param.getWxUserInfo().getUserId(), param.getAddressId()));
-        // 支持的配送方式
-        result.setExpressList(getExpressList());
-        //初始化paramGoods
-        initParamGoods(param);
-        return result;
-    }
 
     /**
      * 订单商品入库（存在分销则分销商品更新recid）
@@ -661,11 +649,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         return expressList;
     }
 
-    /**admin.storeTop.json
-     * init param goods
+    /**
+     * 查询和提交订单初始化商品
+     * 商品来源 购物车/处方
+     *
      * @param param
      */
-    public void initParamGoods(OrderBeforeParam param) throws MpException {
+    public void queryAndExecuteInitParamGoods(OrderBeforeParam param) throws MpException {
         if(OrderConstant.CART_Y.equals(param.getIsCart())) {
             //购物车结算初始化商品
             param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
@@ -686,31 +676,23 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 处理查询方法
      * @param param
-     * @param vo
      * @throws MpException
      */
-    public void processQueryParam(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
-
+    public OrderBeforeVo queryProcessParam(OrderBeforeParam param) throws MpException {
+        //初始化Goods
+        queryAndExecuteInitParamGoods(param);
         //初始化所有可选支付方式
         param.setPaymentList(payment.getSupportPayment());
         //好友代付
         param.setInsteadPayCfg(insteadPayConfig.getInsteadPayConfig());
         //设置规格和商品信息、基础校验规格与商品
-        processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
+        queryAndExecuteProcessParamGoods(param);
         //TODO 营销相关 活动校验或活动参数初始化
         marketProcessorFactory.processInitCheckedOrderCreate(param);
-        //下架商品校验
-        checkGoodsIsOnSale(param.getGoods());
-        if(null != param.getActivityId() && null != param.getActivityType()) {
-            //活动生成ordergodos;
-            vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getStoreId()));
-        }else {
-            //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
-            //初始化订单商品
-            vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.createOrderCartProductBo(), param.getStoreId()));
-        }
-        //据处理过的param和其他信息填充下单确认页返回信息
-        processBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
+        //下架商品校验(因为有些活动下架仍可以下单)
+        queryAndExecuteCheckGoodsIsOnSale(param.getGoods());
+        //订单金额计算,返回vo
+        return queryProcessBeforeVoInfo(param);
     }
 
     /**
@@ -718,14 +700,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param goodsList
      * @throws MpException
      */
-    private void checkGoodsIsOnSale(List<Goods> goodsList) throws MpException {
+    private void queryAndExecuteCheckGoodsIsOnSale(List<Goods> goodsList) throws MpException {
         logger().info("校验商品上下架");
         for (Goods goods: goodsList) {
             if (!GoodsConstant.ON_SALE.equals(goods.getGoodsInfo().getIsOnSale())) {
-                logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
-                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
-            }
-            if (goods.getStoreGoods() == null) {
                 logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
             }
@@ -735,23 +713,18 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 非营销商品处理（query/execute）
      * @param param
-     * @param userId
-     * @param storeId
      * @throws MpException
      */
-    public void processParamGoods(OrderBeforeParam param, Integer userId, Integer storeId) throws MpException {
+    public void queryAndExecuteProcessParamGoods(OrderBeforeParam param) throws MpException {
         logger().info("processParamGoods start");
         //规格信息,key proId
-        Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
+        Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds());
         //goods type,key goodsId
-        Map<Integer, GoodsRecord> goods = goodsService.getGoodsToOrder(param.getGoodsIds());
-        // 门店商品
-        Map<Integer, StoreGoodsRecord> storeGoods = goodsService.getStoreGoodsToOrder(param.getGoodsIds(), param.getStoreId());
+        Map<Integer, GoodsRecord> goods = goodsService.getGoodsByIds(param.getGoodsIds());
         //赋值
         for (Goods temp : param.getGoods()) {
             temp.setProductInfo(productInfo.get(temp.getProductId()));
             temp.setGoodsInfo(goods.get(temp.getGoodsId()));
-            temp.setStoreGoods(storeGoods.get(temp.getGoodsId()));
             //校验
             checkGoodsAndProduct(temp);
             //初始化商品价格
@@ -760,34 +733,25 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         logger().info("processParamGoods end");
     }
 
-    /**
-     * 唯一性的营销活动下单
-     * @param param
-     * @param storeId
-     * @throws MpException
-     */
-    private void processParamGoodsByMarket(OrderBeforeParam param, Integer storeId) throws MpException {
-        //赋值
-        for (Goods temp : param.getGoods()) {
-
-        }
-    }
 
     /**
      * 根据处理过的param和其他信息填充下单确认页返回信息
+     * 订单金额计算,返回vo
      * @param param
-     * @param userId
-     * @param storeId
-     * @param vo
      */
-    private void processBeforeVoInfo(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
-        vo.setInsteadPayCfg(param.getInsteadPayCfg());
+    private OrderBeforeVo queryProcessBeforeVoInfo(OrderBeforeParam param) throws MpException {
+        /*** 初始化*/
+        OrderBeforeVo vo = OrderBeforeVo.builder().build();
+        //初始化orderGoods vo;
+        initOrderGoods(param,vo);
+        // 地址
+        vo.setAddress(getDefaultAddress(param.getWxUserInfo().getUserId(), param.getAddressId()));
+        // 支持的配送方式
+        vo.setExpressList(getExpressList());
         //默认选择配送方式
         vo.setDeliverType(Objects.isNull(param.getDeliverType()) ? vo.getDefaultDeliverType() : param.getDeliverType());
-        //配送方式支持的门店列表（自提、同城配送）
-        List<StorePojo>[] storeLists = store.filterExpressList(vo.getExpressList(), param.getProductIds(), vo.getAddress(), NO);
-        //处理配送方式及门店信息;设置门店列表
-        processExpressList(storeLists, vo);
+        //好友代付
+        vo.setInsteadPayCfg(param.getInsteadPayCfg());
         //计算金额相关、vo赋值
         processOrderBeforeVo(param, vo, vo.getOrderGoods());
         //赠品活动
@@ -796,7 +760,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
             vo.getOrderGoods().forEach(x-> x.setGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
         }
-
         // 积分使用规则
         setScorePayRule(vo);
         //支付方式
@@ -815,6 +778,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setCheckPrescriptionStatus(param.getCheckPrescriptionStatus());
         vo.setOrderAuditType(param.getOrderAuditType());
         vo.setPatientInfo(param.getPatientInfo());
+        return vo;
     }
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
@@ -825,38 +789,31 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 营销、非营销处理后初始化orderGoods对象
      * @param param 结算参数
-     * @param goods 购买商品列表
-     * @param userId 会员id
-     * @param memberCardNo 会员卡no
-     * @param uniteMarkeingtBo 统一营销优惠信息
-     * @param storeId   门店id
+     * @param vo
      * @throws MpException 校验异常
      * @return  bo
      */
-    public List<OrderGoodsBo> initOrderGoods(OrderBeforeParam param, List<Goods> goods, Integer userId, String memberCardNo, OrderCartProductBo uniteMarkeingtBo, Integer storeId) throws MpException {
+    public void initOrderGoods(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
         logger().info("initOrderGoods开始");
-        List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
-        for (Goods temp : goods) {
-            //TODO 预售商品，不支持现购买 && !$storeId
-            if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(temp.getGoodsInfo().getGoodsType())) {
-                preSaleCheck(temp);
-            }
+        List<OrderGoodsBo> boList = new ArrayList<>(param.getGoods().size());
+        for (Goods temp : param.getGoods()) {
             //非加价购改价(加价购唯一入口在购物车)
             if(!BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(temp.getCartType())) {
-                //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
-                UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()),userId);
-                logger().info("calculateResult:{}", calculateResult);
-                //数量限制
-                goodsNumLimit(temp);
-                temp.setGoodsPrice(calculateResult.getPrice());
-                temp.setProductPrice(calculateResult.getPrice());
-                temp.setGoodsPriceAction(calculateResult.getActivityType());
+                OrderCartProductBo.OrderCartProduct orderCartProduct = param.getOrderCartProductBo().get(temp.getProductId());
+                if (orderCartProduct!=null){
+                    UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, param.getOrderCartProductBo().get(temp.getProductId()),param.getWxUserInfo().getUserId());
+                    logger().info("calculateResult:{}", calculateResult);
+                    //数量限制
+                    goodsNumLimit(temp);
+                    temp.setGoodsPrice(calculateResult.getPrice());
+                    temp.setProductPrice(calculateResult.getPrice());
+                    temp.setGoodsPriceAction(calculateResult.getActivityType());
+                }
             }
-            //TODO temp goodsprice 取规格
-            boList.add(orderGoods.initOrderGoods(temp));
+            boList.add(orderGoods.goodsToOrderGoodsBo(temp));
         }
         param.setBos(boList);
-        return boList;
+        vo.setOrderGoods(boList);
     }
 
     private void preSaleCheck(Goods temp) throws MpException {
@@ -898,31 +855,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 营销、非营销处理后初始化orderGoods对象
-     * @param param 结算参数
-     * @param goods 购买商品列表
-     * @param storeId   门店id
-     * @throws MpException 校验异常
-     * @return  bo
-     */
-    public List<OrderGoodsBo> initOrderGoods(OrderBeforeParam param, List<Goods> goods,Integer storeId) throws MpException {
-        logger().info("initOrderGoods开始");
-        List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
-        for (Goods temp : goods) {
-            goodsNumLimit(temp);
-            OrderGoodsBo bo = orderGoods.initOrderGoods(temp);
-            boList.add(bo);
-        }
-        param.setBos(boList);
-        return boList;
-    }
-
-    /**
      * 校验商品和规格信息（商品已下架校验等待process处理checkAndInit后校验
      * @param goods
      * @throws MpException
      */
     public void checkGoodsAndProduct(Goods goods) throws MpException {
+        if (goods.getGoodsInfo() == null || goods.getProductInfo() == null || goods.getGoodsInfo().getDelFlag() == DelFlag.DISABLE.getCode()) {
+            logger().error("checkGoodsAndProduct,商品不存在");
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, Util.toJson(goods));
+        }
         if (goods.getGoodsNumber() == null || goods.getGoodsNumber() <= 0) {
             logger().error("checkGoodsAndProduct,商品数量不能为0,id:" + goods.getProductId());
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_ZERO, null, goods.getGoodsInfo().getGoodsName());

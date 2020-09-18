@@ -25,7 +25,6 @@ import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
  * 2019年7月17日
  */
 @Service
-
 public class StoreGroupService extends ShopBaseService{
 	/**
 	 * 门店分组列表-查询

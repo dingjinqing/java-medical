@@ -239,13 +239,14 @@ public class GoodsService extends ShopBaseService {
             goodsRecords = db().select(GOODS.GOODS_ID, GOODS.SORT_ID, GOODS.CAT_ID).from(GOODS).where(condition).fetchInto(GoodsRecord.class);
         } else {
             goodsRecords = db().select(GOODS.GOODS_ID, GOODS.SORT_ID, GOODS.CAT_ID).from(GOODS).innerJoin(GOODS_SPEC_PRODUCT)
-                .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID)).where(condition).fetchInto(GoodsRecord.class);
+                    .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID)).where(condition).fetchInto(GoodsRecord.class);
         }
         return goodsRecords;
     }
 
     /**
      * 根据条件查询过滤商品所有需要的标签，品牌，商家分类信息项（对应的项内不统计对应的商品数量）
+     *
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
      */
@@ -272,6 +273,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 全部商品界面：商品分页查询，包含了部分规格信息（规格价格范围，规格类型数量）
+     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      */
@@ -293,6 +295,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 需要对搜索条件进行二次封装
+     *
      * @param goodsPageListParam 搜索条件
      */
     private void assemblyGoodsPageListParam(GoodsPageListParam goodsPageListParam) {
@@ -306,16 +309,16 @@ public class GoodsService extends ShopBaseService {
         Condition condition = this.buildOptions(goodsPageListParam);
 
         SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_NAME.as("goods_title_name"), GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
-            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER,
-            GOODS.GOODS_SALE_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.MARKET_PRICE)
-            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition);
+                GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER,
+                GOODS.GOODS_SALE_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.MARKET_PRICE)
+                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+                .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition);
 
         // 拼接排序
         selectFrom = this.buildOrderFields(selectFrom, goodsPageListParam);
 
         PageResult<GoodsPageListVo> pageResult = this.getPageResult(selectFrom, goodsPageListParam.getCurrentPage(),
-            goodsPageListParam.getPageRows(), GoodsPageListVo.class);
+                goodsPageListParam.getPageRows(), GoodsPageListVo.class);
 
         // 结果集标签、平台分类、规格信息二次处理
         this.disposeGoodsPageListVo(pageResult.getDataList(), goodsPageListParam);
@@ -345,28 +348,29 @@ public class GoodsService extends ShopBaseService {
         List<Integer> goodsIds;
         assemblyGoodsPageListParam(goodsPageListParam);
         try {
-            goodsIds =  esGoodsSearchService.getGoodsIdsByParam(goodsPageListParam);
+            goodsIds = esGoodsSearchService.getGoodsIdsByParam(goodsPageListParam);
         } catch (IOException e) {
             Condition condition = this.buildOptions(goodsPageListParam);
 
             goodsIds = db().select(GOODS.GOODS_ID)
-                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-                .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
+                    .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+                    .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
         }
         return goodsIds;
     }
 
     /**
-     *  根据商品id集合获取对应的商品信息和规格信息
+     * 根据商品id集合获取对应的商品信息和规格信息
+     *
      * @param goodsIds
      * @return GoodsPageListVo
      */
     public List<GoodsPageListVo> getGoodsAndProductsByGoodsIds(List<Integer> goodsIds) {
         List<GoodsPageListVo> goodsPageListVos = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
-            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
-            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.GOODS_ID.in(goodsIds))
-            .fetchInto(GoodsPageListVo.class);
+                GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
+                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+                .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.GOODS_ID.in(goodsIds))
+                .fetchInto(GoodsPageListVo.class);
 
         GoodsPageListParam pageListParam = new GoodsPageListParam();
         pageListParam.setSelectType(GoodsPageListParam.GOODS_LIST_WITH_PRD);
@@ -378,6 +382,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品（规格）查询或导出的通用SelectConditionStep，每条记录包含了商品部分信息和必要的规格信息
+     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      */
     private SelectConditionStep<?> createProductSelect(GoodsPageListParam goodsPageListParam) {
@@ -385,38 +390,40 @@ public class GoodsService extends ShopBaseService {
         Condition condition = this.buildOptions(goodsPageListParam);
 
         SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_NAME.as("goods_title_name"), GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
-            GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, SORT.LEVEL, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
-            GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.DELIVER_PLACE,
-            GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,
-            GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
-            GOODS_SPEC_PRODUCT.PRD_IMG, GOODS_SPEC_PRODUCT.PRD_CODES)
-            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
-            .where(condition);
+                GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, SORT.LEVEL, GOODS.SORT_ID, GOODS.GOODS_AD, GOODS.IS_ON_SALE, GOODS.LIMIT_BUY_NUM, GOODS.GOODS_WEIGHT, GOODS.UNIT,
+                GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.DELIVER_PLACE,
+                GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,
+                GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
+                GOODS_SPEC_PRODUCT.PRD_IMG, GOODS_SPEC_PRODUCT.PRD_CODES)
+                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+                .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+                .where(condition);
 
         // 拼接排序
         selectFrom = this.buildOrderFields(selectFrom, goodsPageListParam);
 
         return selectFrom;
     }
+
     /**
      * 商品（规格）分页查询，每条记录包含了商品部分信息和必要的规格信息
+     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      */
     public PageResult<GoodsPageListVo> getProductPageList(GoodsPageListParam goodsPageListParam) {
         PageResult<GoodsPageListVo> pageResult = null;
-        if( esUtilSearchService.esState() ){
+        if (esUtilSearchService.esState()) {
             try {
                 pageResult = esGoodsSearchService.searchGoodsPageForProduct(goodsPageListParam);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             SelectConditionStep<?> selectFrom = this.createProductSelect(goodsPageListParam);
 
-            pageResult= this.getPageResult(selectFrom, goodsPageListParam.getCurrentPage(),
-                goodsPageListParam.getPageRows(), GoodsPageListVo.class);
+            pageResult = this.getPageResult(selectFrom, goodsPageListParam.getCurrentPage(),
+                    goodsPageListParam.getPageRows(), GoodsPageListVo.class);
 
             // 结果集标签、平台分类、规格信息二次处理
             this.disposeGoodsPageListVo(pageResult.getDataList(), goodsPageListParam);
@@ -426,6 +433,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取符合条件的全部商品规格id集合
+     *
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
      * @return 规格id集合
      */
@@ -434,15 +442,16 @@ public class GoodsService extends ShopBaseService {
         Condition condition = this.buildOptions(goodsPageListParam);
 
         List<Integer> prdIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID)
-            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
-            .where(condition).fetch(GOODS_SPEC_PRODUCT.PRD_ID);
+                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+                .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+                .where(condition).fetch(GOODS_SPEC_PRODUCT.PRD_ID);
 
         return prdIds;
     }
 
     /**
      * 分页条件拼凑
+     *
      * @param goodsPageListParam 过滤条件
      * @return where 过滤结果对象
      */
@@ -539,7 +548,8 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 处理平台分类和商家分类过滤条件
-     * @param condition   已有过滤条件
+     *
+     * @param condition          已有过滤条件
      * @param goodsPageListParam goodsPageListParam 过滤条件
      * @return condition 拼装后的过滤条件
      */
@@ -561,6 +571,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 处理标签过滤条件
+     *
      * @param condition          已有过滤条件
      * @param goodsPageListParam goodsPageListParam 滤条件
      * @return condition 拼装后的过滤条件
@@ -595,6 +606,7 @@ public class GoodsService extends ShopBaseService {
     /**
      * 处理价格过滤条件
      * 当{@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam#getSelectType()} 为2时价格按照规格价格进行筛选，否则按照商品价格进行筛选
+     *
      * @param condition          已有过滤条件
      * @param goodsPageListParam goodsPageListParam 带过滤条件的待执行语句
      * @return condition 拼装后的过滤条件
@@ -620,7 +632,8 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 排序条件过滤
-     * @param scs 待排序语句
+     *
+     * @param scs                待排序语句
      * @param goodsPageListParam
      * @return
      */
@@ -662,7 +675,8 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 处理商品或规格分页查询结果，设置对应的标签、平台分类、商品规格信息等
-     * @param dataList 分页结果集
+     *
+     * @param dataList      分页结果集
      * @param pageListParam 数据筛选条件
      */
     protected void disposeGoodsPageListVo(List<GoodsPageListVo> dataList, GoodsPageListParam pageListParam) {
@@ -710,6 +724,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 为商品设置相应的规格信息
+     *
      * @param goods             {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo}
      * @param goodsSpecProducts 商品对应的{@link com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct}集合
      */
@@ -750,6 +765,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 规格
+     *
      * @param goodsId 商品ID
      * @return GoodsProductVo
      */
@@ -767,8 +783,8 @@ public class GoodsService extends ShopBaseService {
             return new ArrayList<>();
         }
         List<GoodsView> goodsViewList = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG,
-            GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).from(GOODS).where(GOODS.GOODS_ID.in(ids))
-            .fetchInto(GoodsView.class);
+                GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).from(GOODS).where(GOODS.GOODS_ID.in(ids))
+                .fetchInto(GoodsView.class);
         goodsViewList.forEach(item -> item.setGoodsImg(getImgFullUrlUtil(item.getGoodsImg())));
         return goodsViewList;
     }
@@ -778,19 +794,20 @@ public class GoodsService extends ShopBaseService {
      */
     public GoodsView getGoodsView(Integer goodsId) {
         GoodsView goodsView = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
-            from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
-            fetchOne().into(GoodsView.class);
+                from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
+                fetchOne().into(GoodsView.class);
         goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
         return goodsView;
     }
+
     /**
      * 取单个GoodsView
      */
     public GoodsView getGoodsViewByProductId(Integer productId) {
         Record6<Integer, String, String, Integer, BigDecimal, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
-            from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
-            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
-                fetchOne();
+                from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).
+                        fetchOne();
         if (record != null) {
             GoodsView goodsView = record.into(GoodsView.class);
             goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
@@ -804,13 +821,14 @@ public class GoodsService extends ShopBaseService {
      */
     public GoodsSmallVo getGoodsSmallVo(Integer goodsId) {
         GoodsSmallVo goods = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
-            fetchAnyInto(GoodsSmallVo.class);
+                fetchAnyInto(GoodsSmallVo.class);
         goods.setGoodsImg(getImgFullUrlUtil(goods.getGoodsImg()));
         return goods;
     }
 
     /**
      * 根据id获取商品运费模板id
+     *
      * @param goodsId 商品id
      * @return id or null
      */
@@ -820,11 +838,12 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取所有商品所关联的有效品牌id集合
+     *
      * @return 品牌id集合
      */
     public List<Integer> getGoodsBrandIds() {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())
-            .and(Tables.GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE)).and(GOODS.BRAND_ID.ne(GoodsConstant.GOODS_DEFAULT_BRAND_ID));
+                .and(Tables.GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE)).and(GOODS.BRAND_ID.ne(GoodsConstant.GOODS_DEFAULT_BRAND_ID));
         // 是否展示售罄
         Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
         // 不展示售罄商品
@@ -990,7 +1009,7 @@ public class GoodsService extends ShopBaseService {
     private void insertGoodsImgs(List<String> goodsImgs, Integer goodsId) {
 
         InsertValuesStep2<GoodsImgRecord, Integer, String> insertInto = db().insertInto(GOODS_IMG, GOODS_IMG.GOODS_ID,
-            GOODS_IMG.IMG_URL);
+                GOODS_IMG.IMG_URL);
 
         for (String imgUrl : goodsImgs) {
             insertInto.values(goodsId, imgUrl);
@@ -1054,6 +1073,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 多规格商品修改数量
+     *
      * @param param
      */
     public void updateGoodsPrdNumbers(GoodsPrdNumEditParam param) {
@@ -1116,7 +1136,7 @@ public class GoodsService extends ShopBaseService {
                 //修改分销改价
                 updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             });
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger().debug("商品修改error:" + e.getMessage());
             codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_DATA_ILLEGAL_FORMAT_FOR_DB);
         }
@@ -1195,7 +1215,7 @@ public class GoodsService extends ShopBaseService {
      */
     private void updateGoodsRebatePrices(List<GoodsRebatePrice> goodsRebatePrices, List<GoodsSpecProduct> goodsSpecProducts, Integer goodsId) {
         db().update(GOODS_REBATE_PRICE)
-            .set(GOODS_REBATE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(GOODS_REBATE_PRICE.GOODS_ID.eq(goodsId)).execute();
+                .set(GOODS_REBATE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(GOODS_REBATE_PRICE.GOODS_ID.eq(goodsId)).execute();
         insertGoodsRebatePrices(goodsRebatePrices, goodsSpecProducts, goodsId);
     }
 
@@ -1255,7 +1275,7 @@ public class GoodsService extends ShopBaseService {
      */
     private List<GoodsSpecProduct> filterOldGoodsSpecProduct(List<GoodsSpecProduct> goodsSpecProducts) {
         List<GoodsSpecProduct> oldPrds = goodsSpecProducts.stream()
-            .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() != null).collect(Collectors.toList());
+                .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() != null).collect(Collectors.toList());
         return oldPrds;
     }
 
@@ -1267,12 +1287,13 @@ public class GoodsService extends ShopBaseService {
      */
     private List<GoodsSpecProduct> filterNewGoodsSpecProduct(List<GoodsSpecProduct> goodsSpecProducts) {
         List<GoodsSpecProduct> newPrds = goodsSpecProducts.stream()
-            .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() == null).collect(Collectors.toList());
+                .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() == null).collect(Collectors.toList());
         return newPrds;
     }
 
     /**
      * 更新商品Es
+     *
      * @param goodsIds
      */
     public void updateEs(List<Integer> goodsIds) {
@@ -1292,10 +1313,11 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据单个商品id同步修改商品es信息
+     *
      * @param goodsId
      */
-    public void updateEs(Integer goodsId){
-        if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus() ) {
+    public void updateEs(Integer goodsId) {
+        if (esUtilSearchService.esState() && esMappingUpdateService.getEsStatus()) {
             esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
             esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsId);
         }
@@ -1303,17 +1325,18 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 删除商品时-同步es操作(非异步操作)
+     *
      * @param goodsIds
      */
     public void updateEsDeleteSync(List<Integer> goodsIds) {
         try {
             //es服务正常时,索引同更步新，否则走队列
-            if (esUtilSearchService.esState() ) {
+            if (esUtilSearchService.esState()) {
                 esGoodsCreateService.deleteEsGoods(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
-            }else{
-                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
+            } else {
+                esDataUpdateMqService.addEsGoodsIndex(goodsIds, getShopId(), DBOperating.UPDATE);
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE, goodsIds, null);
             }
         } catch (Exception e) {
             logger().debug("商品删除-es同步数据异常：" + e.getMessage());
@@ -1322,20 +1345,22 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 清除指定的sortId
+     *
      * @param sortIds
      */
     public void clearSortId(List<Integer> sortIds) {
         db().update(GOODS).set(GOODS.SORT_ID, 0)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.in(sortIds))).execute();
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.in(sortIds))).execute();
     }
 
     /**
      * 清除指定的brandId
+     *
      * @param brandIds
      */
     public void clearBrandId(List<Integer> brandIds) {
         db().update(GOODS).set(GOODS.BRAND_ID, 0)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.BRAND_ID.in(brandIds))).execute();
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.BRAND_ID.in(brandIds))).execute();
     }
 
 
@@ -1363,9 +1388,9 @@ public class GoodsService extends ShopBaseService {
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
         if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {
             Map<String, BigDecimal> collect =
-                goods.getGoodsSpecProducts()
-                    .stream()
-                    .collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdPrice));
+                    goods.getGoodsSpecProducts()
+                            .stream()
+                            .collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdPrice));
 
             boolean r = goods.getGoodsGradePrds().stream().anyMatch(goodsGradePrd -> {
                 if (goodsGradePrd.getGradePrice() == null || goodsGradePrd.getGrade() == null) {
@@ -1524,25 +1549,27 @@ public class GoodsService extends ShopBaseService {
 
     public List<String> findGoodsNameExist(List<String> goodsNames) {
         return db().select(GOODS.GOODS_NAME).from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_NAME.in(goodsNames)))
-            .fetch(GOODS.GOODS_NAME);
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_NAME.in(goodsNames)))
+                .fetch(GOODS.GOODS_NAME);
     }
 
     public List<String> findGoodsSnExist(List<String> goodsSns) {
         return db().select(GOODS.GOODS_SN).from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsSns)))
-            .fetch(GOODS.GOODS_SN);
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsSns)))
+                .fetch(GOODS.GOODS_SN);
     }
 
     /**
      * 根据货品编号获取商品
+     *
      * @param goodsSn
      * @return
      */
     public GoodsRecord getGoodsRecordByGoodsSn(String goodsSn) {
         return db().selectFrom(GOODS).where(GOODS.GOODS_SN.eq(goodsSn).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
-            .fetchAny();
+                .fetchAny();
     }
+
     /**
      * 商品名和商品码查重
      *
@@ -1683,7 +1710,7 @@ public class GoodsService extends ShopBaseService {
         GoodsRecord goodsRecord = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(targetRecord.getGoodsId())).fetchAny();
 
         Result<GoodsSpecProductRecord> prds = db().selectFrom(GOODS_SPEC_PRODUCT)
-            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsRecord.getGoodsId()).and(GOODS_SPEC_PRODUCT.PRD_ID.ne(param.getPrdId()))).fetch();
+                .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsRecord.getGoodsId()).and(GOODS_SPEC_PRODUCT.PRD_ID.ne(param.getPrdId()))).fetch();
         prds.add(targetRecord);
 
         // 从新计算商品总数量和最低价
@@ -1723,12 +1750,12 @@ public class GoodsService extends ShopBaseService {
         transaction(() -> {
             DSLContext db = db();
             db.update(GOODS).set(GOODS.DEL_FLAG, DelFlag.DISABLE.getCode())
-                .set(GOODS.GOODS_SN,
-                    DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID).concat(DelFlag.DEL_ITEM_SPLITER)
-                        .concat(GOODS.GOODS_SN))
-                .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID)
-                    .concat(DelFlag.DEL_ITEM_SPLITER).concat(GOODS.GOODS_NAME))
-                .where(GOODS.GOODS_ID.in(goodsIds)).execute();
+                    .set(GOODS.GOODS_SN,
+                            DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID).concat(DelFlag.DEL_ITEM_SPLITER)
+                                    .concat(GOODS.GOODS_SN))
+                    .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID)
+                            .concat(DelFlag.DEL_ITEM_SPLITER).concat(GOODS.GOODS_NAME))
+                    .where(GOODS.GOODS_ID.in(goodsIds)).execute();
 
             // 删除关联图片
             deleteImg(goodsIds);
@@ -1772,11 +1799,12 @@ public class GoodsService extends ShopBaseService {
      */
     private void deleteGoodsRebatePrices(List<Integer> goodsIds) {
         db().update(GOODS_REBATE_PRICE).set(GOODS_REBATE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode())
-            .where(GOODS_REBATE_PRICE.GOODS_ID.in(goodsIds)).execute();
+                .where(GOODS_REBATE_PRICE.GOODS_ID.in(goodsIds)).execute();
     }
 
     /**
      * 统计未删除商品总数量
+     *
      * @return 商品数量
      */
     public Integer selectGoodsCount() {
@@ -1866,10 +1894,10 @@ public class GoodsService extends ShopBaseService {
 
     private void setGoodsTags(Integer goodsId, GoodsVo goodsVo) {
         Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
-        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId)==null ? new ArrayList<>(0):gtaLabelMap.get(goodsId));
+        goodsVo.setGoodsLabelPointListVos(gtaLabelMap.get(goodsId) == null ? new ArrayList<>(0) : gtaLabelMap.get(goodsId));
         goodsVo.setGoodsLabelNormalListVos(new ArrayList<>(5));
         // 商家分类关联标签
-        if (!GoodsConstant.GOODS_SORT_DEFAULT_VALUE.equals(goodsVo.getSortId())){
+        if (!GoodsConstant.GOODS_SORT_DEFAULT_VALUE.equals(goodsVo.getSortId())) {
             Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelSortMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsVo.getSortId()), GoodsLabelCoupleTypeEnum.SORTTYPE);
             if (gtaLabelSortMap.get(goodsVo.getSortId()) != null && gtaLabelSortMap.get(goodsVo.getSortId()).size() > 0) {
                 goodsVo.getGoodsLabelNormalListVos().addAll(gtaLabelSortMap.get(goodsVo.getSortId()));
@@ -1915,8 +1943,9 @@ public class GoodsService extends ShopBaseService {
      */
     public List<GoodsGradePrd> selectGoodsGradePrd(Integer goodsId) {
         return db().select().from(GRADE_PRD).where(GRADE_PRD.GOODS_ID.eq(goodsId))
-            .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class);
+                .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class);
     }
+
     /**
      * 批量获取商品规格会员价
      *
@@ -1925,8 +1954,8 @@ public class GoodsService extends ShopBaseService {
      */
     public Map<Integer, List<GoodsGradePrd>> selectGoodsGradePrdByGoodsIds(List<Integer> goodsIds) {
         return db().select().from(GRADE_PRD).where(GRADE_PRD.GOODS_ID.in(goodsIds))
-            .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class)
-            .stream().collect(Collectors.groupingBy(GoodsGradePrd::getGoodsId));
+                .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class)
+                .stream().collect(Collectors.groupingBy(GoodsGradePrd::getGoodsId));
     }
 
     public Result<GoodsSpecProductRecord> getProductByGoodsId(Integer goodsId) {
@@ -1952,7 +1981,7 @@ public class GoodsService extends ShopBaseService {
      */
     private List<GoodsRebatePrice> selectGoodsRebatePrice(Integer goodsId) {
         List<GoodsRebatePrice> goodsRebatePrices = db().select().from(GOODS_REBATE_PRICE).where(GOODS_REBATE_PRICE.GOODS_ID.eq(goodsId))
-            .and(GOODS_REBATE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsRebatePrice.class);
+                .and(GOODS_REBATE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsRebatePrice.class);
 
         return goodsRebatePrices;
     }
@@ -1962,49 +1991,30 @@ public class GoodsService extends ShopBaseService {
      */
     public Map<Integer, GoodsRecord> getGoodsByIds(List<Integer> goodsIds) {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
-            fetchMap(GOODS.GOODS_ID);
+                fetchMap(GOODS.GOODS_ID);
     }
 
     /**
      * 通过商品id数组查询门店商品
+     *
      * @return
      */
-    public Map<Integer, StoreGoodsRecord> getStoreGoodsByIds(List<Integer> goodsIds, Integer storeId) {
-        List<StoreGoodsRecord> storeGoodsRecords = db().selectFrom(STORE_GOODS).where(STORE_GOODS.PRD_ID.in(goodsIds)).
-            and(STORE_GOODS.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).
-            and(STORE_GOODS.STORE_ID.eq(storeId)).
-            and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE)).
-            fetchInto(StoreGoodsRecord.class);
-        Map<Integer, StoreGoodsRecord> map = new HashMap<>();
-        storeGoodsRecords.forEach(storeGoodsRecord -> {
-            map.put((Integer) storeGoodsRecord.get("prd_id"), storeGoodsRecord);
-        });
-        return map;
+    public Map<Integer, Result<StoreGoodsRecord>> getStoreGoodsByIds(List<Integer> prdIds, Integer storeId) {
+        return db().selectFrom(STORE_GOODS).where(STORE_GOODS.PRD_ID.in(prdIds)).
+                and(STORE_GOODS.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).
+                and(STORE_GOODS.STORE_ID.eq(storeId)).
+                and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE)).
+                fetchGroups(STORE_GOODS.PRD_ID);
     }
 
-    /**
-     * 通过商品id数组查询门店商品
-     * @return
-     */
-    public Map<Integer, StoreGoodsRecord> getStoreGoodsByIds(List<Integer> goodsIds) {
-        List<StoreGoodsRecord> storeGoodsRecords = db().selectFrom(STORE_GOODS).where(STORE_GOODS.PRD_ID.in(goodsIds)).
-            and(STORE_GOODS.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).
-            and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE)).
-            fetchInto(StoreGoodsRecord.class);
-        Map<Integer, StoreGoodsRecord> map = new HashMap<>();
-        storeGoodsRecords.forEach(storeGoodsRecord -> {
-            map.put((Integer) storeGoodsRecord.get("prd_id"), storeGoodsRecord);
-        });
-        return map;
-    }
 
     /**
      * 通过商品id数组查询商品
      */
     public Map<Integer, GoodsRecord> getIsSaleGoodsByIds(List<Integer> goodsIds) {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
-            and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
-            fetchMap(GOODS.GOODS_ID);
+                and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+                fetchMap(GOODS.GOODS_ID);
     }
 
     /**
@@ -2045,8 +2055,9 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
-     *  商品视频和快照图片相对路径转换全路径
-     * @param relativePath 相对路径
+     * 商品视频和快照图片相对路径转换全路径
+     *
+     * @param relativePath    相对路径
      * @param videoOrSnapShop true: 视频，false: 快照
      * @return 全路径
      */
@@ -2063,7 +2074,7 @@ public class GoodsService extends ShopBaseService {
      */
     public Optional<GoodsRecord> getGoodsById(Integer goodsId) {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
-            fetchOptional();
+                fetchOptional();
     }
 
     /**
@@ -2078,7 +2089,8 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
-     *  根据规格ID查寻商品信息
+     * 根据规格ID查寻商品信息
+     *
      * @param productId
      * @return
      */
@@ -2088,17 +2100,20 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品规格信息,用于页面显示
+     *
      * @param productId
      * @return
      */
     public ProductSmallInfoVo getProductVoInfoByProductId(Integer productId) {
         return db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS.GOODS_IMG, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS.IS_ON_SALE)
-            .from(GOODS_SPEC_PRODUCT)
-            .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
-            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOneInto(ProductSmallInfoVo.class);
+                .from(GOODS_SPEC_PRODUCT)
+                .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOneInto(ProductSmallInfoVo.class);
     }
+
     /**
      * 商品导出数据的条数
+     *
      * @param param
      * @return
      */
@@ -2108,9 +2123,9 @@ public class GoodsService extends ShopBaseService {
         Condition condition = this.buildOptions(param);
 
         SelectConditionStep<?> selectFrom = db().selectCount()
-            .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
-            .where(condition);
+                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+                .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+                .where(condition);
 
         vo.setRows(selectFrom.fetchOne().into(Integer.class));
         vo.setColumns(saas.getShopApp(getShopId()).config.goodsCfg.getGoodsExportList());
@@ -2119,10 +2134,10 @@ public class GoodsService extends ShopBaseService {
 
     public List<Integer> getAllGoodsId() {
         return db().select(GOODS.GOODS_ID)
-            .from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .fetch()
-            .getValues(GOODS.GOODS_ID);
+                .from(GOODS)
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .fetch()
+                .getValues(GOODS.GOODS_ID);
     }
 
     /**
@@ -2248,24 +2263,25 @@ public class GoodsService extends ShopBaseService {
 
     private Map<Integer, Map<String, GradePrdRecord>> selectAvailableGradeInfoByPrdIds(List<Integer> prdIds, List<String> availabelGrades) {
         List<GradePrdRecord> gradePrdRecords = db().selectFrom(GRADE_PRD)
-            .where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GRADE_PRD.GRADE.in(availabelGrades)).and(GRADE_PRD.PRD_ID.in(prdIds))).fetchInto(GradePrdRecord.class);
+                .where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GRADE_PRD.GRADE.in(availabelGrades)).and(GRADE_PRD.PRD_ID.in(prdIds))).fetchInto(GradePrdRecord.class);
         return gradePrdRecords.stream().collect(Collectors.groupingBy(GradePrdRecord::getPrdId, Collectors.toMap(GradePrdRecord::getGrade, Function.identity())));
     }
 
     /**
      * 取指定商品信息
+     *
      * @param idList
      * @param isCanUse
      * @return
      */
     public List<GoodsSmallVo> getGoodsList(List<Integer> idList, boolean isCanUse) {
         SelectConditionStep<? extends Record> sql = db().select(GOODS.GOODS_ID, GOODS.GOODS_SN, GOODS.IS_ON_SALE, GOODS.GOODS_NUMBER, GOODS.DEL_FLAG, GOODS.GOODS_IMG,
-            GOODS.SHOP_PRICE, GOODS.GOODS_NAME, GOODS.MARKET_PRICE, GOODS.GOODS_TYPE, GOODS.IS_CARD_EXCLUSIVE)
-            .from(GOODS)
-            .where(GOODS.GOODS_ID.in(idList));
+                GOODS.SHOP_PRICE, GOODS.GOODS_NAME, GOODS.MARKET_PRICE, GOODS.GOODS_TYPE, GOODS.IS_CARD_EXCLUSIVE)
+                .from(GOODS)
+                .where(GOODS.GOODS_ID.in(idList));
         if (isCanUse) {
             sql.and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE))
-                .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+                    .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         }
 
         return sql.fetchInto(GoodsSmallVo.class);
@@ -2274,6 +2290,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取商品goodsType
+     *
      * @param goodsIds
      * @return
      * @throws MpException
@@ -2285,10 +2302,11 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 下单时获取goods
-     * @author 王帅
+     *
      * @param goodsIds
      * @return
      * @throws MpException
+     * @author 王帅
      */
     public Map<Integer, GoodsRecord> getGoodsToOrder(List<Integer> goodsIds) {
         Map<Integer, GoodsRecord> goods = getGoodsByIds(goodsIds);
@@ -2297,21 +2315,17 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 下单时校验门店库存
-     * @param goodsIds 商品id列表
+     *
+     * @param prdIds 商品id列表
      * @return Map<Integer, StoreGoodsRecord>
      */
-    public Map<Integer, StoreGoodsRecord> getStoreGoodsToOrder(List<Integer> goodsIds, Integer storeId) {
-        if (storeId == null) {
-            logger().info("结算页校验门店库存");
-            return getStoreGoodsByIds(goodsIds);
-        } else {
-            logger().info("下单时校验门店库存");
-            return getStoreGoodsByIds(goodsIds, storeId);
-        }
+    public  Map<Integer, Result<StoreGoodsRecord>> getStoreGoodsToOrder(List<Integer> prdIds, Integer storeId) {
+        return getStoreGoodsByIds(prdIds, storeId);
     }
 
     /**
      * 批量更新商品、规格的数量和销量
+     *
      * @param params 待更新商品、规格数量销量信息
      */
     public void batchUpdateGoodsNumsAndSaleNumsForOrder(List<BatchUpdateGoodsNumAndSaleNumForOrderParam> params) {
@@ -2330,9 +2344,9 @@ public class GoodsService extends ShopBaseService {
 
         // 查询数据库商品信息，规格信息，准备进行数据修改
         Map<Integer, GoodsRecord> goodsRecords = db().select(GOODS.GOODS_ID, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds))
-            .fetchMap(GOODS.GOODS_ID, GoodsRecord.class);
+                .fetchMap(GOODS.GOODS_ID, GoodsRecord.class);
         Map<Integer, GoodsSpecProductRecord> prdRecordsMap = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds))
-            .fetchMap(GOODS_SPEC_PRODUCT.PRD_ID, GoodsSpecProductRecord.class);
+                .fetchMap(GOODS_SPEC_PRODUCT.PRD_ID, GoodsSpecProductRecord.class);
 
         params.forEach(param -> {
             GoodsRecord goodsRecord = goodsRecords.get(param.getGoodsId());
@@ -2370,8 +2384,8 @@ public class GoodsService extends ShopBaseService {
             log.error("ES查询滞销商品数量失败, 原因如下: {}", e.getMessage());
             Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
             Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
-                .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
-                .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
+                    .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+                    .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
             return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime)));
         }
     }
@@ -2385,8 +2399,8 @@ public class GoodsService extends ShopBaseService {
     public Set<Integer> unsalableGoodsSet() {
         Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
         Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
-            .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
-            .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
+                .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+                .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
         Condition condition = GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime));
         return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchSet(GOODS.GOODS_ID);
     }
@@ -2409,12 +2423,13 @@ public class GoodsService extends ShopBaseService {
      */
     public Set<Integer> smallCommodityInventorySet(Integer num) {
         return db().select(GOODS.GOODS_ID).from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_NUMBER.lessThan(num)))
-            .fetchSet(GOODS.GOODS_ID);
+                .where(GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_NUMBER.lessThan(num)))
+                .fetchSet(GOODS.GOODS_ID);
     }
 
     /**
      * 批量将活动商品改回普通商品
+     *
      * @param goodsIds
      */
     public void changeToNormalType(List<Integer> goodsIds) {
@@ -2448,23 +2463,25 @@ public class GoodsService extends ShopBaseService {
         return list;
 
     }
+
     /**
      * 商品图片列表
+     *
      * @param goodsIds goods id
      * @return Map<goodsid, List < url>>
      */
     public Map<Integer, List<String>> getGoodsImageList(List<Integer> goodsIds) {
         Map<Integer, Result<GoodsImgRecord>> fetch = db().selectFrom(GOODS_IMG)
-            .where(GOODS_IMG.GOODS_ID.in(goodsIds))
-            .orderBy(GOODS_IMG.IMG_DESC.desc()).fetchGroups(GOODS_IMG.GOODS_ID);
+                .where(GOODS_IMG.GOODS_ID.in(goodsIds))
+                .orderBy(GOODS_IMG.IMG_DESC.desc()).fetchGroups(GOODS_IMG.GOODS_ID);
         Map<Integer, List<String>> imgUrlMap = Maps.newHashMap();
         if (fetch.isEmpty()) {
             return imgUrlMap;
         }
         fetch.forEach((key, value) -> {
             List<String> urls = value.stream()
-                .map(y -> getImgFullUrlUtil(y.getImgUrl()))
-                .collect(Collectors.toList());
+                    .map(y -> getImgFullUrlUtil(y.getImgUrl()))
+                    .collect(Collectors.toList());
             imgUrlMap.put(key, urls);
         });
         return imgUrlMap;
@@ -2472,12 +2489,12 @@ public class GoodsService extends ShopBaseService {
 
     public Map<Integer, GoodsVideoBo> getGoodsVideo(List<Integer> goodsIds) {
         Result<Record7<Integer, Integer, Integer, Integer, String, String, Integer>> fetch = db().
-            select(GOODS.GOODS_ID, UPLOADED_VIDEO.VIDEO_ID, UPLOADED_VIDEO.VIDEO_HEIGHT,
-                UPLOADED_VIDEO.VIDEO_WIDTH, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE).
-            from(UPLOADED_VIDEO).
-            leftJoin(GOODS).
-            on(GOODS.GOODS_VIDEO_ID.eq(UPLOADED_VIDEO.VIDEO_ID)).
-            where(GOODS.GOODS_ID.in(goodsIds)).fetch();
+                select(GOODS.GOODS_ID, UPLOADED_VIDEO.VIDEO_ID, UPLOADED_VIDEO.VIDEO_HEIGHT,
+                        UPLOADED_VIDEO.VIDEO_WIDTH, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE).
+                from(UPLOADED_VIDEO).
+                leftJoin(GOODS).
+                on(GOODS.GOODS_VIDEO_ID.eq(UPLOADED_VIDEO.VIDEO_ID)).
+                where(GOODS.GOODS_ID.in(goodsIds)).fetch();
         List<GoodsVideoBo> bos = Lists.newArrayList();
         fetch.forEach(x -> {
             GoodsVideoBo bo = new GoodsVideoBo(x);
@@ -2490,39 +2507,44 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据品牌id获取商品id
+     *
      * @param brandId 品牌id
      * @return goodsId list
      */
     public List<Integer> getGoodsIdByBrandId(Integer brandId) {
         return db().select(GOODS.GOODS_ID).
-            from(GOODS).
-            where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
-            and(GOODS.BRAND_ID.eq(brandId)).
-            fetch(GOODS.GOODS_ID);
+                from(GOODS).
+                where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
+                and(GOODS.BRAND_ID.eq(brandId)).
+                fetch(GOODS.GOODS_ID);
     }
+
     /**
      * 根据品牌id获取商品ids
+     *
      * @param brandIds 品牌ids
      * @return goodsId list
      */
     public List<Integer> getGoodsIdByBrandId(List<Integer> brandIds) {
         return db().select(GOODS.GOODS_ID).
-            from(GOODS).
-            where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
-            and(GOODS.BRAND_ID.in(brandIds)).
-            fetch(GOODS.GOODS_ID);
+                from(GOODS).
+                where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
+                and(GOODS.BRAND_ID.in(brandIds)).
+                fetch(GOODS.GOODS_ID);
     }
+
     /**
      * 根据sortId list获取商品id
+     *
      * @param sortIds 品牌id
      * @return goodsId list
      */
     public List<Integer> getGoodsIdBySortId(List<Integer> sortIds) {
         return db().select(GOODS.GOODS_ID).
-            from(GOODS).
-            where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
-            and(GOODS.SORT_ID.in(sortIds)).
-            fetch(GOODS.GOODS_ID);
+                from(GOODS).
+                where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
+                and(GOODS.SORT_ID.in(sortIds)).
+                fetch(GOODS.GOODS_ID);
     }
 
     /**
@@ -2531,14 +2553,14 @@ public class GoodsService extends ShopBaseService {
      */
     public void onSaleGoods() {
         List<Integer> goodsIds = db().select().from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.IS_ON_SALE.eq(GoodsConstant.OFF_SALE))
-            .and(GOODS.GOODS_NUMBER.gt(0)).and(GOODS.STATE.ne(GoodsConstant.INVALIDATE_OFF_SALE))
-            .and(GOODS.SALE_TYPE.eq(GoodsConstant.POINT_TIME_TO_ON_SALE)).and(GOODS.SALE_TIME.le(DateUtils.getLocalDateTime()))
-            .fetch(GOODS.GOODS_ID);
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.IS_ON_SALE.eq(GoodsConstant.OFF_SALE))
+                .and(GOODS.GOODS_NUMBER.gt(0)).and(GOODS.STATE.ne(GoodsConstant.INVALIDATE_OFF_SALE))
+                .and(GOODS.SALE_TYPE.eq(GoodsConstant.POINT_TIME_TO_ON_SALE)).and(GOODS.SALE_TIME.le(DateUtils.getLocalDateTime()))
+                .fetch(GOODS.GOODS_ID);
 
         db().update(GOODS).set(GOODS.IS_ON_SALE, GoodsConstant.ON_SALE)
-            .set(GOODS.SALE_TYPE, GoodsConstant.NOT_TIME_TO_ON_SALE)
-            .where(GOODS.GOODS_ID.in(goodsIds)).execute();
+                .set(GOODS.SALE_TYPE, GoodsConstant.NOT_TIME_TO_ON_SALE)
+                .where(GOODS.GOODS_ID.in(goodsIds)).execute();
 
         try {
             if (!goodsIds.isEmpty() && esUtilSearchService.esState()) {
@@ -2555,13 +2577,16 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 取单个完整Goods
+     *
      * @return
      */
     public GoodsRecord getGoodsRecordById(int goodsId) {
         return db().fetchAny(GOODS, GOODS.GOODS_ID.eq(goodsId));
     }
+
     /**
      * 取多个完整Goods
+     *
      * @return
      */
     public Map<Integer, GoodsRecord> getGoodsRecordByIds(List<Integer> goodsIds) {
@@ -2577,8 +2602,10 @@ public class GoodsService extends ShopBaseService {
     public Integer getGoodsNum(GoodsNumCountParam param) {
         return getGoodsNum(Collections.singletonList(param)).get(0);
     }
+
     /**
      * 获取满足过滤条件的商品数量集合
+     *
      * @param params 过滤条件集合
      * @return 商品数量集合
      */
@@ -2632,13 +2659,14 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 查询普通商品分享时使用的分享信息
+     *
      * @param goodsId 商品id
      * @return 商品分享信息
      */
     public GoodsVo selectGoodsShareInfo(Integer goodsId) {
         Record4<Integer, String, String, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
-            .from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
-            .fetchAny();
+                .from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+                .fetchAny();
 
         if (record == null) {
             return null;
@@ -2654,12 +2682,14 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 获取指定条件的商品的数量
+     *
      * @param condition 指定的条件
      * @return 商品的数量
      */
     public Integer getGoodsNumDao(Condition condition) {
         return db().fetchCount(GOODS, condition);
     }
+
     /**
      * Exist boolean.商品是否存在
      *
@@ -2672,6 +2702,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 查询当前商品所处于的活动类型，秒杀、预售、砍价、拼团或其它
+     *
      * @param goodsId 商品id
      * @return {@link GoodsActivityType} 活动类型信息,如果商品不属于上述四种活动则返回null
      */
@@ -2727,9 +2758,9 @@ public class GoodsService extends ShopBaseService {
      */
     public List<Integer> getOnShelfGoodsIdList(List<Integer> catIds, List<Integer> sortIds, List<Integer> brandIds) {
         SelectConditionStep<Record1<Integer>> selectConditionStep = db().select(GOODS.GOODS_ID)
-            .from(GOODS)
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+                .from(GOODS)
+                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
         Condition filterCondition = DSL.noCondition();
         //指定平台分类
@@ -2785,6 +2816,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 根据推荐商品id集合分页获取商品
+     *
      * @param param
      * @return
      */
@@ -2806,7 +2838,7 @@ public class GoodsService extends ShopBaseService {
         //分页处理-优化性能
         for (int i = (currentPage - 1) * pageRows, j = 0;
              (currentPage - 1) * pageRows < split.length && j < split.length - (currentPage - 1) * pageRows && j < pageRows;
-             i ++, j ++) {
+             i++, j++) {
             goodsVo = this.select(Integer.parseInt(split[i]));
             goodsVoList.add(goodsVo);
         }
@@ -2814,16 +2846,20 @@ public class GoodsService extends ShopBaseService {
         result.setDataList(goodsVoList);
         return result;
     }
+
     /**
      * 通过分类id集合获取商品id集合
+     *
      * @param sortId
      * @return
      */
     public List<Integer> listGoodsId(List<Integer> sortId) {
         return goodsDao.listGoodsId(sortId);
     }
+
     /**
      * 根据prdId获取商品名称
+     *
      * @param prdId
      * @return
      */

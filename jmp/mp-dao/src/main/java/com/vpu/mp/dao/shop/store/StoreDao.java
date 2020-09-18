@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.store;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
@@ -46,6 +47,8 @@ public class StoreDao extends ShopBaseDao {
 
     private static final String GOODS_NUMBER = "goodsNumber";
 
+    public static final Byte STORE_TYPE_HOSPITAL = 1;
+
     public StoreBasicVo getStoreByNo(String storeNo) {
         return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(StoreBasicVo.class);
     }
@@ -77,12 +80,12 @@ public class StoreDao extends ShopBaseDao {
         // 查询未打烊门店
         select.and(STORE.OPENING_TIME.lt(dateStringParse));
         select.and(STORE.CLOSE_TIME.gt(dateStringParse));
-        if (stores != null && stores.size() != 0) {
-            logger().info("门店库存校验{}",stores);
-            select.and(STORE.STORE_CODE.in(stores));
-        }
+        select.and(STORE.STORE_CODE.in(stores));
         if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
             select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
+        }
+        if (deliveryType == OrderConstant.STORE_EXPRESS) {
+            select.and(STORE.STORE_EXPRESS.eq(BaseConstant.YES));
         }
         select.limit(15);
         return select.fetchInto(StoreDo.class);
@@ -170,6 +173,18 @@ public class StoreDao extends ShopBaseDao {
         return db().select().from(STORE).where(STORE.STORE_ID.in(storeIds))
             .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchInto(StoreStatisticVo.class);
+    }
+
+    /**
+     * 查询是否存在医院类型门店
+     * @return Boolean
+     */
+    public Boolean isExistHospitalStore() {
+        return db().selectCount()
+            .from(STORE)
+            .where(STORE.STORE_TYPE.eq(STORE_TYPE_HOSPITAL))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .fetchAnyInto(Integer.class) == 1;
     }
 
 }

@@ -37,7 +37,10 @@ import com.vpu.mp.service.pojo.shop.store.validated.StoreUpdateValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierSimpleParam;
+import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.shop.store.group.StoreGroupService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -97,14 +100,19 @@ public class AdminStoreController extends AdminBaseController{
      * 门店-新增
      * @return
      */
-    @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
     @PostMapping(value = "/api/admin/store/add")
+    @RedisLock(prefix = JedisKeyConstant.NotResubmit.ADD_STORE_LOCK, noResubmit = true)
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
-       if(shop().store.addStore(store)) {
-    	   return success();
-       }else {
-    	   return fail();
-       }
+        try {
+            if(shop().store.addStore(store)) {
+                return success();
+            }else {
+                return fail();
+            }
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
+        return fail();
     }
 
     /**
