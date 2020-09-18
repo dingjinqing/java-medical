@@ -155,7 +155,7 @@ public class StoreGoodsDao extends ShopBaseDao {
      * @return List<Integer>
      */
     public List<String> checkStoreGoodsIsOnSale(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
-        List<Integer> prdId = storeGoodsBaseCheckInfoList.stream().map(StoreGoodsBaseCheckInfo::getPrdId).collect(Collectors.toList());
+        List<Integer> prdId = storeGoodsBaseCheckInfoList.stream().map(StoreGoodsBaseCheckInfo::getProductId).collect(Collectors.toList());
         return db().select(STORE.STORE_CODE)
             .from(STORE)
             .leftJoin(STORE_GOODS)
