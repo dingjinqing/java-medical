@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBestSellersVo;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreStatisticVo;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -185,6 +186,22 @@ public class StoreDao extends ShopBaseDao {
             .where(STORE.STORE_TYPE.eq(STORE_TYPE_HOSPITAL))
             .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchAnyInto(Integer.class) == 1;
+    }
+
+    /**
+     * 获取医院类型门店信息
+     * @return StorePojo
+     */
+    public StorePojo getHospitalInfo() {
+        List<StorePojo> storePojos = db().select().from(STORE)
+            .where(STORE.STORE_TYPE.eq(STORE_TYPE_HOSPITAL))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .fetchInto(StorePojo.class);
+        if (storePojos == null || storePojos.size() == 0) {
+            return null;
+        } else {
+            return storePojos.get(0);
+        }
     }
 
 }

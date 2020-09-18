@@ -655,4 +655,19 @@ public class StoreWxService extends ShopBaseService {
         }
         return orderInfoList;
     }
+
+    /**
+     * 获取医院类型门店信息
+     * @return
+     */
+    public StoreInfoVo getHospitalInfo() {
+        StorePojo storePojo = store.getHospitalInfo();
+        StoreInfoVo storeInfoVo = new StoreInfoVo();
+        if (storePojo == null){
+            return null;
+        }
+        FieldsUtil.assignNotNull(storePojo, storeInfoVo);
+        return storeInfoVo;
+    }
+
 }
