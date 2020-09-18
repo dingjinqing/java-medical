@@ -508,6 +508,7 @@ public class JsonResultMessage {
     public static final String MSF_STORE_NEED_HAVE = "store.need.have";
     public static final String CODE_NO_STORE_OPEN = "当前无营业门店";
     public static final String CODE_IS_EXIST_HOSPITAL = "store.is.exist.hospital";
+    public static final String CODE_IS_NOT_EXIST_HOSPITAL = "store.is.not.exist.hospital";
 
     /**
      * 门店技师管理

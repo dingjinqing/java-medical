@@ -853,6 +853,11 @@ public class MedicalGoodsService extends ShopBaseService {
         medicalGoodsSpecProductService.batchSkuUpdate(goodsSpecProductEntities);
     }
 
+
+    public void batchSyncStoreGoodsNumberAndStatus(String storeCode){
+
+    }
+
     /**
      * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品信息
      * @param goodsMatchParam

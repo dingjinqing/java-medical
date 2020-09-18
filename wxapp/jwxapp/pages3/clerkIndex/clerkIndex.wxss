@@ -112,9 +112,10 @@
   background: #DCF6F4;
   box-sizing: border-box;
   align-items: center;
+  border-radius: 8rpx;
 }
 .list-item > text:first-of-type{
-  color: 343434;
+  color: #333; 
 }
 .list-item > text:last-of-type{
   color: #27C4BC;

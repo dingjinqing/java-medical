@@ -622,6 +622,7 @@ public enum JsonResultCode {
     CODE_STORE_NEED_HAVE(180020, JsonResultMessage.MSF_STORE_NEED_HAVE),
     CODE_NO_STORE_OPEN(180021, JsonResultMessage.CODE_NO_STORE_OPEN),
     CODE_IS_EXIST_HOSPITAL(180022, JsonResultMessage.CODE_IS_EXIST_HOSPITAL),
+    CODE_IS_NOT_EXIST_HOSPITAL(180023, JsonResultMessage.CODE_IS_NOT_EXIST_HOSPITAL),
 
     /**
      * 售后管理

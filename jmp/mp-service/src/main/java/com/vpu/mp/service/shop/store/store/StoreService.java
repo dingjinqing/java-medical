@@ -295,6 +295,14 @@ public class StoreService extends ShopBaseService {
     }
 
     /**
+     * 获取医院类型门店信息
+     * @return StorePojo
+     */
+    public StorePojo getHospitalInfo() {
+        return storeDao.getHospitalInfo();
+    }
+
+    /**
      * 通过posShopId获取门店信息
      * @param posStoreId 门店使用的pos id
      * @return 门店信息

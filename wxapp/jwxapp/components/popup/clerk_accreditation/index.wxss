@@ -1,0 +1,91 @@
+@import "/css/iconfont.wxss";
+.dialog-content{
+  width: 638rpx;
+  border-radius: 16rpx;
+  background-color: #fff;
+  padding-bottom: 40rpx;
+}
+.dialog-title{
+  line-height: 107rpx;
+  text-align: center;
+  color: #333;
+  border-radius: 16rpx 16rpx 0 0;
+}
+.dialog-title > text{
+  font-size: 36rpx;
+  font-weight: 600;
+  display: inline-block;
+}
+.default-width{
+  width: 573rpx;
+  margin: 0 auto;
+}
+.form-item{
+  height: 100rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  border-bottom: 2rpx solid #eee;
+}
+.form-title{
+  font-size: 28rpx;
+  color: #333;
+  min-width: 184rpx;
+}
+.form-item > input{
+  flex: 1;
+}
+.mobile{
+  color: #26C4BC;
+}
+.gray{
+  color: #999;
+}
+.radio-content + .radio-content{
+  margin-left: 60rpx;
+}
+.radio-content > text{
+  vertical-align: middle;
+}
+.radio-content > .iconfont{
+  font-size:36rpx;
+  margin-right: 15rpx;
+}
+.radio-content > .iconfont.icondanxuanbiankuang{
+  color: #ccc;
+}
+.radio-content > .iconfont.icondanxuan{
+  color: #26C4BC;
+}
+.sign-button{
+  margin-top: 24rpx;
+  border-radius: 10rpx;
+  background-color:#F0FFFE;
+  color:#26C4BC;
+  line-height: 100rpx;
+  box-sizing: border-box;
+  border: 2rpx dashed #26C4BC;
+  text-align: center;
+}
+.sign-button > image{
+  width: 40rpx;
+  height: 32rpx;
+  vertical-align: middle;
+  margin-right: 8rpx;
+}
+.sign-button > text{
+  vertical-align: middle;
+}
+.confirm-button{
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #fff;
+  border-radius: 40rpx;
+  background-color: #26C4BC;
+  margin-top: 24rpx;
+}
+.required{
+  color: #ff0000;
+  margin-left: 10rpx;
+}

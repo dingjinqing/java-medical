@@ -126,7 +126,6 @@ public class GoodsAggregate {
             GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
             FieldsUtil.assign(bo, goodsMedicalInfoDo);
             goodsMedicalInfoDo.setId(goodsIdMedicalIdMap.get(bo.getGoodsId()));
-
             if (DelFlag.DISABLE_VALUE.equals(goodsDo.getDelFlag())){
                 goodsDo.setGoodsSn(DelFlag.DEL_ITEM_PREFIX+goodsDo.getGoodsId()+DelFlag.DEL_ITEM_SPLITER+goodsDo.getGoodsSn());
                 goodsMedicalInfoDo.setIsDelete(DelFlag.DISABLE_VALUE);

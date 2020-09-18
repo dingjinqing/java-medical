@@ -87,6 +87,7 @@ public class StoreGoodsDao extends ShopBaseDao {
             storeGoodsRecord.setPrdId(x.getPrdId());
             storeGoodsRecord.setIsOnSale(x.getIsOnSale());
             storeGoodsRecord.setProductPrice(x.getProductPrice());
+            storeGoodsRecord.setProductNumber(x.getProductNumber());
             return storeGoodsRecord;
         }).collect(Collectors.toList());
     }
@@ -139,23 +140,12 @@ public class StoreGoodsDao extends ShopBaseDao {
     }
 
     /**
-     *
-     * select
-     * 	b2c_store_goods.store_id
-     * from
-     * 	b2c_store_goods
-     * where
-     * 	goods_id = 10
-     * and
-     * 	b2c_store_goods.product_number >= 0
-     * and
-     * 	b2c_store_goods.is_on_sale = 1
      * 查询该商品在哪家门店上架
      * @param storeGoodsBaseCheckInfoList 商品列表
      * @return List<Integer>
      */
     public List<String> checkStoreGoodsIsOnSale(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
-        List<Integer> prdId = storeGoodsBaseCheckInfoList.stream().map(StoreGoodsBaseCheckInfo::getPrdId).collect(Collectors.toList());
+        List<Integer> prdId = storeGoodsBaseCheckInfoList.stream().map(StoreGoodsBaseCheckInfo::getProductId).collect(Collectors.toList());
         return db().select(STORE.STORE_CODE)
             .from(STORE)
             .leftJoin(STORE_GOODS)

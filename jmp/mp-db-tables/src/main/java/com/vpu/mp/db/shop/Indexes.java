@@ -354,6 +354,7 @@ public class Indexes {
     public static final Index SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME = Indexes0.SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME;
     public static final Index STORE_PRIMARY = Indexes0.STORE_PRIMARY;
     public static final Index STORE_GOODS_PRIMARY = Indexes0.STORE_GOODS_PRIMARY;
+    public static final Index STORE_GOODS_KEY_STORE_ID_GOODS_ID = Indexes0.STORE_GOODS_KEY_STORE_ID_GOODS_ID;
     public static final Index STORE_GROUP_GROUP_NAME = Indexes0.STORE_GROUP_GROUP_NAME;
     public static final Index STORE_GROUP_PRIMARY = Indexes0.STORE_GROUP_PRIMARY;
     public static final Index STORE_ORDER_PRIMARY = Indexes0.STORE_ORDER_PRIMARY;
@@ -890,7 +891,8 @@ public class Indexes {
         public static Index SPEC_VALS_SPEC_ID = Internal.createIndex("spec_id", SpecVals.SPEC_VALS, new OrderField[] { SpecVals.SPEC_VALS.SPEC_ID }, false);
         public static Index SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME = Internal.createIndex("unique_spec_id_spec_val_name", SpecVals.SPEC_VALS, new OrderField[] { SpecVals.SPEC_VALS.SPEC_ID, SpecVals.SPEC_VALS.SPEC_VAL_NAME }, true);
         public static Index STORE_PRIMARY = Internal.createIndex("PRIMARY", Store.STORE, new OrderField[] { Store.STORE.STORE_ID }, true);
-        public static Index STORE_GOODS_PRIMARY = Internal.createIndex("PRIMARY", StoreGoods.STORE_GOODS, new OrderField[] { StoreGoods.STORE_GOODS.STORE_ID, StoreGoods.STORE_GOODS.GOODS_ID, StoreGoods.STORE_GOODS.PRD_ID, StoreGoods.STORE_GOODS.IS_ON_SALE }, true);
+        public static Index STORE_GOODS_PRIMARY = Internal.createIndex("PRIMARY", StoreGoods.STORE_GOODS, new OrderField[] { StoreGoods.STORE_GOODS.ID }, true);
+        public static Index STORE_GOODS_KEY_STORE_ID_GOODS_ID = Internal.createIndex("key_store_id_goods_id", StoreGoods.STORE_GOODS, new OrderField[] { StoreGoods.STORE_GOODS.STORE_ID, StoreGoods.STORE_GOODS.GOODS_ID }, false);
         public static Index STORE_GROUP_GROUP_NAME = Internal.createIndex("group_name", StoreGroup.STORE_GROUP, new OrderField[] { StoreGroup.STORE_GROUP.GROUP_NAME }, true);
         public static Index STORE_GROUP_PRIMARY = Internal.createIndex("PRIMARY", StoreGroup.STORE_GROUP, new OrderField[] { StoreGroup.STORE_GROUP.GROUP_ID }, true);
         public static Index STORE_ORDER_PRIMARY = Internal.createIndex("PRIMARY", StoreOrder.STORE_ORDER, new OrderField[] { StoreOrder.STORE_ORDER.ORDER_ID }, true);

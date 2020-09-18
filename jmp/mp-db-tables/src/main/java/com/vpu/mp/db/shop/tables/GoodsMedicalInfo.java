@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
 
-    private static final long serialVersionUID = 57666658;
+    private static final long serialVersionUID = -178680394;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_medical_info</code>
@@ -145,6 +145,11 @@ public class GoodsMedicalInfo extends TableImpl<GoodsMedicalInfoRecord> {
      * The column <code>mini_shop_471752.b2c_goods_medical_info.is_delete</code>.
      */
     public final TableField<GoodsMedicalInfoRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_medical_info.his_last_update_time</code>.
+     */
+    public final TableField<GoodsMedicalInfoRecord, Integer> HIS_LAST_UPDATE_TIME = createField("his_last_update_time", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_medical_info.create_time</code>.

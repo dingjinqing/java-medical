@@ -25,7 +25,7 @@
         <div class="goods-list-content">
             <div class="goods-list-table">
                 <el-table :data="goodsList" style="width: 100%" border class="tableClass">
-                    <el-table-column type="index" width="50" align="center"/>
+                    <!-- <el-table-column type="index" width="50" align="center"/> -->
                     <el-table-column prop="storeName" label="门店名称"/>
                     <el-table-column prop="goodsCommonName" label="商品名称"/>
                     <el-table-column prop="goodsApprovalNumber"  label="规格系数"/>
