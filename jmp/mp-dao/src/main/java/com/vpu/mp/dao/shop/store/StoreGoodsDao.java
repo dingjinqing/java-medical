@@ -150,8 +150,8 @@ public class StoreGoodsDao extends ShopBaseDao {
             .from(STORE)
             .leftJoin(STORE_GOODS)
             .on(STORE.STORE_ID.eq(STORE_GOODS.STORE_ID))
-            .where(STORE_GOODS.PRD_ID.in(prdId))
-            .and(STORE_GOODS.PRODUCT_NUMBER.gt(0))
+//            .where(STORE_GOODS.PRD_ID.in(prdId))
+            .where(STORE_GOODS.PRODUCT_NUMBER.gt(0))
             .and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE))
             .fetchInto(String.class);
     }
