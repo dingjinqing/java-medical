@@ -16,6 +16,6 @@ public class SetInviteCodeParam {
     /**
      * 邀请码
      */
-    @JsonProperty("InviteCode")
+
     private String inviteCode;
 }
