@@ -76,7 +76,7 @@ public class StoreDao extends ShopBaseDao {
             .where(STORE.BUSINESS_STATE.eq(STORE_BUSINESS_OPENING));
         // 如果不是工作日，查询每天营业的门店
         if (weekday == SATURDAY || weekday == SUNDAY) {
-            select.and(STORE.BUSINESS_TYPE.eq(STORE_BUSINESS_WORKDAY));
+            select.and(STORE.BUSINESS_TYPE.eq(STORE_BUSINESS_OPEN_EVERYDAY));
         }
         // 查询未打烊门店
         select.and(STORE.OPENING_TIME.lt(dateStringParse));
