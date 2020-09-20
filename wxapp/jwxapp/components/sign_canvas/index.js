@@ -1,426 +1,259 @@
-// components/sign_canvas/index.js
 global.wxComponent({
-  /**
-   * 组件的属性列表
-   */
-  properties: {},
-  lifetimes: {
-    ready() {
-      let canvasName = this.data.canvasName
-      let ctx = wx.createCanvasContext(canvasName)
-      this.setData({
-        ctx: ctx
-      })
-      var query = this.createSelectorQuery();
-      query.select('.handCenter').boundingClientRect(rect => {
 
-        this.setData({
-          canvasWidth: rect.width,
-          canvasHeight: rect.height
-        })
-
-        /* 将canvas背景设置为 白底，不设置  导出的canvas的背景为透明 */
-        // console.log(this, 'hahah');
-        this.setCanvasBg('#fff');
-
-
-      }).exec();
+  // 组件的属性列表
+  properties: {
+    // 线宽度
+    lineWidth: {
+      type: Number,
+      value: 1,
+      observer (e) {
+        if (this.data.ctx) { this.data.ctx.lineWidth = e }
+      }
+    },
+    // 线颜色
+    lineColor: {
+      type: String,
+      value: '#000',
+      observer (e) {
+        if (this.data.ctx) { this.data.ctx.strokeStyle = e }
+      }
+    },
+    // 画板背景颜色, 默认透明
+    bgColor: {
+      type: String,
+      value: 'rgba(255, 255, 255, 0)',
+      observer () {
+        if (this.data.ctx) { this.clear() }
+      }
     }
   },
-  /**
-   * 组件的初始数据
-   */
+
+  // 组件的初始数据
   data: {
-    canvasName: 'handWriting',
-    ctx: '',
-    canvasWidth: 0,
-    canvasHeight: 0,
-    transparent: 1, // 透明度
-    selectColor: 'black',
-    lineColor: '#1A1A1A', // 颜色
-    lineSize: 1.5, // 笔记倍数
-    lineMin: 0.5, // 最小笔画半径
-    lineMax: 4, // 最大笔画半径
-    pressure: 1, // 默认压力
-    smoothness: 60, //顺滑度，用60的距离来计算速度
-    currentPoint: {},
-    currentLine: [], // 当前线条
-    firstTouch: true, // 第一次触发
-    radius: 1, //画圆的半径
-    cutArea: {
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0
-    }, //裁剪区域
-    bethelPoint: [], //保存所有线条 生成的贝塞尔点；
-    lastPoint: 0,
-    chirography: [], //笔迹
-    currentChirography: {}, //当前笔迹
-    linePrack: [] //划线轨迹 , 生成线条的实际点
+    // 画板
+    canvas: undefined,
+    // 画板上下文
+    ctx: undefined,
+    // 所有笔画
+    strokes: []
   },
 
-  /**
-   * 组件的方法列表
-   */
+  // 组件的方法列表
   methods: {
-    // 笔迹开始
-    uploadScaleStart(e) {
-      if (e.type != 'touchstart') return false;
-      let ctx = this.data.ctx;
-      ctx.setFillStyle(this.data.lineColor); // 初始线条设置颜色
-      ctx.setGlobalAlpha(this.data.transparent); // 设置半透明
-      let currentPoint = {
-        x: e.touches[0].x,
-        y: e.touches[0].y
+    // ---------------------------- 公有方法 ----------------------------
+    // 画板是否为空画板
+    isEmpty () {
+      return !this.data.strokes.length
+    },
+    // 清空画板笔画
+    clear () {
+      if (this.data.ctx) {
+        // 清空笔画
+        this.setData({ strokes: [] })
+        // 绘制背景
+        this.reloadCtxBG()
+        // 绘图变化回调
+        this.callback()
       }
-      let currentLine = this.data.currentLine;
-      currentLine.unshift({
-        time: new Date().getTime(),
-        dis: 0,
-        x: currentPoint.x,
-        y: currentPoint.y
+    },
+    // 撤回到上一个笔画
+    revoke () {
+      if (this.data.ctx && this.data.strokes.length) {
+        // 移除最后一笔
+        this.data.strokes.pop()
+        // 开始重新绘制
+        this.redraw()
+        // 绘图变化回调
+        this.callback()
+      }
+    },
+    // 生成图片
+    createImage (result=undefined, save=false, saveResult=undefined) {
+      wx.canvasToTempFilePath({
+        canvasId: 'drawing-board-canvas',
+        canvas: this.data.canvas,
+        success (res) {
+          // 图片链接
+          const imagePath = res.tempFilePath || ''
+          const isOK = !!imagePath
+          if (result) { result(isOK, res) }
+          // 保存相册
+          if (save && isOK) {
+            wx.saveImageToPhotosAlbum({
+              filePath: imagePath,
+              success (res) {
+                if (saveResult) { saveResult(true, res) }
+              },
+              fail (err) {
+                if (saveResult) { saveResult(false, err) }
+              }
+            })
+          }
+        },
+        // 生成图片失败
+        fail (err) {
+          if (result) { result(false, err) }
+        }
       })
-      this.setData({
-        currentPoint,
-        // currentLine
-      })
-      if (this.data.firstTouch) {
+    },
+
+
+    // ---------------------------- 私有方法 ----------------------------
+
+    // 获取画板及上下文
+    getCanvas () {
+      const query = wx.createSelectorQuery().in(this)
+      query.select('#drawing-board-canvas')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        // 获取画板
+        const canvas = res[0].node
+        // 获取上下文
+        const ctx = canvas.getContext('2d')
+        // 获取设备像素比例
+        const dpr = wx.getSystemInfoSync().pixelRatio
+        // 计算画板当前显示器宽高
+        canvas.width = res[0].width * dpr
+        canvas.height = res[0].height * dpr
+        // 设置缩放比例
+        ctx.scale(dpr, dpr)
+        // 设置组件参数使用
         this.setData({
-          cutArea: {
-            top: currentPoint.y,
-            right: currentPoint.x,
-            bottom: currentPoint.y,
-            left: currentPoint.x
-          },
-          firstTouch: false
+          canvas: canvas,
+          ctx: ctx
         })
-      }
-      this.pointToLine(currentLine);
+        // 刷新上下文属性
+        this.reloadCtx()
+        // 清空画板
+        this.clear()
+      })
     },
-    // 笔迹移动
-    uploadScaleMove(e) {
-      if (e.type != 'touchmove') return false;
-      if (e.cancelable) {
-        // 判断默认行为是否已经被禁用
-        if (!e.defaultPrevented) {
-          e.preventDefault();
+    // 手指触摸动作开始
+    touchStart (e) {
+      const touches = e.touches
+      const touche = touches[0]
+      let ctx = this.data.ctx
+      ctx.beginPath()
+      ctx.moveTo(touche.x, touche.y)
+      // 记录笔画
+      this.addStroke(touche, true)
+    },
+    // 手指触摸后移动
+    touchMove (e) {
+      const touches = e.touches
+      const touche = touches[0]
+      let ctx = this.data.ctx
+      ctx.lineTo(touche.x, touche.y)
+      ctx.stroke()
+      // 记录笔画
+      this.addStroke(touche, false)
+    },
+    // 手指触摸动作结束
+    touchEnd (e) {
+      let ctx = this.data.ctx
+      ctx.closePath()
+      // 绘图变化回调
+      this.callback()
+    },
+    // 手指触摸动作被打断，如来电提醒，弹窗
+    touchCancel (e) {
+      let ctx = this.data.ctx
+      ctx.closePath()
+      // 绘图变化回调
+      this.callback()
+    },
+    // 添加笔画
+    addStroke (touche, isStart) {
+      // 判断是否为开始笔画还是后续笔画
+      if (isStart) {
+        // 笔画属性
+        const attr = {
+          lineWidth: this.data.lineWidth,
+          lineColor: this.data.lineColor
         }
-      }
-      let point = {
-        x: e.touches[0].x,
-        y: e.touches[0].y
-      }
-
-      //测试裁剪
-      if (point.y < this.data.cutArea.top) {
-        this.data.cutArea.top = point.y;
-      }
-      if (point.y < 0) this.data.cutArea.top = 0;
-
-      if (point.x > this.data.cutArea.right) {
-        this.data.cutArea.right = point.x;
-      }
-      if (this.data.canvasWidth - point.x <= 0) {
-        this.data.cutArea.right = this.data.canvasWidth;
-      }
-      if (point.y > this.data.cutArea.bottom) {
-        this.data.cutArea.bottom = point.y;
-      }
-      if (this.data.canvasHeight - point.y <= 0) {
-        this.data.cutArea.bottom = this.data.canvasHeight;
-      }
-      if (point.x < this.data.cutArea.left) {
-        this.data.cutArea.left = point.x;
-      }
-      if (point.x < 0) this.data.cutArea.left = 0;
-
-      this.setData({
-        lastPoint: this.data.currentPoint,
-        currentPoint: point
-      })
-      let currentLine = this.data.currentLine
-      currentLine.unshift({
-        time: new Date().getTime(),
-        dis: this.distance(this.data.currentPoint, this.data.lastPoint),
-        x: point.x,
-        y: point.y
-      })
-      // this.setData({
-      //   currentLine
-      // })
-      this.pointToLine(currentLine);
-    },
-    // 笔迹结束
-    uploadScaleEnd(e) {
-      if (e.type != 'touchend') return 0;
-      let point = {
-        x: e.changedTouches[0].x,
-        y: e.changedTouches[0].y
-      }
-      this.setData({
-        lastPoint: this.data.currentPoint,
-        currentPoint: point
-      })
-      let currentLine = this.data.currentLine
-      currentLine.unshift({
-        time: new Date().getTime(),
-        dis: this.distance(this.data.currentPoint, this.data.lastPoint),
-        x: point.x,
-        y: point.y
-      })
-      // this.setData({
-      //   currentLine
-      // })
-      if (currentLine.length > 2) {
-        var info = (currentLine[0].time - currentLine[currentLine.length - 1].time) / currentLine.length;
-        //$("#info").text(info.toFixed(2));
-      }
-      //一笔结束，保存笔迹的坐标点，清空，当前笔迹
-      //增加判断是否在手写区域；
-      this.pointToLine(currentLine);
-      var currentChirography = {
-        lineSize: this.data.lineSize,
-        lineColor: this.data.lineColor
-      };
-      var chirography = this.data.chirography
-      chirography.unshift(currentChirography);
-      this.setData({
-        chirography
-      })
-      var linePrack = this.data.linePrack
-      linePrack.unshift(this.data.currentLine);
-      this.setData({
-        linePrack,
-        currentLine: []
-      })
-    },
-
-    retDraw() {
-      this.data.ctx.clearRect(0, 0, 700, 730)
-      this.data.ctx.draw();
-
-      //设置canvas背景
-      this.setCanvasBg("#fff");
-    },
-
-    //画两点之间的线条；参数为:line，会绘制最近的开始的两个点；
-    pointToLine(line) {
-      this.calcBethelLine(line);
-      return;
-    },
-    //计算插值的方式；
-    calcBethelLine(line) {
-      if (line.length <= 1) {
-        line[0].r = this.data.radius;
-        return;
-      }
-      let x0, x1, x2, y0, y1, y2, r0, r1, r2, len, lastRadius, dis = 0,
-        time = 0,
-        curveValue = 0.5;
-      if (line.length <= 2) {
-        x0 = line[1].x
-        y0 = line[1].y
-        x2 = line[1].x + (line[0].x - line[1].x) * curveValue;
-        y2 = line[1].y + (line[0].y - line[1].y) * curveValue;
-        //x2 = line[1].x;
-        //y2 = line[1].y;
-        x1 = x0 + (x2 - x0) * curveValue;
-        y1 = y0 + (y2 - y0) * curveValue;;
-
+        // 记录开始笔画
+        this.data.strokes.push({
+          // 笔画属性
+          attr: attr,
+          // 笔画坐标
+          points: [{x: touche.x, y: touche.y}]
+        })
       } else {
-        x0 = line[2].x + (line[1].x - line[2].x) * curveValue;
-        y0 = line[2].y + (line[1].y - line[2].y) * curveValue;
-        x1 = line[1].x;
-        y1 = line[1].y;
-        x2 = x1 + (line[0].x - x1) * curveValue;
-        y2 = y1 + (line[0].y - y1) * curveValue;
+        // 后续笔画
+        const lastStroke = this.data.strokes.pop()
+        lastStroke.points.push({x: touche.x, y: touche.y})
+        this.data.strokes.push(lastStroke)
       }
-      //从计算公式看，三个点分别是(x0,y0),(x1,y1),(x2,y2) ；(x1,y1)这个是控制点，控制点不会落在曲线上；实际上，这个点还会手写获取的实际点，却落在曲线上
-      len = this.distance({
-        x: x2,
-        y: y2
-      }, {
-        x: x0,
-        y: y0
-      });
-      lastRadius = this.data.radius;
-      for (let n = 0; n < line.length - 1; n++) {
-        dis += line[n].dis;
-        time += line[n].time - line[n + 1].time;
-        if (dis > this.data.smoothness) break;
+    },
+    // 刷新上下文属性
+    reloadCtx (attr={}) {
+      let ctx = this.data.ctx
+      ctx.lineWidth = attr.lineWidth || this.data.lineWidth
+      ctx.strokeStyle = attr.lineColor || this.data.lineColor
+    },
+    // 刷新上下文背景
+    reloadCtxBG () {
+      if (this.data.ctx) {
+        // 清空画板
+        this.data.ctx.clearRect(0, 0, this.data.canvas.width, this.data.canvas.height)
+        // 重新绘制画板背景
+        let ctx = this.data.ctx
+        let canvas = this.data.canvas
+        ctx.fillStyle = this.data.bgColor
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
       }
-      this.setData({
-        radius: Math.min(time / len * this.data.pressure + this.data.lineMin, this.data.lineMax) * this.data.lineSize
-      });
-      line[0].r = this.data.radius;
-      //计算笔迹半径；
-      if (line.length <= 2) {
-        r0 = (lastRadius + this.data.radius) / 2;
-        r1 = r0;
-        r2 = r1;
-        //return;
-      } else {
-        r0 = (line[2].r + line[1].r) / 2;
-        r1 = line[1].r;
-        r2 = (line[1].r + line[0].r) / 2;
+    },
+    // 重新绘制 - 更具当前笔画记录进行重新绘制
+    redraw () {
+      // 刷新画板背景
+      this.reloadCtxBG()
+      // 是否还有笔画
+      if (this.data.strokes.length) {
+        // 获取到上下文
+        let ctx = this.data.ctx
+        // 开始绘制
+        this.data.strokes.forEach((stroke) => {
+          // 笔画属性
+          const attr = stroke.attr
+          // 更新当前笔画属性到上下文
+          this.reloadCtx(attr)
+          // 笔画列表
+          const points = [...stroke.points]
+          // 获得第一笔
+          const firstPoint = points.shift()
+          // 开始绘制一笔
+          ctx.beginPath()
+          // 绘制第一笔
+          ctx.moveTo(firstPoint.x, firstPoint.y)
+          // 绘制后面剩余笔画
+          points.forEach((point) => {
+            ctx.lineTo(point.x, point.y)
+          })
+          // 绘制
+          ctx.stroke()
+          // 绘制一笔结束
+          ctx.closePath()
+        })
+        // 恢复上下文默认属性
+        this.reloadCtx()
       }
-      let n = 5;
-      let point = [];
-      for (let i = 0; i < n; i++) {
-        let t = i / (n - 1);
-        let x = (1 - t) * (1 - t) * x0 + 2 * t * (1 - t) * x1 + t * t * x2;
-        let y = (1 - t) * (1 - t) * y0 + 2 * t * (1 - t) * y1 + t * t * y2;
-        let r = lastRadius + (this.data.radius - lastRadius) / n * i;
-        point.push({
-          x: x,
-          y: y,
-          r: r
-        });
-        if (point.length == 3) {
-          let a = this.ctaCalc(point[0].x, point[0].y, point[0].r, point[1].x, point[1].y, point[1].r, point[2].x, point[2].y, point[2].r);
-          a[0].color = this.data.lineColor;
-          // let bethelPoint = this.data.bethelPoint;
-          // console.log(a)
-          // console.log(this.data.bethelPoint)
-          // bethelPoint = bethelPoint.push(a);
-          this.bethelDraw(a, 1);
-          point = [{
-            x: x,
-            y: y,
-            r: r
-          }];
-        }
-      }
-      this.setData({
-        currentLine: line
+    },
+    // 画板变化回调
+    callback () {
+      this.triggerEvent('change', {
+        strokesNumber: this.data.strokes.length
       })
-    },
-    //求两点之间距离
-    distance(a, b) {
-      let x = b.x - a.x;
-      let y = b.y - a.y;
-      return Math.sqrt(x * x + y * y);
-    },
-    ctaCalc(x0, y0, r0, x1, y1, r1, x2, y2, r2) {
-      let a = [],
-        vx01, vy01, norm, n_x0, n_y0, vx21, vy21, n_x2, n_y2;
-      vx01 = x1 - x0;
-      vy01 = y1 - y0;
-      norm = Math.sqrt(vx01 * vx01 + vy01 * vy01 + 0.0001) * 2;
-      vx01 = vx01 / norm * r0;
-      vy01 = vy01 / norm * r0;
-      n_x0 = vy01;
-      n_y0 = -vx01;
-      vx21 = x1 - x2;
-      vy21 = y1 - y2;
-      norm = Math.sqrt(vx21 * vx21 + vy21 * vy21 + 0.0001) * 2;
-      vx21 = vx21 / norm * r2;
-      vy21 = vy21 / norm * r2;
-      n_x2 = -vy21;
-      n_y2 = vx21;
-      a.push({
-        mx: x0 + n_x0,
-        my: y0 + n_y0,
-        color: "#1A1A1A"
-      });
-      a.push({
-        c1x: x1 + n_x0,
-        c1y: y1 + n_y0,
-        c2x: x1 + n_x2,
-        c2y: y1 + n_y2,
-        ex: x2 + n_x2,
-        ey: y2 + n_y2
-      });
-      a.push({
-        c1x: x2 + n_x2 - vx21,
-        c1y: y2 + n_y2 - vy21,
-        c2x: x2 - n_x2 - vx21,
-        c2y: y2 - n_y2 - vy21,
-        ex: x2 - n_x2,
-        ey: y2 - n_y2
-      });
-      a.push({
-        c1x: x1 - n_x2,
-        c1y: y1 - n_y2,
-        c2x: x1 - n_x0,
-        c2y: y1 - n_y0,
-        ex: x0 - n_x0,
-        ey: y0 - n_y0
-      });
-      a.push({
-        c1x: x0 - n_x0 - vx01,
-        c1y: y0 - n_y0 - vy01,
-        c2x: x0 + n_x0 - vx01,
-        c2y: y0 + n_y0 - vy01,
-        ex: x0 + n_x0,
-        ey: y0 + n_y0
-      });
-      a[0].mx = a[0].mx.toFixed(1);
-      a[0].mx = parseFloat(a[0].mx);
-      a[0].my = a[0].my.toFixed(1);
-      a[0].my = parseFloat(a[0].my);
-      for (let i = 1; i < a.length; i++) {
-        a[i].c1x = a[i].c1x.toFixed(1);
-        a[i].c1x = parseFloat(a[i].c1x);
-        a[i].c1y = a[i].c1y.toFixed(1);
-        a[i].c1y = parseFloat(a[i].c1y);
-        a[i].c2x = a[i].c2x.toFixed(1);
-        a[i].c2x = parseFloat(a[i].c2x);
-        a[i].c2y = a[i].c2y.toFixed(1);
-        a[i].c2y = parseFloat(a[i].c2y);
-        a[i].ex = a[i].ex.toFixed(1);
-        a[i].ex = parseFloat(a[i].ex);
-        a[i].ey = a[i].ey.toFixed(1);
-        a[i].ey = parseFloat(a[i].ey);
-      }
-      return a;
-    },
-    bethelDraw(point, is_fill, color) {
-      let ctx = this.data.ctx;
-      ctx.beginPath();
-      ctx.moveTo(point[0].mx, point[0].my);
-      if (undefined != color) {
-        ctx.setFillStyle(color);
-        ctx.setStrokeStyle(color);
-      } else {
-        ctx.setFillStyle(point[0].color);
-        ctx.setStrokeStyle(point[0].color);
-      }
-      for (let i = 1; i < point.length; i++) {
-        ctx.bezierCurveTo(point[i].c1x, point[i].c1y, point[i].c2x, point[i].c2y, point[i].ex, point[i].ey);
-      }
-      ctx.stroke();
-      if (undefined != is_fill) {
-        ctx.fill(); //填充图形 ( 后绘制的图形会覆盖前面的图形, 绘制时注意先后顺序 )
-      }
-      ctx.draw(true)
-    },
-    selectColorEvent(event) {
-      console.log(event)
-      var color = event.currentTarget.dataset.colorValue;
-      var colorSelected = event.currentTarget.dataset.color;
-      this.setData({
-        selectColor: colorSelected,
-        lineColor: color
-      })
-    },
-
-    //设置canvas背景色  不设置  导出的canvas的背景为透明 
-    //@params：字符串  color
-    setCanvasBg(color) {
-
-      console.log(999);
-      /* 将canvas背景设置为 白底，不设置  导出的canvas的背景为透明 */
-      //rect() 参数说明  矩形路径左上角的横坐标，左上角的纵坐标, 矩形路径的宽度, 矩形路径的高度
-      //这里是 canvasHeight - 4 是因为下边盖住边框了，所以手动减了写
-      this.data.ctx.rect(0, 0, this.data.canvasWidth, this.data.canvasHeight - 4);
-      // ctx.setFillStyle('red')
-      this.data.ctx.setFillStyle(color)
-      this.data.ctx.fill() //设置填充
-      this.data.ctx.draw() //开画
-
-
     }
+  },
+
+  // 组件生命周期函数 - 在组件布局完成后执行
+  ready () {
+    // 获取画板及上下文
+    this.getCanvas()
+  },
+
+  // 组件生命周期函数 - 在组件实例被从页面节点树移除时执行
+  detached () {
+    // 画板销毁了
   }
 })
