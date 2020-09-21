@@ -163,15 +163,19 @@ public class DistributorCheckService extends ShopBaseService{
             //更新审核状态 1：审核通过；2：审核拒绝
             changeApplyStatus(param.getId(),(byte)1);
             //如果有邀请码处理邀请绑定
-            if(StringUtils.isNotBlank(param.getInvitationCode())){
-                Integer inviteId = db().select(USER.USER_ID).from(USER).where(USER.INVITATION_CODE.eq(param.getInvitationCode())).fetchOne().into(Integer.class);
-                UserBindParam userBindParam = new UserBindParam();
-                userBindParam.setInviteId(inviteId);
-                userBindParam.setUserId(into.getUserId());
-                mpd.userBind(userBindParam);
+            if(StringUtil.isNotEmpty(param.getInvitationCode())){
+                Record1<Integer> integerRecord1 = db().select(USER.USER_ID).from(USER).where(USER.INVITATION_CODE.eq(param.getInvitationCode())).fetchOne();
+                if(integerRecord1 != null){
+                    Integer inviteId = integerRecord1.into(Integer.class);
+                    UserBindParam userBindParam = new UserBindParam();
+                    userBindParam.setInviteId(inviteId);
+                    userBindParam.setUserId(into.getUserId());
+                    mpd.userBind(userBindParam);
+                }
             }
+            String invitationCode = mpd.validInviteCode();
             //更新分销身份状态，分组情况
-            updateApplyGroup(into.getUserId(),param.getGroupId());
+            updateApplyGroup(into.getUserId(),param.getGroupId(),invitationCode);
         });
         //TODO：更改分销员的返利信息
         //TODO：操作记录
@@ -216,10 +220,11 @@ public class DistributorCheckService extends ShopBaseService{
      * @param userId 申请人id
      * @param groupId 分组id
      */
-    private void updateApplyGroup(Integer userId,Integer groupId){
+    private void updateApplyGroup(Integer userId,Integer groupId,String invitationCode){
         db().update(USER)
             .set(USER.IS_DISTRIBUTOR, (byte)1)
             .set(USER.INVITE_GROUP,groupId)
+            .set(USER.INVITATION_CODE,invitationCode)
             .where(USER.USER_ID.eq(userId))
             .execute();
     }
