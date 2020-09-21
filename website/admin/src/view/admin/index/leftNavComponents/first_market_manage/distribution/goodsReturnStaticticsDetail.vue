@@ -353,7 +353,7 @@ export default {
         label: '自购返利'
       }, {
         value: 1,
-        label: '直间返利'
+        label: '直接返利'
       }, {
         value: 2,
         label: '间接返利'

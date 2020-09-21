@@ -126,8 +126,8 @@
               <th width="100px">{{ $t('order.specText') }}</th>
               <template v-if="order.deliverType == 0">
                 <th width="100px">{{ $t('order.shippingNum') }}</th>
-                <th>{{ $t('order.shippingCompany') }}</th>
-                <th>{{ $t('order.shippingNo') }}</th>
+                <th>配送人</th>
+                <th>配送人手机号</th>
                 <th>{{ $t('order.shippingTimeText') }}</th>
                 <th>{{ $t('order.confirmTimeText') }}</th>
               </template>
@@ -149,10 +149,11 @@
                 <td>{{ shipGoods.sendNumber }}</td>
                 <template v-if="order.deliverType == 0">
                   <td v-if="index === 0" :rowspan="item.goods.length">
-                    {{ $t('expressList.company')[item.shippingId] }}
+                    <!-- {{ $t('expressList.company')[item.shippingId] }} -->
+                    {{item.shippingName}}
                   </td>
                   <td v-if="index === 0" :rowspan="item.goods.length">
-                    {{ item.shippingNo }}
+                    {{ item.shippingName }}
                   </td>
                   <td v-if="index === 0" :rowspan="item.goods.length">
                     {{ item.shippingTime }}
