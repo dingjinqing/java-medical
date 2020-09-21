@@ -316,7 +316,7 @@ export default {
       loading: false,
       langDefaultFlag: false,
       auditTypes: [
-        {value: 0, label: '不审核'},
+        {value: 0, label: 'his同步'},
         {value: 1, label: '续方'},
         {value: 2, label: '开方'},
         {value: 3, label: '会话开方'}
