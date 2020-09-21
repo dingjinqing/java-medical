@@ -619,7 +619,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }
             param.setInsteadPayCfg(cfg);
         }
-        if (param.getStoreId()==null&&param.getStoreId()<=0){
+        if (param.getStoreId()==null||param.getStoreId()<=0){
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_MONEY_ZERO);
         }
         logger().info("校验checkCreateOrderBo,end");
