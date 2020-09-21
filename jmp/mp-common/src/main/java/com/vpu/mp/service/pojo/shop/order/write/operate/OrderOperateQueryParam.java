@@ -22,7 +22,7 @@ public class OrderOperateQueryParam extends AbstractOrderOperateQueryParam{
 	@NotBlank(message = JsonResultMessage.MSG_ORDER_ORDER_SN_NOT_NULL)
 	private String orderSn;
 
-	@NotNull
+
 	private Byte platform;
 
 
