@@ -182,7 +182,7 @@ export default {
       }
       getStoreList(param).then(res => {
         if (res.error !== 0) {
-          this.$message.warning({ message: '系统错误', showClose: true })
+          this.$message.warning({ message: res.message, showClose: true })
           return
         }
         let pageResult = res.content.storePageListVo
@@ -198,7 +198,7 @@ export default {
     storeFunctionChange (row, fieldName) {
       updateStore(row).then(res => {
         if (res.error !== 0) {
-          this.$message.warning({ message: '系统错误', showClose: true })
+          this.$message.warning({ message: res.message, showClose: true })
         } else {
           this.$message.success({ message: '更新完成', showClose: true })
         }
