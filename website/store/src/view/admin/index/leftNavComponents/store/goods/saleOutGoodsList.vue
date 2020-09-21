@@ -1,6 +1,5 @@
 <template>
-  <div class="container">
-    <div class="goods-list-wrap">
+  <div class="goods-list-wrap">
       <div class="goods-list-header">
         <el-form
           ref="goodsListHeaderForm"
@@ -60,10 +59,7 @@
             <el-table-column prop="storeName" label="门店名称" />
             <el-table-column prop="goodsCommonName" label="商品名称" />
             <el-table-column prop="goodsApprovalNumber" label="规格系数" />
-            <el-table-column
-              prop="goodsProductionEnterprise"
-              label="生产企业"
-            />
+            <el-table-column prop="goodsProductionEnterprise" label="生产企业"/>
             <el-table-column prop="goodsStoreSn" label="药房企业唯一编码" />
             <el-table-column prop="productPrice" label="商品价格" />
             <el-table-column label="是否在售">
@@ -87,7 +83,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -165,15 +160,14 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  padding: 10px;
-}
 .goods-list-wrap {
+  padding: 10px;
   height: 100%;
+  box-sizing: border-box;
   overflow: hidden;
 }
 .goods-list-header {
-  padding: 10px;
+  padding: 15px;
   background-color: white;
   height: 120px;
 }
