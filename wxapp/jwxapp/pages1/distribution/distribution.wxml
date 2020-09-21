@@ -207,14 +207,14 @@
       </block>
       <!-- 底部按钮 -->
       <block wx:if='{{rebate_center == 1}}'>
-        <view class="fix_area" style='position: fixed;bottom:{{hasBottom ?"55px":"0px;"}}'>
+        <view class="fix_area" style='padding-bottom:{{isIpx?"50rpx":""}};position: fixed;bottom:{{hasBottom ?"55px":"0px;"}}'>
           <view class="btn_to_invite">
             <button class="shareStyle" style="background:{{comColor}};" catchtap="shareGoods">邀请好友成为{{distributor_name || '分销员'}}</button>
           </view>
         </view>
       </block>
       <block wx:else>
-        <view class="fix_area" style='position: fixed;bottom:{{hasBottom ?"55px":"0px;"}}'>
+        <view class="fix_area" style='padding-bottom:{{isIpx?"50rpx":""}};position: fixed;bottom:{{hasBottom ?"55px":"0px;"}}'>
           <view wx:if="{{dis_info.judgeStatus == 1}}" class="btn_to_invite" style="background:{{comColor}}" bindtap='apply_get'>重新申请成为{{distributor_name || '分销员'}}</view>
           <view wx:if="{{dis_info.judgeStatus == 0}}" class="btn_to_invite">
             <button class="shareStyle" style="background:{{comColor}};" catchtap="shareGoods">邀请好友成为{{distributor_name || '分销员'}}</button>

@@ -1,7 +1,7 @@
 <!--pages1/distripromotion/distripromotion.wxml-->
 <include src="/pages/common/header.wxml"/>
 <view class='main-container'>
-  <view class="dis_content" wx:for="{{promotionList}}" wx:key="{{index}}">
+  <view class="dis_content" wx:for="{{promotionList}}" wx:key="index">
     <view class="promotion_title">
       {{item.title}}
       <view class='copy' bindtap='toCopy' data-content='{{item.promotionLanguage}}' style="border-color:{{somColor}};color:{{comColor}}">复制</view>

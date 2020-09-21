@@ -193,6 +193,8 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
+    //用户分享行为数据收集埋点
+    util.handleToBuryPoint(5)
     var that = this;
     return {
       path: 'pages/distributionspread/distributionspread?inviteId=' + util.getCache('user_id'),
