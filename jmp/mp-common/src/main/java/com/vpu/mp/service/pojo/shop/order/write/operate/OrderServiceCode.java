@@ -40,7 +40,10 @@ public enum OrderServiceCode {
     //13:订单得处方续方
     PRESCRIPTION(),
     //14:订单待开方
-    MAKE_PRESCRIPTION();
+    MAKE_PRESCRIPTION(),
+    //15:药师拣药完成
+    PICK_MEDICINE();
+
     OrderServiceCode() {
     }
 }

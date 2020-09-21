@@ -229,7 +229,7 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
 
     public void updateDoctorStatisticInquiryScore(Byte type, Date refDate,DoctorStatisticMinMaxVo doctorStatisticMinMax) {
         BigDecimal differ = doctorStatisticMinMax.getMaxInquiryMoney().subtract(doctorStatisticMinMax.getMinInquiryMoney());
-        if(BigDecimal.ZERO.equals(differ)) {
+        if(BigDecimal.ZERO.compareTo(differ) == 0) {
             db().update(DOCTOR_SUMMARY_TREND)
                 .set(DOCTOR_SUMMARY_TREND.INQUIRY_SCORE, BigDecimal.ZERO)
                 .where(DOCTOR_SUMMARY_TREND.TYPE.eq(type))

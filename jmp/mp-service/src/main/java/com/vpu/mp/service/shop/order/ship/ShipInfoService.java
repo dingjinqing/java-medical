@@ -3,8 +3,10 @@ package com.vpu.mp.service.shop.order.ship;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
@@ -70,33 +72,38 @@ public class ShipInfoService extends ShopBaseService {
 		return goods;
 	}
 
-	public void addRecord(List<PartOrderGoodsShipRecord> shipInfoList , OrderGoodsRecord orderGoodsVo , String batchNo , ShipParam param , Integer sendNumber) {
+	public PartOrderGoodsShipRecord addRecord(OrderGoodsRecord orderGoodsVo, OrderInfoRecord orderRecord, String batchNo, ShipParam param, Integer sendNumber) {
 		PartOrderGoodsShipRecord record = new PartOrderGoodsShipRecord();
-		record.set(PART_ORDER_GOODS_SHIP.SHOP_ID,getShopId());
-		record.set(PART_ORDER_GOODS_SHIP.ORDER_GOODS_ID,orderGoodsVo.getRecId());
-		record.set(PART_ORDER_GOODS_SHIP.ORDER_SN,orderGoodsVo.getOrderSn());
-		record.set(PART_ORDER_GOODS_SHIP.BATCH_NO,batchNo);
-		record.set(PART_ORDER_GOODS_SHIP.GOODS_ID,orderGoodsVo.getGoodsId());
-		record.set(PART_ORDER_GOODS_SHIP.GOODS_NAME,orderGoodsVo.getGoodsName());
-		record.set(PART_ORDER_GOODS_SHIP.PRODUCT_ID,orderGoodsVo.getProductId());
-		record.set(PART_ORDER_GOODS_SHIP.SEND_NUMBER,sendNumber.shortValue());
-		record.set(PART_ORDER_GOODS_SHIP.GOODS_ATTR,orderGoodsVo.getGoodsAttr());
-		if (param != null) {
-			//核销时不设置
-			record.set(PART_ORDER_GOODS_SHIP.SHIPPING_NO,param.getShippingNo());
-			record.set(PART_ORDER_GOODS_SHIP.SHIPPING_ID,param.getShippingId());
-		}else {
-			//核销设置时间
+		record.setShopId(getShopId());
+		record.setOrderGoodsId(orderGoodsVo.getRecId());
+		record.setOrderSn(orderGoodsVo.getOrderSn());
+		record.setBatchNo(batchNo);
+		record.setGoodsId(orderGoodsVo.getGoodsId());
+		record.setGoodsName(orderGoodsVo.getGoodsName());
+		record.setProductId(orderGoodsVo.getProductId());
+		record.setSendNumber(sendNumber.shortValue());
+		record.setGoodsAttr(orderGoodsVo.getGoodsAttr());
+		record.setShippingType(orderRecord.getDeliverType());
+		record.setShippingAccountId(param.getShipAccountId());
+		record.setShippingPlatform(param.getPlatform());
+		record.setShippingUserId(param.getShipUserId());
+		//核销时不设置
+		record.setShippingId(param.getShippingId());
+		record.setShippingNo(param.getShippingNo());
+		if (orderRecord.getDeliverType().equals(OrderConstant.DELIVER_TYPE_SELF)){
+			//自提订单核销
 			Timestamp temp = DateUtils.getSqlTimestamp();
-			record.setShippingTime(temp);
 			record.setConfirmTime(temp);
 		}
-
-		shipInfoList.add(record);
+		return record;
 	}
 
-	public void receive(String orderSn) {
-		db().update(TABLE).set(TABLE.CONFIRM_TIME, DateUtils.getSqlTimestamp()).where(TABLE.ORDER_SN.eq(orderSn)).execute();
+	public void receive(String orderSn,Byte platform,Integer userId,Integer accountId) {
+		db().update(TABLE).set(TABLE.CONFIRM_TIME, DateUtils.getSqlTimestamp())
+				.set(TABLE.CONFIRM_PLATFORM, platform)
+				.set(TABLE.CONFIRM_ACCOUNT_ID, accountId)
+				.set(TABLE.CONFIRM_USER_ID, userId)
+				.where(TABLE.ORDER_SN.eq(orderSn)).execute();
 	}
 
     /**

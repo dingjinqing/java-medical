@@ -44,7 +44,7 @@ public class GoodsAnalysisDao extends ShopBaseDao {
         if (param.getOrderField() != null) {
             goodsFiledSorted(select, param);
         } else {
-            select.orderBy(DOCTOR.ID.desc());
+            select.orderBy(GOODS.GOODS_ID.desc());
         }
         return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), GoodsAnalysisListVo.class);

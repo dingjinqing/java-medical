@@ -12,6 +12,7 @@ import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.department.*;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,8 @@ public class DepartmentService extends BaseShopConfigService {
     protected DepartmentDao departmentDao;
     @Autowired
     protected DoctorDepartmentCoupleDao doctorDepartmentCoupleDao;
+    @Autowired
+    public ShopCommonConfigService shopCommonConfigService;
     public static final int ZERO = 0;
 
     public PageResult<DepartmentListVo> getDepartmentList(DepartmentListParam param) {
@@ -281,6 +284,10 @@ public class DepartmentService extends BaseShopConfigService {
             List<Integer> departmentIds = doctorDepartmentCoupleDao.getDepartmentIdsByDoctorId(param.getDoctorId());
             param.setDepartmentIds(departmentIds);
         }
+        param.setDepartmentRecommendType(shopCommonConfigService.getDepartmentRecommendType());
+        param.setConsultationRate(shopCommonConfigService.getDepartmentRecommendConsultationRate());
+        param.setInquiryRate(shopCommonConfigService.getDepartmentRecommendInquiryRate());
+        param.setDoctorRate(shopCommonConfigService.getDepartmentRecommendDoctorRate());
         return departmentDao.listDepartmentsByOptions(param);
     }
 

@@ -3,16 +3,14 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandClassifyVo;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
-import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -282,8 +280,8 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@GetMapping(value = "/admin/decorate/cate/list")
 	public JsonResult sysCate() {
-		List<SysCatevo> parentList = SysCatServiceHelper.getAllSysCateVoByCat();
-		return this.success(parentList);
+//		List<SysCatevo> parentList = SysCatServiceHelper.getAllSysCateVoByCat();
+		return this.success(new ArrayList());
 	}
 
 	/**
