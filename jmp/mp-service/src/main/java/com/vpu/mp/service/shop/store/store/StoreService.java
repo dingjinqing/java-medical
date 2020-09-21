@@ -56,7 +56,6 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_HOSPITAL;
 import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
 import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
