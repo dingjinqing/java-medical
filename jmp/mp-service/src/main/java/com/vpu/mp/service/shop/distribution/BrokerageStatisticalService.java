@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.distribution.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -57,33 +58,39 @@ public class BrokerageStatisticalService extends ShopBaseService{
             select.where(USER.as(INVITE).USER_ID.eq(param.getUserId()));
         }
         //分销员昵称
-		if(param.getDistributorName() != null) {
+		if(StringUtils.isNotBlank(param.getDistributorName())) {
 			select.where(USER.as(INVITE).USERNAME.contains(param.getDistributorName()));
 		}
 		//分销员手机号
-		if(param.getDistributorMobile() != null) {
+		if(StringUtils.isNotBlank(param.getDistributorMobile())) {
 			select.where(USER.as(INVITE).MOBILE.contains(param.getDistributorMobile()));
 		}
 		//下单用户昵称
-		if(param.getUsername() != null) {
+		if(StringUtils.isNotBlank(param.getUsername())) {
 			select.where(USER.USERNAME.contains(param.getUsername()));
 		}
 		//下单用户手机号
-		if(param.getMobile() != null) {
+		if(StringUtils.isNotBlank(param.getMobile())) {
 			select.where(USER.MOBILE.contains(param.getMobile()));
 		}
 		//下单时间
-		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
-			select.where(ORDER_INFO.CREATE_TIME.ge(param.getStartCreateTime()).and(ORDER_INFO.CREATE_TIME.le(param.getEndCreateTime())));
+		if(param.getStartCreateTime() != null ) {
+			select.where(ORDER_INFO.CREATE_TIME.ge(param.getStartCreateTime()));
 		}
+		if(param.getEndCreateTime() != null){
+            select.where(ORDER_INFO.CREATE_TIME.le(param.getEndCreateTime()));
+        }
 		//返利订单号
-		if(param.getOrderSn() != null) {
+		if(StringUtils.isNotBlank(param.getOrderSn())) {
 			select.where(ORDER_INFO.ORDER_SN.contains(param.getOrderSn()));
 		}
 		//返利日期
-		if(param.getStartRebateTime() != null && param.getEndRebateTime() != null) {
-			select.where(ORDER_INFO.FINISHED_TIME.ge(param.getStartRebateTime()).and(ORDER_INFO.FINISHED_TIME.le(param.getEndRebateTime())));
+		if(param.getStartRebateTime() != null) {
+			select.where(ORDER_INFO.FINISHED_TIME.ge(param.getStartRebateTime()));
 		}
+		if(param.getEndRebateTime() != null){
+            select.where(ORDER_INFO.FINISHED_TIME.le(param.getEndCreateTime()));
+        }
 		//返利状态
 		if(param.getSettlementFlag() != null) {
 			select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(param.getSettlementFlag()));
