@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
 
-    private static final long serialVersionUID = 818834103;
+    private static final long serialVersionUID = 1776771175;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_part_order_goods_ship</code>
@@ -143,6 +143,11 @@ public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
     public final TableField<PartOrderGoodsShipRecord, Byte> SHIPPING_PLATFORM = createField("shipping_platform", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "发货平台");
 
     /**
+     * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_mobile</code>. 发货人员手机号
+     */
+    public final TableField<PartOrderGoodsShipRecord, String> SHIPPING_MOBILE = createField("shipping_mobile", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "发货人员手机号");
+
+    /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_user_id</code>. 发货人员userId
      */
     public final TableField<PartOrderGoodsShipRecord, Integer> SHIPPING_USER_ID = createField("shipping_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发货人员userId");
@@ -166,6 +171,11 @@ public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_platform</code>. 收货操作平台
      */
     public final TableField<PartOrderGoodsShipRecord, Byte> CONFIRM_PLATFORM = createField("confirm_platform", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "收货操作平台");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_mobile</code>. 收货人员手机号
+     */
+    public final TableField<PartOrderGoodsShipRecord, String> CONFIRM_MOBILE = createField("confirm_mobile", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "收货人员手机号");
 
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_user_id</code>. 收货人员userId

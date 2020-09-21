@@ -8,6 +8,7 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
@@ -24,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
@@ -71,6 +73,8 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 	public OrderGoodsService orderGoods;
     @Autowired
     public OrderOperateSendMessage sendMessage;
+    @Autowired
+    public StoreAccountDao storeAccountDao;
 
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -176,17 +180,23 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 	public void handleShipAccountId(ShipParam param) {
 		if (param.getPlatform().equals(OrderConstant.PLATFORM_ADMIN)){
 			param.setShipAccountId(param.getAdminInfo().getSysId());
+			param.setMobile(param.getAdminInfo().getMobile());
 		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_STORE)){
 			param.setShipAccountId(param.getStoreInfo().getStoreAccountId());
 			param.setShipUserId(param.getStoreInfo().getStoreAuthInfoVo().getStoreAccountInfo().getUserId());
+			param.setMobile(param.getStoreInfo().getStoreAuthInfoVo().getStoreAccountInfo().getMobile());
 		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP)){
 			param.setShipUserId(param.getWxUserInfo().getUserId());
+			param.setMobile(param.getWxUserInfo().getWxUser().getMobile());
 		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP_STORE)){
 			param.setShipAccountId(param.getWxUserInfo().getStoreAccountId());
 			param.setShipUserId(param.getWxUserInfo().getUserId());
+			StoreAccountVo oneInfo = storeAccountDao.getOneInfo(param.getWxUserInfo().getStoreAccountId());
+			param.setMobile(oneInfo.getMobile());
 		}else {
 			param.setShipAccountId(0);
 			param.setShipUserId(0);
+			param.setMobile("");
 		}
 	}
 

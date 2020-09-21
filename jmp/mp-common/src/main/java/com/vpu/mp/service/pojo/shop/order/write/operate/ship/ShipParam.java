@@ -33,6 +33,7 @@ public final class ShipParam extends OrderOperateQueryParam{
 	private Byte platform;
 	private Integer shipAccountId;
 	private Integer shipUserId;
+	private String mobile;
 
 
 	@Getter

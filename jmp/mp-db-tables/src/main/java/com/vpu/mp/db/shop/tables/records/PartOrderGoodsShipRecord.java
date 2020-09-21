@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PartOrderGoodsShipRecord extends UpdatableRecordImpl<PartOrderGoodsShipRecord> {
 
-    private static final long serialVersionUID = -2041129199;
+    private static final long serialVersionUID = 1004771258;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.rec_id</code>.
@@ -266,101 +266,129 @@ public class PartOrderGoodsShipRecord extends UpdatableRecordImpl<PartOrderGoods
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_mobile</code>. 发货人员手机号
+     */
+    public void setShippingMobile(String value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_mobile</code>. 发货人员手机号
+     */
+    public String getShippingMobile() {
+        return (String) get(17);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_user_id</code>. 发货人员userId
      */
     public void setShippingUserId(Integer value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_user_id</code>. 发货人员userId
      */
     public Integer getShippingUserId() {
-        return (Integer) get(17);
+        return (Integer) get(18);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_time</code>. 订单确收收货时间
      */
     public void setConfirmTime(Timestamp value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_time</code>. 订单确收收货时间
      */
     public Timestamp getConfirmTime() {
-        return (Timestamp) get(18);
+        return (Timestamp) get(19);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.create_time</code>. 创建时间
      */
     public void setCreateTime(Timestamp value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.create_time</code>. 创建时间
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(19);
+        return (Timestamp) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_account_id</code>. 收货人员id
      */
     public void setConfirmAccountId(Integer value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_account_id</code>. 收货人员id
      */
     public Integer getConfirmAccountId() {
-        return (Integer) get(20);
+        return (Integer) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_platform</code>. 收货操作平台
      */
     public void setConfirmPlatform(Byte value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_platform</code>. 收货操作平台
      */
     public Byte getConfirmPlatform() {
-        return (Byte) get(21);
+        return (Byte) get(22);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_mobile</code>. 收货人员手机号
+     */
+    public void setConfirmMobile(String value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_mobile</code>. 收货人员手机号
+     */
+    public String getConfirmMobile() {
+        return (String) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_user_id</code>. 收货人员userId
      */
     public void setConfirmUserId(Integer value) {
-        set(22, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_user_id</code>. 收货人员userId
      */
     public Integer getConfirmUserId() {
-        return (Integer) get(22);
+        return (Integer) get(24);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_part_order_goods_ship.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(23, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_part_order_goods_ship.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(23);
+        return (Timestamp) get(25);
     }
 
     // -------------------------------------------------------------------------
@@ -389,7 +417,7 @@ public class PartOrderGoodsShipRecord extends UpdatableRecordImpl<PartOrderGoods
     /**
      * Create a detached, initialised PartOrderGoodsShipRecord
      */
-    public PartOrderGoodsShipRecord(Integer recId, Integer shopId, Integer orderGoodsId, String orderSn, String batchNo, Integer goodsId, String goodsName, Integer productId, Short sendNumber, String goodsAttr, Byte shippingType, String shippingNo, String shippingName, Byte shippingId, Timestamp shippingTime, Integer shippingAccountId, Byte shippingPlatform, Integer shippingUserId, Timestamp confirmTime, Timestamp createTime, Integer confirmAccountId, Byte confirmPlatform, Integer confirmUserId, Timestamp updateTime) {
+    public PartOrderGoodsShipRecord(Integer recId, Integer shopId, Integer orderGoodsId, String orderSn, String batchNo, Integer goodsId, String goodsName, Integer productId, Short sendNumber, String goodsAttr, Byte shippingType, String shippingNo, String shippingName, Byte shippingId, Timestamp shippingTime, Integer shippingAccountId, Byte shippingPlatform, String shippingMobile, Integer shippingUserId, Timestamp confirmTime, Timestamp createTime, Integer confirmAccountId, Byte confirmPlatform, String confirmMobile, Integer confirmUserId, Timestamp updateTime) {
         super(PartOrderGoodsShip.PART_ORDER_GOODS_SHIP);
 
         set(0, recId);
@@ -409,12 +437,14 @@ public class PartOrderGoodsShipRecord extends UpdatableRecordImpl<PartOrderGoods
         set(14, shippingTime);
         set(15, shippingAccountId);
         set(16, shippingPlatform);
-        set(17, shippingUserId);
-        set(18, confirmTime);
-        set(19, createTime);
-        set(20, confirmAccountId);
-        set(21, confirmPlatform);
-        set(22, confirmUserId);
-        set(23, updateTime);
+        set(17, shippingMobile);
+        set(18, shippingUserId);
+        set(19, confirmTime);
+        set(20, createTime);
+        set(21, confirmAccountId);
+        set(22, confirmPlatform);
+        set(23, confirmMobile);
+        set(24, confirmUserId);
+        set(25, updateTime);
     }
 }
