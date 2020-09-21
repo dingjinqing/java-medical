@@ -43,7 +43,7 @@ public class StoreDao extends ShopBaseDao {
      * @param stores 有货门店storeCode
      * @return List<StoreDo>
      */
-    public List<StoreDo> getStoreOpen(List<String> stores, Integer deliveryType) {
+    public List<StoreDo> getStoreOpen(List<String> stores, Byte deliveryType) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date date = new Date();
         String dateStringParse = sdf.format(date);

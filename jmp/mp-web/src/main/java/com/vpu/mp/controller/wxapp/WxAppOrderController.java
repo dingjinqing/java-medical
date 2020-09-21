@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_SELF;
+
 /**
  * 订单
  * @author 王帅
@@ -392,7 +394,7 @@ public class WxAppOrderController extends WxAppBaseController{
         if ("".equals(orderAddressParam.getLat()) || "".equals(orderAddressParam.getLng())) {
             return success(storeService.getStoreListOpen(orderAddressParam.getStoreGoodsBaseCheckInfoList()));
         }
-        orderAddressParam.setDeliveryType(1);
+        orderAddressParam.setDeliveryType(DELIVER_TYPE_SELF);
         Map<String, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
         return success(storeListOpen);
     }
