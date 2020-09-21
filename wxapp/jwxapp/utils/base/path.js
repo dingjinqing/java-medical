@@ -31,13 +31,6 @@ const path = {
     "commentcomplete/commentcomplete",
     "couponpackage/couponpackage",
     "foothistory/foothistory"
-  ],
-  'pages2': [
-    "assessstart/assessstart",
-    "assessinfo/assessinfo",
-    "assessend/assessend",
-    "assesscheck/assesscheck",
-    "distripromotion/distripromotion",
   ]
 };
 
