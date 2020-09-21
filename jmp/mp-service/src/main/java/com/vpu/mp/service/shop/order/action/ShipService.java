@@ -6,8 +6,9 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.AbstractExcelDisposer;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
@@ -24,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
@@ -32,8 +34,8 @@ import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +73,8 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 	public OrderGoodsService orderGoods;
     @Autowired
     public OrderOperateSendMessage sendMessage;
+    @Autowired
+    public StoreAccountDao storeAccountDao;
 
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -93,21 +97,24 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
             //无单号物流发货时置单号为空
             param.setShippingNo(StringUtils.EMPTY);
         }
+		handleShipAccountId(param);
 		Map<Integer, OrderGoodsVo> cbsMap = canBeShipped.stream().collect(Collectors.toMap(OrderGoodsVo::getRecId, Function.identity()));
 		ShipGoods[] shipGoods = param.getShipGoods();
 		//构建商品行查询条件
-		ArrayList<Integer> recIds = new ArrayList<Integer>(shipGoods.length);
+		ArrayList<Integer> recIds = new ArrayList<>(shipGoods.length);
 		for (ShipGoods sTemp : shipGoods) {
 			recIds.add(sTemp.getRecId());
 		}
 		//查询商品行,返回的OrderGoodsRecord
 		Map<Integer, OrderGoodsRecord> goods = db().fetch(ORDER_GOODS,ORDER_GOODS.REC_ID.in(recIds)).intoMap(OrderGoodsRecord::getRecId);
+		//构造主表基本信息 b2c_order_info
+		OrderInfoRecord orderRecord = db().fetchOne(ORDER_INFO, ORDER_INFO.ORDER_SN.eq(param.getOrderSn()));
 		//构造_添加部分发货信息 b2c_part_order_goods_ship
-		List<PartOrderGoodsShipRecord> shipInfoList = new ArrayList<PartOrderGoodsShipRecord>(shipGoods.length);
+		List<PartOrderGoodsShipRecord> shipInfoList = new ArrayList<>(shipGoods.length);
 		//声明存放OrderGoodsRecord的list
-		ArrayList<OrderGoodsRecord> recordList = new ArrayList<OrderGoodsRecord>(shipGoods.length);
+		ArrayList<OrderGoodsRecord> recordList = new ArrayList<>(shipGoods.length);
 		//发货批次号,同一批次为同一快递
-		String batchNo = canBeShipped.get(0).getOrderSn() + "_" + DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
+		String batchNo = orderRecord.getOrderSn() + "_" + DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
 		for (ShipGoods oneGoods : shipGoods) {
 			Integer sendNumber = oneGoods.getSendNumber();
 			//校验_商品发货数量
@@ -129,15 +136,13 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			OrderGoodsRecord orderGoodsVo = goods.get(oneGoods.getRecId());
 			orderGoodsVo.setSendNumber((orderGoodsVo.getSendNumber() + sendNumber));
 			recordList.add(orderGoodsVo);
-			shipInfo.addRecord(shipInfoList, orderGoodsVo, batchNo, param, sendNumber);
+			shipInfoList.add(shipInfo.addRecord(orderGoodsVo,orderRecord, batchNo, param, sendNumber));
 		}
 		//判断此次发货是否为部分发货
 		byte partShipFlag = OrderConstant.NO_PART_SHIP;
 		if(canBeShipped.size() > shipGoods.length || flag) {
 			partShipFlag = OrderConstant.PART_SHIP;
 		}
-		//构造主表基本信息 b2c_order_info
-		OrderInfoRecord orderRecord = db().fetchOne(ORDER_INFO, ORDER_INFO.ORDER_SN.eq(param.getOrderSn()));
 		//设置是否部分发货
 		if(partShipFlag == OrderConstant.PART_SHIP) {
 			orderRecord.setPartShipFlag(OrderConstant.PART_SHIP);
@@ -161,11 +166,38 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		//action操作
 		orderAction.addRecord(orderRecord, param, OrderConstant.ORDER_WAIT_DELIVERY, orderRecord.getOrderStatus() == OrderConstant.ORDER_SHIPPED ? "全部发货 " : "部分发货");
 		//操作记录
-		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_SHIP.code }), new String[] {param.getOrderSn()});
+		record.insertRecord(Collections.singletonList(RecordContentTemplate.ORDER_SHIP.code), param.getOrderSn());
 		//发送消息模板
         sendMessage.send(orderRecord, recordList);
 		logger.info("发货完成");
 		return null;
+	}
+
+	/**
+	 * 处理账户的id
+	 * @param param
+	 */
+	public void handleShipAccountId(ShipParam param) {
+		if (param.getPlatform().equals(OrderConstant.PLATFORM_ADMIN)){
+			param.setShipAccountId(param.getAdminInfo().getSysId());
+			param.setMobile(param.getAdminInfo().getMobile());
+		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_STORE)){
+			param.setShipAccountId(param.getStoreInfo().getStoreAccountId());
+			param.setShipUserId(param.getStoreInfo().getStoreAuthInfoVo().getStoreAccountInfo().getUserId());
+			param.setMobile(param.getStoreInfo().getStoreAuthInfoVo().getStoreAccountInfo().getMobile());
+		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP)){
+			param.setShipUserId(param.getWxUserInfo().getUserId());
+			param.setMobile(param.getWxUserInfo().getWxUser().getMobile());
+		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP_STORE)){
+			param.setShipAccountId(param.getWxUserInfo().getStoreAccountId());
+			param.setShipUserId(param.getWxUserInfo().getUserId());
+			StoreAccountVo oneInfo = storeAccountDao.getOneInfo(param.getWxUserInfo().getStoreAccountId());
+			param.setMobile(oneInfo.getMobile());
+		}else {
+			param.setShipAccountId(0);
+			param.setShipUserId(0);
+			param.setMobile("");
+		}
 	}
 
 	/**

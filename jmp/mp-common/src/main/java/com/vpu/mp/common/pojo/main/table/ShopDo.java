@@ -76,5 +76,5 @@ public class ShopDo implements Serializable {
     private String     storeClerkPrivilegeList;
     private String     publicityImg;
     private String     copywriting;
-
+    private String     cachet;
 }

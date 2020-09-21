@@ -1,16 +1,14 @@
   <include src="/pages/common/header.wxml" />
-      <view class="wrapper" style="height:calc(100vh - {{margin_top_nav + 8}}px);">
-        <view class="handBtn">
-          <view class="btn">取消</view>
-          <view class="btn">清屏</view>
-          <view class="btn">确定</view>
-        </view>
-        <view class="handCenter">
-          <canvas class="handWriting" disable-scroll="true" bindtouchstart="uploadScaleStart"
-            bindtouchmove="uploadScaleMove" bindtouchend="uploadScaleEnd" canvas-id="handWriting" type="2d">
-          </canvas>
-        </view>
-        <view class="handRight">
-          <view class="handTitle">开方时使用此签名</view>
-        </view>
-      </view>
+  <view class="wrapper" style="height:calc(100vh - {{margin_top_nav + 8}}px);">
+    <view class="handBtn">
+      <view class="btn">取消</view>
+      <view class="btn" bindtap="clearBoard">清屏</view>
+      <view class="btn">确定</view>
+    </view>
+    <view class="handCenter">
+      <v-sign id="sign"/>
+    </view>
+    <view class="handRight">
+      <view class="handTitle">开方时使用此签名</view>
+    </view>
+  </view>

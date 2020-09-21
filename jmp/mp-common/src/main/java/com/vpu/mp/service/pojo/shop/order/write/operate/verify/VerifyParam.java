@@ -18,4 +18,7 @@ public class VerifyParam extends OrderOperateQueryParam{
 	@NotNull(message = JsonResultMessage.MSG_ORDER_VERIFY_IFCHECK_NOT_NULL)
 	private Boolean isCheck;
 	private String verifyCode;
+	@NotNull
+	private Byte platform;
+
 }

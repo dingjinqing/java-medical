@@ -1,18 +1,14 @@
 package com.vpu.mp.service.pojo.wxapp.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Tolerate;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 /**
- * 
+ *
  * @author lixinguo
  *
  */
@@ -25,37 +21,37 @@ public class WxAppSessionUser {
 	 */
 	@JsonProperty(value = "geographic_location")
 	Byte geoLocation = 10;
-	
+
 	/**
 	 * 是否隐藏底部导航
 	 */
 	@JsonProperty(value = "hid_bottom")
 	Byte hideBottom = 0;
-	
+
 	/**
 	 * 微信用户信息
 	 */
 	@JsonProperty(value = "res")
 	WxUserInfo wxUser;
-	
+
 	/**
 	 * 店铺标记
 	 */
 	@JsonProperty(value = "shop_flag")
 	Byte shopFlag;
-	
-	
+
+
 	@JsonProperty(value = "shop_id")
 	Integer shopId;
-	
+
 	String token;
-	
+
 	@JsonProperty(value = "user_avatar")
 	String userAvatar;
-	
+
 	@JsonProperty(value = "user_id")
 	Integer userId;
-	
+
 	String username;
 	/**  图片地址，小程序前端用 */
 	String imageHost;

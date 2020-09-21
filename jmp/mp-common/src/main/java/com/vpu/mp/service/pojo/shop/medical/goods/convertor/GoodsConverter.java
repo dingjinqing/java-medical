@@ -19,13 +19,13 @@ import java.util.Collections;
 public class GoodsConverter {
     public static final String ASC = "asc";
 
-    public static GoodsPageListCondition convertPageListConditionFromPageListParam(MedicalGoodsPageListParam pageListParam){
+    public static GoodsPageListCondition convertPageListConditionFromPageListParam(MedicalGoodsPageListParam pageListParam) {
         GoodsPageListCondition goodsPageListCondition = new GoodsPageListCondition();
-        FieldsUtil.assign(pageListParam,goodsPageListCondition);
+        FieldsUtil.assign(pageListParam, goodsPageListCondition);
 
         if (pageListParam.getOrderField() != null) {
             GoodsSortItem goodsSortItem = new GoodsSortItem();
-           goodsSortItem.setColumnName(pageListParam.getOrderField());
+            goodsSortItem.setColumnName(pageListParam.getOrderField());
             if (ASC.equals(pageListParam.getOrderDirection())) {
                 goodsSortItem.setAsc(true);
             } else {
@@ -41,7 +41,7 @@ public class GoodsConverter {
      * @param bo
      * @return
      */
-    public static GoodsDo convertGoodsMedicalExternalRequestItemBoToGoodsDo(GoodsMedicalExternalRequestItemBo bo){
+    public static GoodsDo convertGoodsMedicalExternalRequestItemBoToGoodsDo(GoodsMedicalExternalRequestItemBo bo) {
         GoodsDo goodsDo = new GoodsDo();
         goodsDo.setGoodsId(bo.getGoodsId());
         goodsDo.setGoodsSn(bo.getGoodsCode());
@@ -49,7 +49,11 @@ public class GoodsConverter {
         goodsDo.setGoodsName(bo.getGoodsCommonName());
         goodsDo.setShopPrice(bo.getGoodsPrice());
         goodsDo.setCostPrice(bo.getGoodsPrice());
-        goodsDo.setMarketPrice(bo.getGoodsPrice());
+        if (bo.getStorePrice() != null) {
+            goodsDo.setMarketPrice(bo.getStorePrice());
+        } else {
+            goodsDo.setMarketPrice(bo.getGoodsPrice());
+        }
         goodsDo.setGoodsNumber(bo.getGoodsNumber());
         goodsDo.setIsMedical(bo.getIsMedical());
         goodsDo.setUnit(bo.getGoodsBasicUnit());
@@ -68,7 +72,7 @@ public class GoodsConverter {
      * @param bo
      * @return
      */
-    public static GoodsDo convertGoodsMedicalExternalRequestItemBoToGoodsDoForStore(GoodsMedicalExternalRequestItemBo bo){
+    public static GoodsDo convertGoodsMedicalExternalRequestItemBoToGoodsDoForStore(GoodsMedicalExternalRequestItemBo bo) {
         GoodsDo goodsDo = new GoodsDo();
         goodsDo.setGoodsId(bo.getGoodsId());
         goodsDo.setStoreStatus(bo.getStoreStatus());
@@ -80,8 +84,8 @@ public class GoodsConverter {
     }
 
     public static GoodsMedicalInfoDo convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(GoodsMedicalExternalRequestItemBo bo) {
-        GoodsMedicalInfoDo goodsMedicalInfoDo =new GoodsMedicalInfoDo();
-        FieldsUtil.assign(bo,goodsMedicalInfoDo);
+        GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
+        FieldsUtil.assign(bo, goodsMedicalInfoDo);
         if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
             goodsMedicalInfoDo.setIsDelete(DelFlag.DISABLE_VALUE);
         }

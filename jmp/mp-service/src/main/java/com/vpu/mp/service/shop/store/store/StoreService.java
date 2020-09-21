@@ -14,10 +14,7 @@ import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
-import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -677,7 +674,8 @@ public class StoreService extends ShopBaseService {
         // List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
         // 不拉取三方库，校验本地可用门店
         List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(orderAddressParam.getStoreGoodsBaseCheckInfoList());
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, orderAddressParam.getDeliveryType());
+        List<String> storeCodesNew = new ArrayList<String>(new TreeSet<String>(storeCodes));
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodesNew, orderAddressParam.getDeliveryType());
         logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
@@ -700,7 +698,8 @@ public class StoreService extends ShopBaseService {
         // List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
         // 不拉取三方库，校验本地可用门店
         List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(storeGoodsBaseCheckInfoList);
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, DELIVER_TYPE_COURIER);
+        List<String> storeCodesNew = new ArrayList<String>(new TreeSet<String>(storeCodes));
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodesNew, DELIVER_TYPE_COURIER);
         logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {

@@ -1,15 +1,5 @@
 package com.vpu.mp.auth;
 
-import java.util.Calendar;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
@@ -20,9 +10,17 @@ import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 import com.vpu.mp.service.saas.SaasApplication;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -31,16 +29,16 @@ public class AdminAuth {
 
 	@Autowired
 	protected AuthConfig authConfig;
-	
+
 	@Autowired
 	protected HttpServletRequest request;
-	
+
 	@Autowired
 	protected SaasApplication saas ;
-	
+
 	@Autowired
 	protected JedisManager jedis;
-	
+
 	protected Logger log = LoggerFactory.getLogger(AdminAuth.class);
 
 	protected static final String TOKEN = "V-Token";
@@ -66,7 +64,7 @@ public class AdminAuth {
 
 	/**
 	 * 是否有效system登录TOKEN
-	 * 
+	 *
 	 * @param  token
 	 * @return
 	 */
@@ -76,7 +74,7 @@ public class AdminAuth {
 
 	/**
 	 * 登录账户
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 */
@@ -100,25 +98,26 @@ public class AdminAuth {
 		AdminTokenAuthInfo info = new AdminTokenAuthInfo();
 		info.setSysId(account.getSysId());
 		info.setUserName(account.getUserName());
+		info.setUserName(account.getMobile());
 		info.setSubAccountId(subAccount != null ? subAccount.getAccountId() : 0);
 		info.setSubUserName(subAccount != null ? subAccount.getAccountName() : "");
 		info.setSubLogin(subAccount != null);
 		info.setLoginShopId(0);
 		info.setAccountName(subAccount != null ? subAccount.getAccountName() : account.getAccountName());
-		
+
 		// 如果当前登录用户与正在登录的用户相同，则使用当前登录用户的Token
 		AdminTokenAuthInfo user = user();
 		if(user!=null && user.getSysId().equals(info.getSysId()) && user.getSubAccountId().equals(info.getSubAccountId())) {
 			info.setToken(user.getToken());
 		}
-		
+
 		this.saveTokenInfo(info);
 		return info;
 	}
 
 	/**
 	 * 保存登录信息
-	 * 
+	 *
 	 * @param info
 	 */
 	public void saveTokenInfo(AdminTokenAuthInfo info) {
@@ -133,7 +132,7 @@ public class AdminAuth {
 
 	/**
 	 * 删除登录信息
-	 * 
+	 *
 	 * @param info
 	 */
 	public void deleteTokenInfo(AdminTokenAuthInfo info) {
@@ -142,7 +141,7 @@ public class AdminAuth {
 
 	/**
 	 * 切换店铺
-	 * 
+	 *
 	 * @param  shopId
 	 * @return
 	 */
@@ -182,7 +181,7 @@ public class AdminAuth {
 
 	/**
 	 * 得到当前登录用户
-	 * 
+	 *
 	 * @return
 	 */
 	public AdminTokenAuthInfo user() {
@@ -198,7 +197,7 @@ public class AdminAuth {
 
 	/**
 	 * 重置token的存活时间
-	 * 
+	 *
 	 * @param token
 	 */
 	public void reTokenTtl() {
@@ -212,7 +211,7 @@ public class AdminAuth {
 	 * 登录时间表更新
 	 * @param info
 	 * @param shop
-	 * @return 
+	 * @return
 	 * @return
 	 */
 	public int insert(AdminTokenAuthInfo info, ShopRecord shop) {
@@ -222,7 +221,7 @@ public class AdminAuth {
 		if (info.isSubLogin()) {
 			record.setUserName(info.getSubUserName());
 			record.setUserId(info.getSubAccountId());
-			
+
 		}
 		record.setSysId(info.getSysId());
 		record.setShopName(shop.getShopName());
@@ -231,7 +230,7 @@ public class AdminAuth {
 		record.setAccountType((byte)0);
 		return saas.shop.insertUserLoginRecord(record);
 	}
-	
+
 	/**
 	 * 更新accountName
 	 * @param accountName
