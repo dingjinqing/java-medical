@@ -57,6 +57,7 @@ import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_COURIER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 
@@ -669,7 +670,7 @@ public class StoreService extends ShopBaseService {
     }
 
     /**
-     * 查询当前在营业的门店列表(不传地址)
+     * 查询当前在营业的门店列表(不传地址,仅供门店配送方式使用)
      * @return Map<Double, StoreDo>
      */
     public Map<String, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
@@ -677,7 +678,7 @@ public class StoreService extends ShopBaseService {
         // List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
         // 不拉取三方库，校验本地可用门店
         List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(storeGoodsBaseCheckInfoList);
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, 1);
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, DELIVER_TYPE_COURIER);
         logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
