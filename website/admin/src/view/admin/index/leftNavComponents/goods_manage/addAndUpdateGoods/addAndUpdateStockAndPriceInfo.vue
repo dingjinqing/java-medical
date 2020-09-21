@@ -383,7 +383,7 @@
         <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.maxBuyNumTip')}}</span>
       </el-form-item>
       <el-form-item
-        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.costPrice')"
+        label="成本价"
         prop="prdCost"
       >
         <el-input-number
@@ -393,6 +393,7 @@
           size="small"
           controls-position="right"
           :min="0"
+          :precision="2"
           :disabled="specInfoSwitch"
           style="width:170px;"
         />
