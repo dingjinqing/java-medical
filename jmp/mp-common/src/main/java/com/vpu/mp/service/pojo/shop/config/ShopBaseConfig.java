@@ -58,6 +58,10 @@ public class ShopBaseConfig {
      * 店面详情
      */
     private String copywriting;
+    /**
+     * 公章
+     */
+    private String cachet;
 
 
 }

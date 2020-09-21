@@ -677,7 +677,8 @@ public class StoreService extends ShopBaseService {
         // List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
         // 不拉取三方库，校验本地可用门店
         List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(orderAddressParam.getStoreGoodsBaseCheckInfoList());
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, orderAddressParam.getDeliveryType());
+        List<String> storeCodesNew = new ArrayList<String>(new TreeSet<String>(storeCodes));
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodesNew, orderAddressParam.getDeliveryType());
         logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
@@ -700,7 +701,8 @@ public class StoreService extends ShopBaseService {
         // List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
         // 不拉取三方库，校验本地可用门店
         List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(storeGoodsBaseCheckInfoList);
-        List<StoreDo> stores = storeDao.getStoreOpen(storeCodes, DELIVER_TYPE_COURIER);
+        List<String> storeCodesNew = new ArrayList<String>(new TreeSet<String>(storeCodes));
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodesNew, DELIVER_TYPE_COURIER);
         logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new IdentityHashMap<>(15);
         stores.forEach(e -> {
