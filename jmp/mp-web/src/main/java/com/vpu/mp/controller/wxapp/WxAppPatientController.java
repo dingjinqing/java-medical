@@ -143,9 +143,11 @@ public class WxAppPatientController extends WxAppBaseController {
         Integer userId = patientAddParam.getUserId();
         PatientDo patientDo = new PatientDo();
         FieldsUtil.assign(patientAddParam,patientDo);
+        UserPatientCoupleDo userPatientCoupleDo = new UserPatientCoupleDo();
         if (patientDo.getId() >0) {
             shop().patientService.updatePatient(patientDo);
         } else {
+            userPatientCoupleDo.setIsFetch(PatientConstant.UN_FETCH);
             PatientExternalRequestParam param = new PatientExternalRequestParam();
             FieldsUtil.assign(patientDo,param);
             Integer patientId = shop().patientService.getPatientExist(param);
@@ -163,12 +165,10 @@ public class WxAppPatientController extends WxAppBaseController {
                 shop().patientService.updatePatient(patientDo);
             }
         }
-        UserPatientCoupleDo userPatientCoupleDo = new UserPatientCoupleDo();
         FieldsUtil.assign(patientDo,userPatientCoupleDo);
         userPatientCoupleDo.setId(null);
         userPatientCoupleDo.setPatientId(patientDo.getId());
         userPatientCoupleDo.setUserId(userId);
-        userPatientCoupleDo.setIsFetch(PatientConstant.UN_FETCH);
         shop().patientService.addPatientUser(userPatientCoupleDo);
         return success();
     }
