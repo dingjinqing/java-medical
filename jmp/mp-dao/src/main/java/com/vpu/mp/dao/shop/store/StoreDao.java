@@ -31,9 +31,7 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.ASC;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_AUTO_PICK_ENABLE;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_BUSINESS_OPENING;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.STORE_BUSINESS_WORKDAY;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConfigConstant.*;
 import static java.util.Calendar.SATURDAY;
 import static java.util.Calendar.SUNDAY;
 
