@@ -873,6 +873,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK = "order.medical.prescription.check";
     public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_INVALID = "order.medical.prescription.Invalid";
     public static final String MSG_ORDER_MEDICAL_HISTORY_CHECK = "order.medical.history.check";
+    public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_UPLOAD_ERROR = "订单状态修改上传异常";
 
     /**
      * 订单状态
