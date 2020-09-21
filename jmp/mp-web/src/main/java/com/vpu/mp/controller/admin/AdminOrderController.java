@@ -134,6 +134,7 @@ public class AdminOrderController extends AdminBaseController {
 	@PostMapping("/shipGoods")
 	public JsonResult shipGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
+		param.setPlatform(OrderConstant.PLATFORM_ADMIN);
 		try {
 			return success(shop().orderActionFactory.orderQuery(param));
 		} catch (MpException e) {

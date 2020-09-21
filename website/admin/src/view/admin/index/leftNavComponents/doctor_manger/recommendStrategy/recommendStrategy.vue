@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { getWithDrawConfig, setWithDrawConfig } from '@/api/admin/basicConfiguration/doctorWithDraw'
+import { getWithDrawConfig, setWithDrawConfig } from '@/api/admin/doctorManage/recommend/recommend.js'
 export default {
   data () {
     return {

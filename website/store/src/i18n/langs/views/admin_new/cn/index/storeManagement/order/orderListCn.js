@@ -394,7 +394,8 @@ export const cn = {
   deliverTypeList: [
     [null, '全部'],
     [0, '快递'],
-    [1, '自提']
+    [1, '自提'],
+    [2, '同城配送']
   ],
   paymentTypeList: [
     [null, '全部'],

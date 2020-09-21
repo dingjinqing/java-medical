@@ -853,7 +853,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_EXCLUSIVE_GOODS_NO_BUY = "order.exclusive.goods.no.buy";
     public static final String MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY = "order.presale.goods.not.suport.buy";
     public static final String MSG_ORDER_MONEYPAID_ERROR_PLEASE_CHECK = "order.moneypaid.error.please.check";
-    public static final String CODE_ORDER_STORE_NOT_NULL_CHECK = "没有可用的门店";
+    public static final String CODE_ORDER_STORE_NOT_NULL_CHECK = "请选择可用的门店";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
@@ -873,6 +873,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK = "order.medical.prescription.check";
     public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_INVALID = "order.medical.prescription.Invalid";
     public static final String MSG_ORDER_MEDICAL_HISTORY_CHECK = "order.medical.history.check";
+    public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_UPLOAD_ERROR = "订单状态修改上传异常";
 
     /**
      * 订单状态

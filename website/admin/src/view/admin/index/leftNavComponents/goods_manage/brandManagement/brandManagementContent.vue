@@ -1266,7 +1266,7 @@ tbody img {
   }
 }
 </style>
-<style>
+<style scoped>
 .el-popper .grandSelectClass {
   padding-left: 20px;
 }

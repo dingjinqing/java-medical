@@ -2,230 +2,327 @@
   <div class="membersDetailContent">
     <div class="membersDetailContentMain">
       <div class="topContainer">
-        <div class="titleEdit"><span>{{$t('membershipIntroduction.Essentialinformation')}}</span><span @click="handleBaseInfo()">{{$t('membershipIntroduction.Towrite')}}</span></div>
+        <div class="titleEdit">
+          <span>{{ $t('membershipIntroduction.Essentialinformation') }}</span
+          ><span @click="handleBaseInfo()">{{
+            $t('membershipIntroduction.Towrite')
+          }}</span>
+        </div>
         <div class="topMain">
           <div class="headDiv">
-            <img :src="headeImgUrl">
+            <img :src="headeImgUrl" />
           </div>
           <div class="headRightDiv">
             <ul>
               <li>
-                <div class="userName">{{$t('membershipIntroduction.nickname')}}：{{ this.memberBasicInfo.username }}</div>
+                <div class="userName">
+                  {{ $t('membershipIntroduction.nickname') }}：{{
+                    this.memberBasicInfo.username
+                  }}
+                </div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.Realname')}}：
-                  <span v-if='this.memberBasicInfo.realName'> {{ this.memberBasicInfo.realName }} </span>
-                  <span v-else> {{$t('membershipIntroduction.unknown')}} </span>
+                <div>
+                  {{ $t('membershipIntroduction.Realname') }}：
+                  <span v-if="this.memberBasicInfo.realName">
+                    {{ this.memberBasicInfo.realName }}
+                  </span>
+                  <span v-else>
+                    {{ $t('membershipIntroduction.unknown') }}
+                  </span>
                 </div>
-                <div>{{$t('membershipIntroduction.inviter')}}：
-                  <span v-if='this.memberBasicInfo.inviteUserName'> {{ this.memberBasicInfo.inviteUserName }} </span>
-                  <span v-else>{{$t('membershipIntroduction.notExists')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.inviter') }}：
+                  <span v-if="this.memberBasicInfo.inviteUserName">
+                    {{ this.memberBasicInfo.inviteUserName }}
+                  </span>
+                  <span v-else>{{
+                    $t('membershipIntroduction.notExists')
+                  }}</span>
                   <span
                     @click="hanldeModifyPerson()"
                     class="iconfont iconbianji iconSpn"
                   ></span>
                 </div>
-                <div>{{$t('membershipIntroduction.Becomeacustomer')}}：{{ this.memberBasicInfo.createTime }}</div>
-              </li>
-              <li>
-                <div>{{$t('membershipIntroduction.Recentbrowsing')}}：
-                  <span v-if="this.memberBasicInfo.updateTime">{{ this.memberBasicInfo.updateTime }}</span>
-                  <span v-else> {{$t('membershipIntroduction.unknown')}} </span>
-                </div>
-                <div>{{$t('membershipIntroduction.phoneNum')}}：
-                  <span v-if="this.memberBasicInfo.mobile"> {{this.memberBasicInfo.mobile}} </span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span></div>
-                <div>OpenID：
-                  <span v-if="this.memberBasicInfo.wxOpenid">{{ this.memberBasicInfo.wxOpenid }}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Becomeacustomer') }}：{{
+                    this.memberBasicInfo.createTime
+                  }}
                 </div>
               </li>
               <li>
-                <div>WxUnionID：
-                  <span v-if="this.memberBasicInfo.wxUnionId">{{ this.memberBasicInfo.wxUnionId }}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Recentbrowsing') }}：
+                  <span v-if="this.memberBasicInfo.updateTime">{{
+                    this.memberBasicInfo.updateTime
+                  }}</span>
+                  <span v-else>
+                    {{ $t('membershipIntroduction.unknown') }}
+                  </span>
+                </div>
+                <div>
+                  {{ $t('membershipIntroduction.phoneNum') }}：
+                  <span v-if="this.memberBasicInfo.mobile">
+                    {{ this.memberBasicInfo.mobile }}
+                  </span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
+                </div>
+                <div>
+                  OpenID：
+                  <span v-if="this.memberBasicInfo.wxOpenid">{{
+                    this.memberBasicInfo.wxOpenid
+                  }}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  WxUnionID：
+                  <span v-if="this.memberBasicInfo.wxUnionId">{{
+                    this.memberBasicInfo.wxUnionId
+                  }}</span>
                   <span v-else>{{ this.memberBasicInfo.unknown }}</span>
                 </div>
-                <div>{{$t('membershipIntroduction.Accumulateintegrals')}}：
-                  <span v-if="this.memberBasicInfo.totalScore">{{ this.memberBasicInfo.totalScore }}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Accumulateintegrals') }}：
+                  <span v-if="this.memberBasicInfo.totalScore">{{
+                    this.memberBasicInfo.totalScore
+                  }}</span>
                   <span v-else>0</span>
                 </div>
-                <div>{{$t('membershipIntroduction.Cumulativeamount')}}：
-                  <span v-if="this.memberBasicInfo.totalConsumpAmount">{{ this.memberBasicInfo.totalConsumpAmount }}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Cumulativeamount') }}：
+                  <span v-if="this.memberBasicInfo.totalConsumpAmount">{{
+                    this.memberBasicInfo.totalConsumpAmount
+                  }}</span>
                   <span v-else>0</span>
                 </div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.address')}}：
-                  <span v-if='addressListLength'>
-                    <ul style="font-size: 12px;margin-top: 3px;">
+                <div>
+                  {{ $t('membershipIntroduction.address') }}：
+                  <span v-if="addressListLength">
+                    <ul style="font-size: 12px; margin-top: 3px">
                       <li
-                        v-for="(item,index) in this.memberBasicInfo.addressList"
+                        v-for="(item, index) in this.memberBasicInfo
+                          .addressList"
                         :key="index"
                       >
-                        {{item}}
+                        {{ item }}
                       </li>
                     </ul>
-
                   </span>
-                  <span v-else>{{$t('membershipIntroduction.notAddYet')}}</span></div>
+                  <span v-else>{{
+                    $t('membershipIntroduction.notAddYet')
+                  }}</span>
+                </div>
               </li>
             </ul>
 
-            <ul
-              class="hiddenUl"
-              v-if="hiddenUlFlag"
-            >
+            <ul class="hiddenUl" v-if="hiddenUlFlag">
               <li>
-                <div>{{$t('membershipIntroduction.Sourcechannel')}}：
-                  <span v-if='this.memberBasicInfo.source'>{{this.memberBasicInfo.source}}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Sourcechannel') }}：
+                  <span v-if="this.memberBasicInfo.source">{{
+                    this.memberBasicInfo.source
+                  }}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
-                <div>{{$t('membershipIntroduction.Birthday')}}：
-                  <span v-if='this.memberBasicInfo.birthdayYear && this.memberBasicInfo.birthdayMonth && this.memberBasicInfo.birthdayDay'>{{this.memberBasicInfo.birthdayYear}}-{{this.memberBasicInfo.birthdayMonth}}-{{ this.memberBasicInfo.birthdayDay }}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Birthday') }}：
+                  <span
+                    v-if="
+                      this.memberBasicInfo.birthdayYear &&
+                      this.memberBasicInfo.birthdayMonth &&
+                      this.memberBasicInfo.birthdayDay
+                    "
+                    >{{ this.memberBasicInfo.birthdayYear }}-{{
+                      this.memberBasicInfo.birthdayMonth
+                    }}-{{ this.memberBasicInfo.birthdayDay }}</span
+                  >
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
-                <div>{{$t('membershipIntroduction.Educationlevel')}}：
-                  <span v-if='this.memberBasicInfo.education'>{{this.memberBasicInfo.education}}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Educationlevel') }}：
+                  <span v-if="this.memberBasicInfo.education">{{
+                    this.memberBasicInfo.education
+                  }}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
-                <div>{{$t('membershipIntroduction.PermanentResidence')}}：
-                  <span v-if='this.memberBasicInfo.provinceName || this.memberBasicInfo.cityName || this.memberBasicInfo.distictName'>
-                    {{ this.memberBasicInfo.provinceName }} {{ this.memberBasicInfo.cityName }} {{this.memberBasicInfo.distictName}}
+                <div>
+                  {{ $t('membershipIntroduction.PermanentResidence') }}：
+                  <span
+                    v-if="
+                      this.memberBasicInfo.provinceName ||
+                      this.memberBasicInfo.cityName ||
+                      this.memberBasicInfo.distictName
+                    "
+                  >
+                    {{ this.memberBasicInfo.provinceName }}
+                    {{ this.memberBasicInfo.cityName }}
+                    {{ this.memberBasicInfo.distictName }}
                   </span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
-                <div>{{$t('membershipIntroduction.ID')}}：
-                  <span v-if="this.memberBasicInfo.cid">{{ this.memberBasicInfo.cid }}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.ID') }}：
+                  <span v-if="this.memberBasicInfo.cid">{{
+                    this.memberBasicInfo.cid
+                  }}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
               </li>
               <li>
-                <div>{{$t('membershipIntroduction.indursty')}}：
-                  <span v-if="this.memberBasicInfo.industryInfo">{{ this.memberBasicInfo.industryInfo }}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.indursty') }}：
+                  <span v-if="this.memberBasicInfo.industryInfo">{{
+                    this.memberBasicInfo.industryInfo
+                  }}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
-                <div>{{$t('membershipIntroduction.Maritalstatus')}}：
-                  <span v-if="this.maritalStatus">{{ this.maritalStatus}}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Maritalstatus') }}：
+                  <span v-if="this.maritalStatus">{{
+                    this.maritalStatus
+                  }}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
-                <div>{{$t('membershipIntroduction.monthlyincome')}}：
-                  <span v-if="this.memberBasicInfo.monthlyIncome">{{ this.memberBasicInfo.monthlyIncome }}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.monthlyincome') }}：
+                  <span v-if="this.memberBasicInfo.monthlyIncome">{{
+                    this.memberBasicInfo.monthlyIncome
+                  }}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
-                <div>{{$t('membershipIntroduction.Gender')}}：
-                  <span v-if="this.memberBasicInfo.sex">{{ this.memberBasicInfo.sex }}</span>
-                  <span v-else>{{$t('membershipIntroduction.unknown')}}</span>
+                <div>
+                  {{ $t('membershipIntroduction.Gender') }}：
+                  <span v-if="this.memberBasicInfo.sex">{{
+                    this.memberBasicInfo.sex
+                  }}</span>
+                  <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
               </li>
             </ul>
           </div>
         </div>
-        <div
-          class="footer"
-          @click="handleCheckMore()"
-        >
+        <div class="footer" @click="handleCheckMore()">
           <div class="footerMain">
-            {{this.checkMoreText}}
+            {{ this.checkMoreText }}
           </div>
         </div>
       </div>
-
     </div>
     <div class="topContainer">
-      <div class="titleEdit"><span>{{$t('membershipIntroduction.Labelinformation')}}</span><span @click="handleLabelEditOpen()">{{$t('membershipIntroduction.Towrite')}}</span></div>
+      <div class="titleEdit">
+        <span>{{ $t('membershipIntroduction.Labelinformation') }}</span
+        ><span @click="handleLabelEditOpen()">{{
+          $t('membershipIntroduction.Towrite')
+        }}</span>
+      </div>
       <div class="labelList">
         <span
-          v-for="(item,index) in lebalDataList"
+          v-for="(item, index) in lebalDataList"
           :key="index"
           class="lebalSpan"
-        >{{item.value}}<i
-            @click="handleToDelLabel(item.id)"
-            class="fa fa-remove"
-          ></i></span>
+          >{{ item.value
+          }}<i @click="handleToDelLabel(item.id)" class="fa fa-remove"></i
+        ></span>
       </div>
     </div>
     <div class="topContainer">
-      <div class="titleEdit"><span>{{$t('membershipIntroduction.AssetInformation')}}</span></div>
-      <ul
-        class="assetsUl"
-        :class="assetsUl"
-      >
-        <li
-          v-for="(item,index) in assetsData"
-          :key="index"
-        >
+      <div class="titleEdit">
+        <span>{{ $t('membershipIntroduction.AssetInformation') }}</span>
+      </div>
+      <ul class="assetsUl" :class="assetsUl">
+        <li v-for="(item, index) in assetsData" :key="index">
           <div class="assetsUlLeft">
-            <img :src="item.img">
+            <img :src="item.img" />
           </div>
           <div class="assetsUlRight">
-            <span>{{item.cardName}}</span>
-            <span v-if="item.haveSetUp === true ?true:false">|</span>
+            <span>{{ item.cardName }}</span>
+            <span v-if="item.haveSetUp === true ? true : false">|</span>
             <span
-              v-if="item.haveSetUp === true ?true:false"
-              style="color:#5A8BFF;cursor: pointer;"
+              v-if="item.haveSetUp === true ? true : false"
+              style="color: #5a8bff; cursor: pointer"
               @click="handleSetUp(index)"
-            >{{$t('membershipIntroduction.setup')}}</span>
+              >{{ $t('membershipIntroduction.setup') }}</span
+            >
             <span
               @click="jumpToDetailPage(index)"
-              style="margin-top:10px;color:#5A8BFF;cursor: pointer;display:block"
-            >{{item.num}}</span>
+              style="
+                margin-top: 10px;
+                color: #5a8bff;
+                cursor: pointer;
+                display: block;
+              "
+              >{{ item.num }}</span
+            >
           </div>
         </li>
       </ul>
     </div>
     <div class="topContainer">
-      <div class="titleEdit"><span>{{$t('membershipIntroduction.Transactionstatistics')}}</span><span @click="jumpToOrderPage">{{$t('membershipIntroduction.OrderList')}}</span></div>
-      <div
-        class="transactionTab"
-        v-if="transactionTabFlag === true"
-      >
+      <div class="titleEdit">
+        <span>{{ $t('membershipIntroduction.Transactionstatistics') }}</span
+        ><span @click="jumpToOrderPage">{{
+          $t('membershipIntroduction.OrderList')
+        }}</span>
+      </div>
+      <div class="transactionTab" v-if="transactionTabFlag === true">
         <p
           v-for="(item, index) in transactionTab"
           :key="index"
           :class="index === transactionTabIndex ? 'hignLight' : ''"
           @click="transactionTabSelect(index, item.value)"
-        >{{item.label}}</p>
+        >
+          {{ item.label }}
+        </p>
       </div>
       <div class="transactionDiv">
         <div
-          style="flex:1"
-          v-for="(item,index) in transactionData"
+          style="flex: 1"
+          v-for="(item, index) in transactionData"
           :key="index"
-          :class="index!==0?'borderLeft':''"
-          v-if="!(transactionTabFlag === false && (item.value === 'unitPrice' || item.value === 'totalMoneyPaid'))"
+          :class="index !== 0 ? 'borderLeft' : ''"
+          v-if="
+            !(
+              transactionTabFlag === false &&
+              (item.value === 'unitPrice' || item.value === 'totalMoneyPaid')
+            )
+          "
         >
           <p>
-            {{item.title}}
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
-              <div slot="content">{{item.tip}}</div>
+            {{ item.title }}
+            <el-tooltip effect="light" placement="top">
+              <div slot="content">{{ item.tip }}</div>
               <i class="el-icon-question icon-style"></i>
             </el-tooltip>
           </p>
+          <div class="transactionBottom" v-if="item.value === 'lastOrderTime'">
+            {{ item.content ? item.content : '暂未下单' }}
+          </div>
           <div
             class="transactionBottom"
-            v-if="item.value === 'lastOrderTime'"
-          >{{item.content ? item.content : '暂未下单'}}</div>
-          <div
-            class="transactionBottom"
-            v-else-if="item.value === 'unitPrice' || item.value === 'totalMoneyPaid' || item.value === 'returnOrderMoney'"
-          >￥{{item.content ? Number(item.content).toFixed(2) : '0.00'}}</div>
-          <div
-            class="transactionBottom"
-            v-else
-          >{{item.content}}</div>
+            v-else-if="
+              item.value === 'unitPrice' ||
+              item.value === 'totalMoneyPaid' ||
+              item.value === 'returnOrderMoney'
+            "
+          >
+            ￥{{ item.content ? Number(item.content).toFixed(2) : '0.00' }}
+          </div>
+          <div class="transactionBottom" v-else>{{ item.content }}</div>
           <div
             v-if="transactionTabIndex === 2"
-            style="text-align: center;margin-top: 10px;"
+            style="text-align: center; margin-top: 10px"
           >
             <el-button
               type="primary"
               plain
               size="small"
               @click="jumpToMemberHandler(item.linkName, index)"
-            >查看订单</el-button>
+              >查看订单</el-button
+            >
           </div>
         </div>
       </div>
@@ -233,64 +330,52 @@
         class="transactionOrder"
         v-if="transactionTabIndex !== 0 && transactionTabIndex !== 2"
       >
-        <el-button
-          type="primary"
-          plain
-          size="small"
-          @click="jumpToHandler"
-        >查看订单</el-button>
+        <el-button type="primary" plain size="small" @click="jumpToHandler"
+          >查看订单</el-button
+        >
       </div>
     </div>
     <div class="topContainer">
       <div class="titleEdit"><span>患者信息</span></div>
       <div class="tablebox">
         <el-table
-          v-loading='loading'
-          :data='tableData'
-          style="width:100%"
+          v-loading="loading"
+          :data="tableData"
+          style="width: 100%"
           border
           :header-cell-style="{
-              'background-color':'#f5f5f5',
-              'text-align':'center',
-              'border':'none',
-              'color': '#000'
-            }"
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
+            color: '#000',
+          }"
           :cell-style="{
-              'text-align':'center'
-            }"
+            'text-align': 'center',
+          }"
         >
+          <el-table-column prop="id" label="患者编号"></el-table-column>
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column prop="mobile" label="手机号"></el-table-column>
           <el-table-column
-            prop='id'
-            label='患者编号'
+            prop="treatmentNo"
+            label="就诊卡号"
           ></el-table-column>
-          <el-table-column
-            prop='name'
-            label='姓名'
-          ></el-table-column>
-          <el-table-column
-            prop='mobile'
-            label='手机号'
-          ></el-table-column>
-          <el-table-column
-            prop='treatmentNo'
-            label='就诊卡号'
-          ></el-table-column>
-          <el-table-column
-            label='性别'
-          >
+          <el-table-column label="性别">
             <template v-slot="scope">
-              <span>{{scope.row.sex == 0 ? '男' : (scope.row.sex == 1 ? '女' : '未知')}}</span>
+              <span>{{
+                scope.row.sex == 0 ? '男' : scope.row.sex == 1 ? '女' : '未知'
+              }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop='diseaseHistoryNameStr'
-            label='疾病史'
+            prop="diseaseHistoryNameStr"
+            label="疾病史"
           ></el-table-column>
           <el-table-column
-            prop='allergyHistory'
-            label='过敏史'
+            prop="allergyHistory"
+            label="过敏史"
           ></el-table-column>
-          <el-table-column label='操作'>
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
@@ -299,7 +384,7 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.id)'>查看详情</a>
+                  <a @click="handleSeeMessage(scope.row.id)">查看详情</a>
                 </el-tooltip>
               </div>
             </template>
@@ -308,20 +393,19 @@
       </div>
     </div>
 
-    <div
-      class="topContainer"
-      v-if="memberBasicInfo.isDistributor"
-    >
-      <div class="titleEdit"><span>{{$t('membershipIntroduction.distributionStatistic')}}</span></div>
+    <div class="topContainer" v-if="memberBasicInfo.isDistributor">
+      <div class="titleEdit">
+        <span>{{ $t('membershipIntroduction.distributionStatistic') }}</span>
+      </div>
       <div class="transactionDiv">
         <div
-          style="flex:1"
-          v-for="(item,index) in distributionData"
+          style="flex: 1"
+          v-for="(item, index) in distributionData"
           :key="index"
-          :class="index!==0?'borderLeft':''"
+          :class="index !== 0 ? 'borderLeft' : ''"
         >
-          <p>{{item.title}}</p>
-          <div class="transactionBottom">{{item.content}}</div>
+          <p>{{ item.title }}</p>
+          <div class="transactionBottom">{{ item.content }}</div>
         </div>
       </div>
     </div>
@@ -333,20 +417,13 @@
         width="40%"
         :modal-append-to-body="false"
       >
-        <div
-          class="balanceDialogDiv"
-          style="margin-bottom:30px"
-        >
-          <el-form
-            label-position="right"
-            label-width="130px"
-            size="small"
-          >
+        <div class="balanceDialogDiv" style="margin-bottom: 30px">
+          <el-form label-position="right" label-width="130px" size="small">
             <el-form-item :label="$t('membershipIntroduction.Gender')">
               <el-col :span="12">
                 <el-select
                   v-model="GenderValue"
-                  :placeholder="$t('membershipIntroduction.placeChoise') "
+                  :placeholder="$t('membershipIntroduction.placeChoise')"
                   size="small"
                 >
                   <el-option
@@ -365,7 +442,7 @@
                   v-model="birthdayVal"
                   type="date"
                   :placeholder="$t('membershipIntroduction.chooseDate')"
-                  value-format='yyyy-MM-dd'
+                  value-format="yyyy-MM-dd"
                   size="small"
                 >
                 </el-date-picker>
@@ -394,7 +471,7 @@
                   size="small"
                 >
                   <el-option
-                    v-for="(item,index) in MarriageValueOptions"
+                    v-for="(item, index) in MarriageValueOptions"
                     :key="index"
                     :label="item.label"
                     :value="item.value"
@@ -411,7 +488,7 @@
                   size="small"
                 >
                   <el-option
-                    v-for="(item,index) in incomeValueOptions"
+                    v-for="(item, index) in incomeValueOptions"
                     :key="index"
                     :label="item.label"
                     :value="item.value"
@@ -437,7 +514,7 @@
                   size="small"
                 >
                   <el-option
-                    v-for="(item,index) in educationValueOptions"
+                    v-for="(item, index) in educationValueOptions"
                     :key="index"
                     :label="item.label"
                     :value="item.value"
@@ -454,7 +531,7 @@
                   size="small"
                 >
                   <el-option
-                    v-for="(item,index) in industryValueOptions"
+                    v-for="(item, index) in industryValueOptions"
                     :key="index"
                     :label="item.label"
                     :value="item.value"
@@ -465,19 +542,16 @@
             </el-form-item>
           </el-form>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="baseInfoDialogVisible = false"
-          >{{ $t('membershipIntroduction.cancel') }}</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="baseInfoDialogVisible = false">{{
+            $t('membershipIntroduction.cancel')
+          }}</el-button>
           <el-button
             size="small"
             type="primary"
             @click="handleUserDialogSure()"
-          >{{ $t('membershipIntroduction.centain') }}</el-button>
+            >{{ $t('membershipIntroduction.centain') }}</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -497,10 +571,7 @@
         width="25%"
         :modal-append-to-body="false"
       >
-        <div
-          class="labelEditDialogDiv"
-          style="margin-bottom:30px"
-        >
+        <div class="labelEditDialogDiv" style="margin-bottom: 30px">
           <div>{{ $t('membershipIntroduction.chooseTag') }}</div>
           <el-select
             size="small"
@@ -509,7 +580,7 @@
             multiple
           >
             <el-option
-              v-for="(item,index) in labelEditValueOptions"
+              v-for="(item, index) in labelEditValueOptions"
               :key="index"
               :label="item.value"
               :value="item.id"
@@ -517,19 +588,13 @@
             </el-option>
           </el-select>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="labelEditDialogVisible = false"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleTagDialogSure()"
-          >确 定</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="labelEditDialogVisible = false"
+            >取 消</el-button
+          >
+          <el-button type="primary" size="small" @click="handleTagDialogSure()"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -541,50 +606,42 @@
         width="35%"
         :modal-append-to-body="false"
       >
-        <div
-          class="labelEditDialogDiv"
-          style="margin-bottom:30px"
-        >
+        <div class="labelEditDialogDiv" style="margin-bottom: 30px">
           <div class="MemberdialogContainer">
-
             <div class="memberCardT1DialogTop">
-              <span>可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span>
+              <span
+                >可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span
+              >
             </div>
             <div class="cardName">
               <i>1</i>
-              {{getCardName}}
+              {{ getCardName }}
             </div>
             <div class="memberCardT1Main">
               <div>已选：</div>
               <div class="memberCardT1MainCardsMiddle">
                 <div
                   class="memberCardT1MainCards"
-                  v-for="(item,index) in cardLlabelsdATa"
+                  v-for="(item, index) in cardLlabelsdATa"
                   :key="index"
                 >
-                  <span>{{item.cardName}}<i
+                  <span
+                    >{{ item.cardName
+                    }}<i
                       @click="hanldeToDelCard(index)"
                       class="fa fa-remove"
-                    ></i></span>
+                    ></i
+                  ></span>
                 </div>
               </div>
-              <div
-                class="memberCardT1MainRight"
-                @click="hanldeToTurnRows()"
-              >
+              <div class="memberCardT1MainRight" @click="hanldeToTurnRows()">
                 <span>添加新卡</span>
-                <i :class="newCardsT1Flag?'newCardsT1':'newCardsT2'"></i>
+                <i :class="newCardsT1Flag ? 'newCardsT1' : 'newCardsT2'"></i>
               </div>
             </div>
-            <div
-              class="memberCardT1Footer"
-              v-if="memberTableFlag"
-            >
-              <div
-                class="content"
-                v-if="page_two"
-              >
-                <table width='100%'>
+            <div class="memberCardT1Footer" v-if="memberTableFlag">
+              <div class="content" v-if="page_two">
+                <table width="100%">
                   <thead>
                     <tr>
                       <td>卡名称</td>
@@ -595,33 +652,28 @@
                   </thead>
                   <tbody v-if="tbodyFlagTwo">
                     <tr
-                      v-for="(item,index) in trListTwo"
+                      v-for="(item, index) in trListTwo"
                       :key="index"
-                      :class="item.index===index?'clickClass':''"
+                      :class="item.index === index ? 'clickClass' : ''"
                     >
-                      <td style="white-space: nowrap;">{{item.cardName}}</td>
-                      <td>{{item.startTime}}</td>
-                      <td class="link">{{item.content}}</td>
+                      <td style="white-space: nowrap">{{ item.cardName }}</td>
+                      <td>{{ item.startTime }}</td>
+                      <td class="link">{{ item.content }}</td>
                       <td class="lastTd">
-                        <span @click="handleClickMemberCard(index)">{{item.index===index?'-':'添加'}}</span>
+                        <span @click="handleClickMemberCard(index)">{{
+                          item.index === index ? '-' : '添加'
+                        }}</span>
                       </td>
                     </tr>
                   </tbody>
-
                 </table>
-                <div
-                  class="noData"
-                  v-if="!tbodyFlagTwo"
-                >
-                  <img :src="noImg">
+                <div class="noData" v-if="!tbodyFlagTwo">
+                  <img :src="noImg" />
                   <span>暂无相关数据</span>
                 </div>
               </div>
-              <div
-                class="content_two"
-                v-else
-              >
-                <table width='100%'>
+              <div class="content_two" v-else>
+                <table width="100%">
                   <thead>
                     <tr>
                       <td>名称</td>
@@ -631,44 +683,37 @@
                   </thead>
                   <tbody v-if="tbodyFlag">
                     <tr
-                      v-for="(item,index) in trList"
+                      v-for="(item, index) in trList"
                       :key="index"
-                      :class="clickIindex===index?'clickClass':''"
+                      :class="clickIindex === index ? 'clickClass' : ''"
                       @click="handleClick(index)"
                     >
-                      <td>{{item.title}}</td>
+                      <td>{{ item.title }}</td>
 
                       <td class="tb_decorate_a">
-                        {{item.path}}
+                        {{ item.path }}
                       </td>
                     </tr>
                   </tbody>
-
                 </table>
-                <div
-                  class="noData"
-                  v-if="!tbodyFlag"
-                >
-                  <img :src="noImg">
+                <div class="noData" v-if="!tbodyFlag">
+                  <img :src="noImg" />
                   <span>暂无相关数据</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="closeMemberCardDialog()"
-          >取 消</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="closeMemberCardDialog()"
+            >取 消</el-button
+          >
           <el-button
             type="primary"
             size="small"
             @click="handleForSetMemberCard()"
-          >确 定</el-button>
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -680,7 +725,6 @@
         @submitRes="hanldeModifyData"
       >
       </ModifyData>
-
     </div>
   </div>
 </template>
@@ -2017,7 +2061,7 @@ td {
   width: 205px !important;
 }
 </style>
-<style>
+<style scoped>
 .balanceDialogDiv .el-input__inner {
   width: 170px !important;
 }

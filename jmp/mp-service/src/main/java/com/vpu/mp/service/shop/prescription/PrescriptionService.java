@@ -23,6 +23,7 @@ import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
@@ -380,7 +381,11 @@ public class PrescriptionService extends ShopBaseService {
         FieldsUtil.assign(param,prescriptionParam);
         prescriptionParam.setDoctorCode(doctor.getHospitalCode());
         prescriptionParam.setDoctorName(doctor.getName());
+        prescriptionParam.setDoctorSignature(doctor.getSignature());
         prescriptionParam.setOrderSn(param.getOrderSn());
+        //医院公章
+        ShopBaseConfig shopBaseCfgInfo=saas.shop.getShopBaseInfoById(getShopId());
+        prescriptionParam.setCachet(shopBaseCfgInfo.getCachet());
         //映射patient信息
         buildPrescriptionPatientInfo(prescriptionParam,param);
         prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
