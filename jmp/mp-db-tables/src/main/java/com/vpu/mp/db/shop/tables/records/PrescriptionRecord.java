@@ -5,12 +5,14 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Prescription;
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -26,7 +28,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 123380968;
+    private static final long serialVersionUID = 1953637859;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.id</code>. 主键id
@@ -575,31 +577,73 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_prescription.doctor_signature</code>. 医师签名
+     */
+    public void setDoctorSignature(String value) {
+        set(39, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription.doctor_signature</code>. 医师签名
+     */
+    public String getDoctorSignature() {
+        return (String) get(39);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription.pharmacist_signature</code>. 药师签名
+     */
+    public void setPharmacistSignature(String value) {
+        set(40, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription.pharmacist_signature</code>. 药师签名
+     */
+    public String getPharmacistSignature() {
+        return (String) get(40);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription.cachet</code>. 医院公章
+     */
+    public void setCachet(String value) {
+        set(41, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription.cachet</code>. 医院公章
+     */
+    public String getCachet() {
+        return (String) get(41);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_prescription.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(39, value);
+        set(42, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(39);
+        return (Timestamp) get(42);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(40, value);
+        set(43, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(40);
+        return (Timestamp) get(43);
     }
 
     // -------------------------------------------------------------------------
@@ -628,7 +672,7 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
     /**
      * Create a detached, initialised PrescriptionRecord
      */
-    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, String orderSn, Integer patientId, Integer userId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, BigDecimal totalPrice, Byte source, Byte auditType, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Byte settlementFlag, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionRecord(Integer id, String prescriptionCode, String posCode, String orderSn, Integer patientId, Integer userId, String patientTreatmentCode, String identityCode, Byte identityType, String patientName, Integer patientAge, Byte patientSex, String patientDiseaseHistory, String patientAllergyHistory, String registerHospital, String departmentCode, String departmentName, String doctorCode, String doctorName, Timestamp diagnoseTime, String pharmacistName, String pharmacistCode, String diagnosisName, String diagnosisDetail, String doctorAdvice, String patientComplain, String patientSign, BigDecimal totalPrice, Byte source, Byte auditType, Byte status, String statusMemo, Byte expireType, Timestamp prescriptionCreateTime, Timestamp prescriptionExpireTime, Byte isDelete, Byte isUsed, Byte isValid, Byte settlementFlag, String doctorSignature, String pharmacistSignature, String cachet, Timestamp createTime, Timestamp updateTime) {
         super(Prescription.PRESCRIPTION);
 
         set(0, id);
@@ -670,7 +714,10 @@ public class PrescriptionRecord extends UpdatableRecordImpl<PrescriptionRecord> 
         set(36, isUsed);
         set(37, isValid);
         set(38, settlementFlag);
-        set(39, createTime);
-        set(40, updateTime);
+        set(39, doctorSignature);
+        set(40, pharmacistSignature);
+        set(41, cachet);
+        set(42, createTime);
+        set(43, updateTime);
     }
 }
