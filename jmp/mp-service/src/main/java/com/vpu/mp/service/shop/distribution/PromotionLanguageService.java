@@ -44,13 +44,19 @@ public class PromotionLanguageService extends ShopBaseService{
 			select.where(PROMOTION_LANGUAGE.PROMOTION_LANGUAGE_.contains(param.getPromotionLanguage()));
 		}
 		//创建时间
-		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
-			select.where(PROMOTION_LANGUAGE.CREATE_TIME.ge(param.getStartCreateTime())).and(PROMOTION_LANGUAGE.CREATE_TIME.le(param.getEndCreateTime()));
+		if(param.getStartCreateTime() != null ) {
+			select.where(PROMOTION_LANGUAGE.CREATE_TIME.ge(param.getStartCreateTime()));
 		}
+		if(param.getEndCreateTime() != null){
+            select.where(PROMOTION_LANGUAGE.CREATE_TIME.le(param.getEndCreateTime()));
+        }
 		//修改时间
-		if(param.getStartUpdateTime() != null && param.getEndUpdateTime() != null) {
-			select.where(PROMOTION_LANGUAGE.UPDATE_TIME.ge(param.getStartUpdateTime())).and(PROMOTION_LANGUAGE.UPDATE_TIME.le(param.getEndUpdateTime()));
+		if(param.getStartUpdateTime() != null) {
+			select.where(PROMOTION_LANGUAGE.UPDATE_TIME.ge(param.getStartUpdateTime()));
 		}
+		if(param.getEndUpdateTime() != null){
+            select.where(PROMOTION_LANGUAGE.UPDATE_TIME.le(param.getEndUpdateTime()));
+        }
 		select.orderBy(PROMOTION_LANGUAGE.UPDATE_TIME.desc());
 	}
 	

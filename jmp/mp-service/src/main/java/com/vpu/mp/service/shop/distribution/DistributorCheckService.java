@@ -10,9 +10,11 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
+import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +87,35 @@ public class DistributorCheckService extends ShopBaseService{
         //申请结束时间
         if(param.getEndTime() != null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.le(param.getEndTime()));
+        }
+        //根据ID
+        if (param.getUserId() != null) {
+            select.and(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId()));
+        }
+        //根据邀请码
+        if (StringUtil.isNotEmpty(param.getInvitationCode())) {
+            //1.根据邀请码查询出发出邀请码的邀请人ID
+            SelectConditionStep<Record1<Integer>> selectConditionStep =
+                db().select(USER.USER_ID)
+                    .from(USER)
+                    .where(USER.INVITATION_CODE.contains(param.getInvitationCode()));
+            if (selectConditionStep != null) {
+                Set<Integer> integers = selectConditionStep.fetchSet(USER.USER_ID);
+                //2.根据邀请人ID查询出受邀请人集合
+                select.and(USER.INVITE_ID.in(integers));
+            }
+        }
+        //根据分销员分组
+        if (param.getInviteGroup() != null) {
+            select.and(USER.INVITE_GROUP.eq(param.getInviteGroup()));
+        }
+        //审核开始时间
+        if (param.getCheckStartTime() != null) {
+            select.and(DISTRIBUTOR_APPLY.UPDATE_TIME.ge(param.getCheckStartTime()));
+        }
+        //审核结束时间
+        if (param.getCheckEndTime() != null) {
+            select.and(DISTRIBUTOR_APPLY.UPDATE_TIME.le(param.getCheckEndTime()));
         }
         //flag = 1是从店铺助手过来
         if(param.getFlag() == 1){
