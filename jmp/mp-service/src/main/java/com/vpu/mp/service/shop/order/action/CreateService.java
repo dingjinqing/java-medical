@@ -248,7 +248,20 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     @Override
     public Object query(OrderBeforeParam param) throws MpException {
-        return queryProcessParam(param);
+        //初始化Goods
+        queryAndExecuteInitParamGoods(param);
+        //初始化所有可选支付方式
+        param.setPaymentList(payment.getSupportPayment());
+        //好友代付
+        param.setInsteadPayCfg(insteadPayConfig.getInsteadPayConfig());
+        //设置规格和商品信息、基础校验规格与商品
+        queryAndExecuteProcessParamGoods(param);
+        //TODO 营销相关 活动校验或活动参数初始化
+        marketProcessorFactory.processInitCheckedOrderCreate(param);
+        //下架商品校验(因为有些活动下架仍可以下单)
+        queryAndExecuteCheckGoodsIsOnSale(param.getGoods());
+        //订单金额计算,返回vo
+        return queryProcessBeforeVoInfo(param);
     }
 
     @Override
@@ -485,13 +498,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //处理营销活动后校验(因为有些活动下架仍可以下单)
         queryAndExecuteCheckGoodsIsOnSale(param.getGoods());
         //初始化 goodsBo 活动后价格
-        initOrderGoods(param, orderBeforeVo);
+        queryAndExecuteInitOrderGoods(param, orderBeforeVo);
         //生成订单商品后校验必填项
         checkMust(param.getBos(), param);
         orderBo.setOrderGoodsBo(param.getBos());
         //处理orderBeforeVo
         orderBeforeVo.setAddress(orderBo.getAddress());
-        processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
+        queryAndExecuteProcessOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
         //校验
         checkOrder(orderBeforeVo, orderBo, param);
         return orderBo;
@@ -673,27 +686,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
-    /**
-     * 处理查询方法
-     * @param param
-     * @throws MpException
-     */
-    public OrderBeforeVo queryProcessParam(OrderBeforeParam param) throws MpException {
-        //初始化Goods
-        queryAndExecuteInitParamGoods(param);
-        //初始化所有可选支付方式
-        param.setPaymentList(payment.getSupportPayment());
-        //好友代付
-        param.setInsteadPayCfg(insteadPayConfig.getInsteadPayConfig());
-        //设置规格和商品信息、基础校验规格与商品
-        queryAndExecuteProcessParamGoods(param);
-        //TODO 营销相关 活动校验或活动参数初始化
-        marketProcessorFactory.processInitCheckedOrderCreate(param);
-        //下架商品校验(因为有些活动下架仍可以下单)
-        queryAndExecuteCheckGoodsIsOnSale(param.getGoods());
-        //订单金额计算,返回vo
-        return queryProcessBeforeVoInfo(param);
-    }
 
     /**
      * 下架商品校验(因为有些活动下架仍可以下单，所以此类processInitCheckedOrderCreate中可以将goods.getGoodsInfo().getIsOnSale()字段设置为已上架)
@@ -743,7 +735,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         /*** 初始化*/
         OrderBeforeVo vo = OrderBeforeVo.builder().build();
         //初始化orderGoods vo;
-        initOrderGoods(param,vo);
+        queryAndExecuteInitOrderGoods(param,vo);
         // 地址
         vo.setAddress(getDefaultAddress(param.getWxUserInfo().getUserId(), param.getAddressId()));
         // 支持的配送方式
@@ -753,7 +745,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //好友代付
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
         //计算金额相关、vo赋值
-        processOrderBeforeVo(param, vo, vo.getOrderGoods());
+        queryAndExecuteProcessOrderBeforeVo(param, vo, vo.getOrderGoods());
         //赠品活动
         processBeforeUniteActivity(param, vo);
         //下单页面显示积分兑换金额时去除积分,结算不做此逻辑（只是为了展示方便）
@@ -793,7 +785,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException 校验异常
      * @return  bo
      */
-    public void initOrderGoods(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
+    public void queryAndExecuteInitOrderGoods(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
         logger().info("initOrderGoods开始");
         List<OrderGoodsBo> boList = new ArrayList<>(param.getGoods().size());
         for (Goods temp : param.getGoods()) {
@@ -899,7 +891,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param vo
      * @param bos
      */
-    public void processOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) throws MpException {
+    public void queryAndExecuteProcessOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) throws MpException {
         logger().info("金额处理赋值(processOrderBeforeVo),start");
         //积分兑换比
         Integer scoreProportion = scoreCfg.getScoreProportion();

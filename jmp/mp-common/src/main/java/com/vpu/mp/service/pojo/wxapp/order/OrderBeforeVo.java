@@ -173,10 +173,17 @@ public class OrderBeforeVo {
      * @return
      */
     public Byte getDefaultDeliverType(){
-        for (int i = 0, length = expressList.length ; i < length ; i++){
-            if(expressList[i] == OrderConstant.YES){
-                return (byte)i;
-            }
+        //门店配送
+        if(expressList[3]==BaseConstant.YES.byteValue()){
+            return 3;
+        }
+        //自提
+        if(expressList[1]==BaseConstant.YES.byteValue()){
+            return 1;
+        }
+        //快递
+        if(expressList[0]==BaseConstant.YES.byteValue()){
+            return 0;
         }
         return null;
     }
