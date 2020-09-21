@@ -17,17 +17,20 @@ page {
 .handRight {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 80rpx;
 }
 
 .handCenter {
   overflow: hidden;
   box-sizing: border-box;
+  flex: 1;
 }
 
 .handTitle {
   transform: rotate(90deg);
-  flex: 1;
   color: #666;
+  white-space: nowrap;
 }
 
 .handBtn {
@@ -35,7 +38,7 @@ page {
   flex-direction: column;
   justify-content: center;
   align-content: center;
-  padding-left: 40rpx;
+  width:140rpx;
 }
 .handBtn .btn{
   width: 120rpx;
