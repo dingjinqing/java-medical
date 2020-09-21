@@ -364,7 +364,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             OrderAddressParam orderAddressParam = new OrderAddressParam();
             orderAddressParam.setLat(userAddressInfo.getLat());
             orderAddressParam.setLng(userAddressInfo.getLng());
-            orderAddressParam.setDeliveryType(0);
+            orderAddressParam.setDeliveryType(DELIVER_TYPE_COURIER);
             List<StoreGoodsBaseCheckInfo> list = new ArrayList<>();
             param.getGoods().forEach(goods -> {
                 StoreGoodsBaseCheckInfo goodsMedicalInfo = getGoodsMedicalInfo(goods.getGoodsId());
