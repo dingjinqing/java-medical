@@ -42,6 +42,7 @@ import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.formula.functions.Today;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -482,7 +483,9 @@ public class StoreService extends ShopBaseService {
      */
     public List<StorePojo> getCanBuyStoreList(List<Integer> productIds, byte express, UserAddressVo address, byte isFormStore) {
         //条件
-        Condition condition = STORE_GOODS.PRD_ID.in(productIds).and(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE)).and(STORE.BUSINESS_STATE.eq(BUSINESS_STATE_ON)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        Condition condition = STORE_GOODS.PRD_ID.in(productIds)
+            .and(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         //自提
         condition = express == OrderConstant.DELIVER_TYPE_SELF ? condition.and(STORE.AUTO_PICK.eq((short) OrderConstant.YES)) : condition;
         //TODO 同城配送
