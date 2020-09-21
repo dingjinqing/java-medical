@@ -8,6 +8,7 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.decoration.*;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.distribution.*;
+import com.vpu.mp.service.shop.doctor.DoctorLoginLogService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.doctor.DoctorStatisticService;
 import com.vpu.mp.service.shop.express.ExpressService;
@@ -710,4 +711,10 @@ public class ShopApplication {
      */
     @Autowired
     public GoodsAnalysisService goodsAnalysisService;
+
+    /**
+     * 医师登录统计
+     */
+    @Autowired
+    public DoctorLoginLogService doctorLoginLogService;
 }

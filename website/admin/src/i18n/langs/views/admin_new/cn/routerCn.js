@@ -444,5 +444,7 @@ export const cn = {
   // 咨询订单 订单统计
   advisoryTotal: ['销售统计', '咨询订单统计'],
   // 提现审核 提现详情
-  doctorWithdrawInfo: ['提现审核', '提现详情']
+  doctorWithdrawInfo: ['提现审核', '提现详情'],
+  // 医师管理 出勤统计
+  doctorAttendanceStrategy: ['医师管理', '出勤统计']
 }

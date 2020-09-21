@@ -2,7 +2,7 @@
   <div>
     <div class="small_container">
       <div class="top_one">
-        <div class="top_name">{{$t('selectLinks.smallProgramName')}}：</div>
+        <div class="top_name">{{ $t('selectLinks.smallProgramName') }}：</div>
         <el-select
           v-model="selectValue"
           :placeholder="$t('selectLinks.linkPlaceHoder')"
@@ -18,7 +18,7 @@
         </el-select>
       </div>
       <div class="top_one top_two">
-        <div>{{$t('selectLinks.smallProgramPageName')}}：</div>
+        <div>{{ $t('selectLinks.smallProgramPageName') }}：</div>
         <el-input
           v-model="pageName"
           :placeholder="$t('selectLinks.namePlaceHolder')"
@@ -26,58 +26,48 @@
         ></el-input>
       </div>
       <div class="top_one top_three">
-        <div>{{$t('selectLinks.smallProgramAdress')}}：</div>
+        <div>{{ $t('selectLinks.smallProgramAdress') }}：</div>
         <el-input
           v-model="pagePath"
           :placeholder="$t('selectLinks.adressPlaceholder')"
           size="mini"
         ></el-input>
-        <el-button
-          type="primary"
-          size="mini"
-          @click="pageSave()"
-        >{{$t('selectLinks.save')}}</el-button>
+        <el-button type="primary" size="mini" @click="pageSave()">{{
+          $t('selectLinks.save')
+        }}</el-button>
       </div>
-
     </div>
     <div class="content">
-      <table width='100%'>
+      <table width="100%">
         <thead>
           <tr>
-            <td>{{$t('selectLinks.smallProgramName')}}</td>
-            <td>{{$t('selectLinks.pageName')}}</td>
-            <td>{{$t('selectLinks.route')}}</td>
-            <td>{{$t('selectLinks.status')}}</td>
-            <td>{{$t('selectLinks.operation')}}</td>
+            <td>{{ $t('selectLinks.smallProgramName') }}</td>
+            <td>{{ $t('selectLinks.pageName') }}</td>
+            <td>{{ $t('selectLinks.route') }}</td>
+            <td>{{ $t('selectLinks.status') }}</td>
+            <td>{{ $t('selectLinks.operation') }}</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
           <tr
-            v-for="(item,index) in trList"
+            v-for="(item, index) in trList"
             :key="index"
-            :class="clickIindex===index?'clickClass':''"
+            :class="clickIindex === index ? 'clickClass' : ''"
             @click="handleClick(index)"
           >
-            <td>{{item.title}}</td>
-            <td class="link">{{item.pathName}}</td>
-            <td>{{item.linkPath}}</td>
-            <td>{{item.status}}</td>
-            <td
-              class="tb_decorate_a"
-              @click="deleRr(index)"
-            >
-              {{$t('selectLinks.del')}}
+            <td>{{ item.title }}</td>
+            <td class="link">{{ item.pathName }}</td>
+            <td>{{ item.linkPath }}</td>
+            <td>{{ item.status }}</td>
+            <td class="tb_decorate_a" @click="deleRr(index)">
+              {{ $t('selectLinks.del') }}
             </td>
           </tr>
         </tbody>
-
       </table>
-      <div
-        class="noData"
-        v-if="!tbodyFlag"
-      >
-        <img :src="noImg">
-        <span>{{$t('selectLinks.noDataAvailable')}}</span>
+      <div class="noData" v-if="!tbodyFlag">
+        <img :src="noImg" />
+        <span>{{ $t('selectLinks.noDataAvailable') }}</span>
       </div>
     </div>
   </div>
@@ -187,7 +177,7 @@ export default {
   margin-right: 28px;
 }
 </style>
-<style>
+<style scoped>
 .small_container .el-input {
   width: 155px !important;
 }

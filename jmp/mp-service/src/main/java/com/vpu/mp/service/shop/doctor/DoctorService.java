@@ -742,14 +742,16 @@ public class DoctorService extends BaseShopConfigService {
         data.setConsultationNumber(getDoctorConsultationData(param));
 
         DoctorStatisticOneParam inquiryData = getDoctorInquiryData(param);
-        data.setInquiryMoney(inquiryData.getInquiryMoney());
+        BigDecimal inquiryMoney = inquiryData.getInquiryMoney() == null ? (new BigDecimal(0.00)) : inquiryData.getInquiryMoney();
+        data.setInquiryMoney(inquiryMoney);
         data.setInquiryNumber(inquiryData.getInquiryNumber());
 
         DoctorStatisticOneParam prescriptionData = getDoctorPrescriptionData(param);
-        data.setPrescriptionMoney(prescriptionData.getPrescriptionMoney());
+        BigDecimal prescriptionMoney = prescriptionData.getPrescriptionMoney() == null ? (new BigDecimal(0.00)) : prescriptionData.getPrescriptionMoney();
+        data.setPrescriptionMoney(prescriptionMoney);
         data.setPrescriptionNum(prescriptionData.getPrescriptionNum());
 
-        data.setConsumeMoney(inquiryData.getInquiryMoney().add(prescriptionData.getPrescriptionMoney()));
+        data.setConsumeMoney(inquiryMoney.add(prescriptionMoney));
         return data;
     }
 }

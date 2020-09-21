@@ -277,8 +277,15 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         /**
          * 订单同步到his
          */
-        Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
-        uploadPrescriptionService.uploadPrescription(order.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
+        try {
+            if (!order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT)){
+                Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
+                uploadPrescriptionService.uploadPrescription(order.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
+            }
+        }catch (Exception e){
+            log.error("订单同步到his异常");
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -7,7 +7,7 @@
       width="1075px"
       :modal-append-to-body="false"
     >
-      <div style="margin: 20px 10px;">
+      <div style="margin: 20px 10px">
         <section>
           <div>
             <span>渠道页面分析：</span>
@@ -28,8 +28,8 @@
           </div>
 
           <div
-            style="display: flex;margin-top:15px;"
-            v-if="requestParam.sourceType===0"
+            style="display: flex; margin-top: 15px"
+            v-if="requestParam.sourceType === 0"
           >
             <div>
               <span>页面名称：</span>
@@ -41,7 +41,7 @@
                 clearable
               ></el-input>
             </div>
-            <div style="margin: 0 15px 15px 15px;">
+            <div style="margin: 0 15px 15px 15px">
               <span>页面分类：</span>
               <el-select
                 v-model="formDialog.catId"
@@ -60,16 +60,14 @@
               </el-select>
             </div>
             <div>
-              <el-button
-                size="small"
-                type="primary"
-                @click="choosePage()"
-              > 筛选 </el-button>
+              <el-button size="small" type="primary" @click="choosePage()">
+                筛选
+              </el-button>
             </div>
           </div>
         </section>
 
-        <section v-if="requestParam.sourceType===0">
+        <section v-if="requestParam.sourceType === 0">
           <div class="table_list">
             <el-table
               :data="customPageData"
@@ -80,11 +78,7 @@
               height="300px"
               border
             >
-              <el-table-column
-                prop="pageName"
-                label="页面名称"
-                align="center"
-              >
+              <el-table-column prop="pageName" label="页面名称" align="center">
               </el-table-column>
               <el-table-column
                 prop="createTime"
@@ -92,24 +86,20 @@
                 align="center"
               >
               </el-table-column>
-              <el-table-column
-                prop="name"
-                label="页面分类"
-                align="center"
-              >
+              <el-table-column prop="name" label="页面分类" align="center">
               </el-table-column>
             </el-table>
           </div>
         </section>
 
-        <section v-if="requestParam.sourceType===1">
+        <section v-if="requestParam.sourceType === 1">
           <div class="choiseDialog">
             <div>
               <section
-                style="padding-left:30px;display: flex;"
+                style="padding-left: 30px; display: flex"
                 class="chooseCondiction"
               >
-                <div style="margin-right: 30px;">
+                <div style="margin-right: 30px">
                   <sortCatTreeSelect
                     ref="sortTree"
                     :filterGoodsInfo="initSortCatParams"
@@ -118,12 +108,13 @@
                     :selectedId.sync="requestParam.sortId"
                   />
                 </div>
-                <div>商品标签：
+                <div>
+                  商品标签：
                   <el-select
                     v-model="requestParam.labelId"
                     placeholder="请选择商品标签"
                     size="small"
-                    style="width:140px;margin-left:-4px"
+                    style="width: 140px; margin-left: -4px"
                   >
                     <el-option
                       v-for="item in goodsLabelOptions"
@@ -134,15 +125,14 @@
                     </el-option>
                   </el-select>
                 </div>
-                <div
-                  class="rangeLi"
-                  style="margin-left:30px;"
-                >商品价格范围：
+                <div class="rangeLi" style="margin-left: 30px">
+                  商品价格范围：
                   <el-input
                     v-model="requestParam.lowShopPrice"
                     placeholder="请输入内容"
                     size="small"
-                  ></el-input>&nbsp;元至&nbsp;
+                  ></el-input
+                  >&nbsp;元至&nbsp;
                   <el-input
                     v-model="requestParam.highShopPrice"
                     placeholder="请输入内容"
@@ -151,29 +141,32 @@
                 </div>
               </section>
               <ul>
-                <li>商品名称：
+                <li>
+                  商品名称：
                   <el-input
                     v-model="requestParam.goodsName"
                     placeholder="请输入商品名称"
                     size="small"
-                    style="width:140px"
+                    style="width: 140px"
                   ></el-input>
                 </li>
-                <li>商品货号：
+                <li>
+                  商品货号：
                   <el-input
                     v-model="requestParam.goodsSn"
                     placeholder="请输入商品货号"
                     size="small"
-                    style="width:140px"
+                    style="width: 140px"
                   ></el-input>
                 </li>
-                <li>商品品牌：
+                <li>
+                  商品品牌：
                   <el-select
                     v-model="requestParam.brandId"
                     value-key="id"
                     placeholder="请选择商品品牌"
                     size="small"
-                    style="width:140px"
+                    style="width: 140px"
                   >
                     <el-option
                       v-for="item in goodsBrandOptions"
@@ -191,31 +184,34 @@
                     @click="selectGoodsData"
                     type="primary"
                     size="small"
-                    style="margin-right:10px"
-                  >筛选</el-button>
+                    style="margin-right: 10px"
+                    >筛选</el-button
+                  >
                   <el-button
                     @click="resetFilterData"
                     type="info"
                     plain
                     size="small"
                     class="resetCondition"
-                  >重置筛选条件</el-button>
+                    >重置筛选条件</el-button
+                  >
                 </div>
-                <div style="padding: 10px;">
-                  <span>已经选择{{checkedIdList.length}}件商品</span>
+                <div style="padding: 10px">
+                  <span>已经选择{{ checkedIdList.length }}件商品</span>
                 </div>
               </div>
             </div>
             <!--选择商品弹窗表格-->
             <div class="table_container">
-              <table width='100%'>
+              <table width="100%">
                 <thead>
                   <tr>
                     <td v-if="!singleElection">
                       <el-checkbox
                         v-model="checkPageAllFlag"
                         @change="checkedPageRow(checkPageAllFlag)"
-                      ></el-checkbox><i class="tdTopText">全选本页</i>
+                      ></el-checkbox
+                      ><i class="tdTopText">全选本页</i>
                     </td>
 
                     <td>商品信息</td>
@@ -230,66 +226,61 @@
                 </thead>
                 <tbody v-if="tbodyFlag">
                   <tr
-                    v-for="(item,index) in tableData"
+                    v-for="(item, index) in tableData"
                     :key="index"
-                    :class="{goods_tr_choose: item.ischecked}"
-                    @click.prevent="handleRowClick(index,item,$event)"
+                    :class="{ goods_tr_choose: item.ischecked }"
+                    @click.prevent="handleRowClick(index, item, $event)"
                   >
                     <td v-if="!singleElection">
                       <div class="tdCenter">
                         <el-checkbox v-model="item.ischecked"></el-checkbox>
                       </div>
                     </td>
-                    <td
-                      class="isLeft"
-                      :class="loadProduct?'tdCenter':''"
-                    >
-                      <img :src="item.prdImg || item.goodsImg">
-                      <span>{{item.goodsName}}</span>
+                    <td class="isLeft" :class="loadProduct ? 'tdCenter' : ''">
+                      <img :src="item.prdImg || item.goodsImg" />
+                      <span>{{ item.goodsName }}</span>
                       <!-- 规格描述 -->
-                      <span v-if="loadProduct">{{item.prdDesc}}</span>
+                      <span v-if="loadProduct">{{ item.prdDesc }}</span>
                     </td>
                     <td class="tb_decorate_a">
-                      {{item.goodsSn}}
+                      {{ item.goodsSn }}
                     </td>
                     <td class="tb_decorate_a">
-                      <span v-if="!loadProduct">{{item.shopPrice}}</span>
-                      <span v-if="loadProduct">{{item.prdPrice}}</span>
+                      <span v-if="!loadProduct">{{ item.shopPrice }}</span>
+                      <span v-if="loadProduct">{{ item.prdPrice }}</span>
                     </td>
                     <td class="tb_decorate_a">
-                      <span v-if="!loadProduct">{{item.goodsNumber}}</span>
-                      <span v-if="loadProduct">{{item.prdNumber}}</span>
+                      <span v-if="!loadProduct">{{ item.goodsNumber }}</span>
+                      <span v-if="loadProduct">{{ item.prdNumber }}</span>
                     </td>
                     <!--<td class="tb_decorate_a">-->
                     <!--{{item.catName}}-->
                     <!--</td>-->
                     <td class="tb_decorate_a">
-                      {{item.sortName}}
+                      {{ item.sortName }}
                     </td>
                     <td class="tb_decorate_a">
                       <span
-                        v-for="(childrenItem,childrenIndex) in item.goodsLabels"
-                        :key='childrenIndex'
-                      >{{childrenItem.name}}</span>
-
+                        v-for="(childrenItem,
+                        childrenIndex) in item.goodsLabels"
+                        :key="childrenIndex"
+                        >{{ childrenItem.name }}</span
+                      >
                     </td>
                     <td class="tb_decorate_a">
-                      {{item.brandName}}
+                      {{ item.brandName }}
                     </td>
                   </tr>
                 </tbody>
-
               </table>
 
               <div class="tablefooter">
-                <div
-                  v-if="!singleElection"
-                  class="selectAll"
-                >
+                <div v-if="!singleElection" class="selectAll">
                   <el-checkbox
                     v-model="checkAllFlag"
                     @change="checkedAllRow(checkAllFlag)"
-                  >选择全部</el-checkbox>
+                    >选择全部</el-checkbox
+                  >
                 </div>
                 <div class="paginationInfo">
                   <pagination
@@ -299,30 +290,19 @@
                 </div>
               </div>
             </div>
-            <div
-              class="noData"
-              v-if="!tbodyFlag"
-            >
-              <img :src="noImg">
+            <div class="noData" v-if="!tbodyFlag">
+              <img :src="noImg" />
               <span>暂无相关数据</span>
             </div>
           </div>
         </section>
       </div>
 
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          size="small"
-          @click="cancleBtnHandle"
-        >取 消</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleChoiseGooddialog()"
-        >确 定</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancleBtnHandle">取 消</el-button>
+        <el-button type="primary" size="small" @click="handleChoiseGooddialog()"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -1025,7 +1005,7 @@ img {
   margin-left: 15px;
 }
 </style>
-<style>
+<style scoped>
 .choosingGoods_Container .rangeLi .el-input {
   width: 70px !important;
 }

@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.prescription;
 
 import cn.hutool.json.JSONUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
@@ -14,6 +15,7 @@ import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.prescription.UploadPrescriptionGoodsParam;
 import com.vpu.mp.service.pojo.shop.order.prescription.UploadPrescriptionParam;
@@ -104,25 +106,29 @@ public class UploadPrescriptionService extends ShopBaseService {
      * @param order
      * @return
      */
-    public JsonResult uploadPrescription(CreateParam createParam, CreateOrderBo orderBo, OrderInfoRecord order) {
-        PatientOneParam patient = patientDao.getOneInfo(createParam.getPatientId());
-        List<PrescriptionDo> prescriptionDoList = prescriptionDao.listDiagnosis(createParam.getPatientId());
-        List<String> diagnosisNameList = prescriptionDoList.stream().map(PrescriptionDo::getDiagnosisName).collect(Collectors.toList());
-        List<String> posCodeList = prescriptionDoList.stream().map(PrescriptionDo::getPosCode).collect(Collectors.toList());
-        List<UploadPrescriptionGoodsParam> goodsParamList =new ArrayList<>();
-        for (OrderGoodsBo orderGoodsBo : orderBo.getOrderGoodsBo()) {
-            toGoodsParam(goodsParamList, orderGoodsBo);
+    public JsonResult uploadPrescription(CreateParam createParam, CreateOrderBo orderBo, OrderInfoRecord order) throws MpException {
+        try {
+            PatientOneParam patient = patientDao.getOneInfo(createParam.getPatientId());
+            List<PrescriptionDo> prescriptionDoList = prescriptionDao.listDiagnosis(createParam.getPatientId());
+            List<String> diagnosisNameList = prescriptionDoList.stream().map(PrescriptionDo::getDiagnosisName).collect(Collectors.toList());
+            List<String> posCodeList = prescriptionDoList.stream().map(PrescriptionDo::getPosCode).collect(Collectors.toList());
+            List<UploadPrescriptionGoodsParam> goodsParamList =new ArrayList<>();
+            for (OrderGoodsBo orderGoodsBo : orderBo.getOrderGoodsBo()) {
+                toGoodsParam(goodsParamList, orderGoodsBo);
+            }
+            UploadPrescriptionParam param =new UploadPrescriptionParam();
+            param.setOrderSn(order.getOrderSn());
+            param.setName(patient.getName());
+            param.setMobile(patient.getMobile());
+            param.setIdentityCode(param.getIdentityCode());
+            param.setSex(param.getSex());
+            param.setPrescriptionList(posCodeList);
+            param.setDiagnosisNameList(diagnosisNameList);
+            param.setGoodsMedicalList(goodsParamList);
+           return uploadPrescription(param);
+        }catch (Exception e){
+            throw new MpException(JsonResultCode.CODE_ACCOUNT_SAME,null);
         }
-        UploadPrescriptionParam param =new UploadPrescriptionParam();
-        param.setOrderSn(order.getOrderSn());
-        param.setName(patient.getName());
-        param.setMobile(patient.getMobile());
-        param.setIdentityCode(param.getIdentityCode());
-        param.setSex(param.getSex());
-        param.setPrescriptionList(posCodeList);
-        param.setDiagnosisNameList(diagnosisNameList);
-        param.setGoodsMedicalList(goodsParamList);
-        return uploadPrescription(param);
     }
 
     private void toGoodsParam(List<UploadPrescriptionGoodsParam> goodsParamList, OrderGoodsBo orderGoodsBo) {

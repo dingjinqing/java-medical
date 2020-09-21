@@ -25,6 +25,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.pojo.shop.department.DepartmentCodeVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -346,6 +347,10 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
         prescriptionVo.setDepartmentName(departmentOne.getName());
         prescriptionVo.setDoctorCode(doctor.getHospitalCode());
         prescriptionVo.setDoctorName(doctor.getName());
+        prescriptionVo.setDoctorSignature(doctor.getSignature());
+        //医院公章
+        ShopBaseConfig shopBaseCfgInfo=saas.shop.getShopBaseInfoById(getShopId());
+        prescriptionVo.setCachet(shopBaseCfgInfo.getCachet());
         prescriptionVo.setDiagnoseTime(time);
         prescriptionVo.setPharmacistCode("");
         prescriptionVo.setPharmacistName("");

@@ -45,17 +45,19 @@ public class DoctorStatisticScheduleTask {
             allDoctors.forEach((d)->{
                 shop.doctorTaskService.insertDoctorStatistic(d.getId());
             });
-            LocalDateTime today = LocalDate.now().atStartOfDay();
-            Date refDate = Date.valueOf(today.minusDays(1).toLocalDate());
-            DoctorStatisticAllMinMaxVo doctorStatisticAllMinMaxVo = new DoctorStatisticAllMinMaxVo();
-            doctorStatisticAllMinMaxVo.setOneMinMax(doctorStatisticService.getMinMaxStatisticData(refDate,(byte) 1));
-            doctorStatisticAllMinMaxVo.setWeekMinMax(doctorStatisticService.getMinMaxStatisticData(refDate,(byte) 7));
-            doctorStatisticAllMinMaxVo.setMonthMinMax(doctorStatisticService.getMinMaxStatisticData(refDate,(byte) 30));
-            doctorStatisticAllMinMaxVo.setSeasonMinMax(doctorStatisticService.getMinMaxStatisticData(refDate,(byte) 90));
-            TYPE_LIST_1.forEach((t)->{
-                DoctorStatisticMinMaxVo doctorStatisticMinMax = shop.doctorTaskService.getMinMaxByType(doctorStatisticAllMinMaxVo,t);
-                shop.doctorTaskService.updateDoctorStatisticScore(t,refDate,doctorStatisticMinMax);
-            });
+            if (allDoctors.size() > 0) {
+                LocalDateTime today = LocalDate.now().atStartOfDay();
+                Date refDate = Date.valueOf(today.minusDays(1).toLocalDate());
+                DoctorStatisticAllMinMaxVo doctorStatisticAllMinMaxVo = new DoctorStatisticAllMinMaxVo();
+                doctorStatisticAllMinMaxVo.setOneMinMax(doctorStatisticService.getMinMaxStatisticData(refDate,(byte) 1));
+                doctorStatisticAllMinMaxVo.setWeekMinMax(doctorStatisticService.getMinMaxStatisticData(refDate,(byte) 7));
+                doctorStatisticAllMinMaxVo.setMonthMinMax(doctorStatisticService.getMinMaxStatisticData(refDate,(byte) 30));
+                doctorStatisticAllMinMaxVo.setSeasonMinMax(doctorStatisticService.getMinMaxStatisticData(refDate,(byte) 90));
+                TYPE_LIST_1.forEach((t)->{
+                    DoctorStatisticMinMaxVo doctorStatisticMinMax = shop.doctorTaskService.getMinMaxByType(doctorStatisticAllMinMaxVo,t);
+                    shop.doctorTaskService.updateDoctorStatisticScore(t,refDate,doctorStatisticMinMax);
+                });
+            }
         });
     }
 }

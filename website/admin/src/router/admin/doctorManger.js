@@ -8,10 +8,7 @@ const routes = [
       crumbTitle: 'router.doctorList',
       meta: 'doctor_manger'
     },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/doctor_manger/doctor/doctorManagement'
-      ),
+    component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/doctor/doctorManagement'),
     children: [
       // 医师列表
       {
@@ -22,10 +19,7 @@ const routes = [
           meta: 'doctor_manger',
           category: 'doctor'
         },
-        component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/doctor_manger/doctor/doctorList'
-          )
+        component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/doctor/doctorList')
       },
       // 添加医师
       {
@@ -36,10 +30,7 @@ const routes = [
           meta: 'doctor_manger',
           category: 'doctorList'
         },
-        component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/doctor_manger/doctor/addAndUpdateDoctor'
-          )
+        component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/doctor/addAndUpdateDoctor')
       },
       {
         // 编辑医师
@@ -50,10 +41,7 @@ const routes = [
           meta: 'doctor_manger',
           category: 'doctorList'
         },
-        component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/doctor_manger/doctor/addAndUpdateDoctor'
-          )
+        component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/doctor/addAndUpdateDoctor')
       }
     ]
   },
@@ -67,9 +55,7 @@ const routes = [
       category: 'doctorProfessionalTitle'
     },
     component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/doctor_manger/doctorProfessionalTitle/doctorProfessionalTitle'
-      )
+			import('@/view/admin/index/leftNavComponents/doctor_manger/doctorProfessionalTitle/doctorProfessionalTitle')
   },
   // 科室管理
   {
@@ -80,10 +66,7 @@ const routes = [
       crumbTitle: 'router.officesList',
       meta: 'doctor_manger'
     },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/doctor_manger/offices/officesManagement'
-      ),
+    component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/offices/officesManagement'),
     children: [
       //  医师管理/科室管理/科室列表
       {
@@ -94,10 +77,7 @@ const routes = [
           meta: 'doctor_manger',
           category: 'offices'
         },
-        component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/doctor_manger/offices/officesList'
-          )
+        component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/offices/officesList')
       },
       {
         path: '/admin/home/main/doctor/offices/addOffices',
@@ -108,9 +88,7 @@ const routes = [
           category: 'officesList'
         },
         component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices'
-          )
+					import('@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices')
       },
       {
         path: '/admin/home/main/doctor/offices/updateOffices/:id',
@@ -121,9 +99,7 @@ const routes = [
           category: 'offices'
         },
         component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices'
-          )
+					import('@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices')
       }
     ]
   },
@@ -135,10 +111,7 @@ const routes = [
       crumbTitle: 'router.advisoryTotal',
       meta: 'first_web_manage'
     },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/doctor_manger/advisory/advisoryTotal'
-      )
+    component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/advisory/advisoryTotal')
     // children: [
     //   //  医师管理/科室管理/科室列表
     //   {
@@ -164,10 +137,7 @@ const routes = [
       crumbTitle: 'router.commentList',
       meta: 'doctor_manger'
     },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/doctor_manger/comment/commentList'
-      )
+    component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/comment/commentList')
   },
   //   推荐策略
   {
@@ -178,9 +148,7 @@ const routes = [
       meta: 'doctor_manger'
     },
     component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/doctor_manger/recommendStrategy/recommendStrategy'
-      )
+			import('@/view/admin/index/leftNavComponents/doctor_manger/recommendStrategy/recommendStrategy')
   },
 
   // 医师详情
@@ -191,10 +159,17 @@ const routes = [
       crumbTitle: 'router.doctorDetail',
       meta: 'doctor_manger'
     },
-    component: () =>
-      import(
-        '@/view/admin/index/leftNavComponents/doctor_manger/doctor/doctorDetail'
-      )
+    component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/doctor/doctorDetail')
+  },
+  // 医师详情
+  {
+    path: '/admin/home/main/doctor/attendance/strategy',
+    name: 'doctorAttendanceStrategy',
+    meta: {
+      crumbTitle: 'router.doctorAttendanceStrategy',
+      meta: 'doctor_manger'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/doctor_manger/doctor/attendanceStrategy')
   }
 ]
 

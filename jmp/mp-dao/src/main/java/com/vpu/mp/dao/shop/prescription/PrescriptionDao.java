@@ -547,4 +547,14 @@ public class PrescriptionDao extends ShopBaseDao {
             .and(PRESCRIPTION.USER_ID.eq(userId))
             .fetchAnyInto(PrescriptionDoctorVo.class);
     }
+
+    /**
+     * 更新药师签名
+     * @param prescriptionCode
+     * @param pharmacistSignature
+     */
+    public void updatePharmacistSignature(String prescriptionCode,String pharmacistSignature){
+        db().update(PRESCRIPTION).set(PRESCRIPTION.PHARMACIST_SIGNATURE,pharmacistSignature)
+            .where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
+    }
 }

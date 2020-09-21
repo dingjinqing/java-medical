@@ -619,6 +619,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }
             param.setInsteadPayCfg(cfg);
         }
+        if (param.getStoreId()==null||param.getStoreId()<=0){
+            throw new MpException(JsonResultCode.CODE_ORDER_STORE_NOT_NULL_CHECK);
+        }
         logger().info("校验checkCreateOrderBo,end");
     }
 
