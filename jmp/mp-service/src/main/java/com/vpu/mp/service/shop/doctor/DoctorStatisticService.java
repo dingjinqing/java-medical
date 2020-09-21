@@ -4,10 +4,11 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorSummaryTrendDo;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.dao.shop.doctor.DoctorSummaryTrendDao;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticMinMaxVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticParam;
+import com.vpu.mp.service.pojo.saas.shop.ShopListInfoVo;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
+import com.vpu.mp.service.saas.SaasApplication;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TYPE_LIST_1;
 
 /**
  * @author chenjie
@@ -34,6 +37,9 @@ public class DoctorStatisticService {
 
     @Autowired
     public DoctorDepartmentCoupleDao doctorDepartmentCoupleDao;
+
+    @Autowired
+    private SaasApplication saas;
 
     /**
      * 统计医师业绩数据
@@ -108,7 +114,7 @@ public class DoctorStatisticService {
             param.setDoctorIds(doctorIds);
         }
         PageResult<DoctorStatisticListVo> doctorList = new PageResult<>();
-        if (param.getType()>0) {
+        if (param.getType() != null && param.getType()>0) {
             doctorList = doctorSummaryTrendDao.getDoctorListForType(param);
         } else {
             doctorList = doctorSummaryTrendDao.getDoctorListForCustomize(param);
@@ -128,5 +134,29 @@ public class DoctorStatisticService {
     public void updateDoctorStatisticScore(Byte type,Date refDate, DoctorStatisticMinMaxVo doctorStatisticMinMax) {
         doctorSummaryTrendDao.updateDoctorStatisticConsultationScore(type,refDate,doctorStatisticMinMax);
         doctorSummaryTrendDao.updateDoctorStatisticInquiryScore(type,refDate,doctorStatisticMinMax);
+    }
+
+    public void doctorStatistics() {
+        List<ShopListInfoVo> result = saas.shopService.getShopListInfo();
+        result.forEach((r) -> {
+            ShopApplication shop = saas.getShopApp(r.getShopId());
+            List<DoctorOneParam> allDoctors = shop.doctorService.getAllDoctor();
+            allDoctors.forEach((d)->{
+                shop.doctorTaskService.insertDoctorStatistic(d.getId());
+            });
+            if (allDoctors.size() > 0) {
+                LocalDateTime today = LocalDate.now().atStartOfDay();
+                Date refDate = Date.valueOf(today.minusDays(1).toLocalDate());
+                DoctorStatisticAllMinMaxVo doctorStatisticAllMinMaxVo = new DoctorStatisticAllMinMaxVo();
+                doctorStatisticAllMinMaxVo.setOneMinMax(shop.doctorStatisticService.getMinMaxStatisticData(refDate, (byte) 1));
+                doctorStatisticAllMinMaxVo.setWeekMinMax(shop.doctorStatisticService.getMinMaxStatisticData(refDate, (byte) 7));
+                doctorStatisticAllMinMaxVo.setMonthMinMax(shop.doctorStatisticService.getMinMaxStatisticData(refDate, (byte) 30));
+                doctorStatisticAllMinMaxVo.setSeasonMinMax(shop.doctorStatisticService.getMinMaxStatisticData(refDate, (byte) 90));
+                TYPE_LIST_1.forEach((t) -> {
+                    DoctorStatisticMinMaxVo doctorStatisticMinMax = shop.doctorTaskService.getMinMaxByType(doctorStatisticAllMinMaxVo, t);
+                    shop.doctorTaskService.updateDoctorStatisticScore(t, refDate, doctorStatisticMinMax);
+                });
+            }
+        });
     }
 }

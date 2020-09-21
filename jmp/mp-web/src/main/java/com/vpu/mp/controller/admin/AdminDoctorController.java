@@ -7,6 +7,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
+import com.vpu.mp.service.shop.doctor.DoctorStatisticService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
 public class AdminDoctorController extends AdminBaseController {
     @Autowired
     private PrescriptionService prescriptionService;
+    @Autowired
+    private DoctorStatisticService doctorStatisticService;
     /**
      * 医师列表
      * @param param
@@ -195,5 +198,37 @@ public class AdminDoctorController extends AdminBaseController {
     public JsonResult doctorSummaryList(@RequestBody DoctorStatisticParam param) {
         PageResult<DoctorStatisticListVo> doctorSummaryList = shop().doctorStatisticService.getDoctorSummaryList(param);
         return this.success(doctorSummaryList);
+    }
+
+    /**
+     * 医师业绩统计列表
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/doctors/attendance/summary/list")
+    public JsonResult doctorAttendanceSummaryList(@RequestBody DoctorAttendanceListParam param) {
+        PageResult<DoctorAttendanceOneParam> doctorAttendanceSummaryList = shop().doctorLoginLogService.getDoctorAttendancePage(param);
+        return this.success(doctorAttendanceSummaryList);
+    }
+
+    /**
+     * 医师业绩统计分布
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/doctors/attendance/summary/divide")
+    public JsonResult doctorAttendanceSummaryDivide(@RequestBody DoctorAttendanceListParam param) {
+        DoctorAttendanceDivideVo doctorAttendanceSummaryDivide = shop().doctorLoginLogService.getDoctorAttendanceDivide(param.getType());
+        return this.success(doctorAttendanceSummaryDivide);
+    }
+
+    /**
+     * 医师业绩统计分布
+     * @return
+     */
+    @PostMapping("/api/admin/doctors/summary/test")
+    public JsonResult doctorSummaryTest() {
+        doctorStatisticService.doctorStatistics();
+        return this.success();
     }
 }
