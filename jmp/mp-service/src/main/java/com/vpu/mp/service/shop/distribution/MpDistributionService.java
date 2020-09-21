@@ -923,6 +923,7 @@ public class MpDistributionService extends ShopBaseService{
         select.groupBy(ORDER_GOODS.ORDER_SN, ORDER_INFO.CREATE_TIME, ORDER_INFO.FINISHED_TIME,
             ORDER_INFO.ORDER_STATUS, ORDER_INFO.ORDER_STATUS_NAME, USER.USERNAME,
             ORDER_GOODS_REBATE.REBATE_LEVEL,ORDER_INFO.SETTLEMENT_FLAG);
+        select.orderBy(ORDER_GOODS_REBATE.CREATE_TIME.desc());
         return select;
     }
 
