@@ -340,7 +340,7 @@ public class OrderReadService extends ShopBaseService {
      * @param mainOrderList
      */
     private void getStoreInfo(ArrayList<OrderListInfoVo> mainOrderList) {
-        List<Integer> storeIds = mainOrderList.stream().map(OrderListInfoVo::getStoreId).collect(Collectors.toList());
+        List<Integer> storeIds = mainOrderList.stream().map(OrderListInfoVo::getStoreId).distinct().collect(Collectors.toList());
         List<StoreOrderVo> storeInfoByIds = store.getStoreInfoByIds(storeIds);
         for (OrderListInfoVo orderListInfoVo : mainOrderList) {
             storeInfoByIds.stream().filter(storeInfo -> storeInfo.getStoreId()
