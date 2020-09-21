@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 public class SetDefaulttParam {
     /**推广语id*/
-    @JsonProperty("LanguageId")
     private Integer languageId;
     /**用户id*/
     private Integer userId;
