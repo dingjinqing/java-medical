@@ -7,9 +7,9 @@
           :model="goodsFilterModel"
           :inline="true"
         >
-          <el-form-item label="商品信息：" prop="goodsName">
+          <el-form-item label="商品信息：" prop="keywords">
             <el-input
-              v-model="goodsFilterModel.goodsName"
+              v-model="goodsFilterModel.keywords"
               placeholder="商品名称"
               size="small"
             ></el-input>
@@ -98,7 +98,7 @@ export default {
   data () {
     return {
       goodsFilterModel: {
-        goodsName: null,
+        keywords: null,
         storeId: null,
         isOnSale: null,
         isSaleOut: 1
