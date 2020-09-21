@@ -22,6 +22,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalOneInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -235,6 +236,11 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
         FieldsUtil.assign(param,prescriptionVo);
         prescriptionVo.setDoctorCode(doctor.getHospitalCode());
         prescriptionVo.setDoctorName(doctor.getName());
+        //医师签名
+        prescriptionVo.setDoctorSignature(doctor.getSignature());
+        //医院公章
+        ShopBaseConfig shopBaseCfgInfo=saas.shop.getShopBaseInfoById(getShopId());
+        prescriptionVo.setCachet(shopBaseCfgInfo.getCachet());
         prescriptionVo.setOrderSn(orderInfoDo.getOrderSn());
         //从订单患者病例中获取
         OrderMedicalHistoryDo orderMedicalHistoryDo=orderMedicalHistoryDao.getByOrderId(param.getOrderId());
