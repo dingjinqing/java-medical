@@ -381,6 +381,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             List<StoreGoodsBaseCheckInfo> list = new ArrayList<>();
             param.getGoods().forEach(goods -> {
                 StoreGoodsBaseCheckInfo goodsMedicalInfo = getGoodsMedicalInfo(goods.getGoodsId());
+                goodsMedicalInfo.setProductId(goods.getProductId());
                 goodsMedicalInfo.setGoodsNumber(goods.getGoodsNumber().toString());
                 list.add(goodsMedicalInfo);
             });
