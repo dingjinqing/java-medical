@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * 发货
- * 
+ *
  * @author 王帅
  *
  */
@@ -26,7 +26,15 @@ public final class ShipParam extends OrderOperateQueryParam{
 	private Byte shippingId;
 	@NotNull(message = JsonResultMessage.MSG_ORDER_SHIPPING_SHIPGOODS_NOT_NULL)
 	private ShipGoods[] shipGoods;
-	
+	/**
+	 * 平台 0 admin 1store 3wxapp 4wxapp_store
+	 */
+	@NotNull
+	private Byte platform;
+	private Integer shipAccountId;
+	private Integer shipUserId;
+
+
 	@Getter
 	@Setter
     @AllArgsConstructor

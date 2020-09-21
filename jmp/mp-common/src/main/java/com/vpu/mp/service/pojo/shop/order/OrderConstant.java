@@ -74,6 +74,8 @@ public class OrderConstant {
 	public final static byte ORDER_TO_AUDIT =14;
 	/** 待开方 */
  	public final static byte ORDER_TO_AUDIT_OPEN =15;
+ 	/** 代配送 与代发货一致,属于门店发货的中间状态 可进行操作：发货 */
+ 	public final static byte ORDER_WAIT_STORE_DELIVERY =16;
 
 
 	/*退货状态*/
@@ -142,6 +144,24 @@ public class OrderConstant {
 	public final static byte NO_PART_SHIP = 0;
 	/**是*/
 	public final static byte PART_SHIP = 1;
+
+	/**
+	 * admin
+	 */
+	public final static byte PLATFORM_ADMIN =0;
+	/**
+	 * 门店 store
+	 */
+	public final static byte PLATFORM_STORE =1;
+	/**
+	 * wxapp 微信
+	 */
+	public final static byte PLATFORM_WXAPP =2;
+	/**
+	 * wxapp_store 微信门店
+	 */
+	public final static byte PLATFORM_WXAPP_STORE =3;
+
 
 	/**
 	 *  return_order_goods表success字段
@@ -214,7 +234,7 @@ public class OrderConstant {
 	/**一分*/
 	public final static BigDecimal CENT = new BigDecimal("0.01");
 
-	/**操作人：商家 0 、买家1、定时任务2、mq3、pos4、erp/ekb5**/
+	/**操作人：0商家 、1买家、2定时任务、3mq、4pos、5erp/ekb 6医师 7门店  **/
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_ADMIN = 0;
 	public final static byte IS_MP_AUTO = 2;
