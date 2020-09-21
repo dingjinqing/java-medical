@@ -23,4 +23,12 @@ public class DoctorStatisticParam {
     private List<Integer> doctorIds;
     private Integer currentPage;
     private Integer pageRows;
+    /**
+     * 排序字段
+     */
+    private String orderField;
+    /**
+     * 排序方式
+     */
+    private String orderDirection;
 }

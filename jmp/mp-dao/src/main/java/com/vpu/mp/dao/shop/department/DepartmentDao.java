@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -28,6 +30,9 @@ import static com.vpu.mp.db.shop.Tables.*;
 @Repository
 public class DepartmentDao extends ShopBaseDao {
     public static final Integer ROOT_ID = 0;
+    public static final String SCORE = "score";
+    public static final String DOCTOR_NUMBER = "doctor_number";
+    public static final String DOCTOR_NUM_SCORE = "doctor_num_score";
 
     /**
      * 科室列表
@@ -248,35 +253,6 @@ public class DepartmentDao extends ShopBaseDao {
     }
 
     /**
-     * 获取子节点科室信息
-     * @param param
-     * @return
-     */
-    public List<DepartmentOneParam> listDepartmentsByOptions(DepartmentListParam param) {
-        Condition condition = DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF));
-        if (param.getKeyword() != null && param.getKeyword() != "") {
-            condition = condition.and(DEPARTMENT.NAME.like(likeValue(param.getKeyword())));
-        }
-        if (param.getDepartmentIds() != null) {
-            condition = condition.and(DEPARTMENT.ID.in(param.getDepartmentIds()));
-        }
-        LocalDateTime today = LocalDate.now().atStartOfDay();
-//        SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> statisticTable = getDepartmentStatisticTable();
-        SelectHavingStep<Record2<Integer, Integer>> doctorTable = getDoctorNumberTable();
-        SelectJoinStep<? extends Record> select = db().select(DEPARTMENT.ID,DEPARTMENT.NAME,DEPARTMENT.ID,DEPARTMENT.CODE,doctorTable.field("doctor_number")).from(DEPARTMENT)
-            .leftJoin(DEPARTMENT_SUMMARY_TREND).on(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID.eq(DEPARTMENT.ID).and(DEPARTMENT_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_WEEK)).and(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(Date.valueOf(today.minusDays(1).toLocalDate()))))
-            .leftJoin(doctorTable).on(doctorTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT.ID));
-        select.where(condition)
-            .and(doctorTable.field("doctor_number",Integer.class).gt(0))
-//            .and(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(Date.valueOf(today.minusDays(1).toLocalDate())))
-            .orderBy(DEPARTMENT.FIRST.desc(),doctorTable.field("doctor_number").desc(),DEPARTMENT_SUMMARY_TREND.CONSULTATION_NUMBER.desc());
-        if (param.getLimitNum() != null){
-            select.limit(param.getLimitNum());
-        }
-        return select.fetchInto(DepartmentOneParam.class);
-    }
-
-    /**
      * 从统计表取每个科室的总的统计数据子查询（5项）
      * @return
      */
@@ -405,5 +381,92 @@ public class DepartmentDao extends ShopBaseDao {
             .leftJoin(DOCTOR_DEPARTMENT_COUPLE)
             .on(DEPARTMENT.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID))
             .where(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID.eq(doctorId)).fetchInto(String.class);
+    }
+
+    /**
+     * 科室评分查询
+     * @return
+     */
+    public SelectHavingStep<Record2<Integer, BigDecimal>> getDepartmentStatisticScore(Integer departmentRecommendType, Integer consultationRate,Integer inquiryRate,Integer doctorRate){
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        Date refDate = Date.valueOf(today.minusDays(1).toLocalDate());
+        SelectHavingStep<Record2<Integer, BigDecimal>> doctorNumberScoreTable = getDoctorScoreTable();
+        if (doctorNumberScoreTable == null) {
+            return db().select(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID
+                ,DEPARTMENT_SUMMARY_TREND.CONSULTATION_SCORE.multiply(consultationRate).add(DEPARTMENT_SUMMARY_TREND.INQUIRY_SCORE.multiply(inquiryRate)).as(SCORE))
+                .from(DEPARTMENT_SUMMARY_TREND)
+                .where(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(refDate))
+                .and(DEPARTMENT_SUMMARY_TREND.TYPE.eq((byte)departmentRecommendType.intValue()));
+        }
+        return db().select(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID
+            ,DEPARTMENT_SUMMARY_TREND.CONSULTATION_SCORE.multiply(consultationRate).add(DEPARTMENT_SUMMARY_TREND.INQUIRY_SCORE.multiply(inquiryRate)).add(doctorNumberScoreTable.field(DOCTOR_NUM_SCORE).multiply(doctorRate)).as(SCORE))
+            .from(DOCTOR_SUMMARY_TREND)
+            .leftJoin(doctorNumberScoreTable).on(doctorNumberScoreTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID))
+            .where(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(refDate))
+            .and(DEPARTMENT_SUMMARY_TREND.TYPE.eq((byte)departmentRecommendType.intValue()));
+    }
+
+    /**
+     * 科室医师数量子查询（小程序）
+     * @return
+     */
+    public SelectHavingStep<Record2<Integer, BigDecimal>> getDoctorScoreTable(){
+        List<Integer> departmentDoctorNumber = getDepartmentDoctorNumber();
+        Integer max =  Collections.max(departmentDoctorNumber);
+        Integer min =  Collections.min(departmentDoctorNumber);
+        BigDecimal minDecimal = new BigDecimal(min);
+        Integer differ = max-min;
+        BigDecimal differDecimal = new BigDecimal(differ);
+        if (BigDecimal.ZERO.equals(differDecimal)) {
+            return null;
+        }
+        return db().select(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID
+            ,(DSL.count(DOCTOR.ID).cast(SQLDataType.DECIMAL(10,2)).sub(minDecimal)).divide(differDecimal).as(DOCTOR_NUM_SCORE))
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .where(DOCTOR.IS_DELETE.eq((byte) 0))
+            .and(DOCTOR.STATUS.eq((byte) 1))
+            .and(DOCTOR.CAN_CONSULTATION.eq((byte) 1))
+            .groupBy(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID);
+    }
+
+    public List<Integer> getDepartmentDoctorNumber(){
+        return db().select(DSL.count(DOCTOR.ID).as(DOCTOR_NUMBER))
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .where(DOCTOR.IS_DELETE.eq((byte) 0))
+            .and(DOCTOR.STATUS.eq((byte) 1))
+            .and(DOCTOR.CAN_CONSULTATION.eq((byte) 1))
+            .groupBy(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID)
+            .fetchInto(Integer.class);
+    }
+
+
+    /**
+     * 获取子节点科室信息
+     * @param param
+     * @return
+     */
+    public List<DepartmentOneParam> listDepartmentsByOptions(DepartmentListParam param) {
+        Condition condition = DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF));
+        if (param.getKeyword() != null && param.getKeyword() != "") {
+            condition = condition.and(DEPARTMENT.NAME.like(likeValue(param.getKeyword())));
+        }
+        if (param.getDepartmentIds() != null) {
+            condition = condition.and(DEPARTMENT.ID.in(param.getDepartmentIds()));
+        }
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        SelectHavingStep<Record2<Integer, Integer>> doctorTable = getDoctorNumberTable();
+        SelectHavingStep<Record2<Integer, BigDecimal>> departmentScoreTable = getDepartmentStatisticScore(param.getDepartmentRecommendType(),param.getConsultationRate(),param.getInquiryRate(),param.getDoctorRate());
+        SelectJoinStep<? extends Record> select = db().select(DEPARTMENT.ID,DEPARTMENT.NAME,DEPARTMENT.ID,DEPARTMENT.CODE,doctorTable.field("doctor_number")).from(DEPARTMENT)
+            .leftJoin(departmentScoreTable).on(departmentScoreTable.field(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID).eq(DEPARTMENT.ID))
+            .leftJoin(doctorTable).on(doctorTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT.ID));
+        select.where(condition)
+            .and(doctorTable.field("doctor_number",Integer.class).gt(0))
+            .orderBy(DEPARTMENT.FIRST.desc(),departmentScoreTable.field(SCORE).desc());
+        if (param.getLimitNum() != null){
+            select.limit(param.getLimitNum());
+        }
+        return select.fetchInto(DepartmentOneParam.class);
     }
 }

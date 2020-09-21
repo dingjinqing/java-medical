@@ -36,6 +36,21 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
     public static final String MIN_INQUIRY_MONEY = "min_inquiry_money";
     public static final String MAX_INQUIRY_MONEY = "max_inquiry_money";
     public static final Integer INTEGER_ZERO = 0;
+
+    /**
+     * 前台传入的控制排序方向
+     */
+    public static final String ASC = "asc";
+    public static final String DESC = "desc";
+    /**
+     * 待排序字段
+     */
+    public static final String CONSULTATION_NUMBER = "consultation_number";
+    public static final String INQUIRY_MONEY = "inquiry_money";
+    public static final String INQUIRY_NUMBER = "inquiry_number";
+    public static final String PRESCRIPTION_MONEY = "prescription_money";
+    public static final String PRESCRIPTION_NUM = "prescription_num";
+    public static final String CONSUME_MONEY = "consume_money";
     /**
      * 添加记录
      *
@@ -83,10 +98,10 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
     public PageResult<DoctorStatisticListVo> getDoctorListForCustomize(DoctorStatisticParam param) {
         SelectJoinStep<? extends Record> select = db()
             .select(DOCTOR_SUMMARY_TREND.DOCTOR_ID,DOCTOR.NAME
-                , DSL.sum(DOCTOR_SUMMARY_TREND.CONSULTATION_NUMBER).as("consultation_number")
-                ,DSL.sum(DOCTOR_SUMMARY_TREND.INQUIRY_MONEY).as("inquiry_money"),DSL.sum(DOCTOR_SUMMARY_TREND.INQUIRY_NUMBER).as("inquiry_number")
-                ,DSL.sum(DOCTOR_SUMMARY_TREND.PRESCRIPTION_MONEY).as("prescription_money"),DSL.sum(DOCTOR_SUMMARY_TREND.PRESCRIPTION_NUM).as("prescription_num")
-                ,DSL.sum(DOCTOR_SUMMARY_TREND.CONSUME_MONEY).as("consume_money"))
+                , DSL.sum(DOCTOR_SUMMARY_TREND.CONSULTATION_NUMBER).as(CONSULTATION_NUMBER)
+                ,DSL.sum(DOCTOR_SUMMARY_TREND.INQUIRY_MONEY).as(INQUIRY_MONEY),DSL.sum(DOCTOR_SUMMARY_TREND.INQUIRY_NUMBER).as(INQUIRY_NUMBER)
+                ,DSL.sum(DOCTOR_SUMMARY_TREND.PRESCRIPTION_MONEY).as(PRESCRIPTION_MONEY),DSL.sum(DOCTOR_SUMMARY_TREND.PRESCRIPTION_NUM).as(PRESCRIPTION_NUM)
+                ,DSL.sum(DOCTOR_SUMMARY_TREND.CONSUME_MONEY).as(CONSUME_MONEY))
             .from(DOCTOR_SUMMARY_TREND)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_SUMMARY_TREND.DOCTOR_ID));
         Date startDate = new Date(param.getStartTime().getTime());
@@ -94,9 +109,9 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
         select.where(DOCTOR_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY)).and(DOCTOR_SUMMARY_TREND.REF_DATE.ge(startDate)).and(DOCTOR_SUMMARY_TREND.REF_DATE.le(endDate));
         select.groupBy(DOCTOR_SUMMARY_TREND.DOCTOR_ID,DOCTOR.NAME);
         buildOptions(select, param);
-//        if (param.getOrderField() != null) {
-//            doctorFiledSorted(select, param);
-//        }
+        if (param.getOrderField() != null) {
+            doctorSummaryFiledSorted(select, param);
+        }
         return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), DoctorStatisticListVo.class);
     }
@@ -133,11 +148,66 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_SUMMARY_TREND.DOCTOR_ID));
         select.where(DOCTOR_SUMMARY_TREND.TYPE.eq(param.getType()));
         buildOptions(select, param);
-//        if (param.getOrderField() != null) {
-//            doctorFiledSorted(select, param);
-//        }
+        if (param.getOrderField() != null) {
+            doctorSummaryFiledSorted(select, param);
+        }
         return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), DoctorStatisticListVo.class);
+    }
+
+    /**
+     * 对商品统计按指定字段进行排序
+     * @param select 查询实体
+     * @param param 排序参数
+     */
+    private void doctorSummaryFiledSorted(SelectJoinStep<? extends Record> select, DoctorStatisticParam param) {
+        if (ASC.equals(param.getOrderDirection())) {
+            switch (param.getOrderField()) {
+                case CONSULTATION_NUMBER:
+                    select.orderBy(DSL.field(CONSULTATION_NUMBER).asc());
+                    break;
+                case INQUIRY_MONEY:
+                    select.orderBy(DSL.field(INQUIRY_MONEY).asc());
+                    break;
+                case INQUIRY_NUMBER:
+                    select.orderBy(DSL.field(INQUIRY_NUMBER).asc());
+                    break;
+                case PRESCRIPTION_MONEY:
+                    select.orderBy(DSL.field(PRESCRIPTION_MONEY).asc());
+                    break;
+                case PRESCRIPTION_NUM:
+                    select.orderBy(DSL.field(PRESCRIPTION_NUM).asc());
+                    break;
+                case CONSUME_MONEY:
+                    select.orderBy(DSL.field(CONSUME_MONEY).asc());
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (param.getOrderField()) {
+                case CONSULTATION_NUMBER:
+                    select.orderBy(DSL.field(CONSULTATION_NUMBER).desc());
+                    break;
+                case INQUIRY_MONEY:
+                    select.orderBy(DSL.field(INQUIRY_MONEY).desc());
+                    break;
+                case INQUIRY_NUMBER:
+                    select.orderBy(DSL.field(INQUIRY_NUMBER).desc());
+                    break;
+                case PRESCRIPTION_MONEY:
+                    select.orderBy(DSL.field(PRESCRIPTION_MONEY).desc());
+                    break;
+                case PRESCRIPTION_NUM:
+                    select.orderBy(DSL.field(PRESCRIPTION_NUM).desc());
+                    break;
+                case CONSUME_MONEY:
+                    select.orderBy(DSL.field(CONSUME_MONEY).desc());
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public DoctorStatisticMinMaxVo getMinMaxStatisticData(Date refDate, Byte type){
@@ -168,7 +238,7 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
         } else {
             db().update(DOCTOR_SUMMARY_TREND)
                 .set(DOCTOR_SUMMARY_TREND.INQUIRY_SCORE,
-                    (DOCTOR_SUMMARY_TREND.INQUIRY_MONEY.sub(doctorStatisticMinMax.getMinInquiryMoney())).multiply(differ))
+                    (DOCTOR_SUMMARY_TREND.INQUIRY_MONEY.sub(doctorStatisticMinMax.getMinInquiryMoney())).divide(differ))
                 .where(DOCTOR_SUMMARY_TREND.TYPE.eq(type))
                 .and(DOCTOR_SUMMARY_TREND.REF_DATE.eq(refDate))
                 .execute();
@@ -189,7 +259,7 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
         } else {
             db().update(DOCTOR_SUMMARY_TREND)
                 .set(DOCTOR_SUMMARY_TREND.CONSULTATION_SCORE,
-                    (DOCTOR_SUMMARY_TREND.CONSULTATION_NUMBER.cast(SQLDataType.DECIMAL(10,2)).sub(minConsultation)).multiply(differDecimal))
+                    (DOCTOR_SUMMARY_TREND.CONSULTATION_NUMBER.cast(SQLDataType.DECIMAL(10,2)).sub(minConsultation)).divide(differDecimal))
                 .where(DOCTOR_SUMMARY_TREND.TYPE.eq(type))
                 .and(DOCTOR_SUMMARY_TREND.REF_DATE.eq(refDate))
                 .execute();

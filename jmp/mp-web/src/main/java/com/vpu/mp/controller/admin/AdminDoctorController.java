@@ -5,9 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorUnbundlingParam;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,5 +184,16 @@ public class AdminDoctorController extends AdminBaseController {
         oneInfo.setTitleName(title);
         oneInfo.setDepartmentNames(departmentNames);
         return success(oneInfo);
+    }
+
+    /**
+     * 医师统计列表
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/doctors/summary/list")
+    public JsonResult doctorSummaryList(@RequestBody DoctorStatisticParam param) {
+        PageResult<DoctorStatisticListVo> doctorSummaryList = shop().doctorStatisticService.getDoctorSummaryList(param);
+        return this.success(doctorSummaryList);
     }
 }

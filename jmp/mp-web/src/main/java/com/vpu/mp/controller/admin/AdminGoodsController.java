@@ -12,6 +12,8 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionRecommendGoodsParam;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
+import com.vpu.mp.service.pojo.shop.goods.goodsanalysis.GoodsAnalysisListParam;
+import com.vpu.mp.service.pojo.shop.goods.goodsanalysis.GoodsAnalysisListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
@@ -571,5 +573,16 @@ public class AdminGoodsController extends AdminBaseController {
     @PostMapping("/api/admin/goods/test")
     public void test() {
         shop().shopTaskService.wechatTaskService.beginDailyTask();
+    }
+
+    /**
+     * 热销商品统计列表
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/goods/summary/list")
+    public JsonResult goodsSummaryList(@RequestBody GoodsAnalysisListParam param) {
+        PageResult<GoodsAnalysisListVo> goodsSummaryList = shop().goodsAnalysisService.getGoodsAnalysisPageList(param);
+        return this.success(goodsSummaryList);
     }
 }
