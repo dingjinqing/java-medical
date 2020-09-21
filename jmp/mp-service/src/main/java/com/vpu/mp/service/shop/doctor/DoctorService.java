@@ -37,6 +37,9 @@ import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import com.vpu.mp.service.shop.anchor.AnchorPointsService;
+import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import com.vpu.mp.service.shop.config.ShopBasicConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
@@ -63,7 +66,7 @@ import static com.vpu.mp.service.shop.anchor.AnchorPointsEvent.DOCTOR_ENTER_IN;
  * @author chenjie
  */
 @Service
-public class DoctorService extends ShopBaseService {
+public class DoctorService extends BaseShopConfigService {
     /**自动推荐最大数量*/
     public static final int RECOMMEND_MAX_NUM = 10;
     public static final String HOSPITAL_NAME = "六盘水医院";
@@ -105,6 +108,8 @@ public class DoctorService extends ShopBaseService {
     private PrescriptionRebateService prescriptionRebateService;
     @Autowired
     private DoctorLoginLogService doctorLoginLogService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 
     public static final int ZERO = 0;
 
@@ -339,12 +344,7 @@ public class DoctorService extends ShopBaseService {
     }
 
     public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
-        List<Integer> doctorIds = doctorDepartmentCoupleDao.listHistoryDoctorIds(doctorParam);
-        List<DoctorConsultationOneParam> historyDoctors = doctorDepartmentCoupleDao.listHistoryDoctor(doctorIds);
-        if (historyDoctors.size() < RECOMMEND_MAX_NUM) {
-            List<DoctorConsultationOneParam> historyDoctorMore = doctorDepartmentCoupleDao.listDoctorMore(doctorIds, 10 - historyDoctors.size());
-            historyDoctors.addAll(historyDoctorMore);
-        }
+        List<DoctorConsultationOneParam> historyDoctors = doctorDao.listRecommendDoctors(shopCommonConfigService.getDoctorRecommendType(),shopCommonConfigService.getDoctorRecommendConsultationRate(),shopCommonConfigService.getDoctorRecommendInquiryRate());
         setDoctorDepartmentNames(historyDoctors);
         return historyDoctors;
     }

@@ -10,6 +10,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
@@ -17,7 +18,10 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -28,6 +32,8 @@ import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.*;
  */
 @Repository
 public class DoctorDao extends ShopBaseDao {
+
+    public static final String SCORE = "score";
 
     /**
      * 医师列表
@@ -510,29 +516,32 @@ public class DoctorDao extends ShopBaseDao {
             .fetchAnyInto(DoctorStatisticOneParam.class);
     }
 
-    public List<DoctorConsultationOneParam> listRecommendDoctors(){
-
+    public List<DoctorConsultationOneParam> listRecommendDoctors(Integer doctorRecommendType, Integer consultationRate,Integer inquiryRate){
+        SelectHavingStep<Record2<Integer, BigDecimal>> doctorScoreTable = getDoctorStatisticScore(doctorRecommendType,consultationRate,inquiryRate);
         return  db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
-            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")).from(DOCTOR)
+            ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")
+            ,doctorScoreTable.field(SCORE)
+        ).from(DOCTOR)
             .leftJoin(DOCTOR_TITLE).on(DOCTOR_TITLE.ID.eq(DOCTOR.TITLE_ID))
+            .leftJoin(doctorScoreTable).on(doctorScoreTable.field(DOCTOR_SUMMARY_TREND.DOCTOR_ID).eq(DOCTOR.ID))
             .where(DOCTOR.IS_DELETE.eq((byte) 0))
             .and(DOCTOR.STATUS.eq((byte) 1))
-            .orderBy(DOCTOR.CONSULTATION_NUMBER)
+            .orderBy(doctorScoreTable.field(SCORE))
             .limit(10)
             .fetchInto(DoctorConsultationOneParam.class);
     }
 
     /**
-     * 科室医师数量子查询（小程序）
+     * 医师评分查询
      * @return
      */
-    public SelectHavingStep<Record2<Integer, BigDecimal>> getDoctorStatisticScore(Integer consultationRate,Integer inquiryRate){
-        return db().select(DOCTOR_SUMMARY_TREND.DOCTOR_ID,DSL.sum(DOCTOR.ID).as("doctor_number"))
+    public SelectHavingStep<Record2<Integer, BigDecimal>> getDoctorStatisticScore(Integer doctorRecommendType, Integer consultationRate,Integer inquiryRate){
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        Date refDate = Date.valueOf(today.minusDays(1).toLocalDate());
+        return db().select(DOCTOR_SUMMARY_TREND.DOCTOR_ID
+            ,DOCTOR_SUMMARY_TREND.CONSULTATION_SCORE.multiply(consultationRate).add(DOCTOR_SUMMARY_TREND.INQUIRY_SCORE.multiply(inquiryRate)).as(SCORE))
             .from(DOCTOR_SUMMARY_TREND)
-            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_SUMMARY_TREND.DOCTOR_ID))
-            .where(DOCTOR.IS_DELETE.eq((byte) 0))
-            .and(DOCTOR.STATUS.eq((byte) 1))
-            .and(DOCTOR.CAN_CONSULTATION.eq((byte) 1))
-            .groupBy(DOCTOR_SUMMARY_TREND.DOCTOR_ID);
+            .where(DOCTOR_SUMMARY_TREND.REF_DATE.eq(refDate))
+            .and(DOCTOR_SUMMARY_TREND.TYPE.eq((byte)doctorRecommendType.intValue()));
     }
 }

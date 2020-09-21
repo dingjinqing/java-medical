@@ -122,7 +122,7 @@ public class GoodsAnalysisDao extends ShopBaseDao {
     }
 
     /**
-     * 对医师按指定字段进行排序
+     * 对商品统计按指定字段进行排序
      * @param select 查询实体
      * @param param 排序参数
      */

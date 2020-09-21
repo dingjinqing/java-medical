@@ -30,8 +30,8 @@ public class DoctorTaskService extends ShopBaseService {
         TYPE_LIST_1.forEach((e) -> {
             DoctorStatisticParam param = new DoctorStatisticParam();
             param.setDoctorId(doctorId);
-            param.setStartTime(Timestamp.valueOf(today.minusDays(e+1)));
-            param.setEndTime(Timestamp.valueOf(today.minusDays(1)));
+            param.setStartTime(Timestamp.valueOf(today.minusDays(e)));
+            param.setEndTime(Timestamp.valueOf(today));
             param.setType(e);
             param.setRefDate(Date.valueOf(today.minusDays(1).toLocalDate()));
             doctorStatisticService.statisticDoctor(param);

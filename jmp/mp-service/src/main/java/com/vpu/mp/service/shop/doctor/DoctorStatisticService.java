@@ -95,7 +95,12 @@ public class DoctorStatisticService {
         doctorSummaryTrendDao.updateDoctorStatistic(param);
     }
 
-    public PageResult<DoctorStatisticListVo> getDoctorList(DoctorStatisticParam param) {
+    /**
+     * 获取医师统计数据
+     * @param param
+     * @return
+     */
+    public PageResult<DoctorStatisticListVo> getDoctorSummaryList(DoctorStatisticParam param) {
         if (param.getDepartmentId() != null) {
             List<Integer> departmentIds = new ArrayList<>();
             departmentIds.add(param.getDepartmentId());

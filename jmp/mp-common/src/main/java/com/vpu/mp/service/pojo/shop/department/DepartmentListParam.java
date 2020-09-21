@@ -19,6 +19,10 @@ public class DepartmentListParam {
     private Integer doctorId;
     private List<Integer> departmentIds;
     private Integer limitNum;
+    private Integer departmentRecommendType;
+    private Integer consultationRate;
+    private Integer inquiryRate;
+    private Integer doctorRate;
 
     @Override
     public String toString() {
