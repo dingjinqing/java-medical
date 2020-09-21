@@ -50,12 +50,12 @@
           prop="shopPrice"
           sortable="custom"
           align="center"
-          :label="$t('allGoods.allGoodsData.shopPrice')"
+          label="价格"
           width="130"
         >
           <template slot-scope="{row}">
             <!--非默认规格-->
-            <span v-if="!row.isDefaultPrd">
+            <span v-if="!row.isDefaultProduct">
               <template v-if="row.minShopPrice === row.maxShopPrice">
                 {{row.maxShopPrice}}
               </template>

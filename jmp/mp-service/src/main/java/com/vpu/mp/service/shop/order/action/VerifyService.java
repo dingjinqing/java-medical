@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.verify.VerifyParam;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
@@ -53,6 +54,8 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 
 	@Autowired
     private OrderOperateSendMessage sendMessage;
+	@Autowired
+	private ShipService shipService;
 
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -78,18 +81,18 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//发货批次号,同一批次为同一快递
 		String batchNo = order.getOrderSn() + "_" + DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL_NO_UNDERLINE);
-
 		//order goods
 		Result<OrderGoodsRecord> goods = orderGoods.getByOrderId(order.getOrderId());
 
+		ShipParam  shipParam =new ShipParam();
+		shipParam.setPlatform(param.getPlatform());
+		shipService.handleShipAccountId(shipParam);
 		//构造_添加部分发货信息 b2c_part_order_goods_ship
 		List<PartOrderGoodsShipRecord> shipInfoList = new ArrayList<PartOrderGoodsShipRecord>(goods.size());
-
 		for (OrderGoodsRecord temp : goods) {
 			temp.setSendNumber(temp.getGoodsNumber());
-			shipInfo.addRecord(shipInfoList, temp, batchNo, null, temp.getGoodsNumber());
+			shipInfoList.add(shipInfo.addRecord(temp, order, batchNo, shipParam, temp.getGoodsNumber()));
 		}
-
 		transaction(()->{
 			orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_RECEIVED);
 			//添加（部分）发货信息 b2c_part_order_goods_ship

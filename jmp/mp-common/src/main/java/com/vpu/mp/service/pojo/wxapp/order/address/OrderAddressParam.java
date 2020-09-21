@@ -19,5 +19,5 @@ public class OrderAddressParam {
 
     private List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList;
 
-    private Integer deliveryType;
+    private Byte deliveryType;
 }

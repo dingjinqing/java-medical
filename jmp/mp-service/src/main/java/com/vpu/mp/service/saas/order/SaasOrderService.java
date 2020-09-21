@@ -26,7 +26,6 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import com.vpu.mp.service.pojo.shop.report.MedicalSalesReportVo;
-import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.report.MedicalSalesReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -225,12 +224,12 @@ public class SaasOrderService extends MainBaseService {
         }
         //查询订单订单是否存在退款中订单
         Map<Integer, Integer> returningCount = returnOrderBakDao.getOrderCount(allOrderSn, OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
-        //设置订单操作
-        for (List<OrderListInfoVo> orderList : allOrder.values()) {
-            for (OrderListInfoVo order : orderList) {
-                OrderOperationJudgment.operationSet(order, returningCount.get(order.getOrderId()), returnOrderBakDao.canBeShipped(order.getOrderSn()));
-            }
-        }
+//        //设置订单操作
+//        for (List<OrderListInfoVo> orderList : allOrder.values()) {
+//            for (OrderListInfoVo order : orderList) {
+//                OrderOperationJudgment.operationSet(order, returningCount.get(order.getOrderId()), returnOrderBakDao.canBeShipped(order.getOrderSn()));
+//            }
+//        }
         pageResult.setDataList(mainOrderList);
         log.info("订单综合查询结束");
         return result;

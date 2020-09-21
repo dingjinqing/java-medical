@@ -18,22 +18,6 @@
                 clearable
               ></el-input>
             </el-form-item>
-            <el-form-item :label="$t('storePermission.roles') + '：'">
-              <el-select v-model="queryParams.accountType" class="form-input">
-                <el-option
-                  :label="$t('storePermission.all')"
-                  :value="0"
-                ></el-option>
-                <el-option
-                  :label="$t('storePermission.storeManager')"
-                  :value="2"
-                ></el-option>
-                <el-option
-                  :label="$t('storePermission.clerk')"
-                  :value="1"
-                ></el-option>
-              </el-select>
-            </el-form-item>
             <el-form-item :label="$t('storePermission.accountStatus') + '：'">
               <el-select v-model="queryParams.status" class="form-input">
                 <el-option
@@ -178,16 +162,7 @@
                 :label="$t('storePermission.accountRole') + '：'"
                 prop="accountType"
               >
-                <el-select class="form-input" v-model="accountForm.accountType">
-                  <el-option
-                    :label="$t('storePermission.storeManager')"
-                    :value="2"
-                  ></el-option>
-                  <el-option
-                    :label="$t('storePermission.clerk')"
-                    :value="1"
-                  ></el-option>
-                </el-select>
+                店员
               </el-form-item>
               <el-form-item
                 :label="$t('storePermission.storeAccount') + '：'"

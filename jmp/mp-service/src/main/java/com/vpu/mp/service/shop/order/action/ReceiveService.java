@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -33,21 +34,23 @@ import java.util.Arrays;
 
 @Component
 public class ReceiveService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, OrderOperateQueryParam>{
-	
+
 	@Autowired
 	private OrderInfoService orderInfo;
-	
+
 	@Autowired
 	private ShipInfoService ship;
-	
+
 	@Autowired
 	public RecordAdminActionService record;
-	
+
 	@Autowired
 	private OrderActionService orderAction;
 
 	@Autowired
     private ReturnOrderGoodsService returnGoods;
+	@Autowired
+	private ShipService shipService;
 
 	@Autowired
     private OrderOperateSendMessage sendMessage;
@@ -74,9 +77,11 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 		if(!OrderOperationJudgment.isReceive(order.into(OrderInfoVo.class))) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED, null);
 		}
-		
+		ShipParam shipParam =new ShipParam();
+		shipParam.setPlatform(param.getPlatform());
+		shipService.handleShipAccountId(shipParam);
 		transaction(()->{
-			ship.receive(order.getOrderSn());
+			ship.receive(order.getOrderSn(),shipParam.getPlatform(),shipParam.getShipUserId(),shipParam.getShipAccountId());
 			orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_RECEIVED);
 		});
 		//TODO 发送通知

@@ -7,6 +7,7 @@ import com.vpu.mp.common.pojo.shop.table.DoctorLoginLogDo;
 import com.vpu.mp.dao.shop.doctor.DoctorLoginLogDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceDivideVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceOneParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class DoctorLoginLogService extends ShopBaseService {
 
     @Autowired
     private DoctorLoginLogDao doctorLoginLogDao;
+
+    public final static Byte  THIS_MONTH = 1;
 
     /**
      * 医师的出勤天数
@@ -50,19 +53,22 @@ public class DoctorLoginLogService extends ShopBaseService {
 
     }
 
-    public Integer getDoctorNum(Integer min, Integer max){
-        List<Integer> doctorIds = doctorLoginLogDao.getDoctorIds(min,max);
+    public Integer getDoctorNum(Integer min, Integer max,Byte type){
+        List<Integer> doctorIds = doctorLoginLogDao.getDoctorIds(min,max,type);
         return doctorIds.size();
     }
 
-    public DoctorAttendanceDivideVo getDoctorAttendanceDivide(){
-        Integer dayOfMonth = DateUtils.getLocalDate().getDayOfMonth();
-        Integer halfDays = (Integer)(int)Math.ceil(Double.valueOf(dayOfMonth)/Double.valueOf(2));
-        Integer thirdQuarterDays = (Integer)(int)Math.ceil(Double.valueOf(dayOfMonth)/Double.valueOf(2));
+    public DoctorAttendanceDivideVo getDoctorAttendanceDivide(Byte type){
+        Integer days = 30;
+        if (THIS_MONTH.equals(type)) {
+            days = DateUtils.getLocalDate().getDayOfMonth();
+        }
+        Integer halfDays = (Integer)(int)Math.ceil(Double.valueOf(days)/Double.valueOf(2));
+        Integer thirdQuarterDays = (Integer)(int)Math.ceil(Double.valueOf(days)*Double.valueOf(0.75));
         DoctorAttendanceDivideVo doctorAttendanceDivideVo = new DoctorAttendanceDivideVo();
-        doctorAttendanceDivideVo.setHalfNum(getDoctorNum(0,halfDays));
-        doctorAttendanceDivideVo.setThirdQuarterNum(getDoctorNum(halfDays,thirdQuarterDays));
-        doctorAttendanceDivideVo.setFourthQuarterNum(getDoctorNum(thirdQuarterDays,dayOfMonth+1));
+        doctorAttendanceDivideVo.setHalfNum(getDoctorNum(0,halfDays,type));
+        doctorAttendanceDivideVo.setThirdQuarterNum(getDoctorNum(halfDays,thirdQuarterDays,type));
+        doctorAttendanceDivideVo.setFourthQuarterNum(getDoctorNum(thirdQuarterDays,days+1,type));
         return doctorAttendanceDivideVo;
     }
 
@@ -71,9 +77,9 @@ public class DoctorLoginLogService extends ShopBaseService {
      * @param page
      * @return
      */
-    public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(Integer page) {
+    public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(DoctorAttendanceListParam param) {
         Integer dayOfMonth = DateUtils.getLocalDate().getDayOfMonth();
-        PageResult<DoctorAttendanceOneParam> dataList = doctorLoginLogDao.getDoctorAttendancePage(page);
+        PageResult<DoctorAttendanceOneParam> dataList = doctorLoginLogDao.getDoctorAttendancePage(param);
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
             data.setLoginRate(new BigDecimal(Double.valueOf(data.getLoginDays())/Double.valueOf(dayOfMonth)));
         }

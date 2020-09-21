@@ -41,7 +41,7 @@
             :placeholder="$t('distribution.chooseDate')"
             value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
-          {{$t('distribution.to')}}
+          {{ $t('distribution.to') }}
           <el-date-picker
             v-model="searchParam.endCreateTime"
             type="datetime"
@@ -63,7 +63,7 @@
             :placeholder="$t('distribution.chooseDate')"
             value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
-          {{$t('distribution.to')}}
+          {{ $t('distribution.to') }}
           <el-date-picker
             v-model="searchParam.endInviteTime"
             type="datetime"
@@ -76,11 +76,9 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button
-            @click="initData"
-            type="primary"
-            size="small"
-          >{{$t('distribution.screen')}}</el-button>
+          <el-button @click="initData" type="primary" size="small">{{
+            $t('distribution.screen')
+          }}</el-button>
           <!-- <el-button size="small">{{$t('distribution.export')}}</el-button> -->
         </el-form-item>
       </el-form>
@@ -88,8 +86,8 @@
 
     <div class="main list_content">
       <div class="title_content">
-        <span>{{$t('distribution.inviteMoneyTip') + '：'}}</span>
-        <span style="color: red;">{{totalGetFanliMoney}}</span>
+        <span>{{ $t('distribution.inviteMoneyTip') + '：' }}</span>
+        <span style="color: red">{{ totalGetFanliMoney }}</span>
       </div>
     </div>
 
@@ -104,15 +102,13 @@
         <template slot="empty">
           <tableEmpty />
         </template>
-        <el-table-column
-          :label="$t('distribution.username')"
-          align="center"
-        >
+        <el-table-column :label="$t('distribution.username')" align="center">
           <template slot-scope="scope">
             <span
               class="nameStyle"
               @click="userNameHandler(scope.row.userId)"
-            >{{scope.row.username}}</span>
+              >{{ scope.row.username }}</span
+            >
           </template>
         </el-table-column>
         <el-table-column
@@ -134,12 +130,9 @@
           width="100px"
         >
         </el-table-column>
-        <el-table-column
-          :label="$t('distribution.orderNumber')"
-          align="center"
-        >
+        <el-table-column :label="$t('distribution.orderNumber')" align="center">
           <template slot-scope="scope">
-            <span>{{scope.row.orderNumber ? scope.row.orderNumber : 0}}</span>
+            <span>{{ scope.row.orderNumber ? scope.row.orderNumber : 0 }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -147,7 +140,11 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span>{{scope.row.totalCanFanliMoney ? scope.row.totalCanFanliMoney : '0.00'}}</span>
+            <span>{{
+              scope.row.totalCanFanliMoney
+                ? scope.row.totalCanFanliMoney
+                : '0.00'
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -155,7 +152,9 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span>{{scope.row.totalFanliMoney ? scope.row.totalFanliMoney : '0.00'}}</span>
+            <span>{{
+              scope.row.totalFanliMoney ? scope.row.totalFanliMoney : '0.00'
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -179,10 +178,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <pagination
-      :page-params.sync="pageParams"
-      @pagination="initData"
-    />
+    <pagination :page-params.sync="pageParams" @pagination="initData" />
   </div>
 </template>
 <script>
@@ -228,8 +224,8 @@ export default {
       inviteUserList(paramsData).then(res => {
         if (res.error === 0) {
           this.totalGetFanliMoney = res.content.totalGetFanliMoney
-          this.tableData = res.content.inviteUserInfo.dataList
-          this.pageParams = res.content.inviteUserInfo.page
+          this.tableData = res.content.InviteUserInfo.dataList
+          this.pageParams = res.content.InviteUserInfo.page
           this.tableData.forEach(item => {
             if (item.inviteExpiryDate === null || item.inviteExpiryDate === '1970-01-13') {
               item.inviteExpiryDate = '永久'

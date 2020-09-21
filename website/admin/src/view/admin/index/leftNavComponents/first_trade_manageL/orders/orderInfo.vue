@@ -910,9 +910,9 @@
                   </div>
                 </div>
               </td>
-              <td>{{ rebateItem.rebateTotalMoney }}</td>
-              <td>{{ rebateItem.costPrice }}</td>
-              <td>{{ rebateItem.canRebateMoney }}</td>
+              <td>{{ rebateItem.rebateTotalMoney || '0.00' }}</td>
+              <td>{{ rebateItem.costPrice || '0.00' }}</td>
+              <td>{{ rebateItem.canRebateMoney || '0.00' }}</td>
               <td>{{ rebateItem.rebateLevel | getRebateLevel }}</td>
               <td>{{ (rebateItem.rebatePercent * 100).toFixed(2) }}%</td>
               <td>{{ rebateItem.realRebateMoney.toFixed(2) }}</td>

@@ -7,6 +7,8 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
@@ -14,21 +16,21 @@ import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListVo;
-import org.bouncycastle.util.Times;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.ORDER_ACTION;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
@@ -260,5 +262,9 @@ public class OrderInfoDao extends ShopBaseDao {
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreOrderListVo.class);
     }
 
+
+    public OrderInfoDo getByOrderId(Integer orderId) {
+        return db().select().from(ORDER_INFO).where(ORDER_INFO.ORDER_ID.eq(orderId)).fetchAnyInto(OrderInfoDo.class);
+    }
 
 }

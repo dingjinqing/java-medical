@@ -1,16 +1,9 @@
 <template>
   <div class="content">
     <div class="main">
-      <el-form
-        :model="form"
-        label-width="140px"
-        label-position="right"
-      >
+      <el-form :model="form" label-width="140px" label-position="right">
         <div>
-          <el-form-item
-            label="返利订单号："
-            class="item"
-          >
+          <el-form-item label="返利订单号：" class="item">
             <el-input
               v-model="form.rebateOrderSn"
               size="small"
@@ -18,10 +11,7 @@
               :placeholder="$t('distribution.contentTip')"
             ></el-input>
           </el-form-item>
-          <el-form-item
-            label="下单用户昵称："
-            class="item"
-          >
+          <el-form-item label="下单用户昵称：" class="item">
             <el-input
               v-model="form.username"
               size="small"
@@ -29,10 +19,7 @@
               :placeholder="$t('distribution.contentTip')"
             ></el-input>
           </el-form-item>
-          <el-form-item
-            label="下单用户手机号："
-            class="item"
-          >
+          <el-form-item label="下单用户手机号：" class="item">
             <el-input
               v-model="form.mobile"
               size="small"
@@ -42,10 +29,7 @@
           </el-form-item>
         </div>
         <div>
-          <el-form-item
-            label="分销员昵称："
-            class="item"
-          >
+          <el-form-item label="分销员昵称：" class="item">
             <el-input
               v-model="form.distributorName"
               size="small"
@@ -53,10 +37,7 @@
               :placeholder="$t('distribution.contentTip')"
             ></el-input>
           </el-form-item>
-          <el-form-item
-            label="分销员手机号："
-            class="item"
-          >
+          <el-form-item label="分销员手机号：" class="item">
             <el-input
               v-model="form.distributorMobile"
               size="small"
@@ -64,10 +45,7 @@
               :placeholder="$t('distribution.contentTip')"
             ></el-input>
           </el-form-item>
-          <el-form-item
-            label="分销员真实姓名："
-            class="item"
-          >
+          <el-form-item label="分销员真实姓名：" class="item">
             <el-input
               v-model="form.distributorRealName"
               size="small"
@@ -77,17 +55,14 @@
           </el-form-item>
         </div>
         <div>
-          <el-form-item
-            label="返利时间："
-            class="item"
-          >
+          <el-form-item label="返利时间：" class="item">
             <el-date-picker
               v-model="form.startRebateTime"
               type="datetime"
               :placeholder="$t('distribution.chooseDate')"
               value-format="yyyy-MM-dd 00:00:00"
               size="small"
-              style="width: 190px;"
+              style="width: 190px"
             >
             </el-date-picker>
             至
@@ -97,14 +72,11 @@
               :placeholder="$t('distribution.chooseDate')"
               value-format="yyyy-MM-dd 23:59:59"
               size="small"
-              style="width: 190px;"
+              style="width: 190px"
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item
-            label="返利状态："
-            class="item"
-          >
+          <el-form-item label="返利状态：" class="item">
             <el-select
               v-model="form.rebateStatus"
               :placeholder="$t('distribution.selectTip')"
@@ -123,10 +95,7 @@
           </el-form-item>
         </div>
         <div>
-          <el-form-item
-            label="返利关系："
-            class="item"
-          >
+          <el-form-item label="返利关系：" class="item">
             <el-select
               v-model="form.rebateLevel"
               :placeholder="$t('distribution.selectTip')"
@@ -147,12 +116,10 @@
             @click="initData"
             type="primary"
             size="small"
-            style="margin-left: 10px;"
-          >筛选</el-button>
-          <el-button
-            size="small"
-            @click="exportDataList"
-          >导出</el-button>
+            style="margin-left: 10px"
+            >筛选</el-button
+          >
+          <el-button size="small" @click="exportDataList">导出</el-button>
         </div>
       </el-form>
     </div>
@@ -168,28 +135,20 @@
         <template slot="empty">
           <tableEmpty />
         </template>
-        <el-table-column
-          label="商品名称"
-          align="center"
-          width="120"
-        >
+        <el-table-column label="商品名称" align="center" width="120">
           <template slot-scope="scope">
             <div class="goodsContent">
               <img
                 :src="$imageHost + '/' + scope.row.goodsImg"
                 alt=""
                 class="imgContent"
-              >
-              <span class="nameContent">{{scope.row.goodsName}}</span>
+              />
+              <span class="nameContent">{{ scope.row.goodsName }}</span>
             </div>
           </template>
         </el-table-column>
 
-        <el-table-column
-          prop="goodsNumber"
-          label="商品数量"
-          align="center"
-        >
+        <el-table-column prop="goodsNumber" label="商品数量" align="center">
         </el-table-column>
 
         <el-table-column
@@ -199,53 +158,35 @@
         >
         </el-table-column>
 
-        <el-table-column
-          label="商品订单号"
-          align="center"
-        >
+        <el-table-column label="商品订单号" align="center">
           <template slot-scope="scope">
-            <span
-              @click="orderHandler(scope.row.orderSn)"
-              class="highStyle"
-            >{{scope.row.orderSn}}</span>
+            <span @click="orderHandler(scope.row.orderSn)" class="highStyle">{{
+              scope.row.orderSn
+            }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="下单用户昵称"
-          align="center"
-        >
+        <el-table-column label="下单用户昵称" align="center">
           <template slot-scope="scope">
-            <span
-              @click="userHandler(scope.row.userId)"
-              class="highStyle"
-            >{{scope.row.username}}</span>
+            <span @click="userHandler(scope.row.userId)" class="highStyle">{{
+              scope.row.username
+            }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column
-          prop="mobile"
-          label="下单用户手机号"
-          align="center"
-        >
+        <el-table-column prop="mobile" label="下单用户手机号" align="center">
         </el-table-column>
 
-        <el-table-column
-          prop="rebateLevel"
-          label="返利关系"
-          align="center"
-        >
+        <el-table-column prop="rebateLevel" label="返利关系" align="center">
         </el-table-column>
 
-        <el-table-column
-          label="分销员昵称"
-          align="center"
-        >
+        <el-table-column label="分销员昵称" align="center">
           <template slot-scope="scope">
             <span
               @click="userHandler(scope.row.distributorId)"
               class="highStyle"
-            >{{scope.row.distributorName}}</span>
+              >{{ scope.row.distributorName }}</span
+            >
           </template>
         </el-table-column>
 
@@ -263,12 +204,13 @@
         >
         </el-table-column>
 
-        <el-table-column
-          label="返利比例"
-          align="center"
-        >
+        <el-table-column label="返利比例" align="center">
           <template slot-scope="scope">
-            <span>{{scope.row.rebatePercent ? scope.row.rebatePercent : 0}}%</span>
+            <span
+              >{{
+                scope.row.rebatePercent ? scope.row.rebatePercent : 0
+              }}%</span
+            >
           </template>
         </el-table-column>
 
@@ -279,11 +221,7 @@
         >
         </el-table-column>
 
-        <el-table-column
-          prop="settlementFlag"
-          label="返利状态"
-          align="center"
-        >
+        <el-table-column prop="settlementFlag" label="返利状态" align="center">
         </el-table-column>
 
         <el-table-column
@@ -296,10 +234,7 @@
       </el-table>
     </div>
 
-    <pagination
-      :page-params.sync="pageParams"
-      @pagination="initData"
-    />
+    <pagination :page-params.sync="pageParams" @pagination="initData" />
 
     <!-- 导出数据弹窗 -->
     <exportDialog

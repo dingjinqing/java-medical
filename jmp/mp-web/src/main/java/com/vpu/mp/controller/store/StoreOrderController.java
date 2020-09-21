@@ -107,7 +107,8 @@ public class StoreOrderController extends StoreBaseController {
      */
     @PostMapping("/shipGoods")
     public JsonResult shipGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
-        param.setIsMp(OrderConstant.IS_MP_ADMIN);
+        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
+        param.setPlatform(OrderConstant.PLATFORM_STORE);
         try {
             return success(shop().orderActionFactory.orderQuery(param));
         } catch (MpException e) {

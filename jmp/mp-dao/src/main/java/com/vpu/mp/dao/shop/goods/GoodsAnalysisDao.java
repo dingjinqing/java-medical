@@ -44,7 +44,7 @@ public class GoodsAnalysisDao extends ShopBaseDao {
         if (param.getOrderField() != null) {
             goodsFiledSorted(select, param);
         } else {
-            select.orderBy(DOCTOR.ID.desc());
+            select.orderBy(GOODS.GOODS_ID.desc());
         }
         return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), GoodsAnalysisListVo.class);
@@ -122,7 +122,7 @@ public class GoodsAnalysisDao extends ShopBaseDao {
     }
 
     /**
-     * 对医师按指定字段进行排序
+     * 对商品统计按指定字段进行排序
      * @param select 查询实体
      * @param param 排序参数
      */
