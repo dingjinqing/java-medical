@@ -234,7 +234,7 @@ public class OrderConstant {
 	/**一分*/
 	public final static BigDecimal CENT = new BigDecimal("0.01");
 
-	/**操作人：商家 0 、买家1、定时任务2、mq3、pos4、erp/ekb5**/
+	/**操作人：0商家 、1买家、2定时任务、3mq、4pos、5erp/ekb 6医师 7门店  **/
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_ADMIN = 0;
 	public final static byte IS_MP_AUTO = 2;

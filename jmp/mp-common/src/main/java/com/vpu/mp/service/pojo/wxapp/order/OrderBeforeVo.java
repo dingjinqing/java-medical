@@ -174,16 +174,16 @@ public class OrderBeforeVo {
      */
     public Byte getDefaultDeliverType(){
         //门店配送
-        if(expressList[3]==BaseConstant.YES.byteValue()){
-            return 3;
+        if(expressList[OrderConstant.STORE_EXPRESS]==BaseConstant.YES.byteValue()){
+            return OrderConstant.STORE_EXPRESS;
         }
         //自提
-        if(expressList[1]==BaseConstant.YES.byteValue()){
-            return 1;
+        if(expressList[OrderConstant.DELIVER_TYPE_SELF]==BaseConstant.YES.byteValue()){
+            return OrderConstant.DELIVER_TYPE_SELF;
         }
         //快递
-        if(expressList[0]==BaseConstant.YES.byteValue()){
-            return 0;
+        if(expressList[OrderConstant.DELIVER_TYPE_COURIER]==BaseConstant.YES.byteValue()){
+            return OrderConstant.DELIVER_TYPE_COURIER;
         }
         return null;
     }

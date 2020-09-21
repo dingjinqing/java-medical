@@ -178,6 +178,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			param.setShipAccountId(param.getAdminInfo().getSysId());
 		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_STORE)){
 			param.setShipAccountId(param.getStoreInfo().getStoreAccountId());
+			param.setShipUserId(param.getStoreInfo().getStoreAuthInfoVo().getStoreAccountInfo().getUserId());
 		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP)){
 			param.setShipUserId(param.getWxUserInfo().getUserId());
 		}else if (param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP_STORE)){
