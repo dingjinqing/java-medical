@@ -66,13 +66,21 @@
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/address.png"></image>
         <view class="shipping_info_content">
           <view>
-            <text selectable>{{i18n.$t(localePack,"pages.order.receiver")}}：</text>
+            <text selectable>{{orderInfo.deliverType !== 1 ? i18n.$t(localePack,"pages.order.receiver") : '取件人'}}：</text>
             <text selectable>{{orderInfo.consignee}}</text>
             <text selectable style="margin-left:10rpx;">{{orderInfo.mobile}}</text>
           </view>
-          <view>
+          <view wx:if="{{orderInfo.deliverType !== 1}}">
             <text selectable>{{i18n.$t(localePack,"pages.order.address")}}：</text>
             <text selectable>{{orderInfo.completeAddress}}</text>
+          </view>
+          <view wx:if="{{orderInfo.deliverType === 1}}">
+            <text selectable>门店名称：</text>
+            <text selectable>{{orderInfo.storeInfo.storeName}}</text>
+          </view>
+          <view wx:if="{{orderInfo.deliverType === 1}}">
+            <text selectable>门店地址：</text>
+            <text selectable>{{orderInfo.storeInfo.address}}</text>
           </view>
         </view>
       </view>

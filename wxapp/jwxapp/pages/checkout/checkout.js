@@ -60,7 +60,8 @@ global.wxPage({
     options: {},
     title_bgColor: '#26C4BC',
     patientDiagnose: null,
-    selectedStoreInfo: null
+    selectedStoreInfo: null,
+    firstLoad:true
   },
 
   /**
@@ -188,6 +189,7 @@ global.wxPage({
             }
           }, false, '', '确定')
         }
+        this.data.firstLoad = false
       }, {
       ...this.data.params
     }
@@ -1179,6 +1181,7 @@ global.wxPage({
     })
   },
   getDefaultDeliverType(expressList){
+    if(!this.data.firstLoad) return
     try {
       expressList.forEach((item,index) => {
         if(item) {
