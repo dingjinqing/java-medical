@@ -14,10 +14,7 @@ import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
-import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -56,6 +53,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_HOSPITAL;
 import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
 import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
