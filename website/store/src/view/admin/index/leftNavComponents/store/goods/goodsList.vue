@@ -8,7 +8,7 @@
       >
         <el-form-item label="商品信息：" prop="goodsName">
           <el-input
-            v-model="goodsFilterModel.goodsName"
+            v-model="goodsFilterModel.keywords"
             placeholder="商品名称"
             size="small"
           ></el-input>
@@ -85,15 +85,15 @@
 </template>
 
 <script>
-import { getGoodsPageListApi } from '@/api/store/storeGoods'
-import { allSourceRequest } from '@/api/store/store'
+import {getGoodsPageListApi} from '@/api/store/storeGoods'
+import {allSourceRequest} from '@/api/store/store'
 
 export default {
   name: 'goodsList',
   data () {
     return {
       goodsFilterModel: {
-        goodsName: null,
+        keywords: null,
         storeId: null,
         isOnSale: null
       },

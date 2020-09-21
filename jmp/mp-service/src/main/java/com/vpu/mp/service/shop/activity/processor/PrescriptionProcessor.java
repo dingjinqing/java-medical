@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -275,8 +277,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         /**
          * 订单同步到his
          */
-//        Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
-//        uploadPrescriptionService.uploadPrescription(order.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
+        Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(order.getOrderId());
+        uploadPrescriptionService.uploadPrescription(order.into(OrderInfoDo.class), goods.into(OrderGoodsBo.class));
     }
 
     @Override
