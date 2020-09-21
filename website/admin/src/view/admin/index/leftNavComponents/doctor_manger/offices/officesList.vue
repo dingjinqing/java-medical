@@ -2,10 +2,16 @@
   <div class="allDepartment">
     <allDepartmentHeaderTab :tabIndex="0" />
     <div class="goodsSortForm">
-      <el-button type="primary" size="small" @click="addDepartmentClicked"
-        >添加科室</el-button
-      >
-      <el-button type="primary" size="small" @click="fetch">同步</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="addDepartmentClicked"
+      >添加科室</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="fetch"
+      >同步</el-button>
     </div>
     <div>
       <el-table
@@ -15,7 +21,11 @@
         border
         style="width: 100%;"
       >
-        <el-table-column align="left" label="科室名称" width="200">
+        <el-table-column
+          align="left"
+          label="科室名称"
+          width="200"
+        >
           <template v-slot="{ row, $index }">
             <template v-if="row.isLeaf === 0 && row.level === 1">
               <span
@@ -31,7 +41,10 @@
               <span class="n-bold"> {{ row.name }}</span>
             </template>
             <template v-else-if="row.level === 1">
-              <span class="collapseTab" style="width: 48px;"></span>
+              <span
+                class="collapseTab"
+                style="width: 48px;"
+              ></span>
 
               <span class="n-bold"> {{ row.name }}</span>
             </template>
@@ -41,21 +54,54 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="医生人数" prop="doctor_number" />
-         <el-table-column align="center" label="处方数" prop="prescription_num" />
-          <el-table-column align="center" label="处方金额" prop="prescription_money" />
-           <el-table-column align="center" label="咨询单数" prop="inquiry_number" />
-            <el-table-column align="center" label="接诊人数" prop="consultation_number" />
-             <el-table-column align="center" label="咨询金额" prop="inquiry_money" />
-        <el-table-column align="center" label="操作">
+        <el-table-column
+          align="center"
+          label="医生人数"
+          prop="doctorNumber"
+        />
+        <el-table-column
+          align="center"
+          label="处方数"
+          prop="prescriptionNum"
+        />
+        <el-table-column
+          align="center"
+          label="处方金额"
+          prop="prescriptionMoney"
+        />
+        <el-table-column
+          align="center"
+          label="咨询单数"
+          prop="inquiryNumber"
+        />
+        <el-table-column
+          align="center"
+          label="接诊人数"
+          prop="consultationNumber"
+        />
+        <el-table-column
+          align="center"
+          label="咨询金额"
+          prop="inquiryMoney"
+        />
+        <el-table-column
+          align="center"
+          label="操作"
+        >
           <template v-slot="scope">
-            <el-tooltip content="编辑" placement="top">
+            <el-tooltip
+              content="编辑"
+              placement="top"
+            >
               <span
                 class="iconfont iconbianji"
                 @click="editDepartmentClicked(scope.row)"
               ></span>
             </el-tooltip>
-            <el-tooltip content="删除" placement="top">
+            <el-tooltip
+              content="删除"
+              placement="top"
+            >
               <span
                 class="iconfont iconshanchu2"
                 @click="deleteDepartmentClicked(scope.row, scope.$index)"
@@ -64,7 +110,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination :page-params.sync="pageParams" @pagination="handleQuery" />
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="handleQuery"
+      />
     </div>
   </div>
 </template>
