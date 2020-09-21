@@ -10,70 +10,56 @@
           class="demo-ruleForm"
         >
           <el-form-item
-            :label="$t('selectLinks.linkName')+'：'"
+            :label="$t('selectLinks.linkName') + '：'"
             prop="pageName"
           >
-            <el-input
-              v-model="ruleForm.pageName"
-              size="small"
-            ></el-input>
+            <el-input v-model="ruleForm.pageName" size="small"></el-input>
           </el-form-item>
           <el-form-item
-            :label="$t('selectLinks.pageClassification')+'：'"
+            :label="$t('selectLinks.pageClassification') + '：'"
             prop="pageClassify"
           >
-            <el-input
-              v-model="ruleForm.pageClassify"
-              size="small"
-            ></el-input>
+            <el-input v-model="ruleForm.pageClassify" size="small"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button
               type="primary"
               size="mini"
               @click="handleToSaveNewPath()"
-            >{{$t('selectLinks.save')}}</el-button>
+              >{{ $t('selectLinks.save') }}</el-button
+            >
           </el-form-item>
         </el-form>
-
       </div>
-
     </div>
-    <div class="alerm">{{$t('selectLinks.pageJumpTips')}}</div>
+    <div class="alerm">{{ $t('selectLinks.pageJumpTips') }}</div>
     <div class="content">
-      <table width='100%'>
+      <table width="100%">
         <thead>
           <tr>
-            <td>{{$t('selectLinks.name')}}</td>
-            <td>{{$t('selectLinks.link')}}</td>
-            <td>{{$t('selectLinks.operation')}}</td>
+            <td>{{ $t('selectLinks.name') }}</td>
+            <td>{{ $t('selectLinks.link') }}</td>
+            <td>{{ $t('selectLinks.operation') }}</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
           <tr
-            v-for="(item,index) in trList"
+            v-for="(item, index) in trList"
             :key="index"
-            :class="clickIindex===index?'clickClass':''"
+            :class="clickIindex === index ? 'clickClass' : ''"
             @click="handleClick(index)"
           >
-            <td>{{item.pathName}}</td>
-            <td class="link">{{item.linkPath}}</td>
-            <td
-              class="tb_decorate_a"
-              @click="deleRr(index)"
-            >
-              {{$t('selectLinks.del')}}
+            <td>{{ item.pathName }}</td>
+            <td class="link">{{ item.linkPath }}</td>
+            <td class="tb_decorate_a" @click="deleRr(index)">
+              {{ $t('selectLinks.del') }}
             </td>
           </tr>
         </tbody>
-
       </table>
-      <div
-        class="noData"
-        v-if="!tbodyFlag"
-      >
-        <img :src="noImg">
-        <span>{{$t('selectLinks.noDataAvailable')}}</span>
+      <div class="noData" v-if="!tbodyFlag">
+        <img :src="noImg" />
+        <span>{{ $t('selectLinks.noDataAvailable') }}</span>
       </div>
     </div>
   </div>
@@ -258,7 +244,7 @@ td {
   justify-content: space-around;
 }
 </style>
-<style>
+<style scoped>
 .pageJump_container .el-input {
   width: 170px !important;
 }

@@ -2315,7 +2315,7 @@ img {
   margin-left: 88px;
 }
 </style>
-<style>
+<style scoped >
 .liNav .el-input__inner {
   width: 150px !important;
 }
