@@ -56,7 +56,7 @@
       <div class="nav_box" style='margin-top:0;padding-top:0'>
         <div class="filters">
           <div class="filters_item">
-            <span class="fil_span">开方类型：</span>
+            <span class="fil_span">处方类型：</span>
             <el-select
                     v-model="queryParams.auditType"
                     placeholder="全部"
@@ -120,7 +120,7 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <span class="fil_span">是否结算：</span>
+            <span class="fil_span">返利状态：</span>
             <el-select
                     v-model="queryParams.settlementFlag"
                     placeholder="全部"
@@ -284,7 +284,7 @@
           </el-table-column>
           <el-table-column
                   prop='settlementFlag'
-                  label='是否返利'>
+                  label='返利状态'>
             <template slot-scope="scope">
               {{getLabelValue(settlementFlag,scope.row.settlementFlag)}}
             </template>
@@ -328,8 +328,7 @@ export default {
       settlementFlag: [
         {value: 0, label: '未返利'},
         {value: 1, label: '已返利'},
-        {value: 2, label: '不返利'},
-        {value: null, label: '不返利'}
+        {value: 2, label: '不返利'}
       ],
       isUsed: [
         {value: 0, label: '未使用'},
