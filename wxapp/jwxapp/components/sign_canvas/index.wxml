@@ -1,8 +1,8 @@
-<view class="drawing-board">
+<view class="~drawing-board">
   <canvas
     type="2d"
     id="drawing-board-canvas"
-    class="drawing-board-canvas"
+    class="`~drawing-board-canvas"
     canvas-id="drawing-board-canvas"
     bindtouchstart="touchStart"
     bindtouchmove="touchMove"
