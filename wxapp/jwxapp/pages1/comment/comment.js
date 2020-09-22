@@ -204,7 +204,7 @@ global.wxPage({
                     imgCatId: -1,
                     needImgWidth: obj.width,
                     needImgHeight: obj.height
-                  }
+                  } 
                   util.uploadFile(url, tempFilePaths[i], params, function (e) {
                     var data = JSON.parse(e.data);
                     if (data.error === 0) {
