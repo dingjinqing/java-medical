@@ -143,6 +143,8 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			recordList.add(orderGoodsVo);
 			shipInfoList.add(shipInfo.addRecord(orderGoodsVo,orderRecord, batchNo, param, sendNumber));
 		}
+		//更新处方药师签名
+        setPharmacistSignature(recordList,param);
 		//判断此次发货是否为部分发货
 		byte partShipFlag = OrderConstant.NO_PART_SHIP;
 		if(canBeShipped.size() > shipGoods.length || flag) {
