@@ -29,7 +29,6 @@ public final class ShipParam extends OrderOperateQueryParam{
 	/**
 	 * 平台 0 admin 1store 3wxapp 4wxapp_store
 	 */
-	@NotNull
 	private Byte platform;
 	private Integer shipAccountId;
 	private Integer shipUserId;

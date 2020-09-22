@@ -246,7 +246,7 @@ public class CartService extends ShopBaseService {
      */
     public Short getCartProductNumber(Integer userId, Integer prdId) {
         Record1<Short> product = db().select(CART.CART_NUMBER).from(CART).where(CART.USER_ID.eq(userId)).and(CART.PRODUCT_ID.eq(prdId)).and(CART.EXTEND_ID.eq(0))
-                .and(CART.STORE_ID.eq(0)).and(CART.TYPE.isNull().or(CART.TYPE.notEqual(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS))).fetchOne();
+                .and(CART.TYPE.isNull().or(CART.TYPE.notEqual(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS))).fetchOne();
         if (product != null) {
             return product.component1();
         }
@@ -340,13 +340,12 @@ public class CartService extends ShopBaseService {
      * @param goodsNumber 商品数量
      * @return 结果
      */
-    public ResultMessage changeGoodsNumber(Integer userId, Integer storeId, Integer cartId, Integer productId, Integer goodsNumber) {
+    public ResultMessage changeGoodsNumber(Integer userId, Integer cartId, Integer productId, Integer goodsNumber) {
         //校验
         ResultMessage resultMessage = checkProductNumber(productId, goodsNumber);
         if (resultMessage.getFlag()) {
             db().update(CART).set(CART.CART_NUMBER, goodsNumber.shortValue()).set(CART.IS_CHECKED, (byte) 1)
-                    .where(CART.USER_ID.eq(userId)).and(CART.CART_ID.eq(cartId))
-                    .and(CART.STORE_ID.eq(storeId)).and(CART.PRODUCT_ID.eq(productId)).execute();
+                    .where(CART.USER_ID.eq(userId)).and(CART.CART_ID.eq(cartId)).and(CART.PRODUCT_ID.eq(productId)).execute();
         }
         return resultMessage;
     }
@@ -481,13 +480,12 @@ public class CartService extends ShopBaseService {
     /**
      * 获取当前购物车选中商品
      */
-    public List<OrderBeforeParam.Goods> getCartCheckedData(Integer userId, Integer storeId) {
+    public List<OrderBeforeParam.Goods> getCartCheckedData(Integer userId) {
         //TODO 后期加参数
         return db().select(CART.GOODS_ID, CART.PRODUCT_ID, CART.CART_NUMBER.as("goodsNumber"), CART.TYPE.as("cartType"), CART.EXTEND_ID.as("cartExtendId"))
                 .from(CART)
                 .where(CART.IS_CHECKED.eq(CartConstant.CART_IS_CHECKED))
                 .and(CART.USER_ID.eq(userId))
-                .and(CART.STORE_ID.eq(storeId))
                 .orderBy(CART.CART_ID.desc())
                 .fetchInto(OrderBeforeParam.Goods.class);
     }
@@ -549,7 +547,7 @@ public class CartService extends ShopBaseService {
             return resultMessage;
         }else if (resultMessage.getFlag()&&inCartFlag){
             logger().info("修改商品数量");
-            changeGoodsNumber(param.getUserId(),0,cardId,param.getPrdId(),param.getGoodsNumber());
+            changeGoodsNumber(param.getUserId(),cardId,param.getPrdId(),param.getGoodsNumber());
             //切换商品活动
             checkoutActivity(param,cardId,cartList);
         }
