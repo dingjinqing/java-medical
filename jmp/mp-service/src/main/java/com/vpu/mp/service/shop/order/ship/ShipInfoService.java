@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -117,5 +118,25 @@ public class ShipInfoService extends ShopBaseService {
         }else {
             return null;
         }
+    }
+
+    /**
+     * 查询完成数
+     * @param accountId
+     * @param userId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public Integer getCountFinishedNumByAccountIdUserId(Integer accountId,Integer userId, Timestamp startTime,Timestamp endTime){
+        SelectConditionStep<? extends Record> select=db().selectCount().from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.CONFIRM_ACCOUNT_ID.eq(accountId))
+            .and(PART_ORDER_GOODS_SHIP.CONFIRM_USER_ID.eq(userId));
+        if(startTime!=null){
+            select.and(PART_ORDER_GOODS_SHIP.CONFIRM_TIME.ge(startTime));
+        }
+        if(endTime!=null){
+            select.and(PART_ORDER_GOODS_SHIP.CONFIRM_TIME.le(endTime));
+        }
+        return select.fetchAnyInto(Integer.class);
     }
 }
