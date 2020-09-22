@@ -675,7 +675,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void queryAndExecuteInitParamGoods(OrderBeforeParam param) throws MpException {
         if(OrderConstant.CART_Y.equals(param.getIsCart())) {
             //购物车结算初始化商品
-            param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId(), param.getStoreId() == null ? NumberUtils.INTEGER_ZERO : param.getStoreId()));
+            param.setGoods(cart.getCartCheckedData(param.getWxUserInfo().getUserId()));
         }else if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
             PrescriptionVo prescriptionVo = prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
             if (prescriptionVo.getIsUsed().equals(BaseConstant.NO)){
@@ -978,8 +978,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //积分兑换比
         Integer scoreProportion = scoreCfg.getScoreProportion();
         //积分抵扣金额()
-        BigDecimal scoreDiscount =
-                BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal(scoreProportion));
+        BigDecimal scoreDiscount = BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal(scoreProportion));
         //支付金额
         BigDecimal moneyPaid = BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(currentMoneyPaid, BigDecimalUtil.Operator.subtrac),

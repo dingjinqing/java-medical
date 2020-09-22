@@ -90,7 +90,7 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/change")
     public JsonResult changeGoodsNumber(@RequestBody @Valid WxAppChangeNumberParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        ResultMessage resultMessage = shop().cart.changeGoodsNumber(user.getUserId(), 0, param.getCartId(),param.getProductId(), param.getCartNumber());
+        ResultMessage resultMessage = shop().cart.changeGoodsNumber(user.getUserId(), param.getCartId(),param.getProductId(), param.getCartNumber());
         if (!resultMessage.getFlag()){
             return fail(resultMessage);
         }

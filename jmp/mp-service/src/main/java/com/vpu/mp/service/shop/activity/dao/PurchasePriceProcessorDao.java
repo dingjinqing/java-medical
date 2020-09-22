@@ -156,7 +156,7 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
                         for (int i=goodsNum-purchaseInfo.getMaxChangePurchase();i>0;i--){
                             if (goods.getCartNumber()>1){
                                 logger().info("商品数量减少:{}",goods.getGoodsName());
-                                cartService.changeGoodsNumber(cartBo.getUserId(),0,goods.getCartId(),goods.getProductId(),goods.getCartNumber()-1);
+                                cartService.changeGoodsNumber(cartBo.getUserId(),goods.getCartId(),goods.getProductId(),goods.getCartNumber()-1);
                                 goods.setCartNumber(goods.getCartNumber()-1);
                             }else {
                                 logger().info("删除加价购商品:{}",goods.getGoodsName());
