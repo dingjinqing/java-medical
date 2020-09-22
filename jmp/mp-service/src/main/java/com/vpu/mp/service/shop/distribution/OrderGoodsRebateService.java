@@ -56,7 +56,7 @@ public class OrderGoodsRebateService extends ShopBaseService {
                 BigDecimalUtil.BigDecimalPlus.create(rebateRecord.getRatio(), BigDecimalUtil.Operator.divide),
                 BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(bo.getGoodsNumber()))
             ));
-            record.setRebateMoney(BigDecimalUtil.divide(record.getTotalRebateMoney(), new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_DOWN));
+            record.setRealRebateMoney(record.getTotalRebateMoney());
             goodsTotalRebateMoney = goodsTotalRebateMoney.add(record.getTotalRebateMoney());
             result.add(record);
         }

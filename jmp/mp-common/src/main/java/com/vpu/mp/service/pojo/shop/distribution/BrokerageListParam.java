@@ -54,7 +54,7 @@ public class BrokerageListParam {
 	/**
 	 * 返利状态 0：待返利；1：不返利；2：已返利
 	 */
-	private Byte settlementFlag;
+	private String settlementFlag;
 	/**
 	 * 分销员分组
 	 */

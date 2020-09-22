@@ -45,6 +45,7 @@ import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
+import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentService;
@@ -225,6 +226,8 @@ public class StoreWxService extends ShopBaseService {
     private OrderGoodsDao orderGoodsDao;
     @Autowired
     private UserAddressDao userAddressDao;
+    @Autowired
+    private ShipInfoService shipInfoService;
 
     /**
      * The constant BYTE_TWO.
@@ -549,9 +552,9 @@ public class StoreWxService extends ShopBaseService {
      * @return
      */
     public Integer storeClerkAuth(StoreClerkAuthParam param)throws MpException {
-//        if(!checkMobileCode(param)){
-//            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_SMS_ERROR);
-//        }
+        if(!checkMobileCode(param)){
+            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_SMS_ERROR);
+        }
         StoreAccountVo storeAccountVo=storeAccountDao.storeAccountAuth(param);
         if(storeAccountVo==null||!Util.md5(param.getPassword()).equals(storeAccountVo.getAccountPasswd())){
             throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_ERROR);
@@ -605,9 +608,6 @@ public class StoreWxService extends ShopBaseService {
             //待处理数
             Integer waitReceiveOrderNum= orderInfoDao.countNumByStoreIdOrderStatus(statisticVo.getStoreId(), orderStatusList);
             statisticVo.setWaitHandleOrderNum(waitReceiveOrderNum);
-            //已完成数
-            Integer finishedNum=orderActionService.getCountNumByUserIdOrderStatus(storeAccountVo.getAccountId(),OrderConstant.ORDER_RECEIVED,statisticVo.getStoreId());
-            statisticVo.setFinishedOrderNum(finishedNum);
         }
         //本月数据
         StoreMonthStatisticVo monthVo=new StoreMonthStatisticVo();
@@ -616,7 +616,7 @@ public class StoreWxService extends ShopBaseService {
         Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeAccountVo.getStoreLists(), orderStatusList,startTime,endTime);
         monthVo.setWaitHandleNum(waitHandleNum);
         //已完成的数量
-        Integer finishedNum=orderActionService.getCountNumByUserIdOrderStatusAndTime(storeAccountVo.getAccountId(),OrderConstant.ORDER_RECEIVED,storeAccountVo.getStoreLists(),startTime,endTime);
+        Integer finishedNum=shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),startTime,endTime);
         monthVo.setFinishedNum(finishedNum);
         storeMainShowVo.setStoreAccount(storeAccountVo);
         storeMainShowVo.setStatisticList(storeList);

@@ -8,9 +8,12 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
@@ -31,6 +34,8 @@ import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.Tables.PATIENT;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION;
 import static com.vpu.mp.db.shop.Tables.PRESCRIPTION_ITEM;
+import static com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionParam.PRESCRIPTION_SOURCE_IS_HIS;
+import static com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionParam.PRESCRIPTION_TYPE_IS_HIS_FETCH;
 
 /**
  * 处方
@@ -556,5 +561,50 @@ public class PrescriptionDao extends ShopBaseDao {
     public void updatePharmacistSignature(String prescriptionCode,String pharmacistSignature){
         db().update(PRESCRIPTION).set(PRESCRIPTION.PHARMACIST_SIGNATURE,pharmacistSignature)
             .where(PRESCRIPTION.PRESCRIPTION_CODE.eq(prescriptionCode)).execute();
+    }
+
+    /**
+     * 根据医师id查询关联处方
+     * @param doctorQueryPrescriptionParam 查询处方入参
+     * @return PageResult<DoctorQueryPrescriptionVo>
+     */
+    public PageResult<DoctorQueryPrescriptionVo> getDoctorQueryPrescription(DoctorQueryPrescriptionParam doctorQueryPrescriptionParam) {
+        SelectConditionStep<? extends Record> where = db()
+            .select(PRESCRIPTION.PRESCRIPTION_CODE,
+                PRESCRIPTION.DEPARTMENT_NAME,
+                PRESCRIPTION.PATIENT_NAME,
+                PRESCRIPTION.AUDIT_TYPE,
+                PRESCRIPTION.ORDER_SN,
+                PRESCRIPTION.TOTAL_PRICE,
+                PRESCRIPTION.CREATE_TIME)
+            .from(PRESCRIPTION)
+            .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorQueryPrescriptionParam.getDoctorCode()));
+        doctorQueryPrescriptionBuildOption(doctorQueryPrescriptionParam, where);
+        return this.getPageResult(where, doctorQueryPrescriptionParam.getCurrentPage(),
+            doctorQueryPrescriptionParam.getPageRows(), DoctorQueryPrescriptionVo.class);
+    }
+
+    /**
+     * 医师查询关联处方条件查询
+     * @param doctorQueryPrescriptionParam 医师查询处方条件
+     * @param select 查询实体
+     */
+    private void doctorQueryPrescriptionBuildOption(DoctorQueryPrescriptionParam doctorQueryPrescriptionParam, SelectConditionStep<? extends Record> select) {
+        if (doctorQueryPrescriptionParam.getPatientName() != null && doctorQueryPrescriptionParam.getPatientName().trim().length() > 0) {
+            select.and(PRESCRIPTION.PATIENT_NAME.like(likeValue(doctorQueryPrescriptionParam.getPatientName().trim())));
+        }
+        if (doctorQueryPrescriptionParam.getDepartmentName() != null && doctorQueryPrescriptionParam.getDepartmentName().trim().length() > 0) {
+            select.and(PRESCRIPTION.DEPARTMENT_NAME.like(likeValue(doctorQueryPrescriptionParam.getDepartmentName().trim())));
+        }
+        if (doctorQueryPrescriptionParam.getAuditType() != null && PRESCRIPTION_TYPE_IS_HIS_FETCH.equals(doctorQueryPrescriptionParam.getAuditType())) {
+            select.and(PRESCRIPTION.SOURCE.eq(PRESCRIPTION_SOURCE_IS_HIS));
+        } else if (doctorQueryPrescriptionParam.getAuditType() != null) {
+            select.and(PRESCRIPTION.AUDIT_TYPE.eq(doctorQueryPrescriptionParam.getAuditType()));
+        }
+        if (doctorQueryPrescriptionParam.getStartTime() != null || doctorQueryPrescriptionParam.getEndTime() != null) {
+            select.and(PRESCRIPTION.CREATE_TIME.ge(doctorQueryPrescriptionParam.getStartTime()))
+                .and(PRESCRIPTION.CREATE_TIME.le(doctorQueryPrescriptionParam.getEndTime()));
+        }
+        select.orderBy(PRESCRIPTION.CREATE_TIME.desc());
     }
 }

@@ -139,4 +139,13 @@ public class AdminDepartmentController extends AdminBaseController{
     public JsonResult fetchDoctorDepartments() {
         return shop().departmentService.fetchExternalDepartments();
     }
+
+    /**
+     * 科室下拉List
+     */
+    @GetMapping("/api/admin/doctor/department/select/list")
+    public JsonResult getDepartmentSelectList() {
+        return success(shop().departmentService.listDepartmentsByName(null));
+    }
+
 }

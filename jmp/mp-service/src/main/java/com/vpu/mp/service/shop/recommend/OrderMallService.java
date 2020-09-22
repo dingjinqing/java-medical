@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.recommend;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  * 好物圈订单操作
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年11月12日 上午10:15:22
@@ -86,7 +87,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 添加好物圈订单
-	 * 
+	 *
 	 * @param userId
 	 * @param orderSns
 	 * @return
@@ -204,7 +205,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 更新商品，消费者，不要直接调用
-	 * 
+	 *
 	 * @param jsonRootBean
 	 * @return
 	 */
@@ -226,7 +227,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 导入商品，消费者，不要直接调用
-	 * 
+	 *
 	 * @param jsonRootBean
 	 * @return
 	 */
@@ -248,7 +249,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 得到商家信息
-	 * 
+	 *
 	 * @return
 	 */
 	private BrandInfo getBrandInfo() {
@@ -258,7 +259,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 得到优惠信息
-	 * 
+	 *
 	 * @param orderGoods
 	 * @return
 	 */
@@ -274,7 +275,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 得到发票信息
-	 * 
+	 *
 	 * @param order
 	 * @return
 	 */
@@ -292,7 +293,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 得到快递相关信息
-	 * 
+	 *
 	 * @param order
 	 * @return
 	 */
@@ -313,7 +314,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 得到包裹信息
-	 * 
+	 *
 	 * @param order
 	 * @return
 	 */
@@ -321,7 +322,7 @@ public class OrderMallService extends ShopMallBaseService {
 		if (StringUtils.isEmpty(order.getShippingNo())) {
 			return null;
 		}
-		Map<String, List<ShippingInfoVo>> shippingByOrderSn = shipInfo.getShippingByOrderSn(order.getOrderSn());
+		Map<String, List<ShippingInfoVo>> shippingByOrderSn = shipInfo.getShippingByOrderSn(Collections.singletonList(order.getOrderSn()));
 		List<ShippingInfoVo> partShips = shippingByOrderSn.get(order.getOrderSn());
 		if (partShips == null || partShips.size() == 0) {
 			return null;
@@ -438,7 +439,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 	/**
 	 * 得到微信已购订单状态
-	 * 
+	 *
 	 * @param orderStatus
 	 * @return
 	 */

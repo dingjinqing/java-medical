@@ -11,11 +11,7 @@ import com.vpu.mp.service.shop.doctor.DoctorStatisticService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -230,5 +226,34 @@ public class AdminDoctorController extends AdminBaseController {
     public JsonResult doctorSummaryTest() {
         doctorStatisticService.doctorStatistics();
         return this.success();
+    }
+
+    /**
+     * 查询医师关联咨询记录
+     * @return
+     */
+    @PostMapping("/api/admin/doctor/query/inquiry")
+    public JsonResult doctorQueryInquiry(@Validated @RequestBody DoctorQueryInquiryParam doctorQueryInquiryParam) {
+        return success(shop().doctorService.getDoctorQueryInquiry(doctorQueryInquiryParam));
+    }
+
+    /**
+     * 查询医师相关处方记录
+     * @param doctorQueryPrescriptionParam 查询处方入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/doctor/query/prescription")
+    public JsonResult doctorQueryPrescription(@Validated @RequestBody DoctorQueryPrescriptionParam doctorQueryPrescriptionParam) {
+        return success(shop().doctorService.getDoctorQueryPrescription(doctorQueryPrescriptionParam));
+    }
+
+    /**
+     * 查询医师相关患者记录
+     * @param doctorQueryPatientParam 查询患者入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/doctor/query/patient")
+    public JsonResult doctorQueryPatient(@Validated @RequestBody DoctorQueryPatientParam doctorQueryPatientParam) {
+        return success(shop().doctorService.getDoctorQueryPatient(doctorQueryPatientParam));
     }
 }

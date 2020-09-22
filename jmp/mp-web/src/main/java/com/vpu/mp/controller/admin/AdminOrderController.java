@@ -149,6 +149,7 @@ public class AdminOrderController extends AdminBaseController {
 	public JsonResult ship(@RequestBody @Valid ShipParam param ) {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
+		param.setPlatform(OrderConstant.PLATFORM_ADMIN);
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());

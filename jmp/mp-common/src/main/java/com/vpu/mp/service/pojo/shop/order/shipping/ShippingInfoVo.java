@@ -1,16 +1,14 @@
 package com.vpu.mp.service.pojo.shop.order.shipping;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
 /**
  * 	可发货信息
  * @author 王帅
@@ -23,6 +21,17 @@ public class ShippingInfoVo extends BaseShippingInfoVo{
 	private List<Goods> goods;
 	/**批次号：相同为同一批*/
 	private String batchNo;
+	private Timestamp shippingTime;
+	private Integer   shippingAccountId;
+	private Byte      shippingPlatform;
+	private String    shippingMobile;
+	private Integer   shippingUserId;
+	private Timestamp confirmTime;
+	private Timestamp createTime;
+	private Integer   confirmAccountId;
+	private Byte      confirmPlatform;
+	private String    confirmMobile;
+	private Integer   confirmUserId;
 	@Data
 	@AllArgsConstructor
 	public static class Goods{

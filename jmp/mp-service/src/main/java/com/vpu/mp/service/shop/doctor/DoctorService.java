@@ -21,9 +21,12 @@ import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDutyRecordDao;
+import com.vpu.mp.dao.shop.order.InquiryOrderDao;
+import com.vpu.mp.dao.shop.patient.PatientDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
 import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
@@ -38,7 +41,6 @@ import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
 import com.vpu.mp.service.shop.anchor.AnchorPointsService;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
-import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.department.DepartmentService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
@@ -53,13 +55,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.util.MapUtil.merge2ResultMap;
 import static com.vpu.mp.service.shop.anchor.AnchorPointsEvent.DOCTOR_ENTER_IN;
 
 /**
@@ -67,7 +67,9 @@ import static com.vpu.mp.service.shop.anchor.AnchorPointsEvent.DOCTOR_ENTER_IN;
  */
 @Service
 public class DoctorService extends BaseShopConfigService {
-    /**自动推荐最大数量*/
+    /**
+     * 自动推荐最大数量
+     */
     public static final int RECOMMEND_MAX_NUM = 10;
     public static final String HOSPITAL_NAME = "六盘水医院";
     public static final float ANSWER_TIME_TEN_MUNITES = 10;
@@ -110,6 +112,15 @@ public class DoctorService extends BaseShopConfigService {
     private DoctorLoginLogService doctorLoginLogService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
+    @Autowired
+    private InquiryOrderDao inquiryOrderDao;
+    @Autowired
+    private PatientDao patientDao;
+
 
     public static final int ZERO = 0;
 
@@ -125,8 +136,8 @@ public class DoctorService extends BaseShopConfigService {
             list.setDepartmentNames(departmentList);
             String titleName = titleService.getTitleName(list.getTitleId());
             list.setTitleName(titleName);
-            Integer hour = list.getAvgAnswerTime()/3600;
-            Integer munite = list.getConsultationNumber()==0 ? -1:(list.getAvgAnswerTime()-3600*hour)/60;
+            Integer hour = list.getAvgAnswerTime() / 3600;
+            Integer munite = list.getConsultationNumber() == 0 ? -1 : (list.getAvgAnswerTime() - 3600 * hour) / 60;
             list.setAnswerHourInt(hour);
             list.setAnswerMunite(munite);
         }
@@ -136,22 +147,23 @@ public class DoctorService extends BaseShopConfigService {
 
     public Integer insertDoctor(DoctorOneParam param) {
         doctorDao.insertDoctor(param);
-        setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
+        setDoctorDepartmentCouples(param.getId(), param.getDepartmentIdsStr());
         return param.getId();
     }
 
     public Integer updateDoctor(DoctorOneParam param) {
         DoctorOneParam doctorInfo = getOneInfo(param.getId());
         if (!doctorInfo.getStatus().equals(param.getStatus())) {
-            dealDoctorWx(param.getId(),param.getStatus());
+            dealDoctorWx(param.getId(), param.getStatus());
         }
         doctorDao.updateDoctor(param);
-        setDoctorDepartmentCouples(param.getId(),param.getDepartmentIdsStr());
+        setDoctorDepartmentCouples(param.getId(), param.getDepartmentIdsStr());
         return param.getId();
     }
+
     public Integer enableDoctor(DoctorOneParam param) {
         doctorDao.updateDoctor(param);
-        dealDoctorWx(param.getId(),param.getStatus());
+        dealDoctorWx(param.getId(), param.getStatus());
         return param.getId();
     }
 
@@ -162,9 +174,9 @@ public class DoctorService extends BaseShopConfigService {
         return doctorInfo;
     }
 
-    public void setDoctorDepartmentCouples (Integer doctorId, String departmentIdsStr) {
+    public void setDoctorDepartmentCouples(Integer doctorId, String departmentIdsStr) {
         doctorDepartmentCoupleDao.deleteDepartmentByDoctor(doctorId);
-        if(!StringUtils.isBlank(departmentIdsStr)) {
+        if (!StringUtils.isBlank(departmentIdsStr)) {
             List<String> result = Arrays.asList(departmentIdsStr.split(","));
             for (String departmentIdStr : result) {
                 Integer departmentId = Integer.parseInt(departmentIdStr);
@@ -182,10 +194,11 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 更新/新增医师
+     *
      * @param doctor
      */
     public void synchroDoctor(DoctorOneParam doctor) {
-        if(getDoctorByCode(doctor.getHospitalCode()) == null) {
+        if (getDoctorByCode(doctor.getHospitalCode()) == null) {
             //默认不接诊
             doctor.setCanConsultation(DoctorConstant.CAN_NOT_CONSULTATION);
             //默认不上班
@@ -211,7 +224,7 @@ public class DoctorService extends BaseShopConfigService {
             doctor.setProfessionalCode(list.getProfessionalCode());
             doctor.setUrl(list.getDocUrl());
             doctor.setMobile(list.getDocPhone());
-            doctor.setSex((list.getDoctorSex() == 0) ? (byte)0:(byte)1);
+            doctor.setSex((list.getDoctorSex() == 0) ? (byte) 0 : (byte) 1);
             doctor.setTitleId(titleService.getTitleIdNew(list.getPositionCode()));
 
             List<String> result = Arrays.asList(list.getDepartCode().split(","));
@@ -234,7 +247,7 @@ public class DoctorService extends BaseShopConfigService {
         }
     }
 
-    public List<DoctorFetchOneParam> listDoctorFetch(List<DoctorFetchOneParam> doctorFetchList){
+    public List<DoctorFetchOneParam> listDoctorFetch(List<DoctorFetchOneParam> doctorFetchList) {
         Map<String, List<DoctorFetchOneParam>> doctorCodeMap = doctorFetchList.stream().collect(Collectors.groupingBy(DoctorFetchOneParam::getDoctorCode));
 
         List<DoctorFetchOneParam> doctorList = new ArrayList<>();
@@ -248,7 +261,7 @@ public class DoctorService extends BaseShopConfigService {
             }
             int number = v.size();
             DoctorFetchOneParam newDoctor = new DoctorFetchOneParam();
-            FieldsUtil.assign(v.get(number-1),newDoctor);
+            FieldsUtil.assign(v.get(number - 1), newDoctor);
             newDoctor.setDepartCode(Joiner.on(",").join(departmentCodes));
             doctorList.add(newDoctor);
         });
@@ -257,15 +270,16 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 拉取医师列表
+     *
      * @return
      */
-    public JsonResult fetchExternalDoctor(){
+    public JsonResult fetchExternalDoctor() {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_INFOS;
 
         Long lastRequestTime = saas().externalRequestHistoryService.getLastRequestTime(ApiExternalRequestConstant.APP_ID_HIS, shopId, ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_INFOS);
-        DoctorExternalRequestParam param =new DoctorExternalRequestParam();
+        DoctorExternalRequestParam param = new DoctorExternalRequestParam();
         param.setStartTime(null);
 
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
@@ -284,8 +298,8 @@ public class DoctorService extends BaseShopConfigService {
         return JsonResult.success();
     }
 
-    public boolean isCodeExist(Integer doctorId,String code) {
-        boolean flag = doctorDao.isCodeExist(doctorId,code);
+    public boolean isCodeExist(Integer doctorId, String code) {
+        boolean flag = doctorDao.isCodeExist(doctorId, code);
         return flag;
     }
 
@@ -297,10 +311,11 @@ public class DoctorService extends BaseShopConfigService {
      */
     /**
      * 医师认证
+     *
      * @param doctorAuthParam 当前用户姓名、手机号、医师医院唯一编码, 验证码
      * @return 验证信息
      */
-    public Integer doctorAuth(DoctorAuthParam doctorAuthParam){
+    public Integer doctorAuth(DoctorAuthParam doctorAuthParam) {
         boolean b = checkMobileCode(doctorAuthParam);
         if (!b) {
             return null;
@@ -318,20 +333,21 @@ public class DoctorService extends BaseShopConfigService {
                 // 修改doctor表中userId为当前用户
                 doctorDo.setUserId(doctorAuthParam.getUserId());
                 //更新是否接诊
-                doctorDao.updateCanConsultation(doctorDo.getId(),DoctorConstant.CAN_CONSULTATION);
+                doctorDao.updateCanConsultation(doctorDo.getId(), DoctorConstant.CAN_CONSULTATION);
                 //更新医师签名
-                doctorDao.updateSignature(doctorDo.getId(),doctorAuthParam.getSignature());
+                doctorDao.updateSignature(doctorDo.getId(), doctorAuthParam.getSignature());
                 // 修改医师表用户id为当前验证用户，修改医师手机号为用户验证时填写手机号
                 doctorDao.updateUserId(doctorDo, doctorAuthParam.getMobile());
             });
             return doctorDo.getId();
         } else {
-            return  null;
+            return null;
         }
     }
 
     /**
      * 短信验证码校验
+     *
      * @return
      */
     private boolean checkMobileCode(DoctorAuthParam doctorAuthParam) {
@@ -344,7 +360,7 @@ public class DoctorService extends BaseShopConfigService {
     }
 
     public List<DoctorConsultationOneParam> listRecommendDoctorForConsultation(UserPatientParam doctorParam) {
-        List<DoctorConsultationOneParam> historyDoctors = doctorDao.listRecommendDoctors(shopCommonConfigService.getDoctorRecommendType(),shopCommonConfigService.getDoctorRecommendConsultationRate(),shopCommonConfigService.getDoctorRecommendInquiryRate());
+        List<DoctorConsultationOneParam> historyDoctors = doctorDao.listRecommendDoctors(shopCommonConfigService.getDoctorRecommendType(), shopCommonConfigService.getDoctorRecommendConsultationRate(), shopCommonConfigService.getDoctorRecommendInquiryRate());
         setDoctorDepartmentNames(historyDoctors);
         return historyDoctors;
     }
@@ -372,28 +388,31 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 查询医师信息集合
+     *
      * @param doctorIds 医师id集合
      * @return
      */
-    public List<DoctorSimpleVo> listDoctorSimpleInfo(List<Integer> doctorIds){
+    public List<DoctorSimpleVo> listDoctorSimpleInfo(List<Integer> doctorIds) {
         return doctorDao.listDoctorSimpleInfo(doctorIds);
     }
 
     /**
      * 根据医师信息获取医师所属科室
+     *
      * @param doctorId 医师id
      * @return List<Department>
      */
-    public List<DepartmentListVo> selectDepartmentsByDoctorId(Integer doctorId){
+    public List<DepartmentListVo> selectDepartmentsByDoctorId(Integer doctorId) {
         return doctorDao.selectDepartmentsByDoctorId(doctorId);
     }
 
     /**
      * 根据医师职称id查询职称名
+     *
      * @param doctorOneParam 医师职称id
      * @return String
      */
-    public String selectDoctorTitle(DoctorOneParam doctorOneParam){
+    public String selectDoctorTitle(DoctorOneParam doctorOneParam) {
         return doctorDao.selectDoctorTitle(doctorOneParam);
     }
 
@@ -403,10 +422,11 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 设置医师科室信息，医院信息
+     *
      * @param list
      */
     public void setDoctorDepartmentNames(List<DoctorConsultationOneParam> list) {
-        for (DoctorConsultationOneParam item:list) {
+        for (DoctorConsultationOneParam item : list) {
             item.setHospitalName(HOSPITAL_NAME);
             List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(item.getId());
             if (departmentList.size() > 0) {
@@ -417,18 +437,20 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 新增用户医师关注
+     *
      * @param
      * @return
      */
-    public void insertUserDoctor(UserDoctorParam param){
+    public void insertUserDoctor(UserDoctorParam param) {
         UserDoctorAttentionDo userDoctorAttentionDo = new UserDoctorAttentionDo();
-        FieldsUtil.assign(param,userDoctorAttentionDo);
+        FieldsUtil.assign(param, userDoctorAttentionDo);
         userDoctorAttentionDao.insertUserDoctor(userDoctorAttentionDo);
         updateAttentionNumberByDoctorId(param.getDoctorId());
     }
 
     /**
      * 解除用户医师关注
+     *
      * @param param
      */
     public void deleteUserDoctor(UserDoctorParam param) {
@@ -438,10 +460,11 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 更新医师上班状态
+     *
      * @param param
      * @return int
      */
-    public void updateOnDuty(DoctorDutyParam param){
+    public void updateOnDuty(DoctorDutyParam param) {
         doctorDao.updateOnDuty(param);
         DoctorDutyRecordParam doctorDutyRecordParam = new DoctorDutyRecordParam();
         doctorDutyRecordParam.setDoctorId(param.getDoctorId());
@@ -457,8 +480,8 @@ public class DoctorService extends BaseShopConfigService {
     /**
      * 医师自动上班
      */
-    public void onDutyDoctorTask (){
-        List<Integer> doctorIds=doctorDao.listNotOnDutyDoctorIds();
+    public void onDutyDoctorTask() {
+        List<Integer> doctorIds = doctorDao.listNotOnDutyDoctorIds();
         doctorIds.forEach(doctorId -> {
             DoctorDutyParam doctorDuty = new DoctorDutyParam();
             doctorDuty.setDoctorId(doctorId);
@@ -470,52 +493,58 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 新增医师上下班记录
+     *
      * @param
      * @return
      */
-    public void insertDoctorDutyRecord(DoctorDutyRecordParam param){
+    public void insertDoctorDutyRecord(DoctorDutyRecordParam param) {
         DoctorDutyRecordDo doctorDutyRecordDo = new DoctorDutyRecordDo();
-        FieldsUtil.assign(param,doctorDutyRecordDo);
+        FieldsUtil.assign(param, doctorDutyRecordDo);
         doctorDutyRecordDao.insertDoctorDutyRecord(doctorDutyRecordDo);
     }
 
     /**
      * 更新医师平均响应时间
+     *
      * @param param
      */
-    public void updateAvgAnswerTime(DoctorSortParam param){
+    public void updateAvgAnswerTime(DoctorSortParam param) {
         doctorDao.updateAvgAnswerTime(param);
     }
 
     /**
      * 更新医师接诊数
+     *
      * @param param
      */
-    public void updateConsultationNumber(DoctorSortParam param){
+    public void updateConsultationNumber(DoctorSortParam param) {
         doctorDao.updateConsultationNumber(param);
     }
 
     /**
      * 更新医师平均评分
+     *
      * @param param
      */
-    public void updateAvgCommentStar(DoctorSortParam param){
+    public void updateAvgCommentStar(DoctorSortParam param) {
         doctorDao.updateAvgCommentStar(param);
     }
 
     /**
      * 更新医师关注数
+     *
      * @param param
      */
-    public void updateAttentionNumber(DoctorSortParam param){
+    public void updateAttentionNumber(DoctorSortParam param) {
         doctorDao.updateAttentionNumber(param);
     }
 
     /**
      * 更新医师关注数(根据医师Id)
+     *
      * @param doctorId
      */
-    public void updateAttentionNumberByDoctorId(Integer doctorId){
+    public void updateAttentionNumberByDoctorId(Integer doctorId) {
         Integer attentionNumber = userDoctorAttentionDao.getAttentionNumber(doctorId);
         DoctorSortParam doctorSortParam = new DoctorSortParam();
         doctorSortParam.setDoctorId(doctorId);
@@ -525,50 +554,55 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 更新医师登录token
+     *
      * @param doctorId
      * @param userToken
      */
-    public void updateUserToken(Integer doctorId, String userToken){
-        doctorDao.updateUserToken(doctorId,userToken);
+    public void updateUserToken(Integer doctorId, String userToken) {
+        doctorDao.updateUserToken(doctorId, userToken);
     }
 
     /**
      * 处理医师wx账号
+     *
      * @param doctorId
      * @param status
      */
-    public void dealDoctorWx (Integer doctorId,Byte status){
+    public void dealDoctorWx(Integer doctorId, Byte status) {
         DoctorOneParam doctorInfo = getOneInfo(doctorId);
         if (doctorInfo.getUserId() > 0) {
             jedisManager.delete(doctorInfo.getUserToken());
-            Byte userType = DoctorConstant.ABLE.equals(status) ? AuthConstant.AUTH_TYPE_DOCTOR_USER:AuthConstant.AUTH_TYPE_NORMAL_USER;
-            userDao.updateUserDoctorAuth(doctorInfo.getUserId(),userType);
+            Byte userType = DoctorConstant.ABLE.equals(status) ? AuthConstant.AUTH_TYPE_DOCTOR_USER : AuthConstant.AUTH_TYPE_NORMAL_USER;
+            userDao.updateUserDoctorAuth(doctorInfo.getUserId(), userType);
         }
     }
 
     /**
      * 根userId更新医师token
+     *
      * @param userId
      * @param userToken
      */
-    public void updateUserTokenByUserId(Integer userId,String userToken) {
-        doctorDao.updateUserTokenByUserId(userId,userToken);
+    public void updateUserTokenByUserId(Integer userId, String userToken) {
+        doctorDao.updateUserTokenByUserId(userId, userToken);
     }
 
     /**
      * 删除医师登录token
+     *
      * @param doctorId
      */
-    public void deleteUserToken(Integer doctorId){
+    public void deleteUserToken(Integer doctorId) {
         jedisManager.delete(getOneInfo(doctorId).getUserToken());
     }
 
     /**
      * 咨询医师详情
+     *
      * @param param
      * @return
      */
-    public DoctorOneParam getWxDoctorInfo(UserDoctorParam param){
+    public DoctorOneParam getWxDoctorInfo(UserDoctorParam param) {
         DoctorOneParam doctorInfo = getOneInfo(param.getDoctorId());
         setDoctorDepartmentTitle(doctorInfo);
         doctorInfo.setIsAttention(userDoctorAttentionDao.isAttention(param));
@@ -577,13 +611,13 @@ public class DoctorService extends BaseShopConfigService {
         return doctorInfo;
     }
 
-    private static byte getAnswerHour(Integer seconds){
-        float num = (float)seconds/60;
+    private static byte getAnswerHour(Integer seconds) {
+        float num = (float) seconds / 60;
         if (num < ANSWER_TIME_TEN_MUNITES) {
             return DoctorConstant.TEN_MUNITE_IN;
-        } else if(num < ANSWER_TIME_HALF_HOUR) {
+        } else if (num < ANSWER_TIME_HALF_HOUR) {
             return DoctorConstant.HALF_HOUR_IN;
-        } else if(num < ANSWER_TIME_ONE_HOUR) {
+        } else if (num < ANSWER_TIME_ONE_HOUR) {
             return DoctorConstant.ONE_HOUR_IN;
         } else {
             return DoctorConstant.ONE_HOUR_OUT;
@@ -593,6 +627,7 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 设置医师科室信息，医院信息
+     *
      * @param param
      */
     public void setDoctorDepartmentTitle(DoctorOneParam param) {
@@ -607,6 +642,7 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 医师解绑
+     *
      * @param doctorUnbundlingParam doctorId
      */
     public void doctorUnbundling(DoctorUnbundlingParam doctorUnbundlingParam) {
@@ -623,15 +659,16 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * admin医师是否接诊
+     *
      * @param doctorUnbundlingParam doctorId
      */
     public void doctorCanConsultation(DoctorUnbundlingParam doctorUnbundlingParam) {
         doctorDao.canConsultation(doctorUnbundlingParam.getDoctorId());
     }
 
-    public void testTemplateMessage(){
+    public void testTemplateMessage() {
         // 订阅消息
-        String[][] maData = new String[][] {
+        String[][] maData = new String[][]{
             {"患者信息"},
             {"病情描述"},
             {Util.getdate("yyyy-MM-dd HH:mm:ss")},
@@ -642,7 +679,7 @@ public class DoctorService extends BaseShopConfigService {
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
 
         // 公众号消息
-        String[][] mpData = new String[][] {
+        String[][] mpData = new String[][]{
             {"患者信息"},
             {"病情描述"},
             {Util.getdate("yyyy-MM-dd HH:mm:ss")},
@@ -661,38 +698,40 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 更新医师咨询总金额
+     *
      * @param param
      */
-    public void updateConsultationTotalMoney(DoctorSortParam param){
+    public void updateConsultationTotalMoney(DoctorSortParam param) {
         doctorDao.updateConsultationTotalMoney(param);
     }
 
     /**
      * 获取考勤
+     *
      * @return
      */
-    public DoctorAttendanceVo getAttendance(Integer userId, String doctorCode, Integer doctorId){
+    public DoctorAttendanceVo getAttendance(Integer userId, String doctorCode, Integer doctorId) {
         DateTime date = DateUtil.date();
-        AnchorPointsListParam param =new AnchorPointsListParam();
+        AnchorPointsListParam param = new AnchorPointsListParam();
         param.setStartTime(DateUtil.beginOfMonth(date).toTimestamp());
         param.setEndTime(DateUtil.endOfMonth(date).toTimestamp());
         param.setEvent(DOCTOR_ENTER_IN.getEvent());
         param.setKey(DOCTOR_ENTER_IN.getKey());
         param.setUserId(1);
         String doctorAttendanceRate = doctorLoginLogService.getDoctorAttendanceRate(doctorId, param.getStartTime(), param.getEndTime());
-        logger().info("医师userId:{},出勤率{}",userId,doctorAttendanceRate);
+        logger().info("医师userId:{},出勤率{}", userId, doctorAttendanceRate);
         Integer prescriptionNum = prescriptionService.countDateByDoctor(doctorCode, param.getStartTime(), param.getEndTime());
-        logger().info("医师code:{},处方数量{}",doctorCode,prescriptionNum);
+        logger().info("医师code:{},处方数量{}", doctorCode, prescriptionNum);
         Integer receivingNumber = inquiryOrderService.countByDateDoctor(doctorId, param.getStartTime(), param.getEndTime());
-        logger().info("医师id:{},接诊数{}",doctorId,receivingNumber);
+        logger().info("医师id:{},接诊数{}", doctorId, receivingNumber);
         BigDecimal inquiryOrderRebate = inquiryOrderRebateService.getRealRebateByDoctorDate(doctorId, param.getStartTime(), param.getEndTime());
         BigDecimal prescriptionRebate = prescriptionRebateService.getRealRebateByDoctorDate(doctorId, param.getStartTime(), param.getEndTime());
-        logger().info("医师id:{},服务费{}",doctorId,receivingNumber);
-        DoctorAttendanceVo vo =new DoctorAttendanceVo();
+        logger().info("医师id:{},服务费{}", doctorId, receivingNumber);
+        DoctorAttendanceVo vo = new DoctorAttendanceVo();
         vo.setDoctorAttendanceRate(doctorAttendanceRate);
         vo.setPrescriptionNum(prescriptionNum);
         vo.setReceivingNumber(receivingNumber);
-        vo.setServiceCharge(inquiryOrderRebate.add(prescriptionRebate).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+        vo.setServiceCharge(inquiryOrderRebate.add(prescriptionRebate).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
         return vo;
     }
 
@@ -707,6 +746,7 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 获取科室处方统计数据
+     *
      * @param param
      * @return
      */
@@ -716,6 +756,7 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 获取科室接诊统计数据
+     *
      * @param param
      * @return
      */
@@ -725,6 +766,7 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 获取科室处方统计数据
+     *
      * @param param
      * @return
      */
@@ -734,10 +776,11 @@ public class DoctorService extends BaseShopConfigService {
 
     /**
      * 获取科室统计信息
+     *
      * @param param
      * @return
      */
-    public DoctorSummaryTrendDo getDoctorStatisData(DoctorStatisticParam param){
+    public DoctorSummaryTrendDo getDoctorStatisData(DoctorStatisticParam param) {
         DoctorSummaryTrendDo data = new DoctorSummaryTrendDo();
         data.setConsultationNumber(getDoctorConsultationData(param));
 
@@ -754,4 +797,48 @@ public class DoctorService extends BaseShopConfigService {
         data.setConsumeMoney(inquiryMoney.add(prescriptionMoney));
         return data;
     }
+
+    /**
+     * 查询医师关联患者信息
+     * @param doctorQueryPatientParam 医师查询关联患者列表入参
+     * @return PageResult<DoctorQueryPatientVo>
+     */
+    public PageResult<DoctorQueryPatientVo> getDoctorQueryPatient(DoctorQueryPatientParam doctorQueryPatientParam) {
+        List<DoctorQueryPatientVo> doctorQueryPatientWithPrescription = patientDao.getDoctorQueryPatientWithPrescription(doctorQueryPatientParam);
+        List<DoctorQueryPatientVo> doctorQueryPatientWithInquiry = patientDao.getDoctorQueryPatientWithInquiry(doctorQueryPatientParam);
+        Map<String, DoctorQueryPatientVo> prescriptionCollect = doctorQueryPatientWithPrescription.stream().collect(Collectors.toMap(DoctorQueryPatientVo::getPatientName, Function.identity()));
+        Map<String, DoctorQueryPatientVo> inquiryCollect = doctorQueryPatientWithInquiry.stream().collect(Collectors.toMap(DoctorQueryPatientVo::getPatientName, Function.identity()));
+        merge2ResultMap(prescriptionCollect, inquiryCollect);
+        List<DoctorQueryPatientVo> result = new ArrayList<>(prescriptionCollect.values());
+        PageResult<DoctorQueryPatientVo> patientVoPageResult = new PageResult<>();
+        patientVoPageResult.setDataList(result);
+        return patientVoPageResult;
+    }
+
+
+
+    /**
+     * 查询医师关联问诊信息
+     *
+     * @param doctorQueryInquiryParam 医师查询关联问诊列表入参
+     * @return PageResult<DoctorQueryInquiryVo>
+     */
+    public PageResult<DoctorQueryInquiryVo> getDoctorQueryInquiry(DoctorQueryInquiryParam doctorQueryInquiryParam) {
+        return inquiryOrderDao.getDoctorQueryInquiry(doctorQueryInquiryParam);
+    }
+
+    /**
+     * 根据医师id查询关联处方
+     * @param doctorQueryPrescriptionParam 查询处方入参
+     * @return PageResult<DoctorQueryPrescriptionVo>
+     */
+    public PageResult<DoctorQueryPrescriptionVo> getDoctorQueryPrescription(DoctorQueryPrescriptionParam doctorQueryPrescriptionParam) {
+        PageResult<DoctorQueryPrescriptionVo> doctorQueryPrescription = prescriptionDao.getDoctorQueryPrescription(doctorQueryPrescriptionParam);
+        doctorQueryPrescription.getDataList().forEach(doctorQueryPrescriptionVo -> {
+            List<String> prescriptionGoodsNameByPrescriptionCode = prescriptionItemDao.getPrescriptionGoodsNameByPrescriptionCode(doctorQueryPrescriptionVo.getPrescriptionCode());
+            doctorQueryPrescriptionVo.setGoodsNames(prescriptionGoodsNameByPrescriptionCode);
+        });
+        return doctorQueryPrescription;
+    }
+
 }

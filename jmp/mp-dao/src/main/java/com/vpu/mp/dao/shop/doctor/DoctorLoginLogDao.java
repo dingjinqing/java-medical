@@ -74,10 +74,10 @@ public class DoctorLoginLogDao extends ShopBaseDao {
         Timestamp startTime = getStartTime(param.getType());
         SelectJoinStep<? extends Record> select = db().select(DOCTOR_LOGIN_LOG.DOCTOR_ID,DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as(LOGIN_DAYS)
             , DSL.max(DOCTOR_LOGIN_LOG.CREATE_TIME).as(LAST_TIME),DOCTOR.NAME)
-            .from(DOCTOR_LOGIN_LOG)
-            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)));
-        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME);
-        return this.getPageResult(select, param.getPage(), 5, DoctorAttendanceOneParam.class);
+            .from(DOCTOR)
+            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)));
+        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME).orderBy(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).desc());
+        return this.getPageResult(select, param.getCurrentPage(), 5, DoctorAttendanceOneParam.class);
     }
 
     public Timestamp getStartTime(Byte type) {

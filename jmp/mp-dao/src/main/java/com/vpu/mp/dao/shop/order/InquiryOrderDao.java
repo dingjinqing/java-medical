@@ -6,7 +6,10 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryInquiryParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryInquiryVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDoctorVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
@@ -18,6 +21,7 @@ import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
@@ -322,4 +326,29 @@ public class InquiryOrderDao extends ShopBaseDao {
             .and(INQUIRY_ORDER.USER_ID.eq(userId))
             .fetchAnyInto(PrescriptionDoctorVo.class);
     }
+
+    /**
+     * 查询医师关联问诊信息
+     * @param doctorQueryInquiryParam 医师查询关联问诊列表入参
+     * @return PageResult<DoctorQueryInquiryVo>
+     */
+    public PageResult<DoctorQueryInquiryVo> getDoctorQueryInquiry(DoctorQueryInquiryParam doctorQueryInquiryParam) {
+        SelectConditionStep<? extends Record> select = db().select(Tables.INQUIRY_ORDER.PATIENT_NAME,
+            Tables.INQUIRY_ORDER.ORDER_SN,
+            Tables.INQUIRY_ORDER.CREATE_TIME.as("inqTime"),
+            Tables.INQUIRY_ORDER.ORDER_AMOUNT.as("inquiryCost"))
+            .from(Tables.INQUIRY_ORDER)
+            .where(Tables.INQUIRY_ORDER.DOCTOR_ID.eq(doctorQueryInquiryParam.getDoctorId()));
+        if (doctorQueryInquiryParam.getPatientName() != null && doctorQueryInquiryParam.getPatientName().trim().length() > 0) {
+            select.and(Tables.INQUIRY_ORDER.PATIENT_NAME.like(likeValue(doctorQueryInquiryParam.getPatientName())));
+        }
+        if (doctorQueryInquiryParam.getStartTime() != null || doctorQueryInquiryParam.getEndTime() != null) {
+            select.and(Tables.INQUIRY_ORDER.CREATE_TIME.ge(doctorQueryInquiryParam.getStartTime()))
+                .and(Tables.INQUIRY_ORDER.CREATE_TIME.le(doctorQueryInquiryParam.getEndTime()));
+        }
+        return this.getPageResult(select, doctorQueryInquiryParam.getCurrentPage(),
+            doctorQueryInquiryParam.getPageRows(), DoctorQueryInquiryVo.class);
+    }
+
+
 }

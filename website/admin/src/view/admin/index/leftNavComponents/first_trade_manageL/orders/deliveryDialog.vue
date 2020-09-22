@@ -17,14 +17,13 @@
         </div>
       </div>
       <div class="delivery-info_shipinfo">
-        <div>
+        <div v-if="orderData.deliverType !== 3"  >
           快递列表：
           <el-select
             v-model="shippingId"
             size="small"
             class="default_input"
-            filterable
-          >
+            filterable>
             <el-option
               v-for="(item, key) in $t('expressList.company')"
               :key="key"
@@ -185,6 +184,9 @@ export default {
         if (newVal === true) {
           this.showDelivery = true
           this.initData()
+          if (this.orderData.deliverType === 3) {
+            this.shippingId = '42'
+          }
         }
       },
       immediate: true
