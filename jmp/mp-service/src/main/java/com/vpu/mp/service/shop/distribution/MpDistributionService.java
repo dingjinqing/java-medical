@@ -1024,40 +1024,46 @@ public class MpDistributionService extends ShopBaseService{
         if(!(param.getUserId().equals(param.getInviteId()))){
             //原始邀请人
             Integer oldInviteId = db().select(USER.INVITE_ID).from(USER).where(USER.USER_ID.eq(param.getUserId())).fetchOne().into(Integer.class);
-            if(isDistributor == 1){//是分销员，需计算邀请保护期
+//            if(isDistributor == 1){//是分销员，需计算邀请保护期
                 //获取分销配置
                 DistributionParam cfg = this.distributionCfg.getDistributionCfg();
+            if(cfg.getStatus() != null && cfg.getStatus() == 1) {
                 //邀请保护时间
                 Timestamp protectDate = DateUtils.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
-                if(cfg.getProtectDate() == -1){
+                if (cfg.getProtectDate() == -1) {
                     //-1为永久保护
                     Date foreverDate = new Date(946656000);
-                    protectDate = Util.getEarlyTimeStamp(foreverDate,1);
+                    protectDate = Util.getEarlyTimeStamp(foreverDate, 1);
                 }
-                if(cfg.getProtectDate() == 0){
+                if (cfg.getProtectDate() == 0) {
                     //没有保护期
-                    protectDate =Util.currentTimeStamp();
+                    protectDate = Util.currentTimeStamp();
                 }
 
                 //邀请失效时间
                 Timestamp inviteExpiryDate = DateUtils.getTimeStampPlus(cfg.getVaild(), ChronoUnit.DAYS);
-                if(cfg.getVaild() == 0){
+                if (cfg.getVaild() == 0) {
                     //永久返利有效
                     Date foreverDate = new Date(946656000);
-                    inviteExpiryDate = Util.getEarlyTimeStamp(foreverDate,1);
+                    inviteExpiryDate = Util.getEarlyTimeStamp(foreverDate, 1);
                 }
                 Date ed = new Date(inviteExpiryDate.getTime());
-                db().update(USER).set(USER.INVITE_ID,param.getInviteId())
-                    .set(USER.INVITE_EXPIRY_DATE,ed)
-                    .set(USER.INVITE_PROTECT_DATE,protectDate)
-                    .set(USER.INVITE_TIME,Util.currentTimeStamp())
+                db().update(USER).set(USER.INVITE_ID, param.getInviteId())
+                    .set(USER.INVITE_EXPIRY_DATE, ed)
+                    .set(USER.INVITE_PROTECT_DATE, protectDate)
+                    .set(USER.INVITE_TIME, Util.currentTimeStamp())
                     .where(USER.USER_ID.eq(param.getUserId())).execute();
-            }else{
-                //不是分销员，直接建立绑定关系
+            }else {
                 db().update(USER).set(USER.INVITE_ID,param.getInviteId())
                     .set(USER.INVITE_TIME,Util.currentTimeStamp())
                     .where(USER.USER_ID.eq(param.getUserId())).execute();
             }
+//            }else{
+//                //不是分销员，直接建立绑定关系
+//                db().update(USER).set(USER.INVITE_ID,param.getInviteId())
+//                    .set(USER.INVITE_TIME,Util.currentTimeStamp())
+//                    .where(USER.USER_ID.eq(param.getUserId())).execute();
+//            }
             updateSublayerNumber(param.getInviteId());
             if(oldInviteId > 0){
                 updateSublayerNumber(oldInviteId);
