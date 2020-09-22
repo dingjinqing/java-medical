@@ -9,6 +9,7 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
@@ -25,6 +26,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
@@ -75,6 +78,8 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
     public OrderOperateSendMessage sendMessage;
     @Autowired
     public StoreAccountDao storeAccountDao;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
 
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -138,6 +143,8 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			recordList.add(orderGoodsVo);
 			shipInfoList.add(shipInfo.addRecord(orderGoodsVo,orderRecord, batchNo, param, sendNumber));
 		}
+		//更新处方药师签名
+        setPharmacistSignature(recordList,param);
 		//判断此次发货是否为部分发货
 		byte partShipFlag = OrderConstant.NO_PART_SHIP;
 		if(canBeShipped.size() > shipGoods.length || flag) {
@@ -200,6 +207,21 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		}
 	}
 
+    /**
+     * 更新处方药师签名
+     * @param list
+     */
+	public void setPharmacistSignature(List<OrderGoodsRecord> list,ShipParam param){
+	    List<String> prescriptionCodeList=list.stream().map(OrderGoodsRecord::getPrescriptionCode).collect(Collectors.toList());
+        prescriptionCodeList= prescriptionCodeList.stream().distinct().collect(Collectors.toList());
+        for(String preCode:prescriptionCodeList){
+            PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(preCode);
+            StoreAccountVo oneInfo=storeAccountDao.getOneInfo(param.getShipAccountId());
+            if(prescriptionVo!=null&&oneInfo!=null){
+                prescriptionDao.updatePharmacistSignature(preCode,oneInfo.getSignature());
+            }
+        }
+    }
 	/**
 	 * 发货查询
 	 * @param param

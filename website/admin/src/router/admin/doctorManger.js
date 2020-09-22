@@ -55,7 +55,7 @@ const routes = [
       category: 'doctorProfessionalTitle'
     },
     component: () =>
-			import('@/view/admin/index/leftNavComponents/doctor_manger/doctorProfessionalTitle/doctorProfessionalTitle')
+import('@/view/admin/index/leftNavComponents/doctor_manger/doctorProfessionalTitle/doctorProfessionalTitle')
   },
   // 科室管理
   {
@@ -88,7 +88,7 @@ const routes = [
           category: 'officesList'
         },
         component: () =>
-					import('@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices')
+import('@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices')
       },
       {
         path: '/admin/home/main/doctor/offices/updateOffices/:id',
@@ -99,7 +99,7 @@ const routes = [
           category: 'offices'
         },
         component: () =>
-					import('@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices')
+import('@/view/admin/index/leftNavComponents/doctor_manger/offices/addAndUpdateOffices')
       }
     ]
   },
@@ -148,7 +148,7 @@ const routes = [
       meta: 'doctor_manger'
     },
     component: () =>
-			import('@/view/admin/index/leftNavComponents/doctor_manger/recommendStrategy/recommendStrategy')
+import('@/view/admin/index/leftNavComponents/doctor_manger/recommendStrategy/recommendStrategy')
   },
 
   // 医师详情
