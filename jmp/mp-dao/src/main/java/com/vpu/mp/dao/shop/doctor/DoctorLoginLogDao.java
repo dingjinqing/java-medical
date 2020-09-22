@@ -76,7 +76,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
             , DSL.max(DOCTOR_LOGIN_LOG.CREATE_TIME).as(LAST_TIME),DOCTOR.NAME)
             .from(DOCTOR_LOGIN_LOG)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)));
-        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME);
+        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME).orderBy(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)));
         return this.getPageResult(select, param.getPage(), 5, DoctorAttendanceOneParam.class);
     }
 
