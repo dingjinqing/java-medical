@@ -4,8 +4,10 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.distribution.*;
+import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
@@ -32,7 +34,7 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		SelectJoinStep<? extends Record> select = db().select(USER.as(INVITE).USER_ID .as("partnerId"),USER.as(INVITE).USERNAME .as("distributorName"),USER.as(INVITE).MOBILE.as("distributorMobile"),
 				USER.USER_ID,USER.USERNAME.as("orderUserName"),USER.MOBILE.as("userMobile"),USER_DETAIL.REAL_NAME,ORDER_GOODS_REBATE.ORDER_SN,ORDER_INFO.ORDER_AMOUNT,
 				ORDER_INFO.MOBILE,USER.USERNAME,ORDER_GOODS_REBATE.REBATE_LEVEL,DISTRIBUTOR_GROUP.GROUP_NAME,
-				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,ORDER_INFO.CREATE_TIME,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("realRebateMoney"),ORDER_INFO.SETTLEMENT_FLAG)
+				ORDER_GOODS_REBATE.REAL_REBATE_MONEY,ORDER_INFO.CREATE_TIME,ORDER_GOODS.CAN_CALCULATE_MONEY.as("totalRebateMoney"),ORDER_INFO.SETTLEMENT_FLAG,ORDER_INFO.FINISHED_TIME.as("rebateTime"))
 				.from(ORDER_GOODS_REBATE
                     .leftJoin(ORDER_GOODS).on(ORDER_GOODS.REC_ID.eq(ORDER_GOODS_REBATE.REC_ID))
 				.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
@@ -91,10 +93,10 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		if(param.getEndRebateTime() != null){
             select.where(ORDER_INFO.FINISHED_TIME.le(param.getEndCreateTime()));
         }
-		//返利状态
-		if(param.getSettlementFlag() != null) {
-			select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(param.getSettlementFlag()));
-		}
+        //返利状态
+        if(StringUtil.isNotEmpty(param.getSettlementFlag())) {
+            select.where(ORDER_INFO.SETTLEMENT_FLAG.in(Util.stringToList(param.getSettlementFlag())));
+        }
 		//分销员分组
 		if(param.getDistributorGroup() != null) {
 			select.where(USER.INVITE_GROUP.eq(param.getDistributorGroup()));
