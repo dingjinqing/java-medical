@@ -519,26 +519,16 @@
                   class="operate"
                 >
                   <template
-                    v-if="
-                      goodsTypeArray.indexOf('17') != -1 &&
+                    v-if="goodsTypeArray.indexOf('17') != -1 &&
                       oneOrder.orderSn == oneOrder.mainOrderSn &&
-                      [8, 10, 13].indexOf(oneOrder.orderStatus)
-                    "
-                  >
+                      [8, 10, 13].indexOf(oneOrder.orderStatus)">
                     {{ $t('order.waitReceive') }}
                   </template>
                   <template v-else>
-                    <template
-                      v-if="
-                        oneOrder.orderStatus != 3 && oneOrder.orderStatus != 5
-                      "
-                    >
-                      <template
-                        v-if="
+                    <template v-if="oneOrder.orderStatus != 3 && oneOrder.orderStatus != 5">
+                      <template v-if="
                           oneOrder.orderStatus == 0 &&
-                          goodsTypeArray.indexOf('10') != -1
-                        "
-                      >
+                          goodsTypeArray.indexOf('10') != -1">
                         <template v-if="order.bkOrderPaid == 0">
                           {{ $t('order.waitDeposit') }}
                         </template>
@@ -551,62 +541,34 @@
                       </template>
                     </template>
                     <template v-else>
-                      <template
-                        v-if="
-                          oneOrder.deliverType == 1 && oneOrder.orderStatus == 3
-                        "
-                      >
+                      <template v-if="oneOrder.deliverType == 1 && oneOrder.orderStatus == 3">
                         {{ $t('order.waitverify') }}
                       </template>
-                      <template
-                        v-else-if="
-                          oneOrder.deliverType == 0 && oneOrder.orderStatus == 3
-                        "
-                      >
-                        {{ $t('order.waitShip') }}
+                      <template v-if="oneOrder.deliverType != 1 && oneOrder.orderStatus == 3">
+                          {{ $t('order.waitShip') }}
                         <template v-if="oneOrder.orderRemindTime">
                           <el-tooltip
                             class="item"
                             effect="dark"
-                            :content="
-                              $t('order.remindTime') + oneOrder.orderRemindTime
-                            "
-                            placement="top"
-                          >
+                            :content="$t('order.remindTime') + oneOrder.orderRemindTime"
+                            placement="top">
                             <i class="el-icon-question"></i>
                           </el-tooltip>
                         </template>
                       </template>
                       <template
-                        v-else-if="
-                          oneOrder.deliverType == 1 && oneOrder.orderStatus == 5
-                        "
-                      >
+                        v-else-if="oneOrder.deliverType == 1 && oneOrder.orderStatus == 5">
                         {{ $t('order.takeByself') }}
                       </template>
-                      <template
-                        v-else-if="
-                          oneOrder.deliverType == 0 && oneOrder.orderStatus == 5
-                        "
-                      >
+                      <template v-else-if="oneOrder.deliverType != 1 && oneOrder.orderStatus == 5">
                         {{ $t('order.received') }}
                       </template>
                     </template>
-                    <template
-                      v-if="
-                        oneOrder.orderStatus == 3 && oneOrder.partShipFlag == 1
-                      "
-                    >
+                    <template v-if="oneOrder.orderStatus == 3 && oneOrder.partShipFlag == 1">
                       <br />
                       ({{ $t('order.partShip') }})
                     </template>
-                    <template
-                      v-if="
-                        oneOrder.orderStatus == 3 &&
-                        oneOrder.deliverType != 1 &&
-                        oneOrder.canDeliver == true
-                      "
-                    >
+                    <template v-if="oneOrder.orderStatus == 3 &&oneOrder.deliverType != 1 &&oneOrder.canDeliver == true">
                       <!-- 非自提且待发货自提 -->
                       <br />
                       <el-button
