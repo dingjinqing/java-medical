@@ -4,8 +4,10 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.distribution.*;
+import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
@@ -91,10 +93,10 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		if(param.getEndRebateTime() != null){
             select.where(ORDER_INFO.FINISHED_TIME.le(param.getEndCreateTime()));
         }
-		//返利状态
-		if(param.getSettlementFlag() != null) {
-			select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(param.getSettlementFlag()));
-		}
+        //返利状态
+        if(StringUtil.isNotEmpty(param.getSettlementFlag())) {
+            select.where(ORDER_INFO.SETTLEMENT_FLAG.in(Util.stringToList(param.getSettlementFlag())));
+        }
 		//分销员分组
 		if(param.getDistributorGroup() != null) {
 			select.where(USER.INVITE_GROUP.eq(param.getDistributorGroup()));
