@@ -38,16 +38,16 @@ public class ShipInfoService extends ShopBaseService {
 
 	/**
 	 * 	通过订单sn[]查询其下配送信息，已通过相同的物流号进行聚合
-	 * @param arrayToSearch
+	 * @param sOrderSns
 	 * @return  Map<Integer, List<OrderGoods>>
 	 */
-	public Map<String,List<ShippingInfoVo>> getShippingByOrderSn(String... arrayToSearch) {
-		if(arrayToSearch.length == 0) {
-			return new HashMap<String, List<ShippingInfoVo>>(0);
+	public Map<String,List<ShippingInfoVo>> getShippingByOrderSn(List<String> sOrderSns) {
+		if(sOrderSns.size() == 0) {
+			return new HashMap<>(0);
 		}
 		Map<String, List<ShippingInfoVo>> goods = db().select(TABLE.asterisk())
 				.from(TABLE)
-				.where(TABLE.ORDER_SN.in(arrayToSearch))
+				.where(TABLE.ORDER_SN.in(sOrderSns))
 				.orderBy(TABLE.REC_ID.desc())
 				.fetchGroups(TABLE.ORDER_SN,ShippingInfoVo.class);
 		//聚合List<ShippingInfoVo>>相同批次号的对象合并它放在在数组第一次出现的位置
