@@ -7,37 +7,32 @@
     <view class="default-width">
       <view class="form-item">
         <view class="form-title">门店账户<text class="required">*</text></view>
-        <input placeholder="请输入门店账户"></input>
+        <input placeholder="请输入门店账户" bindinput="changeAccountName" value="{{accountName}}"></input>
       </view>
       <view class="form-item">
         <view class="form-title">账户密码<text class="required">*</text></view>
-        <input placeholder="请输入门店账户"></input>
+        <input placeholder="请输入门店账户" bindinput="changePassword" value="{{password}}"></input>
       </view>
       <view class="form-item">
         <view class="form-title">手机号码</view>
-        <input placeholder="请输入手机号"></input>
+        <input placeholder="请输入手机号" bindinput="changeMobile" value="{{mobile}}"></input>
         <view class="mobile {{countDown ? 'gray' : ''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
       </view>
       <view class="form-item">
         <view class="form-title">验证码</view>
-        <input placeholder="请输入验证码"></input>
+        <input placeholder="请输入验证码" bindinput="changeMobileCheckCode" value="{{mobileCheckCode}}"></input>
       </view>
       <view class="form-item">
         <view class="form-title">是否药师</view>
         <view class="radio-content">
-          <text class="iconfont {{isDoctor ? 'icondanxuan' : 'icondanxuanbiankuang'}}"></text>
-          <text>是</text>
-        </view>
-        <view class="radio-content">
-          <text class="iconfont {{!isDoctor ? 'icondanxuan' : 'icondanxuanbiankuang'}}"></text>
-          <text>否</text>
+          <text bindtap="toggleIsPharmacist" class="iconfont {{isPharmacist ? 'iconduoxuan' : 'iconduoxuanbiankuang'}}"></text>
         </view>
       </view>
       <view class="sign-button" wx:if="{{!showCanvas}}" bindtap="showCanvasContent">
         <image src="{{imageUrl}}image/wxapp/sign_icon.png"></image><text>点击此处签名</text>
       </view>
-      <v-sign wx:if="{{showCanvas}}"/>
-      <view class="confirm-button">确定</view>
+      <v-sign wx:if="{{showCanvas}}" id="sign"/>
+      <view class="confirm-button" bindtap="confirm">确定</view>
     </view>
   </view>
 </v-popup>

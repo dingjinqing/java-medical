@@ -345,6 +345,21 @@ global.wxComponent({
         }
       )
       util.jumpLink('/pages2/doctorIndex/doctorIndex', 'redirectTo')
+    },
+    to_clerk_index(){
+      util.api('/api/wxapp/store/storeClerk/auth/check',res=>{
+        if(res.error === 0){
+          if(res.user_type === 3){
+            util.jumpLink(`pages3/clerkIndex/clerkIndex`)
+          } else {
+            this.setData({
+              showClerkAccreditation:true
+            })
+          }
+        } else {
+          util.showModal('提示',res.message)
+        }
+      },null,null,true)
     }
   },
 

@@ -1,5 +1,7 @@
 {
   "component": true,
   "navigationBarTitleText": "编辑",
-  "usingComponents": {}
+  "usingComponents": {
+    "v-accreditation":"/components/popup/clerk_accreditation/index"
+  }
 }

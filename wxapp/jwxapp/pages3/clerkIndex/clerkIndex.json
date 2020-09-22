@@ -1,5 +1,4 @@
 {
   "usingComponents": {
-    "v-accreditation":"/components/popup/clerk_accreditation/index"
   }
 }
