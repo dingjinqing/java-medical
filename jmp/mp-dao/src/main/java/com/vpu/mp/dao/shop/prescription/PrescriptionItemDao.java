@@ -147,4 +147,16 @@ public class PrescriptionItemDao extends ShopBaseDao {
            .fetchAnyInto(PrescriptionItemVo.class);
 
     }
+
+    /**
+     * 根据处方号查询处方药品
+     * @param prescriptionCodes 处方号
+     * @return List<String>
+     */
+    public List<String> getPrescriptionGoodsNameByPrescriptionCode(String prescriptionCodes) {
+        return db().select(PRESCRIPTION_ITEM.GOODS_COMMON_NAME)
+            .from(PRESCRIPTION_ITEM)
+            .where(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(prescriptionCodes))
+            .fetchInto(String.class);
+    }
 }
