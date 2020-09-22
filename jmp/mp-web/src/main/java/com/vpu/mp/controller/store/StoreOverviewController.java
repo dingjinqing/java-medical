@@ -108,6 +108,7 @@ public class StoreOverviewController extends StoreBaseController {
      */
     @PostMapping("/api/store/view/bestsellers")
     public JsonResult getBestSellers(@Validated @RequestBody StoreBestSellersParam storeBestSellersParam) {
+        storeBestSellersParam.setStoreIds(storeAuth.user().getStoreIds());
         return success(saas.overviewService.getBestSellers(storeBestSellersParam));
     }
 }
