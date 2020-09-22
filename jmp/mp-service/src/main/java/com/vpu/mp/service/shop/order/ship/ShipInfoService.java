@@ -87,10 +87,12 @@ public class ShipInfoService extends ShopBaseService {
 		record.setShippingType(orderRecord.getDeliverType());
 		record.setShippingAccountId(param.getShipAccountId());
 		record.setShippingPlatform(param.getPlatform());
-		record.setShippingUserId(param.getShipUserId());
 		//核销时不设置
 		record.setShippingId(param.getShippingId());
 		record.setShippingNo(param.getShippingNo());
+		if (param.getShipUserId()!=null){
+			record.setShippingUserId(param.getShipUserId());
+		}
 		if (orderRecord.getDeliverType().equals(OrderConstant.DELIVER_TYPE_SELF)){
 			//自提订单核销
 			Timestamp temp = DateUtils.getSqlTimestamp();
