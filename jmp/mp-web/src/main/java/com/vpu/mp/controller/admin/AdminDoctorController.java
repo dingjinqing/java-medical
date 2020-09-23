@@ -256,4 +256,13 @@ public class AdminDoctorController extends AdminBaseController {
     public JsonResult doctorQueryPatient(@Validated @RequestBody DoctorQueryPatientParam doctorQueryPatientParam) {
         return success(shop().doctorService.getDoctorQueryPatient(doctorQueryPatientParam));
     }
+
+    /**
+     * 查询医师业绩详情
+     * @return
+     */
+    @PostMapping("/api/admin/doctor/query/performance")
+    public JsonResult getDoctorPerformanceDetail(@RequestBody DoctorDetailPerformanceParam param){
+        return success(shop().doctorService.getDoctorPerformanceDetail(param));
+    }
 }

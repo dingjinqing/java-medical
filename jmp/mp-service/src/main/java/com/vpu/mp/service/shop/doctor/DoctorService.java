@@ -18,6 +18,7 @@ import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDutyRecordDao;
+import com.vpu.mp.dao.shop.doctor.DoctorLoginLogDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
@@ -117,6 +118,10 @@ public class DoctorService extends BaseShopConfigService {
     private InquiryOrderDao inquiryOrderDao;
     @Autowired
     private PatientDao patientDao;
+    @Autowired
+    private DoctorLoginLogDao doctorLoginLogDao;
+    @Autowired
+    private DoctorStatisticService doctorStatisticService;
 
 
     public static final int ZERO = 0;
@@ -841,6 +846,33 @@ public class DoctorService extends BaseShopConfigService {
             doctorQueryPrescriptionVo.setGoodsNames(prescriptionGoodsNameByPrescriptionCode);
         });
         return doctorQueryPrescription;
+    }
+
+    /**
+     * 获取医师业绩统计详情
+     * @param param
+     * @return
+     */
+    public DoctorDetailPerformanceVo getDoctorPerformanceDetail(DoctorDetailPerformanceParam param){
+        DoctorDetailPerformanceVo doctorDetailPerformanceVo=new DoctorDetailPerformanceVo();
+
+        DoctorAttendanceOneParam doctorAttend = doctorLoginLogDao.getDoctorAttend(param.getDoctorId(), param.getStartTime(), param.getEndTime());
+        if(doctorAttend!=null){
+            Integer[] timeDifference = DateUtils.getTimeDifference(param.getEndTime(), param.getStartTime());
+            doctorAttend.setLoginRate(new BigDecimal(Double.valueOf(doctorAttend.getLoginDays())/Double.valueOf(timeDifference[0])).setScale(2, BigDecimal.ROUND_HALF_UP));
+            FieldsUtil.assign(doctorAttend,doctorDetailPerformanceVo);
+        }
+        DoctorDetailPerformanceVo inquiryCount=inquiryOrderDao.getCountNumByDateDoctorId(param.getDoctorId(),param.getStartTime(),param.getEndTime());
+        doctorDetailPerformanceVo.setInquiryMoney(inquiryCount.getInquiryMoney());
+        doctorDetailPerformanceVo.setInquiryNumber(inquiryCount.getInquiryNumber());
+        Integer receiveCount = inquiryOrderDao.countByDateDoctorId(param.getDoctorId(), param.getStartTime(), param.getEndTime());
+        doctorDetailPerformanceVo.setConsultationNumber(receiveCount);
+        DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
+        DoctorDetailPerformanceVo prescriptionCount=prescriptionDao.countSumDateByDoctor(doctor.getHospitalCode(),param.getStartTime(),param.getEndTime());
+
+        doctorDetailPerformanceVo.setPrescriptionMoney(prescriptionCount.getPrescriptionMoney());
+        doctorDetailPerformanceVo.setPrescriptionNum(prescriptionCount.getPrescriptionNum());
+        return doctorDetailPerformanceVo;
     }
 
 }

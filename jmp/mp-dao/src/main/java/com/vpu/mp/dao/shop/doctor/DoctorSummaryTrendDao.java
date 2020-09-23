@@ -129,6 +129,9 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
         if (param.getDepartmentId() != null) {
             select.where(DOCTOR_SUMMARY_TREND.DOCTOR_ID.in(param.getDoctorIds()));
         }
+        if(param.getDoctorId()!=null){
+            select.where(DOCTOR.ID.eq(param.getDoctorId()));
+        }
     }
 
     /**

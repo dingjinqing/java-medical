@@ -257,6 +257,7 @@ public class WxAppAuth {
                 //门店用户
                 wxAppSessionUser.setUserType(AUTH_TYPE_STORE_ACCOUNT_USER);
                 wxAppSessionUser.setStoreAccountId(accountId);
+                wxAppSessionUser.setDoctorId(0);
                 jedis.set(getToken(), Util.toJson(wxAppSessionUser));
                 storeAccountDao.updateUserToken(storeAccountVo.getAccountId(),getToken());
             }
