@@ -1,4 +1,5 @@
 <template>
+<div class="con_c">
   <div class="container">
     <el-form
       ref="smsSetting"
@@ -11,10 +12,10 @@
       </div>
       <div class="item-setting-content">
         <div class="item">
-          <el-form-item prop="status">
+          <el-form-item prop="doctorRecommendType">
             <span class="fil_span">时间筛选：</span>
             <el-select
-              v-model="timeSelect"
+              v-model="formData.doctorRecommendType"
               size="small"
               @change="dateChangeHandler"
               class="timeSelect"
@@ -30,20 +31,20 @@
           </el-form-item>
         </div>
         <div class="item">
-          <el-form-item prop="withdrawCashMax">
-            接诊量权重<el-input-number
+          <el-form-item prop="doctorRecommendConsultationRate">
+            接诊量权重：<el-input-number
               controls-position="right"
               :min="1"
               size="small"
-              v-model="formData.withdrawCashMax"
+              v-model="formData.doctorRecommendConsultationRate"
             ></el-input-number>元
           </el-form-item>
-          <el-form-item prop="withdrawCashMix">
+          <el-form-item prop="doctorRecommendInquiryRate">
             咨询费用权重：<el-input-number
               controls-position="right"
               :min="1"
               size="small"
-              v-model="formData.withdrawCashMix"
+              v-model="formData.doctorRecommendInquiryRate"
             ></el-input-number>元
           </el-form-item>
         </div>
@@ -63,10 +64,10 @@
       </div>
       <div class="item-setting-content">
         <div class="item">
-          <el-form-item prop="status">
+          <el-form-item prop="departmentRecommendType">
             <span class="fil_span">时间筛选：</span>
             <el-select
-              v-model="timeSelect"
+              v-model="formData.departmentRecommendType"
               size="small"
               @change="dateChangeHandler"
               class="timeSelect"
@@ -82,28 +83,28 @@
           </el-form-item>
         </div>
         <div class="item">
-          <el-form-item prop="withdrawCashMax">
+          <el-form-item prop="departmentRecommendConsultationRate">
             接诊量权重<el-input-number
               controls-position="right"
               :min="1"
               size="small"
-              v-model="formData.withdrawCashMax"
+              v-model="formData.departmentRecommendConsultationRate"
             ></el-input-number>元
           </el-form-item>
-          <el-form-item prop="withdrawCashMix">
+          <el-form-item prop="departmentRecommendInquiryRate">
             咨询金额权重：<el-input-number
               controls-position="right"
               :min="1"
               size="small"
-              v-model="formData.withdrawCashMix"
+              v-model="formData.departmentRecommendInquiryRate"
             ></el-input-number>元
           </el-form-item>
-          <el-form-item prop="withdrawCashMix">
+          <el-form-item prop="departmentRecommendDoctorRate">
             医生人数权重：<el-input-number
               controls-position="right"
               :min="1"
               size="small"
-              v-model="formData.withdrawCashMix"
+              v-model="formData.departmentRecommendDoctorRate"
             ></el-input-number>元
           </el-form-item>
         </div>
@@ -124,10 +125,12 @@
       >保存</el-button>
     </el-row>
   </div>
+</div>
+
 </template>
 
 <script>
-import { getWithDrawConfig, setWithDrawConfig } from '@/api/admin/doctorManage/recommend/recommend.js'
+import { getRecommend, saveRecommend } from '@/api/admin/doctorManage/recommend/recommend.js'
 export default {
   data () {
     return {
@@ -140,32 +143,26 @@ export default {
         { value: 90, label: '最近90天' }
       ],
       rules: {
-        withdrawCashMax: [
-          { required: true, message: '请输入最多提现', trigger: 'blur' }
+        doctorRecommendType: [
+          { required: true, message: '请选择医师筛选时间', trigger: 'change' }
         ],
-        withdrawCashMix: [
-          { required: true, message: '请输入最少提现', trigger: 'change' }
+        departmentRecommendType: [
+          { required: true, message: '请选择科室筛选时间', trigger: 'change' }
         ],
-        goodsSharingProportion: [
-          { required: true, message: '请输入分成比例', trigger: 'change' }
+        doctorRecommendConsultationRate: [
+          { required: true, message: '请输入医师接诊量权重', trigger: 'change' }
         ],
-        rxMedicalDoctorProportion: [
-          { required: true, message: '请输入医生佣金比例', trigger: 'change' }
+        doctorRecommendInquiryRate: [
+          { required: true, message: '请输入医师咨询费用权重', trigger: 'change' }
         ],
-        rxMedicalPlatformProportion: [
-          { required: true, message: '请输入平台佣金比例', trigger: 'change' }
+        departmentRecommendConsultationRate: [
+          { required: true, message: '请输入科室接诊量权重', trigger: 'change' }
         ],
-        noRxMedicalDoctorProportion: [
-          { required: true, message: '请输入医生佣金比例', trigger: 'change' }
+        departmentRecommendInquiryRate: [
+          { required: true, message: '请输入科室咨询金额权重', trigger: 'change' }
         ],
-        noRxMedicalPlatformProportion: [
-          { required: true, message: '请输入平台佣金比例', trigger: 'blur' }
-        ],
-        inquiryOrderDoctorProportion: [
-          { required: true, message: '请输入医生佣金比例', trigger: 'blur' }
-        ],
-        inquiryOrderPlatformProportion: [
-          { required: true, message: '请输入平台佣金比例', trigger: 'blur' }
+        departmentRecommendDoctorRate: [
+          { required: true, message: '请输入医师人数权重', trigger: 'change' }
         ]
       }
     }
@@ -175,10 +172,10 @@ export default {
   },
   methods: {
     getSetting () {
-      getWithDrawConfig().then(res => {
+      getRecommend().then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.formData = { ...res.content, status: !!res.content.status, isAutomaticAudit: !!res.content.isAutomaticAudit }
+          this.formData = { ...res.content }
         } else {
           this.$message.error({ message: res.message })
         }
@@ -187,8 +184,8 @@ export default {
     setSetting () {
       this.$refs['smsSetting'].validate((valid) => {
         if (valid) {
-          let params = { ...this.formData, status: this.formData.status ? 1 : 0, isAutomaticAudit: this.formData.isAutomaticAudit ? 1 : 0 }
-          setWithDrawConfig(params).then(res => {
+          let params = { ...this.formData }
+          saveRecommend(params).then(res => {
             console.log(params)
             if (res.error === 0) {
               this.$message.success({ message: '保存成功' })
@@ -208,9 +205,9 @@ export default {
 <style lang="scss" scoped>
 .container {
   background-color: #fff;
-  margin: 0 10px;
-  overflow: hidden;
+  margin: 10px;
   padding: 0 16px 20px;
+  overflow: hidden;
   .main-title {
     height: 40px;
     background-color: #eef1f6;
