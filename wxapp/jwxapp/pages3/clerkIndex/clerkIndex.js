@@ -38,12 +38,18 @@ global.wxPage({
         this.setData({
           userData:res.content.storeAccount,
           storeList:res.content.statisticList,
-          panelData:res.content.monthVo
+          panelData:res.content.monthVo,
+          hasNum:res.content.statisticList.some(item=>item.waitHandleOrderNum > 0)
         })
       } else {
         util.showModal('提示',res.message)
       }
     })
+  },
+  viewWaitHandleOrder({currentTarget:{dataset:{storeId}}}){
+    util.jumpLink(`/pages3/clerkOrderList/clerkOrderList${util.getUrlParams({
+      storeId
+    })}`)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

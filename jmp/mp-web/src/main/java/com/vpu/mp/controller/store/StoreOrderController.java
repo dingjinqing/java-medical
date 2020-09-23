@@ -136,7 +136,7 @@ public class StoreOrderController extends StoreBaseController {
      * 确认收货
      */
     @PostMapping("/receive")
-    public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
+    public JsonResult receive(@RequestBody @Valid OrderOperateQueryParam param) {
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setStoreInfo(storeAuth.user());
         param.setPlatform(OrderConstant.PLATFORM_STORE);

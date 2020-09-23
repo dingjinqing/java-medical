@@ -1,5 +1,4 @@
 import service from '@/util/request.js'
-
 // 患者列表
 export function getPatientList (data) {
   return service({

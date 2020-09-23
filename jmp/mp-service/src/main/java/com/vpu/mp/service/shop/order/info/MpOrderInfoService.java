@@ -129,8 +129,17 @@ public class MpOrderInfoService extends OrderInfoService{
         if(param == null) {
             return select;
         }
-        select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId())
-                .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
+        select.where(setIsContainSubOrder(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()), isContainSubOrder));
+        if (param.getPlatform()!=null&&param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP_STORE)){
+            if (param.getStoreId()!=null){
+                select.where(TABLE.STORE_ID.eq(param.getStoreId()));
+            }else{
+                select.where(TABLE.STORE_ID.in(param.getStoreIds()));
+            }
+            select.where(TABLE.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
+        }else {
+            select.where(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()));
+        }
         if(!StringUtils.isBlank(param.getSearch())) {
             select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).
                 where(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
@@ -160,6 +169,12 @@ public class MpOrderInfoService extends OrderInfoService{
                 break;
             case OrderConstant.RETURNING:
                 select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED));
+                break;
+            case OrderConstant.STORE_ACCOUNT_WAIT_DELIVERY:
+                select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED)));
+                break;
+            case OrderConstant.STORE_ACCOUNT_FINISHED:
+                select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
                 break;
             default:
                 break;

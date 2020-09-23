@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * 退款、退货
- * 
+ *
  * @author 王帅
  *
  */
@@ -81,10 +81,12 @@ public class RefundVo {
 		}
 		return Boolean.TRUE;
 	}
-	
+
 	public Boolean isReturn(Byte isMp) {
 		if(isMp == OrderConstant.IS_MP_Y) {
 			return mpIsReturn();
+		}else if (isMp==OrderConstant.IS_MP_STORE_CLERK){
+			return adminIsReturn();
 		}else {
 			return adminIsReturn();
 		}

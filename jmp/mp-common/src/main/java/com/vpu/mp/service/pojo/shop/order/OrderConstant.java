@@ -192,7 +192,9 @@ public class OrderConstant {
 	/**退款支持状态:待审核,待开方,待发货 已发货 已收货 已完成*/
 	public final static List<Byte> IS_RETURNMONEY = new ArrayList<Byte>(Arrays.asList(ORDER_TO_AUDIT_OPEN,ORDER_TO_AUDIT,ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED, ORDER_FINISHED));
 	/**审核订单 医师可以退   待审核,待开方 */
-	public final static List<Byte> IS_AUDIT_ORDER = new ArrayList<Byte>(Arrays.asList(ORDER_TO_AUDIT_OPEN,ORDER_TO_AUDIT,ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED, ORDER_FINISHED));
+	public final static List<Byte> IS_AUDIT_ORDER = new ArrayList<Byte>(Arrays.asList(ORDER_TO_AUDIT_OPEN,ORDER_TO_AUDIT));
+	/** 门店退款 代发货 **/
+	public final static List<Byte> IS_STOTE_RETURN_ORDER = new ArrayList<Byte>(Arrays.asList(ORDER_WAIT_DELIVERY));
 	/**退货支持状态:已发货 已收货 已完成*/
 	public final static List<Byte> IS_RETURNGOODS = new ArrayList<Byte>(Arrays.asList(ORDER_SHIPPED, ORDER_RECEIVED, ORDER_FINISHED));
 
@@ -281,6 +283,8 @@ public class OrderConstant {
 	public final static byte RETURN_OPERATE_ADMIN_AGREE_RETURN = 3;
 	/**商家拒绝退货申请*/
 	public final static byte RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY = 4;
+	/** 商家同意退款(代发货,门店店员退款)*/
+	public final static byte RETURN_OPERATE_STORE_ALL_RETURN = 5;
 	/**操作对应的中文*/
 	public final static String[] RETURN_OPERATE = {
 			"买家提交物流信息",
@@ -451,6 +455,14 @@ public class OrderConstant {
 	public static final byte AUDIT = 6;
 	/** 已取消 */
 	public static final byte RETURNING = 7;
+	/**
+	 *门店列表待发货
+	 */
+	public static final byte STORE_ACCOUNT_WAIT_DELIVERY = 8;
+	/**
+	 * 门店列表已完成
+	 */
+	public static final byte STORE_ACCOUNT_FINISHED = 9;
 
 	/**
 	 * 是否货到付款订单
@@ -620,6 +632,7 @@ public class OrderConstant {
 	 * 退款原因类型 医师审核未通过
 	 */
 	public static final Byte RETRURN_REASON_TYPE_DOCTOR_AUDIT = 6;
+	public static final Byte RETRURN_REASON_TYPE_STORE = 4;
 
     /**
      * 订单综合查询排序规则ORDER_QUERY_SORT_RULE

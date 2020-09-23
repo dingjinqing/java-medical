@@ -225,3 +225,11 @@ export function setBind (data) {
     data
   })
 }
+// 获取销售数据
+export function getBestsellers (data) {
+  return service({
+    url: '/api/store/view/bestsellers',
+    method: 'post',
+    data
+  })
+}

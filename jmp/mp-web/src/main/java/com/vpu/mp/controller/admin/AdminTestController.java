@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.department.StringParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
@@ -293,7 +294,11 @@ public class AdminTestController extends AdminBaseController {
     @RequestMapping(value = "/api/admin/test/fetch/doctor")
     public JsonResult fetchDoctor(@RequestBody StringParam param) {
         String json = "[{\"departCode\":\"31243\",\"departName\":\"科室1231\",\"state\":1,\"pid\":\"d19876732\"},{\"departCode\":\"s231\",\"departName\":\"科室3333\",\"state\":1,\"pid\":\"d328932\"}]";
-        saas.getShopApp(shopId()).doctorService.fetchDoctor(param.getJson());
+        try {
+            saas.getShopApp(shopId()).doctorService.fetchDoctor(param.getJson());
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
         return success();
 
 

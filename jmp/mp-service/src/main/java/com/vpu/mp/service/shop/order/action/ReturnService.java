@@ -6,12 +6,12 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.AbstractExcelDisposer;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
-import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
@@ -50,7 +50,11 @@ import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-import com.vpu.mp.service.shop.order.action.base.*;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
+import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -81,7 +85,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
@@ -274,7 +277,36 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();
             returnGoods.setRecId(orderGoods.getRecId());
             returnGoods.setReturnNumber(orderGoods.getGoodsNumber());
-
+            returnGoodsList.add(returnGoods);
+        });
+        param.setReturnGoods(returnGoodsList);
+        return execute(param);
+    }
+    /**
+     * 审核失败退款
+     * @param orderSn
+     * @return
+     */
+    public ExecuteResult storeAllRefund(String orderSn){
+        OrderInfoRecord orderRecord = orderInfo.getOrderByOrderSn(orderSn);
+        Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(orderRecord.getOrderId());
+        //组装退款param
+        RefundParam param = new RefundParam();
+        //1是退款
+        param.setAction((byte) OrderServiceCode.RETURN.ordinal());
+        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
+        param.setOrderSn(orderSn);
+        param.setOrderId(orderRecord.getOrderId());
+        param.setReturnType(OrderConstant.RT_ONLY_MONEY);
+        param.setReturnMoney(orderRecord.getMoneyPaid().add(orderRecord.getScoreDiscount()).add(orderRecord.getUseAccount()).add(orderRecord.getMemberCardBalance()).subtract(orderRecord.getShippingFee()));
+        param.setShippingFee(orderRecord.getShippingFee());
+        param.setReasonType(OrderConstant.RETRURN_REASON_TYPE_DOCTOR_AUDIT);
+//        param.setReasonDesc("");
+        List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
+        oGoods.forEach(orderGoods -> {
+            RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();
+            returnGoods.setRecId(orderGoods.getRecId());
+            returnGoods.setReturnNumber(orderGoods.getGoodsNumber());
             returnGoodsList.add(returnGoods);
         });
         param.setReturnGoods(returnGoodsList);
@@ -410,7 +442,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         if (!Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_REVOKE).equals(param.getReturnOperate()) &&
             !Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_SUBMIT_SHIPPING).equals(param.getReturnOperate()) &&
             !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE).equals(param.getReturnOperate()) &&
-            !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY).equals(param.getReturnOperate())) {
+            !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY).equals(param.getReturnOperate())&&
+            !Byte.valueOf(OrderConstant.RETURN_OPERATE_STORE_ALL_RETURN).equals(param.getReturnOperate())) {
             //非提交物流、非撤销校验
             if (param.getReturnMoney() == null) {
                 logger.info("退款时未输入退商品金额");

@@ -252,7 +252,7 @@ public class WxAppStoreController extends WxAppBaseController{
         param.setUserId(wxAppAuth.user().getUserId());
         param.setShopId(wxAppAuth.user().getShopId());
         try {
-            Integer accountId=shop().store.wxService.storeClerkAuth(param);
+            Integer accountId=shop().store.wxService.storeClerkAuth(param,wxAppAuth.user());
             if(accountId!=null){
                 wxAppAuth.updateStoreClerkUserType(accountId);
             }

@@ -1,3 +1,5 @@
+const util = require("../../utils/util");
+
 let plugin = requirePlugin('routePlan');
 global.wxPage({
 
@@ -5,14 +7,54 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-
+    storeId:null,
+    pageParams: {
+      currentPage: 1,
+      pageRows: 20
+    },
+    shippingStatus:8,
+    dataList:[]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    let {storeId} = options
+    this.data.storeId = storeId
+    this.requestOrderList()
+  },
+  requestOrderList(){
+    util.api('/api/wxapp/store/order/list',res=>{
+      console.log(res)
+      if (res.error === 0) {
+        if (this.data.pageParams.currentPage === 1) {
+          this.setData({
+            dataList: [
+              [...res.content.dataList]
+            ]
+          })
+        } else {
+          this.setData({
+            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']: res.content.dataList
+          })
+        }
+        this.setData({
+          pageParams: res.content.page
+        })
+      }
+    },{
+      storeId:Number(this.data.storeId),
+      type:this.data.shippingStatus,
+      ...this.data.pageParams
+    })
+  },
+  // 切换筛选条件
+  toggleFilter({currentTarget:{dataset:{shippingStatus}}}){
+    this.setData({
+      shippingStatus:Number(shippingStatus)
+    })
+    this.requestOrderList()
   },
   viewMap(){
     let key = 'C3JBZ-4UXEJ-PCLFP-KNWNV-UDVUT-IJFES';  //使用在腾讯位置服务申请的key

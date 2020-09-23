@@ -381,6 +381,9 @@ public class ShopOverviewService extends MainBaseService {
      * @return PageResult<StoreBestSellersVo>
      */
     public PageResult<StoreBestSellersVo> getBestSellers(StoreBestSellersParam storeBestSellersParam) {
+        if (storeBestSellersParam.getType() == 0 && storeBestSellersParam.getStartDate() == null && storeBestSellersParam.getEndDate() == null) {
+            storeBestSellersParam.setType(30);
+        }
         //得到时间
         if (!storeBestSellersParam.getType().equals(CUSTOM_DAYS)) {
             storeBestSellersParam.setStartDate(getDate(storeBestSellersParam.getType()));

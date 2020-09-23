@@ -52,6 +52,8 @@ public class CreateOrderBo {
             orderRecord.setCompleteAddress(address.getCompleteAddress());
             orderRecord.setZipcode(address.getZipcode());
             orderRecord.setMobile(address.getMobile());
+            orderRecord.setLat(address.getLat());
+            orderRecord.setLng(address.getLng());
         }
         if (invoice != null) {
             //发票信息

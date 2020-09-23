@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentIdNameVo;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListParam;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
@@ -88,7 +89,12 @@ public class WxAppDoctorConsultationController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/consultation/doctor/info")
     public JsonResult getConsultationDoctorInfo(@RequestBody UserDoctorParam param) {
-        DoctorOneParam doctorInfo = shop().doctorService.getWxDoctorInfo(param);
+        DoctorOneParam doctorInfo = null;
+        try {
+            doctorInfo = shop().doctorService.getWxDoctorInfo(param);
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
         InquiryOrderParam inquiryOrderParam = new InquiryOrderParam();
         FieldsUtil.assign(param,inquiryOrderParam);
         InquiryOrderDo inquiryOrderDo = shop().inquiryOrderService.getUndoneOrder(inquiryOrderParam);

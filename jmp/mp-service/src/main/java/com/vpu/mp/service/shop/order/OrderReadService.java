@@ -762,6 +762,7 @@ showManualReturn(vo);
 	}
 
 
+
 	private void setBkPayOperation(OrderListMpVo order) {
 		//有效时间区间
 		Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
