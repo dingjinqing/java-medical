@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
@@ -23,6 +24,7 @@ import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.user.UserDoctorAttentionDao;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.anchor.AnchorPointsListParam;
@@ -148,7 +150,7 @@ public class DoctorService extends BaseShopConfigService {
         return param.getId();
     }
 
-    public Integer updateDoctor(DoctorOneParam param) {
+    public Integer updateDoctor(DoctorOneParam param) throws MpException {
         DoctorOneParam doctorInfo = getOneInfo(param.getId());
         if (!doctorInfo.getStatus().equals(param.getStatus())) {
             dealDoctorWx(param.getId(), param.getStatus());
@@ -158,13 +160,16 @@ public class DoctorService extends BaseShopConfigService {
         return param.getId();
     }
 
-    public Integer enableDoctor(DoctorOneParam param) {
+    public Integer enableDoctor(DoctorOneParam param) throws MpException {
         doctorDao.updateDoctor(param);
         dealDoctorWx(param.getId(), param.getStatus());
         return param.getId();
     }
 
-    public DoctorOneParam getOneInfo(Integer doctorId) {
+    public DoctorOneParam getOneInfo(Integer doctorId) throws MpException {
+        if (doctorId == null) {
+            throw MpException.initErrorResult(JsonResultCode.DOCTOR_ID_IS_NULL, null, null);
+        }
         DoctorOneParam doctorInfo = doctorDao.getOneInfo(doctorId);
         List<Integer> departmentIds = doctorDepartmentCoupleDao.getDepartmentIdsByDoctorId(doctorId);
         doctorInfo.setDepartmentIds(departmentIds);
@@ -194,7 +199,7 @@ public class DoctorService extends BaseShopConfigService {
      *
      * @param doctor
      */
-    public void synchroDoctor(DoctorOneParam doctor) {
+    public void synchroDoctor(DoctorOneParam doctor) throws MpException {
         if (getDoctorByCode(doctor.getHospitalCode()) == null) {
             //默认不接诊
             doctor.setCanConsultation(DoctorConstant.CAN_NOT_CONSULTATION);
@@ -208,7 +213,7 @@ public class DoctorService extends BaseShopConfigService {
         }
     }
 
-    public void fetchDoctor(String json) {
+    public void fetchDoctor(String json) throws MpException {
         List<DoctorFetchOneParam> doctorFetchList = Util.parseJson(json, new TypeReference<List<DoctorFetchOneParam>>() {
         });
         List<DoctorFetchOneParam> doctorFetchListNew = listDoctorFetch(doctorFetchList);
@@ -270,7 +275,7 @@ public class DoctorService extends BaseShopConfigService {
      *
      * @return
      */
-    public JsonResult fetchExternalDoctor() {
+    public JsonResult fetchExternalDoctor() throws MpException {
         String appId = ApiExternalRequestConstant.APP_ID_HIS;
         Integer shopId = getShopId();
         String serviceName = ApiExternalRequestConstant.SERVICE_NAME_FETCH_DOCTOR_INFOS;
@@ -565,7 +570,7 @@ public class DoctorService extends BaseShopConfigService {
      * @param doctorId
      * @param status
      */
-    public void dealDoctorWx(Integer doctorId, Byte status) {
+    public void dealDoctorWx(Integer doctorId, Byte status) throws MpException {
         DoctorOneParam doctorInfo = getOneInfo(doctorId);
         if (doctorInfo.getUserId() > 0) {
             jedisManager.delete(doctorInfo.getUserToken());
@@ -589,7 +594,7 @@ public class DoctorService extends BaseShopConfigService {
      *
      * @param doctorId
      */
-    public void deleteUserToken(Integer doctorId) {
+    public void deleteUserToken(Integer doctorId) throws MpException {
         jedisManager.delete(getOneInfo(doctorId).getUserToken());
     }
 
@@ -599,7 +604,7 @@ public class DoctorService extends BaseShopConfigService {
      * @param param
      * @return
      */
-    public DoctorOneParam getWxDoctorInfo(UserDoctorParam param) {
+    public DoctorOneParam getWxDoctorInfo(UserDoctorParam param) throws MpException {
         DoctorOneParam doctorInfo = getOneInfo(param.getDoctorId());
         setDoctorDepartmentTitle(doctorInfo);
         doctorInfo.setIsAttention(userDoctorAttentionDao.isAttention(param));
