@@ -1343,6 +1343,7 @@ export default {
       console.log(res)
       let resCopy = JSON.parse(JSON.stringify(res))
       // 过滤
+      this.data.goods_items = this.data.goods_items ? this.data.goods_items : []
       res.forEach((item, index) => {
         this.data.goods_items.forEach((itemC, indexC) => {
           if (item.goodsId === itemC.goodsId) {
