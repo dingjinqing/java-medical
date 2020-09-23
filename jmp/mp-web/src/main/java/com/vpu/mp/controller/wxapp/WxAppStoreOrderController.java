@@ -3,6 +3,8 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
@@ -60,11 +62,12 @@ public class WxAppStoreOrderController extends WxAppBaseController{
     /**
      * 延长收货、确认收货、取消订单、提醒发货、删除订单
      */
-    @PostMapping("/api/wxapp/store/order/operation")
+    @PostMapping("/api/wxapp/store/order/receive")
     public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
         param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
         param.setWxUserInfo(wxAppAuth.user());
         param.setPlatform(OrderConstant.PLATFORM_WXAPP_STORE);
+        param.setAction((byte) OrderServiceCode.RECEIVE.ordinal());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
@@ -72,4 +75,22 @@ public class WxAppStoreOrderController extends WxAppBaseController{
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
     }
+
+    /**
+     * 退款
+     */
+    @PostMapping("/refund")
+    public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
+        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
+        param.setWxUserInfo(wxAppAuth.user());
+        param.setPlatform(OrderConstant.PLATFORM_WXAPP_STORE);
+        param.setAction((byte) OrderServiceCode.RECEIVE.ordinal());
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult == null || executeResult.isSuccess()) {
+            return success(executeResult == null ? null : executeResult.getResult());
+        }else {
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
+        }
+    }
+
 }
