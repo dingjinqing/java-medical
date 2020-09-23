@@ -133,6 +133,22 @@ public class StoreOrderController extends StoreBaseController {
     }
 
     /**
+     * 确认收货
+     */
+    @PostMapping("/receive")
+    public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setStoreInfo(storeAuth.user());
+        param.setPlatform(OrderConstant.PLATFORM_STORE);
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult == null || executeResult.isSuccess()) {
+            return success(executeResult == null ? null : executeResult.getResult());
+        }else {
+            return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
+        }
+    }
+
+    /**
      * 	退款、退货查询
      */
     @PostMapping("/refund/list")
