@@ -123,6 +123,7 @@ public class StoreOrderController extends StoreBaseController {
     public JsonResult ship(@RequestBody @Valid ShipParam param ) {
         param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
         param.setStoreInfo(storeAuth.user());
+        param.setPlatform(OrderConstant.PLATFORM_STORE);
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
