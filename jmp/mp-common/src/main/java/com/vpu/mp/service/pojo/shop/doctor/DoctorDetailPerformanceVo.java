@@ -13,13 +13,14 @@ import java.sql.Timestamp;
 public class DoctorDetailPerformanceVo {
     private Integer    doctorId;
     private Integer    consultationNumber;
-    private BigDecimal inquiryMoney;
+    private BigDecimal inquiryMoney=BigDecimal.ZERO;
     private Integer    inquiryNumber;
-    private BigDecimal prescriptionMoney;
+    private BigDecimal prescriptionMoney=BigDecimal.ZERO;
     private Integer    prescriptionNum;
     private String name;
     private Timestamp lastTime;
     private Integer loginDays;
     private BigDecimal loginRate;
+    private BigDecimal consumeMoney=BigDecimal.ZERO;
 
 }
