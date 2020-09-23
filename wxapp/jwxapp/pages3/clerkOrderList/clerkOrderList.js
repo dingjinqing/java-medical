@@ -31,16 +31,16 @@ global.wxPage({
         if (this.data.pageParams.currentPage === 1) {
           this.setData({
             dataList: [
-              [...res.content.dataList]
+              [...res.content.orders.dataList]
             ]
           })
         } else {
           this.setData({
-            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']: res.content.dataList
+            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']: res.content.orders.dataList
           })
         }
         this.setData({
-          pageParams: res.content.page
+          pageParams: res.content.orders.page
         })
       }
     },{
@@ -56,13 +56,13 @@ global.wxPage({
     })
     this.requestOrderList()
   },
-  viewMap(){
+  viewMap({currentTarget:{dataset:{lat,lng,completeAddress}}}){
     let key = 'C3JBZ-4UXEJ-PCLFP-KNWNV-UDVUT-IJFES';  //使用在腾讯位置服务申请的key
     let referer = '旺店精选';   //调用插件的app的名称
     let endPoint = JSON.stringify({  //终点
-        'name': '吉野家(北京西站北口店)',
-        'latitude': 39.89631551,
-        'longitude': 116.323459711
+        'name': completeAddress,
+        'latitude': lat,
+        'longitude': lng
     });
     wx.navigateTo({
         url: 'plugin://routePlan/index?key=' + key + '&referer=' + referer + '&endPoint=' + endPoint
