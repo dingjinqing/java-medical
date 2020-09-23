@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.doctor;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class DoctorQueryPrescriptionVo {
     private String departmentName;
 
     private List<String> goodsNames;
+
+    private BigDecimal totalPrice = new BigDecimal(0);
 
     private String orderSn;
 
