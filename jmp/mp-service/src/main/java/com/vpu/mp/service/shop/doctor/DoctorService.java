@@ -5,10 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
@@ -811,11 +808,16 @@ public class DoctorService extends BaseShopConfigService {
         merge2ResultMap(prescriptionCollect, inquiryCollect);
         List<DoctorQueryPatientVo> result = new ArrayList<>(prescriptionCollect.values());
         PageResult<DoctorQueryPatientVo> patientVoPageResult = new PageResult<>();
-        patientVoPageResult.setDataList(result);
+        Integer pageCount = (Integer)(int)Math.ceil((double) result.size() / Double.valueOf(doctorQueryPatientParam.getPageRows()));
+        if (doctorQueryPatientParam.getCurrentPage() > pageCount) {
+            doctorQueryPatientParam.setCurrentPage(pageCount);
+        }
+        Page page = Page.getPage(result.size(), doctorQueryPatientParam.getCurrentPage(), doctorQueryPatientParam.getPageRows());
+        patientVoPageResult.setPage(page);
+        List<DoctorQueryPatientVo> doctorQueryPatientVos = result.subList((doctorQueryPatientParam.getCurrentPage() - 1) * doctorQueryPatientParam.getPageRows(), (doctorQueryPatientParam.getCurrentPage() * doctorQueryPatientParam.getPageRows()) - 1);
+        patientVoPageResult.setDataList(doctorQueryPatientVos);
         return patientVoPageResult;
     }
-
-
 
     /**
      * 查询医师关联问诊信息

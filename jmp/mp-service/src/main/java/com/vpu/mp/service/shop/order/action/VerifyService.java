@@ -97,7 +97,7 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 			orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_RECEIVED);
 			//添加（部分）发货信息 b2c_part_order_goods_ship
 			db().batchInsert(shipInfoList).execute();
-			//更新发货数量 b2c_order_goods
+			//更新发货数量 b2c_order_goods0
 			db().batchUpdate(goods).execute();
 		});
 		//action操作

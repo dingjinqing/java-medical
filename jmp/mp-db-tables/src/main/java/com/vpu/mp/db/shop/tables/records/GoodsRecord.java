@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = -1708912507;
+    private static final long serialVersionUID = -1408989049;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods.goods_id</code>.
@@ -239,14 +239,14 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.is_on_sale</code>. 是否在售，1在售，0下架
+     * Setter for <code>mini_shop_471752.b2c_goods.is_on_sale</code>. 是否在售 0 否 1是
      */
     public void setIsOnSale(Byte value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.is_on_sale</code>. 是否在售，1在售，0下架
+     * Getter for <code>mini_shop_471752.b2c_goods.is_on_sale</code>. 是否在售 0 否 1是
      */
     public Byte getIsOnSale() {
         return (Byte) get(15);
