@@ -206,6 +206,8 @@ export default {
               localStorage.setItem('V-Username', res.content.storeAccountName)
               localStorage.setItem('V-isSubLogin', this.isSubLogin)
               localStorage.setItem('V-AccountName', res.content.storeAccountName)
+              localStorage.setItem('V-StoreMiniProgramName', res.content.nickName)
+              localStorage.setItem('V-StoreMiniProgramQrcode', res.content.qrcodeUrl)
               getShowMenu().then((res) => {
                 if (res.error === 0) {
                   let souceArray = res.content

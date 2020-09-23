@@ -125,7 +125,7 @@
             <span class="title">公告</span>
             <a class="gengduo"
               ><span @click="toList">更多</span>
-              <img :src="image + '/image/admin/new_ov/go.png'" alt="" />
+              <img :src="$imageHost + '/image/admin/new_ov/go.png'" alt="" />
             </a>
           </div>
           <div class="list-content">
@@ -148,25 +148,21 @@
         <div class="item-title">
           <span class="title">热销药品</span>
         </div>
-        <!-- <div class="filters">
+        <div class="filters">
           <div class="filters_item">
-            <span>科室：</span>
-            <el-select
-              v-model="docterPerformanceParams.departmentId"
-              filterable
-              size="small"
-            >
+            <span>时间筛选：</span>
+            <el-select v-model="goodsTableParams.type" size="small">
               <el-option
-                v-for="item in departmentList"
-                :key="item.id"
-                :value="item.id"
-                :label="item.name"
+                v-for="item in timeDataList"
+                :key="item.value"
+                :value="item.value"
+                :label="item.label"
               ></el-option>
             </el-select>
           </div>
-          <div class="filters_item">
+          <div class="filters_item" v-if="goodsTableParams.type === 0">
             <el-date-picker
-              v-model="docterPerformanceParams.startTime"
+              v-model="goodsTableParams.startDate"
               type="datetime"
               placeholder="开始时间"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -175,7 +171,7 @@
             />
             至
             <el-date-picker
-              v-model="docterPerformanceParams.endTime"
+              v-model="goodsTableParams.endDate"
               type="datetime"
               placeholder="结束时间"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -185,44 +181,43 @@
             />
           </div>
           <div class="filters_item">
-            <el-button
-              type="primary"
-              @click="filterTable"
-              size="small"
-              style="margin-left: 20px"
-              >搜索</el-button
+            <el-button type="primary" size="small" @click="getBestsellersList"
+              >筛选</el-button
             >
           </div>
-        </div> -->
+        </div>
         <div class="table-content">
           <el-table :data="goodsTable" border header-row-class-name="tableClss">
             <el-table-column
-              prop="name"
+              prop="goodsCommonName"
               label="药品名称"
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="desc"
+              prop="goodsQualityRatio"
               label="规格明细"
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="vendor"
+              prop="goodsProductionEnterprise"
               label="生产厂家"
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="num"
+              prop="goodsNumber"
               label="销售数量"
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="money"
+              prop="totalPrice"
               label="销售金额"
               align="center"
             ></el-table-column>
           </el-table>
-          <pagination :page-params.sync="goodsTablePageParams" />
+          <pagination
+            :page-params.sync="goodsTablePageParams"
+            @pagination="getBestsellersList"
+          />
         </div>
       </div>
     </div>
@@ -241,7 +236,7 @@
 </template>
 
 <script>
-import { getArticleList, getOrderNum, getUnfilledOrderNum, getAllStoreList, getBindStatus, getQrCode, setBind } from '@/api/store/store'
+import { getArticleList, getOrderNum, getUnfilledOrderNum, getAllStoreList, getBindStatus, getQrCode, setBind, getBestsellers } from '@/api/store/store'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -265,20 +260,19 @@ export default {
       bindData: {},
       centerDialogVisible: false,
       imgsrc: null,
-      goodsTable: [
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
-        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' }
-      ],
-      goodsTablePageParams: {}
+      goodsTable: [],
+      goodsTablePageParams: {},
+      goodsTableParams: {
+        type: 30,
+        startDate: '',
+        endDate: ''
+      },
+      timeDataList: [
+        { value: 1, label: '最近1天' },
+        { value: 7, label: '最近7天' },
+        { value: 30, label: '最近30天' },
+        { value: 0, label: '自定义' }
+      ]
     }
   },
   mounted () {
@@ -286,6 +280,20 @@ export default {
     this.getArticle()
     this.getStoreList()
     this.getBindStatus()
+    this.getBestsellersList()
+  },
+  watch: {
+    'goodsTableParams.type': {
+      handler: function (val) {
+        if (val === 0 && !this.goodsTableParams.startDate && !this.goodsTableParams.endDate) {
+          let start = new Date()
+          let end = new Date()
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+          this.goodsTableParams.startDate = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate() + 1} 00:00:00`
+          this.goodsTableParams.endDate = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()} 23:59:59`
+        }
+      }
+    }
   },
   methods: {
     getArticle () {
@@ -370,6 +378,16 @@ export default {
         }
       })
       window.open(routeUrl.href, '_blank')
+    },
+    getBestsellersList () {
+      getBestsellers({ ...this.goodsTableParams, ...this.goodsTablePageParams }).then(res => {
+        if (res.error === 0) {
+          this.goodsTablePageParams = res.content.page
+          this.goodsTable = res.content.dataList
+        } else {
+          this.$message.error({ message: res.message })
+        }
+      })
     }
   }
 }
@@ -533,6 +551,35 @@ export default {
     font-weight: bold;
     color: #000;
     padding: 8px 10px;
+  }
+  .filters {
+    display: flex;
+    line-height: 32px;
+    flex-wrap: wrap;
+    // max-width: 1226px;
+    .filters_item {
+      display: flex;
+      max-width: 480px;
+      min-width: 320px;
+      margin-left: 15px;
+      margin-bottom: 10px;
+      /deep/ .areaLinkage {
+        .el-select {
+          margin-left: 10px;
+          &:first-of-type {
+            margin-left: 0;
+          }
+        }
+      }
+      > span {
+        min-width: 100px;
+        font-size: 14px;
+        text-align: right;
+      }
+    }
+  }
+  .middle_input {
+    width: 185px;
   }
 }
 </style>
