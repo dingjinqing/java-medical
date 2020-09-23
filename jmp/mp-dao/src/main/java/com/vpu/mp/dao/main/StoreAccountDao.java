@@ -121,6 +121,6 @@ public class StoreAccountDao extends MainBaseDao {
      * @return
      */
     public StoreAccountVo getByUserId(Integer userId){
-        return db().select(STORE_ACCOUNT.ACCOUNT_ID).from(STORE_ACCOUNT).where(STORE_ACCOUNT.USER_ID.eq(userId)).fetchAnyInto(StoreAccountVo.class);
+        return db().select().from(STORE_ACCOUNT).where(STORE_ACCOUNT.USER_ID.eq(userId)).fetchAnyInto(StoreAccountVo.class);
     }
 }
