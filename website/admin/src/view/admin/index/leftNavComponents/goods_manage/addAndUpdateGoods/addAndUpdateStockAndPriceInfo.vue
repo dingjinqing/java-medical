@@ -387,15 +387,14 @@
         prop="prdCost"
       >
         <el-input-number
-          ref="prdCostInput"
-          v-model="goodsProductInfo.prdCost"
-          step-strictly
-          size="small"
-          controls-position="right"
-          :min="0"
-          :precision="2"
-          :disabled="specInfoSwitch"
-          style="width:170px;"
+                ref="prdCostInput"
+                v-model="goodsProductInfo.prdCost"
+                size="small"
+                controls-position="right"
+                :min="0"
+                :precision="2"
+                :disabled="specInfoSwitch"
+                style="width:170px;"
         />
         <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.costPriceTip')}}</span>
       </el-form-item>
@@ -1360,7 +1359,7 @@ export default {
         // 初始化会员卡信息
         this._initMemberCards(goodsData)
         // 会员价设置是否显示设置
-        this.memberCardPrdShow = goodsData.goodsGradePrds.length !== null && goodsData.goodsGradePrds.length > 0
+        // this.memberCardPrdShow = goodsData.goodsGradePrds.length !== null && goodsData.goodsGradePrds.length > 0
         // 初始化商品规格会员卡价格
         this._initMemberCardPrice(goodsData, isUseDefaultPrd)
         // 开启监听
