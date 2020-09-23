@@ -576,7 +576,7 @@ public class PrescriptionDao extends ShopBaseDao {
                 PRESCRIPTION.AUDIT_TYPE,
                 PRESCRIPTION.ORDER_SN,
                 PRESCRIPTION.TOTAL_PRICE,
-                PRESCRIPTION.CREATE_TIME)
+                PRESCRIPTION.CREATE_TIME.as("treatmentTime"))
             .from(PRESCRIPTION)
             .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorQueryPrescriptionParam.getDoctorCode()));
         doctorQueryPrescriptionBuildOption(doctorQueryPrescriptionParam, where);
