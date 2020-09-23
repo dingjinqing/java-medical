@@ -6,11 +6,10 @@ package com.vpu.mp.common.pojo.shop.table;
 
 import lombok.Data;
 
+import javax.annotation.Generated;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import javax.annotation.Generated;
 
 
 /**
@@ -176,5 +175,6 @@ public class OrderInfoDo implements Serializable {
     private String     prescriptionCodeList;
     private Timestamp  auditTime;
     private Integer    patientId;
-
+    private String     lat;
+    private String     lng;
 }
