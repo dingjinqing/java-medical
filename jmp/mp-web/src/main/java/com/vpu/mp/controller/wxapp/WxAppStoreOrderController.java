@@ -2,10 +2,10 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.saas.shop.StoreAccountService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import lombok.extern.slf4j.Slf4j;
@@ -28,16 +28,20 @@ public class WxAppStoreOrderController extends WxAppBaseController{
     @Autowired
     private StoreAccountService setWxUserInfo;
 
+
     /**
      * 订单列表
      */
     @PostMapping("/api/wxapp/store/order/list")
-    public JsonResult list(@RequestBody @Valid OrderPageListQueryParam param) {
-        Integer storeAccountId = wxAppAuth.user().getStoreAccountId();
-        StoreAccountVo storeAccountVo = setWxUserInfo.getStoreInfoById(storeAccountId);
+    public JsonResult storeOrderList(@RequestBody @Valid OrderListParam param) {
+        param.setWxUserInfo(wxAppAuth.user());
+        StoreAccountVo storeAccountVo = setWxUserInfo.getStoreInfoById(wxAppAuth.user().getStoreAccountId());
         param.setStoreIds(storeAccountVo.getStoreLists());
+        param.setPlatform(OrderConstant.PLATFORM_WXAPP_STORE);
         return success(shop().readOrder.getPageList(param));
     }
+
+
 
     /**
      * 	发货

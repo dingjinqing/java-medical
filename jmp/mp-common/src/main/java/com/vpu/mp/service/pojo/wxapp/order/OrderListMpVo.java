@@ -92,4 +92,17 @@ public class OrderListMpVo{
     /**预售订单预计发货时间*/
     private Timestamp bkShippingTime;
     private Integer scoreProportion;
+	/**
+	 * 全部地址
+	 */
+	private String completeAddress;
+	/**
+	 * 手机号
+	 */
+	private String mobile;
+	/**
+	 * 地址经纬度
+	 */
+	private String lat;
+	private String lng;
 }

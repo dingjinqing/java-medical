@@ -129,8 +129,17 @@ public class MpOrderInfoService extends OrderInfoService{
         if(param == null) {
             return select;
         }
-        select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId())
-                .and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
+        select.where(setIsContainSubOrder(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()), isContainSubOrder));
+        if (param.getPlatform()!=null&&param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP_STORE)){
+            if (param.getStoreId()!=null){
+                select.where(TABLE.SHOP_ID.eq(param.getStoreId()));
+            }else{
+                select.where(TABLE.SHOP_ID.in(param.getStoreIds()));
+            }
+            select.where(TABLE.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
+        }else {
+            select.where(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()));
+        }
         if(!StringUtils.isBlank(param.getSearch())) {
             select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).
                 where(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
