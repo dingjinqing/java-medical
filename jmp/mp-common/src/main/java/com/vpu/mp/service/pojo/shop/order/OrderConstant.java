@@ -451,6 +451,14 @@ public class OrderConstant {
 	public static final byte AUDIT = 6;
 	/** 已取消 */
 	public static final byte RETURNING = 7;
+	/**
+	 *门店列表待发货
+	 */
+	public static final byte STORE_ACCOUNT_WAIT_DELIVERY = 8;
+	/**
+	 * 门店列表已完成
+	 */
+	public static final byte STORE_ACCOUNT_FINISHED = 9;
 
 	/**
 	 * 是否货到付款订单
