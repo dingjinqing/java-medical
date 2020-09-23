@@ -1,48 +1,45 @@
 <template>
   <div class="view-container">
-    <div class="left-content">
-      <div class="content-item">
-        <div class="item-title">
-          <span class="title">待办事项</span>
-          <div v-if="bindData.isBind === 0">
-            关注公众号，实时接收消息通知
-            <el-button
-              class="btn_follow"
-              @click="handleBind"
-            >关注</el-button>
+    <div class="top-content">
+      <div class="left-content">
+        <div class="content-item">
+          <div class="item-title">
+            <span class="title">待办事项</span>
+            <div v-if="bindData.isBind === 0">
+              关注公众号，实时接收消息通知
+              <el-button class="btn_follow" @click="handleBind">关注</el-button>
+            </div>
+            <div v-if="bindData.isBind === 1">
+              {{ bindData.nickName }}已关注公众号，可实时接收消息通知
+              <el-button class="btn_follow" @click="handleCancelBind"
+                >解除绑定</el-button
+              >
+            </div>
           </div>
-          <div v-if="bindData.isBind === 1">
-            {{ bindData.nickName }}已关注公众号，可实时接收消息通知
-            <el-button
-              class="btn_follow"
-              @click="handleCancelBind"
-            >解除绑定</el-button>
-          </div>
-        </div>
-        <div class="module-content">
-          <div
-            class="module-item"
-            :style="
-              'background:url(' +
-              $imageHost +
-              '/image/store/overview/so_blue.png) no-repeat 95% 90%,-webkit-linear-gradient(left, #dfecff, #b2cbff);'
-            "
-          >
-            <span class="num">{{ waitVerifyNum }}</span>
-            <span class="title">待核销自提订单</span>
-          </div>
-          <div
-            class="module-item"
-            :style="
-              'background:url(' +
-              $imageHost +
-              '/image/store/overview/so_orange.png) no-repeat 95% 90%,-webkit-linear-gradient(left, #fff6da, #ffe2af);'
-            "
-          >
-            <span class="num">{{ waitDeliverNum }}</span>
-            <span class="title">待发货订单</span>
-          </div>
-          <!-- <div
+          <div class="module-content">
+            <div
+              class="module-item"
+              :style="
+                'background:url(' +
+                $imageHost +
+                '/image/store/overview/so_blue.png) no-repeat 95% 90%,-webkit-linear-gradient(left, #dfecff, #b2cbff);'
+              "
+            >
+              <span class="num">{{ waitVerifyNum }}</span>
+              <span class="title">待核销自提订单</span>
+            </div>
+            <div
+              class="module-item"
+              :style="
+                'background:url(' +
+                $imageHost +
+                '/image/store/overview/so_orange.png) no-repeat 95% 90%,-webkit-linear-gradient(left, #fff6da, #ffe2af);'
+              "
+            >
+              <span class="num">{{ waitDeliverNum }}</span>
+              <span class="title">待发货订单</span>
+            </div>
+            <!-- <div
             class="module-item"
             :style="
               'background:url(' +
@@ -53,121 +50,179 @@
             <span class="num">0</span>
             <span class="title">待核销服务</span>
           </div> -->
+          </div>
+        </div>
+        <div class="content-item">
+          <div class="item-title">
+            <span class="title">数据看板</span>
+            <div>
+              查询时间：
+              <el-select v-model="searchTimeType" @change="selectChange">
+                <el-option
+                  v-for="item in timeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  size="small"
+                ></el-option>
+              </el-select>
+            </div>
+            <div>
+              门店：
+              <el-select v-model="searchStoreId" @change="selectChange">
+                <el-option
+                  v-for="item in storeList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                  size="small"
+                ></el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="data-content">
+            <div class="data-item">
+              <img :src="$imageHost + '/image/store/overview/so2.png'" alt="" />
+              <div class="desc">
+                <span class="title">下单人数</span>
+                <span class="num">{{ totalNum.orderUserNum || 0 }}</span>
+              </div>
+            </div>
+            <div class="data-item">
+              <img :src="$imageHost + '/image/store/overview/so3.png'" alt="" />
+              <div class="desc">
+                <span class="title">付款人数</span>
+                <span class="num">{{ totalNum.orderPayUserNum || 0 }}</span>
+              </div>
+            </div>
+            <div class="data-item">
+              <img :src="$imageHost + '/image/store/overview/so4.png'" alt="" />
+              <div class="desc">
+                <span class="title">下单数</span>
+                <span class="num">{{ totalNum.orderNum || 0 }}</span>
+              </div>
+            </div>
+            <div class="data-item">
+              <img :src="$imageHost + '/image/store/overview/so5.png'" alt="" />
+              <div class="desc">
+                <span class="title">支付单数</span>
+                <span class="num">{{ totalNum.orderPayNum || 0 }}</span>
+              </div>
+            </div>
+            <div class="data-item">
+              <img :src="$imageHost + '/image/store/overview/so6.png'" alt="" />
+              <div class="desc">
+                <span class="title">消费金额</span>
+                <span class="num">{{ totalNum.totalPaidMoney || '0.00' }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="content-item">
-        <div class="item-title">
-          <span class="title">数据看板</span>
-          <div>
-            查询时间：
-            <el-select
-              v-model="searchTimeType"
-              @change="selectChange"
+      <div class="right-content" v-if="articleList.length">
+        <div class="content-item">
+          <div class="item-title">
+            <span class="title">公告</span>
+            <a class="gengduo"
+              ><span @click="toList">更多</span>
+              <img :src="image + '/image/admin/new_ov/go.png'" alt="" />
+            </a>
+          </div>
+          <div class="list-content">
+            <div
+              class="list-item"
+              v-for="articleItem in articleList"
+              :key="articleItem.articleId"
+              @click="noticeDetail(articleItem.articleId)"
             >
-              <el-option
-                v-for="item in timeList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-                size="small"
-              ></el-option>
-            </el-select>
-          </div>
-          <div>
-            门店：
-            <el-select
-              v-model="searchStoreId"
-              @change="selectChange"
-            >
-              <el-option
-                v-for="item in storeList"
-                :key="item.label"
-                :label="item.label"
-                :value="item.value"
-                size="small"
-              ></el-option>
-            </el-select>
-          </div>
-        </div>
-        <div class="data-content">
-          <div class="data-item">
-            <img
-              :src="$imageHost + '/image/store/overview/so2.png'"
-              alt=""
-            />
-            <div class="desc">
-              <span class="title">下单人数</span>
-              <span class="num">{{ totalNum.orderUserNum || 0 }}</span>
-            </div>
-          </div>
-          <div class="data-item">
-            <img
-              :src="$imageHost + '/image/store/overview/so3.png'"
-              alt=""
-            />
-            <div class="desc">
-              <span class="title">付款人数</span>
-              <span class="num">{{ totalNum.orderPayUserNum || 0 }}</span>
-            </div>
-          </div>
-          <div class="data-item">
-            <img
-              :src="$imageHost + '/image/store/overview/so4.png'"
-              alt=""
-            />
-            <div class="desc">
-              <span class="title">下单数</span>
-              <span class="num">{{ totalNum.orderNum || 0 }}</span>
-            </div>
-          </div>
-          <div class="data-item">
-            <img
-              :src="$imageHost + '/image/store/overview/so5.png'"
-              alt=""
-            />
-            <div class="desc">
-              <span class="title">支付单数</span>
-              <span class="num">{{ totalNum.orderPayNum || 0 }}</span>
-            </div>
-          </div>
-          <div class="data-item">
-            <img
-              :src="$imageHost + '/image/store/overview/so6.png'"
-              alt=""
-            />
-            <div class="desc">
-              <span class="title">消费金额</span>
-              <span class="num">{{ totalNum.totalPaidMoney || '0.00' }}</span>
+              <span class="dot"></span>
+              <span class="text">{{ articleItem.title }}</span>
+              <span class="time">{{ articleItem.updateTime }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div
-      class="right-content"
-      v-if="articleList.length"
-    >
+    <div class="bottom-content">
       <div class="content-item">
         <div class="item-title">
-          <span class="title">公告</span>
-          <a class="gengduo"><span @click="toList">更多</span>
-            <img
-              :src="image + '/image/admin/new_ov/go.png'"
-              alt=""
-            >
-          </a>
+          <span class="title">热销药品</span>
         </div>
-        <div class="list-content">
-          <div
-            class="list-item"
-            v-for="articleItem in articleList"
-            :key="articleItem.articleId"
-            @click="noticeDetail(articleItem.articleId)"
-          >
-            <span class="dot"></span>
-            <span class="text">{{ articleItem.title }}</span>
-            <span class="time">{{ articleItem.updateTime }}</span>
+        <!-- <div class="filters">
+          <div class="filters_item">
+            <span>科室：</span>
+            <el-select
+              v-model="docterPerformanceParams.departmentId"
+              filterable
+              size="small"
+            >
+              <el-option
+                v-for="item in departmentList"
+                :key="item.id"
+                :value="item.id"
+                :label="item.name"
+              ></el-option>
+            </el-select>
           </div>
+          <div class="filters_item">
+            <el-date-picker
+              v-model="docterPerformanceParams.startTime"
+              type="datetime"
+              placeholder="开始时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              class="middle_input"
+              size="small"
+            />
+            至
+            <el-date-picker
+              v-model="docterPerformanceParams.endTime"
+              type="datetime"
+              placeholder="结束时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              class="middle_input"
+              default-time="23:59:59"
+              size="small"
+            />
+          </div>
+          <div class="filters_item">
+            <el-button
+              type="primary"
+              @click="filterTable"
+              size="small"
+              style="margin-left: 20px"
+              >搜索</el-button
+            >
+          </div>
+        </div> -->
+        <div class="table-content">
+          <el-table :data="goodsTable" border header-row-class-name="tableClss">
+            <el-table-column
+              prop="name"
+              label="药品名称"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="desc"
+              label="规格明细"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="vendor"
+              label="生产厂家"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="num"
+              label="销售数量"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="money"
+              label="销售金额"
+              align="center"
+            ></el-table-column>
+          </el-table>
+          <pagination :page-params.sync="goodsTablePageParams" />
         </div>
       </div>
     </div>
@@ -179,10 +234,7 @@
       <span>用手机扫下方二维码关注公众号，及时接收新订单提醒</span>
 
       <div style="text-align: center">
-        <img
-          :src="this.imgsrc"
-          style="width: 100px; padding-top: 23px"
-        />
+        <img :src="this.imgsrc" style="width: 100px; padding-top: 23px" />
       </div>
     </el-dialog>
   </div>
@@ -191,6 +243,9 @@
 <script>
 import { getArticleList, getOrderNum, getUnfilledOrderNum, getAllStoreList, getBindStatus, getQrCode, setBind } from '@/api/store/store'
 export default {
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
       storeList: [],
@@ -209,7 +264,21 @@ export default {
       ],
       bindData: {},
       centerDialogVisible: false,
-      imgsrc: null
+      imgsrc: null,
+      goodsTable: [
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' },
+        { name: '头孢', desc: '大', vendor: '六厂', num: '10', money: '1000' }
+      ],
+      goodsTablePageParams: {}
     }
   },
   mounted () {
@@ -310,9 +379,10 @@ export default {
 .view-container {
   padding: 10px;
   display: flex;
-  > div {
+  flex-direction: column;
+  > div.top-content {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
   }
   .left-content {
     flex: 1;
@@ -417,8 +487,12 @@ export default {
       }
     }
   }
+  .bottom-content {
+    margin-top: 10px;
+  }
   .left-content,
-  .right-content {
+  .right-content,
+  .bottom-content {
     > .content-item {
       padding: 20px;
       background-color: #fff;
@@ -451,6 +525,14 @@ export default {
         margin-top: 10px;
       }
     }
+  }
+  /deep/ .tableClss th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
   }
 }
 </style>

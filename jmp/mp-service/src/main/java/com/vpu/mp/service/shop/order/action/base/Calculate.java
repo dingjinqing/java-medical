@@ -9,7 +9,12 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
+import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -64,9 +69,6 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
-import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -76,6 +78,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
+import static com.vpu.mp.common.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 订单模块计算类
@@ -719,7 +724,7 @@ public class Calculate extends ShopBaseService {
                 bo.setIsCanReturn(isCanReturn);
             }
         }
-        if (orderGoods.stream().map(OrderGoodsBo::getIsCanReturn).max(Byte::compareTo).get().equals(OrderConstant.IS_CAN_RETURN_N)) {
+        if (orderGoods.stream().map(OrderGoodsBo::getIsCanReturn).max(Byte::compareTo).orElse(OrderConstant.IS_CAN_RETURN_Y).equals(OrderConstant.IS_CAN_RETURN_N)) {
             //max不可能为null
             //所有商品都为不可退则订单可退状态也改为不可退
             order.setReturnTypeCfg(OrderConstant.CFG_RETURN_TYPE_N);

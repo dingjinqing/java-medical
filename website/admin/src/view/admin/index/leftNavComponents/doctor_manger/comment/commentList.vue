@@ -154,7 +154,7 @@
             <el-tooltip
               content="通过"
               placement="top"
-              v-if="scope.row.auditStatus == 0||scope.row.auditStatus == 2"
+              v-if="(scope.row.auditStatus == 0||scope.row.auditStatus == 2)&&autoReview == false"
             >
               <span
                 class="el-icon-success operateSpan"
@@ -164,7 +164,7 @@
             <el-tooltip
               content="拒绝"
               placement="top"
-              v-if="scope.row.auditStatus == 0||scope.row.auditStatus == 1"
+              v-if="(scope.row.auditStatus == 0||scope.row.auditStatus == 1)&&autoReview == false"
             >
               <span
                 class="el-icon-error operateSpan"

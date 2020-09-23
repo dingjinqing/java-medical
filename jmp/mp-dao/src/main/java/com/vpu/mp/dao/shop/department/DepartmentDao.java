@@ -400,7 +400,7 @@ public class DepartmentDao extends ShopBaseDao {
         }
         return db().select(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID
             ,DEPARTMENT_SUMMARY_TREND.CONSULTATION_SCORE.multiply(consultationRate).add(DEPARTMENT_SUMMARY_TREND.INQUIRY_SCORE.multiply(inquiryRate)).add(doctorNumberScoreTable.field(DOCTOR_NUM_SCORE).multiply(doctorRate)).as(SCORE))
-            .from(DOCTOR_SUMMARY_TREND)
+            .from(DEPARTMENT_SUMMARY_TREND)
             .leftJoin(doctorNumberScoreTable).on(doctorNumberScoreTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID))
             .where(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(refDate))
             .and(DEPARTMENT_SUMMARY_TREND.TYPE.eq((byte)departmentRecommendType.intValue()));

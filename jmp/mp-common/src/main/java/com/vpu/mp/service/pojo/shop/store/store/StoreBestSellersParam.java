@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.store.store;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author 赵晓东
@@ -26,8 +27,7 @@ public class StoreBestSellersParam {
     private static final String TOTAL_PRICE = "totalPrice";
     private static final String GOODS_NUMBER = "goodsNumber";
 
-    @NotNull(message = "门店不能为空")
-    private Integer storeId;
+    private List<Integer> storeIds;
     /**
      * 排序字段
      */

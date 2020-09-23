@@ -40,6 +40,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
     public final static String  DATE ="date";
     public final static String  VALUE ="value";
     public final static Byte  THIS_MONTH = 1;
+    public final static Integer  INTEGER_ZERO = 0;
     /**
      * 医师的出勤天数
      * @param doctorId 医师id
@@ -66,17 +67,17 @@ public class DoctorLoginLogDao extends ShopBaseDao {
 
     /**
      * 医师出勤率
-     * @param page
+     * @param param
      * @return
      */
     public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(DoctorAttendanceListParam param) {
         Timestamp startTime = getStartTime(param.getType());
         SelectJoinStep<? extends Record> select = db().select(DOCTOR_LOGIN_LOG.DOCTOR_ID,DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as(LOGIN_DAYS)
             , DSL.max(DOCTOR_LOGIN_LOG.CREATE_TIME).as(LAST_TIME),DOCTOR.NAME)
-            .from(DOCTOR_LOGIN_LOG)
-            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID));
-        select.where(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)).groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID);
-        return this.getPageResult(select, param.getPage(), 5, DoctorAttendanceOneParam.class);
+            .from(DOCTOR)
+            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)));
+        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME).orderBy(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).desc());
+        return this.getPageResult(select, param.getCurrentPage(), 5, DoctorAttendanceOneParam.class);
     }
 
     public Timestamp getStartTime(Byte type) {
@@ -94,8 +95,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
         Timestamp startTime = getStartTime(type);
         return db().select(DOCTOR.ID)
             .from(DOCTOR)
-            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR_LOGIN_LOG.DOCTOR_ID.eq(DOCTOR.ID))
-            .where(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime))
+            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR_LOGIN_LOG.DOCTOR_ID.eq(DOCTOR.ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)))
             .groupBy(DOCTOR.ID)
             .having(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).ge(min).and(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).lt(max)))
             .fetchInto(Integer.class);

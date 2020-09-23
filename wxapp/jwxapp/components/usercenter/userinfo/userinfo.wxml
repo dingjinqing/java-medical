@@ -74,6 +74,10 @@
         <view class="main_txt">医生认证</view>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'></view>
       </view>
+      <view bindtap="to_clerk_index">
+        <view class="main_txt">店员认证</view>
+        <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'></view>
+      </view>
     </view>
     <view class='footer'>
       <block wx:if="{{act == 1}}">
@@ -90,3 +94,4 @@
   </block>
 </view>
 <include src="../common/footer.wxml"/>
+<v-accreditation show="{{showClerkAccreditation}}"/>

@@ -4,8 +4,11 @@ import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.distribution.*;
+import jodd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -31,7 +34,7 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		SelectJoinStep<? extends Record> select = db().select(USER.as(INVITE).USER_ID .as("partnerId"),USER.as(INVITE).USERNAME .as("distributorName"),USER.as(INVITE).MOBILE.as("distributorMobile"),
 				USER.USER_ID,USER.USERNAME.as("orderUserName"),USER.MOBILE.as("userMobile"),USER_DETAIL.REAL_NAME,ORDER_GOODS_REBATE.ORDER_SN,ORDER_INFO.ORDER_AMOUNT,
 				ORDER_INFO.MOBILE,USER.USERNAME,ORDER_GOODS_REBATE.REBATE_LEVEL,DISTRIBUTOR_GROUP.GROUP_NAME,
-				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,ORDER_INFO.CREATE_TIME,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("realRebateMoney"),ORDER_INFO.SETTLEMENT_FLAG)
+				ORDER_GOODS_REBATE.REAL_REBATE_MONEY,ORDER_INFO.CREATE_TIME,ORDER_GOODS.CAN_CALCULATE_MONEY.as("totalRebateMoney"),ORDER_INFO.SETTLEMENT_FLAG,ORDER_INFO.FINISHED_TIME.as("rebateTime"))
 				.from(ORDER_GOODS_REBATE
                     .leftJoin(ORDER_GOODS).on(ORDER_GOODS.REC_ID.eq(ORDER_GOODS_REBATE.REC_ID))
 				.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
@@ -57,37 +60,43 @@ public class BrokerageStatisticalService extends ShopBaseService{
             select.where(USER.as(INVITE).USER_ID.eq(param.getUserId()));
         }
         //分销员昵称
-		if(param.getDistributorName() != null) {
+		if(StringUtils.isNotBlank(param.getDistributorName())) {
 			select.where(USER.as(INVITE).USERNAME.contains(param.getDistributorName()));
 		}
 		//分销员手机号
-		if(param.getDistributorMobile() != null) {
+		if(StringUtils.isNotBlank(param.getDistributorMobile())) {
 			select.where(USER.as(INVITE).MOBILE.contains(param.getDistributorMobile()));
 		}
 		//下单用户昵称
-		if(param.getUsername() != null) {
+		if(StringUtils.isNotBlank(param.getUsername())) {
 			select.where(USER.USERNAME.contains(param.getUsername()));
 		}
 		//下单用户手机号
-		if(param.getMobile() != null) {
+		if(StringUtils.isNotBlank(param.getMobile())) {
 			select.where(USER.MOBILE.contains(param.getMobile()));
 		}
 		//下单时间
-		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
-			select.where(ORDER_INFO.CREATE_TIME.ge(param.getStartCreateTime()).and(ORDER_INFO.CREATE_TIME.le(param.getEndCreateTime())));
+		if(param.getStartCreateTime() != null ) {
+			select.where(ORDER_INFO.CREATE_TIME.ge(param.getStartCreateTime()));
 		}
+		if(param.getEndCreateTime() != null){
+            select.where(ORDER_INFO.CREATE_TIME.le(param.getEndCreateTime()));
+        }
 		//返利订单号
-		if(param.getOrderSn() != null) {
+		if(StringUtils.isNotBlank(param.getOrderSn())) {
 			select.where(ORDER_INFO.ORDER_SN.contains(param.getOrderSn()));
 		}
 		//返利日期
-		if(param.getStartRebateTime() != null && param.getEndRebateTime() != null) {
-			select.where(ORDER_INFO.FINISHED_TIME.ge(param.getStartRebateTime()).and(ORDER_INFO.FINISHED_TIME.le(param.getEndRebateTime())));
+		if(param.getStartRebateTime() != null) {
+			select.where(ORDER_INFO.FINISHED_TIME.ge(param.getStartRebateTime()));
 		}
-		//返利状态
-		if(param.getSettlementFlag() != null) {
-			select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(param.getSettlementFlag()));
-		}
+		if(param.getEndRebateTime() != null){
+            select.where(ORDER_INFO.FINISHED_TIME.le(param.getEndCreateTime()));
+        }
+        //返利状态
+        if(StringUtil.isNotEmpty(param.getSettlementFlag())) {
+            select.where(ORDER_INFO.SETTLEMENT_FLAG.in(Util.stringToList(param.getSettlementFlag())));
+        }
 		//分销员分组
 		if(param.getDistributorGroup() != null) {
 			select.where(USER.INVITE_GROUP.eq(param.getDistributorGroup()));

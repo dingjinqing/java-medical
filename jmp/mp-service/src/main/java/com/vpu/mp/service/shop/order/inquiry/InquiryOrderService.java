@@ -262,15 +262,17 @@ public class InquiryOrderService extends ShopBaseService {
         order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
         order.setPayTime(DateUtils.getLocalDateTime());
-        //返利配置计算返利
-        addRebate(order);
+        transaction(()->{
+            //返利配置计算返利
+            addRebate(order);
+            //更新问诊订单状态为待接诊
+            inquiryOrderDao.update(order);
+            //添加会话问诊
+            ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
+            FieldsUtil.assign(order,imSessionNewParam);
+            imSessionService.insertNewSession(imSessionNewParam);
+        });
 
-        //更新问诊订单状态为待接诊
-        inquiryOrderDao.update(order);
-        //添加会话问诊
-        ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
-        FieldsUtil.assign(order,imSessionNewParam);
-        imSessionService.insertNewSession(imSessionNewParam);
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }

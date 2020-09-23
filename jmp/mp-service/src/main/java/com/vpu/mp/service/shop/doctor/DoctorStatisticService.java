@@ -119,7 +119,10 @@ public class DoctorStatisticService {
         } else {
             doctorList = doctorSummaryTrendDao.getDoctorListForCustomize(param);
         }
-
+        for (DoctorStatisticListVo doctor:doctorList.getDataList()) {
+            List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(doctor.getDoctorId());
+            doctor.setDepartmentNames(departmentList);
+        }
         return doctorList;
     }
 

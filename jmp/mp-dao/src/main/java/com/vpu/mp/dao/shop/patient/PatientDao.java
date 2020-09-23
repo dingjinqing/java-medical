@@ -8,6 +8,8 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PatientRecord;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPatientParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPatientVo;
 import com.vpu.mp.service.pojo.shop.patient.*;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -272,6 +274,11 @@ public class PatientDao extends ShopBaseDao{
             patientPrescriptionParam.getPageRows(), PatientPrescriptionVo.class);
     }
 
+    /**
+     * 患者查询关联处方条件查询
+     * @param patientPrescriptionParam 查询关联处方条件
+     * @param select 条件入参
+     */
     private void patientPrescriptionBuildOptions(PatientPrescriptionParam patientPrescriptionParam, SelectConditionStep<Record> select) {
         if (patientPrescriptionParam.getDoctorName() != null && patientPrescriptionParam.getDoctorName().trim().length() > 0) {
             select.and(PRESCRIPTION.DOCTOR_NAME.like(likeValue(patientPrescriptionParam.getDoctorName().trim())));
@@ -289,6 +296,11 @@ public class PatientDao extends ShopBaseDao{
         select.orderBy(PRESCRIPTION.CREATE_TIME.desc());
     }
 
+    /**
+     * 查询患者关联问诊
+     * @param patientPrescriptionParam 患者关联问诊入参
+     * @return PageResult<InquiryOrderDo>
+     */
     public PageResult<InquiryOrderDo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
         SelectConditionStep<Record> where = db().select()
             .from(INQUIRY_ORDER)
@@ -342,5 +354,55 @@ public class PatientDao extends ShopBaseDao{
         if (patientQueryDoctorParam.getDepartmentName() != null && patientQueryDoctorParam.getDepartmentName().trim().length() > 0) {
             select.and(PRESCRIPTION.DEPARTMENT_NAME.like(likeValue(patientQueryDoctorParam.getDepartmentName().trim())));
         }
+    }
+
+    /**
+     * 查询医师关联患者处方信息
+     * @param doctorQueryPatientParam 医师查询关联患者列表入参
+     * @return PageResult<DoctorQueryPatientVo>
+     */
+    public List<DoctorQueryPatientVo> getDoctorQueryPatientWithPrescription(DoctorQueryPatientParam doctorQueryPatientParam) {
+        SelectConditionStep<? extends Record> where = db().select(PATIENT.NAME.as("patientName")
+            , USER.USERNAME.as("patientNickName")
+            , DSL.count(PATIENT.NAME).as("prescriptionNum")
+            , DSL.sum(PRESCRIPTION.TOTAL_PRICE).as("medicineCost"))
+            .from(PRESCRIPTION)
+            .leftJoin(PATIENT)
+            .on(PRESCRIPTION.PATIENT_ID.eq(PATIENT.ID))
+            .leftJoin(USER_PATIENT_COUPLE)
+            .on(USER_PATIENT_COUPLE.PATIENT_ID.eq(PATIENT.ID))
+            .leftJoin(USER)
+            .on(USER_PATIENT_COUPLE.USER_ID.eq(USER.USER_ID))
+            .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorQueryPatientParam.getDoctorCode()));
+        if (doctorQueryPatientParam.getPatientName() != null && doctorQueryPatientParam.getPatientName().trim().length() > 0) {
+            where.and(PRESCRIPTION.PATIENT_NAME.like(likeValue(doctorQueryPatientParam.getPatientName())));
+        }
+        where.groupBy(PATIENT.ID, USER.USERNAME, PATIENT.NAME);
+        return where.fetchInto(DoctorQueryPatientVo.class);
+    }
+
+    /**
+     * 查询医师关联患者问诊信息
+     * @param doctorQueryPatientParam 医师查询关联患者列表入参
+     * @return PageResult<DoctorQueryPatientVo>
+     */
+    public List<DoctorQueryPatientVo> getDoctorQueryPatientWithInquiry(DoctorQueryPatientParam doctorQueryPatientParam) {
+        SelectConditionStep<? extends Record> where = db().select(PATIENT.NAME.as("patientName")
+            , USER.USERNAME.as("patientNickName")
+            , DSL.count(PATIENT.NAME).as("inquiryNum")
+            , DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiryCost"))
+            .from(INQUIRY_ORDER)
+            .leftJoin(PATIENT)
+            .on(INQUIRY_ORDER.PATIENT_ID.eq(PATIENT.ID))
+            .leftJoin(USER_PATIENT_COUPLE)
+            .on(USER_PATIENT_COUPLE.PATIENT_ID.eq(PATIENT.ID))
+            .leftJoin(USER)
+            .on(USER_PATIENT_COUPLE.USER_ID.eq(USER.USER_ID))
+            .where(INQUIRY_ORDER.DOCTOR_ID.eq(doctorQueryPatientParam.getDoctorId()));
+        if (doctorQueryPatientParam.getPatientName() != null && doctorQueryPatientParam.getPatientName().trim().length() > 0) {
+            where.and(INQUIRY_ORDER.PATIENT_NAME.like(likeValue(doctorQueryPatientParam.getPatientName())));
+        }
+        where.groupBy(PATIENT.ID, USER.USERNAME, PATIENT.NAME);
+        return where.fetchInto(DoctorQueryPatientVo.class);
     }
 }

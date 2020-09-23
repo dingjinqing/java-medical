@@ -10,7 +10,6 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
-import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;

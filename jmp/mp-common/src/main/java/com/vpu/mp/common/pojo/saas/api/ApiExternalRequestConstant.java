@@ -69,4 +69,11 @@ public class ApiExternalRequestConstant {
     /**取消药房订单接口*/
     public static final String SERVICE_NAME_CANCEL_ORDER = "cancelOrder";
 
+    /**
+     * 请求his接口，server拒绝服务，需要过一会后再请求
+     */
+    public static final Integer HIS_NET_ERROR_UNEXPECTED_FILE_CODE = 2002;
+
+    public static final String HIS_NET_ERROR_UNEXPECTED_FILE_MSG = "Unexpected end of file from server";
+
 }

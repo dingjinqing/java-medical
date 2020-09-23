@@ -3,9 +3,13 @@ var base = require("../base/base.js")
 global.wxComponent({
   mixins: [base],
   data: {
-    mobile: '',
-    isDoctor: true,
-    showCanvas: false
+    isPharmacist: true,
+    showCanvas: false,
+    accountName:'',
+    password:'',
+    mobile:'',
+    mobileCheckCode:'',
+    isPharmacist:0
   },
   lifetimes: {},
   methods: {
@@ -19,7 +23,7 @@ global.wxComponent({
         util.showModal("提示", "请输入正确的手机号！");
         return false;
       }
-      util.api('/api/wxapp/user/patient/send/sms', res => {
+      util.api('/api/wxapp/store/storeClerk/send/check/code', res => {
         if (res.error === 0) {
           const TIME_COUNT = 60;
           this.setData({
@@ -47,6 +51,63 @@ global.wxComponent({
     showCanvasContent() {
       this.setData({
         showCanvas: true
+      })
+    },
+    changeAccountName({detail:{value}}){
+      this.data.accountName = value
+    },
+    changePassword({detail:{value}}){
+      this.data.password = value
+    },
+    changeMobile({detail:{value}}){
+      this.data.mobile = value
+    },
+    changeMobileCheckCode({detail:{value}}){
+      this.data.mobileCheckCode = value
+    },
+    toggleIsPharmacist(){
+      this.setData({
+        isPharmacist:this.data.isPharmacist ? 0 : 1
+      })
+    },
+    confirm(){
+      if(!this.data.accountName){
+        util.showModal('提示','请输入门店账户')
+        return
+      }
+      if(!this.data.password){
+        util.showModal('提示','请输入账户密码')
+        return
+      }
+      if(!this.data.mobile){
+        util.showModal('提示','请输入手机号')
+        return
+      }
+      if (!/^1[3456789]\d{9}$/.test(this.data.mobile)) {
+        util.showModal("提示", "请输入正确的手机号！");
+        return false;
+      }
+      if(!this.data.mobileCheckCode){
+        util.showModal('提示','请输入验证码')
+        return
+      }
+      this.selectComponent('#sign').createImage('','',(res)=>{
+        console.log(res)
+        util.api('/api/wxapp/store/storeClerk/auth',result=>{
+          console.log(result)
+          if(result.error === 0){
+            
+          } else {
+            util.showModal('提示',result.message)
+          }
+        },{
+          accountName:this.data.accountName,
+          password:this.data.password,
+          mobile:this.data.mobile,
+          mobileCheckCode:this.data.mobileCheckCode,
+          isPharmacist:this.data.isPharmacist,
+          signature:res.content.imgPath
+        })
       })
     }
   }

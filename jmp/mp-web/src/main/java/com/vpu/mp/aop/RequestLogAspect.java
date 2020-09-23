@@ -1,15 +1,14 @@
 package com.vpu.mp.aop;
 
 
+import cn.hutool.json.JSONUtil;
 import com.google.common.base.Stopwatch;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
-
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -17,12 +16,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -58,10 +55,7 @@ public class RequestLogAspect {
         logAfterStr.append("RequestURI   :").append(request.getRequestURI()).append("\n");
         logAfterStr.append("RequestParams:");
         if( point.getArgs() != null && point.getArgs().length > 0){
-            Arrays.stream(point.getArgs()).
-                filter(o -> !(o instanceof BindingResult)).
-                forEach(o -> logAfterStr.append("【"+ FieldsUtil.objectToString(o)+"】"));
-            logAfterStr.append("\n");
+            logAfterStr.append(JSONUtil.toJsonStr(point.getArgs()));
         }
         log.info(logAfterStr.toString());
         Stopwatch stopwatch = Stopwatch.createStarted();

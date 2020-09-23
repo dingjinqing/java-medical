@@ -2,9 +2,9 @@
   <include src="/pages/common/header.wxml" />
   <view class="main-container" style="height:calc(100vh - {{margin_top_nav + 8}}px);">
     <view class="desc-info" style="background:url({{imageUrl}}image/wxapp/clerk_index_bg.png) no-repeat;background-size:cover;">
-      <image src="http://medicaldevimg.weipubao.cn//image/wxapp/go_back_home.png"></image>
-      <view class="clerk-name">吴晓红</view>
-      <view class="permission">店员</view>
+      <image src="{{user_avatar}}"></image>
+      <view class="clerk-name">{{userData.accountName}}</view>
+      <view class="permission">{{userData.accountType === 1 ? '店员' : '店长'}}</view>
     </view>
     <view class="default-content">
       <view class="data-panel">
@@ -13,34 +13,25 @@
         </view>
         <view class="panel-content">
           <view class="panel-item">
-            <text>10</text>
+            <text>{{panelData.waitHandleNum}}</text>
             <text>待处理订单</text>
           </view>
           <view class="panel-item">
-            <text>10</text>
+            <text>{{panelData.finishedNum}}</text>
             <text>已完成订单</text>
           </view>
         </view>
       </view>
-      <view class="title">
+      <view class="title" >
           <text>待处理</text>
       </view>
-      <view class="shop-item">
-        <view class="shop-title">西直门</view>
+      <view class="shop-item" wx:for="{{storeList}}" wx:key="storeId" wx:if="{{item.waitHandleOrderNum}}">
+        <view class="shop-title">{{item.storeName}}</view>
         <view class="list-item">
           <text>待接单订单</text>
-          <text>12</text>
-        </view>
-      </view>
-      <view class="shop-item">
-        <view class="shop-title">西直门</view>
-        <view class="list-item">
-          <text>待接单订单</text>
-          <text>6</text>
+          <text>{{item.waitHandleOrderNum}}</text>
         </view>
       </view>
     </view>
   </view>
 </view>
-
-<v-accreditation show="{{true}}"/>

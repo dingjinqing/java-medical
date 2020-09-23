@@ -107,7 +107,7 @@ public class StoreDao extends ShopBaseDao {
             .on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
             .leftJoin(GOODS_MEDICAL_INFO)
             .on(ORDER_GOODS.GOODS_ID.eq(GOODS_MEDICAL_INFO.GOODS_ID))
-            .where(ORDER_INFO.STORE_ID.eq(storeBestSellersParam.getStoreId()));
+            .where(ORDER_INFO.STORE_ID.in(storeBestSellersParam.getStoreIds()));
         buildOption(where, storeBestSellersParam);
         where.orderBy(ORDER_GOODS.CREATE_TIME.desc());
         return this.getPageResult(where, storeBestSellersParam.getCurrentPage(),

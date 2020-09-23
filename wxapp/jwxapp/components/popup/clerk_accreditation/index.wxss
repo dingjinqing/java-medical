@@ -51,10 +51,10 @@
   font-size:36rpx;
   margin-right: 15rpx;
 }
-.radio-content > .iconfont.icondanxuanbiankuang{
+.radio-content > .iconfont.iconduoxuanbiankuang{
   color: #ccc;
 }
-.radio-content > .iconfont.icondanxuan{
+.radio-content > .iconfont.iconduoxuan{
   color: #26C4BC;
 }
 .sign-button{

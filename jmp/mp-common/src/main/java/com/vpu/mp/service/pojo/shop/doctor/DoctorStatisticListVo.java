@@ -13,4 +13,5 @@ import java.util.List;
 public class DoctorStatisticListVo extends DoctorSummaryTrendDo {
     private List<String> departmentNames;
     private Integer rank;
+    private String name;
 }

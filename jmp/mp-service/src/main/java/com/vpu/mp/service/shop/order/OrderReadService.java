@@ -7,15 +7,17 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.Page;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
-import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
-import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
@@ -23,12 +25,18 @@ import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -37,17 +45,34 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
+import com.vpu.mp.service.pojo.shop.order.OrderSimpleInfoVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
-import com.vpu.mp.service.pojo.shop.order.api.*;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderListVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderPageResult;
+import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
+import com.vpu.mp.service.pojo.shop.order.api.ApiReturnGoodsListVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderListVo;
+import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderPageResult;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
-import com.vpu.mp.service.pojo.shop.order.refund.*;
+import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -63,16 +88,13 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFail
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.bo.PrescriptionItemBo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
-import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreOrderVo;
-import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -147,8 +169,18 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -380,9 +412,7 @@ public class OrderReadService extends ShopBaseService {
 			//所有订单sn
 			orderIds.add(order.getOrderId());
 			//add配送信息
-			if(order.getDeliverType() == OrderConstant.DELIVER_TYPE_COURIER && !StringUtils.isEmpty(order.getShippingNo())) {
-				sOrderSns.add(order.getOrderSn());
-			}
+			sOrderSns.add(order.getOrderSn());
 			//add退货款信息
 			if(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS) {
 				rOrderSns.add(order.getOrderSn());
@@ -391,7 +421,7 @@ public class OrderReadService extends ShopBaseService {
 		//查询商品行
 		Map<Integer, List<OrderGoodsVo>> goods = orderGoods.getByOrderIds(orderIds.toArray(new Integer[orderIds.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsVo.class);
 		//查询配送信息
-		Map<String, List<ShippingInfoVo>> shippingByOrderSn = shipInfo.getShippingByOrderSn(sOrderSns.toArray(new String[sOrderSns.size()]));
+		Map<String, List<ShippingInfoVo>> shippingByOrderSn = shipInfo.getShippingByOrderSn(sOrderSns);
 		//查询退款订单信息
 		Map<String, List<OrderConciseRefundInfoVo>> refundByOrderSn = returnOrder.getRefundByOrderSn(rOrderSns.toArray(new String[rOrderSns.size()])).intoGroups(returnOrder.TABLE.ORDER_SN,OrderConciseRefundInfoVo.class);
 		//查询退货款商品信息
@@ -927,7 +957,7 @@ showManualReturn(vo);
 	 * @return
 	 */
 	public List<ShippingInfoVo> getMpOrderShippingInfo(String orderSn , Map<Integer, OrderGoodsMpVo> goods){
-		Map<String, List<ShippingInfoVo>> shippingMap = shipInfo.getShippingByOrderSn(orderSn);
+		Map<String, List<ShippingInfoVo>> shippingMap = shipInfo.getShippingByOrderSn(Collections.singletonList(orderSn));
 		List<ShippingInfoVo> result = shippingMap.get(orderSn);
 		if(CollectionUtils.isEmpty(result)) {
 			return null;
@@ -1414,7 +1444,7 @@ showManualReturn(vo);
         }
         Map<String, List<ApiOrderGoodsListVo>> goodsInfo = orderGoods.getGoodsByOrderSns(orders.stream().map(ApiOrderListVo::getOrderSn).collect(Collectors.toList()));
         //发货信息
-        Map<String, List<ShippingInfoVo>> shippingInfo = shipInfo.getShippingByOrderSn(orders.stream().map(ApiOrderListVo::getOrderSn).toArray(String[]::new));
+        Map<String, List<ShippingInfoVo>> shippingInfo = shipInfo.getShippingByOrderSn(orders.stream().map(ApiOrderListVo::getOrderSn).collect(Collectors.toList()));
         for (ApiOrderListVo order: orders) {
             //商品
             List<ApiOrderGoodsListVo> goods = goodsInfo.get(order.getOrderSn());

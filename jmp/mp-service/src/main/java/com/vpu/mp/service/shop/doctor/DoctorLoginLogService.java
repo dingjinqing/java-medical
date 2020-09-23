@@ -74,14 +74,14 @@ public class DoctorLoginLogService extends ShopBaseService {
 
     /**
      * 医师出勤率
-     * @param page
+     * @param param
      * @return
      */
     public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(DoctorAttendanceListParam param) {
-        Integer dayOfMonth = DateUtils.getLocalDate().getDayOfMonth();
+        Integer dayOfMonth = THIS_MONTH.equals(param.getType()) ? DateUtils.getLocalDate().getDayOfMonth():30;
         PageResult<DoctorAttendanceOneParam> dataList = doctorLoginLogDao.getDoctorAttendancePage(param);
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
-            data.setLoginRate(new BigDecimal(Double.valueOf(data.getLoginDays())/Double.valueOf(dayOfMonth)));
+            data.setLoginRate(new BigDecimal(Double.valueOf(data.getLoginDays())/Double.valueOf(dayOfMonth)).setScale(2, BigDecimal.ROUND_HALF_UP));
         }
         return dataList;
     }

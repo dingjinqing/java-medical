@@ -933,11 +933,12 @@
                               childOrder.orderStatus == 3
                             "
                           >
+                            <!-- 待核销-->
                             {{ $t('order.waitverify') }}
                           </template>
                           <template
                             v-else-if="
-                              childOrder.deliverType == 0 &&
+                              childOrder.deliverType != 1 &&
                               childOrder.orderStatus == 3 &&
                               searchParams.pinStatus.length == 0
                             "
