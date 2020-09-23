@@ -44,7 +44,7 @@
         <el-button
                 type="primary"
                 size="small"
-                @click="pullStoreMedicalGoodsApi">
+                @click="pullStoreGoods">
           拉取药房商品数据
         </el-button>
         <el-button
