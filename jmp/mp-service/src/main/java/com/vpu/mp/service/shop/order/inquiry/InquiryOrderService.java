@@ -341,7 +341,7 @@ public class InquiryOrderService extends ShopBaseService {
         vo.setOrderSn(orderSn);
         return vo;
     }
-    private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo){
+    private String saveInquiryOrder(InquiryToPayParam payParam, String payCode, InquiryOrderDo inquiryOrderDo) throws MpException {
         if(StringUtils.isNotBlank(payParam.getOrderSn())){
             return payParam.getOrderSn();
         }

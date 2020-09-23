@@ -101,7 +101,12 @@ public class WxAppDoctorController extends WxAppBaseController {
     @PostMapping("/api/wxapp/doctor/auth/info")
     public JsonResult getDoctorAuthInfo(){
         WxAppSessionUser user=wxAppAuth.user();
-        DoctorOneParam doctor= doctorService.getOneInfo(user.getDoctorId());
+        DoctorOneParam doctor= null;
+        try {
+            doctor = doctorService.getOneInfo(user.getDoctorId());
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
         return success(doctor);
     }
 
@@ -117,7 +122,12 @@ public class WxAppDoctorController extends WxAppBaseController {
         DoctorMessageCountVo doctorMessageCountVo =
             messageService.countDoctorMessage(user.getDoctorId(), doctorMainShowParam);
         // 获取医师首页个人信息
-        DoctorOneParam oneInfo = doctorService.getOneInfo(user.getDoctorId());
+        DoctorOneParam oneInfo = null;
+        try {
+            oneInfo = doctorService.getOneInfo(user.getDoctorId());
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
         DoctorMainShowVo doctorMainShowVo = new DoctorMainShowVo();
         //添加医师职称
         String duty = doctorService.selectDoctorTitle(oneInfo);

@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
@@ -71,7 +72,11 @@ public class AdminDoctorController extends AdminBaseController {
             return fail(JsonResultCode.DOCTOR_CODE_IS_EXIST);
         }
 
-        shop().doctorService.updateDoctor(param);
+        try {
+            shop().doctorService.updateDoctor(param);
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
 
         return success();
     }
@@ -85,7 +90,12 @@ public class AdminDoctorController extends AdminBaseController {
         if (doctorId == null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
-        DoctorOneParam doctorInfo = shop().doctorService.getOneInfo(doctorId);
+        DoctorOneParam doctorInfo = null;
+        try {
+            doctorInfo = shop().doctorService.getOneInfo(doctorId);
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
         if (doctorInfo.getTitleId() == 0) {
             doctorInfo.setTitleId(null);
         }
@@ -102,7 +112,11 @@ public class AdminDoctorController extends AdminBaseController {
         if (param.getId() == null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
-        shop().doctorService.enableDoctor(param);
+        try {
+            shop().doctorService.enableDoctor(param);
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
         return success();
     }
 
@@ -111,7 +125,12 @@ public class AdminDoctorController extends AdminBaseController {
      */
     @PostMapping("/api/admin/doctors/fetch")
     public JsonResult fetchDoctors() {
-        return shop().doctorService.fetchExternalDoctor();
+        try {
+            return shop().doctorService.fetchExternalDoctor();
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
+        return fail();
     }
 
     /**
@@ -177,7 +196,12 @@ public class AdminDoctorController extends AdminBaseController {
         List<DepartmentListVo> departmentListVos =
             shop().doctorService.selectDepartmentsByDoctorId(doctorUnbundlingParam.getDoctorId());
         List<String> departmentNames = departmentListVos.stream().map(DepartmentListVo::getName).collect(Collectors.toList());
-        DoctorOneParam oneInfo = shop().doctorService.getOneInfo(doctorUnbundlingParam.getDoctorId());
+        DoctorOneParam oneInfo = null;
+        try {
+            oneInfo = shop().doctorService.getOneInfo(doctorUnbundlingParam.getDoctorId());
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
         //添加医师职称
         String title = shop().doctorService.selectDoctorTitle(oneInfo);
         oneInfo.setTitleName(title);
@@ -255,5 +279,14 @@ public class AdminDoctorController extends AdminBaseController {
     @PostMapping("/api/admin/doctor/query/patient")
     public JsonResult doctorQueryPatient(@Validated @RequestBody DoctorQueryPatientParam doctorQueryPatientParam) {
         return success(shop().doctorService.getDoctorQueryPatient(doctorQueryPatientParam));
+    }
+
+    /**
+     * 查询医师业绩详情
+     * @return
+     */
+    @PostMapping("/api/admin/doctor/query/performance")
+    public JsonResult getDoctorPerformanceDetail(@RequestBody DoctorDetailPerformanceParam param){
+        return success(shop().doctorService.getDoctorPerformanceDetail(param));
     }
 }
