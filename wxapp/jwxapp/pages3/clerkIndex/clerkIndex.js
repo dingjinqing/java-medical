@@ -1,4 +1,4 @@
-// pages3/clerkIndex/clerkIndex.js
+const util = require('../../utils/util')
 global.wxPage({
 
   /**
@@ -12,9 +12,39 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.checkClerk()
   },
-
+  checkClerk(){
+    util.api('/api/wxapp/store/storeClerk/auth/check',res => {
+      if(res.error === 0){
+        if(res.content.user_type === 3){
+          this.setData({
+            user_avatar:res.content.user_avatar
+          })
+          this.requestClerkIndexData()
+        } else {
+          util.showModal('提示','未认证信息，请重新认证', () => {
+            util.jumpLink('/pages/index/index', 'redirectTo')
+          })
+        }
+      }else {
+        util.showModal('提示',res.message)
+      }
+    })
+  },
+  requestClerkIndexData(){
+    util.api('/api/wxapp/store/storeClerk/main',res=>{
+      if(res.error === 0){
+        this.setData({
+          userData:res.content.storeAccount,
+          storeList:res.content.statisticList,
+          panelData:res.content.monthVo
+        })
+      } else {
+        util.showModal('提示',res.message)
+      }
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

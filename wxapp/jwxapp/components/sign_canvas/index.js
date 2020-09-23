@@ -1,3 +1,4 @@
+var util = require("../../utils/util.js");
 global.wxComponent({
 
   // 组件的属性列表
@@ -5,7 +6,7 @@ global.wxComponent({
     // 线宽度
     lineWidth: {
       type: Number,
-      value: 1,
+      value: 3,
       observer (e) {
         if (this.data.ctx) { this.data.ctx.lineWidth = e }
       }
@@ -73,22 +74,47 @@ global.wxComponent({
         canvasId: 'drawing-board-canvas',
         canvas: this.data.canvas,
         success (res) {
+          console.log(res)
           // 图片链接
           const imagePath = res.tempFilePath || ''
           const isOK = !!imagePath
           if (result) { result(isOK, res) }
+          var url = util.getUrl('/api/wxapp/image/upload');
+          wx.getImageInfo({
+            src: imagePath,
+            success: function (obj) {
+              console.log(obj)
+              var params = {
+                userId: util.getCache('user_id'),
+                imgCatId: -1,
+                needImgWidth: obj.width,
+                needImgHeight: obj.height
+              } 
+              util.uploadFile(url, imagePath, params, function (e) {
+                var data = JSON.parse(e.data);
+                if (data.error === 0) {
+                  if (saveResult) { saveResult(data) }
+                } else {
+                  util.toast_fail(data.message)
+                }
+              });
+            },
+            fail: function (err) {
+              throw err
+            }
+          })
           // 保存相册
-          if (save && isOK) {
-            wx.saveImageToPhotosAlbum({
-              filePath: imagePath,
-              success (res) {
-                if (saveResult) { saveResult(true, res) }
-              },
-              fail (err) {
-                if (saveResult) { saveResult(false, err) }
-              }
-            })
-          }
+          // if (save && isOK) {
+          //   wx.saveImageToPhotosAlbum({
+          //     filePath: imagePath,
+          //     success (res) {
+          //       if (saveResult) { saveResult(true, res) }
+          //     },
+          //     fail (err) {
+          //       if (saveResult) { saveResult(false, err) }
+          //     }
+          //   })
+          // }
         },
         // 生成图片失败
         fail (err) {
@@ -243,7 +269,69 @@ global.wxComponent({
       this.triggerEvent('change', {
         strokesNumber: this.data.strokes.length
       })
-    }
+    },
+    // 保存图片
+    base64ImageHandle(base64, cb) {
+      const that = this;
+      const timestamp = new Date().getTime() + Math.ceil(Math.random() * 1000000);
+      // 指定图片的临时路径
+      const path = `${wx.env.USER_DATA_PATH}/${timestamp}.png`;
+      var imageData = base64.replace(/^data:image\/\w+;base64,/, "");
+      // 获取小程序的文件系统
+      const fsm = wx.getFileSystemManager();
+      fsm.readdir({
+        dirPath: `${wx.env.USER_DATA_PATH}`, /// 获取文件列表
+        success(res) {
+          console.log(res)
+          res.files.forEach((val) => { // 遍历文件列表里的数据
+            fsm.unlink({
+              filePath: `${wx.env.USER_DATA_PATH}/${val}`
+            });
+          })
+          // 把数据写入到临时目录中
+          fsm.writeFile({
+            filePath: path,
+            data: imageData,
+            encoding: 'base64',
+            success: (res) => {
+              console.log(res);
+              wx.saveImageToPhotosAlbum({
+                filePath: path,
+                success: function (res) {
+                  cb && cb(res);
+                },
+                fail: function (res) {
+                  console.log(res)
+                  wx.getSetting({
+                    success: function (res) {
+                      if (!res.authSetting['scope.writePhotosAlbum']) {
+                        that.showModal('是否打开设置页面', '需要获取您的相册权限，请到小程序的设置页面打开授权', function () {
+                          wx.openSetting({
+                            success: function (res) {
+  
+                            }
+                          })
+                        })
+                      }
+                    }
+                  })
+                },
+              })
+            },
+            fail: (err) => {
+              console.log('base err', err);
+              wx.showToast({
+                title: '保存失败',
+                icon: 'none',
+              })
+            }
+          });
+        },
+        fail(err) {
+          console.log(err)
+        }
+      })
+    },
   },
 
   // 组件生命周期函数 - 在组件布局完成后执行

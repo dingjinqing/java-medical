@@ -349,7 +349,7 @@ global.wxComponent({
     to_clerk_index(){
       util.api('/api/wxapp/store/storeClerk/auth/check',res=>{
         if(res.error === 0){
-          if(res.user_type === 3){
+          if(res.content.user_type === 3){
             util.jumpLink(`pages3/clerkIndex/clerkIndex`)
           } else {
             this.setData({

@@ -91,6 +91,24 @@ global.wxComponent({
         util.showModal('提示','请输入验证码')
         return
       }
+      this.selectComponent('#sign').createImage('','',(res)=>{
+        console.log(res)
+        util.api('/api/wxapp/store/storeClerk/auth',result=>{
+          console.log(result)
+          if(result.error === 0){
+            
+          } else {
+            util.showModal('提示',result.message)
+          }
+        },{
+          accountName:this.data.accountName,
+          password:this.data.password,
+          mobile:this.data.mobile,
+          mobileCheckCode:this.data.mobileCheckCode,
+          isPharmacist:this.data.isPharmacist,
+          signature:res.content.imgPath
+        })
+      })
     }
   }
 });
