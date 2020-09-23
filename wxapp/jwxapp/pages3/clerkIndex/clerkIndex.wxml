@@ -27,7 +27,7 @@
       </view>
       <view class="shop-item" wx:for="{{storeList}}" wx:key="storeId" wx:if="{{item.waitHandleOrderNum}}">
         <view class="shop-title">{{item.storeName}}</view>
-        <view class="list-item">
+        <view class="list-item" data-store-id="{{item.storeId}}" bindtap="viewWaitHandleOrder">
           <text>待接单订单</text>
           <text>{{item.waitHandleOrderNum}}</text>
         </view>
