@@ -1,52 +1,28 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="titleEdit"><span>购药记录</span></div>
+      <div class="titleEdit"><span>医师列表</span></div>
       <div class="navBox">
         <div class="filters">
           <div class="filters_item">
-            <span>药品名称：</span>
+            <span>医师姓名：</span>
             <el-input
-              v-model="queryParams.goodsCommonName"
+              v-model="queryParams.doctorName"
               size="small"
               style="width: 150px"
-              placeholder="请输入药品名称"
+              placeholder="请输入医师姓名"
             >
             </el-input>
           </div>
           <div class="filters_item">
-            <span class="fil_span">批准文号：</span>
+            <span class="fil_span">科室：</span>
             <el-input
-              v-model="queryParams.goodsApprovalNumber"
+              v-model="queryParams.departmentName"
               size="small"
               style="width: 150px"
-              placeholder="请输入批准文号"
+              placeholder="请输入科室名称"
             >
             </el-input>
-          </div>
-          <div class="filters_item">
-            <span class="fil_span">生产厂家：</span>
-            <el-input
-              v-model="queryParams.goodsProductionEnterprise"
-              size="small"
-              style="width: 150px"
-              placeholder="请输入批准文号"
-            >
-            </el-input>
-          </div>
-          <div class="filters_item">
-            <span class="fil_span">时间筛选：</span>
-            <el-date-picker
-              v-model="timeValue"
-              type="daterange"
-              size="small"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :default-time="['00:00:00', '23:59:59']"
-              range-separator="-"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            >
-            </el-date-picker>
           </div>
           <div class="btn_wrap">
             <el-button
@@ -74,50 +50,28 @@
           }"
         >
           <el-table-column
-            prop="goodsCommonName"
-            label="药品名称"
+            prop="doctorName"
+            label="医师姓名"
           ></el-table-column>
           <el-table-column
-            prop='goodsQualityRatio'
-            label='规格系数'
+            prop='departmentName'
+            label='科室'
           ></el-table-column>
           <el-table-column
-            prop="goodsProductionEnterprise"
-            label="生产厂家"
+            prop="prescriptionNumber"
+            label="处方数"
           ></el-table-column>
           <el-table-column
-            prop="goodsApprovalNumber"
-            label="批准文号"
+            prop="prescriptionConsumptionAmount"
+            label="处方金额"
           ></el-table-column>
           <el-table-column
-            prop="goodsNumber"
-            label="数量"
+            prop="inquiryNumber"
+            label="咨询单数"
           ></el-table-column>
           <el-table-column
-            prop="goodsPrice"
-            label="单价"
-          ></el-table-column>
-          <el-table-column label="处方号">
-            <template slot-scope="scope">
-              <div class="operation">
-                <a @click="handleSeeMessage(scope.row.prescriptionCode)">{{scope.row.prescriptionCode}}</a>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="订单号">
-            <template slot-scope="scope">
-              <div class="operation">
-                <a @click="handleSeeOrder(scope.row.orderSn)">{{scope.row.orderSn}}</a>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="discountedTotalPrice"
-            label="总金额"
-          ></el-table-column>
-          <el-table-column
-            prop="createTime"
-            label="下单时间"
+            prop="inquiryConsumptionAmount"
+            label="咨询总金额"
           ></el-table-column>
         </el-table>
         <pagination
@@ -131,7 +85,7 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getMedicineList } from '@/api/admin/memberManage/patientManage.js'
+import { getDoctor } from '@/api/admin/memberManage/patientManage.js'
 import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
 export default {
   components: { pagination },
@@ -151,17 +105,15 @@ export default {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
+      timeSelect: -1,
       pageParams: {
         currentPage: 1,
         pageRows: 5
       },
       tableData: [],
       queryParams: {
-        startTime: '',
-        endTime: '',
-        goodsCommonName: '',
-        goodsApprovalNumber: '',
-        goodsProductionEnterprise: ''
+        doctorName: '',
+        departmentName: ''
       },
       // 表格原始数据
       originalData: [],
@@ -177,7 +129,7 @@ export default {
       let params = {
         ...this.queryParams
       }
-      getMedicineList(params).then((res) => {
+      getDoctor(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -198,15 +150,6 @@ export default {
         name: 'prescription_message'
       })
       newpage.href = newpage.href + '?prescriptionCode=' + code
-      console.log(newpage.href)
-      window.open(newpage.href, '_blank')
-    },
-    handleSeeOrder (code) {
-      console.log(this.$router)
-      let newpage = this.$router.resolve({
-        name: 'orderInfo'
-      })
-      newpage.href = newpage.href + '?orderSn=' + code
       console.log(newpage.href)
       window.open(newpage.href, '_blank')
     },

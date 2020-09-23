@@ -3,6 +3,8 @@
     <div class="patientContent_main">
       <patientMessage />
       <medicalRecord />
+      <inquiryList />
+      <doctorList />
       <prescriptionList />
     </div>
   </div>
@@ -12,12 +14,16 @@
 import patientMessage from './patientMessage'
 import prescriptionList from './prescriptionList'
 import medicalRecord from './medicalRecord'
+import inquiryList from './inquiryList'
+import doctorList from './doctorList'
 
 export default {
   components: {
     patientMessage,
-    prescriptionList,
-    medicalRecord
+    medicalRecord,
+    inquiryList,
+    doctorList,
+    prescriptionList
   },
   data () {
     return {
