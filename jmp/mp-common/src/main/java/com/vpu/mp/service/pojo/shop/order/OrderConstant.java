@@ -281,6 +281,8 @@ public class OrderConstant {
 	public final static byte RETURN_OPERATE_ADMIN_AGREE_RETURN = 3;
 	/**商家拒绝退货申请*/
 	public final static byte RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY = 4;
+	/** 商家同意退款(代发货,门店店员退款)*/
+	public final static byte RETURN_OPERATE_STORE_ALL_RETURN = 5;
 	/**操作对应的中文*/
 	public final static String[] RETURN_OPERATE = {
 			"买家提交物流信息",
@@ -628,6 +630,7 @@ public class OrderConstant {
 	 * 退款原因类型 医师审核未通过
 	 */
 	public static final Byte RETRURN_REASON_TYPE_DOCTOR_AUDIT = 6;
+	public static final Byte RETRURN_REASON_TYPE_STORE = 4;
 
     /**
      * 订单综合查询排序规则ORDER_QUERY_SORT_RULE

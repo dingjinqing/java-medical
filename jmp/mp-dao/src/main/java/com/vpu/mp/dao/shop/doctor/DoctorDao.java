@@ -410,7 +410,7 @@ public class DoctorDao extends ShopBaseDao {
      */
     public void unbundlingDoctorToken(Integer doctorId) {
         db().update(DOCTOR).set(DOCTOR.USER_TOKEN, "")
-            .set(DOCTOR.AUTH_TIME, Timestamp.valueOf(DateUtils.DATE_FORMAT_ZERO))
+            .set(DOCTOR.AUTH_TIME, Timestamp.valueOf(DateUtils.DATE_FORMAT_DEFAULT))
             .where(DOCTOR.ID.eq(doctorId)).execute();
     }
 

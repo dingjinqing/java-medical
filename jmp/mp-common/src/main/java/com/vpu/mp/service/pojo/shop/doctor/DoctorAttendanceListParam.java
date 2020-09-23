@@ -11,4 +11,5 @@ import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 @Data
 public class DoctorAttendanceListParam extends BasePageParam {
     private Byte type;
+    private Integer doctorId;
 }
