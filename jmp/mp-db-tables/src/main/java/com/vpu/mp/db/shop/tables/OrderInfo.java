@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfo extends TableImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = 642953803;
+    private static final long serialVersionUID = -1130700863;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_info</code>
@@ -771,7 +771,7 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.order_audit_type</code>. 订单审核类型, 0不审核,1审核,2开方,3根据处方下单
      */
-    public final TableField<OrderInfoRecord, Byte> ORDER_AUDIT_TYPE = createField("order_audit_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单审核类型, 0审核 1开方,2根据处方下单");
+    public final TableField<OrderInfoRecord, Byte> ORDER_AUDIT_TYPE = createField("order_audit_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单审核类型, 0不审核,1审核,2开方,3根据处方下单");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.order_audit_status</code>. 订单审核状态 0未审核 1审核通过 2审核不通过
@@ -792,6 +792,16 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
      * The column <code>mini_shop_471752.b2c_order_info.patient_id</code>. 患者id
      */
     public final TableField<OrderInfoRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "患者id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_info.lat</code>. 精度
+     */
+    public final TableField<OrderInfoRecord, String> LAT = createField("lat", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "精度");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_info.lng</code>. 维度
+     */
+    public final TableField<OrderInfoRecord, String> LNG = createField("lng", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "维度");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_info</code> table reference
