@@ -22,7 +22,7 @@
           </view>
         </view>
       </view>
-      <view class="title" >
+      <view class="title" wx:if="{{hasNum}}">
           <text>待处理</text>
       </view>
       <view class="shop-item" wx:for="{{storeList}}" wx:key="storeId" wx:if="{{item.waitHandleOrderNum}}">

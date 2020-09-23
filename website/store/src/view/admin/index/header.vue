@@ -23,7 +23,7 @@
     </div>
 
     <div class="rightCon">
-      <div class="langChange" @mouseover="langEnter()" @mouseout="langLeave()">
+      <!-- <div class="langChange" @mouseover="langEnter()" @mouseout="langLeave()">
         <span>{{ $t('messages.lang') }}</span>
         <img :src="imageUrlData[1].image_4" class="head_down" />
         <div class="head_list_lang">
@@ -38,7 +38,19 @@
             {{ item.show_lang }}
           </div>
         </div>
-      </div>
+      </div> -->
+      <el-popover
+        placement="bottom"
+        trigger="hover"
+        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
+      >
+        <img :src="miniPorgramQrcode" class="qrcode-image" />
+        <div class="mini-program-info" slot="reference">
+          <span>适用小程序：{{ this.miniPorgramName }}</span>
+          <img :src="imageUrlData[1].image_4" class="head_down" />
+        </div>
+      </el-popover>
+
       <div class="middle" @mouseenter="user_enter()" @mouseleave="user_leave()">
         <div class="account">
           <div class="menu">
@@ -129,7 +141,9 @@ export default {
         { lang: 'en', login_active: '', show_lang: 'English' },
         { lang: 'cn', login_active: '', show_lang: 'Chinese' }
       ],
-      isSubLogin: false
+      isSubLogin: false,
+      miniPorgramName: '',
+      miniPorgramQrcode: ''
     }
   },
   mounted () {
@@ -170,6 +184,8 @@ export default {
       this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
       this.imageUrl[1].img_2 = localStorage.getItem('V-AccountShopAvatar')
       this.accountName = localStorage.getItem('V-AccountName')
+      this.miniPorgramName = localStorage.getItem('V-StoreMiniProgramName')
+      this.miniPorgramQrcode = localStorage.getItem('V-StoreMiniProgramQrcode')
       if (Cookies.get('V-Token')) {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
@@ -513,5 +529,12 @@ label {
 }
 .rightCon {
   display: flex;
+}
+.mini-program-info {
+  margin-right: 15px;
+}
+.qrcode-image {
+  width: 200px;
+  height: 200px;
 }
 </style>
