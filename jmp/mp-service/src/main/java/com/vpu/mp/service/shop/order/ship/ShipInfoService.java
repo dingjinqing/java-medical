@@ -91,12 +91,10 @@ public class ShipInfoService extends ShopBaseService {
 			logger().info("store用户配送");
 			StoreAccountVo storeAccountVo=storeAccountDao.getOneInfo(shippingInfoVo.getShippingAccountId());
 			shippingInfoVo.setShippingAccountName(storeAccountVo.getAccountName());
-			shippingInfoVo.setShippingMobile(shippingInfoVo.getConfirmMobile());
 		}else if (shippingInfoVo.getShippingPlatform().equals(OrderConstant.PLATFORM_WXAPP_STORE)){
 			logger().info("wxStore用户配送");
 			StoreAccountVo storeAccountVo=storeAccountDao.getOneInfo(shippingInfoVo.getShippingAccountId());
 			shippingInfoVo.setShippingAccountName(storeAccountVo.getAccountName());
-			shippingInfoVo.setShippingMobile(shippingInfoVo.getConfirmMobile());
 		}else if (shippingInfoVo.getShippingPlatform().equals(OrderConstant.PLATFORM_WXAPP)){
 			logger().info("wx买家自提");
 			shippingInfoVo.setShippingAccountName("自提");
@@ -116,6 +114,7 @@ public class ShipInfoService extends ShopBaseService {
 		record.setGoodsAttr(orderGoodsVo.getGoodsAttr());
 		record.setShippingType(orderRecord.getDeliverType());
 		record.setShippingAccountId(param.getShipAccountId());
+		record.setShippingMobile(param.getMobile());
 		record.setShippingPlatform(param.getPlatform());
 		//核销时不设置
 		record.setShippingId(param.getShippingId());
