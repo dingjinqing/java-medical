@@ -16,7 +16,7 @@
           <p>收货地址：{{deliveryInfo.completeAddress}}</p>
         </div>
       </div>
-      <div class="delivery-info_shipinfo">
+      <div class="delivery-info_shipinfo" v-if="orderData.deliverType !== 3">
         <div>
           快递列表：
           <el-select
@@ -58,11 +58,6 @@
             'text-align':'center'
           }"
         >
-          <el-table-column
-            type="selection"
-            width="55"
-          >
-          </el-table-column>
           <el-table-column
             prop=""
             label="商品名称"
@@ -145,10 +140,6 @@ export default {
       })
     },
     goodsDelivery () {
-      if (this.$refs.multipleTable.selection.length === 0) {
-        this.$message.error('请选择要发货的商品')
-        return
-      }
       if (!this.shippingNo && this.shippingId !== '42') {
         this.$message.error('请输入快递单号')
         return
@@ -162,7 +153,7 @@ export default {
         shippingId: this.shippingId,
         shipGoods: []
       }
-      obj.shipGoods = this.$refs.multipleTable.selection.map(item => {
+      obj.shipGoods = this.deliveryInfo.orderGoodsVo.map(item => {
         return { recId: item.recId, sendNumber: item.goodsNumber }
       })
       console.log(obj)
@@ -184,6 +175,9 @@ export default {
       handler (newVal) {
         if (newVal === true) {
           this.showDelivery = true
+          if (this.orderData.deliverType === 3) {
+            this.shippingId = '42'
+          }
           this.initData()
         }
       },

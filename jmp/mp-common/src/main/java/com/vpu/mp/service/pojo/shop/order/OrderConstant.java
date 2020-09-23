@@ -192,7 +192,9 @@ public class OrderConstant {
 	/**退款支持状态:待审核,待开方,待发货 已发货 已收货 已完成*/
 	public final static List<Byte> IS_RETURNMONEY = new ArrayList<Byte>(Arrays.asList(ORDER_TO_AUDIT_OPEN,ORDER_TO_AUDIT,ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED, ORDER_FINISHED));
 	/**审核订单 医师可以退   待审核,待开方 */
-	public final static List<Byte> IS_AUDIT_ORDER = new ArrayList<Byte>(Arrays.asList(ORDER_TO_AUDIT_OPEN,ORDER_TO_AUDIT,ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED, ORDER_FINISHED));
+	public final static List<Byte> IS_AUDIT_ORDER = new ArrayList<Byte>(Arrays.asList(ORDER_TO_AUDIT_OPEN,ORDER_TO_AUDIT));
+	/** 门店退款 代发货 **/
+	public final static List<Byte> IS_STOTE_RETURN_ORDER = new ArrayList<Byte>(Arrays.asList(ORDER_WAIT_DELIVERY));
 	/**退货支持状态:已发货 已收货 已完成*/
 	public final static List<Byte> IS_RETURNGOODS = new ArrayList<Byte>(Arrays.asList(ORDER_SHIPPED, ORDER_RECEIVED, ORDER_FINISHED));
 
