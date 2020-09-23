@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionAuditParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
@@ -29,7 +30,11 @@ import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -156,6 +161,23 @@ public class AdminOrderController extends AdminBaseController {
         }else {
             return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
         }
+	}
+
+	/**
+	 * 确认收货
+	 */
+	@PostMapping("/receive")
+	public JsonResult receive(@RequestBody @Valid OrderOperateQueryParam param) {
+		param.setAction((byte)OrderServiceCode.RECEIVE.ordinal());
+		param.setIsMp(OrderConstant.IS_MP_Y);
+		param.setAdminInfo(adminAuth.user());
+		param.setPlatform(OrderConstant.PLATFORM_STORE);
+		ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+		if(executeResult == null || executeResult.isSuccess()) {
+			return success(executeResult == null ? null : executeResult.getResult());
+		}else {
+			return result(executeResult.getErrorCode(), executeResult.getResult(), executeResult.getErrorParam());
+		}
 	}
 
 	/**

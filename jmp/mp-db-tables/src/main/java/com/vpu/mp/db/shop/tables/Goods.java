@@ -8,15 +8,26 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +43,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Goods extends TableImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = -1965986093;
+    private static final long serialVersionUID = 1391122193;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods</code>
@@ -123,9 +134,9 @@ public class Goods extends TableImpl<GoodsRecord> {
     public final TableField<GoodsRecord, String> GOODS_IMG = createField("goods_img", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.is_on_sale</code>. 是否在售，1在售，0下架
+     * The column <code>mini_shop_471752.b2c_goods.is_on_sale</code>. 是否在售 0 否 1是
      */
-    public final TableField<GoodsRecord, Byte> IS_ON_SALE = createField("is_on_sale", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否在售，1在售，0下架");
+    public final TableField<GoodsRecord, Byte> IS_ON_SALE = createField("is_on_sale", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否在售 0 否 1是");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods.del_flag</code>.

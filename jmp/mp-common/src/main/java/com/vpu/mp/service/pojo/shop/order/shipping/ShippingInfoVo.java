@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 /**
  * 	可发货信息
@@ -21,17 +20,6 @@ public class ShippingInfoVo extends BaseShippingInfoVo{
 	private List<Goods> goods;
 	/**批次号：相同为同一批*/
 	private String batchNo;
-	private Timestamp shippingTime;
-	private Integer   shippingAccountId;
-	private Byte      shippingPlatform;
-	private String    shippingMobile;
-	private Integer   shippingUserId;
-	private Timestamp confirmTime;
-	private Timestamp createTime;
-	private Integer   confirmAccountId;
-	private Byte      confirmPlatform;
-	private String    confirmMobile;
-	private Integer   confirmUserId;
 	@Data
 	@AllArgsConstructor
 	public static class Goods{
@@ -69,7 +57,7 @@ public class ShippingInfoVo extends BaseShippingInfoVo{
 	private Integer productId;
 	@Override
 	public boolean equals(Object obj) {
-		return ((ShippingInfoVo)obj).getBatchNo().equals(batchNo) ? true : false;
+		return ((ShippingInfoVo) obj).getBatchNo().equals(batchNo);
 	}
 
 	@Override
