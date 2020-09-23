@@ -12,7 +12,7 @@ global.wxPage({
       currentPage: 1,
       pageRows: 20
     },
-    shippingStatus:0,
+    shippingStatus:8,
     dataList:[]
   },
 
@@ -45,8 +45,7 @@ global.wxPage({
       }
     },{
       storeId:Number(this.data.storeId),
-      shippingStatus:this.data.shippingStatus,
-      type:0,
+      type:this.data.shippingStatus,
       ...this.data.pageParams
     })
   },

@@ -2,11 +2,11 @@
   <include src="/pages/common/header.wxml" />
   <view class="main-container">
     <view class="filter">
-      <view class="filter-item {{shippingStatus === 0 ? 'active' : ''}}" data-shipping-status="0"
+      <view class="filter-item {{shippingStatus === 8 ? 'active' : ''}}" data-shipping-status="8"
         bindtap="toggleFilter">
         <text>待处理</text>
       </view>
-      <view class="filter-item {{shippingStatus === 1 ? 'active' : ''}}" data-shipping-status="1"
+      <view class="filter-item {{shippingStatus === 9 ? 'active' : ''}}" data-shipping-status="9"
         bindtap="toggleFilter">
         <text>已完成</text>
       </view>
