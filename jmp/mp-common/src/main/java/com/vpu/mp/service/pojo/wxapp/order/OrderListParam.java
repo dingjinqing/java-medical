@@ -23,10 +23,6 @@ public class OrderListParam extends BaseParam{
 	private String search;
 	private Byte platform;
 	private Integer storeId;
-	/**
-	 * 发货状态  0待处理 1处理完成
-	 */
-	private Byte shippingStatus;
 	/**门店后台门店过滤*/
 	private List<Integer> storeIds;
 }
