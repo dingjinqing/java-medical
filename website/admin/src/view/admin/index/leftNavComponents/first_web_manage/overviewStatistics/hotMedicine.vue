@@ -31,6 +31,7 @@
         <el-table
           v-loading="loading"
           :data="tableData"
+          @sort-change="changeTableSort"
           style="width: 100%"
           border
           :header-cell-style="{
@@ -44,50 +45,50 @@
           }"
         >
           <el-table-column
-            prop="doctorName"
+            prop="goodsName"
             label="药品名称"
           ></el-table-column>
           <el-table-column
-            prop='orderSn'
+            prop='goodsQualityRatio'
             label='规格明细'
           ></el-table-column>
           <el-table-column
-            prop="createTime"
+            prop="goodsProductionEnterprise"
             label="生产厂家"
           ></el-table-column>
           <el-table-column
-            prop="orderAmount"
+            prop="goodsLabels"
             label="标签"
           ></el-table-column>
           <el-table-column
-            prop="orderAmount"
+            prop="pv"
             label="浏览人数"
-            sortable
+            sortable="custom"
           ></el-table-column>
           <el-table-column
-            prop="orderAmount"
+            prop="uv"
             label="浏览量"
-            sortable
+            sortable="custom"
           ></el-table-column>
           <el-table-column
-            prop="orderAmount"
+            prop="addCartUserNum"
             label="加购量"
-            sortable
+            sortable="custom"
           ></el-table-column>
           <el-table-column
-            prop="orderAmount"
+            prop="collectionIncrementNum"
             label="收藏量"
-            sortable
+            sortable="custom"
           ></el-table-column>
           <el-table-column
-            prop="orderAmount"
+            prop="saleNum"
             label="销售数量"
-            sortable
+            sortable="custom"
           ></el-table-column>
           <el-table-column
-            prop="orderAmount"
+            prop="saleMoney"
             label="销售金额"
-            sortable
+            sortable="custom"
           ></el-table-column>
         </el-table>
         <pagination
@@ -101,8 +102,7 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getInquiryList } from '@/api/admin/memberManage/patientManage.js'
-import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
+import { getHotMedical } from '@/api/admin/firstWebManage/overviewStatistics/overviewStatistics.js'
 export default {
   components: { pagination },
   watch: {
@@ -128,7 +128,8 @@ export default {
       },
       tableData: [],
       queryParams: {
-        doctorName: null,
+        orderField: null,
+        orderDirection: null,
         startTime: '',
         endTime: ''
       },
@@ -140,13 +141,12 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.queryParams.patientId = this.id
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
       let params = {
         ...this.queryParams
       }
-      getInquiryList(params).then((res) => {
+      getHotMedical(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -174,13 +174,31 @@ export default {
       this.tableData = data
       this.langDefaultFlag = true
     },
-    getDoctor (doctor) {
-      getDoctorList(doctor).then(res => {
-        if (res.error === 0) {
-          console.log(res)
-          this.doctorList = res.content
+    // 选择指定列进行排序
+    changeTableSort (column) {
+      console.log(column)
+      // 获取字段名称和排序类型
+      if (column.order) {
+        this.queryParams.orderDirection = column.order === 'descending' ? 'desc' : 'asc'
+        if (column.prop === 'pv') {
+          this.queryParams.orderField = 'pv'
+        } else if (column.prop === 'uv') {
+          this.queryParams.orderField = 'uv'
+        } else if (column.prop === 'addCartUserNum') {
+          this.queryParams.orderField = 'add_cart_user_num'
+        } else if (column.prop === 'collectionIncrementNum') {
+          this.queryParams.orderField = 'collection_increment_num'
+        } else if (column.prop === 'saleNum') {
+          this.queryParams.orderField = 'sale_num'
+        } else if (column.prop === 'saleMoney') {
+          this.queryParams.orderField = 'sale_money'
         }
-      })
+      } else {
+        this.queryParams.orderDirection = ''
+        this.queryParams.orderField = ''
+      }
+
+      this.initDataList()
     }
   },
   // watch: {
@@ -195,7 +213,6 @@ export default {
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
     // this.getDateValue(1)
-    this.getDoctor({})
     this.initDataList()
   },
   filters: {

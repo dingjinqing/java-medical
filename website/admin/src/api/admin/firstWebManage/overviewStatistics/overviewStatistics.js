@@ -25,3 +25,12 @@ export function getPageInfo (data) {
     data: data
   })
 }
+
+//  热销药品
+export function getHotMedical (data) {
+  return service({
+    url: `/api/admin/goods/summary/list`,
+    method: 'post',
+    data: data
+  })
+}
