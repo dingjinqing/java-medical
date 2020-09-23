@@ -62,6 +62,13 @@ export function pullMedicalGoodsApi () {
     method: 'post'
   })
 }
+export function pullStoreMedicalGoodsApi () {
+  return service({
+    url: `/api/admin/medical/store/goods/pull`,
+    method: 'post'
+  })
+}
+
 // 商品名、商品编码、商品规格编码是否已存在
 export function isGoodsColumnValueExist (data) {
   return service({
