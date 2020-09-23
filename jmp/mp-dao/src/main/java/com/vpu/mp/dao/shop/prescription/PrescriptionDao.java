@@ -547,8 +547,8 @@ public class PrescriptionDao extends ShopBaseDao {
      */
     public DoctorDetailPerformanceVo countSumDateByDoctor(String doctorCode, Timestamp startTime, Timestamp endTime) {
         return db().select(
-            DSL.count(PRESCRIPTION.PRESCRIPTION_CODE).as("prescriptionNum"),
-            DSL.sum(PRESCRIPTION.TOTAL_PRICE).as("prescriptionMoney")
+            DSL.ifnull(DSL.count(PRESCRIPTION.PRESCRIPTION_CODE),0).as("prescriptionNum"),
+            DSL.ifnull(DSL.sum(PRESCRIPTION.TOTAL_PRICE),0).as("prescriptionMoney")
         ).from(PRESCRIPTION)
             .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorCode))
             .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
