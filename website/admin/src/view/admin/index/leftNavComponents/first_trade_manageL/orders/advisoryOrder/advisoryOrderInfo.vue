@@ -6,7 +6,11 @@
           <span>订单号：{{ orderContent.orderSn }}</span>
           <span>订单状态：{{ orderContent.orderStatusName }}</span>
         </div>
-        <el-button type="primary" size="small" @click="viewRecord"
+        <el-button
+          type="primary"
+          size="small"
+          v-if="orderContent.orderStatus >= 3"
+          @click="viewRecord"
           >咨询详情</el-button
         >
         <el-button
