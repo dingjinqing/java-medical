@@ -23,4 +23,26 @@ public class BaseShippingInfoVo {
     protected Timestamp shippingTime;
     /**确认收货时间*/
     protected Timestamp confirmTime;
+    /**
+     * 配送人操作平台
+     */
+    private Byte      shippingPlatform;
+    /**
+     * 配送人
+     */
+    private String   shippingAccountName;
+    /**
+     * 绑定用户
+     */
+    private Integer   shippingUserId;
+    /**
+     * 配送人电话
+     */
+    private String    shippingMobile;
+    private Integer   shippingAccountId;
+    private Timestamp createTime;
+    private Integer   confirmAccountId;
+    private Byte      confirmPlatform;
+    private String    confirmMobile;
+    private Integer   confirmUserId;
 }
