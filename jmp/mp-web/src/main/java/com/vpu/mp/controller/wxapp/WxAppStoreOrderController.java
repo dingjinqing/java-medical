@@ -79,7 +79,7 @@ public class WxAppStoreOrderController extends WxAppBaseController{
     /**
      * 退款
      */
-    @PostMapping("/refund")
+    @PostMapping("/api/wxapp/store/order/refund")
     public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
         param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
         param.setWxUserInfo(wxAppAuth.user());
