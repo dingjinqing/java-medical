@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.service.foundation.exception.MpException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +29,13 @@ public class WxAppLoginController extends WxAppBaseController {
 	@PostMapping("/api/wxapp/login")
 	public JsonResult login(@RequestBody WxAppLoginParam param) throws WxErrorException {
 		logger().info("小程序登录");
-		WxAppSessionUser user = wxAppAuth.login(param,request);
-		if(user==null) {
+        WxAppSessionUser user = null;
+        try {
+            user = wxAppAuth.login(param,request);
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
+        if(user==null) {
 			//登录失败
 			return fail(JsonResultCode.ERR_CODE_LOGIN_FAILED);
 		}

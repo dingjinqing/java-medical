@@ -114,7 +114,7 @@ public class WxAppAuth {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public WxAppSessionUser login(WxAppLoginParam param, HttpServletRequest request) throws WxErrorException {
+	public WxAppSessionUser login(WxAppLoginParam param, HttpServletRequest request) throws WxErrorException, MpException {
 		Integer shopId = shopId();
 		log.info("登录店铺" + shopId);
 		ShopApplication shopApp = saas.getShopApp(shopId);
@@ -185,7 +185,7 @@ public class WxAppAuth {
      * @param userRecord       user
      * @return WxAppSessionUser
      */
-    private WxAppSessionUser setAuth(WxAppSessionUser wxAppSessionUser, UserRecord userRecord) {
+    private WxAppSessionUser setAuth(WxAppSessionUser wxAppSessionUser, UserRecord userRecord) throws MpException {
         // 如果有认证医师查看是否禁用
         Byte userType = userRecord.getUserType();
         //添加用户个人角色信息
@@ -257,6 +257,7 @@ public class WxAppAuth {
                 //门店用户
                 wxAppSessionUser.setUserType(AUTH_TYPE_STORE_ACCOUNT_USER);
                 wxAppSessionUser.setStoreAccountId(accountId);
+                wxAppSessionUser.setDoctorId(0);
                 jedis.set(getToken(), Util.toJson(wxAppSessionUser));
                 storeAccountDao.updateUserToken(storeAccountVo.getAccountId(),getToken());
             }

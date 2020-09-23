@@ -8,6 +8,7 @@ import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.main.StoreAccountDao;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.address.UserAddressDao;
+import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.pharmacist.PharmacistDao;
@@ -32,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.*;
@@ -228,6 +230,8 @@ public class StoreWxService extends ShopBaseService {
     private UserAddressDao userAddressDao;
     @Autowired
     private ShipInfoService shipInfoService;
+    @Autowired
+    private DoctorDao doctorDao;
 
     /**
      * The constant BYTE_TWO.
@@ -551,11 +555,29 @@ public class StoreWxService extends ShopBaseService {
      * @param param
      * @return
      */
-    public Integer storeClerkAuth(StoreClerkAuthParam param)throws MpException {
+    public Integer storeClerkAuth(StoreClerkAuthParam param, WxAppSessionUser wxAppSessionUser)throws MpException {
+        StoreAccountVo storeAccountVo=storeAccountDao.storeAccountAuth(param);
+        //校验是否能认证
+        checkStoreClerkAuth(param,storeAccountVo,wxAppSessionUser);
+        transaction(()->{
+
+            if(param.getIsPharmacist().equals((byte)1)){
+                //是否药师
+                storeAccountDao.updateSignature(storeAccountVo.getAccountId(),param.getSignature());
+            }
+            userDao.updateUserType(param.getUserId(), AuthConstant.AUTH_TYPE_STORE_ACCOUNT_USER);
+            storeAccountDao.updateUserId(storeAccountVo.getAccountId(),param.getUserId());
+        });
+        return storeAccountVo.getAccountId();
+    }
+
+    public void checkStoreClerkAuth(StoreClerkAuthParam param,StoreAccountVo storeAccountVo, WxAppSessionUser wxAppSessionUser)throws MpException {
+        if(wxAppSessionUser.getUserType()==null||wxAppSessionUser.getUserType().equals(0)){
+            throw new MpException(JsonResultCode.AUTH_ALREADY_AUTHED);
+        }
         if(!checkMobileCode(param)){
             throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_SMS_ERROR);
         }
-        StoreAccountVo storeAccountVo=storeAccountDao.storeAccountAuth(param);
         if(storeAccountVo==null||!Util.md5(param.getPassword()).equals(storeAccountVo.getAccountPasswd())){
             throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_ERROR);
         }
@@ -565,18 +587,7 @@ public class StoreWxService extends ShopBaseService {
         if(storeAccountVo.getUserId()>0){
             throw new MpException(JsonResultCode.STORE_CLERK_AUTH_AlREADY_ERROR);
         }
-        transaction(()->{
-            Byte userType=AuthConstant.AUTH_TYPE_STORE_ACCOUNT_USER;
-            if(param.getIsPharmacist().equals((byte)1)){
-                //是否药师
-                storeAccountDao.updateSignature(storeAccountVo.getAccountId(),param.getSignature());
-            }
-            userDao.updateUserType(param.getUserId(), userType);
-            storeAccountDao.updateUserId(storeAccountVo.getAccountId(),param.getUserId());
-        });
-        return storeAccountVo.getAccountId();
     }
-
     /**
      * 短信验证码校验
      * @return
@@ -602,7 +613,6 @@ public class StoreWxService extends ShopBaseService {
         //待处理的状态
         orderStatusList.add(OrderConstant.ORDER_WAIT_DELIVERY);
         orderStatusList.add(OrderConstant.ORDER_SHIPPED);
-        orderStatusList.add(OrderConstant.ORDER_RECEIVED);
         //门店数据
         for(StoreStatisticVo statisticVo:storeList){
             //待处理数

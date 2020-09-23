@@ -8,6 +8,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorDetailPerformanceVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -537,6 +538,24 @@ public class PrescriptionDao extends ShopBaseDao {
                 .fetchAnyInto(Integer.class);
     }
 
+    /**
+     * 医师时间段内的处方数量,金额
+     * @param doctorCode
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public DoctorDetailPerformanceVo countSumDateByDoctor(String doctorCode, Timestamp startTime, Timestamp endTime) {
+        return db().select(
+            DSL.ifnull(DSL.count(PRESCRIPTION.PRESCRIPTION_CODE),0).as("prescriptionNum"),
+            DSL.ifnull(DSL.sum(PRESCRIPTION.TOTAL_PRICE),0).as("prescriptionMoney")
+        ).from(PRESCRIPTION)
+            .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorCode))
+            .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(PRESCRIPTION.IS_VALID.eq(BaseConstant.YES))
+            .and(PRESCRIPTION.CREATE_TIME.between(startTime,endTime))
+            .fetchAnyInto(DoctorDetailPerformanceVo.class);
+    }
     /**
      * 查询用户关联医师处方
      * @param doctorCode 医师code

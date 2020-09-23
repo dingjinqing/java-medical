@@ -8,6 +8,7 @@ import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorDetailPerformanceVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryInquiryParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryInquiryVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
@@ -307,11 +308,29 @@ public class InquiryOrderDao extends ShopBaseDao {
                 .innerJoin(IM_SESSION).on(IM_SESSION.ORDER_SN.eq(INQUIRY_ORDER.ORDER_SN))
                 .where(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
                 .and(IM_SESSION.RECEIVE_START_TIME.between(startTime,endTime))
-                .and(INQUIRY_ORDER.ORDER_STATUS.in(InquiryOrderConstant.REFUND_FAILED,InquiryOrderConstant.ORDER_FINISHED,InquiryOrderConstant.ORDER_REFUND,
+                .and(INQUIRY_ORDER.ORDER_STATUS.in(InquiryOrderConstant.ORDER_RECEIVING,InquiryOrderConstant.ORDER_FINISHED,InquiryOrderConstant.ORDER_REFUND,
                         InquiryOrderConstant.ORDER_TO_REFUND,InquiryOrderConstant.ORDER_PART_REFUND))
                 .fetchAnyInto(Integer.class);
     }
 
+    /**
+     * 医师时间段内咨询单数数量，金额
+     * @param doctorId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public DoctorDetailPerformanceVo getCountNumByDateDoctorId(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+        return db().select(
+            DSL.ifnull(DSL.count(INQUIRY_ORDER.ORDER_ID),0).as("inquiryNumber"),
+            DSL.ifnull(DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT),0).as("inquiryMoney")
+        ).from(INQUIRY_ORDER)
+            .where(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
+            .and(INQUIRY_ORDER.CREATE_TIME.between(startTime,endTime))
+            .and(INQUIRY_ORDER.ORDER_STATUS.in(InquiryOrderConstant.ORDER_RECEIVING,InquiryOrderConstant.ORDER_FINISHED,InquiryOrderConstant.ORDER_REFUND,
+                InquiryOrderConstant.ORDER_TO_REFUND,InquiryOrderConstant.ORDER_PART_REFUND))
+            .fetchAnyInto(DoctorDetailPerformanceVo.class);
+    }
     /**
      * 查询用户关联医师处方
      * @param doctorId 医师id

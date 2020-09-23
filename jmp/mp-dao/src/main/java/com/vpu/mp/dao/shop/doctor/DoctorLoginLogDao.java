@@ -100,4 +100,28 @@ public class DoctorLoginLogDao extends ShopBaseDao {
             .having(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).ge(min).and(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).lt(max)))
             .fetchInto(Integer.class);
     }
+
+    /**
+     * 根据医师id获取出勤信息
+     * @param doctorId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public DoctorAttendanceOneParam getDoctorAttend(Integer doctorId,Timestamp startTime,Timestamp endTime){
+        SelectJoinStep<? extends Record> select = db().select(DOCTOR_LOGIN_LOG.DOCTOR_ID,DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as(LOGIN_DAYS)
+            , DSL.max(DOCTOR_LOGIN_LOG.CREATE_TIME).as(LAST_TIME),DOCTOR.NAME)
+            .from(DOCTOR)
+            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID));
+        select.where(DOCTOR.ID.eq(doctorId));
+        if(startTime!=null){
+            select.where(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime));
+        }
+        if(endTime!=null){
+            select.where(DOCTOR_LOGIN_LOG.CREATE_TIME.le(endTime));
+        }
+        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME).orderBy(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).desc());
+        return select.fetchAnyInto(DoctorAttendanceOneParam.class);
+    }
+
 }
