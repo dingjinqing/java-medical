@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.saas.shop.StoreAccountService;
+import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,9 @@ import javax.validation.Valid;
 public class WxAppStoreOrderController extends WxAppBaseController{
 
     @Autowired
-    private StoreAccountService setWxUserInfo;
+    private StoreAccountService storeAccountService;
+    @Autowired
+    private ReturnService returnService;
 
 
     /**
@@ -37,7 +40,7 @@ public class WxAppStoreOrderController extends WxAppBaseController{
     @PostMapping("/api/wxapp/store/order/list")
     public JsonResult storeOrderList(@RequestBody @Valid OrderListParam param) {
         param.setWxUserInfo(wxAppAuth.user());
-        StoreAccountVo storeAccountVo = setWxUserInfo.getStoreInfoById(wxAppAuth.user().getStoreAccountId());
+        StoreAccountVo storeAccountVo = storeAccountService.getStoreInfoById(wxAppAuth.user().getStoreAccountId());
         param.setStoreIds(storeAccountVo.getStoreLists());
         param.setPlatform(OrderConstant.PLATFORM_WXAPP_STORE);
         return success(shop().readOrder.getPageList(param));
@@ -81,11 +84,7 @@ public class WxAppStoreOrderController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/store/order/refund")
     public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
-        param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
-        param.setWxUserInfo(wxAppAuth.user());
-        param.setPlatform(OrderConstant.PLATFORM_WXAPP_STORE);
-        param.setAction((byte) OrderServiceCode.RECEIVE.ordinal());
-        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        ExecuteResult executeResult = returnService.storeAllRefund(param.getOrderSn());
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
