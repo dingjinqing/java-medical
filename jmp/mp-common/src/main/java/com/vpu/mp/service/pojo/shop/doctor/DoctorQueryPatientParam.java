@@ -32,7 +32,7 @@ public class DoctorQueryPatientParam {
     /**
      * 分页查询参数
      */
-    private Integer currentPage;
-    private Integer pageRows;
+    private Integer currentPage = 1;
+    private Integer pageRows = 5;
 
 }
