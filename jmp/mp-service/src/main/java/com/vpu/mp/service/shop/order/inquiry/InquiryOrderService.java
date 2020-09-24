@@ -415,6 +415,9 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void refundInquiryOrder(InquiryOrderDo order,BigDecimal refundMoney,String refundReason)throws MpException{
         logger().info("问诊订单退款-开始start,orderSn:{}"+order.getOrderSn());
+        if(InquiryOrderConstant.ORDER_REFUND.equals(order.getOrderStatus())){
+            throw new MpException(JsonResultCode.INQUIRY_ORDER_REFUND_MONEY_EXCESS);
+        }
         //0元订单
         if(order.getOrderAmount().compareTo(BigDecimal.ZERO)==0){
             order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);

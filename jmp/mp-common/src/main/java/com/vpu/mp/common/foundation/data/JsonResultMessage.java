@@ -1443,6 +1443,7 @@ public class JsonResultMessage {
     public static final String INQUIRY_ORDER_SN_IS_NULL="inquiry.order.sn.is.null";
     public static final String INQUIRY_ORDER_ID_IS_NULL="inquiry.order.id.is.null";
     public static final String INQUIRY_ORDER_REFUND_MONEY_EXCESS="inquiry.order.refund.money.excess";
+    public static final String INQUIRY_ORDER_ALREADY_REFUND="inquiry.order.is.already.refunded";
     /**
      * 验证码错误
      */
