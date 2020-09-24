@@ -726,7 +726,7 @@ public class DoctorService extends BaseShopConfigService {
         DoctorOneParam daoOneInfo = doctorDao.getOneInfo(doctorId);
         param.setStartTime(DateUtil.beginOfMonth(date).toTimestamp());
         //从注册那天算起
-        if (daoOneInfo.getAuthTime().after(param.getStartTime())){
+        if (daoOneInfo.getAuthTime()!=null&&daoOneInfo.getAuthTime().after(param.getStartTime())){
             param.setStartTime(daoOneInfo.getAuthTime());
         }
         //结束时间不能大于今天
