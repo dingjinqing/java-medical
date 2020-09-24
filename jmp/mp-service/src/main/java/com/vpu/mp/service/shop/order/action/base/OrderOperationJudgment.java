@@ -20,8 +20,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
 
 /**
  * 订单操作判断
@@ -238,7 +237,7 @@ public class OrderOperationJudgment {
      * @return
      */
     public static boolean isVerify(OrderListInfoVo order) {
-        if (order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getDeliverType() == OrderConstant.DELIVER_TYPE_SELF) {
+        if (order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getDeliverType() == DELIVER_TYPE_SELF) {
             return true;
         }
         return false;
@@ -341,6 +340,9 @@ public class OrderOperationJudgment {
     public static boolean isShowRemindShip(OrderListMpVo order) {
         if (CollectionUtils.isEmpty(order.getOrderType())) {
             order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType())));
+        }
+        if (order.getDeliverType() == DELIVER_TYPE_SELF) {
+            return false;
         }
         if (order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && !order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GIVE_GIFT)) {
             return true;
