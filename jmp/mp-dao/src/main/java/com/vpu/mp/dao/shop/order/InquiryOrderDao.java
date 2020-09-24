@@ -322,8 +322,8 @@ public class InquiryOrderDao extends ShopBaseDao {
      */
     public DoctorDetailPerformanceVo getCountNumByDateDoctorId(Integer doctorId, Timestamp startTime, Timestamp endTime) {
         return db().select(
-            DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiryNumber"),
-            DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiryMoney")
+            DSL.ifnull(DSL.count(INQUIRY_ORDER.ORDER_ID),0).as("inquiryNumber"),
+            DSL.ifnull(DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT),0).as("inquiryMoney")
         ).from(INQUIRY_ORDER)
             .where(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
             .and(INQUIRY_ORDER.CREATE_TIME.between(startTime,endTime))

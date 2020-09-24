@@ -1455,6 +1455,7 @@ public class JsonResultMessage {
     public static final String STORE_CLERK_AUTH_ALREADY_ERROR ="店员认证失败，该身份已经认证";
     public static final String STORE_CLERK_AUTH_INFO_SMS_ERROR ="店员认证失败，验证码有误";
     public static final String STORE_CLERK_AUTH_IS_DISABLED ="店员认证失败，账户已被禁用";
+    public static final String AUTH_ALREADY_AUTHED = "该用户已经认证过其他身份，请先解绑再进行操作";
 
     public static final String FETCH_HIS_ERROR = "拉取信息时错误";
     public static final String FETCH_HIS_NO_PATIENT = "无此患者信息";
@@ -1469,5 +1470,7 @@ public class JsonResultMessage {
     public static final String DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "医师提现未关注微信公众号";
     public static final String DOCTOR_WITHDRAW_EXCEED_DAY_MAX_LIMIT_MONEY = "医师提现超出每日可提现最大额度限制";
     public static final String DOCTOR_WITHDRAW_LESS_MINIMUM = "医师提现不满足单次最小额度限制";
+    public static final String DOCTOR_WITHDRAW_ALREADY_ERROR= "医师该次提现出账已经失败";
+    public static final String DOCTOR_WITHDRAW_ALREADY_REJECT= "医师该次提现已经被驳回";
 
 }

@@ -53,6 +53,9 @@ import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.NO;
+import static com.vpu.mp.common.foundation.data.BaseConstant.YES;
+import static com.vpu.mp.service.pojo.shop.store.store.StorePojo.IS_EXIST_HOSPITAL;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -103,14 +106,11 @@ public class AdminStoreController extends AdminBaseController{
     @PostMapping(value = "/api/admin/store/add")
     @RedisLock(prefix = JedisKeyConstant.NotResubmit.ADD_STORE_LOCK, noResubmit = true)
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
-        try {
-            if(shop().store.addStore(store)) {
-                return success();
-            }else {
-                return fail();
-            }
-        } catch (MpException e) {
-            e.printStackTrace();
+        Byte addStore = shop().store.addStore(store);
+        if (YES.equals(addStore)) {
+            return success();
+        } else if (IS_EXIST_HOSPITAL.equals(addStore)){
+            return fail(JsonResultCode.CODE_IS_EXIST_HOSPITAL);
         }
         return fail();
     }

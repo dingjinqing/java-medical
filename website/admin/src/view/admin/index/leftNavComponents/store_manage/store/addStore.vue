@@ -2,7 +2,11 @@
   <div class="storeWrap">
     <div v-if="reload" id="storeDiv" class="storeContent">
       <!-- 头部导航 headerSteps-->
-      <el-steps :active="stepData.currentStep" simple>
+      <el-steps
+        :active="stepData.currentStep"
+        simple
+        v-if="storeFormInfo.storeType === 0"
+      >
         <el-step :title="step1" icon="el-icon-edit"></el-step>
         <el-step :title="step2" icon="el-icon-edit"></el-step>
       </el-steps>
@@ -18,6 +22,10 @@
         size="small"
         label-suffix="："
       >
+        <el-form-item label="门店类型" prop="storeType">
+          <el-radio v-model="storeFormInfo.storeType" :label="0">门店</el-radio>
+          <el-radio v-model="storeFormInfo.storeType" :label="1">医院</el-radio>
+        </el-form-item>
         <el-form-item :label="$t('addStore.storeName')" prop="storeName">
           <el-input
             v-model="storeFormInfo.storeName"
@@ -494,22 +502,28 @@
       </div>
       <!-- 底部按钮组件 -->
       <div class="storeFooter">
-        <el-button
-          size="small"
-          v-if="this.stepData.currentStep == 0"
-          @click="nextClickHandler"
-          >{{ $t('addStore.next') }}</el-button
-        >
-        <el-button
-          size="small"
-          v-if="this.stepData.currentStep == 1"
-          @click="prevClickHandler"
-          >{{ $t('addStore.previous') }}</el-button
-        >
+        <template>
+          <el-button
+            size="small"
+            v-if="
+              this.stepData.currentStep == 0 && storeFormInfo.storeType === 0
+            "
+            @click="nextClickHandler"
+            >{{ $t('addStore.next') }}</el-button
+          >
+          <el-button
+            size="small"
+            v-if="
+              this.stepData.currentStep == 1 && storeFormInfo.storeType === 1
+            "
+            @click="prevClickHandler"
+            >{{ $t('addStore.previous') }}</el-button
+          >
+        </template>
         <el-button
           type="primary"
           size="small"
-          v-if="this.stepData.currentStep == 1"
+          v-if="this.stepData.currentStep == 1 || storeFormInfo.storeType === 1"
           @click="saveClickHandler"
           >{{ $t('addStore.save') }}</el-button
         >
@@ -610,6 +624,7 @@ export default {
         districtCode: ''
       },
       storeFormInfo: {
+        storeType: 0,
         storeName: '',
         manager: '',
         mobile: '',

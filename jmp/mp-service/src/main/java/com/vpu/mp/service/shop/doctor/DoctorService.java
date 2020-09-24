@@ -824,6 +824,10 @@ public class DoctorService extends BaseShopConfigService {
         }
         Page page = Page.getPage(result.size(), doctorQueryPatientParam.getCurrentPage(), doctorQueryPatientParam.getPageRows());
         patientVoPageResult.setPage(page);
+        if (result.size() == 0) {
+            patientVoPageResult.setDataList(new ArrayList<>());
+            return patientVoPageResult;
+        }
         List<DoctorQueryPatientVo> doctorQueryPatientVos = result.subList((doctorQueryPatientParam.getCurrentPage() - 1) * doctorQueryPatientParam.getPageRows(), (doctorQueryPatientParam.getCurrentPage() * doctorQueryPatientParam.getPageRows()) - 1);
         patientVoPageResult.setDataList(doctorQueryPatientVos);
         return patientVoPageResult;
@@ -860,23 +864,25 @@ public class DoctorService extends BaseShopConfigService {
      */
     public DoctorDetailPerformanceVo getDoctorPerformanceDetail(DoctorDetailPerformanceParam param){
         DoctorDetailPerformanceVo doctorDetailPerformanceVo=new DoctorDetailPerformanceVo();
-
+        //出勤
         DoctorAttendanceOneParam doctorAttend = doctorLoginLogDao.getDoctorAttend(param.getDoctorId(), param.getStartTime(), param.getEndTime());
         if(doctorAttend!=null){
             Integer[] timeDifference = DateUtils.getTimeDifference(param.getEndTime(), param.getStartTime());
             doctorAttend.setLoginRate(new BigDecimal(Double.valueOf(doctorAttend.getLoginDays())/Double.valueOf(timeDifference[0])).setScale(2, BigDecimal.ROUND_HALF_UP));
             FieldsUtil.assign(doctorAttend,doctorDetailPerformanceVo);
         }
+        //问诊
         DoctorDetailPerformanceVo inquiryCount=inquiryOrderDao.getCountNumByDateDoctorId(param.getDoctorId(),param.getStartTime(),param.getEndTime());
         doctorDetailPerformanceVo.setInquiryMoney(inquiryCount.getInquiryMoney());
         doctorDetailPerformanceVo.setInquiryNumber(inquiryCount.getInquiryNumber());
         Integer receiveCount = inquiryOrderDao.countByDateDoctorId(param.getDoctorId(), param.getStartTime(), param.getEndTime());
         doctorDetailPerformanceVo.setConsultationNumber(receiveCount);
+        //处方
         DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
         DoctorDetailPerformanceVo prescriptionCount=prescriptionDao.countSumDateByDoctor(doctor.getHospitalCode(),param.getStartTime(),param.getEndTime());
-
         doctorDetailPerformanceVo.setPrescriptionMoney(prescriptionCount.getPrescriptionMoney());
         doctorDetailPerformanceVo.setPrescriptionNum(prescriptionCount.getPrescriptionNum());
+        doctorDetailPerformanceVo.setConsumeMoney(doctorDetailPerformanceVo.getPrescriptionMoney().add(doctorDetailPerformanceVo.getInquiryMoney()));
         return doctorDetailPerformanceVo;
     }
 

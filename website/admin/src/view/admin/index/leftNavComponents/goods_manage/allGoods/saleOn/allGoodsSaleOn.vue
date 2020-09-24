@@ -39,7 +39,13 @@
           type="primary"
           size="small"
           @click="pullMedicalGoods">
-          拉取商品数据
+          拉取His商品数据
+        </el-button>
+        <el-button
+                type="primary"
+                size="small"
+                @click="pullStoreGoods">
+          拉取药房商品数据
         </el-button>
         <el-button
                 type="primary"
@@ -75,7 +81,7 @@ import allGoodsHeader from '../allGoodsHeader'
 import saleOnAndInStockContent from '../saleOnAndInStockContent'
 
 /* 导入js api */
-import { pullMedicalGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import { pullMedicalGoodsApi, pullStoreMedicalGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // api导入
 import { batchOperateGoods } from '@/api/admin/goodsManage/allGoods/allGoods'
 export default {
@@ -151,6 +157,10 @@ export default {
     /* 拉取药品信息 */
     pullMedicalGoods () {
       pullMedicalGoodsApi()
+    },
+    /* 拉取药房药品信息 */
+    pullStoreGoods () {
+      pullStoreMedicalGoodsApi()
     },
     /* 批量上架双方已经匹配的数据 */
     batchUpOrDownGoods (type) {

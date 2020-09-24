@@ -15,24 +15,24 @@
       <block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
         <view class="card-item">
           <view class="order-sn">
-            订单编号：P202009141643170527
+            订单编号：{{item.orderSn}}
           </view>
           <view class="consignee-info">
-            <view class="consignee-name" bindtap="call"><text>收货人手机号：13788746472</text>
+            <view class="consignee-name" bindtap="call"><text>收货人手机号：{{item.mobile}}</text>
               <image src="{{imageUrl}}image/wxapp/clerk_phone.png"></image>
             </view>
-            <view class="consignee-address" bindtap="viewMap"><text>收货地址：北京市海淀区伊泰大厦</text>
+            <view class="consignee-address" data-lat="{{item.lat}}" data-lng="{{item.lng}}" data-complete-address="{{item.completeAddress}}" bindtap="viewMap"><text>收货地址：{{item.completeAddress}}</text>
               <image src="{{imageUrl}}image/wxapp/clerk_position.png"></image>
             </view>
           </view>
           <view class="goods-content">
-            <view class="goods-item">
-              <image src="http://medicaldevimg.weipubao.cn//image/wxapp/go_back_home.png" class="goods-image"></image>
+            <view class="goods-item" wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:for-index>
+              <image src="{{goodsItem.goodsImg}}" class="goods-image"></image>
               <view class="goods-info">
-                <view class="goods-name">敖东安神补脑液口服液10支治多梦神 经衰弱安眠药失眠中药调理安神</view>
+                <view class="goods-name">{{goodsItem.goodsName}}</view>
                 <view class="goods-price">
-                  <view class="price">￥23.00</view>
-                  <view class="num">X1</view>
+                  <view class="price">￥{{goodsItem.goodsPrice}}</view>
+                  <view class="num">X{{goodsItem.goodsNumber}}</view>
                 </view>
               </view>
             </view>

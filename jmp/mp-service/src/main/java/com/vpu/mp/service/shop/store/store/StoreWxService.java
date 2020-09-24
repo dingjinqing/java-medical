@@ -69,6 +69,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_HOSPITAL;
+import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_NORMAL_STORE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
@@ -356,7 +358,8 @@ public class StoreWxService extends ShopBaseService {
         if (condition.get(scanStores) != null) {
             Byte scanStore = (Byte) condition.get(scanStores);
             SelectConditionStep<StoreRecord> conditionStep = db()
-                .selectFrom(STORE).where(DEL_CONDITION);
+                .selectFrom(STORE).where(DEL_CONDITION)
+                .and(STORE.STORE_TYPE.eq(STORE_TYPE_NORMAL_STORE));
             if (!BYTE_ZERO.equals(scanStore)) {
                 conditionStep.and(STORE.POS_SHOP_ID.greaterThan(INTEGER_ZERO));
             }
@@ -556,25 +559,11 @@ public class StoreWxService extends ShopBaseService {
      * @return
      */
     public Integer storeClerkAuth(StoreClerkAuthParam param, WxAppSessionUser wxAppSessionUser)throws MpException {
-        if(!checkMobileCode(param)){
-            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_SMS_ERROR);
-        }
         StoreAccountVo storeAccountVo=storeAccountDao.storeAccountAuth(param);
-        if(storeAccountVo==null||!Util.md5(param.getPassword()).equals(storeAccountVo.getAccountPasswd())){
-            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_ERROR);
-        }
-        if(storeAccountVo.getStatus()==0){
-            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_IS_DISABLED);
-        }
-        if(storeAccountVo.getUserId()>0){
-            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_AlREADY_ERROR);
-        }
+        //校验是否能认证
+        checkStoreClerkAuth(param,storeAccountVo,wxAppSessionUser);
         transaction(()->{
-            //如果用户是医师，先解绑
-            if(AuthConstant.AUTH_TYPE_DOCTOR_USER.equals(wxAppSessionUser.getUserType())){
-                doctorDao.unbundlingDoctorAuth(wxAppSessionUser.getDoctorId());
-                doctorDao.unbundlingDoctorToken(wxAppSessionUser.getDoctorId());
-            }
+
             if(param.getIsPharmacist().equals((byte)1)){
                 //是否药师
                 storeAccountDao.updateSignature(storeAccountVo.getAccountId(),param.getSignature());
@@ -585,6 +574,23 @@ public class StoreWxService extends ShopBaseService {
         return storeAccountVo.getAccountId();
     }
 
+    public void checkStoreClerkAuth(StoreClerkAuthParam param,StoreAccountVo storeAccountVo, WxAppSessionUser wxAppSessionUser)throws MpException {
+        if(wxAppSessionUser.getUserType()==null||wxAppSessionUser.getUserType().equals(0)){
+            throw new MpException(JsonResultCode.AUTH_ALREADY_AUTHED);
+        }
+        if(!checkMobileCode(param)){
+            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_SMS_ERROR);
+        }
+        if(storeAccountVo==null||!Util.md5(param.getPassword()).equals(storeAccountVo.getAccountPasswd())){
+            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_INFO_ERROR);
+        }
+        if(storeAccountVo.getStatus()==0){
+            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_IS_DISABLED);
+        }
+        if(storeAccountVo.getUserId()>0){
+            throw new MpException(JsonResultCode.STORE_CLERK_AUTH_AlREADY_ERROR);
+        }
+    }
     /**
      * 短信验证码校验
      * @return
