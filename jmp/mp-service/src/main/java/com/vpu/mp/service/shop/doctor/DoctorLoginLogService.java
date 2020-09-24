@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.doctor;
 
-import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorLoginLogDo;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -29,18 +27,6 @@ public class DoctorLoginLogService extends ShopBaseService {
 
     public final static Byte  THIS_MONTH = 1;
 
-    /**
-     * 医师的出勤天数
-     *
-     * @param doctorId 医师id
-     * @return
-     */
-    public String getDoctorAttendanceRate(Integer doctorId, Timestamp startTime, Timestamp endTime) {
-        int attendanceDay = doctorLoginLogDao.getDoctorAttendanceDayNum(doctorId,startTime,endTime);
-        long  dueAttendanceDay = DateUtil.betweenDay(startTime, endTime,true)+1;
-        return BigDecimal.valueOf(attendanceDay).divide(BigDecimal.valueOf(dueAttendanceDay),3,BigDecimal.ROUND_HALF_UP)
-                .multiply(BigDecimal.valueOf(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString();
-    }
 
     /**
      * 添加医师登录记录

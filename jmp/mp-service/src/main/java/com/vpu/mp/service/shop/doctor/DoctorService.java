@@ -720,12 +720,22 @@ public class DoctorService extends BaseShopConfigService {
     public DoctorAttendanceVo getAttendance(Integer userId, String doctorCode, Integer doctorId) {
         DateTime date = DateUtil.date();
         AnchorPointsListParam param = new AnchorPointsListParam();
-        param.setStartTime(DateUtil.beginOfMonth(date).toTimestamp());
-        param.setEndTime(DateUtil.endOfMonth(date).toTimestamp());
         param.setEvent(DOCTOR_ENTER_IN.getEvent());
         param.setKey(DOCTOR_ENTER_IN.getKey());
         param.setUserId(1);
-        String doctorAttendanceRate = doctorLoginLogService.getDoctorAttendanceRate(doctorId, param.getStartTime(), param.getEndTime());
+        DoctorOneParam daoOneInfo = doctorDao.getOneInfo(doctorId);
+        param.setStartTime(DateUtil.beginOfMonth(date).toTimestamp());
+        //从注册那天算起
+        if (daoOneInfo.getAuthTime().after(param.getStartTime())){
+            param.setStartTime(daoOneInfo.getAuthTime());
+        }
+        //结束时间不能大于今天
+        param.setEndTime(date.toTimestamp());
+        int attendanceDay = doctorLoginLogDao.getDoctorAttendanceDayNum(doctorId,param.getStartTime(),param.getEndTime());
+        /** 应出勤天数*/
+        Long  dueAttendanceDay = DateUtil.betweenDay(param.getStartTime(), param.getEndTime(),true)+1;
+        String doctorAttendanceRate = BigDecimal.valueOf(attendanceDay).divide(BigDecimal.valueOf(dueAttendanceDay), 3, BigDecimal.ROUND_HALF_UP)
+                .multiply(BigDecimal.valueOf(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString();
         logger().info("医师userId:{},出勤率{}", userId, doctorAttendanceRate);
         Integer prescriptionNum = prescriptionService.countDateByDoctor(doctorCode, param.getStartTime(), param.getEndTime());
         logger().info("医师code:{},处方数量{}", doctorCode, prescriptionNum);
@@ -738,6 +748,8 @@ public class DoctorService extends BaseShopConfigService {
         vo.setDoctorAttendanceRate(doctorAttendanceRate);
         vo.setPrescriptionNum(prescriptionNum);
         vo.setReceivingNumber(receivingNumber);
+        vo.setAttendanceDay(attendanceDay);
+        vo.setDueAttendanceDay(dueAttendanceDay.intValue());
         vo.setServiceCharge(inquiryOrderRebate.add(prescriptionRebate).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
         return vo;
     }
