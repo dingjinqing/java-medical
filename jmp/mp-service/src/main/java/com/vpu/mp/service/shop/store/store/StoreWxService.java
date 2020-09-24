@@ -69,6 +69,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_HOSPITAL;
+import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_NORMAL_STORE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
@@ -356,7 +358,8 @@ public class StoreWxService extends ShopBaseService {
         if (condition.get(scanStores) != null) {
             Byte scanStore = (Byte) condition.get(scanStores);
             SelectConditionStep<StoreRecord> conditionStep = db()
-                .selectFrom(STORE).where(DEL_CONDITION);
+                .selectFrom(STORE).where(DEL_CONDITION)
+                .and(STORE.STORE_TYPE.eq(STORE_TYPE_NORMAL_STORE));
             if (!BYTE_ZERO.equals(scanStore)) {
                 conditionStep.and(STORE.POS_SHOP_ID.greaterThan(INTEGER_ZERO));
             }

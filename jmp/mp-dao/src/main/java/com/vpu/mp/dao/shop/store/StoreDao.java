@@ -48,6 +48,8 @@ public class StoreDao extends ShopBaseDao {
 
     public static final Byte STORE_TYPE_HOSPITAL = 1;
 
+    public static final Byte STORE_TYPE_NORMAL_STORE = 0;
+
     public StoreBasicVo getStoreByNo(String storeNo) {
         return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(StoreBasicVo.class);
     }
