@@ -880,7 +880,7 @@ public class DoctorService extends BaseShopConfigService {
         DoctorAttendanceOneParam doctorAttend = doctorLoginLogDao.getDoctorAttend(param.getDoctorId(), param.getStartTime(), param.getEndTime());
         if(doctorAttend!=null){
             Integer[] timeDifference = DateUtils.getTimeDifference(param.getEndTime(), param.getStartTime());
-            doctorAttend.setLoginRate(new BigDecimal(Double.valueOf(doctorAttend.getLoginDays())/Double.valueOf(timeDifference[0])).setScale(2, BigDecimal.ROUND_HALF_UP));
+            doctorAttend.setLoginRate(new BigDecimal(Double.valueOf(doctorAttend.getLoginDays())/Double.valueOf(timeDifference[0]+1)).setScale(2, BigDecimal.ROUND_HALF_UP));
             FieldsUtil.assign(doctorAttend,doctorDetailPerformanceVo);
         }
         //问诊
