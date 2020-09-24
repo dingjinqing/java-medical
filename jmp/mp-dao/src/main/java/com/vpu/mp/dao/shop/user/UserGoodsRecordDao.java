@@ -33,7 +33,7 @@ public class UserGoodsRecordDao extends ShopBaseDao {
      * 用户的浏览记录
      * @return
      */
-    public PageResult<MemberGoodsBrowseReportParam> userGoodsBrowseReport(MemberGoodsBrowseReportParam param){
+    public PageResult<MemberGoodsBrowseReportVo> userGoodsBrowseReport(MemberGoodsBrowseReportParam param){
         SelectConditionStep<? extends Record> where = db()
                 .select(USER_GOODS_RECORD.ID,USER_GOODS_RECORD.UPDATE_TIME.as(MemberGoodsBrowseReportVo.TIME),
                         DSL.count(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME).as(MemberGoodsBrowseReportVo.GOODSNAME),
@@ -62,7 +62,7 @@ public class UserGoodsRecordDao extends ShopBaseDao {
         where.groupBy(USER_GOODS_RECORD.ID, USER_GOODS_RECORD.UPDATE_TIME);
         paramBbuildSelect(param, where);
         where.orderBy(USER_GOODS_RECORD.UPDATE_TIME.desc());
-        return getPageResult(where,param,MemberGoodsBrowseReportParam.class);
+        return getPageResult(where,param,MemberGoodsBrowseReportVo.class);
     }
 
     private void paramBbuildSelect(MemberGoodsBrowseReportParam param, SelectConditionStep<? extends Record> where) {
