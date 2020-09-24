@@ -179,6 +179,7 @@ public class DoctorWithdrawService extends ShopBaseService {
             });
 
         }else if(DoctorWithdrawConstant.WITHDRAW_CHECK_REFUSE.equals(param.getCheckStatus())){
+            //审核驳回
             if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())){
                 transaction(()->{
                     //修改可提现金额，冻结金额
