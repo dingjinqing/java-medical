@@ -13,6 +13,7 @@ import java.util.List;
 public class PrescriptionItemBo  {
     private String prescriptionCode;
     private String doctorName;
+    private Byte settlementFlag;
     private List<PrescriptionItemDo> itemList;
 
 }

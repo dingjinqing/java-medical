@@ -118,7 +118,7 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.queryParams.patientId = this.id
+      this.queryParams.doctorId = this.id
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
       let params = {
