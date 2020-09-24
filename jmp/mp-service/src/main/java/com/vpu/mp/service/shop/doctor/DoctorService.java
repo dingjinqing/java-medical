@@ -14,7 +14,7 @@ import com.vpu.mp.common.pojo.shop.table.DoctorDutyRecordDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorSummaryTrendDo;
 import com.vpu.mp.common.pojo.shop.table.UserDoctorAttentionDo;
 import com.vpu.mp.config.SmsApiConfig;
-import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;

@@ -59,7 +59,8 @@ import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_COURIER;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
+import static com.vpu.mp.service.pojo.shop.store.store.StorePojo.IS_EXIST_HOSPITAL;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 
@@ -215,17 +216,17 @@ public class StoreService extends ShopBaseService {
      * @param store
      * @return
      */
-    public Boolean addStore(StorePojo store) throws MpException{
+    public Byte addStore(StorePojo store){
         // 判断是否存在医院类型门店
         if (storeDao.isExistHospitalStore() && STORE_TYPE_HOSPITAL.equals(store.getStoreType())) {
-            throw MpException.initErrorResult(JsonResultCode.CODE_CARD_RECEIVE_NOCODE, store.getStoreType(), null);
+            return IS_EXIST_HOSPITAL;
         }
         if (store.getPickDetail() != null) {
             store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
         }
         StoreRecord record = new StoreRecord();
         this.assign(store, record);
-        return db().executeInsert(record) > 0;
+        return db().executeInsert(record) > 0 ? YES : NO;
     }
 
     /**

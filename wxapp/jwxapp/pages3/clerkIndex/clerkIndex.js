@@ -47,7 +47,7 @@ global.wxPage({
     })
   },
   viewWaitHandleOrder({currentTarget:{dataset:{storeId}}}){
-    util.jumpLink(`/pages3/clerkOrderList/clerkOrderList${util.getUrlParams({
+    util.jumpLink(`pages3/clerkOrderList/clerkOrderList${util.getUrlParams({
       storeId
     })}`)
   },

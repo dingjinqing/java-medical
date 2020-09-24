@@ -20,7 +20,7 @@
           <view>{{info.storeName}}</view>
           <text class="iconfont icondianhua" style="color:{{comColor}};font-size=40rpx;float:right;" bindtap="phoneCall"></text>
         </view>
-        <view class="nowappoint" bindtap="changeStore">
+        <view class="nowappoint" wx:if="{{storeType !== '1'}}" bindtap="changeStore">
           {{i18n.$t(localePack,"pages.store.switchStore")}}
         </view>
       </view>

@@ -6,7 +6,14 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.member.*;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberParam;
+import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
@@ -14,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
+import com.vpu.mp.service.pojo.shop.member.report.MemberGoodsBrowseReportParam;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.user.detail.UserAssociatedDoctorParam;
@@ -21,7 +29,11 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -166,6 +178,14 @@ public class AdminMemberController extends AdminBaseController{
 		MemberDetailsVo vo = shop().member.getMemberInfoById(userId,getLang());
 
 		return i18nSuccess(vo);
+	}
+
+	/**
+	 * 商品浏览记录
+	 */
+	@PostMapping("/goods/browse/report")
+	public JsonResult userGoodsRecordReport(@RequestBody @Validated MemberGoodsBrowseReportParam param){
+		return success(shop().member.userGoodsRecordReport(param));
 	}
 
 

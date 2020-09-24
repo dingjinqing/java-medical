@@ -26,7 +26,7 @@
             </view>
           </view>
           <view class="goods-content">
-            <view class="goods-item" wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:for-index>
+            <view class="goods-item" wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:key="recId">
               <image src="{{goodsItem.goodsImg}}" class="goods-image"></image>
               <view class="goods-info">
                 <view class="goods-name">{{goodsItem.goodsName}}</view>
@@ -38,11 +38,16 @@
             </view>
           </view>
           <view class="button-content">
-            <view class="deliver">发货</view>
-            <view class="return">退款</view>
+            <view class="deliver" wx:if="{{item.orderStatus === 3}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="deliver">发货</view>
+            <view class="deliver" wx:if="{{item.orderStatus === 4}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="confirm">确认送达</view>
+            <view class="return" bindtap="return">退款</view>
           </view>
         </view>
       </block>
     </block>
+    <view class="is-null" wx:if="{{dataList[0].length <= 0}}">
+      <image src="{{imageUrl}}image/wxapp/no-order.png"></image>
+      <text>您还没有相关订单</text>
+    </view>
   </view>
 </view>
