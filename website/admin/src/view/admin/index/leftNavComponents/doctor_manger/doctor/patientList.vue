@@ -7,10 +7,10 @@
           <div class="filters_item">
             <span>患者姓名：</span>
             <el-input
-              v-model="queryParams.goodsCommonName"
+              v-model="queryParams.patientName"
               size="small"
               style="width: 150px"
-              placeholder="请输入药品名称"
+              placeholder="请输入患者姓名"
             >
             </el-input>
           </div>
@@ -54,27 +54,27 @@
           }"
         >
           <el-table-column
-            prop="goodsCommonName"
+            prop="patientName"
             label="患者姓名"
           ></el-table-column>
           <el-table-column
-            prop='goodsQualityRatio'
+            prop='patientNickName'
             label='用户昵称'
           ></el-table-column>
           <el-table-column
-            prop="goodsProductionEnterprise"
+            prop="prescriptionNum"
             label="处方数量"
           ></el-table-column>
           <el-table-column
-            prop="goodsApprovalNumber"
+            prop="inquiryNum"
             label="咨询次数"
           ></el-table-column>
           <el-table-column
-            prop="goodsNumber"
+            prop="medicineCost"
             label="药品消费金额"
           ></el-table-column>
           <el-table-column
-            prop="goodsPrice"
+            prop="inquiryCost"
             label="咨询消费金额"
           ></el-table-column>
         </el-table>
@@ -89,8 +89,7 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getMedicineList } from '@/api/admin/memberManage/patientManage.js'
-import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
+import { doctorPatient } from '@/api/admin/doctorManage/doctorInfo/doctor'
 export default {
   components: { pagination },
   watch: {
@@ -117,9 +116,7 @@ export default {
       queryParams: {
         startTime: '',
         endTime: '',
-        goodsCommonName: '',
-        goodsApprovalNumber: '',
-        goodsProductionEnterprise: ''
+        patientName: ''
       },
       // 表格原始数据
       originalData: [],
@@ -129,13 +126,14 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.queryParams.patientId = this.id
+      this.queryParams.doctorId = this.id
+      this.queryParams.doctorCode = this.code
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
       let params = {
         ...this.queryParams
       }
-      getMedicineList(params).then((res) => {
+      doctorPatient(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -150,35 +148,27 @@ export default {
         console.log(error)
       })
     },
-    handleSeeMessage (code) {
-      console.log(this.$router)
-      let newpage = this.$router.resolve({
-        name: 'prescription_message'
-      })
-      newpage.href = newpage.href + '?prescriptionCode=' + code
-      console.log(newpage.href)
-      window.open(newpage.href, '_blank')
-    },
-    handleSeeOrder (code) {
-      console.log(this.$router)
-      let newpage = this.$router.resolve({
-        name: 'orderInfo'
-      })
-      newpage.href = newpage.href + '?orderSn=' + code
-      console.log(newpage.href)
-      window.open(newpage.href, '_blank')
-    },
+    // handleSeeMessage (code) {
+    //   console.log(this.$router)
+    //   let newpage = this.$router.resolve({
+    //     name: 'prescription_message'
+    //   })
+    //   newpage.href = newpage.href + '?prescriptionCode=' + code
+    //   console.log(newpage.href)
+    //   window.open(newpage.href, '_blank')
+    // },
+    // handleSeeOrder (code) {
+    //   console.log(this.$router)
+    //   let newpage = this.$router.resolve({
+    //     name: 'orderInfo'
+    //   })
+    //   newpage.href = newpage.href + '?orderSn=' + code
+    //   console.log(newpage.href)
+    //   window.open(newpage.href, '_blank')
+    // },
     handleData (data) {
       this.tableData = data
       this.langDefaultFlag = true
-    },
-    getDoctor (doctor) {
-      getDoctorList(doctor).then(res => {
-        if (res.error === 0) {
-          console.log(res)
-          this.doctorList = res.content
-        }
-      })
     }
   },
   // watch: {
@@ -192,8 +182,8 @@ export default {
   // },
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
+    this.code = this.$route.query.code ? this.$route.query.code : 0
     // this.getDateValue(1)
-    this.getDoctor({})
     this.initDataList()
   },
   filters: {
