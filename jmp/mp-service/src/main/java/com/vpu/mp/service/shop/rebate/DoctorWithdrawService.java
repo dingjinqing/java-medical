@@ -161,9 +161,15 @@ public class DoctorWithdrawService extends ShopBaseService {
         if(doctorWithdrawVo==null){
             throw new MpException(JsonResultCode.CODE_FAIL);
         }
+        if(DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL.equals(doctorWithdrawVo.getStatus())){
+            throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_ALREADY_ERROR);
+        }
+        if(DoctorWithdrawConstant.WITHDRAW_CHECK_REFUSE.equals(doctorWithdrawVo.getStatus())){
+            throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_ALREADY_REJECT);
+        }
         DoctorOneParam doctor=doctorService.getOneInfo(doctorWithdrawVo.getDoctorId());
         DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(doctorWithdrawVo.getDoctorId());
-        if(DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS.equals(param.getCheckStatus())){
+        if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())&&DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS.equals(param.getCheckStatus())){
             //出账,暂时注释掉
             pay2Person(param.getOrderSn(),param.getClientIp(),doctorWithdrawVo.getRealName(),doctor.getUserId(),doctorWithdrawVo.getType(),doctorWithdrawVo.getWithdrawCash(),doctorWithdrawVo,doctorTotalRebateVo,true);
             transaction(()->{
@@ -173,11 +179,13 @@ public class DoctorWithdrawService extends ShopBaseService {
             });
 
         }else if(DoctorWithdrawConstant.WITHDRAW_CHECK_REFUSE.equals(param.getCheckStatus())){
-            transaction(()->{
-                //修改可提现金额，冻结金额
-                doctorTotalRebateDao.updateTotalMoneyBlockedMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getTotalMoney().add(doctorWithdrawVo.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
-                doctorWithDrawDao.update(doctorWithdrawVo.getId(),param.getCheckStatus(),param.getRefuseDesc());
-            });
+            if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())){
+                transaction(()->{
+                    //修改可提现金额，冻结金额
+                    doctorTotalRebateDao.updateTotalMoneyBlockedMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getTotalMoney().add(doctorWithdrawVo.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
+                    doctorWithDrawDao.update(doctorWithdrawVo.getId(),param.getCheckStatus(),param.getRefuseDesc());
+                });
+            }
 
         }else {
             doctorWithDrawDao.update(doctorWithdrawVo.getId(),param.getCheckStatus(),param.getRefuseDesc());
