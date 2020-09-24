@@ -121,3 +121,20 @@
   font-weight: 500;
   background-color: #25C3BB;
 }
+.is-null{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.is-null image{
+  width: 750rpx;
+  height: 448rpx;
+}
+.is-null text{
+  margin-top: -60rpx;
+  color: #999;
+}
