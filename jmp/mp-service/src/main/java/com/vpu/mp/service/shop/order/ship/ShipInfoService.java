@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -160,7 +161,7 @@ public class ShipInfoService extends ShopBaseService {
      * @return
      */
     public Integer getCountFinishedNumByAccountIdUserId(Integer accountId,Integer userId, Timestamp startTime,Timestamp endTime){
-        SelectConditionStep<? extends Record> select=db().selectCount().from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.CONFIRM_ACCOUNT_ID.eq(accountId))
+        SelectConditionStep<? extends Record> select=db().select(DSL.countDistinct(PART_ORDER_GOODS_SHIP.ORDER_SN)).from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.CONFIRM_ACCOUNT_ID.eq(accountId))
             .and(PART_ORDER_GOODS_SHIP.CONFIRM_USER_ID.eq(userId));
         if(startTime!=null){
             select.and(PART_ORDER_GOODS_SHIP.CONFIRM_TIME.ge(startTime));

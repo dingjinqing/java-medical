@@ -7,8 +7,10 @@ import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.shop.user.UserGoodsRecordDao;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.db.shop.tables.records.TagRecord;
@@ -45,6 +47,7 @@ import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
+import com.vpu.mp.service.pojo.shop.member.report.MemberGoodsBrowseReportParam;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
@@ -64,7 +67,16 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.*;
+import org.jooq.InsertValuesStep2;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectField;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.Table;
+import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.tools.StringUtils;
@@ -94,7 +106,7 @@ import static org.jooq.impl.DSL.date;
 
 
 /**
- * 
+ *
  * @author 黄壮壮 2019-07-08 16:22
  */
 @Service
@@ -117,6 +129,8 @@ public class MemberService extends ShopBaseService {
 	public static final Integer YEAR = 365;
 	public static final Byte YES_DISTRIBUTOR = 1;
 
+	@Autowired
+	private UserGoodsRecordDao userGoodsRecordDao;
 	@Autowired
 	public AccountService account;
 	@Autowired
@@ -151,11 +165,11 @@ public class MemberService extends ShopBaseService {
 	public UserExportService userExpSvc;
 	@Autowired
 	public RecordAdminActionService recordAdminActionSvc;
-	@Autowired 
+	@Autowired
 	public CardFreeShipService freeShipSvc;
 	@Autowired
 	public CouponService couponSvc;
-	
+
 	/**
 	 * 导出会员
 	 */
@@ -163,41 +177,41 @@ public class MemberService extends ShopBaseService {
 
 		List<UserRecord> userList = getExportUserList(param);
 		List<MemberRecordExportVo> resList = new ArrayList<>();
-		
+
 		for(UserRecord user: userList) {
 			MemberRecordExportVo vo = new MemberRecordExportVo();
 			FieldsUtil.assignNotNull(user, vo);
 			//TODO
 			UserCenterNumBean userCenterOrder = order.getUserCenterNum(user.getUserId(), 0, new Integer[] {6,8,10}, new Integer[] {});
 			UserCenterNumBean userCenterReturnOrder = order.getUserCenterNum(user.getUserId(), 4, new Integer[] {7,9}, new Integer[] {5});
-			
+
 			// 邀请人姓名
 			vo.setInviteUserName(userCardDao.getUserName(user.getInviteId()));
-			
+
 			resList.add(vo);
 		}
 		 Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
 	     ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
-		
+
 	     excelWriter.writeModelList(resList,MemberRecordExportVo.class);
 	     return workbook;
 	}
-	
-	
-	
+
+
+
 	public List<UserRecord> getExportUserList(MemberPageListParam param) {
 		return memberDao.getExportUserList(param);
 	}
-	
-	
+
+
 	/**
 	 * 会员列表分页查询
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
 	public PageResult<MemberInfoVo> getPageList(MemberPageListParam param, String language) {
-		
+
 		/** 获取会员列表的基本信息 */
 		PageResult<MemberInfoVo> memberList = getMemberList(param);
 		logger().info("获取会员列表成功");
@@ -223,11 +237,11 @@ public class MemberService extends ShopBaseService {
 
 		return memberList;
 	}
-	
+
 
 
 	/**
-	 * 获取会员列表的基本信息 
+	 * 获取会员列表的基本信息
 	 */
 	private PageResult<MemberInfoVo> getMemberList(MemberPageListParam param) {
 		PageResult<MemberInfoVo> memberList = memberDao.getMemberList(param);
@@ -267,7 +281,7 @@ public class MemberService extends ShopBaseService {
 			tmp.append(channelName);
 			sourceName =  tmp.toString();
 		}
-		
+
 		if(member.getSource()!=null && member.getSource()>0) {
 			// 门店
 			StringBuilder tmp = new StringBuilder();
@@ -329,7 +343,7 @@ public class MemberService extends ShopBaseService {
         }
         return select;
     }
-	
+
 	/**
 	 *  获取用户信息
 	 */
@@ -345,7 +359,7 @@ public class MemberService extends ShopBaseService {
 			user.setScore(actualScore);
 			score.updateUserScore(userId, actualScore);
 		}
-		
+
 		return user;
 	}
 
@@ -393,7 +407,7 @@ public class MemberService extends ShopBaseService {
 		}else {
 			ids = param.getUserIdList();
 		}
-		
+
 		transaction(()->{
 			int num = updateUserLoginPermission(param, ids);
 			if(num > 0) {
@@ -516,8 +530,8 @@ public class MemberService extends ShopBaseService {
 			.where(USER_TAG.USER_ID.eq(userId))
 			.fetchInto(TagVo.class);
 	}
-	
-	/** 根据用户id获取用户详情 
+
+	/** 根据用户id获取用户详情
 	 * @throws MpException */
 	public MemberDetailsVo getMemberInfoById(Integer userId,String language) {
 		MemberDetailsVo vo = new MemberDetailsVo();
@@ -525,7 +539,7 @@ public class MemberService extends ShopBaseService {
 
 		/** 用户基本信息 */
 		MemberBasicInfoVo memberBasicInfoVo = dealWithUserBasicInfo(userId, transStatistic,language);
-		
+
 		/** -查询不到用户 */
 		if(memberBasicInfoVo == null) {
 			return vo;
@@ -537,19 +551,19 @@ public class MemberService extends ShopBaseService {
 		vo.setTransStatistic(transStatistic);
 		return vo;
 	}
-	
+
 
 	/**
 	 * 处理会员用户的底本信息
-	 * 
-	 * @throws MpException 
+	 *
+	 * @throws MpException
 	 */
 	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,String language){
 		/** 会员用户基本信息 */
 		logger().info("正在处理会员基本信息");
 
 		MemberBasicInfoVo memberBasicInfoVo = getMemberInfo(userId);
-		
+
 		if(memberBasicInfoVo == null) {
 			return memberBasicInfoVo;
 		}
@@ -592,13 +606,13 @@ public class MemberService extends ShopBaseService {
 			logger().info("受教育程度" + MemberEducationEnum.valueOf(eduCode).getName());
 		}
 		/** 来源 */
-		
+
 		MemberInfoVo memberInfoVo = new MemberInfoVo();
 		FieldsUtil.assignNotNull(memberBasicInfoVo, memberInfoVo);
 		String sourceName = getSourceName(language,memberInfoVo);
 		memberBasicInfoVo.setSourceName(sourceName);
-		
-		
+
+
 		/** 行业 */
 		if(memberBasicInfoVo.getIndustryInfo() != null) {
 			int industryCode = Integer.parseInt(memberBasicInfoVo.getIndustryInfo());
@@ -607,7 +621,7 @@ public class MemberService extends ShopBaseService {
 			memberBasicInfoVo.setIndustryInfo(name);
 		}
 		memberBasicInfoVo.setUserId(userId);
-		
+
 		/** 邀请人分销分组名称 */
 		memberBasicInfoVo.setInviteGroupName(distributorListService.getGroupName(userId));
         List<PatientOneParam> patientList = patientService.listPatientByUserId(userId);
@@ -627,10 +641,10 @@ public class MemberService extends ShopBaseService {
 		Integer cityCode = memberBasicInfoVo.getCityCode();
 		/** 区代码 */
 		Integer districtCode = memberBasicInfoVo.getDistrictCode();
-		
+
 		if(provinceCode != null) {
 			for(AreaProvinceVo province: allArea) {
-				
+
 				if(provinceCode.equals(province.getProvinceId())){
 					/** 设置省名称 */
 					String provinceName = province.getProvinceName();
@@ -644,7 +658,7 @@ public class MemberService extends ShopBaseService {
 						if(cityCode.equals(city.getCityId())) {
 							String cityName = city.getCityName();
 							memberBasicInfoVo.setCityName(cityName);
-							
+
 							/** 获取区|县 */
 							List<AreaDistrictVo> areaDistrict = city.getAreaDistrict();
 							if(districtCode == null || areaDistrict.size()<1) {
@@ -658,15 +672,15 @@ public class MemberService extends ShopBaseService {
 									return;
 								}
 							}
-							
+
 						}
 					}
-					
-					
+
+
 				}
 			}
 		}
-		
+
 	}
 
 	/**
@@ -682,7 +696,7 @@ public class MemberService extends ShopBaseService {
 		return null;
 	}
 
-	
+
 
 
 	/**
@@ -693,7 +707,7 @@ public class MemberService extends ShopBaseService {
 	public MemberBasicInfoVo getMemberInfo(Integer userId) {
 		return memberDao.getMemberInfo(userId);
 	}
-	
+
 	/**
 	 * 	获取用户积分
 	 */
@@ -704,9 +718,9 @@ public class MemberService extends ShopBaseService {
 		}else {
 			return NumberUtils.INTEGER_ZERO;
 		}
-		
+
 	}
-	
+
 	/**
 	 * 	获取用户余额
 	 */
@@ -727,23 +741,23 @@ public class MemberService extends ShopBaseService {
 	}
 	/**
 	 * 获取分销信息
-	 * 
+	 *
 	 * @param userId
 	 * @param transStatistic
 	 * @param memberBasicInfoVo
 	 */
 	private void dealWithDistributorsInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,
 			MemberBasicInfoVo memberBasicInfoVo) {
-		
+
 		if(memberBasicInfoVo == null) {
 			return;
 		}
 		logger().info("正在获取分销统计信息");
 		/** 分销统计 */
 		/** 判断是不是分销员 */
-		
+
 		if (YES_DISTRIBUTOR.equals(memberBasicInfoVo.getIsDistributor())) {
-			
+
 			/** 用户的分销信息 */
 			DistributorListVo distributor = getDistributor(userId, memberBasicInfoVo);
 			if (distributor != null) {
@@ -773,13 +787,13 @@ public class MemberService extends ShopBaseService {
                 /** -已提现佣金总额(元) */
                 transStatistic.getDistributionStatistics().setWithdrawCash(distributionWithdraw.getWithdrawCash());
             }
-			
+
 		}
 	}
 
 	/**
 	 * 获取对应Id的分销员信息
-	 * 
+	 *
 	 * @param userId
 	 * @param memberBasicInfoVo
 	 * @return
@@ -907,14 +921,14 @@ public class MemberService extends ShopBaseService {
      * 	更新会员的信息
      *
      * @param param
-     * @throws MpException 
+     * @throws MpException
      */
     public void updateMemberInfo(MemberParam param) throws MpException {
-		
+
 		/** 更新user_detail */
 		memberDao.updateMemberInfoSql(param);
-		
-		
+
+
 		/** 更新用户邀请人*/
         if (param.getInviteId() != null && param.getUserId()!=null) {
         	if(param.getUserId().equals(param.getInviteId())) {
@@ -987,20 +1001,24 @@ public class MemberService extends ShopBaseService {
 	 * @return
 	 */
 	public UserImportDetailRecord getUserByMobile(String mobile) {
-		
+
 		return db().selectFrom(USER_IMPORT_DETAIL)
 				.where(USER_IMPORT_DETAIL.MOBILE.eq(mobile)
 						.and(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))).and(USER_IMPORT_DETAIL.USER_ACTION.eq(YES_DISTRIBUTOR)))
 				.orderBy(USER_IMPORT_DETAIL.ID.desc()).fetchAny();
 	}
-	
+
 	public void updateUserDetail(UserDetailRecord record) {
 		memberDao.updateUserDetail(record);
 	}
-	
+
 
     public Result<UserRecord> getUserRecordByIds(List<Integer> collect) {
         return db().selectFrom(User.USER).where(User.USER.USER_ID.in(collect))
             .fetchInto(User.USER);
     }
+
+	public PageResult<MemberGoodsBrowseReportParam> userGoodsRecordReport(MemberGoodsBrowseReportParam param) {
+		 return userGoodsRecordDao.userGoodsBrowseReport(param);
+	}
 }
