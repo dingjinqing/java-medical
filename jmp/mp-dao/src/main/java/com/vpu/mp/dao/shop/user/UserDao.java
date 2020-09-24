@@ -1,4 +1,4 @@
-package com.vpu.mp.dao.shop;
+package com.vpu.mp.dao.shop.user;
 
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -21,6 +21,11 @@ import java.util.List;
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
+/**
+ * 用户
+ * @author 赵晓东
+ * @date 2020年08月11日
+ */
 @Repository
 public class UserDao extends ShopBaseDao {
 

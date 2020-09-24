@@ -8,8 +8,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
-import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
@@ -71,7 +70,6 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

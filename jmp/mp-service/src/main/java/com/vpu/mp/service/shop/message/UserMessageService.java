@@ -6,7 +6,7 @@ import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.UserAnnouncementDo;
 import com.vpu.mp.common.pojo.shop.table.UserMessageDo;
-import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.message.MessageDao;
 import com.vpu.mp.dao.shop.message.UserAnnouncementDao;

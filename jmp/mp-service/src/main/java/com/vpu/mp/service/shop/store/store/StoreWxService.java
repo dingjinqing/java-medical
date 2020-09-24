@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.main.StoreAccountDao;
-import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.address.UserAddressDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;

@@ -16,7 +16,7 @@ import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
-import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
