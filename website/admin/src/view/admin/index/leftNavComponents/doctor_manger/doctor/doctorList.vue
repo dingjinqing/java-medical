@@ -173,7 +173,7 @@
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
-                @click="toDetail(scope.row.id)"
+                @click="toDetail(scope.row.id,scope.row.hospitalCode)"
               >查看详情</a>
             </div>
           </template>
@@ -360,11 +360,12 @@ export default {
       })
       window.open(href, '_blank')
     },
-    toDetail (id) {
+    toDetail (id, code) {
       const { href } = this.$router.resolve({
         path: '/admin/home/main/doctor/detail',
         query: {
-          id: id
+          id: id,
+          code: code
         }
       })
       window.open(href, '_blank')

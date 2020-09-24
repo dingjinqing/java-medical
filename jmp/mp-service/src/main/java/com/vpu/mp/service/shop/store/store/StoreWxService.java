@@ -6,7 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.main.StoreAccountDao;
-import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.address.UserAddressDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
@@ -69,6 +69,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_HOSPITAL;
+import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_NORMAL_STORE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
@@ -356,7 +358,8 @@ public class StoreWxService extends ShopBaseService {
         if (condition.get(scanStores) != null) {
             Byte scanStore = (Byte) condition.get(scanStores);
             SelectConditionStep<StoreRecord> conditionStep = db()
-                .selectFrom(STORE).where(DEL_CONDITION);
+                .selectFrom(STORE).where(DEL_CONDITION)
+                .and(STORE.STORE_TYPE.eq(STORE_TYPE_NORMAL_STORE));
             if (!BYTE_ZERO.equals(scanStore)) {
                 conditionStep.and(STORE.POS_SHOP_ID.greaterThan(INTEGER_ZERO));
             }
@@ -608,6 +611,7 @@ public class StoreWxService extends ShopBaseService {
      */
     public StoreMainShowVo storeMainShow(StoreAccountVo storeAccountVo){
         StoreMainShowVo storeMainShowVo=new StoreMainShowVo();
+        //可用门店
         List<StoreStatisticVo> storeList=storeDao.getListByStoreIds(storeAccountVo.getStoreLists());
         List<Byte> orderStatusList=new ArrayList<>();
         //待处理的状态
@@ -623,7 +627,8 @@ public class StoreWxService extends ShopBaseService {
         StoreMonthStatisticVo monthVo=new StoreMonthStatisticVo();
         Timestamp startTime=DateUtil.beginOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
         Timestamp endTime=DateUtil.endOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
-        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeAccountVo.getStoreLists(), orderStatusList,startTime,endTime);
+        List<Integer> storeIdList=storeList.stream().map(StoreStatisticVo::getStoreId).collect(Collectors.toList());
+        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeIdList, orderStatusList,startTime,endTime);
         monthVo.setWaitHandleNum(waitHandleNum);
         //已完成的数量
         Integer finishedNum=shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),startTime,endTime);

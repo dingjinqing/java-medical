@@ -494,6 +494,7 @@ public class OrderReadService extends ShopBaseService {
             prescriptionItemBo.setItemList(list);
             prescriptionItemBo.setPrescriptionCode(preCode);
             prescriptionItemBo.setDoctorName(prescriptionVo.getDoctorName());
+            prescriptionItemBo.setSettlementFlag(prescriptionVo.getSettlementFlag());
             boList.add(prescriptionItemBo);
         }
         return boList;

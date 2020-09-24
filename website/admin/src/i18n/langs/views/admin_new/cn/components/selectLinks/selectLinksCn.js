@@ -5,66 +5,86 @@ export const cn = {
   sure: '确 定',
   level_one_DataList: [
     {
-      flagindex: null, title: '常用链接'
+      flagindex: null,
+      title: '常用链接'
     },
     {
-      flagindex: null, title: '商品链接'
+      flagindex: null,
+      title: '商品链接'
     },
     {
-      flagindex: '', title: '自定义页面'
+      flagindex: '',
+      title: '自定义页面'
     },
     {
-      flagindex: '', title: '营销活动'
+      flagindex: '',
+      title: '营销活动'
     },
     {
-      flagindex: '', title: '商品分类'
+      flagindex: '',
+      title: '商品分类'
     },
     {
-      flagindex: '', title: '网页跳转'
+      flagindex: '',
+      title: '网页跳转'
     },
     {
-      flagindex: '', title: '小程序跳转'
+      flagindex: '',
+      title: '小程序跳转'
     },
     {
-      flagindex: '', title: '表单页面'
+      flagindex: '',
+      title: '表单页面'
     },
     {
-      flagindex: '', title: '门店'
+      flagindex: '',
+      title: '门店'
     }
   ],
   level_two_DataList_one: [
     {
-      flagindex: null, title: '拼团抽奖'
+      flagindex: null,
+      title: '拼团抽奖'
     },
     {
-      flagindex: '', title: '瓜分积分'
+      flagindex: '',
+      title: '瓜分积分'
     },
     {
-      flagindex: '', title: '好友助力'
+      flagindex: '',
+      title: '好友助力'
     },
     {
-      flagindex: '', title: '加价购'
+      flagindex: '',
+      title: '加价购'
     },
     {
-      flagindex: '', title: '幸运抽奖'
+      flagindex: '',
+      title: '幸运抽奖'
     },
     {
-      flagindex: '', title: '满折满减'
+      flagindex: '',
+      title: '满折满减'
     },
     {
-      flagindex: '', title: '一口价'
+      flagindex: '',
+      title: '一口价'
     },
     {
-      flagindex: '', title: '优惠券'
+      flagindex: '',
+      title: '优惠券'
     },
     {
-      flagindex: '', title: '会员卡'
+      flagindex: '',
+      title: '会员卡'
     },
     {
-      flagindex: '', title: '测评'
+      flagindex: '',
+      title: '测评'
     },
     {
-      flagindex: '', title: '优惠礼包'
+      flagindex: '',
+      title: '优惠礼包'
     }
   ],
   level_two_DataList_two: [
@@ -72,13 +92,16 @@ export const cn = {
     //   flagindex: null, title: '平台分类'
     // },
     {
-      flagindex: null, title: '商家分类'
+      flagindex: null,
+      title: '商家分类'
     },
     {
-      flagindex: '', title: '商品品牌'
+      flagindex: '',
+      title: '商品品牌'
     },
     {
-      flagindex: '', title: '商品标签'
+      flagindex: '',
+      title: '商品标签'
     }
   ],
   name: '名称',
@@ -143,6 +166,11 @@ export const cn = {
     {
       title: '关注医师',
       path: 'pages2/doctorFocus/doctorFocus',
+      spanId: ''
+    },
+    {
+      title: '医院详情',
+      path: 'pages/storeinfo/storeinfo?storeType=1',
       spanId: ''
     }
     // {

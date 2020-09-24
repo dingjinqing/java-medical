@@ -79,6 +79,7 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 		}
 		ShipParam shipParam =new ShipParam();
 		shipParam.setPlatform(param.getPlatform());
+		shipParam.setWxUserInfo(param.getWxUserInfo());
 		shipService.handleShipAccountId(shipParam);
 		transaction(()->{
 			ship.receive(order.getOrderSn(),shipParam.getPlatform(),shipParam.getShipUserId(),shipParam.getShipAccountId());

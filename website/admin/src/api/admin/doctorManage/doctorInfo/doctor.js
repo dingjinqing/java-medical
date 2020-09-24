@@ -106,3 +106,44 @@ export function fetchDoctorTitle (data) {
     data
   })
 }
+
+// 医师详情
+export function doctorDetail (data) {
+  return service({
+    url: '/api/admin/doctors/details/show',
+    method: 'post',
+    data
+  })
+}
+// 医师详情-处方
+export function doctorPrescription (data) {
+  return service({
+    url: '/api/admin/doctor/query/prescription',
+    method: 'post',
+    data
+  })
+}
+// 医师详情-患者
+export function doctorPatient (data) {
+  return service({
+    url: '/api/admin/doctor/query/patient',
+    method: 'post',
+    data
+  })
+}
+// 医师详情-咨询
+export function doctorInquiry (data) {
+  return service({
+    url: '/api/admin/doctor/query/inquiry',
+    method: 'post',
+    data
+  })
+}
+// 医师详情-业绩
+export function doctorPerfomance (data) {
+  return service({
+    url: '/api/admin/doctor/query/performance',
+    method: 'post',
+    data
+  })
+}

@@ -296,6 +296,12 @@ var order = {
           return "已自提";
         } else if (orderData.deliverType == 0 && orderData.orderStatus == 5) {
           return "已收货";
+        } else if (orderData.deliverType == 3 && orderData.orderStatus == 5) {
+          return "已收货";
+        } else if (orderData.deliverType == 3 && orderData.orderStatus == 3) {
+          return "待发货";
+        } else if (orderData.deliverType == 3 && orderData.orderStatus == 4) {
+          return "已发货";
         }
       }
     }

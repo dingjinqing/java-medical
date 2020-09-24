@@ -104,7 +104,7 @@ export default {
     return {
       imageUrl: [
         {
-          img_1: this.$imageHost + '/image/admin/official/bottom_logo.png'
+          img_1: this.$imageHost + '/image/admin/official/yswy_logo.png'
         },
         {
           img_2: ''
@@ -370,8 +370,10 @@ export default {
   height: 100%;
 }
 .left img {
-  height: 49px;
-  margin-top: 18px;
+    margin-top: 28px;
+    width: 130px;
+    left: -4px;
+    position: relative;
 }
 .middle {
   float: right;

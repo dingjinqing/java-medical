@@ -48,6 +48,8 @@ public class StoreDao extends ShopBaseDao {
 
     public static final Byte STORE_TYPE_HOSPITAL = 1;
 
+    public static final Byte STORE_TYPE_NORMAL_STORE = 0;
+
     public StoreBasicVo getStoreByNo(String storeNo) {
         return db().selectFrom(STORE).where(STORE.STORE_CODE.eq(storeNo)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(StoreBasicVo.class);
     }
@@ -80,6 +82,7 @@ public class StoreDao extends ShopBaseDao {
         select.and(STORE.OPENING_TIME.lt(dateStringParse));
         select.and(STORE.CLOSE_TIME.gt(dateStringParse));
         select.and(STORE.STORE_CODE.in(stores));
+        select.and(STORE.STORE_TYPE.eq(STORE_TYPE_NORMAL_STORE));
         if (deliveryType == OrderConstant.DELIVER_TYPE_SELF) {
             select.and(STORE.AUTO_PICK.eq(STORE_AUTO_PICK_ENABLE));
         }

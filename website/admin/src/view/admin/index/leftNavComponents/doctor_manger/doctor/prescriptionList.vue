@@ -7,10 +7,10 @@
           <div class="filters_item">
             <span>患者姓名：</span>
             <el-input
-              v-model="queryParams.doctorName"
+              v-model="queryParams.patientName"
               size="small"
               style="width: 150px"
-              placeholder="请输入药品名称"
+              placeholder="请输入患者姓名"
             >
             </el-input>
           </div>
@@ -20,14 +20,14 @@
               v-model="queryParams.departmentName"
               size="small"
               style="width: 150px"
-              placeholder="请输入批准文号"
+              placeholder="请输入科室名"
             >
             </el-input>
           </div>
           <div class="filters_item">
             <span class="fil_span">就诊类型：</span>
             <el-select
-              v-model="queryParams.prescriptionType"
+              v-model="queryParams.auditType"
               size="small"
               class="default_input"
               style="width:150px"
@@ -83,15 +83,13 @@
             prop="prescriptionCode"
             label="处方号"
           ></el-table-column>
-          <el-table-column
-            label='就诊类型'
-          >
-          <template v-slot='scope'>
+          <el-table-column label='就诊类型'>
+            <template v-slot='scope'>
               {{getLabelValue(prescriptionTypes,scope.row.auditType)}}
-          </template>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="doctorName"
+            prop="patientName"
             label="患者姓名"
           ></el-table-column>
           <el-table-column
@@ -99,16 +97,14 @@
             label="科室"
           ></el-table-column>
           <el-table-column
-            prop="orderSnByOrderInfo"
+            prop="orderSn"
             label="订单号"
           ></el-table-column>
           <el-table-column
             prop="totalPrice"
             label="处方金额"
           ></el-table-column>
-          <el-table-column
-            label="处方药品"
-          >
+          <el-table-column label="处方药品">
             <template v-slot="scope">
               <span
                 v-for="(item,index) in scope.row.goodsList"
@@ -120,7 +116,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="createTime"
+            prop="treatmentTime"
             label="就诊时间"
           ></el-table-column>
           <el-table-column label="操作">
@@ -149,8 +145,7 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
-import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
+import { doctorPrescription } from '@/api/admin/doctorManage/doctorInfo/doctor'
 export default {
   components: { pagination },
   watch: {
@@ -176,17 +171,18 @@ export default {
       prescriptionTypes: [
         { value: null, label: '全部' },
         { value: 0, label: '不审核' },
-        { value: 1, label: '续方' },
+        { value: 1, label: '审核' },
         { value: 2, label: '开方' },
-        { value: 3, label: '会话开方' }
+        { value: 3, label: '根据处方下单' },
+        { value: 4, label: 'his拉取' }
       ],
       tableData: [],
       queryParams: {
         startTime: '',
         endTime: '',
-        doctorName: '',
+        patientName: '',
         departmentName: '',
-        prescriptionType: null
+        auditType: null
       },
       // 表格原始数据
       originalData: [],
@@ -197,12 +193,13 @@ export default {
     initDataList () {
       this.loading = true
       this.queryParams.patientId = this.id
+      this.queryParams.doctorCode = this.code
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
       let params = {
         ...this.queryParams
       }
-      getPrescriptionList(params).then((res) => {
+      doctorPrescription(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -217,26 +214,18 @@ export default {
         console.log(error)
       })
     },
-    handleSeeMessage (code) {
-      console.log(this.$router)
-      let newpage = this.$router.resolve({
-        name: 'prescription_message'
-      })
-      newpage.href = newpage.href + '?prescriptionCode=' + code
-      console.log(newpage.href)
-      window.open(newpage.href, '_blank')
-    },
+    // handleSeeMessage (code) {
+    //   console.log(this.$router)
+    //   let newpage = this.$router.resolve({
+    //     name: 'prescription_message'
+    //   })
+    //   newpage.href = newpage.href + '?prescriptionCode=' + code
+    //   console.log(newpage.href)
+    //   window.open(newpage.href, '_blank')
+    // },
     handleData (data) {
       this.tableData = data
       this.langDefaultFlag = true
-    },
-    getDoctor (doctor) {
-      getDoctorList(doctor).then(res => {
-        if (res.error === 0) {
-          console.log(res)
-          this.doctorList = res.content
-        }
-      })
     },
     getLabelValue (map, value) {
       let label = ''
@@ -259,8 +248,8 @@ export default {
   // },
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
+    this.code = this.$route.query.code ? this.$route.query.code : 0
     // this.getDateValue(1)
-    this.getDoctor({})
     this.initDataList()
   },
   filters: {

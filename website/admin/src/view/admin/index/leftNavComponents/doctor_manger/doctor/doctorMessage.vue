@@ -4,17 +4,30 @@
     <el-main class="patientConfig">
       <div class="user-info">
         <div class="user-info-content">
-          <div class="title">基础信息</div>
+          <div class="title">基础信息  <span style="font-weight:400;">{{data.registerHospital}}</span></div>
           <div class="item-box">
             <div class="item">医师姓名：{{data.name}}</div>
-            <div class="item">患者编号：{{data.id}}</div>
-            <div class="item">手机号：{{data.mobile}}</div>
+            <div class="item">院内编号：{{data.hospitalCode}}</div>
+            <div class="item">医师资格编码：{{data.certificateCode}}</div>
+            <div class="item">医师执业编码：{{data.professionalCode}}</div>
             <div class="item">性别：{{data.sex == 0 ? '男' : (data.sex == 1 ? '女' : '未知')}}</div>
-            <div class="item">证件类型：{{data.identityType == 1 ? '身份证' : (data.identityType == 1 ? '军人证' : ( data.identityType == 3 ?  '护照' : '社保卡'))}}</div>
-            <div class="item">证件号：{{data.identityCode}}</div>
-            <div class="item">生日：{{data.birthday}}</div>
-            <div class="item">疾病史：{{data.diseaseHistoryNameStr}}</div>
-            <div class="item">过敏史：{{data.allergyHistory}}</div>
+            <!-- <div class="item">证件类型：{{data.identityType == 1 ? '身份证' : (data.identityType == 1 ? '军人证' : ( data.identityType == 3 ?  '护照' : '社保卡'))}}</div> -->
+            <div class="item">医师职称：{{data.titleName}}</div>
+            <!-- <div class="item">聘任职务：{{data.diseaseHistoryNameStr}}</div> -->
+            <div class="item">科室：
+              <span
+                v-for="(item,index) in data.departmentNames"
+                :key="index"
+              >{{item}}</span>
+            </div>
+            <div class="item">问诊费用：{{data.consultationPrice}}</div>
+            <div class="item">擅长疾病：{{data.treatDisease}}</div>
+            <div class="item">手机号：{{data.mobile}}</div>
+            <div class="item">评价星级：{{data.avgCommentStar}}</div>
+            <div class="item">关注数：{{data.attentionNumber}}</div>
+            <div class="item">接诊量：{{data.consultationNumber}}</div>
+            <div class="item">平均响应时间：{{data.avgAnswerTime}}</div>
+            <div class="item">医师签名：{{data.allergyHistory}}</div>
           </div>
         </div>
       </div>
@@ -24,9 +37,9 @@
 </template>
 
 <script>
-import { getPatientMessage } from '@/api/admin/memberManage/patientManage.js'
+import { doctorDetail } from '@/api/admin/doctorManage/doctorInfo/doctor'
 export default {
-  name: 'patienMessage',
+  name: 'doctorMessage',
   data () {
     return {
       data: {}
@@ -36,8 +49,8 @@ export default {
     this.langDefault()
   },
   methods: {
-    inintData (id) {
-      getPatientMessage(id).then(res => {
+    inintData (doctorId) {
+      doctorDetail({ doctorId: doctorId }).then(res => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -47,14 +60,14 @@ export default {
     }
   },
   mounted () {
-    let id = this.$route.query.id ? this.$route.query.id : 0
-    this.inintData(id)
+    let doctorId = this.$route.query.id ? this.$route.query.id : 0
+    this.inintData(doctorId)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.el-container{
+.el-container {
   padding: 10px 20px;
   background: #fff;
 }
