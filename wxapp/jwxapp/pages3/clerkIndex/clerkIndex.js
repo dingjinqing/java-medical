@@ -5,7 +5,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-
+    isFirstLoad:true
   },
 
   /**
@@ -41,6 +41,7 @@ global.wxPage({
           panelData:res.content.monthVo,
           hasNum:res.content.statisticList.some(item=>item.waitHandleOrderNum > 0)
         })
+        this.data.isFirstLoad = false
       } else {
         util.showModal('提示',res.message)
       }
@@ -62,7 +63,7 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    if(!this.data.isFirstLoad) this.requestClerkIndexData()
   },
 
   /**
