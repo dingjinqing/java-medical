@@ -822,10 +822,18 @@ public class DoctorService extends BaseShopConfigService {
         if (doctorQueryPatientParam.getCurrentPage() > pageCount) {
             doctorQueryPatientParam.setCurrentPage(pageCount);
         }
+        if (doctorQueryPatientParam.getCurrentPage() <= 0) {
+            doctorQueryPatientParam.setCurrentPage(1);
+        }
         Page page = Page.getPage(result.size(), doctorQueryPatientParam.getCurrentPage(), doctorQueryPatientParam.getPageRows());
         patientVoPageResult.setPage(page);
         if (result.size() == 0) {
             patientVoPageResult.setDataList(new ArrayList<>());
+            return patientVoPageResult;
+        }
+        if (doctorQueryPatientParam.getCurrentPage() >= page.getPageCount()) {
+            List<DoctorQueryPatientVo> doctorQueryPatientVos = result.subList((doctorQueryPatientParam.getCurrentPage() - 1) * doctorQueryPatientParam.getPageRows(), page.getTotalRows());
+            patientVoPageResult.setDataList(doctorQueryPatientVos);
             return patientVoPageResult;
         }
         List<DoctorQueryPatientVo> doctorQueryPatientVos = result.subList((doctorQueryPatientParam.getCurrentPage() - 1) * doctorQueryPatientParam.getPageRows(), (doctorQueryPatientParam.getCurrentPage() * doctorQueryPatientParam.getPageRows()) - 1);
