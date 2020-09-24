@@ -462,7 +462,9 @@ export const cn = {
     { value: -1, label: '全部' },
     { value: 0, label: '商家主动售后' },
     { value: 1, label: '下单人申请售后' },
-    { value: 2, label: '系统自动售后' }
+    { value: 2, label: '系统自动售后' },
+    { value: 5, label: '处方审核失败' },
+    { value: 6, label: '门店退款' }
     // {value: 3, label: '旺店通ERP主动售后'},
     // {value: 4, label: '旺店通POS主动售后'}
   ],
