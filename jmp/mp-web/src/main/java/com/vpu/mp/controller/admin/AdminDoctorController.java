@@ -2,17 +2,31 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.*;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceDivideVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorDetailPerformanceParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryInquiryParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPatientParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticListVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorUnbundlingParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.shop.doctor.DoctorStatisticService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -170,7 +184,6 @@ public class AdminDoctorController extends AdminBaseController {
      *
      * @return
      */
-    @PostMapping("/api/admin/doctor/")
     public JsonResult listDoctorComment(@RequestBody @Validated DoctorAuditedPrescriptionParam param){
         return success(prescriptionService.auditedPrescriptionList(param));
     }

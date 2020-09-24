@@ -139,3 +139,12 @@ export function exportCfg (data) {
     responseType: 'blob'
   })
 }
+
+// 医师列表
+export function getDoctorList (data) {
+  return service({
+    url: '/api/admin/member/query/doctor',
+    method: 'post',
+    data: data
+  })
+}

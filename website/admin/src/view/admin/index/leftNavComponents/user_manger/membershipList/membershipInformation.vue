@@ -3,8 +3,7 @@
     <div class="membersDetailContentMain">
       <div class="topContainer">
         <div class="titleEdit">
-          <span>{{ $t('membershipIntroduction.Essentialinformation') }}</span
-          ><span @click="handleBaseInfo()">{{
+          <span>{{ $t('membershipIntroduction.Essentialinformation') }}</span><span @click="handleBaseInfo()">{{
             $t('membershipIntroduction.Towrite')
           }}</span>
         </div>
@@ -119,7 +118,10 @@
               </li>
             </ul>
 
-            <ul class="hiddenUl" v-if="hiddenUlFlag">
+            <ul
+              class="hiddenUl"
+              v-if="hiddenUlFlag"
+            >
               <li>
                 <div>
                   {{ $t('membershipIntroduction.Sourcechannel') }}：
@@ -130,16 +132,13 @@
                 </div>
                 <div>
                   {{ $t('membershipIntroduction.Birthday') }}：
-                  <span
-                    v-if="
+                  <span v-if="
                       this.memberBasicInfo.birthdayYear &&
                       this.memberBasicInfo.birthdayMonth &&
                       this.memberBasicInfo.birthdayDay
-                    "
-                    >{{ this.memberBasicInfo.birthdayYear }}-{{
+                    ">{{ this.memberBasicInfo.birthdayYear }}-{{
                       this.memberBasicInfo.birthdayMonth
-                    }}-{{ this.memberBasicInfo.birthdayDay }}</span
-                  >
+                    }}-{{ this.memberBasicInfo.birthdayDay }}</span>
                   <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
                 <div>
@@ -151,13 +150,11 @@
                 </div>
                 <div>
                   {{ $t('membershipIntroduction.PermanentResidence') }}：
-                  <span
-                    v-if="
+                  <span v-if="
                       this.memberBasicInfo.provinceName ||
                       this.memberBasicInfo.cityName ||
                       this.memberBasicInfo.distictName
-                    "
-                  >
+                    ">
                     {{ this.memberBasicInfo.provinceName }}
                     {{ this.memberBasicInfo.cityName }}
                     {{ this.memberBasicInfo.distictName }}
@@ -205,7 +202,10 @@
             </ul>
           </div>
         </div>
-        <div class="footer" @click="handleCheckMore()">
+        <div
+          class="footer"
+          @click="handleCheckMore()"
+        >
           <div class="footerMain">
             {{ this.checkMoreText }}
           </div>
@@ -214,8 +214,7 @@
     </div>
     <div class="topContainer">
       <div class="titleEdit">
-        <span>{{ $t('membershipIntroduction.Labelinformation') }}</span
-        ><span @click="handleLabelEditOpen()">{{
+        <span>{{ $t('membershipIntroduction.Labelinformation') }}</span><span @click="handleLabelEditOpen()">{{
           $t('membershipIntroduction.Towrite')
         }}</span>
       </div>
@@ -224,17 +223,25 @@
           v-for="(item, index) in lebalDataList"
           :key="index"
           class="lebalSpan"
-          >{{ item.value
-          }}<i @click="handleToDelLabel(item.id)" class="fa fa-remove"></i
-        ></span>
+        >{{ item.value
+          }}<i
+            @click="handleToDelLabel(item.id)"
+            class="fa fa-remove"
+          ></i></span>
       </div>
     </div>
     <div class="topContainer">
       <div class="titleEdit">
         <span>{{ $t('membershipIntroduction.AssetInformation') }}</span>
       </div>
-      <ul class="assetsUl" :class="assetsUl">
-        <li v-for="(item, index) in assetsData" :key="index">
+      <ul
+        class="assetsUl"
+        :class="assetsUl"
+      >
+        <li
+          v-for="(item, index) in assetsData"
+          :key="index"
+        >
           <div class="assetsUlLeft">
             <img :src="item.img" />
           </div>
@@ -245,8 +252,7 @@
               v-if="item.haveSetUp === true ? true : false"
               style="color: #5a8bff; cursor: pointer"
               @click="handleSetUp(index)"
-              >{{ $t('membershipIntroduction.setup') }}</span
-            >
+            >{{ $t('membershipIntroduction.setup') }}</span>
             <span
               @click="jumpToDetailPage(index)"
               style="
@@ -255,20 +261,21 @@
                 cursor: pointer;
                 display: block;
               "
-              >{{ item.num }}</span
-            >
+            >{{ item.num }}</span>
           </div>
         </li>
       </ul>
     </div>
     <div class="topContainer">
       <div class="titleEdit">
-        <span>{{ $t('membershipIntroduction.Transactionstatistics') }}</span
-        ><span @click="jumpToOrderPage">{{
+        <span>{{ $t('membershipIntroduction.Transactionstatistics') }}</span><span @click="jumpToOrderPage">{{
           $t('membershipIntroduction.OrderList')
         }}</span>
       </div>
-      <div class="transactionTab" v-if="transactionTabFlag === true">
+      <div
+        class="transactionTab"
+        v-if="transactionTabFlag === true"
+      >
         <p
           v-for="(item, index) in transactionTab"
           :key="index"
@@ -293,12 +300,18 @@
         >
           <p>
             {{ item.title }}
-            <el-tooltip effect="light" placement="top">
+            <el-tooltip
+              effect="light"
+              placement="top"
+            >
               <div slot="content">{{ item.tip }}</div>
               <i class="el-icon-question icon-style"></i>
             </el-tooltip>
           </p>
-          <div class="transactionBottom" v-if="item.value === 'lastOrderTime'">
+          <div
+            class="transactionBottom"
+            v-if="item.value === 'lastOrderTime'"
+          >
             {{ item.content ? item.content : '暂未下单' }}
           </div>
           <div
@@ -311,7 +324,10 @@
           >
             ￥{{ item.content ? Number(item.content).toFixed(2) : '0.00' }}
           </div>
-          <div class="transactionBottom" v-else>{{ item.content }}</div>
+          <div
+            class="transactionBottom"
+            v-else
+          >{{ item.content }}</div>
           <div
             v-if="transactionTabIndex === 2"
             style="text-align: center; margin-top: 10px"
@@ -321,8 +337,7 @@
               plain
               size="small"
               @click="jumpToMemberHandler(item.linkName, index)"
-              >查看订单</el-button
-            >
+            >查看订单</el-button>
           </div>
         </div>
       </div>
@@ -330,9 +345,104 @@
         class="transactionOrder"
         v-if="transactionTabIndex !== 0 && transactionTabIndex !== 2"
       >
-        <el-button type="primary" plain size="small" @click="jumpToHandler"
-          >查看订单</el-button
+        <el-button
+          type="primary"
+          plain
+          size="small"
+          @click="jumpToHandler"
+        >查看订单</el-button>
+      </div>
+    </div>
+    <div class="topContainer">
+      <div class="titleEdit"><span>医师列表</span></div>
+      <div class="navBox">
+        <div class="filters">
+          <div class="filters_item">
+            <span>医师姓名：</span>
+            <el-input
+              v-model="doctorparams.doctorName"
+              size="small"
+              style="width: 150px"
+              placeholder="请输入医师姓名"
+            >
+            </el-input>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">科室：</span>
+            <el-input
+              v-model="doctorparams.departmentName"
+              size="small"
+              style="width: 150px"
+              placeholder="请输入科室名"
+            >
+            </el-input>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">是否收藏：</span>
+            <el-select
+              v-model="doctorparams.isFavorite"
+              size="small"
+              class="default_input"
+              style="width:150px"
+            >
+              <el-option
+                v-for="item in favorites"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="btn_wrap">
+            <el-button
+              type="primary"
+              size="small"
+              @click="initDataList"
+            >查询</el-button>
+          </div>
+        </div>
+      </div>
+      <div class="tablebox">
+        <el-table
+          v-loading="loading"
+          :data="doctorData"
+          style="width: 100%"
+          border
+          :header-cell-style="{
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
+            color: '#000',
+          }"
+          :cell-style="{
+            'text-align': 'center',
+          }"
         >
+          <el-table-column label="医师姓名">
+            <template slot-scope="scope">
+              <div class="operation">
+                <a @click="handleDoctorMessage(scope.row.doctorId,scope.row.doctorCode)">{{scope.row.doctorName}}</a>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="departmentName"
+            label="科室"
+          ></el-table-column>
+          <el-table-column
+            prop="prescriptionNum"
+            label="处方数"
+          ></el-table-column>
+          <el-table-column
+            prop="inquiryNum"
+            label="咨询单数"
+          ></el-table-column>
+          <el-table-column label="是否收藏">
+            <template v-slot='scope'>
+              {{scope.row.isFav == true ? '是' : '否'}}
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
     </div>
     <div class="topContainer">
@@ -353,9 +463,84 @@
             'text-align': 'center',
           }"
         >
-          <el-table-column prop="id" label="患者编号"></el-table-column>
-          <el-table-column prop="name" label="姓名"></el-table-column>
-          <el-table-column prop="mobile" label="手机号"></el-table-column>
+          <el-table-column
+            prop="id"
+            label="患者编号"
+          ></el-table-column>
+          <el-table-column
+            prop="name"
+            label="姓名"
+          ></el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号"
+          ></el-table-column>
+          <el-table-column
+            prop="treatmentNo"
+            label="就诊卡号"
+          ></el-table-column>
+          <el-table-column label="性别">
+            <template v-slot="scope">
+              <span>{{
+                scope.row.sex == 0 ? '男' : scope.row.sex == 1 ? '女' : '未知'
+              }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="diseaseHistoryNameStr"
+            label="疾病史"
+          ></el-table-column>
+          <el-table-column
+            prop="allergyHistory"
+            label="过敏史"
+          ></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <div class="operation">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="查看详情"
+                  placement="top"
+                >
+                  <a @click="handleSeeMessage(scope.row.id)">查看详情</a>
+                </el-tooltip>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+    <div class="topContainer">
+      <div class="titleEdit"><span>患者信息</span></div>
+      <div class="tablebox">
+        <el-table
+          v-loading="loading"
+          :data="tableData"
+          style="width: 100%"
+          border
+          :header-cell-style="{
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
+            color: '#000',
+          }"
+          :cell-style="{
+            'text-align': 'center',
+          }"
+        >
+          <el-table-column
+            prop="id"
+            label="患者编号"
+          ></el-table-column>
+          <el-table-column
+            prop="name"
+            label="姓名"
+          ></el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号"
+          ></el-table-column>
           <el-table-column
             prop="treatmentNo"
             label="就诊卡号"
@@ -393,7 +578,10 @@
       </div>
     </div>
 
-    <div class="topContainer" v-if="memberBasicInfo.isDistributor">
+    <div
+      class="topContainer"
+      v-if="memberBasicInfo.isDistributor"
+    >
       <div class="titleEdit">
         <span>{{ $t('membershipIntroduction.distributionStatistic') }}</span>
       </div>
@@ -417,8 +605,15 @@
         width="40%"
         :modal-append-to-body="false"
       >
-        <div class="balanceDialogDiv" style="margin-bottom: 30px">
-          <el-form label-position="right" label-width="130px" size="small">
+        <div
+          class="balanceDialogDiv"
+          style="margin-bottom: 30px"
+        >
+          <el-form
+            label-position="right"
+            label-width="130px"
+            size="small"
+          >
             <el-form-item :label="$t('membershipIntroduction.Gender')">
               <el-col :span="12">
                 <el-select
@@ -542,16 +737,21 @@
             </el-form-item>
           </el-form>
         </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="baseInfoDialogVisible = false">{{
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="small"
+            @click="baseInfoDialogVisible = false"
+          >{{
             $t('membershipIntroduction.cancel')
           }}</el-button>
           <el-button
             size="small"
             type="primary"
             @click="handleUserDialogSure()"
-            >{{ $t('membershipIntroduction.centain') }}</el-button
-          >
+          >{{ $t('membershipIntroduction.centain') }}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -571,7 +771,10 @@
         width="25%"
         :modal-append-to-body="false"
       >
-        <div class="labelEditDialogDiv" style="margin-bottom: 30px">
+        <div
+          class="labelEditDialogDiv"
+          style="margin-bottom: 30px"
+        >
           <div>{{ $t('membershipIntroduction.chooseTag') }}</div>
           <el-select
             size="small"
@@ -588,13 +791,19 @@
             </el-option>
           </el-select>
         </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="labelEditDialogVisible = false"
-            >取 消</el-button
-          >
-          <el-button type="primary" size="small" @click="handleTagDialogSure()"
-            >确 定</el-button
-          >
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="small"
+            @click="labelEditDialogVisible = false"
+          >取 消</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="handleTagDialogSure()"
+          >确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -606,12 +815,13 @@
         width="35%"
         :modal-append-to-body="false"
       >
-        <div class="labelEditDialogDiv" style="margin-bottom: 30px">
+        <div
+          class="labelEditDialogDiv"
+          style="margin-bottom: 30px"
+        >
           <div class="MemberdialogContainer">
             <div class="memberCardT1DialogTop">
-              <span
-                >可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span
-              >
+              <span>可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span>
             </div>
             <div class="cardName">
               <i>1</i>
@@ -625,22 +835,29 @@
                   v-for="(item, index) in cardLlabelsdATa"
                   :key="index"
                 >
-                  <span
-                    >{{ item.cardName
+                  <span>{{ item.cardName
                     }}<i
                       @click="hanldeToDelCard(index)"
                       class="fa fa-remove"
-                    ></i
-                  ></span>
+                    ></i></span>
                 </div>
               </div>
-              <div class="memberCardT1MainRight" @click="hanldeToTurnRows()">
+              <div
+                class="memberCardT1MainRight"
+                @click="hanldeToTurnRows()"
+              >
                 <span>添加新卡</span>
                 <i :class="newCardsT1Flag ? 'newCardsT1' : 'newCardsT2'"></i>
               </div>
             </div>
-            <div class="memberCardT1Footer" v-if="memberTableFlag">
-              <div class="content" v-if="page_two">
+            <div
+              class="memberCardT1Footer"
+              v-if="memberTableFlag"
+            >
+              <div
+                class="content"
+                v-if="page_two"
+              >
                 <table width="100%">
                   <thead>
                     <tr>
@@ -667,12 +884,18 @@
                     </tr>
                   </tbody>
                 </table>
-                <div class="noData" v-if="!tbodyFlagTwo">
+                <div
+                  class="noData"
+                  v-if="!tbodyFlagTwo"
+                >
                   <img :src="noImg" />
                   <span>暂无相关数据</span>
                 </div>
               </div>
-              <div class="content_two" v-else>
+              <div
+                class="content_two"
+                v-else
+              >
                 <table width="100%">
                   <thead>
                     <tr>
@@ -696,7 +919,10 @@
                     </tr>
                   </tbody>
                 </table>
-                <div class="noData" v-if="!tbodyFlag">
+                <div
+                  class="noData"
+                  v-if="!tbodyFlag"
+                >
                   <img :src="noImg" />
                   <span>暂无相关数据</span>
                 </div>
@@ -704,16 +930,19 @@
             </div>
           </div>
         </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="closeMemberCardDialog()"
-            >取 消</el-button
-          >
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="small"
+            @click="closeMemberCardDialog()"
+          >取 消</el-button>
           <el-button
             type="primary"
             size="small"
             @click="handleForSetMemberCard()"
-            >确 定</el-button
-          >
+          >确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -730,7 +959,7 @@
 </template>
 <script>
 import ProAndUrbA from '@/components/system/proAndUrbA'
-import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest } from '@/api/admin/membershipList.js'
+import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest, getDoctorList } from '@/api/admin/membershipList.js'
 import { getMemberCard, getAllAvailableMemberCardRequest, setCardForMemberRequest } from '@/api/admin/memberManage/memberCard.js'
 import ModifyData from './modifyData'
 import pagination from '@/components/admin/pagination/pagination'
@@ -790,8 +1019,12 @@ export default {
           value: '选项3',
           label: 'IT服务(系统/数据/维护/多领域经营)'
         }
-
       ],
+      doctorparams: {
+        doctorName: '',
+        departmentName: '',
+        isFavorite: true
+      },
       modifypersonDialogVisible: false,
       page_one: true,
       page_two: true,
@@ -856,6 +1089,14 @@ export default {
           label: '门店买单交易统计',
           value: 'storeOrderTransactionStatistics'
         }
+      ],
+      pageParams: {
+        currentPage: 1,
+        pageRows: 5
+      },
+      favorites: [
+        { value: true, label: '是' },
+        { value: false, label: '否' }
       ]
     }
   },
@@ -873,7 +1114,7 @@ export default {
   },
   mounted () {
     // 初始化语言
-
+    this.initDataList()
     this.langDefault()
   },
   computed: {
@@ -1058,6 +1299,27 @@ export default {
         }
       })
       this.getAllAvailableMemberCard()
+    },
+    initDataList () {
+      this.doctorparams.userId = this.userId
+      this.doctorparams.currentPage = this.doctorparams.currentPage
+      this.doctorparams.pageRows = this.doctorparams.pageRows
+      let params = {
+        ...this.doctorparams
+      }
+      getDoctorList(params).then((res) => {
+        if (res.error !== 0) {
+          this.$message.error({ message: res.message })
+          return
+        }
+        console.log(res)
+        this.originalData = res.content.dataList
+        this.pageParams = res.content.page
+        let originalData = JSON.parse(JSON.stringify(this.originalData))
+        this.doctorData = originalData
+      }).catch(error => {
+        console.log(error)
+      })
     },
     closeMemberCardDialog () {
       this.memberCardT1DialogVisible = false
@@ -1716,6 +1978,16 @@ export default {
           id: userId
         }
       })
+    },
+    handleDoctorMessage (id, code) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/detail',
+        query: {
+          id: id,
+          code: code
+        }
+      })
+      window.open(href, '_blank')
     }
   }
 }
@@ -1730,7 +2002,7 @@ export default {
 }
 </style>
 
-<style scoped>
+<style  scoped lang='scss'>
 .lebalSpan {
   display: inline-block;
   min-width: 60px;
@@ -2122,5 +2394,38 @@ td {
 .tablebox a {
   color: #5a8bff;
   cursor: pointer;
+}
+.navBox {
+  display: flex;
+  background-color: #fff;
+  padding: 0px 20px;
+}
+.filters {
+  flex: 2;
+  display: flex;
+  flex-wrap: wrap;
+  line-height: 32px;
+  margin-left: -15px;
+  margin: 10px 0 5px;
+}
+.filters_item {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 15px;
+}
+.fil_span {
+  font-size: 14px;
+  text-align: right;
+}
+.timeSelect {
+  width: 140px;
+  margin: 0 10px 0 10px;
+}
+.choosed_time {
+  margin-left: 20px;
+}
+
+.btn_wrap {
+  margin-left: 20px;
 }
 </style>

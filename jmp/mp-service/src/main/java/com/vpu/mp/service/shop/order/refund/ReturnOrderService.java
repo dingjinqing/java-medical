@@ -1,12 +1,11 @@
 package com.vpu.mp.service.shop.order.refund;
 
-import cn.hutool.db.sql.Order;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.db.shop.tables.ReturnOrder;
@@ -51,11 +50,20 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDITING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDIT_PASS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_CLOSE;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_REFUSE;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.STATE_COLLECTION_1;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.STATE_COLLECTION_2;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.STATE_COLLECTION_3;
 
 /**
  * Table:return_order
@@ -268,6 +276,10 @@ public class ReturnOrderService extends ShopBaseService{
             returnOrder.setReturnSource(OrderConstant.RS_MP);
         }else if(Byte.valueOf(OrderConstant.IS_MP_ADMIN).equals(param.getIsMp())) {
             returnOrder.setReturnSource(OrderConstant.RS_ADMIN);
+        }else if(Byte.valueOf(OrderConstant.IS_MP_DOCTOR).equals(param.getIsMp())) {
+            returnOrder.setReturnSource(OrderConstant.RS_DOCTOR_AUDIT);
+        }else if(Byte.valueOf(OrderConstant.IS_MP_STORE_CLERK).equals(param.getIsMp())) {
+            returnOrder.setReturnSource(OrderConstant.RS_STORE);
         }else if(Byte.valueOf(OrderConstant.IS_MP_POS).equals(param.getIsMp())) {
             returnOrder.setReturnSource(OrderConstant.RS_POS);
         }else if(Byte.valueOf(OrderConstant.IS_MP_ERP_OR_EKB).equals(param.getIsMp())) {

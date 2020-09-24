@@ -17,6 +17,8 @@ public class DoctorAttendanceVo {
      * 出勤率
      */
     private String doctorAttendanceRate;
+    private Integer attendanceDay;
+    private Integer dueAttendanceDay;
     /**
      * 服务费
      */
