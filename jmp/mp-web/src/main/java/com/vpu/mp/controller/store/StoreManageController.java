@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.BaseConstant.YES;
+import static com.vpu.mp.service.pojo.shop.store.store.StorePojo.IS_EXIST_HOSPITAL;
+
 /**
  * @author chenjie
  * @date 2020年08月26日
@@ -64,14 +67,11 @@ public class StoreManageController extends StoreBaseController{
     @PostMapping(value = "/api/store/store/add")
     @RedisLock(prefix = JedisKeyConstant.NotResubmit.ADD_STORE_LOCK, noResubmit = true)
     public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
-        try {
-            if(shop().store.addStore(store)) {
-                return success();
-            }else {
-                return fail();
-            }
-        } catch (MpException e) {
-            e.printStackTrace();
+        Byte addStore = shop().store.addStore(store);
+        if (YES.equals(addStore)) {
+            return success();
+        } else if (IS_EXIST_HOSPITAL.equals(addStore)){
+            return fail(JsonResultCode.CODE_IS_EXIST_HOSPITAL);
         }
         return fail();
     }

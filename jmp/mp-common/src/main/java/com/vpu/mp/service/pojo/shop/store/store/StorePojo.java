@@ -88,4 +88,9 @@ public class StorePojo implements Comparable<StorePojo> {
             return -1;
         }
     }
+
+    /**
+     * 门店列表已存在医院
+     */
+    public static final Byte IS_EXIST_HOSPITAL = 2;
 }
