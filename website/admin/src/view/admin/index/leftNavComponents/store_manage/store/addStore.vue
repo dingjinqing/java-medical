@@ -502,22 +502,28 @@
       </div>
       <!-- 底部按钮组件 -->
       <div class="storeFooter">
-        <el-button
-          size="small"
-          v-if="this.stepData.currentStep == 0"
-          @click="nextClickHandler"
-          >{{ $t('addStore.next') }}</el-button
-        >
-        <el-button
-          size="small"
-          v-if="this.stepData.currentStep == 1"
-          @click="prevClickHandler"
-          >{{ $t('addStore.previous') }}</el-button
-        >
+        <template>
+          <el-button
+            size="small"
+            v-if="
+              this.stepData.currentStep == 0 && storeFormInfo.storeType === 0
+            "
+            @click="nextClickHandler"
+            >{{ $t('addStore.next') }}</el-button
+          >
+          <el-button
+            size="small"
+            v-if="
+              this.stepData.currentStep == 1 && storeFormInfo.storeType === 1
+            "
+            @click="prevClickHandler"
+            >{{ $t('addStore.previous') }}</el-button
+          >
+        </template>
         <el-button
           type="primary"
           size="small"
-          v-if="this.stepData.currentStep == 1"
+          v-if="this.stepData.currentStep == 1 || storeFormInfo.storeType === 1"
           @click="saveClickHandler"
           >{{ $t('addStore.save') }}</el-button
         >

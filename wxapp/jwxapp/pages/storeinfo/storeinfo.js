@@ -18,7 +18,8 @@ global.wxPage({
     currentTabsIndex: 0,
     mobile: '',
     dis: 0,
-    content: '' // 门店介绍
+    content: '', // 门店介绍
+    storeType:null
   },
 
   /**
@@ -28,6 +29,10 @@ global.wxPage({
     if (!util.check_setting(options)) return;
     id = options.id;
     scene = options.scene;
+    let {storeType = null} = options
+    this.setData({
+      storeType : storeType
+    })
   },
 
   preview: function (e) {
@@ -93,7 +98,8 @@ global.wxPage({
     })
   },
   storeRequest: function (that) {
-    util.api('/api/wxapp/store/info', function (res) {
+    let api = this.data.storeType ? '/api/wxapp/store/hospital/info' : '/api/wxapp/store/info'
+    util.api(api, function (res) {
       if (res.error === 0) {
         if (res.content.delFlag == 1) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.notExist'), function () {
