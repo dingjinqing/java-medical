@@ -134,7 +134,7 @@ export function doctorPatient (data) {
 // 医师详情-咨询
 export function doctorInquiry (data) {
   return service({
-    url: '/api/admin/doctors/details/show',
+    url: '/api/admin/doctor/query/inquiry',
     method: 'post',
     data
   })
