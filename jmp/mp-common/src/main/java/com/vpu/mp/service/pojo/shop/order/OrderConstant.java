@@ -248,19 +248,23 @@ public class OrderConstant {
 
     /**
      *   ReturnSource
-     *  售后方式5个
+     *  售后方式7个
      *         0商家主动售后
      *         1下单人申请售后
      *         2系统自动售后（1）改价失败退款（2）微信支付失败（3）活动自动售后
      *         3旺店通ERP主动售后（仅对接后显示）
      *         4旺店通POS主动售后（仅对接后显示）
      *         其中活动自动售后设计的活动有：社区团购、我要送礼、多人拼团
+	 *         5医师审核失败
+	 *         6门店退款
      */
     public final static byte RS_ADMIN = 0;
     public final static byte RS_MP = 1;
     public final static byte RS_AUTO = 2;
     public final static byte RS_ERP = 3;
     public final static byte RS_POS = 4;
+    public final static byte RS_DOCTOR_AUDIT = 5;
+    public final static byte RS_STORE = 6;
 
     /**
      * 其中活动自动售后设计的活动有：0社区团购、1我要送礼、2多人拼团
