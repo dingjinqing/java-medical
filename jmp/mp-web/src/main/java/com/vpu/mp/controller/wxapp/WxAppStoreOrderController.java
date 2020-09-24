@@ -55,6 +55,7 @@ public class WxAppStoreOrderController extends WxAppBaseController{
     public JsonResult ship(@RequestBody @Valid ShipParam param ) {
         param.setIsMp(OrderConstant.IS_MP_STORE_CLERK);
         param.setPlatform(OrderConstant.PLATFORM_WXAPP_STORE);
+        param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
