@@ -7,7 +7,6 @@ import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
-import com.vpu.mp.common.foundation.util.Page;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.dao.shop.user.UserGoodsRecordDao;
@@ -48,6 +47,7 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.report.MemberGoodsBrowseReportParam;
+import com.vpu.mp.service.pojo.shop.member.report.MemberGoodsBrowseReportVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
@@ -1018,7 +1018,7 @@ public class MemberService extends ShopBaseService {
             .fetchInto(User.USER);
     }
 
-	public PageResult<MemberGoodsBrowseReportParam> userGoodsRecordReport(MemberGoodsBrowseReportParam param) {
+	public PageResult<MemberGoodsBrowseReportVo> userGoodsRecordReport(MemberGoodsBrowseReportParam param) {
 		 return userGoodsRecordDao.userGoodsBrowseReport(param);
 	}
 }
