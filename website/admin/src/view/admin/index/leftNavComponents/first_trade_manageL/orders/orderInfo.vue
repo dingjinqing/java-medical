@@ -150,10 +150,10 @@
                 <template v-if="order.deliverType == 0">
                   <td v-if="index === 0" :rowspan="item.goods.length">
                     <!-- {{ $t('expressList.company')[item.shippingId] }} -->
-                    {{item.shippingName}}
+                    {{item.shippingAccountName}}
                   </td>
                   <td v-if="index === 0" :rowspan="item.goods.length">
-                    {{ item.shippingName }}
+                    {{ item.shippingMobile }}
                   </td>
                   <td v-if="index === 0" :rowspan="item.goods.length">
                     {{ item.shippingTime }}

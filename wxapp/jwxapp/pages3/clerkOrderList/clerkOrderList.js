@@ -68,6 +68,59 @@ global.wxPage({
         url: 'plugin://routePlan/index?key=' + key + '&referer=' + referer + '&endPoint=' + endPoint
     });
   },
+  deliver({currentTarget:{dataset:{orderId,orderSn,parentIndex}}}){
+    let orderList = this.data.dataList[parentIndex]
+    let target = orderList.findIndex(item=>item.orderId === orderId)
+    let shipGoods = orderList[target].goods.map(item=>{return {recId:item.recId,sendNumber:item.goodsNumber}})
+    util.showModal('提示','确认发货？',()=>{
+      util.api('/api/wxapp/store/order/ship',res=>{
+        console.log(res)
+        if(res.error === 0){
+          this.setData({
+            [`dataList[${parentIndex}][${target}].orderStatus`]:4
+          })
+        } else {
+          util.showModal('提示',res.message)
+        }
+      },{
+        action:0,
+        orderId:orderId,
+        orderSn:orderSn,
+        shipGoods,
+        shippingId:42,
+        shippingNo:1
+      })
+    },true,'取消','确认发货')
+  },
+  confirm({currentTarget:{dataset:{orderId,orderSn,parentIndex}}}){
+    let orderList = this.data.dataList[parentIndex]
+    let target = orderList.findIndex(item=>item.orderId === orderId)
+    util.showModal('提示','确认送达？',()=>{
+      util.api('/api/wxapp/store/order/receive',res=>{
+        console.log(res)
+        if(res.error === 0){
+          this.setData({
+            [`dataList[${parentIndex}][${target}].orderStatus`]:5
+          })
+        } else {
+          util.showModal('提示',res.message)
+        }
+      },{
+        action:6,
+        orderId,
+        orderSn
+      })
+    },true,'取消','确认送达')
+  },
+  return(){
+    util.showModal('提示','确认退款？',()=>{
+      util.api('',res=>{
+
+      },{
+        orderSn
+      })
+    },true,'取消','确认退款')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -107,7 +160,16 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (
+      this.data.pageParams &&
+      this.data.pageParams.currentPage === this.data.pageParams.lastPage
+    ) {
+      return;
+    }
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestOrderList()
   },
 
   /**

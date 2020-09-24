@@ -44,7 +44,7 @@
           }"
         >
           <el-table-column
-            prop="goodsCommonName"
+            prop="lastTime"
             label="最近登录时间"
           ></el-table-column>
           <el-table-column>
@@ -64,28 +64,28 @@
 
             </template>
             <template v-slot="scope">
-              <span>{{scope.row.goodsQualityRatio}}</span>
+              <span>{{scope.row.loginRate}}</span>
             </template>
 
           </el-table-column>
           <el-table-column
-            prop="goodsProductionEnterprise"
+            prop="consultationNumber"
             label="累计接诊人数"
           ></el-table-column>
           <el-table-column
-            prop="goodsApprovalNumber"
+            prop="prescriptionNum"
             label="累计处方数"
           ></el-table-column>
           <el-table-column
-            prop="goodsNumber"
+            prop="prescriptionMoney"
             label="累计处方金额"
           ></el-table-column>
           <el-table-column
-            prop="goodsPrice"
+            prop="inquiryNumber"
             label="累计咨询单数"
           ></el-table-column>
           <el-table-column
-            prop="discountedTotalPrice"
+            prop="inquiryMoney"
             label="累计咨询金额"
           ></el-table-column>
           <el-table-column
@@ -104,8 +104,7 @@
 
 <script>
 import pagination from '@/components/admin/pagination/pagination'
-import { getMedicineList } from '@/api/admin/memberManage/patientManage.js'
-import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
+import { doctorPerfomance } from '@/api/admin/doctorManage/doctorInfo/doctor'
 export default {
   components: { pagination },
   watch: {
@@ -131,10 +130,7 @@ export default {
       tableData: [],
       queryParams: {
         startTime: '',
-        endTime: '',
-        goodsCommonName: '',
-        goodsApprovalNumber: '',
-        goodsProductionEnterprise: ''
+        endTime: ''
       },
       // 表格原始数据
       originalData: [],
@@ -144,13 +140,19 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      this.queryParams.patientId = this.id
+      this.queryParams.doctorId = this.id
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
+      if (this.queryParams.startTime === '' || this.queryParams.endTime === '') {
+        this.$message.success({
+          message: '请选择时间范围',
+          duration: '2000'
+        })
+      }
       let params = {
         ...this.queryParams
       }
-      getMedicineList(params).then((res) => {
+      doctorPerfomance(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
           return
@@ -165,35 +167,22 @@ export default {
         console.log(error)
       })
     },
-    handleSeeMessage (code) {
-      console.log(this.$router)
-      let newpage = this.$router.resolve({
-        name: 'prescription_message'
-      })
-      newpage.href = newpage.href + '?prescriptionCode=' + code
-      console.log(newpage.href)
-      window.open(newpage.href, '_blank')
-    },
-    handleSeeOrder (code) {
-      console.log(this.$router)
-      let newpage = this.$router.resolve({
-        name: 'orderInfo'
-      })
-      newpage.href = newpage.href + '?orderSn=' + code
-      console.log(newpage.href)
-      window.open(newpage.href, '_blank')
-    },
     handleData (data) {
       this.tableData = data
       this.langDefaultFlag = true
     },
-    getDoctor (doctor) {
-      getDoctorList(doctor).then(res => {
-        if (res.error === 0) {
-          console.log(res)
-          this.doctorList = res.content
-        }
-      })
+    getNowTime () {
+      var now = new Date()
+      var year = now.getFullYear()
+      var month = now.getMonth()
+      var date = now.getDate()
+      month = month + 1
+      month = month.toString().padStart(2, '0')
+      date = date.toString().padStart(2, '0')
+      var defaultDate = `${year}-${month}-${date}`
+      this.timeValue = [defaultDate + ' 00:00:00', defaultDate + ' 23:59:59']
+      this.queryParams.startTime = this.timeValue[0]
+      this.queryParams.endTime = this.timeValue[1]
     }
   },
   // watch: {
@@ -208,7 +197,7 @@ export default {
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
     // this.getDateValue(1)
-    this.getDoctor({})
+    this.getNowTime()
     this.initDataList()
   },
   filters: {

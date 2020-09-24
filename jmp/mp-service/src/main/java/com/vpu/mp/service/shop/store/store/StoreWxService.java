@@ -611,6 +611,7 @@ public class StoreWxService extends ShopBaseService {
      */
     public StoreMainShowVo storeMainShow(StoreAccountVo storeAccountVo){
         StoreMainShowVo storeMainShowVo=new StoreMainShowVo();
+        //可用门店
         List<StoreStatisticVo> storeList=storeDao.getListByStoreIds(storeAccountVo.getStoreLists());
         List<Byte> orderStatusList=new ArrayList<>();
         //待处理的状态
@@ -626,7 +627,8 @@ public class StoreWxService extends ShopBaseService {
         StoreMonthStatisticVo monthVo=new StoreMonthStatisticVo();
         Timestamp startTime=DateUtil.beginOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
         Timestamp endTime=DateUtil.endOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
-        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeAccountVo.getStoreLists(), orderStatusList,startTime,endTime);
+        List<Integer> storeIdList=storeList.stream().map(StoreStatisticVo::getStoreId).collect(Collectors.toList());
+        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeIdList, orderStatusList,startTime,endTime);
         monthVo.setWaitHandleNum(waitHandleNum);
         //已完成的数量
         Integer finishedNum=shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),startTime,endTime);
