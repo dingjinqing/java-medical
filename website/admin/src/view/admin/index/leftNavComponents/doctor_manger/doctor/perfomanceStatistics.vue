@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     initDataList () {
-      this.loading = true
+      // this.loading = true
       this.queryParams.doctorId = this.id
       this.queryParams.currentPage = this.pageParams.currentPage
       this.queryParams.pageRows = this.pageParams.pageRows
@@ -162,7 +162,7 @@ export default {
         this.pageParams = res.content.page
         let originalData = JSON.parse(JSON.stringify(this.originalData))
         this.handleData(originalData)
-        this.loading = false
+        // this.loading = false
       }).catch(error => {
         console.log(error)
       })

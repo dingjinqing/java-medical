@@ -112,12 +112,24 @@ global.wxPage({
       })
     },true,'取消','确认送达')
   },
-  return(){
+  return({currentTarget:{dataset:{orderId,orderSn,parentIndex}}}){
+    let orderList = this.data.dataList[parentIndex]
+    let target = orderList.findIndex(item=>item.orderId === orderId)
     util.showModal('提示','确认退款？',()=>{
-      util.api('',res=>{
-
+      util.api('/api/wxapp/store/order/refund',res=>{
+        console.log(res)
+        if(res.error === 0){
+          this.setData({
+            [`dataList[${parentIndex}][${target}].orderStatus`]:10
+          })
+        } else {
+          util.showModal('提示',res.message)
+        }
       },{
-        orderSn
+        action:1,
+        returnType:1,
+        orderSn,
+        orderId
       })
     },true,'取消','确认退款')
   },
