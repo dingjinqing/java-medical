@@ -100,7 +100,7 @@ public class PrescriptionRebateService extends ShopBaseService {
             //应返利金额
             item.setTotalRebateMoney(item.getCanCalculateMoney().multiply(item.getGoodsSharingProportion())
                 .multiply(item.getRebateProportion())
-                .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_HALF_UP));
+                .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN));
             item.setRealRebateMoney(item.getTotalRebateMoney());
             prescriptionItemDao.updatePrescriptionItem(item);
         }
@@ -127,8 +127,8 @@ public class PrescriptionRebateService extends ShopBaseService {
         rebateParam.setPrescriptionCode(prescription.getPrescriptionCode());
         rebateParam.setStatus(PrescriptionRebateConstant.TO_REBATE);
         rebateParam.setDoctorId(doctor.getId());
-        rebateParam.setTotalMoney(totalMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_HALF_UP));
-        rebateParam.setTotalRebateMoney(totalRebateMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_HALF_UP));
+        rebateParam.setTotalMoney(totalMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_DOWN));
+        rebateParam.setTotalRebateMoney(totalRebateMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_DOWN));
         rebateParam.setCanCalculateMoney(canRebateMoneyTotal);
         rebateParam.setRealRebateMoney(rebateParam.getTotalRebateMoney());
         prescriptionRebateDao.addPrescriptionRebate(rebateParam);
