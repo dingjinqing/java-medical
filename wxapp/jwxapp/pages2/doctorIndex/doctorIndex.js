@@ -23,7 +23,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    if(this.data.bottom.user_type == 0) {
+    if(this.data.bottom.user_type !=1) {
       this.data.show_modal = 1
     } else {
       this.data.show_modal = 0
