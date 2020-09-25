@@ -44,3 +44,10 @@
   font-size: 30rpx;
   margin-left: 10rpx;
 }
+.small-text{
+  font-size: 26rpx;
+  width: 70%;
+  font-weight: 200;
+  text-align: center;
+  line-height: 36rpx;
+}
