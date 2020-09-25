@@ -7,7 +7,7 @@ import lombok.Data;
 
 /**
  * 文件上传
- * 
+ *
  * @author zhaojianqiang
  * @time 下午4:34:06
  */
@@ -25,6 +25,6 @@ public class UiGetListVo {
 	private Timestamp delTime;
 	private Integer tagId;
 	private Integer groupId;
-	private List<CardInfoVo> cardList;
+	private List<com.vpu.mp.service.pojo.shop.member.userimp.CardInfoVo> cardList;
 
 }

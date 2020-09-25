@@ -53,6 +53,19 @@ public class StoreOverviewController extends StoreBaseController {
     }
 
     /**
+     * 门店公告-取单个公告信息
+     * @return
+     */
+    @GetMapping(value = "/api/store/overview/article/get/{articleId}")
+    public JsonResult getArticle(@PathVariable Integer articleId) {
+        ArticlePojo article = shop().store.getArticle(articleId);
+        if(null != article) {
+            return success(article);
+        }else {
+            return fail();
+        }
+    }
+    /**
      * 门店公告-列表
      * @return
      */

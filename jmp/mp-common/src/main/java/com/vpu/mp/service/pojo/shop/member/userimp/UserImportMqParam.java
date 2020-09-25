@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 文件上传，队列用
- * 
+ *
  * @author zhaojianqiang
  * @time 下午4:34:06
  */
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserImportMqParam {
-	private List<UserImportPojo> models;
+	private List<com.vpu.mp.service.pojo.shop.member.userimp.UserImportPojo> models;
 	private String lang;
 	private Integer shopId;
 	private String cardId;
