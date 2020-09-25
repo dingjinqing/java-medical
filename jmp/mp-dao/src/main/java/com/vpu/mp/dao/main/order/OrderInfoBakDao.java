@@ -82,7 +82,11 @@ public class OrderInfoBakDao extends MainBaseDao {
                 //运费
                 sum(ORDER_INFO_BAK.SHIPPING_FEE).as(ActiveDiscountMoney.SHIPPING_FEE),
                 //销售单数
-                count(ORDER_INFO_BAK.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER)
+                count(ORDER_INFO_BAK.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
+                //处方药订单数量
+                sum(ORDER_INFO_BAK.ORDER_MEDICAL_TYPE).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_NUMBER),
+                //处方药金额
+                sum(DSL.iif(ORDER_INFO_BAK.ORDER_MEDICAL_TYPE.eq(BaseConstant.YES),ORDER_INFO_BAK.MONEY_PAID.add(ORDER_INFO_BAK.USE_ACCOUNT),BigDecimal.ZERO)).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_ACCOUNT)
         )
                 .from(ORDER_INFO_BAK)
                 .where(ORDER_INFO_BAK.CREATE_TIME.between(startTime, endTime));

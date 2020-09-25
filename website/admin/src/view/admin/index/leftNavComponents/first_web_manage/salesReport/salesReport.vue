@@ -102,6 +102,18 @@
           </template>
         </el-table-column>
         <el-table-column
+              prop='orderNumber'
+              label='订单数量'
+        ></el-table-column>
+        <el-table-column
+                prop='prescriptionOrderNum'
+                label='处方药销售金额'
+        ></el-table-column>
+        <el-table-column
+                prop='prescriptionOrderAmount'
+                label='处方药订单数量'
+        ></el-table-column>
+        <el-table-column
           prop='shippingFee'
           label='运费'
         ></el-table-column>
