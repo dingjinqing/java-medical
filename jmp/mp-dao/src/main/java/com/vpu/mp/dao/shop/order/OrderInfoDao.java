@@ -103,8 +103,7 @@ public class OrderInfoDao extends ShopBaseDao {
                 //处方药订单数量
                 sum(ORDER_INFO.ORDER_MEDICAL_TYPE).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_NUMBER),
                 //处方药金额
-                sum(DSL.iif(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(BaseConstant.YES),ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT), BigDecimal.ZERO)).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_ACCOUNT)
-
+                sum(DSL.iif(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(BaseConstant.YES),ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT), BigDecimal.ZERO)).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_AMOUNT)
         )
                 .from(ORDER_INFO)
                 .where(ORDER_INFO.CREATE_TIME.between(startTime, endTime))

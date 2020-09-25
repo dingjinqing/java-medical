@@ -34,7 +34,7 @@ public class ActiveDiscountMoney {
     /**
      * 处方订单金额
      */
-    public static final String PRESCRIPTION_ORDER_ACCOUNT ="prescriptionOrderAccount";
+    public static final String PRESCRIPTION_ORDER_AMOUNT ="prescriptionOrderAmount";
     /**
      * 客单价
      */
