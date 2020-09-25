@@ -68,6 +68,7 @@ public class WxAppDoctorAuditController extends WxAppBaseController{
     @PostMapping("/api/wxapp/doctor/prescription/list")
     public JsonResult auditedPrescriptionList(@RequestBody @Validated DoctorAuditedPrescriptionParam param){
         WxAppSessionUser user = wxAppAuth.user();
+        param.setDoctorId(user.getDoctorId());
         if (user.getUserType().equals(AuthConstant.AUTH_TYPE_DOCTOR_USER)){
             return success(prescriptionService.auditedPrescriptionList(param));
         }
