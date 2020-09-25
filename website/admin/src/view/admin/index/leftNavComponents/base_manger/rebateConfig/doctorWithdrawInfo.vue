@@ -303,6 +303,7 @@ export default {
                 this.$message.error({
                   message: res.message
                 })
+                this.detail()
               }
             })
           })
@@ -323,6 +324,7 @@ export default {
                 this.$message.error({
                   message: res.message
                 })
+                this.detail()
               }
             })
           })
@@ -343,6 +345,7 @@ export default {
                 this.$message.error({
                   message: res.message
                 })
+                this.detail()
               }
             })
           }).catch(() => {

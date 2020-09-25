@@ -224,7 +224,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 int rebateNumber = orderGoodsDo.getGoodsNumber() - orderGoodsDo.getReturnNumber();
                 //实际返利金额
                 item.setRealRebateMoney(
-                    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
                         BigDecimalUtil.BigDecimalPlus.create(item.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
                         BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
                         BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsDo.getGoodsNumber())))

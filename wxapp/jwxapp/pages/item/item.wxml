@@ -7,7 +7,7 @@
     return str.substring(start,end)
   }
   module.exports = {
-    includes:includes
+    includes:includes,
     substring:substring
   }
 </wxs>
