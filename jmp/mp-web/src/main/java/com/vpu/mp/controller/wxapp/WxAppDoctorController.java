@@ -91,7 +91,7 @@ public class WxAppDoctorController extends WxAppBaseController {
             }
             smsService.sendCheckSms(param, SmsTemplate.DOCTOR_CHECK_MOBILE, SmsApiConfig.REDIS_KEY_SMS_CHECK_DOCTOR_MOBILE);
         } catch (MpException e) {
-            return fail();
+            return fail(e.getErrorCode());
         }
         return success();
     }
@@ -107,7 +107,7 @@ public class WxAppDoctorController extends WxAppBaseController {
         try {
             doctor = doctorService.getOneInfo(user.getDoctorId());
         } catch (MpException e) {
-            e.printStackTrace();
+            return fail(e.getErrorCode());
         }
         return success(doctor);
     }
