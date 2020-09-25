@@ -6,6 +6,6 @@
     "v-popup-collect-coupon": "/components/popup/collect-coupon/index",
     "v-pay-award": "/components/popup/pay_award/index",
     "v-suspend-window": "/components/suspend-window/index",
-    "v-get-prescription":"/components/popup/get-prescription/index"
+    "v-no-prescription-dialog":"/components/popup/no_prescription_dialog/index"
   }
 }

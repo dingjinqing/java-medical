@@ -24,4 +24,4 @@
 <v-suspend-window page_id='{{page_id}}'/>
 
 <!-- 获取病历的弹窗 -->
-<v-get-prescription show='{{noPatient}}' hospital_img=''/>
+<v-no-prescription-dialog show='{{noPatient}}' source="index" dialog-type="2"/>
