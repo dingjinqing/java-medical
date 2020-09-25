@@ -300,7 +300,11 @@ global.wxPage({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.requestSessionList()
+    if (this.data.targetStatus == 3) {
+      this.getCommentList()
+    } else {
+      this.requestSessionList()
+    }
   },
 
   /**

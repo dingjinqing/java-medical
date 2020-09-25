@@ -1251,4 +1251,8 @@ public class Tables {
      * 用户收藏药品记录
      */
     public static final UserCollectionAction USER_COLLECTION_ACTION = com.vpu.mp.db.shop.tables.UserCollectionAction.USER_COLLECTION_ACTION;
+    /**
+     * 慢性病药品关联信息
+     */
+    public static final GoodsChronicCouple GOODS_CHRONIC_COUPLE = com.vpu.mp.db.shop.tables.GoodsChronicCouple.GOODS_CHRONIC_COUPLE;
 }

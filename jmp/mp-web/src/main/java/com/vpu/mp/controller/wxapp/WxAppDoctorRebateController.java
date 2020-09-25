@@ -37,6 +37,8 @@ public class WxAppDoctorRebateController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/doctor/rebate/prescription/list")
     public JsonResult prescriptionRebateList(@RequestBody PrescriptionRebateListParam param){
+        WxAppSessionUser user=wxAppAuth.user();
+        param.setDoctorId(user.getDoctorId());
         PageResult<PrescriptionRebateVo> result=shop().prescriptionRebateService.getPageList(param);
         return success(result);
     }
@@ -48,6 +50,8 @@ public class WxAppDoctorRebateController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/doctor/rebate/inquiryOrder/list")
     public JsonResult inquiryOrderRebateList(@RequestBody InquiryOrderRebateListParam param){
+        WxAppSessionUser user=wxAppAuth.user();
+        param.setDoctorId(user.getDoctorId());
         PageResult<InquiryOrderRebateVo> result=shop().inquiryOrderRebateService.getPageList(param);
         return success(result);
     }
