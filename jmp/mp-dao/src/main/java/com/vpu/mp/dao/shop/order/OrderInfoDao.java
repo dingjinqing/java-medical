@@ -17,7 +17,6 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
@@ -82,7 +81,7 @@ public class OrderInfoDao extends ShopBaseDao {
                 //日期
                 date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),
                 //销售金额  微信+余额+运费
-                sum((ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT).add(ORDER_INFO.SHIPPING_FEE))).as(ActiveDiscountMoney.ORDER_AMOUNT),
+                sum((ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT))).as(ActiveDiscountMoney.ORDER_AMOUNT),
                 //微信
                 sum(ORDER_INFO.MONEY_PAID).as(ActiveDiscountMoney.MONEY_PAID),
                 //余额
