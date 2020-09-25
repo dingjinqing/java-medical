@@ -311,6 +311,8 @@ public class MedicalSalesReportService extends ShopBaseService {
         BigDecimal useAccount =BigDecimal.ZERO;
         BigDecimal shippingFee =BigDecimal.ZERO;
         BigDecimal returnAmount =BigDecimal.ZERO;
+        Integer prescriptionNum =0;
+        BigDecimal prescriptionNumAmount =BigDecimal.ZERO;
         int returnNumber =0;
         while (endDate.compareTo(startDate) >= 0) {
             Date date = DateUtil.date(startDate).toSqlDate();
@@ -328,8 +330,10 @@ public class MedicalSalesReportService extends ShopBaseService {
             useAccount =useAccount.add(Optional.ofNullable(orderReport.getUseAccount()).orElse(BigDecimal.ZERO));
             shippingFee = shippingFee.add(Optional.ofNullable(orderReport.getShippingFee()).orElse(BigDecimal.ZERO));
             returnAmount = returnAmount.add(Optional.ofNullable(returnReport.getReturnAmount()).orElse(BigDecimal.ZERO));
-            returnNumber =+ Optional.ofNullable(returnReport.getReturnNumber()).orElse(0);
+            returnNumber =returnNumber+ Optional.ofNullable(returnReport.getReturnNumber()).orElse(0);
             startDate = DateUtil.offset(startDate,DateField.DAY_OF_YEAR,1).toTimestamp();
+            prescriptionNum= prescriptionNum+ Optional.ofNullable(returnReport.getPrescriptionOrderNum()).orElse(0);
+            prescriptionNumAmount = prescriptionNumAmount.add(Optional.ofNullable(returnReport.getPrescriptionOrderAmount()).orElse(BigDecimal.ZERO));
         }
         //笔单价 =净销售额/订单数量
         BigDecimal orderAvga =BigDecimal.ZERO;
@@ -345,6 +349,8 @@ public class MedicalSalesReportService extends ShopBaseService {
         report.setOrderAvg(orderAvga.setScale(2,BigDecimal.ROUND_HALF_UP));
         report.setReturnAmount(returnAmount);
         report.setReturnNumber(returnNumber);
+        report.setPrescriptionOrderNum(prescriptionNum);
+        report.setPrescriptionOrderAmount(prescriptionNumAmount);
         return report;
     }
 }

@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.order;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
@@ -22,6 +23,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Iterator;
@@ -97,7 +99,14 @@ public class OrderInfoDao extends ShopBaseDao {
                 //运费
                 sum(ORDER_INFO.SHIPPING_FEE).as(ActiveDiscountMoney.SHIPPING_FEE),
                  //销售单数
-                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER)
+                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
+                //销售单数
+                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
+                //处方药订单数量
+                sum(ORDER_INFO.ORDER_MEDICAL_TYPE).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_NUMBER),
+                //处方药金额
+                sum(DSL.iif(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(BaseConstant.YES),ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT), BigDecimal.ZERO)).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_ACCOUNT)
+
         )
                 .from(ORDER_INFO)
                 .where(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
