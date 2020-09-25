@@ -71,8 +71,10 @@ public class MedicalSalesReportService extends ShopBaseService {
      * @param param
      */
     public void buildSalesReportDate(MedicalSalesReportParam param) {
-        DateTime endDate=DateUtil.date(param.getEndTime());
-        DateTime startDate =DateUtil.date(param.getStartTime());
+        DateTime startDate =DateUtil.beginOfDay(param.getStartTime());
+        param.setStartTime(startDate.toTimestamp());
+        DateTime endDate=DateUtil.endOfDay(param.getEndTime());
+        param.setEndTime(endDate.toTimestamp());
         Map<Timestamp,Timestamp> map =new LinkedHashMap<>();
         switch (param.getAnalyzeType()){
             case MedicalSalesReportParam.ANALYZE_TYPE_DAY:
