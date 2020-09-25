@@ -3,6 +3,9 @@ package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.GoodsChronicCoupleDo;
+import com.vpu.mp.dao.shop.goods.GoodsChronicCoupleDao;
+import com.vpu.mp.dao.shop.label.GoodsLabelDao;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -45,10 +48,15 @@ public class GoodsLabelService extends ShopBaseService {
     private EsDataUpdateMqService esDataUpdateMqService;
     @Autowired
     private EsGoodsLabelSearchService esGoodsLabelSearchService;
+    @Autowired
+    private GoodsLabelDao goodsLabelDao;
+    @Autowired
+    private GoodsChronicCoupleDao goodsChronicCoupleDao;
 
     public static final Byte POINT_GOODS = 0;
     public static final Byte ALL_GOODS = 1;
     public static final Byte NONE_GOODS =2;
+    public static final Byte IS_CHRONIC = 1;
 
 
     public PageResult<GoodsLabelPageListVo> getPageList(GoodsLabelPageListParam param) {
@@ -353,5 +361,27 @@ public class GoodsLabelService extends ShopBaseService {
 
     public boolean exist(Integer id) {
         return db().fetchExists(GOODS_LABEL, GOODS_LABEL.ID.eq(id).and(GOODS_LABEL.DEL_FLAG.eq(BYTE_ZERO)));
+    }
+
+    public void insertOnly(GoodsLabelAddAndUpdateParam param) {
+        goodsLabelDao.insertOnly(param);
+    }
+
+    public void insertChronicLabelData(){
+        List<String> chronicNames = goodsChronicCoupleDao.listChronicNames();
+        GoodsLabelAddAndUpdateParam goodsLabelAddAndUpdateParam = new GoodsLabelAddAndUpdateParam();
+        goodsLabelAddAndUpdateParam.setIsChronic(IS_CHRONIC);
+        for(String chronicName:chronicNames) {
+            goodsLabelAddAndUpdateParam.setName(chronicName);
+            insertOnly(goodsLabelAddAndUpdateParam);
+        }
+        List<GoodsLabelBase> chronicLabels = goodsLabelDao.listChronicLabels();
+        List<Integer> goodsIds = new ArrayList<>();
+        for (GoodsLabelBase chronicLabel:chronicLabels) {
+            goodsIds = goodsChronicCoupleDao.listGoodsChronicGoodsCouples(chronicLabel.getName());
+            goodsLabelAddAndUpdateParam.setId(chronicLabel.getId());
+            goodsLabelAddAndUpdateParam.setGoodsIds(goodsIds);
+            insertGoodsLabelCouple(goodsLabelAddAndUpdateParam);
+        }
     }
 }

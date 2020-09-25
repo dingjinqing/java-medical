@@ -31,7 +31,7 @@ public class StoreMenuService extends MainBaseService {
     protected String[] authExcept = { "/api/store/overview","/api/store/showMenu","/api/store/overview/wait/data",
                                    "/api/store/overview/statistic/data" ,"/api/store/overview/article/list","/api/store/all/get",
                                     "/api/store/public/service/bind/getOfficialQrCode","/api/store/survey/official/bind",
-                                    "/api/store/malloverview/getbindUnBindStatus"};
+                                    "/api/store/malloverview/getbindUnBindStatus","/api/store/overview/article/get/*"};
     final protected String menuJson = "admin.authorityNew.json";
     final protected String authorityJson = "admin.privilegePassNew.json";
     final protected String versionJson = "admin.versionNew.json";

@@ -71,8 +71,10 @@ public class MedicalSalesReportService extends ShopBaseService {
      * @param param
      */
     public void buildSalesReportDate(MedicalSalesReportParam param) {
-        DateTime endDate=DateUtil.date(param.getEndTime());
-        DateTime startDate =DateUtil.date(param.getStartTime());
+        DateTime startDate =DateUtil.beginOfDay(param.getStartTime());
+        param.setStartTime(startDate.toTimestamp());
+        DateTime endDate=DateUtil.endOfDay(param.getEndTime());
+        param.setEndTime(endDate.toTimestamp());
         Map<Timestamp,Timestamp> map =new LinkedHashMap<>();
         switch (param.getAnalyzeType()){
             case MedicalSalesReportParam.ANALYZE_TYPE_DAY:
@@ -332,7 +334,7 @@ public class MedicalSalesReportService extends ShopBaseService {
         //笔单价 =净销售额/订单数量
         BigDecimal orderAvga =BigDecimal.ZERO;
         if (orderNumber>0){
-            orderAvga = orderAmount.subtract(BigDecimal.valueOf(orderNumber)).divide(BigDecimal.valueOf(orderNumber),2,BigDecimal.ROUND_HALF_UP);
+            orderAvga = orderAmount.divide(BigDecimal.valueOf(orderNumber),2,BigDecimal.ROUND_HALF_UP);
         }
         report.setOrderAmount(orderAmount);
         report.setOrderNumber(orderNumber);
