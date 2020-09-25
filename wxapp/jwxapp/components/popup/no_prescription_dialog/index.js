@@ -14,6 +14,10 @@ global.wxComponent({
    patientInfo:{
      type:Object,
      value:null
+   },
+   source:{
+     type:String,
+     value:''
    }
   },
 
@@ -34,7 +38,7 @@ global.wxComponent({
       this.bindClose()
     },
     addPatient(){
-      util.jumpLink('pages1/familylist/familylist?source=checkout')
+      util.jumpLink(`pages1/familylist/familylist?source=${this.data.source}`)
       this.bindClose()
     }
   }
