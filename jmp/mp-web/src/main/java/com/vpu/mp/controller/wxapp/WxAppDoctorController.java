@@ -30,8 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
-import static com.vpu.mp.common.foundation.data.JsonResultCode.DOCTOR_LOGIN_AUTH_ERROR;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.*;
 import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
 
 /**
@@ -63,8 +62,8 @@ public class WxAppDoctorController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/doctor/auth")
     public JsonResult doctorAuth(@Validated @RequestBody DoctorAuthParam doctorAuthParam) {
-        if (wxAppAuth.user().getUserType() != 0 || wxAppAuth.user().getUserType() == null) {
-            return fail(DOCTOR_LOGIN_AUTH_ERROR);
+        if (wxAppAuth.user().getUserType() != 0 &&wxAppAuth.user().getUserType() != null) {
+            return fail(AUTH_ALREADY_AUTHED);
         }
         doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
         Integer doctorId = doctorService.doctorAuth(doctorAuthParam);
