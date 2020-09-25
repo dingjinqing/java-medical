@@ -3,6 +3,8 @@ package com.vpu.mp.controller.store;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.service.pojo.shop.auth.StoreTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.overview.BindAndUnParam;
 import com.vpu.mp.service.pojo.shop.overview.BindofficialVo;
 import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
@@ -81,8 +83,11 @@ public class StoreOverviewController extends StoreBaseController {
      */
     @GetMapping("/api/store/public/service/bind/getOfficialQrCode")
     public JsonResult generateThirdPartCode() {
+        StoreTokenAuthInfo storeTokenAuthInfo=storeAuth.user();
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(storeTokenAuthInfo.getLoginShopId());
+
         try {
-            String generateThirdPartCode = saas.shop.officeAccount.generateThirdPartCodeForStore(storeAuth.user(),bindAppId);
+            String generateThirdPartCode = saas.shop.officeAccount.generateThirdPartCodeForStore(storeAuth.user(),wxapp.getLinkOfficialAppId());
             return success(generateThirdPartCode);
         } catch (WxErrorException e) {
             logger().debug(e.getMessage(),e);
