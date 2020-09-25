@@ -15,8 +15,10 @@ import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOaPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeaccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.auth.StoreTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.market.message.BindRabbitParam;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
 import com.vpu.mp.service.wechat.api.WxOpenMpampLinkService;
@@ -527,6 +529,42 @@ public class ShopOfficialAccount extends MainBaseService {
         int expireSeconds = 24 * 60 * 30 * 60 - 60;
         //$sceneValue = $shopId.'&'.$accountAction.'&'.$accountId;
         String sceneValue = user.loginShopId.toString() + "&" + String.valueOf(accountAction) + "&"+ String.valueOf(accountId);
+        //查看缓存中是否存了二维码
+        String key = "official_scene_ticket@"+sceneValue;
+        String string = jedis.get(key);
+        if(StringUtils.isNotEmpty(string)) {
+            logger().info("公众号 " + appId + "创建二维码,缓存中存在" +string);
+            return string;
+        }
+
+        WxMpQrcodeService qrcodeService = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getQrcodeService();
+        WxMpQrCodeTicket qrCodeCreateTmpTicket = qrcodeService.qrCodeCreateTmpTicket(sceneValue, expireSeconds);
+        // 获取的二维码ticket
+        String ticket = qrCodeCreateTmpTicket.getTicket();
+        logger().info("公众号 " + appId + "创建二维码ticket的值" + ticket);
+        String qrCodePictureUrl = qrcodeService.qrCodePictureUrl(ticket);
+        logger().info("公众号 " + appId + "通过ticket换取二维码的结果 " + qrCodePictureUrl);
+        jedis.set(key, qrCodePictureUrl, expireSeconds);
+        return qrCodePictureUrl;
+    }
+    /**
+     * 小程序获得公众号场景二维码
+     * @param wxAppSessionUser
+     * @param appId
+     * @return
+     * @throws WxErrorException
+     */
+    public String generateThirdPartCodeForWx(WxAppSessionUser wxAppSessionUser, String appId) throws WxErrorException {
+        logger().info("传入appid为：{}",appId);
+        // 店员账号3
+        int accountAction = 3;
+        if(wxAppSessionUser.getUserType().equals(AuthConstant.AUTH_TYPE_DOCTOR_USER)){
+            accountAction=4;
+        }
+        int accountId = wxAppSessionUser.getStoreAccountId();
+        int expireSeconds = 24 * 60 * 30 * 60 - 60;
+        //$sceneValue = $shopId.'&'.$accountAction.'&'.$accountId;
+        String sceneValue = wxAppSessionUser.getShopId().toString() + "&" + String.valueOf(accountAction) + "&"+ String.valueOf(accountId);
         //查看缓存中是否存了二维码
         String key = "official_scene_ticket@"+sceneValue;
         String string = jedis.get(key);
