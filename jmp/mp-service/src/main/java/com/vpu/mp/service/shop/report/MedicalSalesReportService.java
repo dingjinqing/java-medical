@@ -334,7 +334,7 @@ public class MedicalSalesReportService extends ShopBaseService {
         //笔单价 =净销售额/订单数量
         BigDecimal orderAvga =BigDecimal.ZERO;
         if (orderNumber>0){
-            orderAvga = orderAmount.subtract(BigDecimal.valueOf(orderNumber)).divide(BigDecimal.valueOf(orderNumber),2,BigDecimal.ROUND_HALF_UP);
+            orderAvga = orderAmount.divide(BigDecimal.valueOf(orderNumber),2,BigDecimal.ROUND_HALF_UP);
         }
         report.setOrderAmount(orderAmount);
         report.setOrderNumber(orderNumber);
