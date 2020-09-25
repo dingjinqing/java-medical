@@ -173,7 +173,7 @@ public class DoctorService extends BaseShopConfigService {
 
     public DoctorOneParam getOneInfo(Integer doctorId) throws MpException {
         if (doctorId == null) {
-            throw MpException.initErrorResult(JsonResultCode.DOCTOR_ID_IS_NULL, null, null);
+            throw MpException.initErrorResult(JsonResultCode.DOCTOR_ID_IS_NULL, "医师id为null");
         }
         DoctorOneParam doctorInfo = doctorDao.getOneInfo(doctorId);
         List<Integer> departmentIds = doctorDepartmentCoupleDao.getDepartmentIdsByDoctorId(doctorId);
