@@ -23,7 +23,7 @@
     </div>
 
     <div class="rightCon">
-      <div
+      <!-- <div
         class="langChange"
         @mouseover="langEnter()"
         @mouseout="langLeave()"
@@ -43,7 +43,7 @@
             :key="index"
           >{{item.show_lang}}</div>
         </div>
-      </div>
+      </div> -->
       <div
         class="middle"
         @mouseenter="user_enter()"

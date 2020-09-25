@@ -58,7 +58,7 @@
         <img :src="imageUrl[3].img_4">
       </div>
     </div>
-    <div
+    <!-- <div
       class="langChange"
       @mouseover="langEnter()"
       @mouseout="langLeave()"
@@ -78,7 +78,7 @@
           :key="index"
         >{{item.show_lang}}</div>
       </div>
-    </div>
+    </div> -->
 
   </div>
 </template>
