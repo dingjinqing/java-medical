@@ -249,8 +249,9 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/storeClerk/auth")
     public JsonResult salesclerkAuth(@RequestBody StoreClerkAuthParam param){
-        param.setUserId(wxAppAuth.user().getUserId());
-        param.setShopId(wxAppAuth.user().getShopId());
+        WxAppSessionUser user=wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        param.setShopId(user.getShopId());
         try {
             Integer accountId=shop().store.wxService.storeClerkAuth(param,wxAppAuth.user());
             if(accountId!=null){

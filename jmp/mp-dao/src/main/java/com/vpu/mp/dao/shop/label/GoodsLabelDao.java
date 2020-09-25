@@ -3,10 +3,15 @@ package com.vpu.mp.dao.shop.label;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.pojo.shop.table.GoodsLabelDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAddAndUpdateParam;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelBase;
 import com.vpu.mp.service.pojo.shop.medical.label.MedicalLabelConstant;
 import org.jooq.Condition;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
@@ -19,6 +24,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 @Repository
 public class GoodsLabelDao extends ShopBaseDao {
 
+    public static final Byte IS_CHRONIC = 1;
     /**
      * 根据标签id集合查询有效标签信息
      * @param labelIds
@@ -51,4 +57,23 @@ public class GoodsLabelDao extends ShopBaseDao {
         return goodsLabelDos;
     }
 
+    /**
+     * 新增商品标签
+     *
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAddAndUpdateParam}
+     */
+    public void insertOnly(GoodsLabelAddAndUpdateParam param) {
+        transaction(() -> {
+            GoodsLabelRecord record = db().newRecord(GOODS_LABEL, param);
+            record.insert();
+            param.setId(record.getId());
+        });
+    }
+
+    public List<GoodsLabelBase> listChronicLabels(){
+        return db().select(GOODS_LABEL.NAME,GOODS_LABEL.ID)
+            .from(GOODS_LABEL)
+            .where(GOODS_LABEL.IS_CHRONIC.eq(IS_CHRONIC))
+            .fetchInto(GoodsLabelBase.class);
+    }
 }

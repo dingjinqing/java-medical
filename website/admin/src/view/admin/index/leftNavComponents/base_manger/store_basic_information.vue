@@ -4,118 +4,160 @@
     <el-main class="shop_config">
       <ul class="program_details">
         <li class="details_item">
-          <span class="item_label">{{$t('storeBasicInformation.storeName')}}：</span>
-          <div
-            class="item_content"
-            v-if="!changeNameFlag"
+          <span class="item_label"
+            >{{ $t('storeBasicInformation.storeName') }}：</span
           >
-            <span>{{form.shopName}}</span>
+          <div class="item_content" v-if="!changeNameFlag">
+            <span>{{ form.shopName }}</span>
             <el-button
               type="text"
               class="iconSpan"
               size="small"
               @click="changeNameFlagHandle"
-            >{{$t('storeBasicInformation.change')}}</el-button>
+              >{{ $t('storeBasicInformation.change') }}</el-button
+            >
           </div>
-          <div
-            class="item_content"
-            v-else
-          >
+          <div class="item_content" v-else>
             <el-input
               v-model="form.shopName"
               @blur="changeNameHandle"
-              style="width: 182px;"
+              style="width: 182px"
               size="small"
             ></el-input>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">{{$t('storeBasicInformation.storeStatus')}}：</span>
+          <span class="item_label"
+            >{{ $t('storeBasicInformation.storeStatus') }}：</span
+          >
           <div class="item_content">
             <el-radio-group v-model="form.businessState">
-              <el-radio :label="1">{{$t('storeBasicInformation.opened')}}</el-radio>
-              <el-radio :label="0">{{$t('storeBasicInformation.notOpen')}}</el-radio>
+              <el-radio :label="1">{{
+                $t('storeBasicInformation.opened')
+              }}</el-radio>
+              <el-radio :label="0">{{
+                $t('storeBasicInformation.notOpen')
+              }}</el-radio>
             </el-radio-group>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">{{$t('storeBasicInformation.createTime')}}：</span>
+          <span class="item_label"
+            >{{ $t('storeBasicInformation.createTime') }}：</span
+          >
           <div class="item_content">
-            <span>{{form.created}}</span>
+            <span>{{ form.created }}</span>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">{{$t('storeBasicInformation.validUntil')}}：</span>
+          <span class="item_label"
+            >{{ $t('storeBasicInformation.validUntil') }}：</span
+          >
           <div class="item_content">
-            <span>{{form.expireTime}}</span>
+            <span>{{ form.expireTime }}</span>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">{{$t('storeBasicInformation.backendShopLogo')}}：</span>
+          <span class="item_label"
+            >{{ $t('storeBasicInformation.backendShopLogo') }}：</span
+          >
           <div class="item_content">
-            <div
-              class="logo_wrap"
-              @click="selectAvatarHandle"
-            >
+            <div class="logo_wrap" @click="selectAvatarHandle">
               <el-image
                 :src="$imageHost + '/' + form.shopAvatar"
                 fit="contain"
-                style="padding:4px; width:100%; height: 100%;"
+                style="padding: 4px; width: 100%; height: 100%"
               ></el-image>
-              <span class="logo_span">{{$t('storeBasicInformation.change')}}</span>
+              <span class="logo_span">{{
+                $t('storeBasicInformation.change')
+              }}</span>
             </div>
-            <p>{{$t('storeBasicInformation.imageFormat')}}：png,bmp,jpeg,jpg,gif；{{$t('storeBasicInformation.cannotGreater')}}5M；</p>
-            <p>{{$t('storeBasicInformation.usePng')}}</p>
+            <p>
+              {{
+                $t('storeBasicInformation.imageFormat')
+              }}：png,bmp,jpeg,jpg,gif；{{
+                $t('storeBasicInformation.cannotGreater')
+              }}5M；
+            </p>
+            <p>{{ $t('storeBasicInformation.usePng') }}</p>
           </div>
         </li>
         <li class="details_item">
-          <span class="item_label">{{$t('storeBasicInformation.frontEndShopLogo')}}:</span>
+          <span class="item_label"
+            >{{ $t('storeBasicInformation.frontEndShopLogo') }}:</span
+          >
           <div class="item_content">
             <el-radio-group v-model="form.showLogo">
-              <el-radio :label="0">{{$t('storeBasicInformation.donotShow')}}</el-radio>
-              <el-radio :label="1">{{$t('storeBasicInformation.customize')}}</el-radio>
+              <el-radio :label="0">{{
+                $t('storeBasicInformation.donotShow')
+              }}</el-radio>
+              <el-radio :label="1">{{
+                $t('storeBasicInformation.customize')
+              }}</el-radio>
             </el-radio-group>
             <div v-if="form.showLogo === 1">
               <div class="applet_logo">
-                <div
-                  class="logo_wrap"
-                  @click="selectAppletLogoHandle"
-                >
+                <div class="logo_wrap" @click="selectAppletLogoHandle">
                   <el-image
-                    :src="$imageHost + '/' +  form.logo"
+                    :src="$imageHost + '/' + form.logo"
                     fit="contain"
-                    style="padding:4px; width:100%; height: 100%;"
+                    style="padding: 4px; width: 100%; height: 100%"
                   ></el-image>
-                  <span class="logo_span">{{$t('storeBasicInformation.change')}}</span>
+                  <span class="logo_span">{{
+                    $t('storeBasicInformation.change')
+                  }}</span>
                 </div>
                 <div class="logo_info">
-                  <p>{{$t('storeBasicInformation.showBottom')}}</p>
-                  <el-tooltip
-                    placement="right"
-                    effect="light"
-                  >
+                  <p>{{ $t('storeBasicInformation.showBottom') }}</p>
+                  <el-tooltip placement="right" effect="light">
                     <div slot="content">
                       <el-image
-                        :src="$imageHost + '/image/admin/new_preview_image/bottom_logo.jpg'"
-                        style="width: 200px; height: 355.74px;"
+                        :src="
+                          $imageHost +
+                          '/image/admin/new_preview_image/bottom_logo.jpg'
+                        "
+                        style="width: 200px; height: 355.74px"
                       ></el-image>
                     </div>
-                    <el-button type="text">{{$t('storeBasicInformation.viewExample')}}</el-button>
+                    <el-button type="text">{{
+                      $t('storeBasicInformation.viewExample')
+                    }}</el-button>
                   </el-tooltip>
-                  <p>{{$t('storeBasicInformation.recommendedPng')}}</p>
+                  <p>{{ $t('storeBasicInformation.recommendedPng') }}</p>
                 </div>
               </div>
               <div>
-                <span>{{$t('storeBasicInformation.link')}}：</span>
+                <span>{{ $t('storeBasicInformation.link') }}：</span>
                 <el-input
                   v-model="form.logoLink"
                   size="small"
-                  style="width: 182px;"
+                  style="width: 182px"
                 ></el-input>
-                <el-button
-                  size="small"
-                  @click="selectLinkHandle"
-                >{{$t('storeBasicInformation.selectLink')}}</el-button>
+                <el-button size="small" @click="selectLinkHandle">{{
+                  $t('storeBasicInformation.selectLink')
+                }}</el-button>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="details_item" style="margin-top: 15px">
+          <span class="item_label">医院公章：</span>
+          <div class="item_content">
+            <div class="applet_logo" style="margin-top: 0">
+              <div class="logo_wrap" @click="selectSealHandle">
+                <el-image
+                  :src="$imageHost + '/' + form.cachet"
+                  fit="contain"
+                  style="padding: 4px; width: 100%; height: 100%"
+                ></el-image>
+                <span class="logo_span">{{
+                  $t('storeBasicInformation.change')
+                }}</span>
+              </div>
+              <div class="logo_info">
+                <p>
+                  建议使用png格式图片，以保持最佳效果；建议图片尺寸为144px*144px
+                </p>
               </div>
             </div>
           </div>
@@ -123,11 +165,9 @@
       </ul>
     </el-main>
     <div class="basic-page-footer">
-      <el-button
-        type="primary"
-        size="small"
-        @click="saveBasicInfoHandle"
-      >{{$t('storeBasicInformation.save')}}</el-button>
+      <el-button type="primary" size="small" @click="saveBasicInfoHandle">{{
+        $t('storeBasicInformation.save')
+      }}</el-button>
     </div>
 
     <!-- 选择后端logo -->
@@ -144,6 +184,14 @@
       pageIndex="pictureSpace"
       :imageSize="[300, 80]"
       @handleSelectImg="appletSelectHandle"
+    ></ImageDalog>
+
+    <!-- 选择医院公章 -->
+    <ImageDalog
+      :tuneUp="hospitalSealVisible"
+      pageIndex="pictureSpace"
+      :imageSize="[144, 144]"
+      @handleSelectImg="sealSelectHandle"
     ></ImageDalog>
 
     <!-- 选择链接 -->
@@ -171,12 +219,14 @@ export default {
         shopAvatar: 'image/admin/shop_def_y.png', // 店铺logo
         showLogo: 0, // 是否显示小程序店铺logo
         logo: 'image/admin/shop_def_y.png', // 小程序端底部logo
-        logoLink: '' // 小程序端店铺链接
+        logoLink: '', // 小程序端店铺链接
+        cachet: 'image/admin/shop_def_y.png'
       },
       changeNameFlag: false, // 更改店铺名称
       avatarDialogVisible: false, // 选择店铺Logo
       appletDialogVisible: false, // 选择小程序店铺Logo
-      tuneUpSelectLink: false // 选择链接弹窗
+      tuneUpSelectLink: false, // 选择链接弹窗
+      hospitalSealVisible: false
     }
   },
   created () {
@@ -207,6 +257,12 @@ export default {
     },
     selectAppletLogoHandle () {
       this.appletDialogVisible = !this.appletDialogVisible
+    },
+    selectSealHandle () {
+      this.hospitalSealVisible = !this.hospitalSealVisible
+    },
+    sealSelectHandle (img) {
+      this.$set(this.form, 'cachet', img.imgPath)
     },
     avatarSelectHandle (img) {
       this.$set(this.form, 'shopAvatar', img.imgPath)
