@@ -575,7 +575,7 @@ public class StoreWxService extends ShopBaseService {
     }
 
     public void checkStoreClerkAuth(StoreClerkAuthParam param,StoreAccountVo storeAccountVo, WxAppSessionUser wxAppSessionUser)throws MpException {
-        if(wxAppSessionUser.getUserType()==null||wxAppSessionUser.getUserType().equals(0)){
+        if(wxAppSessionUser.getUserType()!=null&&!wxAppSessionUser.getUserType().equals(0)){
             throw new MpException(JsonResultCode.AUTH_ALREADY_AUTHED);
         }
         if(!checkMobileCode(param)){

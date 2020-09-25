@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawParam;
 import com.vpu.mp.service.pojo.shop.rebate.DoctorWithdrawVo;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.rebate.DoctorWithdrawService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,8 @@ public class WxAppDoctorWithdrawController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/doctor/withdraw/list")
     public JsonResult getPageList(@RequestBody DoctorWithdrawListParam param){
+        WxAppSessionUser user=wxAppAuth.user();
+        param.setDoctorId(user.getDoctorId());
         PageResult<DoctorWithdrawVo> result= doctorWithdrawService.getPageList(param);
         return success(result);
     }
@@ -43,6 +46,8 @@ public class WxAppDoctorWithdrawController extends WxAppBaseController{
     @RedisLock(prefix = JedisKeyConstant.NotResubmit.DOCTOR_WITHDRAW_APPLY, noResubmit = true)
     @PostMapping("/api/wxapp/doctor/withdraw/apply")
     public JsonResult apply(@RequestBody DoctorWithdrawParam param){
+        WxAppSessionUser user=wxAppAuth.user();
+        param.setDoctorId(user.getDoctorId());
         try {
             param.setClientIp(RequestUtil.getIp(request));
             doctorWithdrawService.addDoctorWithdraw(param);
