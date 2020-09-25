@@ -114,7 +114,6 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
-
     public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_BAK_PRIMARY;
     public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY;
 
@@ -318,8 +317,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderBak.RETURN_ORDER_BAK, "KEY_b2c_return_order_bak_PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK.RET_ID);
-        public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, "KEY_b2c_return_order_goods_bak_PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID);
+        public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderBak.RETURN_ORDER_BAK, "KEY_b2c_return_order_bak_PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK.RET_ID, ReturnOrderBak.RETURN_ORDER_BAK.SHOP_ID);
+        public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, "KEY_b2c_return_order_goods_bak_PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID, ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.SHOP_ID);
 
         public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_PRIMARY = Internal.createUniqueKey(OrderInfoBak.ORDER_INFO_BAK, "KEY_b2c_order_info_bak_PRIMARY", OrderInfoBak.ORDER_INFO_BAK.ID);
         public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_ORDER_SN = Internal.createUniqueKey(OrderInfoBak.ORDER_INFO_BAK, "KEY_b2c_order_info_bak_order_sn", OrderInfoBak.ORDER_INFO_BAK.ORDER_SN);

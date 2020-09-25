@@ -3,14 +3,15 @@
 <view class="mian-container">
   <view class="prescription-content">
     <view class="prescription-item">
-      <view class="top_info">
-        <view class="item-title">{{prescriptionInfo.prescriptionCode}}</view>
+      <view class="top_info" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
+        <view class="title">电子处方</view>
+        <view class="prescription-code">处方号：{{prescriptionInfo.prescriptionCode}}</view>
       </view>
       <view class="item-list-content">
-      <view class="prescription-code-status">
+      <!-- <view class="prescription-code-status">
 						<view>处方号：<text>{{prescriptionInfo.prescriptionCode}}</text></view>
 						<view>{{prescriptionInfo.isUsed ? '已使用' : '未使用'}}</view>
-					</view>
+					</view> -->
         <view class="item-list">
           <view class="list-item">
             <text class="list-item-dot"></text>
@@ -48,6 +49,8 @@
             <view class="medicine_spec">用法用量：</view>
           </view>
         </view>
+        <image class="use-icon" wx:if="{{prescriptionInfo.isUsed}}" src="{{imageUrl}}image/wxapp/used.png"></image>
+				<image class="use-icon" wx:if="{{!prescriptionInfo.isUsed}}" src="{{imageUrl}}image/wxapp/unused.png"></image>
       </view>
       <view class="doctor-info">
         <view class="doctor-name">

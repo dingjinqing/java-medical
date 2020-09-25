@@ -227,7 +227,7 @@ label {
 }
 .rp_expand{
   right: 18rpx;
-  bottom: 24rpx;
+  bottom: 18rpx;
 }
 .no_chat{
   background: #CBCBCB !important;

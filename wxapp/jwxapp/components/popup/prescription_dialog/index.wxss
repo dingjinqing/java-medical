@@ -12,22 +12,29 @@
   height: 180rpx;
   background:#26C4BC;
   border-radius: 16rpx 16rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .prescription-title-content .title{
   color: #fff;
   font-size: 40rpx;
   text-align: center;
   font-weight: 600;
-  line-height: 160rpx;
 }
-.prescription-title-content .title-item{
+.prescription-title-content .prescription-code{
+  color: #fff;
+  
+}
+/* .prescription-title-content .title-item{
   color: #fff;
   font-size: 26rpx;
   padding-left: 33rpx;
 }
 .prescription-title-content .title-item + .title-item{
   margin-top: 20rpx;
-}
+} */
 .prescription-info-content{
   background: #fff;
   border-radius: 16rpx 16rpx 0 0;
@@ -37,6 +44,7 @@
   flex-direction: column;
   padding:56rpx 62rpx 56rpx 32rpx;
   overflow-y: scroll;
+  position: relative;
 }
 .prescription-item{
   display: flex;
@@ -158,4 +166,11 @@
   background-color: #26C4BC;
   color: #fff;
   margin: 20rpx auto 0;
+}
+.use-icon{
+  width: 122rpx;
+  height: 122rpx;
+  position: absolute;
+  right: 24rpx;
+  top: 24rpx;
 }
