@@ -143,20 +143,6 @@
               <span>￥{{scope.row.moneyPaid}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop='createTime'
-            label='备注'
-          ></el-table-column>
-          <el-table-column label='操作'>
-            <template slot-scope="scope">
-              <div class="operation">
-                <a
-                  href="javaScript:void(0);"
-                  @click='toDetail(scope.row.orderId)'
-                >详情</a>
-              </div>
-            </template>
-          </el-table-column>
         </el-table>
         <pagination
           :page-params.sync="pageParams"
