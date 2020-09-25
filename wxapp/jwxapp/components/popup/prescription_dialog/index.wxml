@@ -4,13 +4,14 @@
 		<view class="prescription-content" bindtap="viewRxSearch">
 			<view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
 				<view class="title">电子处方</view>
+				<view class="prescription-code">处方号：{{prescriptionData.prescriptionCode}}</view>
 			</view>
 			<view class="prescription-info-content">
 				<view>
-					<view class="prescription-code-status">
+					<!-- <view class="prescription-code-status">
 						<view>处方号：<text>{{prescriptionData.prescriptionCode}}</text></view>
 						<view>{{prescriptionData.isUsed ? '已使用' : '未使用'}}</view>
-					</view>
+					</view> -->
 					<view class="prescription-item">
 						<view class="item-title">
 							<text class="list-item-dot"></text>
@@ -57,6 +58,8 @@
 						</view>
 					</view>
 				</view>
+				<image class="use-icon" wx:if="{{prescriptionData.isUsed}}" src="{{imageUrl}}image/wxapp/used.png"></image>
+				<image class="use-icon" wx:if="{{!prescriptionData.isUsed}}" src="{{imageUrl}}image/wxapp/unused.png"></image>
 			</view>
 			<view class="prescription-doctor-info">
 				<view class="doctor-info" wx:if="{{prescriptionData.doctorName}}">

@@ -2,9 +2,11 @@
   <include src="/pages/common/header.wxml" />
   <view class="main-container" style="height:calc(100vh - {{margin_top_nav + 8}}px);">
     <view class="desc-info" style="background:url({{imageUrl}}image/wxapp/clerk_index_bg.png) no-repeat;background-size:cover;">
-      <image src="{{user_avatar}}"></image>
-      <view class="clerk-name">{{userData.accountName}}</view>
-      <view class="permission">{{userData.accountType === 1 ? '店员' : '店长'}}</view>
+      <view class="desc-info-content">
+        <image src="{{user_avatar}}"></image>
+        <view class="clerk-name">{{userData.accountName}}</view>
+        <view class="permission">{{userData.accountType === 1 ? '店员' : '店长'}}</view>
+      </view>
     </view>
     <view class="default-content">
       <view class="data-panel">
