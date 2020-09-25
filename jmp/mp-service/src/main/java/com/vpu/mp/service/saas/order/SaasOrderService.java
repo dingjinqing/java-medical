@@ -14,6 +14,7 @@ import com.vpu.mp.dao.main.order.ReturnOrderGoodsBakDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
+import com.vpu.mp.db.main.tables.records.OrderGoodsBakRecord;
 import com.vpu.mp.db.main.tables.records.OrderInfoBakRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.order.report.OrderBakSalesReportParam;
@@ -72,46 +73,62 @@ public class SaasOrderService extends MainBaseService {
 
     public void synOrderGoodsCreate(Timestamp beginTime, Timestamp endTime, Integer shopId) {
         List<OrderGoodsDo> createOrderGoodsList = orderGoodsDao.listCreateOrderGoodsByYesterday(beginTime, endTime);
-        List<OrderInfoBakRecord> createOrderGoodsByYesterday = new ArrayList<>();
         createOrderGoodsList.forEach(orderInfoDo -> {
-            OrderInfoBakRecord orderInfoBakRecord = db().newRecord(ORDER_INFO_BAK, orderInfoDo);
+            OrderGoodsBakRecord orderInfoBakRecord = databaseManager.mainDb().newRecord(ORDER_GOODS_BAK, orderInfoDo);
             orderInfoBakRecord.setShopId(shopId);
-            createOrderGoodsByYesterday.add(orderInfoBakRecord);
+            try {
+                orderInfoBakRecord.insert();
+            }catch (Exception e){
+                log.info("同步失败{}",orderInfoBakRecord.getOrderSn());
+            }
         });
-        databaseManager.mainDb().batchInsert(createOrderGoodsByYesterday).execute();
+
     }
 
     public void synOrderGoodsUpdate(Timestamp beginTime, Timestamp endTime, Integer shopId) {
         List<OrderGoodsDo> updateOrderGoodsList = orderGoodsDao.listUpdateOrderGoodsByYesterday(beginTime, endTime);
-        List<OrderInfoBakRecord> updateOrderGoodsByYesterday = new ArrayList<>();
         updateOrderGoodsList.forEach(orderInfoDo -> {
-            OrderInfoBakRecord orderInfoBakRecord = db().newRecord(ORDER_INFO_BAK, orderInfoDo);
+            OrderGoodsBakRecord orderInfoBakRecord = databaseManager.mainDb().newRecord(ORDER_GOODS_BAK, orderInfoDo);
+            Integer id = databaseManager.mainDb().select(ORDER_GOODS_BAK.ID).from(ORDER_GOODS_BAK)
+                    .where(ORDER_GOODS_BAK.ORDER_SN.eq(orderInfoBakRecord.getOrderSn()))
+                    .and(ORDER_GOODS_BAK.REC_ID.eq(orderInfoBakRecord.getRecId())).fetchAnyInto(Integer.class);
+            orderInfoBakRecord.setId(id.longValue());
             orderInfoBakRecord.setShopId(shopId);
-            updateOrderGoodsByYesterday.add(orderInfoBakRecord);
+            try {
+                orderInfoBakRecord.update();
+            }catch (Exception e){
+                log.info("更新失败{}",orderInfoBakRecord.getOrderSn());
+            }
         });
-        databaseManager.mainDb().batchUpdate(updateOrderGoodsByYesterday).execute();
     }
 
     public void synOrderCreate(Timestamp beginTime, Timestamp endTime, Integer shopId) {
         List<OrderInfoDo> createOrderList = orderInfoDao.listCreateOrderByYesterday(beginTime, endTime);
-        List<OrderInfoBakRecord> createOrderByYesterday = new ArrayList<>();
         createOrderList.forEach(orderInfoDo -> {
-            OrderInfoBakRecord orderInfoBakRecord = db().newRecord(ORDER_INFO_BAK, orderInfoDo);
+            OrderInfoBakRecord orderInfoBakRecord = databaseManager.mainDb().newRecord(ORDER_INFO_BAK, orderInfoDo);
             orderInfoBakRecord.setShopId(shopId);
-            createOrderByYesterday.add(orderInfoBakRecord);
+            try {
+                orderInfoBakRecord.insert();
+            }catch (Exception e){
+                log.info("同步失败{}",orderInfoBakRecord.getOrderSn());
+            }
         });
-        databaseManager.mainDb().batchInsert(createOrderByYesterday).execute();
     }
 
     public void synOrderUpdate(Timestamp beginTime, Timestamp endTime, Integer shopId) {
-        List<OrderInfoBakRecord> updateOrderByYesterday = new ArrayList<>();
         List<OrderInfoDo> updateOrderList = orderInfoDao.listUpdateOrderByYesterday(beginTime, endTime);
         updateOrderList.forEach(orderInfoDo -> {
-            OrderInfoBakRecord orderInfoBakRecord = db().newRecord(ORDER_INFO_BAK, orderInfoDo);
+            OrderInfoBakRecord orderInfoBakRecord = databaseManager.mainDb().newRecord(ORDER_INFO_BAK, orderInfoDo);
+            Integer id = databaseManager.mainDb().select(ORDER_INFO_BAK.ID).from(ORDER_INFO_BAK).where(ORDER_INFO_BAK.ORDER_SN.eq(orderInfoBakRecord.getOrderSn())).fetchAnyInto(Integer.class);
+            orderInfoBakRecord.setId(id.longValue());
             orderInfoBakRecord.setShopId(shopId);
-            updateOrderByYesterday.add(orderInfoBakRecord);
+            try {
+                orderInfoBakRecord.update();
+            }catch (Exception e){
+                log.info("更新失败{}",orderInfoBakRecord.getOrderSn());
+            }
         });
-        databaseManager.mainDb().batchUpdate(updateOrderByYesterday).execute();
+
     }
 
 

@@ -5,17 +5,15 @@ package com.vpu.mp.db.main.tables.records;
 
 
 import com.vpu.mp.db.main.tables.ReturnOrderGoodsBak;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
-import org.jooq.Record1;
 import org.jooq.Record19;
+import org.jooq.Record2;
 import org.jooq.Row19;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -31,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrderGoodsBakRecord extends UpdatableRecordImpl<ReturnOrderGoodsBakRecord> implements Record19<Integer, Integer, Integer, Integer, String, Integer, String, Integer, Short, BigDecimal, BigDecimal, String, Short, BigDecimal, BigDecimal, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -635665412;
+    private static final long serialVersionUID = -1964549271;
 
     /**
      * Setter for <code>mini_main.b2c_return_order_goods_bak.id</code>.
@@ -307,8 +305,8 @@ public class ReturnOrderGoodsBakRecord extends UpdatableRecordImpl<ReturnOrderGo
      * {@inheritDoc}
      */
     @Override
-    public Record1<Integer> key() {
-        return (Record1) super.key();
+    public Record2<Integer, Integer> key() {
+        return (Record2) super.key();
     }
 
     // -------------------------------------------------------------------------

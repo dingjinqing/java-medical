@@ -889,6 +889,67 @@
         </table>
       </div>
     </div>
+    <div
+      class="order-list-table"
+      v-if="order.prescriptionItemList && order.prescriptionItemList.length"
+    >
+      <div class="title">返利详情</div>
+      <div class="table_box">
+        <table width="100%">
+          <thead>
+            <tr>
+              <th>医师姓名</th>
+              <th>返利处方号</th>
+              <th width="270px">商品名称</th>
+              <th>佣金比例</th>
+              <th>商品参与返利金额</th>
+              <th>返利佣金金额</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template
+              v-for="(prescriptionItem,
+              prescriptionIndex) in order.prescriptionItemList"
+            >
+              <tr
+                v-for="goodsItem in prescriptionItem.itemList"
+                class="order-tb-body"
+                :key="prescriptionIndex"
+              >
+                <td
+                  v-if="prescriptionItem.itemList"
+                  :rowspan="prescriptionItem.itemList"
+                  :key="id"
+                >
+                  {{ prescriptionItem.doctorName }}
+                </td>
+                <td
+                  v-if="prescriptionItem.itemList"
+                  :rowspan="prescriptionItem.itemList"
+                  :key="id"
+                >
+                  {{ prescriptionItem.prescriptionCode }}
+                </td>
+                <td :key="id">
+                  <div class="goods_info">
+                    <div class="right_info">
+                      <div class="goods_name">
+                        <span>{{ goodsItem.goodsCommonName }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td :key="id">
+                  {{ (goodsItem.rebateProportion * 100).toFixed(2) }}%
+                </td>
+                <td :key="id">{{ goodsItem.canCalculateMoney }}</td>
+                <td :key="id">{{ goodsItem.realRebateMoney.toFixed(2) }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <!-- <div
       class="status_box"
       :class="{hide:!showStatus}"
