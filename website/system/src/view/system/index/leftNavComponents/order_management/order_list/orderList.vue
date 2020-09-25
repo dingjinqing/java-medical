@@ -143,10 +143,6 @@
               <span>￥{{scope.row.moneyPaid}}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop='createTime'
-            label='备注'
-          ></el-table-column>
         </el-table>
         <pagination
           :page-params.sync="pageParams"
