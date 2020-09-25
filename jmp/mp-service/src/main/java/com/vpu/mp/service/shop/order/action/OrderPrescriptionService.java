@@ -309,8 +309,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
                 itemDo.setDragSumNum((double) goods.getGoodsNumber());
                 itemDo.setDragSumUnit(medicalInfoDo.getGoodsPackageUnit());
                 itemDo.setGoodsImg(goods.getGoodsImg());
-                itemDo.setMedicinePrice(goods.getShopPrice());
-                totalPrize = totalPrize.add(goods.getShopPrice());
+                itemDo.setMedicinePrice(goods.getShopPrice().multiply(BigDecimal.valueOf(goods.getGoodsNumber())));
+                totalPrize = totalPrize.add(itemDo.getMedicinePrice());
                 list.add(itemDo);
                 orderGoodsDao.updatePrescriptionDetailCode(goods.getRecId(),itemDo.getPrescriptionDetailCode());
 
