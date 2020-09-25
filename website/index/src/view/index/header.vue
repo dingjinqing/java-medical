@@ -138,7 +138,7 @@ export default {
         { lang: 'cn', login_active: '', show_lang: 'Chinese' }
       ],
       imageUrlData: [
-        { image_1: this.$imageHost + '/image/admin/official/head_logo.png' },
+        { image_1: this.$imageHost + '/image/admin/official/yswy_head_logo.png' },
         { image_2: this.$imageHost + '/image/admin/head_icon.png' },
         { image_3: this.$imageHost + '/image/admin/official/blue_down.png' },
         { image_4: this.$imageHost + '/image/admin/official/blue_down.png' }

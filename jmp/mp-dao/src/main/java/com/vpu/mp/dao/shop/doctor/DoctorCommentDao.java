@@ -75,9 +75,6 @@ public class DoctorCommentDao extends ShopBaseDao {
         if (param.getDoctorId() != null) {
             records.where(DOCTOR_COMMENT.DOCTOR_ID.eq(param.getDoctorId()));
         }
-        if (!Strings.isEmpty(param.getDoctorCode())) {
-            records.where(DOCTOR.HOSPITAL_CODE.eq(param.getDoctorCode()));
-        }
         if (param.getDoctorName()!=null&&param.getDoctorName().trim().length()>0){
             records.where(DOCTOR.NAME.like(likeValue(param.getDoctorName())));
         }

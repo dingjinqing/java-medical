@@ -16,8 +16,7 @@
 .prescription-item > .top_info{
   color: #fff;
   background-color: skyblue;
-  height: 350rpx;
-  background:#26c4bc url(http://medicaldevimg.weipubao.cn/image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx; 
+  height: 350rpx; 
   border-radius: 16rpx 16rpx 0 0;
 }
 .prescription-item > .top_info .item-title{
@@ -25,6 +24,15 @@
   text-align: center;
   font-size: 40rpx;
   font-weight: bold;
+}
+.prescription-item > .top_info .title{
+  text-align: center;
+  font-size: 40rpx;
+  font-weight: bold;
+  padding-top: 43rpx;
+}
+.prescription-item > .top_info .prescription-code{
+  text-align: center;
 }
 .prescription-item > .top_info .top_content{
   padding-left: 34rpx;
@@ -146,4 +154,11 @@
 }
 .prescription-code-status > view > text{
   font-weight: bold;
+}
+.use-icon{
+  width: 122rpx;
+  height: 122rpx;
+  position: absolute;
+  right: 24rpx;
+  top: 24rpx;
 }

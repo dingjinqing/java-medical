@@ -269,7 +269,7 @@ public class ImSessionService extends ShopBaseService {
         String statusKey = getSessionRedisStatusKey(getShopId(), sessionId);
         String s = jedisManager.get(statusKey);
         if (s == null) {
-            return null;
+          return imSessionDao.getStatus(sessionId);
         } else {
             return Byte.valueOf(s);
         }

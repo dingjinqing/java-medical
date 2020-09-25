@@ -88,6 +88,11 @@ public class ImSessionDao extends ShopBaseDao {
             .fetchAnyInto(ImSessionDo.class);
     }
 
+    public Byte getStatus(Integer id){
+        return db().select(IM_SESSION.SESSION_STATUS).from(IM_SESSION).where(IM_SESSION.ID.eq(id).and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)))
+            .fetchAny(IM_SESSION.SESSION_STATUS);
+    }
+
     /**
      * 根据orderSn获取对应的会话信息
      * @param orderSn

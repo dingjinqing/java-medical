@@ -1156,6 +1156,11 @@ public class MiniShop_471752 extends SchemaImpl {
     public final DoctorSummaryTrend DOCTOR_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DoctorSummaryTrend.DOCTOR_SUMMARY_TREND;
 
     /**
+     * 慢性病药品关联信息
+     */
+    public final GoodsChronicCouple GOODS_CHRONIC_COUPLE = com.vpu.mp.db.shop.tables.GoodsChronicCouple.GOODS_CHRONIC_COUPLE;
+
+    /**
      * No further instances allowed
      */
     private MiniShop_471752() {
@@ -1409,7 +1414,8 @@ public class MiniShop_471752 extends SchemaImpl {
             DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND,
             DoctorSummaryTrend.DOCTOR_SUMMARY_TREND,
             DoctorLoginLog.DOCTOR_LOGIN_LOG,
-            UserCollectionAction.USER_COLLECTION_ACTION);
+            UserCollectionAction.USER_COLLECTION_ACTION,
+            GoodsChronicCouple.GOODS_CHRONIC_COUPLE);
 
 
     }

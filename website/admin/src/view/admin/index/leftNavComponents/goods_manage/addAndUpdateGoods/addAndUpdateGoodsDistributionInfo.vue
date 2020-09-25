@@ -440,9 +440,9 @@ export default {
       // 分销推广语初始化
       this.goodsDistributionInfo.promotionLanguage = goodsData.promotionLanguage
       // 海报分享样式初始化
-      this.goodsDistributionInfo.shareAction = goodsData.goodsSharePostConfig.shareAction
-      this.goodsDistributionInfo.shareDoc = goodsData.goodsSharePostConfig.shareDoc
-      this.goodsDistributionInfo.shareImgAction = goodsData.goodsSharePostConfig.shareImgAction
+      // this.goodsDistributionInfo.shareAction = goodsData.goodsSharePostConfig.shareAction
+      // this.goodsDistributionInfo.shareDoc = goodsData.goodsSharePostConfig.shareDoc
+      // this.goodsDistributionInfo.shareImgAction = goodsData.goodsSharePostConfig.shareImgAction
       if (this.goodsDistributionInfo.shareAction === 2 && this.goodsDistributionInfo.shareImgAction === 2) {
         this.goodsDistributionInfo.shareImgObj = { imgPath: goodsData.goodsSharePostConfig.shareImgPath, imgUrl: goodsData.goodsSharePostConfig.shareImgUrl }
       }

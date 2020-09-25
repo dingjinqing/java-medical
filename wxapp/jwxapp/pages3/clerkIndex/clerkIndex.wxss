@@ -4,10 +4,13 @@
 .desc-info{
   height: 386rpx;
   padding: 0 24rpx;
+}
+.desc-info-content{
+  height: 306rpx;
   display: flex;
   align-items: center;
 }
-.desc-info > image{
+.desc-info-content > image{
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;

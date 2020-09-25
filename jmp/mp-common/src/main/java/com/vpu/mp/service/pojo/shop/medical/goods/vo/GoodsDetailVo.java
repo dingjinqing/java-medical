@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,4 +75,6 @@ public class GoodsDetailVo {
      * 商品附属图片
      */
     private List<String> goodsImgs;
+
+    private List<GoodsMedicalRebatePrice> goodsRebatePrices = new ArrayList<>();
 }

@@ -24,4 +24,5 @@ public class GoodsLabelDo {
     private Timestamp createTime;
     private Timestamp updateTime;
     private Byte      isNone;
+    private Byte      isChronic;
 }
