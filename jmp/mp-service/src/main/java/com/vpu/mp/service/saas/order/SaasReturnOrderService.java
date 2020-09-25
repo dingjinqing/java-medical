@@ -1,6 +1,6 @@
 package com.vpu.mp.service.saas.order;
 
-import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
+import com.vpu.mp.common.pojo.main.table.ReturnOrderBakDo;
 import com.vpu.mp.common.pojo.shop.table.ReturnOrderGoodsDo;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderGoodsDao;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.main.Tables.RETURN_ORDER_BAK;
@@ -35,46 +34,54 @@ public class SaasReturnOrderService extends MainBaseService {
 
     public void synOrderGoodsCreate(Timestamp beginTime, Timestamp endTime, Integer shopId) {
         List<ReturnOrderGoodsDo> createOrderGoodsList = returnOrderGoodsDao.listCreateOrderGoodsByYesterday(beginTime, endTime);
-        List<ReturnOrderBakRecord> createOrderGoodsByYesterday =new ArrayList<>();
         createOrderGoodsList.forEach(orderInfoDo->{
-            ReturnOrderBakRecord orderInfoBakRecord = db().newRecord(RETURN_ORDER_BAK, orderInfoDo);
+            ReturnOrderGoodsBakRecord orderInfoBakRecord = databaseManager.mainDb().newRecord(RETURN_ORDER_GOODS_BAK, orderInfoDo);
             orderInfoBakRecord.setShopId(shopId);
-            createOrderGoodsByYesterday.add(orderInfoBakRecord);
+            try {
+                orderInfoBakRecord.insert();
+            }catch (Exception e){
+                log.info("退款订单同步失败{}",orderInfoBakRecord.getOrderSn());
+            }
         });
-        databaseManager.mainDb().batchInsert(createOrderGoodsByYesterday).execute();
     }
 
     public void synOrderGoodsUpdate(Timestamp beginTime, Timestamp endTime,Integer shopId) {
-        List<ReturnOrderGoodsDo> updateOrderGoodsList = returnOrderDao.listUpdateOrderGoodsByYesterday(beginTime, endTime);
-        List<ReturnOrderGoodsBakRecord> updateOrderGoodsByYesterday =new ArrayList<>();
+        List<ReturnOrderGoodsDo> updateOrderGoodsList = returnOrderGoodsDao.listUpdateOrderGoodsByYesterday(beginTime, endTime);
         updateOrderGoodsList.forEach(orderInfoDo->{
-            ReturnOrderGoodsBakRecord orderInfoBakRecord = db().newRecord(RETURN_ORDER_GOODS_BAK, orderInfoDo);
+            ReturnOrderGoodsBakRecord orderInfoBakRecord = databaseManager.mainDb().newRecord(RETURN_ORDER_GOODS_BAK, orderInfoDo);
             orderInfoBakRecord.setShopId(shopId);
-            updateOrderGoodsByYesterday.add(orderInfoBakRecord);
+            try {
+                orderInfoBakRecord.update();
+            }catch (Exception e){
+                log.info("退款订单同步失败{}",orderInfoBakRecord.getOrderSn());
+            }
         });
-        databaseManager.mainDb().batchUpdate(updateOrderGoodsByYesterday).execute();
     }
 
     public void synOrderCreate(Timestamp beginTime, Timestamp endTime,Integer shopId) {
-        List<OrderInfoDo> createOrderList = returnOrderDao.listCreateOrderByYesterday(beginTime, endTime);
-        List<ReturnOrderBakRecord> createOrderByYesterday =new ArrayList<>();
+        List<ReturnOrderBakDo> createOrderList = returnOrderDao.listCreateOrderByYesterday(beginTime, endTime);
         createOrderList.forEach(orderInfoDo->{
-            ReturnOrderBakRecord orderInfoBakRecord = db().newRecord(RETURN_ORDER_BAK, orderInfoDo);
+            ReturnOrderBakRecord orderInfoBakRecord = databaseManager.mainDb().newRecord(RETURN_ORDER_BAK, orderInfoDo);
             orderInfoBakRecord.setShopId(shopId);
-            createOrderByYesterday.add(orderInfoBakRecord);
+            try {
+                orderInfoBakRecord.insert();
+            }catch (Exception e){
+                log.info("退款订单同步失败{}",orderInfoBakRecord.getOrderSn());
+            }
         });
-        databaseManager.mainDb().batchInsert(createOrderByYesterday).execute();
     }
 
     public void synOrderUpdate(Timestamp beginTime, Timestamp endTime,Integer shopId) {
-        List<OrderInfoDo> updateOrderList = returnOrderDao.listUpdateOrderByYesterday(beginTime, endTime);
-        List<ReturnOrderBakRecord> updateOrderByYesterday =new ArrayList<>();
+        List<ReturnOrderBakDo> updateOrderList = returnOrderDao.listUpdateOrderByYesterday(beginTime, endTime);
         updateOrderList.forEach(orderInfoDo->{
-            ReturnOrderBakRecord orderInfoBakRecord = db().newRecord(RETURN_ORDER_BAK, orderInfoDo);
+            ReturnOrderBakRecord orderInfoBakRecord = databaseManager.mainDb().newRecord(RETURN_ORDER_BAK, orderInfoDo);
             orderInfoBakRecord.setShopId(shopId);
-            updateOrderByYesterday.add(orderInfoBakRecord);
+            try {
+                orderInfoBakRecord.update();
+            }catch (Exception e){
+                log.info("退款订单同步失败{}",orderInfoBakRecord.getOrderSn());
+            }
         });
-        databaseManager.mainDb().batchUpdate(updateOrderByYesterday).execute();
     }
 
 
