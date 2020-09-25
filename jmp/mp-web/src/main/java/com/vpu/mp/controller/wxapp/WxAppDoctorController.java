@@ -62,7 +62,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/doctor/auth")
     public JsonResult doctorAuth(@Validated @RequestBody DoctorAuthParam doctorAuthParam) {
-        if (wxAppAuth.user().getUserType() != 0 &&wxAppAuth.user().getUserType() != null) {
+        if (wxAppAuth.user().getUserType() != null&&wxAppAuth.user().getUserType() != 0 ) {
             return fail(AUTH_ALREADY_AUTHED);
         }
         doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
