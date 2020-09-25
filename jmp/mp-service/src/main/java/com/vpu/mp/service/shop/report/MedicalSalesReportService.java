@@ -325,7 +325,7 @@ public class MedicalSalesReportService extends ShopBaseService {
                 returnReport = new MedicalOrderReportVo();
             }
             orderAmount = orderAmount.add(Optional.ofNullable(orderReport.getOrderAmount()).orElse(BigDecimal.ZERO));
-            orderNumber =+ Optional.ofNullable(orderReport.getOrderNumber()).orElse(0);
+            orderNumber =orderNumber+ Optional.ofNullable(orderReport.getOrderNumber()).orElse(0);
             moneyPaid = moneyPaid.add(Optional.ofNullable(orderReport.getMoneyPaid()).orElse(BigDecimal.ZERO));
             useAccount =useAccount.add(Optional.ofNullable(orderReport.getUseAccount()).orElse(BigDecimal.ZERO));
             shippingFee = shippingFee.add(Optional.ofNullable(orderReport.getShippingFee()).orElse(BigDecimal.ZERO));

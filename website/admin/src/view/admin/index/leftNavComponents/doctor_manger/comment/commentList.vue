@@ -233,7 +233,7 @@ export default {
         { key: 5, value: '五星' }
       ],
       auditFlag: [
-        { key: -1, value: '全部' },
+        { key: null, value: '全部' },
         { key: 0, value: '待审核' },
         { key: 1, value: '已通过' },
         { key: 2, value: '未通过' }
