@@ -284,11 +284,13 @@ public class AdminWechatApiController extends AdminBaseController {
 	 */
 	@GetMapping("/api/admin/public/service/bind/getOfficialQrCode")
 	public JsonResult generateThirdPartCode() {
-		try {
+        AdminTokenAuthInfo adminTokenAuthInfo=adminAuth.user();
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(adminTokenAuthInfo.getLoginShopId());
+        try {
 			if(!adminAuth.user().shopLogin) {
 				return fail(JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT);
 			}
-			String generateThirdPartCode = saas.shop.officeAccount.generateThirdPartCode(adminAuth.user(),bindAppId);
+			String generateThirdPartCode = saas.shop.officeAccount.generateThirdPartCode(adminAuth.user(),wxapp.getLinkOfficialAppId());
 			return success(generateThirdPartCode);
 		} catch (WxErrorException e) {
 			logger().debug(e.getMessage(),e);
