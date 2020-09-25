@@ -33,6 +33,7 @@ public class WxAppLoginController extends WxAppBaseController {
         try {
             user = wxAppAuth.login(param,request);
         } catch (MpException e) {
+            logger().debug("捕获登录异常-打印异常信息:"+e.getMessage());
             e.printStackTrace();
         }
         if(user==null) {
