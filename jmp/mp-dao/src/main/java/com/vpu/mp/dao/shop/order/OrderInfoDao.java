@@ -92,8 +92,6 @@ public class OrderInfoDao extends ShopBaseDao {
                 sum(ORDER_INFO.SHIPPING_FEE).as(ActiveDiscountMoney.SHIPPING_FEE),
                  //销售单数
                 count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
-                //销售单数
-                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
                 //处方药订单数量
                 sum(ORDER_INFO.ORDER_MEDICAL_TYPE).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_NUMBER),
                 //处方药金额
