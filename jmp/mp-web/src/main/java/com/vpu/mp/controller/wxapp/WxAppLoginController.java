@@ -35,7 +35,6 @@ public class WxAppLoginController extends WxAppBaseController {
         } catch (MpException e) {
             e.printStackTrace();
         }
-        logger().info("小程序登录返回："+user.toString());
         if(user==null) {
 			//登录失败
 			return fail(JsonResultCode.ERR_CODE_LOGIN_FAILED);
