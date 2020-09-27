@@ -10,6 +10,7 @@ import com.vpu.mp.dao.shop.doctor.DoctorCommentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentReplyDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
@@ -59,7 +60,7 @@ public class DoctorCommentService extends ShopBaseService {
      * 添加评价
      * @param param
      */
-    public void addComment(DoctorCommentAddParam param) {
+    public void addComment(DoctorCommentAddParam param)  throws MpException {
         //保存
         DoctorCommentDo doctorCommentDo = doctorCommentDao.getByImSessionId(param.getImSessionId());
         if (doctorCommentDo!=null){
@@ -100,7 +101,7 @@ public class DoctorCommentService extends ShopBaseService {
     /**
      * 添加评价
      */
-    public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId) {
+    public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId) throws MpException {
         //保存
         PatientOneParam oneInfo = patientDao.getOneInfo(patientId);
         DoctorCommentAddParam param =new DoctorCommentAddParam();
@@ -113,6 +114,13 @@ public class DoctorCommentService extends ShopBaseService {
         param.setOrderSn(orderSn);
         param.setCommNote(DoctorCommentConstant.DOCTOR_DEFAULT_COMMENT);
         param.setImSessionId(imSessionId);
+        param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
+        param.setPatientName(oneInfo.getName());
+        DoctorOneParam doctorInfo = doctorService.getOneInfo(param.getDoctorId());
+        param.setDoctorName(doctorInfo.getName());
+        InquiryOrderDo inquiryOrder = inquiryOrderDao.getByOrderSn(param.getOrderSn());
+        param.setOrderId(inquiryOrder.getOrderId());
+        param.setDoctorCode(doctorInfo.getHospitalCode());
         doctorCommentDao.save(param);
         //更新医师评价
         BigDecimal avgCommentStar = doctorCommentDao.getAvgCommentStar(param.getDoctorId());
