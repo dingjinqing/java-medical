@@ -7,6 +7,8 @@ ALTER TABLE `b2c_prescription_item` ADD COLUMN `platform_real_rebate_money`  dec
 ALTER TABLE `b2c_prescription_rebate` ADD COLUMN `platform_rebate_money`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '平台返利金额' AFTER `real_rebate_money`;
 ALTER TABLE `b2c_prescription_rebate` ADD COLUMN `platform_real_rebate_money`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '平台实际返利金额' AFTER `platform_rebate_money`;
 
+ALTER TABLE `b2c_inquiry_order` ADD COLUMN `rebate_proportion`  decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '返利比例' AFTER `image_url`;
+ALTER TABLE `b2c_inquiry_order` ADD COLUMN `total_rebate_money`  decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '返利金额' AFTER `rebate_proportion`;
 ALTER TABLE `b2c_inquiry_order` ADD COLUMN `platform_rebate_proportion`  decimal(6,4) NOT NULL DEFAULT '0.0000' COMMENT '平台返利比例' AFTER `total_rebate_money`;
 ALTER TABLE `b2c_inquiry_order` ADD COLUMN `platform_rebate_money`  decimal(10,4) NOT NULL DEFAULT '0.0000' COMMENT '平台返利金额' AFTER `platform_rebate_proportion`;
 ALTER TABLE `b2c_inquiry_order_rebate` ADD COLUMN `platform_rebate_money`  decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '平台实际返利金额' AFTER `total_rebate_money`;
