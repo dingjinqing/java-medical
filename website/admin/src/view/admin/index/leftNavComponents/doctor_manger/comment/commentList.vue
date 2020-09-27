@@ -87,9 +87,34 @@
           'text-align': 'center',
         }"
       >
-        <el-table-column prop="name" label="医生姓名"></el-table-column>
-        <el-table-column prop="userName" label="用户昵称"></el-table-column>
-        <el-table-column prop="orderSn" label="咨询订单号"></el-table-column>
+        <el-table-column prop="name" label="医生姓名">
+          <template slot-scope="scope">
+            <div class="operation">
+              <a @click="handleSeeDoctor(scope.row.doctorId)">{{scope.row.doctorName}}({{scope.row.doctorCode}})</a>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="patientName" label="患者">
+          <template slot-scope="scope">
+            <div class="operation">
+              <a @click="handleSeePatient(scope.row.patientId)">{{scope.row.patientName}}({{scope.row.patientId}})</a>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="userName" label="用户昵称">
+          <template slot-scope="scope">
+            <div class="operation">
+              <a @click="handleSeeUserInfo(scope.row.userId)">{{scope.row.userName}}({{scope.row.userId}})</a>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="orderSn" label="咨询订单号">
+          <template slot-scope="scope">
+            <div class="operation">
+              <a @click="handleSeeAdvisoryOrderInfo(scope.row.orderId)">{{scope.row.orderId}}({{scope.row.orderSn}})</a>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="评价内容" align="center" width="200px">
           <template slot-scope="scope">
             <div class="evaluation-info">
@@ -99,9 +124,8 @@
                   ><i
                     class="el-icon-star-on"
                     v-for="index in scope.row.stars"
-                    :key="index"
-                  ></i
-                ></span>
+                    :key="index"></i>
+              </span>
               </div>
               <div class="evaluation-info_item">
                 <span class="evaluation-info_title">评价：</span
@@ -154,8 +178,7 @@
             <el-tooltip
               content="通过"
               placement="top"
-              v-if="scope.row.auditStatus == 0||scope.row.auditStatus == 2"
-            >
+              v-if="scope.row.auditStatus == 0||scope.row.auditStatus == 2">
               <span
                 class="el-icon-success operateSpan"
                 @click="passComment(scope.row.id, 1)"
@@ -164,8 +187,7 @@
             <el-tooltip
               content="拒绝"
               placement="top"
-              v-if="scope.row.auditStatus == 0||scope.row.auditStatus == 1"
-            >
+              v-if="scope.row.auditStatus == 0||scope.row.auditStatus == 1">
               <span
                 class="el-icon-error operateSpan"
                 @click="passComment(scope.row.id, 2)"
@@ -174,8 +196,7 @@
             <el-tooltip
               content="置顶"
               placement="top"
-              v-if="scope.row.top === 0"
-            >
+              v-if="scope.row.top === 0">
               <span
                 class="el-icon-top operateSpan"
                 @click="evaluationTop(scope.row.id, 1)"
@@ -184,8 +205,7 @@
             <el-tooltip
               content="取消置顶"
               placement="top"
-              v-if="scope.row.top > 0"
-            >
+              v-if="scope.row.top > 0">
               <span
                 class="el-icon-bottom operateSpan"
                 @click="evaluationTop(scope.row.id, 0)"
@@ -337,6 +357,46 @@ export default {
         }
       })
     },
+    // 跳转患者详情
+    handleSeeAdvisoryOrderInfo (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'advisory_order_info'
+      })
+      newpage.href = newpage.href + '?orderId=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
+    // 跳转患者详情
+    handleSeeUserInfo (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'membershipInformation'
+      })
+      newpage.href = newpage.href + '?userId=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
+    // 跳转患者详情
+    handleSeePatient (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'patient_message'
+      })
+      newpage.href = newpage.href + '?id=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
+    // 跳转医师列表
+    handleSeeDoctor (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'addDoctor'
+      })
+      newpage.href = newpage.href + '?id=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
     passComment (id, status) {
       aduitComment({ id: id, status: status }).then(res => {
         if (res.error === 0) {
@@ -412,6 +472,10 @@ export default {
     padding: 10px;
     background: #fff;
     margin: 0 10px 10px;
+    a {
+      color: #5a8bff;
+      cursor: pointer;
+    }
   }
   .default_input {
     width: 150px;
