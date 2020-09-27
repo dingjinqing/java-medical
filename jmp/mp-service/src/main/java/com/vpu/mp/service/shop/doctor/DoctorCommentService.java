@@ -8,9 +8,9 @@ import com.vpu.mp.common.pojo.shop.table.DoctorCommentReplyDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentReplyDao;
+import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
@@ -47,6 +47,8 @@ public class DoctorCommentService extends ShopBaseService {
     @Autowired
     private DoctorService doctorService;
     @Autowired
+    private DoctorDao doctorDao;
+    @Autowired
     private ImSessionService imSessionService;
     @Autowired
     private InquiryOrderDao inquiryOrderDao;
@@ -60,7 +62,7 @@ public class DoctorCommentService extends ShopBaseService {
      * 添加评价
      * @param param
      */
-    public void addComment(DoctorCommentAddParam param)  throws MpException {
+    public void addComment(DoctorCommentAddParam param){
         //保存
         DoctorCommentDo doctorCommentDo = doctorCommentDao.getByImSessionId(param.getImSessionId());
         if (doctorCommentDo!=null){
@@ -83,7 +85,7 @@ public class DoctorCommentService extends ShopBaseService {
             param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
             PatientOneParam oneInfo = patientDao.getOneInfo(param.getPatientId());
             param.setPatientName(oneInfo.getName());
-            DoctorOneParam doctorInfo = doctorService.getOneInfo(param.getDoctorId());
+            DoctorOneParam doctorInfo = doctorDao.getOneInfo(param.getDoctorId());
             param.setDoctorName(doctorInfo.getName());
             InquiryOrderDo inquiryOrder = inquiryOrderDao.getByOrderSn(param.getOrderSn());
             param.setOrderId(inquiryOrder.getOrderId());
@@ -101,7 +103,7 @@ public class DoctorCommentService extends ShopBaseService {
     /**
      * 添加评价
      */
-    public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId) throws MpException {
+    public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId)  {
         //保存
         PatientOneParam oneInfo = patientDao.getOneInfo(patientId);
         DoctorCommentAddParam param =new DoctorCommentAddParam();
@@ -116,7 +118,7 @@ public class DoctorCommentService extends ShopBaseService {
         param.setImSessionId(imSessionId);
         param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
         param.setPatientName(oneInfo.getName());
-        DoctorOneParam doctorInfo = doctorService.getOneInfo(param.getDoctorId());
+        DoctorOneParam doctorInfo = doctorDao.getOneInfo(param.getDoctorId());
         param.setDoctorName(doctorInfo.getName());
         InquiryOrderDo inquiryOrder = inquiryOrderDao.getByOrderSn(param.getOrderSn());
         param.setOrderId(inquiryOrder.getOrderId());
