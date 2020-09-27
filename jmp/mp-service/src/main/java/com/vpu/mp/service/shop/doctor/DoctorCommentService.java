@@ -7,7 +7,7 @@ import com.vpu.mp.common.pojo.shop.table.DoctorCommentDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorCommentReplyDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
-import com.vpu.mp.dao.shop.UserDao;
+import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentReplyDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
