@@ -391,7 +391,7 @@ export default {
     handleSeeDoctor (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
-        name: 'addDoctor'
+        name: 'doctor_detail'
       })
       newpage.href = newpage.href + '?id=' + code
       console.log(newpage.href)
