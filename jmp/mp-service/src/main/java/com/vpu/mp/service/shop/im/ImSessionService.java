@@ -8,7 +8,6 @@ import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.ImSessionItemDo;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
 import com.vpu.mp.dao.shop.session.ImSessionItemDao;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -423,7 +422,7 @@ public class ImSessionService extends ShopBaseService {
     /**
      * 批量关闭到时间的会话
      */
-    public void batchCloseSession(List<String> orderSns) throws MpException{
+    public void batchCloseSession(List<String> orderSns) {
         logger().info("批量关闭到时间的会话：" + orderSns);
         ImSessionCondition cancelCondition = new ImSessionCondition();
         cancelCondition.setOrderSns(orderSns);
@@ -467,7 +466,7 @@ public class ImSessionService extends ShopBaseService {
      * 关闭对话session
      * @param sessionId 会话id
      */
-    public void closeImSession(Integer sessionId) throws MpException {
+    public void closeImSession(Integer sessionId){
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
         if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus()) && !ImSessionConstant.SESSION_CONTINUE_ON.equals(imSessionDo.getSessionStatus())) {
             return;
