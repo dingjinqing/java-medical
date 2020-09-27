@@ -18,13 +18,19 @@ public class DoctorCommentListVo {
 
     private Integer id;
     private String userName;
+    private Integer userId;
+    private Integer patientId;
+    private String patientName;
+    private Integer imSessionId;
     private Integer doctorId;
-    private String name;
+    private String doctorName;
+    private String doctorCode;
     private Byte stars;
     private Byte isAnonymou;
     private String commNote;
     private Integer commNoteLength;
     private String orderSn;
+    private Integer orderId;
     private Integer top;
     private Byte auditStatus;
     private Byte isDelete;

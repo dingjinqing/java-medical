@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorComment extends TableImpl<DoctorCommentRecord> {
 
-    private static final long serialVersionUID = 186005219;
+    private static final long serialVersionUID = 139539859;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_doctor_comment</code>
@@ -78,9 +78,29 @@ public class DoctorComment extends TableImpl<DoctorCommentRecord> {
     public final TableField<DoctorCommentRecord, Integer> PATIENT_ID = createField("patient_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "患者id");
 
     /**
+     * The column <code>mini_shop_471752.b2c_doctor_comment.patient_name</code>. 患者名称
+     */
+    public final TableField<DoctorCommentRecord, String> PATIENT_NAME = createField("patient_name", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "患者名称");
+
+    /**
      * The column <code>mini_shop_471752.b2c_doctor_comment.doctor_id</code>. 医师id
      */
     public final TableField<DoctorCommentRecord, Integer> DOCTOR_ID = createField("doctor_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "医师id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor_comment.doctor_code</code>. 医师院内编码
+     */
+    public final TableField<DoctorCommentRecord, String> DOCTOR_CODE = createField("doctor_code", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "医师院内编码");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor_comment.doctor_name</code>. 医师名称
+     */
+    public final TableField<DoctorCommentRecord, String> DOCTOR_NAME = createField("doctor_name", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "医师名称");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_doctor_comment.order_id</code>. 订单id
+     */
+    public final TableField<DoctorCommentRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "订单id");
 
     /**
      * The column <code>mini_shop_471752.b2c_doctor_comment.order_sn</code>. 订单编号

@@ -12,14 +12,13 @@ import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentListVo;
 import org.elasticsearch.common.Strings;
 import org.jooq.Record;
-import org.jooq.SelectOnConditionStep;
+import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.tables.DoctorComment.DOCTOR_COMMENT;
 
 /**
@@ -70,16 +69,15 @@ public class DoctorCommentDao extends ShopBaseDao {
      * @return
      */
     public PageResult<DoctorCommentListVo> listDoctorComment(DoctorCommentListParam param) {
-        SelectOnConditionStep<Record> records = db().select(DOCTOR_COMMENT.asterisk(), DOCTOR.NAME).from(DOCTOR_COMMENT)
-                .leftJoin(DOCTOR).on(DOCTOR_COMMENT.DOCTOR_ID.eq(DOCTOR.ID));
+        SelectJoinStep<Record> records = db().select().from(DOCTOR_COMMENT);
         if (param.getDoctorId() != null) {
             records.where(DOCTOR_COMMENT.DOCTOR_ID.eq(param.getDoctorId()));
         }
         if (!Strings.isEmpty(param.getDoctorCode())) {
-            records.where(DOCTOR.HOSPITAL_CODE.eq(param.getDoctorCode()));
+            records.where(DOCTOR_COMMENT.DOCTOR_CODE.eq(param.getDoctorCode()));
         }
         if (param.getDoctorName()!=null&&param.getDoctorName().trim().length()>0){
-            records.where(DOCTOR.NAME.like(likeValue(param.getDoctorName())));
+            records.where(DOCTOR_COMMENT.DOCTOR_NAME.like(likeValue(param.getDoctorName())));
         }
         if (param.getStars() != null && param.getStars() > 0) {
             records.where(DOCTOR_COMMENT.STARS.eq(param.getStars()));
