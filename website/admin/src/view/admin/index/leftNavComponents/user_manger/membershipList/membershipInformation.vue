@@ -446,11 +446,112 @@
       </div>
     </div>
     <div class="topContainer">
-      <div class="titleEdit"><span>患者信息</span></div>
+      <div class="titleEdit"><span>浏览记录</span></div>
+      <div class="navBox">
+        <div class="filters">
+          <div class="filters_item">
+            <span>药品名称：</span>
+            <el-input
+              v-model="medicalParams.goodsName"
+              size="small"
+              style="width: 150px"
+              placeholder="请输入药品名称"
+            >
+            </el-input>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">是否收藏：</span>
+            <el-select
+              v-model="medicalParams.isCollect"
+              size="small"
+              class="default_input"
+              style="width:150px"
+            >
+              <el-option
+                v-for="item in commenIs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">是否收藏：</span>
+            <el-select
+              v-model="medicalParams.isCollect"
+              size="small"
+              class="default_input"
+              style="width:150px"
+            >
+              <el-option
+                v-for="item in commenIs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">是否加购：</span>
+            <el-select
+              v-model="medicalParams.isAddCart"
+              size="small"
+              class="default_input"
+              style="width:150px"
+            >
+              <el-option
+                v-for="item in commenIs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">是否购买：</span>
+            <el-select
+              v-model="medicalParams.isBuy"
+              size="small"
+              class="default_input"
+              style="width:150px"
+            >
+              <el-option
+                v-for="item in commenIs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">是否关联处方：</span>
+            <el-select
+              v-model="medicalParams.isPrescription"
+              size="small"
+              class="default_input"
+              style="width:150px"
+            >
+              <el-option
+                v-for="item in commenIs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="btn_wrap">
+            <el-button
+              type="primary"
+              size="small"
+              @click="initMedicalList"
+            >查询</el-button>
+          </div>
+        </div>
+      </div>
       <div class="tablebox">
         <el-table
           v-loading="loading"
-          :data="tableData"
+          :data="medicalData"
           style="width: 100%"
           border
           :header-cell-style="{
@@ -464,50 +565,41 @@
           }"
         >
           <el-table-column
-            prop="id"
-            label="患者编号"
+            prop="goodsName"
+            label="药品名称"
           ></el-table-column>
           <el-table-column
-            prop="name"
-            label="姓名"
+            prop="specifications"
+            label="规格系数"
           ></el-table-column>
           <el-table-column
-            prop="mobile"
-            label="手机号"
+            prop="manufacturer"
+            label="生产厂家"
           ></el-table-column>
-          <el-table-column
-            prop="treatmentNo"
-            label="就诊卡号"
-          ></el-table-column>
-          <el-table-column label="性别">
-            <template v-slot="scope">
-              <span>{{
-                scope.row.sex == 0 ? '男' : scope.row.sex == 1 ? '女' : '未知'
-              }}</span>
+          <el-table-column label="是否关关联处方">
+            <template v-slot='scope'>
+              {{scope.row.isFav == true ? '是' : '否'}}
+            </template>
+          </el-table-column>
+          <el-table-column label="是否加购">
+            <template v-slot='scope'>
+              {{scope.row.isFav == true ? '是' : '否'}}
+            </template>
+          </el-table-column>
+          <el-table-column label="是否收藏">
+            <template v-slot='scope'>
+              {{scope.row.isFav == true ? '是' : '否'}}
+            </template>
+          </el-table-column>
+          <el-table-column label="是否购买">
+            <template v-slot='scope'>
+              {{scope.row.isFav == true ? '是' : '否'}}
             </template>
           </el-table-column>
           <el-table-column
-            prop="diseaseHistoryNameStr"
-            label="疾病史"
+            prop="time"
+            label="浏览时间"
           ></el-table-column>
-          <el-table-column
-            prop="allergyHistory"
-            label="过敏史"
-          ></el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <div class="operation">
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="查看详情"
-                  placement="top"
-                >
-                  <a @click="handleSeeMessage(scope.row.id)">查看详情</a>
-                </el-tooltip>
-              </div>
-            </template>
-          </el-table-column>
         </el-table>
       </div>
     </div>
@@ -959,7 +1051,7 @@
 </template>
 <script>
 import ProAndUrbA from '@/components/system/proAndUrbA'
-import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest, getDoctorList } from '@/api/admin/membershipList.js'
+import { getAllIndustryRequest, membershipListRequest, memberInfoRequest, getTagForMemberRequest, allTagRequest, setTagForMemberRequest, updateMemberInfoRequest, getDoctorList, getBrowseReport } from '@/api/admin/membershipList.js'
 import { getMemberCard, getAllAvailableMemberCardRequest, setCardForMemberRequest } from '@/api/admin/memberManage/memberCard.js'
 import ModifyData from './modifyData'
 import pagination from '@/components/admin/pagination/pagination'
@@ -1020,11 +1112,6 @@ export default {
           label: 'IT服务(系统/数据/维护/多领域经营)'
         }
       ],
-      doctorparams: {
-        doctorName: '',
-        departmentName: '',
-        isFavorite: true
-      },
       modifypersonDialogVisible: false,
       page_one: true,
       page_two: true,
@@ -1094,9 +1181,26 @@ export default {
         currentPage: 1,
         pageRows: 5
       },
+      doctorparams: {
+        doctorName: '',
+        departmentName: '',
+        isFavorite: false
+      },
+      medicalParams: {
+        goodsName: '',
+        isCollect: null,
+        isAddCart: null,
+        isBuy: null,
+        isPrescription: null
+      },
       favorites: [
         { value: true, label: '是' },
         { value: false, label: '否' }
+      ],
+      commenIs: [
+        { value: 0, label: '否' },
+        { value: 1, label: '是' },
+        { value: null, label: '全部' }
       ]
     }
   },
@@ -1115,6 +1219,7 @@ export default {
   mounted () {
     // 初始化语言
     this.initDataList()
+    this.initMedicalList()
     this.langDefault()
   },
   computed: {
@@ -1317,6 +1422,27 @@ export default {
         this.pageParams = res.content.page
         let originalData = JSON.parse(JSON.stringify(this.originalData))
         this.doctorData = originalData
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    initMedicalList () {
+      this.medicalParams.userId = this.userId
+      this.medicalParams.currentPage = this.medicalParams.currentPage
+      this.medicalParams.pageRows = this.medicalParams.pageRows
+      let params = {
+        ...this.medicalParams
+      }
+      getBrowseReport(params).then((res) => {
+        if (res.error !== 0) {
+          this.$message.error({ message: res.message })
+          return
+        }
+        console.log(res)
+        this.originalData = res.content.dataList
+        this.pageParams = res.content.page
+        let originalData = JSON.parse(JSON.stringify(this.originalData))
+        this.medicalData = originalData
       }).catch(error => {
         console.log(error)
       })
