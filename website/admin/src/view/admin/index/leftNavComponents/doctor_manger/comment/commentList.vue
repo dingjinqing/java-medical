@@ -111,7 +111,7 @@
         <el-table-column prop="orderSn" label="咨询订单号">
           <template slot-scope="scope">
             <div class="operation">
-              <a @click="handleSeeAdvisoryOrderInfo(scope.row.orderId)">{{scope.row.orderId}}({{scope.row.orderSn}})</a>
+              <a @click="handleSeeAdvisoryOrderInfo(scope.row.orderId)">{{scope.row.orderSn}}</a>
             </div>
           </template>
         </el-table-column>
