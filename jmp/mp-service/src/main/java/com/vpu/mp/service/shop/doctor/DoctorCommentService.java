@@ -6,6 +6,8 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorCommentDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorCommentReplyDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.common.pojo.shop.table.UserDo;
+import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentReplyDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
@@ -56,6 +58,8 @@ public class DoctorCommentService extends ShopBaseService {
     private DoctorCommentAutoAuditConfigService doctorCommentAutoAuditConfigService;
     @Autowired
     private PatientDao patientDao;
+    @Autowired
+    private UserDao userDao;
 
 
     /**
@@ -106,13 +110,14 @@ public class DoctorCommentService extends ShopBaseService {
     public void addDefaultComment(Integer doctorId,Integer userId,Integer patientId,String orderSn,Integer imSessionId)  {
         //保存
         PatientOneParam oneInfo = patientDao.getOneInfo(patientId);
+        UserDo userDo = userDao.getUserById(userId);
         DoctorCommentAddParam param =new DoctorCommentAddParam();
         param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
         param.setDoctorId(doctorId);
         param.setUserId(userId);
         param.setPatientId(patientId);
         param.setIsAnonymou(BaseConstant.YES);
-        param.setUserName(oneInfo.getName());
+        param.setUserName(userDo.getUsername());
         param.setOrderSn(orderSn);
         param.setCommNote(DoctorCommentConstant.DOCTOR_DEFAULT_COMMENT);
         param.setImSessionId(imSessionId);
