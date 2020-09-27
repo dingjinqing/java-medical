@@ -332,8 +332,8 @@ public class MedicalSalesReportService extends ShopBaseService {
             returnAmount = returnAmount.add(Optional.ofNullable(returnReport.getReturnAmount()).orElse(BigDecimal.ZERO));
             returnNumber =returnNumber+ Optional.ofNullable(returnReport.getReturnNumber()).orElse(0);
             startDate = DateUtil.offset(startDate,DateField.DAY_OF_YEAR,1).toTimestamp();
-            prescriptionNum= prescriptionNum+ Optional.ofNullable(returnReport.getPrescriptionOrderNum()).orElse(0);
-            prescriptionNumAmount = prescriptionNumAmount.add(Optional.ofNullable(returnReport.getPrescriptionOrderAmount()).orElse(BigDecimal.ZERO));
+            prescriptionNum= prescriptionNum+ Optional.ofNullable(orderReport.getPrescriptionOrderNum()).orElse(0);
+            prescriptionNumAmount = prescriptionNumAmount.add(Optional.ofNullable(orderReport.getPrescriptionOrderAmount()).orElse(BigDecimal.ZERO));
         }
         //笔单价 =净销售额/订单数量
         BigDecimal orderAvga =BigDecimal.ZERO;
