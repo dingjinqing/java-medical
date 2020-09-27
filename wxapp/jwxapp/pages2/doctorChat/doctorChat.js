@@ -450,7 +450,7 @@ global.wxPage({
 	onRefresh() {
 		if (this._freshing) return
 		this._freshing = true
-		console.log('ddddd')
+		console.log('dd')
 		setTimeout(() => {
 			this.setData({
 				triggered: false
