@@ -118,14 +118,13 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop='orderMedicalAmount'
+          prop='prescriptionOrderNum'
           label='处方药销售金额'
         ></el-table-column>
         <el-table-column
-          prop='orderMedicalNumber'
+          prop='prescriptionOrderAmount'
           label='处方药订单数量'
         ></el-table-column>
-
         <el-table-column
           prop='moneyPaid'
           label='实付金额'

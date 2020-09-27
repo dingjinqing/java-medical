@@ -71,8 +71,10 @@ public class MedicalSalesReportService extends ShopBaseService {
      * @param param
      */
     public void buildSalesReportDate(MedicalSalesReportParam param) {
-        DateTime endDate=DateUtil.date(param.getEndTime());
-        DateTime startDate =DateUtil.date(param.getStartTime());
+        DateTime startDate =DateUtil.beginOfDay(param.getStartTime());
+        param.setStartTime(startDate.toTimestamp());
+        DateTime endDate=DateUtil.endOfDay(param.getEndTime());
+        param.setEndTime(endDate.toTimestamp());
         Map<Timestamp,Timestamp> map =new LinkedHashMap<>();
         switch (param.getAnalyzeType()){
             case MedicalSalesReportParam.ANALYZE_TYPE_DAY:
@@ -309,6 +311,8 @@ public class MedicalSalesReportService extends ShopBaseService {
         BigDecimal useAccount =BigDecimal.ZERO;
         BigDecimal shippingFee =BigDecimal.ZERO;
         BigDecimal returnAmount =BigDecimal.ZERO;
+        Integer prescriptionNum =0;
+        BigDecimal prescriptionNumAmount =BigDecimal.ZERO;
         int returnNumber =0;
         while (endDate.compareTo(startDate) >= 0) {
             Date date = DateUtil.date(startDate).toSqlDate();
@@ -321,18 +325,20 @@ public class MedicalSalesReportService extends ShopBaseService {
                 returnReport = new MedicalOrderReportVo();
             }
             orderAmount = orderAmount.add(Optional.ofNullable(orderReport.getOrderAmount()).orElse(BigDecimal.ZERO));
-            orderNumber =+ Optional.ofNullable(orderReport.getOrderNumber()).orElse(0);
+            orderNumber =orderNumber+ Optional.ofNullable(orderReport.getOrderNumber()).orElse(0);
             moneyPaid = moneyPaid.add(Optional.ofNullable(orderReport.getMoneyPaid()).orElse(BigDecimal.ZERO));
             useAccount =useAccount.add(Optional.ofNullable(orderReport.getUseAccount()).orElse(BigDecimal.ZERO));
             shippingFee = shippingFee.add(Optional.ofNullable(orderReport.getShippingFee()).orElse(BigDecimal.ZERO));
             returnAmount = returnAmount.add(Optional.ofNullable(returnReport.getReturnAmount()).orElse(BigDecimal.ZERO));
-            returnNumber =+ Optional.ofNullable(returnReport.getReturnNumber()).orElse(0);
+            returnNumber =returnNumber+ Optional.ofNullable(returnReport.getReturnNumber()).orElse(0);
             startDate = DateUtil.offset(startDate,DateField.DAY_OF_YEAR,1).toTimestamp();
+            prescriptionNum= prescriptionNum+ Optional.ofNullable(orderReport.getPrescriptionOrderNum()).orElse(0);
+            prescriptionNumAmount = prescriptionNumAmount.add(Optional.ofNullable(orderReport.getPrescriptionOrderAmount()).orElse(BigDecimal.ZERO));
         }
         //笔单价 =净销售额/订单数量
         BigDecimal orderAvga =BigDecimal.ZERO;
         if (orderNumber>0){
-            orderAvga = orderAmount.subtract(BigDecimal.valueOf(orderNumber)).divide(BigDecimal.valueOf(orderNumber),2,BigDecimal.ROUND_HALF_UP);
+            orderAvga = orderAmount.divide(BigDecimal.valueOf(orderNumber),2,BigDecimal.ROUND_HALF_UP);
         }
         report.setOrderAmount(orderAmount);
         report.setOrderNumber(orderNumber);
@@ -343,6 +349,8 @@ public class MedicalSalesReportService extends ShopBaseService {
         report.setOrderAvg(orderAvga.setScale(2,BigDecimal.ROUND_HALF_UP));
         report.setReturnAmount(returnAmount);
         report.setReturnNumber(returnNumber);
+        report.setPrescriptionOrderNum(prescriptionNum);
+        report.setPrescriptionOrderAmount(prescriptionNumAmount);
         return report;
     }
 }

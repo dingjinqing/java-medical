@@ -477,7 +477,7 @@ public class DoctorDao extends ShopBaseDao {
      * @return
      */
     public DoctorStatisticOneParam getDoctorInquiryData(DoctorStatisticParam param) {
-        return db().select(DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiry_num"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
+        return db().select(DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiry_number"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
             .from(INQUIRY_ORDER)
             .where(INQUIRY_ORDER.ORDER_STATUS.notIn(InquiryOrderConstant.ORDER_TO_PAID,InquiryOrderConstant.ORDER_CANCELED))
             .and(INQUIRY_ORDER.DOCTOR_ID.eq(param.getDoctorId()))

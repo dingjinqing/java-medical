@@ -1,3 +1,6 @@
+.main-container{
+  padding-bottom: 24rpx;
+}
 .filter{
   display: flex;
   height: 90rpx;
@@ -109,7 +112,7 @@
   text-align: center;
 }
 .button-content > view + view{
-  margin-right: 24px;
+  margin-right: 24rpx;
 }
 .button-content > view.return{
   border: 2rpx solid #cbcbcb;

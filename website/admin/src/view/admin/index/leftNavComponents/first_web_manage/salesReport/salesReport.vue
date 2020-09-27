@@ -102,6 +102,18 @@
           </template>
         </el-table-column>
         <el-table-column
+              prop='orderNumber'
+              label='订单数量'
+        ></el-table-column>
+        <el-table-column
+                prop='prescriptionOrderNum'
+                label='处方药销售金额'
+        ></el-table-column>
+        <el-table-column
+                prop='prescriptionOrderAmount'
+                label='处方药订单数量'
+        ></el-table-column>
+        <el-table-column
           prop='shippingFee'
           label='运费'
         ></el-table-column>
@@ -283,7 +295,7 @@ export default {
       this.endDate.month = date[0].split('-')[1]
       this.endDate.day = date[0].split('-')[2]
       this.param.startTime = date[1] + ' 00:00:00'
-      this.param.endTime = date[0] + ' 00:00:00'
+      this.param.endTime = date[0] + ' 23:59:59'
       this.initData()
     },
     handleData (data) {

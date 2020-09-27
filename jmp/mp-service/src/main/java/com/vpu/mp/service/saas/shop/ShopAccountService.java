@@ -40,6 +40,7 @@ import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 public class ShopAccountService extends MainBaseService {
 	private static final String MAIN_ACCOUNT_TYPE = "1";
 	private static final String STORE_ACCOUNT_TYPE = "3";
+	private static final String DOCTOR_ACCOUNT_TYPE = "4";
 	private static final int QR_SCENE_EVENT_ARR_LEN = 3;
 	@Autowired
 	protected JedisManager jedis;
@@ -236,6 +237,8 @@ public class ShopAccountService extends MainBaseService {
                         saas.shop.storeAccount.upateBind(accountId, openId, (byte)1);
                         return true;
                     }
+                }else if(DOCTOR_ACCOUNT_TYPE.equals(split[1])){
+			        //医师
                 } else if(MAIN_ACCOUNT_TYPE.equals(split[1])) {
 					//主账户
 					if(getAccountInfoForId(accountId)!=null) {

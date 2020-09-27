@@ -4,7 +4,7 @@
   <block wx:if='{{patientList!= ""}}'>
     <view class="family_content">
       <view class="each_family" data-patient-id="{{item.id}}" 
-            bindtap="{{source ? 'toggleFamily' : ''}}" wx:for='{{patientList}}' wx:key='key'> 
+            bindtap="{{source === 'checkout' ? 'toggleFamily' : ''}}" wx:for='{{patientList}}' wx:key='key'> 
         <view class="ef_top">
           <view class="ef_top_left">
             <view>{{item.name}}</view>

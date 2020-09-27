@@ -74,7 +74,7 @@ public class OrderInfoBakDao extends MainBaseDao {
                 //日期
                 date(ORDER_INFO_BAK.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),
                 //销售金额  微信+余额+运费
-                sum((ORDER_INFO_BAK.MONEY_PAID.add(ORDER_INFO_BAK.USE_ACCOUNT).add(ORDER_INFO_BAK.SHIPPING_FEE))).as(ActiveDiscountMoney.ORDER_AMOUNT),
+                sum((ORDER_INFO_BAK.MONEY_PAID.add(ORDER_INFO_BAK.USE_ACCOUNT))).as(ActiveDiscountMoney.ORDER_AMOUNT),
                 //微信
                 sum(ORDER_INFO_BAK.MONEY_PAID).as(ActiveDiscountMoney.MONEY_PAID),
                 //余额
@@ -82,7 +82,11 @@ public class OrderInfoBakDao extends MainBaseDao {
                 //运费
                 sum(ORDER_INFO_BAK.SHIPPING_FEE).as(ActiveDiscountMoney.SHIPPING_FEE),
                 //销售单数
-                count(ORDER_INFO_BAK.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER)
+                count(ORDER_INFO_BAK.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
+                //处方药订单数量
+                sum(ORDER_INFO_BAK.ORDER_MEDICAL_TYPE).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_NUMBER),
+                //处方药金额
+                sum(DSL.iif(ORDER_INFO_BAK.ORDER_MEDICAL_TYPE.eq(BaseConstant.YES),ORDER_INFO_BAK.MONEY_PAID.add(ORDER_INFO_BAK.USE_ACCOUNT),BigDecimal.ZERO)).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_AMOUNT)
         )
                 .from(ORDER_INFO_BAK)
                 .where(ORDER_INFO_BAK.CREATE_TIME.between(startTime, endTime));

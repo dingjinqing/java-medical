@@ -5,7 +5,7 @@ package com.vpu.mp.db.main.tables.records;
 
 
 import com.vpu.mp.db.main.tables.ReturnOrderBak;
-import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.impl.UpdatableRecordImpl;
 
 import javax.annotation.Generated;
@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrderBakRecord extends UpdatableRecordImpl<ReturnOrderBakRecord> {
 
-    private static final long serialVersionUID = 1310630617;
+    private static final long serialVersionUID = -293676874;
 
     /**
      * Setter for <code>mini_main.b2c_return_order_bak.ret_id</code>.
@@ -554,8 +554,8 @@ public class ReturnOrderBakRecord extends UpdatableRecordImpl<ReturnOrderBakReco
      * {@inheritDoc}
      */
     @Override
-    public Record1<Integer> key() {
-        return (Record1) super.key();
+    public Record2<Integer, Integer> key() {
+        return (Record2) super.key();
     }
 
     // -------------------------------------------------------------------------

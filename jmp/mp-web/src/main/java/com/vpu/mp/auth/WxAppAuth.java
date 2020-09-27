@@ -186,16 +186,19 @@ public class WxAppAuth {
      * @return WxAppSessionUser
      */
     private WxAppSessionUser setAuth(WxAppSessionUser wxAppSessionUser, UserRecord userRecord) throws MpException {
+        log.debug("设置用户身份");
         // 如果有认证医师查看是否禁用
         Byte userType = userRecord.getUserType();
         //添加用户个人角色信息
         wxAppSessionUser.setUserType(userRecord.getUserType());
         if (Objects.equals(userType, 0)) {
+            log.debug("普通用户身份");
             wxAppSessionUser.setDoctorId(0);
             wxAppSessionUser.setStoreAccountId(0);
         }
         //如果当前用户是医师，那么直接进入医师界面
         if (AUTH_TYPE_DOCTOR_USER.equals(userType)) {
+            log.debug("医师身份");
             // 查询该医师是否禁用，如果禁用禁止登录
             Integer doctorId = adminUserService.getDoctorId(userRecord.getUserId());
             wxAppSessionUser.setDoctorId(doctorId);
@@ -204,6 +207,7 @@ public class WxAppAuth {
                 wxAppSessionUser.setDoctorId(STATUS_DISABLE);
             }
         }else if(AUTH_TYPE_STORE_ACCOUNT_USER.equals(userType)){
+            log.debug("店员身份");
             StoreAccountVo storeAccountVo=storeAccountDao.getByUserId(userRecord.getUserId());
             wxAppSessionUser.setStoreAccountId(storeAccountVo.getAccountId());
             if(storeAccountVo.getStatus()==0){

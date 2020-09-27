@@ -939,23 +939,21 @@
               <tr
                 v-for="(goodsItem,prescriptionIndex) in prescriptionItem.itemList"
                 class="order-tb-body"
-                :key="prescriptionIndex"
+                v-bind:key="`${prescriptionIndex}-${goodsItem.id}`"
               >
                 <td
                   v-if="prescriptionItem.itemList"
                   :rowspan="prescriptionItem.itemList"
-                  :key="id"
                 >
                   {{ prescriptionItem.doctorName }}
                 </td>
                 <td
                   v-if="prescriptionItem.itemList"
                   :rowspan="prescriptionItem.itemList"
-                  :key="id"
                 >
                   {{ prescriptionItem.prescriptionCode }}
                 </td>
-                <td :key="id">
+                <td>
                   <div class="goods_info">
                     <div class="right_info">
                       <div class="goods_name">
@@ -964,11 +962,9 @@
                     </div>
                   </div>
                 </td>
-                <td :key="id">
-                  {{ (goodsItem.rebateProportion * 100).toFixed(2) }}%
-                </td>
-                <td :key="id">{{ goodsItem.canCalculateMoney }}</td>
-                <td :key="id">{{ goodsItem.realRebateMoney.toFixed(2) }}</td>
+                <td>{{ (goodsItem.rebateProportion * 100).toFixed(2) }}%</td>
+                <td>{{ goodsItem.canCalculateMoney }}</td>
+                <td>{{ goodsItem.realRebateMoney.toFixed(2) }}</td>
               </tr>
             </template>
           </tbody>

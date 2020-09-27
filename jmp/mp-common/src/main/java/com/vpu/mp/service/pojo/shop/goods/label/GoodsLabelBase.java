@@ -15,4 +15,5 @@ public class GoodsLabelBase {
     protected Byte goodsList;
     protected Byte goodsSelect;
     protected Short level;
+    protected Byte isChronic;
 }
