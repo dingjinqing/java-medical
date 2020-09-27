@@ -188,9 +188,9 @@ global.wxPage({
   },
   chatEnd () {
 
-    util.showModal('提示', '确定要结束本次问诊吗？', async () => {
-      let sessionStatus = await this.statusApi()
-      util.api('/api/wxapp/inquiry/order/status/update', res => {
+    util.showModal('提示', '确定要结束本次问诊吗？', () => {
+      util.api('/api/wxapp/inquiry/order/status/update', async res => {
+        let sessionStatus = await this.statusApi()
         if (res.error === 0) {
           clearInterval(this.timer)
           this.setData({
