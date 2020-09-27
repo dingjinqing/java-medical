@@ -91,13 +91,17 @@ public class PrescriptionRebateService extends ShopBaseService {
         for(PrescriptionItemDo item:itemList){
             BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
             BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+            BigDecimal platformRxProportion=rebateConfig.getRxMedicalPlatformProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
             BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+            BigDecimal platformNoRxProportion=rebateConfig.getNoRxMedicalPlatformProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
             GoodsMedicalInfoDo medicalInfoDo = medicalInfoDao.getByGoodsId(item.getGoodsId());
             item.setGoodsSharingProportion(sharingProportion);
             if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
                 item.setRebateProportion(rxProportion);
+                item.setPlatformRebateProportion(platformRxProportion);
             }else {
                 item.setRebateProportion(noRxProportion);
+                item.setPlatformRebateProportion(platformNoRxProportion);
             }
 //            OrderGoodsDo orderGoodsDo=orderGoodsDao.getByOrderIdGoodsIdPrdId(order.getOrderId(),item.getGoodsId(),item.getPrdId());
             OrderGoodsDo orderGoodsDo=orderGoodsDao.getByPrescriptionDetailCode(item.getPrescriptionDetailCode());
@@ -109,7 +113,12 @@ public class PrescriptionRebateService extends ShopBaseService {
             item.setTotalRebateMoney(item.getCanCalculateMoney().multiply(item.getGoodsSharingProportion())
                 .multiply(item.getRebateProportion())
                 .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN));
+            //平台应返利金额
+            item.setPlatformRebateMoney(item.getCanCalculateMoney().multiply(item.getGoodsSharingProportion())
+                .multiply(item.getPlatformRebateProportion())
+                .setScale(BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN));
             item.setRealRebateMoney(item.getTotalRebateMoney());
+            item.setPlatformRealRebateMoney(item.getPlatformRebateMoney());
             prescriptionItemDao.updatePrescriptionItem(item);
         }
     }
@@ -123,13 +132,14 @@ public class PrescriptionRebateService extends ShopBaseService {
         DoctorOneParam doctor=doctorService.getDoctorByCode(prescription.getDoctorCode());
         //总返利金额
         BigDecimal totalRebateMoney=itemList.stream().map(PrescriptionItemDo::getTotalRebateMoney).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal platformTotalRebateMoney=itemList.stream().map(PrescriptionItemDo::getPlatformRebateMoney).reduce(BigDecimal.ZERO,BigDecimal::add);
         //总金额
-        BigDecimal totalMoney=BigDecimal.ZERO;
-        for(PrescriptionItemDo item :itemList){
-            BigDecimal num=BigDecimal.valueOf(item.getDragSumNum());
-            BigDecimal itemTotalMoney=item.getMedicinePrice().multiply(num);
-            totalMoney=totalMoney.add(itemTotalMoney);
-        }
+        BigDecimal totalMoney=itemList.stream().map(PrescriptionItemDo::getMedicinePrice).reduce(BigDecimal.ZERO,BigDecimal::add);
+//        for(PrescriptionItemDo item :itemList){
+//            BigDecimal num=BigDecimal.valueOf(item.getDragSumNum());
+//            BigDecimal itemTotalMoney=item.getMedicinePrice().multiply(num);
+//            totalMoney=totalMoney.add(itemTotalMoney);
+//        }
         BigDecimal canRebateMoneyTotal=itemList.stream().map(PrescriptionItemDo::getCanCalculateMoney).reduce(BigDecimal.ZERO,BigDecimal::add);
         PrescriptionRebateParam rebateParam=new PrescriptionRebateParam();
         rebateParam.setPrescriptionCode(prescription.getPrescriptionCode());
@@ -139,6 +149,9 @@ public class PrescriptionRebateService extends ShopBaseService {
         rebateParam.setTotalRebateMoney(totalRebateMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_DOWN));
         rebateParam.setCanCalculateMoney(canRebateMoneyTotal);
         rebateParam.setRealRebateMoney(rebateParam.getTotalRebateMoney());
+        //平台返利金额
+        rebateParam.setPlatformRebateMoney(platformTotalRebateMoney.setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_DOWN));
+        rebateParam.setPlatformRealRebateMoney(rebateParam.getTotalRebateMoney());
         prescriptionRebateDao.addPrescriptionRebate(rebateParam);
     }
     /**

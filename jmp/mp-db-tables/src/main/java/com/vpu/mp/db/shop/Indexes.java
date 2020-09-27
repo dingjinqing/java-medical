@@ -571,6 +571,9 @@ public class Indexes {
     public static final Index DOCTOR_LOGIN_LOG_PRIMARY = Indexes0.DOCTOR_LOGIN_LOG_PRIMARY;
     public static final Index USER_COLLECTION_ACTION_PRIMARY = Indexes0.USER_COLLECTION_ACTION_PRIMARY;
     public static final Index GOODS_CHRONIC_COUPLE_PRIMARY = Indexes0.GOODS_CHRONIC_COUPLE_PRIMARY;
+    public static final Index ORDER_GOODS_PLATFORM_REBATE_PRIMARY = Indexes0.ORDER_GOODS_PLATFORM_REBATE_PRIMARY;
+    public static final Index ORDER_GOODS_PLATFORM_REBATE_REC_ID = Indexes0.ORDER_GOODS_PLATFORM_REBATE_REC_ID;
+    public static final Index ORDER_GOODS_PLATFORM_REBATE_SHOP_ID = Indexes0.ORDER_GOODS_PLATFORM_REBATE_SHOP_ID;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -1120,6 +1123,10 @@ public class Indexes {
         public static Index DOCTOR_LOGIN_LOG_PRIMARY = Internal.createIndex("PRIMARY", DoctorLoginLog.DOCTOR_LOGIN_LOG, new OrderField[] { DoctorLoginLog.DOCTOR_LOGIN_LOG.ID }, true);
         public static Index USER_COLLECTION_ACTION_PRIMARY = Internal.createIndex("PRIMARY", UserCollectionAction.USER_COLLECTION_ACTION, new OrderField[] { UserCollectionAction.USER_COLLECTION_ACTION.ID }, true);
         public static Index GOODS_CHRONIC_COUPLE_PRIMARY = Internal.createIndex("PRIMARY", GoodsChronicCouple.GOODS_CHRONIC_COUPLE, new OrderField[] { GoodsChronicCouple.GOODS_CHRONIC_COUPLE.ID }, true);
+        public static Index ORDER_GOODS_PLATFORM_REBATE_PRIMARY = Internal.createIndex("PRIMARY", OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE, new OrderField[] { OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE.ID }, true);
+        public static Index ORDER_GOODS_PLATFORM_REBATE_REC_ID = Internal.createIndex("rec_id", OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE, new OrderField[] { OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE.REC_ID }, false);
+        public static Index ORDER_GOODS_PLATFORM_REBATE_SHOP_ID = Internal.createIndex("shop_id", OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE, new OrderField[] { OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE.SHOP_ID }, false);
+
     }
 
 }

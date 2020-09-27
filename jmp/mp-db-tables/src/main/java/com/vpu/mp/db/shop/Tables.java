@@ -1255,4 +1255,8 @@ public class Tables {
      * 慢性病药品关联信息
      */
     public static final GoodsChronicCouple GOODS_CHRONIC_COUPLE = com.vpu.mp.db.shop.tables.GoodsChronicCouple.GOODS_CHRONIC_COUPLE;
+    /**
+     * 平台返利数据表
+     */
+    public static final OrderGoodsPlatformRebate ORDER_GOODS_PLATFORM_REBATE = com.vpu.mp.db.shop.tables.OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE;
 }
