@@ -854,6 +854,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_EXCLUSIVE_GOODS_NO_BUY = "order.exclusive.goods.no.buy";
     public static final String MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY = "order.presale.goods.not.suport.buy";
     public static final String MSG_ORDER_MONEYPAID_ERROR_PLEASE_CHECK = "order.moneypaid.error.please.check";
+    public static final String CODE_ORDER_STORE_NOT_NULL_CHECK = "请选择可用的门店";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
@@ -873,6 +874,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK = "order.medical.prescription.check";
     public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_INVALID = "order.medical.prescription.Invalid";
     public static final String MSG_ORDER_MEDICAL_HISTORY_CHECK = "order.medical.history.check";
+    public static final String MSG_ORDER_MEDICAL_PRESCRIPTION_UPLOAD_ERROR = "订单状态修改上传异常";
 
     /**
      * 订单状态
@@ -1450,6 +1452,12 @@ public class JsonResultMessage {
 
     public static final String DOCTOR_LOGIN_AUTH_ERROR = "认证失败";
     public static final String DOCTOR_LOGIN_AUTH_ALREADY_LOGIN="医师信息已被认证";
+
+    public static final String STORE_CLERK_AUTH_INFO_ERROR ="店员认证失败，认证信息有误";
+    public static final String STORE_CLERK_AUTH_ALREADY_ERROR ="店员认证失败，该身份已经认证";
+    public static final String STORE_CLERK_AUTH_INFO_SMS_ERROR ="店员认证失败，验证码有误";
+    public static final String STORE_CLERK_AUTH_IS_DISABLED ="店员认证失败，账户已被禁用";
+    public static final String AUTH_ALREADY_AUTHED = "该用户已经认证过其他身份，请先解绑再进行操作";
 
     public static final String FETCH_HIS_ERROR = "拉取信息时错误";
     public static final String FETCH_HIS_NO_PATIENT = "无此患者信息";
