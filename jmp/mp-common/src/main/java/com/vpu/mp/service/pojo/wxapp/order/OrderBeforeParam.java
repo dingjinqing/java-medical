@@ -239,6 +239,18 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
          */
         private Byte medicalAuditType;
         /**
+         * 规格参数
+         */
+        private String goodsQualityRatio;
+        /**
+         * 生产厂家
+         */
+        private String goodsProductionEnterprise;
+        /**
+         * 批准文号
+         */
+        private String goodsApprovalNumber;
+        /**
          * 门店商品
          */
         @JsonIgnore

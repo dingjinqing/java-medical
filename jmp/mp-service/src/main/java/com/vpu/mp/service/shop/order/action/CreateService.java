@@ -229,7 +229,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * 核销码前缀
      */
     private static final String HX = "HX";
-
+    /**
+     * 核销码生成字符集
+     */
     private static final String[] CHARS = new String[] {"0", "1", "2", "3", "4", "5",
         "6", "7", "8", "9"};
 
@@ -732,6 +734,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private OrderBeforeVo queryProcessBeforeVoInfo(OrderBeforeParam param) throws MpException {
         /*** 初始化*/
         OrderBeforeVo vo = OrderBeforeVo.builder().build();
+        // 添加药品规格信息
+        addGoodsMedicalParam(param);
         //初始化orderGoods vo;
         queryAndExecuteInitOrderGoods(param,vo);
         // 地址
@@ -769,6 +773,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setOrderAuditType(param.getOrderAuditType());
         vo.setPatientInfo(param.getPatientInfo());
         return vo;
+    }
+
+    private void addGoodsMedicalParam(OrderBeforeParam param) {
+        param.getGoods().forEach(goods -> {
+            GoodsMedicalInfoDo byGoodsId = goodsMedicalInfoDao.getByGoodsId(goods.getGoodsId());
+            goods.setGoodsQualityRatio(byGoodsId.getGoodsQualityRatio());
+            goods.setGoodsProductionEnterprise(byGoodsId.getGoodsProductionEnterprise());
+            goods.setGoodsApprovalNumber(byGoodsId.getGoodsApprovalNumber());
+        });
     }
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
