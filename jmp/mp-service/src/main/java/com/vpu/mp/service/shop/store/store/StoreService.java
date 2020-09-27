@@ -13,6 +13,7 @@ import com.vpu.mp.db.shop.tables.records.ArticleRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
@@ -653,13 +654,19 @@ public class StoreService extends ShopBaseService {
      * @param orderAddressParam 地址经纬度
      * @return Map<Double, StoreDo>
      */
-    public Map<String, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) {
+    public Map<String, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) throws MpException {
         // 三方库拉取可用门店列表 **
         // List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
         // 不拉取三方库，校验本地可用门店
         List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(orderAddressParam.getStoreGoodsBaseCheckInfoList());
+        if (storeCodes.isEmpty()) {
+            throw new MpException(JsonResultCode.CODE_NO_STORE_OPEN);
+        }
         List<String> storeCodesNew = new ArrayList<String>(new TreeSet<String>(storeCodes));
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodesNew, orderAddressParam.getDeliveryType());
+        if (stores.isEmpty()) {
+            throw new MpException(JsonResultCode.CODE_STORE_GOODS_IS_EMPTY);
+        }
         logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new HashMap<>(15);
         stores.forEach(e -> {
