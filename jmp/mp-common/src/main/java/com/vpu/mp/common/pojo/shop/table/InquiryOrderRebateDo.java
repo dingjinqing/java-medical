@@ -18,6 +18,7 @@ public class InquiryOrderRebateDo {
     private Integer    doctorId;
     private BigDecimal totalMoney;
     private BigDecimal totalRebateMoney;
+    private BigDecimal platformRebateMoney;
     private Byte       status;
     private String     reason;
     private Byte       isDelete;

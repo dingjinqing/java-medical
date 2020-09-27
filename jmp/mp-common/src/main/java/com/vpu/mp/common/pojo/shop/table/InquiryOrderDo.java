@@ -46,6 +46,8 @@ public class InquiryOrderDo extends ImSessionDo {
     private String     imageUrl;
     private BigDecimal rebateProportion;
     private BigDecimal totalRebateMoney;
+    private BigDecimal platformRebateProportion;
+    private BigDecimal platformRebateMoney;
     private Byte       isDelete;
     private Byte       settlementFlag;
     private Timestamp  createTime;

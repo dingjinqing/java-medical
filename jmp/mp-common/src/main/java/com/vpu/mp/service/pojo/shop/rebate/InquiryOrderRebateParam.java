@@ -27,6 +27,11 @@ public class InquiryOrderRebateParam {
      */
     private BigDecimal totalRebateMoney;
     /**
+     * 平台返利金额
+     */
+    private BigDecimal platformRebateMoney;
+
+    /**
      * 返利状态
      */
     private Byte status;

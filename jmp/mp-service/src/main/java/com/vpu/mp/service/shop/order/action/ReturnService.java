@@ -13,10 +13,12 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsPlatformRebateDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
+import com.vpu.mp.dao.shop.rebate.OrderGoodsPlatformRebateDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -40,6 +42,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.rebate.OrderGoodsPlatformRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
@@ -150,6 +153,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     private PrescriptionDao prescriptionDao;
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private OrderGoodsPlatformRebateDao orderGoodsPlatformRebateDao;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -206,14 +211,14 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
      * 更改处方返利信息
      * @param returnGoods
      * @param returnOrderRecord
-     * @param orderSn
+     * @param order
      */
-    public void updatePrescriptionRebateStatus(List<OrderReturnGoodsVo> returnGoods, ReturnOrderRecord returnOrderRecord, String orderSn){
+    public void updatePrescriptionRebateStatus(List<OrderReturnGoodsVo> returnGoods, ReturnOrderRecord returnOrderRecord, OrderInfoVo order){
         if(CollectionUtils.isEmpty(returnGoods)) {
             return;
         }
 
-        List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(orderSn);
+        List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(order.getOrderSn());
         preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
         for(String preCode:preCodeList){
             PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(preCode);
@@ -232,11 +237,20 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                         BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
                         BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsDo.getGoodsNumber())))
                 );
+                //平台实际返利金额
+                item.setPlatformRealRebateMoney(
+                    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(item.getPlatformRebateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsDo.getGoodsNumber())))
+                );
                 prescriptionItemDao.updatePrescriptionItem(item);
             });
             BigDecimal realRebateTotalMoney=itemList.stream().map(PrescriptionItemDo::getRealRebateMoney).reduce(BIGDECIMAL_ZERO,BigDecimal::add);
+            BigDecimal platformRealRebateTotalMoney=itemList.stream().map(PrescriptionItemDo::getPlatformRealRebateMoney).reduce(BIGDECIMAL_ZERO,BigDecimal::add);
+
             //更新实际返利金额
-            prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney);
+            prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney,platformRealRebateTotalMoney);
             if(returnOrderRecord.getRefundStatus().equals(OrderConstant.REFUND_STATUS_FINISH)){
                 List<OrderGoodsDo> orderGoodsDoList=orderGoodsDao.getByPrescription(preCode);
                 int returnNums=orderGoodsDoList.stream().collect(Collectors.summingInt(OrderGoodsDo::getReturnNumber));
@@ -250,7 +264,35 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             }
         }
 
+    }
 
+    /**
+     * 平台返利
+     * @param returnGoods
+     */
+    public void updatePlatformRebate(List<OrderReturnGoodsVo> returnGoods){
+        for(OrderReturnGoodsVo returnGoodsVo:returnGoods){
+            OrderGoodsRecord goodsRecord = orderGoodsDao.getByRecId(returnGoodsVo.getRecId());
+            //不审核的药品,平台单独返利
+            if(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT.equals(goodsRecord.getMedicalAuditType())){
+                //实际返利数量
+                int rebateNumber = goodsRecord.getGoodsNumber() - goodsRecord.getReturnNumber();
+                OrderGoodsPlatformRebateDo platformRebateDo = orderGoodsPlatformRebateDao.getByRecId(goodsRecord.getRecId());
+                if(platformRebateDo!=null){
+                    //实际返利金额
+                    platformRebateDo.setPlatformRealRebateMoney(
+                        BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
+                            BigDecimalUtil.BigDecimalPlus.create(platformRebateDo.getPlatformRebateMoney(), BigDecimalUtil.Operator.multiply),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(goodsRecord.getGoodsNumber())))
+                    );
+                    if(rebateNumber==0){
+                        platformRebateDo.setStatus(OrderGoodsPlatformRebateConstant.REBATE_FAIL);
+                    }
+                }
+                orderGoodsPlatformRebateDao.update(platformRebateDo);
+            }
+        }
     }
     /**
      * 审核失败退款
@@ -800,7 +842,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //返利金额重新计算
         calculate.recalculationRebate(returnGoods, orderGoods.getOrderGoods(order.getOrderSn(), returnGoods.stream().map(OrderReturnGoodsVo::getRecId).collect(Collectors.toList())), order.getOrderSn());
         //医师处方返利金额重新计算
-        updatePrescriptionRebateStatus(returnGoods,returnOrderRecord,order.getOrderSn());
+        updatePrescriptionRebateStatus(returnGoods,returnOrderRecord,order);
+        //平台返利
+        updatePlatformRebate(returnGoods);
         // 发送退款成功模板消息
         // 自动同步订单微信购物单
         returnStatusChange.addRecord(returnOrderRecord, param.getIsMp(), "当前退款订单正常结束：" + OrderConstant.RETURN_TYPE_CN[returnOrderRecord.getReturnType()]);
