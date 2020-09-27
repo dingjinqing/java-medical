@@ -28,10 +28,13 @@
           <text bindtap="toggleIsPharmacist" class="iconfont {{isPharmacist ? 'iconduoxuan' : 'iconduoxuanbiankuang'}}"></text>
         </view>
       </view>
-      <view class="sign-button" wx:if="{{!showCanvas}}" bindtap="showCanvasContent">
+      <view class="sign-button" wx:if="{{!showCanvas && isPharmacist && !clerkImagePath.imgUrl}}" bindtap="showCanvasContent">
         <image src="{{imageUrl}}image/wxapp/sign_icon.png"></image><text>点击此处签名</text>
       </view>
-      <v-sign wx:if="{{showCanvas}}" id="sign"/>
+      <view class="clerk-image-content" wx:if="{{clerkImagePath.imgUrl}}">
+        <image src="{{clerkImagePath.imgUrl}}" wx:if="{{clerkImagePath.imgUrl}}" class="clerk-image"></image>
+      </view>
+      <!-- <v-sign wx:if="{{showCanvas && isPharmacist}}" id="sign"/> -->
       <view class="confirm-button" bindtap="confirm">确定</view>
     </view>
   </view>

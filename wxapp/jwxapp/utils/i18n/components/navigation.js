@@ -151,6 +151,7 @@ module.exports = {
     "doctorWithdraw":'返利提现',
     "clerkOrderList":'订单列表',
     "clerkMap":'地址',
-    "clerkIndex":'首页'
+    "clerkIndex":'首页',
+    "clerkSign":"签名"
   }
 }

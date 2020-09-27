@@ -94,4 +94,4 @@
   </block>
 </view>
 <include src="../common/footer.wxml"/>
-<v-accreditation show="{{showClerkAccreditation}}"/>
+<v-accreditation show="{{showClerkAccreditation}}" clerk-image-path="{{clerkImagePath}}"/>

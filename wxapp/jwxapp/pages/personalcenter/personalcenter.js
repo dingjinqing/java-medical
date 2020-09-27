@@ -8,7 +8,8 @@ global.wxPage({
    */
   data: {
     tabIndex: 'usercenter',
-    options: {}
+    options: {},
+    clerkImagePath:{}
   },
 
   /**

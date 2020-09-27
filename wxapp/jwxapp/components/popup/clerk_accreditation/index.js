@@ -3,13 +3,21 @@ var base = require("../base/base.js")
 global.wxComponent({
   mixins: [base],
   data: {
-    isPharmacist: true,
     showCanvas: false,
     accountName:'',
     password:'',
     mobile:'',
     mobileCheckCode:'',
     isPharmacist:0
+  },
+  properties:{
+    clerkImagePath:{
+      type:Object,
+      value:null,
+      observer:(val)=>{
+        console.log(val)
+      }
+    }
   },
   lifetimes: {},
   methods: {
@@ -49,9 +57,10 @@ global.wxComponent({
       })
     },
     showCanvasContent() {
-      this.setData({
-        showCanvas: true
-      })
+      // this.setData({
+      //   showCanvas: true
+      // })
+      util.jumpLink('/pages3/clerkSign/clerkSign')
     },
     changeAccountName({detail:{value}}){
       this.data.accountName = value
@@ -91,23 +100,26 @@ global.wxComponent({
         util.showModal('提示','请输入验证码')
         return
       }
-      this.selectComponent('#sign').createImage('','',(res)=>{
-        console.log(res)
-        util.api('/api/wxapp/store/storeClerk/auth',result=>{
-          console.log(result)
-          if(result.error === 0){
-            
-          } else {
-            util.showModal('提示',result.message)
-          }
-        },{
-          accountName:this.data.accountName,
-          password:this.data.password,
-          mobile:this.data.mobile,
-          mobileCheckCode:this.data.mobileCheckCode,
-          isPharmacist:this.data.isPharmacist,
-          signature:res.content.imgPath
-        })
+
+      if(!this.clerkImagePath.imgPath && this.data.isPharmacist){
+        util.showModal('提示','请签名添加图片')
+        return
+      }
+
+      util.api('/api/wxapp/store/storeClerk/auth',result=>{
+        console.log(result)
+        if(result.error === 0){
+          
+        } else {
+          util.showModal('提示',result.message)
+        }
+      },{
+        accountName:this.data.accountName,
+        password:this.data.password,
+        mobile:this.data.mobile,
+        mobileCheckCode:this.data.mobileCheckCode,
+        isPharmacist:this.data.isPharmacist,
+        signature:this.clerkImagePath.imgPath
       })
     }
   }

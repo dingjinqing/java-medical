@@ -1,9 +1,9 @@
   <include src="/pages/common/header.wxml" />
   <view class="wrapper" style="height:calc(100vh - {{margin_top_nav + 8}}px);">
     <view class="handBtn">
-      <view class="btn">取消</view>
+      <view class="btn" bindtap="cancel">取消</view>
       <view class="btn" bindtap="clearBoard">清屏</view>
-      <view class="btn">确定</view>
+      <view class="btn" bindtap="confirm">确定</view>
     </view>
     <view class="handCenter">
       <v-sign id="sign"/>
