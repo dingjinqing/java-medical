@@ -3,6 +3,7 @@ package com.vpu.mp.dao.shop.order;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
@@ -239,6 +240,16 @@ public class OrderGoodsDao extends ShopBaseDao {
     public List<OrderGoodsVo> getOrderGoodsListByOrderId(Integer orderId){
         return db().select().from(ORDER_GOODS).where(ORDER_GOODS.ORDER_ID.eq(orderId))
             .fetchInto(OrderGoodsVo.class);
+    }
+
+    /**
+     *
+     * @param recId
+     * @return
+     */
+    public OrderGoodsRecord getByRecId(Integer recId){
+        return db().select().from(ORDER_GOODS).where(ORDER_GOODS.REC_ID.eq(recId))
+            .fetchOneInto(OrderGoodsRecord.class);
     }
 
 

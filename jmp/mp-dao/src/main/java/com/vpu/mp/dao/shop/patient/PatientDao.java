@@ -210,11 +210,11 @@ public class PatientDao extends ShopBaseDao{
      * @return PageResult<PatientMedicineVo> 患者购药记录出参
      */
     public PageResult<PatientMedicineVo> getPatientMedicine(PatientMedicineParam patientMedicineParam) {
-        SelectOnConditionStep<Record10<String, String, String, String, Integer, BigDecimal, String, String, BigDecimal, Timestamp>> select = db().select(
-              GOODS_MEDICAL_INFO.GOODS_COMMON_NAME
-            , GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO
-            , GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE
-            , GOODS_MEDICAL_INFO.GOODS_APPROVAL_NUMBER
+        SelectOnConditionStep<? extends Record> select = db().select(
+              ORDER_GOODS.GOODS_NAME.as("goodsCommonName")
+            , ORDER_GOODS.GOODS_QUALITY_RATIO
+            , ORDER_GOODS.GOODS_PRODUCTION_ENTERPRISE
+            , ORDER_GOODS.GOODS_APPROVAL_NUMBER
             , ORDER_GOODS.GOODS_NUMBER
             , ORDER_GOODS.GOODS_PRICE
             , ORDER_GOODS.PRESCRIPTION_CODE
@@ -222,9 +222,7 @@ public class PatientDao extends ShopBaseDao{
             , ORDER_GOODS.DISCOUNTED_TOTAL_PRICE
             , ORDER_GOODS.CREATE_TIME).from(ORDER_GOODS)
             .leftJoin(ORDER_INFO)
-            .on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
-            .leftJoin(GOODS_MEDICAL_INFO)
-            .on(ORDER_GOODS.GOODS_ID.eq(GOODS_MEDICAL_INFO.GOODS_ID));
+            .on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
         patientMedicineBuildOptions(select, patientMedicineParam);
         return this.getPageResult(select, patientMedicineParam.getCurrentPage(),
             patientMedicineParam.getPageRows(), PatientMedicineVo.class);
@@ -235,8 +233,7 @@ public class PatientDao extends ShopBaseDao{
      * @param select 查询实体
      * @param patientMedicineParam 患者条件查询入参
      */
-    private void patientMedicineBuildOptions(SelectOnConditionStep<Record10<String, String, String, String, Integer,
-        BigDecimal, String, String, BigDecimal, Timestamp>> select, PatientMedicineParam patientMedicineParam) {
+    private void patientMedicineBuildOptions(SelectOnConditionStep<? extends Record> select, PatientMedicineParam patientMedicineParam) {
         if (patientMedicineParam.getGoodsCommonName() != null && patientMedicineParam.getGoodsCommonName().trim().length() > 0) {
             select.where(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.like(likeValue(patientMedicineParam.getGoodsCommonName().trim())));
         }

@@ -71,8 +71,10 @@ public class PrescriptionRebateDao extends ShopBaseDao {
      * @param prescriptionCode
      * @param realRebateMoney
      */
-    public void updateRealRebateMoney(String prescriptionCode, BigDecimal realRebateMoney){
-        db().update(PRESCRIPTION_REBATE).set(PRESCRIPTION_REBATE.REAL_REBATE_MONEY,realRebateMoney).where(PRESCRIPTION_REBATE.PRESCRIPTION_CODE.eq(prescriptionCode))
+    public void updateRealRebateMoney(String prescriptionCode, BigDecimal realRebateMoney,BigDecimal platformRealRebateMoney){
+        db().update(PRESCRIPTION_REBATE).set(PRESCRIPTION_REBATE.REAL_REBATE_MONEY,realRebateMoney)
+            .set(PRESCRIPTION_REBATE.PLATFORM_REAL_REBATE_MONEY,platformRealRebateMoney)
+            .where(PRESCRIPTION_REBATE.PRESCRIPTION_CODE.eq(prescriptionCode))
             .execute();
     }
 

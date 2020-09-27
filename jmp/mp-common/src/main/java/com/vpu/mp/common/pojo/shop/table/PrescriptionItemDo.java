@@ -54,6 +54,9 @@ public class PrescriptionItemDo implements Serializable {
     private BigDecimal rebateProportion;
     private BigDecimal totalRebateMoney;
     private BigDecimal realRebateMoney;
+    private BigDecimal platformRebateProportion;
+    private BigDecimal platformRebateMoney;
+    private BigDecimal platformRealRebateMoney;
     private Byte       isDelete;
     private Timestamp  createTime;
     private Timestamp  updateTime;

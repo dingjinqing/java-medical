@@ -477,6 +477,9 @@ public class Tables {
      * 店铺物流信息表
      */
     public static final ShopLogistics SHOP_LOGISTICS = com.vpu.mp.db.main.tables.ShopLogistics.SHOP_LOGISTICS;
-
+    /**
+     * 平台返利数据表
+     */
+    public static final PlatformTotalRebate PLATFORM_TOTAL_REBATE = com.vpu.mp.db.main.tables.PlatformTotalRebate.PLATFORM_TOTAL_REBATE;
 
 }

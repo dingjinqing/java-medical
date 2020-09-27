@@ -5,12 +5,16 @@ import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.main.table.PlatformTotalRebateDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsPlatformRebateDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.dao.main.platform.PlatformTotalRebateDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
+import com.vpu.mp.dao.shop.rebate.OrderGoodsPlatformRebateDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.FanliGoodsStatisticsRecord;
@@ -33,6 +37,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.rebate.OrderGoodsPlatformRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
@@ -141,6 +146,10 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
     private OrderOperateSendMessage sendMessage;
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private PlatformTotalRebateDao platformTotalRebateDao;
+    @Autowired
+    private OrderGoodsPlatformRebateDao orderGoodsPlatformRebateDao;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -175,6 +184,8 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             orderInfo.setOrderRebateInfo(orderRecord, total);
             //医师返利
             setDoctorRebate(orderRecord);
+            //平台返利
+            setPlatformRebate(orderRecord);
             //新增收支
         });
         //分销升级
@@ -210,11 +221,19 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                         BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
                         BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsDo.getGoodsNumber())))
                 );
+                //平台实际返利金额
+                item.setPlatformRealRebateMoney(
+                    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(item.getPlatformRebateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsDo.getGoodsNumber())))
+                );
                 prescriptionItemDao.updatePrescriptionItem(item);
             });
             BigDecimal realRebateTotalMoney=itemList.stream().map(PrescriptionItemDo::getRealRebateMoney).reduce(BIGDECIMAL_ZERO,BigDecimal::add);
+            BigDecimal platformRealRebateTotalMoney=itemList.stream().map(PrescriptionItemDo::getPlatformRealRebateMoney).reduce(BIGDECIMAL_ZERO,BigDecimal::add);
             //更新实际返利金额
-            prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney);
+            prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney,platformRealRebateTotalMoney);
 
             //更改处方返利状态
             prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATED,null);
@@ -225,8 +244,47 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                 //获取处方返利金额，统计医师返利金额
                 PrescriptionRebateParam rebate= prescriptionRebateDao.getRebateByPrescriptionCode(preCode);
                 doctorTotalRebateDao.updateDoctorTotalRebate(doctor.getId(),rebate.getRealRebateMoney());
-
             }
+            //统计平台返利
+            PlatformTotalRebateDo platformTotalRebateDo=new PlatformTotalRebateDo();
+            platformTotalRebateDo.setShopId(getShopId());
+            platformTotalRebateDo.setTotalMoney(platformRealRebateTotalMoney);
+            platformTotalRebateDo.setFinalMoney(platformRealRebateTotalMoney);
+            platformTotalRebateDao.savePlatFormTotalRebate(platformTotalRebateDo);
+        }
+    }
+
+    /**
+     * 平台返利信息
+     * @param orderRecord
+     */
+    public void setPlatformRebate(OrderInfoRecord orderRecord){
+        List<OrderGoodsRecord> goodsRecordList = orderGoods.getByOrderId(orderRecord.getOrderId()).into(OrderGoodsRecord.class);
+        for(OrderGoodsRecord orderGoodsRecord:goodsRecordList){
+            if(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT.equals(orderGoodsRecord.getMedicalAuditType())){
+                //实际返利数量
+                int rebateNumber = orderGoodsRecord.getGoodsNumber() - orderGoodsRecord.getReturnNumber();
+                OrderGoodsPlatformRebateDo platformRebateDo = orderGoodsPlatformRebateDao.getByRecId(orderGoodsRecord.getRecId());
+                if(platformRebateDo==null){
+                    continue;
+                }
+                //实际返利金额
+                platformRebateDo.setPlatformRealRebateMoney(
+                    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(platformRebateDo.getPlatformRebateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsRecord.getGoodsNumber())))
+                );
+                platformRebateDo.setStatus(OrderGoodsPlatformRebateConstant.REBATED);
+                orderGoodsPlatformRebateDao.update(platformRebateDo);
+                //统计平台返利
+                PlatformTotalRebateDo platformTotalRebateDo=new PlatformTotalRebateDo();
+                platformTotalRebateDo.setShopId(getShopId());
+                platformTotalRebateDo.setTotalMoney(platformRebateDo.getPlatformRealRebateMoney());
+                platformTotalRebateDo.setFinalMoney(platformRebateDo.getPlatformRealRebateMoney());
+                platformTotalRebateDao.savePlatFormTotalRebate(platformTotalRebateDo);
+            }
+
         }
     }
     /**
