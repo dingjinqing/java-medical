@@ -129,7 +129,11 @@ public class InquiryOrderTaskService extends ShopBaseService {
             inquiryOrderDao.update(order);
             List<String> orderSnList=new ArrayList<>();
             orderSnList.add(order.getOrderSn());
-            imSessionService.batchCloseSession(orderSnList);
+            try {
+                imSessionService.batchCloseSession(orderSnList);
+            } catch (MpException e) {
+                e.printStackTrace();
+            }
             //完成问诊，更改返利状态
             inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATED,null);
             //统计医师返利金额

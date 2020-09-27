@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
@@ -91,7 +92,7 @@ public class WxAppImSessionController extends WxAppBaseController {
      * @return jsonResult
      */
     @PostMapping("/api/wxapp/im/session/close/{sessionId}")
-    public JsonResult closeSession(@PathVariable("sessionId") Integer sessionId) {
+    public JsonResult closeSession(@PathVariable("sessionId") Integer sessionId) throws MpException {
         if (sessionId == null) {
             return fail(JsonResultCode.IM_SESSION_ID_IS_NULL);
         }

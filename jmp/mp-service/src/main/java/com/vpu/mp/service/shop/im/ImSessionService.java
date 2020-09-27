@@ -8,6 +8,7 @@ import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.ImSessionItemDo;
 import com.vpu.mp.dao.shop.session.ImSessionDao;
 import com.vpu.mp.dao.shop.session.ImSessionItemDao;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -17,7 +18,13 @@ import com.vpu.mp.service.pojo.shop.patient.PatientSimpleInfoVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.base.ImSessionItemBase;
 import com.vpu.mp.service.pojo.wxapp.medical.im.bo.ImSessionItemBo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
-import com.vpu.mp.service.pojo.wxapp.medical.im.param.*;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPullMsgParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionQueryPageListParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionRenderPageParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionSendMsgParam;
+import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionUnReadMessageInfoParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionItemRenderVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionPullMsgVo;
@@ -32,7 +39,12 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -414,7 +426,7 @@ public class ImSessionService extends ShopBaseService {
     /**
      * 批量关闭到时间的会话
      */
-    public void batchCloseSession(List<String> orderSns) {
+    public void batchCloseSession(List<String> orderSns) throws MpException{
         logger().info("批量关闭到时间的会话：" + orderSns);
         ImSessionCondition cancelCondition = new ImSessionCondition();
         cancelCondition.setOrderSns(orderSns);
@@ -458,7 +470,7 @@ public class ImSessionService extends ShopBaseService {
      * 关闭对话session
      * @param sessionId 会话id
      */
-    public void closeImSession(Integer sessionId) {
+    public void closeImSession(Integer sessionId) throws MpException {
         ImSessionDo imSessionDo = imSessionDao.getById(sessionId);
         if (!ImSessionConstant.SESSION_ON.equals(imSessionDo.getSessionStatus()) && !ImSessionConstant.SESSION_CONTINUE_ON.equals(imSessionDo.getSessionStatus())) {
             return;
