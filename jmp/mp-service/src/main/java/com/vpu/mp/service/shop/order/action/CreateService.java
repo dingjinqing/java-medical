@@ -224,11 +224,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 随机生成核销码位数
      */
-    private final Integer uuidLength = 6;
+    private static final Integer UUID_LENGTH = 8;
     /**
      * 核销码前缀
      */
-    private final String HX = "HX";
+    private static final String HX = "HX";
+
+    private static final String[] CHARS = new String[] {"0", "1", "2", "3", "4", "5",
+        "6", "7", "8", "9"};
+
     /**
      * 营销活动processorFactory
      */
@@ -462,26 +466,19 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     }
 
-    private String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
-        "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
-        "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
-        "6", "7", "8", "9" };
-
-
     /**
-     * 生成短6位UUID作为核销码
+     * 生成短8位UUID作为核销码
      * @return String
      */
     private String generateShortUuid() {
         StringBuilder shortBuilder = new StringBuilder();
         String uuid = UUID.randomUUID().toString().replace("-", "");
-        for (int i = 0; i < uuidLength; i++) {
+        for (int i = 0; i < UUID_LENGTH; i++) {
             String str = uuid.substring(i * 4, i * 4 + 4);
             int x = Integer.parseInt(str, 16);
-            shortBuilder.append(chars[x % 0X24]);
+            shortBuilder.append(CHARS[x % 0Xa]);
         }
         return HX + shortBuilder.toString();
-
     }
 
     private CreateOrderBo processPrepairCreateOrder(CreateParam param, OrderBeforeVo orderBeforeVo) throws MpException {

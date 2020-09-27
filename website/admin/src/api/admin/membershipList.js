@@ -148,3 +148,12 @@ export function getDoctorList (data) {
     data: data
   })
 }
+
+// 浏览记录
+export function getBrowseReport (data) {
+  return service({
+    url: '/api/admin/member/goods/browse/report',
+    method: 'post',
+    data: data
+  })
+}
