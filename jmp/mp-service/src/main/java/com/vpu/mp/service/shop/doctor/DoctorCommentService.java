@@ -120,7 +120,7 @@ public class DoctorCommentService extends ShopBaseService {
         List<Integer> ids =new ArrayList<>();
         pageResult.getDataList().forEach(item->{
             item.setCommNoteLength(item.getCommNote().length());
-            if (item.getIsAnonymou().equals(BaseConstant.YES)){
+            if (BaseConstant.YES.equals(item.getIsAnonymou())&&! BaseConstant.YES.equals(param.getHasDelete())){
                 item.setUserName(DoctorCommentConstant.DOCTOR_COMMENT_ANONYMOU_NAME);
             }
             ids.add(item.getId());

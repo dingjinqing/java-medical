@@ -17,7 +17,11 @@ public class DoctorCommentDo {
     private Integer   userId;
     private String    userName;
     private Integer   patientId;
+    private String    patientName;
     private Integer   doctorId;
+    private String    doctorCode;
+    private String    doctorName;
+    private Integer   orderId;
     private String    orderSn;
     private Integer   imSessionId;
     private Byte      stars;
