@@ -82,8 +82,9 @@ global.wxPage({
           util.jumpLink('/pages/usercenter/usercenter','reLaunch')
         });
       } else{
-        util.showModal('提示',res.message);
-        util.jumpLink('/pages/usercenter/usercenter','reLaunch')
+        util.showModal('提示',res.message,()=>{
+          util.jumpLink('/pages/usercenter/usercenter','reLaunch')
+        });
       }
     },{
       doctorName: this.data.name,

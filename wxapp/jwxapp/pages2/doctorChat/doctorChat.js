@@ -189,18 +189,19 @@ global.wxPage({
   chatEnd () {
 
     util.showModal('提示', '确定要结束本次问诊吗？', () => {
-      util.api('/api/wxapp/inquiry/order/status/update', res => {
+      util.api('/api/wxapp/inquiry/order/status/update', async res => {
+        let sessionStatus = await this.statusApi()
         if (res.error === 0) {
           clearInterval(this.timer)
           this.setData({
-            'targetUserInfo.sessionStatus': 4
+            'targetUserInfo.sessionStatus': sessionStatus
           })
           if (this.data.source === 'inquiryList') {
             let pageList = getCurrentPages();
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item => item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: 4
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: sessionStatus
             })
             wx.navigateBack()
           }
@@ -215,10 +216,11 @@ global.wxPage({
   chatContinue () {
 
     util.showModal('提示', '确定要继续问诊吗？', () => {
-      util.api('/api/wxapp/inquiry/order/status/update', res => {
+      util.api('/api/wxapp/inquiry/order/status/update', async res => {
+        let sessionStatus = await this.statusApi()
         if (res.error === 0) {
           this.setData({
-            'targetUserInfo.sessionStatus': 5
+            'targetUserInfo.sessionStatus': sessionStatus
           })
           this.requsetMessage()
           if (this.data.source === 'inquiryList') {
@@ -226,7 +228,7 @@ global.wxPage({
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item => item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: 5
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: sessionStatus
             })
           }
         }
@@ -384,6 +386,20 @@ global.wxPage({
       if (nowTime == pullTime) return this.getTodayTime(time)
     }
     return time
+  },
+  statusApi() {
+    let sessionId = this.data.targetUserInfo.id;
+    let url = `/api/wxapp/im/session/status/${sessionId}`
+    return new Promise(resolve => [
+      util.api(url, res => {
+        // console.log(res)
+        if (res.error === 0) {
+          resolve(String(res.content))
+        } else {
+          clearInterval(this.statusTimer)
+        }
+      })
+    ])
   },
   onRefresh() {
     if (this._freshing) return
