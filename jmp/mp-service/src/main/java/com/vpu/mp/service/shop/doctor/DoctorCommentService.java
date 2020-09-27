@@ -5,10 +5,13 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorCommentDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorCommentReplyDo;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorCommentReplyDao;
+import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorSortParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentAddParam;
 import com.vpu.mp.service.pojo.shop.doctor.comment.DoctorCommentConstant;
@@ -45,6 +48,8 @@ public class DoctorCommentService extends ShopBaseService {
     @Autowired
     private ImSessionService imSessionService;
     @Autowired
+    private InquiryOrderDao inquiryOrderDao;
+    @Autowired
     private DoctorCommentAutoAuditConfigService doctorCommentAutoAuditConfigService;
     @Autowired
     private PatientDao patientDao;
@@ -75,6 +80,13 @@ public class DoctorCommentService extends ShopBaseService {
             imSessionService.updateSessionEvaluateStatusToAlready(param.getImSessionId());
         }else {
             param.setAuditStatus(DoctorCommentConstant.CHECK_COMMENT_PASS);
+            PatientOneParam oneInfo = patientDao.getOneInfo(param.getPatientId());
+            param.setPatientName(oneInfo.getName());
+            DoctorOneParam doctorInfo = doctorService.getOneInfo(param.getDoctorId());
+            param.setDoctorName(doctorInfo.getName());
+            InquiryOrderDo inquiryOrder = inquiryOrderDao.getByOrderSn(param.getOrderSn());
+            param.setOrderId(inquiryOrder.getOrderId());
+            param.setDoctorCode(doctorInfo.getHospitalCode());
             doctorCommentDao.save(param);
         }
         //更新医师评价

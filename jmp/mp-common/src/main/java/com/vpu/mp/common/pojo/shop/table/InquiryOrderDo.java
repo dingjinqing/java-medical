@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  */
 @Data
 @NoArgsConstructor
-public class InquiryOrderDo {
+public class InquiryOrderDo extends ImSessionDo {
 
     private static final long serialVersionUID = 883131361;
 
