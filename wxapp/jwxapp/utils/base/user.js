@@ -20,9 +20,6 @@ var user = {
           console.log('登录', data)
           api.api("/api/wxapp/login", function (d) {
             console.log('返回信息', d)
-            helper.handleBuriedPoint('login_wxapp', '', [{
-              key: '点击'
-            }])
             if (d.error == 0) {
               cache.setCache("openid", d.content.res.openid);
               cache.setCache("user_id", d.content.user_id);
@@ -33,6 +30,9 @@ var user = {
               cache.setCache("geographic_location", d.content.geographic_location);
               cache.setCache("imageHost",d.content.imageHost);
               cache.setCache("doctor_id",d.content.doctor_id);
+              helper.handleBuriedPoint('login_wxapp', '', [{
+                key: '点击'
+              }])
               if (cb) cb(d.content);
             }
           }, data);
