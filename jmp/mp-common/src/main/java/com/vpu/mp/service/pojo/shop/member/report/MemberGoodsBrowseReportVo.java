@@ -52,7 +52,7 @@ public class MemberGoodsBrowseReportVo {
     /**
      *是否收藏
      */
-    private Integer isCollect;
+    private Integer collect;
 
 
 }

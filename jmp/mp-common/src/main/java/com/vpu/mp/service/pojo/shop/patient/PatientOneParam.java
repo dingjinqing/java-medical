@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.patient;
 import lombok.Data;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -36,7 +37,18 @@ public class  PatientOneParam {
     private String familyDiseaseHistoryStr;
     private String diseaseHistoryNameStr;
     private Integer patientId;
+    /**
+     * 用户ID
+     */
     private Integer userId;
+    /**
+     * 用户昵称
+     */
+    private String wxNickName;
+    /**
+     * 注册时间
+     */
+    private Timestamp createTime;
     /**
      * 处方数量2
      */
