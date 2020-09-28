@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.store.store;
 
 import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.config.SmsApiConfig;
@@ -575,7 +576,7 @@ public class StoreWxService extends ShopBaseService {
     }
 
     public void checkStoreClerkAuth(StoreClerkAuthParam param,StoreAccountVo storeAccountVo, WxAppSessionUser wxAppSessionUser)throws MpException {
-        if(wxAppSessionUser.getUserType()!=null&&!wxAppSessionUser.getUserType().equals(0)){
+        if(wxAppSessionUser.getUserType()!=null&&!AuthConstant.AUTH_TYPE_NORMAL_USER.equals(wxAppSessionUser.getUserType())){
             throw new MpException(JsonResultCode.AUTH_ALREADY_AUTHED);
         }
         if(!checkMobileCode(param)){
