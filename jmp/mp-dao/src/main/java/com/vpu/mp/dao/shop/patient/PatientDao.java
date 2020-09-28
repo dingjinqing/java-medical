@@ -28,6 +28,15 @@ import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
  */
 @Repository
 public class PatientDao extends ShopBaseDao{
+
+    private static final String PRESCRIPTION_AUDIT_FAILED = "处方审核未通过";
+
+    private static final String PRESCRIPTION_AUDIT_NOT_PASSED = "处方未审核";
+
+    private static final String OTC = "OTC";
+
+    private static final Byte PRESCRIPTION_AUDIT_FAILED_CODE = 2;
+
     /**
      * 患者列表
      *
@@ -208,14 +217,17 @@ public class PatientDao extends ShopBaseDao{
      * @return PageResult<PatientMedicineVo> 患者购药记录出参
      */
     public PageResult<PatientMedicineVo> getPatientMedicine(PatientMedicineParam patientMedicineParam) {
-        SelectOnConditionStep<Record10<String, String, String, String, Integer, BigDecimal, String, String, BigDecimal, Timestamp>> select = db().select(
+        SelectOnConditionStep<? extends Record> select = db().select(
               GOODS_MEDICAL_INFO.GOODS_COMMON_NAME
             , GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO
             , GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE
             , GOODS_MEDICAL_INFO.GOODS_APPROVAL_NUMBER
             , ORDER_GOODS.GOODS_NUMBER
             , ORDER_GOODS.GOODS_PRICE
+            , ORDER_GOODS.PRESCRIPTION_OLD_CODE
             , ORDER_GOODS.PRESCRIPTION_CODE
+            , ORDER_GOODS.MEDICAL_AUDIT_TYPE
+            , ORDER_GOODS.MEDICAL_AUDIT_STATUS
             , ORDER_GOODS.ORDER_SN
             , ORDER_GOODS.DISCOUNTED_TOTAL_PRICE
             , ORDER_GOODS.CREATE_TIME).from(ORDER_GOODS)
@@ -224,8 +236,23 @@ public class PatientDao extends ShopBaseDao{
             .leftJoin(GOODS_MEDICAL_INFO)
             .on(ORDER_GOODS.GOODS_ID.eq(GOODS_MEDICAL_INFO.GOODS_ID));
         patientMedicineBuildOptions(select, patientMedicineParam);
-        return this.getPageResult(select, patientMedicineParam.getCurrentPage(),
+        PageResult<PatientMedicineVo> pageResult = this.getPageResult(select, patientMedicineParam.getCurrentPage(),
             patientMedicineParam.getPageRows(), PatientMedicineVo.class);
+        pageResult.getDataList().forEach(patientMedicineVo -> {
+            if (patientMedicineVo.getMedicalAuditType() == 1 && patientMedicineVo.getMedicalAuditStatus() == 0) {
+                patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_NOT_PASSED);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
+            }
+            if (patientMedicineVo.getMedicalAuditType() == 1 && PRESCRIPTION_AUDIT_FAILED_CODE.equals(patientMedicineVo.getMedicalAuditStatus())) {
+                patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_FAILED);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
+            }
+            if (patientMedicineVo.getMedicalAuditType() == 0) {
+                patientMedicineVo.setPrescriptionCode(OTC);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
+            }
+        });
+        return pageResult;
     }
 
     /**
@@ -233,8 +260,7 @@ public class PatientDao extends ShopBaseDao{
      * @param select 查询实体
      * @param patientMedicineParam 患者条件查询入参
      */
-    private void patientMedicineBuildOptions(SelectOnConditionStep<Record10<String, String, String, String, Integer,
-        BigDecimal, String, String, BigDecimal, Timestamp>> select, PatientMedicineParam patientMedicineParam) {
+    private void patientMedicineBuildOptions(SelectOnConditionStep<? extends Record> select, PatientMedicineParam patientMedicineParam) {
         if (patientMedicineParam.getGoodsCommonName() != null && patientMedicineParam.getGoodsCommonName().trim().length() > 0) {
             select.where(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.like(likeValue(patientMedicineParam.getGoodsCommonName().trim())));
         }
