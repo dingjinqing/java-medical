@@ -28,6 +28,15 @@ import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
  */
 @Repository
 public class PatientDao extends ShopBaseDao{
+
+    private static final String PRESCRIPTION_AUDIT_FAILED = "处方审核未通过";
+
+    private static final String PRESCRIPTION_AUDIT_NOT_PASSED = "处方未审核";
+
+    private static final String OTC = "OTC";
+
+    private static final Byte PRESCRIPTION_AUDIT_FAILED_CODE = 2;
+
     /**
      * 患者列表
      *
@@ -231,16 +240,16 @@ public class PatientDao extends ShopBaseDao{
             patientMedicineParam.getPageRows(), PatientMedicineVo.class);
         pageResult.getDataList().forEach(patientMedicineVo -> {
             if (patientMedicineVo.getMedicalAuditType() == 1 && patientMedicineVo.getMedicalAuditStatus() == 0) {
-                patientMedicineVo.setPrescriptionCode("处方未审核");
-                patientMedicineVo.setIsCanSkipPrescription((byte)0);
+                patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_NOT_PASSED);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
             }
-            if (patientMedicineVo.getMedicalAuditType() == 1 && patientMedicineVo.getMedicalAuditStatus() == 2) {
-                patientMedicineVo.setPrescriptionCode("处方审核未通过");
-                patientMedicineVo.setIsCanSkipPrescription((byte)0);
+            if (patientMedicineVo.getMedicalAuditType() == 1 && PRESCRIPTION_AUDIT_FAILED_CODE.equals(patientMedicineVo.getMedicalAuditStatus())) {
+                patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_FAILED);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
             }
             if (patientMedicineVo.getMedicalAuditType() == 0) {
-                patientMedicineVo.setPrescriptionCode("非处方药");
-                patientMedicineVo.setIsCanSkipPrescription((byte)0);
+                patientMedicineVo.setPrescriptionCode(OTC);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
             }
         });
         return pageResult;
