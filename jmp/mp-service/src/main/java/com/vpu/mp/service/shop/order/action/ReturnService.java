@@ -210,10 +210,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 更改处方返利信息
      * @param returnGoods
-     * @param returnOrderRecord
      * @param order
      */
-    public void updatePrescriptionRebateStatus(List<OrderReturnGoodsVo> returnGoods, ReturnOrderRecord returnOrderRecord, OrderInfoVo order){
+    public void updatePrescriptionRebateStatus(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order){
         if(CollectionUtils.isEmpty(returnGoods)) {
             return;
         }
@@ -251,17 +250,16 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
             //更新实际返利金额
             prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney,platformRealRebateTotalMoney);
-            if(returnOrderRecord.getRefundStatus().equals(OrderConstant.REFUND_STATUS_FINISH)){
-                List<OrderGoodsDo> orderGoodsDoList=orderGoodsDao.getByPrescription(preCode);
-                int returnNums=orderGoodsDoList.stream().collect(Collectors.summingInt(OrderGoodsDo::getReturnNumber));
-                int goodsNums=orderGoodsDoList.stream().collect(Collectors.summingInt(OrderGoodsDo::getGoodsNumber));
-                //商品退完
-                if(goodsNums==returnNums){
-                    //更改处方返利状态
-                    prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATE_FAIL,PrescriptionRebateConstant.REASON_RETURNED);
-                    prescriptionDao.updateSettlementFlag(preCode,PrescriptionConstant.SETTLEMENT_NOT);
-                }
+            List<OrderGoodsDo> orderGoodsDoList=orderGoodsDao.getByPrescription(preCode);
+            int returnNums=orderGoodsDoList.stream().mapToInt(OrderGoodsDo::getReturnNumber).sum();
+            int goodsNums=orderGoodsDoList.stream().mapToInt(OrderGoodsDo::getGoodsNumber).sum();
+            //商品退完
+            if(goodsNums==returnNums){
+                //更改处方返利状态
+                prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATE_FAIL,PrescriptionRebateConstant.REASON_RETURNED);
+                prescriptionDao.updateSettlementFlag(preCode,PrescriptionConstant.SETTLEMENT_NOT);
             }
+
         }
 
     }
@@ -842,7 +840,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //返利金额重新计算
         calculate.recalculationRebate(returnGoods, orderGoods.getOrderGoods(order.getOrderSn(), returnGoods.stream().map(OrderReturnGoodsVo::getRecId).collect(Collectors.toList())), order.getOrderSn());
         //医师处方返利金额重新计算
-        updatePrescriptionRebateStatus(returnGoods,returnOrderRecord,order);
+        updatePrescriptionRebateStatus(returnGoods,order);
         //平台返利
         updatePlatformRebate(returnGoods);
         // 发送退款成功模板消息
