@@ -42,7 +42,7 @@ public class UserGoodsRecordDao extends ShopBaseDao {
                         DSL.countDistinct(PRESCRIPTION_ITEM.ID).as(MemberGoodsBrowseReportVo.PRESCRIPTIONNUM),
                         DSL.countDistinct(USER_CART_RECORD.ID).as(MemberGoodsBrowseReportVo.ADDCARTNUM),
                         DSL.countDistinct(USER_COLLECTION.ID).as(MemberGoodsBrowseReportVo.COLLECT),
-                        DSL.countDistinct(ORDER_GOODS.REC_ID).as(MemberGoodsBrowseReportVo.GOODSNAME)
+                        DSL.countDistinct(ORDER_GOODS.REC_ID).as(MemberGoodsBrowseReportVo.BUYGOODSNUM)
                         )
                 .from(USER_GOODS_RECORD)
                 .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_ID.eq(USER_GOODS_RECORD.GOODS_ID))
