@@ -187,6 +187,13 @@ export function getArticleList (data) {
     data
   })
 }
+// 公告详情
+export function getArticleDetail (articleId) {
+  return service({
+    url: `/api/store/overview/article/get/${articleId}`,
+    method: 'get'
+  })
+}
 // 获取门店下拉列表数据
 export function getAllStoreList (data) {
   return service({

@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.patient;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -14,8 +15,16 @@ public class PatientListParam {
     private Integer pageRows;
     private String name;
     private String mobile;
-    private Integer userId=0;
+    private Integer userId = 0;
     private List<Integer> patientIds;
+    /**
+     * 注册时间上界
+     */
+    private Timestamp startTime;
+    /**
+     * 注册时间下界
+     */
+    private Timestamp endTime;
 
     @Override
     public String toString() {

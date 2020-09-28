@@ -28,7 +28,7 @@
           <text bindtap="toggleIsPharmacist" class="iconfont {{isPharmacist ? 'iconduoxuan' : 'iconduoxuanbiankuang'}}"></text>
         </view>
       </view>
-      <view class="sign-button" wx:if="{{!showCanvas && isPharmacist && !clerkImagePath.imgUrl}}" bindtap="showCanvasContent">
+      <view class="sign-button" wx:if="{{!showCanvas && isPharmacist}}" bindtap="showCanvasContent">
         <image src="{{imageUrl}}image/wxapp/sign_icon.png"></image><text>点击此处签名</text>
       </view>
       <view class="clerk-image-content" wx:if="{{clerkImagePath.imgUrl}}">

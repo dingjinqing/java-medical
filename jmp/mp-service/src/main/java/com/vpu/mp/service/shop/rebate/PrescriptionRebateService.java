@@ -15,11 +15,13 @@ import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
 import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateListParam;
@@ -29,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateVo;
 import com.vpu.mp.service.pojo.shop.rebate.RebateReportConstant;
 import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,8 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
 /**
  * @author yangpengcheng
@@ -59,6 +64,8 @@ public class PrescriptionRebateService extends ShopBaseService {
     private OrderGoodsDao orderGoodsDao;
     @Autowired
     private PrescriptionDao prescriptionDao;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
 
     /**
      * 处方返利信息入库
@@ -85,7 +92,14 @@ public class PrescriptionRebateService extends ShopBaseService {
      * @param order
      */
     public void updatePrescriptionItem( List<PrescriptionItemDo> itemList,OrderInfoDo order,RebateConfig rebateConfig){
-        Double sums=itemList.stream().collect(Collectors.summingDouble(PrescriptionItemDo::getDragSumNum));
+        List<OrderGoodsRecord> goodsRecordList = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsRecord.class);
+        goodsRecordList = goodsRecordList.stream().filter(goodsRecord -> {
+            if (YES == goodsRecord.getIsGift()) {
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+        Integer sums=goodsRecordList.stream().collect(Collectors.summingInt(OrderGoodsRecord::getGoodsNumber));
         BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), BigDecimal.valueOf(sums), RoundingMode.HALF_UP);
 
         for(PrescriptionItemDo item:itemList){
@@ -103,7 +117,6 @@ public class PrescriptionRebateService extends ShopBaseService {
                 item.setRebateProportion(noRxProportion);
                 item.setPlatformRebateProportion(platformNoRxProportion);
             }
-//            OrderGoodsDo orderGoodsDo=orderGoodsDao.getByOrderIdGoodsIdPrdId(order.getOrderId(),item.getGoodsId(),item.getPrdId());
             OrderGoodsDo orderGoodsDo=orderGoodsDao.getByPrescriptionDetailCode(item.getPrescriptionDetailCode());
             //可计算返利商品金额
             BigDecimal canRebateMoney = BigDecimalUtil.subtrac(orderGoodsDo.getDiscountedTotalPrice(), BigDecimalUtil.multiply(avgScoreDiscount, new BigDecimal(orderGoodsDo.getGoodsNumber())));

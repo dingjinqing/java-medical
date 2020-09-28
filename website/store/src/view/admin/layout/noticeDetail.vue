@@ -37,7 +37,7 @@
 </template>
 <script>
 // 引入组件
-// import { noticeDetailRequest } from '@/api/admin/survey.js'
+import { getArticleDetail } from '@/api/store/store'
 export default {
   components: {
   },
@@ -54,11 +54,12 @@ export default {
   },
   methods: {
     handleClick () {
-    //   noticeDetailRequest({ articleId: this.id }).then((res) => {
-    //     if (res.error === 0) {
-    //       this.detailData = res.content
-    //     }
-    //   })
+      console.log(this.id)
+      getArticleDetail(this.id).then((res) => {
+        if (res.error === 0) {
+          this.detailData = res.content
+        }
+      })
     }
   }
 }
