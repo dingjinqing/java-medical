@@ -2,7 +2,7 @@
   var getStatus = function(status){
     var statusName = {
       '1':'处理中',
-      '2':'处理中',
+      '2':'已驳回',
       '3':'处理中',
       '4':'已提现',
       '5':'处理中'
