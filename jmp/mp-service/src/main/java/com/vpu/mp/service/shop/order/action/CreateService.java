@@ -467,6 +467,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void addPlatformRebate(OrderInfoRecord order){
         List<OrderGoodsRecord> goodsRecordList = orderGoods.getByOrderId(order.getOrderId()).into(OrderGoodsRecord.class);
+        //过滤符合平台返利条件
+        goodsRecordList = goodsRecordList.stream().filter(goodsRecord -> {
+            if (YES == goodsRecord.getIsGift()) {
+                return false;
+            }
+            return OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT.equals(goodsRecord.getMedicalAuditType());
+        }).collect(Collectors.toList());
         Integer sums=goodsRecordList.stream().collect(Collectors.summingInt(OrderGoodsRecord::getGoodsNumber));
         BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), BigDecimal.valueOf(sums), RoundingMode.HALF_UP);
 
