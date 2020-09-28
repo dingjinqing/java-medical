@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
 
-    private static final long serialVersionUID = 1260950177;
+    private static final long serialVersionUID = -1096039334;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order</code>
@@ -208,6 +208,16 @@ public class InquiryOrder extends TableImpl<InquiryOrderRecord> {
      * The column <code>mini_shop_471752.b2c_inquiry_order.total_rebate_money</code>. 返利金额
      */
     public final TableField<InquiryOrderRecord, BigDecimal> TOTAL_REBATE_MONEY = createField("total_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.platform_rebate_proportion</code>. 平台返利比例
+     */
+    public final TableField<InquiryOrderRecord, BigDecimal> PLATFORM_REBATE_PROPORTION = createField("platform_rebate_proportion", org.jooq.impl.SQLDataType.DECIMAL(6, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "平台返利比例");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order.platform_rebate_money</code>. 平台返利比例
+     */
+    public final TableField<InquiryOrderRecord, BigDecimal> PLATFORM_REBATE_MONEY = createField("platform_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 4).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.0000", org.jooq.impl.SQLDataType.DECIMAL)), this, "平台返利比例");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order.is_delete</code>. 删除

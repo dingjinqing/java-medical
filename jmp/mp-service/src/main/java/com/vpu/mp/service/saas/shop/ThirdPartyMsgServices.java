@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.db.main.tables.records.*;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountEditParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import org.jooq.impl.DSL;
@@ -17,10 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
-import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.main.tables.records.ThirdPartyServicesRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -98,7 +95,9 @@ public class ThirdPartyMsgServices extends MainBaseService {
 	}
 
 	private boolean sendSingleMessage(OrderInfoRecord order, String officialOpenId,Byte accountAction,Integer accountId) {
-		MpOfficialAccountUserRecord userAccount = mpOfficialAccountUserService.getUser(bindAppId, officialOpenId);
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(order.getShopId());
+        String officialAppId=wxapp.getLinkOfficialAppId();
+        MpOfficialAccountUserRecord userAccount = mpOfficialAccountUserService.getUser(officialAppId, officialOpenId);
 		if (userAccount == null) {
 			return false;
 		}
@@ -107,7 +106,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		if (StringUtils.isEmpty(userAccount.getUnionid())) {
 			logger().info("没有登录过小程序");
 			com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord user = saas
-					.getShopApp(order.getShopId()).officialAccountUser.getUser(bindAppId, userAccount.getOpenid());
+					.getShopApp(order.getShopId()).officialAccountUser.getUser(officialAppId, userAccount.getOpenid());
 			userIdList.add(user.getRecId());
 			mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER;
 		} else {

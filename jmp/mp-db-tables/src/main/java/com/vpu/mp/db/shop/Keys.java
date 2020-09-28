@@ -316,6 +316,7 @@ public class Keys {
     public static final Identity<UserCollectionActionRecord, Integer> IDENTITY_USER_COLLECTION_ACTION = Identities0.IDENTITY_USER_COLLECTION_ACTION;
     public static final Identity<StoreGoodsRecord, Integer> IDENTITY_STORE_GOODS = Identities0.IDENTITY_STORE_GOODS;
     public static final Identity<GoodsChronicCoupleRecord, Integer> IDENTITY_GOODS_CHRONIC_COUPLE = Identities0.IDENTITY_GOODS_CHRONIC_COUPLE;
+    public static final Identity<OrderGoodsPlatformRebateRecord, Integer> IDENTITY_ORDER_GOODS_PLATFORM_REBATE = Identities0.IDENTITY_ORDER_GOODS_PLATFORM_REBATE;
 
 
 
@@ -624,6 +625,7 @@ public class Keys {
     public static final UniqueKey<DoctorLoginLogRecord> KEY_B2C_DOCTOR_LOGIN_LOG_PRIMARY = UniqueKeys0.KEY_B2C_DOCTOR_LOGIN_LOG_PRIMARY;
     public static final UniqueKey<UserCollectionActionRecord> KEY_B2C_USER_COLLECTION_ACTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_COLLECTION_ACTION_PRIMARY;
     public static final UniqueKey<GoodsChronicCoupleRecord> KEY_B2C_GOODS_CHRONIC_COUPLE_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_CHRONIC_COUPLE_PRIMARY;
+    public static final UniqueKey<OrderGoodsPlatformRebateRecord> KEY_B2C_ORDER_GOODS_PLATFORM_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_PLATFORM_REBATE_PRIMARY;
 
 
 
@@ -910,6 +912,8 @@ public class Keys {
 
         public static Identity<StoreGoodsRecord, Integer> IDENTITY_STORE_GOODS = Internal.createIdentity(StoreGoods.STORE_GOODS, StoreGoods.STORE_GOODS.ID);
         public static Identity<GoodsChronicCoupleRecord, Integer> IDENTITY_GOODS_CHRONIC_COUPLE = Internal.createIdentity(GoodsChronicCouple.GOODS_CHRONIC_COUPLE, GoodsChronicCouple.GOODS_CHRONIC_COUPLE.ID);
+        public static Identity<OrderGoodsPlatformRebateRecord, Integer> IDENTITY_ORDER_GOODS_PLATFORM_REBATE = Internal.createIdentity(OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE, OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE.ID);
+
     }
 
     private static class UniqueKeys0 {
@@ -1218,6 +1222,7 @@ public class Keys {
         public static final UniqueKey<DoctorLoginLogRecord> KEY_B2C_DOCTOR_LOGIN_LOG_PRIMARY = Internal.createUniqueKey(DoctorLoginLog.DOCTOR_LOGIN_LOG, "KEY_b2c_doctor_login_log_PRIMARY", DoctorLoginLog.DOCTOR_LOGIN_LOG.ID);
         public static final UniqueKey<UserCollectionActionRecord> KEY_B2C_USER_COLLECTION_ACTION_PRIMARY = Internal.createUniqueKey(UserCollectionAction.USER_COLLECTION_ACTION, "KEY_b2c_user_collection_action_PRIMARY", UserCollectionAction.USER_COLLECTION_ACTION.ID);
         public static final UniqueKey<GoodsChronicCoupleRecord> KEY_B2C_GOODS_CHRONIC_COUPLE_PRIMARY = Internal.createUniqueKey(GoodsChronicCouple.GOODS_CHRONIC_COUPLE, "KEY_b2c_goods_chronic_couple_PRIMARY", GoodsChronicCouple.GOODS_CHRONIC_COUPLE.ID);
+        public static final UniqueKey<OrderGoodsPlatformRebateRecord> KEY_B2C_ORDER_GOODS_PLATFORM_REBATE_PRIMARY = Internal.createUniqueKey(OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE, "KEY_b2c_order_goods_platform_rebate_PRIMARY", OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE.ID);
 
     }
 }

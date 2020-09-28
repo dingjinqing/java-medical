@@ -1,4 +1,4 @@
-// pages/signature/signature.js
+const util = require("../../utils/util");
 global.wxPage({
 
 	/**
@@ -9,7 +9,20 @@ global.wxPage({
   },
   clearBoard(){
     this.selectComponent('#sign').clear()
-  },
+	},
+	cancel(){
+		wx.navigateBack()
+	},
+	confirm(){
+		this.selectComponent('#sign').createImage('','',(res)=>{
+			let pageList = getCurrentPages()
+			let prevPage = pageList[pageList.length - 2]
+			prevPage.setData({
+				clerkImagePath: {...res.content},
+			})
+			wx.navigateBack()
+		})
+	},
 
 
 

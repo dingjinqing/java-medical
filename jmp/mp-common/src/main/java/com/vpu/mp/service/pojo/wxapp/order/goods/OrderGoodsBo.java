@@ -29,6 +29,18 @@ public class OrderGoodsBo {
     @RedisLockField
 	private Integer goodsId;
 	private String goodsName;
+    /**
+     * 规格参数
+     */
+    private String goodsQualityRatio;
+    /**
+     * 生产厂家
+     */
+    private String goodsProductionEnterprise;
+    /**
+     * 批准文号
+     */
+    private String goodsApprovalNumber;
 	private String goodsSn;
 	private Integer productId;
 	private String productSn;

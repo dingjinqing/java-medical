@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InquiryOrderRebate extends TableImpl<InquiryOrderRebateRecord> {
 
-    private static final long serialVersionUID = 927823598;
+    private static final long serialVersionUID = 183222829;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_inquiry_order_rebate</code>
@@ -82,6 +82,11 @@ public class InquiryOrderRebate extends TableImpl<InquiryOrderRebateRecord> {
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.total_rebate_money</code>. 返利金额
      */
     public final TableField<InquiryOrderRebateRecord, BigDecimal> TOTAL_REBATE_MONEY = createField("total_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.platform_rebate_money</code>. 平台返利比例
+     */
+    public final TableField<InquiryOrderRebateRecord, BigDecimal> PLATFORM_REBATE_MONEY = createField("platform_rebate_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "平台返利比例");
 
     /**
      * The column <code>mini_shop_471752.b2c_inquiry_order_rebate.status</code>. 状态  0待返利 1已返利

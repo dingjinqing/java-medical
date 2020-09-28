@@ -16,7 +16,8 @@ var user_block = 0;
 var card_no;
 global.wxComponent({
   properties: {
-    comColor: String
+    comColor: String,
+    clerkImagePath:Object
   },
   /**
    * 页面的初始数据

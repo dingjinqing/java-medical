@@ -153,6 +153,7 @@ public class WxAppOrderController extends WxAppBaseController{
      */
     @PostMapping("/operation")
     public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
+        param.setPlatform(OrderConstant.PLATFORM_WXAPP);
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
