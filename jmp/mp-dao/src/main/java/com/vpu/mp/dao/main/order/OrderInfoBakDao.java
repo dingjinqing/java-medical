@@ -89,7 +89,12 @@ public class OrderInfoBakDao extends MainBaseDao {
                 sum(DSL.iif(ORDER_INFO_BAK.ORDER_MEDICAL_TYPE.eq(BaseConstant.YES),ORDER_INFO_BAK.MONEY_PAID.add(ORDER_INFO_BAK.USE_ACCOUNT),BigDecimal.ZERO)).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_AMOUNT)
         )
                 .from(ORDER_INFO_BAK)
-                .where(ORDER_INFO_BAK.CREATE_TIME.between(startTime, endTime));
+                .where(ORDER_INFO_BAK.CREATE_TIME.between(startTime, endTime))
+                .and(ORDER_INFO_BAK.ORDER_STATUS.notIn(
+                        OrderConstant.ORDER_WAIT_PAY,
+                        OrderConstant.ORDER_CANCELLED,
+                        OrderConstant.ORDER_CLOSED
+                ));
         if (shopId!=null&&shopId>0){
             where.and(ORDER_INFO_BAK.SHOP_ID.eq(shopId));
         }
