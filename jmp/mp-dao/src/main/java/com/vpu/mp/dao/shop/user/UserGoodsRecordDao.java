@@ -71,30 +71,30 @@ public class UserGoodsRecordDao extends ShopBaseDao {
         }
         if (param.getIsAddCart()!=null){
             if (param.getIsAddCart().equals(BaseConstant.NO)){
-                where.and(DSL.countDistinct(USER_CART_RECORD.ID).eq(BaseConstant.NO.intValue()));
+                where.having(DSL.countDistinct(USER_CART_RECORD.ID).eq(BaseConstant.NO.intValue()));
             }else {
-                where.and(DSL.countDistinct(USER_CART_RECORD.ID).ge(BaseConstant.YES.intValue()));
+                where.having(DSL.countDistinct(USER_CART_RECORD.ID).ge(BaseConstant.YES.intValue()));
             }
         }
         if (param.getIsBuy()!=null){
             if (BaseConstant.NO.equals(param.getIsBuy())){
-                where.and(DSL.countDistinct(ORDER_GOODS.REC_ID).eq(BaseConstant.NO.intValue()));
+                where.having(DSL.countDistinct(ORDER_GOODS.REC_ID).eq(BaseConstant.NO.intValue()));
             }else {
-                where.and(DSL.countDistinct(ORDER_GOODS.REC_ID).ge(BaseConstant.YES.intValue()));
+                where.having(DSL.countDistinct(ORDER_GOODS.REC_ID).ge(BaseConstant.YES.intValue()));
             }
         }
         if (param.getIsCollect()!=null){
             if (BaseConstant.NO.equals(param.getIsCollect())){
-                where.and(DSL.countDistinct(USER_COLLECTION.ID).eq(BaseConstant.NO.intValue()));
+                where.having(DSL.countDistinct(USER_COLLECTION.ID).eq(BaseConstant.NO.intValue()));
             }else {
-                where.and(DSL.countDistinct(USER_COLLECTION.ID).ge(BaseConstant.YES.intValue()));
+                where.having(DSL.countDistinct(USER_COLLECTION.ID).ge(BaseConstant.YES.intValue()));
             }
         }
         if (param.getIsPrescription()!=null){
             if (BaseConstant.NO.equals(param.getIsPrescription())){
-                where.and(DSL.countDistinct(PRESCRIPTION_ITEM.ID).eq(BaseConstant.NO.intValue()));
+                where.having(DSL.countDistinct(PRESCRIPTION_ITEM.ID).eq(BaseConstant.NO.intValue()));
             }else {
-                where.and(DSL.countDistinct(PRESCRIPTION_ITEM.ID).ge(BaseConstant.YES.intValue()));
+                where.having(DSL.countDistinct(PRESCRIPTION_ITEM.ID).ge(BaseConstant.YES.intValue()));
             }
         }
     }
