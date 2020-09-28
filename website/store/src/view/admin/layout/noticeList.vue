@@ -20,7 +20,7 @@
           <p>{{ item.desc }}</p>
         </div>
         <div class="rightContent">
-          <p>2019-09-06 10:10:16</p>
+          <p>{{item.updateTime}}</p>
           <el-button
             size="small"
             @click="detailHandler(item.articleId)"
@@ -43,7 +43,7 @@
 <script>
 // 引入组件
 import pagination from '@/components/admin/pagination/pagination'
-// import { noticeListRequest } from '@/api/admin/survey.js'
+import { getArticleList } from '@/api/store/store'
 export default {
   components: {
     pagination
@@ -61,18 +61,18 @@ export default {
   },
   methods: {
     handleClick () {
-    //   let obj = {
-    //     page: {
-    //       currentPage: '1',
-    //       pageRows: '20'
-    //     }
-    //   }
-      //   noticeListRequest(obj).then((res) => {
-      //     if (res.error === 0) {
-      //       this.noticeList = res.content.dataList
-      //       this.pageParams = res.content.page
-      //     }
-      //   })
+      let obj = {
+        page: {
+          currentPage: '1',
+          pageRows: '20'
+        }
+      }
+      getArticleList(obj).then((res) => {
+        if (res.error === 0) {
+          this.noticeList = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
     },
 
     // 详情
