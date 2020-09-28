@@ -49,7 +49,7 @@ public class UserGoodsRecordDao extends ShopBaseDao {
                 .leftJoin(PRESCRIPTION).on(PRESCRIPTION.USER_ID.eq(USER_GOODS_RECORD.USER_ID))
                 .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.GOODS_ID.eq(USER_GOODS_RECORD.GOODS_ID)
                         .and(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
-                        .and(PRESCRIPTION.USER_ID.eq(USER_CART_RECORD.USER_ID)))
+                        .and(PRESCRIPTION.USER_ID.eq(USER_GOODS_RECORD.USER_ID)))
                 .leftJoin(USER_CART_RECORD).on(USER_CART_RECORD.GOODS_ID.eq(USER_GOODS_RECORD.GOODS_ID)
                         .and(USER_CART_RECORD.USER_ID.eq(USER_GOODS_RECORD.USER_ID)))
                 .leftJoin(USER_COLLECTION).on(USER_COLLECTION.GOODS_ID.eq(USER_GOODS_RECORD.GOODS_ID)
@@ -66,7 +66,7 @@ public class UserGoodsRecordDao extends ShopBaseDao {
     }
 
     private void paramBbuildSelect(MemberGoodsBrowseReportParam param, SelectConditionStep<? extends Record> where) {
-        if (param.getGoodsName()!=null&& Strings.isEmpty(param.getGoodsName().trim())){
+        if (param.getGoodsName()!=null&&! Strings.isEmpty(param.getGoodsName().trim())){
             where.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(param.getGoodsName()));
         }
         if (param.getIsAddCart()!=null){
