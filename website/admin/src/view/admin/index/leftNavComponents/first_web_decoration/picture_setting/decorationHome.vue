@@ -2,13 +2,11 @@
   <div class="decHomeContainer">
     <div class="decHomeMain">
       <div class="top">
-        <span>{{$t('decorationHome.libraryName')}}</span><span>{{$t('decorationHome.libraryNameTips')}}</span>
+        <span>{{ $t('decorationHome.libraryName') }}</span
+        ><span>{{ $t('decorationHome.libraryNameTips') }}</span>
       </div>
       <div class="content">
-        <div
-          class="decLeft"
-          :class="columnFlag?'':'tapsClass'"
-        >
+        <div class="decLeft" :class="columnFlag ? '' : 'tapsClass'">
           <el-tabs v-model="activeName">
             <el-tab-pane
               :label="$t('decorationHome.imageAndText')"
@@ -26,90 +24,90 @@
             >
             </el-tab-pane>
           </el-tabs>
-          <vue-scroll
-            :ops="ops"
-            style="height:520px"
-          >
+          <vue-scroll :ops="ops" style="height: 520px">
             <div id="listLeft">
               <div
-                v-for="(item,key) in nowShowLeftModules"
+                v-for="(item, key) in nowShowLeftModules"
                 :key="item.id"
                 class="picTextConDivList"
-                :class="item.flag?'third_drag':''"
+                :class="item.flag ? 'third_drag' : ''"
                 :dataId="item.id"
-                @click="handleToClickLeftModule(item.id,item.flag)"
-                :style="leftComClass?'justify-content:space-between ':''"
+                @click="handleToClickLeftModule(item.id, item.flag)"
+                :style="leftComClass ? 'justify-content:space-between ' : ''"
               >
-                <img :src="item.flag?item.imgUrl:item.noJurisdictionUurl">
+                <img :src="item.flag ? item.imgUrl : item.noJurisdictionUurl" />
                 <!--无权限时右上角问号-->
                 <img
                   class="questionMark"
                   v-if="!item.flag"
-                  :src="$imageHost+'/image/admin/system_icon.png'"
-                >
+                  :src="$imageHost + '/image/admin/system_icon.png'"
+                />
                 <!--无权限隐藏模块显示-->
                 <div
                   v-if="!item.flag"
                   class="system_info_content2"
-                  :style="key%2 !==0?'left:-110px':''"
+                  :style="key % 2 !== 0 ? 'left:-110px' : ''"
                 >
                   <div class="system_info_content_top">该模块仅旗舰版可用</div>
                   <div class="system_info_content_bottom">
-                    <el-button
-                      size="small"
-                      type="primary"
-                    >了解更多</el-button>
+                    <el-button size="small" type="primary">了解更多</el-button>
                   </div>
                 </div>
-                <span
-                  :title='item.text'
-                  :class="leftComClass"
-                >{{item.text}}</span>
-
+                <span :title="item.text" :class="leftComClass">{{
+                  item.text
+                }}</span>
               </div>
             </div>
           </vue-scroll>
         </div>
         <div class="decMiddle">
           <div class="decTop">
-            <span>{{pageSetData.page_name}}</span>
+            <span>{{ pageSetData.page_name }}</span>
           </div>
-          <vue-scroll
-            :ops="ops"
-            style="height:530px"
-          >
+          <vue-scroll :ops="ops" style="height: 530px">
             <div
               class="decContent"
-              :style="pageSetData.bg_types===1?`backgroundImage:url('${pageSetData.page_bg_image}');background-repeat:no-repeat;background-size:100% 100%`:`background-color:${pageSetData.page_bg_color}`"
+              :style="
+                pageSetData.bg_types === 1
+                  ? `backgroundImage:url('${pageSetData.page_bg_image}');background-repeat:no-repeat;background-size:100% 100%`
+                  : `background-color:${pageSetData.page_bg_color}`
+              "
             >
-
               <div
                 class="drag_area"
-                :class="zbFlag?'zwHeight':''"
-                style="min-height:530px;"
+                :class="zbFlag ? 'zwHeight' : ''"
+                style="min-height: 530px"
               >
                 <!--放这里-->
                 <div
                   class="hereDaily"
-                  :class="topAreaFlag?'setHere':''"
+                  :class="topAreaFlag ? 'setHere' : ''"
                   @mouseover="dragTopOver()"
                   @mouseout="dragTopOut()"
                   v-if="isDragging"
                 >
-                  <span :class="topAreaFlag?'setHereSpan':''">{{$t('decorationHome.putItHere')}}</span>
+                  <span :class="topAreaFlag ? 'setHereSpan' : ''">{{
+                    $t('decorationHome.putItHere')
+                  }}</span>
                 </div>
                 <!--占位提示-->
                 <div
                   class="zbTips"
                   v-if="!showModulesList.length"
-                  style='z-index:1000'
+                  style="z-index: 1000"
                 >
-                  <div class="drag_notice">{{$t('decorationHome.seizeASeat')}}</div>
+                  <div class="drag_notice">
+                    {{ $t('decorationHome.seizeASeat') }}
+                  </div>
                 </div>
                 <!--拖拽区域-->
                 <draggable
                   class="list-group"
-                  :style="showModulesList.length?'padding-bottom:10px':'padding-bottom:127px'"
+                  :style="
+                    showModulesList.length
+                      ? 'padding-bottom:10px'
+                      : 'padding-bottom:127px'
+                  "
                   element="div"
                   v-model="showModulesList"
                   :options="dragOptions"
@@ -118,42 +116,45 @@
                 >
                   <!--模块列表-->
                   <div
-                    v-for="(item,index) in showModulesList"
+                    v-for="(item, index) in showModulesList"
                     :key="index"
-                    style="width:383px"
+                    style="width: 383px"
                   >
                     <!--模块-->
                     <div
-                      :style="pageSetData.show_margin===1?`margin-bottom:${pageSetData.margin_val}px`:''"
+                      :style="
+                        pageSetData.show_margin === 1
+                          ? `margin-bottom:${pageSetData.margin_val}px`
+                          : ''
+                      "
                       @click.prevent="handleToClickModule(index)"
                     >
                       <components
-                        :is='middleModulesList[item]'
+                        :is="middleModulesList[item]"
                         :flag="index"
                         :middleHereFlag="middleHereFlag"
                         :nowRightShowIndex="nowRightShowIndex"
                         @handleToClickIcon="handleToClickIcon"
-                        @middleDragData='middleDragData'
-                        :backData='modulesData[index]'
+                        @middleDragData="middleDragData"
+                        :backData="modulesData[index]"
                       ></components>
                     </div>
                   </div>
                   <!--模块列表结束-->
                 </draggable>
               </div>
-
             </div>
           </vue-scroll>
         </div>
         <div class="decRight">
           <PageSetup
-            :nowRightShowMoudlesIndex='nowRightShowMoudlesIndex'
+            :nowRightShowMoudlesIndex="nowRightShowMoudlesIndex"
             :nowRightModulesData="nowRightModulesData"
-            :nowRightShowIndex='nowRightShowIndex'
-            :pageSetData='pageSetData'
-            @handleToClearIndex='handleToClearIndex'
-            @handleToBackMiddleData='handleToBackMiddleData'
-            @hanelToPageSet='hanelToPageSet'
+            :nowRightShowIndex="nowRightShowIndex"
+            :pageSetData="pageSetData"
+            @handleToClearIndex="handleToClearIndex"
+            @handleToBackMiddleData="handleToBackMiddleData"
+            @hanelToPageSet="hanelToPageSet"
           />
         </div>
       </div>
@@ -161,19 +162,15 @@
     <!--保存-->
     <div class="footer">
       <div>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleToFooter(0)"
-        >{{$t('pageSetUp.saveAndPublish')}}</el-button>
-        <el-button
-          size="small"
-          @click="handleToFooter(1)"
-        >{{$t('pageSetUp.saveAsDraft')}}</el-button>
-        <el-button
-          size="small"
-          @click="handleToFooter(2)"
-        >{{$t('pageSetUp.previewEffect')}}</el-button>
+        <el-button type="primary" size="small" @click="handleToFooter(0)">{{
+          $t('pageSetUp.saveAndPublish')
+        }}</el-button>
+        <el-button size="small" @click="handleToFooter(1)">{{
+          $t('pageSetUp.saveAsDraft')
+        }}</el-button>
+        <el-button size="small" @click="handleToFooter(2)">{{
+          $t('pageSetUp.previewEffect')
+        }}</el-button>
       </div>
     </div>
     <!--中间模块是否删除弹窗-->
@@ -182,21 +179,20 @@
       :visible.sync="deleteVisible"
       width="30%"
     >
-      <div style="display:flex;justify-content:center"><span>{{$t('pageSetUp.sureToDelete')}}</span></div>
+      <div style="display: flex; justify-content: center">
+        <span>{{ $t('pageSetUp.sureToDelete') }}</span>
+      </div>
 
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          size="small"
-          @click="deleteVisible = false"
-        >{{$t('pageSetUp.cancel')}}</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="deleteVisible = false">{{
+          $t('pageSetUp.cancel')
+        }}</el-button>
         <el-button
           size="small"
           type="primary"
           @click="handleToSureDelete(deleteFlag)"
-        >{{$t('pageSetUp.determine')}}</el-button>
+          >{{ $t('pageSetUp.determine') }}</el-button
+        >
       </span>
     </el-dialog>
     <!--二次保存确认-->
@@ -204,18 +200,16 @@
       :title="$t('decorationHome.pagePublishingReminder')"
       :visible.sync="saveTwoDialogVisible"
       width="30%"
-      :center='true'
+      :center="true"
     >
-      <span>{{$t('decorationHome.pagePublishingReminderTip')}}</span>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="saveTwoDialogVisible = false">{{$t('decorationHome.cancel')}}</el-button>
-        <el-button
-          type="primary"
-          @click="handleToSaveTwo()"
-        >{{$t('decorationHome.determine')}}</el-button>
+      <span>{{ $t('decorationHome.pagePublishingReminderTip') }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="saveTwoDialogVisible = false">{{
+          $t('decorationHome.cancel')
+        }}</el-button>
+        <el-button type="primary" @click="handleToSaveTwo()">{{
+          $t('decorationHome.determine')
+        }}</el-button>
       </span>
     </el-dialog>
     <!--预览弹窗-->
@@ -224,11 +218,8 @@
       :visible.sync="previewVisible"
       width="30%"
     >
-      <div style="padding: 20px 40px;display:flex;justify-content: center">
-        <img
-          style="width:180px;height: 180px"
-          :src="previewCodeImg"
-        >
+      <div style="padding: 20px 40px; display: flex; justify-content: center">
+        <img style="width: 180px; height: 180px" :src="previewCodeImg" />
       </div>
     </el-dialog>
   </div>
@@ -411,13 +402,44 @@ export default {
           this.page_tpl_type = res.content.page_tpl_type
 
           this.isEditSave = true
-          let content = JSON.parse(res.content.page_content)
+          let content = {
+            cat_id: 0,
+            page_cfg: {},
+            page_content: {},
+            page_id: 1,
+            page_name: '首页',
+            page_publish_content: {},
+            page_tpl_type: 3,
+            page_type: 1,
+            ...JSON.parse(res.content.page_content)
+          }
           this.editPageData = content
           console.log(content)
           this.pageSetData.page_name = res.content.page_name
-          this.pageSetData.cat_id = res.content.cat_id
+          this.pageSetData.cat_id = res.content.cat_id || 0
+          content.page_cfg.cat_id = res.content.cat_id || 0
           content.page_cfg.cat_id = JSON.stringify(content.page_cfg.cat_id)
-          this.pageSetData = content.page_cfg
+          this.pageSetData = {
+            'is_ok': 1,
+            'cat_id': '',
+            'page_name': '',
+            'bg_types': 0,
+            'has_bottom': 0,
+            'page_bg_color': '#ffffff',
+            'page_bg_image': '',
+            'show_margin': 0,
+            'margin_val': 0,
+            'last_cur_idx': this.cur_idx,
+            'pictorial': {
+              'is_add': 0,
+              'user_visibility': 0,
+              'share_btn_name': '',
+              'share_desc': '',
+              'share_img_path': '',
+              'name_length': 0
+            },
+            ...content.page_cfg
+          }
           this.cur_idx = content.page_cfg.last_cur_idx
           let moduleDataCopy = JSON.parse(JSON.stringify(content))
           delete moduleDataCopy.page_cfg
