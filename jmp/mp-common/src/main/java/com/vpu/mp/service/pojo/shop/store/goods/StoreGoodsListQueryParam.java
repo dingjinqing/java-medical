@@ -1,10 +1,9 @@
 package com.vpu.mp.service.pojo.shop.store.goods;
 
-import javax.validation.constraints.NotNull;
-
 import com.vpu.mp.common.foundation.util.Page;
-
 import lombok.Data;
+
+import java.util.List;
 
 
 /**
@@ -24,9 +23,13 @@ public class StoreGoodsListQueryParam {
 	private Byte isSync;
 	
 	private String keywords;
-	
-	@NotNull
+
 	private Integer storeId;
+
+	/**用户有权限的门店id集合*/
+	private List<Integer> limitedStoreIds;
+
+	private Byte isSaleOut;
 	/**
      * 	分页信息
      */

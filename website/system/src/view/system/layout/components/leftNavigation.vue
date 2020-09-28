@@ -226,6 +226,12 @@ export default {
             imgUrl_h: this.$imageHost + '/image/system/icon_left/order_admin_h.png',
             span: '咨询订单',
             routeName: 'advisoryTotal'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/system/icon_left/order_admin.png',
+            imgUrl_h: this.$imageHost + '/image/system/icon_left/order_admin_h.png',
+            span: '销售报表',
+            routeName: 'salesReport'
           }
         ],
         setting: [

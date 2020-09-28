@@ -31,6 +31,10 @@ public class MiniShop_471752 extends SchemaImpl {
     private static final long serialVersionUID = -390755599;
 
     /**
+     * 埋点
+     */
+    public final AnchorPoints ANCHOR_POINTS = com.vpu.mp.db.shop.tables.AnchorPoints.ANCHOR_POINTS;
+    /**
      * The table <code>mini_shop_471752.b2c_division_receive_record</code>.
      */
     public final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
@@ -38,7 +42,10 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_4748160.b2c_prize_record</code>.
      */
     public final PrizeRecord PRIZE_RECORD = com.vpu.mp.db.shop.tables.PrizeRecord.PRIZE_RECORD;
-
+    /**
+     * 医师评价回复
+     */
+    public final DoctorCommentReply DOCTOR_COMMENT_REPLY = com.vpu.mp.db.shop.tables.DoctorCommentReply.DOCTOR_COMMENT_REPLY;
 
     /**
      * The table <code>mini_shop_4748160.b2c_pay_award_prize</code>.
@@ -1114,6 +1121,29 @@ public class MiniShop_471752 extends SchemaImpl {
      */
     public final DoctorComment DOCTOR_COMMENT = com.vpu.mp.db.shop.tables.DoctorComment.DOCTOR_COMMENT;
 
+    /**
+     * 门店账户表
+     */
+    public final StoreAccount STORE_ACCOUNT = com.vpu.mp.db.shop.tables.StoreAccount.STORE_ACCOUNT;
+
+    /**
+     * 同城配送账号表
+     */
+    public final CityServiceAccount CITY_SERVICE_ACCOUNT = com.vpu.mp.db.shop.tables.CityServiceAccount.CITY_SERVICE_ACCOUNT;
+    /**
+     * 同城配送订单表
+     */
+    public final CityServiceOrder CITY_SERVICE_ORDER = com.vpu.mp.db.shop.tables.CityServiceOrder.CITY_SERVICE_ORDER;
+    /**
+     * 门店数据概览
+     */
+    public final StoreOrderSummaryTrend STORE_ORDER_SUMMARY_TREND = com.vpu.mp.db.shop.tables.StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND;
+    /**
+     * 科室信息统计
+     */
+    public final DepartmentSummaryTrend DEPARTMENT_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND;
+
+
 
     /**
      * No further instances allowed
@@ -1359,7 +1389,14 @@ public class MiniShop_471752 extends SchemaImpl {
             UserAnnouncement.USER_ANNOUNCEMENT,
             UserDoctorAttention.USER_DOCTOR_ATTENTION,
             DoctorDutyRecord.DOCTOR_DUTY_RECORD,
-            DoctorComment.DOCTOR_COMMENT);
+            DoctorComment.DOCTOR_COMMENT,
+            CityServiceAccount.CITY_SERVICE_ACCOUNT,
+            CityServiceOrder.CITY_SERVICE_ORDER,
+            DoctorCommentReply.DOCTOR_COMMENT_REPLY,
+            StoreAccount.STORE_ACCOUNT,
+            AnchorPoints.ANCHOR_POINTS,
+            StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND,
+            DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND);
 
 
     }

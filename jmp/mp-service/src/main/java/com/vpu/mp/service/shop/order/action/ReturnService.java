@@ -11,7 +11,13 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
-import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
+import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -32,6 +38,9 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateConstant;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -41,10 +50,7 @@ import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import com.vpu.mp.service.shop.order.action.base.IorderOperate;
-import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
-import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
+import com.vpu.mp.service.shop.order.action.base.*;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -65,6 +71,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -74,8 +81,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_ONLY_MONEY;
 
 /**
@@ -128,6 +137,16 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     private AtomicOperation atomicOperation;
     @Autowired
     private WxCardExchangeService wxCardExchange;
+    @Autowired
+    private Calculate calculate;
+    @Autowired
+    private PrescriptionRebateDao prescriptionRebateDao;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private PrescriptionDao prescriptionDao;
+    @Autowired
+    private PrescriptionItemDao prescriptionItemDao;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -181,6 +200,56 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
+     * 更改处方返利信息
+     * @param returnGoods
+     * @param returnOrderRecord
+     * @param orderSn
+     */
+    public void updatePrescriptionRebateStatus(List<OrderReturnGoodsVo> returnGoods, ReturnOrderRecord returnOrderRecord, String orderSn){
+        if(CollectionUtils.isEmpty(returnGoods)) {
+            return;
+        }
+
+        List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(orderSn);
+        preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
+        for(String preCode:preCodeList){
+            PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(preCode);
+            if(prescriptionVo==null||!PrescriptionConstant.SETTLEMENT_WAIT.equals(prescriptionVo.getSettlementFlag())){
+                continue;
+            }
+            List<PrescriptionItemDo> itemList=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);
+            itemList.forEach(item -> {
+                OrderGoodsDo orderGoodsDo=orderGoodsDao.getByPrescriptionDetailCode(item.getPrescriptionDetailCode());
+                //实际返利数量
+                int rebateNumber = orderGoodsDo.getGoodsNumber() - orderGoodsDo.getReturnNumber();
+                //实际返利金额
+                item.setRealRebateMoney(
+                    BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(item.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(rebateNumber), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(orderGoodsDo.getGoodsNumber())))
+                );
+                prescriptionItemDao.updatePrescriptionItem(item);
+            });
+            BigDecimal realRebateTotalMoney=itemList.stream().map(PrescriptionItemDo::getRealRebateMoney).reduce(BIGDECIMAL_ZERO,BigDecimal::add);
+            //更新实际返利金额
+            prescriptionRebateDao.updateRealRebateMoney(preCode,realRebateTotalMoney);
+            if(returnOrderRecord.getRefundStatus().equals(OrderConstant.REFUND_STATUS_FINISH)){
+                List<OrderGoodsDo> orderGoodsDoList=orderGoodsDao.getByPrescription(preCode);
+                int returnNums=orderGoodsDoList.stream().collect(Collectors.summingInt(OrderGoodsDo::getReturnNumber));
+                int goodsNums=orderGoodsDoList.stream().collect(Collectors.summingInt(OrderGoodsDo::getGoodsNumber));
+                //商品退完
+                if(goodsNums==returnNums){
+                    //更改处方返利状态
+                    prescriptionRebateDao.updateStatus(preCode, PrescriptionRebateConstant.REBATE_FAIL,PrescriptionRebateConstant.REASON_RETURNED);
+                    prescriptionDao.updateSettlementFlag(preCode,PrescriptionConstant.SETTLEMENT_NOT);
+                }
+            }
+        }
+
+
+    }
+    /**
      * 审核失败退款
      * @param orderSn
      * @return
@@ -190,7 +259,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(orderRecord.getOrderId());
         //组装退款param
         RefundParam param = new RefundParam();
-        param.setAction((byte) OrderServiceCode.RETURN.ordinal());//1是退款
+        //1是退款
+        param.setAction((byte) OrderServiceCode.RETURN.ordinal());
         param.setIsMp(OrderConstant.IS_MP_DOCTOR);
         param.setOrderSn(orderSn);
         param.setOrderId(orderRecord.getOrderId());
@@ -695,6 +765,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //限次卡退次数
         wxCardExchange.limitCardRefundTimes(order, returnGoods);
         //返利金额重新计算
+        calculate.recalculationRebate(returnGoods, orderGoods.getOrderGoods(order.getOrderSn(), returnGoods.stream().map(OrderReturnGoodsVo::getRecId).collect(Collectors.toList())), order.getOrderSn());
+        //医师处方返利金额重新计算
+        updatePrescriptionRebateStatus(returnGoods,returnOrderRecord,order.getOrderSn());
         // 发送退款成功模板消息
         // 自动同步订单微信购物单
         returnStatusChange.addRecord(returnOrderRecord, param.getIsMp(), "当前退款订单正常结束：" + OrderConstant.RETURN_TYPE_CN[returnOrderRecord.getReturnType()]);
@@ -736,6 +809,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         if (!isRestore) {
             return;
         }
+        orderCreateMpProcessorFactory.processReturnOrder(returnOrderRecord, BaseConstant.ACTIVITY_TYPE_PRESCRIPTION, null, returnGoods);
         //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
         goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
         for (Byte type : goodsType) {
@@ -891,28 +965,28 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     public ApiJsonResult returnOrderApi(ApiReturnParam param) {
         ApiJsonResult result = new ApiJsonResult();
         if (param == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("参数content为空");
             return result;
         }
         if (StringUtils.isBlank(param.getOrderSn())) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("参数order_sn为空");
             return result;
         }
         if (StringUtils.isBlank(param.getRefundType())) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("参数refund_type为空");
             return result;
         }
         if (OrderConstant.API_RETURN_REFUSE.equals(param.getRefundType()) && StringUtils.isBlank(param.getRefuseReason())) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("参数refuse_reason为空");
             return result;
         }
         ReturnOrderRecord rOrder = returnOrder.getByReturnOrderSn(param.getReturnOrderSn());
         if (rOrder == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("退款订单不存在");
             return result;
         }
@@ -954,12 +1028,12 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                         //卖家同意退货申请或者买家提交物流后可以完成退款
                         executeParam.setReturnOperate(null);
                     } else {
-                        result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                        result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
                         result.setMsg("当前退款订单无法执行当前操作");
                         return true;
                     }
                 } else {
-                    result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                    result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
                     result.setMsg("当前退款订单无法执行当前操作");
                     return true;
                 }
@@ -978,12 +1052,12 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                     //卖家同意退货申请或者买家提交物流后可以完成退款
                     executeParam.setReturnOperate(null);
                 } else {
-                    result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                    result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
                     result.setMsg("当前退款订单无法执行当前操作");
                     return true;
                 }
             } else {
-                result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
                 result.setMsg("当前退款订单无法执行当前操作");
                 return true;
             }
@@ -996,16 +1070,16 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 executeParam.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY);
                 executeParam.setApplyNotPassReason(param.getRefuseReason());
             } else {
-                result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
                 result.setMsg("当前退款订单无法执行当前操作");
                 return true;
             }
             ExecuteResult executeResult = saas().getShopApp(getShopId()).orderActionFactory.orderOperate(executeParam);
             if (executeResult == null || executeResult.isSuccess()) {
-                result.setCode(ApiExternalGateConfig.ERROR_CODE_SUCCESS);
+                result.setCode(ApiExternalGateConstant.ERROR_CODE_SUCCESS);
             } else {
                 logger.error("外服系统调用退款接口失败，executeResult：{}", executeResult);
-                result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+                result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
                 result.setMsg(Util.translateMessage(AbstractExcelDisposer.DEFAULT_LANGUAGE, executeResult.getErrorCode().getMessage(), JsonResult.LANGUAGE_TYPE_MSG, executeResult.getErrorParam()));
             }
         }

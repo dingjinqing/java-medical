@@ -5,13 +5,11 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.GoodsMedicalInfo;
-
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
 
 
 /**

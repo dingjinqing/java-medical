@@ -1,15 +1,22 @@
 package com.vpu.mp.service.shop.store.store;
 
+import com.google.common.collect.Maps;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
+import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.db.shop.tables.records.ArticleRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
+import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -17,15 +24,15 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
 import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
 import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsBaseCheckInfo;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsCheckQueryParam;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsCheckQueryVo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
-import com.vpu.mp.service.pojo.shop.store.store.StorePickDetailPojo;
-import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreVo;
+import com.vpu.mp.service.pojo.shop.store.store.*;
+import com.vpu.mp.service.pojo.wxapp.order.address.OrderAddressParam;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
+import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
@@ -36,27 +43,23 @@ import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
+import org.apache.poi.ss.formula.functions.Today;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.DecimalFormat;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
 import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_COURIER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 
@@ -125,6 +128,9 @@ public class StoreService extends ShopBaseService {
     @Autowired
     public StoreWxService wxService;
 
+    @Autowired
+    public TradeService trade;
+
     /**
      * The Reservation.小程序端门店服务预约
      */
@@ -135,16 +141,18 @@ public class StoreService extends ShopBaseService {
      */
     @Autowired
     public ShopOverviewService shopOverviewService;
+    @Autowired
+    public StoreDao storeDao;
+
     /**
      * 门店列表分页查询
-     *
      * @param param
      * @return StorePageListVo
      */
     public StoreVo getPageList(StoreListQueryParam param) {
         SelectWhereStep<? extends Record> select = db().select(
-            STORE.STORE_ID, STORE.STORE_NAME, STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,
-            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE,STORE.CITY_SERVICE
+            STORE.STORE_ID, STORE.STORE_NAME,STORE.STORE_CODE ,STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,
+            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE, STORE.CITY_SERVICE
         ).from(STORE)
             .leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 
@@ -153,17 +161,17 @@ public class StoreService extends ShopBaseService {
         PageResult<StorePageListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StorePageListVo.class);
         Integer totalNum = 0;
         String shopVersion = shopOverviewService.getShopVersion(getShopId());
-        if (ShopConst.ShopType.V_1.equals(shopVersion)){
+        if (ShopConst.ShopType.V_1.equals(shopVersion)) {
             totalNum = 1;
-        }else if(ShopConst.ShopType.V_2.equals(shopVersion)){
+        } else if (ShopConst.ShopType.V_2.equals(shopVersion)) {
             totalNum = 5;
-        }else if(ShopConst.ShopType.V_3.equals(shopVersion)){
+        } else if (ShopConst.ShopType.V_3.equals(shopVersion)) {
             totalNum = 10;
-        }else if(ShopConst.ShopType.V_4.equals(shopVersion)){
+        } else if (ShopConst.ShopType.V_4.equals(shopVersion)) {
             totalNum = 200;
         }
         Integer nowNum = pageResult.getDataList().size();
-        Integer canCreateNum = totalNum-nowNum;
+        Integer canCreateNum = totalNum - nowNum;
         StoreVo storeVo = new StoreVo();
         storeVo.setShopVersion(shopVersion);
         storeVo.setCanCreateNum(canCreateNum);
@@ -175,60 +183,52 @@ public class StoreService extends ShopBaseService {
         if (param == null) {
             return select;
         }
-        if (param.getGroupName() != null && !"".equals(param.getGroupName())) {
-            select.where(STORE_GROUP.GROUP_NAME.eq(param.getGroupName()));
-        }
-        if (param.getGroupId() != null && param.getGroupId() > 0) {
-            select.where(STORE_GROUP.GROUP_ID.eq(param.getGroupId()));
-        }
-        if (param.getIsAuthPos() != null) {
-            if (param.getIsAuthPos()) {
-                select.where(STORE.POS_SHOP_ID.gt(0));
-            } else {
-                select.where(STORE.POS_SHOP_ID.eq(0));
-            }
-        }
         if (!StringUtils.isEmpty(param.getKeywords())) {
-            select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.POS_SHOP_ID.like(param.getKeywords())));
+            select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.STORE_CODE.like(param.getKeywords())));
         }
         //查询条件-营业状态
-        if (!StoreListQueryParam.CONDITION_ALL.equals(param.getBusinessState())){
+        if (param.getBusinessState() != null) {
             select.where(STORE.BUSINESS_STATE.eq(param.getBusinessState()));
         }
         //查询条件-门店自提
-        if (!StoreListQueryParam.CONDITION_ALL_SHORT.equals(param.getAutoPick())){
+        if (param.getAutoPick() != null) {
             select.where(STORE.AUTO_PICK.eq(param.getAutoPick()));
         }
         //查询条件-同城配送
-        if (!StoreListQueryParam.CONDITION_ALL.equals(param.getCityService())){
+        if (param.getCityService() != null) {
             select.where(STORE.CITY_SERVICE.eq(param.getCityService()));
+        }
+        if (param.getManager() != null) {
+            select.where(STORE.MANAGER.like(likeValue(param.getManager())));
+        }
+        //查询条件-门店过滤
+        if (param.getStoreIds() != null) {
+            select.where(STORE.STORE_ID.in(param.getStoreIds()));
         }
         return select;
     }
 
     /**
      * 新增门店
-     *
      * @param store
      * @return
      */
     public Boolean addStore(StorePojo store) {
-        if (store.getPickDetail()!=null){
+        if (store.getPickDetail() != null) {
             store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
         }
         StoreRecord record = new StoreRecord();
         this.assign(store, record);
-        return db().executeInsert(record) > 0 ? true : false;
+        return db().executeInsert(record) > 0;
     }
 
     /**
      * 更新门店
-     *
      * @param store
      * @return
      */
     public Boolean updateStore(StorePojo store) {
-        if (store.getPickDetail()!=null){
+        if (store.getPickDetail() != null) {
             store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
         }
         StoreRecord record = new StoreRecord();
@@ -248,7 +248,7 @@ public class StoreService extends ShopBaseService {
 
             {
                 storeList.forEach(store -> {
-                    if (store.getPickDetail()!=null){
+                    if (store.getPickDetail() != null) {
                         store.setPickTimeDetail(Util.toJson(store.getPickDetail()));
                     }
                     StoreRecord record = new StoreRecord();
@@ -262,7 +262,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 删除门店
-     *
      * @param storeId
      * @return
      */
@@ -272,18 +271,17 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 取单个门店信息
-     *
      * @param storeId
      * @return StorePojo
      */
     public StorePojo getStore(Integer storeId) {
         StoreRecord r = db().fetchOne(STORE, STORE.STORE_ID.eq(storeId));
-        if(r == null){
+        if (r == null) {
             return null;
         }
         StorePojo storePojo = r.into(StorePojo.class);
-        if (!StringUtils.isEmpty(storePojo.getPickTimeDetail())){
-            storePojo.setPickDetail(Util.json2Object(storePojo.getPickTimeDetail(),StorePickDetailPojo.class,false));
+        if (!StringUtils.isEmpty(storePojo.getPickTimeDetail())) {
+            storePojo.setPickDetail(Util.json2Object(storePojo.getPickTimeDetail(), StorePickDetailPojo.class, false));
         }
         return storePojo;
     }
@@ -294,13 +292,12 @@ public class StoreService extends ShopBaseService {
      * @return 门店信息
      */
     public StoreRecord getStoreByPosShopId(Integer posStoreId) {
-      return db().selectFrom(STORE)
-          .where(STORE.POS_SHOP_ID.eq(posStoreId).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
+        return db().selectFrom(STORE)
+            .where(STORE.POS_SHOP_ID.eq(posStoreId).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchAny();
     }
 
     /**
      * 检查门店编码是否可用,返回true表示可用
-     *
      * @param posShopId
      * @return Boolean
      */
@@ -316,7 +313,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 门店分组列表-查询
-     *
      * @param param
      * @return
      */
@@ -348,7 +344,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 门店分组-(检查组名是否可用)
-     *
      * @param param
      * @return true可用，fasle不可用
      */
@@ -362,7 +357,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 门店分组-新增
-     *
      * @param param
      * @return
      */
@@ -373,7 +367,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 门店分组-修改
-     *
      * @param param
      * @return
      */
@@ -385,7 +378,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 门店分组-删除
-     *
      * @param param
      * @return
      */
@@ -410,13 +402,13 @@ public class StoreService extends ShopBaseService {
     }
 
     public List<StoreBasicVo> getStoreListByStoreIds(List<Integer> storeId) {
-		logger().info("正在根据门店id数组查询门店基本信息");
-		return db().select(STORE.STORE_ID,STORE.STORE_NAME)
-				.from(STORE)
-				.where(STORE.STORE_ID.in(storeId))
-				.and(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetchInto(StoreBasicVo.class);
-	}
+        logger().info("正在根据门店id数组查询门店基本信息");
+        return db().select(STORE.STORE_ID, STORE.STORE_NAME)
+            .from(STORE)
+            .where(STORE.STORE_ID.in(storeId))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .fetchInto(StoreBasicVo.class);
+    }
 
     /**
      * 获取所有门店id和名称
@@ -431,7 +423,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 获取门店名称
-     *
      * @param sourceId
      * @return
      */
@@ -449,7 +440,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * Share store service share qr code vo.通用分享方法
-     *
      * @param qrCodeTypeEnum the qr code type enum
      * @param pathParam      the path param
      * @return the share qr code vo
@@ -465,10 +455,10 @@ public class StoreService extends ShopBaseService {
     /**
      * 王帅
      * 过滤门店
-     * @param expressList    配送方式list
-     * @param productIds     规格ids
-     * @param address        地址
-     * @param isFormStore    ??
+     * @param expressList 配送方式list
+     * @param productIds  规格ids
+     * @param address     地址
+     * @param isFormStore 是否门店下单（暂时未用）
      * @return
      */
     public List<StorePojo>[] filterExpressList(Byte[] expressList, List<Integer> productIds, UserAddressVo address, byte isFormStore) {
@@ -484,7 +474,8 @@ public class StoreService extends ShopBaseService {
         return result;
     }
 
-    /**王帅
+    /**
+     * 王帅
      * @param productIds  规格ids
      * @param express     配送方式
      * @param address     地址
@@ -493,7 +484,9 @@ public class StoreService extends ShopBaseService {
      */
     public List<StorePojo> getCanBuyStoreList(List<Integer> productIds, byte express, UserAddressVo address, byte isFormStore) {
         //条件
-        Condition condition = STORE_GOODS.PRD_ID.in(productIds).and(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE)).and(STORE.BUSINESS_STATE.eq(BUSINESS_STATE_ON)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        Condition condition = STORE_GOODS.PRD_ID.in(productIds)
+            .and(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         //自提
         condition = express == OrderConstant.DELIVER_TYPE_SELF ? condition.and(STORE.AUTO_PICK.eq((short) OrderConstant.YES)) : condition;
         //TODO 同城配送
@@ -508,7 +501,7 @@ public class StoreService extends ShopBaseService {
             return null;
         }
         List<StorePojo> storeList = db().select().from(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StorePojo.class);
-        if(express == OrderConstant.CITY_EXPRESS_SERVICE){
+        if (express == OrderConstant.CITY_EXPRESS_SERVICE) {
             //TODO 同城配送特殊处理
             storeList = storeList;
         }
@@ -517,7 +510,6 @@ public class StoreService extends ShopBaseService {
 
     /**
      * Gets charge store list.所有服务评价待审核的门店列表
-     *
      * @return the charge store list
      */
     public Map<Integer, String> getChargeStoreList() {
@@ -527,25 +519,34 @@ public class StoreService extends ShopBaseService {
             .and(COMMENT_SERVICE.FLAG.eq(BYTE_ZERO))
             .fetchMap(COMMENT_SERVICE.STORE_ID, STORE.STORE_NAME);
     }
-    
+
     /**
      * 获得门店数量
      * @param storeIds
      * @return
      */
     public Integer getStoreNum(List<Integer> storeIds) {
-    	return db().select(DSL.sum(STORE.STORE_ID)).from(STORE).where(STORE.STORE_ID.in(storeIds)).fetchAnyInto(Integer.class);
+        return db().select(DSL.sum(STORE.STORE_ID)).from(STORE).where(STORE.STORE_ID.in(storeIds)).fetchAnyInto(Integer.class);
     }
-    
+
     /**
      * 根据id列表获取店铺
      * @param storeIds
      * @return
      */
     public List<StoreInfo> getStoreByIds(List<Integer> storeIds) {
-    	return  db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StoreInfo.class);
+        return db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StoreInfo.class);
     }
-    
+
+    /**
+     * 根据id列表获取店铺
+     * @param storeIds
+     * @return
+     */
+    public List<StoreOrderVo> getStoreInfoByIds(List<Integer> storeIds) {
+        return db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StoreOrderVo.class);
+    }
+
     /**
      * 获取所有门店id和名称
      */
@@ -554,37 +555,35 @@ public class StoreService extends ShopBaseService {
         return db().select(STORE.STORE_ID, STORE.STORE_NAME)
             .from(STORE).fetchInto(StoreInfo.class);
     }
+
     /**
      * 新增公告
-     *
      * @param articlePojo
      * @return
      */
     public Boolean addArticle(ArticlePojo articlePojo) {
-        ArticleRecord record =db().newRecord(ARTICLE,articlePojo);
-        if (StringUtils.isEmpty(record.getTitle())||"".equals(articlePojo.getTitle())){
-            throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR,",标题不能为空");
+        ArticleRecord record = db().newRecord(ARTICLE, articlePojo);
+        if (StringUtils.isEmpty(record.getTitle()) || "".equals(articlePojo.getTitle())) {
+            throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR, ",标题不能为空");
         }
         return db().executeInsert(record) > 0 ? true : false;
     }
 
     /**
      * 更新公告
-     *
      * @param articlePojo
      * @return
      */
     public Boolean updateArticle(ArticlePojo articlePojo) {
-        ArticleRecord record =db().newRecord(ARTICLE,articlePojo);
-        if (StringUtils.isEmpty(record.getTitle())||"".equals(articlePojo.getTitle())){
-            throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR,",标题不能为空");
+        ArticleRecord record = db().newRecord(ARTICLE, articlePojo);
+        if (StringUtils.isEmpty(record.getTitle()) || "".equals(articlePojo.getTitle())) {
+            throw new BusinessException(JsonResultCode.CODE_PARAM_ERROR, ",标题不能为空");
         }
-        return db().executeUpdate(record) > 0 ? true : false;
+        return db().executeUpdate(record) > 0;
     }
 
     /**
      * 删除公告
-     *
      * @param articleId
      * @return
      */
@@ -594,13 +593,12 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 取单个公告信息
-     *
      * @param articleId
      * @return ArticlePojo
      */
     public ArticlePojo getArticle(Integer articleId) {
         ArticleRecord r = db().fetchOne(ARTICLE, ARTICLE.ARTICLE_ID.eq(articleId));
-        if(r == null){
+        if (r == null) {
             return null;
         }
         return r.into(ArticlePojo.class);
@@ -611,7 +609,7 @@ public class StoreService extends ShopBaseService {
      * @param param 标题 发布状态
      * @return 分页信息
      */
-    public PageResult<ArticlePojo> articleList(ArticleParam param){
+    public PageResult<ArticlePojo> articleList(ArticleParam param) {
         SelectConditionStep<? extends Record> sql = db().select()
             .from(ARTICLE)
             .where(ARTICLE.IS_DEL.eq(DelFlag.NORMAL_VALUE));
@@ -620,19 +618,151 @@ public class StoreService extends ShopBaseService {
             sql.and(ARTICLE.TITLE.like(this.likeValue(param.getTitle())));
         }
         //查询条件-发布状态
-        if (!ArticleParam.ALL_STATUS.equals(param.getStatus())){
+        if (!ArticleParam.ALL_STATUS.equals(param.getStatus())) {
             sql.and(ARTICLE.STATUS.eq(param.getStatus()));
         }
-        PageResult<ArticlePojo> result = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),ArticlePojo.class);
+        PageResult<ArticlePojo> result = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), ArticlePojo.class);
         return result;
     }
+
     /**
      * 发布公告
-     *
      * @param articleId
      * @return
      */
     public Boolean releaseArticle(Integer articleId) {
         return db().update(ARTICLE).set(ARTICLE.STATUS, NumberUtils.BYTE_ONE).where(ARTICLE.ARTICLE_ID.eq(articleId)).execute() > 0 ? true : false;
     }
+
+    /**
+     * 获取门店和自提按钮开关
+     */
+    public StoreConfigVo getStoreBtnConfig() {
+        OrderProcessParam config = trade.getOrderProcessConfig();
+        StoreConfigVo storeConfigVo = new StoreConfigVo();
+        storeConfigVo.setFetch(config.getFetch());
+        storeConfigVo.setCityService(config.getCityService());
+        return storeConfigVo;
+    }
+
+    public StoreBasicVo getStoreByNo(String storeNo) {
+        return storeDao.getStoreByNo(storeNo);
+    }
+
+    /**
+     * 查询当前在营业的门店列表(传地址)
+     * @param orderAddressParam 地址经纬度
+     * @return Map<Double, StoreDo>
+     */
+    public Map<String, StoreDo> getStoreListOpen(OrderAddressParam orderAddressParam) throws MpException {
+        // 三方库拉取可用门店列表 **
+        // List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
+        // 不拉取三方库，校验本地可用门店
+        List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(orderAddressParam.getStoreGoodsBaseCheckInfoList());
+        if (storeCodes.isEmpty()) {
+            throw new MpException(JsonResultCode.CODE_NO_STORE_OPEN);
+        }
+        List<String> storeCodesNew = new ArrayList<String>(new TreeSet<String>(storeCodes));
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodesNew, orderAddressParam.getDeliveryType());
+        if (stores.isEmpty()) {
+            throw new MpException(JsonResultCode.CODE_STORE_GOODS_IS_EMPTY);
+        }
+        logger().info("门店库存校验{}", stores);
+        Map<String, StoreDo> map = new HashMap<>(15);
+        stores.forEach(e -> {
+            double distance = Util.getDistance(Double.parseDouble(orderAddressParam.getLng()),
+                Double.parseDouble(orderAddressParam.getLat()),
+                Double.parseDouble(e.getLongitude()),
+                Double.parseDouble(e.getLatitude()));
+            map.put(formatDouble(distance), e);
+        });
+        sortByKey(map, false);
+        return map;
+    }
+
+    /**
+     * 查询当前在营业的门店列表(不传地址,仅供门店配送方式使用)
+     * @return Map<Double, StoreDo>
+     */
+    public Map<String, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+        // 三方库拉取可用门店列表 **
+        // List<String> storeCodes = checkStoreGoods(storeGoodsBaseCheckInfoList);
+        // 不拉取三方库，校验本地可用门店
+        List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(storeGoodsBaseCheckInfoList);
+        List<String> storeCodesNew = new ArrayList<String>(new TreeSet<String>(storeCodes));
+        List<StoreDo> stores = storeDao.getStoreOpen(storeCodesNew, DELIVER_TYPE_COURIER);
+        logger().info("门店库存校验{}", stores);
+        Map<String, StoreDo> map = new IdentityHashMap<>(15);
+        stores.forEach(e -> {
+            map.put(formatDouble(0D), e);
+        });
+        return map;
+    }
+
+    /**
+     * @param d double值
+     * @return String
+     */
+    public static String formatDouble(double d) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(d);
+    }
+
+    /**
+     * 调取药房接口查询库存是否充足 供getStoreListOpen方法调用
+     * @param storeGoodsBaseCheckInfoList 药品列表
+     * @return List<String> 返回null表示接口校验异常，否则表示可用的药店编码集合
+     */
+    private List<String> checkStoreGoods(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+        StoreGoodsCheckQueryParam param = new StoreGoodsCheckQueryParam();
+        param.setGoodsItems(storeGoodsBaseCheckInfoList);
+
+        String appId = ApiExternalRequestConstant.APP_ID_STORE;
+        Integer shopId = getShopId();
+        String serviceName = ApiExternalRequestConstant.SERVICE_NAME_GET_STOCK_ENOUGH_SHOP_LIST;
+        ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
+        // 数据拉取错误
+        if (!ApiExternalRequestConstant.ERROR_CODE_SUCCESS.equals(apiExternalRequestResult.getError())) {
+            logger().debug("获取药品库存足够门店接口异常：error " + apiExternalRequestResult.getError() + ",msg " + apiExternalRequestResult.getMsg());
+            return null;
+        }
+        String dataJson = apiExternalRequestResult.getData();
+        StoreGoodsCheckQueryVo storeGoodsCheckQueryVo = Util.parseJson(dataJson, StoreGoodsCheckQueryVo.class);
+        if (storeGoodsCheckQueryVo == null) {
+            return null;
+        } else {
+            return storeGoodsCheckQueryVo.getShopList();
+        }
+    }
+
+    /**
+     * 根据map的key排序
+     * @param map    待排序的map
+     * @param isDesc 是否降序，true：降序，false：升序
+     * @return 排序好的map
+     */
+    private static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map, boolean isDesc) {
+        Map<K, V> result = Maps.newLinkedHashMap();
+        if (isDesc) {
+            map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByKey().reversed())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        } else {
+            map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByKey())
+                .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        }
+        return result;
+    }
+
+    /**
+     * 获取所有门店id和名称
+     */
+    public List<StoreBasicVo> getAllStoreForLeader(List<Integer> storeIds) {
+        logger().info("获取所有门店id和名称");
+        return db().select(STORE.STORE_ID, STORE.STORE_NAME)
+            .from(STORE)
+            .where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(STORE.STORE_ID.in(storeIds))
+            .fetchInto(StoreBasicVo.class);
+    }
+
 }

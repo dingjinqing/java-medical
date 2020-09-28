@@ -10,6 +10,7 @@ import com.vpu.mp.dao.shop.goods.SpecValDao;
 import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.medical.sku.entity.SpecEntity;
 import com.vpu.mp.service.pojo.shop.medical.sku.entity.SpecValEntity;
+import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class GoodsSpecProductAggregate {
      * 获取GoodsSpecProduct转GoodsSpecProductDo时忽略的字段
      * @return 需要忽略的字段
      */
-    private static Set<String> getSpecAssignIgnoreFields(){
+    private static Set<String> getSpecAssignIgnoreFields() {
         Set<String> assignIgnoreField = new HashSet<>(1);
         assignIgnoreField.add("specVals");
         return assignIgnoreField;
@@ -44,7 +45,7 @@ public class GoodsSpecProductAggregate {
      * @param goodsSpecProductDos
      * @return
      */
-    private static List<GoodsSpecProductEntity> convertGoodsSpecProductDoToEntity( List<GoodsSpecProductDo> goodsSpecProductDos){
+    private static List<GoodsSpecProductEntity> convertGoodsSpecProductDoToEntity(List<GoodsSpecProductDo> goodsSpecProductDos) {
         return goodsSpecProductDos.stream().map(skuDo -> {
             GoodsSpecProductEntity goodsSpecProductEntity = new GoodsSpecProductEntity();
             FieldsUtil.assign(skuDo, goodsSpecProductEntity);
@@ -57,7 +58,7 @@ public class GoodsSpecProductAggregate {
      * @param goodsSpecProductEntities
      * @return
      */
-    private static GoodsSpecProductDo convertGoodsSpecProductEntityToDo(GoodsSpecProductEntity goodsSpecProductEntities){
+    private static GoodsSpecProductDo convertGoodsSpecProductEntityToDo(GoodsSpecProductEntity goodsSpecProductEntities) {
         GoodsSpecProductDo goodsSpecProductDo = new GoodsSpecProductDo();
         FieldsUtil.assign(goodsSpecProductEntities, goodsSpecProductDo);
         return goodsSpecProductDo;
@@ -68,7 +69,7 @@ public class GoodsSpecProductAggregate {
      * 批量插入sku
      * @param goodsSpecProductEntities
      */
-    public void batchSkuInsert(List<GoodsSpecProductEntity> goodsSpecProductEntities){
+    public void batchSkuInsert(List<GoodsSpecProductEntity> goodsSpecProductEntities) {
         List<GoodsSpecProductDo> goodsSpecProductDos = new ArrayList<>(goodsSpecProductEntities.size());
         for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProductEntities) {
             GoodsSpecProductDo goodsSpecProductDo = convertGoodsSpecProductEntityToDo(goodsSpecProductEntity);
@@ -90,12 +91,16 @@ public class GoodsSpecProductAggregate {
         goodsSpecProductDao.batchUpdate(goodsSpecProductDos);
     }
 
+    public Map<Integer, List<GoodsSpecProductDetailVo>> groupGoodsIdToSku(List<Integer> goodsIds) {
+        return goodsSpecProductDao.groupGoodsIdToSku(goodsIds);
+    }
+
     /**
      * 根据商品id查询对应sku集合
      * @param goodsId
      * @return
      */
-    public List<GoodsSpecProductEntity> listSkuByGoodsId(Integer goodsId){
+    public List<GoodsSpecProductEntity> listSkuByGoodsId(Integer goodsId) {
         List<GoodsSpecProductDo> goodsSpecProductDos = goodsSpecProductDao.getSkuByGoodsId(goodsId);
         return convertGoodsSpecProductDoToEntity(goodsSpecProductDos);
     }
@@ -105,7 +110,7 @@ public class GoodsSpecProductAggregate {
      * @param goodsIds
      * @return
      */
-    public List<GoodsSpecProductEntity> listSkuByGoodsIds(List<Integer> goodsIds){
+    public List<GoodsSpecProductEntity> listSkuByGoodsIds(List<Integer> goodsIds) {
         List<GoodsSpecProductDo> goodsSpecProductDos = goodsSpecProductDao.listSkuByGoodsIds(goodsIds);
         return convertGoodsSpecProductDoToEntity(goodsSpecProductDos);
     }
@@ -128,7 +133,7 @@ public class GoodsSpecProductAggregate {
         Set<String> specAssignIgnoreFields = getSpecAssignIgnoreFields();
         for (SpecEntity specEntity : specEntities) {
             SpecDo specDo = new SpecDo();
-            FieldsUtil.assignWithIgnoreField(specEntity,specDo,specAssignIgnoreFields);
+            FieldsUtil.assignWithIgnoreField(specEntity, specDo, specAssignIgnoreFields);
             specDos.add(specDo);
         }
         specDao.batchInsert(specDos);
@@ -143,7 +148,7 @@ public class GoodsSpecProductAggregate {
             for (SpecValEntity specValEntity : specEntity.getGoodsSpecVals()) {
                 specValEntities.add(specValEntity);
                 specValEntity.setSpecId(specEntity.getSpecId());
-                SpecValDo specValDo= new SpecValDo(specEntity.getSpecId(),specValEntity.getGoodsId(), specValEntity.getSpecValName());
+                SpecValDo specValDo = new SpecValDo(specEntity.getSpecId(), specValEntity.getGoodsId(), specValEntity.getSpecValName());
                 specValDos.add(specValDo);
             }
         }

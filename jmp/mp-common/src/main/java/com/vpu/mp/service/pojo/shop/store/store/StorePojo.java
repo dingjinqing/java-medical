@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class StorePojo implements Comparable<StorePojo> {
     @NotNull(groups = {StoreUpdateValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
-	private Integer   storeId;
+    private Integer   storeId;
     @NotNull(groups = {StoreAddValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
     private String    storeName;
     @NotNull(groups = {StoreAddValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
@@ -50,7 +50,6 @@ public class StorePojo implements Comparable<StorePojo> {
     private Integer   group;
     private String    service;
     private String    content;
-    @NotNull(groups = {StoreCodingCheckValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
     private Integer   posShopId;
     private Timestamp createTime;
     private Timestamp updateTime;
@@ -69,6 +68,10 @@ public class StorePojo implements Comparable<StorePojo> {
     public Double distance;
     /** 自提取货时间类型 1门店营业时间 2自定义时间 */
     private Byte pickTimeAction;
+    /**
+     * 门店编码
+     */
+    private String storeCode;
     /** 自提时间明细 */
     @JsonIgnore
     private String pickTimeDetail;

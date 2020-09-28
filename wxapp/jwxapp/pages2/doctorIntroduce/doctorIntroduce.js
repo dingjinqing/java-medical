@@ -72,7 +72,7 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    if(this.data.pageParams.currentPage === this.data.pageParams.lastPage) return;
+    if (this.data.pageParams.currentPage === this.data.pageParams.lastPage) return;
     this.setData({
       'pageParams.currentPage': this.data.pageParams.currentPage + 1
     });
@@ -164,16 +164,25 @@ global.wxPage({
   getCommentList() {
     let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
     util.api('/api/wxapp/patient/doctor/comment/list', res => {
-      console.log(res)          
+      console.log(res)
       if (res.error === 0) {
         let list = res.content.dataList
-        list.forEach(function(item,index){
+        list.forEach(function (item, index) {
           if (item.commNoteLength >= 75) {
-           item.new_comm_note = item.commNote.substring(0, 72) + '...';
+            item.new_comm_note = item.commNote.substring(0, 72) + '...';
             item.need_expand = true;
             item.zk = true
           } else {
             item.new_comm_note = item.commNote;
+          }
+          if (item.replylist) {
+            if (item.replylist[0].replyNote.length >= 70) {
+              item.rp_new_comm_note = item.replylist[0].replyNote.substring(0, 67) + '...';
+              item.rp_need_expand = true;
+              item.rp_zk = true
+            } else {
+              item.rp_new_comm_note = item.replylist[0].replyNote;
+            }
           }
         })
         if (this.data.pageParams.currentPage === 1) {
@@ -196,15 +205,26 @@ global.wxPage({
       doctorId: this.data.doctorId
     })
   },
-  zk_sq(e){
+  zk_sq(e) {
     let pidx = e.currentTarget.dataset.pidx;
     let idx = e.currentTarget.dataset.idx;
     let dataList = this.data.dataList;
     this.setData({
-      ['dataList[' + pidx+ '][' + idx +'].zk']: !dataList[pidx][idx].zk
+      ['dataList[' + pidx + '][' + idx + '].zk']: !dataList[pidx][idx].zk
+    })
+  },
+  rp_zk_sq(e){
+    let pidx = e.currentTarget.dataset.pidx;
+    let idx = e.currentTarget.dataset.idx;
+    let dataList = this.data.dataList;
+    this.setData({
+      ['dataList[' + pidx+ '][' + idx +'].rp_zk']: !dataList[pidx][idx].rp_zk
     })
   },
   toChat(e) {
+    util.handleBuriedPoint('doctor_online_chat', 'pages2/doctorIntroduce/doctorIntroduce', [{
+      key: '点击'
+    }])
     let doctor_id = e.currentTarget.dataset.doctor_id;
     let price = e.currentTarget.dataset.price;
     let that = this;

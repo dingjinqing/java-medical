@@ -66,8 +66,14 @@ public class InquiryOrderConstant {
     public final static Byte REFUND_SUCCESS=1;
     public final static Byte REFUND_FAILED=2;
     /**
-     *
+     *退款原因
      */
     public final static String REFUND_REASON_OVERTIME="超时自动退款";
     public final static String REFUND_REASON_DOCTOR="医师退款";
+    /**
+     * 结算状态，返利使用 0未结算 1已结算 2不返利
+     */
+    public final static Byte SETTLEMENT_WAIT=0;
+    public final static Byte SETTLEMENT_FINISH=1;
+    public final static Byte SETTLEMENT_NOT=2;
 }

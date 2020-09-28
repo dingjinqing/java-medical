@@ -5,6 +5,8 @@ import com.vpu.mp.common.foundation.util.Page;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author 王兵兵
  *
@@ -21,17 +23,16 @@ public class StoreListQueryParam {
 	 */
 	private String keywords;
     /**营业状态1:营业，0:关店*/
-    private Byte businessState = CONDITION_ALL;
+    private Byte businessState;
     /** The Auto pick.是否自提设置，0否，1是 */
-    private Short autoPick = CONDITION_ALL_SHORT;
+    private Short autoPick;
     /** 是否支持同城配送 0否 1支持 */
-    private Byte cityService = CONDITION_ALL;
-    /** 搜索条件为全部 */
-    public static final Byte CONDITION_ALL = -1;
-    public static final Short CONDITION_ALL_SHORT = -1;
+    private Byte cityService;
+    private String manager;
 	/**
      * 	分页信息
      */
     private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
     private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+    private List<Integer> storeIds;
 }

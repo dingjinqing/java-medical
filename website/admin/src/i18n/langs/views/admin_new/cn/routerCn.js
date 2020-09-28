@@ -29,6 +29,9 @@ export const cn = {
   situation: ['概况', '实时概况'],
   // 概况 销售报表
   sales_report: ['销售统计', '销售报表'],
+  // 概况 销售报表
+  anchor_points: ['埋点列表', '埋点列表'],
+  anchor_points_report: ['埋点', '埋点报表'],
   // 小程序管理 页面分类
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间
@@ -135,6 +138,8 @@ export const cn = {
   third_auth: ['基础配置', '第三方对接配置'],
   // 基础配置 短信信息
   smsConfig: ['短信中心', '充值记录'],
+  // 基础配置 短信信息
+  rebateConfig: ['基础配置', '返利配置'],
   // 小程序管理 自定义页面装修
   picture_setting: ['小程序管理', '自定义页面装修'],
 
@@ -165,12 +170,7 @@ export const cn = {
   // 营销管理 砍价 - 活动效果数据
   bargain_effect_data: ['营销管理', '砍价', '活动效果数据'],
   // 营销管理 砍价 - 帮忙砍价用户列表
-  bargain_record_detail: [
-    '营销管理',
-    '砍价',
-    '发起砍价用户列表',
-    '帮忙砍价用户列表'
-  ],
+  bargain_record_detail: ['营销管理', '砍价', '发起砍价用户列表', '帮忙砍价用户列表'],
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
   // 营销管理 添加好友助力活动
@@ -433,10 +433,14 @@ export const cn = {
   officesList: ['医师管理', '科室管理'],
   // 医师管理 评价列表
   commentList: ['医师管理', '医师评价'],
+  // 医师管理 推荐策略
+  recommendStrategy: ['医师管理', '推荐策略'],
   // 处方管理 处方列表
   prescriptionList: ['处方管理', '处方列表'],
   // 医师管理 添加医师
   addDoctor: ['医师管理', '添加医师'],
   // 咨询订单 订单统计
-  advisoryTotal: ['销售统计', '咨询订单统计']
+  advisoryTotal: ['销售统计', '咨询订单统计'],
+  // 提现审核 提现详情
+  doctorWithdrawInfo: ['提现审核', '提现详情']
 }

@@ -41,4 +41,6 @@ public class AccountData extends BaseData {
 	private Byte isPaid;
 	/** 语言-用于国际化 */
 	private String language;
+    /**是否消息推送*/
+    private Boolean noSendMsg;
 }

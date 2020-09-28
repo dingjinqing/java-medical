@@ -5,9 +5,7 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
-import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-import com.vpu.mp.db.shop.tables.Department;
 import com.vpu.mp.db.shop.tables.records.DoctorRecord;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.doctor.DoctorListParam.*;
 
 /**
  * @author chenjie
@@ -39,10 +38,62 @@ public class DoctorDao extends ShopBaseDao {
             .from(DOCTOR);
         select.where(DOCTOR.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
-        select.orderBy(DOCTOR.ID.desc());
-        PageResult<DoctorOneParam> doctorList = this.getPageResult(select, param.getCurrentPage(),
+        if (param.getOrderField() != null) {
+            doctorFiledSorted(select, param);
+        } else {
+            select.orderBy(DOCTOR.ID.desc());
+        }
+        return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), DoctorOneParam.class);
-        return doctorList;
+    }
+
+    /**
+     * 对医师按指定字段进行排序
+     * @param select 查询实体
+     * @param param 排序参数
+     */
+    private void doctorFiledSorted(SelectJoinStep<? extends Record> select, DoctorListParam param) {
+        if (ASC.equals(param.getOrderDirection())) {
+            switch (param.getOrderField()) {
+                case AVG_COMMENT_STAR:
+                    select.orderBy(DOCTOR.AVG_COMMENT_STAR.asc());
+                    break;
+                case AVG_ANSWER_TIME:
+                    select.orderBy(DOCTOR.AVG_ANSWER_TIME.asc());
+                    break;
+                case ATTENTION_NUMBER:
+                    select.orderBy(DOCTOR.ATTENTION_NUMBER.asc());
+                    break;
+                case CONSULTATION_NUMBER:
+                    select.orderBy(DOCTOR.CONSULTATION_NUMBER.asc());
+                    break;
+                case CONSULTATION_PRICE:
+                    select.orderBy(DOCTOR.CONSULTATION_PRICE.asc());
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (param.getOrderField()) {
+                case AVG_COMMENT_STAR:
+                    select.orderBy(DOCTOR.AVG_COMMENT_STAR.desc());
+                    break;
+                case AVG_ANSWER_TIME:
+                    select.orderBy(DOCTOR.AVG_ANSWER_TIME.desc());
+                    break;
+                case ATTENTION_NUMBER:
+                    select.orderBy(DOCTOR.ATTENTION_NUMBER.desc());
+                    break;
+                case CONSULTATION_NUMBER:
+                    select.orderBy(DOCTOR.CONSULTATION_NUMBER.desc());
+                    break;
+                case CONSULTATION_PRICE:
+                    select.orderBy(DOCTOR.CONSULTATION_PRICE.desc());
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /**
@@ -152,7 +203,8 @@ public class DoctorDao extends ShopBaseDao {
     public DoctorDo doctorAuth(DoctorAuthParam doctorAuthParam) {
         return db().select().from(DOCTOR)
             .where(DOCTOR.NAME.eq(doctorAuthParam.getDoctorName()))
-            .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile()))
+            // 不校验手机号 2020-9-16
+//            .and(DOCTOR.MOBILE.eq(doctorAuthParam.getMobile()))
             .and(DOCTOR.HOSPITAL_CODE.eq(doctorAuthParam.getHospitalCode()))
             .fetchAnyInto(DoctorDo.class);
     }
@@ -162,8 +214,9 @@ public class DoctorDao extends ShopBaseDao {
      * @param doctorDo 当前用户
      * @return int
      */
-    public int updateUserId(DoctorDo doctorDo){
+    public int updateUserId(DoctorDo doctorDo, String mobile){
         return db().update(DOCTOR).set(DOCTOR.USER_ID, doctorDo.getUserId())
+            .set(DOCTOR.MOBILE, mobile)
             .where(DOCTOR.NAME.eq(doctorDo.getName())
                 .and(DOCTOR.MOBILE.eq(doctorDo.getMobile()))).execute();
     }
@@ -353,5 +406,18 @@ public class DoctorDao extends ShopBaseDao {
             db().update(DOCTOR).set(DOCTOR.CAN_CONSULTATION, (byte)1)
                 .where(DOCTOR.ID.eq(doctorId)).execute();
         }
+    }
+
+    /**
+     * 更新医师咨询总金额
+     * @param param
+     */
+    public void updateConsultationTotalMoney(DoctorSortParam param){
+        db().update(DOCTOR).set(DOCTOR.CONSULTATION_TOTAL_MONEY, param.getConsultationTotalMoney())
+            .where(DOCTOR.ID.eq(param.getDoctorId()))
+            .execute();
+    }
+
+    public void countDateByDoctor(Integer doctorCode) {
     }
 }

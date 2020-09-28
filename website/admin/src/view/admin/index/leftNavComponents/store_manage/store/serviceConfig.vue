@@ -70,12 +70,20 @@
           @click="handleTake()"
         >{{$t('serviceConfig.pleasechoose')}}</el-button>
         {{$t('serviceConfig.alreadychoose')}}
-        <el-input
+        <!-- <el-input
           size="small"
           class="inputWidthSmall"
           :disabled="true"
           v-model="param.store_scan_num"
-        ></el-input>
+        ></el-input> -->
+        <hc-input-number
+          type="priority"
+          inline
+          size="small"
+          class="inputWidthSmall"
+          :disabled="true"
+          v-model="param.store_scan_num"
+        ></hc-input-number>
         {{$t('serviceConfig.home')}}
         <span class="notefont">{{$t('serviceConfig.choosestore')}}</span>
       </div>

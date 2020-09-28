@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.order;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
@@ -9,10 +10,15 @@ import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
@@ -77,7 +83,7 @@ public class OrderInfoDao extends ShopBaseDao {
                 //日期
                 date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),
                 //销售金额  微信+余额+运费
-                sum((ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT).add(ORDER_INFO.SHIPPING_FEE))).as(ActiveDiscountMoney.ORDER_AMOUNT),
+                sum((ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT))).as(ActiveDiscountMoney.ORDER_AMOUNT),
                 //微信
                 sum(ORDER_INFO.MONEY_PAID).as(ActiveDiscountMoney.MONEY_PAID),
                 //余额
@@ -85,10 +91,19 @@ public class OrderInfoDao extends ShopBaseDao {
                 //运费
                 sum(ORDER_INFO.SHIPPING_FEE).as(ActiveDiscountMoney.SHIPPING_FEE),
                  //销售单数
-                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER)
+                count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
+                //处方药订单数量
+                sum(ORDER_INFO.ORDER_MEDICAL_TYPE).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_NUMBER),
+                //处方药金额
+                sum(DSL.iif(ORDER_INFO.ORDER_MEDICAL_TYPE.eq(BaseConstant.YES),ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT), BigDecimal.ZERO)).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_AMOUNT)
         )
                 .from(ORDER_INFO)
                 .where(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
+                .and(ORDER_INFO.ORDER_STATUS.notIn(
+                        OrderConstant.ORDER_WAIT_PAY,
+                        OrderConstant.ORDER_CANCELLED,
+                        OrderConstant.ORDER_CLOSED
+                ))
                 .groupBy(date(ORDER_INFO.CREATE_TIME))
                 .orderBy(ORDER_INFO.CANCELLED_TIME)
                 .fetchMap(date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME), MedicalOrderReportVo.class);
@@ -127,5 +142,84 @@ public class OrderInfoDao extends ShopBaseDao {
         return  db().selectFrom(ORDER_INFO)
                 .where(ORDER_INFO.CREATE_TIME.ge(beginTime)).and(ORDER_INFO.CREATE_TIME.le(endTime))
                 .fetchInto(OrderInfoDo.class);
+    }
+
+    /**
+     * 检查核销码是否正确
+     * @param verifyCode 核销码
+     * @param orderSn 订单OrderSn
+     * @return boolean
+     * @author 赵晓东
+     */
+    public boolean checkVerifyCode(String verifyCode, String orderSn) {
+        OrderInfoDo orderInfoDo = db().select().from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_SN.eq(orderSn))
+            .and(ORDER_INFO.VERIFY_CODE.eq(verifyCode)).fetchAnyInto(OrderInfoDo.class);
+        return orderInfoDo != null;
+    }
+
+    /**
+     * 获取门店支付统计数据
+     * @param param
+     * @return
+     */
+    public StatisticPayVo getStoreOrderPayData(StatisticParam param) {
+        return db().select(DSL.count(ORDER_INFO.ORDER_ID).as("orderNum"),
+            DSL.countDistinct(ORDER_INFO.USER_ID).as("userNum"),
+            DSL.sum(ORDER_INFO.MONEY_PAID.add(ORDER_INFO.USE_ACCOUNT).add(ORDER_INFO.MEMBER_CARD_BALANCE)).as("totalMoneyPaid")
+        ).from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
+            .and(ORDER_INFO.STORE_ID.eq(param.getStoreId()))
+            .and(ORDER_INFO.PAY_TIME.ge(param.getStartTime()))
+            .and(ORDER_INFO.PAY_TIME.le(param.getEndTime()))
+            .fetchAnyInto(StatisticPayVo.class);
+    }
+
+    /**
+     * 获取门店下单统计数据
+     * @param param
+     * @return
+     */
+    public StatisticAddVo getStoreOrderAddData(StatisticParam param) {
+        return db().select(
+            DSL.count(ORDER_INFO.ORDER_ID).as("orderNum"),
+            DSL.countDistinct(ORDER_INFO.USER_ID).as("userNum")
+        ).from(ORDER_INFO)
+            .where(ORDER_INFO.STORE_ID.eq(param.getStoreId()))
+            .and(ORDER_INFO.CREATE_TIME.ge(param.getStartTime()))
+            .and(ORDER_INFO.CREATE_TIME.le(param.getEndTime()))
+            .fetchAnyInto(StatisticAddVo.class);
+    }
+
+    /**
+     * 获取门店配送单待发货单量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreOrderWaitDeliver(List<Integer> storeIds) {
+        return db().select(
+            DSL.count(ORDER_INFO.ORDER_ID).as("orderNum")
+        ).from(ORDER_INFO)
+            .where(ORDER_INFO.STORE_ID.in(storeIds))
+            .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.CITY_EXPRESS_SERVICE))
+            .and(ORDER_INFO.DEL_FLAG.eq(OrderConstant.NORMAL_DEL))
+            .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))
+            .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 获取门店自提单待核销单量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreOrderWaitVerify(List<Integer> storeIds) {
+        return db().select(
+            DSL.count(ORDER_INFO.ORDER_ID).as("orderNum")
+        ).from(ORDER_INFO)
+            .where(ORDER_INFO.STORE_ID.in(storeIds))
+            .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_SELF))
+            .and(ORDER_INFO.DEL_FLAG.eq(OrderConstant.NORMAL_DEL))
+            .and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))
+            .fetchAnyInto(Integer.class);
     }
 }

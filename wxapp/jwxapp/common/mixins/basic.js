@@ -48,6 +48,7 @@ var basic = {
     var d = this.eventData(e);
     if (d.skip) return false;
     if (d.url) {
+      if(d.type && d.type == 1) util.handleBuriedPoint('into_goods_detail','/pages/item/item',[{'key':'路径来源','value':'首页'}])
       util.jumpLink(d.url, d.linkType);
     }
   },

@@ -19,9 +19,12 @@ global.wxComponent({
       },{
         id
       })
-      
+
     },
     viewCaseHistoryList(){
+      util.handleBuriedPoint('home_page_syn_my_medical', 'pages/index/index', [{
+        key: '点击'
+      }])
       util.jumpLink('pages1/medicalrecordlist/medicalrecordlist')
     }
   }

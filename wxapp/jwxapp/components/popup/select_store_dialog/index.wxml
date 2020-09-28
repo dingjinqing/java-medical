@@ -1,13 +1,22 @@
+<wxs module="tool">
+var getSelected = function(stordId,selectedId){
+  if(stordId-0 === selectedId-0) return true
+  return false
+}
+module.exports = {
+getSelected:getSelected
+}
+</wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
   <view class="dialog_content">
     <view class="dialog_title">
-       {{storeInfo.titleName}}
+       选择自提门店
       <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap='bindClose'></image>
     </view>
     <scroll-view class="dialog_info" scroll-y enable-flex>
-      <view class="store_item" wx:for="{{storeInfo.data}}" wx:for-item="storeItem" wx:for-indx="storeIndex" wx:key="id" bindtap="_selectStore" data-id="{{storeItem.id}}">
+      <view class="store_item" wx:for="{{storeInfo}}" wx:for-item="storeItem"  wx:for-index="storeIndex" wx:key="storeId" bindtap="_selectStore" data-idx="{{storeIndex}}" data-id="{{storeItem.storeId}}">
         <view class="radio_box">
-          <text class="iconfont {{storeItem.checked ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{storeItem.checked ? main_setting.comColor : ''}}"></text>
+          <text class="iconfont {{tool.getSelected(storeItem.storeId,selectedStore) ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{tool.getSelected(storeItem.storeId,selectedStore) ? main_setting.comColor : ''}}"></text>
         </view>
         <view class="store_info">
           <view class="store_name">{{storeItem.storeName}}</view>

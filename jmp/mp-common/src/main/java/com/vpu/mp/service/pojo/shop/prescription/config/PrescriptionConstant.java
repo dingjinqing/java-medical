@@ -44,7 +44,11 @@ public interface PrescriptionConstant {
     /**
      * 处方号前缀
      */
-    public static final String PRESCRIPTION_CODE_PREFIX="P";
+    public static final String PRESCRIPTION_CODE_PREFIX="C";
+    /**
+     * 处方明细号前缀
+     */
+    public static final String PRESCRIPTION_DETAIL_CODE_PREFIX="M";
     /**
      * 默认过期时间
      */
@@ -57,6 +61,15 @@ public interface PrescriptionConstant {
     public static final Byte PRESCRIPTION_AUDIT_TYPE_AUDIT = 1;
     public static final Byte PRESCRIPTION_AUDIT_TYPE_PRESCRIBE = 2;
     public static final Byte PRESCRIPTION_AUDIT_TYPE_ORDER = 3;
+    /**
+     * 结算状态，处方返利使用 0未结算 1已结算 2不返利
+     */
+    public final static Byte SETTLEMENT_WAIT=0;
+    public final static Byte SETTLEMENT_FINISH=1;
+    public final static Byte SETTLEMENT_NOT=2;
 
-
+    /**
+     * 已使用
+     */
+    public final static Byte HAS_USED=1;
 }

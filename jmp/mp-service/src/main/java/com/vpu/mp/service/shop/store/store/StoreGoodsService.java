@@ -1,23 +1,23 @@
 package com.vpu.mp.service.shop.store.store;
 
-import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.dao.shop.store.StoreGoodsDao;
+import com.vpu.mp.db.main.tables.records.TaskJobMainRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
-import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
+import com.vpu.mp.service.pojo.shop.store.goods.*;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 import org.jooq.*;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -37,41 +37,70 @@ public class StoreGoodsService extends ShopBaseService{
     public static final Byte OFF_SALE = 0;
     public static final Byte SYNC = 1;
     public static final Byte NOT_SYNC = 0;
-
+    public static final String UPDATE_IS_COMPILE = "storeGoodsUpdateInfo:";
+    private static final Integer EXPIRE_TIME = 60;
+    @Autowired
+    public JedisManager jedis;
+    @Autowired
+    protected TaskJobMainService taskJobMainService;
+    @Autowired
+    private StoreGoodsDao storeGoodsDao;
 
     /**
-     * 从店铺拉取数据更新门店内的商品信息
-     * @param storeId 门店id
+     * 从店铺拉取数据更新门店内的商品信息(和pos对接无关)
      */
-    public void updateGoodsDataFromShop(Integer storeId) {
+    public void updateGoodsDataFromShop(StoreGoodsUpdateTimeParam param) {
+        Objects.requireNonNull(param.getStoreId(), "[门店商品][商品同步]门店id不能为null");
+        String storeId = param.getStoreId().toString();
+        String startTime = Optional.ofNullable(param.getUpdateBegin()).isPresent() ? param.getUpdateBegin().toString() : "";
+        String endTime = Optional.ofNullable(param.getUpdateEnd()).isPresent() ? param.getUpdateEnd().toString() : "";
+        logger().info("[门店商品][商品同步][{}]---开始执行", param.getStoreId());
+        List<StoreGoods> storeGoodsList = storeGoodsDao.selectMainGoods(param);
+        logger().info("[门店商品][商品同步][{}]---筛选条件{}下当前店铺一共有{}个规格商品",
+            param.getStoreId(), startTime + "--" + endTime, storeGoodsList.size());
 
-        List<StoreGoods> storeGoodsList = db().select(GOODS.GOODS_ID,GOODS.IS_ON_SALE,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_SN,
-            GOODS_SPEC_PRODUCT.PRD_NUMBER.as("product_number"),GOODS_SPEC_PRODUCT.PRD_PRICE.as("product_price"))
-            .from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
-            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.IS_ON_SALE.eq((byte) 1)).fetchInto(StoreGoods.class);
+        List<Integer> goodsPrdIdsForUpdate = storeGoodsDao.selectGoodsPrdIdsForUpdate(param);
+        logger().info("[门店商品][商品同步][{}]---当前门店现有{}个规格商品", param.getStoreId(), goodsPrdIdsForUpdate.size());
 
-        List<Integer> goodsPrdIdsForUpdate = db().select(STORE_GOODS.PRD_ID).from(STORE_GOODS).where(STORE_GOODS.STORE_ID.eq(storeId)).fetchInto(Integer.class);
+        // TODO:拉取药房药品信息入库
 
         List<StoreGoodsRecord> recordsForInsert = new ArrayList<>(storeGoodsList.size());
         List<StoreGoodsRecord> recordsForUpdate = new ArrayList<>(goodsPrdIdsForUpdate.size());
-        for (StoreGoods storeGoods : storeGoodsList) {
-            StoreGoodsRecord record = new StoreGoodsRecord();
-            assign(storeGoods,record);
-            record.setStoreId(storeId);
-            record.setFlag((byte)1);
 
-            // TODO: 同步POS未实现
+        // TODO:商品入库
 
-            if (goodsPrdIdsForUpdate.contains(storeGoods.getPrdId())) {
-                recordsForUpdate.add(record);
-            } else {
-                recordsForInsert.add(record);
+    }
+
+    /**
+     * 添加更新商品任务到队列
+     */
+    public void addUpdateGoodsTaskFromShop(StoreGoodsUpdateTimeParam param) {
+        UpdateStoreGoodsMqParam mqParam = new UpdateStoreGoodsMqParam();
+        mqParam.setShopId(getShopId());
+        mqParam.setParam(param);
+        //调用消息队列进行执行
+        Integer taskJobId = saas.taskJobMainService.dispatchImmediately(mqParam, mqParam.getClass().getName(), getShopId(),
+            TaskJobsConstant.TaskJobEnum.STORE_UPDATE_JOB.getExecutionType());
+        jedis.set(UPDATE_IS_COMPILE + getShopId() + ":" + param.getStoreId(), taskJobId.toString(), EXPIRE_TIME);
+    }
+
+    /**
+     * 判断门店商品更新队列是否完成
+     */
+    public Boolean judgeQueueIsCompile(Integer storeId) {
+        String key = UPDATE_IS_COMPILE + getShopId() + ":" + storeId;
+        //判断当前门店id是否存在
+        String value = jedis.get(key);
+        if (value != null && !StringUtils.isBlank(jedis.get(key))) {
+            //判断当前门店指定队列是否完成
+            TaskJobMainRecord record = taskJobMainService.getTaskJobMainRecordById(Integer.valueOf(jedis.get(key))).into(TaskJobMainRecord.class);
+            if (record != null && record.getStatus().equals(TaskJobsConstant.STATUS_COMPLETE)) {
+                jedis.delete(key);
+                return true;
             }
+            return false;
         }
-        transaction(()->{
-            db().batchInsert(recordsForInsert).execute();
-            db().batchUpdate(recordsForUpdate).execute();
-        });
+        return true;
     }
 
 	/**
@@ -128,6 +157,31 @@ public class StoreGoodsService extends ShopBaseService{
 		return select;
 	}
 
+    /**
+     * 批量同步门店商品数据
+     * @param storeGoodsList
+     */
+    public void batchSyncStoreGoods(List<StoreGoods> storeGoodsList) {
+        if (storeGoodsList.size() == 0) {
+            return;
+        }
+        List<Integer> goodsIds = storeGoodsList.stream().map(StoreGoods::getGoodsId).collect(Collectors.toList());
+        Set<Integer> existStoreGoodsSet = new HashSet<>(storeGoodsDao.selectExistStoreGoodsIds(goodsIds, storeGoodsList.get(0).getStoreId()));
+
+        List<StoreGoods> readyToInsert = new ArrayList<>();
+        List<StoreGoods> readyToUpdate = new ArrayList<>();
+
+        for (StoreGoods storeGoods : storeGoodsList) {
+            if (existStoreGoodsSet.contains(storeGoods.getGoodsId())) {
+                readyToUpdate.add(storeGoods);
+            } else {
+                readyToInsert.add(storeGoods);
+            }
+        }
+
+        storeGoodsDao.batchInsert(readyToInsert);
+        storeGoodsDao.batchUpdate(readyToUpdate);
+    }
     /**
      * 门店商品-上架
      * @param param
@@ -204,5 +258,25 @@ public class StoreGoodsService extends ShopBaseService{
         db().update(STORE_GOODS).set(STORE_GOODS.PRODUCT_NUMBER,number)
             .where(STORE_GOODS.PRD_ID.eq(prdId).and(STORE_GOODS.STORE_ID.eq(storeId)))
             .execute();
+    }
+
+    /***************门店后端商品功能代码*****************/
+
+    /**
+     * 门店商品分页查询
+     * @param param
+     * @return
+     */
+    public PageResult<StoreGoodsListQueryVo> getGoodsPageList(StoreGoodsListQueryParam param) {
+        return storeGoodsDao.getGoodsPageList(param);
+    }
+
+    /**
+     * 查询该商品在哪家门店上架
+     * @param storeGoodsBaseCheckInfoList 商品列表
+     * @return List<Integer>
+     */
+    public List<String> checkStoreGoodsIsOnSale(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
+        return storeGoodsDao.checkStoreGoodsIsOnSale(storeGoodsBaseCheckInfoList);
     }
 }

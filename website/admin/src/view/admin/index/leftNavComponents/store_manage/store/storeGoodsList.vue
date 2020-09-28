@@ -84,7 +84,8 @@
                 type="primary"
                 size="small"
                 @click="updateGoodsHandle"
-              >{{$t('storeGoodsList.updateGoods')}}</el-button>
+                :loading="loading"
+              >{{loading?$t('storeGoodsList.updatingGoods'):$t('storeGoodsList.updateGoods')}}</el-button>
             </div>
           </ul>
         </div>
@@ -94,6 +95,7 @@
             :data="goodsData"
             class="tableClass"
             border
+            :max-height="remainingHeight"
             @selection-change="selectionChangeHandle"
             :header-cell-style="{
               'background-color':'#f5f5f5',
@@ -206,7 +208,7 @@
               <div class="noData">
                 <img :src="noImg">
               </div>
-              <span>暂无相关数据</span>
+              <span>{{$t('selectLinks.noDataAvailable')}}</span>
             </div>
           </el-table>
           <div class="table-page">
@@ -214,7 +216,7 @@
               <el-checkbox
                 v-model="isSelectAll"
                 @change="selectAllChange"
-              >全选</el-checkbox>
+              >{{$t('imgsSpace.allCheckedText')}}</el-checkbox>
               <el-button
                 size="small"
                 @click="shelfGoodsHandle()"
@@ -234,17 +236,66 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      :title="$t('storeGoodsList.prompt')"
+      :visible.sync="goodsUpdateVisible"
+      width="500px"
+    >
+      <div class="dialog-content">
+        <ul>
+          <li>
+            <el-radio
+              v-model="goodsUpdateType"
+              :label="0"
+            >{{$t('storeGoodsList.incrementalUp')}}</el-radio>
+            <el-date-picker
+              v-model="datepicker"
+              type="datetimerange"
+              class="update-date-picker"
+              size="small"
+              :range-separator="$t(`dateTimePicker.to`)"
+              :start-placeholder="$t(`dateTimePicker.pleaseSelectTheStartTime`)"
+              :end-placeholder="$t(`dateTimePicker.pleaseSelectTheEndTime`)"
+              :default-time="['00:00:00','23:59:59']"
+            ></el-date-picker>
+          </li>
+          <li>
+            <el-radio
+              v-model="goodsUpdateType"
+              :label="1"
+            >{{$t('storeGoodsList.allUp')}}</el-radio>
+          </li>
+        </ul>
+      </div>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmUpdateHandle"
+        >{{$t('storeGoodsList.deter')}}</el-button>
+        <el-button
+          size="small"
+          @click="goodsUpdateVisible = false"
+        >{{$t('storeGoodsList.cancel')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getGoodsList, getCateList, updateGoods, shelfGoods, obtainGoods } from '@/api/admin/storeManage/storeGoods'
+import { getGoodsList, getCateList, updateGoods, shelfGoods, obtainGoods, judgeCompile } from '@/api/admin/storeManage/storeGoods'
 import pagination from '@/components/admin/pagination/pagination'
+import '@/util/date.js'
 export default {
   components: { pagination },
   data () {
+    let that = this
     return {
       loading: false,
+      remainingHeight: '316px',
       storeName: '',
       queryParams: {
         storeId: '', // 商家id
@@ -255,18 +306,22 @@ export default {
       },
       catIds: [],
       isOnSale: [
-        { id: 1, name: '上架的商品' },
-        { id: 0, name: '下架的商品' }
+        { id: 1, name: that.$t('storeGoodsList.onShelves') },
+        { id: 0, name: that.$t('storeGoodsList.offShelf') }
       ],
       isSync: [
-        { id: 1, name: '是' },
-        { id: 0, name: '否' }
+        { id: 1, name: that.$t('storeGoodsList.yes') },
+        { id: 0, name: that.$t('storeGoodsList.no') }
       ],
       selected: [],
       tableData: [],
       noImg: this.$imageHost + '/image/admin/no_data.png',
       pageParams: {},
-      isSelectAll: false // 标识是否全选
+      isSelectAll: false, // 标识是否全选
+      goodsUpdateVisible: false, // 商品更新弹窗
+      datepicker: [],
+      goodsUpdateType: 0, // 商品更新方式
+      judgetimer: '' // 循环判断是否更新完成
     }
   },
   computed: {
@@ -283,6 +338,10 @@ export default {
     this.langDefault()
     this.initCategory()
     this.initDataList()
+    // 计算table所占高度
+    if (document.documentElement) {
+      this.remainingHeight = document.documentElement.clientHeight - 410
+    }
   },
   methods: {
     searchHandle () {
@@ -290,16 +349,76 @@ export default {
       this.initDataList()
     },
     updateGoodsHandle () {
-      const params = {
-        storeId: this.queryParams.storeId
-      }
+      this.goodsUpdateVisible = true
+    },
+    // 判断门店商品是否更新完成
+    judgeUpdate () {
+      let that = this
+      return new Promise((resolve, reject) => {
+        judgeCompile({
+          storeId: this.queryParams.storeId
+        }).then(res => {
+          if (res.error === 0) {
+            if (that.judgetimer) {
+              that.loading = false
+              clearInterval(that.judgetimer)
+              that.$message.success(that.$t('storeGoodsList.upComplete'))
+              that.initDataList()
+            }
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        }).catch(err => {
+          console.error(err)
+          if (that.judgetimer) {
+            that.loading = false
+            clearInterval(that.judgetimer)
+          }
+          resolve(false)
+        })
+      })
+    },
+    // 更新商品
+    updateGoodsRequest (params) {
       updateGoods(params).then(res => {
         if (res.error === 0) {
-          this.initDataList()
+          this.$message.warning(this.$t('storeGoodsList.updating'))
+          this.pollingJudge()
         }
       }).catch(err => {
         console.error(err)
       })
+    },
+    pollingJudge () {
+      let that = this
+      this.loading = true
+      that.judgetimer = setInterval(() => {
+        this.judgeUpdate()
+      }, 2000)
+    },
+    // 更新商品确认
+    async confirmUpdateHandle () {
+      let params = {
+        storeId: this.queryParams.storeId,
+        updateTye: this.goodsUpdateType
+      }
+      if (this.goodsUpdateType === 0) {
+        params.updateBegin = this.datepicker[0] ? this.datepicker[0].format('yyyy-MM-dd hh:mm:ss') : ''
+        params.updateEnd = this.datepicker[1] ? this.datepicker[1].format('yyyy-MM-dd hh:mm:ss') : ''
+      }
+      if (this.goodsUpdateType === 0 && (!params.updateBegin || !params.updateEnd)) {
+        this.$message.warning(this.$t('storeGoodsList.psTime'))
+        return false
+      }
+      let result = await this.judgeUpdate()
+      if (result) {
+        this.updateGoodsRequest(params)
+      } else {
+        this.$message.warning(this.$t('storeGoodsList.lastUp'))
+        this.pollingJudge()
+      }
+      this.goodsUpdateVisible = false
     },
     selectAllChange (val) {
       console.log(val)
@@ -459,5 +578,11 @@ export default {
 }
 .table-page-right {
   float: right;
+}
+.update-date-picker {
+  margin: 10px 24px 10px;
+}
+/deep/ .el-dialog__body {
+  padding: 10px 20px;
 }
 </style>

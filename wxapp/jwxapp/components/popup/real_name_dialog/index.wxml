@@ -1,0 +1,11 @@
+<wxs src="../../../utils/wxs/filter.wxs" module="filter"></wxs>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="inner" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+	<view class="dialog-content">
+		<view class="title">
+			请输入真实姓名
+		</view>
+		<input type="text" class="real-name" value="{{realName}}" bindinput="changeInput"></input>
+		<view class="button" bindtap="comfirmName">确定</view>
+	</view>
+
+</v-popup>

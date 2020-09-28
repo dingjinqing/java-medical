@@ -6,8 +6,10 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.db.shop.tables.StoreGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
@@ -52,6 +54,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Byte deliverType;
     /**购物车标记*/
     private Byte isCart;
+    /**
+     * 门店Id
+     */
 	private Integer storeId;
     /**
      * 0:默认选第一张；null：小程序不选；""不可使用;其他：卡号
@@ -234,6 +239,11 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
          * 订单审核类型 0不审核 1审核 2开方 3有效处方
          */
         private Byte medicalAuditType;
+        /**
+         * 门店商品
+         */
+        @JsonIgnore
+        private StoreGoodsRecord storeGoods;
 
         public static Goods init(Integer goodsId, Integer goodsNumber, Integer productId) {
             OrderBeforeParam.Goods goods = new OrderBeforeParam.Goods();

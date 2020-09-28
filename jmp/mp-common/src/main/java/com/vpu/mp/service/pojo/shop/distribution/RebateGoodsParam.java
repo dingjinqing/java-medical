@@ -9,8 +9,10 @@ import lombok.Data;
  */
 @Data
 public class RebateGoodsParam {
-	private Integer goodsType;
+	private Integer goodsSort;
 	private String goodsName;
+    private Integer startNum;
+    private Integer endNum;
 	
 	/**
      * 	分页信息

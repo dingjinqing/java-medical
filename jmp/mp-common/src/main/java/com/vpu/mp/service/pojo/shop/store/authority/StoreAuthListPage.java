@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.store.authority;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 
  * @author zhaojianqiang
@@ -15,4 +17,5 @@ public class StoreAuthListPage {
 	private String mobile;
 	private Byte accountType = 0;
 	private Byte status = -1;
+	private List<Integer> storeIds;
 }

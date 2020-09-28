@@ -50,6 +50,7 @@ global.wxPage({
           advice_arr.push(this.data.page_info.goodsMedicalOneInfoVoList[i].goodsCommonName)
           each_obj.goodsId = this.data.page_info.goodsMedicalOneInfoVoList[i].goodsId
           each_obj.dragSumNum = this.data.page_info.goodsMedicalOneInfoVoList[i].goodsNumber
+          each_obj.prdId = this.data.page_info.goodsMedicalOneInfoVoList[i].prdId
           this.data.goodsList.push(each_obj)
         }
         console.log(this.data.goodsList)

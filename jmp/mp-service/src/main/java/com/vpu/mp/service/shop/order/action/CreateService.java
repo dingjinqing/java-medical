@@ -6,18 +6,23 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
+import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.address.UserAddressService;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
@@ -34,6 +39,7 @@ import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsBaseCheckInfo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -42,6 +48,7 @@ import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.order.address.OrderAddressParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
@@ -54,6 +61,7 @@ import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.config.InsteadPayConfigService;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -77,6 +85,7 @@ import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
@@ -94,12 +103,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -198,6 +202,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private PrescriptionDao prescriptionDao;
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private PrescriptionRebateService prescriptionRebateService;
+    @Autowired
+    public RebateConfigService rebateConfigService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserAddressService userAddressService;
+    @Autowired
+    private GoodsMedicalInfoDao goodsMedicalInfoDao;
     /**
      * 随机生成核销码位数
      */
@@ -273,12 +287,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 //订单入库,以上只有orderSn，无法获取orderId
                 // 自提订单生成核销码
-                if (param.getDeliverType() == 1) {
-                    String s = generateShortUuid();
-                    order.setVerifyCode(s);
-                    order.setStoreId(param.getStoreId());
-                    order.setDeliverType((byte) 1);
-                }
+                noutoasiakasCode(param, order);
                 order.store();
                 order.refresh();
                 addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
@@ -332,6 +341,59 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
+    /**
+     * 订单添加门店信息、自提码信息
+     * @param param 创建订单信息
+     * @param order 订单入参
+     */
+    private void noutoasiakasCode(CreateParam param, OrderInfoRecord order) throws MpException{
+        if (param.getDeliverType() == 1) {
+            String s = generateShortUuid();
+            order.setVerifyCode(s);
+            order.setStoreId(param.getStoreId());
+            order.setDeliverType((byte) 1);
+        }
+        if (param.getDeliverType() == 0) {
+            UserAddressVo userAddressInfo = userAddressService.getUserAddressByAddressId(param.getAddressId());
+            OrderAddressParam orderAddressParam = new OrderAddressParam();
+            orderAddressParam.setLat(userAddressInfo.getLat());
+            orderAddressParam.setLng(userAddressInfo.getLng());
+            orderAddressParam.setDeliveryType(DELIVER_TYPE_COURIER);
+            List<StoreGoodsBaseCheckInfo> list = new ArrayList<>();
+            param.getGoods().forEach(goods -> {
+                StoreGoodsBaseCheckInfo goodsMedicalInfo = getGoodsMedicalInfo(goods.getGoodsId());
+                goodsMedicalInfo.setProductId(goods.getProductId());
+                goodsMedicalInfo.setGoodsNumber(goods.getGoodsNumber().toString());
+                list.add(goodsMedicalInfo);
+            });
+            orderAddressParam.setStoreGoodsBaseCheckInfoList(list);
+            // 调取接口校验门店库存
+            Map<String, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
+            Set<Map.Entry<String, StoreDo>> entry = storeListOpen.entrySet();
+            for (Map.Entry<String, StoreDo> value : entry) {
+                StoreDo storeDo = value.getValue();
+                order.setStoreId(storeDo.getStoreId());
+                break;
+            }
+            order.setDeliverType((byte) 0);
+        }
+    }
+
+    /**
+     * 根据商品id查询商品详情
+     * @param goodsId 商品id
+     * @return StoreGoodsBaseCheckInfo
+     */
+    private StoreGoodsBaseCheckInfo getGoodsMedicalInfo(Integer goodsId) {
+        StoreGoodsBaseCheckInfo storeGoodsBaseCheckInfo = new StoreGoodsBaseCheckInfo();
+        GoodsMedicalInfoDo byGoodsId = goodsMedicalInfoDao.getByGoodsId(goodsId);
+        storeGoodsBaseCheckInfo.setGoodsQualityRatio(byGoodsId.getGoodsQualityRatio());
+        storeGoodsBaseCheckInfo.setGoodsProductionEnterprise(byGoodsId.getGoodsProductionEnterprise());
+        storeGoodsBaseCheckInfo.setGoodsCommonName(byGoodsId.getGoodsCommonName());
+        storeGoodsBaseCheckInfo.setGoodsApprovalNumber(byGoodsId.getGoodsApprovalNumber());
+        return storeGoodsBaseCheckInfo;
+    }
+
     private void addPatientDiagnose(CreateParam param, OrderInfoRecord order) throws MpException {
         if (order.getOrderAuditType().equals(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)){
             logger().info("待开方订单保存患者信息");
@@ -355,6 +417,27 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 throw new MpException(JsonResultCode.MSG_ORDER_MEDICAL_PRESCRIPTION_CHECK);
             }
         }
+    }
+
+    /**
+     * 处方返利信息入库
+     * @param param
+     */
+    public void addPrescriptionRebate(CreateParam param,OrderInfoRecord order){
+        RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+        if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+            //根据处方下单
+            if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param. getIsPrescription())){
+                PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
+                //处方药品
+                List<PrescriptionItemDo> prescriptionItemDos = prescriptionItemDao.listOrderGoodsByPrescriptionCode(param.getPrescriptionCode());
+                OrderInfoDo orderInfoDo=new OrderInfoDo();
+                FieldsUtil.assign(order,orderInfoDo);
+                //处方返利信息入库
+                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,orderInfoDo);
+            }
+        }
+
     }
 
     private String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
@@ -553,8 +636,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //先查默认地址
             defaultAddress = address.getefaultAddress(userId);
             if(defaultAddress == null) {
-                //上次下单地址
-//                defaultAddress = orderInfo.getLastOrderAddress(userId);
             }
         }
         return defaultAddress;
@@ -572,8 +653,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         // 自提
         expressList[OrderConstant.DELIVER_TYPE_SELF] = tradeCfg.getFetch();
         //TODO 同城配送
-        // expressList[OrderConstant.DELIVER_TYPE_COURIER] =
-        // trade.getCityExpressService();
         return expressList;
     }
 
@@ -635,8 +714,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException
      */
     private void checkGoodsIsOnSale(List<Goods> goodsList) throws MpException {
+        logger().info("校验商品上下架");
         for (Goods goods: goodsList) {
             if (!GoodsConstant.ON_SALE.equals(goods.getGoodsInfo().getIsOnSale())) {
+                logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
+            }
+            if (goods.getStoreGoods() == null) {
                 logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
             }
@@ -656,10 +740,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
         //goods type,key goodsId
         Map<Integer, GoodsRecord> goods = goodsService.getGoodsToOrder(param.getGoodsIds());
+        // 门店商品
+        Map<Integer, StoreGoodsRecord> storeGoods = goodsService.getStoreGoodsToOrder(param.getGoodsIds(), param.getStoreId());
         //赋值
         for (Goods temp : param.getGoods()) {
             temp.setProductInfo(productInfo.get(temp.getProductId()));
             temp.setGoodsInfo(goods.get(temp.getGoodsId()));
+            temp.setStoreGoods(storeGoods.get(temp.getGoodsId()));
             //校验
             checkGoodsAndProduct(temp);
             //初始化商品价格
@@ -831,17 +918,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException
      */
     public void checkGoodsAndProduct(Goods goods) throws MpException {
-        if (goods.getGoodsInfo() == null || goods.getProductInfo() == null || goods.getGoodsInfo().getDelFlag() == DelFlag.DISABLE.getCode()) {
-            logger().error("checkGoodsAndProduct,商品不存在");
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, Util.toJson(goods));
-        }
         if (goods.getGoodsNumber() == null || goods.getGoodsNumber() <= 0) {
             logger().error("checkGoodsAndProduct,商品数量不能为0,id:" + goods.getProductId());
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_ZERO, null, goods.getGoodsInfo().getGoodsName());
-        }
-        if (goods.getGoodsNumber() > goods.getProductInfo().getPrdNumber()) {
-            logger().error("checkGoodsAndProduct,库存不足,id:" + goods.getProductId());
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, null, goods.getGoodsInfo().getGoodsName());
         }
     }
 
@@ -1202,7 +1281,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void setOtherValue(CreateParam param, OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         Timestamp currentTime = DateUtils.getSqlTimestamp();
         //TODO 订单类型拼接(支付有礼)
-        orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));//支付信息
+        //支付信息
+        orderBo.getOrderType().addAll(orderGoods.getGoodsType(order, orderBo.getOrderGoodsBo(), order.getInsteadPayMoney()));
         if(BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(beforeVo.getMoneyPaid(), BigDecimalUtil.Operator.add),
             BigDecimalUtil.BigDecimalPlus.create(beforeVo.getBkOrderMoney(), BigDecimalUtil.Operator.add),

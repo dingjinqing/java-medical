@@ -62,5 +62,21 @@ public class RecordContentMessage {
     /** 瓜分积分活动添加 */
 	public static final String DIVIDE_INTEGRATION_ADD = "divide.integration.add";
 
+    /** 营销分销配置 */
+    public static final String DISTRIBUTION_CHANGE = "distribution.change";
+    public static final String DISTRIBUTION_STATUS_ON = "distribution.status.on";
+    public static final String DISTRIBUTION_STATUS_OFF = "distribution.status.off";
+    public static final String DISTRIBUTION_JUDGE_STATUS_ON = "distribution.judge.status.on";
+    public static final String DISTRIBUTION_JUDGE_STATUS_OFF = "distribution.judge.status.off";
+    public static final String DISTRIBUTION_WITHDRAW_STATUS_ON = "distribution.withdraw.status.on";
+    public static final String DISTRIBUTION_WITHDRAW_STATUS_OFF = "distribution.withdraw.status.off";
+    public static final String DISTRIBUTION_VALID_1 = "distribution.validity.1";
+    public static final String DISTRIBUTION_VALID_2 = "distribution.validity.2";
+    public static final String DISTRIBUTION_VALID_3 = "distribution.validity.3";
+    public static final String DISTRIBUTION_PROTECT_DATA_1 = "distribution.protect.date.1";
+    public static final String DISTRIBUTION_PROTECT_DATA_2 = "distribution.protect.date.2";
+    public static final String DISTRIBUTION_PROTECT_DATA_3 = "distribution.protect.date.3";
+    public static final String DISTRIBUTION_UPDATE_LEVEL = "distribution.update.level";
+
 
 }

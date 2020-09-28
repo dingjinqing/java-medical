@@ -136,4 +136,22 @@ public class PictorialIntegrationService extends ShopBaseService {
         BaseShareService baseShareService = findShareBaseService(param);
         return baseShareService.getPictorialInfo(param);
     }
+    /**
+     * 分销中心推广海报
+     * @param param
+     * @return
+     */
+    public GoodsPictorialInfo getDistributionPictorialInfo(GoodsShareBaseParam param) {
+        BaseShareService baseShareService = findShareBaseService(param);
+        return baseShareService.getDistributionPictorialInfo(param);
+    }
+    /**
+     * 分销员微信二维码海报
+     * @param param
+     * @return
+     */
+    public GoodsPictorialInfo getDistributorPictorialInfo(GoodsShareBaseParam param) {
+        BaseShareService shareBaseService = findShareBaseService(param);
+        return shareBaseService.getDistributorPictorialInfo(param);
+    }
 }

@@ -105,6 +105,8 @@ export const cn = {
     analysis_basic: '概况统计',
     situation: '实时概况',
     sales_report: '销售报表',
+    anchor_points: '埋点列表',
+    anchor_points_report: '埋点报表',
     analysis_portrait: '用户画像',
     analysis_visit: '访问分析',
     analysis_visit_source: '来源分析',
@@ -173,7 +175,9 @@ export const cn = {
     doctorProfessionalTitle: '医师职称',
     officesList: '科室管理',
     commentList: '评价列表',
+    recommendStrategy: '推荐策略',
     advisoryTotal: '咨询统计',
-    prescriptionList: '处方列表'
+    prescriptionList: '处方列表',
+    rebateConfig: '返利配置'
   }
 }

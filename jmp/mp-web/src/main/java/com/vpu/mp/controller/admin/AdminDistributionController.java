@@ -2,7 +2,10 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToGroupParam;
 import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToLevelParam;
@@ -39,16 +42,23 @@ import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
 import com.vpu.mp.service.pojo.shop.distribution.SetInviteCodeParam;
 import com.vpu.mp.service.pojo.shop.distribution.ShowDistributionGroupParam;
 import com.vpu.mp.service.pojo.shop.distribution.UserRemarkListVo;
+import com.vpu.mp.service.pojo.shop.distribution.withdraw.WithdrawRemarkParam;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
+import com.vpu.mp.service.shop.ShopApplication;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
+
+import static com.vpu.mp.common.foundation.excel.AbstractExcelDisposer.LANGUAGE_TYPE_EXCEL;
 
 /**
  * 分销模块
@@ -58,10 +68,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
-//	@Override
-//    protected ShopApplication shop() {
-//        return saas.getShopApp(471752);
-//    }
+/**
+	@Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
+*/
+
 	//分销配置
 	/**
 	 * 获取分销配置
@@ -87,6 +100,16 @@ public class AdminDistributionController extends AdminBaseController{
         }
 		return this.success(result);
 	}
+
+    /**
+     * 子商户类型
+     * @return
+     */
+    @PostMapping("/admin/distribution/mpPayType")
+    public JsonResult serviceProviderType(){
+        Byte mpPay = shop().config.distributionCfg.getMpPay();
+        return this.success(mpPay);
+    }
 
     /**
      * 获取推广文案二维码
@@ -421,6 +444,19 @@ public class AdminDistributionController extends AdminBaseController{
 	}
 
     /**
+     * 分销员列表导出
+     * @param param
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/admin/distribution/distrobutor/list/export")
+    public void exportDistributorList(@RequestBody DistributorListParam param, HttpServletResponse response) throws IOException {
+        Workbook workbook = shop().distributorList.exportDistributorList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.DISTRIBUTOR_LIST_NAME,LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
+    }
+
+    /**
      * 分销员编辑设置分组（支持批量设置）
      * @param param
      * @return
@@ -519,6 +555,19 @@ public class AdminDistributionController extends AdminBaseController{
 		return this.success(list);
 	}
 
+    /**
+     * 佣金统计导出
+     * @param param
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/admin/distribution/brokerage/list/export")
+    public void exportBrokeList(@RequestBody BrokerageListParam param, HttpServletResponse response) throws IOException {
+        Workbook workbook = shop().brokerage.exportBrokeList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.BROKERAGE_LIST_NAME,LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
+    }
+
 	/**
 	 * 分销员等级列表
 	 * @return
@@ -550,6 +599,19 @@ public class AdminDistributionController extends AdminBaseController{
 		return this.success(rebateGoodsList);
 	}
 
+    /**
+     * 商品返利统计导出Excel
+     * @param param
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/admin/distribution/rebate/goods/list/export")
+    public void exportRebateGoodsList(@RequestBody RebateGoodsParam param, HttpServletResponse response) throws IOException {
+        Workbook workbook = shop().rebateGoods.exportRebateGoodsList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.REBATE_GOODS_NAME,LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
+    }
+
 	/**
 	 * 商品返利明细
 	 * @param param
@@ -560,6 +622,19 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<RebateGoodsDetailVo> detail = shop().rebateGoods.getRebateGoodsDetail(param);
 		return this.success(detail);
 	}
+
+    /**
+     * 商品返利明细导出Excel
+     * @param param
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/admin/distribution/rebate/goods/detail/export")
+    public void exportRebateGoodsDetail(@RequestBody RebateGoodsDetailParam param, HttpServletResponse response) throws IOException {
+        Workbook workbook = shop().rebateGoods.exportRebateGoodsDetail(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.REBATE_GOODS_DETAIL_NAME, LANGUAGE_TYPE_EXCEL) + DateUtils.dateFormat(DateUtils.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
+    }
 
 	//分销推广语
 	/**
@@ -729,6 +804,17 @@ public class AdminDistributionController extends AdminBaseController{
     @PostMapping("/admin/distribution/distributor/check/refuse")
     public JsonResult applyRefuse(@RequestBody DistributionApplyOptParam param){
         boolean res = shop().distributorCheck.applyRefuse(param);
+        return this.success(res);
+    }
+
+    /**
+     * 提现详情添加备注
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/withdraw/withdrawRemark/add")
+    public JsonResult addWithdrawRemark(@RequestBody WithdrawRemarkParam param){
+        int res = shop().withdrawService.addWithdrawRemark(param);
         return this.success(res);
     }
 }

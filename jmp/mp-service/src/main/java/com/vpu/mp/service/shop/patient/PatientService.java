@@ -11,26 +11,36 @@ import com.vpu.mp.common.foundation.util.RandomUtil;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
-import com.vpu.mp.common.pojo.shop.table.PatientDo;
-import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
+import com.vpu.mp.common.pojo.shop.table.*;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
-import com.vpu.mp.db.shop.tables.Patient;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.sms.SmsCheckParam;
 import com.vpu.mp.service.pojo.shop.sms.template.SmsTemplate;
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.config.SmsApiConfig.REDIS_KEY_SMS_USER_CHECK_NUM;
@@ -44,6 +54,8 @@ public class PatientService extends BaseShopConfigService{
     public static final String STRING_BLANK = "";
     public static final String NOTHING = "无";
     @Autowired
+    private MpAuthShopService mpAuthShopService;
+    @Autowired
     protected PatientDao patientDao;
     @Autowired
     protected UserPatientCoupleDao userPatientCoupleDao;
@@ -55,6 +67,10 @@ public class PatientService extends BaseShopConfigService{
     protected JedisManager jedisManager;
     @Autowired
     protected PrescriptionDao prescriptionDao;
+    @Autowired
+    private OrderGoodsService orderGoodsService;
+    @Autowired
+    private InquiryOrderService inquiryOrderService;
 
     public static final int ZERO = 0;
 
@@ -113,6 +129,7 @@ public class PatientService extends BaseShopConfigService{
         for (PatientOneParam patient : patientList) {
             patient.setId(patient.getPatientId());
             getPatientDiseaseStr(patient,diseaseMap);
+            patient.setCountPrescription(prescriptionDao.countPrescriptionByPatient(patient.getId()));
         }
         return patientList;
     }
@@ -267,6 +284,23 @@ public class PatientService extends BaseShopConfigService{
     }
 
     /**
+     * 待审核处方展示患者信息
+     * @param prescriptionNoParam 处方号
+     * @return UserPatientDetailVo
+     */
+    public PrescriptionShowPatientDetailsParam auditPatientShow(PrescriptionNoParam prescriptionNoParam) {
+        // 根据处方号获取该患者信息
+        PrescriptionShowPatientDetailsParam prescriptionShowPatientDetailsParam = new PrescriptionShowPatientDetailsParam();
+        PrescriptionVo doByPrescriptionNo = prescriptionDao.getDoByPrescriptionNo(prescriptionNoParam.getPrescriptionCode());
+        UserPatientParam userPatientParam = new UserPatientOneParam();
+        userPatientParam.setPatientId(doByPrescriptionNo.getPatientId());
+        userPatientParam.setUserId(doByPrescriptionNo.getUserId());
+        UserPatientDetailVo oneDetail = getOneDetail(userPatientParam);
+        FieldsUtil.assign(oneDetail, prescriptionShowPatientDetailsParam);
+        return prescriptionShowPatientDetailsParam;
+    }
+
+    /**
      * 获取患者信息
      * @param patientIds id集合
      * @return
@@ -282,7 +316,8 @@ public class PatientService extends BaseShopConfigService{
     public void sendCheckSms(PatientSmsCheckNumParam param) throws MpException {
         //0000-9999
         int intRandom = RandomUtil.getIntRandom();
-        String smsContent = String.format(SmsTemplate.PATIENT_CHECK_MOBILE, "XX医院", intRandom);
+        MpAuthShopRecord mpAuthShopRecord = mpAuthShopService.getAuthShopByShopId(getShopId());
+        String smsContent = String.format(SmsTemplate.PATIENT_CHECK_MOBILE, mpAuthShopRecord.getNickName(), intRandom);
         smsService.sendSms(param.getUserId(), param.getMobile(), smsContent);
         Integer patientId = patientDao.getPatientIdByIdentityCode(param.getIdentityCode());
         String checkKey = String.format(REDIS_KEY_SMS_USER_CHECK_NUM, getShopId(), patientId);
@@ -311,7 +346,6 @@ public class PatientService extends BaseShopConfigService{
         if(patientList.size()==0) {
             userPatientCoupleDo.setIsDefault((byte) 1);
         }
-//        userPatientCoupleDao.save(userPatientCoupleDo);
         saveUserPaitientCouple(userPatientCoupleDo);
     }
 
@@ -388,5 +422,55 @@ public class PatientService extends BaseShopConfigService{
      */
     public Integer countPatientByUser(Integer userId) {
         return patientDao.countPatientByUser(userId);
+    }
+
+    /**
+     * 根据患者id查询用户购药记录
+     * @param patientMedicineParam 用户查询购药记录入参
+     * @return PageResult<PatientMedicineVo>
+     */
+    public PageResult<PatientMedicineVo> getPatientBuyMedicineRecord(PatientMedicineParam patientMedicineParam) {
+        return patientDao.getPatientMedicine(patientMedicineParam);
+    }
+
+    /**
+     * 根据患者id查询关联医师信息
+     * @param patientQueryDoctorParam 用户查询关联医师入参
+     * @return PageResult<PatientQueryDoctorVo>
+     */
+    public PageResult<PatientQueryDoctorVo> getPatientQueryDoctorInfo(PatientQueryDoctorParam patientQueryDoctorParam) {
+        PageResult<PatientQueryDoctorVo> patientQueryDoctor = patientDao.getPatientQueryDoctor(patientQueryDoctorParam);
+        patientQueryDoctor.getDataList().forEach(patientQueryDoctorVo -> {
+            PatientInquiryOrderVo inquiryNumberByPatient = inquiryOrderService.getInquiryNumberByPatient(patientQueryDoctorParam.getPatientId(), patientQueryDoctorVo.getDoctorId());
+            if (inquiryNumberByPatient != null) {
+                patientQueryDoctorVo.setInquiryNumber(inquiryNumberByPatient.getInquiryCount());
+                patientQueryDoctorVo.setInquiryConsumptionAmount(inquiryNumberByPatient.getTotalAmount());
+                patientQueryDoctorVo.setConsumptionAmount(patientQueryDoctorVo.getInquiryConsumptionAmount().add(patientQueryDoctorVo.getPrescriptionConsumptionAmount()));
+            }
+        });
+        return patientQueryDoctor;
+    }
+
+    /**
+     * 根据患者id查询关联处方
+     * @param patientPrescriptionParam 用户查询关联处方入参
+     * @return PageResult<PatientPrescriptionVo>
+     */
+    public PageResult<PatientPrescriptionVo> getPatientPrescription(PatientPrescriptionParam patientPrescriptionParam) {
+        PageResult<PatientPrescriptionVo> patientPrescription = patientDao.getPatientPrescription(patientPrescriptionParam);
+        patientPrescription.getDataList().forEach(patientPrescriptionVo -> {
+            List<OrderGoodsDo> byPrescription = orderGoodsService.getByPrescription(patientPrescriptionVo.getPrescriptionCode());
+            patientPrescriptionVo.setGoodsList(byPrescription);
+        });
+        return patientPrescription;
+    }
+
+    /**
+     * 根据患者id查询咨询订单
+     * @param patientPrescriptionParam 咨询查询入参
+     * @return PageResult<InquiryOrderDo>
+     */
+    public PageResult<InquiryOrderDo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
+        return patientDao.getPatientInquiry(patientPrescriptionParam);
     }
 }

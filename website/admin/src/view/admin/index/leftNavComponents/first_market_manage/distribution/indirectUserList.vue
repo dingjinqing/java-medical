@@ -59,7 +59,7 @@
             type="primary"
             size="small"
           >{{$t('distribution.screen')}}</el-button>
-          <el-button size="small">{{$t('distribution.export')}}</el-button>
+          <!-- <el-button size="small">{{$t('distribution.export')}}</el-button> -->
         </el-form-item>
       </el-form>
     </div>
@@ -79,6 +79,9 @@
         border
         style="width: 100%"
       >
+        <template slot="empty">
+          <tableEmpty />
+        </template>
         <el-table-column
           :label="$t('distribution.username')"
           align="center"
@@ -110,13 +113,13 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="inviteName"
           :label="$t('distribution.higherName')"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="inviteMobile"
           :label="$t('distribution.higherMobile')"
           align="center"
         >

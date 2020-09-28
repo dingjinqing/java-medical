@@ -3,21 +3,25 @@ package com.vpu.mp.dao.shop.patient;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.pojo.shop.table.PatientDo;
+import com.vpu.mp.common.pojo.shop.table.*;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.PatientRecord;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorExternalRequestParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.patient.*;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.PATIENT;
-import static com.vpu.mp.db.shop.Tables.USER_PATIENT_COUPLE;
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
 
 /**
  * @author chenjie
@@ -196,5 +200,147 @@ public class PatientDao extends ShopBaseDao{
      */
     public Integer countPatientByUser(Integer userId) {
         return db().fetchCount(USER_PATIENT_COUPLE, USER_PATIENT_COUPLE.USER_ID.eq(userId).and(USER_PATIENT_COUPLE.IS_DELETE.eq((byte) 0)));
+    }
+
+    /**
+     * 查询患者购药记录
+     * @param patientMedicineParam 患者id
+     * @return PageResult<PatientMedicineVo> 患者购药记录出参
+     */
+    public PageResult<PatientMedicineVo> getPatientMedicine(PatientMedicineParam patientMedicineParam) {
+        SelectOnConditionStep<Record10<String, String, String, String, Integer, BigDecimal, String, String, BigDecimal, Timestamp>> select = db().select(
+              GOODS_MEDICAL_INFO.GOODS_COMMON_NAME
+            , GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO
+            , GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE
+            , GOODS_MEDICAL_INFO.GOODS_APPROVAL_NUMBER
+            , ORDER_GOODS.GOODS_NUMBER
+            , ORDER_GOODS.GOODS_PRICE
+            , ORDER_GOODS.PRESCRIPTION_CODE
+            , ORDER_GOODS.ORDER_SN
+            , ORDER_GOODS.DISCOUNTED_TOTAL_PRICE
+            , ORDER_GOODS.CREATE_TIME).from(ORDER_GOODS)
+            .leftJoin(ORDER_INFO)
+            .on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+            .leftJoin(GOODS_MEDICAL_INFO)
+            .on(ORDER_GOODS.GOODS_ID.eq(GOODS_MEDICAL_INFO.GOODS_ID));
+        patientMedicineBuildOptions(select, patientMedicineParam);
+        return this.getPageResult(select, patientMedicineParam.getCurrentPage(),
+            patientMedicineParam.getPageRows(), PatientMedicineVo.class);
+    }
+
+    /**
+     * 患者购药记录条件查询筛选
+     * @param select 查询实体
+     * @param patientMedicineParam 患者条件查询入参
+     */
+    private void patientMedicineBuildOptions(SelectOnConditionStep<Record10<String, String, String, String, Integer,
+        BigDecimal, String, String, BigDecimal, Timestamp>> select, PatientMedicineParam patientMedicineParam) {
+        if (patientMedicineParam.getGoodsCommonName() != null && patientMedicineParam.getGoodsCommonName().trim().length() > 0) {
+            select.where(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.like(likeValue(patientMedicineParam.getGoodsCommonName().trim())));
+        }
+        if (patientMedicineParam.getGoodsApprovalNumber() != null && patientMedicineParam.getGoodsApprovalNumber().trim().length() > 0) {
+            select.where(GOODS_MEDICAL_INFO.GOODS_APPROVAL_NUMBER.like(likeValue(patientMedicineParam.getGoodsApprovalNumber())));
+        }
+        if (patientMedicineParam.getGoodsProductionEnterprise() != null && patientMedicineParam.getGoodsProductionEnterprise().trim().length() > 0) {
+            select.where(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(patientMedicineParam.getGoodsProductionEnterprise())));
+        }
+        if (patientMedicineParam.getStartTime() != null || patientMedicineParam.getEndTime() != null) {
+            select.where(ORDER_GOODS.CREATE_TIME.ge(patientMedicineParam.getStartTime()))
+                .and(ORDER_GOODS.CREATE_TIME.le(patientMedicineParam.getEndTime()));
+        }
+        select.where(ORDER_INFO.PATIENT_ID.eq(patientMedicineParam.getPatientId()))
+            .orderBy(ORDER_GOODS.CREATE_TIME.desc());
+    }
+
+    /**
+     * 根据患者id查询关联处方
+     * @param patientPrescriptionParam 查询处方入参
+     * @return
+     */
+    public PageResult<PatientPrescriptionVo> getPatientPrescription(PatientPrescriptionParam patientPrescriptionParam) {
+        SelectConditionStep<Record> where = db()
+            .select(PRESCRIPTION.asterisk(), ORDER_INFO.ORDER_SN.as("orderSnByOrderInfo"))
+            .from(PRESCRIPTION)
+            .leftJoin(ORDER_GOODS)
+            .on(ORDER_GOODS.PRESCRIPTION_CODE.eq(PRESCRIPTION.PRESCRIPTION_CODE))
+            .leftJoin(ORDER_INFO)
+            .on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+            .where(PRESCRIPTION.PATIENT_ID.eq(patientPrescriptionParam.getPatientId()));
+        patientPrescriptionBuildOptions(patientPrescriptionParam, where);
+        patientPrescriptionParam.setPageRows(5);
+        return this.getPageResult(where, patientPrescriptionParam.getCurrentPage(),
+            patientPrescriptionParam.getPageRows(), PatientPrescriptionVo.class);
+    }
+
+    private void patientPrescriptionBuildOptions(PatientPrescriptionParam patientPrescriptionParam, SelectConditionStep<Record> select) {
+        if (patientPrescriptionParam.getDoctorName() != null && patientPrescriptionParam.getDoctorName().trim().length() > 0) {
+            select.and(PRESCRIPTION.DOCTOR_NAME.like(likeValue(patientPrescriptionParam.getDoctorName().trim())));
+        }
+        if (patientPrescriptionParam.getDepartmentName() != null && patientPrescriptionParam.getDepartmentName().trim().length() > 0) {
+            select.and(PRESCRIPTION.DEPARTMENT_NAME.like(likeValue(patientPrescriptionParam.getDepartmentName().trim())));
+        }
+        if (patientPrescriptionParam.getPrescriptionType() != null) {
+            select.and(PRESCRIPTION.AUDIT_TYPE.eq(patientPrescriptionParam.getPrescriptionType()));
+        }
+        if (patientPrescriptionParam.getStartTime() != null || patientPrescriptionParam.getEndTime() != null) {
+            select.and(PRESCRIPTION.CREATE_TIME.ge(patientPrescriptionParam.getStartTime()))
+                .and(PRESCRIPTION.CREATE_TIME.le(patientPrescriptionParam.getEndTime()));
+        }
+        select.orderBy(PRESCRIPTION.CREATE_TIME.desc());
+    }
+
+    public PageResult<InquiryOrderDo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
+        SelectConditionStep<Record> where = db().select()
+            .from(INQUIRY_ORDER)
+            .where(INQUIRY_ORDER.PATIENT_ID.eq(patientPrescriptionParam.getPatientId()));
+        if (patientPrescriptionParam.getDoctorName() != null && patientPrescriptionParam.getDoctorName().trim().length() > 0) {
+            where.and(INQUIRY_ORDER.DOCTOR_NAME.like(likeValue(patientPrescriptionParam.getDoctorName().trim())));
+        }
+        if (patientPrescriptionParam.getStartTime() != null || patientPrescriptionParam.getEndTime() != null) {
+            where.and(INQUIRY_ORDER.CREATE_TIME.ge(patientPrescriptionParam.getStartTime()))
+                .and(INQUIRY_ORDER.CREATE_TIME.le(patientPrescriptionParam.getEndTime()));
+        }
+        where.orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
+        patientPrescriptionParam.setPageRows(5);
+        return this.getPageResult(where, patientPrescriptionParam.getCurrentPage(),
+            patientPrescriptionParam.getPageRows(), InquiryOrderDo.class);
+    }
+
+    /**
+     * 根据患者id查询关联医师信息
+     * @param patientQueryDoctorParam 用户查询关联医师入参
+     * @return PageResult<PatientQueryDoctorVo>
+     */
+    public PageResult<PatientQueryDoctorVo> getPatientQueryDoctor(PatientQueryDoctorParam patientQueryDoctorParam) {
+        SelectConditionStep<Record6<String, String, String, Integer, BigDecimal, Integer>> select = db().select(
+            PRESCRIPTION.DOCTOR_CODE
+            , PRESCRIPTION.DOCTOR_NAME.as("doctorName")
+            , PRESCRIPTION.DEPARTMENT_NAME.as("departmentName")
+            , DOCTOR.ID.as("doctorId")
+            , DSL.sum(PRESCRIPTION.TOTAL_PRICE).as("prescriptionConsumptionAmount")
+            , DSL.count(PRESCRIPTION.DOCTOR_NAME).as("prescriptionNumber"))
+            .from(DOCTOR)
+            .join(PRESCRIPTION)
+            .on(PRESCRIPTION.DOCTOR_CODE.eq(DOCTOR.HOSPITAL_CODE))
+            .where(PRESCRIPTION.PATIENT_ID.eq(patientQueryDoctorParam.getPatientId()));
+        patientPrescriptionBuildOptions(select, patientQueryDoctorParam);
+        select.groupBy(PRESCRIPTION.PATIENT_ID
+            , PRESCRIPTION.DOCTOR_CODE
+            , PRESCRIPTION.DOCTOR_NAME
+            , PRESCRIPTION.DEPARTMENT_NAME
+            , DOCTOR.ID)
+            .orderBy(PRESCRIPTION.CREATE_TIME.desc());
+        patientQueryDoctorParam.setPageRows(5);
+        return this.getPageResult(select, patientQueryDoctorParam.getCurrentPage(),
+            patientQueryDoctorParam.getPageRows(), PatientQueryDoctorVo.class);
+    }
+
+    private void patientPrescriptionBuildOptions(SelectConditionStep<Record6<String, String, String, Integer, BigDecimal, Integer>> select, PatientQueryDoctorParam patientQueryDoctorParam) {
+        if (patientQueryDoctorParam.getDoctorName() != null && patientQueryDoctorParam.getDoctorName().trim().length() > 0) {
+            select.and(PRESCRIPTION.DOCTOR_NAME.like(likeValue(patientQueryDoctorParam.getDoctorName().trim())));
+        }
+        if (patientQueryDoctorParam.getDepartmentName() != null && patientQueryDoctorParam.getDepartmentName().trim().length() > 0) {
+            select.and(PRESCRIPTION.DEPARTMENT_NAME.like(likeValue(patientQueryDoctorParam.getDepartmentName().trim())));
+        }
     }
 }

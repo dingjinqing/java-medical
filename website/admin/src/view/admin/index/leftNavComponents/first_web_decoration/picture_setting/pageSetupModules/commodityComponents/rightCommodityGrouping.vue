@@ -1,259 +1,263 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>{{$t('commodityGrouping.commodityGroupingModule')}}</h2>
+      <h2>{{ $t('commodityGrouping.commodityGroupingModule') }}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="tips">
-          {{$t('commodityGrouping.menu')}}<span style="color:#999">{{$t('commodityGrouping.groupsCanBeSelected')}}</span>
+          {{ $t('commodityGrouping.menu')
+          }}<span style="color: #999;">{{
+            $t('commodityGrouping.groupsCanBeSelected')
+          }}</span>
         </div>
         <!--添加商家分类、商品标签、商品品牌数据后显示的隐藏模块-->
-        <div v-if='linkageData.sort_group_arr.length'>
+        <div v-if="linkageData.sort_group_arr.length">
           <div
             class="hiddenGoodsModules"
-            v-for="(item,index) in linkageData.sort_group_arr"
+            v-for="(item, index) in linkageData.sort_group_arr"
             :key="index"
           >
             <div>
-              <span>{{Number(item.sort_type)===0?$t('commodityGrouping.merchantClassification'):Number(item.sort_type)===1?$t('commodityGrouping.merchantLabel'):$t('commodityGrouping.merchantBrand')}}：</span>
-              <span style="display:inline-block;width:100px">{{item.sort_name}}</span>
+              <span
+                >{{
+                  Number(item.sort_type) === 0
+                    ? $t('commodityGrouping.merchantClassification')
+                    : Number(item.sort_type) === 1
+                    ? $t('commodityGrouping.merchantLabel')
+                    : $t('commodityGrouping.merchantBrand')
+                }}：</span
+              >
+              <span style="display: inline-block; width: 100px;">{{
+                item.sort_name
+              }}</span>
               <span
                 @click="handleToEditData(index)"
-                style="padding-left: 20px;color: #5A8BFF;cursor: pointer;"
-              >{{$t('commodityGrouping.modify')}}</span>
+                style="padding-left: 20px; color: #5a8bff; cursor: pointer;"
+                >{{ $t('commodityGrouping.modify') }}</span
+              >
             </div>
             <div class="nameContainer">
-              <span>{{$t('commodityGrouping.customGroupName')}}</span>
-              <el-input
-                v-model="item.group_name"
-                size="small"
-              ></el-input>
+              <span>{{ $t('commodityGrouping.customGroupName') }}</span>
+              <el-input v-model="item.group_name" size="small"></el-input>
             </div>
             <div>
-              <span>{{$t('commodityGrouping.displayQuantity')}}</span>
+              <span>{{ $t('commodityGrouping.displayQuantity') }}</span>
               <el-radio
                 v-model="item.is_all"
                 @change="handleToClickShowNumRadio(index)"
                 :label="1"
-              >{{$t('commodityGrouping.whole')}}{{item.sort_goods_num}}{{$t('commodityGrouping.piece')}}</el-radio>
+                >{{ $t('commodityGrouping.whole') }}{{ item.sort_goods_num
+                }}{{ $t('commodityGrouping.piece') }}</el-radio
+              >
               <el-radio
                 v-model="item.is_all"
                 @change="handleToClickShowNumRadio(index)"
                 :label="2"
-              >{{$t('commodityGrouping.designatedCommodity')}}</el-radio>
+                >{{ $t('commodityGrouping.designatedCommodity') }}</el-radio
+              >
               <span
-                style="cursor:pointer;color:#409EFF"
-                v-if="item.group_goods_id?true:false"
+                style="cursor: pointer; color: #409eff;"
+                v-if="item.group_goods_id ? true : false"
                 @click="handleToClickShowNumRadio(index)"
-              >{{item.group_goods_id.split(",").length}}件</span>
+                >{{ item.group_goods_id.split(',').length }}件</span
+              >
             </div>
             <div class="groupItemOperation">
               <img
-                @click="handleToClickTopIcon(0,index)"
-                :src="$imageHost+'/image/admin/new_shop_beautify/add_up_use.png'"
-              >
+                @click="handleToClickTopIcon(0, index)"
+                :src="
+                  $imageHost + '/image/admin/new_shop_beautify/add_up_use.png'
+                "
+              />
               <img
-                @click="handleToClickTopIcon(1,index)"
-                :src="$imageHost+'/image/admin/new_shop_beautify/add_down.png'"
-                style="padding:0 5px"
-              >
+                @click="handleToClickTopIcon(1, index)"
+                :src="
+                  $imageHost + '/image/admin/new_shop_beautify/add_down.png'
+                "
+                style="padding: 0 5px;"
+              />
               <img
-                @click="handleToClickTopIcon(2,index)"
-                :src="$imageHost+'/image/admin/new_shop_beautify/add_close.png'"
-              >
+                @click="handleToClickTopIcon(2, index)"
+                :src="
+                  $imageHost + '/image/admin/new_shop_beautify/add_close.png'
+                "
+              />
             </div>
           </div>
-
         </div>
         <!--end-->
         <div class="add_sort_cat">
           <span
             @click="handleToCallDialog(0)"
-            style="border-right:1px dashed #D3D3D3"
-          >+{{$t('commodityGrouping.addMerchantCategory')}}</span>
+            style="border-right: 1px dashed #d3d3d3;"
+            >+{{ $t('commodityGrouping.addMerchantCategory') }}</span
+          >
           <span
             @click="handleToCallDialog(1)"
-            style="border-right:1px dashed #D3D3D3"
-          >+{{$t('commodityGrouping.addProductLabel')}}</span>
-          <span @click="handleToCallDialog(2)">+{{$t('commodityGrouping.addBrand')}}</span>
+            style="border-right: 1px dashed #d3d3d3;"
+            >+{{ $t('commodityGrouping.addProductLabel') }}</span
+          >
+          <span @click="handleToCallDialog(2)"
+            >+{{ $t('commodityGrouping.addBrand') }}</span
+          >
         </div>
-        <div
-          class="mainList"
-          style="display:flex"
-        >
-          <span>{{$t('commodityGrouping.menuStyle')}}</span>
-          <div :style="columnFlag?'display:flex;flex-direction: column':''">
-            <el-radio
-              v-model="linkageData.position_style"
-              label="0"
-            >{{$t('commodityGrouping.showProductGroups')}}</el-radio>
-            <el-radio
-              v-model="linkageData.position_style"
-              label="1"
-            >{{$t('commodityGrouping.groupsOnTheLeft')}}</el-radio>
+        <div class="mainList" style="display: flex;">
+          <span>{{ $t('commodityGrouping.menuStyle') }}</span>
+          <div :style="columnFlag ? 'display:flex;flex-direction: column' : ''">
+            <el-radio v-model="linkageData.position_style" label="0">{{
+              $t('commodityGrouping.showProductGroups')
+            }}</el-radio>
+            <el-radio v-model="linkageData.position_style" label="1">{{
+              $t('commodityGrouping.groupsOnTheLeft')
+            }}</el-radio>
           </div>
-
         </div>
         <div class="mainList bgContainer">
-          <span>{{$t('commodityGrouping.backgroundColor')}}</span>
+          <span>{{ $t('commodityGrouping.backgroundColor') }}</span>
           <div class="bgDiv">
-            <el-radio
-              v-model="linkageData.goods_module_bg"
-              label="0"
-            >{{$t('commodityGrouping.pageBackgroundColor')}}</el-radio>
+            <el-radio v-model="linkageData.goods_module_bg" label="0">{{
+              $t('commodityGrouping.pageBackgroundColor')
+            }}</el-radio>
             <div class="customBgColor">
-              <el-radio
-                v-model="linkageData.goods_module_bg"
-                label="1"
-              >{{$t('commodityGrouping.custom')}}</el-radio>
+              <el-radio v-model="linkageData.goods_module_bg" label="1">{{
+                $t('commodityGrouping.custom')
+              }}</el-radio>
               <span>
                 <el-color-picker
                   v-model="linkageData.goods_bg_color"
                   show-alpha
-                  :disabled="linkageData.goods_module_bg==='0'?true:false"
+                  :disabled="linkageData.goods_module_bg === '0' ? true : false"
                   :predefine="predefineColors"
                 >
                 </el-color-picker>
               </span>
-              <div style="margin-left:10px;margin-top:-1px">
-                <el-button
-                  @click="handleToReset()"
-                  size="small"
-                >{{$t('commodityGrouping.reset')}}</el-button>
+              <div style="margin-left: 10px; margin-top: -1px;">
+                <el-button @click="handleToReset()" size="small">{{
+                  $t('commodityGrouping.reset')
+                }}</el-button>
               </div>
             </div>
-
           </div>
-
         </div>
         <div v-if="linkageData.position_style === '0'">
           <div class="mainList allGroup">
-            <span>{{$t('commodityGrouping.allGrouped')}}</span>
+            <span>{{ $t('commodityGrouping.allGrouped') }}</span>
             <div>
-              <div style="color:#999;margin-bottom:10px">{{$t('commodityGrouping.allGroupedTip')}}</div>
+              <div style="color: #999; margin-bottom: 10px;">
+                {{ $t('commodityGrouping.allGroupedTip') }}
+              </div>
               <div>
-                <el-radio
-                  v-model="linkageData.group_display"
-                  label="1"
-                >{{$t('commodityGrouping.exhibition')}}</el-radio>
-                <el-radio
-                  v-model="linkageData.group_display"
-                  label="0"
-                >{{$t('commodityGrouping.notShow')}}</el-radio>
+                <el-radio v-model="linkageData.group_display" label="1">{{
+                  $t('commodityGrouping.exhibition')
+                }}</el-radio>
+                <el-radio v-model="linkageData.group_display" label="0">{{
+                  $t('commodityGrouping.notShow')
+                }}</el-radio>
               </div>
             </div>
-
           </div>
           <div class="mainList menuLocation">
-            <span>{{$t('commodityGrouping.menuLocation')}}</span>
-            <el-radio
-              v-model="linkageData.menu_style"
-              label="0"
-            >{{$t('commodityGrouping.generaSstyle')}}</el-radio>
-            <el-radio
-              v-model="linkageData.menu_style"
-              label="1"
-            >{{$t('commodityGrouping.scrollToTopFixed')}}</el-radio>
+            <span>{{ $t('commodityGrouping.menuLocation') }}</span>
+            <el-radio v-model="linkageData.menu_style" label="0">{{
+              $t('commodityGrouping.generaSstyle')
+            }}</el-radio>
+            <el-radio v-model="linkageData.menu_style" label="1">{{
+              $t('commodityGrouping.scrollToTopFixed')
+            }}</el-radio>
           </div>
           <div class="mainList listStyle">
-            <span>{{$t('commodityGrouping.productListStyle')}}</span>
+            <span>{{ $t('commodityGrouping.productListStyle') }}</span>
             <div>
               <div class="listStyleFirstDiv">
-                <el-radio
-                  v-model="linkageData.shop_style"
-                  label="1"
-                >{{$t('commodityGrouping.bigPictureDisplay')}}</el-radio>
-                <el-radio
-                  v-model="linkageData.shop_style"
-                  label="2"
-                >{{$t('commodityGrouping.twoRows')}}</el-radio>
-                <el-radio
-                  v-model="linkageData.shop_style"
-                  label="3"
-                >{{$t('commodityGrouping.threeRows')}}</el-radio>
+                <el-radio v-model="linkageData.shop_style" label="1">{{
+                  $t('commodityGrouping.bigPictureDisplay')
+                }}</el-radio>
+                <el-radio v-model="linkageData.shop_style" label="2">{{
+                  $t('commodityGrouping.twoRows')
+                }}</el-radio>
+                <el-radio v-model="linkageData.shop_style" label="3">{{
+                  $t('commodityGrouping.threeRows')
+                }}</el-radio>
               </div>
               <div>
-                <el-radio
-                  v-model="linkageData.shop_style"
-                  label="4"
-                >{{$t('commodityGrouping.listOfCommodities')}}</el-radio>
-                <el-radio
-                  v-model="linkageData.shop_style"
-                  label="5"
-                >{{$t('commodityGrouping.rowSlip')}}</el-radio>
+                <el-radio v-model="linkageData.shop_style" label="4">{{
+                  $t('commodityGrouping.listOfCommodities')
+                }}</el-radio>
+                <el-radio v-model="linkageData.shop_style" label="5">{{
+                  $t('commodityGrouping.rowSlip')
+                }}</el-radio>
               </div>
             </div>
-
           </div>
         </div>
 
         <!--底部模块-->
         <div class="foorter">
-          <div style="display:flex">
-            <span>{{$t('commodityGrouping.moduleStyle')}}</span>
-            <div :style="columnFlag?'display:flex;flex-direction: column':''">
-              <el-radio
-                v-model="linkageData.module_style"
-                label="1"
-              >{{$t('commodityGrouping.whiteBackground')}}</el-radio>
-              <el-radio
-                v-model="linkageData.module_style"
-                label="2"
-              >{{$t('commodityGrouping.frameProjection')}}</el-radio>
-              <el-radio
-                v-model="linkageData.module_style"
-                label="3"
-              >{{$t('commodityGrouping.whiteWithBorder')}}</el-radio>
+          <div style="display: flex;">
+            <span>{{ $t('commodityGrouping.moduleStyle') }}</span>
+            <div
+              :style="columnFlag ? 'display:flex;flex-direction: column' : ''"
+            >
+              <el-radio v-model="linkageData.module_style" label="1">{{
+                $t('commodityGrouping.whiteBackground')
+              }}</el-radio>
+              <el-radio v-model="linkageData.module_style" label="2">{{
+                $t('commodityGrouping.frameProjection')
+              }}</el-radio>
+              <el-radio v-model="linkageData.module_style" label="3">{{
+                $t('commodityGrouping.whiteWithBorder')
+              }}</el-radio>
             </div>
-
           </div>
-          <div style="margin:10px 0">
-            <span>{{$t('commodityGrouping.moduleAngle')}}</span>
-            <el-radio
-              v-model="linkageData.if_radius"
-              label="0"
-            >{{$t('commodityGrouping.rightAngle')}}</el-radio>
-            <el-radio
-              v-model="linkageData.if_radius"
-              label="1"
-            >{{$t('commodityGrouping.fillet')}}</el-radio>
+          <div style="margin: 10px 0;">
+            <span>{{ $t('commodityGrouping.moduleAngle') }}</span>
+            <el-radio v-model="linkageData.if_radius" label="0">{{
+              $t('commodityGrouping.rightAngle')
+            }}</el-radio>
+            <el-radio v-model="linkageData.if_radius" label="1">{{
+              $t('commodityGrouping.fillet')
+            }}</el-radio>
           </div>
           <div class="endDiv">
-            <span>{{$t('commodityGrouping.showContents')}}</span>
+            <span>{{ $t('commodityGrouping.showContents') }}</span>
             <div>
               <div>
-                <el-checkbox v-model="linkageData.show_name">{{$t('commodityGrouping.tradeName')}}</el-checkbox>
-                <el-checkbox v-model="linkageData.show_price">{{$t('commodityGrouping.commodityPrice')}}</el-checkbox>
+                <el-checkbox v-model="linkageData.show_name">{{
+                  $t('commodityGrouping.tradeName')
+                }}</el-checkbox>
+                <el-checkbox v-model="linkageData.show_price">{{
+                  $t('commodityGrouping.commodityPrice')
+                }}</el-checkbox>
               </div>
-              <div :style="columnFlag?'margin:10px 0':'margin:10px 0;display:flex'">
-                <el-checkbox v-model="
-                linkageData.cart_btn">{{$t('commodityGrouping.purchaseButton')}}</el-checkbox>
+              <div
+                :style="
+                  columnFlag ? 'margin:10px 0' : 'margin:10px 0;display:flex'
+                "
+              >
+                <el-checkbox v-model="linkageData.cart_btn">{{
+                  $t('commodityGrouping.purchaseButton')
+                }}</el-checkbox>
                 <div>
-                  <span style="color:#999;white-space: pre-wrap;width: 330px">{{$t('commodityGrouping.purchaseButtonTip')}}</span>
-
+                  <span
+                    style="color: #999; white-space: pre-wrap; width: 330px;"
+                    >{{ $t('commodityGrouping.purchaseButtonTip') }}</span
+                  >
                 </div>
               </div>
               <!--购买按钮checkbox选中后显示的隐藏模块-->
-              <div
-                class="buyBtnHidden"
-                v-if="linkageData.cart_btn"
-              >
-                <el-radio
-                  v-model="linkageData.cart_btn_choose"
-                  label="0"
-                >
+              <div class="buyBtnHidden" v-if="linkageData.cart_btn">
+                <el-radio v-model="linkageData.cart_btn_choose" label="0">
                   <i
                     class="iconfont icontianjia icon_font_size new_class"
                     style="color: rgb(177, 78, 105);"
                   ></i>
                 </el-radio>
-                <el-radio
-                  v-model="linkageData.cart_btn_choose"
-                  label="1"
-                ><i
+                <el-radio v-model="linkageData.cart_btn_choose" label="1"
+                  ><i
                     class="iconfont icongouwuche1 icon_font_size new_class"
                     style="color: rgb(177, 78, 105);"
-                  ></i></el-radio>
+                  ></i
+                ></el-radio>
                 <el-radio
                   v-model="linkageData.cart_btn_choose"
                   label="2"
@@ -263,7 +267,7 @@
                     class="right_buy new_back"
                     style="background-color: rgb(177, 78, 105);"
                   >
-                    {{$t('commodityGrouping.grabAtOnce')}}
+                    {{ $t('commodityGrouping.grabAtOnce') }}
                   </i>
                 </el-radio>
                 <el-radio
@@ -273,41 +277,57 @@
                 >
                   <i
                     class="cart_buy"
-                    style="color: rgb(177, 78, 105); border-color: rgb(177, 78, 105);"
-                  >{{$t('commodityGrouping.purchase')}}</i>
+                    style="
+                      color: rgb(177, 78, 105);
+                      border-color: rgb(177, 78, 105);
+                    "
+                    >{{ $t('commodityGrouping.purchase') }}</i
+                  >
                 </el-radio>
               </div>
               <!--end-->
               <div
-                v-if="linkageData.shop_style!=='3'||linkageData.position_style==='1'"
-                :style="columnFlag?'margin-bottom:10px':'margin-bottom:10px;display:flex'"
+                v-if="
+                  linkageData.shop_style !== '3' ||
+                  linkageData.position_style === '1'
+                "
+                :style="
+                  columnFlag
+                    ? 'margin-bottom:10px'
+                    : 'margin-bottom:10px;display:flex'
+                "
               >
-                <el-checkbox v-model="linkageData.other_message">{{$t('commodityGrouping.otherInformation')}}</el-checkbox>
+                <el-checkbox v-model="linkageData.other_message">{{
+                  $t('commodityGrouping.otherInformation')
+                }}</el-checkbox>
                 <div>
-                  <span style="color:#999;white-space: pre-wrap;width: 330px">{{$t('commodityGrouping.otherInformationTip')}}</span>
+                  <span
+                    style="color: #999; white-space: pre-wrap; width: 330px;"
+                    >{{ $t('commodityGrouping.otherInformationTip') }}</span
+                  >
                 </div>
               </div>
               <!--其他信息checkbox选中后显示的隐藏模块-->
-              <div v-if="linkageData.shop_style!=='3'||linkageData.position_style==='1'">
+              <div
+                v-if="
+                  linkageData.shop_style !== '3' ||
+                  linkageData.position_style === '1'
+                "
+              >
                 <div v-if="linkageData.other_message">
-                  <el-radio
-                    v-model="linkageData.show_market"
-                    label="1"
-                  >{{$t('commodityGrouping.marketValue')}}</el-radio>
-                  <el-radio
-                    v-model="linkageData.show_market"
-                    label="2"
-                  >{{$t('commodityGrouping.salesVolume')}}</el-radio>
-                  <el-radio
-                    v-model="linkageData.show_market"
-                    label="3"
-                  >{{$t('commodityGrouping.evaluationNumber')}}</el-radio>
+                  <el-radio v-model="linkageData.show_market" label="1">{{
+                    $t('commodityGrouping.marketValue')
+                  }}</el-radio>
+                  <el-radio v-model="linkageData.show_market" label="2">{{
+                    $t('commodityGrouping.salesVolume')
+                  }}</el-radio>
+                  <el-radio v-model="linkageData.show_market" label="3">{{
+                    $t('commodityGrouping.evaluationNumber')
+                  }}</el-radio>
                 </div>
-
               </div>
               <!--end-->
             </div>
-
           </div>
         </div>
       </div>
@@ -317,42 +337,42 @@
     <el-dialog
       :title="$t('commodityGrouping.tips')"
       :visible.sync="delVisible"
-      :append-to-body='true'
+      :append-to-body="true"
       width="30%"
     >
-      <div style="width:100%;text-align:center"><span>{{$t('commodityGrouping.wantToDelete')}}</span></div>
+      <div style="width: 100%; text-align: center;">
+        <span>{{ $t('commodityGrouping.wantToDelete') }}</span>
+      </div>
 
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="delVisible = false">{{$t('commodityGrouping.cancel')}}</el-button>
-        <el-button
-          type="primary"
-          @click="handleToDel()"
-        >{{$t('commodityGrouping.Determine')}}</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="delVisible = false">{{
+          $t('commodityGrouping.cancel')
+        }}</el-button>
+        <el-button type="primary" @click="handleToDel()">{{
+          $t('commodityGrouping.Determine')
+        }}</el-button>
       </span>
     </el-dialog>
     <!--商家分类弹窗-->
     <AddingBusClassDialog
-      :dialogVisible.sync='classificationDialogVisible'
-      :classFlag='1'
-      :backDataArr='backDataArr'
-      @BusClassTrueDetailData='busClassTrueDetailData'
+      :dialogVisible.sync="classificationDialogVisible"
+      :classFlag="1"
+      :backDataArr="backDataArr"
+      @BusClassTrueDetailData="busClassTrueDetailData"
       :singleElection="true"
       :showFatherNode="true"
     />
     <!--商品标签弹窗-->
     <AddProductLabel
-      :callAddProductLabel.sync='callAddProductLabel'
-      @handleToGetBackData='handleToGetBackData'
+      :callAddProductLabel.sync="callAddProductLabel"
+      @handleToGetBackData="handleToGetBackData"
       :brandBackData="[]"
       :singleElection="true"
     />
     <!--商品品牌弹窗-->
     <AddBrandDialog
-      :callAddBrand.sync='callAddBrand'
-      @handleToGetBackData='handleToGetBrandBackData'
+      :callAddBrand.sync="callAddBrand"
+      @handleToGetBackData="handleToGetBrandBackData"
       :brandBackData="[]"
       :singleElection="true"
     />
@@ -801,7 +821,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "@/assets/aliIcon/iconfont.scss";
+@import '@/assets/aliIcon/iconfont.scss';
 .rightCommodity {
   .rightCommodityMain {
     background: #f8f8f8;

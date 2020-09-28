@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Department extends TableImpl<DepartmentRecord> {
 
-    private static final long serialVersionUID = -1771760218;
+    private static final long serialVersionUID = 2080375024;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_department</code>
@@ -106,6 +106,11 @@ public class Department extends TableImpl<DepartmentRecord> {
      * The column <code>mini_shop_471752.b2c_department.update_time</code>. 最后修改时间
      */
     public final TableField<DepartmentRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_department.first</code>. 优先级
+     */
+    public final TableField<DepartmentRecord, Integer> FIRST = createField("first", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
 
     /**
      * Create a <code>mini_shop_471752.b2c_department</code> table reference

@@ -3,12 +3,9 @@
     <div class="main">
       <div class="navBox">
         <div class="filters">
-          <div class="filters_item"><span>{{$t('storeList.storeGroup')}}：</span>
-            <el-select
-              v-model="queryParams.groupId"
-              size="small"
-              @change="initDataList"
-            >
+          <div class="filters_item">
+            <span>{{ $t('storeList.storeGroup') }}：</span>
+            <el-select v-model="queryParams.groupId" size="small">
               <el-option
                 :label="$t('storeCommon.all')"
                 :value="null"
@@ -21,7 +18,7 @@
               ></el-option>
             </el-select>
           </div>
-          <div class="filters_item"><span>{{$t('storeList.isAuthPos')}}：</span>
+          <!-- <div class="filters_item"><span>{{$t('storeList.isAuthPos')}}：</span>
             <el-select
               v-model="queryParams.isAuthPos"
               size="small"
@@ -41,23 +38,16 @@
                 :value="false"
               ></el-option>
             </el-select>
-          </div>
+          </div> -->
           <div class="filters_item">
-            <span>{{$t('storeList.businessState')}}：</span>
-            <el-select
-              v-model="queryParams.businessState"
-              size="small"
-              @change="initDataList"
-            >
+            <span>{{ $t('storeList.businessState') }}：</span>
+            <el-select v-model="queryParams.businessState" size="small">
               <el-option
                 selected
                 :label="$t('storeCommon.all')"
-                :value="-1"
+                :value="null"
               ></el-option>
-              <el-option
-                :label="$t('storeList.open')"
-                :value="1"
-              ></el-option>
+              <el-option :label="$t('storeList.open')" :value="1"></el-option>
               <el-option
                 :label="$t('storeList.notOpen')"
                 :value="0"
@@ -65,31 +55,21 @@
             </el-select>
           </div>
           <div class="filters_item">
+            <span>门店信息：</span>
             <el-input
               v-model="queryParams.keywords"
               size="small"
-              style="width:190px;"
+              style="width: 160px"
               :placeholder="$t('storeList.storeInfoPlaceholder')"
-              @change="initDataList"
             >
-              <i
-                slot="suffix"
-                class="el-input__icon el-icon-search"
-                style="cursor: pointer;"
-                @click="initDataList"
-              ></i>
             </el-input>
           </div>
           <div class="filters_item">
-            <span>{{$t('storeList.storePickup')}}：</span>
-            <el-select
-              v-model="queryParams.autoPick"
-              size="small"
-              @change="initDataList"
-            >
+            <span>{{ $t('storeList.storePickup') }}：</span>
+            <el-select v-model="queryParams.autoPick" size="small">
               <el-option
                 :label="$t('storeCommon.all')"
-                :value="-1"
+                :value="null"
               ></el-option>
               <el-option
                 :label="$t('storeList.turnedOn')"
@@ -102,15 +82,11 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <span>{{$t('storeList.sameCityDelivery')}}：</span>
-            <el-select
-              v-model="queryParams.cityService"
-              size="small"
-              @change="initDataList"
-            >
+            <span>{{ $t('storeList.sameCityDelivery') }}：</span>
+            <el-select v-model="queryParams.cityService" size="small">
               <el-option
                 :label="$t('storeCommon.all')"
-                :value="-1"
+                :value="null"
               ></el-option>
               <el-option
                 :label="$t('storeList.turnedOn')"
@@ -122,31 +98,51 @@
               ></el-option>
             </el-select>
           </div>
+          <div class="filters_item">
+            <el-button type="primary" size="small" @click="initDataList"
+              >搜索</el-button
+            >
+          </div>
         </div>
         <div class="navBox-right">
-          <el-popover
-            width="300"
-            trigger="hover"
-          >
-            <p style="line-height:20px; font-size:12px; padding-bottom:10px; border-bottom:1px solid #eee;">体验版最多创建1个门店 ，基础版最多创建5个门店 ，高级版最多创建10个门店 ，旗舰版最多创建200个门店</p>
-            <div style="text-align:center; padding-top:10px;">
-              <el-button
-                type="primary"
-                size="small"
-                @click="goMore"
-              >{{$t('storeList.understandMore')}}</el-button>
+          <el-popover width="300" trigger="hover">
+            <p
+              style="
+                line-height: 20px;
+                font-size: 12px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+              "
+            >
+              体验版最多创建1个门店 ，基础版最多创建5个门店
+              ，高级版最多创建10个门店 ，旗舰版最多创建200个门店
+            </p>
+            <div style="text-align: center; padding-top: 10px">
+              <el-button type="primary" size="small" @click="goMore">{{
+                $t('storeList.understandMore')
+              }}</el-button>
             </div>
             <p
               slot="reference"
-              style="line-height: 30px; color: #999;padding: 0 12px; margin-bottom: 10px; font-size:12px;"
-            >{{$t('storeList.currentVersion')}}{{shopVersionText}}，{{$t('storeList.canAlsoCreate')}} {{canCreateNum}} {{$t('storeList.aStore')}} <i class="el-icon-question"></i></p>
+              style="
+                line-height: 30px;
+                color: #999;
+                padding: 0 12px;
+                margin-bottom: 10px;
+                font-size: 12px;
+              "
+            >
+              {{ $t('storeList.currentVersion') }}{{ shopVersionText }}，{{
+                $t('storeList.canAlsoCreate')
+              }}
+              {{ canCreateNum }} {{ $t('storeList.aStore') }}
+              <i class="el-icon-question"></i>
+            </p>
           </el-popover>
           <div>
-            <el-button
-              type="primary"
-              size="small"
-              @click="addStoreHandle"
-            >{{$t('storeList.addStore')}}</el-button>
+            <el-button type="primary" size="small" @click="addStoreHandle">{{
+              $t('storeList.addStore')
+            }}</el-button>
           </div>
         </div>
       </div>
@@ -154,15 +150,15 @@
         <el-table
           v-loading="loading"
           :data="tableData"
-          style="width:100%;"
+          style="width: 100%"
           border
           :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none'
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
           }"
           :cell-style="{
-            'text-align':'center'
+            'text-align': 'center',
           }"
         >
           <el-table-column
@@ -170,13 +166,14 @@
             :label="$t('storeList.storeName')"
           ></el-table-column>
           <el-table-column
-            prop="posShopId"
+            prop="storeCode"
             :label="$t('storeList.posShopId')"
           ></el-table-column>
-          <el-table-column
-            prop="groupName"
-            :label="$t('storeList.groupName')"
-          >
+          <!-- <el-table-column
+            prop="posShopId"
+            label="POS门店编号"
+          ></el-table-column> -->
+          <el-table-column prop="groupName" :label="$t('storeList.groupName')">
           </el-table-column>
           <el-table-column
             prop="address"
@@ -213,17 +210,21 @@
               >{{$t('storeList.opening')}}</a>
             </template>
           </el-table-column> -->
-          <el-table-column
-            :label="$t('storeList.storePickup')"
-            prop="autoPick"
-          >
-            <template slot-scope="{row}">
+          <el-table-column :label="$t('storeList.storePickup')" prop="autoPick">
+            <template slot-scope="{ row, $index }">
               <div>
                 <el-checkbox
                   v-model="row.autoPick"
-                  @change="changeState(row)"
+                  @change="changeState(row, 'autoPick', $index)"
                   :true-label="1"
                   :false-label="0"
+                  :disabled="
+                    Boolean(
+                      deliveryConfig &&
+                        deliveryConfig.fetch === 0 &&
+                        row.autoPick === 0
+                    )
+                  "
                 ></el-checkbox>
               </div>
             </template>
@@ -232,13 +233,14 @@
             :label="$t('storeList.sameCityDelivery')"
             prop="cityService"
           >
-            <template slot-scope="{row}">
+            <template slot-scope="{ row, $index }">
               <div>
                 <el-checkbox
                   v-model="row.cityService"
-                  @change="changeState(row)"
+                  @change="changeState(row, 'cityService', $index)"
                   :true-label="1"
                   :false-label="0"
+                  :disabled="row.cityService === 0"
                 ></el-checkbox>
               </div>
             </template>
@@ -247,11 +249,11 @@
             :label="$t('storeList.businessState')"
             prop="businessState"
           >
-            <template slot-scope="{row}">
+            <template slot-scope="{ row, $index }">
               <div>
                 <el-checkbox
                   v-model="row.businessState"
-                  @change="changeState(row)"
+                  @change="changeState(row, 'businessState', $index)"
                   :true-label="1"
                   :false-label="0"
                 ></el-checkbox>
@@ -263,10 +265,7 @@
             :label="$t('storeList.purchaseOrderCode')"
           ></el-table-column>
 
-          <el-table-column
-            :label="$t('marketCommon.operate')"
-            width="230px"
-          >
+          <el-table-column :label="$t('marketCommon.operate')" width="230px">
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
@@ -275,7 +274,9 @@
                   :content="$t('storeCommon.edit')"
                   placement="top"
                 >
-                  <a @click="edit('edit', scope.row.storeId, scope.row)">{{$t('storeCommon.edit')}}</a>
+                  <a @click="edit('edit', scope.row.storeId, scope.row)">{{
+                    $t('storeCommon.edit')
+                  }}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -283,7 +284,10 @@
                   :content="$t('storeList.goodsManage')"
                   placement="top"
                 >
-                  <a @click="edit('goodsManage', scope.row.storeId, scope.row)">{{$t('storeList.goodsManage')}}</a>
+                  <a
+                    @click="edit('goodsManage', scope.row.storeId, scope.row)"
+                    >{{ $t('storeList.goodsManage') }}</a
+                  >
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -291,7 +295,12 @@
                   :content="$t('storeList.verifierManage')"
                   placement="top"
                 >
-                  <a @click="edit('verifierManage', scope.row.storeId, scope.row)">{{$t('storeList.verifierManage')}}</a>
+                  <a
+                    @click="
+                      edit('verifierManage', scope.row.storeId, scope.row)
+                    "
+                    >{{ $t('storeList.verifierManage') }}</a
+                  >
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -299,7 +308,9 @@
                   :content="$t('storeCommon.delete')"
                   placement="top"
                 >
-                  <a @click="del(scope.row.storeId)">{{$t('storeCommon.delete')}}</a>
+                  <a @click="del(scope.row.storeId)">{{
+                    $t('storeCommon.delete')
+                  }}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -307,7 +318,10 @@
                   :content="$t('storeList.storeManage')"
                   placement="top"
                 >
-                  <a @click="edit('storeManage', scope.row.storeId, scope.row)">{{$t('storeList.storeManage')}}</a>
+                  <a
+                    @click="edit('storeManage', scope.row.storeId, scope.row)"
+                    >{{ $t('storeList.storeManage') }}</a
+                  >
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -315,16 +329,15 @@
                   :content="$t('storeCommon.share')"
                   placement="top"
                 >
-                  <a @click="edit('share',scope.row.storeId, scope.row)">{{$t('storeCommon.share')}}</a>
+                  <a @click="edit('share', scope.row.storeId, scope.row)">{{
+                    $t('storeCommon.share')
+                  }}</a>
                 </el-tooltip>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
+        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
       </div>
     </div>
 
@@ -333,15 +346,13 @@
       :show="shareDialog"
       :imgPath="shareImg"
       :pagePath="sharePath"
-      @close="shareDialog=false"
+      @close="shareDialog = false"
     />
-
   </div>
-
 </template>
 
 <script>
-import { storeList, allStoreGroup, updateStore, delStore, shareStore } from '@/api/admin/storeManage/store'
+import { storeList, allStoreGroup, updateStore, delStore, shareStore, getDeliveryConfig } from '@/api/admin/storeManage/store'
 import pagination from '@/components/admin/pagination/pagination'
 // 地区编码
 import chinaData from '@/assets/china-data'
@@ -358,9 +369,9 @@ export default {
       queryParams: {
         groupId: null,
         isAuthPos: null,
-        businessState: -1,
-        autoPick: -1,
-        cityService: -1
+        businessState: null,
+        autoPick: null,
+        cityService: null
       },
       tableData: [],
       storeGroup: [],
@@ -372,7 +383,8 @@ export default {
       sharePath: '',
       shareDialog: false, // 分享弹窗
       canCreateNum: 0, // 可以创建门店数
-      shopVersionText: that.$t('storeList.ultimate') // 店铺版本
+      shopVersionText: that.$t('storeList.ultimate'), // 店铺版本
+      deliveryConfig: null
     }
   },
   methods: {
@@ -407,7 +419,7 @@ export default {
     handleData (data) {
       data.map((item, index) => {
         item.address = this.getFullAddress(item)
-        item.businessHours = item.openingTime + ' - ' + item.closeTime
+        item.businessHours = (item.openingTime && item.closeTime) ? item.openingTime + ' - ' + item.closeTime : ''
         item.businessStateName = item.businessState === 1 ? this.$t('storeList.open') : this.$t('storeList.notOpen')
       })
       this.tableData = data
@@ -416,7 +428,14 @@ export default {
     initGroupList () {
       allStoreGroup().then((res) => {
         if (res.error === 0) {
-          this.storeGroup = res.content
+          this.storeGroup = res.content.storeGroups
+        }
+      })
+      getDeliveryConfig().then(res => {
+        if (res.error === 0) {
+          this.deliveryConfig = res.content
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -469,12 +488,28 @@ export default {
     //     }
     //   })
     // },
-    changeState (row) {
+    changeState (row, operate, index) {
+      // 根据限制
+      console.log(row.autoPick, this.tableData[index].autoPick)
+      if (this.deliveryConfig) {
+        if (operate === 'autoPick' && this.deliveryConfig.fetch === 0 && row.autoPick === 1) {
+          this.$message.warning('基础配置中自提功能未开启，门店不能开启自提功能')
+          this.$set(this.tableData[index], 'autoPick', 0)
+          this.$set(row, 'autoPick', 0)
+          return false
+        }
+        if (operate === 'cityService' && this.deliveryConfig.cityService === 0 && row.cityService === 1) {
+          this.$message.warning('基础配置中同城配送功能未开启，门店不能开启同城配送功能')
+          this.$set(this.tableData[index], 'cityService', 0)
+          return false
+        }
+      }
       let params = {
         storeId: row.storeId,
         businessState: row.businessState,
         autoPick: row.autoPick,
-        cityService: row.cityService
+        cityService: row.cityService,
+        cityAccountIds: []
       }
       updateStore(params).then((res) => {
         if (res.error === 0) {
@@ -482,6 +517,8 @@ export default {
             message: this.$t('marketCommon.successfulOperation')
           })
           this.initDataList()
+        } else {
+          this.$message.error('修改失败')
         }
       })
     },
@@ -609,13 +646,12 @@ export default {
       .filters_item {
         width: 250px;
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-start;
         margin-left: 15px;
         margin-bottom: 10px;
         > span {
-          width: 120px;
           font-size: 14px;
-          text-align: right;
+          text-align: left;
         }
         .el-select {
           width: 120px;

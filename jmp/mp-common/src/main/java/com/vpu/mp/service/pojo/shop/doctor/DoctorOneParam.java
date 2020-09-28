@@ -14,11 +14,26 @@ import java.util.List;
  */
 @Data
 public class DoctorOneParam extends DoctorDo {
+    /**
+     * 科室
+     */
     private List<DepartmentOneParam> departmentList;
+    /**
+     * 职称
+     */
     private String    titleName;
+    /**
+     * 科室id
+     */
     private List<Integer> departmentIds;
+    /**
+     * 科室名称
+     */
     private List<String> departmentNames;
     private String departmentIdsStr;
+    /**
+     * 医师评价
+     */
     private PageResult<DoctorCommentListVo> commentList;
     private String hospitalName;
     private String departmentName;
@@ -29,4 +44,6 @@ public class DoctorOneParam extends DoctorDo {
      * 响应时间区间1：10分钟内，2：半小时内，3：1小时内，4：1小时以上
      */
     private Byte answerType;
+    private Integer answerMunite;
+    private Integer answerHourInt;
 }

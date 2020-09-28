@@ -21,4 +21,12 @@ public class ReturnOrderGoodsDao extends ShopBaseDao {
                 .where(RETURN_ORDER_GOODS.CREATE_TIME.ge(beginTime)).and(RETURN_ORDER_GOODS.CREATE_TIME.le(endTime))
                 .fetchInto(ReturnOrderGoodsDo.class);
     }
+
+
+    public List<ReturnOrderGoodsDo> listUpdateOrderGoodsByYesterday(Timestamp beginTime, Timestamp endTime) {
+        return  db().selectFrom(RETURN_ORDER_GOODS)
+                .where(RETURN_ORDER_GOODS.UPDATE_TIME.ge(beginTime)).and(RETURN_ORDER_GOODS.UPDATE_TIME.le(endTime))
+                .and(RETURN_ORDER_GOODS.CREATE_TIME.le(beginTime))
+                .fetchInto(ReturnOrderGoodsDo.class);
+    }
 }

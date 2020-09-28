@@ -1,31 +1,36 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.Tables.SHOP;
-import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jooq.SelectConditionStep;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.dao.foundation.database.DslPlus;
+import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.dao.shop.store.StoreDao;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.StoreAccountRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.pojo.shop.auth.StoreAuthConstant;
+import com.vpu.mp.service.pojo.shop.auth.StoreAuthInfoVo;
+import com.vpu.mp.service.pojo.shop.auth.StoreLoginParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountEditParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListPage;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import jodd.util.StringUtil;
+import org.jooq.Condition;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.*;
+
+import static com.vpu.mp.db.main.Tables.SHOP;
+import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
 
 /**
- * 
+ *
  * @author zhaojianqiang
  * @time 下午4:58:30
  */
@@ -34,16 +39,18 @@ public class StoreAccountService extends MainBaseService {
 	private static final Byte IS_DEL = 1;
 	private static final Byte NO_DEL = 0;
 	private static final String DOT = ",";
+	@Autowired
+	public StoreAccountDao storeAccountDao;
+    @Autowired
+    public StoreDao storeDao;
 
-	/**
-	 * 获取用户列表
-	 * 
-	 * @param currentPage
-	 * @param pageRows
-	 * @param sysId
-	 * @param shopId
-	 * @return
-	 */
+    /**
+     * 获取用户列表
+     * @param param
+     * @param sysId
+     * @param shopId
+     * @return
+     */
 	public PageResult<StoreAccountVo> accountList(StoreAuthListPage param, Integer sysId, Integer shopId) {
 		SelectConditionStep<StoreAccountRecord> where = db().selectFrom(STORE_ACCOUNT).where(STORE_ACCOUNT.DEL_FLAG
 				.eq(NO_DEL).and(STORE_ACCOUNT.SYS_ID.eq(sysId).and(STORE_ACCOUNT.SHOP_ID.eq(shopId))));
@@ -59,12 +66,19 @@ public class StoreAccountService extends MainBaseService {
 		if (param.getStatus() > -1) {
 			where.and(STORE_ACCOUNT.STATUS.eq(param.getStatus()));
 		}
+		if (param.getStoreIds() != null) {
+            Condition condition = DSL.noCondition();
+            for (Integer storeId:param.getStoreIds()) {
+                condition = condition.or(DslPlus.findInSet(storeId, STORE_ACCOUNT.STORE_LIST));
+            }
+            where.and(condition);
+        }
 		return this.getPageResult(where, param.getCurrentPage(), param.getPageRows(), StoreAccountVo.class);
 	}
 
 	/**
 	 * 根据id获取
-	 * 
+	 *
 	 * @param accountId
 	 * @return
 	 */
@@ -84,7 +98,7 @@ public class StoreAccountService extends MainBaseService {
 		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STORE_LIST, storeList)
 				.where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
 	}
-	
+
 	public int updateStoreList(Integer accountId, Integer[] storeLists) {
 		String string = changeToString(storeLists);
 		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STORE_LIST, string)
@@ -93,7 +107,7 @@ public class StoreAccountService extends MainBaseService {
 
 	/**
 	 * 删除
-	 * 
+	 *
 	 * @param accountId
 	 * @return
 	 */
@@ -104,7 +118,7 @@ public class StoreAccountService extends MainBaseService {
 
 	/**
 	 * 更新状态
-	 * 
+	 *
 	 * @param accountId
 	 * @param status
 	 * @return
@@ -113,14 +127,14 @@ public class StoreAccountService extends MainBaseService {
 		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STATUS, status)
 				.where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
 	}
-	
+
 	protected List<Integer> changeToArray(String stores) {
 		List<Integer> list = new ArrayList<Integer>();
 		if (stores != null) {
 			if (stores.contains(DOT)) {
 				String[] split = stores.split(DOT);
 				for (String string : split) {
-					list.add(Integer.valueOf(string));						
+					list.add(Integer.valueOf(string));
 				}
 			} else {
 				list.add(Integer.valueOf(stores));
@@ -128,7 +142,7 @@ public class StoreAccountService extends MainBaseService {
 		}
 		return list;
 	}
-	
+
 	protected String changeToString(Integer[] storeList) {
 		Set<Integer> set = new LinkedHashSet<Integer>();
 		for (Integer integer : storeList) {
@@ -145,26 +159,27 @@ public class StoreAccountService extends MainBaseService {
 		return null;
 	}
 
-	/**
-	 * 新建
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public int create(StoreAccountParam param,Integer shopId) {
-		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
-		StoreAccountRecord record = db().newRecord(STORE_ACCOUNT, param);
-		record.setStoreList(changeToString(param.getStoreList()));
-		record.setAccountPasswd(Util.md5(param.getAccountPasswd()));
-		record.setSysId(shop.getSysId());
-		record.setShopId(shopId);
-		int insert = record.insert();
-		return insert;
-	}
+    /**
+     * 新建
+     *
+     * @param param
+     * @return
+     */
+    public int create(StoreAccountParam param, Integer shopId) {
+        ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
+        StoreAccountRecord record = db().newRecord(STORE_ACCOUNT, param);
+        record.setStoreList(changeToString(param.getStoreList()));
+        record.setAccountPasswd(Util.md5(param.getAccountPasswd()));
+        record.setSysId(shop.getSysId());
+        record.setShopId(shopId);
+        record.setWxNickName("");
+        int insert = record.insert();
+        return insert;
+    }
 
 	/**
 	 * 编辑
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -191,4 +206,75 @@ public class StoreAccountService extends MainBaseService {
 		StoreAccountRecord any = where.fetchAny();
 		return any;
 	}
+
+	public StoreAuthInfoVo getStoreAccountFlag(StoreLoginParam param){
+        StoreAuthInfoVo storeAuthInfoVo = new StoreAuthInfoVo();
+        StoreAccountVo storeAccountInfo = storeAccountDao.getStoreAccountInfo(param);
+        if (storeAccountInfo == null) {
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_NOT_EXIST);
+        } else if (StoreAuthConstant.IS_DELETE.equals(storeAccountInfo.getDelFlag())){
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_DELETE);
+        } else if (StoreAuthConstant.IS_FORBIDDEN.equals(storeAccountInfo.getStatus())){
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_IS_FORBIDDEN);
+        } else if (StringUtil.isBlank(storeAccountInfo.getStoreList())){
+            storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_IS_EMPTY);
+        } else {
+            Boolean isOk = true;
+            List<Integer> list = changeToArray(storeAccountInfo.getStoreList());
+            storeAccountInfo.setStoreLists(list);
+            if (StoreAuthConstant.STORE_CLERK.equals(param.getStoreAccountType())) {
+                StoreBasicVo storeInfo = saas().getShopApp(storeAccountInfo.getShopId()).store.getStoreByNo(param.getStoreNo());
+                if (storeInfo == null || !list.contains(storeInfo.getStoreId())) {
+                    storeAuthInfoVo.setMsg(StoreAuthConstant.STORE_NOT_EXIST);
+                    isOk = false;
+                } else {
+                    List<Integer> storeListNew = new ArrayList<>();
+                    storeListNew.add(storeInfo.getStoreId());
+                    storeAccountInfo.setStoreLists(storeListNew);
+                }
+            }
+            storeAuthInfoVo.setIsOk(isOk);
+        }
+        storeAuthInfoVo.setStoreAccountInfo(storeAccountInfo);
+        return storeAuthInfoVo;
+    }
+
+    public StoreAuthInfoVo verifyStoreLogin(StoreLoginParam param){
+        StoreAuthInfoVo storeAuthInfoVo = getStoreAccountFlag(param);
+        if (!StoreAuthConstant.STORE_AUTH_OK.equals(storeAuthInfoVo.getIsOk())) {
+            return storeAuthInfoVo;
+        }
+        if (!Util.md5(param.getPassword()).equals(storeAuthInfoVo.getStoreAccountInfo().getAccountPasswd())) {
+            storeAuthInfoVo.setIsOk(false);
+            storeAuthInfoVo.setMsg(StoreAuthConstant.ACCOUNT_PW_ERROR);
+        }
+        return storeAuthInfoVo;
+    }
+
+    /**
+     * 获取门店登录账号信息
+     * @param storeAccountId
+     * @return
+     */
+    public StoreAccountVo getOneInfo(Integer storeAccountId){
+        return storeAccountDao.getOneInfo(storeAccountId);
+    }
+
+    public int upateBind(Integer storeAccountId, String officalOpenId, byte bind) {
+        return storeAccountDao.upateBind(storeAccountId,officalOpenId,bind);
+    }
+
+    public int updateRowBind(Integer storeAccountId,byte bind) {
+        return storeAccountDao.updateRowBind(storeAccountId,bind);
+    }
+
+    /**
+     * 获得绑定第三方公众号的账号
+     * @param shopId
+     * @param storeId
+     * @return
+     */
+    public List<StoreAccountVo> getStoreAccountByBindThird(Integer shopId, Integer storeId) {
+        return storeAccountDao.getStoreAccountByBindThird(shopId,storeId);
+    }
 }

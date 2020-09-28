@@ -5,6 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorMainShowVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
@@ -22,8 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
-import static com.vpu.mp.common.foundation.data.JsonResultCode.DOCTOR_LOGIN_AUTH_ERROR;
+import static com.vpu.mp.common.foundation.data.JsonResultCode.*;
 
 /**
  * @Description 医师端
@@ -50,7 +50,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @return JsonResult
      */
     @PostMapping("/api/wxapp/doctor/auth")
-    public JsonResult doctorAuth(@RequestBody DoctorAuthParam doctorAuthParam) {
+    public JsonResult doctorAuth(@Validated @RequestBody DoctorAuthParam doctorAuthParam) {
         doctorAuthParam.setUserId(wxAppAuth.user().getUserId());
         Integer doctorId = doctorService.doctorAuth(doctorAuthParam);
         // 如果医师id!=null 更新缓存
@@ -120,6 +120,8 @@ public class WxAppDoctorController extends WxAppBaseController {
             list.add(departmentListVo.getName());
         }
         doctorMainShowVo.setDepartmentName(list);
+        DoctorAttendanceVo attendance = doctorService.getAttendance(user.getUserId(), oneInfo.getHospitalCode(), user.getDoctorId());
+        doctorMainShowVo.setDoctorMonthData(attendance);
         return super.success(doctorMainShowVo);
     }
 }

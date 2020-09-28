@@ -43,6 +43,16 @@
   flex-direction: column;
   margin-top: 20rpx;
 }
+.prescription-code-status{
+  display: flex;
+  color: #333;
+}
+.prescription-code-status > view:nth-child(1){
+  margin-right: auto;
+}
+.prescription-code-status > view > text{
+  font-weight: bold;
+}
 .prescription-item:nth-child(1){
   margin-top: 0;
 }
@@ -68,6 +78,7 @@
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
+  height: 84rpx;
 }
 .prescription-item > .user-info > .info-item{
   display: flex;

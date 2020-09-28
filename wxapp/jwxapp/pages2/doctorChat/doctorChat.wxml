@@ -1,9 +1,8 @@
 <wxs src="../../utils/wxs/filter.wxs" module="filter"></wxs>
 <view class="body">
 	<include src="../../pages/common/header.wxml" />
-	<scroll-view class="main-container" bindtap="hideMoreActions" scroll-y='true' style='height:{{scrollViewHeight}}px' scroll-top='{{allHeight}}' bindscroll='startScroll'>
-		<!-- <chat-date send-time='{{time}}' /> -->
-		<view id='all_content'>
+	<scroll-view class="main-container" bindtap="hideMoreActions" scroll-y='true' style='height:{{scrollViewHeight || 500}}px' scroll-top='{{allHeight}}' bindscroll='startScroll' refresher-enabled='{{true}}' refresher-threshold="{{100}}" refresher-triggered="{{triggered}}" bindrefresherrefresh='onRefresh' bindrefresherpulling='onPulling' bindrefresherrestore="onRestore"   bindrefresherabort="onAbort" >
+		<view id='all_content' style='padding-bottom:{{targetUserInfo.sessionStatus >= 6 ? "40rpx" : "0rpx"}}'>
 			<block wx:for='{{chatContent}}' wx:for-item='item' wx:for-index='idx' wx:key='key'>
 				<view class="system_info" wx:if="{{idx === 0}}">
 					【系统提示】根据相关规定，不得对首诊患者开展互联网诊疗活动，请问询确定后再对患者进行开方。

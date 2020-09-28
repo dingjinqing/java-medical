@@ -1,10 +1,13 @@
 package com.vpu.sql.entity;
 
-import com.vpu.sql.constant.DBOperator;
+import com.vpu.sql.constant.DbOperator;
 
 import java.util.LinkedList;
 import java.util.Map;
 
+/**
+ * @author luguangyao
+ */
 public class UpdateSql {
 
 
@@ -27,7 +30,7 @@ public class UpdateSql {
     /**
      * 涉及到的字段以及操作类型
      */
-    private Map<String,DBOperator> sqlOperatorMap;
+    private Map<String, DbOperator> sqlOperatorMap;
 
 
     public String getTableName() {
@@ -46,11 +49,11 @@ public class UpdateSql {
         this.sql = sql;
     }
 
-    public Map<String, DBOperator> getSqlOperatorMap() {
+    public Map<String, DbOperator> getSqlOperatorMap() {
         return sqlOperatorMap;
     }
 
-    public void setSqlOperatorMap(Map<String, DBOperator> sqlOperatorMap) {
+    public void setSqlOperatorMap(Map<String, DbOperator> sqlOperatorMap) {
         this.sqlOperatorMap = sqlOperatorMap;
     }
 }

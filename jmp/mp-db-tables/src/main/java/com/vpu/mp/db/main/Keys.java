@@ -108,11 +108,12 @@ public class Keys {
     public static final Identity<ExternalRequestHistoryRecord, Integer> IDENTITY_EXTERNAL_REQUEST_HISTORY = Identities0.IDENTITY_EXTERNAL_REQUEST_HISTORY;
     public static final Identity<InquiryOrderRecord, Long> IDENTITY_INQUIRY_ORDER = Identities0.IDENTITY_INQUIRY_ORDER;
     public static final Identity<ShopSmsConfigRecord, Integer> IDENTITY_SHOP_SMS_CONFIG = Identities0.IDENTITY_SHOP_SMS_CONFIG;
+    public static final Identity<ShopLogisticsRecord, Integer> IDENTITY_SHOP_LOGISTICS = Identities0.IDENTITY_SHOP_LOGISTICS;
+
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
-
     public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_BAK_PRIMARY;
     public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY;
 
@@ -223,6 +224,8 @@ public class Keys {
     public static final UniqueKey<ExternalRequestHistoryRecord> KEY_B2C_EXTERNAL_REQUEST_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_EXTERNAL_REQUEST_HISTORY_PRIMARY;
     public static final UniqueKey<InquiryOrderRecord> KEY_B2C_INQUIRY_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_INQUIRY_ORDER_PRIMARY;
     public static final UniqueKey<ShopSmsConfigRecord> KEY_B2C_SHOP_SMS_CONFIG_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_SMS_CONFIG_PRIMARY;
+    public static final UniqueKey<ShopLogisticsRecord> KEY_B2C_SHOP_LOGISTICS_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_LOGISTICS_PRIMARY;
+
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -309,12 +312,13 @@ public class Keys {
         public static Identity<ExternalRequestHistoryRecord, Integer> IDENTITY_EXTERNAL_REQUEST_HISTORY = Internal.createIdentity(ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY, ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY.ID);
         public static Identity<InquiryOrderRecord, Long> IDENTITY_INQUIRY_ORDER = Internal.createIdentity(InquiryOrder.INQUIRY_ORDER, InquiryOrder.INQUIRY_ORDER.ID);
         public static Identity<ShopSmsConfigRecord, Integer> IDENTITY_SHOP_SMS_CONFIG = Internal.createIdentity(ShopSmsConfig.SHOP_SMS_CONFIG, ShopSmsConfig.SHOP_SMS_CONFIG.ID);
+        public static Identity<ShopLogisticsRecord, Integer> IDENTITY_SHOP_LOGISTICS = Internal.createIdentity(ShopLogistics.SHOP_LOGISTICS, ShopLogistics.SHOP_LOGISTICS.ID);
 
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderBak.RETURN_ORDER_BAK, "KEY_b2c_return_order_bak_PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK.RET_ID);
-        public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, "KEY_b2c_return_order_goods_bak_PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID);
+        public static final UniqueKey<ReturnOrderBakRecord> KEY_B2C_RETURN_ORDER_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderBak.RETURN_ORDER_BAK, "KEY_b2c_return_order_bak_PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK.RET_ID, ReturnOrderBak.RETURN_ORDER_BAK.SHOP_ID);
+        public static final UniqueKey<ReturnOrderGoodsBakRecord> KEY_B2C_RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createUniqueKey(ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, "KEY_b2c_return_order_goods_bak_PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID, ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.SHOP_ID);
 
         public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_PRIMARY = Internal.createUniqueKey(OrderInfoBak.ORDER_INFO_BAK, "KEY_b2c_order_info_bak_PRIMARY", OrderInfoBak.ORDER_INFO_BAK.ID);
         public static final UniqueKey<OrderInfoBakRecord> KEY_B2C_ORDER_INFO_BAK_ORDER_SN = Internal.createUniqueKey(OrderInfoBak.ORDER_INFO_BAK, "KEY_b2c_order_info_bak_order_sn", OrderInfoBak.ORDER_INFO_BAK.ORDER_SN);
@@ -423,5 +427,7 @@ public class Keys {
         public static final UniqueKey<ExternalRequestHistoryRecord> KEY_B2C_EXTERNAL_REQUEST_HISTORY_PRIMARY = Internal.createUniqueKey(ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY, "KEY_b2c_external_request_history_PRIMARY", ExternalRequestHistory.EXTERNAL_REQUEST_HISTORY.ID);
         public static final UniqueKey<InquiryOrderRecord> KEY_B2C_INQUIRY_ORDER_PRIMARY = Internal.createUniqueKey(InquiryOrder.INQUIRY_ORDER, "KEY_b2c_inquiry_order_PRIMARY", InquiryOrder.INQUIRY_ORDER.ID);
         public static final UniqueKey<ShopSmsConfigRecord> KEY_B2C_SHOP_SMS_CONFIG_PRIMARY = Internal.createUniqueKey(ShopSmsConfig.SHOP_SMS_CONFIG, "KEY_b2c_shop_sms_config_PRIMARY", ShopSmsConfig.SHOP_SMS_CONFIG.ID);
+        public static final UniqueKey<ShopLogisticsRecord> KEY_B2C_SHOP_LOGISTICS_PRIMARY = Internal.createUniqueKey(ShopLogistics.SHOP_LOGISTICS, "KEY_b2c_shop_logistics_PRIMARY", ShopLogistics.SHOP_LOGISTICS.ID);
+
     }
 }

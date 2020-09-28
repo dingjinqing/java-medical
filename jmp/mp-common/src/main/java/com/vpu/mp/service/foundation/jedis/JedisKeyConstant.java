@@ -27,11 +27,16 @@ public class JedisKeyConstant {
      * goods lock(库存、销量)
      */
     public static final String GOODS_LOCK = "lock:goods:";
+
+    public static final String ADD_STORE_LOCK = "lock:store:";
     /**
      * prescription lock(库存、销量)
      */
     public static final String PRESCRIPTION_LOCK = "lock:prescription:";
-
+    /**
+     * make prescription lock(库存、销量)
+     */
+    public static final String MAKE_PRESCRIPTION_LOCK = "lock:makePrescription:";
     //店铺配置
     /**
      * 分词配置
@@ -69,6 +74,15 @@ public class JedisKeyConstant {
          * 下单锁（同一个用户同时只会存在一个正常可以完成的下单请求）+shopId+userid
          */
         public static final String ORDER_SUBMIT = "lock:orderSubmit";
+
+        /**
+         * 提现申请锁+shopId+userid
+         */
+        public static final String WITHDRAW_APPLY = "lock:withdrawApply";
+        /**
+         * 医师提现申请锁+shopId+userid
+         */
+        public static final String DOCTOR_WITHDRAW_APPLY = "lock:doctorWithdrawApply";
     }
 
     /**会话未读信息表*/
@@ -77,4 +91,10 @@ public class JedisKeyConstant {
     public static final String IM_SESSION_ITEM_LIST_KEY_BAK = "session:shopId%d:sessionId%d:bak";
     /**会话状态标识位key存在则表明会话可用，否则不可用*/
     public static final String IM_SESSION_STATUS = "session:shopId%d:sessionId%d:status";
+
+    /**
+     * 分销员二维码
+     */
+    public static final String DISTRIBUTION_QR_CODE = "distribution:qrCode:";
+    // ============ 分销相关 end ============
 }

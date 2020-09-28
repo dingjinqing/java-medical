@@ -7,6 +7,11 @@
         size="small"
         @click="addDepartmentClicked"
       >添加科室</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="fetch"
+      >同步</el-button>
     </div>
     <div>
       <el-table
@@ -14,45 +19,70 @@
         header-row-class-name="tableClss"
         :data="departmentData"
         border
-        style="width: 100%"
+        style="width: 100%;"
       >
         <el-table-column
           align="left"
           label="科室名称"
+          width="200"
         >
-          <template v-slot="{row,$index}">
+          <template v-slot="{ row, $index }">
             <template v-if="row.isLeaf === 0 && row.level === 1">
               <span
                 v-if="!row.open"
                 class="collapseIcon el-icon-folder-add"
-                @click="collapseIconClicked(row,$index)"
+                @click="collapseIconClicked(row, $index)"
               ></span>
               <span
                 v-else
                 class="collapseIcon el-icon-folder-remove"
-                @click="collapseIconClicked(row,$index)"
+                @click="collapseIconClicked(row, $index)"
               ></span>
-              <span class="n-bold"> {{row.name}}</span>
-
+              <span class="n-bold"> {{ row.name }}</span>
             </template>
             <template v-else-if="row.level === 1">
               <span
                 class="collapseTab"
-                style='width:48px;'
+                style="width: 48px;"
               ></span>
 
-              <span class="n-bold"> {{row.name}}</span>
+              <span class="n-bold"> {{ row.name }}</span>
             </template>
             <template v-else>
               <span class="collapseTab"></span>
-              {{row.name}}
+              {{ row.name }}
             </template>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="科室代码"
-          prop="code"
+          label="医生人数"
+          prop="doctorNumber"
+        />
+        <el-table-column
+          align="center"
+          label="处方数"
+          prop="prescriptionNum"
+        />
+        <el-table-column
+          align="center"
+          label="处方金额"
+          prop="prescriptionMoney"
+        />
+        <el-table-column
+          align="center"
+          label="咨询单数"
+          prop="inquiryNumber"
+        />
+        <el-table-column
+          align="center"
+          label="接诊人数"
+          prop="consultationNumber"
+        />
+        <el-table-column
+          align="center"
+          label="咨询金额"
+          prop="inquiryMoney"
         />
         <el-table-column
           align="center"
@@ -74,7 +104,7 @@
             >
               <span
                 class="iconfont iconshanchu2"
-                @click="deleteDepartmentClicked(scope.row,scope.$index)"
+                @click="deleteDepartmentClicked(scope.row, scope.$index)"
               ></span>
             </el-tooltip>
           </template>
@@ -90,7 +120,7 @@
 
 <script>
 // 导入api
-import { getDepartmentList, getBatchDepartmentList, deleteDepartment } from '@/api/admin/doctorManage/allDepartment/departmentManagement.js'
+import { getDepartmentList, getBatchDepartmentList, deleteDepartment, fetchDoctorDepartment } from '@/api/admin/doctorManage/allDepartment/departmentManagement.js'
 // 组件导入
 import allDepartmentHeaderTab from './officesHeaderTab'
 
@@ -167,6 +197,11 @@ export default {
           row.level === 1 ? this.handleQuery() : this.departmentData.splice($index, 1)
         })
       })
+    },
+    fetch () {
+      fetchDoctorDepartment().then(res => {
+        console.log(res)
+      })
     }
   },
   mounted () {
@@ -191,7 +226,7 @@ export default {
   }
   .collapseTab {
     display: inline-block;
-    width: 120px;
+    width: 70px;
   }
   .operateSpan {
     font-size: 22px;

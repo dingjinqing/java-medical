@@ -20,4 +20,9 @@ public class AnnounceBo {
      */
     @JsonProperty("shop_text")
     private String shopText;
+    /**
+     * 当前公告是否推送给用户
+     */
+    @JsonProperty("is_pull")
+    private Byte isPull;
 }

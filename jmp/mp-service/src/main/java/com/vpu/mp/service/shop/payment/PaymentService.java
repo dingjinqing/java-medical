@@ -427,7 +427,7 @@ public class PaymentService extends ShopBaseService {
      * 代付子单支付回调
      * @param param
      */
-    private void onPayNotifySubOrder(PaymentRecordParam param) throws MpException {
+    private void  onPayNotifySubOrder(PaymentRecordParam param) throws MpException {
         logger().info("代付子单支付回调start");
         SubOrderInfoRecord order = subOrderService.get(param.getOrderSn());
         if (order == null) {

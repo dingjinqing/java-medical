@@ -21,6 +21,7 @@ public class GoodsDo {
     private Integer    shopId;
     private Integer    catId;
     private String     goodsSn;
+    private String goodsBarCode;
     private String     goodsName;
     private Integer    brandId;
     private String     goodsAd;
@@ -68,4 +69,7 @@ public class GoodsDo {
     private Integer    pv;
     private Integer    commentNum;
     private Integer    roomId;
+    private String storeCode;
+    private Byte hisStatus;
+    private Byte storeStatus;
 }

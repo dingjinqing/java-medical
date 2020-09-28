@@ -171,6 +171,16 @@ public class JsonResultMessage {
      * 营销
      */
     public static final String DISTRIBUTOR_GROUP_NAME_EXIST = "distributor.group.name.exist";
+    public static final String DISTRIBUTOR_WITHDRAW_MONEY_NOT_NULL = "distributor.withdraw.money.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_REALNAME_NOT_NULL = "distributor.withdraw.realname.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_MINIMUM_LIMIT_MONEY  = "distributor.withdraw.minimum.limit.money";
+    public static final String DISTRIBUTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY  = "distributor.withdraw.maximum.limit.money";
+    public static final String DISTRIBUTOR_WITHDRAW_ISPASS_NOT_NULL = "distributor.withdraw.ispass.not.null";
+    public static final String DISTRIBUTOR_WITHDRAW_ORDER_SN_NOT_NULL = "distributor.withdraw.order.sn.not.null";
+    public static final String  DISTRIBUTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "distributor.withdraw.no.focus.wechat.official.accounts";
+    public static final String  DISTRIBUTOR_WITHDRAW_WX_ERROR = "distributor.withdraw.wx.error";
+    public static final String  WITHDRAW_OPERATE_ACTION_ERROR = "withdraw.operate.action.error";
+    public static final String  WITHDRAW_AUDIT_STATUS_NOT_ALLOW = "withdraw.audit.status.not.allow";
 
     /**
      * 营销-砍价excel导出-发起砍价
@@ -496,6 +506,8 @@ public class JsonResultMessage {
     public static final String CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG = "wx.store.pay.lower.score.down.config";
     public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
     public static final String MSF_STORE_NEED_HAVE = "store.need.have";
+    public static final String CODE_NO_STORE_OPEN = "当前无营业门店";
+    public static final String CODE_STORE_GOODS_IS_EMPTY = "商品库存不足";
 
     /**
      * 门店技师管理
@@ -864,6 +876,8 @@ public class JsonResultMessage {
      * 订单状态
      */
     public static final String CODE_ORDER_STATUS_ALREADY_CHANGE = "order.status.is.already.change";
+    public static final String ORDER_CHECK_VERIFY_CODE_FAILD = "order.check.verify.code.faild";
+
 
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
@@ -1324,6 +1338,71 @@ public class JsonResultMessage {
     public static final String USER_CARD_CHARGE_FILE_NAME = "user.card.charge.file_name";
 
     /**
+     * 分销-分销员列表导出
+     */
+    public static final String DISTRIBUTOR_LIST_NAME = "distributor.list.name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_NAME = "distributor.list.distributor_name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_MOBILE = "distributor.list.distributor_mobile";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_REAL_NAME = "distributor.list.distributor_real_name";
+    public static final String DISTRIBUTOR_LIST_DISTRIBUTOR_TAGS = "distributor.list.distributor_tags";
+    public static final String DISTRIBUTOR_LIST_CREATE_TIME = "distributor.list.create_time";
+    public static final String DISTRIBUTOR_LIST_CHECK_TIME = "distributor.list.check_time";
+    public static final String DISTRIBUTOR_LIST_INVITE_NAME = "distributor.list.invite_name";
+    public static final String DISTRIBUTOR_LIST_INVITE_REAL_NAME = "distributor.list.invite_real_name";
+    public static final String DISTRIBUTOR_LIST_INVITE_MOBILE = "distributor.list.invite_mobile";
+    public static final String DISTRIBUTOR_LIST_GROUP_NAME = "distributor.list.group_name";
+    public static final String DISTRIBUTOR_LIST_LEVEL_NAME = "distributor.list.level_name";
+    public static final String DISTRIBUTOR_LIST_SUBLAYER_NUMBER = "distributor.list.sublayer_number";
+    public static final String DISTRIBUTOR_LIST_NEXT_NUMBER = "distributor.list.next_number";
+    public static final String DISTRIBUTOR_LIST_TOTAL_FANLI_MONEY = "distributor.list.total_fanli_money";
+    public static final String DISTRIBUTOR_LIST_WAIT_FANLI_MONEY = "distributor.list.wait_fanli_money";
+    public static final String DISTRIBUTOR_LIST_INVITATION_CODE = "distributor.list.invitation_code";
+    public static final String DISTRIBUTOR_LIST_REMARK = "distributor.list.remark";
+
+    /** 分销-商品返利统计导出*/
+    public static final String REBATE_GOODS_NAME = "rebate.goods.name";
+    public static final String REBATE_GOODS_GOODS_NAME = "rebate.goods.goods_name";
+    public static final String REBATE_GOODS_GOODS_PRICE = "rebate.goods.goods_price";
+    public static final String REBATE_GOODS_GOODS_CATE = "rebate.goods.goods_cate";
+    public static final String REBATE_GOODS_GOODS_SALE_NUM = "rebate.goods.goods_sale_num";
+    public static final String REBATE_GOODS_SALE_NUM = "rebate.goods.sale_num";
+    public static final String REBATE_GOODS_TOTAL_FANLI = "rebate.goods.total_fanli";
+
+    /**分销-商品返利详情统计导出*/
+    public static final String REBATE_GOODS_DETAIL_NAME = "rebate.goods_detail.name";
+    public static final String REBATE_GOODS_DETAIL_GOODS_NAME = "rebate.goods_detail.goods_name";
+    public static final String REBATE_GOODS_DETAIL_GOODS_NUMBER = "rebate.goods_detail.goods_number";
+    public static final String REBATE_GOODS_DETAIL_ORDER_SN = "rebate.goods_detail.order_sn";
+    public static final String REBATE_GOODS_DETAIL_CAN_CALCULATE_MONEY = "rebate.goods_detail.can_calculate_money";
+    public static final String REBATE_GOODS_DETAIL_USERNAME = "rebate.goods_detail.username";
+    public static final String REBATE_GOODS_DETAIL_MOBILE = "rebate.goods_detail.mobile";
+    public static final String REBATE_GOODS_DETAIL_REBATE_LEVEL = "rebate.goods_detail.rebate_level";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_NAME = "rebate.goods_detail.distributor_name";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_REAL_NAME = "rebate.goods_detail.distributor_real_name";
+    public static final String REBATE_GOODS_DETAIL_DISTRIBUTOR_MOBILE = "rebate.goods_detail.distributor_mobile";
+    public static final String REBATE_GOODS_DETAIL_REBATE_PERCENT = "rebate.goods_detail.rebate_percent";
+    public static final String REBATE_GOODS_DETAIL_REAL_REBATE_MONEY = "rebate.goods_detail.real_rebate_money";
+    public static final String REBATE_GOODS_DETAIL_REBATE_STATUS = "rebate.goods_detail.rebate_status";
+    public static final String REBATE_GOODS_DETAIL_FINISHED_TIME = "rebate.goods_detail.finished_time";
+
+    /** 分销-佣金统计导出*/
+    public static final String BROKERAGE_LIST_NAME = "brokerage.list.brokerage_name";
+    public static final String BROKERAGE_LIST_DISTRIBUTOR_NAME = "brokerage.list.distributor_name";
+    public static final String BROKERAGE_LIST_DISTRIBUTOR_MOBILE = "brokerage.list.distributor_mobile";
+    public static final String BROKERAGE_LIST_REAL_NAME = "brokerage.list.real_name";
+    public static final String BROKERAGE_LIST_GROUP_NAME = "brokerage.list.group_name";
+    public static final String BROKERAGE_LIST_ORDER_SN = "brokerage.list.order_sn";
+    public static final String BROKERAGE_LIST_ORDER_AMOUNT = "brokerage.list.order_amount";
+    public static final String BROKERAGE_LIST_USER_MOBILE = "brokerage.list.user_mobile";
+    public static final String BROKERAGE_LIST_USER_NAME = "brokerage.list.user_name";
+    public static final String BROKERAGE_LIST_REBATE_LEVEL = "brokerage.list.rebate_level";
+    public static final String BROKERAGE_LIST_TOTAL_REBATE_MONRY = "brokerage.list.total_rebate_money";
+    public static final String BROKERAGE_LIST_REAL_REBATE_MONRY = "brokerage.list.real_rebate_money";
+    public static final String BROKERAGE_LIST_CREATE_TIME = "brokerage.list.create_time";
+    public static final String BROKERAGE_LIST_SETTLEMENT_FLAG = "brokerage.list.settlement_flag";
+    public static final String BROKERAGE_LIST_REBATE_TIME = "brokerage.list.rebate_time";
+
+    /**
      * 科室
      */
     public static final String DOCTOR_DEPARTMENT_NAME_EXIST = "doctor.department.name.exist";
@@ -1342,6 +1421,7 @@ public class JsonResultMessage {
     public static final String DOCTOR_CODE_IS_EXIST = "doctor.code.is.exist";
     public static final String PATIENT_IS_EXIST = "patient.is.exist";
     public static final String PATIENT_IS_NOT_EXIST = "patient.is.not.exist";
+    public static final String DOCTOR_AUTH_DISABLED = "doctor.auth.disabled";
 
     /**
      * 会话
@@ -1360,6 +1440,7 @@ public class JsonResultMessage {
     public static final String INQUIRY_ORDER_SN_IS_NULL="inquiry.order.sn.is.null";
     public static final String INQUIRY_ORDER_ID_IS_NULL="inquiry.order.id.is.null";
     public static final String INQUIRY_ORDER_REFUND_MONEY_EXCESS="inquiry.order.refund.money.excess";
+    public static final String INQUIRY_ORDER_ALREADY_REFUND="inquiry.order.is.already.refunded";
     /**
      * 验证码错误
      */
@@ -1373,5 +1454,15 @@ public class JsonResultMessage {
     public static final String FETCH_HIS_NULL = "暂无信息";
     public static final String TO_FETCH_PATIENT = "请跳转至输入验证码拉取信息界面";
     public static final String SMS_OUT_OF_LIMITS = "今日可发送短信已超额";
+
+    public static final String DOCTOR_WITHDRAW_MAXIMUM_LIMIT_MONEY = "医师提现金额超出可提现金额";
+    public static final String DOCTOR_WITHDRAW_IS_NOT_EXIST = "不存在医师可提现金额";
+    public static final String NO_LINK_WECHAT_OFFICIAL_ACCOUNTS = "小程序未绑定微信公众号";
+    public static final String DOCTOR_WITHDRAW_EX_ERROR = "医师提现微信出现错误,{0}";
+    public static final String DOCTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS = "医师提现未关注微信公众号";
+    public static final String DOCTOR_WITHDRAW_EXCEED_DAY_MAX_LIMIT_MONEY = "医师提现超出每日可提现最大额度限制";
+    public static final String DOCTOR_WITHDRAW_LESS_MINIMUM = "医师提现不满足单次最小额度限制";
+    public static final String DOCTOR_WITHDRAW_ALREADY_ERROR= "医师该次提现出账已经失败";
+    public static final String DOCTOR_WITHDRAW_ALREADY_REJECT= "医师该次提现已经被驳回";
 
 }

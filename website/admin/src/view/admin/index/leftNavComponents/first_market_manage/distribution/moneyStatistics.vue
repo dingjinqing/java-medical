@@ -52,6 +52,7 @@
             size="small"
             align="right"
             class="selectWidth"
+            value-format="yyyy-MM-dd HH:mm:ss"
             :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
           {{$t('distribution.to')}}
@@ -61,6 +62,7 @@
             size="small"
             align="right"
             class="selectWidth"
+            value-format="yyyy-MM-dd HH:mm:ss"
             default-time="23:59:59"
             :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
@@ -83,6 +85,7 @@
             size="small"
             align="right"
             class="selectWidth"
+            value-format="yyyy-MM-dd HH:mm:ss"
             :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
           {{$t('distribution.to')}}
@@ -92,6 +95,7 @@
             size="small"
             align="right"
             class="selectWidth"
+            value-format="yyyy-MM-dd HH:mm:ss"
             default-time="23:59:59"
             :placeholder="$t('distribution.chooseDate')"
           ></el-date-picker>
@@ -104,6 +108,7 @@
             size="small"
             class="inputWidth"
             clearable
+            multiple
             :placeholder="$t('distribution.selectTip')"
           >
             <el-option
@@ -155,7 +160,10 @@
             type="primary"
             size="small"
           >{{$t('distribution.screen')}}</el-button>
-          <el-button size="small">{{$t('distribution.export')}}</el-button>
+          <el-button
+            size="small"
+            @click="exportDataList"
+          >{{$t('distribution.export')}}</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -167,6 +175,9 @@
       border
       style="width: 100%; margin-top: 10px;"
     >
+      <template slot="empty">
+        <tableEmpty />
+      </template>
       <el-table-column
         :label="$t('distribution.distributorName')"
         align="center"
@@ -174,7 +185,7 @@
         <template slot-scope="scope">
           <span
             class="linkStyle"
-            @click="userNameHandler(scope.row.userId)"
+            @click="userNameHandler(scope.row.distributorId)"
           >{{scope.row.distributorName}}</span>
         </template>
       </el-table-column>
@@ -216,14 +227,19 @@
       <el-table-column
         prop="userMobile"
         :label="$t('distribution.orderMobile')"
-        align="enter"
+        align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="orderUserName"
         :label="$t('distribution.orderName')"
-        align="enter"
+        align="center"
       >
+        <template slot-scope="scope">
+          <span
+            class="linkStyle"
+            @click="userNameHandler(scope.row.userId)"
+          >{{scope.row.orderUserName}}</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="rebateLevel"
@@ -266,19 +282,42 @@
       :page-params.sync="pageParams"
       @pagination="initData"
     />
+
+    <!-- 导出数据弹窗 -->
+    <exportDialog
+      :tuneUp="exportDialog"
+      :param="this.searchParam"
+      :totalRows="totalRows"
+      :type="2"
+      @export="exportHandler"
+    />
   </div>
 </template>
 
 <script>
-import { brokerageList, distributorAllGroup } from '@/api/admin/marketManage/distribution.js'
+import { download } from '@/util/excelUtil.js'
+import { brokerageList, distributorAllGroup, brokerageExport } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
+    pagination: () => import('@/components/admin/pagination/pagination'),
+    exportDialog: () => import('./moneyExportDialog')
   },
   props: {
     userId: {
       type: Number,
-      default: () => 0
+      default: () => null
+    },
+    username: {
+      type: String,
+      default: () => ''
+    },
+    mobile: {
+      type: String,
+      default: () => ''
+    },
+    settlementFlag: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -294,7 +333,7 @@ export default {
         orderSn: '',
         startRebateTime: '',
         endRebateTime: '',
-        settlementFlag: '',
+        settlementFlag: [],
         distributorGroup: '',
         rebateLevel: ''
       },
@@ -309,10 +348,10 @@ export default {
         label: '待返利',
         value: 0
       }, {
-        label: '不返利',
+        label: '已返利',
         value: 1
       }, {
-        label: '已返利',
+        label: '不返利',
         value: 2
       }],
       // 分销员分组列表
@@ -327,31 +366,50 @@ export default {
       }, {
         label: '间接返利',
         value: 2
-      }]
+      }],
+
+      exportDialog: false, // 导出数据弹窗
+      totalRows: 0 // 筛选个数
     }
   },
   watch: {
     userId () {
-      this.initData()
+      this.getAllData()
     }
   },
   mounted () {
-    this.initData()
-    this.getGroupList() // 分销员分组
+    this.getAllData()
   },
   methods: {
+    async getAllData () {
+      // 获取分销员分组
+      await distributorAllGroup().then(res => {
+        this.groupList = res.content
+      })
+      this.searchParam.distributorName = this.username
+      this.searchParam.distributorMobile = this.mobile
+      this.searchParam.settlementFlag = this.settlementFlag
+      this.initData()
+    },
+
     // 佣金统计列表
     initData () {
-      var paramsData = {}
-      paramsData = this.searchParam
-      paramsData.userId = this.userId
-      paramsData.currentPage = this.pageParams.currentPage
-      paramsData.pageRows = this.pageParams.pageRows
-      brokerageList(paramsData).then(res => {
-        if (res.error === 0) {
-          this.handleData(res.content.dataList)
-          this.pageParams = res.content.page
-        }
+      return new Promise((resolve, reject) => {
+        var paramsData = {}
+        paramsData = JSON.parse(JSON.stringify(this.searchParam))
+        paramsData.settlementFlag = paramsData.settlementFlag.toString()
+        paramsData.userId = this.userId
+        paramsData.currentPage = this.pageParams.currentPage
+        paramsData.pageRows = this.pageParams.pageRows
+        brokerageList(paramsData).then(res => {
+          if (res.error === 0) {
+            this.handleData(res.content.dataList)
+            this.pageParams = res.content.page
+            resolve(this.pageParams)
+          }
+        }).catch(error => {
+          reject(error)
+        })
       })
     },
 
@@ -361,9 +419,9 @@ export default {
         if (item.settlementFlag === 0) {
           item.settlementFlag = '待返利'
         } else if (item.settlementFlag === 1) {
-          item.settlementFlag = '不返利'
-        } else if (item.settlementFlag === 2) {
           item.settlementFlag = '已返利'
+        } else if (item.settlementFlag === 2) {
+          item.settlementFlag = '不返利'
         }
         if (item.rebateLevel === 0) {
           item.rebateLevel = '自购返利'
@@ -374,13 +432,6 @@ export default {
         }
       })
       this.tableData = data
-    },
-
-    // 获取所有分销员分组
-    getGroupList () {
-      distributorAllGroup().then(res => {
-        this.groupList = res.content
-      })
     },
 
     // 用户昵称跳转
@@ -401,7 +452,34 @@ export default {
           orderSn: orderSn
         }
       })
+    },
+
+    // 导出数据
+    exportDataList () {
+      this.initData().then(() => {
+        this.totalRows = this.pageParams.totalRows
+        this.exportDialog = !this.exportDialog
+      })
+    },
+
+    // 导出数据弹窗回调函数
+    exportHandler (data) {
+      // 搜索条件
+      var obj = {}
+      for (var i in data) {
+        if (i === 'startNum' || i === 'endNum') {
+          obj[i] = data[i]
+        } else if (data[i]) {
+          obj[i] = data[i]
+        }
+      }
+      brokerageExport(obj).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '佣金统计列表导出.xlsx'
+        download(res, decodeURIComponent(fileName))
+      })
     }
+
   }
 }
 

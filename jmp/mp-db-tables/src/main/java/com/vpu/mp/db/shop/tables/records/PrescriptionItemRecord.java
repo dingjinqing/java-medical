@@ -5,12 +5,14 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.PrescriptionItem;
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -26,7 +28,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = -1063939987;
+    private static final long serialVersionUID = 628911608;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.id</code>.
@@ -323,45 +325,115 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.can_calculate_money</code>. 可计算返利金额
+     */
+    public void setCanCalculateMoney(BigDecimal value) {
+        set(21, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.can_calculate_money</code>. 可计算返利金额
+     */
+    public BigDecimal getCanCalculateMoney() {
+        return (BigDecimal) get(21);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.goods_sharing_proportion</code>. 商品分成比例
+     */
+    public void setGoodsSharingProportion(BigDecimal value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.goods_sharing_proportion</code>. 商品分成比例
+     */
+    public BigDecimal getGoodsSharingProportion() {
+        return (BigDecimal) get(22);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.rebate_proportion</code>. 返利比例
+     */
+    public void setRebateProportion(BigDecimal value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.rebate_proportion</code>. 返利比例
+     */
+    public BigDecimal getRebateProportion() {
+        return (BigDecimal) get(23);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.total_rebate_money</code>. 返利金额
+     */
+    public void setTotalRebateMoney(BigDecimal value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.total_rebate_money</code>. 返利金额
+     */
+    public BigDecimal getTotalRebateMoney() {
+        return (BigDecimal) get(24);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.real_rebate_money</code>. 实际返利金额
+     */
+    public void setRealRebateMoney(BigDecimal value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.real_rebate_money</code>. 实际返利金额
+     */
+    public BigDecimal getRealRebateMoney() {
+        return (BigDecimal) get(25);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.
      */
     public void setIsDelete(Byte value) {
-        set(21, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.
      */
     public Byte getIsDelete() {
-        return (Byte) get(21);
+        return (Byte) get(26);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(22, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(22);
+        return (Timestamp) get(27);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(23, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(23);
+        return (Timestamp) get(28);
     }
 
     // -------------------------------------------------------------------------
@@ -390,7 +462,7 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
     /**
      * Create a detached, initialised PrescriptionItemRecord
      */
-    public PrescriptionItemRecord(Integer id, String posCode, String posDetailCode, String prescriptionCode, String prescriptionDetailCode, Integer goodsId, String goodsCommonName, String goodsImg, String goodsQualityRatio, Integer prdId, String useMethod, Double perTimeNum, String perTimeUnit, Double perTimeDosage, String perTimeDosageUnit, Double frequency, Double dragSumNum, String dragSumUnit, String goodsUseMemo, String goodsProductionEnterprise, BigDecimal medicinePrice, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionItemRecord(Integer id, String posCode, String posDetailCode, String prescriptionCode, String prescriptionDetailCode, Integer goodsId, String goodsCommonName, String goodsImg, String goodsQualityRatio, Integer prdId, String useMethod, Double perTimeNum, String perTimeUnit, Double perTimeDosage, String perTimeDosageUnit, Double frequency, Double dragSumNum, String dragSumUnit, String goodsUseMemo, String goodsProductionEnterprise, BigDecimal medicinePrice, BigDecimal canCalculateMoney, BigDecimal goodsSharingProportion, BigDecimal rebateProportion, BigDecimal totalRebateMoney, BigDecimal realRebateMoney, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
         super(PrescriptionItem.PRESCRIPTION_ITEM);
 
         set(0, id);
@@ -414,8 +486,13 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
         set(18, goodsUseMemo);
         set(19, goodsProductionEnterprise);
         set(20, medicinePrice);
-        set(21, isDelete);
-        set(22, createTime);
-        set(23, updateTime);
+        set(21, canCalculateMoney);
+        set(22, goodsSharingProportion);
+        set(23, rebateProportion);
+        set(24, totalRebateMoney);
+        set(25, realRebateMoney);
+        set(26, isDelete);
+        set(27, createTime);
+        set(28, updateTime);
     }
 }

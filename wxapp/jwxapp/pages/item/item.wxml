@@ -7,7 +7,7 @@
     return str.substring(start,end)
   }
   module.exports = {
-    includes:includes
+    includes:includes,
     substring:substring
   }
 </wxs>
@@ -165,7 +165,7 @@
           <view class="act-time">{{announceData.startTime}}开始</view>
         </view>
       </view>
-      <view class="flex-wrap">
+      <view class="flex-wrap" wx:if="{{goodsInfo.isMedical && goodsInfo.isRx}}">
         <view class="prescription-tips">
           <image src="{{imageUrl}}image/wxapp/warn.png"></image>
           <text>本品为处方药，请在医师指导下使用</text>

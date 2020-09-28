@@ -34,12 +34,12 @@
 					<view>接诊量</view>
 				</view>
 				<view>
-					<view>{{answerType == 1 ? '10分钟内' : (answerType == 2 ? '半小时内' : ( answerType == 3 ? '1小时内' : '1小时以上'))}}</view>
+					<view>{{con.answerType == 1 ? '10分钟内' : (con.answerType == 2 ? '半小时内' : ( con.answerType == 3 ? '1小时内' : '1小时以上'))}}</view>
 					<view>平均响应时间</view>
 				</view>
 				<view>
-					<view>{{con.avgCommentStar}}</view>
-					<view>患者评分</view>
+					<view>{{con.avgCommentStar > 0 ? con.avgCommentStar : '暂无评分'}}</view>
+					<view>综合评分</view>
 				</view>
 			</view>
 			<image src='{{imageUrl}}image/wxapp/doctor_introduce_right.png'></image>
@@ -55,7 +55,7 @@
 						<view class="c_top">
 							<view class="c_t_name">{{item.userName}}</view>
 							<view class="c_t_star">
-							   <block wx:for='{{item.stars - 0}}' wx:key=''>
+							   <block wx:for='{{item.stars - 0}}' wx:key='key'>
 								 		<text class='iconfont iconshoucang star'></text>
 								 </block>
 							</view>
@@ -70,6 +70,17 @@
 						</view>
 						<view class="c_bot">
 							<text>{{item.createTime}}</text>
+						</view>
+						<view class="d_reply" wx:if='{{item.replylist}}'>
+						  <view class="reply_top">医师回复：</view>
+													<view class="reply_bot">
+								<view class="re_text">
+									{{ item.rp_need_expand  ? ( item.rp_zk ? item.rp_new_comm_note : item.replylist[0].replyNote) : item.replylist[0].replyNote}}
+								</view>
+								<view class="rp_expand" wx:if='{{item.rp_need_expand == true}}' data-pidx='{{pageIndex}}' data-idx='{{itemIndex}}' catchtap="rp_zk_sq">
+									{{item.rp_zk ? '展开' : '收起'}}
+								</view>
+							</view>
 						</view>
 					</view>
 				</block>

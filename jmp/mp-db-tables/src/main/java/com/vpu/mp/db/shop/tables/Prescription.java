@@ -8,6 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PrescriptionRecord;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -20,11 +28,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-
-import javax.annotation.Generated;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -40,7 +43,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Prescription extends TableImpl<PrescriptionRecord> {
 
-    private static final long serialVersionUID = 1284982615;
+    private static final long serialVersionUID = 1405675377;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_prescription</code>
@@ -69,6 +72,11 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
      * The column <code>mini_shop_471752.b2c_prescription.pos_code</code>. 医嘱单号
      */
     public final TableField<PrescriptionRecord, String> POS_CODE = createField("pos_code", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "医嘱单号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.order_sn</code>. 订单号
+     */
+    public final TableField<PrescriptionRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单号");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription.patient_id</code>. 患者id
@@ -186,6 +194,11 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
     public final TableField<PrescriptionRecord, String> PATIENT_SIGN = createField("patient_sign", org.jooq.impl.SQLDataType.CLOB, this, "患者体征");
 
     /**
+     * The column <code>mini_shop_471752.b2c_prescription.total_price</code>. 处方总金额
+     */
+    public final TableField<PrescriptionRecord, BigDecimal> TOTAL_PRICE = createField("total_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "处方总金额");
+
+    /**
      * The column <code>mini_shop_471752.b2c_prescription.source</code>. 处方来源 0系统内部创建 1医院拉取
      */
     public final TableField<PrescriptionRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "处方来源 0系统内部创建 1医院拉取");
@@ -233,7 +246,12 @@ public class Prescription extends TableImpl<PrescriptionRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_prescription.is_valid</code>. 是否有效  0无效 1有效，默认1
      */
-    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效  0无效 1有效，默认1");
+    public final TableField<PrescriptionRecord, Byte> IS_VALID = createField("is_valid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效  0无效 1有效，默认1");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_prescription.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     */
+    public final TableField<PrescriptionRecord, Byte> SETTLEMENT_FLAG = createField("settlement_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "结算标志：0：未结算，1：已结算");
 
     /**
      * The column <code>mini_shop_471752.b2c_prescription.create_time</code>.

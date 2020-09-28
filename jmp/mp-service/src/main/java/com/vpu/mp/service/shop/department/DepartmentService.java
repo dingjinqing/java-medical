@@ -6,6 +6,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.DepartmentSummaryTrendDo;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -245,13 +246,15 @@ public class DepartmentService extends BaseShopConfigService {
     }
 
     /**
-     * 获取疾病史选中List
+     * 获取推荐科室list
      * @return
      */
-    public List<DepartmentIdNameVo> listRecommendDepartment() {
-        List<DepartmentIdNameVo> departmentList = Util.parseJson(get("recommendDepartments"), new TypeReference<List<DepartmentIdNameVo>>() {
-        });
-        return departmentList;
+    public List<DepartmentOneParam> listRecommendDepartment() {
+//        List<DepartmentIdNameVo> departmentList = Util.parseJson(get("recommendDepartments"), new TypeReference<List<DepartmentIdNameVo>>() {
+//        });
+        DepartmentListParam departmentListParam = new DepartmentListParam();
+        departmentListParam.setLimitNum(7);
+        return listDepartmentsByOptions(departmentListParam);
     }
 
     /**
@@ -259,7 +262,8 @@ public class DepartmentService extends BaseShopConfigService {
      * @return
      */
     public List<DepartmentOneParam> listDepartmentsSelect() {
-        List<DepartmentOneParam> departmentList = departmentDao.listDepartmentsByName(null);
+        DepartmentListParam departmentListParam = new DepartmentListParam();
+        List<DepartmentOneParam> departmentList = listDepartmentsByOptions(departmentListParam);
         DepartmentOneParam allItem = new DepartmentOneParam();
         allItem.setId(0);
         allItem.setName("全部科室");
@@ -278,5 +282,60 @@ public class DepartmentService extends BaseShopConfigService {
             param.setDepartmentIds(departmentIds);
         }
         return departmentDao.listDepartmentsByOptions(param);
+    }
+
+    /**
+     * 获取所有科室的信息
+     *
+     * @return
+     */
+    public List<DepartmentOneParam> getAllDepartment() {
+        return departmentDao.getAllDepartment();
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DepartmentStatisticOneParam getDepartmentInquiryData(DepartmentStatisticParam param) {
+        return departmentDao.getDepartmentInquiryData(param);
+    }
+
+    /**
+     * 获取科室接诊统计数据
+     * @param param
+     * @return
+     */
+    public Integer getDepartmentConsultationData(DepartmentStatisticParam param) {
+        return departmentDao.getDepartmentConsultationData(param);
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DepartmentStatisticOneParam getDepartmentPrescriptionData(DepartmentStatisticParam param) {
+        return departmentDao.getDepartmentPrescriptionData(param);
+    }
+
+    /**
+     * 获取科室统计信息
+     * @param param
+     * @return
+     */
+    public DepartmentSummaryTrendDo getDepartmentStatisData(DepartmentStatisticParam param){
+        DepartmentSummaryTrendDo data = new DepartmentSummaryTrendDo();
+        data.setConsultationNumber(getDepartmentConsultationData(param));
+
+        DepartmentStatisticOneParam inquiryData = getDepartmentInquiryData(param);
+        data.setInquiryMoney(inquiryData.getInquiryMoney());
+        data.setInquiryNumber(inquiryData.getInquiryNumber());
+
+        DepartmentStatisticOneParam prescriptionData = getDepartmentPrescriptionData(param);
+        data.setPrescriptionMoney(prescriptionData.getPrescriptionMoney());
+        data.setPrescriptionNum(prescriptionData.getPrescriptionNum());
+        return data;
     }
 }

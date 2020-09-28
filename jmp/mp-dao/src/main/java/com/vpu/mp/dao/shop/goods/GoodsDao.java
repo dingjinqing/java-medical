@@ -1,12 +1,13 @@
 package com.vpu.mp.dao.shop.goods;
 
 import cn.hutool.core.util.StrUtil;
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
-import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -19,14 +20,16 @@ import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 /**
  * 商品dao
@@ -35,6 +38,26 @@ import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
  */
 @Repository
 public class GoodsDao extends ShopBaseDao {
+    /**
+     * 通过goodsId获取推广语
+     *
+     * @param goodsId 商品id
+     * @return
+     */
+    public String getPromotionLanguage(Integer goodsId) {
+        return db().select(GOODS.PROMOTION_LANGUAGE).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAnyInto(String.class);
+    }
+    /**
+     * 通过分类id集合获取商品id集合
+     *
+     * @param sortId
+     * @return
+     */
+    public List<Integer> listGoodsId(List<Integer> sortId) {
+
+        return db().select(GOODS.GOODS_ID).from(GOODS)
+            .where(GOODS.SORT_ID.in(sortId)).fetch(GOODS.GOODS_ID);
+    }
     /**
      * 商品新增
      * @param goodsDo 商品数据
@@ -264,6 +287,26 @@ public class GoodsDao extends ShopBaseDao {
    }
 
     /**
+     * 查询商品id和价格的映射
+     * @param goodsIds
+     * @return
+     */
+    public Map<Integer, BigDecimal> mapGoodsIdToGoodsPrice(Collection<Integer> goodsIds) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_ID.in(goodsIds));
+        return db().select(GOODS.GOODS_ID, GOODS.SHOP_PRICE).from(GOODS).where(condition).fetchMap(GOODS.GOODS_ID, GOODS.SHOP_PRICE);
+    }
+
+    /**
+     * 查询商品Sn和商品id
+     * @param goodsCodes
+     * @return
+     */
+    public Map<String, Integer> mapGoodsSnToGoodsId(Collection<String> goodsCodes) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.GOODS_SN.in(goodsCodes));
+        return db().select(GOODS.GOODS_SN, GOODS.GOODS_ID).from(GOODS).where(condition).fetchMap(GOODS.GOODS_SN, GOODS.GOODS_ID);
+    }
+
+    /**
      * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品Id
      * @param goodsMatchParam
      * @return
@@ -300,5 +343,33 @@ public class GoodsDao extends ShopBaseDao {
             .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchAnyInto(String.class);
+    }
+
+    /**
+     * 批量修改所有商品的上下架状态
+     * @param isOnSale
+     */
+    public void switchSaleStatusAllGoods(Byte isOnSale,Byte source){
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE);
+        // 下架his的所有药品
+        if (MedicalGoodsConstant.SOURCE_FROM_HIS.equals(source)) {
+            condition = condition.and(GOODS.SOURCE.eq(source));
+        }
+        // 下架药房的所有药品
+        if (MedicalGoodsConstant.SOURCE_FROM_STORE.equals(source)) {
+            condition = condition.and(GOODS.STORE_CODE.isNotNull());
+        }
+        db().update(GOODS).set(GOODS.IS_ON_SALE,isOnSale).where(condition).execute();
+    }
+
+    /**
+     * 批量上架可用的商品信息
+     */
+    public void batchUpStoreAndMedicalGoods(){
+        db().update(GOODS).set(GOODS.IS_ON_SALE,MedicalGoodsConstant.ON_SALE)
+            .where(GOODS.STORE_STATUS.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.byteValue())
+                .and(GOODS.HIS_STATUS.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE.byteValue()))
+                .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .execute();
     }
 }

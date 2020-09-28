@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.message.maconfig;
 import lombok.Data;
 
 /**
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年12月5日 上午11:23:19
@@ -39,5 +39,7 @@ public class SubcribeTemplateCategory {
     public static final String CONSULTATION_ANSWER = "consultation_answer";
     /** 医生已接诊提醒*/
     public static final String CONSULTATION_SUCCESS = "consultation_success";
+    /** 新订单提醒*/
+    public static final String ORDER_NEW = "order_new";
 
 }

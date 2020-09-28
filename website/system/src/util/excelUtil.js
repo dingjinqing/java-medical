@@ -8,7 +8,6 @@ export function download (data, fileName) {
   link.style.display = 'none'
   link.href = url
   link.setAttribute('download', decodeURI(fileName))
-
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)

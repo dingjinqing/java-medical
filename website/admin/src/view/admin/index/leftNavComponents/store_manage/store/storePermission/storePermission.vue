@@ -2,14 +2,8 @@
   <div class="container">
     <div class="top">
       <div class="filter-list">
-        <el-tabs
-          v-model="activeName"
-          @tab-click="tabClickHandle"
-        >
-          <el-tab-pane
-            :label="$t('storePermission.storeAccountList')"
-            name="1"
-          >
+        <el-tabs v-model="activeName" @tab-click="tabClickHandle">
+          <el-tab-pane :label="$t('storePermission.storeAccountList')" name="1">
           </el-tab-pane>
           <el-tab-pane
             :label="$t('storePermission.storeStaff')"
@@ -21,7 +15,8 @@
           type="primary"
           size="small"
           @click="goStoreBackstage"
-        >{{$t('storePermission.storeBackstage')}}</el-button>
+          >{{ $t('storePermission.storeBackstage') }}</el-button
+        >
       </div>
       <router-view></router-view>
     </div>
@@ -58,7 +53,7 @@ export default {
       }
     },
     goStoreBackstage () {
-      window.open('https://mpdev.weipubao.cn/store/login')
+      window.open('/store/index/login')
     }
   }
 }

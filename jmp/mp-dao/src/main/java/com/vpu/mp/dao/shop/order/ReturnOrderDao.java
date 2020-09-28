@@ -1,8 +1,8 @@
 package com.vpu.mp.dao.shop.order;
 
-import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
-import com.vpu.mp.common.pojo.shop.table.ReturnOrderGoodsDo;
+import com.vpu.mp.common.pojo.main.table.ReturnOrderBakDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.RETURN_ORDER;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
 
@@ -54,29 +53,24 @@ public class ReturnOrderDao extends ShopBaseDao {
                 DSL.count().as(ActiveDiscountMoney.RETURN_NUMBER))
                 .from(RETURN_ORDER)
                 .where(RETURN_ORDER.CREATE_TIME.between(startTime, endTime))
+                .and(RETURN_ORDER.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))
                 .groupBy(date(RETURN_ORDER.CREATE_TIME))
                 .orderBy(RETURN_ORDER.CREATE_TIME)
                 .fetchMap(date(RETURN_ORDER.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME), MedicalOrderReportVo.class);
     }
 
 
-    public List<ReturnOrderGoodsDo> listUpdateOrderGoodsByYesterday(Timestamp beginTime, Timestamp endTime) {
-        return  db().selectFrom(RETURN_ORDER)
-                .where(RETURN_ORDER.UPDATE_TIME.ge(beginTime)).and(RETURN_ORDER.UPDATE_TIME.le(endTime))
-                .and(RETURN_ORDER.CREATE_TIME.le(beginTime))
-                .fetchInto(ReturnOrderGoodsDo.class);
-    }
 
-    public List<OrderInfoDo> listCreateOrderByYesterday(Timestamp beginTime, Timestamp endTime) {
+    public List<ReturnOrderBakDo> listCreateOrderByYesterday(Timestamp beginTime, Timestamp endTime) {
         return  db().selectFrom(RETURN_ORDER)
                 .where(RETURN_ORDER.CREATE_TIME.ge(beginTime)).and(RETURN_ORDER.CREATE_TIME.le(endTime))
-                .fetchInto(OrderInfoDo.class);
+                .fetchInto(ReturnOrderBakDo.class);
     }
 
-    public List<OrderInfoDo> listUpdateOrderByYesterday(Timestamp beginTime, Timestamp endTime) {
+    public List<ReturnOrderBakDo> listUpdateOrderByYesterday(Timestamp beginTime, Timestamp endTime) {
         return  db().selectFrom(RETURN_ORDER)
                 .where(RETURN_ORDER.UPDATE_TIME.ge(beginTime)).and(RETURN_ORDER.UPDATE_TIME.le(endTime))
                 .and(RETURN_ORDER.CREATE_TIME.le(beginTime))
-                .fetchInto(OrderInfoDo.class);
+                .fetchInto(ReturnOrderBakDo.class);
     }
 }

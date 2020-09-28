@@ -32,6 +32,27 @@ public class DistributorCheckListParam {
      * 申请结束时间
      */
     private Timestamp endTime;
+    /**
+     * 用戶id
+     */
+    private Integer userId;
+    /**
+     * 邀请码
+     */
+    private String invitationCode;
+    /**
+     * 分销员分组id
+     */
+    private Integer inviteGroup;
+    /**
+     * 审核开始时间
+     */
+    private Timestamp checkStartTime;
+
+    /**
+     * 审核结束时间
+     */
+    private Timestamp checkEndTime;
 
     private Integer currentPage;
     private Integer pageRows;

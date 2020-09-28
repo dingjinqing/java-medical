@@ -8,15 +8,26 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +43,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Goods extends TableImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = 1190133248;
+    private static final long serialVersionUID = 1664470100;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods</code>
@@ -68,6 +79,11 @@ public class Goods extends TableImpl<GoodsRecord> {
     public final TableField<GoodsRecord, String> GOODS_SN = createField("goods_sn", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
+     * The column <code>mini_shop_471752.b2c_goods.goods_bar_code</code>.
+     */
+    public final TableField<GoodsRecord, String> GOODS_BAR_CODE = createField("goods_bar_code", org.jooq.impl.SQLDataType.VARCHAR(128), this, "");
+
+    /**
      * The column <code>mini_shop_471752.b2c_goods.goods_name</code>.
      */
     public final TableField<GoodsRecord, String> GOODS_NAME = createField("goods_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
@@ -88,14 +104,14 @@ public class Goods extends TableImpl<GoodsRecord> {
     public final TableField<GoodsRecord, Integer> GOODS_NUMBER = createField("goods_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "库存");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.goods_weight</code>.
+     * The column <code>mini_shop_471752.b2c_goods.goods_weight</code>. 商品重量，默认规格重量或自定义规格中的最小重量
      */
-    public final TableField<GoodsRecord, BigDecimal> GOODS_WEIGHT = createField("goods_weight", org.jooq.impl.SQLDataType.DECIMAL(10, 3).nullable(false).defaultValue(DSL.inline("0.000", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
+    public final TableField<GoodsRecord, BigDecimal> GOODS_WEIGHT = createField("goods_weight", org.jooq.impl.SQLDataType.DECIMAL(10, 3), this, "商品重量，默认规格重量或自定义规格中的最小重量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.market_price</code>.
+     * The column <code>mini_shop_471752.b2c_goods.market_price</code>. 市场价格，多规格时取最高
      */
-    public final TableField<GoodsRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
+    public final TableField<GoodsRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "市场价格，多规格时取最高");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods.shop_price</code>.
@@ -301,6 +317,21 @@ public class Goods extends TableImpl<GoodsRecord> {
      * The column <code>mini_shop_471752.b2c_goods.room_id</code>. 直播间id
      */
     public final TableField<GoodsRecord, Integer> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGER, this, "直播间id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.store_code</code>. 药房药品唯一标识
+     */
+    public final TableField<GoodsRecord, String> STORE_CODE = createField("store_code", org.jooq.impl.SQLDataType.VARCHAR(128), this, "药房药品唯一标识");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.his_status</code>. his数据状态
+     */
+    public final TableField<GoodsRecord, Byte> HIS_STATUS = createField("his_status", org.jooq.impl.SQLDataType.TINYINT, this, "his数据状态");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.store_status</code>. 药房数据状态
+     */
+    public final TableField<GoodsRecord, Byte> STORE_STATUS = createField("store_status", org.jooq.impl.SQLDataType.TINYINT, this, "药房数据状态");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods</code> table reference

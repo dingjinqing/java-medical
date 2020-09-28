@@ -12,6 +12,7 @@ public class ApiExternalRequestConstant {
     public static final String APP_ID_POS = "200001";
     public static final String APP_ID_CRM = "200002";
     public static final String APP_ID_HIS = "200003";
+    public static final String APP_ID_STORE = "200004";
 
     /**
      * 响应码
@@ -29,7 +30,7 @@ public class ApiExternalRequestConstant {
     public static final Integer ERROR_CODE_NET_ILLEGAL = 2002;
 
     /**
-     * 服务方法名称
+     * His 服务方法名称
      */
     /**拉取患者信息*/
     public static final String SERVICE_NAME_FETCH_PATIENT_INFO = "fetchPatientInfo";
@@ -53,4 +54,19 @@ public class ApiExternalRequestConstant {
     public static final String SERVICE_NAME_FETCH_MEDICAL_HISTORY_INFOS = "fetchMedicalHistoryInfos";
     /**同步医嘱信息**/
     public static final String SERVICE_NAME_FETCH_MEDICAL_ADVICE_INFOS = "fetchMedicalAdviceInfos";
+
+    /**
+     * Store 服务方法名
+     */
+    /**推送订单至store pos系统*/
+    public static final String SERVICE_NAME_SYNC_ORDER_POS_INFO = "syncOrderPosInfo";
+    /**分页拉取药房商品信息*/
+    public static final String SERVICE_NAME_PULL_GOODS_INFOS = "pullGoodsInfos";
+    /**批量同步药品信息*/
+    public static final String SERVICE_NAME_SYNC_GOODS_INFOS = "syncGoodsInfos";
+    /**请求药品库存足够的药店列表*/
+    public static final String SERVICE_NAME_GET_STOCK_ENOUGH_SHOP_LIST = "getStockEnoughShopList";
+    /**取消药房订单接口*/
+    public static final String SERVICE_NAME_CANCEL_ORDER = "cancelOrder";
+
 }

@@ -193,6 +193,10 @@ public class TradeService extends BaseShopConfigService {
      * {"province_code":"610000","city_code":"610100","district_code":"610116","address":"西直门"}
      */
     final public static String K_SHOP_ADDRESS = "shop_address";
+    /**
+     * 同城配送开关
+     */
+    final public static String K_CITY_SERVICE = "city_service";
 
     /**
      * Gets express.
@@ -212,6 +216,24 @@ public class TradeService extends BaseShopConfigService {
     public int setExpress(Byte express) {
         Assert.isTrue(express == (byte) 0 || express == (byte) 1,"setExpress need value equal one or zero");
         return this.set(K_EXPRESS, express, Byte.class);
+    }
+
+    /**
+     * Gets city_service
+     * @return
+     */
+    public Byte getCityService() {
+        return this.get(K_CITY_SERVICE, Byte.class, BYTE_ZERO);
+    }
+
+    /**
+     * setCityService
+     * @param cityService
+     * @return
+     */
+    public int setCityService(Byte cityService) {
+        Assert.isTrue(cityService == (byte) 0 || cityService == (byte) 1,"setCityService need value equal one or zero");
+        return this.set(K_CITY_SERVICE, cityService, Byte.class);
     }
 
     /**

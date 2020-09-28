@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
 
-    private static final long serialVersionUID = -1311562281;
+    private static final long serialVersionUID = -1985810343;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.id</code>.
@@ -46,409 +46,409 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_doctor.account_id</code>. 医师子账号id
-     */
-    public void setAccountId(Integer value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_doctor.account_id</code>. 医师子账号id
-     */
-    public Integer getAccountId() {
-        return (Integer) get(1);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_doctor.age</code>. 年龄
      */
     public void setAge(Integer value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.age</code>. 年龄
      */
     public Integer getAge() {
-        return (Integer) get(2);
+        return (Integer) get(1);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.work_time</code>. 从业时间
      */
     public void setWorkTime(Integer value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.work_time</code>. 从业时间
      */
     public Integer getWorkTime() {
-        return (Integer) get(3);
+        return (Integer) get(2);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.sex</code>. 0未知 1男 2 女
      */
     public void setSex(Byte value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.sex</code>. 0未知 1男 2 女
      */
     public Byte getSex() {
-        return (Byte) get(4);
+        return (Byte) get(3);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.name</code>. 医师姓名
      */
     public void setName(String value) {
-        set(5, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.name</code>. 医师姓名
      */
     public String getName() {
-        return (String) get(5);
+        return (String) get(4);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.url</code>. 医师头像
      */
     public void setUrl(String value) {
-        set(6, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.url</code>. 医师头像
      */
     public String getUrl() {
-        return (String) get(6);
+        return (String) get(5);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.duty</code>. 聘任职务
      */
     public void setDuty(Byte value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.duty</code>. 聘任职务
      */
     public Byte getDuty() {
-        return (Byte) get(7);
+        return (Byte) get(6);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.hospital_code</code>. 医师院内编号
      */
     public void setHospitalCode(String value) {
-        set(8, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.hospital_code</code>. 医师院内编号
      */
     public String getHospitalCode() {
-        return (String) get(8);
+        return (String) get(7);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.certificate_code</code>. 医师资格编码
      */
     public void setCertificateCode(String value) {
-        set(9, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.certificate_code</code>. 医师资格编码
      */
     public String getCertificateCode() {
-        return (String) get(9);
+        return (String) get(8);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.professional_code</code>. 医师职业编码
      */
     public void setProfessionalCode(String value) {
-        set(10, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.professional_code</code>. 医师职业编码
      */
     public String getProfessionalCode() {
-        return (String) get(10);
+        return (String) get(9);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.register_time</code>. 注册时间
      */
     public void setRegisterTime(Date value) {
-        set(11, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.register_time</code>. 注册时间
      */
     public Date getRegisterTime() {
-        return (Date) get(11);
+        return (Date) get(10);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.register_hospital</code>. 注册医院
      */
     public void setRegisterHospital(String value) {
-        set(12, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.register_hospital</code>. 注册医院
      */
     public String getRegisterHospital() {
-        return (String) get(12);
+        return (String) get(11);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.mobile</code>. 手机号
      */
     public void setMobile(String value) {
-        set(13, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.mobile</code>. 手机号
      */
     public String getMobile() {
-        return (String) get(13);
+        return (String) get(12);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.title_id</code>. 职称id
      */
     public void setTitleId(Integer value) {
-        set(14, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.title_id</code>. 职称id
      */
     public Integer getTitleId() {
-        return (Integer) get(14);
+        return (Integer) get(13);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.consultation_price</code>. 问诊费用
      */
     public void setConsultationPrice(BigDecimal value) {
-        set(15, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.consultation_price</code>. 问诊费用
      */
     public BigDecimal getConsultationPrice() {
-        return (BigDecimal) get(15);
+        return (BigDecimal) get(14);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.treat_disease</code>. 主治疾病
      */
     public void setTreatDisease(String value) {
-        set(16, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.treat_disease</code>. 主治疾病
      */
     public String getTreatDisease() {
-        return (String) get(16);
+        return (String) get(15);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.status</code>. 是否启用 1启用 0禁用
      */
     public void setStatus(Byte value) {
-        set(17, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.status</code>. 是否启用 1启用 0禁用
      */
     public Byte getStatus() {
-        return (Byte) get(17);
+        return (Byte) get(16);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.user_id</code>. 用户id，当前用户是否为医师
      */
     public void setUserId(Integer value) {
-        set(18, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.user_id</code>. 用户id，当前用户是否为医师
      */
     public Integer getUserId() {
-        return (Integer) get(18);
+        return (Integer) get(17);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.is_delete</code>.
      */
     public void setIsDelete(Byte value) {
-        set(19, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.is_delete</code>.
      */
     public Byte getIsDelete() {
-        return (Byte) get(19);
+        return (Byte) get(18);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(20, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(20);
+        return (Timestamp) get(19);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(21);
+        return (Timestamp) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.on_duty_time</code>. 上班时间
      */
     public void setOnDutyTime(Timestamp value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.on_duty_time</code>. 上班时间
      */
     public Timestamp getOnDutyTime() {
-        return (Timestamp) get(22);
+        return (Timestamp) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.is_on_duty</code>. 是否上班
      */
     public void setIsOnDuty(Byte value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.is_on_duty</code>. 是否上班
      */
     public Byte getIsOnDuty() {
-        return (Byte) get(23);
+        return (Byte) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.can_consultation</code>. 是否接诊
      */
     public void setCanConsultation(Byte value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.can_consultation</code>. 是否接诊
      */
     public Byte getCanConsultation() {
-        return (Byte) get(24);
+        return (Byte) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.avg_answer_time</code>. 平均接诊时间
      */
     public void setAvgAnswerTime(Integer value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.avg_answer_time</code>. 平均接诊时间
      */
     public Integer getAvgAnswerTime() {
-        return (Integer) get(25);
+        return (Integer) get(24);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.consultation_number</code>. 接诊数
      */
     public void setConsultationNumber(Integer value) {
-        set(26, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.consultation_number</code>. 接诊数
      */
     public Integer getConsultationNumber() {
-        return (Integer) get(26);
+        return (Integer) get(25);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.avg_comment_star</code>. 平均评分
      */
     public void setAvgCommentStar(BigDecimal value) {
-        set(27, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.avg_comment_star</code>. 平均评分
      */
     public BigDecimal getAvgCommentStar() {
-        return (BigDecimal) get(27);
+        return (BigDecimal) get(26);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.attention_number</code>. 关注数
      */
     public void setAttentionNumber(Integer value) {
-        set(28, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.attention_number</code>. 关注数
      */
     public Integer getAttentionNumber() {
-        return (Integer) get(28);
+        return (Integer) get(27);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_doctor.user_token</code>. 医师关联用户token
      */
     public void setUserToken(String value) {
-        set(29, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_doctor.user_token</code>. 医师关联用户token
      */
     public String getUserToken() {
-        return (String) get(29);
+        return (String) get(28);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_doctor.consultation_total_money</code>. 咨询总金额
+     */
+    public void setConsultationTotalMoney(BigDecimal value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_doctor.consultation_total_money</code>. 咨询总金额
+     */
+    public BigDecimal getConsultationTotalMoney() {
+        return (BigDecimal) get(29);
     }
 
     // -------------------------------------------------------------------------
@@ -477,38 +477,38 @@ public class DoctorRecord extends UpdatableRecordImpl<DoctorRecord> {
     /**
      * Create a detached, initialised DoctorRecord
      */
-    public DoctorRecord(Integer id, Integer accountId, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation, Integer avgAnswerTime, Integer consultationNumber, BigDecimal avgCommentStar, Integer attentionNumber, String userToken) {
+    public DoctorRecord(Integer id, Integer age, Integer workTime, Byte sex, String name, String url, Byte duty, String hospitalCode, String certificateCode, String professionalCode, Date registerTime, String registerHospital, String mobile, Integer titleId, BigDecimal consultationPrice, String treatDisease, Byte status, Integer userId, Byte isDelete, Timestamp createTime, Timestamp updateTime, Timestamp onDutyTime, Byte isOnDuty, Byte canConsultation, Integer avgAnswerTime, Integer consultationNumber, BigDecimal avgCommentStar, Integer attentionNumber, String userToken, BigDecimal consultationTotalMoney) {
         super(Doctor.DOCTOR);
 
         set(0, id);
-        set(1, accountId);
-        set(2, age);
-        set(3, workTime);
-        set(4, sex);
-        set(5, name);
-        set(6, url);
-        set(7, duty);
-        set(8, hospitalCode);
-        set(9, certificateCode);
-        set(10, professionalCode);
-        set(11, registerTime);
-        set(12, registerHospital);
-        set(13, mobile);
-        set(14, titleId);
-        set(15, consultationPrice);
-        set(16, treatDisease);
-        set(17, status);
-        set(18, userId);
-        set(19, isDelete);
-        set(20, createTime);
-        set(21, updateTime);
-        set(22, onDutyTime);
-        set(23, isOnDuty);
-        set(24, canConsultation);
-        set(25, avgAnswerTime);
-        set(26, consultationNumber);
-        set(27, avgCommentStar);
-        set(28, attentionNumber);
-        set(29, userToken);
+        set(1, age);
+        set(2, workTime);
+        set(3, sex);
+        set(4, name);
+        set(5, url);
+        set(6, duty);
+        set(7, hospitalCode);
+        set(8, certificateCode);
+        set(9, professionalCode);
+        set(10, registerTime);
+        set(11, registerHospital);
+        set(12, mobile);
+        set(13, titleId);
+        set(14, consultationPrice);
+        set(15, treatDisease);
+        set(16, status);
+        set(17, userId);
+        set(18, isDelete);
+        set(19, createTime);
+        set(20, updateTime);
+        set(21, onDutyTime);
+        set(22, isOnDuty);
+        set(23, canConsultation);
+        set(24, avgAnswerTime);
+        set(25, consultationNumber);
+        set(26, avgCommentStar);
+        set(27, attentionNumber);
+        set(28, userToken);
+        set(29, consultationTotalMoney);
     }
 }

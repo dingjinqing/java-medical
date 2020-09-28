@@ -69,8 +69,13 @@ public class TaskJobsConstant {
         /**批量发货*/
         BATCH_SHIP(1015,RabbitConfig.EXCHANGE_ORDER,RabbitConfig.BINDING_EXCHANGE_BATCH_SHIP_KEY),
         /**pos对接pos_sync_product*/
-        POS_SYNC_PRODUCT(1016,RabbitConfig.EXCHANGE_POS_SYNC,RabbitConfig.BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY);
-    	
+        POS_SYNC_PRODUCT(1016,RabbitConfig.EXCHANGE_POS_SYNC,RabbitConfig.BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY),
+        /**
+         *  门店商品更新
+         */
+        STORE_UPDATE_JOB(1019, RabbitConfig.EXCHANGE_STORE_GOODS_UPDATE, RabbitConfig.BINDING_EXCHANGE_STORE_GOODS_UPDATE_KEY);
+
+
         private Integer executionType;
         private String exchangeName;
         private String routingKey;

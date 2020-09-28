@@ -1,116 +1,129 @@
 <template>
   <div class="content">
     <div class="main">
+      <div class="titleEdit"><span>处方列表</span></div>
       <div class="navBox">
         <div class="filters">
           <div class="filters_item">
-            <span>处方号：</span>
+            <span>医师姓名：</span>
             <el-input
-              v-model="queryParams.prescriptionNos"
+              v-model="queryParams.doctorName"
               size="small"
-              style="width:190px;"
-              placeholder="请输入患者处方号"
+              style="width: 150px"
+              placeholder="请输入药品名称"
             >
             </el-input>
           </div>
-          <div class="filters_item ">
-            <span class="fil_span">医师姓名：</span>
-            <el-select
-              v-model="queryParams.doctorName"
-              placeholder="请输入医师姓名"
+          <div class="filters_item">
+            <span class="fil_span">科室：</span>
+            <el-input
+              v-model="queryParams.departmentName"
               size="small"
-              class="default_input"
-              filterable
+              style="width: 150px"
+              placeholder="请输入批准文号"
             >
-              <el-option
-                label="全部"
-                value=" "
-              ></el-option>
-              <el-option
-                v-for="item in doctorList"
-                :key="item.name"
-                :label="item.name"
-                :value="item.name"
-              ></el-option>
-            </el-select>
-
+            </el-input>
           </div>
           <div class="filters_item">
-            <span class="fil_span">时间筛选：</span>
+            <span class="fil_span">就诊类型：</span>
             <el-select
-              v-model="timeSelect"
+              v-model="queryParams.prescriptionType"
               size="small"
-              clearable
-              @change="dateChangeHandler"
-              class="timeSelect"
+              class="default_input"
+              style="width:150px"
             >
               <el-option
-                v-for="item in timeRange"
+                v-for="item in prescriptionTypes"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
             </el-select>
+          </div>
+          <div class="filters_item">
+            <span class="fil_span">时间筛选：</span>
             <el-date-picker
-              v-if="timeSelect===0"
               v-model="timeValue"
               type="daterange"
               size="small"
-              value-format="yyyyMMdd"
-              @change="changeDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']"
               range-separator="-"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
             >
             </el-date-picker>
-            <span class="choosed_time">{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
           </div>
           <div class="btn_wrap">
             <el-button
-              type='primary'
-              size='small'
+              type="primary"
+              size="small"
               @click="initDataList"
-            >搜索</el-button>
+            >查询</el-button>
           </div>
         </div>
       </div>
       <div class="table_box">
         <el-table
-          v-loading='loading'
-          :data='tableData'
-          style="width:100%"
+          v-loading="loading"
+          :data="tableData"
+          style="width: 100%"
           border
           :header-cell-style="{
-              'background-color':'#f5f5f5',
-              'text-align':'center',
-              'border':'none',
-              'color': '#000'
-            }"
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
+            color: '#000',
+          }"
           :cell-style="{
-              'text-align':'center'
-            }"
+            'text-align': 'center',
+          }"
         >
           <el-table-column
-            prop='prescriptionCode'
-            label='处方号'
+            prop="prescriptionCode"
+            label="处方号"
           ></el-table-column>
           <el-table-column
-            prop='departmentName'
-            label='科室名称'
+            label='就诊类型'
+          >
+          <template v-slot='scope'>
+              {{getLabelValue(prescriptionTypes,scope.row.auditType)}}
+          </template>
+          </el-table-column>
+          <el-table-column
+            prop="doctorName"
+            label="医师姓名"
           ></el-table-column>
           <el-table-column
-            prop='doctorName'
-            label='医师名称'
+            prop="departmentName"
+            label="科室"
           ></el-table-column>
           <el-table-column
-            prop='diagnosisName'
-            label='疾病名称'
+            prop="orderSnByOrderInfo"
+            label="订单号"
           ></el-table-column>
           <el-table-column
-            prop='diagnoseTime'
-            label='就诊时间'
+            prop="totalPrice"
+            label="处方金额"
           ></el-table-column>
-          <el-table-column label='操作'>
+          <el-table-column
+            label="处方药品"
+          >
+            <template v-slot="scope">
+              <span
+                v-for="(item,index) in scope.row.goodsList"
+                :key='index'
+                style="margin-right:5px;"
+              >
+                {{item.goodsName}}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="就诊时间"
+          ></el-table-column>
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
@@ -119,7 +132,7 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.prescriptionCode)'>查看详情</a>
+                  <a @click="handleSeeMessage(scope.row.prescriptionCode)">查看详情</a>
                 </el-tooltip>
               </div>
             </template>
@@ -137,13 +150,18 @@
 <script>
 import pagination from '@/components/admin/pagination/pagination'
 import { getPrescriptionList } from '@/api/admin/memberManage/patientManage.js'
-import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
 import { getDoctorList } from '@/api/admin/doctorManage/advistoryTotal/advistory.js'
 export default {
   components: { pagination },
   watch: {
-    lang () {
-      this.timeRange = this.$t('tradesStatistics.timeRange')
+    timeValue (val) {
+      if (val !== null) {
+        this.queryParams.startTime = val[0]
+        this.queryParams.endTime = val[1]
+      } else {
+        this.queryParams.startTime = ''
+        this.queryParams.endTime = ''
+      }
     }
   },
   data () {
@@ -151,29 +169,24 @@ export default {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      timeSelect: 1,
-      timeRange: this.$t('tradesStatistics.timeRange'),
-      startDate: {
-        year: '',
-        month: '',
-        day: ''
-      },
-      endDate: {
-        year: '',
-        month: '',
-        day: ''
-      },
       pageParams: {
         currentPage: 1,
-        pageRows: 20
+        pageRows: 5
       },
+      prescriptionTypes: [
+        { value: null, label: '全部' },
+        { value: 0, label: '不审核' },
+        { value: 1, label: '续方' },
+        { value: 2, label: '开方' },
+        { value: 3, label: '会话开方' }
+      ],
       tableData: [],
-      storeGroup: [],
       queryParams: {
-        prescriptionNos: null,
-        diagnoseStartTime: '',
-        diagnoseEndTime: '',
-        doctorName: ''
+        startTime: '',
+        endTime: '',
+        doctorName: '',
+        departmentName: '',
+        prescriptionType: null
       },
       // 表格原始数据
       originalData: [],
@@ -189,7 +202,6 @@ export default {
       let params = {
         ...this.queryParams
       }
-      params.prescriptionNos = this.queryParams.prescriptionNos ? [this.queryParams.prescriptionNos] : null
       getPrescriptionList(params).then((res) => {
         if (res.error !== 0) {
           this.$message.error({ message: res.message })
@@ -204,40 +216,6 @@ export default {
       }).catch(error => {
         console.log(error)
       })
-    },
-    // 选择时间段
-    dateChangeHandler (time) {
-      if (time !== 0) {
-        this.getDateValue(time)
-        this.initDataList()
-      }
-    },
-    // 自定义时间
-    changeDate () {
-      this.queryParams.diagnoseStartTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
-      this.queryParams.diagnoseEndTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 00:00:00'
-      this.startDate.year = this.timeValue[0].substring(0, 4)
-      this.startDate.month = this.timeValue[0].substring(4, 6)
-      this.startDate.day = this.timeValue[0].substring(6, 8)
-      this.endDate.year = this.timeValue[1].substring(0, 4)
-      this.endDate.month = this.timeValue[1].substring(4, 6)
-      this.endDate.day = this.timeValue[1].substring(6, 8)
-      this.initData()
-    },
-    getDateValue (unit) {
-      getDate(unit).then(res => {
-        if (res.error === 0) {
-          this.startDate.year = res.content.startTime.split('-')[0]
-          this.startDate.month = res.content.startTime.split('-')[1]
-          this.startDate.day = res.content.startTime.split('-')[2]
-          this.endDate.year = res.content.endTime.split('-')[0]
-          this.endDate.month = res.content.endTime.split('-')[1]
-          this.endDate.day = res.content.endTime.split('-')[2]
-          this.queryParams.diagnoseStartTime = res.content.startTime + ' 00:00:00'
-          this.queryParams.diagnoseEndTime = res.content.endTime + ' 00:00:00'
-          this.initData()
-        }
-      }).catch(err => console.log(err))
     },
     handleSeeMessage (code) {
       console.log(this.$router)
@@ -259,6 +237,15 @@ export default {
           this.doctorList = res.content
         }
       })
+    },
+    getLabelValue (map, value) {
+      let label = ''
+      map.forEach(item => {
+        if (item.value === value) {
+          label = item.label
+        }
+      })
+      return label
     }
   },
   // watch: {
@@ -272,7 +259,7 @@ export default {
   // },
   mounted () {
     this.id = this.$route.query.id ? this.$route.query.id : 0
-    this.getDateValue(1)
+    // this.getDateValue(1)
     this.getDoctor({})
     this.initDataList()
   },
@@ -287,47 +274,63 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-.main {
-  padding: 10px;
-  .navBox {
-    display: flex;
-    background-color: #fff;
-    padding: 0px 15px 10px;
-    margin: 0px 10px 0;
-    .filters {
-      flex: 2;
+.content {
+  margin-top: 10px;
+  background: #fff;
+  .main {
+    .titleEdit {
+      padding: 0 20px;
+      height: 50px;
+      display: -webkit-box;
+      display: -ms-flexbox;
       display: flex;
-      flex-wrap: wrap;
-      line-height: 32px;
-      margin-left: -15px;
-      .filters_item {
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      border-bottom: 1px solid #e6e9f0;
+      margin-bottom: 10px;
+    }
+    .navBox {
+      display: flex;
+      background-color: #fff;
+      padding: 0px 20px;
+      .filters {
+        flex: 2;
         display: flex;
-        justify-content: flex-end;
-        margin-left: 15px;
-        .fil_span {
-          font-size: 14px;
-          text-align: right;
+        flex-wrap: wrap;
+        line-height: 32px;
+        margin-left: -15px;
+        .filters_item {
+          display: flex;
+          justify-content: flex-end;
+          margin-left: 15px;
+          .fil_span {
+            font-size: 14px;
+            text-align: right;
+          }
+          .timeSelect {
+            width: 140px;
+            margin: 0 10px 0 10px;
+          }
+          .choosed_time {
+            margin-left: 20px;
+          }
         }
-        .timeSelect {
-          width: 140px;
-          margin: 0 10px 0 10px;
-        }
-        .choosed_time {
+        .btn_wrap {
           margin-left: 20px;
         }
       }
-      .btn_wrap {
-        margin-left: 20px;
+    }
+    .table_box {
+      padding: 10px;
+      background: #fff;
+      a {
+        color: #5a8bff;
+        cursor: pointer;
       }
     }
-  }
-  .table_box {
-    padding: 10px;
-    background: #fff;
-    margin-top: 10px;
-    a {
-      color: #5a8bff;
-      cursor: pointer;
+    .el-button + .el-button {
+      margin-left: 10px !important;
     }
   }
 }

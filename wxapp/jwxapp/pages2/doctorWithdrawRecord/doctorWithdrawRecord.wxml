@@ -1,0 +1,39 @@
+<wxs module="tool">
+  var getStatus = function(status){
+    var statusName = {
+      '1':'处理中',
+      '2':'处理中',
+      '3':'处理中',
+      '4':'已提现',
+      '5':'处理中'
+    }
+    return statusName[''+status]
+  }
+  module.exports = {
+    getStatus:getStatus
+  }
+</wxs>
+<wxs src="../../utils/wxs/filter.wxs" module="filter" />
+<view class="body">
+<include src="/pages/common/header.wxml"/>
+  <view class="main-container">
+    <view class="top-content" style='background:#26C4BC'>
+      <view class="top-tops">已提现</view>
+      <view class="total-money">￥<text>{{accruingWithdrawCash}}</text></view>
+    </view>
+    <view class="record-list">
+    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+        <view class="record-item">
+        <view class="item-top">
+          <view class="money">￥{{filter.getFixed(item.withdrawCash)}}</view>
+          <!-- <view class="point">到微信钱包</view> -->
+          <view class="status">{{tool.getStatus(item.status)}}</view>
+        </view>
+        <view class="item-bottom">{{item.createTime}}</view>
+      </view>
+      </block>
+    </block>
+    </view>
+  </view>
+</view>

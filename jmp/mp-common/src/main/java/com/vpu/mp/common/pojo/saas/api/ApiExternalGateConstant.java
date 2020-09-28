@@ -1,20 +1,22 @@
 package com.vpu.mp.common.pojo.saas.api;
 
+import lombok.Data;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * 外部请求小程序常量
  * @author 李晓冰
- * @date 2020年07月17日
+ * @date 2020年03月30日
  */
+@Data
 public class ApiExternalGateConstant {
     /**
      * 服务名称定义
      */
-    public static final String ORDER_AUDIT = "orderAudit";
+    public static final String SYNC_ORDER_STATUS = "syncOrderStatus";
 
 
     /**
@@ -25,7 +27,7 @@ public class ApiExternalGateConstant {
     /**
      * 响应码
      * */
-    public static final Integer ERROR_CODE_SUCCESS = 0;
+    public static final Integer ERROR_CODE_SUCCESS = 1000;
     public static final Integer ERROR_LACK_PARAM = 2000;
     public static final Integer ERROR_CODE_INVALID_SIGN = 3001;
     public static final Integer ERROR_CODE_OVERTIME = 3002;
@@ -57,6 +59,7 @@ public class ApiExternalGateConstant {
     public static final String APP_ID_POS = "200001";
     public static final String APP_ID_CRM = "200002";
     public static final String APP_ID_HIS = "200003";
+    public static final String APP_ID_STORE = "200004";
     public static final Map<String, String> APP_NAMES = new HashMap<>(3);
 
     static {
@@ -65,9 +68,10 @@ public class ApiExternalGateConstant {
         APP_NAMES.put(APP_ID_POS, "POS");
         APP_NAMES.put(APP_ID_CRM, "CRM");
         APP_NAMES.put(APP_ID_HIS, "HIS");
+        APP_NAMES.put(APP_ID_STORE, "STORE");
 
         // 初始化服务名集合
-        SERVICE_NAMES.add(ORDER_AUDIT);
+        SERVICE_NAMES.add(SYNC_ORDER_STATUS);
     }
 
 }

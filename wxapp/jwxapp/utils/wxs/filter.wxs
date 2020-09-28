@@ -14,8 +14,23 @@ var getSex = function (type){
   }
   return sexData[''+type]
 }
+var getGestation = function (type){
+  var getGestationData = {
+    '0':'未知',
+    '1':'无',
+    '2':'备孕中',
+    '3':'怀孕中',
+    '4':'正在哺乳'
+  }
+  return getGestationData[''+type]
+}
+var getFixed = function(num) {
+  return num.toFixed(2)
+}
 module.exports = {
   includes: includes,
   substring: substring,
-  getSex:getSex
+  getSex:getSex,
+  getGestation:getGestation,
+  getFixed:getFixed
 }

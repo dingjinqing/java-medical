@@ -12,17 +12,17 @@
           type="datetime"
           :placeholder="$t('distribution.chooseDate')"
           size="small"
-          style="width: 190px;"
+          style="width: 190px"
           value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
-        <span>{{$t('distribution.to')}}</span>
+        <span>{{ $t('distribution.to') }}</span>
         <el-date-picker
           v-model="time.endCreateTime"
           type="datetime"
           :placeholder="$t('distribution.chooseDate')"
           size="small"
-          style="width: 190px;"
+          style="width: 190px"
           value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
@@ -33,17 +33,17 @@
           type="datetime"
           :placeholder="$t('distribution.chooseDate')"
           size="small"
-          style="width: 190px;"
+          style="width: 190px"
           value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
-        <span>{{$t('distribution.to')}}</span>
+        <span>{{ $t('distribution.to') }}</span>
         <el-date-picker
           v-model="time.endUpdateTime"
           type="datetime"
           :placeholder="$t('distribution.chooseDate')"
           size="small"
-          style="width: 190px;"
+          style="width: 190px"
           value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
@@ -52,26 +52,21 @@
         <el-input
           v-model="time.promotionLanguage"
           size="small"
-          style="width: 170px;"
+          style="width: 170px"
           :placeholder="$t('distribution.inputAdvertisement')"
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button
-          type="primary"
-          size="small"
-          @click="search()"
-        >{{$t('distribution.search')}}</el-button>
+        <el-button type="primary" size="small" @click="search()">{{
+          $t('distribution.search')
+        }}</el-button>
       </el-form-item>
     </el-form>
 
-    <div style="margin-bottom: 10px;">
-      <el-button
-        :plain="true"
-        type="primary"
-        size="small"
-        @click="add"
-      >{{$t('distribution.addAdvertisement')}}</el-button>
+    <div style="margin-bottom: 10px">
+      <el-button :plain="true" type="primary" size="small" @click="add">{{
+        $t('distribution.addAdvertisement')
+      }}</el-button>
     </div>
 
     <div>
@@ -91,8 +86,8 @@
         </el-table-column>
 
         <el-table-column
-          prop="promotionLanguage"
-          :label="$t('distribution.inputAdvertisement')"
+          prop="PromotionLanguage"
+          label="推广语内容"
           align="center"
         >
         </el-table-column>
@@ -119,33 +114,29 @@
         >
         </el-table-column>
 
-        <el-table-column
-          prop=""
-          :label="$t('distribution.opt')"
-          align="center"
-        >
+        <el-table-column prop="" :label="$t('distribution.opt')" align="center">
           <template slot-scope="scope">
             <div class="opt">
-              <span @click="edit(scope.row.id)">{{$t('distribution.edit')}}</span>
+              <span @click="edit(scope.row.id)">{{
+                $t('distribution.edit')
+              }}</span>
               <span
                 prop="isPause"
                 @click="stop(scope.row.id)"
                 v-if="scope.row.isPause"
-              >{{$t('distribution.pause')}}</span>
-              <span
-                prop="isPause"
-                @click="start(scope.row.id)"
-                v-else
-              >{{$t('distribution.open')}}</span>
-              <span @click="del(scope.row.id)">{{$t('distribution.delete')}}</span>
+                >{{ $t('distribution.pause') }}</span
+              >
+              <span prop="isPause" @click="start(scope.row.id)" v-else>{{
+                $t('distribution.open')
+              }}</span>
+              <span @click="del(scope.row.id)">{{
+                $t('distribution.delete')
+              }}</span>
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="search"
-      />
+      <pagination :page-params.sync="pageParams" @pagination="search" />
     </div>
 
     <!-- 推广语弹窗 -->
@@ -155,42 +146,38 @@
       width="30%"
       center
     >
-      <div style="margin-bottom: 20px;">
-        <span>{{$t('distribution.title') + '：'}}</span>
+      <div style="margin-bottom: 20px">
+        <span>{{ $t('distribution.title') + '：' }}</span>
         <el-input
           prop="title"
           size="small"
-          style="width: 170px;"
+          style="width: 170px"
           v-model="param.title"
         ></el-input>
       </div>
       <div>
-        <span>{{$t('distribution.addNote')}}</span>
+        <span>{{ $t('distribution.addNote') }}</span>
         <el-input
           v-model="param.promotionLanguage"
           type="textarea"
           :placeholder="$t('distribution.inputAdvertisement')"
-          rows=6
-          style="margin-top: 10px;"
+          rows="6"
+          style="margin-top: 10px"
         ></el-input>
       </div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          @click="cancel"
-          size="small"
-        >{{$t('distribution.cancleBtn')}}</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancel" size="small">{{
+          $t('distribution.cancleBtn')
+        }}</el-button>
         <el-button
           v-model="opt"
           type="primary"
           @click="confirm()"
           size="small"
-        >{{$t('distribution.confirmBt')}}</el-button>
+          >{{ $t('distribution.confirmBt') }}</el-button
+        >
       </span>
     </el-dialog>
-
   </div>
 </template>
 

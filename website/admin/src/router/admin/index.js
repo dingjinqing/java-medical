@@ -207,6 +207,32 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_web_manage/salesReport/salesReport'
               )
           },
+          // 埋点
+          {
+            path: '/admin/home/main/anchorPoints/list',
+            name: 'anchor_points',
+            meta: {
+              crumbTitle: 'router.anchor_points',
+              meta: 'first_web_manage'
+            },
+            component: () =>
+                import(
+                  '@/view/admin/index/leftNavComponents/first_web_manage/anchorPoints/anchorPointsList'
+                )
+          },
+          // 埋点报表
+          {
+            path: '/admin/home/main/anchorPoints/report',
+            name: 'anchor_points_report',
+            meta: {
+              crumbTitle: 'router.anchor_points_report',
+              meta: 'first_web_manage'
+            },
+            component: () =>
+                import(
+                  '@/view/admin/index/leftNavComponents/first_web_manage/anchorPoints/anchorPointsReport'
+                )
+          },
           // 用户画像
           {
             path: '/admin/home/main/userportrait',
@@ -1030,6 +1056,30 @@ const routes = [
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/base_manger/smsRecord/smsConfig'
+              )
+          },
+          {
+            path: '/admin/home/main/basicConfig/rebateConfig',
+            name: 'rebateConfig',
+            meta: {
+              crumbTitle: 'router.rebateConfig',
+              meta: 'base_manger'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/rebateConfig/rebateConfig'
+              )
+          },
+          {
+            path: '/admin/home/main/basicConfig/rebateConfig/doctorWithdrawInfo',
+            name: 'doctorWithdrawInfo',
+            meta: {
+              crumbTitle: 'router.doctorWithdrawInfo',
+              meta: 'base_manger'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/rebateConfig/doctorWithdrawInfo'
               )
           }
         ].concat(

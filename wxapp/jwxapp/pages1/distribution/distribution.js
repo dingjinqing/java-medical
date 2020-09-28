@@ -7,6 +7,7 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    hasBottom: false,
     dis_info: [],
     distributor_name: '', // 分销员统称
     page_name: '', // 页面名称
@@ -16,9 +17,10 @@ global.wxPage({
     page_id: 0,
     is_bind_mobile: 0, // 绑定手机号
     is_block: 0, // 提现绑定手机号弹窗
-    if_show_pic: 0, // 分享框
-    if_show_pic_modal: 0, // 海报弹窗
     posterBase64: '', // 分享图片
+
+    shareGood: false, // 分享弹窗
+    shareData: {} // 下载海报信息
   },
 
   /**
@@ -27,6 +29,11 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
+    wx.createSelectorQuery().select('.bottom').boundingClientRect().exec(function (reda) {
+      that.setData({
+        hasBottom: !reda || !reda[0] ? false : true
+      })
+    })
     dis_request(that);
   },
   // 去提现记录
@@ -35,9 +42,6 @@ global.wxPage({
   },
   // 去规则说明
   toRule: function () {
-    // util.api('/api/wxapp/rebate/config', function (res) {
-    //   util.jumpToWeb('/wxapp/distribution/help', res.content);
-    // }, {});
     util.jumpToWeb('/wxapp/wxapp/distribution/help');
   },
   // 待返利佣金说明
@@ -48,7 +52,8 @@ global.wxPage({
   // 去提现
   to_money: function () {
     var that = this;
-    if (that.data.dis_info.fanli_cfg.withdraw_status == 0 || that.data.dis_info.fanli_cfg.withdraw_status == null) {
+    // 提现限制条件
+    if (that.data.dis_info.withdrawStatus == 0 || that.data.dis_info.withdrawStatus == null) {
       util.showModal("提示", "系统暂时不支持提现");
       return false
     }
@@ -56,7 +61,7 @@ global.wxPage({
       util.showModal("提示", "暂无可提现余额");
       return false
     }
-    if (that.data.is_bind_mobile == 1 && util.getCache('mobile') == '') {
+    if (util.getCache('mobile') == '') {
       util.checkSession(function () {
         that.setData({
           is_block: 1
@@ -87,31 +92,43 @@ global.wxPage({
   // 分销-邀请用户
   toUser: function () {
     util.navigateTo({
-      url: '/pages1/inviteduser/inviteduser?user_id=' + util.getCache('user_id'),
+      url: '/pages1/inviteduser/inviteduser',
     })
   },
   // 分销-返利订单
   toOrder: function () {
     util.navigateTo({
-      url: '/pages/distributionorder/distributionorder',
+      url: '/pages1/distributionorder/distributionorder',
     })
+  },
+  // 去独立推广中心
+  to_own_pro_center: function () {
+    util.jumpLink('/pages1/promotioncenter/promotioncenter?type=1&userId=' + util.getCache('user_id'))
+    util.setCache('distributionType', 1); // 独立商品页面类型
   },
   // 去推广中心
   to_pro_center: function () {
     util.jumpLink('/pages1/promotioncenter/promotioncenter')
+    util.setCache('distributionType', 0); // 独立商品页面类型
+  },
+  // 去设置二维码
+  to_qrCode: function () {
+    util.jumpLink('/pages1/distributionCode/distributionCode')
   },
   // 去推荐商品详情
   to_item: function (e) {
-    let good_id = e.currentTarget.dataset.goods_id;
+    let goodId = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: "/pages/item/item?gid=" + good_id
+      url: "/pages/item/item?gid=" + goodId
     })
   },
   // 查看更多商品
   to_search: function () {
-    // util.navigateTo({
-    //   url: "/pages/searchs/search?is_rebate=1"
-    // })
+    // util.jumpLink(`/pages/search/search${util.getUrlParams({
+    //   pageFrom:20,
+    //   outerPageParam:JSON.stringify({
+    //   })
+    // })}`);
   },
   // 去返利排名列表页
   toRank: function () {
@@ -122,103 +139,48 @@ global.wxPage({
   // 去推广语页面
   toPromotion: function () {
     util.navigateTo({
-      url: "/pages/distripromotion/distripromotion"
+      url: "/pages1/distripromotion/distripromotion"
     })
   },
   // 打开分享框
-  show_image: function () {
-    this.setData({ if_show_pic: 1 })
+  shareGoods: function () {
+    this.setData({ shareGood: true })
   },
-  // 关闭分享框
-  close_modal: function () {
-    this.setData({ if_show_pic: 0 })
-  },
-  // 下载海报
-  show_haibao: function (e) {
-    var that = this;
-    wx.showLoading({
-      title: '生成中',
-    })
-    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
-    //   wx.hideLoading();
-    //   if (res.error == 0) {
-    //     that.data.posterBase64 = res.content
-    //     that.setData({
-    //       pictorial: that.data.posterBase64
-    //     })
-    //   } else {
-    //     util.toast_fail(res.message);
-    //   }
-    // }, {
-    //     activityId: bargain_info.recordInfo.bargainId,
-    //     realPrice: bargain_info.bargainPrice,
-    //     linePrice: bargain_info.recordInfo.prdPrice,
-    //     pageType: 1
+  // 保存图片回调函数
+  handleDownloadCb () {
+    // 复制推广语
+    // let toast = this.selectComponent('#toast')
+    // if(!this.data.currentData.promotionLanguage) {
+    //   toast.showToast({
+    //     title: '图片已保存到相册',
+    //     duration:2000
     //   })
-  },
-  // 关闭海报
-  go_no_share: function () {
-    this.setData({ if_show_pic_modal: 0 })
-  },
-  // 保存图片
-  saveImgToPhotosAlbumTap: function (e) {
-    var that = this;
-    if (that.data.posterBase64) {
-      util.base64ImageHandle(that.data.posterBase64, function (res) {
-        that.save_photo_tips(that);
-      });
-    } else {
-      util.toast_fail('正在生成中...')
-    }
-  },
-  save_photo_tips: function (that) {
-    //复制
-    var promotion_language = that.data.copy_content;
-    if (promotion_language != '') {
-      wx.setClipboardData({
-        data: promotion_language,
-        success: function (res) {
-          wx.hideToast();
-          that.setData({
-            toastInfo: {
-              icon: 'success',
-              duration: 4000,
-              title: '图片已保存到相册',
-              content: promotion_language + '　以上邀请码已复制'
-            },
-            copyComplete: true
-          })
-        }
-      });
-    } else {
-      that.setData({
-        toastInfo: {
-          icon: 'success',
-          duration: 2000,
-          title: '图片已保存到相册'
-        },
-        copyComplete: true,
-      })
-    }
-    // util.showToast({ title: '图片已保存到相册', icon: 'success' })
-    that.setData({
-      if_show_pic_modal: 0
-    })
+    // } else {
+    //   wx.setClipboardData({
+    //     data: this.data.currentData.promotionLanguage,
+    //     success: (res) => {
+    //       wx.hideToast();
+    //       toast.showToast({
+    //         title: '图片已保存到相册',
+    //         content:`${this.data.currentData.promotionLanguage} 以上推广语已复制`,
+    //         duration:4000
+    //       })
+    //     }
+    //   });
+    // }
   },
   // 去首页或申请
   bindRedirectTo: function (e) {
-    util.navigateTo({
-      url: "/pages/index/index",
-    })
-    // if (this.data.dis_info.status == 0) {
-    //   util.navigateTo({
-    //     url: "/pages/index/index",
-    //   })
-    // } else {
-    //   util.navigateTo({
-    //     url: "/pages/distributionspread/distributionspread",
-    //   })
-    // }
+    var type = e.currentTarget.dataset.type;
+    if (type == 0) {
+      util.navigateTo({
+        url: "/pages/index/index",
+      })
+    } else {
+      util.navigateTo({
+        url: "/pages/distributionspread/distributionspread",
+      })
+    }
   },
   // 申请成为分销员
   apply_get: function (e) {
@@ -226,20 +188,13 @@ global.wxPage({
       url: "/pages/distributionspread/distributionspread",
     })
   },
-  preview: function (e) {
-    var nowImgUrl = e.currentTarget.dataset.src;
-    var arr = [];
-    arr[0] = nowImgUrl;
-    wx.previewImage({
-      current: nowImgUrl, // 当前显示图片的http链接
-      urls: arr // 需要预览的图片http链接列表
-    })
-  },
 
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
+    //用户分享行为数据收集埋点
+    util.handleToBuryPoint(5)
     var that = this;
     return {
       path: 'pages/distributionspread/distributionspread?inviteId=' + util.getCache('user_id'),
@@ -279,17 +234,38 @@ function dis_request(that) {
           if (item.finishedTime) {
             item.finishedTime = item.finishedTime.substring(0, 10);
           }
-          if (item.username.length > 4) {
+          if (item.username && item.username.length > 4) {
             item.username = item.username.substring(0, 4) + "...";
           }
-          item.fanliMoney = parseFloat(item.fanliMoney).toFixed(2);
+          item.fanliMoney = parseFloat(item.fanliMoney || 0).toFixed(2);
         })
       }
       // 返利排名
       if (dis_info.rebateRankingTop && dis_info.rebateRankingTop.length > 0) {
         dis_info.rebateRankingTop.forEach(item => {
-          item.finalMoney = parseFloat(item.finalMoney).toFixed(2);
+          item.finalMoney = parseFloat(item.finalMoney || 0).toFixed(2);
         })
+      }
+      if (dis_info.userRebate && dis_info.userRebate.finalMoney) {
+        dis_info.userRebate.finalMoney = parseFloat(dis_info.userRebate.finalMoney || 0).toFixed(2);
+      }
+      // 推荐商品
+      if (dis_info.recommendGoods && dis_info.recommendGoods.length > 0) {
+        dis_info.recommendGoodsNum = dis_info.recommendGoods.length
+        // if (dis_info.recommendGoods.length > 10) {
+        //   dis_info.recommendGoods = dis_info.recommendGoods.slice(0, 10)
+        // }
+        dis_info.recommendGoods.forEach(item => {
+          item.highRebate = parseFloat(item.highRebate || 0).toFixed(2)
+        })
+      }
+      // 金额
+      dis_info.canWithdraw = parseFloat(dis_info.canWithdraw).toFixed(2);
+      dis_info.totalWithdraw = parseFloat(dis_info.totalWithdraw).toFixed(2);
+      dis_info.waitWithdraw = parseFloat(dis_info.waitWithdraw).toFixed(2);
+      dis_info.totalCanFanliMoney = parseFloat(dis_info.totalCanFanliMoney).toFixed(2);
+      if (dis_info.userRebate && dis_info.userRebate.finalMoney) {
+        dis_info.userRebate.finalMoney = parseFloat(dis_info.userRebate.finalMoney || 0).toFixed(2);
       }
       that.setData({
         dis_info: dis_info,

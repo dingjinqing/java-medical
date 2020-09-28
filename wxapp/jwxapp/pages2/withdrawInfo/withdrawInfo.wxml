@@ -1,0 +1,93 @@
+<wxs src="../../utils/wxs/filter.wxs" module="filter" />
+<wxs module="tool">
+  var getMedicalName = function(medicalList){
+    if(!medicalList || !medicalList.length) return ''
+    var arr =  medicalList.map(function(item){
+      return item.goodsCommonName
+    })
+    return arr
+  }
+  var getStatusName = function(status){
+    var statusName = {
+      '0':'待返利',
+      '1':'已返利',
+      '2':'未返利'
+    }
+    return statusName[''+status]
+  }
+  getReceiveStatus = function(status){
+    var receiveStatus = {
+      '0':'待付款',
+      '1':'待接诊',
+      '2':'接诊中',
+      '3':'已完成',
+      '4':'已退款',
+      '5':'已取消',
+      '6':'待退款',
+      '7':'部分退款',
+    }
+    return receiveStatus[''+status]
+  }
+module.exports = {
+  getMedicalName:getMedicalName,
+  getStatusName:getStatusName,
+  getReceiveStatus:getReceiveStatus
+}
+</wxs>
+<view class="body">
+<include src="/pages/common/header.wxml"/>
+  <view class="main-container">
+    <view class="top-bg-style"></view>
+    <view class="tab-content">
+      <view data-type="-1" bindtap="toggleStatus"><text class="{{targetStatus === '-1' ? 'active' : ''}}">全部</text></view>
+			<view data-type="0" bindtap="toggleStatus"><text class="{{targetStatus === '0' ? 'active' : ''}}">待返利</text></view>
+			<view data-type="1" bindtap="toggleStatus"><text class="{{targetStatus === '1' ? 'active' : ''}}">已返利</text></view>
+    </view>
+    <view class="type-contennt" style="{{typeBgStyle}}">
+      <view class="type-item" bindtap="changeType" data-type="1" style="{{activeStyle1}}">处方列表</view>
+      <view class="type-item" bindtap="changeType" data-type="2" style="{{activeStyle2}}">咨询列表</view>
+    </view>
+    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+			<block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+          <view class="card-item">
+            <view class="card-item-title">
+              <view class="status-title" wx:if="{{activeType === '1'}}">返利状态：<text>{{tool.getStatusName(item.status)}}</text><text wx:if="{{item.status === 1 && (item.realRebateMoney !== item.totalRebateMoney)}}">(部分返利)</text></view>
+              <view class="username-title" wx:if="{{activeType === '2'}}"><text>{{item.patientName}}</text> <view>{{tool.getReceiveStatus(item.orderStatus)}}</view></view>
+              <view class="date" wx:if="{{activeType === '2'}}">{{filter.substring(item.createTime,0,10)}}</view>
+            </view>
+            <view class="prescription-content" wx:if="{{activeType === '1'}}">
+              <view class="prescription-item">处方编号：{{item.prescriptionCode}}</view>
+              <view class="prescription-item">关联药品：{{tool.getMedicalName(item.medicalList)}}</view>
+              <view class="prescription-item">开方时间：{{item.createTime}}</view>
+            </view>
+            <view class="money-content" wx:if="{{activeType === '2'}}">
+              <view class="money-item">
+                <text class="money">{{filter.getFixed(item.totalMoney)}}</text>
+                <text class="tips">咨询费总额</text>
+              </view>
+              <view class="money-item">
+                <text class="money">{{filter.getFixed(item.totalRebateMoney)}}</text>
+                <text class="tips">服务费</text>
+              </view>
+              <view class="money-item">
+                <text class="money">{{tool.getStatusName(item.status)}}</text>
+                <text class="tips">返利状态</text>
+              </view>
+            </view>
+            <view class="price-status-content" wx:if="{{activeType === '1'}}">
+              <view wx:if="{{item.status !== 2}}">服务费：<text>{{filter.getFixed(item.realRebateMoney)}}</text></view>
+              <view wx:if="{{item.status !== 2}}">处方商品总额：<text>{{filter.getFixed(item.canCalculateMoney)}}</text></view>
+              <view class="reason" wx:if="{{activeType === '1' && item.status === 2}}">
+                <image src="{{imageUrl}}image/wxapp/icon_warning.png"></image>
+                <text>未返利原因：{{item.reason}}</text>
+              </view>
+            </view>
+          </view>
+      </block>
+    </block>
+    <view class="is-null" wx:if="{{dataList[0].length <= 0}}">
+			<image src="{{imageUrl}}image/wxapp/no-order.png" mode="widthFix"></image>
+			<text>您还没有相应记录</text>
+		</view>
+  </view>
+</view>

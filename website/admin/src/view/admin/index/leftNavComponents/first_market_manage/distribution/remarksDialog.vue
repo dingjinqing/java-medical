@@ -32,6 +32,9 @@
           border
           style="width: 100%"
         >
+          <template slot="empty">
+            <tableEmpty />
+          </template>
           <el-table-column
             label="序号"
             align="center"
@@ -94,7 +97,7 @@ export default {
     // 用户id
     userId: {
       type: Number,
-      default: () => -1
+      default: () => null
     }
   },
   data () {

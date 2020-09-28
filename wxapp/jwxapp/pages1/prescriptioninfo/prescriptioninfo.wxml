@@ -7,6 +7,10 @@
         <view class="item-title">{{prescriptionInfo.prescriptionCode}}</view>
       </view>
       <view class="item-list-content">
+      <view class="prescription-code-status">
+						<view>处方号：<text>{{prescriptionInfo.prescriptionCode}}</text></view>
+						<view>{{prescriptionInfo.isUsed ? '已使用' : '未使用'}}</view>
+					</view>
         <view class="item-list">
           <view class="list-item">
             <text class="list-item-dot"></text>

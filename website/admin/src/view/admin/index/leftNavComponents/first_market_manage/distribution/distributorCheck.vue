@@ -3,54 +3,114 @@
     <div class="table_list">
       <el-form
         :model="searchForm"
-        label-width="90px"
+        label-width="100px"
         label-position="right"
         :inline="true"
       >
-        <el-form-item :label="$t('distribution.reviewMobile') + '：'">
-          <el-input
-            v-model="searchForm.mobile"
-            size="small"
-            clearable
-            class="inputWidth"
-          ></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('distribution.reviewName') + '：'">
-          <el-input
-            v-model="searchForm.username"
-            size="small"
-            clearable
-            class="inputWidth"
-          ></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('distribution.reviewTime') + '：'">
-          <el-date-picker
-            v-model="searchForm.startTime"
-            type="date"
-            :placeholder="$t('distribution.reviewSelect')"
-            size="small"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            style="width: 190px;"
-          >
-          </el-date-picker>
-          <span>{{ $t('distribution.to') }}</span>
-          <el-date-picker
-            v-model="searchForm.endTime"
-            type="date"
-            :placeholder="$t('distribution.reviewSelect')"
-            size="small"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            style="width: 190px;"
-          >
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="small"
-            @click="initDataList"
-          >{{ $t('distribution.reviewSearch') }}</el-button>
-        </el-form-item>
+        <div>
+          <el-form-item :label="$t('distribution.reviewMobile') + '：'">
+            <el-input
+              v-model="searchForm.mobile"
+              size="small"
+              clearable
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('distribution.reviewName') + '：'">
+            <el-input
+              v-model="searchForm.username"
+              size="small"
+              clearable
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('distribution.reviewTime') + '：'">
+            <el-date-picker
+              v-model="searchForm.startTime"
+              type="date"
+              :placeholder="$t('distribution.reviewSelect')"
+              size="small"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width: 190px;"
+            >
+            </el-date-picker>
+            <span>{{ $t('distribution.to') }}</span>
+            <el-date-picker
+              v-model="searchForm.endTime"
+              type="date"
+              :placeholder="$t('distribution.reviewSelect')"
+              size="small"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width: 190px;"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </div>
+        <div>
+          <el-form-item label="分销员ID：">
+            <el-input
+              v-model="searchForm.userId"
+              size="small"
+              clearable
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="邀请码：">
+            <el-input
+              v-model="searchForm.invitationCode"
+              size="small"
+              clearable
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="分销员分组：">
+            <el-select
+              v-model="searchForm.inviteGroup"
+              :placeholder="$t('distribution.selectTip')"
+              size="small"
+              class="inputWidth"
+              clearable
+            >
+              <el-option
+                v-for="item in groupNameList"
+                :key="item.id"
+                :label="item.groupName"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <div>
+          <el-form-item label="审核时间：">
+            <el-date-picker
+              v-model="searchForm.checkStartTime"
+              type="date"
+              :placeholder="$t('distribution.reviewSelect')"
+              size="small"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width: 190px;"
+            >
+            </el-date-picker>
+            <span>{{ $t('distribution.to') }}</span>
+            <el-date-picker
+              v-model="searchForm.checkEndTime"
+              type="date"
+              :placeholder="$t('distribution.reviewSelect')"
+              size="small"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              style="width: 190px;"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="small"
+              @click="initDataList"
+            >{{ $t('distribution.reviewSearch') }}</el-button>
+          </el-form-item>
+        </div>
       </el-form>
 
       <el-tabs
@@ -245,6 +305,9 @@
             </td>
           </tr>
         </table>
+        <template v-if="!tableData || tableData.length === 0">
+          <tableEmpty />
+        </template>
       </div>
       <div
         v-else
@@ -329,7 +392,12 @@ export default {
         mobile: '',
         username: '',
         startTime: '',
-        endTime: ''
+        endTime: '',
+        userId: '',
+        invitationCode: '',
+        inviteGroup: '',
+        checkStartTime: '',
+        checkEndTime: ''
       },
       activeName: '0', // tab值
       pageParams: {}, // 分页
@@ -358,11 +426,21 @@ export default {
   mounted () {
     // 初始化数据
     this.langDefault()
-    this.initDataList()
-    this.getDistributionGroup()
+    this.getAllData()
     this.province = deepCloneObj(chinaData)
   },
   methods: {
+    async getAllData () {
+      // 获取分销员分组
+      await distributionGroup(this.pageParams).then((res) => {
+        if (res.error === 0) {
+          this.groupNameList = res.content.dataList
+        }
+      })
+
+      this.initDataList()
+    },
+
     initDataList () {
       var requestParams = {}
       requestParams = this.searchForm
@@ -425,15 +503,6 @@ export default {
       console.log(this.tableData)
     },
 
-    // 获取分销员分组
-    getDistributionGroup () {
-      distributionGroup(this.pageParams).then((res) => {
-        if (res.error === 0) {
-          this.groupNameList = res.content.dataList
-        }
-      })
-    },
-
     // 分销员分组弹窗
     setGroupHandler (userId, groupName) {
       this.groupDialog = !this.groupDialog
@@ -458,11 +527,13 @@ export default {
       getCheckPass({
         id: data.id,
         groupId: data.activationFields.rebate_group ? data.activationFields.rebate_group : 0,
-        invitation: data.activationFields.invitation_code ? data.activationFields.invitation_code : ''
+        invitationCode: data.activationFields.invitation_code ? data.activationFields.invitation_code : ''
       }).then((res) => {
         if (res.error === 0) {
           this.$message.success(this.$t('distribution.reviewPass') + '!')
           this.initDataList()
+        } else {
+          this.$message.warning(res.message)
         }
       })
     },
@@ -500,6 +571,8 @@ export default {
           this.failDialogVisible = false
           this.textarea = ''
           this.initDataList()
+        } else {
+          this.$message.warning(res.content)
         }
       })
     },
@@ -519,6 +592,9 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+.tab_content /deep/ .el-tabs__nav-wrap {
+  border: none;
+}
 .tab_content {
   min-width: 100%;
   font-size: 14px;

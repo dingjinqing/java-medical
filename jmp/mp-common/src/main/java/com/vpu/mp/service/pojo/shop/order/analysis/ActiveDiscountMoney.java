@@ -28,6 +28,14 @@ public class ActiveDiscountMoney {
      */
     public static final String ORDER_NUMBER ="orderNumber";
     /**
+     * 处方订单数量
+     */
+    public static final String PRESCRIPTION_ORDER_NUMBER ="prescriptionOrderNum";
+    /**
+     * 处方订单金额
+     */
+    public static final String PRESCRIPTION_ORDER_AMOUNT ="prescriptionOrderAmount";
+    /**
      * 客单价
      */
     public static final String ORDER_AVG ="orderAvg";

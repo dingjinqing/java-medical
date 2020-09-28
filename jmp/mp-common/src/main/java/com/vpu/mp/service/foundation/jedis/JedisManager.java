@@ -102,7 +102,7 @@ public class JedisManager {
      * @param endIndex
      * @return
      */
-    public List<String> lrange(String key, Integer startIndex, Integer endIndex) {
+    public List<String> lrange(String key, long startIndex, long endIndex) {
         try (Jedis jedis = getJedisPool().getResource()){
             return jedis.lrange(key,startIndex,endIndex);
         }

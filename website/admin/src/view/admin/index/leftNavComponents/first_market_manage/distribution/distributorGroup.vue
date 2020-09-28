@@ -48,6 +48,9 @@
         border
         style="width: 100%"
       >
+        <template slot="empty">
+          <tableEmpty />
+        </template>
         <el-table-column
           prop="groupName"
           :label="$t('distribution.groupName')"
@@ -73,12 +76,13 @@
         </el-table-column>
         <el-table-column align="center">
           <template slot="header">
+            <span>{{$t('distribution.isDefaultGroup')}}</span>
             <el-tooltip
               effect="dark"
               :content="$t('distribution.isDefaultTip')"
               placement="top"
             >
-              <span>{{$t('distribution.isDefaultGroup')}} <i class="el-icon-warning-outline"></i></span>
+              <i class="el-icon-warning-outline"></i>
             </el-tooltip>
           </template>
 
@@ -94,12 +98,13 @@
         </el-table-column>
         <el-table-column align="center">
           <template slot="header">
+            <span>{{$t('distribution.canSelect')}}</span>
             <el-tooltip
               effect="dark"
               :content="$t('distribution.canSelectTip')"
               placement="top"
             >
-              <span>{{$t('distribution.canSelect')}} <i class="el-icon-warning-outline"></i></span>
+              <i class="el-icon-warning-outline"></i>
             </el-tooltip>
           </template>
 
@@ -143,6 +148,7 @@
       :title="typeFlag === 0 ? $t('distribution.addGroupTitle') : $t('distribution.editGroupTitle')"
       :visible.sync="groupDialogVisible"
       :close-on-click-modal="false"
+      @close="cancelGroupHandler"
       width="40%"
       center
     >
@@ -291,17 +297,16 @@ export default {
 
     // 添加按钮
     addGroupHandler () {
+      this.typeFlag = 0
       this.groupDialogVisible = true
-      this.param.groupName = ''
-      this.param.canSelect = 1
     },
 
     // 编辑按钮
     editHandler (id, groupName) {
-      this.currentName = groupName // 编辑当前分组名
       this.typeFlag = 1
-      this.editId = id // 要操作的id
       this.groupDialogVisible = true
+      this.editId = id // 要操作的id
+      this.currentName = groupName // 编辑当前分组名
       distributionGroupEdit(id).then(res => {
         if (res.error === 0) {
           this.param.groupName = res.content.groupName
@@ -310,44 +315,50 @@ export default {
       })
     },
 
-    // 保存分销员分组
+    // 确定分组
     saveGroupHandler () {
       this.$refs['param'].validate((valid) => {
         if (valid) {
-          // 关闭弹窗
           if (this.typeFlag === 0) {
             // 添加保存
             distributionGroupAdd(this.param).then(res => {
               if (res.error === 0) {
-                this.$message.success({
-                  message: '添加成功!'
-                })
-                this.initGroupList()
+                this.$message.success('添加成功!')
+                this.groupDialogVisible = false
+                this.param.groupName = ''
+                this.param.canSelect = 1
                 this.$refs['param'].resetFields()
+                this.initGroupList()
+              } else {
+                this.$message.warning('添加成功!')
               }
             })
           } else {
             // 编辑保存
-            this.param.id = this.id
-            distributionGroupSave(this.param).then(res => {
+            var obj = this.param
+            obj.id = this.editId
+            distributionGroupSave(obj).then(res => {
               if (res.error === 0) {
-                this.$message.success({
-                  message: '编辑成功!'
-                })
-                this.initGroupList()
+                this.$message.success('编辑成功!')
+                this.groupDialogVisible = false
+                this.param.groupName = ''
+                this.param.canSelect = 1
                 this.$refs['param'].resetFields()
+                this.initGroupList()
+              } else {
+                this.$message.warning('编辑失败')
               }
             })
           }
-          this.groupDialogVisible = false
         }
       })
     },
 
-    // 取消添加分销员分组
+    // 取消分组
     cancelGroupHandler () {
-      // 关闭弹窗
       this.groupDialogVisible = false
+      this.param.groupName = ''
+      this.param.canSelect = 1
       this.$refs['param'].resetFields()
     },
 
@@ -360,14 +371,10 @@ export default {
       }).then(() => {
         distributionGroupDel(id).then(res => {
           if (res.error === 0) {
-            this.$message.success({
-              message: '删除成功!'
-            })
+            this.$message.success('删除成功!')
             this.initGroupList()
           }
         })
-      }).catch(() => {
-
       })
     },
 
@@ -377,7 +384,7 @@ export default {
       this.distributorId = id // 要操作的id
     },
 
-    // 分销员回调函数
+    // 分销员弹窗回调函数
     handleSelectRow (row) {
       this.selectRow = row
       addDistributor({
@@ -385,7 +392,7 @@ export default {
         userIds: this.selectRow
       }).then(res => {
         if (res.error === 0) {
-          this.$message.success({ message: '添加成功' })
+          this.$message.success('添加成功!')
           this.initGroupList()
         }
       })
@@ -402,9 +409,7 @@ export default {
         }).then(() => {
           cancleDefaultGroup(id).then(res => {
             if (res.error === 0) {
-              this.$message.success({
-                message: '取消成功!'
-              })
+              this.$message.success('取消成功!')
               this.initGroupList()
             }
           })
@@ -425,9 +430,7 @@ export default {
         }).then(() => {
           setDefaultGroup(id).then(res => {
             if (res.error === 0) {
-              this.$message.success({
-                message: '设置默认分组成功!'
-              })
+              this.$message.success('设置默认分组成功!')
               this.initGroupList()
             }
           })
@@ -449,9 +452,7 @@ export default {
         canSelect: value
       }).then(res => {
         if (res.error === 0) {
-          this.$message.success({
-            message: '设置选择成功!'
-          })
+          this.$message.success('设置选择成功!')
           this.initGroupList()
         }
       })

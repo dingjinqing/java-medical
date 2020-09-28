@@ -10,8 +10,8 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
-import com.vpu.mp.common.pojo.shop.table.OrderMedicalHistoryDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.goods.GoodsDao;
@@ -27,16 +27,40 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsMatchParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
-import com.vpu.mp.service.pojo.shop.patient.*;
-import com.vpu.mp.service.pojo.shop.prescription.*;
+import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
+import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionItemVo;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDrugVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionOneParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -70,6 +94,8 @@ public class PrescriptionService extends ShopBaseService {
     public PatientService patientService;
     @Autowired
     public OrderMedicalHistoryDao orderMedicalHistoryDao;
+    @Autowired
+    public RebateConfigService rebateConfigService;
     /**
      * 保存处方
      */
@@ -367,6 +393,7 @@ public class PrescriptionService extends ShopBaseService {
         FieldsUtil.assign(param,prescriptionParam);
         prescriptionParam.setDoctorCode(doctor.getHospitalCode());
         prescriptionParam.setDoctorName(doctor.getName());
+        prescriptionParam.setOrderSn(param.getOrderSn());
         //映射patient信息
         buildPrescriptionPatientInfo(prescriptionParam,param);
         prescriptionParam.setPrescriptionCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_CODE_PREFIX));
@@ -379,12 +406,14 @@ public class PrescriptionService extends ShopBaseService {
         Map<Integer,PrescriptionDrugVo> goodsMap=goodsList.stream().collect(Collectors.toMap(PrescriptionDrugVo::getGoodsId, Function.identity(),(x1, x2) -> x1));
         //药品信息生成处方明细列表
         List<GoodsMedicalInfoDo> goodsMedicalInfoDoList=goodsMedicalInfoDao.listByGoodsIds(goodsIdList);
+        BigDecimal totalPrize =BigDecimal.ZERO;
 
-        List<PrescriptionItemParam> itemList=new ArrayList<>();
+        List<PrescriptionItemDo> itemList=new ArrayList<>();
         for (GoodsMedicalInfoDo info: goodsMedicalInfoDoList) {
             PrescriptionItemParam item=new PrescriptionItemParam();
             //药品信息映射
             FieldsUtil.assignWithIgnoreField(info,item,getPrescriptionIgnoreFields());
+            item.setPrescriptionDetailCode(IncrSequenceUtil.generatePrescriptionCode(PrescriptionConstant.PRESCRIPTION_DETAIL_CODE_PREFIX));
             item.setUseMethod(info.getGoodsUseMethod());
             item.setPrescriptionCode(prescriptionParam.getPrescriptionCode());
             GoodsDo goods=goodsDao.getByGoodsId(info.getGoodsId());
@@ -393,9 +422,14 @@ public class PrescriptionService extends ShopBaseService {
             item.setDragSumUnit(info.getGoodsPackageUnit());
             item.setGoodsImg(goods.getGoodsImg());
             item.setPrdId(goodsMap.get(info.getGoodsId()).getPrdId());
+            item.setPerTimeUnit(info.getGoodsBasicUnit());
+            item.setPerTimeDosageUnit(info.getGoodsBasicUnit());
+            item.setDragSumUnit(info.getGoodsPackageUnit());
+            totalPrize = totalPrize.add(goods.getShopPrice());
             itemList.add(item);
         }
         prescriptionParam.setList(itemList);
+        prescriptionParam.setTotalPrice(totalPrize);
         return prescriptionParam;
     }
 
@@ -416,31 +450,18 @@ public class PrescriptionService extends ShopBaseService {
      * @param param
      */
     public void buildPrescriptionPatientInfo(PrescriptionParam prescriptionParam,PrescriptionOneParam param){
-        if(param.getOrderId()!=null){
-            //从订单患者病例中获取
-            OrderMedicalHistoryDo orderMedicalHistoryDo=orderMedicalHistoryDao.getByOrderId(param.getOrderId());
-            prescriptionParam.setPatientName(orderMedicalHistoryDo.getPatientName());
-            prescriptionParam.setPatientSex(orderMedicalHistoryDo.getSex());
-            prescriptionParam.setPatientAge(orderMedicalHistoryDo.getAge());
-            prescriptionParam.setPatientDiseaseHistory(orderMedicalHistoryDo.getDiseaseHistory());
-            prescriptionParam.setPatientAllergyHistory(orderMedicalHistoryDo.getAllergyHistory());
-            prescriptionParam.setIdentityType(orderMedicalHistoryDo.getIdentityType());
-            prescriptionParam.setIdentityCode(orderMedicalHistoryDo.getIdentityCode());
-            prescriptionParam.setPatientTreatmentCode(orderMedicalHistoryDo.getPatientTreatmentCode());
-        }else {
-            //从患者信息中获取
-            UserPatientParam userPatientParam = new UserPatientParam();
-            userPatientParam.setPatientId(param.getPatientId());
-            userPatientParam.setUserId(param.getUserId());
-            UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
-            prescriptionParam.setPatientName(patient.getName());
-            prescriptionParam.setPatientSex(patient.getSex());
-            prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
-            prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistoryStr());
-            prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
-            prescriptionParam.setIdentityCode(patient.getIdentityCode());
-            prescriptionParam.setPatientTreatmentCode(patient.getTreatmentCode());
-        }
+        //从患者信息中获取
+        UserPatientParam userPatientParam = new UserPatientParam();
+        userPatientParam.setPatientId(param.getPatientId());
+        userPatientParam.setUserId(param.getUserId());
+        UserPatientDetailVo patient=patientService.getOneDetail(userPatientParam);
+        prescriptionParam.setPatientName(patient.getName());
+        prescriptionParam.setPatientSex(patient.getSex());
+        prescriptionParam.setPatientAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
+        prescriptionParam.setPatientDiseaseHistory(patient.getDiseaseHistoryStr());
+        prescriptionParam.setPatientAllergyHistory(patient.getAllergyHistory());
+        prescriptionParam.setIdentityCode(patient.getIdentityCode());
+        prescriptionParam.setPatientTreatmentCode(patient.getTreatmentCode());
 
     }
     /**
@@ -473,7 +494,7 @@ public class PrescriptionService extends ShopBaseService {
             param.setDoctorCode(oneInfo.getHospitalCode());
             PageResult<PrescriptionParam> result = prescriptionDao.listAuditedByDoctor(param);
             List<String> preCodeList = result.getDataList().stream().map(PrescriptionDo::getPrescriptionCode).collect(Collectors.toList());
-            Map<String, List<PrescriptionItemParam>> stringPrescriptionItemInfoVoMap = prescriptionItemDao.mapByPrescriptionCodeList(preCodeList);
+            Map<String, List<PrescriptionItemDo>> stringPrescriptionItemInfoVoMap = prescriptionItemDao.mapByPrescriptionCodeList(preCodeList);
             result.getDataList().forEach(prescription -> {
                 if (stringPrescriptionItemInfoVoMap.containsKey(prescription.getPrescriptionCode())){
                     prescription.setList(stringPrescriptionItemInfoVoMap.get(prescription.getPrescriptionCode()));
@@ -482,5 +503,10 @@ public class PrescriptionService extends ShopBaseService {
             return result;
         }
         return null;
+    }
+
+
+    public Integer countDateByDoctor(String doctorCode, Timestamp startTime, Timestamp endTime) {
+       return prescriptionDao.countDateByDoctor(doctorCode,startTime,endTime);
     }
 }

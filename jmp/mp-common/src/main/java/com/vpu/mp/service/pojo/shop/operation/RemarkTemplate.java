@@ -85,6 +85,10 @@ public enum RemarkTemplate {
 	/**
 	 * 营销
 	 */
+    /**	分销提现	*/
+    DISTRIBUTION_WITHDRAW(2020,RemarkMessage.MSG_DISTRIBUTION_WITHDRAW),
+    /**	分销恢复金额	*/
+    DISTRIBUTION_THAW(2021,RemarkMessage.MSG_DISTRIBUTION_THAW),
 	/**	支付有礼 */
 	PAY_HAS_GIFT(4001,RemarkMessage.MSG_PAY_HAS_GIFT),
 	/**	评价有理 */

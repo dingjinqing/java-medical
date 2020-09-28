@@ -27,10 +27,11 @@
   }
 </wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
+<wxs src="../../utils/wxs/filter.wxs" module="tool" />
 <view class="body">
   <include src="../common/header.wxml" />
   <view class="main-container" wx:if="{{orderInfo}}">
-    <view class="order-status_bg" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
+    <view class="order-status_bg" style='background:#26C4BC'></view>
     <view class="order-status">
       <view class="status-name">
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/status_success.png"></image>
@@ -66,13 +67,21 @@
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/address.png"></image>
         <view class="shipping_info_content">
           <view>
-            <text selectable>{{i18n.$t(localePack,"pages.order.receiver")}}：</text>
+            <text selectable>{{orderInfo.deliverType !== 1 ? i18n.$t(localePack,"pages.order.receiver") : '取件人'}}：</text>
             <text selectable>{{orderInfo.consignee}}</text>
             <text selectable style="margin-left:10rpx;">{{orderInfo.mobile}}</text>
           </view>
-          <view>
+          <view wx:if="{{orderInfo.deliverType !== 1}}">
             <text selectable>{{i18n.$t(localePack,"pages.order.address")}}：</text>
             <text selectable>{{orderInfo.completeAddress}}</text>
+          </view>
+          <view wx:if="{{orderInfo.deliverType === 1}}">
+            <text selectable>门店名称：</text>
+            <text selectable>{{orderInfo.storeInfo.storeName}}</text>
+          </view>
+          <view wx:if="{{orderInfo.deliverType === 1}}">
+            <text selectable>门店地址：</text>
+            <text selectable>{{orderInfo.storeInfo.address}}</text>
           </view>
         </view>
       </view>
@@ -157,6 +166,14 @@
         注：未在指定时间内支付尾款，则定金不予退还!
       </view>
     </view>
+
+    <view class="pay_info" wx:if="{{orderInfo.deliverType}}">
+      <view class="pay_item">
+        <text>核销码：{{filter.includes([3,4,5,6],orderInfo.orderStatus) ? orderInfo.verifyCode : '审核通过后自动生成核销码'}}</text>
+        <view>{{orderInfo.orderStatus === 5 ? '已自提' : '待核销'}}</view>
+      </view>
+    </view>
+
     <view class="order_top">
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{i18n.$t(localePack,"pages.checkout.deliverType["+orderInfo.deliverType+"]")}}</text>
     </view>
@@ -231,7 +248,7 @@
       <view class="pay_item" wx:if="{{orderInfo.goodsTotalPrice.money > 0 || orderInfo.goodsTotalPrice.score > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.goodsTotalPrice")}}</text>
         <view wx:if="{{!filter.includes(orderInfo.orderType,4)}}">
-          ￥{{orderInfo.goodsTotalPrice.money}}
+          ￥{{tool.getFixed(orderInfo.goodsTotalPrice.money)}}
         </view>
         <view wx:else>
         {{orderInfo.goodsTotalPrice.money > 0 ? '￥'+orderInfo.goodsTotalPrice.money : ''}}
@@ -241,23 +258,23 @@
       </view>
       <view class="pay_item" wx:if="{{orderInfo.shippingFee > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.shippingFee")}}</text>
-        <text>+￥{{orderInfo.shippingFee}}</text>
+        <text>+￥{{tool.getFixed(orderInfo.shippingFee)}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.packageDiscount > 0}}">
         <text>一口价优惠</text>
-        <text>-￥{{orderInfo.packageDiscount}}</text>
+        <text>-￥{{tool.getFixed(orderInfo.packageDiscount)}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.grouperCheapReduce > 0}}">
         <text>团长优惠</text>
-        <text>-￥{{orderInfo.grouperCheapReduce}}</text>
+        <text>-￥{{tool.getFixed(orderInfo.grouperCheapReduce)}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.discount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.couponReduce")}}</text>
-        <text>-￥{{orderInfo.discount}}</text>
+        <text>-￥{{tool.getFixed(orderInfo.discount)}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.memberCardReduce > 0}}">
         <text>{{filter.includes(orderInfo.orderType,13) ? '限次卡抵扣金额' : i18n.$t(localePack,"pages.order.cardReduce")}}</text>
-        <text>-￥{{orderInfo.memberCardReduce}}</text>
+        <text>-￥{{tool.getFixed(orderInfo.memberCardReduce)}}</text>
       </view>
       <view class="pay_item" wx:if="{{filter.includes(orderInfo.orderType,13)}}">
         <text>限次卡抵扣次数</text>
@@ -265,11 +282,11 @@
       </view>
       <view class="pay_item" wx:if="{{isPreSaleOrder&&orderInfo.preSaleDiscount > 0}}">
         <text>定金抵扣</text>
-        <text>-￥{{orderInfo.preSaleDiscount}}</text>
+        <text>-￥{{tool.getFixed(orderInfo.preSaleDiscount)}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.memberCardBalance > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useCardBalance")}}</text>
-        <text>-￥{{orderInfo.memberCardBalance}}</text>
+        <text>-￥{{tool.getFixed(orderInfo.memberCardBalance)}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.scoreDiscount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useScore")}}</text>
@@ -277,7 +294,7 @@
       </view>
       <view class="pay_item" wx:if="{{orderInfo.useAccount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useBalance")}}</text>
-        <text>-￥{{orderInfo.useAccount}}</text>
+        <text>-￥{{tool.getFixed(orderInfo.useAccount)}}</text>
       </view>
       <!-- <view class="pay_item">
         <text>{{i18n.$t(localePack,"pages.order.promotions")}}</text>
@@ -286,7 +303,7 @@
       <view class="line-item"></view>
       <view class="total_money">
         {{i18n.$t(localePack,"pages.order.actualPayment")}}
-        <text style="color:{{comColor}}">￥{{orderInfo.moneyPaid}}</text>
+        <text style="color:{{comColor}}">￥{{tool.getFixed(orderInfo.moneyPaid)}}</text>
       </view>
     </view>
 
@@ -315,7 +332,7 @@
 		</view>
 
     <block wx:if="{{orderInfo.returnOrderList.length}}">
-      <view class="order_info" wx:for="{{orderInfo.returnOrderList}}">
+      <view class="order_info" wx:for="{{orderInfo.returnOrderList}}" wx:key="retId">
         <view class="title">售后详情</view>
         <view class="order_item">
           售后类型：{{filter.getReturnName(item.returnType)}}

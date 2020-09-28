@@ -219,11 +219,15 @@ label {
 .c_mid{
   position: relative;
 }
-.expand{
+.expand,.rp_expand {
   position: absolute;
   right: 10rpx;
   bottom: 4rpx;
   font-weight: 600;
+}
+.rp_expand{
+  right: 18rpx;
+  bottom: 18rpx;
 }
 .no_chat{
   background: #CBCBCB !important;
@@ -263,4 +267,34 @@ bottom: 10px;
 .is-null image{
   width: 700rpx;
   height: 400rpx;
+}
+
+.d_reply{
+  background:rgba(245,245,245,1);
+  margin-top: 20rpx;
+  padding:15rpx 24rpx;
+  position: relative;
+  border-radius: 16rpx;
+}
+.d_reply::before{
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: -10rpx;
+  left: 50rpx;
+  border-bottom: solid 10rpx #f5f5f5;
+  border-right: solid 10rpx transparent;
+  border-left: solid 10rpx transparent;
+}
+.reply_top{
+  color: #333;
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-bottom: 4rpx;
+}
+.re_text{
+  color: #333;
+  font-size: 28rpx;
+  font-weight: 400;
 }

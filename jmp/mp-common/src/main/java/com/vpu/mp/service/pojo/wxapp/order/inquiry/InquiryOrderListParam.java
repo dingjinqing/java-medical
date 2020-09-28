@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.wxapp.order.inquiry;
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author yangpengcheng
  */
@@ -28,4 +30,12 @@ public class InquiryOrderListParam extends BasePageParam {
      * 患者姓名
      */
     private String patientName;
+    /**
+     * 开始时间
+     */
+    private Timestamp startTime;
+    /**
+     * 结束时间
+     */
+    private Timestamp endTime;
 }

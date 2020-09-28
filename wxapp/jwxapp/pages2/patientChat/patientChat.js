@@ -3,16 +3,6 @@ var app = new getApp();
 var imageUrl = app.globalData.imageUrl;
 var util = require('../../utils/util.js');
 var chatInput = null
-const {
-  orderSn,
-  orderDetail
-} = require('../../utils/i18n/pages/order.js');
-const {
-  theMaximumClaimLimit
-} = require('../../utils/i18n/components/decorate/decorate.js');
-const {
-  all
-} = require('../../utils/i18n/page1/search.js');
 
 
 
@@ -33,6 +23,11 @@ global.wxPage({
     arrive_bottom: true,
     allHeight: 0,
     showPre: false,
+    triggered: false,
+    pageParams: {
+      currentPage: 1,
+      pageRows: 20
+    }
   },
 
   /**
@@ -87,7 +82,7 @@ global.wxPage({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    if(!this.data.showPre){
+    if (!this.data.showPre) {
       clearInterval(this.timer)
       clearInterval(this.statusTimer)
     }
@@ -157,7 +152,7 @@ global.wxPage({
         } else {
           newStatus = 5
         }
-      } else if (sessionStatus == 6) {
+      } else if (sessionStatus == 6 || sessionStatus == 3) {
         newStatus = 5
       } else {
         newStatus = status
@@ -319,6 +314,9 @@ global.wxPage({
             } else {
               that.sendMessage(patient_message, 3)
             }
+            that.setData({
+              firstSendMessage:patient_message
+            })
           }
 
         }
@@ -338,7 +336,7 @@ global.wxPage({
             that.setData({
               sessionId: res.content
             })
-            if (that.data.firstLoad) await that.requestDetail(orderSn)
+            if (that.data.firstLoad) await that.requestDetail(that.data.orderSn)
             resolve(res)
           }
         }, {
@@ -355,10 +353,15 @@ global.wxPage({
   },
   historyChatApi() {
     return new Promise((resolve, reject) => {
+      let oldchatContent = this.data.chatContent;
+      let count = 0;
+      oldchatContent.forEach(item => {
+        if(item.status) count++
+      })
       util.api('/api/wxapp/im/session/render', res => {
         console.log(res)
-        if (res.error === 0 && res.content.dataList.length) {
-          let newChatContent = res.content.dataList.reduce((defaultValue, item) => {
+        if (res.error === 0 && res.content.length) {
+          let newChatContent = res.content.reduce((defaultValue, item) => {
             defaultValue.push({
               position: item.doctor ? 0 : 1,
               messageInfo: {
@@ -369,16 +372,25 @@ global.wxPage({
             })
             return defaultValue
           }, [])
+          if(this.data.first){
+             let firstSendMessage = this.data.firstSendMessage;
+             let lastMessge = newChatContent[newChatContent.length - 1];
+             if( JSON.stringify(firstSendMessage) == JSON.stringify(lastMessge.messageInfo.message)){
+              newChatContent.pop()
+             }
+          }
+          let currentPage = 1 + this.data.pageParams.currentPage
           this.setData({
-            chatContent: [...newChatContent],
-            firstLoad: false
+            chatContent: [...newChatContent, ...this.data.chatContent],
+            firstLoad: false,
           })
         }
         resolve(res)
       }, {
         sessionId: this.data.sessionId,
         isDoctor: false,
-        isFirstTime: this.data.firstLoad
+        isFirstTime: this.data.firstLoad,
+        startLineIndex:this.data.chatContent.length - count
       })
     })
   },
@@ -407,13 +419,33 @@ global.wxPage({
       scrollViewHeight: win_h - navigation_h - 70,
     });
   },
-  getRectHeight() {
+  getRectHeight(req = 1, count = 1) {
     let that = this
     wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
-      that.setData({
-        allHeight: reda[0].height,
-      })
+      if (req == 1) {
+        that.setData({
+          allHeight: reda[0].height,
+        })
+      } else {
+        let oldHeight;
+        if (count == 1) {
+          that.setData({
+            oldHeight: reda[0].height,
+          })
+          console.log('oldHeight:',oldHeight)
+          that.requestHistory(2)
+        } else {
+          let oldHeight = that.data.oldHeight
+          let newHeight = reda[0].height
+          let allHeight = newHeight - oldHeight;
+          console.log(oldHeight, newHeight, allHeight)
+          that.setData({
+            allHeight: allHeight
+          })
+        }
+      }
     })
+
   },
   getScrollHeight(scrollTop) {
     let that = this
@@ -445,6 +477,33 @@ global.wxPage({
       if (nowTime == pullTime) return this.getTodayTime(time)
     }
     return time
-  }
+  },
+  onRefresh() {
+    if (this._freshing) return
+    this._freshing = true
+    console.log('ddddd')
+    setTimeout(() => {
+      this.setData({
+        triggered: false,
+      })
+      this._freshing = false
+    }, 500)
+    this.getRectHeight(2,1)
+  },
+
+
+  onRestore(e) {
+    console.log('onRestore:', e)
+  },
+
+  onAbort(e) {
+    console.log('onAbort', e)
+  },
+
+  async requestHistory(count) {
+    let resData = await this.historyChatApi()
+    if (resData) this.getRectHeight(2,count)
+  },
+
 
 })

@@ -333,7 +333,8 @@ global.wxComponent({
       );
     },
     to_doc_index () {
-      util.jumpLink('/pages2/doctorIndex/doctorIndex', 'reLaunch')
+      util.handleBuriedPoint('doctor_enter_in','pages/personalcenter/personalcenter',[{'key':'打卡','value':'个人中心'}])
+      util.jumpLink('/pages2/doctorIndex/doctorIndex', 'redirectTo')
     }
   },
 

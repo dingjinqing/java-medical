@@ -8,17 +8,24 @@ import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.db.shop.Tables.USER;
 
+import com.vpu.mp.common.foundation.excel.ExcelFactory;
+import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.common.foundation.excel.ExcelWriter;
+import com.vpu.mp.dao.shop.distribution.OrderGoodsRebateDao;
+import com.vpu.mp.db.shop.tables.records.SortRecord;
+import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.shop.goods.GoodsSortService;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
-import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
-import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
-import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsParam;
-import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
+
+import java.util.List;
 
 /**
  * 	商品返利统计
@@ -27,6 +34,11 @@ import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
  */
 @Service
 public class RebateGoodsService extends ShopBaseService{
+    @Autowired
+    public GoodsSortService gs;
+
+    @Autowired
+    protected OrderGoodsRebateDao orderGoodsRebateDao;
 	
 	/** 查询别名 **/
     private static final String INVITE = "n";
@@ -44,8 +56,10 @@ public class RebateGoodsService extends ShopBaseService{
 		PageResult<RebateGoodsVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsVo.class);
 		//获取商品对应分类名称
 		for(RebateGoodsVo listInfo : pageList.dataList) {
-			SysCatevo catInfo = saas.sysCate.getOneCateInfo(listInfo.getCatId());
-			listInfo.setCatName(catInfo.getCatName());
+            SortRecord sort = gs.getSortDao(listInfo.getSortId());
+            if(sort!=null){
+                listInfo.setCatName(sort.getSortName());
+            }
 		}
 		return pageList;
 	}
@@ -57,8 +71,8 @@ public class RebateGoodsService extends ShopBaseService{
 	 */
 	public void optionBuild(SelectJoinStep<? extends Record> select,RebateGoodsParam param) {
 		//商品类型
-		if(param.getGoodsType() != null) {
-			select.where(FANLI_GOODS_STATISTICS.CAT_ID.eq(param.getGoodsType()));
+		if(param.getGoodsSort() != null) {
+			select.where(FANLI_GOODS_STATISTICS.CAT_ID.eq(param.getGoodsSort()));
 		}
 		//商品名称
 		if(param.getGoodsName() != null) {
@@ -66,6 +80,34 @@ public class RebateGoodsService extends ShopBaseService{
 		}
 		select.orderBy(FANLI_GOODS_STATISTICS.PRD_TOTAL_FANLI.desc());
 	}
+
+    /**
+     * 商品返利统计导出Excel
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook exportRebateGoodsList(RebateGoodsParam param, String lang){
+        SelectJoinStep<? extends Record> select = db().select(GOODS.GOODS_ID,FANLI_GOODS_STATISTICS.SALE_NUMBER,FANLI_GOODS_STATISTICS.PRD_TOTAL_FANLI,GOODS.GOODS_NAME,GOODS.GOODS_SALE_NUM,GOODS.SHOP_PRICE,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS.SORT_ID)
+            .from(FANLI_GOODS_STATISTICS)
+            .leftJoin(GOODS).on(FANLI_GOODS_STATISTICS.GOODS_ID.eq(GOODS.GOODS_ID))
+            .leftJoin(GOODS_SPEC_PRODUCT).on(FANLI_GOODS_STATISTICS.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID));
+        optionBuild(select,param);
+
+        select.limit(param.getStartNum(),param.getEndNum());
+        List<RebateGoodsExportVo> rebateGoodsExportVo = select.fetchInto(RebateGoodsExportVo.class);
+        //获取商品对应分类名称
+        for(RebateGoodsExportVo listInfo : rebateGoodsExportVo) {
+            SortRecord sort = gs.getSortDao(listInfo.getSortId());
+            if(sort != null){
+                listInfo.setCatName(sort.getSortName());
+            }
+        }
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(rebateGoodsExportVo, RebateGoodsExportVo.class);
+        return workbook;
+    }
 	
 	/**
 	 * 商品返利明细列表
@@ -73,60 +115,23 @@ public class RebateGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<RebateGoodsDetailVo> getRebateGoodsDetail(RebateGoodsDetailParam param) {
-		SelectJoinStep<? extends Record> select = db().select(ORDER_GOODS_REBATE.ORDER_SN,ORDER_GOODS_REBATE.REBATE_MONEY,
-				ORDER_GOODS_REBATE.REBATE_USER_ID,ORDER_GOODS_REBATE.REBATE_PERCENT,ORDER_INFO.SETTLEMENT_FLAG,
-				ORDER_INFO.FINISHED_TIME,ORDER_INFO.USER_ID,ORDER_GOODS.RETURN_NUMBER,ORDER_GOODS.CAN_CALCULATE_MONEY,
-				ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_NUMBER,ORDER_INFO.MOBILE,USER.as(INVITE).USERNAME.as("distributorName"))
-				.from(ORDER_GOODS_REBATE
-				.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
-				.leftJoin(USER.as(INVITE)).on(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(USER.as(INVITE).USER_ID))
-				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID)))
-				.leftJoin(ORDER_GOODS).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
-		buildOptionDetail(select,param);
-		PageResult<RebateGoodsDetailVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsDetailVo.class);
-		
-		return pageList;
+        return orderGoodsRebateDao.listRebateGoodsDetails(param);
 	}
-	
-	/**
-	 * 商品返利明细条件查询
-	 * @param select
-	 * @param param
-	 */
-	public void buildOptionDetail(SelectJoinStep<? extends Record> select,RebateGoodsDetailParam param) {
-		select.where(ORDER_INFO.FANLI_TYPE.eq((byte) 1).and(ORDER_GOODS_REBATE.GOODS_ID.eq(param.getGoodsId())));
-		//被邀请人手机号
-		if(param.getMobile() != null) {
-			select.where(USER.MOBILE.contains(param.getMobile()));
-		}
-		//被邀请人用户名
-		if(param.getUsername() != null) {
-			select.where(USER.USERNAME.contains(param.getUsername()));
-		}
-		
-		//分销员手机号
-		if(param.getDistributorMobile() != null) {
-			select.where(USER.as(INVITE).MOBILE.contains(param.getDistributorMobile()));
-		}
-		//分销员用户名
-		if(param.getDistributorName() != null) {
-			select.where(USER.as(INVITE).USERNAME.contains(param.getUsername()));
-		}
-		//返利开始时间
-		if(param.getStartRebateTime() != null && param.getEndRebateTme() != null) {
-			select.where(ORDER_INFO.FINISHED_TIME.ge(param.getStartRebateTime()));
-		}
-		//返利结束时间
-		if(param.getEndRebateTme() != null) {
-			select.where(ORDER_INFO.FINISHED_TIME.le(param.getEndRebateTme()));
-		}
-		//返利订单号
-		if(param.getRebateOrderSn() != null) {
-			select.where(ORDER_GOODS_REBATE.ORDER_SN.contains(param.getRebateOrderSn()));
-		}
-		//返利状态
-		if(param.getRebateStatus() != null) {
-			select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(param.getRebateStatus()));
-		}
-	}
+
+
+    /**
+     * 商品返利明细导出Excel
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook exportRebateGoodsDetail(RebateGoodsDetailParam param, String lang) {
+        List<RebateGoodsDetailExportVo> rebateGoodsDetailExportVoList = orderGoodsRebateDao.listRebateGoodsExportDetails(param);
+
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        excelWriter.writeModelList(rebateGoodsDetailExportVoList, RebateGoodsDetailExportVo.class);
+
+        return workbook;
+    }
 }

@@ -1,30 +1,10 @@
 <template>
   <div class="patientContent">
     <div class="patientContent_main">
-      <!-- <el-tabs
-        v-model="acitveName"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane
-          label="基础信息"
-          name="first"
-        >
-          <patientMessage
-            v-if="showFlag"
-            @patientConfig="show"
-          />
-        </el-tab-pane>
-        <el-tab-pane
-          label="处方列表"
-          name="second"
-        >
-          <prescriptionList
-            v-if="!showFlag"
-            @patientConfig="show"
-          />
-        </el-tab-pane>
-      </el-tabs> -->
       <patientMessage />
+      <medicalRecord />
+      <inquiryList />
+      <doctorList />
       <prescriptionList />
     </div>
   </div>
@@ -33,10 +13,16 @@
 <script>
 import patientMessage from './patientMessage'
 import prescriptionList from './prescriptionList'
+import medicalRecord from './medicalRecord'
+import inquiryList from './inquiryList'
+import doctorList from './doctorList'
 
 export default {
   components: {
     patientMessage,
+    medicalRecord,
+    inquiryList,
+    doctorList,
     prescriptionList
   },
   data () {
@@ -80,9 +66,5 @@ export default {
   min-width: 100%;
   font-size: 14px;
   height: 100%;
-  .patientContent_main {
-    background-color: #fff;
-    padding: 10px 20px;
-  }
 }
 </style>

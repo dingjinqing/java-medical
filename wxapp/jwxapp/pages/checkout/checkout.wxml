@@ -11,19 +11,19 @@
         </block>
       </view> -->
 	
-		<view class="shipping_method_content" wx:if="{{orderInfo.expressList[1]||orderInfo.expressList[2]}}">
+		<view class="shipping_method_content" wx:if="{{orderInfo.expressList[1]||orderInfo.expressList[2]||orderInfo.expressList[3]}}">
 			<block wx:for="{{orderInfo.expressList}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="shipIndex">
 				<view class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{i18n.$t(localePack,"pages.checkout.deliverType["+shipIndex+"]")}}</view>
 			</block>
 		</view>
-		<view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;border-radius:{{orderInfo.expressList[1]||orderInfo.expressList[2] ? '0 0 16rpx 16rpx' : '16rpx'}};">
+		<view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0 && params.deliverType !== 3}}" style="background:#fff;border-bottom:2rpx solid #eee;">
 			<view class="address-user_info">
-				<text class="user_name">王的盛宴</text>
+				<text class="user_name">{{selectedStoreInfo.storeName}}</text>
 			</view>
 			<view class="address-address_info">
 				<image src="{{imageUrl}}image/wxapp/address.png"></image>
-				<text class="address">蜂鸟社区</text>
-				<text class="">距离当前位置0.58km</text>
+				<text class="address">{{selectedStoreInfo.address}}</text>
+				<text class="">距离当前位置{{selectedStoreInfo.distance}}km</text>
 				<image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
 			</view>
 		</view>
@@ -36,7 +36,7 @@
 				<text class="user_name">{{orderInfo.address.consignee}}</text>
 				<text class="user_mobile">{{orderInfo.address.mobile}}</text>
 			</view>
-			<view class="address-address_info" wx:if="{{orderInfo.address && params.deliverType !== 1}}">
+			<view class="address-address_info" wx:if="{{orderInfo.address && params.deliverType !== 1 && params.deliverType !== 2}}">
 				<image src="{{imageUrl}}image/wxapp/address.png"></image>
 				<text class="address">{{orderInfo.address.provinceName+orderInfo.address.cityName+orderInfo.address.districtName+orderInfo.address.address}}</text>
 				<image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
@@ -338,7 +338,7 @@
 	<!-- 选择会员卡 -->
 	<v-select-card show="{{showCardDialog}}" member-card-list="{{orderInfo.memberCards}}" default-member-card-no="{{orderInfo.defaultMemberCard.cardNo}}" bindconfirm="getSelectCard" />
 	<!-- 选择自提/同城门店 -->
-	<v-select-store show="{{showStoreDialog}}" store-data="{{storeDialogData}}" bindsubmit="getSelectStore" />
+	<v-select-store show="{{showStoreDialog}}" selected-store="{{params.storeId}}" store-data="{{storeList}}" bindconfirm="getSelectStore" />
 	<!-- 好友代付弹窗 -->
 	<v-friend-pay show="{{showFriendPayDialog}}" friend-config="{{orderInfo.insteadPayCfg}}" bindpayEvent="getFriendPayData" />
 	<!-- 定金膨胀发货规则弹窗 -->
@@ -346,6 +346,6 @@
 	<!-- 处方详情展示弹窗 -->
 	<v-prescription-dialog show="{{showPrescription}}" prescription-data="{{prescriptionData}}"/>
 	<!-- 无处方提示弹窗 -->
-	<no-prescription-dialog show="{{showNoPrescription}}" dialog-type="{{noPrescriptionType}}" patient-info="{{orderInfo.patientInfo}}"/>
+	<no-prescription-dialog show="{{showNoPrescription}}" source="checkout" dialog-type="{{noPrescriptionType}}" patient-info="{{orderInfo.patientInfo}}"/>
 	<include src="../common/footer.wxml" />
 </view>

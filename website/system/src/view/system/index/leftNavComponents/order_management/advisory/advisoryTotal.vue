@@ -4,13 +4,13 @@
       <div class="filters">
         <div class="filters_item ">
           <span class="fil_span">医师姓名：</span>
-                       <el-input
-              v-model="param.doctorName"
-              size="small"
-              style="width:190px;"
-              placeholder="请输入医师姓名"
-            >
-            </el-input>
+          <el-input
+            v-model="param.doctorName"
+            size="small"
+            style="width:190px;"
+            placeholder="请输入医师姓名"
+          >
+          </el-input>
 
         </div>
         <div class="filters_item">
@@ -120,9 +120,9 @@
 </template>
 
 <script>
-import { getAdvistoryReportList, getReportExport, getDoctorList, getDoctorTotal } from '@/api/admin/orderManage/advisory.js'
-import { getDate } from '@/api/admin/firstWebManage/goodsStatistics/goodsStatistics.js'
+import { getAdvistoryReportList, getReportExport, getDoctorTotal } from '@/api/admin/orderManage/advisory.js'
 import { download } from '@/util/excelUtil.js'
+import { dateChange } from '@/util/date.js'
 import pagination from '@/components/system/pagination/pagination'
 export default {
   components: {
@@ -131,29 +131,29 @@ export default {
   watch: {
     lang () {
       this.timeRange = [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' },
+        { value: -1, label: '最新1天' },
+        { value: -7, label: '最新7天' },
+        { value: -30, label: '最新30天' },
         { value: 0, label: '自定义' }
       ]
     }
   },
   mounted () {
-    this.getDateValue(1)
-    this.getDoctor({})
+    this.getDateValue(-1)
+    // this.getDoctor({})
     this.initData()
   },
   data () {
     return {
       loading: false,
       timeValue: [],
-      timeSelect: 1,
+      timeSelect: -1,
       pageParams: {},
       tableData: [],
       timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' },
+        { value: -1, label: '最新1天' },
+        { value: -7, label: '最新7天' },
+        { value: -30, label: '最新30天' },
         { value: 0, label: '自定义' }
       ],
       startDate: {
@@ -188,7 +188,6 @@ export default {
     dateChangeHandler (time) {
       if (time !== 0) {
         this.getDateValue(time)
-        this.initData()
       }
     },
     // 自定义时间
@@ -201,22 +200,18 @@ export default {
       this.endDate.year = this.timeValue[1].substring(0, 4)
       this.endDate.month = this.timeValue[1].substring(4, 6)
       this.endDate.day = this.timeValue[1].substring(6, 8)
-      this.initData()
     },
     getDateValue (unit) {
-      getDate(unit).then(res => {
-        if (res.error === 0) {
-          this.startDate.year = res.content.startTime.split('-')[0]
-          this.startDate.month = res.content.startTime.split('-')[1]
-          this.startDate.day = res.content.startTime.split('-')[2]
-          this.endDate.year = res.content.endTime.split('-')[0]
-          this.endDate.month = res.content.endTime.split('-')[1]
-          this.endDate.day = res.content.endTime.split('-')[2]
-          this.param.startTime = res.content.startTime + ' 00:00:00'
-          this.param.endTime = res.content.endTime + ' 00:00:00'
-          this.initData()
-        }
-      }).catch(err => console.log(err))
+      let date = dateChange(unit)
+      this.startDate.year = date[1].split('-')[0]
+      this.startDate.month = date[1].split('-')[1]
+      this.startDate.day = date[1].split('-')[2]
+      this.endDate.year = date[0].split('-')[0]
+      this.endDate.month = date[0].split('-')[1]
+      this.endDate.day = date[0].split('-')[2]
+      this.param.startTime = date[1] + ' 00:00:00'
+      this.param.endTime = date[0] + ' 00:00:00'
+      this.initData()
     },
     initData () {
       let params = Object.assign({}, this.param, this.pageParams)
@@ -228,14 +223,6 @@ export default {
         }
       }).catch(err => console.log(err))
       this.getTotal({ doctorName: this.param.doctorName, startTime: this.param.startTime, endTime: this.param.endTime })
-    },
-    getDoctor (doctor) {
-      getDoctorList(doctor).then(res => {
-        if (res.error === 0) {
-          console.log(res)
-          this.doctorList = res.content
-        }
-      })
     },
     getTotal (doctor) {
       getDoctorTotal(doctor).then(res => {

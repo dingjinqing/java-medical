@@ -1303,6 +1303,8 @@ CREATE TABLE `b2c_shop` (
   `shop_language` varchar(45) NOT NULL DEFAULT 'zh-CN' COMMENT '语言',
   `expire_time` timestamp null DEFAULT NULL COMMENT '到期时间',
   `store_clerk_privilege_list` TEXT NULL DEFAULT NULL COMMENT '门店店员权限列表',
+  `publicity_img` varchar(512) DEFAULT '' COMMENT '店铺宣传图',
+  `copywriting` text COMMENT '店铺详情文案',
   PRIMARY KEY (`shop_id`),
   KEY `mobile` (`mobile`)
 )COMMENT='店铺';
@@ -1660,12 +1662,13 @@ CREATE TABLE `b2c_statistics_shop` (
   KEY `shop_id` (`shop_id`)
 )COMMENT='店铺数据统计';
 
-CREATE TABLE  `b2c_store_account` (
+CREATE TABLE `b2c_store_account` (
     `account_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '门店账号ID',
     `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属店铺id',
     `sys_id` int(10) NOT NULL DEFAULT '0' COMMENT '所属账户id',
     `mobile` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号',
     `account_name` varchar(50) DEFAULT '' COMMENT '账户名称',
+    `wx_nick_name` varchar(50) default '' comment '门店账户绑定微信昵称',
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `account_type` tinyint(1) DEFAULT '1' COMMENT '账户类型1:店员，2：店长',
     `status` tinyint(1) DEFAULT '0' COMMENT '账户状态0:禁用，1：启用',
@@ -1673,10 +1676,13 @@ CREATE TABLE  `b2c_store_account` (
     `account_passwd` varchar(64)  DEFAULT NULL COMMENT '账号密码',
     `store_list` varchar(191)  DEFAULT NULL COMMENT '可用门店id,逗号隔开',
     `update_time`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '关联用户Id',
+    `official_open_id` varchar(128) DEFAULT NULL COMMENT '公众号openid',
+    `is_bind` tinyint(1) DEFAULT '0' COMMENT '是否已绑定',
     PRIMARY KEY (`account_id`),
     KEY `mobile` (`mobile`),
     KEY `account_name` (`account_name`)
-);
+) comment '门店账户表';
 
 
 CREATE TABLE `b2c_system_cfg` (
@@ -2267,4 +2273,17 @@ CREATE TABLE  `b2c_return_order_goods_bak` (
   KEY `goods_id` (`goods_id`),
   KEY `shop_id` (`shop_id`)
 )COMMENT='退货商品表';
+
+-- 店铺物流信息表
+CREATE TABLE `b2c_shop_logistics` (
+    `id` int(8) NOT NULL AUTO_INCREMENT,
+    `shop_id` int(8) NOT NULL DEFAULT '0' COMMENT '店铺Id',
+    `logistic_name` varchar(30) NOT NULL DEFAULT '' COMMENT '快递公司名称',
+    `logistic_type` varchar(20) NOT NULL DEFAULT '' COMMENT '快递100type字段',
+    `shipping_code` varchar(20) NOT NULL DEFAULT '',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未删除，1:已删除',
+    PRIMARY KEY (`id`)
+) COMMENT='店铺物流信息表';
 

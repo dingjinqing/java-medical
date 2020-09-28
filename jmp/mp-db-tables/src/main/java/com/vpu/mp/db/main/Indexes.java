@@ -239,21 +239,21 @@ public class Indexes {
     public static final Index INQUIRY_ORDER_ORDER_SN = Indexes0.INQUIRY_ORDER_ORDER_SN;
     public static final Index INQUIRY_ORDER_SHOP_ID = Indexes0.INQUIRY_ORDER_SHOP_ID;
     public static final Index SHOP_SMS_CONFIG_PRIMARY = Indexes0.SHOP_SMS_CONFIG_PRIMARY;
+    public static final Index SHOP_LOGISTICS_PRIMARY = Indexes0.SHOP_LOGISTICS_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-
+        public static Index RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createIndex("PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID, ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.SHOP_ID }, true);
         public static Index RETURN_ORDER_BAK_ORDER_SN = Internal.createIndex("order_sn", ReturnOrderBak.RETURN_ORDER_BAK, new OrderField[] { ReturnOrderBak.RETURN_ORDER_BAK.ORDER_SN }, false);
-        public static Index RETURN_ORDER_BAK_PRIMARY = Internal.createIndex("PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK, new OrderField[] { ReturnOrderBak.RETURN_ORDER_BAK.RET_ID }, true);
         public static Index RETURN_ORDER_GOODS_BAK_GOODS_ID = Internal.createIndex("goods_id", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.GOODS_ID }, false);
         public static Index RETURN_ORDER_GOODS_BAK_ORDER_SN = Internal.createIndex("order_sn", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ORDER_SN }, false);
-        public static Index RETURN_ORDER_GOODS_BAK_PRIMARY = Internal.createIndex("PRIMARY", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.ID }, true);
         public static Index RETURN_ORDER_GOODS_BAK_REC_ID = Internal.createIndex("rec_id", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.REC_ID }, false);
         public static Index RETURN_ORDER_GOODS_BAK_RET_ID = Internal.createIndex("ret_id", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.RET_ID }, false);
         public static Index RETURN_ORDER_GOODS_BAK_SHOP_ID = Internal.createIndex("shop_id", ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK, new OrderField[] { ReturnOrderGoodsBak.RETURN_ORDER_GOODS_BAK.SHOP_ID }, false);
+        public static Index RETURN_ORDER_BAK_PRIMARY = Internal.createIndex("PRIMARY", ReturnOrderBak.RETURN_ORDER_BAK, new OrderField[] { ReturnOrderBak.RETURN_ORDER_BAK.RET_ID, ReturnOrderBak.RETURN_ORDER_BAK.SHOP_ID }, true);
 
         public static Index ORDER_INFO_BAK_MAIN_ORDER_SN = Internal.createIndex("main_order_sn", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.MAIN_ORDER_SN }, false);
         public static Index ORDER_INFO_BAK_ORDER_SN = Internal.createIndex("order_sn", OrderInfoBak.ORDER_INFO_BAK, new OrderField[] { OrderInfoBak.ORDER_INFO_BAK.ORDER_SN }, true);
@@ -453,5 +453,7 @@ public class Indexes {
         public static Index INQUIRY_ORDER_ORDER_SN = Internal.createIndex("order_sn", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.ORDER_SN }, false);
         public static Index INQUIRY_ORDER_SHOP_ID = Internal.createIndex("shop_id", InquiryOrder.INQUIRY_ORDER, new OrderField[] { InquiryOrder.INQUIRY_ORDER.SHOP_ID }, false);
         public static Index SHOP_SMS_CONFIG_PRIMARY = Internal.createIndex("PRIMARY", ShopSmsConfig.SHOP_SMS_CONFIG, new OrderField[] { ShopSmsConfig.SHOP_SMS_CONFIG.ID }, true);
+        public static Index SHOP_LOGISTICS_PRIMARY = Internal.createIndex("PRIMARY", ShopLogistics.SHOP_LOGISTICS, new OrderField[] { ShopLogistics.SHOP_LOGISTICS.ID }, true);
+
     }
 }

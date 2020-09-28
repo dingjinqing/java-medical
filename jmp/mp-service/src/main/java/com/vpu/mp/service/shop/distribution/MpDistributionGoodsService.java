@@ -3,10 +3,10 @@ package com.vpu.mp.service.shop.distribution;
 import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.db.shop.tables.records.RebatePriceRecordRecord;
-import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.dao.shop.distribution.PromotionLanguageDao;
+import com.vpu.mp.dao.shop.distribution.UserPromotionLanguageDao;
+import com.vpu.mp.dao.shop.goods.GoodsDao;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
@@ -28,16 +28,20 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vpu.mp.common.foundation.data.DistributionConstant.*;
 import static com.vpu.mp.db.shop.Tables.*;
 
 /**
@@ -61,6 +65,12 @@ public class MpDistributionGoodsService extends ShopBaseService {
 
     @Autowired
     protected CouponMpService mpCoupon;
+    @Autowired
+    protected PromotionLanguageDao promotionLanguageDao;
+    @Autowired
+    protected UserPromotionLanguageDao userPromotionLanguageDao;
+    @Autowired
+    protected GoodsDao goodsDao;
 
     public RebateRatioVo goodsRebateInfo(Integer goodsId,Integer catId,Integer sortId,Integer userId){
         //获取用户分销等级
@@ -74,6 +84,8 @@ public class MpDistributionGoodsService extends ShopBaseService {
             if(userRebateRatio.getFirstRebate() != null && userRebateRatio.getFirstRebate() == 0){
                 userRebateRatio.setFirstRatio(null);
             }
+            //返利成本价保护
+            costPriceProtect(userRebateRatio,goodsId,goodsRebateStrategy.getCostProtection());
             return userRebateRatio;
         }
     }
@@ -104,10 +116,15 @@ public class MpDistributionGoodsService extends ShopBaseService {
      */
     public List<DistributionStrategyParam> goingStrategy(){
         Timestamp nowDate = Util.currentTimeStamp();
-        return db().select().from(DISTRIBUTION_STRATEGY).where(DISTRIBUTION_STRATEGY.STATUS.eq((byte) 0))
+        Result<Record> fetch = db().select().from(DISTRIBUTION_STRATEGY).where(DISTRIBUTION_STRATEGY.STATUS.eq((byte) 0))
             .and(DISTRIBUTION_STRATEGY.DEL_FLAG.eq((byte) 0))
             .and(DISTRIBUTION_STRATEGY.START_TIME.le(nowDate)).and(DISTRIBUTION_STRATEGY.END_TIME.ge(nowDate))
-            .orderBy(DISTRIBUTION_STRATEGY.STRATEGY_LEVEL.desc()).fetchInto(DistributionStrategyParam.class);
+            .orderBy(DISTRIBUTION_STRATEGY.STRATEGY_LEVEL.desc(), DISTRIBUTION_STRATEGY.CREATE_TIME.desc()).fetch();
+        if(fetch != null){
+            return fetch.into(DistributionStrategyParam.class);
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -195,35 +212,40 @@ public class MpDistributionGoodsService extends ShopBaseService {
     }
 
     private void getRebateRatio(DistributionStrategyParam goodsRebateStrategy, RebateRatioVo rebateRatio, Byte level) {
-        if(level.equals(DistributionConstant.level_1)){
+        if(level.equals(LEVEL_1)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio());
+            rebateRatio.setStrategyType(goodsRebateStrategy.getStrategyType());
         }
-        if(level.equals(DistributionConstant.level_2)){
+        if(level.equals(DistributionConstant.LEVEL_2)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio2());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio2());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio2());
+            rebateRatio.setStrategyType(goodsRebateStrategy.getStrategyType());
         }
-        if(level.equals(DistributionConstant.level_3)){
+        if(level.equals(DistributionConstant.LEVEL_3)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio3());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio3());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio3());
+            rebateRatio.setStrategyType(goodsRebateStrategy.getStrategyType());
         }
-        if(level.equals(DistributionConstant.level_4)){
+        if(level.equals(DistributionConstant.LEVEL_4)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio4());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio4());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio4());
+            rebateRatio.setStrategyType(goodsRebateStrategy.getStrategyType());
         }
-        if(level.equals(DistributionConstant.level_5)){
+        if(level.equals(DistributionConstant.LEVEL_5)){
             rebateRatio.setRebateId(goodsRebateStrategy.getId());
             rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio5());
             rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio5());
             rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio5());
+            rebateRatio.setStrategyType(goodsRebateStrategy.getStrategyType());
         }
     }
 
@@ -244,8 +266,8 @@ public class MpDistributionGoodsService extends ShopBaseService {
             return null;
         }
         //异常分销等级重置
-        if(userInfo.getDistributorLevel() < 1 || userInfo.getDistributorLevel() > 5) {
-            userInfo.setDistributorLevel(DistributionConstant.level_1);
+        if(userInfo.getDistributorLevel() < LEVEL_1 || userInfo.getDistributorLevel() > LEVEL_5) {
+            userInfo.setDistributorLevel(LEVEL_1);
         }
         //等级详情
         DistributorLevelVo levelInfo = distributorLevel.getOneLevelInfo(userInfo.getDistributorLevel());
@@ -440,12 +462,216 @@ public class MpDistributionGoodsService extends ShopBaseService {
      * @param goodsId
      * @return
      */
-    public String getGoodsPromotionLanguage(Integer goodsId){
-        Record1<String> record = db().select(GOODS.PROMOTION_LANGUAGE).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOne();
-        if(record != null){
-            return record.into(String.class);
+    public String getGoodsPromotionLanguage(Integer userId, Integer goodsId){
+        // 1.获取商品推广语
+        String promotionLanguage = goodsDao.getPromotionLanguage(goodsId);
+
+        if (StringUtils.isNotEmpty(promotionLanguage)) {
+            return promotionLanguage;
+        }
+
+        // 2.获取分销中心默认推广语
+        Integer languageId = userPromotionLanguageDao.getLanIdByUserId(userId);
+        if (languageId != null) {
+            promotionLanguage = promotionLanguageDao.getPromotionLanguage(languageId);
+        }
+
+        return promotionLanguage;
+    }
+    /**
+     * 是否为多规格商品
+     * @param goodsId
+     * @return
+     */
+    public int isMorePrd(Integer goodsId){
+        Integer into = db().selectCount().from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOne().into(Integer.class);
+        //多规格
+        if(into.compareTo(1)>0){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    /**
+     * 多规格商品最高规格价
+     * @param goodsId
+     * @return
+     */
+    public BigDecimal highPrdPrice(Integer goodsId){
+        BigDecimal price = db().select(GOODS_SPEC_PRODUCT.PRD_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+            .orderBy(GOODS_SPEC_PRODUCT.PRD_PRICE.desc()).limit(1).fetchOne().into(BigDecimal.class);
+        return price;
+    }
+
+    /**
+     * 多规格商品最低规格价
+     * @param goodsId
+     * @return
+     */
+    public BigDecimal lowPrdPrice(Integer goodsId){
+        BigDecimal price = db().select(GOODS_SPEC_PRODUCT.PRD_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+            .orderBy(GOODS_SPEC_PRODUCT.PRD_PRICE.asc()).limit(1).fetchOne().into(BigDecimal.class);
+        return price;
+    }
+
+    /**
+     * 多规格商品最高划线价
+     * @param goodsId
+     * @return
+     */
+    public BigDecimal highPrdLinePrice(Integer goodsId){
+        BigDecimal linePrice = db().select(GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+            .orderBy(GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE.desc()).limit(1).fetchOne().into(BigDecimal.class);
+        return linePrice;
+    }
+    /**
+     * 获取商品多图
+     * @param goodsId
+     * @return
+     */
+    public List<String> goodsImgs(Integer goodsId){
+        Result<Record1<String>> fetch = db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch();
+        if(fetch != null){
+            List<String> imgs = fetch.into(String.class);
+            List<String> googsMoreImgs = new ArrayList<String>();
+            for (String img:imgs){
+                googsMoreImgs.add(imageUrl(img));
+            }
+            return googsMoreImgs;
         }else{
             return null;
         }
+    }
+    /**
+     * 返利成本保护价，多规格商品按规格算
+     * @param
+     * @return
+     */
+    public void costPriceProtect(RebateRatioVo userRebateRatio,Integer goodsId,Byte costProtection){
+        //商品是否为多规格商品
+        List<GoodsSpecProductRecord> into = db().select().from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetch().into(GoodsSpecProductRecord.class);
+        //最高直接返利金额
+        BigDecimal highDirectlyRebatePrice = BigDecimal.ZERO;
+        //最高间接间接返利金额
+        BigDecimal highIndirectRebatePrice = BigDecimal.ZERO;
+        //最高首单返利金额
+        BigDecimal highFirstRebatePrice = BigDecimal.ZERO;
+        BigDecimal rat = new BigDecimal("100");
+        //佣金计算方式
+        if(userRebateRatio.getStrategyType().equals(STRATEGY_TYPE_GOODS_RPICE)) {
+            logger().info("根据商品支付金额返利");
+            for (GoodsSpecProductRecord item : into) {
+                //当前规格商品直接返利金额
+                BigDecimal directlyRebatePrice = item.getPrdPrice().multiply(new BigDecimal(userRebateRatio.getFanliRatio())).divide(rat);
+                //当前规格商品间接返利金额
+                BigDecimal indirectRebatePrice = item.getPrdPrice().multiply(new BigDecimal(userRebateRatio.getRebateRatio())).divide(rat);
+                //当前规格商品直接返利金额
+                BigDecimal firstRebatePrice = item.getPrdPrice().multiply(new BigDecimal(userRebateRatio.getFirstRebate())).divide(rat);
+                //当前规格成本价保护
+                BigDecimal prdCostPriceProtect = item.getPrdPrice().subtract(item.getPrdCostPrice());
+                logger().info("成本价保护值：" + prdCostPriceProtect);
+                byte costProtectionOpen = 1;
+                if (costProtection == costProtectionOpen) {
+                    logger().info("开启成本价保护");
+                    if (prdCostPriceProtect.compareTo(BigDecimal.ZERO) > 0) {
+                        //当前规格直接返利小于成本价保护值
+                        if (directlyRebatePrice.compareTo(prdCostPriceProtect) > 0) {
+                            if (prdCostPriceProtect.compareTo(highDirectlyRebatePrice) > 0) {
+                                highDirectlyRebatePrice = prdCostPriceProtect;
+                            }
+                        } else {
+                            if (directlyRebatePrice.compareTo(highDirectlyRebatePrice) > 0) {
+                                highDirectlyRebatePrice = directlyRebatePrice;
+                            }
+                        }
+
+                        //当前规格间接返利小于成本价保护值
+                        if (indirectRebatePrice.compareTo(prdCostPriceProtect) > 0) {
+                            if (prdCostPriceProtect.compareTo(highIndirectRebatePrice) > 0) {
+                                highIndirectRebatePrice = prdCostPriceProtect;
+                            }
+                        } else {
+                            if (indirectRebatePrice.compareTo(highIndirectRebatePrice) > 0) {
+                                highIndirectRebatePrice = indirectRebatePrice;
+                            }
+                        }
+                        //开启首单返利 0：关闭；1：开启
+                        if (userRebateRatio.getFirstRebate() == 1) {
+                            //当前规格首单返利成本价保护值
+                            if (firstRebatePrice.compareTo(prdCostPriceProtect) > 0) {
+                                if (prdCostPriceProtect.compareTo(highFirstRebatePrice) > 0) {
+                                    highFirstRebatePrice = prdCostPriceProtect;
+                                }
+                            } else {
+                                if (firstRebatePrice.compareTo(highFirstRebatePrice) > 0) {
+                                    highFirstRebatePrice = firstRebatePrice;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    logger().info("未开成本价保护");
+                    if (directlyRebatePrice.compareTo(highDirectlyRebatePrice) > 0) {
+                        highDirectlyRebatePrice = directlyRebatePrice;
+                    }
+                    if (indirectRebatePrice.compareTo(highIndirectRebatePrice) > 0) {
+                        highIndirectRebatePrice = indirectRebatePrice;
+                    }
+                    //开启首单返利 0：关闭；1：开启
+                    if (userRebateRatio.getFirstRebate() == 1) {
+                        if (firstRebatePrice.compareTo(highFirstRebatePrice) > 0) {
+                            highFirstRebatePrice = firstRebatePrice;
+                        }
+                    }
+                }
+            }
+            userRebateRatio.setHighDirectlyRebatePrice(highDirectlyRebatePrice);
+            userRebateRatio.setHighIndirectRebatePrice(highIndirectRebatePrice);
+            userRebateRatio.setHighFirstRebatePrice(highFirstRebatePrice);
+        } else{
+            //利润计算方式
+            logger().info("根据商品利润返利");
+            strageProfits(into,userRebateRatio,rat);
+        }
+
+    }
+    /**
+     * 根据利润计算返利佣金
+     * @param into
+     * @param userRebateRatio
+     * @param rat
+     */
+    public void strageProfits(List<GoodsSpecProductRecord> into,RebateRatioVo userRebateRatio,BigDecimal rat){
+        //最高直接返利金额
+        BigDecimal highDirectlyRebatePrice = BigDecimal.ZERO;
+        //最高间接间接返利金额
+        BigDecimal highIndirectRebatePrice = BigDecimal.ZERO;
+        //最高首单返利金额
+        BigDecimal highFirstRebatePrice = BigDecimal.ZERO;
+        for (GoodsSpecProductRecord item : into) {
+            BigDecimal goodsPrice = item.getPrdPrice().subtract(item.getPrdCostPrice());
+            //当前规格商品直接返利金额
+            BigDecimal directlyRebatePrice =goodsPrice.multiply(new BigDecimal(userRebateRatio.getFanliRatio())).divide(rat);
+            //当前规格商品间接返利金额
+            BigDecimal indirectRebatePrice = goodsPrice.multiply(new BigDecimal(userRebateRatio.getRebateRatio())).divide(rat);
+            //当前规格商品直接返利金额
+            BigDecimal firstRebatePrice = goodsPrice.multiply(new BigDecimal(userRebateRatio.getFirstRebate())).divide(rat);
+            if (directlyRebatePrice.compareTo(highDirectlyRebatePrice) > 0) {
+                highDirectlyRebatePrice = directlyRebatePrice;
+            }
+            if (indirectRebatePrice.compareTo(highIndirectRebatePrice) > 0) {
+                highIndirectRebatePrice = indirectRebatePrice;
+            }
+            //开启首单返利 0：关闭；1：开启
+            if (userRebateRatio.getFirstRebate() == 1) {
+                //当前规格首单返利成本价保护值
+                if (firstRebatePrice.compareTo(highFirstRebatePrice) > 0) {
+                    highFirstRebatePrice = firstRebatePrice;
+                }
+            }
+        }
+        userRebateRatio.setHighDirectlyRebatePrice(highDirectlyRebatePrice);
+        userRebateRatio.setHighIndirectRebatePrice(highIndirectRebatePrice);
+        userRebateRatio.setHighFirstRebatePrice(highFirstRebatePrice);
     }
 }

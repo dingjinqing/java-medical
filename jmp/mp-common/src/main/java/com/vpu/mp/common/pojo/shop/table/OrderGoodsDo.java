@@ -78,6 +78,7 @@ public class OrderGoodsDo implements Serializable {
     private Integer    purchaseId;
     private String     prescriptionOldCode;
     private String     prescriptionCode;
+    private String     prescriptionDetailCode;
     private Byte       medicalAuditType;
     private Byte       medicalAuditStatus;
     private Timestamp  auditTime;

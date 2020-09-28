@@ -11,6 +11,7 @@ import lombok.Data;
 public class GoodsMedicalBaseInfo {
     private String goodsCommonName;
     private String goodsCode;
+    private String goodsBarCode;
     private String goodsAliasName;
     private String goodsQualityRatio;
     private Byte isRx;
@@ -37,4 +38,10 @@ public class GoodsMedicalBaseInfo {
     private String goodsProductionEnterprise;
     private Byte    goodsLimitDuty;
     private Byte    goodsLimitAntibacterial;
+
+    /**我方程序计算生产的字段*/
+    /**名称+规格系数+药企组成的唯一值*/
+    private String goodsKeyComposedByNameQualityEnterprise;
+    /**药房商品唯一值*/
+    private String storeCode;
 }

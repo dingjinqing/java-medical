@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { setDocument, getDocument } from '@/api/admin/marketManage/distribution.js'
+import { setDocument, getDocument, setRebateDocument, getRebateDocument } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor'), // 富文本编辑器
@@ -89,19 +89,41 @@ export default {
   },
   data () {
     return {
-      pageText: 'pages/distributionspread/distributionspread',
+      type: 1, // 类型 (1推广文案, 2返利规则)
+      pageText: '',
       form: {
-        title: '分销员推广测试',
+        title: '',
         document: '' // 文本内容
       },
       shareDialog: false, // 分享弹窗
       shareImg: '',
       sharePath: '',
 
-      templateFlag: false,
+      templateFlag: false, // 默认适用模板
       contentTip1: '',
       contentTip2: '',
-      contentText: ''
+      contentText: '',
+
+      // 返利规则模板
+      rebateTemplate: `
+        <div class="rebateContent">
+          <p>1. 返利说明</p>
+          <p>(1) 买家购买返利商品,下单支付成功,则邀请该用户注册的分销员可获得佣金返利。</p>
+          <p>(2) 邀请新用户注册,或者分享给已经注册的但没有邀请人的用户都算作该分销员的用户。</p>
+          <p>(3) 订单支付成功则返利佣金为待返利状态,交易完成则该佣金返利完成,自动提现到分销员的用户余额中。交易完成前发生退款的订单,相应的分销员返利佣金为已退款返利失败状态。</p>
+          <p>(4) 仅在线支付的订单算作业绩,即微信支付、余额支付(会员卡余额、用户余额)、货到付款的订单计算返利佣金。例如买家购买返利商品A价格为100元,该买家使用了20元的优惠券,其余金额使用微信支付,返利比例为10%,则邀请该买家的分销员可获得返利佣金为(100-20)*10%=8元。</p>
+          <p>(5) 买家仅购买返利商品,该买家的邀请人可获得返利佣金,购买普通商品不返利。</p>
+          <p>2. 结算说明</p>
+          <p>(1) 按照返佣比例进行返利。</p>
+          <p>(2) 返利有效期在用户被分销员邀请注册开始计算，在指定天数限制内该用户购买分销商品给分销员计算佣金返利，一旦超过该天数，则不再给分销员佣金返利。</p>
+          <p>3. 其他说明</p>
+          <p>(1) 分享前,请确定商品页面有【...】按钮。</p>
+          <p>(2) 销售过程中有任何疑问,请直接联系商家。</p>
+          <p>(3) 已售出商品的任何售后问题,由本商城处理。</p>
+          <p>(4) 不传播或者扩散有关政治、色情等任何违法的信息,一经发现,则立即封号,如果触犯任何法律相关问题,商城不负任何责任。</p>
+          <p>(5) 以上内容解释权归本商城所有。</p>
+        </div>
+      `
     }
   },
   watch: {
@@ -109,47 +131,90 @@ export default {
       this.contentTip1 = this.$t('distribution.contentTip1')
       this.contentTip2 = this.$t('distribution.contentTip2')
       this.contentText = this.$t('distribution.contentText')
-      this.getClickHandler()
+      this.getInitData()
     }
   },
   mounted () {
-    // 初始化数据
     this.langDefault()
-    this.getClickHandler()
+
+    if (this.$route.query.type) {
+      this.type = this.$route.query.type
+      if (this.type === 1) {
+        this.pageText = 'pages/distributionspread/distributionspread'
+        this.form.title = '分销员推广测试'
+      } else {
+        this.pageText = 'pages/distribution/distribution'
+        this.form.title = '返利规则说明'
+      }
+      this.getInitData()
+    }
   },
   methods: {
-    // 获取
-    getClickHandler () {
-      getDocument().then((res) => {
-        if (res.error === 0) {
-          if (res.content) {
-            this.form = res.content
-          } else {
-            if (this.templateFlag === true) {
-              this.form.document = this.contentTip1 + this.contentText
+    // 初始化数据
+    getInitData () {
+      if (this.type === 1) {
+        // 获取推广文案
+        getDocument().then((res) => {
+          if (res.error === 0) {
+            if (res.content) {
+              this.form = res.content
             } else {
-              this.form.document = this.contentTip2 + this.contentText
+              if (this.templateFlag === true) {
+                this.form.document = this.contentTip1 + this.contentText
+              } else {
+                this.form.document = this.contentTip2 + this.contentText
+              }
             }
           }
-          this.$message.success('获取推广文案')
-        }
-      })
+        })
+      } else {
+        // 获取返利规则
+        getRebateDocument().then(res => {
+          if (res.error === 0) {
+            if (res.content) {
+              this.form = res.content
+            } else {
+              // this.form.document = this.rebateTemplate
+            }
+          }
+        })
+      }
     },
 
     // 保存
     saveClickHandler () {
-      console.log(this.form)
-      setDocument(this.form).then((res) => {
-        if (res.error === 0) {
-          this.$message.success(this.$t('distribution.rebateSaveSuccess'))
-        }
-      })
+      if (this.type === 1) {
+        // 保存推广文案
+        console.log(this.form)
+        setDocument(this.form).then((res) => {
+          if (res.error === 0) {
+            this.$message.success(this.$t('distribution.rebateSaveSuccess'))
+            // setTimeout(() => {
+            //   this.$router.push({ name: 'distribution_info' })
+            // }, 1000)
+          }
+        })
+      } else {
+        // 保存返利规则
+        setRebateDocument(this.form).then(res => {
+          if (res.error === 0) {
+            this.$message.success(this.$t('distribution.rebateSaveSuccess'))
+            // setTimeout(() => {
+            //   this.$router.push({ name: 'distribution_info' })
+            // }, 1000)
+          }
+        })
+      }
     },
 
     // 使用模板文案
     templateCopyHandler () {
       this.templateFlag = true
-      this.form.document = this.contentTip1 + this.contentText
+      if (this.type === 1) {
+        this.form.document = this.contentTip1 + this.contentText
+      } else {
+        this.form.document = this.rebateTemplate
+      }
     },
 
     // 复制
@@ -232,6 +297,11 @@ export default {
   height: 540px;
   overflow-y: auto;
   padding: 0 8px;
+}
+
+.leftContent .leftPass >>> .rebateContent {
+  font-size: 14px;
+  line-height: 28px;
 }
 
 .rightContent {

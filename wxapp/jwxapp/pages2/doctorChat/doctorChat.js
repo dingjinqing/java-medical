@@ -24,6 +24,11 @@ global.wxPage({
     arrive_bottom: true,
     allHeight: 0,
     showPre:false,
+    triggered: false,
+    pageParams: {
+      currentPage: 1,
+      pageRows: 20
+    }
   },
 
   /**
@@ -184,18 +189,19 @@ global.wxPage({
   chatEnd () {
 
     util.showModal('提示', '确定要结束本次问诊吗？', () => {
-      util.api('/api/wxapp/inquiry/order/status/update', res => {
+      util.api('/api/wxapp/inquiry/order/status/update', async res => {
+        let sessionStatus = await this.statusApi()
         if (res.error === 0) {
           clearInterval(this.timer)
           this.setData({
-            'targetUserInfo.sessionStatus': 4
+            'targetUserInfo.sessionStatus': sessionStatus
           })
           if (this.data.source === 'inquiryList') {
             let pageList = getCurrentPages();
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item => item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: 4
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: sessionStatus
             })
             wx.navigateBack()
           }
@@ -210,10 +216,11 @@ global.wxPage({
   chatContinue () {
 
     util.showModal('提示', '确定要继续问诊吗？', () => {
-      util.api('/api/wxapp/inquiry/order/status/update', res => {
+      util.api('/api/wxapp/inquiry/order/status/update', async res => {
+        let sessionStatus = await this.statusApi()
         if (res.error === 0) {
           this.setData({
-            'targetUserInfo.sessionStatus': 5
+            'targetUserInfo.sessionStatus': sessionStatus
           })
           this.requsetMessage()
           if (this.data.source === 'inquiryList') {
@@ -221,7 +228,7 @@ global.wxPage({
             let prevPage = pageList[pageList.length - 2];
             let targetIndex = prevPage.data.dataList[this.data.targetUserInfo.parentIndex].findIndex(item => item.id === this.data.targetUserInfo.id)
             prevPage.setData({
-              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: 5
+              [`dataList[${this.data.targetUserInfo.parentIndex}][${targetIndex}].sessionStatus`]: sessionStatus
             })
           }
         }
@@ -265,8 +272,8 @@ global.wxPage({
     return new Promise((resolve, reject) => {
       util.api('/api/wxapp/im/session/render', res => {
         console.log(res)
-        if (res.error === 0 && res.content.dataList.length) {
-          let newChatContent = res.content.dataList.reduce((defaultValue, item) => {
+        if (res.error === 0 && res.content.length) {
+          let newChatContent = res.content.reduce((defaultValue, item) => {
             defaultValue.push({
               position: item.doctor ? 1 : 0,
               messageInfo: {
@@ -277,16 +284,18 @@ global.wxPage({
             })
             return defaultValue
           }, [])
+          let currentPage = 1 + this.data.pageParams.currentPage
           this.setData({
-            chatContent: [...newChatContent],
+            chatContent: [...newChatContent, ...this.data.chatContent],
             firstLoad: false
           })
         }
         resolve(res)
       }, {
+        startLineIndex:this.data.chatContent.length,
         sessionId: this.data.targetUserInfo.id,
         isDoctor: true,
-        isFirstTime: this.data.firstLoad
+        isFirstTime: this.data.firstLoad,
       })
     })
   },
@@ -320,12 +329,31 @@ global.wxPage({
     if(this.data.targetUserInfo.sessionStatus === 6) return 0;
     return 135
   },
-  getRectHeight() {
+  getRectHeight(req = 1, count = 1) {
     let that = this
     wx.createSelectorQuery().select('#all_content').boundingClientRect().exec(function (reda) {
-      that.setData({
-        allHeight: reda[0].height,
-      })
+      if (req == 1) {
+        that.setData({
+          allHeight: reda[0].height,
+        })
+      } else {
+        let oldHeight;
+        if (count == 1) {
+          that.setData({
+            oldHeight: reda[0].height,
+          })
+          console.log('oldHeight:',oldHeight)
+          that.requestHistory(2)
+        } else {
+          let oldHeight = that.data.oldHeight
+          let newHeight = reda[0].height
+          let allHeight = newHeight - oldHeight;
+          console.log(oldHeight, newHeight, allHeight)
+          that.setData({
+            allHeight: allHeight
+          })
+        }
+      }
     })
   },
   getScrollHeight(scrollTop) {
@@ -358,5 +386,44 @@ global.wxPage({
       if (nowTime == pullTime) return this.getTodayTime(time)
     }
     return time
-  }
+  },
+  onRefresh() {
+    if (this._freshing) return
+    this._freshing = true
+    console.log('ddddd')
+    setTimeout(() => {
+      this.setData({
+        triggered: false,
+      })
+      this._freshing = false
+    }, 500)
+    this.getRectHeight(2,1)
+  },
+
+  statusApi() {
+    let sessionId = this.data.targetUserInfo.id;
+    let url = `/api/wxapp/im/session/status/${sessionId}`
+    return new Promise(resolve => [
+      util.api(url, res => {
+        // console.log(res)
+        if (res.error === 0) {
+          resolve(String(res.content))
+        } else {
+          clearInterval(this.statusTimer)
+        }
+      })
+    ])
+  },
+  onRestore(e) {
+    console.log('onRestore:', e)
+  },
+
+  onAbort(e) {
+    console.log('onAbort', e)
+  },
+
+  async requestHistory(count) {
+    let resData = await this.historyChatApi()
+    if (resData) this.getRectHeight(2,count)
+  },
 })

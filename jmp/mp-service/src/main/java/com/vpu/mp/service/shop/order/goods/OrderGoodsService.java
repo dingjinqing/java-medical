@@ -10,8 +10,10 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.database.DslPlus;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.db.main.tables.records.OrderInfoBakRecord;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -27,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.goods.param.SyncHisMedicalOrderRequestParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -80,6 +83,8 @@ public class OrderGoodsService extends ShopBaseService {
 	public final OrderGoods TABLE = ORDER_GOODS;
 	@Autowired
 	private OrderGoodsDao orderGoodsDao;
+	@Autowired
+    private PrescriptionItemDao prescriptionItemDao;
 
 	/** 商品数量 发货数量 退款成功数量*/
 	public static byte TOTAL_GOODSNUMBER = 0,TOTAL_SENDNUMBER = 1,TOTAL_SUCCESSRETURNNUMBER = 2;
@@ -105,6 +110,15 @@ public class OrderGoodsService extends ShopBaseService {
 	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
+
+    /**
+     * 根据处方号查药品列表
+     * @param prescriptionCode 处方号
+     * @return List<OrderGoodsDo>
+     */
+	public List<OrderGoodsDo> getByPrescription(String prescriptionCode) {
+	    return orderGoodsDao.getByPrescription(prescriptionCode);
+    }
 
 	/**
 	 * 单个订单商品
@@ -412,6 +426,10 @@ public class OrderGoodsService extends ShopBaseService {
             }
             if(bo.getPurchasePriceId() != null) {
                 record.setPurchaseId(bo.getPurchasePriceId());
+            }
+            PrescriptionItemVo item= prescriptionItemDao.getByPrescriptionCodeGoodsIdPrdId(record.getPrescriptionCode(),record.getGoodsId(),record.getProductId());
+            if(item!=null){
+                record.setPrescriptionDetailCode(item.getPrescriptionDetailCode());
             }
             records.add(record);
         }

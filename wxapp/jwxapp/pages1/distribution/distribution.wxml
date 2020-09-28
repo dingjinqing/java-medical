@@ -3,16 +3,21 @@
 <!-- <v-toast show="{{copyComplete}}" toast-info="{{toastInfo}}" /> -->
 <view class='main-container'>
   <!-- 分销开关关闭 -->
-  <view wx:if="{{dis_info.status == 0 && have_account == 0}}">
+  <view wx:if="{{dis_info.status == 0 && have_account == 0}}" class="none_container">
     <image class='none_image' src='{{imageUrl}}/image/wxapp/rebate_center_none.png'></image>
     <view class='none_message'>该功能未开启</view>
-    <view class='none_button' bindtap='bindRedirectTo' style='color:{{comColor}};border-color:{{comColor}}'>回首页</view>
+    <view class='none_button' bindtap='bindRedirectTo' data-type="0" style='color:{{comColor}};border-color:{{comColor}}'>回首页</view>
   </view>
-  <view wx:if="{{dis_info.status == 1 || (dis_info.status == 0 && have_account == 1)}}">
-    <view class='dis_container'>
+  <view wx:else>
+    <view class='none_container' wx:if="{{rebate_center == 2 && have_account == 0 && dis_info.judgeStatus == 1}}">
+      <image class='none_image' src='{{imageUrl}}/image/wxapp/rebate_center_none.png'></image>
+      <view class='none_message'>您还不是分销员</view>
+      <view class='none_button' bindtap='bindRedirectTo' data-type="1" style='color:{{comColor}};border-color:{{comColor}}'>申请分销员</view>
+    </view>
+    <view class='dis_container' wx:else>
       <!-- 获得返利的轮播,去分享（是分销员） -->
-      <block wx:if='{{rebate_center == 1}}'>
-        <view class="act_notice">
+      <block wx:if='{{rebate_center == 1 || dis_info.judgeStatus == 0}}'>
+        <view class="act_notice" wx:if="{{!(dis_info.totalWithdraw > 0)}}">
           <view class="act_zhezhao" style='background:{{linColor}}'>
             <view class="act_img" style="background:url({{imageUrl}}image/wxapp/invite_yuan.png) no-repeat;background-size:75%;"></view>
             <view class='share_note'>您还没有佣金收入哦，</view>
@@ -37,22 +42,22 @@
         </view>
       </block>
       <!-- 提现的部分(是分销员或者非分销员但是有余额) -->
-      <block wx:if='{{rebate_center == 1 || (rebate_center == 2 && have_account == 1)}}'>
+      <block wx:if='{{rebate_center == 1 || dis_info.judgeStatus == 0 || have_account == 1}}'>
         <view class='dis_top' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
           <view class='dis_info'>
             <view class="can_tixian">
                 <view class="ct_tit">可提现佣金</view>
-                <view class="ct_money">{{dis_info.canWithdraw > 0 ? dis_info.canWithdraw : "0.00"}}</view>
+                <view class="ct_money">{{dis_info.canWithdraw}}</view>
                 <view class="btn_record" bindtap='withdraw_record'>提现记录</view>
             </view>
             <view class="two_money">
               <view class="leiji_money">
                 <view class="lm_top">累积获得佣金(元)</view>
-                <view class="lm_bottom">{{dis_info.totalWithdraw > 0 ? dis_info.totalWithdraw : "0.00"}}</view>
+                <view class="lm_bottom">{{dis_info.totalWithdraw}}</view>
               </view>
               <view class="leiji_money">
                 <view class="lm_top">待返利佣金 <image src='{{imageUrl}}/image/wxapp/dis_notice.png' mode='widthFix' bindtap='a_tips'></image></view>
-                <view class="lm_bottom">{{dis_info.waitWithdraw > 0 ? dis_info.waitWithdraw : "0.00"}}</view>
+                <view class="lm_bottom">{{dis_info.waitWithdraw}}</view>
               </view>
             </view>
             <view class="btn_tixian" style="color:{{comColor}};" bindtap='to_money'>提现</view>
@@ -64,7 +69,7 @@
         </view>
       </block>
       <!-- 推广中心、分销商品、自定义页面之类的内容（是分销员显示） -->
-      <block wx:if='{{rebate_center == 1}}'>
+      <block wx:if='{{rebate_center == 1 || dis_info.judgeStatus == 0}}'>
         <!-- 分销员等级 / 分组 -->
         <view class="dis_group_line" wx:if='{{dis_info.distributorLevel || dis_info.distributorGroup}}'>
           <view class="distor_grade" bindtap='to_grade' wx:if='{{dis_info.distributorLevel}}'>
@@ -76,7 +81,7 @@
           </view>
         </view>
         <!-- 我的邀请码 -->
-        <view class="distor_num" wx:if='{{dis_info.invitationCode}}'>
+        <view class="distor_num" wx:if='{{dis_info.invitationCode && dis_info.invitationCodeCfg == 1}}'>
           <view>我的邀请码</view>
           <view class="copy_content">
             {{dis_info.invitationCode}} <image bindtap="toCopy" data-content='{{dis_info.invitationCode}}' src="{{imageUrl}}image/wxapp/icon_dis_copy.png"></image>
@@ -86,21 +91,34 @@
         <view class='dis_amount'>
             <view class='amount_user' bindtap='toUser'>
               <view>{{dis_info.inviteUserNum}}</view>
-              <view>邀请用户</view>
+              <view>我邀请的用户</view>
             </view>
             <view class='amount_user' bindtap='toOrder'>
               <view>{{dis_info.rebateOrderNum}}</view>
               <view>返利订单</view>
             </view>
             <view class='amount_order'>
-              <view>{{dis_info.totalCanFanliMoney ? dis_info.totalCanFanliMoney : '0.00'}}</view>
+              <view>{{dis_info.totalCanFanliMoney}}</view>
               <view>返利商品总额</view>
             </view>
         </view>
+        <!-- 独立推广中心 -->
+        <view class="own_promotion_center" bindtap="to_own_pro_center" wx:if="{{dis_info.personalPromote == 1}}">
+          <view>我的推广商品</view>
+          <image src="{{imageUrl}}/image/wxapp/right_into.png" mode="widthFix"></image>
+        </view>
+        <!-- 二维码信息 -->
+        <view class="qrCode_center" bindtap="to_qrCode" wx:if="{{dis_info.personalPromote == 1}}">
+          <view>我的二维码</view>
+          <view class="qrcode_right">
+            <text wx:if="{{dis_info.qrCode == 1}}">已设置</text>
+            <image src="{{imageUrl}}/image/wxapp/right_into.png" mode="widthFix"></image>
+          </view>
+        </view>
         <!-- 推广中心 -->
-        <view class="tuiguang_center clearfix">
+        <view class="tuiguang_center clearfix" wx:if="{{dis_info.personalPromote == 1}}">
           <view class="tc_left">
-            <text class="fontStyle" style="color:{{comColor}}">推广中心</text>
+            <text class='iconfont icontuiguangzhongxin' style="color:{{comColor}}"></text>
           </view>
           <view class="tc_right">
               <view class="tr_word">更多商品，一键分享</view>
@@ -110,18 +128,18 @@
           </view>
         </view>
         <!-- 推荐商品 -->
-        <view class="dis_recommend" wx:if='{{dis_info.rebateGoods}}'>
+        <view class="dis_recommend" wx:if='{{dis_info.recommendGoods && dis_info.recommendGoods.length > 0}}'>
           <view class="dis_recommend_title clearfix">
             <text>推荐商品</text>
           </view>
           <view class='dis_goods clearfix'>
             <scroll-view scroll-x='true'>
-              <block wx:for="{{dis_info.rebateGoods}}" wx:key="index">
+              <block wx:for="{{dis_info.recommendGoods}}" wx:key="index">
                 <view class='dis_goods_list' bindtap='to_item' data-goods_id="{{item.goodsId}}">
                   <view class='dis_goods_img'>
-                    <image src='{{item.goodsImg}}'></image>
+                    <image src='{{imageUrl}}{{item.goodsImg}}'></image>
                     <image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
-                    <view class="dis_money">最高返利{{item.maxFanli}}元</view>
+                    <view class="dis_money">最高返利{{item.highRebate}}元</view>
                   </view>
                   <view class='dis_goods_info'>
                     <view>{{item.goodsName}}</view>
@@ -129,23 +147,23 @@
                   </view>
                 </view>
               </block>
-              <view class='look_more_goods' bindtap='to_search' wx:if='{{dis_info.rebateGoodsNum > 10}}'>
+              <!-- <view class='look_more_goods' bindtap='to_search' wx:if='{{dis_info.recommendGoodsNum > 10}}'>
                 <image src='{{imageUrl}}image/wxapp/see_mo.jpg'></image>
-              </view>
+              </view> -->
             </scroll-view>
           </view>
         </view>
         <!-- 返利排名 -->
         <view class='all_rank' wx:if="{{dis_info.rankStatus == 1 && dis_info.rebateRankingTop.length >= 3 }}">
           <view class='rank_title clearfix' bindtap='toRank'>
-            <view>全网返利佣金排名</view>
+            <view style="text-align: left;">全网返利佣金排名</view>
             <view>查看全部 <image src='{{imageUrl}}image/wxapp/right_into.png'></image></view>
           </view>
           <view class='own_paiming clearfix'>
             <view class='own_rank'>{{dis_info.rebateRanking ? dis_info.rebateRanking : '暂无'}}</view>
             <image class='own_touxiang' src='{{dis_info.userRebate.userAvatar}}'></image>
             <view class='own_name'>{{dis_info.userRebate.username}}</view>
-            <view class='own_info'>￥{{dis_info.userRebate.finalMoney ? dis_info.userRebate.finalMoney: 0.00}}</view>
+            <view class='own_info'>￥{{dis_info.userRebate.finalMoney}}</view>
           </view>
           <view class='top_qiansan'>
             <view class='top1_person each_top'>
@@ -170,7 +188,7 @@
         </view>
         <!-- 推广语 -->
         <view class='my_invite'>
-          <view class='rank_title clearfix' wx:if="{{dis_info.hasPromotion}}" bindtap='toPromotion'>
+          <view class='rank_title clearfix' wx:if="{{dis_info.hasPromotionLanguage === 1}}" bindtap='toPromotion'>
             <view class="rt_left">推广语</view>
             <view class="rt_right">
               立即查看 <image src='{{imageUrl}}image/wxapp/right_into.png'></image>
@@ -180,51 +198,34 @@
         <!-- <view class='customize-container' style='{{color}}' wx:if='{{dis_info.fanli_cfg.rebate_page_id != "" && dis_info.fanli_cfg.rebate_page_id != undefined}}'>
           <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" other-page='other-page' />
         </view> -->
-        <view class="fix_area">
+        <!-- <view class="fix_area">
           <view class="btn_to_invite" style="background:{{comColor}}" bindtap='show_image'>邀请好友成为{{distributor_name || '分销员'}}</view>
+          <view class="btn_to_invite">
+            <button open-type="share" class="shareStyle" style="background:{{comColor}};">邀请好友成为{{distributor_name || '分销员'}}</button>
+          </view>
+        </view> -->
+      </block>
+      <!-- 底部按钮 -->
+      <block wx:if='{{rebate_center == 1}}'>
+        <view class="fix_area" style='padding-bottom:{{isIpx?"50rpx":""}};position: fixed;bottom:{{hasBottom ?"55px":"0px;"}}'>
+          <view class="btn_to_invite">
+            <button class="shareStyle" style="background:{{comColor}};" catchtap="shareGoods">邀请好友成为{{distributor_name || '分销员'}}</button>
+          </view>
         </view>
       </block>
-      <!-- 重新申请（非分销员但是有余额）  -->
-      <block wx:if='{{ rebate_center == 2 && have_account == 1 && dis_info.status == 1 && dis_info.judgeStatus == 1 }}'>
-        <view class="this_bg"><image src="{{imageUrl}}/image/wxapp/had_acc_dis.png"></image></view>
-        <view class="btn_to_invite btn_re_apply" style="background:{{comColor}}" bindtap='apply_get'>重新申请成为{{distributor_name || '分销员'}}</view>
+      <block wx:else>
+        <view class="fix_area" style='padding-bottom:{{isIpx?"50rpx":""}};position: fixed;bottom:{{hasBottom ?"55px":"0px;"}}'>
+          <view wx:if="{{dis_info.judgeStatus == 1}}" class="btn_to_invite" style="background:{{comColor}}" bindtap='apply_get'>重新申请成为{{distributor_name || '分销员'}}</view>
+          <view wx:if="{{dis_info.judgeStatus == 0}}" class="btn_to_invite">
+            <button class="shareStyle" style="background:{{comColor}};" catchtap="shareGoods">邀请好友成为{{distributor_name || '分销员'}}</button>
+          </view>
+        </view>
       </block>
-      <block wx:if='{{ rebate_center == 2 && have_account == 1 && dis_info.status == 1 && dis_info.judgeStatus == 0 }}'>
-        <view class="this_bg"><image src="{{imageUrl}}/image/wxapp/had_acc_dis.png"></image></view>
-        <view class="btn_to_invite btn_re_apply" style="background:{{comColor}}" bindtap='show_image'>邀请好友成为{{distributor_name || '分销员'}}</view>
-      </block>
     </view>
-  </view>
-  
-  <!-- 非分销员且没余额 -->
-  <!-- <view wx:if="{{rebate_center == 2 && have_account == 0}}" class='none_container'>
-    <image class='none_image' src='{{imageUrl}}/image/wxapp/rebate_center_none.png'></image>
-    <view class='none_message'>{{dis_info.status == 0 ? '该功能未开启' : '您还不是分销员'}}</view>
-    <view class='none_button' bindtap='bindRedirectTo' style='color:{{comColor}};border-color:{{comColor}}'>
-      {{dis_info.status == 0 ? '回首页' : '申请' + (distributor_name || '分销员') }}
-    </view>
-  </view> -->
-  <!-- 分享框-->
-  <view class="model_area" wx:if='{{if_show_pic == 1}}' bindtap="close_modal">
-    <view class="share_content_box">
-      <button catchtap='onShareAppMessage' open-type='share' id='2'>
-        <image src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix' style='margin-bottom:20rpx;'></image>
-        <text>分享给朋友</text>
-      </button>
-      <view bindtap='show_haibao' data-src='{{imageUrl}}{{dis_info.invite_image}}'>
-        <image src="{{ imageUrl }}image/wxapp/download_img.png" mode='widthFix' style='margin-bottom:20rpx;'></image>
-        <text>下载海报</text>
-      </view>
-    </view>
-  </view>
-  <!-- 海报的保存 -->
-  <view class="haibao_area" wx:if='{{if_show_pic_modal == 1}}' catchtap="go_no_share">
-    <view class="share_haibao"  data-src='{{imageUrl}}{{dis_info.invite_image}}'>
-        <image src='{{imageUrl}}{{dis_info.invite_image}}' mode='widthFix' style="border:2rpx solid #ccc;width:580rpx;" catchtap='preview'></image>
-    </view>
-    <view class='btn_save_img' catchtap='saveImgToPhotosAlbumTap' style='background:{{comColor}}'>保存图片</view>
-    <view class='save_tips'>保存图片到本地相册</view>
   </view>
 </view>
+<!-- 分享弹窗 -->
+<v-share show="{{shareGood}}" share-data="{{shareData}}" show-multiple="{{false}}" source="distribution" bindhandleDownloadCb="handleDownloadCb"/>
 <!-- 绑定手机号弹窗 -->
 <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以去提现" />
+<include src="/pages/common/footer.wxml" />

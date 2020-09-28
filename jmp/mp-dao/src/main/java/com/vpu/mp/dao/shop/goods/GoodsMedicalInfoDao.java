@@ -5,10 +5,13 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsMedicalInfoRecord;
+import org.jooq.Condition;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
 
@@ -96,6 +99,20 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
             .fetchInto(GoodsMedicalInfoDo.class);
     }
 
+    /**
+     * 根据药品通用名称，规格系数，生产企业,查询his中的药品id对应关系
+     * @param goodsKeys
+     * @return
+     */
+    public Map<String, Integer> mapGoodsHisKeyToGoodsId(List<String> goodsKeys) {
+        Condition condition = GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
+        condition = condition.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.concat(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.concat(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)).in(goodsKeys));
+
+        List<GoodsMedicalInfoDo> goodsMedicalInfoDos = db().select(GOODS_MEDICAL_INFO.GOODS_ID, GOODS_MEDICAL_INFO.GOODS_COMMON_NAME, GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO, GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)
+            .from(GOODS_MEDICAL_INFO).where(condition).fetchInto(GoodsMedicalInfoDo.class);
+
+        return goodsMedicalInfoDos.stream().collect(Collectors.toMap(x -> x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise(), GoodsMedicalInfoDo::getGoodsId, (x1, x2) -> x1));
+    }
 
     public void deleteByGoodsId(Integer goodsId) {
         db().update(GOODS_MEDICAL_INFO)

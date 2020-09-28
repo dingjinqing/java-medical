@@ -30,7 +30,6 @@ public class DoctorDo   {
     private static final long serialVersionUID = -713395963;
 
     private Integer    id;
-    private Integer    accountId;
     private Integer    age;
     private Integer    workTime;
     private Byte       sex;
@@ -59,4 +58,5 @@ public class DoctorDo   {
     private BigDecimal avgCommentStar;
     private Integer    attentionNumber;
     private String     userToken;
+    private BigDecimal consultationTotalMoney;
 }

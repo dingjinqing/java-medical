@@ -8,6 +8,7 @@
             v-model="param.doctorName"
             placeholder="请输入医生姓名"
             size="small"
+            clearable
             class="default_input"
             filterable
           >
@@ -29,7 +30,6 @@
           <el-select
             v-model="timeSelect"
             size="small"
-            clearable
             @change="dateChangeHandler"
             class="timeSelect"
           >
@@ -144,6 +144,7 @@ export default {
   mounted () {
     this.getDateValue(1)
     this.getDoctor({})
+    this.param.doctorName = this.$route.query.name ? this.$route.query.name : ''
     this.initData()
   },
   data () {
@@ -302,7 +303,7 @@ export default {
   .total_amount {
     background: #fff;
     padding: 10px 0;
-    margin:0 10px;
+    margin: 0 10px;
     div {
       text-align: center;
       font-size: 15px;

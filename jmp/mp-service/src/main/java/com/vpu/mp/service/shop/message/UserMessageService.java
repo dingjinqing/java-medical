@@ -196,7 +196,8 @@ public class UserMessageService extends ShopBaseService {
         if (!unReadMessageInfo.isEmpty()) {
             //查询当前用户有没有此医生的问诊记录
             for (ImSessionUnReadInfoVo imSessionUnReadInfoVo : unReadMessageInfo) {
-                UserMessageVo imSessionBySessionId = messageDao.getImSessionBySessionId(imSessionUnReadInfoVo.getSessionId(), imSessionUnReadMessageInfoParam.getUserId());
+                ImSessionDo sessionInfoById = imSessionService.getSessionInfoById(imSessionUnReadInfoVo.getSessionId());
+                UserMessageVo imSessionBySessionId = messageDao.getMessageByOrderSn(sessionInfoById.getOrderSn());
                 // 新增
                 UserMessageParam userMessageParam = new UserMessageParam();
                 ImSessionDo imSession = imSessionDao.getImSession(imSessionUnReadInfoVo.getSessionId());
@@ -346,11 +347,11 @@ public class UserMessageService extends ShopBaseService {
      * @param userId 用户id
      */
     public void fetchUserMessage(Integer userId) {
-        ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
-        imSessionUnReadMessageInfoParam.setUserId(userId);
-        setImSessionMessage(imSessionUnReadMessageInfoParam);
-        setOrderMessage(userId);
-        setAnnouncementMessage(userId);
+            ImSessionUnReadMessageInfoParam imSessionUnReadMessageInfoParam = new ImSessionUnReadMessageInfoParam();
+            imSessionUnReadMessageInfoParam.setUserId(userId);
+            setImSessionMessage(imSessionUnReadMessageInfoParam);
+            setOrderMessage(userId);
+            setAnnouncementMessage(userId);
     }
 
     /**
@@ -359,7 +360,10 @@ public class UserMessageService extends ShopBaseService {
      */
     public void addAnnouncement(PageStoreParam pageStoreParam) {
         String pageContent = pageStoreParam.getPageContent();
-        List<String> list = this.processPageContentBeforeSave(pageContent);
+        List<AnnounceBo> list = this.processPageContentBeforeSave(pageContent);
+        if (list.isEmpty()) {
+            return;
+        }
         messageDao.addAnnouncementMessage(list);
     }
 
@@ -368,9 +372,8 @@ public class UserMessageService extends ShopBaseService {
      * @param pageContent 装修json
      * @return String
      */
-    protected List<String> processPageContentBeforeSave(String pageContent) {
-        List<String> list = toAnnounceBoBo(pageContent);
-        return list;
+    private List<AnnounceBo> processPageContentBeforeSave(String pageContent) {
+        return toAnnouncementBo(pageContent);
     }
 
     /**
@@ -378,13 +381,13 @@ public class UserMessageService extends ShopBaseService {
      * @param pageContent
      * @return
      */
-    private List<String> toAnnounceBoBo(String pageContent) {
-        List<String> list = new ArrayList<>();
+    private List<AnnounceBo> toAnnouncementBo(String pageContent) {
+        List<AnnounceBo> list = new ArrayList<>();
         Map<String, AnnounceBo> announceBo = Util.json2Object(pageContent, new TypeReference<Map<String, AnnounceBo>>() {}, false);
         assert announceBo != null;
         announceBo.forEach( (k, v) ->{
             if (v.getShopText() != null) {
-                list.add(v.getShopText());
+                list.add(v);
             }
         });
         return list;

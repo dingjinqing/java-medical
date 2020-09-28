@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  * 创建的入参
- * 
+ *
  * @author zhaojianqiang
  * @time 下午3:36:35
  */
@@ -28,4 +28,6 @@ public class StoreAccountParam {
 	private String accountPasswd;
 	@NotNull
 	private Integer[] storeList;
+	private String wxNickName = "";
+	private Integer userId=0;
 }

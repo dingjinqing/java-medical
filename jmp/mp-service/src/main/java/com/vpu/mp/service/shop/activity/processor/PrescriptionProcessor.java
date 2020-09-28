@@ -5,6 +5,8 @@ import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
+import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
@@ -17,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.goods.param.SyncHisMedicalOrderRequestParam;
 import com.vpu.mp.service.pojo.shop.order.goods.param.SyncMedicalOrderGoodsItem;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
@@ -24,6 +27,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.prescription.UploadPrescriptionService;
@@ -57,6 +61,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     @Autowired
     private OrderGoodsService orderGoodsService;
     @Autowired
+    private OrderInfoService orderInfoService;
+    @Autowired
     private OrderMedicalHistoryDao orderMedicalHistoryDao;
     @Autowired
     private UploadPrescriptionService uploadPrescriptionService;
@@ -64,6 +70,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     private PatientDao patientDao;
     @Autowired
     private PrescriptionDao prescriptionDao;
+    @Autowired
+    private OrderGoodsDao orderGoodsDao;
 
     @Override
     public Byte getPriority() {
@@ -145,6 +153,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                     }
                 }
                 goods.setPrescriptionOldCode(prescriptionVo.getPrescriptionCode());
+                goods.setPrescriptionInfo(prescriptionVo);
             }
             if (!OrderConstant.MEDICAL_TYPE_RX.equals(param.getOrderMedicalType())){
                 log.info("订单全部非处方药,不需要审核");
@@ -253,7 +262,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         //更新处方状态
         if (OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION.equals(order.getOrderAuditType())){
-            prescriptionDao.updatePrescriprionIsUsered(param.getPrescriptionCode());
+            prescriptionDao.updatePrescriprionIsUseredAndOrderSn(param.getPrescriptionCode(),order.getOrderSn());
         }
     }
 
@@ -279,20 +288,39 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
 
     @Override
     public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
-        Result<OrderGoodsRecord> goodsList = orderGoodsService.getByOrderId(returnOrderRecord.getOrderId());
-        SyncHisMedicalOrderRequestParam param =new SyncHisMedicalOrderRequestParam();
-        param.setOrderSn(returnOrderRecord.getOrderSn());
-        param.setStatus(OrderConstant.EXTERNAL_HIS_ORDER_STATUS_REFUND);
-        List<SyncMedicalOrderGoodsItem> list =new ArrayList<>();
-        for (OrderGoodsRecord goods : goodsList) {
-            SyncMedicalOrderGoodsItem item = new SyncMedicalOrderGoodsItem();
-            GoodsMedicalInfoDo medicalInfoDo = medicalGoodsService.getByGoodsId(goods.getGoodsId());
-            item.setGoodsCode(medicalInfoDo.getGoodsCode());
-            item.setNumber(goods.getGoodsNumber());
-            list.add(item);
+        //同步订单状态到his
+        if (returnOrderRecord!=null){
+            Result<OrderGoodsRecord> goodsList = orderGoodsService.getByOrderId(returnOrderRecord.getOrderId());
+            SyncHisMedicalOrderRequestParam param =new SyncHisMedicalOrderRequestParam();
+            param.setOrderSn(returnOrderRecord.getOrderSn());
+            param.setStatus(OrderConstant.EXTERNAL_HIS_ORDER_STATUS_REFUND);
+            List<SyncMedicalOrderGoodsItem> list =new ArrayList<>();
+            for (OrderGoodsRecord goods : goodsList) {
+                SyncMedicalOrderGoodsItem item = new SyncMedicalOrderGoodsItem();
+                GoodsMedicalInfoDo medicalInfoDo = medicalGoodsService.getByGoodsId(goods.getGoodsId());
+                item.setGoodsCode(medicalInfoDo.getGoodsCode());
+                item.setNumber(goods.getGoodsNumber());
+                list.add(item);
+            }
+            param.setGoodsItemList(list);
+            orderGoodsService.syncMedicalOrderStatus(param);
+        }else if (returnGoods!=null&&returnGoods.size()>0){
+            // 定时任务和取消 处方下单的处方恢复未使用状态
+            OrderReturnGoodsVo orderReturnGoodsVo = returnGoods.get(0);
+            OrderInfoRecord order = orderInfoService.getByOrderId(orderReturnGoodsVo.getOrderId(), OrderInfoRecord.class);
+            if (order!=null&& OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION.equals(order.getOrderAuditType())){
+                List<OrderGoodsSimpleAuditVo> allGoods = orderGoodsDao.listSimpleAuditByOrderId(order.getOrderId());
+                List<String> codes = allGoods.stream().map(OrderGoodsSimpleAuditVo::getPrescriptionCode).collect(Collectors.toList());
+                List<PrescriptionDo> prescriptionDoList = prescriptionDao.listPrescriptionByCode(codes, PrescriptionDo.class);
+                if (prescriptionDoList!=null){
+                    prescriptionDoList.forEach(item->{
+                        prescriptionDao.updatePrescriprionIsUnUsered(item.getPrescriptionCode());
+                    });
+                }
+            }
+
         }
-        param.setGoodsItemList(list);
-        orderGoodsService.syncMedicalOrderStatus(param);
+
     }
 
 }

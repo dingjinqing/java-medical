@@ -2,7 +2,9 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorUnbundlingParam;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author chenjie
@@ -46,9 +49,9 @@ public class AdminDoctorController extends AdminBaseController {
             return fail(JsonResultCode.DOCTOR_NAME_IS_NULL);
         }
 
-        boolean isExist = shop().doctorService.isCodeExist(null,param.getName());
+        boolean isExist = shop().doctorService.isCodeExist(null,param.getHospitalCode());
         if (isExist) {
-            return fail(JsonResultCode.DOCTOR_NAME_EXIST);
+            return fail(JsonResultCode.DOCTOR_CODE_IS_EXIST);
         }
 
         shop().doctorService.insertDoctor(param);
@@ -66,9 +69,9 @@ public class AdminDoctorController extends AdminBaseController {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
 
-        boolean isExist = shop().doctorService.isCodeExist(param.getId(),param.getName());
+        boolean isExist = shop().doctorService.isCodeExist(param.getId(),param.getHospitalCode());
         if (isExist) {
-            return fail(JsonResultCode.DOCTOR_DEPARTMENT_NAME_EXIST);
+            return fail(JsonResultCode.DOCTOR_CODE_IS_EXIST);
         }
 
         shop().doctorService.updateDoctor(param);
@@ -85,7 +88,11 @@ public class AdminDoctorController extends AdminBaseController {
         if (doctorId == null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
-        return success(shop().doctorService.getOneInfo(doctorId));
+        DoctorOneParam doctorInfo = shop().doctorService.getOneInfo(doctorId);
+        if (doctorInfo.getTitleId() == 0) {
+            doctorInfo.setTitleId(null);
+        }
+        return success(doctorInfo);
     }
 
     /**
@@ -160,5 +167,24 @@ public class AdminDoctorController extends AdminBaseController {
     public JsonResult testDoctor(@RequestBody @Validated DoctorAuditedPrescriptionParam param){
         shop().doctorService.testTemplateMessage();
         return success();
+    }
+
+    /**
+     * 查看医师详情
+     * @param doctorUnbundlingParam doctorId
+     * @return JsonResult
+     */
+    @PostMapping("/api/admin/doctors/details/show")
+    public JsonResult adminDoctorDetails(@RequestBody DoctorUnbundlingParam doctorUnbundlingParam) {
+        // 医师科室
+        List<DepartmentListVo> departmentListVos =
+            shop().doctorService.selectDepartmentsByDoctorId(doctorUnbundlingParam.getDoctorId());
+        List<String> departmentNames = departmentListVos.stream().map(DepartmentListVo::getName).collect(Collectors.toList());
+        DoctorOneParam oneInfo = shop().doctorService.getOneInfo(doctorUnbundlingParam.getDoctorId());
+        //添加医师职称
+        String title = shop().doctorService.selectDoctorTitle(oneInfo);
+        oneInfo.setTitleName(title);
+        oneInfo.setDepartmentNames(departmentNames);
+        return success(oneInfo);
     }
 }

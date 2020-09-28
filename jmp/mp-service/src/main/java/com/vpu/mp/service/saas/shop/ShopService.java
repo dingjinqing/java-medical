@@ -51,7 +51,7 @@ import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -78,16 +78,16 @@ public class ShopService extends MainBaseService {
 	public MpDecorationService decoration;
 	@Autowired
 	public MpAuthShopService mp;
-	
+
 	@Autowired
 	public MpVersionService mpVersion;
-	
+
 	@Autowired
 	public MpOperateLogService mpOperateLog;
-	
+
 	@Autowired
 	public MpJumpVersionService mpJumpVersion;
-	
+
 	@Autowired
 	public ShopOfficialAccount officeAccount;
 
@@ -100,7 +100,7 @@ public class ShopService extends MainBaseService {
     public MpOfficialAccountService mpOfficialAccountService;
     @Autowired
     public MpBackProcessService backProcessService;
-    
+
     @Autowired
     public ShopAppService shopApp;
 
@@ -121,6 +121,12 @@ public class ShopService extends MainBaseService {
 
     @Autowired
     private ShopDao shopDao;
+
+    @Autowired
+    public StoreMenuService storeMenu;
+
+    @Autowired
+    public StoreAccountService storeAccount;
 
     public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
         SelectWhereStep<?> select = db()
@@ -195,7 +201,7 @@ public class ShopService extends MainBaseService {
 		if (param.hidBottom != null) {
 			select.where(SHOP.HID_BOTTOM.eq(param.hidBottom));
 		}
-		
+
 		if(!StringUtils.isEmpty(param.expireStartTime)) {
 			select.where(SHOP.EXPIRE_TIME.ge(param.expireStartTime));
 		}
@@ -256,7 +262,7 @@ public class ShopService extends MainBaseService {
 
     /**
 	 * TODO 加个事务
-	 * 
+	 *
 	 * @param shopReq
 	 * @return
 	 */
@@ -280,10 +286,10 @@ public class ShopService extends MainBaseService {
 
 		// 更新version_config
 		if (updateConfig(shopReq) == 1) {
-			logger().info("更新version_config成功");			
+			logger().info("更新version_config成功");
 		}
 		// 更新记录表
-		if (updateOperation(record, user, request,new ShopRecord()) == 1) {			
+		if (updateOperation(record, user, request,new ShopRecord()) == 1) {
 			logger().info("更新ShopOperation记录表成功");
 		}
 		// 初始化店铺配置
@@ -293,7 +299,7 @@ public class ShopService extends MainBaseService {
 
 	/**
 	 * 得到所有店铺
-	 * 
+	 *
 	 * @return
 	 */
 	public Result<ShopRecord> getAll() {
@@ -302,7 +308,7 @@ public class ShopService extends MainBaseService {
 
 	/**
 	 * 得到可用店铺ID
-	 * 
+	 *
 	 * @return
 	 */
 	public Integer getCanUseShopId() {
@@ -356,7 +362,7 @@ public class ShopService extends MainBaseService {
 	/**
 	 * 得到角色权限对应店铺列表 `state` '0 入驻申请，1审核通过，2审核不通过',审核不通过不能登录到店铺后台 `business_state`
 	 * '营业状态 0未营业 1营业',未营业不能下单，加入购物车，下单接口提示 expire_time 过期可以登录到后台，店铺是未营业状态
-	 * 
+	 *
 	 * @param sysId
 	 * @param subAccountId
 	 * @return
@@ -376,18 +382,11 @@ public class ShopService extends MainBaseService {
 
     /**
      * 店铺基础配置-店铺基础信息get
-     *
      */
 	public ShopBaseConfig getShopBaseInfoById(Integer shopId) {
-        ShopPojo shop = db().select(SHOP.SHOP_AVATAR, SHOP.SHOP_NAME, SHOP.BUSINESS_STATE, SHOP.CREATED, SHOP.BUSINESS_STATE,SHOP.LOGO)
-            .from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOneInto(ShopPojo.class);
-        ShopBaseConfig shopBaseCfgInfo = new ShopBaseConfig();
+		ShopBaseConfig shopBaseCfgInfo = db().select()
+            .from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOneInto(ShopBaseConfig.class);
         shopBaseCfgInfo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(shopId));
-        shopBaseCfgInfo.setShopName(shop.getShopName());
-        shopBaseCfgInfo.setShopAvatar(shop.getShopAvatar());
-        shopBaseCfgInfo.setCreated(shop.getCreated());
-        shopBaseCfgInfo.setBusinessState(shop.getBusinessState());
-        shopBaseCfgInfo.setLogo(shop.getLogo());
         shopBaseCfgInfo.setShowLogo(saas.getShopApp(shopId).config.shopCommonConfigService.getShowLogo());
         shopBaseCfgInfo.setLogoLink(saas.getShopApp(shopId).config.shopCommonConfigService.getLogoLink());
         return shopBaseCfgInfo;
@@ -448,7 +447,7 @@ public class ShopService extends MainBaseService {
 
 	/**
 	 * 判断店铺是否过期,true为过期，false没过期
-	 * 
+	 *
 	 * @return
 	 */
 	public Boolean checkExpire(Integer shopId) {
@@ -475,7 +474,7 @@ public class ShopService extends MainBaseService {
 
 	/**
 	 * 更新version_config
-	 * 
+	 *
 	 * @param shopReq
 	 * @param shopId
 	 * @return
@@ -504,7 +503,7 @@ public class ShopService extends MainBaseService {
 
 	/**
 	 * 根据id查询ShopRecord，diffEdit里用
-	 * 
+	 *
 	 * @param shopId
 	 * @return
 	 */
@@ -522,31 +521,31 @@ public class ShopService extends MainBaseService {
 	public String diffEdit(ShopRecord newShop, ShopRecord oldShop) {
 		StringBuffer sbf = new StringBuffer("新建或者更新");
 		if ((!StringUtils.isEmpty(newShop.getMobile()))&&!newShop.getMobile().equals(oldShop.getMobile())) {
-			sbf.append("电话:" + newShop.getMobile() + ",");			
+			sbf.append("电话:" + newShop.getMobile() + ",");
 		}
 		if ((!StringUtils.isEmpty(newShop.getShopName()))&&!newShop.getShopName().equals(oldShop.getShopName())) {
-			sbf.append("店铺名称:" + newShop.getShopName() + ",");			
+			sbf.append("店铺名称:" + newShop.getShopName() + ",");
 		}
 		if ((!StringUtils.isEmpty(newShop.getShopPhone()))&&!newShop.getShopPhone().equals(oldShop.getShopPhone())) {
 			sbf.append("店铺客服电话:" + newShop.getShopPhone() + ",");
 		}
 		if ((!StringUtils.isEmpty(newShop.getShopNotice()))&&!newShop.getShopNotice().equals(oldShop.getShopNotice())) {
-			sbf.append("店铺公告:" + newShop.getShopNotice() + ",");			
+			sbf.append("店铺公告:" + newShop.getShopNotice() + ",");
 		}
 		if ((!StringUtils.isEmpty(newShop.getShopWx()))&&!newShop.getShopWx().equals(oldShop.getShopWx())) {
-			sbf.append("店铺微信:" + newShop.getShopWx() + ",");			
+			sbf.append("店铺微信:" + newShop.getShopWx() + ",");
 		}
 		if ((!StringUtils.isEmpty(newShop.getShopEmail()))&&!newShop.getShopEmail().equals(oldShop.getShopEmail())) {
-			sbf.append("店铺邮箱:" + newShop.getShopEmail() + ",");			
+			sbf.append("店铺邮箱:" + newShop.getShopEmail() + ",");
 		}
 		if ((!StringUtils.isEmpty(newShop.getIsEnabled()))&&!newShop.getIsEnabled().equals(oldShop.getIsEnabled())) {
-			sbf.append("店铺禁用:" + newShop.getIsEnabled() + ",");			
+			sbf.append("店铺禁用:" + newShop.getIsEnabled() + ",");
 		}
 		if ((!StringUtils.isEmpty(newShop.getShopQq()))&&!newShop.getShopQq().equals(oldShop.getShopQq())) {
-			sbf.append("店铺客服QQ:" + newShop.getShopQq() + ",");			
+			sbf.append("店铺客服QQ:" + newShop.getShopQq() + ",");
 		}
 		if ((!StringUtils.isEmpty(newShop.getShopType()))&&!newShop.getShopType().equals(oldShop.getShopType())) {
-			sbf.append("店铺类型:" + version.getVersionNameByLevel(newShop.getShopType()));			
+			sbf.append("店铺类型:" + version.getVersionNameByLevel(newShop.getShopType()));
 		}
 		return sbf.toString();
 
@@ -554,7 +553,7 @@ public class ShopService extends MainBaseService {
 	public ShopRecord checkShop(Integer shopId,Integer sysId) {
 		 return db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId).and(SHOP.SYS_ID.eq(sysId))).fetchOne();
 	}
-	
+
 	public Integer getShopNumber(Integer sysId) {
 		return (Integer) db().select(DSL.count(SHOP.SYS_ID)).from(SHOP).where(SHOP.SYS_ID.eq(sysId)).fetchAny(0);
 	}
@@ -563,14 +562,14 @@ public class ShopService extends MainBaseService {
 		return db().select(SHOP.fields()).from(SHOP).join(MP_AUTH_SHOP)
 				.on(SHOP.SHOP_ID.eq(MP_AUTH_SHOP.SHOP_ID)).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 	}
-	
+
 	public Integer updateRowIsEnable(Integer shopId,Byte isEnable) {
 		return db().update(SHOP).set(SHOP.IS_ENABLED,isEnable).where(SHOP.SHOP_ID.eq(shopId)).execute();
 	}
 	public Integer updateRowHidBottom(Integer shopId,Byte hidBottem) {
 		return db().update(SHOP).set(SHOP.HID_BOTTOM,hidBottem).where(SHOP.SHOP_ID.eq(shopId)).execute();
 	}
-	
+
 	public List<String> shopSpecialConf(ShopListQueryResultVo shopList) {
 		List<String> specialInfo=new ArrayList<String>();
 		ShopAccountRecord accountInfoForId = account.getAccountInfoForId(shopList.getSysId());
@@ -586,7 +585,7 @@ public class ShopService extends MainBaseService {
 			if(shopAppByErp.getStatus()==1) {
 				//erp已对接
 				specialInfo.add("ErpStatus");
-			}			
+			}
 		}
 		//TODO  开启微信全链路 shop表加 seller_account
 		if(shopList.getHidBottom()==1) {
@@ -605,11 +604,11 @@ public class ShopService extends MainBaseService {
 			}if(numConfig.decorateNumPlus!=null&&numConfig.decorateNumPlus!=0) {
 				//页面装修数量已扩容
 				specialInfo.add("DecorateNumPlus");
-			}			
+			}
 		}
 		return specialInfo;
 	}
-	
+
 	/**
 	 * 编辑店铺
 	 * @param shopReq
@@ -624,14 +623,14 @@ public class ShopService extends MainBaseService {
 			return false;
 		}
 		logger().info("更新数据成功");
-		
+
 		// 更新记录表
-		if (updateOperation(record, user, request,oldShopReq) == 1) {			
+		if (updateOperation(record, user, request,oldShopReq) == 1) {
 			logger().info("更新ShopOperation记录表成功");
 		}
 		return true;
 	}
-	
+
 	/**
 	    * 根据店铺id获取店铺头像
 	 * @param shopId
@@ -640,7 +639,7 @@ public class ShopService extends MainBaseService {
 	public String getShopAvatarById(Integer shopId) {
 	    return db().select(SHOP.SHOP_AVATAR).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOptionalInto(String.class).orElse(null);
 	}
-	
+
 	/**
 	 * 获取单个店铺信息
 	 * @param shopId

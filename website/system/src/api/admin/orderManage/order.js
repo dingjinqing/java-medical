@@ -169,3 +169,12 @@ export function getOrderBrief (data) {
     data: data
   })
 }
+
+// 医药订单列表
+export function getMedicalOrder (data) {
+  return service({
+    url: '/api/system/order/list',
+    method: 'post',
+    data: data
+  })
+}

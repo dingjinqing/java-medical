@@ -10,9 +10,7 @@ import com.vpu.mp.db.shop.tables.records.ImSessionRecord;
 import com.vpu.mp.service.pojo.wxapp.medical.im.condition.ImSessionCondition;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionPageListParam;
 import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionListVo;
-import org.jooq.Condition;
-import org.jooq.Record1;
-import org.jooq.SelectSeekStep2;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.IM_SESSION;
+import static com.vpu.mp.db.shop.Tables.INQUIRY_ORDER;
 
 /**
  * 会话处理Dao
@@ -146,6 +145,27 @@ public class ImSessionDao extends ShopBaseDao {
     }
 
     /**
+     * 获取当前sessionId相关的，其它会话id集合
+     * 相关指：医师id，用户id，患者id相同
+     * @param baseSessionId
+     * @return
+     */
+    public List<Integer> getRelevantSessionIds(Integer baseSessionId) {
+        final String tempTableName = "TEMP_TABLE";
+
+        Table<Record3<Integer, Integer, Integer>> tempTable = db().select(IM_SESSION.DOCTOR_ID, IM_SESSION.USER_ID, IM_SESSION.PATIENT_ID).from(IM_SESSION)
+            .where(IM_SESSION.ID.eq(baseSessionId)).asTable(tempTableName);
+
+        List<Integer> sessionIds = db().select(IM_SESSION.ID).from(IM_SESSION).innerJoin(tempTable)
+            .on(IM_SESSION.DOCTOR_ID.eq(tempTable.field("doctor_id", Integer.class))
+                .and(IM_SESSION.USER_ID.eq(tempTable.field("user_id", Integer.class)))
+                .and(IM_SESSION.PATIENT_ID.eq(tempTable.field("patient_id", Integer.class))))
+            .fetch(IM_SESSION.ID);
+
+        return sessionIds;
+    }
+
+    /**
      * 列出符合条件的会话
      * @param imSessionCondition 会话过滤条件
      * @return 会话列表
@@ -174,10 +194,6 @@ public class ImSessionDao extends ShopBaseDao {
 
         if (imSessionCondition.getUserId() != null) {
             condition = condition.and(IM_SESSION.USER_ID.eq(imSessionCondition.getUserId()));
-        }
-
-        if (imSessionCondition.getUpdateTimeLine() != null) {
-            condition = condition.and(IM_SESSION.UPDATE_TIME.le(imSessionCondition.getUpdateTimeLine()));
         }
 
         return db().selectFrom(IM_SESSION).where(condition).fetchInto(ImSessionDo.class);
@@ -211,6 +227,17 @@ public class ImSessionDao extends ShopBaseDao {
     }
 
     public Integer getSessionCount(Integer doctorId) {
-        return db().fetchCount(IM_SESSION, IM_SESSION.DOCTOR_ID.eq(doctorId).and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE)));
+        return db().fetchCount(IM_SESSION, IM_SESSION.DOCTOR_ID.eq(doctorId)
+            .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_CANCEL)));
+    }
+
+    public BigDecimal getSessionTotalMoney(Integer doctorId) {
+        return db().select(DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("consultation_money")).from(IM_SESSION)
+            .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.ORDER_SN.eq(IM_SESSION.ORDER_SN))
+            .where(IM_SESSION.DOCTOR_ID.eq(doctorId))
+            .and(IM_SESSION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .and(IM_SESSION.SESSION_STATUS.notIn(ImSessionConstant.SESSION_EVALUATE_CAN_NOT_STATUS,ImSessionConstant.SESSION_EVALUATE_CAN_STATUS,ImSessionConstant.SESSION_CANCEL))
+            .fetchAnyInto(BigDecimal.class);
     }
 }

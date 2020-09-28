@@ -7,29 +7,23 @@ import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.BigDecimalUtil;
-import com.vpu.mp.common.foundation.util.Page;
-import com.vpu.mp.common.foundation.util.PageResult;
-import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.foundation.util.api.ApiBasePageParam;
 import com.vpu.mp.common.foundation.util.api.ApiPageResult;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
-import com.vpu.mp.config.ApiExternalGateConfig;
+import com.vpu.mp.common.pojo.saas.api.ApiExternalGateConstant;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
+import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
@@ -43,34 +37,17 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.order.OrderParam;
-import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
-import com.vpu.mp.service.pojo.shop.order.OrderSimpleInfoVo;
+import com.vpu.mp.service.pojo.shop.order.*;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderPageResult;
-import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnGoodsListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderListVo;
-import com.vpu.mp.service.pojo.shop.order.api.ApiReturnOrderPageResult;
+import com.vpu.mp.service.pojo.shop.order.api.*;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
+import com.vpu.mp.service.pojo.shop.order.refund.*;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -86,7 +63,16 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFail
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.bo.PrescriptionItemBo;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreOrderVo;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -156,21 +142,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -269,6 +247,10 @@ public class OrderReadService extends ShopBaseService {
     private UserPatientCoupleDao userPatientCoupleDao;
     @Autowired
     private ReturnOrderDao returnOrderDao;
+    @Autowired
+    private OrderInfoDao orderInfoDao;
+    @Autowired
+    private PrescriptionItemDao prescriptionItemDao;
 
 	/**
 	 * 订单查询
@@ -295,7 +277,7 @@ public class OrderReadService extends ShopBaseService {
 		//查询出全部订单按照主订单分组，正常订单的key为orderSn
 		Map<String, List<OrderListInfoVo>> allOrder = orderInfo.getOrders(orderSn.getDataList());
 		//构造展示商品的订单:MainOrderCount.count=1的可能为正常订单或处于未子订单未被拆分,>1的为已经拆分
-		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>();
+		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>(allOrder.size());
 		//主订单或正常订单
 		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(orderSn.getDataList().size());
 		//现子订单数>0的主订单
@@ -346,10 +328,25 @@ public class OrderReadService extends ShopBaseService {
 				OrderOperationJudgment.operationSet(order,returningCount.get(order.getOrderId()),ship.canBeShipped(order.getOrderSn()));
 			}
 		}
+		// 获取订单门店信息
+        getStoreInfo(mainOrderList);
         pageResult.setDataList(mainOrderList);
 		logger.info("订单综合查询结束");
 		return result;
 	}
+
+    /**
+     * 获取当前订单所属门店信息
+     * @param mainOrderList
+     */
+    private void getStoreInfo(ArrayList<OrderListInfoVo> mainOrderList) {
+        List<Integer> storeIds = mainOrderList.stream().map(OrderListInfoVo::getStoreId).distinct().collect(Collectors.toList());
+        List<StoreOrderVo> storeInfoByIds = store.getStoreInfoByIds(storeIds);
+        for (OrderListInfoVo orderListInfoVo : mainOrderList) {
+            storeInfoByIds.stream().filter(storeInfo -> storeInfo.getStoreId()
+                .equals(orderListInfoVo.getStoreId())).forEach(orderListInfoVo::setStoreOrderVo);
+        }
+    }
 
 
 	/**
@@ -442,8 +439,35 @@ public class OrderReadService extends ShopBaseService {
 			UserPatientDetailVo patientInfo = userPatientCoupleDao.getUserPatientInfo(mainOrder.getUserId(), mainOrder.getPatientId());
 			mainOrder.setPatientInfo(patientInfo);
 		}
+        //处方明细，包含处方返利信息
+        mainOrder.setPrescriptionItemList(getPrescriptionItemList(mainOrder));
 		return mainOrder;
 	}
+
+    /**
+     * 获取医师处方药品返利信息
+     * @param order
+     * @return
+     */
+	private  List<PrescriptionItemBo> getPrescriptionItemList(OrderInfoVo order){
+        List<String> preCodeList=orderGoodsDao.getPrescriptionCodeListByOrderSn(order.getOrderSn());
+        preCodeList=preCodeList.stream().distinct().collect(Collectors.toList());
+        List<PrescriptionItemBo> boList=new ArrayList<>();
+        for(String preCode:preCodeList){
+            PrescriptionVo prescriptionVo= prescriptionDao.getDoByPrescriptionNo(preCode);
+            if(prescriptionVo==null||PrescriptionConstant.SETTLEMENT_NOT.equals(prescriptionVo.getSettlementFlag())){
+                continue;
+            }
+            PrescriptionItemBo prescriptionItemBo=new PrescriptionItemBo();
+
+            List<PrescriptionItemDo> list=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);
+            prescriptionItemBo.setItemList(list);
+            prescriptionItemBo.setPrescriptionCode(preCode);
+            prescriptionItemBo.setDoctorName(prescriptionVo.getDoctorName());
+            boList.add(prescriptionItemBo);
+        }
+        return boList;
+    }
 
     private void buildOrders(List<OrderInfoVo> orders, Map<Integer, List<OrderGoodsVo>> goods, Map<String, List<ShippingInfoVo>> shippingByOrderSn, Map<String, List<OrderConciseRefundInfoVo>> refundByOrderSn, Map<Integer, Integer> returningCount) {
         for (OrderInfoVo vo : orders) {
@@ -749,7 +773,7 @@ showManualReturn(vo);
 		//是否退过款
 		order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? YES : NO);
 		//门店信息
-		order.setStoreInfo(order.getStoreId() > 0 ? store.getStore(order.getOrderId()) : null);
+		order.setStoreInfo(order.getStoreId() > 0 ? store.getStore(order.getStoreId()) : null);
 		//发票
 		order.setInvoiceInfo(order.getInvoiceId() > 0 ? invoice.get(order.getInvoiceId()) : null);
 
@@ -800,11 +824,15 @@ showManualReturn(vo);
 		return order;
 	}
 
+    /**
+     * 订单添加退款信息
+     * @param order 订单入参
+     */
 	private void returnOrderInfo(OrderInfoMpVo order) {
 		if (order.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED)||order.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED)){
 			List<ReturnOrderListMp> returnOrderListMps = returnOrderDao.listByOrderSn(order.getOrderSn());
-			returnOrderListMps.forEach(itme->{
-				itme.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(itme.getReasonType().intValue()));
+			returnOrderListMps.forEach(item->{
+                item.setReasonTypeDesc(OrderConstant.getReturnReasonDesc(item.getReasonType().intValue()));
 			});
 			order.setReturnOrderList(returnOrderListMps);
 		}
@@ -926,7 +954,7 @@ showManualReturn(vo);
 	 * 延长收货
 	 * @return
 	 */
-	public int getExtendReceiveDays() {
+	public Integer getExtendReceiveDays() {
 		Byte switchFlag = trade.getExtendReceiveGoods();
 		if(switchFlag == 0) {
 			return 0;
@@ -1117,21 +1145,20 @@ showManualReturn(vo);
                     vo.setCanRebateTotalMoney(BigDecimalUtil.BIGDECIMAL_ZERO);
                 }else {
                     vo.setRebateTotalMoney(BigDecimalUtil.multiply(vo.getGoodsPrice(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                    vo.setRealRebateMoney(BigDecimalUtil.multiply(vo.getRebateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                    vo.setCanRebateTotalMoney(BigDecimalUtil.multiply(vo.getCanCalculateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
-                }
-                vo.setCanRebateMoney(vo.getCanRebateTotalMoney());
-                vo.setCostPrice(vo.getCostPrice() == null ? BigDecimalUtil.BIGDECIMAL_ZERO : vo.getCostPrice());
-                DistributionStrategyParam strategy = Util.parseJson(vo.getFanliStrategy(), DistributionStrategyParam.class);
-                if(strategy != null) {
-                    if(strategy.getCostProtection() == YES) {
-                        BigDecimal temp;
-                        vo.setCanRebateMoney(
-                            (temp = BigDecimalUtil.subtrac(vo.getCanCalculateMoney(), vo.getCostPrice())).compareTo(BigDecimal.ZERO) > -1 ?
-                                BigDecimalUtil.multiply(temp, new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())) :
-                                BigDecimalUtil.BIGDECIMAL_ZERO);
+                    vo.setCanRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                        BigDecimalUtil.BigDecimalPlus.create(vo.getCanCalculateMoney(), BigDecimalUtil.Operator.multiply),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber()), BigDecimalUtil.Operator.divide),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber())))
+                    );
+                    if(vo.getRealRebateMoney() != null) {
+                        vo.setRealRebateMoney(BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.HALF_DOWN,
+                            BigDecimalUtil.BigDecimalPlus.create(vo.getTotalRebateMoney(), BigDecimalUtil.Operator.multiply),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber()), BigDecimalUtil.Operator.divide),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.valueOf(vo.getGoodsNumber())))
+                        );
                     }
                 }
+                vo.setCostPrice(BigDecimalUtil.multiply(vo.getCostPrice(), BigDecimalUtil.valueOf(vo.getGoodsNumber() - vo.getReturnNumber())));
             }
             List<Integer> rebateUserIds = rebateVos.stream().map(OrderRebateVo::getRebateUserId).distinct().collect(Collectors.toList());
             //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息
@@ -1218,18 +1245,18 @@ showManualReturn(vo);
         ApiOrderQueryParam param = Util.parseJson(gateParam.getContent(), ApiOrderQueryParam.class);
         ApiJsonResult result = new ApiJsonResult();
         if (param == null) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("content为空");
             return result;
         }
         if (StringUtils.isBlank(param.getOrderSn())) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("参数order_sn为空");
             return result;
         }
         ApiPageResult<ApiOrderListVo> pageResult = getApiOrderListVos(param);
         if(CollectionUtils.isEmpty(pageResult.getDataList())) {
-            result.setCode(ApiExternalGateConfig.ERROR_LACK_PARAM);
+            result.setCode(ApiExternalGateConstant.ERROR_LACK_PARAM);
             result.setMsg("查无此单");
             return result;
         }
@@ -1845,4 +1872,50 @@ showManualReturn(vo);
 		return footprintListVo;
 	}
 
+    /**
+     * 检查核销码是否正确
+     * @param verifyCode 核销码
+     * @param orderSn 订单唯一id
+     * @return boolean
+     * @author 赵晓东
+     */
+    public boolean checkVerifyCode(String verifyCode, String orderSn) {
+        return orderInfoDao.checkVerifyCode(verifyCode, orderSn);
+    }
+
+    /**
+     * 获取门店支付统计数据
+     * @param param
+     * @return
+     */
+    public StatisticPayVo getStoreOrderPayData(StatisticParam param) {
+        return orderInfoDao.getStoreOrderPayData(param);
+    }
+
+    /**
+     * 获取门店下单统计数据
+     * @param param
+     * @return
+     */
+    public StatisticAddVo getStoreOrderAddData(StatisticParam param) {
+        return orderInfoDao.getStoreOrderAddData(param);
+    }
+
+    /**
+     * 获取门店配送单待发货单量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreOrderWaitDeliver(List<Integer> storeIds) {
+        return orderInfoDao.getStoreOrderWaitDeliver(storeIds);
+    }
+
+    /**
+     * 获取门店自提单待核销单量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreOrderWaitVerify(List<Integer> storeIds) {
+        return orderInfoDao.getStoreOrderWaitVerify(storeIds);
+    }
 }

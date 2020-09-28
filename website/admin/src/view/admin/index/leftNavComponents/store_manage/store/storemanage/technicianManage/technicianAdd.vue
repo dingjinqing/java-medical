@@ -166,6 +166,7 @@
 
 <script>
 import utils from '@/util/public.js'
+import { delayJudgment } from '@/util/pageName'
 import { addTechnicianApi, getTechnicianGroup, getTechnician, getServiceList, updateTechnicianApi } from '@/api/admin/storeManage/storemanage/technicianManage'
 import ImageDialog from '@/components/admin/imageDalog'
 export default {
@@ -204,6 +205,7 @@ export default {
     if (this.$route.query.technicianId) {
       this.initForm()
     }
+    delayJudgment(this, this.$route.query.technicianId, this.$t('pageName.editTechnician'), this.$t('pageName.addTechnician'))
     // 配置
     utils.getJobTitle().then(res => {
       if (res) {

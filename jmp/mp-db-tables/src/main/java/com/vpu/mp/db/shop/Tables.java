@@ -23,10 +23,19 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * 埋点
+     */
+    public static final AnchorPoints ANCHOR_POINTS = com.vpu.mp.db.shop.tables.AnchorPoints.ANCHOR_POINTS;
+
+    /**
      * The table <code>mini_shop_471752.b2c_division_receive_record</code>.
      */
     public static final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
 
+    /**
+     * 医师评价回复
+     */
+    public static final DoctorCommentReply DOCTOR_COMMENT_REPLY = com.vpu.mp.db.shop.tables.DoctorCommentReply.DOCTOR_COMMENT_REPLY;
 
 
     /**
@@ -1192,5 +1201,42 @@ public class Tables {
      * 医师上下班记录表
      */
     public static final DoctorDutyRecord DOCTOR_DUTY_RECORD = com.vpu.mp.db.shop.tables.DoctorDutyRecord.DOCTOR_DUTY_RECORD;
+    /**
+     * 门店账户表
+     */
+    public static final StoreAccount STORE_ACCOUNT = com.vpu.mp.db.shop.tables.StoreAccount.STORE_ACCOUNT;
+    /**
+     * 医师问诊订单返利表
+     */
+    public static final InquiryOrderRebate INQUIRY_ORDER_REBATE = com.vpu.mp.db.shop.tables.InquiryOrderRebate.INQUIRY_ORDER_REBATE;
+    /**
+     * 同城配送账号表
+     */
+    public static final CityServiceAccount CITY_SERVICE_ACCOUNT = com.vpu.mp.db.shop.tables.CityServiceAccount.CITY_SERVICE_ACCOUNT;
+    /**
+     * 同城配送订单表
+     */
+    public static final CityServiceOrder CITY_SERVICE_ORDER = com.vpu.mp.db.shop.tables.CityServiceOrder.CITY_SERVICE_ORDER;
 
+
+    /**
+     * 医师返利数据表
+     */
+    public static final DoctorTotalRebate DOCTOR_TOTAL_REBATE = com.vpu.mp.db.shop.tables.DoctorTotalRebate.DOCTOR_TOTAL_REBATE;
+    /**
+     * 处方药品返利表
+     */
+    public static final PrescriptionRebate PRESCRIPTION_REBATE = com.vpu.mp.db.shop.tables.PrescriptionRebate.PRESCRIPTION_REBATE;
+    /**
+     * 医生返利提现申请表
+     */
+    public static final DoctorWithdraw DOCTOR_WITHDRAW = com.vpu.mp.db.shop.tables.DoctorWithdraw.DOCTOR_WITHDRAW;
+    /**
+     * 门店数据概览
+     */
+    public static final StoreOrderSummaryTrend STORE_ORDER_SUMMARY_TREND = com.vpu.mp.db.shop.tables.StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND;
+    /**
+     * 科室信息统计
+     */
+    public static final DepartmentSummaryTrend DEPARTMENT_SUMMARY_TREND = com.vpu.mp.db.shop.tables.DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND;
 }

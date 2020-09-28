@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsMedicalInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -83,9 +84,11 @@ public class GoodsAggregate {
 
         for (GoodsMedicalExternalRequestItemBo bo : goodsMedicalExternalRequestItemBos) {
             GoodsDo goodsDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsDo(bo);
-            GoodsMedicalInfoDo goodsMedicalInfoDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(bo);
             goodsDos.add(goodsDo);
-            goodsMedicalInfoDos.add(goodsMedicalInfoDo);
+            if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(bo.getIsMedical())) {
+                GoodsMedicalInfoDo goodsMedicalInfoDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(bo);
+                goodsMedicalInfoDos.add(goodsMedicalInfoDo);
+            }
         }
 
         goodsDao.batchInsert(goodsDos);
@@ -134,6 +137,27 @@ public class GoodsAggregate {
 
 
     /**
+     * 药房拉取到的药品信息批量修改
+     * @param goodsMedicalExternalRequestItemBos
+     */
+    public void batchUpdateStoreGoodsInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos){
+        List<GoodsDo> goodsDos = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
+        for (GoodsMedicalExternalRequestItemBo bo : goodsMedicalExternalRequestItemBos){
+            GoodsDo goodsDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsDoForStore(bo);
+            goodsDos.add(goodsDo);
+        }
+        goodsDao.batchUpdate(goodsDos);
+    }
+
+
+    /**
+     * 根据his数据状态和药房数据状态更新药品的上
+     */
+    public void batchUpStoreAndMedicalGoods(){
+        goodsDao.switchSaleStatusAllGoods(MedicalGoodsConstant.OFF_SALE,null);
+        goodsDao.batchUpStoreAndMedicalGoods();
+    }
+    /**
      * 商品删除
      * @param goodId
      */
@@ -142,15 +166,23 @@ public class GoodsAggregate {
         goodsMedicalInfoDao.deleteByGoodsId(goodId);
     }
 
-    /**
-     * 列举出已有的药品goodsCode
-     * @param goodsCodes
-     * @return
-     */
-    public Map<String,Integer> mapGoodsCodeToGoodsId(List<String> goodsCodes) {
-        return goodsDao.mapGoodsSnToGoodsId(goodsCodes, MedicalGoodsConstant.GOODS_IS_MEDICAL);
+
+    public Map<Integer, BigDecimal> mapGoodsIdToGoodsPrice(Collection<Integer> goodsIds) {
+        return goodsDao.mapGoodsIdToGoodsPrice(goodsIds);
     }
 
+    public Map<String, Integer> mapGoodsSnToGoodsId(Collection<String> goodsCodes) {
+        return goodsDao.mapGoodsSnToGoodsId(goodsCodes);
+    }
+
+    /**
+     * 根据药品通用名称，规格系数，生产企业,查询his中的药品id对应关系
+     * @param goodsKeys
+     * @return
+     */
+    public Map<String, Integer> mapMedicalKeyToGoodsId(List<String> goodsKeys) {
+        return goodsMedicalInfoDao.mapGoodsHisKeyToGoodsId(goodsKeys);
+    }
     /**
      * 根据商品id查询
      * @param goodsId

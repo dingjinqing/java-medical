@@ -25,10 +25,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.main.Tables.ORDER_GOODS_BAK;
 import static com.vpu.mp.db.main.Tables.RETURN_ORDER_BAK;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.main.Tables.RETURN_ORDER_GOODS_BAK;
+import static com.vpu.mp.db.main.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.RETURN_ORDER;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
 
@@ -55,7 +56,8 @@ public class ReturnOrderBakDao extends MainBaseDao {
                 //退款单数
                 DSL.count().as(ActiveDiscountMoney.RETURN_NUMBER))
                 .from(RETURN_ORDER_BAK)
-                .where(RETURN_ORDER_BAK.CREATE_TIME.between(startTime, endTime));
+                .where(RETURN_ORDER_BAK.CREATE_TIME.between(startTime, endTime))
+                .and(RETURN_ORDER.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH));
         if (shopId!=null&&shopId>0){
             where.and(RETURN_ORDER_BAK.SHOP_ID.eq(shopId));
         }
@@ -73,7 +75,7 @@ public class ReturnOrderBakDao extends MainBaseDao {
     public PageResult<OrderReturnListVo> getPageList(OrderPageListQueryParam param) {
         SelectJoinStep<Record> select = db().select(RETURN_ORDER_BAK.asterisk(),USER.USERNAME.as(OrderReturnListVo.ORDER_USERNAME),USER.MOBILE.as(OrderReturnListVo.ORDER_MOBILE))
                 .from(RETURN_ORDER_BAK)
-                .innerJoin(USER).on(RETURN_ORDER_BAK.USER_ID.eq(USER.USER_ID));
+                .innerJoin(USER).on(RETURN_ORDER_BAK.USER_ID.eq(USER.USER_ID).and(RETURN_ORDER_BAK.SHOP_ID.eq(USER.SHOP_ID)));
         buildOptionsReturn(select, param);
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
     }
@@ -163,14 +165,14 @@ public class ReturnOrderBakDao extends MainBaseDao {
         //该单是否支持发货
 
         //TODO Short.valueOf("0")正常商品行
-        List<OrderGoodsVo> orderGoods = db().select(ORDER_GOODS.asterisk()).from(ORDER_GOODS)
-                .where(ORDER_GOODS.ORDER_SN.eq(orderSn).and(ORDER_GOODS.SEND_NUMBER.eq(0))).fetchInto(OrderGoodsVo.class);
+        List<OrderGoodsVo> orderGoods = db().select(ORDER_GOODS_BAK.asterisk()).from(ORDER_GOODS_BAK)
+                .where(ORDER_GOODS_BAK.ORDER_SN.eq(orderSn).and(ORDER_GOODS_BAK.SEND_NUMBER.eq(0))).fetchInto(OrderGoodsVo.class);
         // 查询退货中信息
-        Map<Integer, List<OrderReturnGoodsVo>> returnOrderGoods = db().select(RETURN_ORDER_GOODS.asterisk()).select()
-                .from(RETURN_ORDER_GOODS)
-                .where(RETURN_ORDER_GOODS.ORDER_SN.eq(orderSn),
-                        RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING))
-                .fetchGroups(RETURN_ORDER_GOODS.REC_ID, OrderReturnGoodsVo.class);
+        Map<Integer, List<OrderReturnGoodsVo>> returnOrderGoods = db().select(RETURN_ORDER_GOODS_BAK.asterisk()).select()
+                .from(RETURN_ORDER_GOODS_BAK)
+                .where(RETURN_ORDER_GOODS_BAK.ORDER_SN.eq(orderSn),
+                        RETURN_ORDER_GOODS_BAK.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING))
+                .fetchGroups(RETURN_ORDER_GOODS_BAK.REC_ID, OrderReturnGoodsVo.class);
         Iterator<OrderGoodsVo> iterator = orderGoods.iterator();
         while (iterator.hasNext()) {
             OrderGoodsVo vo = (OrderGoodsVo) iterator.next();

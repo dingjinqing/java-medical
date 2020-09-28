@@ -7,42 +7,42 @@
           <el-input
             v-model="queryParams.doctorName"
             size="small"
-            style="width:150px;"
+            style="width: 150px"
             placeholder="请输入医生姓名"
           ></el-input>
         </div>
-        <!-- <div class="filters_item">
-          <span class="fil_span">科室：</span>
-          <el-select
-            size="small"
-            clearable
-            class="timeSelect"
-            v-model="queryParams.departmentId"
-            placeholder='请选择科室'
-          >
-            <el-option-group
-              v-for="group in belongParts"
-              :key="group.name"
-              :label="group.name"
-            >
-              <el-option
-                v-for="item in group.childDepartmentList"
-                :key="item.name"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-option-group>
-          </el-select>
-        </div> -->
         <div class="filters_item">
           <span class="fil_span">患者：</span>
           <el-input
             v-model="queryParams.patientName"
             size="small"
-            style="width:150px;"
+            style="width: 150px"
             placeholder="请输入患者姓名"
           ></el-input>
+        </div>
+        <div class="filters_item">
+          <span>提交时间：</span>
+          <el-date-picker
+            v-model="queryParams.startTime"
+            type="datetime"
+            placeholder="开始时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            class="default_input"
+            @change="datePickerChange(true, applyTime)"
+            size="small"
+          />
+          <span style="width: auto; margin: 0 5px">至</span>
+          <el-date-picker
+            v-model="queryParams.endTime"
+            type="datetime"
+            placeholder="结束时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            class="default_input"
+            @change="datePickerChange(false, applyTime)"
+            :picker-options="applyEndTime"
+            default-time="23:59:59"
+            size="small"
+          />
         </div>
         <div class="filters_item">
           <span class="fil_span">订单状态：</span>
@@ -50,7 +50,7 @@
             size="small"
             clearable
             class="timeSelect"
-            v-model='queryParams.orderStatus'
+            v-model="queryParams.orderStatus"
           >
             <el-option
               v-for="item in orderStatusInfo"
@@ -62,74 +62,61 @@
           </el-select>
         </div>
         <div class="btn_wrap">
-          <el-button
-            type='primary'
-            size='small'
-            @click="initDataList"
-          >搜索</el-button>
+          <el-button type="primary" size="small" @click="initDataList"
+            >搜索</el-button
+          >
         </div>
       </div>
     </div>
     <div class="table_box">
       <el-table
-        v-loading='loading'
-        :data='tableData'
-        style="width:100%"
+        v-loading="loading"
+        :data="tableData"
+        style="width: 100%"
         border
         :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none',
-            'color': '#000'
-          }"
+          'background-color': '#f5f5f5',
+          'text-align': 'center',
+          border: 'none',
+          color: '#000',
+        }"
         :cell-style="{
-            'text-align':'center'
-          }"
+          'text-align': 'center',
+        }"
       >
-        <el-table-column
-          prop='doctorName'
-          label='医生'
-        ></el-table-column>
-        <el-table-column
-          prop='patientName'
-          label='患者'
-        ></el-table-column>
+        <el-table-column prop="doctorName" label="医生"></el-table-column>
+        <el-table-column prop="patientName" label="患者"></el-table-column>
         <!-- <el-table-column
           prop='departmentName'
           label='科室'
         ></el-table-column> -->
+        <el-table-column prop="orderAmount" label="咨询费"></el-table-column>
         <el-table-column
-          prop='orderAmount'
-          label='咨询费'
+          prop="orderStatusName"
+          label="订单状态"
         ></el-table-column>
-        <el-table-column
-          prop='orderStatusName'
-          label='订单状态'
-        ></el-table-column>
-        <el-table-column
-          prop='createTime'
-          label='提交时间'
-        ></el-table-column>
-        <el-table-column label='操作'>
+        <el-table-column prop="createTime" label="提交时间"></el-table-column>
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="operation">
               <a
-                v-if="scope.row.orderAmount - scope.row.refundMoney > 0 && scope.row.orderStatus !== 0 && scope.row.orderStatus !== 5"
+                v-if="
+                  scope.row.orderAmount - scope.row.refundMoney > 0 &&
+                  scope.row.orderStatus !== 0 &&
+                  scope.row.orderStatus !== 5
+                "
                 href="javaScript:void(0);"
                 @click="returnOrder(scope.row)"
-              >退款</a>
-              <a
-                href="javaScript:void(0);"
-                @click='toDetail(scope.row.orderId)'
-              >详情</a>
+                >退款</a
+              >
+              <a href="javaScript:void(0);" @click="toDetail(scope.row.orderId)"
+                >详情</a
+              >
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="initDataList"
-      />
+      <pagination :page-params.sync="pageParams" @pagination="initDataList" />
     </div>
     <ManualRefund
       :dataInfo="refundInfo"
@@ -150,6 +137,7 @@ export default {
     ManualRefund
   },
   mounted () {
+    this.queryParams.doctorName = this.$route.query.name ? this.$route.query.name : ''
     this.initDoctorPart()
     this.initDataList()
   },
@@ -160,7 +148,9 @@ export default {
         doctorName: '',
         patientName: '',
         departmentId: '',
-        orderStatus: ''
+        orderStatus: '',
+        startTime: null,
+        endTime: null
       },
       pageParams: {},
       tableData: [],
@@ -258,6 +248,19 @@ export default {
     returnOrder ({ refundMoney, orderAmount, orderSn }) {
       this.refundInfo = { orderAmount, refundMoney, orderSn }
       this.showRefund = true
+    },
+    datePickerChange (isStart, target) {
+      if (target.startTime === null || target.endTime === null) {
+        return
+      }
+      if (new Date(target.startTime).getTime() <= new Date(target.endTime).getTime()) {
+        return
+      }
+      if (isStart) {
+        target.startTime = null
+      } else {
+        target.endTime = null
+      }
     }
   }
 }
@@ -271,7 +274,7 @@ export default {
     display: flex;
     width: 100%;
     background-color: #fff;
-    padding: 15px;
+    padding: 10px 15px;
     .filters {
       flex: 2;
       display: flex;
@@ -281,6 +284,7 @@ export default {
       .filters_item {
         display: flex;
         justify-content: flex-end;
+        margin: 10px 0;
         margin-left: 15px;
         > span {
           width: 80px;
@@ -301,6 +305,9 @@ export default {
       color: #5a8bff;
       text-decoration: none;
     }
+  }
+  .btn_wrap .el-button {
+    margin: 10px 40px;
   }
 }
 </style>

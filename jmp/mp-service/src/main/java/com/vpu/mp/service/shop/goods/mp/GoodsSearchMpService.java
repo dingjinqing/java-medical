@@ -98,7 +98,7 @@ public class GoodsSearchMpService extends ShopBaseService {
      * 从数据库反小程序端商品搜索条件
      * @return {@link GoodsSearchFilterConditionMpVo}
      */
-    private GoodsSearchFilterConditionMpVo getGoodsSearchFilterConditionFromDb() {
+    public GoodsSearchFilterConditionMpVo getGoodsSearchFilterConditionFromDb() {
         GoodsSearchFilterConditionMpVo vo = new GoodsSearchFilterConditionMpVo();
         vo.setGoodsBrands(goodsBrandSortMp.getGoodsSearchFilterCondition());
         vo.setGoodsLabels(goodsLabelMpService.getGoodsSearchFilterCondition());
@@ -272,7 +272,7 @@ public class GoodsSearchMpService extends ShopBaseService {
      * @param param 搜索条件
      * @return 搜索到的内容
      */
-    private PageResult<GoodsListMpBo> searchGoodsFromDb(GoodsSearchMpParam param) {
+    public PageResult<GoodsListMpBo> searchGoodsFromDb(GoodsSearchMpParam param) {
 
         Condition condition = buildSearchCondition(param);
 

@@ -246,6 +246,7 @@
 import { getList, batchDel, pass, refuse } from '@/api/admin/storeManage/storemanage/evaluationManage'
 import { getServiceConfig } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
+import { delayJudgment } from '@/util/pageName'
 export default {
   components: { pagination },
   data () {
@@ -302,6 +303,7 @@ export default {
     this.queryParams.storeId = this.$route.query.id
     this.langDefault()
     this.initDataList()
+    delayJudgment(this, -1, null, this.$t('pageName.evaluationReview'))
   },
   methods: {
     // 获取职称配置名称

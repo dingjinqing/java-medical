@@ -31,6 +31,13 @@
 							<text class="item-date">日期：{{item.prescription.prescriptionCreateTime}}</text>
 						</view>
 					</view>
+					<view class="patient_message" data-prescription-code="{{item.prescription.prescriptionCode}}" bindtap="handlePatientMessage">
+					  <view>患者信息</view>
+						<view>
+						 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+						</view>
+					
+					</view>
 					<view class="goods-content" wx:if="{{item.goodsList.length}}">
 						<view class="goods-item" bindtap="viewGoodsInfo" data-gid="{{goodsItem.goodsId}}" wx:for="{{item.goodsList}}" wx:key="goodsId" wx:for-item="goodsItem" wx:for-index="goodsIndex">
 							<image src="{{imageUrl + goodsItem.goodsImg}}"></image>
@@ -72,3 +79,4 @@
 	<include src="../../pages/common/footer.wxml" />
 </view>
 <v-prescription-dialog show="{{showPrescription}}" is-doctor="{{true}}" prescription-data="{{prescriptionData}}"/>
+<v-patient-message show="{{showPatientMessage}}" patient-message='{{patientMessage}}'/>

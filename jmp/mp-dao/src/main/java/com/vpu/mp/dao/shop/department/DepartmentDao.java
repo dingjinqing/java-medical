@@ -6,15 +6,21 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.DepartmentRecord;
 import com.vpu.mp.service.pojo.shop.department.*;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
+import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author chenjie
@@ -30,10 +36,18 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public PageResult<DepartmentListVo> getDepartmentList(DepartmentListParam param) {
+        SelectHavingStep<Record2<Integer, Integer>> doctorTable = getDoctorNumberTable();
+        SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> departmentDataTable = getDepartmentStatisticTable();
         SelectJoinStep<? extends Record> select = db()
             .select(DEPARTMENT.ID, DEPARTMENT.CODE, DEPARTMENT.CREATE_TIME,
-                DEPARTMENT.NAME, DEPARTMENT.PARENT_ID, DEPARTMENT.PARENT_IDS,DEPARTMENT.LEVEL,DEPARTMENT.IS_LEAF)
-            .from(DEPARTMENT);
+                DEPARTMENT.NAME, DEPARTMENT.PARENT_ID, DEPARTMENT.PARENT_IDS,DEPARTMENT.LEVEL,DEPARTMENT.IS_LEAF
+                ,doctorTable.field("doctor_number"),departmentDataTable.field("consultation_number")
+                ,departmentDataTable.field("inquiry_money"),departmentDataTable.field("inquiry_number")
+                ,departmentDataTable.field("prescription_money"),departmentDataTable.field("prescription_num"))
+            .from(DEPARTMENT)
+            .leftJoin(doctorTable).on(doctorTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT.ID))
+            .leftJoin(departmentDataTable).on(departmentDataTable.field(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID).eq(DEPARTMENT.ID));
+//        SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> statisticTable = getDepartmentStatisticTable();
         select.where(DEPARTMENT.IS_DELETE.eq((byte) 0)).and(DEPARTMENT.LEVEL.eq((Integer) 1));
         buildOptions(select, param);
         select.orderBy(DEPARTMENT.ID.desc());
@@ -179,7 +193,7 @@ public class DepartmentDao extends ShopBaseDao {
      */
     public DepartmentOneParam getDepartmentByCode(String code) {
         return db().select().from(DEPARTMENT).where(DEPARTMENT.CODE.eq(code))
-            .fetchOneInto(DepartmentOneParam.class);
+            .fetchAnyInto(DepartmentOneParam.class);
     }
 
     /**
@@ -214,6 +228,16 @@ public class DepartmentDao extends ShopBaseDao {
     }
 
     /**
+     * 获取科室列表信息（小程序）
+     * @return
+     */
+    public List<DepartmentOneParam> listDepartmentsForWx() {
+        Condition condition = DEPARTMENT.IS_DELETE.eq((byte) 0).and(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF));
+
+        return db().select().from(DEPARTMENT).where(condition).fetchInto(DepartmentOneParam.class);
+    }
+
+    /**
      * 根据id集合查询对应信息
      * @param departmentIds id集合
      * @return 科室信息集合
@@ -236,7 +260,137 @@ public class DepartmentDao extends ShopBaseDao {
         if (param.getDepartmentIds() != null) {
             condition = condition.and(DEPARTMENT.ID.in(param.getDepartmentIds()));
         }
-        return db().select().from(DEPARTMENT).where(condition).fetchInto(DepartmentOneParam.class);
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+//        SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> statisticTable = getDepartmentStatisticTable();
+        SelectHavingStep<Record2<Integer, Integer>> doctorTable = getDoctorNumberTable();
+        SelectJoinStep<? extends Record> select = db().select(DEPARTMENT.ID,DEPARTMENT.NAME,DEPARTMENT.ID,DEPARTMENT.CODE,doctorTable.field("doctor_number")).from(DEPARTMENT)
+            .leftJoin(DEPARTMENT_SUMMARY_TREND).on(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID.eq(DEPARTMENT.ID).and(DEPARTMENT_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_WEEK)).and(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(Date.valueOf(today.minusDays(1).toLocalDate()))))
+            .leftJoin(doctorTable).on(doctorTable.field(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID).eq(DEPARTMENT.ID));
+        select.where(condition)
+            .and(doctorTable.field("doctor_number",Integer.class).gt(0))
+//            .and(DEPARTMENT_SUMMARY_TREND.REF_DATE.eq(Date.valueOf(today.minusDays(1).toLocalDate())))
+            .orderBy(DEPARTMENT.FIRST.desc(),doctorTable.field("doctor_number").desc(),DEPARTMENT_SUMMARY_TREND.CONSULTATION_NUMBER.desc());
+        if (param.getLimitNum() != null){
+            select.limit(param.getLimitNum());
+        }
+        return select.fetchInto(DepartmentOneParam.class);
     }
 
+    /**
+     * 从统计表取每个科室的总的统计数据子查询（5项）
+     * @return
+     */
+    public SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> getDepartmentStatisticTable(){
+        return db().select(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID
+            ,DSL.sum(DEPARTMENT_SUMMARY_TREND.CONSULTATION_NUMBER).as("consultation_number")
+            ,DSL.sum(DEPARTMENT_SUMMARY_TREND.INQUIRY_MONEY).as("inquiry_money"),DSL.sum(DEPARTMENT_SUMMARY_TREND.INQUIRY_NUMBER).as("inquiry_number")
+            ,DSL.sum(DEPARTMENT_SUMMARY_TREND.PRESCRIPTION_MONEY).as("prescription_money"),DSL.sum(DEPARTMENT_SUMMARY_TREND.PRESCRIPTION_NUM).as("prescription_num")
+        )
+            .from(DEPARTMENT_SUMMARY_TREND)
+            .where(DEPARTMENT_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY))
+            .groupBy(DEPARTMENT_SUMMARY_TREND.DEPARTMENT_ID);
+    }
+
+    public DepartmentStatisticSelectVo getDepartmentSelect(){
+        return DepartmentStatisticSelectVo.builder().consultationTable(getConsultationTable())
+            .doctorNumberTable(getDoctorNumberTable())
+            .prescriptionTable(getPrescriptionTable())
+            .inquiryTable(getInquiryTable()).build();
+    }
+
+    /**
+     * 科室医师数量子查询（小程序）
+     * @return
+     */
+    public SelectHavingStep<Record2<Integer, Integer>> getDoctorNumberTable(){
+        return db().select(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID,DSL.count(DOCTOR.ID).as("doctor_number"))
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .where(DOCTOR.IS_DELETE.eq((byte) 0))
+            .and(DOCTOR.STATUS.eq((byte) 1))
+            .and(DOCTOR.CAN_CONSULTATION.eq((byte) 1))
+            .groupBy(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID);
+    }
+
+    public SelectHavingStep<Record2<Integer, BigDecimal>> getConsultationTable(){
+        return db().select(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID,DSL.sum(DOCTOR.CONSULTATION_NUMBER).as("consultation_number"))
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .groupBy(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID);
+    }
+
+
+    public SelectHavingStep<Record3<Integer, Integer, BigDecimal>> getPrescriptionTable(){
+        return db().select(DEPARTMENT.ID,DSL.count(PRESCRIPTION.ID).as("presciption_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
+            .from(DEPARTMENT)
+            .leftJoin(PRESCRIPTION ).on(PRESCRIPTION.DEPARTMENT_CODE.eq(DEPARTMENT.CODE))
+            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.POS_CODE.eq(PRESCRIPTION.POS_CODE))
+            .where(PRESCRIPTION.STATUS.eq(PrescriptionConstant.STATUS_PASS))
+            .groupBy(DEPARTMENT.ID);
+    }
+
+    public SelectHavingStep<Record3<Integer, Integer, BigDecimal>> getInquiryTable(){
+        return db().select(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID,DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiry_number"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID))
+            .where(INQUIRY_ORDER.ORDER_STATUS.notIn(InquiryOrderConstant.ORDER_TO_PAID,InquiryOrderConstant.ORDER_CANCELED))
+            .groupBy(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID);
+    }
+    /**
+     * 获取所有科室的信息
+     *
+     * @return
+     */
+    public List<DepartmentOneParam> getAllDepartment() {
+        return db().select().from(DEPARTMENT).where(DEPARTMENT.IS_LEAF.eq(DepartmentConstant.LEAF))
+            .fetchInto(DepartmentOneParam.class);
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DepartmentStatisticOneParam getDepartmentInquiryData(DepartmentStatisticParam param) {
+        return db().select(DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiry_num"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID))
+            .where(INQUIRY_ORDER.ORDER_STATUS.notIn(InquiryOrderConstant.ORDER_TO_PAID,InquiryOrderConstant.ORDER_CANCELED))
+            .and(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID.eq(param.getDepartmentId()))
+            .and(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()))
+            .and(INQUIRY_ORDER.CREATE_TIME.le(param.getEndTime()))
+            .fetchAnyInto(DepartmentStatisticOneParam.class);
+    }
+
+    /**
+     * 获取科室接诊统计数据
+     * @param param
+     * @return
+     */
+    public Integer getDepartmentConsultationData(DepartmentStatisticParam param) {
+        return db().select(DSL.sum(DOCTOR.CONSULTATION_NUMBER).as("consultation_number"))
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .where(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID.eq(param.getDepartmentId()))
+            .fetchAnyInto(Integer.class);
+    }
+
+    /**
+     * 获取科室处方统计数据
+     * @param param
+     * @return
+     */
+    public DepartmentStatisticOneParam getDepartmentPrescriptionData(DepartmentStatisticParam param) {
+        return db().select(DSL.count(PRESCRIPTION.ID).as("prescription_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
+            .from(DEPARTMENT)
+            .leftJoin(PRESCRIPTION ).on(PRESCRIPTION.DEPARTMENT_CODE.eq(DEPARTMENT.CODE))
+            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.POS_CODE.eq(PRESCRIPTION.POS_CODE))
+            .where(DEPARTMENT.ID.eq(param.getDepartmentId()))
+//            .and(PRESCRIPTION.STATUS.eq(PrescriptionConstant.STATUS_PASS))
+            .and(PRESCRIPTION.CREATE_TIME.ge(param.getStartTime()))
+            .and(PRESCRIPTION.CREATE_TIME.le(param.getEndTime()))
+            .fetchAnyInto(DepartmentStatisticOneParam.class);
+    }
 }

@@ -1,19 +1,26 @@
 package com.vpu.mp.service.shop.order.inquiry;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.db.sql.Order;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.excel.ExcelFactory;
 import com.vpu.mp.common.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.common.foundation.excel.ExcelWriter;
-import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.dao.shop.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
+import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
+import com.vpu.mp.dao.shop.rebate.InquiryOrderRebateDao;
 import com.vpu.mp.dao.shop.refund.InquiryOrderRefundListDao;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -21,26 +28,30 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
-import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
+import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.maptemplate.*;
-import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
-import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
-import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.maptemplate.ConsultationSuccessParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
-import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateParam;
+import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateVo;
 import com.vpu.mp.service.pojo.wxapp.image.ImageSimpleVo;
 import com.vpu.mp.service.pojo.wxapp.medical.im.param.ImSessionNewParam;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryToPayParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
+import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.im.ImSessionService;
 import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
@@ -51,7 +62,6 @@ import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.eval.BlankEval;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +70,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +79,8 @@ import java.util.stream.Collectors;
 @Service
 public class InquiryOrderService extends ShopBaseService {
     public static final String BLANK = "测试";
+    public static final BigDecimal HUNDRED = new BigDecimal("100");
+    public static final int DECIMAL_POINT= 4;
     @Autowired
     private InquiryOrderDao inquiryOrderDao;
     @Autowired
@@ -96,6 +107,12 @@ public class InquiryOrderService extends ShopBaseService {
     private UserDao userDao;
     @Autowired
     private MapTemplateSendService mapTemplateSendService;
+    @Autowired
+    private RebateConfigService rebateConfigService;
+    @Autowired
+    private InquiryOrderRebateDao inquiryOrderRebateDao;
+    @Autowired
+    private DoctorTotalRebateDao doctorTotalRebateDao;
 
     /**
      * 问询订单列表
@@ -120,6 +137,9 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDetailVo.setUserName(userDo.getUsername());
         //退款记录
         inquiryOrderDetailVo.setRefundList(inquiryOrderRefundListDao.getListByOrderSn(inquiryOrderDo.getOrderSn()));
+        //咨询返利详情
+        InquiryOrderRebateVo rebateVo=inquiryOrderRebateDao.getRebateByOrderSn(inquiryOrderDo.getOrderSn());
+        inquiryOrderDetailVo.setRebate(rebateVo);
         return inquiryOrderDetailVo;
     }
 
@@ -143,29 +163,62 @@ public class InquiryOrderService extends ShopBaseService {
     public void updateOrder(InquiryOrderOnParam param){
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(param.getOrderSn());
         FieldsUtil.assign(param,inquiryOrderDo);
-        Byte prevStatus = inquiryOrderDo.getOrderStatus();
         inquiryOrderDo.setOrderStatus(param.getOrderStatus());
-        //更新会话状态修改为进行中
-        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            inquiryOrderDo.setLimitTime(DateUtils.getTimeStampPlus(InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS));
-            imSessionService.updateSessionToGoingOn(param.getSessionId());
-        }
-        //更新会话状态为关闭
-        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
-            inquiryOrderDo.setFinishedTime(DateUtils.getLocalDateTime());
-            imSessionService.closeImSession(param.getSessionId());
-        }
-        inquiryOrderDao.update(inquiryOrderDo);
-        //接诊发送提醒
-        if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
-            List<Integer> list=new ArrayList<>();
-            list.add(inquiryOrderDo.getUserId());
-            ConsultationSuccessParam consultationSuccessParam=ConsultationSuccessParam.builder().patientName(inquiryOrderDo.getPatientName())
-                .departmentName(inquiryOrderDo.getDepartmentName()).diseaseDetail(inquiryOrderDo.getDescriptionDisease())
-                .doctorName(inquiryOrderDo.getDoctorName()).userIds(list).build();
-            mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
+        transaction(() ->{
+            //更新会话状态修改为进行中
+            if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_RECEIVING)){
+                inquiryOrderDo.setLimitTime(DateUtils.getTimeStampPlus(InquiryOrderConstant.EXPIRY_TIME_HOUR, ChronoUnit.HOURS));
+                imSessionService.updateSessionToGoingOn(param.getSessionId());
+                //接诊发送提醒
+                sendConsultationMessage(inquiryOrderDo);
+
+            }
+            //更新会话状态为关闭
+            if(param.getOrderStatus().equals(InquiryOrderConstant.ORDER_FINISHED)){
+                inquiryOrderDo.setFinishedTime(DateUtils.getLocalDateTime());
+                //未结算返利的更改状态
+                if(InquiryOrderConstant.SETTLEMENT_WAIT.equals(inquiryOrderDo.getSettlementFlag())){
+                    inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FINISH);
+                    //完成问诊，更改返利状态
+                    inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(),InquiryOrderRebateConstant.REBATED,null);
+                    //第一次正常结束的时候统计返利金额
+                    setDoctorTotalRebate(inquiryOrderDo);
+                }
+                imSessionService.closeImSession(param.getSessionId());
+            }
+            inquiryOrderDao.update(inquiryOrderDo);
+        });
+
+    }
+
+    /**
+     * 接诊发送提醒
+     * @param inquiryOrderDo
+     */
+    public void sendConsultationMessage( InquiryOrderDo inquiryOrderDo){
+        List<Integer> list=new ArrayList<>();
+        list.add(inquiryOrderDo.getUserId());
+        ConsultationSuccessParam consultationSuccessParam=ConsultationSuccessParam.builder().patientName(inquiryOrderDo.getPatientName())
+            .departmentName(inquiryOrderDo.getDepartmentName()).diseaseDetail(inquiryOrderDo.getDescriptionDisease())
+            .doctorName(inquiryOrderDo.getDoctorName()).userIds(list).build();
+        mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
+    }
+
+    /**
+     * 统计返利金额
+     * @param inquiryOrderDo
+     */
+    public void setDoctorTotalRebate( InquiryOrderDo inquiryOrderDo){
+        ImSessionDo im=imSessionService.getSessionInfoByOrderSn(inquiryOrderDo.getOrderSn());
+        if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){
+            doctorTotalRebateDao.updateDoctorTotalRebate(inquiryOrderDo.getDoctorId(),inquiryOrderDo.getTotalRebateMoney());
         }
     }
+
+    /**
+     * 新增
+     * @param inquiryOrderDo
+     */
     public void insert(InquiryOrderDo inquiryOrderDo){
         int orderId=inquiryOrderDao.save(inquiryOrderDo);
         inquiryOrderDo.setOrderId(orderId);
@@ -208,6 +261,9 @@ public class InquiryOrderService extends ShopBaseService {
         order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
         order.setPayTime(DateUtils.getLocalDateTime());
+        //返利配置计算返利
+        addRebate(order);
+
         //更新问诊订单状态为待接诊
         inquiryOrderDao.update(order);
         //添加会话问诊
@@ -218,6 +274,29 @@ public class InquiryOrderService extends ShopBaseService {
 
     }
 
+    /**
+     * 返利入库
+     * @param order
+     */
+    public void addRebate(InquiryOrderDo order){
+        RebateConfig rebateConfig=this.rebateConfigService.getRebateConfig();
+        if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
+            BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_UP);
+            order.setRebateProportion(proportion);
+            order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_UP));
+            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
+            //返利入库
+            InquiryOrderRebateParam param =new InquiryOrderRebateParam();
+            param.setOrderSn(order.getOrderSn());
+            param.setDoctorId(order.getDoctorId());
+            param.setTotalRebateMoney(order.getTotalRebateMoney());
+            param.setStatus(InquiryOrderRebateConstant.TO_REBATE);
+            param.setTotalMoney(order.getOrderAmount());
+            inquiryOrderRebateDao.addInquiryOrderRebate(param);
+        }else {
+            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
+        }
+    }
 
     /**
      * 支付微信接口
@@ -284,7 +363,6 @@ public class InquiryOrderService extends ShopBaseService {
         inquiryOrderDo.setPatientIdentityType(patientOneParam.getIdentityType());
         List<ImageSimpleVo> imageList=payParam.getImageList();
         String imageUrl=Util.toJson(imageList);
-//        String imageUrl=imageList.stream().collect(Collectors.joining(","));
         inquiryOrderDo.setImageUrl(imageUrl);
         inquiryOrderDo.setDescriptionDisease(payParam.getDescriptionDisease());
         inquiryOrderDao.save(inquiryOrderDo);
@@ -298,7 +376,16 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
+        transaction(()->{
+            refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
+            //问诊退款，更改返利状态
+            if(InquiryOrderConstant.SETTLEMENT_WAIT.equals(inquiryOrderDo.getSettlementFlag())){
+                inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OPERATE_REFUND);
+                inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
+                inquiryOrderDao.update(inquiryOrderDo);
+            }
+        });
+
     }
 
     /**
@@ -308,7 +395,13 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void doctorRefund(InquiryOrderOnParam inquiryOrderOnParam)throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
-        refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
+        transaction(()->{
+            refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
+            //问诊退款，更改返利状态
+            inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_DOCTOR_REFUND);
+            inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
+            inquiryOrderDao.update(inquiryOrderDo);
+        });
 
     }
 
@@ -319,6 +412,9 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void refundInquiryOrder(InquiryOrderDo order,BigDecimal refundMoney,String refundReason)throws MpException{
         logger().info("问诊订单退款-开始start,orderSn:{}"+order.getOrderSn());
+        if(InquiryOrderConstant.ORDER_REFUND.equals(order.getOrderStatus())){
+            throw new MpException(JsonResultCode.INQUIRY_ORDER_REFUND_MONEY_EXCESS);
+        }
         //0元订单
         if(order.getOrderAmount().compareTo(BigDecimal.ZERO)==0){
             order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
@@ -426,5 +522,25 @@ public class InquiryOrderService extends ShopBaseService {
             endDate = DateUtil.endOfDay(endDate).toTimestamp();
             param.setEndTime(endDate);
         }
+    }
+
+    /**
+     * 查询患者关联问诊订单数量
+     * @param patientId 患者id
+     * @return Integer
+     */
+    public PatientInquiryOrderVo getInquiryNumberByPatient(Integer patientId, Integer doctorId) {
+        return inquiryOrderDao.getInquiryNumberByPatientId(patientId, doctorId);
+    }
+
+    /**
+     * 查找时间段内医师的接诊量
+     * @param doctorId
+     * @param startTime
+     * @param endTime
+     */
+    public Integer countByDateDoctor(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+        return inquiryOrderDao.countByDateDoctorId(doctorId,startTime,endTime);
+
     }
 }

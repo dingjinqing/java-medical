@@ -36,11 +36,9 @@ import java.util.Map;
 
 import static com.vpu.mp.db.main.Tables.ORDER_GOODS_BAK;
 import static com.vpu.mp.db.main.Tables.ORDER_INFO_BAK;
-import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
-import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+import static com.vpu.mp.db.main.Tables.RETURN_ORDER_BAK;
+import static com.vpu.mp.db.main.Tables.SHOP;
+import static com.vpu.mp.db.main.Tables.USER;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUNDING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURNING;
@@ -76,7 +74,7 @@ public class OrderInfoBakDao extends MainBaseDao {
                 //日期
                 date(ORDER_INFO_BAK.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),
                 //销售金额  微信+余额+运费
-                sum((ORDER_INFO_BAK.MONEY_PAID.add(ORDER_INFO_BAK.USE_ACCOUNT).add(ORDER_INFO_BAK.SHIPPING_FEE))).as(ActiveDiscountMoney.ORDER_AMOUNT),
+                sum((ORDER_INFO_BAK.MONEY_PAID.add(ORDER_INFO_BAK.USE_ACCOUNT))).as(ActiveDiscountMoney.ORDER_AMOUNT),
                 //微信
                 sum(ORDER_INFO_BAK.MONEY_PAID).as(ActiveDiscountMoney.MONEY_PAID),
                 //余额
@@ -84,10 +82,19 @@ public class OrderInfoBakDao extends MainBaseDao {
                 //运费
                 sum(ORDER_INFO_BAK.SHIPPING_FEE).as(ActiveDiscountMoney.SHIPPING_FEE),
                 //销售单数
-                count(ORDER_INFO_BAK.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER)
+                count(ORDER_INFO_BAK.ORDER_ID).as(ActiveDiscountMoney.ORDER_NUMBER),
+                //处方药订单数量
+                sum(ORDER_INFO_BAK.ORDER_MEDICAL_TYPE).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_NUMBER),
+                //处方药金额
+                sum(DSL.iif(ORDER_INFO_BAK.ORDER_MEDICAL_TYPE.eq(BaseConstant.YES),ORDER_INFO_BAK.MONEY_PAID.add(ORDER_INFO_BAK.USE_ACCOUNT),BigDecimal.ZERO)).as(ActiveDiscountMoney.PRESCRIPTION_ORDER_AMOUNT)
         )
                 .from(ORDER_INFO_BAK)
-                .where(ORDER_INFO_BAK.CREATE_TIME.between(startTime, endTime));
+                .where(ORDER_INFO_BAK.CREATE_TIME.between(startTime, endTime))
+                .and(ORDER_INFO_BAK.ORDER_STATUS.notIn(
+                        OrderConstant.ORDER_WAIT_PAY,
+                        OrderConstant.ORDER_CANCELLED,
+                        OrderConstant.ORDER_CLOSED
+                ));
         if (shopId!=null&&shopId>0){
             where.and(ORDER_INFO_BAK.SHOP_ID.eq(shopId));
         }
@@ -104,9 +111,11 @@ public class OrderInfoBakDao extends MainBaseDao {
      * @return
      */
     public Map<String, List<OrderListInfoVo>> getOrders(List<String> orderSn) {
-        List<OrderListInfoVo> orders = db().select(ORDER_INFO_BAK.asterisk(), USER.USERNAME, USER.MOBILE.as("userMobile"))
+        List<OrderListInfoVo> orders = db().select(ORDER_INFO_BAK.asterisk(), USER.USERNAME, USER.MOBILE.as("userMobile")
+        ,SHOP.SHOP_NAME)
                 .from(ORDER_INFO_BAK)
-                .innerJoin(USER).on(ORDER_INFO_BAK.USER_ID.eq(USER.USER_ID))
+                .leftJoin(USER).on(ORDER_INFO_BAK.USER_ID.eq(USER.USER_ID).and(ORDER_INFO_BAK.SHOP_ID.eq(USER.SHOP_ID)))
+                .leftJoin(SHOP).on(SHOP.SHOP_ID.eq(ORDER_INFO_BAK.SHOP_ID))
                 .where(ORDER_INFO_BAK.MAIN_ORDER_SN.in(orderSn).or(ORDER_INFO_BAK.ORDER_SN.in(orderSn)))
                 .orderBy(ORDER_INFO_BAK.ORDER_ID.desc())
                 .fetchInto(OrderListInfoVo.class);
@@ -171,7 +180,7 @@ public class OrderInfoBakDao extends MainBaseDao {
         if (param.getSortRule() != null) {
             switch (param.getSortRule()) {
                 case OrderConstant.OQSR_APPLY_RETURN: {
-                    mainOrder.orderBy(RETURN_ORDER.RET_ID.desc());
+                    mainOrder.orderBy(RETURN_ORDER_BAK.RET_ID.desc());
                     break;
                 }
                 default:
@@ -212,6 +221,9 @@ public class OrderInfoBakDao extends MainBaseDao {
         if (param.getOrderIds() != null && param.getOrderIds().length != 0) {
             select.where(ORDER_INFO_BAK.ORDER_ID.in(param.getOrderIds()));
         }
+        if (param.getShopId()!=null&&param.getShopId()>0){
+            select.where(ORDER_INFO_BAK.SHOP_ID.eq(param.getShopId()));
+        }
 
         //店铺助手操作
         if (param.getShopHelperAction() != null) {
@@ -248,9 +260,6 @@ public class OrderInfoBakDao extends MainBaseDao {
             }
             if (!StringUtils.isBlank(param.userName)) {
                 select.where(USER.USERNAME.like(likeValue(param.userName)));
-            }
-            if (param.tagIds != null && param.tagIds.length != 0) {
-                select.where(USER_TAG.TAG_ID.in(param.tagIds));
             }
         }
         if (param.getUserId() != null) {
@@ -298,14 +307,6 @@ public class OrderInfoBakDao extends MainBaseDao {
         if (param.getIsStar() != null) {
             select.where(ORDER_INFO_BAK.STAR_FLAG.eq(param.getIsStar()));
         }
-        if (!StringUtils.isBlank(param.getShippingNo())) {
-            select.leftJoin(PART_ORDER_GOODS_SHIP).on(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(ORDER_INFO_BAK.ORDER_SN)).where(PART_ORDER_GOODS_SHIP.SHIPPING_NO.like(likeValue(param.getShippingNo())));
-        }
-        // 拼团退款失败订单
-        if (param.pinStatus != null && param.pinStatus.length != 0) {
-            select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO_BAK.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
-            select.where(GROUP_BUY_LIST.STATUS.in(param.pinStatus));
-        }
     }
 
     private void processPayWayOption(SelectJoinStep<?> select, OrderPageListQueryParam param) {
@@ -341,13 +342,13 @@ public class OrderInfoBakDao extends MainBaseDao {
             List<Byte> status = Lists.newArrayList(param.orderStatus);
             Condition condition = DSL.noCondition();
             if (status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING) || status.contains(ORDER_RETURN_FINISHED) || status.contains(ORDER_REFUND_FINISHED)) {
-                select.leftJoin(RETURN_ORDER).on(ORDER_INFO_BAK.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
+                select.leftJoin(RETURN_ORDER_BAK).on(ORDER_INFO_BAK.ORDER_ID.eq(RETURN_ORDER_BAK.ORDER_ID));
                 if (status.contains(ORDER_REFUNDING)) {
-                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    condition = condition.or(RETURN_ORDER_BAK.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER_BAK.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
                     status.remove(Byte.valueOf(ORDER_REFUNDING));
                 }
                 if (status.contains(ORDER_RETURNING)) {
-                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING, REFUND_STATUS_AUDIT_PASS, REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    condition = condition.or(RETURN_ORDER_BAK.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER_BAK.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING, REFUND_STATUS_AUDIT_PASS, REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
                     status.remove(Byte.valueOf(ORDER_RETURNING));
                 }
             }

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.department;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -34,4 +35,10 @@ public class DepartmentListVo {
      */
     private byte isLeaf;
     private List<DepartmentListVo> childDepartmentList;
+    private Integer doctorNumber;
+    private BigDecimal consultationNumber;
+    private BigDecimal inquiryMoney;
+    private BigDecimal inquiryNumber;
+    private BigDecimal prescriptionMoney;
+    private BigDecimal prescriptionNum;
 }

@@ -5,21 +5,15 @@ import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.UserMessageDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
-
-import com.vpu.mp.db.shop.tables.UserMessage;
-import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
-import com.vpu.mp.db.shop.tables.records.UserAnnouncementRecord;
 import com.vpu.mp.db.shop.tables.records.UserMessageRecord;
+import com.vpu.mp.service.pojo.shop.message.AnnounceBo;
 import com.vpu.mp.service.pojo.shop.message.MessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageParam;
 import com.vpu.mp.service.pojo.shop.message.UserMessageVo;
-import com.vpu.mp.service.pojo.wxapp.medical.im.vo.ImSessionUnReadInfoVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -37,16 +31,22 @@ public class MessageDao extends ShopBaseDao {
 
     private static final String USER_MESSAGE_SYSTEM_ANNOUNCEMENT = "系统公告";
 
+    private static final Byte IS_PULL_YES = 1;
+
+    private static final Byte IS_PULL_NO = 0;
+
     /**
      * 新增系统消息
-     * @param list
+     * @param list 新增公告列表
      */
-    public void addAnnouncementMessage(List<String> list){
+    public void addAnnouncementMessage(List<AnnounceBo> list){
         list.forEach(e -> {
-            db().insertInto(USER_MESSAGE).set(USER_MESSAGE.MESSAGE_NAME, USER_MESSAGE_SYSTEM_ANNOUNCEMENT)
-                .set(USER_MESSAGE.MESSAGE_CONTENT, e)
-                .set(USER_MESSAGE.MESSAGE_TYPE, USER_MESSAGE_SYSTEM)
-                .execute();
+            if (IS_PULL_YES.equals(e.getIsPull())) {
+                db().insertInto(USER_MESSAGE).set(USER_MESSAGE.MESSAGE_NAME, USER_MESSAGE_SYSTEM_ANNOUNCEMENT)
+                    .set(USER_MESSAGE.MESSAGE_CONTENT, e.getShopText())
+                    .set(USER_MESSAGE.MESSAGE_TYPE, USER_MESSAGE_SYSTEM)
+                    .execute();
+            }
         });
     }
 
@@ -123,6 +123,17 @@ public class MessageDao extends ShopBaseDao {
             .and(USER_MESSAGE.MESSAGE_TYPE.eq(USER_MESSAGE_CHAT))
             .and(USER_MESSAGE.RECEIVER_ID.eq(userId))
             .and(USER_MESSAGE.IS_DELETE.eq(DelFlag.NORMAL_VALUE)).fetchAnyInto(UserMessageVo.class);
+    }
+
+    /**
+     * 根据orderSn查询消息
+     * @param orderSn 订单号
+     * @return 消息信息
+     */
+    public UserMessageVo getMessageByOrderSn(String orderSn) {
+        return db().select().from(USER_MESSAGE)
+            .where(USER_MESSAGE.MESSAGE_RELEVANCE_ORDER_SN.eq(orderSn))
+            .fetchAnyInto(UserMessageVo.class);
     }
 
     /**

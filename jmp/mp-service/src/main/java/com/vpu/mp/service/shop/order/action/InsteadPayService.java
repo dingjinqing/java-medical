@@ -327,7 +327,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
 
     private void overpay(BigDecimal moneyPaid, BigDecimal insteadPayMoney, String mainOrderSn) {
         if(BigDecimalUtil.compareTo(moneyPaid, insteadPayMoney) == 1){
-            logger().info("代付子单支付回调,超付退款");
+            logger().info("代付子单支付回调_支付金额大于代付金额");
             BigDecimal overMoney = BigDecimalUtil.subtrac(moneyPaid, insteadPayMoney);
             returnMethodService.returnSubOrder(mainOrderSn, overMoney, 0);
         }

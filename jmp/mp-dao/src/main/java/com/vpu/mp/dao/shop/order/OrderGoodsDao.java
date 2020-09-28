@@ -3,6 +3,7 @@ package com.vpu.mp.dao.shop.order;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
@@ -161,4 +162,71 @@ public class OrderGoodsDao extends ShopBaseDao {
                 .where(ORDER_GOODS.CREATE_TIME.ge(beginTime)).and(ORDER_GOODS.CREATE_TIME.le(endTime))
                 .fetchInto(OrderGoodsDo.class);
     }
+
+    /**
+     * 根据订单号获取处方号列表
+     * @param orderSn
+     * @return
+     */
+    public List<String> getPrescriptionCodeListByOrderSn(String orderSn){
+        return db().select(ORDER_GOODS.PRESCRIPTION_CODE).from(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn))
+            .fetchInto(String.class);
+    }
+
+    /**
+     * 根据订单号和goodId获取
+     * @param orderId
+     * @param goodsId
+     * @return
+     */
+    public OrderGoodsDo getByOrderIdGoodsIdPrdId(Integer orderId,Integer goodsId,Integer prdId){
+        return db().select().from(ORDER_GOODS).where(ORDER_GOODS.GOODS_ID.eq(goodsId))
+            .and(ORDER_GOODS.ORDER_ID.eq(orderId)).and(ORDER_GOODS.PRODUCT_ID.eq(prdId))
+            .fetchAnyInto(OrderGoodsDo.class);
+    }
+
+    /**
+     * 根据处方号和goodId获取
+     * @param prescriptionCode
+     * @param goodsId
+     * @return
+     */
+    public OrderGoodsDo getByPreCodeGoodsIdPrdId(String prescriptionCode,Integer goodsId,Integer prdId){
+        return db().select().from(ORDER_GOODS).where(ORDER_GOODS.GOODS_ID.eq(goodsId))
+            .and(ORDER_GOODS.PRESCRIPTION_CODE.eq(prescriptionCode)).and(ORDER_GOODS.PRODUCT_ID.eq(prdId))
+            .fetchAnyInto(OrderGoodsDo.class);
+    }
+
+    /**
+     * 根据处方号查药品
+     * @param prescriptionCode 处方号
+     * @return List<OrderGoodsDo>
+     */
+    public List<OrderGoodsDo> getByPrescription(String prescriptionCode) {
+        return db().select().from(ORDER_GOODS)
+            .where(ORDER_GOODS.PRESCRIPTION_CODE.eq(prescriptionCode))
+            .fetchInto(OrderGoodsDo.class);
+    }
+
+    /**
+     * 根据处方明细号查
+     * @param prescriptionDetailCode
+     * @return
+     */
+    public OrderGoodsDo getByPrescriptionDetailCode(String prescriptionDetailCode){
+        return db().select()
+            .from(ORDER_GOODS).where(ORDER_GOODS.PRESCRIPTION_DETAIL_CODE.eq(prescriptionDetailCode))
+            .fetchAnyInto(OrderGoodsDo.class);
+
+    }
+    /**
+     * 更新处方明细号
+     * @param recId
+     * @param prescriptionDetailCode
+     */
+    public void updatePrescriptionDetailCode(Integer recId,String prescriptionDetailCode){
+        db().update(ORDER_GOODS).set(ORDER_GOODS.PRESCRIPTION_DETAIL_CODE,prescriptionDetailCode)
+            .where(ORDER_GOODS.REC_ID.eq(recId)).execute();
+    }
+
 }

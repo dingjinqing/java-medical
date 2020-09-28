@@ -6,49 +6,55 @@
 				<view class="title">电子处方</view>
 			</view>
 			<view class="prescription-info-content">
-				<view class="prescription-item">
-					<view class="item-title">
-						<text class="list-item-dot"></text>
-						<text class="title">就诊人信息</text>
+				<view>
+					<view class="prescription-code-status">
+						<view>处方号：<text>{{prescriptionData.prescriptionCode}}</text></view>
+						<view>{{prescriptionData.isUsed ? '已使用' : '未使用'}}</view>
 					</view>
-					<view class="user-info">
-						<view class="info-item">
-							<text>{{prescriptionData.patientName}}</text>
-							<text>姓名</text>
+					<view class="prescription-item">
+						<view class="item-title">
+							<text class="list-item-dot"></text>
+							<text class="title">就诊人信息</text>
 						</view>
-						<view class="info-item">
-							<text>{{filter.getSex(prescriptionData.patientSex)}}</text>
-							<text>性别</text>
+						<view class="user-info">
+							<view class="info-item">
+								<text>{{prescriptionData.patientName}}</text>
+								<text>姓名</text>
+							</view>
+							<view class="info-item">
+								<text>{{filter.getSex(prescriptionData.patientSex)}}</text>
+								<text>性别</text>
+							</view>
+							<view class="info-item">
+								<text>{{prescriptionData.patientAge}}岁</text>
+								<text>年龄</text>
+							</view>
+							<view class="info-item">
+								<text>{{prescriptionData.departmentName}}</text>
+								<text>科室</text>
+							</view>
 						</view>
-						<view class="info-item">
-							<text>{{prescriptionData.patientAge}}岁</text>
-							<text>年龄</text>
+					</view>
+					<view class="prescription-item" wx:if="{{prescriptionData.diagnosisName}}">
+						<view class="item-title">
+							<text class="list-item-dot"></text>
+							<text class="title">诊断</text>
 						</view>
-						<view class="info-item">
-							<text>{{prescriptionData.departmentName}}</text>
-							<text>科室</text>
+						<view class="item-info">
+							<text class="title">{{prescriptionData.diagnosisName}}</text>
 						</view>
 					</view>
-				</view>
-				<view class="prescription-item" wx:if="{{prescriptionData.diagnosisDetail}}">
-					<view class="item-title">
-						<text class="list-item-dot"></text>
-						<text class="title">诊断</text>
-					</view>
-					<view class="item-info">
-						<text class="title">{{prescriptionData.diagnosisDetail}}</text>
-					</view>
-				</view>
-				<view class="prescription-item" wx:if="{{prescriptionData.itemList.length}}">
-					<view class="item-title">
-						<text class="list-item-dot"></text>
-						<text class="title">治疗建议</text>
-					</view>
-					<view class="item-info">
-						<block wx:for="{{prescriptionData.itemList}}" wx:key="index">
-							<text class="title">{{item.goodsCommonName}}</text>
-							<text>用法用量：{{item.goodsQualityRatio }}</text>
-						</block>
+					<view class="prescription-item" wx:if="{{prescriptionData.itemList.length}}">
+						<view class="item-title">
+							<text class="list-item-dot"></text>
+							<text class="title">治疗建议</text>
+						</view>
+						<view class="item-info">
+							<block wx:for="{{prescriptionData.itemList}}" wx:key="index">
+								<text class="title">{{item.goodsCommonName}}</text>
+								<text>用法用量：{{item.goodsQualityRatio }}</text>
+							</block>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -71,7 +77,7 @@
 			</view>
 		</view>
 		<view class="warn-tips">本处方内容仅供参考，自行下载配药不具有处方效力</view>
-		<view  wx:if="{{!isDoctor}}" class="button" bindtap="viewRepurchase">去买药</view>
+		<view wx:if="{{!isDoctor}}" class="button" bindtap="viewRepurchase">去买药</view>
 	</view>
 
 </v-popup>

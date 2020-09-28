@@ -10,22 +10,22 @@
       :default-active="$route.path"
       v-if="isRouterAlive"
     >
-      <template v-for="(listItem,listIndex) in defaultList.list">
+      <template v-for="(listItem, listIndex) in defaultList.list">
         <el-submenu
           :index="listItem.path"
           :key="listIndex"
           v-if="listItem.children && listItem.children.length"
         >
           <template slot="title">
-            <img :src="listItem.imgUrl">
-            <span>{{listItem.name | getNavName}}</span>
+            <img :src="listItem.imgUrl" />
+            <span>{{ listItem.name | getNavName }}</span>
           </template>
           <el-menu-item
             :index="childrenItem.path"
-            v-for="(childrenItem,childrenIndex) in listItem.children"
+            v-for="(childrenItem, childrenIndex) in listItem.children"
             :key="childrenIndex"
           >
-            <span slot="title">{{childrenItem.name | getNavName}}</span>
+            <span slot="title">{{ childrenItem.name | getNavName }}</span>
           </el-menu-item>
         </el-submenu>
         <el-menu-item
@@ -33,14 +33,15 @@
           :key="listIndex"
           v-else
         >
-          <img :src="listItem.imgUrl">
+          <img :src="listItem.imgUrl" />
           <span
             slot="title"
             v-if="!listItem.onlyPic"
-          >{{listItem.name | getNavName}}</span>
+          >{{
+            listItem.name | getNavName
+          }}</span>
         </el-menu-item>
       </template>
-
     </el-menu>
   </div>
 </template>
@@ -165,6 +166,30 @@ export default {
               path: '/admin/home/main/advisory/total',
               span: '',
               name: 'advisoryTotal',
+              flag: true
+            }
+          ]
+        }, {
+          imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points.png',
+          imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_h.png',
+          path: '/admin/home/main/anchorPoints',
+          span: '',
+          name: 'anchor_points',
+          flag: true,
+          children: [
+            {
+              imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points.png',
+              imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_h.png',
+              path: '/admin/home/main/anchorPoints/list',
+              span: '',
+              name: 'anchor_points',
+              flag: true
+            }, {
+              imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points_report.png',
+              imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_report_h.png',
+              path: '/admin/home/main/anchorPoints/report',
+              span: '',
+              name: 'anchor_points_report',
               flag: true
             }
           ]
@@ -653,6 +678,14 @@ export default {
           span: '',
           name: 'smsConfig',
           flag: true
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/icon_left/smsConfig.png',
+          imgUrl_h: this.$imageHost + '/image/admin/icon_left/smsConfig_h.png',
+          path: '/admin/home/main/basicConfig/rebateConfig',
+          span: '',
+          name: 'rebateConfig',
+          flag: true
         }
       ],
       doctor_manger: [
@@ -688,6 +721,14 @@ export default {
           name: 'commentList',
           flag: true
         }
+        // {
+        //   imgUrl: this.$imageHost + '/image/admin/icon_left/comment_man.png',
+        //   imgUrl_h: this.$imageHost + '/image/admin/icon_left/comment_man_h.png',
+        //   path: '/admin/home/main/doctor/recommend/strategy',
+        //   span: '',
+        //   name: 'recommendStrategy',
+        //   flag: true
+        // }
       ],
       prescription_manger: [
         {

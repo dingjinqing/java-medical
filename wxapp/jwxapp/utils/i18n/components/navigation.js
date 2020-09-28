@@ -129,7 +129,7 @@ module.exports = {
     "prescriptionsheet": "处方单信息",
     "doctorConsultation": "医师咨询",
     "allDepartment": "全部科室",
-    "operatePrescriptionList": "待续方列表",
+    "operatePrescriptionList": "待审核处方",
     "inquiryList": "待问诊",
     "repurchaselist": "处方药品",
     "patientinfo": "患者信息",
@@ -144,6 +144,10 @@ module.exports = {
     "doctorComment": "医师评价",
     "doctorIntroduce": "医师简介",
     "doctorPrescriptionList": "处方列表",
-    "doctorFocus": "关注的医师"
+    "doctorFocus": "关注的医师",
+    "serviceWithdraw":"服务提现",
+    "withdrawInfo":"提现详情",
+    "doctorWidthdrawRecord":'医师返利记录',
+    "doctorWithdraw":'返利提现'
   }
 }

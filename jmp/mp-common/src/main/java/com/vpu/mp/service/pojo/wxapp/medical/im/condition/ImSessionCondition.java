@@ -23,7 +23,5 @@ public class ImSessionCondition {
 
     private Integer userId;
 
-    private Timestamp updateTimeLine;
-
     private List<Byte> statusList;
 }

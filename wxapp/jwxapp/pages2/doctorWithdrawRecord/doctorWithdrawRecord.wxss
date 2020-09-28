@@ -1,0 +1,48 @@
+.top-content{
+  height: 270rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #fff;
+  margin-bottom: 20rpx;
+}
+.total-money{
+  font-size: 48rpx;
+  margin-top: 20rpx;
+}
+.total-money > text{
+  font-size: 60rpx;
+}
+.record-list{
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding-left: 40rpx;
+}
+.record-item{
+  padding: 30rpx 24rpx 30rpx 0;
+  display: flex;
+  flex-direction: column;
+}
+.record-item+.record-item{
+  border-top: 2rpx solid #eee;
+}
+.item-top{
+  display: flex;
+}
+.money{
+  color: #333;
+  margin-right: 16rpx;
+}
+.point{
+  color: #999;
+}
+.status{
+  color: #26C4BC;
+  margin-left: auto;
+}
+.item-bottom{
+  color: #999;
+  margin-top:16rpx;
+}

@@ -20,6 +20,9 @@ var user = {
           console.log('登录', data)
           api.api("/api/wxapp/login", function (d) {
             console.log('返回信息', d)
+            helper.handleBuriedPoint('login_wxapp', '', [{
+              key: '点击'
+            }])
             if (d.error == 0) {
               cache.setCache("openid", d.content.res.openid);
               cache.setCache("user_id", d.content.user_id);

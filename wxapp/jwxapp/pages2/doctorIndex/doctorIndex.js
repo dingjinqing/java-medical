@@ -82,8 +82,9 @@ global.wxPage({
           util.jumpLink('/pages/usercenter/usercenter','reLaunch')
         });
       } else{
-        util.showModal('提示',res.message);
-        util.jumpLink('/pages/usercenter/usercenter','reLaunch')
+        util.showModal('提示',res.message, () => {
+          util.jumpLink('/pages/usercenter/usercenter','reLaunch')
+        });
       }
     },{
       doctorName: this.data.name,
@@ -195,6 +196,9 @@ global.wxPage({
     util.jumpLink(`/pages2/doctorPrescriptionList/doctorPrescriptionList${util.getUrlParams({
       status
     })}`)
+  },
+  viewWithdraw(){
+    util.jumpLink(`pages2/serviceWithdraw/serviceWithdraw`)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

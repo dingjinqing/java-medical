@@ -106,3 +106,27 @@ export function shareStore (data) {
     data: data
   })
 }
+
+// // 请求第三方配送列表
+// export function getDeliverys () {
+//   return service({
+//     url: '/api/admin/store/account/get',
+//     method: 'get'
+//   })
+// }
+
+// 请求基础配置中的设置
+export function getDeliveryConfig () {
+  return service({
+    url: '/api/admin/store/get/config',
+    method: 'get'
+  })
+}
+
+// 根据门店获取配送列表
+export function getDeliveryByStore (data) {
+  return service({
+    url: '/api/admin/store/account/' + data.storeId,
+    method: 'get'
+  })
+}

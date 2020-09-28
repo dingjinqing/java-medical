@@ -152,7 +152,11 @@
         "doctorComment/doctorComment",
         "doctorIntroduce/doctorIntroduce",
         "doctorPrescriptionList/doctorPrescriptionList",
-        "doctorFocus/doctorFocus"
+        "doctorFocus/doctorFocus",
+        "serviceWithdraw/serviceWithdraw",
+        "withdrawInfo/withdrawInfo",
+        "doctorWithdrawRecord/doctorWithdrawRecord",
+        "doctorWithdraw/doctorWithdraw"
       ]
     }
   ],

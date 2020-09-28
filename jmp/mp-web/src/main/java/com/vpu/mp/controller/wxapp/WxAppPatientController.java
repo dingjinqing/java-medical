@@ -7,6 +7,7 @@ import com.vpu.mp.common.pojo.shop.table.PatientDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.patient.*;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.prescription.FetchPrescriptionService;
 import com.vpu.mp.service.shop.sms.SmsAccountService;
@@ -142,9 +143,11 @@ public class WxAppPatientController extends WxAppBaseController {
         Integer userId = patientAddParam.getUserId();
         PatientDo patientDo = new PatientDo();
         FieldsUtil.assign(patientAddParam,patientDo);
+        UserPatientCoupleDo userPatientCoupleDo = new UserPatientCoupleDo();
         if (patientDo.getId() >0) {
             shop().patientService.updatePatient(patientDo);
         } else {
+            userPatientCoupleDo.setIsFetch(PatientConstant.UN_FETCH);
             PatientExternalRequestParam param = new PatientExternalRequestParam();
             FieldsUtil.assign(patientDo,param);
             Integer patientId = shop().patientService.getPatientExist(param);
@@ -162,12 +165,10 @@ public class WxAppPatientController extends WxAppBaseController {
                 shop().patientService.updatePatient(patientDo);
             }
         }
-        UserPatientCoupleDo userPatientCoupleDo = new UserPatientCoupleDo();
         FieldsUtil.assign(patientDo,userPatientCoupleDo);
         userPatientCoupleDo.setId(null);
         userPatientCoupleDo.setPatientId(patientDo.getId());
         userPatientCoupleDo.setUserId(userId);
-        userPatientCoupleDo.setIsFetch(PatientConstant.FETCH);
         shop().patientService.addPatientUser(userPatientCoupleDo);
         return success();
     }
@@ -179,6 +180,16 @@ public class WxAppPatientController extends WxAppBaseController {
     public JsonResult getPatientDetail(@RequestBody UserPatientParam param) {
         UserPatientDetailVo patientDetail = shop().patientService.getOneDetail(param);
         return success(patientDetail);
+    }
+
+    /**
+     * 待审核处方查看患者信息
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/wxapp/user/patient/show/information")
+    public JsonResult showPatientInformation(@RequestBody @Validated PrescriptionNoParam param) {
+        return success(shop().patientService.auditPatientShow(param));
     }
 
     /**

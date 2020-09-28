@@ -5,27 +5,30 @@ import com.github.binarywang.wxpay.bean.entpay.EntPayRequest;
 import com.github.binarywang.wxpay.bean.entpay.EntPayResult;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
+import com.github.binarywang.wxpay.bean.request.WxPaySendRedpackRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
-import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
-import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
-import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
-import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
+import com.github.binarywang.wxpay.bean.result.*;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.util.SignUtils;
+import com.vpu.mp.common.foundation.data.DistributionConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.WxSerMchConfig;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.pay.jsapi.JsApiVo;
+import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.wechat.WxPayment;
 import com.vpu.mp.service.wechat.WxPaymentAttachParam;
 import com.vpu.mp.support.PemToPkcs12;
@@ -55,6 +58,8 @@ public class MpPaymentService extends ShopBaseService {
 	public PaymentService pay;
     @Autowired
     private WxSerMchConfig wxSerMchConfig;
+    @Autowired
+    private MemberService memberService;
 
 	/**
 	 * 得到店铺小程序支付实例
@@ -331,32 +336,36 @@ public class MpPaymentService extends ShopBaseService {
 		return wxPayment.refund(request);
 	}
 
-	/**
-	 * 企业付款到个人
-	 * @param clientIp 来源IP
-	 * @param outTradeNumber 付款单号
-	 * @param openId 用户OpenId
-	 * @param realUserName 用户真实姓名
-	 * @param amount 付款金额，单位分
-	 * @param desc 描述
-	 * @return
-	 * @throws WxPayException
-	 */
-	public EntPayResult companyPay(String clientIp, String outTradeNumber, String openId, String realUserName,
-			Integer amount, String desc)
-			throws WxPayException {
-		WxPayment wxPayment = this.getMpPay();
-		EntPayRequest wxEntPayRequest = EntPayRequest.newBuilder()
-				.spbillCreateIp(clientIp)
-				.openid(openId)
-				.amount(amount)
-				.description(desc)
-				.reUserName(realUserName)
-				.partnerTradeNo(outTradeNumber)
-				.checkName("FORCE_CHECK")
-				.build();
-		return wxPayment.getEntPayService().entPay(wxEntPayRequest);
-	}
+    /**
+     * 企业付款到个人
+     * @param mchAppid 公众账号appid
+     * @param clientIp 来源IP
+     * @param outTradeNumber 付款单号
+     * @param openId 用户OpenId
+     * @param realUserName 用户真实姓名
+     * @param amount 付款金额，单位分
+     * @param desc 描述
+     * @return
+     * @throws WxPayException
+     */
+    public EntPayResult companyPay(String mchAppid, String clientIp, String outTradeNumber, String openId, String realUserName,
+                                   Integer amount, String desc)
+        throws WxPayException {
+        WxPayment wxPayment = this.getMpPay();
+        EntPayRequest wxEntPayRequest = EntPayRequest.newBuilder()
+            .mchAppid(mchAppid)
+            .spbillCreateIp(clientIp)
+            .openid(openId)
+            .amount(amount)
+            .description(desc)
+            .reUserName(realUserName)
+            .partnerTradeNo(outTradeNumber)
+            .checkName("FORCE_CHECK")
+            .build();
+        EntPayResult entPayResult = wxPayment.getEntPayService().entPay(wxEntPayRequest);
+        entPayResult.checkResult(wxPayment, WxPayConstants.SignType.MD5, true);
+        return entPayResult;
+    }
 
 	/**
 	 * 微信小程序支付回调
@@ -381,4 +390,94 @@ public class MpPaymentService extends ShopBaseService {
 				.build();
 		pay.unionPayNotify(param);
 	}
+
+    /**
+     * 现金红包查询
+     * @param mchBillNo  订单号
+     * @return
+     * @throws WxPayException
+     */
+    public WxPayRedpackQueryResult queryRedpack(String mchBillNo) throws WxPayException {
+        WxPayment wxPayment = this.getMpPay();
+        WxPayRedpackQueryResult wxPayRedpackQueryResult = wxPayment.queryRedpack(mchBillNo);
+        return wxPayRedpackQueryResult;
+    }
+
+    /**
+     * 发放普通红包（场景：目前特约商户不支持'企业付款到个人接口'，现采用红包方式实现）
+     *    场景金额限制------默认红包金额为1-200元，如有需要，可前往商户平台进行设置和申请
+     *    其他限制------商户单日出资金额上限--100万元；单用户单日收款金额上限--1000元；单用户可领取红包个数上限--10个；
+     *
+     * @param linkOfficialAppId 子商户公众号id
+     * @param mchBillNo 商户订单号
+     * @param clientIp  ip
+     * @param openId    openId
+     * @param amount    金额（分）
+     * @param wishing   红包祝福语
+     * @param actName   活动名称
+     * @param remark    备注
+     * @return result
+     * @throws WxPayException exc
+     */
+    public WxPaySendRedpackResult sendRedpack(String linkOfficialAppId, String mchBillNo, String clientIp, String openId, Integer amount, String wishing, String actName, String remark)
+        throws WxPayException {
+        WxPayment wxPayment = this.getMpPay();
+        WxPaySendRedpackRequest requestParam = WxPaySendRedpackRequest.newBuilder()
+            .mchBillNo(mchBillNo)
+            .wxAppid(wxPayment.getConfig().getAppId())
+            .msgAppid(linkOfficialAppId)
+            .sendName(wxPayment.getShopName())
+            .reOpenid(openId)
+            .totalAmount(amount)
+            .totalNum(1)
+            .wishing(wishing)
+            .clientIp(clientIp)
+            .actName(actName)
+            .remark(remark)
+            .build();
+        WxPaySendRedpackResult wxPaySendRedpackResult = wxPayment.sendRedpack(requestParam);
+        wxPaySendRedpackResult.checkResult(wxPayment, WxPayConstants.SignType.MD5, true);
+        return wxPaySendRedpackResult;
+    }
+
+    /**
+     * 提现
+     * @param orderSn orderSn
+     * @param ip ip
+     * @param realName realName
+     * @param userId userId
+     * @param type type
+     * @param money money
+     * @throws MpException mpe
+     */
+    public void pay2Person(String orderSn, String ip, String realName, Integer userId, Byte type, BigDecimal money) throws MpException {
+        logger().info("pay2Person start");
+        //小程序消息
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
+        try {
+            if(DistributionConstant.RT_WX_OPEN.equals(type)) {
+                if(wxapp == null || StringUtils.isBlank(wxapp.getLinkOfficialAppId())) {
+                    throw new MpException(JsonResultCode.DISTRIBUTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS);
+                }
+                String wxOpenId = memberService.getUserWxOpenId(userId);
+                String openId = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
+                companyPay(wxapp.getLinkOfficialAppId(), ip, orderSn, openId, realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(), "佣金提现");
+            }else if(DistributionConstant.RT_WX_MINI.equals(type)) {
+                UserRecord userRecord = memberService.getUserRecordById(userId);
+                companyPay(wxapp.getAppId(), ip, orderSn, userRecord.getWxOpenid(), realName, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(), "佣金提现");
+            }else if(DistributionConstant.RT_SUB_MCH.equals(type)) {
+                if(wxapp == null || StringUtils.isBlank(wxapp.getLinkOfficialAppId())) {
+                    throw new MpException(JsonResultCode.DISTRIBUTOR_WITHDRAW_NO_FOCUS_WECHAT_OFFICIAL_ACCOUNTS);
+                }
+                UserRecord userRecord = memberService.getUserRecordById(userId);
+                String wxOpenId = memberService.getUserWxOpenId(userId);
+                String openId = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
+                sendRedpack(wxapp.getLinkOfficialAppId(), orderSn, ip, openId, BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(), userRecord.getUsername() + "的红包", "佣金提现", "推广商品赚取更多佣金");
+            }
+        } catch (WxPayException e) {
+            throw new MpException(JsonResultCode.DISTRIBUTOR_WITHDRAW_WX_ERROR,
+                e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
+        }
+        logger().info("pay2Person end");
+    }
 }

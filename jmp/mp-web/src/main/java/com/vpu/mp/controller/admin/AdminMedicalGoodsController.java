@@ -5,10 +5,14 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalStoreRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.order.goods.store.*;
+import com.vpu.mp.service.shop.order.goods.OrderStoreSyncService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -17,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @Slf4j
-public class AdminMedicalGoodsController extends AdminBaseController{
+public class AdminMedicalGoodsController extends AdminBaseController {
 
     /**
      * 药品新增
@@ -25,7 +29,7 @@ public class AdminMedicalGoodsController extends AdminBaseController{
      * @return
      */
     @PostMapping("/api/admin/medical/goods/insert")
-    public JsonResult insert(@RequestBody GoodsEntity goodsEntity){
+    public JsonResult insert(@RequestBody GoodsEntity goodsEntity) {
 
         //判断商品名称是否为空
         if (StrUtil.isBlank(goodsEntity.getGoodsName())) {
@@ -43,9 +47,9 @@ public class AdminMedicalGoodsController extends AdminBaseController{
         }
         try {
             shop().medicalGoodsService.insert(shopId(), goodsEntity);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             log.warn(e.getMessage());
-            return fail(JsonResultCode.MEDICAL_GOODS_SKU_CONTENT_ILLEGAL,e.getMessage());
+            return fail(JsonResultCode.MEDICAL_GOODS_SKU_CONTENT_ILLEGAL, e.getMessage());
         }
 
         return success();
@@ -57,7 +61,7 @@ public class AdminMedicalGoodsController extends AdminBaseController{
      * @return
      */
     @PostMapping("/api/admin/medical/goods/update")
-    public JsonResult update(@RequestBody GoodsEntity goodsEntity){
+    public JsonResult update(@RequestBody GoodsEntity goodsEntity) {
 
         if (goodsEntity.getGoodsId() == null) {
             return fail(JsonResultCode.GOODS_ID_IS_NULL);
@@ -78,9 +82,9 @@ public class AdminMedicalGoodsController extends AdminBaseController{
 
         try {
             shop().medicalGoodsService.update(shopId(), goodsEntity);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             log.warn(e.getMessage());
-            return fail(JsonResultCode.MEDICAL_GOODS_SKU_CONTENT_ILLEGAL,e.getMessage());
+            return fail(JsonResultCode.MEDICAL_GOODS_SKU_CONTENT_ILLEGAL, e.getMessage());
         }
 
         return success();
@@ -92,7 +96,7 @@ public class AdminMedicalGoodsController extends AdminBaseController{
      * @return
      */
     @GetMapping("/api/admin/medical/goods/delete/{goodsId}")
-    public JsonResult delete(@PathVariable("goodsId") Integer goodsId){
+    public JsonResult delete(@PathVariable("goodsId") Integer goodsId) {
         if (goodsId == null) {
             return fail(JsonResultCode.GOODS_ID_IS_NULL);
         }
@@ -123,16 +127,53 @@ public class AdminMedicalGoodsController extends AdminBaseController{
      * @return
      */
     @PostMapping("/api/admin/medical/goods/page/list")
-    public JsonResult getGoodsPageList(@RequestBody MedicalGoodsPageListParam pageListParam){
+    public JsonResult getGoodsPageList(@RequestBody MedicalGoodsPageListParam pageListParam) {
         PageResult<GoodsPageListVo> goodsPageList = shop().medicalGoodsService.getGoodsPageList(pageListParam);
 
         return success(goodsPageList);
     }
 
 
-
     @PostMapping("/api/admin/medical/goods/pull")
-    public JsonResult fetchExternalMedicalInfo(){
+    public JsonResult fetchExternalMedicalInfo() {
         return shop().medicalGoodsService.fetchExternalMedicalInfo();
+    }
+
+    @PostMapping("/api/admin/medical/store/goods/pull")
+    public JsonResult fetchExternalStoreMedicalInfo() {
+        shop().medicalGoodsService.fetchExternalStoresGoodsInfo();
+        return success();
+    }
+
+    @PostMapping("/api/admin/medical/store/goods/pull2")
+    public JsonResult fetchExternalStoreMedicalInfoForTest(@RequestBody MedicalGoodsExternalStoreRequestParam param) {
+        return success(shop().medicalGoodsService.fetchExternalStoreTest(param));
+    }
+
+    @Autowired
+    OrderStoreSyncService orderStoreSyncService;
+
+    @PostMapping("/api/admin/medical/test1")
+    public JsonResult fetchTest(@RequestBody OrderStorePosBo param) {
+        boolean b = orderStoreSyncService.pushOrderInfoToStore(param);
+        return success(b);
+    }
+
+    @PostMapping("/api/admin/medical/test2")
+    public JsonResult fetchTest(@RequestBody StoreGoodsNumConfirmParam param) {
+        StoreGoodsConfirmVo vo = orderStoreSyncService.syncGoodsInfosFromStore(param);
+        return success(vo);
+    }
+
+    @PostMapping("/api/admin/medical/test3")
+    public JsonResult fetchTest(@RequestBody OrderStockEnoughQueryParam param) {
+        OrderStockEnoughQueryVo vo = orderStoreSyncService.getStockEnoughShopList(param);
+        return success(vo);
+    }
+
+    @PostMapping("/api/admin/medical/test4")
+    public JsonResult fetchTest(@RequestBody OrderStoreCancelParam param) {
+       boolean b =  orderStoreSyncService.cancelOrder(param);
+        return success(b);
     }
 }

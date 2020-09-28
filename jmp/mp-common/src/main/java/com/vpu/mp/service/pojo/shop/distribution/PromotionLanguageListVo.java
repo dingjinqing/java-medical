@@ -14,11 +14,12 @@ import lombok.Data;
 public class PromotionLanguageListVo {
 	private Integer id;
 	private String title;
-	@JsonProperty("PromotionLanguage")
 	private String promotionLanguage;
 	private Byte isBlock;
 	private Byte delFlag;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+    /**是否默认推广语*/
+    private Byte isDefault = 0;
 
 }

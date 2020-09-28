@@ -97,8 +97,7 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_ONLY_MONEY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_OVERDUE_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_REMIND_DELIVERY;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
+import static org.jooq.impl.DSL.*;
 
 /**
  * Table:order_info
@@ -303,6 +302,10 @@ public class OrderInfoService extends ShopBaseService {
 
         if (param.getOrderIds() != null && param.getOrderIds().length != 0) {
             select.where(ORDER_INFO.ORDER_ID.in(param.getOrderIds()));
+        }
+
+        if (param.getStoreIds() != null) {
+            select.where(ORDER_INFO.STORE_ID.in(param.getStoreIds()));
         }
 
         //店铺助手操作
@@ -884,6 +887,7 @@ public class OrderInfoService extends ShopBaseService {
             // 核销 收货
             case OrderConstant.ORDER_RECEIVED:
                 order.setOrderStatus(OrderConstant.ORDER_RECEIVED);
+                order.setPickupdateTime(DateUtils.getSqlTimestamp().toString());
                 order.setConfirmTime(DateUtils.getSqlTimestamp());
                 break;
             // 完成

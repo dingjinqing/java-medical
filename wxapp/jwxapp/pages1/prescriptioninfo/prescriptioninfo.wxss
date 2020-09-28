@@ -39,6 +39,7 @@
   position: relative;
   border-radius: 16rpx 16rpx 0 0;
   margin-top: -190rpx;
+  overflow: hidden;
 }
 .prescription-item > .item-list-content > .item-list{
   display: flex;
@@ -133,4 +134,16 @@
   background-color: #26C4BC;
   color: #fff;
   margin: 20rpx auto 0;
+}
+.prescription-code-status{
+  display: flex;
+  color: #333;
+  margin-top: 20rpx;
+  padding-right: 30rpx;
+}
+.prescription-code-status > view:nth-child(1){
+  margin-right: auto;
+}
+.prescription-code-status > view > text{
+  font-weight: bold;
 }

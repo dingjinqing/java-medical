@@ -75,6 +75,8 @@ global.wxPage({
               orderInfo.groupBuyInfo.show_noper = orderInfo.groupBuyInfo.groupBuyLimitAmout - orderInfo.groupBuyUserInfos.length;
             }
           }
+          clearInterval(this.countDown)
+          this.setData({clock:null})
           if(orderInfo.payOperationTime > 0){
             this.countdown(parseInt(orderInfo.payOperationTime / 1000))
           }

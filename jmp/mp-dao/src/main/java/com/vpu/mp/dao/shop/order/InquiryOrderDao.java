@@ -7,23 +7,31 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.InquiryOrderRecord;
-import com.vpu.mp.service.pojo.wxapp.order.inquiry.*;
+import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderParam;
+import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.statistics.InquiryOrderStatistics;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderTotalVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DEPARTMENT;
-import static com.vpu.mp.db.shop.Tables.DOCTOR;
+import static com.vpu.mp.db.shop.Tables.IM_SESSION;
 import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.avg;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.currentTimestamp;
+import static org.jooq.impl.DSL.date;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * @author yangpengcheng
@@ -38,6 +46,7 @@ public class InquiryOrderDao extends ShopBaseDao {
             .from(INQUIRY_ORDER);
         select.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
         select=buildOptions(select, param);
+        select.orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         PageResult<InquiryOrderDo> list=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderDo.class);
         return list;
     }
@@ -63,6 +72,10 @@ public class InquiryOrderDao extends ShopBaseDao {
         }
         if(StringUtils.isNotBlank(param.getPatientName())) {
             select.where(INQUIRY_ORDER.PATIENT_NAME.like(this.likeValue(param.getPatientName())));
+        }
+        if (param.getStartTime()!=null&&param.getEndTime()!=null){
+            select.where(INQUIRY_ORDER.CREATE_TIME.ge(param.getStartTime()))
+                    .and(INQUIRY_ORDER.CREATE_TIME.le(param.getEndTime()));
         }
         return select;
     }
@@ -189,7 +202,8 @@ public class InquiryOrderDao extends ShopBaseDao {
     public PageResult<InquiryOrderStatisticsVo> orderStatisticsPage(InquiryOrderStatisticsParam param){
         SelectJoinStep<? extends Record> select=selectOptions(param);
         select=buildOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME))
+        .orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         PageResult<InquiryOrderStatisticsVo> result=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderStatisticsVo.class);
         return result;
     }
@@ -233,7 +247,8 @@ public class InquiryOrderDao extends ShopBaseDao {
     public List<InquiryOrderStatisticsVo> orderStatistics(InquiryOrderStatisticsParam param){
         SelectJoinStep<? extends Record> select=selectOptions(param);
         select=buildOptions(select,param);
-        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME));
+        select.groupBy(INQUIRY_ORDER.DOCTOR_ID,INQUIRY_ORDER.DOCTOR_NAME,date(INQUIRY_ORDER.CREATE_TIME))
+            .orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         List<InquiryOrderStatisticsVo> list=select.fetchInto(InquiryOrderStatisticsVo.class);
         return list;
     }
@@ -255,5 +270,39 @@ public class InquiryOrderDao extends ShopBaseDao {
         select=buildOptions(select,param);
         InquiryOrderTotalVo inquiryOrderTotalVo=select.fetchOneInto(InquiryOrderTotalVo.class);
         return inquiryOrderTotalVo;
+    }
+
+    /**
+     * 查询患者问诊数量
+     * @param patientId 患者id
+     * @return Integer
+     */
+    public PatientInquiryOrderVo getInquiryNumberByPatientId(Integer patientId, Integer doctorId) {
+        return db().select(
+            DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("totalAmount"),
+            DSL.count(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiryCount"))
+            .from(INQUIRY_ORDER)
+            .where(INQUIRY_ORDER.PATIENT_ID.eq(patientId))
+            .and(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
+            .and(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
+            .groupBy(INQUIRY_ORDER.PATIENT_ID)
+            .fetchAnyInto(PatientInquiryOrderVo.class);
+    }
+
+    /**
+     * 医师时间段内接诊数量
+     * @param doctorId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public Integer countByDateDoctorId(Integer doctorId, Timestamp startTime, Timestamp endTime) {
+       return db().selectCount().from(INQUIRY_ORDER)
+                .innerJoin(IM_SESSION).on(IM_SESSION.ORDER_SN.eq(INQUIRY_ORDER.ORDER_SN))
+                .where(INQUIRY_ORDER.DOCTOR_ID.eq(doctorId))
+                .and(IM_SESSION.RECEIVE_START_TIME.between(startTime,endTime))
+                .and(INQUIRY_ORDER.ORDER_STATUS.in(InquiryOrderConstant.REFUND_FAILED,InquiryOrderConstant.ORDER_FINISHED,InquiryOrderConstant.ORDER_REFUND,
+                        InquiryOrderConstant.ORDER_TO_REFUND,InquiryOrderConstant.ORDER_PART_REFUND))
+                .fetchAnyInto(Integer.class);
     }
 }

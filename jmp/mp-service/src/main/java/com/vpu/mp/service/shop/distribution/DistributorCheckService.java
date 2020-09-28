@@ -10,8 +10,11 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.UserBindParam;
+import jodd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +88,35 @@ public class DistributorCheckService extends ShopBaseService{
         if(param.getEndTime() != null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.le(param.getEndTime()));
         }
+        //根据ID
+        if (param.getUserId() != null) {
+            select.and(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId()));
+        }
+        //根据邀请码
+        if (StringUtil.isNotEmpty(param.getInvitationCode())) {
+            //1.根据邀请码查询出发出邀请码的邀请人ID
+            SelectConditionStep<Record1<Integer>> selectConditionStep =
+                db().select(USER.USER_ID)
+                    .from(USER)
+                    .where(USER.INVITATION_CODE.contains(param.getInvitationCode()));
+            if (selectConditionStep != null) {
+                Set<Integer> integers = selectConditionStep.fetchSet(USER.USER_ID);
+                //2.根据邀请人ID查询出受邀请人集合
+                select.and(USER.INVITE_ID.in(integers));
+            }
+        }
+        //根据分销员分组
+        if (param.getInviteGroup() != null) {
+            select.and(USER.INVITE_GROUP.eq(param.getInviteGroup()));
+        }
+        //审核开始时间
+        if (param.getCheckStartTime() != null) {
+            select.and(DISTRIBUTOR_APPLY.UPDATE_TIME.ge(param.getCheckStartTime()));
+        }
+        //审核结束时间
+        if (param.getCheckEndTime() != null) {
+            select.and(DISTRIBUTOR_APPLY.UPDATE_TIME.le(param.getCheckEndTime()));
+        }
         //flag = 1是从店铺助手过来
         if(param.getFlag() == 1){
             select.and(DISTRIBUTOR_APPLY.STATUS.eq((byte)0).and(DISTRIBUTOR_APPLY.CREATE_TIME.add(param.getNumberDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
@@ -131,15 +163,19 @@ public class DistributorCheckService extends ShopBaseService{
             //更新审核状态 1：审核通过；2：审核拒绝
             changeApplyStatus(param.getId(),(byte)1);
             //如果有邀请码处理邀请绑定
-            if(param.getInvitationCode() != null){
-                Integer inviteId = db().select(USER.USER_ID).from(USER).where(USER.INVITATION_CODE.eq(param.getInvitationCode())).fetchOne().into(Integer.class);
-                UserBindParam userBindParam = new UserBindParam();
-                userBindParam.setInviteId(inviteId);
-                userBindParam.setUserId(into.getUserId());
-                mpd.userBind(userBindParam);
+            if(StringUtil.isNotEmpty(param.getInvitationCode())){
+                Record1<Integer> integerRecord1 = db().select(USER.USER_ID).from(USER).where(USER.INVITATION_CODE.eq(param.getInvitationCode())).fetchOne();
+                if(integerRecord1 != null){
+                    Integer inviteId = integerRecord1.into(Integer.class);
+                    UserBindParam userBindParam = new UserBindParam();
+                    userBindParam.setInviteId(inviteId);
+                    userBindParam.setUserId(into.getUserId());
+                    mpd.userBind(userBindParam);
+                }
             }
+            String invitationCode = mpd.validInviteCode();
             //更新分销身份状态，分组情况
-            updateApplyGroup(into.getUserId(),param.getGroupId());
+            updateApplyGroup(into.getUserId(),param.getGroupId(),invitationCode);
         });
         //TODO：更改分销员的返利信息
         //TODO：操作记录
@@ -184,10 +220,11 @@ public class DistributorCheckService extends ShopBaseService{
      * @param userId 申请人id
      * @param groupId 分组id
      */
-    private void updateApplyGroup(Integer userId,Integer groupId){
+    private void updateApplyGroup(Integer userId,Integer groupId,String invitationCode){
         db().update(USER)
             .set(USER.IS_DISTRIBUTOR, (byte)1)
             .set(USER.INVITE_GROUP,groupId)
+            .set(USER.INVITATION_CODE,invitationCode)
             .where(USER.USER_ID.eq(userId))
             .execute();
     }

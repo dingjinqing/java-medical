@@ -2,22 +2,12 @@
   <div class="main">
     <div class="navBox">
       <div class="filters">
-        <!-- <div class="filters_item">
-          <span>医师院内编号：</span>
-          <el-input
-            v-model="queryParams.hospitalCode"
-            size="small"
-            style="width:190px;"
-            placeholder="请输入医师院内编号"
-          >
-          </el-input>
-        </div> -->
         <div class="filters_item">
           <span>姓名：</span>
           <el-input
             v-model="queryParams.name"
             size="small"
-            style="width:190px;"
+            style="width: 190px;"
             placeholder="请输入姓名"
           >
           </el-input>
@@ -27,48 +17,56 @@
           <el-input
             v-model="queryParams.departmentName"
             size="small"
-            style="width:190px;"
+            style="width: 190px;"
             placeholder="请输入科室"
           >
           </el-input>
         </div>
         <div class="btn_wrap">
           <el-button
-            type='primary'
-            size='small'
+            type="primary"
+            size="small"
             @click="initDataList"
           >搜索</el-button>
           <el-button
             type="primary"
             size="small"
-            @click='handleAddDoctor'
+            @click="handleAddDoctor"
           >添加</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="fetch"
+          >同步</el-button>
         </div>
       </div>
     </div>
     <div class="table_box">
       <el-table
-        v-loading='loading'
-        :data='tableData'
-        style="width:100%"
+        v-loading="loading"
+        :data="tableData"
+        style="width: 100%;"
         border
         :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none',
-            'color': '#000'
-          }"
+          'background-color': '#f5f5f5',
+          'text-align': 'center',
+          border: 'none',
+          color: '#000',
+        }"
         :cell-style="{
-            'text-align':'center'
-          }"
+          'text-align': 'center',
+        }"
       >
         <el-table-column
-          prop='hospitalCode'
-          label='医师院内编号'
+          prop="hospitalCode"
+          label="医师院内编号"
         ></el-table-column>
-        <el-table-column label='名称'>
+        <el-table-column label="姓名">
           <template slot-scope="scope">
-            <div class="doc_name_url">
+            <div
+              class="doc_name_url"
+              style='display: flex;justify-content: flex-start;'
+            >
               <img
                 class="doc_img"
                 v-if='scope.row.url'
@@ -78,31 +76,70 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column
-            prop='name'
-            label='姓名'
-          ></el-table-column> -->
+        <!-- <el-table-column label="年龄">
+          <template slot-scope="scope">
+            <span> {{scope.row.age}}</span>
+          </template>
+        </el-table-column> -->
         <el-table-column
-          prop='age'
-          label='年龄'
+          prop="departmentNames"
+          label="职称/科室"
+        >
+          <template slot-scope="scope">
+            <span> {{scope.row.titleName}}/{{scope.row.departmentNames}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="手机号"
         ></el-table-column>
         <el-table-column
-          prop='departmentNames'
-          label='科室'
-        ></el-table-column>
+          label="评分星级"
+          align="center"
+          width="200px"
+        >
+          <template slot-scope="scope">
+            <div class="evaluation-info">
+              <div
+                class="evaluation-info_item"
+                v-if="scope.row.avgCommentStar > 0"
+              >
+                <star :value="scope.row.avgCommentStar" />
+                <div style='margin-top:10px'>{{scope.row.avgCommentStar}}</div>
+                <a
+                  href="javaScript:void(0);"
+                  class="same_btn"
+                  style="margin-top:10px"
+                  @click="toComment(scope.row.name)"
+                >查看</a>
+
+              </div>
+              <div v-else>暂无评价</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="平均响应时间">
+          <template v-slot="scope">
+            <span>{{scope.row.answerHourInt > 0 ?  scope.row.answerHourInt + '小时' : ''}}</span><span>{{scope.row.answerMunite != -1 ?  scope.row.answerMunite + '分钟' : '暂无接诊'}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop='titleName'
-          label='职称'
+          prop="attentionNumber"
+          label="关注量"
         ></el-table-column>
-        <el-table-column
-          prop='mobile'
-          label='手机号'
-        ></el-table-column>
-        <el-table-column
-          prop='workTime'
-          label='从业时间'
-        ></el-table-column>
-        <el-table-column label='操作'>
+        <el-table-column label="接诊量">
+          <template v-slot='scope'>
+            <a
+              href="javaScript:void(0);"
+              class="same_btn"
+              style="margin:0px;display:block"
+              @click="toAdvistory(scope.row.name)"
+              v-if="scope.row.consultationNumber > 0"
+            >{{scope.row.consultationNumber}}</a>
+            <span v-else>0</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="operation">
               <a
@@ -132,7 +169,7 @@
                 href="javaScript:void(0);"
                 class="same_btn"
                 @click="setConsultation(scope.row)"
-              >{{scope.row.canConsultation ? '禁止问诊' : '允许问诊'}}</a>
+              >{{ scope.row.canConsultation ? '禁止问诊' : '允许问诊' }}</a>
             </div>
           </template>
         </el-table-column>
@@ -146,10 +183,11 @@
 </template>
 
 <script>
-import { doctorList, enableDoctor, unBundling, updateConsultation } from '@/api/admin/doctorManage/doctorInfo/doctor'
+import { doctorList, enableDoctor, unBundling, updateConsultation, fetchDoctor } from '@/api/admin/doctorManage/doctorInfo/doctor'
 import pagination from '@/components/admin/pagination/pagination'
+import star from '@/components/admin/commonStar'
 export default {
-  components: { pagination },
+  components: { pagination, star },
   data () {
     return {
       loading: false,
@@ -293,6 +331,29 @@ export default {
           }
         })
       })
+    },
+    fetch () {
+      fetchDoctor().then(res => {
+        console.log(res)
+      })
+    },
+    toAdvistory (name) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/orders/advisoryOrder/list',
+        query: {
+          name: name
+        }
+      })
+      window.open(href, '_blank')
+    },
+    toComment (name) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/comment/list',
+        query: {
+          name: name
+        }
+      })
+      window.open(href, '_blank')
     }
   },
   watch: {
@@ -325,12 +386,12 @@ export default {
       line-height: 32px;
       margin-left: -15px;
       .filters_item {
-        width: 270px;
+        // width: 270px;
         display: flex;
         justify-content: flex-end;
         margin-left: 15px;
         > span {
-          width: 140px;
+          // width: 140px;
           font-size: 14px;
           text-align: right;
         }
@@ -360,13 +421,12 @@ export default {
       display: flex;
       justify-content: center;
       flex-direction: column;
-      > .same_btn {
-        font-size: 12px;
-        text-decoration: none;
-        cursor: pointer;
-        margin-right: 8px;
-        color: #5a8bff;
-      }
+    }
+    .same_btn {
+      font-size: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      color: #5a8bff;
     }
   }
 }

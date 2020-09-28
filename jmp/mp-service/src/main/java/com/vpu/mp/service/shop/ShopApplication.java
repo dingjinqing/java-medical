@@ -71,6 +71,7 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.AuditService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
@@ -79,7 +80,12 @@ import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.question.FeedbackService;
+import com.vpu.mp.service.shop.rebate.DoctorWithdrawService;
+import com.vpu.mp.service.shop.rebate.InquiryOrderRebateService;
+import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
+import com.vpu.mp.service.shop.store.statistic.StoreOrderSummaryTrendService;
+import com.vpu.mp.service.shop.store.store.StoreGoodsService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -87,8 +93,10 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
+import com.vpu.mp.service.shop.task.department.DepartmentTaskService;
 import com.vpu.mp.service.shop.task.order.InquiryOrderTaskService;
 import com.vpu.mp.service.shop.task.prescription.PrescriptionTaskService;
+import com.vpu.mp.service.shop.task.store.StoreTaskService;
 import com.vpu.mp.service.shop.title.TitleService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.shop.user.message.MessageRecordService;
@@ -151,6 +159,11 @@ public class ShopApplication {
 	@Autowired
 	public OrderWriteService writeOrder;
     /**
+     * 订单业务操作
+     */
+	@Autowired
+	public OrderInfoService orderInfoService;
+    /**
      * 订单对外统一接口
      */
     @Autowired
@@ -187,6 +200,11 @@ public class ShopApplication {
 	public AppletsJumpService appletsJump;
 	@Autowired
 	public MallOverviewService mallOverview;
+    /**
+     * 门店商品
+     */
+    @Autowired
+    public StoreGoodsService storeGoodsService;
     /**
      * 优惠券管理
      */
@@ -246,11 +264,19 @@ public class ShopApplication {
      */
     @Autowired
 	public DistributorWithdrawService withdraw;
+
+    /**
+     * 分销提现
+     */
+    @Autowired
+    public WithdrawService withdrawService;
     /**
      * mp分销service
      */
     @Autowired
     public MpDistributionService  mpDistribution;
+    @Autowired
+    public MpDistributorLevelService mpDisLevel;
     /**分销商品service*/
     @Autowired
     public MpDistributionGoodsService mpDisGoods;
@@ -274,6 +300,9 @@ public class ShopApplication {
 
 	@Autowired
 	public ShopTaskService shopTaskService;
+
+    @Autowired
+    public StoreTaskService storeTaskService;
 
 	/**
 	 * 组团购
@@ -635,4 +664,30 @@ public class ShopApplication {
     /**咨询聊天*/
     @Autowired
     public ImSessionService imSessionService;
+    /**
+     * 处方返利
+     */
+    @Autowired
+    public PrescriptionRebateService prescriptionRebateService;
+    /**
+     * 咨询返利
+     */
+    @Autowired
+    public InquiryOrderRebateService inquiryOrderRebateService;
+    /**
+     * 医师提现
+     */
+    @Autowired
+    public DoctorWithdrawService doctorWithdrawService;
+    /**
+     * 门店订单统计
+     */
+    @Autowired
+    public StoreOrderSummaryTrendService storeSummary;
+
+    /**
+     * 科室信息统计
+     */
+    @Autowired
+    public DepartmentTaskService departmentTaskService;
 }

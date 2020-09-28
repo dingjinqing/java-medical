@@ -127,6 +127,8 @@ public class Indexes {
     public static final Index DISTRIBUTION_WITHDRAW_PRIMARY = Indexes0.DISTRIBUTION_WITHDRAW_PRIMARY;
     public static final Index DISTRIBUTOR_APPLY_PRIMARY = Indexes0.DISTRIBUTOR_APPLY_PRIMARY;
     public static final Index DISTRIBUTOR_APPLY_USER_ID = Indexes0.DISTRIBUTOR_APPLY_USER_ID;
+    public static final Index DISTRIBUTOR_COLLECTION_PRIMARY = Indexes0.DISTRIBUTOR_COLLECTION_PRIMARY;
+    public static final Index DISTRIBUTOR_COLLECTION_DISTRIBUTOR_ID = Indexes0.DISTRIBUTOR_COLLECTION_DISTRIBUTOR_ID;
     public static final Index DISTRIBUTOR_GROUP_PRIMARY = Indexes0.DISTRIBUTOR_GROUP_PRIMARY;
     public static final Index DISTRIBUTOR_LEVEL_LEVEL_ID = Indexes0.DISTRIBUTOR_LEVEL_LEVEL_ID;
     public static final Index DISTRIBUTOR_LEVEL_PRIMARY = Indexes0.DISTRIBUTOR_LEVEL_PRIMARY;
@@ -539,6 +541,30 @@ public class Indexes {
     public static final Index USER_DOCTOR_ATTENTION_PRIMARY = Indexes0.USER_DOCTOR_ATTENTION_PRIMARY;
     public static final Index DOCTOR_DUTY_RECORD_PRIMARY = Indexes0.DOCTOR_DUTY_RECORD_PRIMARY;
     public static final Index DOCTOR_COMMENT_PRIMARY = Indexes0.DOCTOR_COMMENT_PRIMARY;
+    public static final Index STORE_ACCOUNT_ACCOUNT_NAME = Indexes0.STORE_ACCOUNT_ACCOUNT_NAME;
+    public static final Index STORE_ACCOUNT_MOBILE = Indexes0.STORE_ACCOUNT_MOBILE;
+    public static final Index STORE_ACCOUNT_PRIMARY = Indexes0.STORE_ACCOUNT_PRIMARY;
+    public static final Index INQUIRY_ORDER_REBATE_DOCTOR_ID = Indexes0.INQUIRY_ORDER_REBATE_DOCTOR_ID;
+    public static final Index INQUIRY_ORDER_REBATE_ORDER_SN = Indexes0.INQUIRY_ORDER_REBATE_ORDER_SN;
+    public static final Index INQUIRY_ORDER_REBATE_PRIMARY = Indexes0.INQUIRY_ORDER_REBATE_PRIMARY;
+    public static final Index CITY_SERVICE_ACCOUNT_PRIMARY = Indexes0.CITY_SERVICE_ACCOUNT_PRIMARY;
+    public static final Index DOCTOR_TOTAL_REBATE_DOCTOR_ID = Indexes0.DOCTOR_TOTAL_REBATE_DOCTOR_ID;
+    public static final Index DOCTOR_TOTAL_REBATE_PRIMARY = Indexes0.DOCTOR_TOTAL_REBATE_PRIMARY;
+    public static final Index CITY_SERVICE_ORDER_BATCH_NO = Indexes0.CITY_SERVICE_ORDER_BATCH_NO;
+    public static final Index CITY_SERVICE_ORDER_ORDER_SN = Indexes0.CITY_SERVICE_ORDER_ORDER_SN;
+    public static final Index CITY_SERVICE_ORDER_ORDER_STATUS = Indexes0.CITY_SERVICE_ORDER_ORDER_STATUS;
+    public static final Index CITY_SERVICE_ORDER_PRIMARY = Indexes0.CITY_SERVICE_ORDER_PRIMARY;
+    public static final Index CITY_SERVICE_ORDER_WAYBILL_ID = Indexes0.CITY_SERVICE_ORDER_WAYBILL_ID;
+    public static final Index DOCTOR_COMMENT_REPLY_PRIMARY = Indexes0.DOCTOR_COMMENT_REPLY_PRIMARY;
+    public static final Index PRESCRIPTION_REBATE_DOCTOR_ID = Indexes0.PRESCRIPTION_REBATE_DOCTOR_ID;
+    public static final Index PRESCRIPTION_REBATE_PRIMARY = Indexes0.PRESCRIPTION_REBATE_PRIMARY;
+    public static final Index DOCTOR_WITHDRAW_DOCTOR_ID = Indexes0.DOCTOR_WITHDRAW_DOCTOR_ID;
+    public static final Index DOCTOR_WITHDRAW_PRIMARY = Indexes0.DOCTOR_WITHDRAW_PRIMARY;
+    public static final Index STORE_ORDER_SUMMARY_TREND_PRIMARY = Indexes0.STORE_ORDER_SUMMARY_TREND_PRIMARY;
+    public static final Index STORE_ORDER_SUMMARY_TREND_REF_TYPE = Indexes0.STORE_ORDER_SUMMARY_TREND_REF_TYPE;
+    public static final Index ANCHOR_POINTS_PRIMARY = Indexes0.ANCHOR_POINTS_PRIMARY;
+    public static final Index DEPARTMENT_SUMMARY_TREND_PRIMARY = Indexes0.DEPARTMENT_SUMMARY_TREND_PRIMARY;
+    public static final Index DEPARTMENT_SUMMARY_TREND_REF_TYPE = Indexes0.DEPARTMENT_SUMMARY_TREND_REF_TYPE;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -634,6 +660,8 @@ public class Indexes {
         public static Index DISTRIBUTION_WITHDRAW_PRIMARY = Internal.createIndex("PRIMARY", DistributionWithdraw.DISTRIBUTION_WITHDRAW, new OrderField[] { DistributionWithdraw.DISTRIBUTION_WITHDRAW.ID }, true);
         public static Index DISTRIBUTOR_APPLY_PRIMARY = Internal.createIndex("PRIMARY", DistributorApply.DISTRIBUTOR_APPLY, new OrderField[] { DistributorApply.DISTRIBUTOR_APPLY.ID }, true);
         public static Index DISTRIBUTOR_APPLY_USER_ID = Internal.createIndex("user_id", DistributorApply.DISTRIBUTOR_APPLY, new OrderField[] { DistributorApply.DISTRIBUTOR_APPLY.USER_ID }, false);
+        public static Index DISTRIBUTOR_COLLECTION_PRIMARY = Internal.createIndex("PRIMARY", DistributorCollection.DISTRIBUTOR_COLLECTION, new OrderField[] { DistributorCollection.DISTRIBUTOR_COLLECTION.ID }, true);
+        public static Index DISTRIBUTOR_COLLECTION_DISTRIBUTOR_ID = Internal.createIndex("distributor_id", DistributorCollection.DISTRIBUTOR_COLLECTION, new OrderField[] { DistributorCollection.DISTRIBUTOR_COLLECTION.DISTRIBUTOR_ID }, false);
         public static Index DISTRIBUTOR_GROUP_PRIMARY = Internal.createIndex("PRIMARY", DistributorGroup.DISTRIBUTOR_GROUP, new OrderField[] { DistributorGroup.DISTRIBUTOR_GROUP.ID }, true);
         public static Index DISTRIBUTOR_LEVEL_LEVEL_ID = Internal.createIndex("level_id", DistributorLevel.DISTRIBUTOR_LEVEL, new OrderField[] { DistributorLevel.DISTRIBUTOR_LEVEL.LEVEL_ID }, true);
         public static Index DISTRIBUTOR_LEVEL_PRIMARY = Internal.createIndex("PRIMARY", DistributorLevel.DISTRIBUTOR_LEVEL, new OrderField[] { DistributorLevel.DISTRIBUTOR_LEVEL.ID }, true);
@@ -1055,6 +1083,31 @@ public class Indexes {
         public static Index USER_DOCTOR_ATTENTION_PRIMARY = Internal.createIndex("PRIMARY", UserDoctorAttention.USER_DOCTOR_ATTENTION, new OrderField[] { UserDoctorAttention.USER_DOCTOR_ATTENTION.ID }, true);
         public static Index DOCTOR_DUTY_RECORD_PRIMARY = Internal.createIndex("PRIMARY", DoctorDutyRecord.DOCTOR_DUTY_RECORD, new OrderField[] { DoctorDutyRecord.DOCTOR_DUTY_RECORD.ID }, true);
         public static Index DOCTOR_COMMENT_PRIMARY = Internal.createIndex("PRIMARY", DoctorComment.DOCTOR_COMMENT, new OrderField[] { DoctorComment.DOCTOR_COMMENT.ID }, true);
+        public static Index STORE_ACCOUNT_ACCOUNT_NAME = Internal.createIndex("account_name", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_NAME }, false);
+        public static Index STORE_ACCOUNT_MOBILE = Internal.createIndex("mobile", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.MOBILE }, false);
+        public static Index STORE_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_ID }, true);
+        public static Index INQUIRY_ORDER_REBATE_DOCTOR_ID = Internal.createIndex("doctor_id", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ORDER_SN }, false);
+        public static Index INQUIRY_ORDER_REBATE_ORDER_SN = Internal.createIndex("order_sn", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ORDER_SN }, false);
+        public static Index INQUIRY_ORDER_REBATE_PRIMARY = Internal.createIndex("PRIMARY", InquiryOrderRebate.INQUIRY_ORDER_REBATE, new OrderField[] { InquiryOrderRebate.INQUIRY_ORDER_REBATE.ID }, true);
+        public static Index CITY_SERVICE_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", CityServiceAccount.CITY_SERVICE_ACCOUNT, new OrderField[] { CityServiceAccount.CITY_SERVICE_ACCOUNT.ID }, true);
+        public static Index CITY_SERVICE_ORDER_BATCH_NO = Internal.createIndex("batch_no", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.BATCH_NO }, false);
+        public static Index CITY_SERVICE_ORDER_ORDER_SN = Internal.createIndex("order_sn", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.ORDER_SN }, false);
+        public static Index CITY_SERVICE_ORDER_ORDER_STATUS = Internal.createIndex("order_status", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.ORDER_STATUS }, false);
+        public static Index CITY_SERVICE_ORDER_PRIMARY = Internal.createIndex("PRIMARY", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.ID }, true);
+        public static Index CITY_SERVICE_ORDER_WAYBILL_ID = Internal.createIndex("waybill_id", CityServiceOrder.CITY_SERVICE_ORDER, new OrderField[] { CityServiceOrder.CITY_SERVICE_ORDER.WAYBILL_ID }, false);
+
+        public static Index ANCHOR_POINTS_PRIMARY = Internal.createIndex("PRIMARY", AnchorPoints.ANCHOR_POINTS, new OrderField[] { AnchorPoints.ANCHOR_POINTS.ID }, true);
+        public static Index DOCTOR_TOTAL_REBATE_DOCTOR_ID = Internal.createIndex("doctor_id", DoctorTotalRebate.DOCTOR_TOTAL_REBATE, new OrderField[] { DoctorTotalRebate.DOCTOR_TOTAL_REBATE.DOCTOR_ID }, false);
+        public static Index DOCTOR_TOTAL_REBATE_PRIMARY = Internal.createIndex("PRIMARY", DoctorTotalRebate.DOCTOR_TOTAL_REBATE, new OrderField[] { DoctorTotalRebate.DOCTOR_TOTAL_REBATE.ID }, true);
+        public static Index DOCTOR_COMMENT_REPLY_PRIMARY = Internal.createIndex("PRIMARY", DoctorCommentReply.DOCTOR_COMMENT_REPLY, new OrderField[] { DoctorCommentReply.DOCTOR_COMMENT_REPLY.ID }, true);
+        public static Index PRESCRIPTION_REBATE_DOCTOR_ID = Internal.createIndex("doctor_id", PrescriptionRebate.PRESCRIPTION_REBATE, new OrderField[] { PrescriptionRebate.PRESCRIPTION_REBATE.DOCTOR_ID }, false);
+        public static Index PRESCRIPTION_REBATE_PRIMARY = Internal.createIndex("PRIMARY", PrescriptionRebate.PRESCRIPTION_REBATE, new OrderField[] { PrescriptionRebate.PRESCRIPTION_REBATE.ID }, true);
+        public static Index DOCTOR_WITHDRAW_DOCTOR_ID = Internal.createIndex("doctor_id", DoctorWithdraw.DOCTOR_WITHDRAW, new OrderField[] { DoctorWithdraw.DOCTOR_WITHDRAW.DOCTOR_ID }, false);
+        public static Index DOCTOR_WITHDRAW_PRIMARY = Internal.createIndex("PRIMARY", DoctorWithdraw.DOCTOR_WITHDRAW, new OrderField[] { DoctorWithdraw.DOCTOR_WITHDRAW.ID }, true);
+        public static Index STORE_ORDER_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND, new OrderField[] { StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.ID }, true);
+        public static Index STORE_ORDER_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND, new OrderField[] { StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.REF_DATE, StoreOrderSummaryTrend.STORE_ORDER_SUMMARY_TREND.TYPE }, false);
+        public static Index DEPARTMENT_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND, new OrderField[] { DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.ID }, true);
+        public static Index DEPARTMENT_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND, new OrderField[] { DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.REF_DATE, DepartmentSummaryTrend.DEPARTMENT_SUMMARY_TREND.TYPE }, false);
     }
 
 }
