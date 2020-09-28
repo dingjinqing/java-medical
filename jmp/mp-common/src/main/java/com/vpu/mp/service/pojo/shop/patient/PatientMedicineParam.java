@@ -37,7 +37,7 @@ public class PatientMedicineParam {
      */
     private Timestamp startTime;
     /**
-     * 购药时间下届
+     * 购药时间下界
      */
     private Timestamp endTime;
     /**
