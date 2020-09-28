@@ -29,6 +29,7 @@ import static com.vpu.mp.db.main.Tables.ORDER_GOODS_BAK;
 import static com.vpu.mp.db.main.Tables.RETURN_ORDER_BAK;
 import static com.vpu.mp.db.main.Tables.RETURN_ORDER_GOODS_BAK;
 import static com.vpu.mp.db.main.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.RETURN_ORDER;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
 
@@ -55,7 +56,8 @@ public class ReturnOrderBakDao extends MainBaseDao {
                 //退款单数
                 DSL.count().as(ActiveDiscountMoney.RETURN_NUMBER))
                 .from(RETURN_ORDER_BAK)
-                .where(RETURN_ORDER_BAK.CREATE_TIME.between(startTime, endTime));
+                .where(RETURN_ORDER_BAK.CREATE_TIME.between(startTime, endTime))
+                .and(RETURN_ORDER.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH));
         if (shopId!=null&&shopId>0){
             where.and(RETURN_ORDER_BAK.SHOP_ID.eq(shopId));
         }
