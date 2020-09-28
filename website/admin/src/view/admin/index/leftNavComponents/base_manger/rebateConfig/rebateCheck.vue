@@ -118,7 +118,7 @@
           <template slot-scope="scope">
             <div class="operate">
               <span
-                v-if="scope.row.status === 3"
+                v-if="[2, 3, 5].inludes(scope.row.status)"
                 @click="changeStatus(scope, 'chargeOff')"
                 >出账</span
               >
