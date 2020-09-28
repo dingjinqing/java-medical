@@ -38,7 +38,7 @@ public class UserGoodsRecordDao extends ShopBaseDao {
                 .select(USER_GOODS_RECORD.ID,USER_GOODS_RECORD.UPDATE_TIME.as(MemberGoodsBrowseReportVo.TIME),
                         DSL.max(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME).as(MemberGoodsBrowseReportVo.GOODSNAME),
                         DSL.max(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO).as(MemberGoodsBrowseReportVo.SPECIFICATIONS),
-                        DSL.max(GOODS_MEDICAL_INFO.GOODS_MEDICAL_INSTRUCTION).as(MemberGoodsBrowseReportVo.MANUFACTURER),
+                        DSL.max(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE).as(MemberGoodsBrowseReportVo.MANUFACTURER),
                         DSL.countDistinct(PRESCRIPTION_ITEM.ID).as(MemberGoodsBrowseReportVo.PRESCRIPTIONNUM),
                         DSL.countDistinct(USER_CART_RECORD.ID).as(MemberGoodsBrowseReportVo.ADDCARTNUM),
                         DSL.countDistinct(USER_COLLECTION.ID).as(MemberGoodsBrowseReportVo.COLLECT),
