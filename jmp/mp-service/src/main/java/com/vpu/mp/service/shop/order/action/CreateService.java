@@ -467,6 +467,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void addPlatformRebate(OrderInfoRecord order){
         List<OrderGoodsRecord> goodsRecordList = orderGoods.getByOrderId(order.getOrderId()).into(OrderGoodsRecord.class);
+        int sums=goodsRecordList.stream().collect(Collectors.summingInt(OrderGoodsRecord::getGoodsNumber));
         //过滤符合平台返利条件
         goodsRecordList = goodsRecordList.stream().filter(goodsRecord -> {
             if (YES == goodsRecord.getIsGift()) {
@@ -474,8 +475,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }
             return OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT.equals(goodsRecord.getMedicalAuditType());
         }).collect(Collectors.toList());
-        Integer sums=goodsRecordList.stream().collect(Collectors.summingInt(OrderGoodsRecord::getGoodsNumber));
-        BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), BigDecimal.valueOf(sums), RoundingMode.HALF_UP);
+        if(goodsRecordList==null||goodsRecordList.size()<=0){
+            return;
+        }
+        BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), new BigDecimal(String.valueOf(sums)), RoundingMode.HALF_UP);
 
         for(OrderGoodsRecord goods:goodsRecordList){
             //不审核的药品,平台单独返利
