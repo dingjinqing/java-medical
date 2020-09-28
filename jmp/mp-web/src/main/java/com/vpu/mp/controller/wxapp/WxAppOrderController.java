@@ -153,6 +153,7 @@ public class WxAppOrderController extends WxAppBaseController{
      */
     @PostMapping("/operation")
     public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
+        param.setPlatform(OrderConstant.PLATFORM_WXAPP);
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
@@ -395,7 +396,13 @@ public class WxAppOrderController extends WxAppBaseController{
             return success(storeService.getStoreListOpen(orderAddressParam.getStoreGoodsBaseCheckInfoList()));
         }
         orderAddressParam.setDeliveryType(DELIVER_TYPE_SELF);
-        Map<String, StoreDo> storeListOpen = storeService.getStoreListOpen(orderAddressParam);
+        Map<String, StoreDo> storeListOpen = null;
+        try {
+            storeListOpen = storeService.getStoreListOpen(orderAddressParam);
+        } catch (MpException e) {
+            e.printStackTrace();
+            return fail(e.getErrorCode());
+        }
         return success(storeListOpen);
     }
 

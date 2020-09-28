@@ -2,8 +2,10 @@ package com.vpu.mp.service.shop.task.order;
 
 import com.vpu.mp.common.foundation.data.ImSessionConstant;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.pojo.main.table.PlatformTotalRebateDo;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.dao.main.platform.PlatformTotalRebateDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
 import com.vpu.mp.dao.shop.rebate.DoctorTotalRebateDao;
 import com.vpu.mp.dao.shop.rebate.InquiryOrderRebateDao;
@@ -42,6 +44,8 @@ public class InquiryOrderTaskService extends ShopBaseService {
     private InquiryOrderRebateDao inquiryOrderRebateDao;
     @Autowired
     private DoctorTotalRebateDao doctorTotalRebateDao;
+    @Autowired
+    private PlatformTotalRebateDao platformTotalRebateDao;
     /**
      * 自动任务关闭待支付的问诊订单
      */
@@ -137,6 +141,12 @@ public class InquiryOrderTaskService extends ShopBaseService {
             if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){
                 doctorTotalRebateDao.updateDoctorTotalRebate(order.getDoctorId(),order.getTotalRebateMoney());
             }
+            //统计平台返利
+            PlatformTotalRebateDo platformTotalRebateDo=new PlatformTotalRebateDo();
+            platformTotalRebateDo.setShopId(order.getShopId());
+            platformTotalRebateDo.setTotalMoney(order.getTotalRebateMoney());
+            platformTotalRebateDo.setFinalMoney(order.getTotalRebateMoney());
+            platformTotalRebateDao.savePlatFormTotalRebate(platformTotalRebateDo);
             logger().info("接诊中问诊订单超时自动结束,成功,orderSn:{}", order.getOrderSn());
         });
         logger().info("接诊中问诊订单超时自动结束定时任务end");

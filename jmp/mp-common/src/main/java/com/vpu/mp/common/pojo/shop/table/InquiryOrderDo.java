@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  */
 @Data
 @NoArgsConstructor
-public class InquiryOrderDo {
+public class InquiryOrderDo extends ImSessionDo {
 
     private static final long serialVersionUID = 883131361;
 
@@ -46,6 +46,8 @@ public class InquiryOrderDo {
     private String     imageUrl;
     private BigDecimal rebateProportion;
     private BigDecimal totalRebateMoney;
+    private BigDecimal platformRebateProportion;
+    private BigDecimal platformRebateMoney;
     private Byte       isDelete;
     private Byte       settlementFlag;
     private Timestamp  createTime;

@@ -12,10 +12,12 @@ import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.main.table.PlatformTotalRebateDo;
 import com.vpu.mp.common.pojo.shop.table.ImSessionDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderRefundListDo;
 import com.vpu.mp.common.pojo.shop.table.UserDo;
+import com.vpu.mp.dao.main.platform.PlatformTotalRebateDao;
 import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.order.InquiryOrderDao;
@@ -114,6 +116,8 @@ public class InquiryOrderService extends ShopBaseService {
     private InquiryOrderRebateDao inquiryOrderRebateDao;
     @Autowired
     private DoctorTotalRebateDao doctorTotalRebateDao;
+    @Autowired
+    private PlatformTotalRebateDao platformTotalRebateDao;
 
     /**
      * 问询订单列表
@@ -214,6 +218,12 @@ public class InquiryOrderService extends ShopBaseService {
         if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){
             doctorTotalRebateDao.updateDoctorTotalRebate(inquiryOrderDo.getDoctorId(),inquiryOrderDo.getTotalRebateMoney());
         }
+        //统计平台返利
+        PlatformTotalRebateDo platformTotalRebateDo=new PlatformTotalRebateDo();
+        platformTotalRebateDo.setShopId(inquiryOrderDo.getShopId());
+        platformTotalRebateDo.setTotalMoney(inquiryOrderDo.getTotalRebateMoney());
+        platformTotalRebateDo.setFinalMoney(inquiryOrderDo.getTotalRebateMoney());
+        platformTotalRebateDao.savePlatFormTotalRebate(platformTotalRebateDo);
     }
 
     /**
@@ -285,14 +295,18 @@ public class InquiryOrderService extends ShopBaseService {
         RebateConfig rebateConfig=this.rebateConfigService.getRebateConfig();
         if(rebateConfig!=null&&RebateConfigConstant.SWITCH_ON.equals(rebateConfig.getStatus())){
             BigDecimal proportion=rebateConfig.getInquiryOrderDoctorProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_UP);
+            BigDecimal platformProportion=rebateConfig.getInquiryOrderPlatformProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_HALF_UP);
             order.setRebateProportion(proportion);
+            order.setPlatformRebateProportion(platformProportion);
             order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_UP));
+            order.setPlatformRebateMoney(order.getOrderAmount().multiply(platformProportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_HALF_UP));
             order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
             //返利入库
             InquiryOrderRebateParam param =new InquiryOrderRebateParam();
             param.setOrderSn(order.getOrderSn());
             param.setDoctorId(order.getDoctorId());
             param.setTotalRebateMoney(order.getTotalRebateMoney());
+            param.setPlatformRebateMoney(order.getPlatformRebateMoney());
             param.setStatus(InquiryOrderRebateConstant.TO_REBATE);
             param.setTotalMoney(order.getOrderAmount());
             inquiryOrderRebateDao.addInquiryOrderRebate(param);

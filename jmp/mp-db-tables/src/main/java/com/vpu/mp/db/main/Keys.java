@@ -109,6 +109,7 @@ public class Keys {
     public static final Identity<InquiryOrderRecord, Long> IDENTITY_INQUIRY_ORDER = Identities0.IDENTITY_INQUIRY_ORDER;
     public static final Identity<ShopSmsConfigRecord, Integer> IDENTITY_SHOP_SMS_CONFIG = Identities0.IDENTITY_SHOP_SMS_CONFIG;
     public static final Identity<ShopLogisticsRecord, Integer> IDENTITY_SHOP_LOGISTICS = Identities0.IDENTITY_SHOP_LOGISTICS;
+    public static final Identity<PlatformTotalRebateRecord, Integer> IDENTITY_PLATFORM_TOTAL_REBATE = Identities0.IDENTITY_PLATFORM_TOTAL_REBATE;
 
 
     // -------------------------------------------------------------------------
@@ -225,6 +226,7 @@ public class Keys {
     public static final UniqueKey<InquiryOrderRecord> KEY_B2C_INQUIRY_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_INQUIRY_ORDER_PRIMARY;
     public static final UniqueKey<ShopSmsConfigRecord> KEY_B2C_SHOP_SMS_CONFIG_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_SMS_CONFIG_PRIMARY;
     public static final UniqueKey<ShopLogisticsRecord> KEY_B2C_SHOP_LOGISTICS_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_LOGISTICS_PRIMARY;
+    public static final UniqueKey<PlatformTotalRebateRecord> KEY_B2C_PLATFORM_TOTAL_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_PLATFORM_TOTAL_REBATE_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -313,6 +315,7 @@ public class Keys {
         public static Identity<InquiryOrderRecord, Long> IDENTITY_INQUIRY_ORDER = Internal.createIdentity(InquiryOrder.INQUIRY_ORDER, InquiryOrder.INQUIRY_ORDER.ID);
         public static Identity<ShopSmsConfigRecord, Integer> IDENTITY_SHOP_SMS_CONFIG = Internal.createIdentity(ShopSmsConfig.SHOP_SMS_CONFIG, ShopSmsConfig.SHOP_SMS_CONFIG.ID);
         public static Identity<ShopLogisticsRecord, Integer> IDENTITY_SHOP_LOGISTICS = Internal.createIdentity(ShopLogistics.SHOP_LOGISTICS, ShopLogistics.SHOP_LOGISTICS.ID);
+        public static Identity<PlatformTotalRebateRecord, Integer> IDENTITY_PLATFORM_TOTAL_REBATE = Internal.createIdentity(PlatformTotalRebate.PLATFORM_TOTAL_REBATE, PlatformTotalRebate.PLATFORM_TOTAL_REBATE.ID);
 
     }
 
@@ -428,6 +431,7 @@ public class Keys {
         public static final UniqueKey<InquiryOrderRecord> KEY_B2C_INQUIRY_ORDER_PRIMARY = Internal.createUniqueKey(InquiryOrder.INQUIRY_ORDER, "KEY_b2c_inquiry_order_PRIMARY", InquiryOrder.INQUIRY_ORDER.ID);
         public static final UniqueKey<ShopSmsConfigRecord> KEY_B2C_SHOP_SMS_CONFIG_PRIMARY = Internal.createUniqueKey(ShopSmsConfig.SHOP_SMS_CONFIG, "KEY_b2c_shop_sms_config_PRIMARY", ShopSmsConfig.SHOP_SMS_CONFIG.ID);
         public static final UniqueKey<ShopLogisticsRecord> KEY_B2C_SHOP_LOGISTICS_PRIMARY = Internal.createUniqueKey(ShopLogistics.SHOP_LOGISTICS, "KEY_b2c_shop_logistics_PRIMARY", ShopLogistics.SHOP_LOGISTICS.ID);
+        public static final UniqueKey<PlatformTotalRebateRecord> KEY_B2C_PLATFORM_TOTAL_REBATE_PRIMARY = Internal.createUniqueKey(PlatformTotalRebate.PLATFORM_TOTAL_REBATE, "KEY_b2c_platform_total_rebate_PRIMARY", PlatformTotalRebate.PLATFORM_TOTAL_REBATE.ID);
 
     }
 }

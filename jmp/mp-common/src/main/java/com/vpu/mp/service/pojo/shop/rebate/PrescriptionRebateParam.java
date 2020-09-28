@@ -16,6 +16,8 @@ public class PrescriptionRebateParam {
     private BigDecimal canCalculateMoney;
     private BigDecimal totalRebateMoney;
     private BigDecimal realRebateMoney;
+    private BigDecimal platformRebateMoney;
+    private BigDecimal platformRealRebateMoney;
     /**
      * 返利状态
      */

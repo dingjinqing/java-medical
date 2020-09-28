@@ -7,7 +7,7 @@
   </view>
   <view class="content">
     <view hidden="{{tabIndex !== 'usercenter'}}">
-      <userinfo options="{{options}}" comColor="{{comColor}}"/>
+      <userinfo options="{{options}}" comColor="{{comColor}}" clerk-image-path="{{clerkImagePath}}"/>
     </view>
     <view hidden="{{tabIndex !== 'address'}}">
       <address options="{{options}}" comColor="{{comColor}}" data="{{addressList}}" />

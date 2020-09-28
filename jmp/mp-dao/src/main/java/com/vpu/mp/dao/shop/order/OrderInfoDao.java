@@ -107,6 +107,11 @@ public class OrderInfoDao extends ShopBaseDao {
         )
                 .from(ORDER_INFO)
                 .where(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
+                .and(ORDER_INFO.ORDER_STATUS.notIn(
+                        OrderConstant.ORDER_WAIT_PAY,
+                        OrderConstant.ORDER_CANCELLED,
+                        OrderConstant.ORDER_CLOSED
+                ))
                 .groupBy(date(ORDER_INFO.CREATE_TIME))
                 .orderBy(ORDER_INFO.CANCELLED_TIME)
                 .fetchMap(date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME), MedicalOrderReportVo.class);

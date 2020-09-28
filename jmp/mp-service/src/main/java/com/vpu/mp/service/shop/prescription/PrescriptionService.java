@@ -409,8 +409,8 @@ public class PrescriptionService extends ShopBaseService {
             item.setUseMethod(info.getGoodsUseMethod());
             item.setPrescriptionCode(prescriptionParam.getPrescriptionCode());
             GoodsDo goods=goodsDao.getByGoodsId(info.getGoodsId());
-            item.setMedicinePrice(goods.getShopPrice());
             item.setDragSumNum(goodsMap.get(info.getGoodsId()).getDragSumNum());
+            item.setMedicinePrice(goods.getShopPrice().multiply(BigDecimal.valueOf(item.getDragSumNum())));
             item.setDragSumUnit(info.getGoodsPackageUnit());
             item.setGoodsImg(goods.getGoodsImg());
             item.setPrdId(goodsMap.get(info.getGoodsId()).getPrdId());

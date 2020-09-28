@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItemRecord> {
 
-    private static final long serialVersionUID = 628911608;
+    private static final long serialVersionUID = 991830323;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.id</code>.
@@ -395,45 +395,87 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.platform_rebate_proportion</code>. 平台返利比例
+     */
+    public void setPlatformRebateProportion(BigDecimal value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.platform_rebate_proportion</code>. 平台返利比例
+     */
+    public BigDecimal getPlatformRebateProportion() {
+        return (BigDecimal) get(26);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.platform_rebate_money</code>. 平台返利金额
+     */
+    public void setPlatformRebateMoney(BigDecimal value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.platform_rebate_money</code>. 平台返利金额
+     */
+    public BigDecimal getPlatformRebateMoney() {
+        return (BigDecimal) get(27);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_prescription_item.platform_real_rebate_money</code>. 平台实际返利金额
+     */
+    public void setPlatformRealRebateMoney(BigDecimal value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_prescription_item.platform_real_rebate_money</code>. 平台实际返利金额
+     */
+    public BigDecimal getPlatformRealRebateMoney() {
+        return (BigDecimal) get(28);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.
      */
     public void setIsDelete(Byte value) {
-        set(26, value);
+        set(29, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.is_delete</code>.
      */
     public Byte getIsDelete() {
-        return (Byte) get(26);
+        return (Byte) get(29);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(27, value);
+        set(30, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(27);
+        return (Timestamp) get(30);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_prescription_item.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(28, value);
+        set(31, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_prescription_item.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(28);
+        return (Timestamp) get(31);
     }
 
     // -------------------------------------------------------------------------
@@ -462,7 +504,7 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
     /**
      * Create a detached, initialised PrescriptionItemRecord
      */
-    public PrescriptionItemRecord(Integer id, String posCode, String posDetailCode, String prescriptionCode, String prescriptionDetailCode, Integer goodsId, String goodsCommonName, String goodsImg, String goodsQualityRatio, Integer prdId, String useMethod, Double perTimeNum, String perTimeUnit, Double perTimeDosage, String perTimeDosageUnit, Double frequency, Double dragSumNum, String dragSumUnit, String goodsUseMemo, String goodsProductionEnterprise, BigDecimal medicinePrice, BigDecimal canCalculateMoney, BigDecimal goodsSharingProportion, BigDecimal rebateProportion, BigDecimal totalRebateMoney, BigDecimal realRebateMoney, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
+    public PrescriptionItemRecord(Integer id, String posCode, String posDetailCode, String prescriptionCode, String prescriptionDetailCode, Integer goodsId, String goodsCommonName, String goodsImg, String goodsQualityRatio, Integer prdId, String useMethod, Double perTimeNum, String perTimeUnit, Double perTimeDosage, String perTimeDosageUnit, Double frequency, Double dragSumNum, String dragSumUnit, String goodsUseMemo, String goodsProductionEnterprise, BigDecimal medicinePrice, BigDecimal canCalculateMoney, BigDecimal goodsSharingProportion, BigDecimal rebateProportion, BigDecimal totalRebateMoney, BigDecimal realRebateMoney, BigDecimal platformRebateProportion, BigDecimal platformRebateMoney, BigDecimal platformRealRebateMoney, Byte isDelete, Timestamp createTime, Timestamp updateTime) {
         super(PrescriptionItem.PRESCRIPTION_ITEM);
 
         set(0, id);
@@ -491,8 +533,11 @@ public class PrescriptionItemRecord extends UpdatableRecordImpl<PrescriptionItem
         set(23, rebateProportion);
         set(24, totalRebateMoney);
         set(25, realRebateMoney);
-        set(26, isDelete);
-        set(27, createTime);
-        set(28, updateTime);
+        set(26, platformRebateProportion);
+        set(27, platformRebateMoney);
+        set(28, platformRealRebateMoney);
+        set(29, isDelete);
+        set(30, createTime);
+        set(31, updateTime);
     }
 }
