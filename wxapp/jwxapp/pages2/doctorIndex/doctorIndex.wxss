@@ -338,3 +338,38 @@
   background-color: #26C4BC;
   text-align: center;
 }
+.sign-button{
+  border-radius: 10rpx;
+  background-color:#F0FFFE;
+  color:#26C4BC;
+  line-height: 100rpx;
+  box-sizing: border-box;
+  border: 2rpx dashed #26C4BC;
+  text-align: center;
+  width: 576rpx;
+  margin: 20rpx auto 0;
+}
+.sign-button > image{
+  width: 40rpx;
+  height: 32rpx;
+  vertical-align: middle;
+  margin-right: 8rpx;
+}
+.sign-button > text{
+  vertical-align: middle;
+}
+.clerk-image{
+  width: 300rpx;
+  height: 573rpx;
+  transform: rotate(-90deg);
+  transform-origin: 50% 26%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.clerk-image-content{
+  height: 300rpx;
+  width: 573rpx;
+  position: relative;
+  margin: 20rpx auto 0;
+}

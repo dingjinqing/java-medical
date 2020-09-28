@@ -15,7 +15,8 @@ global.wxPage({
 		doctorInfo: [],
 		// 工作状态
 		work_status: 1,
-		show_work_modal: 0
+		show_work_modal: 0,
+		clerkImagePath:{}
 	},
 	/**
    * 生命周期函数--监听页面加载
@@ -67,6 +68,10 @@ global.wxPage({
 			util.showModal('提示', '请输入医生院内编号')
 			return false
 		}
+		if (!this.data.clerkImagePath.imgPath) {
+			util.showModal('提示', '请签名添加图片')
+			return false
+		}
 		util.api(
 			'/api/wxapp/doctor/auth',
 			res => {
@@ -93,7 +98,8 @@ global.wxPage({
 				mobile: this.data.mobile,
 				hospitalCode: this.data.hosCode,
 				mobileCheckCode: this.data.mobileCheckCode,
-				userId: util.getCache('user_id')
+				userId: util.getCache('user_id'),
+				signature:this.data.clerkImagePath.imgPath
 			}
 		)
 	},
@@ -252,6 +258,12 @@ global.wxPage({
 				treatDisease: this.data.doctorInfo.treatDisease
 			})}`
 		)
+	},
+	showCanvasContent() {
+		// this.setData({
+		//   showCanvas: true
+		// })
+		util.jumpLink('/pages3/clerkSign/clerkSign')
 	},
 	/**
    * 生命周期函数--监听页面初次渲染完成

@@ -1,186 +1,161 @@
 <template>
-    <div class="doctorInfo">
-      <div
-        v-if='reload'
-        id='doctorDiv'
-        class="doctorContent"
+  <div class="doctorInfo">
+    <div v-if="reload" id="doctorDiv" class="doctorContent">
+      <!-- 添加内容 -->
+      <el-form
+        ref="doctorForm"
+        :model="doctorFormInfo"
+        :rules="doctorFormRules"
+        label-width="150px"
+        size="small"
+        label-suffix="："
       >
-        <!-- 添加内容 -->
-        <el-form
-          ref='doctorForm'
-          :model='doctorFormInfo'
-          :rules='doctorFormRules'
-          label-width="150px"
-          size="small"
-          label-suffix="："
-        >
-          <el-form-item
-            label='注册医院'
-            prop='registeredHospital'
+        <el-form-item label="注册医院" prop="registeredHospital">
+          <span>医院名称</span>
+        </el-form-item>
+        <el-form-item label="医生签名" prop="signature">
+          <div
+            class="choose_url_img"
+            style="border: 1px solid #ccc; width: 150px; height: 78px"
           >
-            <span>医院名称</span>
-          </el-form-item>
-          <el-form-item
-            label='头像'
-            prop='url'
+            <el-image
+              fit="scale-down"
+              :src="imgHost + '/' + signPic"
+              style="width: 150px; height: 78px; cursor: pointer"
+              @click="addSignPic()"
+            />
+          </div>
+        </el-form-item>
+        <el-form-item label="头像" prop="url">
+          <el-radio-group v-model="urlType" class="radio_url">
+            <el-radio :label="0" style="margin-right: 10px">自定义</el-radio>
+            <div class="choose_url_img">
+              <el-image
+                fit="scale-down"
+                :src="imgHost + '/' + showedPic"
+                style="width: 78px; height: 78px; cursor: pointer"
+                @click="addImage()"
+              />
+            </div>
+            <el-radio :label="1">默认</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="医生姓名" prop="name">
+          <el-input
+            v-model="doctorFormInfo.name"
+            placeholder="请输入医生姓名"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="医生院内编号" prop="hospitalCode">
+          <el-input
+            v-model="doctorFormInfo.hospitalCode"
+            placeholder="请输入医生院内编号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="医生资格编码" prop="certificateCode">
+          <el-input
+            v-model="doctorFormInfo.certificateCode"
+            placeholder="请输入医生资格编码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="医生执业编码" prop="professionalCode">
+          <el-input
+            v-model="doctorFormInfo.professionalCode"
+            placeholder="请输入医生执业编码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="医生职称" prop="titleId">
+          <el-select
+            v-model="doctorFormInfo.titleId"
+            placeholder="请选择医生职称"
           >
-            <el-radio-group
-              v-model='urlType'
-              class="radio_url"
-            >
-              <el-radio :label='0' style="margin-right:10px">自定义</el-radio>
-              <div class="choose_url_img">
-                <el-image
-                  fit="scale-down"
-                  :src="imgHost+'/'+showedPic"
-                  style="width: 78px; height: 78px;cursor: pointer;"
-                  @click='addImage()'
-                />
-              </div>
-              <el-radio :label='1'>默认</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item
-            label='医生姓名'
-            prop='name'
+            <el-option
+              v-for="item in doctorJobTitles"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="聘任职务" prop="duty">
+          <el-select v-model="doctorFormInfo.duty" placeholder="请选择聘任职务">
+            <el-option
+              v-for="item in hireJobs"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所属科室" prop="departmentIdsStr">
+          <el-select
+            v-model="doctorFormInfo.departmentIdsStr"
+            multiple
+            placeholder="请选择"
           >
-            <el-input
-              v-model="doctorFormInfo.name"
-              placeholder="请输入医生姓名"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label='医生院内编号'
-            prop='hospitalCode'
-          >
-            <el-input
-              v-model="doctorFormInfo.hospitalCode"
-              placeholder="请输入医生院内编号"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label='医生资格编码'
-            prop='certificateCode'
-          >
-            <el-input
-              v-model="doctorFormInfo.certificateCode"
-              placeholder="请输入医生资格编码"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label='医生执业编码'
-            prop='professionalCode'
-          >
-            <el-input
-              v-model="doctorFormInfo.professionalCode"
-              placeholder="请输入医生执业编码"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label='医生职称'
-            prop='titleId'
-          >
-            <el-select
-              v-model="doctorFormInfo.titleId"
-              placeholder="请选择医生职称"
-            >
-              <el-option
-                v-for="item in doctorJobTitles"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label='聘任职务'
-            prop='duty'
-          >
-            <el-select
-              v-model="doctorFormInfo.duty"
-              placeholder="请选择聘任职务"
+            <el-option-group
+              v-for="group in belongParts"
+              :key="group.name"
+              :label="group.name"
             >
               <el-option
-                v-for="item in hireJobs"
-                :key="item.id"
+                v-for="item in group.childDepartmentList"
+                :key="item.name"
                 :label="item.name"
                 :value="item.id"
-                ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label='所属科室'
-            prop='departmentIdsStr'
-          >
-            <el-select v-model="doctorFormInfo.departmentIdsStr" multiple placeholder="请选择">
-              <el-option-group
-                v-for="group in belongParts"
-                :key="group.name"
-                :label="group.name">
-                <el-option
-                  v-for="item in group.childDepartmentList"
-                  :key="item.name"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-option-group>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label='性别'
-            prop='sex'
-          >
-            <el-radio-group v-model="doctorFormInfo.sex">
-                <el-radio :label="0">男</el-radio>
-                <el-radio :label="1">女</el-radio>
-                <el-radio :label="2">未知</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item
-            label='手机号'
-            prop='mobile'
-          >
-            <el-input
-              v-model.number="doctorFormInfo.mobile"
-              placeholder="请输入手机号码"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label='问诊费用'
-            prop='consultationPrice'
-          >
-            <el-input
-              v-model="doctorFormInfo.consultationPrice"
-              ref='conPriceInput'
-              placeholder="请填写问诊费用"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label='擅长疾病'
-            prop='treatDisease'
-          >
-            <el-input
-              v-model="doctorFormInfo.treatDisease"
-              placeholder="请填写擅长疾病"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div class="addDoctorFooter">
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleSubmit"
-        >保存</el-button>
-      </div>
-      <!--图片dialog-->
-      <ImageDalog
-        :tuneUp="imgDialogShow"
-        pageIndex='pictureSpace'
-        :imageSize="[800,800]"
-        @handleSelectImg='handleSelectImg'
-      />
+              >
+              </el-option>
+            </el-option-group>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="doctorFormInfo.sex">
+            <el-radio :label="0">男</el-radio>
+            <el-radio :label="1">女</el-radio>
+            <el-radio :label="2">未知</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input
+            v-model.number="doctorFormInfo.mobile"
+            placeholder="请输入手机号码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="问诊费用" prop="consultationPrice">
+          <el-input
+            v-model="doctorFormInfo.consultationPrice"
+            ref="conPriceInput"
+            placeholder="请填写问诊费用"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="擅长疾病" prop="treatDisease">
+          <el-input
+            v-model="doctorFormInfo.treatDisease"
+            placeholder="请填写擅长疾病"
+          ></el-input>
+        </el-form-item>
+      </el-form>
     </div>
+    <div class="addDoctorFooter">
+      <el-button type="primary" size="small" @click="handleSubmit"
+        >保存</el-button
+      >
+    </div>
+    <!--图片dialog-->
+    <ImageDalog
+      :tuneUp="showSignPicDialog"
+      pageIndex="pictureSpace"
+      :imageSize="[576, 300]"
+      @handleSelectImg="handleSelectSignImg"
+    />
+    <!--图片dialog-->
+    <ImageDalog
+      :tuneUp="imgDialogShow"
+      pageIndex="pictureSpace"
+      :imageSize="[800, 800]"
+      @handleSelectImg="handleSelectImg"
+    />
+  </div>
 </template>
 
 <script>
@@ -204,6 +179,13 @@ export default {
         callback()
       }
     }
+    var validSignature = (rule, value, callback) => {
+      if (!value && this.urlType === 0) {
+        callback(new Error('请选择医生签名'))
+      } else {
+        callback()
+      }
+    }
     return {
       reload: true,
       doctorFormInfo: {
@@ -220,22 +202,24 @@ export default {
         mobile: '',
         account_id: 0,
         consultationPrice: 0.00,
-        treatDisease: ''
+        treatDisease: '',
+        signature: ''
       },
       doctorFormRules: {
-        url: [{required: true, validator: validUrl, trigger: 'change'}],
-        name: [{required: true, message: '请输入医生姓名', trigger: 'blur'}],
-        hospitalCode: [{required: true, message: '请输入医生院内编号', trigger: 'blur'}],
-        certificateCode: [{required: true, message: '请输入医生资格编码', trigger: 'blur'}],
-        professionalCode: [{required: true, message: '请输入医生执业编码', trigger: 'blur'}],
-        titleId: [{required: true, message: '请选择医生职称', trigger: 'change'}],
-        duty: [{required: true, message: '请选择聘任职务', trigger: 'change'}],
-        departmentIdsStr: [{required: true, validator: validatePartId, trigger: 'change'}],
-        sex: [{required: true, message: '请选择医生性别', trigger: 'change'}],
+        url: [{ required: true, validator: validUrl, trigger: 'change' }],
+        name: [{ required: true, message: '请输入医生姓名', trigger: 'blur' }],
+        hospitalCode: [{ required: true, message: '请输入医生院内编号', trigger: 'blur' }],
+        certificateCode: [{ required: true, message: '请输入医生资格编码', trigger: 'blur' }],
+        professionalCode: [{ required: true, message: '请输入医生执业编码', trigger: 'blur' }],
+        titleId: [{ required: true, message: '请选择医生职称', trigger: 'change' }],
+        duty: [{ required: true, message: '请选择聘任职务', trigger: 'change' }],
+        departmentIdsStr: [{ required: true, validator: validatePartId, trigger: 'change' }],
+        sex: [{ required: true, message: '请选择医生性别', trigger: 'change' }],
         mobile: [
-          {required: true, message: '请填写手机号', trigger: 'blur'},
-          {type: 'number', message: '请填写数字', trigger: 'blur'}
-        ]
+          { required: true, message: '请填写手机号', trigger: 'blur' },
+          { type: 'number', message: '请填写数字', trigger: 'blur' }
+        ],
+        signature: [{ required: true, validator: validSignature, trigger: 'change' }]
       },
       doctorJobTitles: {},
       hireJobs: [
@@ -263,7 +247,9 @@ export default {
       urlType: 0,
       imgHost: `${this.$imageHost}`,
       imgDialogShow: false,
-      showedPic: '/image/admin/add_img.png'
+      showedPic: '/image/admin/add_img.png',
+      signPic: '/image/admin/add_img.png',
+      showSignPicDialog: false
     }
   },
   mounted () {
@@ -304,6 +290,17 @@ export default {
         treatDisease: ''
       }
     },
+    // 添加医师签名
+    addSignPic () {
+      this.showSignPicDialog = !this.showSignPicDialog
+      this.$http.$emit('dtVisible')
+    },
+    // 获取签名图片
+    handleSelectSignImg (res) {
+      this.doctorFormInfo.signature = res.imgPath
+      this.signPic = res.imgPath
+      console.log(res.imgPath)
+    },
     // 获取医师详情
     initDoctor (id) {
       getDoctor(id).then(res => {
@@ -318,6 +315,7 @@ export default {
             this.urlType = 0
             this.showedPic = doctorFormInfo.url
           }
+          this.signPic = doctorFormInfo.signature
           this.doctorFormInfo = doctorFormInfo
         } else {
           this.$message.error({
@@ -412,25 +410,25 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-.doctorInfo{
+.doctorInfo {
   padding: 10px 10px;
   overflow-y: auto;
-  .doctorContent{
+  .doctorContent {
     background-color: white;
     padding: 10px 10px 100px;
-    .add_belong_part{
+    .add_belong_part {
       cursor: pointer;
       width: 250px;
     }
-    .el-input{
+    .el-input {
       width: 300px;
     }
-    .radio_url{
+    .radio_url {
       display: flex;
-      .el-radio{
+      .el-radio {
         padding-top: 10px;
       }
-      .choose_url_img{
+      .choose_url_img {
         width: 80px;
         height: 80px;
         border: 1px solid #ccc;
@@ -438,7 +436,7 @@ export default {
       }
     }
   }
-  .addDoctorFooter{
+  .addDoctorFooter {
     width: calc(100% - 150px);
     transform: translateX(150px);
     background: #f8f8fa;
