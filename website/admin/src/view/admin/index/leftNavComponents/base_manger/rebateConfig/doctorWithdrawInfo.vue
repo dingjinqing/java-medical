@@ -37,7 +37,7 @@
         >
         <el-button
           size="small"
-          v-if="tableData[0].status === 1 || tableData[0].status === 3"
+          v-if="[1, 3, 5].includes(tableData[0].status)"
           @click="changeStatus(tableData[0], 'reject')"
           >驳回提现申请</el-button
         >
