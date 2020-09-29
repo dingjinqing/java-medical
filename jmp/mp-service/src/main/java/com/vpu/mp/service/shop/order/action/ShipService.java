@@ -178,8 +178,6 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		orderAction.addRecord(orderRecord, param, OrderConstant.ORDER_WAIT_DELIVERY, orderRecord.getOrderStatus() == OrderConstant.ORDER_SHIPPED ? "全部发货 " : "部分发货");
 		//操作记录
 		record.insertRecord(Collections.singletonList(RecordContentTemplate.ORDER_SHIP.code), param.getOrderSn());
-        //发货发送提醒
-		sendOrderDeliverMessage(orderRecord);
 		//发送消息模板
         sendMessage.send(orderRecord, recordList);
 		logger.info("发货完成");
