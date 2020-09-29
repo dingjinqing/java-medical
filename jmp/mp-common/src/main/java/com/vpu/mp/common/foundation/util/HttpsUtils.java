@@ -40,6 +40,8 @@ public class HttpsUtils {
     private static PoolingHttpClientConnectionManager connMgr;
     private static RequestConfig requestConfig;
     private static final int MAX_TIMEOUT = 7000;
+    private static final String HTTPS = "https";
+    private static final String THE_QUESTION_MARK = "?";
 
     static {
         // 设置连接池
@@ -133,7 +135,7 @@ public class HttpsUtils {
     public static byte[] getByteArray(String url, Map<String, String> headers) throws IOException {
         HttpClient httpClient;
         log.info("下载图片：请求地址 = {},请求参数 = {},请求协议是否是https = {}",url,JSONObject.toJSONString(headers),url.contains("https"));
-        if (url.contains("https")) {
+        if (url.contains(HTTPS)) {
             httpClient = createSslClientDefault();
         } else {
             httpClient =  HttpClients.createDefault();
@@ -188,7 +190,7 @@ public class HttpsUtils {
             }
             if (GET.equalsIgnoreCase(method)) {
                 if (params != null && params.size() > 0) {
-                    if (url.contains("?")) {
+                    if (url.contains(THE_QUESTION_MARK)) {
                         url += "&" + buildUrlParams(params);
                     } else {
                         url += "?" + buildUrlParams(params);
@@ -231,7 +233,7 @@ public class HttpsUtils {
             }
             if (GET.equalsIgnoreCase(method)) {
                 if (params != null && params.size() > 0) {
-                    if (url.contains("?")) {
+                    if (url.contains(THE_QUESTION_MARK)) {
                         url += "&" + buildUrlParams(params);
                     } else {
                         url += "?" + buildUrlParams(params);
