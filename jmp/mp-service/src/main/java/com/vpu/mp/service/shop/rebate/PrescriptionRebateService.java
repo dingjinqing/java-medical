@@ -100,14 +100,17 @@ public class PrescriptionRebateService extends ShopBaseService {
             return true;
         }).collect(Collectors.toList());
         Integer sums=goodsRecordList.stream().mapToInt(OrderGoodsRecord::getGoodsNumber).sum();
+        if(sums==0){
+            return;
+        }
         BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), BigDecimal.valueOf(sums), RoundingMode.HALF_UP);
 
         for(PrescriptionItemDo item:itemList){
-            BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-            BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-            BigDecimal platformRxProportion=rebateConfig.getRxMedicalPlatformProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-            BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
-            BigDecimal platformNoRxProportion=rebateConfig.getNoRxMedicalPlatformProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE);
+            BigDecimal sharingProportion=rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100,BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN);
+            BigDecimal rxProportion=rebateConfig.getRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100,BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN);
+            BigDecimal platformRxProportion=rebateConfig.getRxMedicalPlatformProportion().divide(BigDecimalUtil.BIGDECIMAL_100,BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN);
+            BigDecimal noRxProportion=rebateConfig.getNoRxMedicalDoctorProportion().divide(BigDecimalUtil.BIGDECIMAL_100,BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN);
+            BigDecimal platformNoRxProportion=rebateConfig.getNoRxMedicalPlatformProportion().divide(BigDecimalUtil.BIGDECIMAL_100,BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN);
             GoodsMedicalInfoDo medicalInfoDo = medicalInfoDao.getByGoodsId(item.getGoodsId());
             item.setGoodsSharingProportion(sharingProportion);
             if(MedicalGoodsConstant.IS_RX.equals(medicalInfoDo.getIsRx())){
