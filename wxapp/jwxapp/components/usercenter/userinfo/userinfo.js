@@ -342,10 +342,9 @@ global.wxComponent({
       util.api(
         "/api/wxapp/doctor/main/log",
         function (res) {
-          console.log(res)
+          util.jumpLink('/pages2/doctorIndex/doctorIndex', 'redirectTo')
         }
       )
-      util.jumpLink('/pages2/doctorIndex/doctorIndex', 'redirectTo')
     },
     to_clerk_index(){
       util.api('/api/wxapp/store/storeClerk/auth/check',res=>{
