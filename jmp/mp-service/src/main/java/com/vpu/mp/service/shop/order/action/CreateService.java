@@ -454,8 +454,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //根据处方下单
         if (OrderConstant.PRESCRIPTION_ORDER_Y.equals(param.getIsPrescription())){
             PrescriptionVo prescriptionVo=prescriptionDao.getDoByPrescriptionNo(param.getPrescriptionCode());
-            OrderInfoDo orderInfoDo=new OrderInfoDo();
-            FieldsUtil.assign(order,orderInfoDo);
+            OrderInfoDo orderInfoDo=order.into(OrderInfoDo.class);
             //处方返利信息入库
             prescriptionRebateService.addPrescriptionRebate(prescriptionVo,orderInfoDo);
         }
@@ -470,7 +469,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //过滤符合平台返利条件
         goodsRecordList = goodsRecordList.stream().filter(goodsRecord -> YES != goodsRecord.getIsGift()).collect(Collectors.toList());
         int sums=goodsRecordList.stream().mapToInt(OrderGoodsRecord::getGoodsNumber).sum();
-
+        if(sums==0){
+            return;
+        }
         BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), new BigDecimal(String.valueOf(sums)), RoundingMode.HALF_UP);
 
         for(OrderGoodsRecord goods:goodsRecordList){
@@ -482,7 +483,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     OrderGoodsPlatformRebateDo platformRebateDo=new OrderGoodsPlatformRebateDo();
                     platformRebateDo.setRecId(goods.getRecId());
                     platformRebateDo.setShopId(order.getShopId());
-                    platformRebateDo.setGoodsSharingProportion(rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100).setScale(BigDecimalUtil.FOUR_SCALE));
+                    platformRebateDo.setGoodsSharingProportion(rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100,BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN));
                     //可计算返利商品金额
                     BigDecimal canRebateMoney = BigDecimalUtil.subtrac(goods.getDiscountedTotalPrice(), BigDecimalUtil.multiply(avgScoreDiscount, new BigDecimal(goods.getGoodsNumber())));
                     canRebateMoney = BigDecimalUtil.compareTo(canRebateMoney, null) > 0 ? canRebateMoney : BigDecimalUtil.BIGDECIMAL_ZERO;
