@@ -39,8 +39,16 @@ public class StoreStatisticVo {
      */
     private Integer waitHandleOrderNum;
     /**
+     * 配送中订单数量
+     */
+    private Integer deliveryOrderNum;
+    /**
      * 已完成订单数量
      */
     private Integer finishedOrderNum;
+    /**
+     * 售后订单数量
+     */
+    private Integer saleAfterOrderNum;
 
 }

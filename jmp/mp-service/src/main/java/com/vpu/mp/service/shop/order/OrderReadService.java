@@ -37,6 +37,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -118,6 +119,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.distribution.OrderGoodsRebateService;
+import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
@@ -283,6 +285,8 @@ public class OrderReadService extends ShopBaseService {
     private OrderInfoDao orderInfoDao;
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private DoctorService doctorService;
 
 	/**
 	 * 订单查询
@@ -491,6 +495,11 @@ public class OrderReadService extends ShopBaseService {
             PrescriptionItemBo prescriptionItemBo=new PrescriptionItemBo();
 
             List<PrescriptionItemDo> list=prescriptionItemDao.listOrderGoodsByPrescriptionCode(preCode);
+            DoctorOneParam doctor=doctorService.getDoctorByCode(prescriptionVo.getDoctorCode());
+            if(doctor!=null){
+                prescriptionItemBo.setDoctorId(doctor.getId());
+            }
+            prescriptionItemBo.setDoctorCode(prescriptionVo.getDoctorCode());
             prescriptionItemBo.setItemList(list);
             prescriptionItemBo.setPrescriptionCode(preCode);
             prescriptionItemBo.setDoctorName(prescriptionVo.getDoctorName());
