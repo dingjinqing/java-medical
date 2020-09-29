@@ -41,13 +41,12 @@ public class PatientDao extends ShopBaseDao{
 
     /**
      * 患者列表
-     *
      * @param param
      * @return
      */
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
         SelectJoinStep<? extends Record> select = db()
-            .select(PATIENT.asterisk(), USER.USERNAME.as("wxNickName"))
+            .select(PATIENT.asterisk(), USER.USERNAME.as("wxNickName"), USER.USER_ID.as("userId"))
             .from(PATIENT);
         select.where(PATIENT.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
@@ -77,8 +76,8 @@ public class PatientDao extends ShopBaseDao{
             select.where(PATIENT.ID.in(param.getPatientIds()));
         }
         if (param.getStartTime() != null || param.getEndTime() != null) {
-            select.where(ORDER_GOODS.CREATE_TIME.ge(param.getStartTime()))
-                .and(ORDER_GOODS.CREATE_TIME.le(param.getEndTime()));
+            select.where(PATIENT.CREATE_TIME.ge(param.getStartTime()))
+                .and(PATIENT.CREATE_TIME.le(param.getEndTime()));
         }
     }
 

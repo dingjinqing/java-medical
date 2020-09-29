@@ -7,6 +7,7 @@ import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.common.pojo.shop.table.DoctorLoginLogDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
@@ -62,7 +63,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/doctor/auth")
     public JsonResult doctorAuth(@Validated @RequestBody DoctorAuthParam doctorAuthParam) {
-        if (wxAppAuth.user().getUserType() != null&&wxAppAuth.user().getUserType() != 0 ) {
+        if (wxAppAuth.user().getUserType() != null && !AuthConstant.AUTH_TYPE_NORMAL_USER.equals(wxAppAuth.user().getUserType())) {
             return fail(AUTH_ALREADY_AUTHED);
         }
         doctorAuthParam.setUserId(wxAppAuth.user().getUserId());

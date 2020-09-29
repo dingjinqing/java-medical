@@ -99,7 +99,7 @@ public class PrescriptionRebateService extends ShopBaseService {
             }
             return true;
         }).collect(Collectors.toList());
-        Integer sums=goodsRecordList.stream().collect(Collectors.summingInt(OrderGoodsRecord::getGoodsNumber));
+        Integer sums=goodsRecordList.stream().mapToInt(OrderGoodsRecord::getGoodsNumber).sum();
         BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), BigDecimal.valueOf(sums), RoundingMode.HALF_UP);
 
         for(PrescriptionItemDo item:itemList){
