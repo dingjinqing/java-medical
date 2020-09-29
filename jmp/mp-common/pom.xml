@@ -124,5 +124,14 @@
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
         </dependency>
+        <!-- 科大讯飞手写图片识别 -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
 	</dependencies>
 </project>

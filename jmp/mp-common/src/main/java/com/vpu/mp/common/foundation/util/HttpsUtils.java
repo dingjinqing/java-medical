@@ -150,7 +150,7 @@ public class HttpsUtils {
             inputStream = response.getEntity().getContent();
             return bytes;
         } catch (IOException e) {
-            log.debug("下载文件：请求{}异常 msg:",url,e.getMessage());
+            log.debug("下载文件：请求{}异常 msg:{}", url, e.getMessage());
             throw e;
         }finally {
             if (inputStream != null) {
