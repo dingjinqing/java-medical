@@ -4,8 +4,10 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -62,7 +64,9 @@ public class AdminMallOverviewController extends AdminBaseController {
      */
     @GetMapping("/api/admin/malloverview/getbindUnBindStatus")
     public JsonResult getbindUnBindStatus(){
-    	BindofficialVo getbindUnBindStatusUseByOver = saas.overviewService.getbindUnBindStatusUseByOver(adminAuth.user(),bindAppId);
+        AdminTokenAuthInfo adminTokenAuthInfo=adminAuth.user();
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(adminTokenAuthInfo.getLoginShopId());
+    	BindofficialVo getbindUnBindStatusUseByOver = saas.overviewService.getbindUnBindStatusUseByOver(adminAuth.user(),wxapp.getLinkOfficialAppId());
     	return success(getbindUnBindStatusUseByOver);
     }
 
@@ -84,7 +88,9 @@ public class AdminMallOverviewController extends AdminBaseController {
      */
     @GetMapping("/api/admin/malloverview/getShopBaseInfo")
     public JsonResult getShopBaseInfo() {
-        ShopBaseInfoVo vo = saas.overviewService.getShopBaseInfo(shop().mallOverview.getShopId(), bindAppId, adminAuth.user());
+        AdminTokenAuthInfo adminTokenAuthInfo=adminAuth.user();
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(adminTokenAuthInfo.getLoginShopId());
+        ShopBaseInfoVo vo = saas.overviewService.getShopBaseInfo(shop().mallOverview.getShopId(), wxapp.getLinkOfficialAppId(), adminAuth.user());
         return success(vo);
     }
 
@@ -156,9 +162,11 @@ public class AdminMallOverviewController extends AdminBaseController {
      */
     @PostMapping("/api/admin/malloverview/allOverview")
     public JsonResult allOverview(@RequestBody @Validated OverviewParam param){
+        AdminTokenAuthInfo adminTokenAuthInfo=adminAuth.user();
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(adminTokenAuthInfo.getLoginShopId());
         return success(OverviewVo.builder()
             //基本信息
-            .shopBaseInfoVo(saas.overviewService.getShopBaseInfo(shop().mallOverview.getShopId(), bindAppId, adminAuth.user()))
+            .shopBaseInfoVo(saas.overviewService.getShopBaseInfo(shop().mallOverview.getShopId(), wxapp.getLinkOfficialAppId(), adminAuth.user()))
             //公告信息
             .announcementVoList(saas.overviewService.getFixedAnnouncement(param.getFixedAnnouncementParam()))
             //数据展示

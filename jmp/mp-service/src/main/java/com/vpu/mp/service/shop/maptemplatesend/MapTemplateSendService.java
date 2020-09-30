@@ -39,7 +39,7 @@ public class MapTemplateSendService extends ShopBaseService {
      * 提醒医生有新咨询订单
      * @param param
      */
-    public void sendConsultationOrderMessage(ConsultationOrderPayParam param, InquiryOrderDo order){
+    public void sendConsultationOrderMessage(ConsultationOrderPayParam param){
         // 订阅消息
         String[][] maData = new String[][] {
             {param.getPatientData()},
