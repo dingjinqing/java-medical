@@ -10,7 +10,7 @@
     <view wx:if="{{actInfo.actName}}" class="act-tags" style="background-color:{{main_setting.linColor}};">{{actInfo.actName}}</view>
   </view>
   <view class="goods-info">
-   <text class="goods-name">{{goodsData.goodsName}}</text>
+   <text class="goods-name">{{goodsData.isMedical === 1 ? goodsData.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{goodsData.goodsName}}</text>
    <text class="gray-text" wx:if="{{goodsData.prdDesc}}">{{goodsData.prdDesc}}</text>
    <view class="goods-info-bottom">
       <view class="vipPriceTag" wx:if="{{actInfo.isVipPrice}}">会员价</view>
