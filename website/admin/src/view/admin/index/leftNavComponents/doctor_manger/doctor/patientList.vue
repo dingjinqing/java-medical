@@ -61,22 +61,26 @@
             prop='patientNickName'
             label='用户昵称'
           ></el-table-column>
-          <el-table-column
-            prop="prescriptionNum"
-            label="处方数量"
-          ></el-table-column>
-          <el-table-column
-            prop="inquiryNum"
-            label="咨询次数"
-          ></el-table-column>
-          <el-table-column
-            prop="medicineCost"
-            label="药品消费金额"
-          ></el-table-column>
-          <el-table-column
-            prop="inquiryCost"
-            label="咨询消费金额"
-          ></el-table-column>
+          <el-table-column label="处方数量">
+            <template v-slot='scope'>
+              <span>{{scope.row.prescriptionNum == null ? '0' : scope.row.prescriptionNum}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="咨询次数">
+            <template v-slot='scope'>
+              <span>{{scope.row.inquiryNum == null ? '0' : scope.row.inquiryNum}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="药品消费金额">
+            <template v-slot='scope'>
+              <span>{{scope.row.medicineCost == null ? '0' : scope.row.medicineCost}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="咨询消费金额">
+            <template v-slot='scope'>
+              <span>{{scope.row.inquiryCost == null ? '0' : scope.row.inquiryCost}}</span>
+            </template>
+          </el-table-column>
         </el-table>
         <pagination
           :page-params.sync="pageParams"

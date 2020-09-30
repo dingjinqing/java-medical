@@ -83,12 +83,10 @@
             prop="prescriptionCode"
             label="处方号"
           ></el-table-column>
-          <el-table-column
-            label='就诊类型'
-          >
-          <template v-slot='scope'>
+          <el-table-column label='就诊类型'>
+            <template v-slot='scope'>
               {{getLabelValue(prescriptionTypes,scope.row.auditType)}}
-          </template>
+            </template>
           </el-table-column>
           <el-table-column
             prop="doctorName"
@@ -99,16 +97,19 @@
             label="科室"
           ></el-table-column>
           <el-table-column
-            prop="orderSnByOrderInfo"
             label="订单号"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <div class="operation">
+                <a @click="handleSeeOrder(scope.row.orderSnByOrderInfo)">{{scope.row.orderSnByOrderInfo}}</a>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="totalPrice"
             label="处方金额"
           ></el-table-column>
-          <el-table-column
-            label="处方药品"
-          >
+          <el-table-column label="处方药品">
             <template v-slot="scope">
               <span
                 v-for="(item,index) in scope.row.goodsList"
@@ -237,6 +238,15 @@ export default {
           this.doctorList = res.content
         }
       })
+    },
+    handleSeeOrder (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'orderInfo'
+      })
+      newpage.href = newpage.href + '?orderSn=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
     },
     getLabelValue (map, value) {
       let label = ''

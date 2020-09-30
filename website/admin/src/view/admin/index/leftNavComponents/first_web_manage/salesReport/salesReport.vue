@@ -102,16 +102,16 @@
           </template>
         </el-table-column>
         <el-table-column
-              prop='orderNumber'
-              label='订单数量'
+          prop='orderNumber'
+          label='订单数量'
         ></el-table-column>
         <el-table-column
-                prop='prescriptionOrderNum'
-                label='处方药销售数量'
+          prop='prescriptionOrderNum'
+          label='处方药销售数量'
         ></el-table-column>
         <el-table-column
-                prop='prescriptionOrderAmount'
-                label='处方药订单金额'
+          prop='prescriptionOrderAmount'
+          label='处方药订单金额'
         ></el-table-column>
         <el-table-column
           prop='shippingFee'
@@ -182,7 +182,7 @@
 
 <script>
 import { getSalesReportList, getSalesReportExport } from '@/api/admin/basicConfiguration/salesreport.js'
-import { dateChange } from '@/util/date.js'
+// import { dateChange } from '@/util/date.js'
 import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -192,31 +192,31 @@ export default {
   watch: {
     lang () {
       this.timeRange = [
-        { value: -1, label: '最新1天' },
-        { value: -7, label: '最新7天' },
-        { value: -30, label: '最新30天' },
+        { value: 1, label: '最新1天' },
+        { value: 7, label: '最新7天' },
+        { value: 30, label: '最新30天' },
         { value: 0, label: '自定义' }
       ]
     }
   },
   mounted () {
-    this.getDateValue(-1)
+    this.getDateValue(1)
   },
   data () {
     return {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      timeSelect: -1,
+      timeSelect: 1,
       pageParams: {
         currentPage: 1,
         pageRows: 20
       },
       tableData: [],
       timeRange: [
-        { value: -1, label: '最新1天' },
-        { value: -7, label: '最新7天' },
-        { value: -30, label: '最新30天' },
+        { value: 1, label: '最新1天' },
+        { value: 7, label: '最新7天' },
+        { value: 30, label: '最新30天' },
         { value: 0, label: '自定义' }
       ],
       startDate: {
@@ -287,15 +287,22 @@ export default {
       }).catch(err => console.log(err))
     },
     getDateValue (unit) {
-      let date = dateChange(unit)
-      this.startDate.year = date[1].split('-')[0]
-      this.startDate.month = date[1].split('-')[1]
-      this.startDate.day = date[1].split('-')[2]
-      this.endDate.year = date[0].split('-')[0]
-      this.endDate.month = date[0].split('-')[1]
-      this.endDate.day = date[0].split('-')[2]
-      this.param.startTime = date[1] + ' 00:00:00'
-      this.param.endTime = date[0] + ' 23:59:59'
+      var startTime = new Date()
+      var endTime = new Date()
+      if (unit !== 0) {
+        endTime.setDate(endTime.getDate() - 1)
+        startTime.setDate(endTime.getDate() - unit + 1)
+      }
+      var startTimeStr = startTime.format('yyyy-MM-dd')
+      var endTimeStr = endTime.format('yyyy-MM-dd')
+      this.param.startTime = startTimeStr + ' 00:00:00'
+      this.param.endTime = endTimeStr + ' 23:59:59'
+      this.startDate.year = startTimeStr.split('-')[0]
+      this.startDate.month = startTimeStr.split('-')[1]
+      this.startDate.day = startTimeStr.split('-')[2]
+      this.endDate.year = endTimeStr.split('-')[0]
+      this.endDate.month = endTimeStr.split('-')[1]
+      this.endDate.day = endTimeStr.split('-')[2]
       this.initData()
     },
     handleData (data) {

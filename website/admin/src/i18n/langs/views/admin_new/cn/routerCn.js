@@ -6,7 +6,7 @@ export const cn = {
   addCalendarMain: ['概况', '营销日历'],
   // 会员管理 会员列表
   membershipList: ['会员管理', '会员列表'],
-  memberEditorList: ['会员管理', '会员编辑信息'],
+  memberEditorList: ['会员管理', '会员详情'],
   // 概况 交易统计
   trades_summary: ['概况', '交易统计'],
   // 概况 商品统计

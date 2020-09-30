@@ -930,6 +930,7 @@
               <th>返利处方号</th>
               <th width="270px">商品名称</th>
               <th>佣金比例</th>
+              <th>分成比例</th>
               <th>商品参与返利金额</th>
               <th>返利佣金金额</th>
             </tr>
@@ -945,7 +946,7 @@
                   v-if="prescriptionItem.itemList"
                   :rowspan="prescriptionItem.itemList"
                 >
-                  {{ prescriptionItem.doctorName }}
+                  <span @click="toDetail(prescriptionItem.doctorId,prescriptionItem.doctorCode)" style="color:#5a8bff;cursor:pointer"> {{ prescriptionItem.doctorName }}</span>
                 </td>
                 <td
                   v-if="prescriptionItem.itemList"
@@ -962,6 +963,7 @@
                     </div>
                   </div>
                 </td>
+                <td>{{ (goodsItem.goodsSharingProportion * 100).toFixed(2) }}%</td>
                 <td>{{ (goodsItem.rebateProportion * 100).toFixed(2) }}%</td>
                 <td>{{ goodsItem.canCalculateMoney }}</td>
                 <td>{{ goodsItem.realRebateMoney.toFixed(2) }}</td>
@@ -1251,6 +1253,16 @@ export default {
           userId
         }
       })
+    },
+    toDetail (id, code) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/detail',
+        query: {
+          id: id,
+          code: code
+        }
+      })
+      window.open(href, '_blank')
     },
     handlePrescriptionInfo (prescriptionCode) {
       let newpage = this.$router.resolve({

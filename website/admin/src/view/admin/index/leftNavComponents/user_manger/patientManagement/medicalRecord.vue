@@ -30,7 +30,7 @@
               v-model="queryParams.goodsProductionEnterprise"
               size="small"
               style="width: 150px"
-              placeholder="请输入批准文号"
+              placeholder="请输入生产厂家"
             >
             </el-input>
           </div>
@@ -100,7 +100,8 @@
           <el-table-column label="处方号">
             <template slot-scope="scope">
               <div class="operation">
-                <a @click="handleSeeMessage(scope.row.prescriptionCode)">{{scope.row.prescriptionCode}}</a>
+                <a @click="handleSeeMessage(scope.row.prescriptionCode)" v-if="scope.row.isCanSkipPrescription == 1">{{scope.row.prescriptionCode}}</a>
+                <span v-else>{{scope.row.prescriptionCode}}</span>
               </div>
             </template>
           </el-table-column>

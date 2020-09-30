@@ -14,7 +14,7 @@
             </el-input>
           </div>
           <div class="filters_item">
-            <span>姓名：</span>
+            <span style="width:60px;">姓名：</span>
             <el-input
               v-model="queryParams.name"
               size="small"
@@ -22,6 +22,26 @@
               placeholder="请输入姓名"
             >
             </el-input>
+          </div>
+          <div
+            class="filters_item"
+            style="width:350px"
+          >
+            <span
+              class="fil_span"
+              style="width:150px;"
+            >时间筛选：</span>
+            <el-date-picker
+              v-model="timeValue"
+              type="daterange"
+              size="small"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']"
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            >
+            </el-date-picker>
           </div>
           <div class="btn_wrap">
             <el-button
@@ -53,6 +73,15 @@
             label='患者编号'
           ></el-table-column>
           <el-table-column
+            prop='wxNickName'
+            label='微信昵称'
+          >
+          <template v-slot='scope'>
+                <span style="color:#5a8bff" @click="hanldeToDetail(scope.row.userId)">{{scope.row.wxNickName}}</span>
+          </template>
+
+          </el-table-column>
+          <el-table-column
             prop='name'
             label='姓名'
           ></el-table-column>
@@ -80,6 +109,10 @@
           <el-table-column
             prop='countPrescription'
             label='处方数量'
+          ></el-table-column>
+          <el-table-column
+            prop='createTime'
+            label='注册时间'
           ></el-table-column>
           <el-table-column label='操作'>
             <template v-slot="scope">
@@ -111,10 +144,22 @@ import pagination from '@/components/admin/pagination/pagination'
 import { getPatientList } from '@/api/admin/memberManage/patientManage.js'
 export default {
   components: { pagination },
+  watch: {
+    timeValue (val) {
+      if (val !== null) {
+        this.queryParams.startTime = val[0]
+        this.queryParams.endTime = val[1]
+      } else {
+        this.queryParams.startTime = ''
+        this.queryParams.endTime = ''
+      }
+    }
+  },
   data () {
     return {
       loading: false,
       langDefaultFlag: false,
+      timeValue: [],
       pageParams: {
         currentPage: 1,
         pageRows: 20
@@ -122,7 +167,9 @@ export default {
       tableData: [],
       queryParams: {
         name: null,
-        mobile: null
+        mobile: null,
+        startTime: '',
+        endTime: ''
       },
       // 表格原始数据
       originalData: []
@@ -152,6 +199,14 @@ export default {
         name: 'patient_message',
         query: {
           id: userId
+        }
+      })
+    },
+    hanldeToDetail (userId) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId: userId
         }
       })
     },

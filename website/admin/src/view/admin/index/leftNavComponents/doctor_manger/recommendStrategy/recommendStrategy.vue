@@ -37,7 +37,7 @@
               :min="1"
               size="small"
               v-model="formData.doctorRecommendConsultationRate"
-            ></el-input-number>元
+            ></el-input-number>%
           </el-form-item>
           <el-form-item prop="doctorRecommendInquiryRate">
             咨询费用权重：<el-input-number
@@ -45,7 +45,7 @@
               :min="1"
               size="small"
               v-model="formData.doctorRecommendInquiryRate"
-            ></el-input-number>元
+            ></el-input-number>%
           </el-form-item>
         </div>
         <div class="item">
@@ -89,7 +89,7 @@
               :min="1"
               size="small"
               v-model="formData.departmentRecommendConsultationRate"
-            ></el-input-number>元
+            ></el-input-number>%
           </el-form-item>
           <el-form-item prop="departmentRecommendInquiryRate">
             咨询金额权重：<el-input-number
@@ -97,7 +97,7 @@
               :min="1"
               size="small"
               v-model="formData.departmentRecommendInquiryRate"
-            ></el-input-number>元
+            ></el-input-number>%
           </el-form-item>
           <el-form-item prop="departmentRecommendDoctorRate">
             医生人数权重：<el-input-number
@@ -105,7 +105,7 @@
               :min="1"
               size="small"
               v-model="formData.departmentRecommendDoctorRate"
-            ></el-input-number>元
+            ></el-input-number>%
           </el-form-item>
         </div>
         <div class="item">

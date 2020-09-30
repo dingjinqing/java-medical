@@ -54,7 +54,7 @@
           }"
         >
           <el-table-column
-            prop="goodsCommonName"
+            prop="patientName"
             label="患者姓名"
           ></el-table-column>
           <el-table-column

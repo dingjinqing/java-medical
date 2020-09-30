@@ -163,8 +163,8 @@ export default {
             }
           ]
         }, {
-          imgUrl: this.$imageHost + '/image/admin/icon_left/anchor_points.png',
-          imgUrl_h: this.$imageHost + '/image/admin/icon_left/anchor_points_h.png',
+          imgUrl: this.$imageHost + '/image/admin/icon_left/advisory_order.png',
+          imgUrl_h: this.$imageHost + '/image/admin/icon_left/advisory_order.png',
           path: '/admin/home/main/anchorPoints',
           span: '',
           name: 'anchor_points',
