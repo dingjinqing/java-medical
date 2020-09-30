@@ -105,9 +105,12 @@
   width: 300rpx;
   height: 573rpx;
   transform: rotate(-90deg);
-  transform-origin: 0 100%;
+  transform-origin: 50% 26%;
   position: absolute;
+  left: 0;
+  top: 0;
 }
 .clerk-image-content{
   height: 300rpx;
+  position: relative;
 }

@@ -101,7 +101,7 @@ global.wxComponent({
         return
       }
 
-      if(!this.clerkImagePath.imgPath && this.data.isPharmacist){
+      if(!this.data.clerkImagePath.imgPath && this.data.isPharmacist){
         util.showModal('提示','请签名添加图片')
         return
       }
@@ -119,7 +119,7 @@ global.wxComponent({
         mobile:this.data.mobile,
         mobileCheckCode:this.data.mobileCheckCode,
         isPharmacist:this.data.isPharmacist,
-        signature:this.clerkImagePath.imgPath
+        signature:this.data.clerkImagePath.imgPath
       })
     }
   }

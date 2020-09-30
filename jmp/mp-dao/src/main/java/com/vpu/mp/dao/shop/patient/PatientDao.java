@@ -30,22 +30,33 @@ import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
  */
 @Repository
 public class PatientDao extends ShopBaseDao{
+
+    private static final String PRESCRIPTION_AUDIT_FAILED = "处方审核未通过";
+
+    private static final String PRESCRIPTION_AUDIT_NOT_PASSED = "处方未审核";
+
+    private static final String OTC = "OTC";
+
+    private static final Byte PRESCRIPTION_AUDIT_FAILED_CODE = 2;
+
     /**
      * 患者列表
-     *
      * @param param
      * @return
      */
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
         SelectJoinStep<? extends Record> select = db()
-            .select()
+            .select(PATIENT.asterisk(), USER.USERNAME.as("wxNickName"), USER.USER_ID.as("userId"))
             .from(PATIENT);
         select.where(PATIENT.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
+        select.leftJoin(USER_PATIENT_COUPLE)
+            .on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
+            .leftJoin(USER)
+            .on(USER_PATIENT_COUPLE.USER_ID.eq(USER.USER_ID));
         select.orderBy(PATIENT.ID.desc());
-        PageResult<PatientOneParam> patientList = this.getPageResult(select, param.getCurrentPage(),
+        return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), PatientOneParam.class);
-        return patientList;
     }
 
     /**
@@ -63,6 +74,10 @@ public class PatientDao extends ShopBaseDao{
         }
         if (param.getUserId()>0) {
             select.where(PATIENT.ID.in(param.getPatientIds()));
+        }
+        if (param.getStartTime() != null || param.getEndTime() != null) {
+            select.where(PATIENT.CREATE_TIME.ge(param.getStartTime()))
+                .and(PATIENT.CREATE_TIME.le(param.getEndTime()));
         }
     }
 
@@ -217,15 +232,33 @@ public class PatientDao extends ShopBaseDao{
             , ORDER_GOODS.GOODS_APPROVAL_NUMBER
             , ORDER_GOODS.GOODS_NUMBER
             , ORDER_GOODS.GOODS_PRICE
+            , ORDER_GOODS.PRESCRIPTION_OLD_CODE
             , ORDER_GOODS.PRESCRIPTION_CODE
+            , ORDER_GOODS.MEDICAL_AUDIT_TYPE
+            , ORDER_GOODS.MEDICAL_AUDIT_STATUS
             , ORDER_GOODS.ORDER_SN
             , ORDER_GOODS.DISCOUNTED_TOTAL_PRICE
             , ORDER_GOODS.CREATE_TIME).from(ORDER_GOODS)
             .leftJoin(ORDER_INFO)
             .on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN));
         patientMedicineBuildOptions(select, patientMedicineParam);
-        return this.getPageResult(select, patientMedicineParam.getCurrentPage(),
+        PageResult<PatientMedicineVo> pageResult = this.getPageResult(select, patientMedicineParam.getCurrentPage(),
             patientMedicineParam.getPageRows(), PatientMedicineVo.class);
+        pageResult.getDataList().forEach(patientMedicineVo -> {
+            if (patientMedicineVo.getMedicalAuditType() == 1 && patientMedicineVo.getMedicalAuditStatus() == 0) {
+                patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_NOT_PASSED);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
+            }
+            if (patientMedicineVo.getMedicalAuditType() == 1 && PRESCRIPTION_AUDIT_FAILED_CODE.equals(patientMedicineVo.getMedicalAuditStatus())) {
+                patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_FAILED);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
+            }
+            if (patientMedicineVo.getMedicalAuditType() == 0) {
+                patientMedicineVo.setPrescriptionCode(OTC);
+                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
+            }
+        });
+        return pageResult;
     }
 
     /**

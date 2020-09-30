@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @Builder
 public class OrderDeliverParam {
-    public static final String ORDERDETAIL = "您的医生已接诊，请查看";
+    public static final String ORDERDETAIL = "已发货";
     private String orderSn;
     @Builder.Default
     private String orderDetail=ORDERDETAIL;

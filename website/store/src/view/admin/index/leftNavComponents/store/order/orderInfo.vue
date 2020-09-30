@@ -162,8 +162,20 @@
                   </td>
                 </template>
                 <template v-else>
-                  <th width="100px">{{ order.storeId }}</th>
-                  <th width="100px">{{ order.confirmTime }}</th>
+                  <td
+                    width="100px"
+                    v-if="index === 0"
+                    :rowspan="item.goods.length"
+                  >
+                    {{ order.storeId }}
+                  </td>
+                  <td
+                    width="100px"
+                    v-if="index === 0"
+                    :rowspan="item.goods.length"
+                  >
+                    {{ order.confirmTime }}
+                  </td>
                 </template>
               </tr>
             </template>

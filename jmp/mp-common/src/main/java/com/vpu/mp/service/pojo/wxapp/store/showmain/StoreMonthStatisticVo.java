@@ -13,7 +13,15 @@ public class StoreMonthStatisticVo {
      */
     private Integer waitHandleNum;
     /**
+     * 配送中数量
+     */
+    private Integer deliveryNum;
+    /**
      * 已完成数量
      */
     private Integer finishedNum;
+    /**
+     * 售后中数量
+     */
+    private Integer saleAfterNum;
 }

@@ -62,7 +62,7 @@ page {
   left: 0;
   transform: translateY(-50%);
   box-sizing: border-box;
-  border: 2rpx dashed #ccc;
+  border: 2rpx dashed #ddd;
   border-radius: 16rpx;
 }
 .drawing-board-canvas{

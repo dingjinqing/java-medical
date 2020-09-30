@@ -128,6 +128,7 @@
           :data="docterPerformanceTable"
           border
           header-row-class-name="tableClss"
+          @sort-change="sortChange"
         >
           <el-table-column
             label="医师姓名"
@@ -143,26 +144,31 @@
             label="累计处方数"
             prop="prescriptionNum"
             align="center"
+            sortable="custom"
           ></el-table-column>
           <el-table-column
             label="累计处方金额"
             prop="prescriptionMoney"
             align="center"
+            sortable="custom"
           ></el-table-column>
           <el-table-column
             label="累计咨询单数"
             prop="inquiryNumber"
             align="center"
+            sortable="custom"
           ></el-table-column>
           <el-table-column
             label="累计咨询金额"
             prop="inquiryMoney"
             align="center"
+            sortable="custom"
           ></el-table-column>
           <el-table-column
             label="累计消费金额"
             prop="consumeMoney"
             align="center"
+            sortable="custom"
           ></el-table-column>
         </el-table>
         <pagination
@@ -199,7 +205,9 @@ export default {
           return `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate() + 1} 23:59:59`
         })(),
         doctorName: null,
-        departmentId: 0
+        departmentId: 0,
+        orderField: null,
+        orderDirection: null
       },
       departmentList: [],
       chartData: {
@@ -291,6 +299,25 @@ export default {
       })
     },
     filterTable () {
+      this.docterPerformancePageParams.currentPage = 1
+      this.getDoctorSummary()
+    },
+    sortChange ({ column, prop, order }) {
+      console.log(column, prop, order)
+      let orderFieldName = {
+        prescriptionNum: 'prescription_num',
+        prescriptionMoney: 'prescription_money',
+        inquiryNumber: 'inquiry_number',
+        inquiryMoney: 'inquiry_money',
+        consumeMoney: 'consume_money'
+      }
+      if (['descending', 'ascending'].includes(order)) {
+        this.docterPerformanceParams.orderField = orderFieldName[prop]
+        this.docterPerformanceParams.orderDirection = order === 'descending' ? 'desc' : 'asc'
+      } else {
+        this.docterPerformanceParams.orderField = null
+        this.docterPerformanceParams.orderDirection = null
+      }
       this.docterPerformancePageParams.currentPage = 1
       this.getDoctorSummary()
     }

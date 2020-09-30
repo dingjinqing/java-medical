@@ -74,17 +74,22 @@ public class PatientService extends BaseShopConfigService{
 
     public static final int ZERO = 0;
 
+    /**
+     * 患者列表
+     * @param param 查询患者入参
+     * @return PageResult<PatientOneParam>
+     */
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
-        if (param.getUserId()>0) {
+        if (param.getUserId() > 0) {
             List<Integer> patientIds = userPatientCoupleDao.listPatientIdsByUserId(param.getUserId());
-            if (patientIds.size()>0) {
+            if (patientIds.size() > 0) {
                 param.setPatientIds(patientIds);
             }
         }
         PageResult<PatientOneParam> patientList = patientDao.getPatientList(param);
         Map<Integer, String> diseaseMap = getDiseaseMap();
         for (PatientOneParam patient : patientList.dataList) {
-            getPatientDiseaseStr(patient,diseaseMap);
+            getPatientDiseaseStr(patient, diseaseMap);
             patient.setAge(DateUtils.getAgeByBirthDay(patient.getBirthday()));
             patient.setCountPrescription(prescriptionDao.countPrescriptionByPatient(patient.getId()));
         }

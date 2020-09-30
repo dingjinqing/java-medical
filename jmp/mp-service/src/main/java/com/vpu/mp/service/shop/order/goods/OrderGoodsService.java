@@ -156,7 +156,7 @@ public class OrderGoodsService extends ShopBaseService {
 	 */
 	public HashMap<Integer, Integer> countSubOrderGoods(Map<String, List<RefundVoGoods>> goods , OrderListInfoVo currentOrder , Boolean isMain) {
 		if(isMain) {
-			HashMap<Integer, Integer> count = new HashMap<Integer,Integer>();
+			HashMap<Integer, Integer> count = new HashMap<Integer,Integer>(15);
 			for (Entry<String, List<RefundVoGoods>> entry : goods.entrySet()) {
 				if(!currentOrder.getOrderSn().equals(entry.getKey())) {
 					for (RefundVoGoods oneGoods : entry.getValue()) {

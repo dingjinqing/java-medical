@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.SelectHavingStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.Tables.PART_ORDER_GOODS_SHIP;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -130,7 +132,13 @@ public class MpOrderInfoService extends OrderInfoService{
             return select;
         }
         select.where(setIsContainSubOrder(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()), isContainSubOrder));
+        SelectHavingStep<? extends Record> shipTable = db().select(PART_ORDER_GOODS_SHIP.ORDER_SN, PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID)
+                .from(PART_ORDER_GOODS_SHIP)
+                .where(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID.eq(param.getWxUserInfo().getStoreAccountId()))
+                .groupBy(PART_ORDER_GOODS_SHIP.ORDER_SN, PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID);
         if (param.getPlatform()!=null&&param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP_STORE)){
+            //门店店员
+            select.leftJoin(shipTable).on(shipTable.field(PART_ORDER_GOODS_SHIP.ORDER_SN).eq(TABLE.ORDER_SN));
             if (param.getStoreId()!=null){
                 select.where(TABLE.STORE_ID.eq(param.getStoreId()));
             }else{
@@ -138,6 +146,7 @@ public class MpOrderInfoService extends OrderInfoService{
             }
             select.where(TABLE.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
         }else {
+            //用户
             select.where(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()));
         }
         if(!StringUtils.isBlank(param.getSearch())) {
@@ -174,6 +183,7 @@ public class MpOrderInfoService extends OrderInfoService{
                 select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED)));
                 break;
             case OrderConstant.STORE_ACCOUNT_FINISHED:
+                select.where(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).isNotNull());
                 select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
                 break;
             default:

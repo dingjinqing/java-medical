@@ -111,15 +111,16 @@ public class DoctorWithdrawService extends ShopBaseService {
     public void automaticAudit(DoctorWithdrawParam param,DoctorTotalRebateVo doctorTotalRebateVo) throws MpException {
         DoctorOneParam doctor=doctorService.getOneInfo(param.getDoctorId());
         param.setStatus(DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS);
-        doctorWithDrawDao.addDoctorWithdraw(param);
-        DoctorWithdrawVo doctorWithdrawVo= doctorWithDrawDao.getWithdrawByOrderSn(param.getOrderSn());
+        transaction(()->{
+            doctorWithDrawDao.addDoctorWithdraw(param);
+            DoctorWithdrawVo doctorWithdrawVo= doctorWithDrawDao.getWithdrawByOrderSn(param.getOrderSn());
+            //提现出账
+            pay2Person(param.getOrderSn(),param.getClientIp(),param.getRealName(),doctor.getUserId(),param.getType(),param.getWithdrawCash(),doctorWithdrawVo);
+            //修改可提现金额
+            doctorTotalRebateDao.updateTotalMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()));
+        });
 
-        //提现出账
-        pay2Person(param.getOrderSn(),param.getClientIp(),param.getRealName(),doctor.getUserId(),param.getType(),param.getWithdrawCash(),doctorWithdrawVo,doctorTotalRebateVo,false);
-
-        //修改可提现金额
-        doctorTotalRebateDao.updateTotalMoney(param.getDoctorId(),doctorTotalRebateVo.getTotalMoney().subtract(param.getWithdrawCash()));
-    }
+}
 
     /**
      * 提现申请校验
@@ -161,26 +162,25 @@ public class DoctorWithdrawService extends ShopBaseService {
         if(doctorWithdrawVo==null){
             throw new MpException(JsonResultCode.CODE_FAIL);
         }
-        if(DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL.equals(doctorWithdrawVo.getStatus())){
-            throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_ALREADY_ERROR);
-        }
         if(DoctorWithdrawConstant.WITHDRAW_CHECK_REFUSE.equals(doctorWithdrawVo.getStatus())){
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_ALREADY_REJECT);
         }
         DoctorOneParam doctor=doctorService.getOneInfo(doctorWithdrawVo.getDoctorId());
         DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(doctorWithdrawVo.getDoctorId());
-        if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())&&DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS.equals(param.getCheckStatus())){
-            //出账,暂时注释掉
-            pay2Person(param.getOrderSn(),param.getClientIp(),doctorWithdrawVo.getRealName(),doctor.getUserId(),doctorWithdrawVo.getType(),doctorWithdrawVo.getWithdrawCash(),doctorWithdrawVo,doctorTotalRebateVo,true);
-            transaction(()->{
-                //释放冻结金额
-                doctorTotalRebateDao.updateBlockMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
-                doctorWithDrawDao.update(doctorWithdrawVo.getId(),param.getCheckStatus(),param.getRefuseDesc());
-            });
+        if(DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS.equals(param.getCheckStatus())){
+            if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL.equals(doctorWithdrawVo.getStatus())){
+                //出账,暂时注释掉
+                pay2Person(param.getOrderSn(),param.getClientIp(),doctorWithdrawVo.getRealName(),doctor.getUserId(),doctorWithdrawVo.getType(),doctorWithdrawVo.getWithdrawCash(),doctorWithdrawVo);
+                transaction(()->{
+                    //释放冻结金额
+                    doctorTotalRebateDao.updateBlockMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
+                    doctorWithDrawDao.update(doctorWithdrawVo.getId(),param.getCheckStatus(),param.getRefuseDesc());
+                });
+            }
 
         }else if(DoctorWithdrawConstant.WITHDRAW_CHECK_REFUSE.equals(param.getCheckStatus())){
             //审核驳回
-            if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())){
+            if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL.equals(doctorWithdrawVo.getStatus())){
                 transaction(()->{
                     //修改可提现金额，冻结金额
                     doctorTotalRebateDao.updateTotalMoneyBlockedMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getTotalMoney().add(doctorWithdrawVo.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
@@ -205,7 +205,7 @@ public class DoctorWithdrawService extends ShopBaseService {
      * @param money
      * @throws MpException
      */
-    public void pay2Person(String orderSn, String ip, String realName, Integer userId, Byte type, BigDecimal money,DoctorWithdrawVo doctorWithdrawVo,DoctorTotalRebateVo doctorTotalRebateVo,boolean isAudit) throws MpException {
+    public void pay2Person(String orderSn, String ip, String realName, Integer userId, Byte type, BigDecimal money,DoctorWithdrawVo doctorWithdrawVo) throws MpException {
         logger().info("pay2Person start");
         MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
         try {
@@ -215,9 +215,6 @@ public class DoctorWithdrawService extends ShopBaseService {
             }
         } catch (WxPayException e) {
             doctorWithDrawDao.update(doctorWithdrawVo.getId(),DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL,e.getErrCodeDes());
-            if(isAudit){
-                doctorTotalRebateDao.updateTotalMoneyBlockedMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getTotalMoney().add(doctorWithdrawVo.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));
-            }
             throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EX_ERROR,
                 e.getMessage(), StringUtils.isBlank(e.getErrCodeDes()) ? e.getCustomErrorMsg() : e.getErrCodeDes());
         }

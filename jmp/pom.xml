@@ -38,6 +38,8 @@
 		<javax.persistence-api.version>2.2</javax.persistence-api.version>
         <flywaydb.version>6.5.5</flywaydb.version>
 		<slf4j-simple.version>1.18.6</slf4j-simple.version>
+        <commons-codec.version>1.6</commons-codec.version>
+        <netty-all.version>4.1.15.Final</netty-all.version>
 	</properties>
 
 
@@ -220,7 +222,17 @@
 				<artifactId>javax.persistence-api</artifactId>
 				<version>${javax.persistence-api.version}</version>
 			</dependency>
-
+            <!-- 科大讯飞手写汉字识别依赖 -->
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty-all.version}</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 

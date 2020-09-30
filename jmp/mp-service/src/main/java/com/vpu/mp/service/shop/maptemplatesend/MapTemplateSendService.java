@@ -1,17 +1,28 @@
 package com.vpu.mp.service.shop.maptemplatesend;
 
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.maptemplate.*;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,12 +33,13 @@ import java.util.List;
 @Slf4j
 @Service
 public class MapTemplateSendService extends ShopBaseService {
-
+    @Autowired
+    private MpOfficialAccountUserService mpOfficialAccountUserService;
     /**
      * 提醒医生有新咨询订单
      * @param param
      */
-    public void sendConsultationOrderMessage(ConsultationOrderPayParam param){
+    public void sendConsultationOrderMessage(ConsultationOrderPayParam param, InquiryOrderDo order){
         // 订阅消息
         String[][] maData = new String[][] {
             {param.getPatientData()},
@@ -35,9 +47,9 @@ public class MapTemplateSendService extends ShopBaseService {
             {param.getCreateTime()},
             {param.getRemark()}
         };
-
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
 
+        Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYP_NO;
         // 公众号消息
         String[][] mpData = new String[][] {
             {param.getPatientData()},
@@ -46,13 +58,13 @@ public class MapTemplateSendService extends ShopBaseService {
             {param.getRemark()}
         };
         RabbitMessageParam param2 = RabbitMessageParam.builder()
-            .maTemplateData(
-                MaTemplateData.builder().config(SubcribeTemplateCategory.CONSULTATION_ORDER_PAY).data(data).build())
-//            .mpTemplateData(
-//                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
+//            .maTemplateData(
+//                MaTemplateData.builder().config(SubcribeTemplateCategory.CONSULTATION_ORDER_PAY).data(data).build())
+            .mpTemplateData(
+                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
             .page("pages/account/account").shopId(getShopId())
             .userIdList(param.getUserIds())
-            .type(MessageTemplateConfigConstant.NEW_CONSULTATION).build();
+            .type(mpTempleType).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
 
@@ -129,7 +141,7 @@ public class MapTemplateSendService extends ShopBaseService {
             {param.getDiseaseDetail()},
             {param.getDoctorName()},
             {param.getRemark()},
-            {param.getDepartmentName()},
+            {"科室"},
         };
 
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();

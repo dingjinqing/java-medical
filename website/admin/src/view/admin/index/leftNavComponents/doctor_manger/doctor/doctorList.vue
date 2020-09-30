@@ -7,7 +7,7 @@
           <el-input
             v-model="queryParams.name"
             size="small"
-            style="width: 190px;"
+            style="width: 190px"
             placeholder="请输入姓名"
           >
           </el-input>
@@ -17,27 +17,41 @@
           <el-input
             v-model="queryParams.departmentName"
             size="small"
-            style="width: 190px;"
+            style="width: 190px"
             placeholder="请输入科室"
           >
           </el-input>
         </div>
+        <div class="filters_item">
+          <span>咨询费用：</span>
+          <el-input-number
+            v-model="queryParams.consultationMoneyMix"
+            size="small"
+            style="width: 100px"
+            placeholder="最小"
+            :min="0"
+            controls-position="right"
+          >
+          </el-input-number
+          >~
+          <el-input-number
+            v-model="queryParams.consultationMoneyMax"
+            size="small"
+            style="width: 100px"
+            placeholder="最大"
+            :min="0"
+            controls-position="right"
+          >
+          </el-input-number>
+        </div>
         <div class="btn_wrap">
-          <el-button
-            type="primary"
-            size="small"
-            @click="initDataList"
-          >搜索</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleAddDoctor"
-          >添加</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="fetch"
-          >同步</el-button>
+          <el-button type="primary" size="small" @click="initDataList"
+            >搜索</el-button
+          >
+          <el-button type="primary" size="small" @click="handleAddDoctor"
+            >添加</el-button
+          >
+          <el-button type="primary" size="small" @click="fetch">同步</el-button>
         </div>
       </div>
     </div>
@@ -45,7 +59,7 @@
       <el-table
         v-loading="loading"
         :data="tableData"
-        style="width: 100%;"
+        style="width: 100%"
         border
         :header-cell-style="{
           'background-color': '#f5f5f5',
@@ -65,14 +79,10 @@
           <template slot-scope="scope">
             <div
               class="doc_name_url"
-              style='display: flex;justify-content: flex-start;'
+              style="display: flex; justify-content: flex-start"
             >
-              <img
-                class="doc_img"
-                v-if='scope.row.url'
-                :src="scope.row.url"
-              >
-              <div>{{scope.row.name}}</div>
+              <img class="doc_img" v-if="scope.row.url" :src="scope.row.url" />
+              <div>{{ scope.row.name }}</div>
             </div>
           </template>
         </el-table-column>
@@ -81,23 +91,15 @@
             <span> {{scope.row.age}}</span>
           </template>
         </el-table-column> -->
-        <el-table-column
-          prop="departmentNames"
-          label="职称/科室"
-        >
+        <el-table-column prop="departmentNames" label="职称/科室">
           <template slot-scope="scope">
-            <span> {{scope.row.titleName}}/{{scope.row.departmentNames}}</span>
+            <span>
+              {{ scope.row.titleName }}/{{ scope.row.departmentNames }}</span
+            >
           </template>
         </el-table-column>
-        <el-table-column
-          prop="mobile"
-          label="手机号"
-        ></el-table-column>
-        <el-table-column
-          label="评分星级"
-          align="center"
-          width="200px"
-        >
+        <el-table-column prop="mobile" label="手机号"></el-table-column>
+        <el-table-column label="评分星级" align="center" width="200px">
           <template slot-scope="scope">
             <div class="evaluation-info">
               <div
@@ -105,14 +107,16 @@
                 v-if="scope.row.avgCommentStar > 0"
               >
                 <star :value="scope.row.avgCommentStar" />
-                <div style='margin-top:10px'>{{scope.row.avgCommentStar}}</div>
+                <div style="margin-top: 10px">
+                  {{ scope.row.avgCommentStar }}
+                </div>
                 <a
                   href="javaScript:void(0);"
                   class="same_btn"
-                  style="margin-top:10px"
+                  style="margin-top: 10px"
                   @click="toComment(scope.row.name)"
-                >查看</a>
-
+                  >查看</a
+                >
               </div>
               <div v-else>暂无评价</div>
             </div>
@@ -120,22 +124,36 @@
         </el-table-column>
         <el-table-column label="平均响应时间">
           <template v-slot="scope">
-            <span>{{scope.row.answerHourInt > 0 ?  scope.row.answerHourInt + '小时' : ''}}</span><span>{{scope.row.answerMunite != -1 ?  scope.row.answerMunite + '分钟' : '暂无接诊'}}</span>
+            <span>{{
+              scope.row.answerHourInt > 0
+                ? scope.row.answerHourInt + '小时'
+                : ''
+            }}</span
+            ><span>{{
+              scope.row.answerMunite != -1
+                ? scope.row.answerMunite + '分钟'
+                : '暂无接诊'
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
           prop="attentionNumber"
           label="关注量"
         ></el-table-column>
+        <el-table-column
+          prop="consultationPrice"
+          label="咨询费用"
+        ></el-table-column>
         <el-table-column label="接诊量">
-          <template v-slot='scope'>
+          <template v-slot="scope">
             <a
               href="javaScript:void(0);"
               class="same_btn"
-              style="margin:0px;display:block"
+              style="margin: 0px; display: block"
               @click="toAdvistory(scope.row.name)"
               v-if="scope.row.consultationNumber > 0"
-            >{{scope.row.consultationNumber}}</a>
+              >{{ scope.row.consultationNumber }}</a
+            >
             <span v-else>0</span>
           </template>
         </el-table-column>
@@ -146,43 +164,46 @@
                 href="javaScript:void(0);"
                 class="same_btn"
                 @click="editDoctor(scope.row.id)"
-              >编辑</a>
+                >编辑</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.status == 1"
                 @click="puaseDoctor(scope.row)"
-              >停用</a>
+                >停用</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.status == 0"
                 @click="beginDoctor(scope.row)"
-              >启用</a>
+                >启用</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 v-if="scope.row.userId !== 0"
                 @click="setBundling(scope.row.id)"
-              >解除绑定</a>
+                >解除绑定</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
                 @click="setConsultation(scope.row)"
-              >{{ scope.row.canConsultation ? '禁止问诊' : '允许问诊' }}</a>
+                >{{ scope.row.canConsultation ? '禁止问诊' : '允许问诊' }}</a
+              >
               <a
                 href="javaScript:void(0);"
                 class="same_btn"
-                @click="toDetail(scope.row.id,scope.row.hospitalCode)"
-              >查看详情</a>
+                @click="toDetail(scope.row.id, scope.row.hospitalCode)"
+                >查看详情</a
+              >
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        :page-params.sync="pageParams"
-        @pagination="initDataList"
-      />
+      <pagination :page-params.sync="pageParams" @pagination="initDataList" />
     </div>
   </div>
 </template>
@@ -201,7 +222,9 @@ export default {
       tableData: [],
       queryParams: {
         name: null,
-        departmentName: null
+        departmentName: null,
+        consultationMoneyMix: null,
+        consultationMoneyMax: null
       },
       // 表格原始数据
       originalData: [],
@@ -398,7 +421,7 @@ export default {
       flex: 2;
       display: flex;
       flex-wrap: wrap;
-      line-height: 32px;
+      line-height: 30px;
       margin-left: -15px;
       .filters_item {
         // width: 270px;

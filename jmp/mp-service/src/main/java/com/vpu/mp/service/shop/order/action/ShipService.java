@@ -16,6 +16,7 @@ import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderDeliverParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.api.ApiShippingParam;
@@ -30,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.shop.express.ExpressService;
+import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -80,6 +82,8 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
     public StoreAccountDao storeAccountDao;
     @Autowired
     private PrescriptionDao prescriptionDao;
+    @Autowired
+    private MapTemplateSendService mapTemplateSendService;
 
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -180,6 +184,15 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		return null;
 	}
 
+    /**
+     * 发货发送提醒
+     * @param order
+     */
+	public void sendOrderDeliverMessage(OrderInfoRecord order){
+        OrderDeliverParam deliverParam= OrderDeliverParam.builder().orderSn(order.getOrderSn()).deliverDate(DateUtils.getLocalDateFormat())
+            .userIds(Collections.singletonList(order.getUserId())).build();
+        mapTemplateSendService.sendOrderDeliverMessage(deliverParam);
+    }
 	/**
 	 * 处理账户的id
 	 * @param param

@@ -36,20 +36,20 @@ public class UserGoodsRecordDao extends ShopBaseDao {
     public PageResult<MemberGoodsBrowseReportVo> userGoodsBrowseReport(MemberGoodsBrowseReportParam param){
         SelectConditionStep<? extends Record> where = db()
                 .select(USER_GOODS_RECORD.ID,USER_GOODS_RECORD.UPDATE_TIME.as(MemberGoodsBrowseReportVo.TIME),
-                        DSL.count(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME).as(MemberGoodsBrowseReportVo.GOODSNAME),
-                        DSL.count(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO).as(MemberGoodsBrowseReportVo.SPECIFICATIONS),
-                        DSL.count(GOODS_MEDICAL_INFO.GOODS_MEDICAL_INSTRUCTION).as(MemberGoodsBrowseReportVo.MANUFACTURER),
+                        DSL.max(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME).as(MemberGoodsBrowseReportVo.GOODSNAME),
+                        DSL.max(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO).as(MemberGoodsBrowseReportVo.SPECIFICATIONS),
+                        DSL.max(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE).as(MemberGoodsBrowseReportVo.MANUFACTURER),
                         DSL.countDistinct(PRESCRIPTION_ITEM.ID).as(MemberGoodsBrowseReportVo.PRESCRIPTIONNUM),
                         DSL.countDistinct(USER_CART_RECORD.ID).as(MemberGoodsBrowseReportVo.ADDCARTNUM),
                         DSL.countDistinct(USER_COLLECTION.ID).as(MemberGoodsBrowseReportVo.COLLECT),
-                        DSL.countDistinct(ORDER_GOODS.REC_ID).as(MemberGoodsBrowseReportVo.GOODSNAME)
+                        DSL.countDistinct(ORDER_GOODS.REC_ID).as(MemberGoodsBrowseReportVo.BUYGOODSNUM)
                         )
                 .from(USER_GOODS_RECORD)
                 .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_ID.eq(USER_GOODS_RECORD.GOODS_ID))
                 .leftJoin(PRESCRIPTION).on(PRESCRIPTION.USER_ID.eq(USER_GOODS_RECORD.USER_ID))
                 .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.GOODS_ID.eq(USER_GOODS_RECORD.GOODS_ID)
                         .and(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
-                        .and(PRESCRIPTION.USER_ID.eq(USER_CART_RECORD.USER_ID)))
+                        .and(PRESCRIPTION.USER_ID.eq(USER_GOODS_RECORD.USER_ID)))
                 .leftJoin(USER_CART_RECORD).on(USER_CART_RECORD.GOODS_ID.eq(USER_GOODS_RECORD.GOODS_ID)
                         .and(USER_CART_RECORD.USER_ID.eq(USER_GOODS_RECORD.USER_ID)))
                 .leftJoin(USER_COLLECTION).on(USER_COLLECTION.GOODS_ID.eq(USER_GOODS_RECORD.GOODS_ID)
@@ -66,35 +66,35 @@ public class UserGoodsRecordDao extends ShopBaseDao {
     }
 
     private void paramBbuildSelect(MemberGoodsBrowseReportParam param, SelectConditionStep<? extends Record> where) {
-        if (param.getGoodsName()!=null&& Strings.isEmpty(param.getGoodsName().trim())){
-            where.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(param.getGoodsName()));
+        if (param.getGoodsName()!=null&&! Strings.isEmpty(param.getGoodsName().trim())){
+            where.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.like(prefixLikeValue(param.getGoodsName())));
         }
         if (param.getIsAddCart()!=null){
             if (param.getIsAddCart().equals(BaseConstant.NO)){
-                where.and(DSL.countDistinct(USER_CART_RECORD.ID).eq(BaseConstant.NO.intValue()));
+                where.having(DSL.countDistinct(USER_CART_RECORD.ID).eq(BaseConstant.NO.intValue()));
             }else {
-                where.and(DSL.countDistinct(USER_CART_RECORD.ID).gt(BaseConstant.YES.intValue()));
+                where.having(DSL.countDistinct(USER_CART_RECORD.ID).ge(BaseConstant.YES.intValue()));
             }
         }
         if (param.getIsBuy()!=null){
-            if (param.getIsAddCart().equals(BaseConstant.NO)){
-                where.and(DSL.countDistinct(ORDER_GOODS.REC_ID).eq(BaseConstant.NO.intValue()));
+            if (BaseConstant.NO.equals(param.getIsBuy())){
+                where.having(DSL.countDistinct(ORDER_GOODS.REC_ID).eq(BaseConstant.NO.intValue()));
             }else {
-                where.and(DSL.countDistinct(ORDER_GOODS.REC_ID).gt(BaseConstant.YES.intValue()));
+                where.having(DSL.countDistinct(ORDER_GOODS.REC_ID).ge(BaseConstant.YES.intValue()));
             }
         }
         if (param.getIsCollect()!=null){
-            if (param.getIsAddCart().equals(BaseConstant.NO)){
-                where.and(DSL.countDistinct(USER_COLLECTION.ID).eq(BaseConstant.NO.intValue()));
+            if (BaseConstant.NO.equals(param.getIsCollect())){
+                where.having(DSL.countDistinct(USER_COLLECTION.ID).eq(BaseConstant.NO.intValue()));
             }else {
-                where.and(DSL.countDistinct(USER_COLLECTION.ID).gt(BaseConstant.YES.intValue()));
+                where.having(DSL.countDistinct(USER_COLLECTION.ID).ge(BaseConstant.YES.intValue()));
             }
         }
         if (param.getIsPrescription()!=null){
-            if (param.getIsAddCart().equals(BaseConstant.NO)){
-                where.and(DSL.countDistinct(PRESCRIPTION_ITEM.ID).eq(BaseConstant.NO.intValue()));
+            if (BaseConstant.NO.equals(param.getIsPrescription())){
+                where.having(DSL.countDistinct(PRESCRIPTION_ITEM.ID).eq(BaseConstant.NO.intValue()));
             }else {
-                where.and(DSL.countDistinct(PRESCRIPTION_ITEM.ID).gt(BaseConstant.YES.intValue()));
+                where.having(DSL.countDistinct(PRESCRIPTION_ITEM.ID).ge(BaseConstant.YES.intValue()));
             }
         }
     }
