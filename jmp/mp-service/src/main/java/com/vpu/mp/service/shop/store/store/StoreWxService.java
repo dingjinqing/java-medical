@@ -617,6 +617,7 @@ public class StoreWxService extends ShopBaseService {
         List<Byte> orderStatusList=new ArrayList<>();
         //待处理的状态
         orderStatusList.add(OrderConstant.ORDER_WAIT_DELIVERY);
+        orderStatusList.add(OrderConstant.ORDER_SHIPPED);
         //门店数据
         for(StoreStatisticVo statisticVo:storeList){
             //待处理数
