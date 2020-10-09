@@ -116,7 +116,7 @@
         <span>{{ $t('order.sellerMessage') }}：{{ order.sellerRemark }}</span>
       </div>
     </div>
-    <div v-if="showShippingInfo" class="order-list-table">
+    <div v-if="showShippingInfo && this.order.deliverType != 3" class="order-list-table">
       <div class="title">{{ $t('order.shippingInfoText') }}</div>
       <div class="table_box">
         <table width="100%">
@@ -1297,6 +1297,7 @@ export default {
       }
     },
     showShippingInfo () {
+      console.log('*****' + this.order.deliverType)
       let mainFlag = this.order.shippingList
       let childFlag = null
       if (this.order.childOrders != null) {
