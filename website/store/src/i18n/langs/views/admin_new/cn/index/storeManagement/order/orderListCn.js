@@ -176,13 +176,15 @@ export const cn = {
   refundNote_1_1_1: '等待商家处理退货退款申请',
   refundNote_1_1_2: '如果您同意，需要您发送退货地址给买家。',
   refundNote_1_1_3: '如果您拒绝，将需要您填写拒绝理由。',
-  refundNote_1_1_4: '请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动发送您的默认退货地址。',
+  refundNote_1_1_4:
+		'请在<span style="color:#ff785f;">{0}</span>内处理本次退款申请，如果逾期处理，系统将自动发送您的默认退货地址。',
   refundBtn_1_1_1: '同意退货，发送退货地址',
   refundBtn_1_1_2: '拒绝退货退款申请',
   // 1_2_1
   refundNote_1_2_1: '商家同意退货退款',
   refundNote_1_2_2: '您已同意退货退款，请等待买家处理。',
-  refundNote_1_2_3: '买家在<span style="color:#ff785f;">{0}</span>内未响应，且商家未确认收货并退款，退款申请将自动完成。',
+  refundNote_1_2_3:
+		'买家在<span style="color:#ff785f;">{0}</span>内未响应，且商家未确认收货并退款，退款申请将自动完成。',
   refundBtn_1_2_1: '确认收货并退款',
   refundBtn_1_2_2: '拒绝确认收货',
   // 1_3_1
@@ -395,7 +397,8 @@ export const cn = {
     [null, '全部'],
     [0, '快递'],
     [1, '自提'],
-    [2, '同城配送']
+    [2, '同城配送'],
+    [3, '门店配送']
   ],
   paymentTypeList: [
     [null, '全部'],
