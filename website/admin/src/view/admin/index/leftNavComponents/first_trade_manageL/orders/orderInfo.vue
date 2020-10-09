@@ -116,7 +116,10 @@
         <span>{{ $t('order.sellerMessage') }}：{{ order.sellerRemark }}</span>
       </div>
     </div>
-    <div v-if="showShippingInfo && this.order.deliverType != 3" class="order-list-table">
+    <div
+      v-if="showShippingInfo && this.order.deliverType != 3"
+      class="order-list-table"
+    >
       <div class="title">{{ $t('order.shippingInfoText') }}</div>
       <div class="table_box">
         <table width="100%">
@@ -953,7 +956,6 @@
               <th width="270px">商品名称</th>
               <th>分成比例</th>
               <th>佣金比例</th>
-              <th>分成比例</th>
               <th>商品参与返利金额</th>
               <th>返利佣金金额</th>
             </tr>
@@ -970,7 +972,17 @@
                   v-if="prescriptionItem.itemList"
                   :rowspan="prescriptionItem.itemList"
                 >
-                  <span @click="toDetail(prescriptionItem.doctorId,prescriptionItem.doctorCode)" style="color:#5a8bff;cursor:pointer"> {{ prescriptionItem.doctorName }}</span>
+                  <span
+                    @click="
+                      toDetail(
+                        prescriptionItem.doctorId,
+                        prescriptionItem.doctorCode
+                      )
+                    "
+                    style="color: #5a8bff; cursor: pointer"
+                  >
+                    {{ prescriptionItem.doctorName }}</span
+                  >
                 </td>
                 <td
                   v-if="prescriptionItem.itemList"
@@ -987,7 +999,9 @@
                     </div>
                   </div>
                 </td>
-                <td>{{ (goodsItem.goodsSharingProportion * 100).toFixed(2) }}%</td>
+                <td>
+                  {{ (goodsItem.goodsSharingProportion * 100).toFixed(2) }}%
+                </td>
                 <td>{{ (goodsItem.rebateProportion * 100).toFixed(2) }}%</td>
                 <td>{{ goodsItem.canCalculateMoney }}</td>
                 <td>{{ goodsItem.realRebateMoney.toFixed(2) }}</td>
