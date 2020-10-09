@@ -223,8 +223,8 @@ export default {
       queryParams: {
         name: null,
         departmentName: null,
-        consultationMoneyMix: null,
-        consultationMoneyMax: null
+        consultationMoneyMix: undefined,
+        consultationMoneyMax: undefined
       },
       // 表格原始数据
       originalData: [],
