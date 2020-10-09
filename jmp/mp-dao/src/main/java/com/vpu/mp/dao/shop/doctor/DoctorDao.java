@@ -127,10 +127,10 @@ public class DoctorDao extends ShopBaseDao {
             select.where(DOCTOR.SEX.eq(param.getSex()));
         }
         if (param.getConsultationMoneyMix() != null) {
-            select.where(DOCTOR.CONSULTATION_TOTAL_MONEY.ge(param.getConsultationMoneyMix()));
+            select.where(DOCTOR.CONSULTATION_PRICE.ge(param.getConsultationMoneyMix()));
         }
         if (param.getConsultationMoneyMax() != null) {
-            select.where(DOCTOR.CONSULTATION_TOTAL_MONEY.le(param.getConsultationMoneyMax()));
+            select.where(DOCTOR.CONSULTATION_PRICE.le(param.getConsultationMoneyMax()));
         }
     }
 
