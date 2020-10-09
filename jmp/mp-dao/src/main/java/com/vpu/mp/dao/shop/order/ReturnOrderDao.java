@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.Tables.RETURN_ORDER;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
@@ -72,5 +73,18 @@ public class ReturnOrderDao extends ShopBaseDao {
                 .where(RETURN_ORDER.UPDATE_TIME.ge(beginTime)).and(RETURN_ORDER.UPDATE_TIME.le(endTime))
                 .and(RETURN_ORDER.CREATE_TIME.le(beginTime))
                 .fetchInto(ReturnOrderBakDo.class);
+    }
+
+    /**
+     * 获取门店售后订单数量
+     * @param status
+     * @param storeId
+     * @return
+     */
+    public Integer getCountByReturnStatus(Byte status,Integer storeId){
+        return db().select(DSL.countDistinct(RETURN_ORDER.ORDER_SN)).from(RETURN_ORDER).
+            leftJoin(ORDER_INFO).on(RETURN_ORDER.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+            .where(RETURN_ORDER.REFUND_STATUS.eq(status)).and(ORDER_INFO.STORE_ID.eq(storeId))
+        .fetchAnyInto(Integer.class);
     }
 }
