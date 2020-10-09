@@ -558,10 +558,12 @@ public class ShopOfficialAccount extends MainBaseService {
         logger().info("传入appid为：{}",appId);
         // 店员账号3
         int accountAction = 3;
+        int accountId = wxAppSessionUser.getStoreAccountId();
         if(wxAppSessionUser.getUserType().equals(AuthConstant.AUTH_TYPE_DOCTOR_USER)){
             accountAction=4;
+            accountId=wxAppSessionUser.getDoctorId();
         }
-        int accountId = wxAppSessionUser.getStoreAccountId();
+
         int expireSeconds = 24 * 60 * 30 * 60 - 60;
         //$sceneValue = $shopId.'&'.$accountAction.'&'.$accountId;
         String sceneValue = wxAppSessionUser.getShopId().toString() + "&" + String.valueOf(accountAction) + "&"+ String.valueOf(accountId);
