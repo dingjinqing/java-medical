@@ -20,8 +20,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {storeId} = options
+    let {storeId,orderStatus:shippingStatus} = options
     this.data.storeId = storeId
+    this.setData({
+      shippingStatus:Number(shippingStatus)
+    })
     this.requestOrderList()
   },
   requestOrderList(){
