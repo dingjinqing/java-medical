@@ -5,7 +5,8 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    isFirstLoad:true
+    isFirstLoad:true,
+    showQrCode:false
   },
 
   /**
@@ -47,10 +48,31 @@ global.wxPage({
       }
     })
   },
-  viewWaitHandleOrder({currentTarget:{dataset:{storeId}}}){
+  viewWaitHandleOrder({currentTarget:{dataset:{storeId,orderStatus}}}){
     util.jumpLink(`pages3/clerkOrderList/clerkOrderList${util.getUrlParams({
-      storeId
+      storeId,
+      orderStatus
     })}`)
+  },
+  viewQrCodeInfo(){
+    util.api('/api/wxapp/public/service/bind/getOfficialQrCode',res=>{
+      if(res.error === 0){
+        this.setData({
+          showQrCode:true,
+          QrCodeImage:res.content
+        })
+      }
+    },{})
+  },
+  bindClose(){
+    this.setData({
+      showQrCode:false
+    })
+  },
+  viewImage(){
+    wx.previewImage({
+      urls:[this.data.QrCodeImage]
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

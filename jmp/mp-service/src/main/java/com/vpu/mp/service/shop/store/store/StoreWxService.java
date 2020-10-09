@@ -7,6 +7,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.main.StoreAccountDao;
+import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.address.UserAddressDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDao;
@@ -234,7 +235,7 @@ public class StoreWxService extends ShopBaseService {
     @Autowired
     private ShipInfoService shipInfoService;
     @Autowired
-    private DoctorDao doctorDao;
+    private ReturnOrderDao returnOrderDao;
 
     /**
      * The constant BYTE_TWO.
@@ -617,6 +618,7 @@ public class StoreWxService extends ShopBaseService {
         List<Byte> orderStatusList=new ArrayList<>();
         //待处理的状态
         orderStatusList.add(OrderConstant.ORDER_WAIT_DELIVERY);
+        orderStatusList.add(OrderConstant.ORDER_SHIPPED);
         //门店数据
         for(StoreStatisticVo statisticVo:storeList){
             //待处理数
@@ -625,9 +627,12 @@ public class StoreWxService extends ShopBaseService {
             Integer finishedOrderNum= shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,null);
             //配送中数量
             Integer deliveryOrderNum= shipInfoService.getCountDeliveryNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,null);
+            //待售后数量
+            Integer saleAfterOrderNum=returnOrderDao.getCountByReturnStatus(OrderConstant.REFUND_STATUS_AUDITING,statisticVo.getStoreId());
             statisticVo.setWaitHandleOrderNum(waitReceiveOrderNum);
             statisticVo.setFinishedOrderNum(finishedOrderNum);
             statisticVo.setDeliveryOrderNum(deliveryOrderNum);
+            statisticVo.setSaleAfterOrderNum(saleAfterOrderNum);
         }
         //本月数据
         StoreMonthStatisticVo monthVo=new StoreMonthStatisticVo();

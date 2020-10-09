@@ -63,13 +63,13 @@ public class GoodsLabelService extends ShopBaseService {
         Condition condition = buildCondition(param);
         SelectSeekStep2<Record, Short, Timestamp> select = db().select().from(GOODS_LABEL).where(condition).orderBy(GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc());
         PageResult<GoodsLabelPageListVo> resultPage = getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsLabelPageListVo.class);
-        if( !resultPage.getDataList().isEmpty() ){
-            assemblyGoodsNumberForEs(resultPage.getDataList());
-        }
+//        if( !resultPage.getDataList().isEmpty() ){
+//            assemblyGoodsNumberForEs(resultPage.getDataList());
+//        }
 
         return resultPage;
     }
-    private void assemblyGoodsNumberForEs(List<GoodsLabelPageListVo> dataList){
+    private void    assemblyGoodsNumberForEs(List<GoodsLabelPageListVo> dataList){
         List<Integer> ids = dataList.stream().map(GoodsLabelPageListVo::getId).collect(Collectors.toList());
         try {
             Map<Integer,Integer> numberMap = esGoodsLabelSearchService.getLabelForGoodsNumber(ids);

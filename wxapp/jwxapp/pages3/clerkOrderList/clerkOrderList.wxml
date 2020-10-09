@@ -6,6 +6,10 @@
         bindtap="toggleFilter">
         <text>待处理</text>
       </view>
+      <view class="filter-item {{shippingStatus === 10 ? 'active' : ''}}" data-shipping-status="10"
+        bindtap="toggleFilter">
+        <text>待售后</text>
+      </view>
       <view class="filter-item {{shippingStatus === 9 ? 'active' : ''}}" data-shipping-status="9"
         bindtap="toggleFilter">
         <text>已完成</text>

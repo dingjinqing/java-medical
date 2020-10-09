@@ -115,7 +115,9 @@ public class StoreOverviewController extends StoreBaseController {
      */
     @GetMapping("/api/store/malloverview/getbindUnBindStatus")
     public JsonResult getbindUnBindStatus(){
-        BindofficialVo getbindUnBindStatusUseByOver = saas.overviewService.getbindUnBindStatusUseByOverForStore(storeAuth.user(),bindAppId);
+        StoreTokenAuthInfo storeTokenAuthInfo=storeAuth.user();
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(storeTokenAuthInfo.getLoginShopId());
+        BindofficialVo getbindUnBindStatusUseByOver = saas.overviewService.getbindUnBindStatusUseByOverForStore(storeAuth.user(),wxapp.getLinkOfficialAppId());
         return success(getbindUnBindStatusUseByOver);
     }
 

@@ -19,7 +19,7 @@ public class WxAppWechatApiController extends WxAppBaseController{
      * 获取绑定店铺的二维码
      * @return
      */
-    @PostMapping("/api/admin/public/service/bind/getOfficialQrCode")
+    @PostMapping("/service/bind/getOfficialQrCode")
     public JsonResult generateThirdPartCode() {
         WxAppSessionUser wxAppSessionUser=wxAppAuth.user();
         MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(wxAppSessionUser.getShopId());

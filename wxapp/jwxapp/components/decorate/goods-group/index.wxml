@@ -54,7 +54,7 @@
 						<view class='module_text'>
 							<view class='module_goods_name' >
 								<block wx:if='{{item.activityType != 10 || item.goodsActivities.length}}'>
-									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
+									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 									<view class="title_box">
 
 										<view
@@ -70,7 +70,7 @@
 									</view>
 								</block>
 								<block wx:else>
-									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+									<view class='van-two-ellipsis'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 								</block>
 							</view>
 							<view class='module_goods_price'>
@@ -129,7 +129,7 @@
 						<view class='module_text'>
 							<view class='module_goods_name' >
 								<block wx:if='{{item.goods_type != 10 || item.goodsActivities.length}}'>
-									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
+									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 									<view class="title_box">
 
 										<view
@@ -145,7 +145,7 @@
 									</view>
 								</block>
 								<block wx:else>
-									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+									<view class='van-two-ellipsis'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 								</block>
 
 							</view>
@@ -207,7 +207,7 @@
 						<view class='module_text' wx:if="{{item.activityType!=1|| item.activityType!=3 ||item.activityType!=5}}}}">
 							<view class='module_goods_name' >
 								<block wx:if='{{item.activityType == 10 || item.goodsActivities.length}}'>
-									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
+									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 									<view class="title_box">
 
 										<view
@@ -224,7 +224,7 @@
 									</view>
 								</block>
 								<block wx:else>
-									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+									<view class='van-two-ellipsis'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 								</block>
 							</view>
 							<view  class='module_goods_price'>
@@ -239,7 +239,7 @@
 						</view>
 						<view class='module_text' wx:else>
 							<view class='module_goods_name' >
-								<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
+								<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 								<view class='title_label' style="border:none">
 									<view class='pin_flagThree' style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}">{{item.activityType==1?i18n.$t(localePack,'components.decorate.assemble'):item.activityType==3?i18n.$t(localePack,'components.decorate.bargain'):i18n.$t(localePack,'components.decorate.seckill')}}</view>
 								</view>
@@ -286,7 +286,7 @@
 						<view class='module_text'>
 							<view class='module_goods_name' >
 								<block wx:if='{{item.activityType != 10 || item.goodsActivities.length}}'>
-									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
+									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 									<view class="title_box">
 
 										<view
@@ -302,7 +302,7 @@
 									</view>
 								</block>
 								<block wx:else>
-									<view class='van-two-ellipsis' style="white-space:normal;">{{item.goodsName}}</view>
+									<view class='van-two-ellipsis' style="white-space:normal;">{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 								</block>
 
 							</view>
@@ -358,7 +358,7 @@
 						<view class='module_text'>
 							<view class='module_goods_name' >
 								<view class='top_title' wx:if='{{m.show_name != 1}}'>
-									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+									<view class='van-two-ellipsis'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 								</view>
 								<view class="title_box">
 
@@ -477,7 +477,7 @@
 							<view class='module_goods_name'>
 
 								<view class='top_title'  wx:if='{{m.show_name != 1}}'>
-									<view class='van-two-ellipsis' >{{item.goodsName}}</view>
+									<view class='van-two-ellipsis' >{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
 								</view>
 								<view class="title_box">
 

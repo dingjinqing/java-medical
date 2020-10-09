@@ -484,6 +484,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     platformRebateDo.setRecId(goods.getRecId());
                     platformRebateDo.setShopId(order.getShopId());
                     platformRebateDo.setGoodsSharingProportion(rebateConfig.getGoodsSharingProportion().divide(BigDecimalUtil.BIGDECIMAL_100,BigDecimalUtil.FOUR_SCALE,BigDecimal.ROUND_DOWN));
+                    platformRebateDo.setTotalMoney(goods.getGoodsPrice().multiply(BigDecimal.valueOf(goods.getGoodsNumber())));
                     //可计算返利商品金额
                     BigDecimal canRebateMoney = BigDecimalUtil.subtrac(goods.getDiscountedTotalPrice(), BigDecimalUtil.multiply(avgScoreDiscount, new BigDecimal(goods.getGoodsNumber())));
                     canRebateMoney = BigDecimalUtil.compareTo(canRebateMoney, null) > 0 ? canRebateMoney : BigDecimalUtil.BIGDECIMAL_ZERO;

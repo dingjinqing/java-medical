@@ -179,13 +179,6 @@ export default {
         callback()
       }
     }
-    var validSignature = (rule, value, callback) => {
-      if (!value && this.urlType === 0) {
-        callback(new Error('请选择医生签名'))
-      } else {
-        callback()
-      }
-    }
     return {
       reload: true,
       doctorFormInfo: {
@@ -218,8 +211,7 @@ export default {
         mobile: [
           { required: true, message: '请填写手机号', trigger: 'blur' },
           { type: 'number', message: '请填写数字', trigger: 'blur' }
-        ],
-        signature: [{ required: true, validator: validSignature, trigger: 'change' }]
+        ]
       },
       doctorJobTitles: {},
       hireJobs: [
