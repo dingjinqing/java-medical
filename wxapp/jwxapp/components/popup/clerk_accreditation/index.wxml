@@ -11,7 +11,7 @@
       </view>
       <view class="form-item">
         <view class="form-title">账户密码<text class="required">*</text></view>
-        <input placeholder="请输入门店账户" bindinput="changePassword" value="{{password}}"></input>
+        <input placeholder="请输入账户密码" bindinput="changePassword" value="{{password}}"></input>
       </view>
       <view class="form-item">
         <view class="form-title">手机号码</view>
@@ -28,10 +28,10 @@
           <text bindtap="toggleIsPharmacist" class="iconfont {{isPharmacist ? 'iconduoxuan' : 'iconduoxuanbiankuang'}}"></text>
         </view>
       </view>
-      <view class="sign-button" wx:if="{{!showCanvas && isPharmacist}}" bindtap="showCanvasContent">
+      <view class="sign-button" wx:if="{{isPharmacist}}" bindtap="showCanvasContent">
         <image src="{{imageUrl}}image/wxapp/sign_icon.png"></image><text>点击此处签名</text>
       </view>
-      <view class="clerk-image-content" wx:if="{{clerkImagePath.imgUrl}}">
+      <view class="clerk-image-content" wx:if="{{isPharmacist && clerkImagePath.imgUrl}}">
         <image src="{{clerkImagePath.imgUrl}}" wx:if="{{clerkImagePath.imgUrl}}" class="clerk-image"></image>
       </view>
       <!-- <v-sign wx:if="{{showCanvas && isPharmacist}}" id="sign"/> -->
