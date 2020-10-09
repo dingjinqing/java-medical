@@ -5,13 +5,13 @@
         :title="$t('imgageDalog.title')"
         :visible.sync="dialogTableVisible"
         width="825px"
-        :append-to-body='true'
+        :append-to-body="true"
       >
         <Cropper
-          @handleToResetPage='handleToResetPage'
-          :imageSize='imageSize'
-          :cropperFlagF='cropperFlagF'
-          :cropperDialog='cropperDialogF'
+          @handleToResetPage="handleToResetPage"
+          :imageSize="imageSize"
+          :cropperFlagF="cropperFlagF"
+          :cropperDialog="cropperDialogF"
         />
         <div class="dialog_top">
           <el-upload
@@ -23,29 +23,21 @@
             :show-file-list="false"
             :on-exceed="handleExceed"
           >
-            <el-button
-              size="small"
-              type="primary"
-            >{{$t('imgageDalog.upload')}}</el-button>
-            <div
-              slot="tip"
-              class="tips"
-              :class="imageDalogTip_lineHeight"
-            >
-              <img :src="imgUrl[0].img_1">
-              {{$t('imgageDalog.tip')}}</div>
+            <el-button size="small" type="primary">{{
+              $t('imgageDalog.upload')
+            }}</el-button>
+            <div slot="tip" class="tips" :class="imageDalogTip_lineHeight">
+              <img :src="imgUrl[0].img_1" />
+              {{ $t('imgageDalog.tip') }}
+            </div>
           </el-upload>
         </div>
         <div class="dialog_middle">
           <div class="dialog_middle_top">
-            <Tree :pageIndex='pageIndex' />
+            <Tree :pageIndex="pageIndex" />
             <div class="dialog_middle_right_box">
               <div class="right_top">
-                <el-select
-                  v-model="value"
-                  placeholder="请选择"
-                  size='mini'
-                >
+                <el-select v-model="value" placeholder="请选择" size="mini">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -57,43 +49,36 @@
                 <el-input
                   v-model="imgNameInput"
                   :placeholder="$t('imgageDalog.imagePlaceholder')"
-                  size='mini'
+                  size="mini"
                 ></el-input>
                 <el-button
                   type="info"
                   plain
                   size="mini"
                   @click="handleSearch()"
-                >{{$t('imgageDalog.search')}}</el-button>
-                <el-checkbox
-                  v-if="imageSize.length"
-                  v-model="checked"
-                >{{this.sizeW}}px x {{this.sizeH}}px</el-checkbox>
+                  >{{ $t('imgageDalog.search') }}</el-button
+                >
+                <el-checkbox v-if="imageSize.length" v-model="checked"
+                  >{{ this.sizeW }}px x {{ this.sizeH }}px</el-checkbox
+                >
               </div>
               <div class="right_content">
                 <ul>
                   <li
                     @mouseenter="enter(index)"
                     @mouseleave="leave(index)"
-                    v-for="(item,index) in img_list"
+                    v-for="(item, index) in img_list"
                     :key="index"
                   >
-
-                    <div style="position:relative">
+                    <div style="position: relative">
                       <a :title="item.imgName">
-                        <img
-                          :src="item.imgUrl"
-                          @click="handleChecked(index)"
-                        >
+                        <img :src="item.imgUrl" @click="handleChecked(index)" />
                       </a>
-                      <div
-                        v-show="item.checked"
-                        class="img_sel"
-                      ></div>
+                      <div v-show="item.checked" class="img_sel"></div>
                     </div>
                     <div
                       class="img_mask"
-                      :class="item.imgIndex === index?'mask_flag':''"
+                      :class="item.imgIndex === index ? 'mask_flag' : ''"
                     >
                       <p :class="imageDalog_p_height">
                         <a
@@ -101,40 +86,56 @@
                           :href="item.imgUrl"
                           target="_blank"
                           :title="$t('imgageDalog.displayOriginalGraph')"
-                        >{{$t('imgageDalog.OriginalImg')}}</a>
+                          >{{ $t('imgageDalog.OriginalImg') }}</a
+                        >
                         <a
                           :title="$t('imgageDalog.cutPictures')"
-                          @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl,item.imgWidth,item.imgHeight)"
+                          @click="
+                            handleCropper(
+                              item.imgPath,
+                              item.imgCatId,
+                              item.imgId,
+                              item.imgUrl,
+                              item.imgWidth,
+                              item.imgHeight
+                            )
+                          "
                         >
-                          {{$t('imgageDalog.tailoring')}}
+                          {{ $t('imgageDalog.tailoring') }}
                         </a>
                         <a
                           class="remove_image"
                           :title="$t('imgageDalog.deletePictures')"
                           @click="delImg(item.imgId)"
-                        >{{$t('imgageDalog.delImg')}}</a>
+                          >{{ $t('imgageDalog.delImg') }}</a
+                        >
                       </p>
                     </div>
                     <div
                       class="img_dim"
-                      :class="item.imgIndex === index?'dim_flag':''"
+                      :class="item.imgIndex === index ? 'dim_flag' : ''"
                     >
-                      <p style="text-align:center">{{item.imgWidth}}x{{item.imgHeight}}</p>
+                      <p style="text-align: center">
+                        {{ item.imgWidth }}x{{ item.imgHeight }}
+                      </p>
                     </div>
                   </li>
                 </ul>
                 <div class="bottom">
-                  <div
-                    class="totle"
-                    :class="admin_imageDalog_totle"
-                  >
-                    <span>{{$t('imgageDalog.currentPage')}}{{this.currentPage}}/{{this.pageCount}},</span>
-                    <span>{{$t('imgageDalog.totalPage')}}{{this.totalRows}}{{$t('imgageDalog.strip')}}</span>
+                  <div class="totle" :class="admin_imageDalog_totle">
+                    <span
+                      >{{ $t('imgageDalog.currentPage')
+                      }}{{ this.currentPage }}/{{ this.pageCount }},</span
+                    >
+                    <span
+                      >{{ $t('imgageDalog.totalPage') }}{{ this.totalRows
+                      }}{{ $t('imgageDalog.strip') }}</span
+                    >
                   </div>
                   <el-pagination
                     @current-change="handleCurrentChange"
                     :current-page.sync="currentPage3"
-                    :page-size="8"
+                    :page-size="10"
                     layout="prev, pager, next, jumper"
                     :total="totalRows"
                     :small="pagination_b"
@@ -144,13 +145,9 @@
               </div>
             </div>
           </div>
-
         </div>
-        <div
-          v-if="isDraggable"
-          class="selectImgList"
-        >
-          <p>已选{{backArr.length}}长图片,拖动可修改插入顺序</p>
+        <div v-if="isDraggable" class="selectImgList">
+          <p>已选{{ backArr.length }}长图片,拖动可修改插入顺序</p>
           <div class="selectImgContainer">
             <draggable
               class="list-group"
@@ -158,59 +155,48 @@
               v-model="backArr"
               :options="dragOptions"
             >
-
               <div
                 class="selectList"
-                @mouseenter='backArr[index].imgIndex = index'
+                @mouseenter="backArr[index].imgIndex = index"
                 @mouseleave="backArr[index].imgIndex = ''"
-                v-for="(item,index) in backArr"
+                v-for="(item, index) in backArr"
                 :key="index"
               >
-                <div
-                  class="imgDit"
-                  v-if="backArr[index].imgIndex === index"
-                >
+                <div class="imgDit" v-if="backArr[index].imgIndex === index">
                   <a
                     target="_blank"
                     title="显示原图"
-                    style="cursor:pointer"
+                    style="cursor: pointer"
                     :href="item.imgUrl"
-                  >原</a>
+                    >原</a
+                  >
                   <a
                     href="javascript:void(0)"
                     title="移出图片"
-                    style="cursor:pointer"
-                    @click="handleToDelDraggableData(item,index)"
-                  >X</a>
+                    style="cursor: pointer"
+                    @click="handleToDelDraggableData(item, index)"
+                    >X</a
+                  >
                 </div>
-                <img :src="item.imgUrl">
+                <img :src="item.imgUrl" />
                 <div
                   class="imgDim"
                   v-if="backArr[index].imgIndex !== index"
                 ></div>
               </div>
-
             </draggable>
           </div>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="dialogTableVisible = false"
-          >{{$t('imgageDalog.cancel')}}</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleToSure()"
-          >{{$t('imgageDalog.Determine')}}</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogTableVisible = false">{{
+            $t('imgageDalog.cancel')
+          }}</el-button>
+          <el-button type="primary" size="small" @click="handleToSure()">{{
+            $t('imgageDalog.Determine')
+          }}</el-button>
         </span>
       </el-dialog>
-
     </div>
-
   </div>
 </template>
 <script>
