@@ -44,7 +44,7 @@
           </view>
           <view class="operate-item" data-order-status="10" data-store-id="{{item.storeId}}" bindtap="viewWaitHandleOrder">
             <view class="operate-image">
-              <view class="num">{{item.waitHandleOrderNum}}</view>
+              <view class="num">{{item.saleAfterOrderNum || '0'}}</view>
               <image src="{{imageUrl}}image/wxapp/clerk-index-icon2.png"></image>
             </view>
             <text>待售后订单</text>
