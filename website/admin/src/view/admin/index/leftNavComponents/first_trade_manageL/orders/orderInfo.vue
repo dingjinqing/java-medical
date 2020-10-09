@@ -1081,7 +1081,10 @@ export default {
         '10': ['createTime', 'payTime', 'refundFinishTime'],
         '11': ['createTime', 'payTime', 'pinStartTime', 'shippingTime', 'affirmTime', 'finishedTime'],
         '12': ['createTime', 'payTime', 'pinEndTime', 'shippingTime', 'affirmTime', 'finishedTime'],
-        '13': ['createTime', 'payTime', 'giftGiving', 'giveCompletion']
+        '13': ['createTime', 'payTime', 'giftGiving', 'giveCompletion'],
+        '14': ['createTime', 'payTime', 'affirmTime', 'finishedTime'],
+        '15': ['createTime', 'payTime', 'affirmTime', 'finishedTime'],
+        '16': ['createTime', 'payTime', 'affirmTime', 'finishedTime']
       },
       returnTypeMap: null,
       returnStatusToShowMapping: null,
