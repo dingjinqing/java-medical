@@ -627,8 +627,11 @@ public class StoreWxService extends ShopBaseService {
             Integer finishedOrderNum= shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,null);
             //配送中数量
             Integer deliveryOrderNum= shipInfoService.getCountDeliveryNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,null);
+            List<Byte> returnStatusList=new ArrayList<>();
+            returnStatusList.add(OrderConstant.REFUND_STATUS_AUDITING);
+            returnStatusList.add(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
             //待售后数量
-            Integer saleAfterOrderNum=returnOrderDao.getCountByReturnStatus(OrderConstant.REFUND_STATUS_AUDITING,statisticVo.getStoreId());
+            Integer saleAfterOrderNum=returnOrderDao.getCountByReturnStatus(returnStatusList,statisticVo.getStoreId());
             statisticVo.setWaitHandleOrderNum(waitReceiveOrderNum);
             statisticVo.setFinishedOrderNum(finishedOrderNum);
             statisticVo.setDeliveryOrderNum(deliveryOrderNum);
