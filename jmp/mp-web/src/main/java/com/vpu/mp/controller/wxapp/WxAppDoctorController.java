@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
+import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.common.pojo.shop.table.DoctorLoginLogDo;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -166,5 +167,23 @@ public class WxAppDoctorController extends WxAppBaseController {
             doctorLoginLogService.save(param);
         }
         return success();
+    }
+
+    /**
+     * 小程序端修改医师信息
+     * @param doctorOneParam 医师信息入参
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/doctor/add/Information")
+    public JsonResult addDoctorInformation(@RequestBody DoctorOneParam doctorOneParam) {
+        if (doctorOneParam.getId() == null) {
+            return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
+        }
+        try {
+            doctorService.updateDoctor(doctorOneParam);
+            return success();
+        } catch (MpException e) {
+            return fail();
+        }
     }
 }
