@@ -1,6 +1,7 @@
 package com.vpu.mp.dao.shop.patient;
 
 import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.pojo.shop.table.UserDo;
 import com.vpu.mp.common.pojo.shop.table.UserPatientCoupleDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.UserPatientCoupleRecord;
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.PATIENT;
-import static com.vpu.mp.db.shop.Tables.USER_PATIENT_COUPLE;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author chenjie
@@ -177,9 +177,20 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
      * @return
      */
     public List<Integer> listPatientIdsByUserId(Integer userId) {
-        List<Integer> patientList = db().select(USER_PATIENT_COUPLE.PATIENT_ID).from(USER_PATIENT_COUPLE)
+        return db().select(USER_PATIENT_COUPLE.PATIENT_ID).from(USER_PATIENT_COUPLE)
             .where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(PATIENT.IS_DELETE.eq((byte) 0)))
             .fetchInto(Integer.class);
-        return patientList;
+    }
+
+    /**
+     * 获取患者绑定用户集合
+     * @param patientId 患者id
+     * @return List<UserDo>
+     */
+    public List<UserDo> listUsersByPatientId(Integer patientId) {
+        return db().select(USER.USER_ID, USER.USERNAME).from(USER)
+            .leftJoin(USER_PATIENT_COUPLE)
+            .on(USER_PATIENT_COUPLE.USER_ID.eq(USER.USER_ID))
+            .where(USER_PATIENT_COUPLE.PATIENT_ID.eq(patientId)).fetchInto(UserDo.class);
     }
 }

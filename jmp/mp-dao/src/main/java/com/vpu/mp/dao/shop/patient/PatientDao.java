@@ -46,15 +46,11 @@ public class PatientDao extends ShopBaseDao{
      */
     public PageResult<PatientOneParam> getPatientList(PatientListParam param) {
         SelectJoinStep<? extends Record> select = db()
-            .select(PATIENT.asterisk(), USER.USERNAME.as("wxNickName"), USER.USER_ID.as("userId"))
+            .select(PATIENT.asterisk())
             .from(PATIENT);
         select.where(PATIENT.IS_DELETE.eq((byte) 0));
         buildOptions(select, param);
-        select.leftJoin(USER_PATIENT_COUPLE)
-            .on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
-            .leftJoin(USER)
-            .on(USER_PATIENT_COUPLE.USER_ID.eq(USER.USER_ID));
-        select.orderBy(PATIENT.ID.desc());
+        select.orderBy(PATIENT.ID.asc());
         return this.getPageResult(select, param.getCurrentPage(),
             param.getPageRows(), PatientOneParam.class);
     }
