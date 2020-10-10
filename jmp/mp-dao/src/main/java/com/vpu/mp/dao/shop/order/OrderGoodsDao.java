@@ -108,16 +108,6 @@ public class OrderGoodsDao extends ShopBaseDao {
     }
 
 
-    /**
-     * 审核通过 更新订单商品状态
-     * @param prescriptionCode
-     */
-    public void updateAuditedToWaitDelivery(List<Integer> recIds,String prescriptionCode){
-        db().update(ORDER_GOODS)
-                .set(ORDER_GOODS.PRESCRIPTION_CODE,prescriptionCode)
-                .where(ORDER_GOODS.REC_ID.in(recIds)).execute();
-
-    }
 
     /**
      * 审核订单商品状态
@@ -127,8 +117,24 @@ public class OrderGoodsDao extends ShopBaseDao {
     public void updateAuditStatusByRecIds(List<Integer> recIds, byte auditStatus) {
         db().update(ORDER_GOODS)
                 .set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus)
+                .set(ORDER_GOODS.AUDIT_TIME,DSL.now())
                 .where(ORDER_GOODS.REC_ID.in(recIds)).execute();
     }
+
+
+    /**
+     * 审核订单商品状态
+     * @param recIds
+     * @param auditStatus
+     */
+    public void updateAuditStatusByRecIds(List<Integer> recIds, byte auditStatus,String prescriptionCode) {
+        db().update(ORDER_GOODS)
+                .set(ORDER_GOODS.MEDICAL_AUDIT_STATUS,auditStatus)
+                .set(ORDER_GOODS.PRESCRIPTION_CODE,prescriptionCode)
+                .set(ORDER_GOODS.AUDIT_TIME,DSL.now())
+                .where(ORDER_GOODS.REC_ID.in(recIds)).execute();
+    }
+
 
     /**
      * 获取审核订单信息

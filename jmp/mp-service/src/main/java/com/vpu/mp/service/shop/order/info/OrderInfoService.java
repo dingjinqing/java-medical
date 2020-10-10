@@ -914,10 +914,12 @@ public class OrderInfoService extends ShopBaseService {
                 //待续方
            case OrderConstant.ORDER_TO_AUDIT:
                 order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT);
+               order.setAuditTime(DateUtil.date().toTimestamp());
                 break;
                 //待开方
             case OrderConstant.ORDER_TO_AUDIT_OPEN:
                 order.setOrderStatus(OrderConstant.ORDER_TO_AUDIT_OPEN);
+                order.setAuditTime(DateUtil.date().toTimestamp());
                 break;
             default:
                 return;

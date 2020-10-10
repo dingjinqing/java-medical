@@ -8,8 +8,6 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderToPrescribeQueryParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
@@ -26,13 +24,10 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
@@ -49,7 +44,10 @@ public class OrderInfoDao extends ShopBaseDao {
      * @param auditStatus
      */
     public void updateAuditStatus(Integer orderId,Byte auditStatus){
-        db().update(ORDER_INFO).set(ORDER_INFO.ORDER_AUDIT_STATUS,auditStatus).where(ORDER_INFO.ORDER_ID.eq(orderId)).execute();
+        db().update(ORDER_INFO)
+                .set(ORDER_INFO.ORDER_AUDIT_STATUS,auditStatus)
+                .set(ORDER_INFO.AUDIT_TIME,DSL.now())
+                .where(ORDER_INFO.ORDER_ID.eq(orderId)).execute();
     }
 
     public PageResult<OrderInfoVo>  listOrderInfo(OrderToPrescribeQueryParam param){

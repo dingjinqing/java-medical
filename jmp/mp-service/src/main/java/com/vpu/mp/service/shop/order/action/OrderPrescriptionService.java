@@ -267,12 +267,9 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             logger().info("orderId:{}审核通过",orderInfoDo.getOrderId());
             //生成处方
             PrescriptionVo prescriptionVo = savePrescriptionInfo(param, orderInfoDo,allGoods,auditGoodsId);
-            if(prescriptionVo!=null){
-                prescriptionRebateService.addPrescriptionRebate(prescriptionVo,orderInfoDo);
-            }
+            prescriptionRebateService.addPrescriptionRebate(prescriptionVo,orderInfoDo);
             //修改状态
-            orderGoodsDao.updateAuditedToWaitDelivery(auditGoodsId,prescriptionVo.getPrescriptionCode());
-            orderGoodsDao.updateAuditStatusByRecIds(auditGoodsId,OrderConstant.MEDICAL_AUDIT_PASS);
+            orderGoodsDao.updateAuditStatusByRecIds(auditGoodsId,OrderConstant.MEDICAL_AUDIT_PASS,prescriptionVo.getPrescriptionCode());
             List<Integer> allUnAuditRecIds = getAllUnAuditRecIds(allGoods);
             if (auditGoodsId.containsAll(allUnAuditRecIds)){
                 logger().info("订单处方全部通过");
