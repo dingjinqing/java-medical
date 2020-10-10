@@ -307,7 +307,7 @@ export default {
             this.urlType = 0
             this.showedPic = doctorFormInfo.url
           }
-          this.signPic = doctorFormInfo.signature
+          this.signPic = doctorFormInfo.signature ? doctorFormInfo.signature : '/image/admin/add_img.png'
           this.doctorFormInfo = doctorFormInfo
         } else {
           this.$message.error({

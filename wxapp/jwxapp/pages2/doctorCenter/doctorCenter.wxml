@@ -4,18 +4,66 @@
     <view class="list-content">
       <view class="list-item">
         <view class="list-title">头像</view>
-        <image class="avatar" bindtap="changeAvatar" src="{{imageUrl + doctorAvatar}}"></image>
+        <image class="avatar" bindtap="changeAvatar" src="{{imageUrl + doctorInfo.url}}"></image>
       </view>
-      <view class="list-item" wx:if="{{treatDisease}}">
+      <view class="list-item">
+        <view class="list-title">医师姓名</view>
+        <view class="list-item-content">
+          <view class="text">
+            {{doctorInfo.name}}
+          </view>
+        </view>
+      </view>
+      <view class="list-item">
+        <view class="list-title">医师职称</view>
+        <view class="list-item-content">
+          <view class="text">
+            {{doctorInfo.titleName}}
+          </view>
+        </view>
+      </view>
+      <view class="list-item">
+        <view class="list-title">手机号码</view>
+        <view class="list-item-content">
+          <view class="text">
+            {{doctorInfo.mobile}}
+          </view>
+        </view>
+      </view>
+      <view class="list-item">
+        <view class="list-title">院内编号</view>
+        <view class="list-item-content">
+          <view class="text">
+            {{doctorInfo.hospitalCode}}
+          </view>
+        </view>
+      </view>
+      <view class="list-item">
+        <view class="list-title">所属科室</view>
+        <view class="list-item-content">
+          <view class="text">
+            {{doctorInfo.departmentNames}}
+          </view>
+        </view>
+      </view>
+      <view class="list-item">
+        <view class="list-title">问诊费用</view>
+        <view class="list-item-content">
+          <view class="text">
+            {{doctorInfo.consultationTotalMoney}}
+          </view>
+        </view>
+      </view>
+      <view class="list-item" wx:if="{{doctorInfo.treatDisease}}">
         <view class="list-title">擅长疾病</view>
         <view class="list-item-content">
           <view class="text">
-            {{treatDisease}}
+            {{doctorInfo.treatDisease}}
           </view>
         </view>
       </view>
     </view>
 
-    <view class="save" style="background-color:{{comColor}};">保存</view>
+    <view class="save" style="background-color:{{comColor}};" bindtap="setDoctorInfo">保存</view>
   </view>
 </view>

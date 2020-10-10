@@ -3,7 +3,8 @@
     <div class="membersDetailContentMain">
       <div class="topContainer">
         <div class="titleEdit">
-          <span>{{ $t('membershipIntroduction.Essentialinformation') }}</span><span @click="handleBaseInfo()">{{
+          <span>{{ $t('membershipIntroduction.Essentialinformation') }}</span
+          ><span @click="handleBaseInfo()">{{
             $t('membershipIntroduction.Towrite')
           }}</span>
         </div>
@@ -118,10 +119,7 @@
               </li>
             </ul>
 
-            <ul
-              class="hiddenUl"
-              v-if="hiddenUlFlag"
-            >
+            <ul class="hiddenUl" v-if="hiddenUlFlag">
               <li>
                 <div>
                   {{ $t('membershipIntroduction.Sourcechannel') }}：
@@ -132,13 +130,16 @@
                 </div>
                 <div>
                   {{ $t('membershipIntroduction.Birthday') }}：
-                  <span v-if="
+                  <span
+                    v-if="
                       this.memberBasicInfo.birthdayYear &&
                       this.memberBasicInfo.birthdayMonth &&
                       this.memberBasicInfo.birthdayDay
-                    ">{{ this.memberBasicInfo.birthdayYear }}-{{
+                    "
+                    >{{ this.memberBasicInfo.birthdayYear }}-{{
                       this.memberBasicInfo.birthdayMonth
-                    }}-{{ this.memberBasicInfo.birthdayDay }}</span>
+                    }}-{{ this.memberBasicInfo.birthdayDay }}</span
+                  >
                   <span v-else>{{ $t('membershipIntroduction.unknown') }}</span>
                 </div>
                 <div>
@@ -150,11 +151,13 @@
                 </div>
                 <div>
                   {{ $t('membershipIntroduction.PermanentResidence') }}：
-                  <span v-if="
+                  <span
+                    v-if="
                       this.memberBasicInfo.provinceName ||
                       this.memberBasicInfo.cityName ||
                       this.memberBasicInfo.distictName
-                    ">
+                    "
+                  >
                     {{ this.memberBasicInfo.provinceName }}
                     {{ this.memberBasicInfo.cityName }}
                     {{ this.memberBasicInfo.distictName }}
@@ -202,19 +205,17 @@
             </ul>
           </div>
         </div>
-        <div
-          class="footer"
-          @click="handleCheckMore()"
-        >
+        <div class="footer" @click="handleCheckMore()">
           <div class="footerMain">
-            {{ this.checkMoreText }}
+            {{ !hiddenUlFlag ? '查看更多' : '收起' }}
           </div>
         </div>
       </div>
     </div>
     <div class="topContainer">
       <div class="titleEdit">
-        <span>{{ $t('membershipIntroduction.Labelinformation') }}</span><span @click="handleLabelEditOpen()">{{
+        <span>{{ $t('membershipIntroduction.Labelinformation') }}</span
+        ><span @click="handleLabelEditOpen()">{{
           $t('membershipIntroduction.Towrite')
         }}</span>
       </div>
@@ -223,25 +224,17 @@
           v-for="(item, index) in lebalDataList"
           :key="index"
           class="lebalSpan"
-        >{{ item.value
-          }}<i
-            @click="handleToDelLabel(item.id)"
-            class="fa fa-remove"
-          ></i></span>
+          >{{ item.value
+          }}<i @click="handleToDelLabel(item.id)" class="fa fa-remove"></i
+        ></span>
       </div>
     </div>
     <div class="topContainer">
       <div class="titleEdit">
         <span>{{ $t('membershipIntroduction.AssetInformation') }}</span>
       </div>
-      <ul
-        class="assetsUl"
-        :class="assetsUl"
-      >
-        <li
-          v-for="(item, index) in assetsData"
-          :key="index"
-        >
+      <ul class="assetsUl" :class="assetsUl">
+        <li v-for="(item, index) in assetsData" :key="index">
           <div class="assetsUlLeft">
             <img :src="item.img" />
           </div>
@@ -252,7 +245,8 @@
               v-if="item.haveSetUp === true ? true : false"
               style="color: #5a8bff; cursor: pointer"
               @click="handleSetUp(index)"
-            >{{ $t('membershipIntroduction.setup') }}</span>
+              >{{ $t('membershipIntroduction.setup') }}</span
+            >
             <span
               @click="jumpToDetailPage(index)"
               style="
@@ -261,21 +255,20 @@
                 cursor: pointer;
                 display: block;
               "
-            >{{ item.num }}</span>
+              >{{ item.num }}</span
+            >
           </div>
         </li>
       </ul>
     </div>
     <div class="topContainer">
       <div class="titleEdit">
-        <span>{{ $t('membershipIntroduction.Transactionstatistics') }}</span><span @click="jumpToOrderPage">{{
+        <span>{{ $t('membershipIntroduction.Transactionstatistics') }}</span
+        ><span @click="jumpToOrderPage">{{
           $t('membershipIntroduction.OrderList')
         }}</span>
       </div>
-      <div
-        class="transactionTab"
-        v-if="transactionTabFlag === true"
-      >
+      <div class="transactionTab" v-if="transactionTabFlag === true">
         <p
           v-for="(item, index) in transactionTab"
           :key="index"
@@ -300,18 +293,12 @@
         >
           <p>
             {{ item.title }}
-            <el-tooltip
-              effect="light"
-              placement="top"
-            >
+            <el-tooltip effect="light" placement="top">
               <div slot="content">{{ item.tip }}</div>
               <i class="el-icon-question icon-style"></i>
             </el-tooltip>
           </p>
-          <div
-            class="transactionBottom"
-            v-if="item.value === 'lastOrderTime'"
-          >
+          <div class="transactionBottom" v-if="item.value === 'lastOrderTime'">
             {{ item.content ? item.content : '暂未下单' }}
           </div>
           <div
@@ -324,10 +311,7 @@
           >
             ￥{{ item.content ? Number(item.content).toFixed(2) : '0.00' }}
           </div>
-          <div
-            class="transactionBottom"
-            v-else
-          >{{ item.content }}</div>
+          <div class="transactionBottom" v-else>{{ item.content }}</div>
           <div
             v-if="transactionTabIndex === 2"
             style="text-align: center; margin-top: 10px"
@@ -337,7 +321,8 @@
               plain
               size="small"
               @click="jumpToMemberHandler(item.linkName, index)"
-            >查看订单</el-button>
+              >查看订单</el-button
+            >
           </div>
         </div>
       </div>
@@ -345,12 +330,9 @@
         class="transactionOrder"
         v-if="transactionTabIndex !== 0 && transactionTabIndex !== 2"
       >
-        <el-button
-          type="primary"
-          plain
-          size="small"
-          @click="jumpToHandler"
-        >查看订单</el-button>
+        <el-button type="primary" plain size="small" @click="jumpToHandler"
+          >查看订单</el-button
+        >
       </div>
     </div>
     <div class="topContainer">
@@ -383,7 +365,7 @@
               v-model="doctorparams.isFavorite"
               size="small"
               class="default_input"
-              style="width:150px"
+              style="width: 150px"
             >
               <el-option
                 v-for="item in favorites"
@@ -394,11 +376,9 @@
             </el-select>
           </div>
           <div class="btn_wrap">
-            <el-button
-              type="primary"
-              size="small"
-              @click="initDataList"
-            >查询</el-button>
+            <el-button type="primary" size="small" @click="initDataList"
+              >查询</el-button
+            >
           </div>
         </div>
       </div>
@@ -421,25 +401,27 @@
           <el-table-column label="医师姓名">
             <template slot-scope="scope">
               <div class="operation">
-                <a @click="handleDoctorMessage(scope.row.doctorId,scope.row.doctorCode)">{{scope.row.doctorName}}</a>
+                <a
+                  @click="
+                    handleDoctorMessage(
+                      scope.row.doctorId,
+                      scope.row.doctorCode
+                    )
+                  "
+                  >{{ scope.row.doctorName }}</a
+                >
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="departmentName"
-            label="科室"
-          ></el-table-column>
+          <el-table-column prop="departmentName" label="科室"></el-table-column>
           <el-table-column
             prop="prescriptionNum"
             label="处方数"
           ></el-table-column>
-          <el-table-column
-            prop="inquiryNum"
-            label="咨询单数"
-          ></el-table-column>
+          <el-table-column prop="inquiryNum" label="咨询单数"></el-table-column>
           <el-table-column label="是否收藏">
-            <template v-slot='scope'>
-              {{scope.row.isFav == true ? '是' : '否'}}
+            <template v-slot="scope">
+              {{ scope.row.isFav == true ? '是' : '否' }}
             </template>
           </el-table-column>
         </el-table>
@@ -465,7 +447,7 @@
               v-model="medicalParams.isCollect"
               size="small"
               class="default_input"
-              style="width:150px"
+              style="width: 150px"
             >
               <el-option
                 v-for="item in commenIs"
@@ -481,7 +463,7 @@
               v-model="medicalParams.isCollect"
               size="small"
               class="default_input"
-              style="width:150px"
+              style="width: 150px"
             >
               <el-option
                 v-for="item in commenIs"
@@ -497,7 +479,7 @@
               v-model="medicalParams.isAddCart"
               size="small"
               class="default_input"
-              style="width:150px"
+              style="width: 150px"
             >
               <el-option
                 v-for="item in commenIs"
@@ -513,7 +495,7 @@
               v-model="medicalParams.isBuy"
               size="small"
               class="default_input"
-              style="width:150px"
+              style="width: 150px"
             >
               <el-option
                 v-for="item in commenIs"
@@ -529,7 +511,7 @@
               v-model="medicalParams.isPrescription"
               size="small"
               class="default_input"
-              style="width:150px"
+              style="width: 150px"
             >
               <el-option
                 v-for="item in commenIs"
@@ -540,11 +522,9 @@
             </el-select>
           </div>
           <div class="btn_wrap">
-            <el-button
-              type="primary"
-              size="small"
-              @click="initMedicalList"
-            >查询</el-button>
+            <el-button type="primary" size="small" @click="initMedicalList"
+              >查询</el-button
+            >
           </div>
         </div>
       </div>
@@ -564,10 +544,7 @@
             'text-align': 'center',
           }"
         >
-          <el-table-column
-            prop="goodsName"
-            label="药品名称"
-          ></el-table-column>
+          <el-table-column prop="goodsName" label="药品名称"></el-table-column>
           <el-table-column
             prop="specifications"
             label="规格系数"
@@ -577,29 +554,26 @@
             label="生产厂家"
           ></el-table-column>
           <el-table-column label="是否关关联处方">
-            <template v-slot='scope'>
-              {{scope.row.isFav == true ? '是' : '否'}}
+            <template v-slot="scope">
+              {{ scope.row.isFav == true ? '是' : '否' }}
             </template>
           </el-table-column>
           <el-table-column label="是否加购">
-            <template v-slot='scope'>
-              {{scope.row.isFav == true ? '是' : '否'}}
+            <template v-slot="scope">
+              {{ scope.row.isFav == true ? '是' : '否' }}
             </template>
           </el-table-column>
           <el-table-column label="是否收藏">
-            <template v-slot='scope'>
-              {{scope.row.isFav == true ? '是' : '否'}}
+            <template v-slot="scope">
+              {{ scope.row.isFav == true ? '是' : '否' }}
             </template>
           </el-table-column>
           <el-table-column label="是否购买">
-            <template v-slot='scope'>
-              {{scope.row.isFav == true ? '是' : '否'}}
+            <template v-slot="scope">
+              {{ scope.row.isFav == true ? '是' : '否' }}
             </template>
           </el-table-column>
-          <el-table-column
-            prop="time"
-            label="浏览时间"
-          ></el-table-column>
+          <el-table-column prop="time" label="浏览时间"></el-table-column>
         </el-table>
       </div>
     </div>
@@ -621,18 +595,9 @@
             'text-align': 'center',
           }"
         >
-          <el-table-column
-            prop="id"
-            label="患者编号"
-          ></el-table-column>
-          <el-table-column
-            prop="name"
-            label="姓名"
-          ></el-table-column>
-          <el-table-column
-            prop="mobile"
-            label="手机号"
-          ></el-table-column>
+          <el-table-column prop="id" label="患者编号"></el-table-column>
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column prop="mobile" label="手机号"></el-table-column>
           <el-table-column
             prop="treatmentNo"
             label="就诊卡号"
@@ -670,10 +635,7 @@
       </div>
     </div>
 
-    <div
-      class="topContainer"
-      v-if="memberBasicInfo.isDistributor"
-    >
+    <div class="topContainer" v-if="memberBasicInfo.isDistributor">
       <div class="titleEdit">
         <span>{{ $t('membershipIntroduction.distributionStatistic') }}</span>
       </div>
@@ -697,15 +659,8 @@
         width="40%"
         :modal-append-to-body="false"
       >
-        <div
-          class="balanceDialogDiv"
-          style="margin-bottom: 30px"
-        >
-          <el-form
-            label-position="right"
-            label-width="130px"
-            size="small"
-          >
+        <div class="balanceDialogDiv" style="margin-bottom: 30px">
+          <el-form label-position="right" label-width="130px" size="small">
             <el-form-item :label="$t('membershipIntroduction.Gender')">
               <el-col :span="12">
                 <el-select
@@ -829,21 +784,16 @@
             </el-form-item>
           </el-form>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="baseInfoDialogVisible = false"
-          >{{
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="baseInfoDialogVisible = false">{{
             $t('membershipIntroduction.cancel')
           }}</el-button>
           <el-button
             size="small"
             type="primary"
             @click="handleUserDialogSure()"
-          >{{ $t('membershipIntroduction.centain') }}</el-button>
+            >{{ $t('membershipIntroduction.centain') }}</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -863,10 +813,7 @@
         width="25%"
         :modal-append-to-body="false"
       >
-        <div
-          class="labelEditDialogDiv"
-          style="margin-bottom: 30px"
-        >
+        <div class="labelEditDialogDiv" style="margin-bottom: 30px">
           <div>{{ $t('membershipIntroduction.chooseTag') }}</div>
           <el-select
             size="small"
@@ -883,19 +830,13 @@
             </el-option>
           </el-select>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="labelEditDialogVisible = false"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleTagDialogSure()"
-          >确 定</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="labelEditDialogVisible = false"
+            >取 消</el-button
+          >
+          <el-button type="primary" size="small" @click="handleTagDialogSure()"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -907,13 +848,12 @@
         width="35%"
         :modal-append-to-body="false"
       >
-        <div
-          class="labelEditDialogDiv"
-          style="margin-bottom: 30px"
-        >
+        <div class="labelEditDialogDiv" style="margin-bottom: 30px">
           <div class="MemberdialogContainer">
             <div class="memberCardT1DialogTop">
-              <span>可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span>
+              <span
+                >可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span
+              >
             </div>
             <div class="cardName">
               <i>1</i>
@@ -927,29 +867,22 @@
                   v-for="(item, index) in cardLlabelsdATa"
                   :key="index"
                 >
-                  <span>{{ item.cardName
+                  <span
+                    >{{ item.cardName
                     }}<i
                       @click="hanldeToDelCard(index)"
                       class="fa fa-remove"
-                    ></i></span>
+                    ></i
+                  ></span>
                 </div>
               </div>
-              <div
-                class="memberCardT1MainRight"
-                @click="hanldeToTurnRows()"
-              >
+              <div class="memberCardT1MainRight" @click="hanldeToTurnRows()">
                 <span>添加新卡</span>
                 <i :class="newCardsT1Flag ? 'newCardsT1' : 'newCardsT2'"></i>
               </div>
             </div>
-            <div
-              class="memberCardT1Footer"
-              v-if="memberTableFlag"
-            >
-              <div
-                class="content"
-                v-if="page_two"
-              >
+            <div class="memberCardT1Footer" v-if="memberTableFlag">
+              <div class="content" v-if="page_two">
                 <table width="100%">
                   <thead>
                     <tr>
@@ -976,18 +909,12 @@
                     </tr>
                   </tbody>
                 </table>
-                <div
-                  class="noData"
-                  v-if="!tbodyFlagTwo"
-                >
+                <div class="noData" v-if="!tbodyFlagTwo">
                   <img :src="noImg" />
                   <span>暂无相关数据</span>
                 </div>
               </div>
-              <div
-                class="content_two"
-                v-else
-              >
+              <div class="content_two" v-else>
                 <table width="100%">
                   <thead>
                     <tr>
@@ -1011,10 +938,7 @@
                     </tr>
                   </tbody>
                 </table>
-                <div
-                  class="noData"
-                  v-if="!tbodyFlag"
-                >
+                <div class="noData" v-if="!tbodyFlag">
                   <img :src="noImg" />
                   <span>暂无相关数据</span>
                 </div>
@@ -1022,19 +946,16 @@
             </div>
           </div>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="closeMemberCardDialog()"
-          >取 消</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="closeMemberCardDialog()"
+            >取 消</el-button
+          >
           <el-button
             type="primary"
             size="small"
             @click="handleForSetMemberCard()"
-          >确 定</el-button>
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -1617,12 +1538,6 @@ export default {
     // 点击查看更多
     handleCheckMore () {
       this.hiddenUlFlag = !this.hiddenUlFlag
-      if (this.hiddenUlFlag === true) {
-        this.checkMoreText = this.$t('membershipIntroduction.retract')
-      } else {
-        this.checkMoreText = this.$t('membershipIntroduction.Seemore')
-      }
-      console.log(this.hiddenUlFlag)
     },
     fullUserDetailDialog () {
       this.GenderValue = this.memberBasicInfo.sexKey
@@ -2475,7 +2390,7 @@ td {
 .modifypersonDivTop .el-input__inner {
   width: 140px !important;
 }
-.baseInfo .distpicker-address-wrapper select {
+/deep/ .baseInfo .distpicker-address-wrapper select {
   height: 30px !important;
   padding: 0 10px !important;
   font-size: 12px !important;
