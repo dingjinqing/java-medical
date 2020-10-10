@@ -7,7 +7,6 @@ import com.vpu.mp.common.pojo.shop.table.DoctorLoginLogDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
@@ -18,12 +17,9 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.ANCHOR_POINTS;
-import static com.vpu.mp.db.shop.Tables.DOCTOR_LOGIN_LOG;
 import static com.vpu.mp.db.shop.Tables.DOCTOR;
-import static org.jooq.impl.DSL.countDistinct;
+import static com.vpu.mp.db.shop.Tables.DOCTOR_LOGIN_LOG;
 import static org.jooq.impl.DSL.date;
 
 /**
@@ -47,12 +43,12 @@ public class DoctorLoginLogDao extends ShopBaseDao {
      * @return
      */
     public Integer getDoctorAttendanceDayNum(Integer doctorId, Timestamp startTime, Timestamp endTime) {
-        Integer count = db().selectCount().from(DOCTOR_LOGIN_LOG)
+        List<Integer> integers = db().selectCount().from(DOCTOR_LOGIN_LOG)
                 .where(DOCTOR_LOGIN_LOG.DOCTOR_ID.eq(doctorId))
                 .and(DOCTOR_LOGIN_LOG.CREATE_TIME.between(startTime, endTime))
                 .groupBy(date(DOCTOR_LOGIN_LOG.CREATE_TIME))
-                .fetchAnyInto(Integer.class);
-        return count==null?0:count;
+                .fetchInto(Integer.class);
+        return integers.size();
 
     }
 
@@ -72,11 +68,11 @@ public class DoctorLoginLogDao extends ShopBaseDao {
      */
     public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(DoctorAttendanceListParam param) {
         Timestamp startTime = getStartTime(param.getType());
-        SelectJoinStep<? extends Record> select = db().select(DOCTOR_LOGIN_LOG.DOCTOR_ID,DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as(LOGIN_DAYS)
+        SelectJoinStep<? extends Record> select = db().select(DOCTOR_LOGIN_LOG.DOCTOR_ID,DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as(LOGIN_DAYS)
             , DSL.max(DOCTOR_LOGIN_LOG.CREATE_TIME).as(LAST_TIME),DOCTOR.NAME)
             .from(DOCTOR)
             .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)));
-        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME).orderBy(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).desc());
+        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME).orderBy(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).desc());
         return this.getPageResult(select, param.getCurrentPage(), 5, DoctorAttendanceOneParam.class);
     }
 
@@ -97,7 +93,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
             .from(DOCTOR)
             .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR_LOGIN_LOG.DOCTOR_ID.eq(DOCTOR.ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)))
             .groupBy(DOCTOR.ID)
-            .having(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).ge(min).and(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).lt(max)))
+            .having(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).ge(min).and(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).lt(max)))
             .fetchInto(Integer.class);
     }
 
@@ -109,7 +105,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
      * @return
      */
     public DoctorAttendanceOneParam getDoctorAttend(Integer doctorId,Timestamp startTime,Timestamp endTime){
-        SelectJoinStep<? extends Record> select = db().select(DOCTOR_LOGIN_LOG.DOCTOR_ID,DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as(LOGIN_DAYS)
+        SelectJoinStep<? extends Record> select = db().select(DOCTOR_LOGIN_LOG.DOCTOR_ID,DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as(LOGIN_DAYS)
             , DSL.max(DOCTOR_LOGIN_LOG.CREATE_TIME).as(LAST_TIME),DOCTOR.NAME)
             .from(DOCTOR)
             .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID));
@@ -120,7 +116,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
         if(endTime!=null){
             select.where(DOCTOR_LOGIN_LOG.CREATE_TIME.le(endTime));
         }
-        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME).orderBy(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).desc());
+        select.groupBy(DOCTOR_LOGIN_LOG.DOCTOR_ID,DOCTOR.NAME).orderBy(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).desc());
         return select.fetchAnyInto(DoctorAttendanceOneParam.class);
     }
 

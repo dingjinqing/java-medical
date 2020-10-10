@@ -87,6 +87,11 @@ public class PatientService extends BaseShopConfigService{
             }
         }
         PageResult<PatientOneParam> patientList = patientDao.getPatientList(param);
+        patientList.dataList.forEach(patientOneParam -> {
+            List<UserDo> userDos = userPatientCoupleDao.listUsersByPatientId(patientOneParam.getId());
+            patientOneParam.setWxNickName(userDos.stream().map(UserDo::getUsername).collect(Collectors.toList()));
+            patientOneParam.setUserId(userDos.stream().map(UserDo::getUserId).collect(Collectors.toList()));
+        });
         Map<Integer, String> diseaseMap = getDiseaseMap();
         for (PatientOneParam patient : patientList.dataList) {
             getPatientDiseaseStr(patient, diseaseMap);
@@ -381,7 +386,7 @@ public class PatientService extends BaseShopConfigService{
             List<PatientOneParam> patients = listPatientByUserId(param.getUserId());
             if (patients.size() > 0) {
                 UserPatientParam userPatient = new UserPatientParam();
-                userPatient.setUserId(patients.get(0).getUserId());
+                userPatient.setUserId(patients.get(0).getUserId().get(0));
                 userPatient.setPatientId(patients.get(0).getPatientId());
                 userPatientCoupleDao.setDefaultPatient(userPatient);
             }
