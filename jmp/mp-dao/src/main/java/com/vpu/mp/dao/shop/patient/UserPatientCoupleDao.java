@@ -51,11 +51,10 @@ public class UserPatientCoupleDao  extends ShopBaseDao {
      * @return
      */
     public List<PatientOneParam> listPatientIdsByUser(Integer userId) {
-        List<PatientOneParam> patientList = db().select(USER_PATIENT_COUPLE.asterisk(),PATIENT.MOBILE,PATIENT.IDENTITY_CODE,PATIENT.IDENTITY_TYPE,PATIENT.NAME).from(USER_PATIENT_COUPLE)
+        return db().select(USER_PATIENT_COUPLE.asterisk(),PATIENT.MOBILE,PATIENT.IDENTITY_CODE,PATIENT.IDENTITY_TYPE,PATIENT.NAME).from(USER_PATIENT_COUPLE)
             .leftJoin(PATIENT).on(PATIENT.ID.eq(USER_PATIENT_COUPLE.PATIENT_ID))
             .where(USER_PATIENT_COUPLE.USER_ID.eq(userId).and(PATIENT.IS_DELETE.eq((byte) 0)))
             .fetchInto(PatientOneParam.class);
-        return patientList;
     }
 
     /**

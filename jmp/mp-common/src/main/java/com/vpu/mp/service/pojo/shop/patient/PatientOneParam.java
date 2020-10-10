@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.patient;
 
+import com.vpu.mp.common.pojo.shop.table.UserDo;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Date;
@@ -37,14 +39,17 @@ public class  PatientOneParam {
     private String familyDiseaseHistoryStr;
     private String diseaseHistoryNameStr;
     private Integer patientId;
+    private Integer userId;
     /**
      * 用户ID
      */
-    private List<Integer> userId;
+    private List<Integer> userIdNew;
     /**
      * 用户昵称
      */
     private List<String> wxNickName;
+
+    private List<UserParam> userParamList;
     /**
      * 注册时间
      */
@@ -53,4 +58,21 @@ public class  PatientOneParam {
      * 处方数量2
      */
     private Integer countPrescription;
+
+    @Data
+    public static class UserParam{
+        /**
+         * 用户ID
+         */
+        private Integer userIdNew;
+        /**
+         * 用户昵称
+         */
+        private String wxNickName;
+
+        public UserParam(Integer userIdNew, String wxNickName) {
+            this.userIdNew = userIdNew;
+            this.wxNickName = wxNickName;
+        }
+    }
 }
