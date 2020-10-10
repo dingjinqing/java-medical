@@ -1762,7 +1762,9 @@ export default {
       let obj = {
         'mobile': String(this.mobileInput).trim(),
         'username': this.userNameInput,
-        'realName': this.realNameInput
+        'realName': this.realNameInput,
+        'rule': 1,
+        'desc': false
       }
       console.log(obj)
       membershipListRequest(obj).then(res => {
