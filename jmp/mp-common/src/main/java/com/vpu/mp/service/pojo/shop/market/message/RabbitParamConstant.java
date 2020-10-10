@@ -68,6 +68,18 @@ public class RabbitParamConstant {
         public static final Integer LEVEL_UP = 3013;
         /** 拼团抽奖结果通知 */
         public static final Integer LOTTERY_TEAM = 3014;
+        /**
+         * 新咨询订单提醒
+         */
+        public static final Integer NEW_CONSULTATION_ORDER = 3015;
+        /**
+         * 待处理订单通知
+         */
+        public static final Integer WAIT_HANDLE_ORDER = 3016;
+        /**
+         * 待售后订单通知
+         */
+        public static final Integer SALE_AFTER_ORDER = 3017;
 
 
         /**

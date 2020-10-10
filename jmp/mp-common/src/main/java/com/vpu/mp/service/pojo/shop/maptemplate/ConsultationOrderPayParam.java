@@ -12,9 +12,17 @@ import java.util.List;
 @Data
 @Builder
 public class ConsultationOrderPayParam {
+    public static final String REMARK = "请您及时接诊";
+    public static final String ORDER_TYPE = "图文问诊";
+    private String doctorName;
     private String patientData;
-    private String diseaseDetail;
+    @Builder.Default
+    private String orderType=ORDER_TYPE;
+    private String orderSn;
     private String createTime;
-    private String remark;
+    private String diseaseDetail;
+    @Builder.Default
+    private String remark=REMARK;
+
     private List<Integer> userIds;
 }

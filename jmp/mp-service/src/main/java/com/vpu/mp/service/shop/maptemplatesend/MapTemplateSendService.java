@@ -49,20 +49,23 @@ public class MapTemplateSendService extends ShopBaseService {
         };
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
 
-        Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYP_NO;
+        Integer mpTempleType = RabbitParamConstant.Type.NEW_CONSULTATION_ORDER;
         // 公众号消息
         String[][] mpData = new String[][] {
+            {param.getDoctorName()+"医生您好，您有新的订单"},
             {param.getPatientData()},
-            {param.getDiseaseDetail()},
+            {param.getOrderType()},
+            {param.getOrderSn()},
             {param.getCreateTime()},
+            {param.getDiseaseDetail()},
             {param.getRemark()}
         };
         RabbitMessageParam param2 = RabbitMessageParam.builder()
 //            .maTemplateData(
 //                MaTemplateData.builder().config(SubcribeTemplateCategory.CONSULTATION_ORDER_PAY).data(data).build())
             .mpTemplateData(
-                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
-            .page("pages/account/account").shopId(getShopId())
+                MpTemplateData.builder().config(MpTemplateConfig.NEW_CONSULTATION_ORDER).data(mpData).build())
+            .page("/pages2/inquiryList/inquiryList").shopId(getShopId())
             .userIdList(param.getUserIds())
             .type(mpTempleType).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -238,25 +241,63 @@ public class MapTemplateSendService extends ShopBaseService {
         String[][] maData = new String[][] {
             {param.getOrderSn()},
             {param.getUserName()},
-            {param.getUserRemark()},
+            {param.getRemark()},
         };
 
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
 
         // 公众号消息
         String[][] mpData = new String[][] {
-            {param.getOrderSn()},
+            {"您好，有新的订单生成"},
             {param.getUserName()},
-            {param.getUserRemark()},
+            {param.getMobile()},
+            {param.getDeliverType()},
+            {param.getDeliverTime()},
+            {param.getRemark()}
         };
         RabbitMessageParam param2 = RabbitMessageParam.builder()
-            .maTemplateData(
-                MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_NEW).data(data).build())
-//            .mpTemplateData(
-//                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
-            .page("pages/account/account").shopId(getShopId())
+//            .maTemplateData(
+//                MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_NEW).data(data).build())
+            .mpTemplateData(
+                MpTemplateData.builder().config(MpTemplateConfig.WAIT_HANDLE_ORDER).data(mpData).build())
+            .page("/pages3/clerkOrderList/clerkOrderList").shopId(getShopId())
             .userIdList(param.getUserIds())
-            .type(MessageTemplateConfigConstant.ORDER_NEW).build();
+            .type(RabbitParamConstant.Type.WAIT_HANDLE_ORDER).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+    }
+
+    /**
+     * 待售后订单通知
+     * @param param
+     */
+    public void sendWaitSaleAfterMessage(OrderSaleAfterParam param){
+        // 订阅消息
+        String[][] maData = new String[][] {
+            {param.getOrderSn()},
+            {param.getRemark()}
+        };
+
+        MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
+
+        // 公众号消息
+        String[][] mpData = new String[][] {
+            {"您好，您有一笔申请退款通知！"},
+            {param.getOrderSn()},
+            {param.getCreateTime()},
+            {param.getOrderSource()},
+            {param.getRefundMoney()},
+            {param.getRefundReason()},
+            {param.getRemark()}
+        };
+        RabbitMessageParam param2 = RabbitMessageParam.builder()
+//            .maTemplateData(
+//                MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_NEW).data(data).build())
+            .mpTemplateData(
+                MpTemplateData.builder().config(MpTemplateConfig.SALE_AFTER_ORDER).data(mpData).build())
+            .page("/pages3/clerkOrderList/clerkOrderList").shopId(getShopId())
+            .userIdList(param.getUserIds())
+            .type(RabbitParamConstant.Type.SALE_AFTER_ORDER).build();
+        saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+
     }
 }

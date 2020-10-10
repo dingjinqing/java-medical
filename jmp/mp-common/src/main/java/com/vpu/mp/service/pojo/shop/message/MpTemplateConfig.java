@@ -155,7 +155,23 @@ public enum MpTemplateConfig {
         "OPENTM410103702",
         "提现申请通知",
         "{{first.DATA}}申请时间：{{keyword1.DATA}}提现金额：{{keyword2.DATA}}{{remark.DATA}}"
-    );
+    ),
+    NEW_CONSULTATION_ORDER(
+        "OPENTM418215361",
+        "订单接诊提醒",
+        "{{first.DATA}}患者姓名：{{keyword1.DATA}}订单类型：{{keyword2.DATA}}订单编号：{{keyword3.DATA}}支付时间：{{keyword4.DATA}}病情描述：{{keyword5.DATA}}{{remark.DATA}}"
+    ),
+    WAIT_HANDLE_ORDER(
+        "OPENTM208008351",
+        "新订单提醒",
+        "{{first.DATA}}客户姓名：{{keyword1.DATA}}客户电话：{{keyword2.DATA}}取货方式：{{keyword3.DATA}}预约取货时间：{{keyword4.DATA}}{{remark.DATA}}"
+    ),
+    SALE_AFTER_ORDER(
+        "OPENTM418226364",
+        "退款申请通知",
+        "{{first.DATA}}订单编号：{{keyword1.DATA}}下单时间：{{keyword2.DATA}}订单来源：{{keyword3.DATA}}退款金额：{{keyword4.DATA}}退款原因：{{keyword5.DATA}}{{remark.DATA}}"
+    )
+    ;
 	/**
 	 * 模板编号
 	 */

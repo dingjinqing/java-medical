@@ -27,6 +27,10 @@ public class StoreAuthConstant {
      */
     public static final Byte IS_FORBIDDEN=0;
     /**
+     * 已启用
+     */
+    public static final Byte IS_ENABLE=1;
+    /**
      * StoreAuthFlag
      */
     public static final Boolean STORE_AUTH_OK=true;
