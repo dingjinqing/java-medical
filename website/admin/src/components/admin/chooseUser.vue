@@ -173,7 +173,9 @@ export default {
         'username': this.userNameInput,
         'realName': this.realNameInput,
         'currentPage': this.pageParams.currentPage,
-        'pageRows': this.pageParams.pageRows
+        'pageRows': this.pageParams.pageRows,
+        'rule': 1,
+        'desc': false
       }
       console.log(obj)
       membershipListRequest(obj).then(res => {

@@ -1749,7 +1749,7 @@ export default {
       // 清空弹出框的输入数据
       this.clearInputData()
       this.modifypersonDialogVisible = !this.modifypersonDialogVisible
-      this.getUserTabelListData()
+      // this.getUserTabelListData()
     },
 
     dealRowData (data) {
