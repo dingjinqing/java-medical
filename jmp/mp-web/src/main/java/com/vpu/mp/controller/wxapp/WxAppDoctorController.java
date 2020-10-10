@@ -10,10 +10,7 @@ import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.auth.AuthConstant;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAuthParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorMainShowVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.message.DoctorMainShowParam;
 import com.vpu.mp.service.pojo.shop.message.DoctorMessageCountVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientSmsCheckParam;
@@ -25,12 +22,14 @@ import com.vpu.mp.service.shop.message.UserMessageService;
 import com.vpu.mp.service.shop.sms.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.common.foundation.data.JsonResultCode.*;
 import static com.vpu.mp.service.pojo.shop.auth.AuthConstant.AUTH_TYPE_DOCTOR_USER;
@@ -174,7 +173,7 @@ public class WxAppDoctorController extends WxAppBaseController {
      * @param doctorOneParam 医师信息入参
      * @return JsonResult
      */
-    @PostMapping("/api/wxapp/doctor/add/Information")
+    @PostMapping("/api/wxapp/doctor/update/Information")
     public JsonResult addDoctorInformation(@RequestBody DoctorOneParam doctorOneParam) {
         if (doctorOneParam.getId() == null) {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
@@ -185,5 +184,30 @@ public class WxAppDoctorController extends WxAppBaseController {
         } catch (MpException e) {
             return fail();
         }
+    }
+
+    /**
+     * 小程序端展示医师详情
+     * @param doctorOneParam 医师id
+     * @return JsonResult
+     */
+    @PostMapping("/api/wxapp/doctor/show/Information")
+    public JsonResult adminDoctorDetails(@RequestBody DoctorOneParam doctorOneParam) {
+        // 医师科室
+        List<DepartmentListVo> departmentListVos =
+            doctorService.selectDepartmentsByDoctorId(doctorOneParam.getId());
+        List<String> departmentNames = departmentListVos.stream().map(DepartmentListVo::getName).collect(Collectors.toList());
+        DoctorOneParam oneInfo = null;
+        try {
+            oneInfo = doctorService.getOneInfo(doctorOneParam.getId());
+        } catch (MpException e) {
+            return fail();
+        }
+        //添加医师职称
+        String title = doctorService.selectDoctorTitle(oneInfo);
+        assert oneInfo != null;
+        oneInfo.setTitleName(title);
+        oneInfo.setDepartmentNames(departmentNames);
+        return success(oneInfo);
     }
 }
