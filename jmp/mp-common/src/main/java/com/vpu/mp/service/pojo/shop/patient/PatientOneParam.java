@@ -39,10 +39,11 @@ public class  PatientOneParam {
     private String familyDiseaseHistoryStr;
     private String diseaseHistoryNameStr;
     private Integer patientId;
+    private Integer userId;
     /**
      * 用户ID
      */
-    private List<Integer> userId;
+    private List<Integer> userIdNew;
     /**
      * 用户昵称
      */
@@ -59,15 +60,19 @@ public class  PatientOneParam {
     private Integer countPrescription;
 
     @Data
-    @AllArgsConstructor
     public static class UserParam{
         /**
          * 用户ID
          */
-        private Integer userId;
+        private Integer userIdNew;
         /**
          * 用户昵称
          */
         private String wxNickName;
+
+        public UserParam(Integer userIdNew, String wxNickName) {
+            this.userIdNew = userIdNew;
+            this.wxNickName = wxNickName;
+        }
     }
 }
