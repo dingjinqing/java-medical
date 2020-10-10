@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.patient;
 
+import com.vpu.mp.common.pojo.shop.table.UserDo;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Date;
@@ -45,6 +47,8 @@ public class  PatientOneParam {
      * 用户昵称
      */
     private List<String> wxNickName;
+
+    private List<UserParam> userParamList;
     /**
      * 注册时间
      */
@@ -53,4 +57,17 @@ public class  PatientOneParam {
      * 处方数量2
      */
     private Integer countPrescription;
+
+    @Data
+    @AllArgsConstructor
+    public static class UserParam{
+        /**
+         * 用户ID
+         */
+        private Integer userId;
+        /**
+         * 用户昵称
+         */
+        private String wxNickName;
+    }
 }
