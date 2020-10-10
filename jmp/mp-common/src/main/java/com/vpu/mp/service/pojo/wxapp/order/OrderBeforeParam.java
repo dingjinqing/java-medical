@@ -27,8 +27,10 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -156,6 +158,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
      */
     private String prescriptionCode;
 
+    LinkedHashMap<String, List<Integer>> productIdMap;
+
+    Set<Integer> productIdSet;
     /**
 	 * 商品参数计算使用
 	 * @author 王帅
@@ -226,6 +231,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
          * 老处方号
          */
         private String prescriptionOldCode;
+        /**
+         * 处方明细号
+         */
+        private String prescriptionDetailOldCode;
         /**
          * 处方号
          */

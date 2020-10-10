@@ -26,6 +26,7 @@ import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
+import com.vpu.mp.service.shop.order.action.base.OrderGoodsPrescriptionCalculate;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.patient.PatientService;
@@ -37,9 +38,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -112,9 +114,9 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         }else {
             log.info("根据商品匹配处方");
             //订单药品信息
-            List<PrescriptionVo> prescriptionList = auditOrderGoods(param);
+            LinkedHashMap<String, PrescriptionVo> prescriptionMap = auditOrderGoods(param);
             //审核订单类型
-            auditOrderInfo(param, prescriptionList);
+            auditOrderInfo(param, prescriptionMap);
         }
     }
 
@@ -189,18 +191,36 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     /**
      * 审核类型
      * @param param
-     * @param prescriptionList
+     * @param prescriptionVoMap
      */
-    private void auditOrderInfo(OrderBeforeParam param, List<PrescriptionVo> prescriptionList) {
+    private void auditOrderInfo(OrderBeforeParam param,LinkedHashMap<String, PrescriptionVo> prescriptionVoMap) {
         if (OrderConstant.MEDICAL_TYPE_RX.equals(param.getOrderMedicalType())){
             if (OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS.equals(param.getCheckPrescriptionStatus())){
                 log.info("处方药订单,药品与处方匹配通过--审核");
                 param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT);
+                List<PrescriptionVo> prescriptionVoList =new ArrayList<>();
+                /**
+                 * 优化处方的匹配,尽量减少处方数量
+                 */
+                List<Integer> productIdSet =new ArrayList<>(param.getProductIdSet());
+                List<PrescriptionVo> prescriptionVos = new ArrayList<>(prescriptionVoMap.values());
+                List<List<Integer>> collect = prescriptionVos.stream().map(PrescriptionVo::getOrderProductIdList).collect(Collectors.toList());
+                // 使用动态规划算法
+                int[] ints = OrderGoodsPrescriptionCalculate.smallestSufficientTeam(productIdSet, collect);
+                for (int index: ints){
+                    PrescriptionVo prescriptionVo = prescriptionVos.get(index);
+                    prescriptionVoList.add(prescriptionVo);
+                    List<Integer> productIds = prescriptionVo.getOrderProductIdList();
+                    param.getGoods().stream().filter(goods ->
+                            productIds.contains(goods.getProductId())|| OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT.equals(goods.getMedicalAuditType())
+                    ).forEach(goods -> {
+                        goods.setPrescriptionInfo(prescriptionVo);
+                        goods.setPrescriptionOldCode(prescriptionVo.getPrescriptionCode());
+                        goods.setPrescriptionDetailOldCode(prescriptionVo.getPrescriptionDetailOldCode());
+                    });
+                }
                 //处方单号去重
-                prescriptionList = prescriptionList.stream()
-                        .collect(Collectors.collectingAndThen
-                                (Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PrescriptionVo::getPrescriptionCode))), ArrayList::new));
-                param.setPrescriptionList(prescriptionList);
+                param.setPrescriptionList(prescriptionVoList);
             }else {
                 log.info("处方药订单,存在没有匹配到订单得药品--线上开方");
                 param.setOrderAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE);
@@ -221,12 +241,15 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
      * @param param
      * @return
      */
-    private List<PrescriptionVo> auditOrderGoods(OrderBeforeParam param) {
+    private LinkedHashMap<String, PrescriptionVo> auditOrderGoods(OrderBeforeParam param) {
         List<PrescriptionVo> prescriptionList =new ArrayList<>();
         param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED);
         UserPatientParam userPatientParam = new UserPatientParam();
         userPatientParam.setUserId(param.getWxUserInfo().getUserId());
         userPatientParam.setPatientId(param.getPatientId());
+        Set<Integer> productIdSet=new HashSet<>();
+        LinkedHashMap<String, List<Integer>> productIdMap =new LinkedHashMap<>();
+        LinkedHashMap<String, PrescriptionVo> prescriptionVoMap =new LinkedHashMap<>();
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GoodsRecord goodsInfo = goods.getGoodsInfo();
             GoodsMedicalInfoDo medicalInfo = medicalGoodsService.getByGoodsId(goodsInfo.getGoodsId());
@@ -235,13 +258,21 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 param.setOrderMedicalType(OrderConstant.MEDICAL_TYPE_RX);
                 goods.setMedicalInfo(medicalInfo);
                 //获取有效的处方
-                PrescriptionVo prescriptionVo = prescriptionService
+                List<PrescriptionVo> prescriptionItem = prescriptionService
                             .getByGoodsInfo(goods.getGoodsId(),userPatientParam, medicalInfo.getGoodsCommonName(), medicalInfo.getGoodsQualityRatio(), medicalInfo.getGoodsProductionEnterprise());
                 //处方信息
-                if (prescriptionVo != null) {
-                    prescriptionList.add(prescriptionVo);
-                    goods.setPrescriptionInfo(prescriptionVo);
-                    goods.setPrescriptionOldCode(prescriptionVo.getPrescriptionCode());
+                if (prescriptionItem!=null&&prescriptionItem.size()>0){
+                    productIdSet.add(goods.getProductId());
+                    for (PrescriptionVo item : prescriptionItem) {
+                        if (!prescriptionVoMap.containsKey(item.getPrescriptionCode())) {
+                            item.setOrderGoodsList(new ArrayList<>());
+                            item.setOrderProductIdList(new ArrayList<>());
+                            prescriptionVoMap.put(item.getPrescriptionCode(),item);
+                        }
+                        prescriptionVoMap.get(item.getPrescriptionCode()).getOrderProductIdList().add(goods.getProductId());
+                        prescriptionVoMap.get(item.getPrescriptionCode()).getOrderGoodsList().add(goods);
+                    }
+                    prescriptionList.addAll(prescriptionItem);
                     if (param.getCheckPrescriptionStatus().equals(OrderConstant.CHECK_ORDER_PRESCRIPTION_NO_NEED)){
                         param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
                     }
@@ -255,7 +286,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 goods.setMedicalAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_NOT);
             }
         }
-        return prescriptionList;
+        param.setProductIdSet(productIdSet);
+        return prescriptionVoMap;
     }
 
     @Override

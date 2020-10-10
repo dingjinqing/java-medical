@@ -1,8 +1,5 @@
 package com.vpu.mp.service.shop.order.action.base;
 
-import cn.hutool.json.JSONUtil;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,47 +13,24 @@ import java.util.Map;
  */
 public class OrderGoodsPrescriptionCalculate {
 
-    //成员技能对应二进制数字都数组下标
-    private static int[] peopleSubscript;
-
-    //当前递归深度
-    private static int currentDepth = 0;
-
-
-    public static void main(String[] args) {
-        String[] req_skills =new String[]{"1","2","3","4"};
-        List<List<String>> people=new ArrayList<>();
-        for (int i = 1; i < 5; i++) {
-            List<String> list =new ArrayList<>();
-            list.add(i+"");
-            people.add(list);
-        }
-        people.get(2).add("1");
-        long l = System.currentTimeMillis();
-        int[] ints = smallestSufficientTeam(req_skills, people);
-        long l2 = System.currentTimeMillis();
-        System.out.printf(JSONUtil.toJsonStr(ints));
-        System.out.printf((l-l2)+"");
-
-    }
 
 
 
-    public static int[] smallestSufficientTeam(String[] req_skills, List<List<String>> people) {
+    public static int[] smallestSufficientTeam(List<Integer> reqSkills, List<List<Integer>> people) {
         int[] result = null;
-        int skillLen = req_skills.length, mustSkill = (1 << skillLen) - 1, peopleSize = people.size();
+        int skillLen = reqSkills.size(), mustSkill = (1 << skillLen) - 1, peopleSize = people.size();
         //技能对应二进制，用1，10，100来表示
-        Map<String, Integer> skillMap = new HashMap<String, Integer>(skillLen << 1);
+        Map<Integer, Integer> skillMap = new HashMap<Integer, Integer>(skillLen << 1);
         for (int i = 0; i < skillLen; i++) {
-            skillMap.put(req_skills[i], 1 << i);
+            skillMap.put(reqSkills.get(i), 1 << i);
         }
         //员工技能对应二进制数
         int[] peopleSkillNums = new int[peopleSize];
-        peopleSubscript = new int[1 << skillLen];
+        int[] peopleSubscript = new int[1 << skillLen];
         for (int i = 0; i < people.size(); i++) {
             int skillNum = 0;
-            List<String> skills = people.get(i);
-            for (String skill : skills) {
+            List<Integer> skills = people.get(i);
+            for (Integer skill : skills) {
                 skillNum += skillMap.get(skill);
             }
             peopleSkillNums[i] = skillNum;
@@ -119,17 +93,16 @@ public class OrderGoodsPrescriptionCalculate {
         }
         //从minDepth回溯深度开始回溯，noIntersectionArr肯定在该结果中，回溯深度从无交集员工数量开始
         for (int i = minDepth; i < skillLen; i++) {
-            currentDepth = i;
             result = new int[i];
             System.arraycopy(noIntersectionArr, 0, result, 0, aloneCount);
-            if (addNextPeople(mustSkill, comSkills, result, peopleSkillNums, aloneCount)) {
+            if (addNextPeople(peopleSubscript, i,mustSkill, comSkills, result, peopleSkillNums, aloneCount)) {
                 break;
             }
         }
         return result;
     }
 
-    private static boolean addNextPeople(int mustSkill, int comSkills, int[] result, int[] peopleSkillNums, int count) {
+    private static boolean addNextPeople(int[] peopleSubscript,int currentDepth,int mustSkill, int comSkills, int[] result, int[] peopleSkillNums, int count) {
         //判断是否为解
         if (mustSkill == comSkills) {
             return true;
@@ -150,7 +123,7 @@ public class OrderGoodsPrescriptionCalculate {
             }
             result[count] = peopleSubscript[peopleSkillNums[i]];
             peopleSkillNums[i] = 0;
-            if (addNextPeople(mustSkill, comSkills | skillNum, result, peopleSkillNums, count + 1)) {
+            if (addNextPeople(peopleSubscript,currentDepth,mustSkill, comSkills | skillNum, result, peopleSkillNums, count + 1)) {
                 return true;
             }
             peopleSkillNums[i] = skillNum;

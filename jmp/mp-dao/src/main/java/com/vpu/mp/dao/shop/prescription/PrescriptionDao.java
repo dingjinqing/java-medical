@@ -14,9 +14,16 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.patient.PatientConstant;
-import com.vpu.mp.service.pojo.shop.patient.PatientPrescriptionParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
-import com.vpu.mp.service.pojo.shop.prescription.*;
+import com.vpu.mp.service.pojo.shop.prescription.FetchPrescriptionVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDoctorVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionInfoVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionPatientListParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionSimpleVo;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
 import org.elasticsearch.common.Strings;
 import org.jooq.Record;
@@ -270,15 +277,15 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param prescriptionNos
      * @return
      */
-    public PrescriptionVo getValidByGoodsId(Integer goodsId, List<String> prescriptionNos) {
-        return db().select(PRESCRIPTION.asterisk())
+    public List<PrescriptionVo> getValidByGoodsId(Integer goodsId, List<String> prescriptionNos) {
+        return db().select(PRESCRIPTION.asterisk(),PRESCRIPTION_ITEM.PRESCRIPTION_DETAIL_CODE)
                 .from(PRESCRIPTION)
                 .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_ID.eq(goodsId))
                 .and(PRESCRIPTION.PRESCRIPTION_CODE.in(prescriptionNos))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
-                .fetchAnyInto(PrescriptionVo.class);
+                .fetchInto(PrescriptionVo.class);
     }
 
 
@@ -291,15 +298,15 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param goodsCommonName 商品名称
      * @return
      */
-    public PrescriptionVo getValidByCommonName( List<String> prescriptionNos, String goodsCommonName){
-        return db().select(PRESCRIPTION.asterisk())
+    public List<PrescriptionVo>  getValidByCommonName( List<String> prescriptionNos, String goodsCommonName){
+        return db().select(PRESCRIPTION.asterisk(),PRESCRIPTION_ITEM.PRESCRIPTION_DETAIL_CODE)
                 .from(PRESCRIPTION)
                 .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
                 .and(PRESCRIPTION.PRESCRIPTION_CODE.in(prescriptionNos))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
-                .fetchAnyInto(PrescriptionVo.class);
+                .fetchInto(PrescriptionVo.class);
     }
 
     /**
@@ -309,8 +316,8 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param goodsCommonName 通用名
      * @param goodsQualityRatio 规格系数
      */
-    public PrescriptionVo getValidByCommonNameAndQualityRatio( List<String> prescriptionNos , String goodsCommonName, String goodsQualityRatio) {
-        return db().select(PRESCRIPTION.asterisk())
+    public List<PrescriptionVo>  getValidByCommonNameAndQualityRatio( List<String> prescriptionNos , String goodsCommonName, String goodsQualityRatio) {
+        return db().select(PRESCRIPTION.asterisk(),PRESCRIPTION_ITEM.PRESCRIPTION_DETAIL_CODE)
                 .from(PRESCRIPTION)
                 .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
@@ -318,7 +325,7 @@ public class PrescriptionDao extends ShopBaseDao {
                 .and(PRESCRIPTION_ITEM.GOODS_QUALITY_RATIO.eq(goodsQualityRatio))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
-                .fetchAnyInto(PrescriptionVo.class);
+                .fetchInto(PrescriptionVo.class);
     }
     /**
      * *****
@@ -327,8 +334,8 @@ public class PrescriptionDao extends ShopBaseDao {
      * @param goodsQualityRatio 规格系数
      * @param productionEnterprise 生产企业
      */
-    public PrescriptionVo getValidByCommonNameAndQualityRatio(List<String> prescriptionNos,String goodsCommonName, String goodsQualityRatio,String productionEnterprise) {
-        return db().select(PRESCRIPTION.asterisk())
+    public List<PrescriptionVo>  getValidByCommonNameAndQualityRatio(List<String> prescriptionNos,String goodsCommonName, String goodsQualityRatio,String productionEnterprise) {
+        return db().select(PRESCRIPTION.asterisk(),PRESCRIPTION_ITEM.PRESCRIPTION_DETAIL_CODE)
                 .from(PRESCRIPTION)
                 .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION.PRESCRIPTION_CODE.eq(PRESCRIPTION_ITEM.PRESCRIPTION_CODE))
                 .where(PRESCRIPTION_ITEM.GOODS_COMMON_NAME.eq(goodsCommonName))
@@ -337,7 +344,7 @@ public class PrescriptionDao extends ShopBaseDao {
                 .and(PRESCRIPTION_ITEM.GOODS_QUALITY_RATIO.eq(goodsQualityRatio))
                 .and(PRESCRIPTION.IS_DELETE.eq(DelFlag.NORMAL_VALUE))
                 .orderBy(PRESCRIPTION.PRESCRIPTION_CREATE_TIME.desc())
-                .fetchAnyInto(PrescriptionVo.class);
+                .fetchInto(PrescriptionVo.class);
     }
 
 

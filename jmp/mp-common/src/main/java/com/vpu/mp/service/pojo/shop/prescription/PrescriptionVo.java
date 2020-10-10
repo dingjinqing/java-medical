@@ -1,7 +1,9 @@
 package com.vpu.mp.service.pojo.shop.prescription;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -16,5 +18,22 @@ import java.util.List;
 public class PrescriptionVo extends PrescriptionDo {
 
     List<PrescriptionItemDo> list =new ArrayList<>();
+    /**
+     * 处方明细号
+     */
+    private String prescriptionDetailOldCode;
+    /**
+     * 仅用于下单匹配订单商品
+     */
+    @JsonIgnore
+    private List<OrderBeforeParam.Goods>  orderGoodsList;
+    @JsonIgnore
+    private List<Integer> orderProductIdList;
 
+    @Override
+    public String toString() {
+        return "PrescriptionVo{" +
+                "prescriptionDetailOldCode='" + prescriptionDetailOldCode + '\'' +
+                '}';
+    }
 }

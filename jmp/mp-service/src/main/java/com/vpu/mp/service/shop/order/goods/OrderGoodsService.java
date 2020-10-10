@@ -21,13 +21,13 @@ import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.api.ApiOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.goods.param.SyncHisMedicalOrderRequestParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
-import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -352,10 +352,10 @@ public class OrderGoodsService extends ShopBaseService {
             if(bo.getPurchasePriceId() != null) {
                 record.setPurchaseId(bo.getPurchasePriceId());
             }
-            PrescriptionItemVo item= prescriptionItemDao.getByPrescriptionCodeGoodsIdPrdId(record.getPrescriptionCode(),record.getGoodsId(),record.getProductId());
-            if(item!=null){
-                record.setPrescriptionDetailCode(item.getPrescriptionDetailCode());
-            }
+            if (record.getGoodsImg()==null||record.getGoodsImg().trim().isEmpty()){
+            	//药品图片如果为空,使用默认图片
+				record.setGoodsImg(MedicalGoodsConstant.MEDICAL_GOODS_WXAPP_DEFAULT_IMG);
+			}
             records.add(record);
         }
         records.forEach(
