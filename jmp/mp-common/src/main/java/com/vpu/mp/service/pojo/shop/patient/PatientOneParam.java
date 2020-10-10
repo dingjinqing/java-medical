@@ -40,11 +40,11 @@ public class  PatientOneParam {
     /**
      * 用户ID
      */
-    private Integer userId;
+    private List<Integer> userId;
     /**
      * 用户昵称
      */
-    private String wxNickName;
+    private List<String> wxNickName;
     /**
      * 注册时间
      */
