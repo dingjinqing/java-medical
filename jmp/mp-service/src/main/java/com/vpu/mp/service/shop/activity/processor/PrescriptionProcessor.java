@@ -10,6 +10,7 @@ import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
+import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionItemVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -74,6 +76,8 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
     private PrescriptionDao prescriptionDao;
     @Autowired
     private OrderGoodsDao orderGoodsDao;
+    @Autowired
+    private PrescriptionItemDao prescriptionItemDao;
 
     @Override
     public Byte getPriority() {
@@ -137,8 +141,10 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                         param.setOrderMedicalType(OrderConstant.MEDICAL_TYPE_RX);
                     }
                 }
+                PrescriptionItemVo item= prescriptionItemDao.getByPrescriptionCodeGoodsIdPrdId(prescriptionVo.getPrescriptionCode(),goods.getGoodsId(),goods.getProductId());
                 goods.setPrescriptionCode(prescriptionVo.getPrescriptionCode());
                 goods.setPrescriptionInfo(prescriptionVo);
+                goods.setPrescriptionDetailOldCode(item.getPrescriptionDetailCode());
             }
             //处方下单默认处方药
             param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
