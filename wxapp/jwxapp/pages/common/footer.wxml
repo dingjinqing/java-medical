@@ -16,7 +16,7 @@
       <view class='bottom-blank'>
 
       </view>
-      <view class='common-bottom' style='height:{{isIpx ?"160rpx":"110rpx;"}}'>
+      <view class='common-bottom' style='height:110rpx;'>
         <view class="bottom" wx:if="{{bottom.img_list.length > 0}}">
           <block wx:for="{{ bottom.img_list }}" wx:key="key" wx:for-index="bot_idx">
             <button open-type="{{item.open_type}}" bindgetuserinfo="onGetUserInfo" data-bind_mobile="{{item.bind_mobile}}" data-open_type="{{item.open_type}}" catchtap="onClickBottomNavigator" data-link="{{ item.page }}" data-idx='{{ bot_idx }}' plain='false' class="bottom_nav"

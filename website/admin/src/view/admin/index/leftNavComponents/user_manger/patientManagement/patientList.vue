@@ -8,29 +8,23 @@
             <el-input
               v-model="queryParams.mobile"
               size="small"
-              style="width:190px;"
+              style="width: 190px"
               placeholder="请输入患者手机号"
             >
             </el-input>
           </div>
           <div class="filters_item">
-            <span style="width:60px;">姓名：</span>
+            <span style="width: 60px">姓名：</span>
             <el-input
               v-model="queryParams.name"
               size="small"
-              style="width:190px;"
+              style="width: 190px"
               placeholder="请输入姓名"
             >
             </el-input>
           </div>
-          <div
-            class="filters_item"
-            style="width:350px"
-          >
-            <span
-              class="fil_span"
-              style="width:150px;"
-            >时间筛选：</span>
+          <div class="filters_item" style="width: 350px">
+            <span class="fil_span" style="width: 150px">时间筛选：</span>
             <el-date-picker
               v-model="timeValue"
               type="daterange"
@@ -44,77 +38,65 @@
             </el-date-picker>
           </div>
           <div class="btn_wrap">
-            <el-button
-              type='primary'
-              size='small'
-              @click="initDataList"
-            >搜索</el-button>
+            <el-button type="primary" size="small" @click="initDataList"
+              >搜索</el-button
+            >
           </div>
         </div>
       </div>
       <div class="table_box">
         <el-table
-          v-loading='loading'
-          :data='tableData'
-          style="width:100%"
+          v-loading="loading"
+          :data="tableData"
+          style="width: 100%"
           border
           :header-cell-style="{
-              'background-color':'#f5f5f5',
-              'text-align':'center',
-              'border':'none',
-              'color': '#000'
-            }"
+            'background-color': '#f5f5f5',
+            'text-align': 'center',
+            border: 'none',
+            color: '#000',
+          }"
           :cell-style="{
-              'text-align':'center'
-            }"
+            'text-align': 'center',
+          }"
         >
-          <el-table-column
-            prop='id'
-            label='患者编号'
-          ></el-table-column>
-          <el-table-column
-            prop='wxNickName'
-            label='微信昵称'
-          >
-          <template v-slot='scope'>
-                <span style="color:#5a8bff" @click="hanldeToDetail(scope.row.userId)">{{scope.row.wxNickName}}</span>
-          </template>
-
-          </el-table-column>
-          <el-table-column
-            prop='name'
-            label='姓名'
-          ></el-table-column>
-          <el-table-column
-            prop='mobile'
-            label='手机号'
-          ></el-table-column>
-          <el-table-column
-            prop='treatmentNo'
-            label='就诊卡号'
-          ></el-table-column>
-          <el-table-column label='性别'>
+          <el-table-column prop="id" label="患者编号"></el-table-column>
+          <el-table-column prop="wxNickName" label="微信昵称">
             <template v-slot="scope">
-              <span>{{scope.row.sex == 0 ? '男' : (scope.row.sex == 1 ? '女' : '未知')}}</span>
+              <span
+                style="color: #5a8bff; cursor: pointer"
+                @click="hanldeToDetail(scope.row.userId)"
+                >{{ scope.row.wxNickName }}</span
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="name" label="姓名"></el-table-column>
+          <el-table-column prop="mobile" label="手机号"></el-table-column>
+          <el-table-column
+            prop="treatmentNo"
+            label="就诊卡号"
+          ></el-table-column>
+          <el-table-column label="性别">
+            <template v-slot="scope">
+              <span>{{
+                scope.row.sex == 0 ? '男' : scope.row.sex == 1 ? '女' : '未知'
+              }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop='diseaseHistoryNameStr'
-            label='疾病史'
+            prop="diseaseHistoryNameStr"
+            label="疾病史"
           ></el-table-column>
           <el-table-column
-            prop='allergyHistory'
-            label='过敏史'
+            prop="allergyHistory"
+            label="过敏史"
           ></el-table-column>
           <el-table-column
-            prop='countPrescription'
-            label='处方数量'
+            prop="countPrescription"
+            label="处方数量"
           ></el-table-column>
-          <el-table-column
-            prop='createTime'
-            label='注册时间'
-          ></el-table-column>
-          <el-table-column label='操作'>
+          <el-table-column prop="createTime" label="注册时间"></el-table-column>
+          <el-table-column label="操作">
             <template v-slot="scope">
               <div class="operation">
                 <el-tooltip
@@ -123,16 +105,13 @@
                   content="查看详情"
                   placement="top"
                 >
-                  <a @click='handleSeeMessage(scope.row.id)'>查看详情</a>
+                  <a @click="handleSeeMessage(scope.row.id)">查看详情</a>
                 </el-tooltip>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
+        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
       </div>
     </div>
   </div>

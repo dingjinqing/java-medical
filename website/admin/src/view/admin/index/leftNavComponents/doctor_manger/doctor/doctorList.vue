@@ -249,9 +249,9 @@ export default {
           if (originalData[i].departmentNames) {
             originalData[i].departmentNames = originalData[i].departmentNames.join('，')
           }
-          if (originalData[i].workTime !== null && originalData[i].workTime !== 0) {
-            originalData[i].workTime = originalData[i].workTime.substr(0, 10)
-          }
+          // if (originalData[i].workTime !== null && originalData[i].workTime !== 0) {
+          //   originalData[i].workTime = originalData[i].workTime.substr(0, 10)
+          // }
           if (originalData[i].url === '') {
             originalData[i].url = this.imgHost + '/image/admin/doc_url_default.png'
           } else {
