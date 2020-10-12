@@ -46,7 +46,7 @@
           </view>
           <view class="list_content" wx:for='{{prescriptionInfo.itemList}}' wx:key='key'>
             <view class="medicine_name">{{item.goodsCommonName}}</view>
-            <view class="medicine_spec">用法用量：</view>
+            <view class="medicine_spec">用法用量：{{item.goodsQualityRatio}}</view>
           </view>
         </view>
         <image class="use-icon" wx:if="{{prescriptionInfo.isUsed}}" src="{{imageUrl}}image/wxapp/used.png"></image>

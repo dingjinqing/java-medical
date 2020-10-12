@@ -281,11 +281,6 @@ export default {
     getDivide () {
       getAttendanceDivide({ type: this.filterType }).then(res => {
         if (res.error === 0) {
-          res.content = {
-            fourthQuarterNum: 45,
-            halfNum: 293,
-            thirdQuarterNum: 88
-          }
           this.chartData.rows = [
             { '出勤率': '50%以下', '人数': res.content.halfNum },
             { '出勤率': '50%~75%', '人数': res.content.thirdQuarterNum },
