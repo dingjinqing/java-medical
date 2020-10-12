@@ -33,7 +33,7 @@
         <view class="each_line">治疗建议：<text class="bold">{{page_info.advice}}</text></view>
         <view class="special_one">
           <view class="spe_tit">医嘱：</view>
-          <textarea placeholder="默认显示药品用法用量，医生手动修改" placeholder-class="place" value='{{doctorAdvice}}' bindblur="adviInput" bindinput="adviInput"></textarea>
+          <textarea placeholder="请输入您的嘱托" placeholder-class="place" value='{{doctorAdvice}}' bindblur="adviInput" bindinput="adviInput"></textarea>
         </view>
       </view>
       <view class="doctor-info">

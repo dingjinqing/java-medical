@@ -708,7 +708,7 @@
                         </template>
                         <template
                           v-else-if="
-                            orderItem.deliverType == 0 &&
+                            orderItem.deliverType != 1 &&
                             orderItem.orderStatus == 5
                           "
                         >
@@ -955,7 +955,7 @@
                           </template>
                           <template
                             v-else-if="
-                              childOrder.deliverType == 0 &&
+                              childOrder.deliverType != 1 &&
                               childOrder.orderStatus == 5
                             "
                           >
