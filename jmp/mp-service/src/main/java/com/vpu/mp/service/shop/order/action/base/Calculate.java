@@ -289,8 +289,8 @@ public class Calculate extends ShopBaseService {
                             //折扣
                             BigDecimal ratio = temp.initRatio();
                             //
-                            if (ratio.compareTo(BigDecimal.ZERO) == -1 || ratio.compareTo(BigDecimal.ONE) == 1) {
-                                logger().error("订单结算优惠券计算ratio数据非法,信息为:{}", param.getWxUserInfo(), temp.getInfo().getCouponSn());
+                            if (ratio.compareTo(BigDecimal.ZERO) < 0 || ratio.compareTo(BigDecimal.ONE) > 0) {
+                                logger().error("订单结算优惠券计算ratio数据非法,信息为:{},{}", param.getWxUserInfo(), temp.getInfo().getCouponSn());
                                 //数据异常不影响正常流程，不使用该优惠券
                                 i.remove();
                             }

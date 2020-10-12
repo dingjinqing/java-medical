@@ -5,18 +5,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceDivideVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorDetailPerformanceParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryInquiryParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPatientParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryPrescriptionParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticListVo;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorUnbundlingParam;
+import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
 import com.vpu.mp.service.shop.doctor.DoctorStatisticService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
@@ -240,7 +229,7 @@ public class AdminDoctorController extends AdminBaseController {
      */
     @PostMapping("/api/admin/doctors/attendance/summary/list")
     public JsonResult doctorAttendanceSummaryList(@RequestBody DoctorAttendanceListParam param) {
-        PageResult<DoctorAttendanceOneParam> doctorAttendanceSummaryList = shop().doctorLoginLogService.getDoctorAttendancePage(param);
+       DoctorAttendanceListVo doctorAttendanceSummaryList = shop().doctorLoginLogService.getDoctorAttendancePage(param);
         return this.success(doctorAttendanceSummaryList);
     }
 

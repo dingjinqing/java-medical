@@ -203,6 +203,21 @@ public class BigDecimalUtil {
     }
 
     /**
+     * BigDecimal除法：精度保留小数点后两位，采取RoundingMode
+     *
+     * @param left=null->zero
+     * @param right=null      throw Exception
+     * @return value
+     */
+    static public BigDecimal divide(BigDecimal left, BigDecimal right, RoundingMode roundingMode, Integer scale) throws ArithmeticException {
+        left = left == null ? BigDecimal.ZERO : left;
+        if (right == null || compareTo(right, null) < 1) {
+            throw new ArithmeticException("Division by zero");
+        }
+        return left.divide(right, scale, roundingMode);
+    }
+
+    /**
      * 支持按照bigDecimals数组顺序进行加减运算，精度保留小数点后两位
      *
      * @param bigDecimals BigDecimalPlus类属性为value（值）与operator（该值与其后一位的运算符）
