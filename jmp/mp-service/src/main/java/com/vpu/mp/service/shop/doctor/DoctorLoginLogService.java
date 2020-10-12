@@ -70,14 +70,16 @@ public class DoctorLoginLogService extends ShopBaseService {
         BigDecimal loginRate = new BigDecimal(1);
         BigDecimal lastRate = param.getLastRate();
         Integer lastRank  = param.getLastRank();
+        Integer index = 1;
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
             loginRate = new BigDecimal(Double.valueOf(data.getLoginDays())/Double.valueOf(dayOfMonth)).setScale(2, BigDecimal.ROUND_HALF_UP);
             data.setLoginRate(loginRate);
             if(!lastRate.equals(loginRate)) {
-                lastRank = lastRank + 1;
+                lastRank = (dataList.getPage().getCurrentPage() - 1)*5 + index;
             }
             data.setLoginRank(lastRank);
             lastRate = loginRate;
+            index++;
         }
         DoctorAttendanceListVo doctorList = new DoctorAttendanceListVo();
         doctorList.setDoctorList(dataList);
