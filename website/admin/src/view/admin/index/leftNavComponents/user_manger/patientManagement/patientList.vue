@@ -23,8 +23,14 @@
             >
             </el-input>
           </div>
-          <div class="filters_item" style="width: 350px">
-            <span class="fil_span" style="width: 150px">时间筛选：</span>
+          <div
+            class="filters_item"
+            style="width: 350px"
+          >
+            <span
+              class="fil_span"
+              style="width: 150px"
+            >时间筛选：</span>
             <el-date-picker
               v-model="timeValue"
               type="daterange"
@@ -38,9 +44,11 @@
             </el-date-picker>
           </div>
           <div class="btn_wrap">
-            <el-button type="primary" size="small" @click="initDataList"
-              >搜索</el-button
-            >
+            <el-button
+              type="primary"
+              size="small"
+              @click="initDataList"
+            >搜索</el-button>
           </div>
         </div>
       </div>
@@ -60,18 +68,31 @@
             'text-align': 'center',
           }"
         >
-          <el-table-column prop="id" label="患者编号"></el-table-column>
-          <el-table-column prop="wxNickName" label="微信昵称">
+          <el-table-column
+            prop="id"
+            label="患者编号"
+          ></el-table-column>
+          <el-table-column
+            prop="wxNickName"
+            label="微信昵称"
+          >
             <template v-slot="scope">
               <span
                 style="color: #5a8bff; cursor: pointer"
-                @click="hanldeToDetail(scope.row.userId)"
-                >{{ scope.row.wxNickName }}</span
-              >
+                @click="hanldeToDetail(item.userIdNew)"
+                v-for="item in scope.row.userParamList"
+                :key='item.userIdNew'
+              >{{ item.wxNickName }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="name" label="姓名"></el-table-column>
-          <el-table-column prop="mobile" label="手机号"></el-table-column>
+          <el-table-column
+            prop="name"
+            label="姓名"
+          ></el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号"
+          ></el-table-column>
           <el-table-column
             prop="treatmentNo"
             label="就诊卡号"
@@ -95,7 +116,10 @@
             prop="countPrescription"
             label="处方数量"
           ></el-table-column>
-          <el-table-column prop="createTime" label="注册时间"></el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="注册时间"
+          ></el-table-column>
           <el-table-column label="操作">
             <template v-slot="scope">
               <div class="operation">
@@ -111,7 +135,10 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="initDataList"
+        />
       </div>
     </div>
   </div>
