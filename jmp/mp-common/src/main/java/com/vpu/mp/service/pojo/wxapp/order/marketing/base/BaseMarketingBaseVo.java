@@ -46,7 +46,7 @@ public abstract class BaseMarketingBaseVo {
                 //折扣超总价
                 totalDiscount = totalPrice;
             }
-            ratio = BigDecimalUtil.divide(totalDiscount ,totalPrice, RoundingMode.FLOOR);
+            ratio = BigDecimalUtil.divide(totalDiscount ,totalPrice, RoundingMode.FLOOR, 8);
         }
         return ratio;
     }
