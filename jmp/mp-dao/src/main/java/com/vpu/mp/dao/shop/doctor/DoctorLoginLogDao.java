@@ -12,6 +12,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.Tables.DOCTOR_LOGIN_LOG;
+import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
 /**
@@ -120,4 +122,19 @@ public class DoctorLoginLogDao extends ShopBaseDao {
         return select.fetchAnyInto(DoctorAttendanceOneParam.class);
     }
 
+    /**
+     * 医师出勤排名
+     * @param
+     * @return
+     */
+    public Integer getDoctorAttendanceRank(Integer loginDays, Byte type) {
+        Timestamp startTime = getStartTime(type);
+        Integer rank = db().selectCount()
+            .from(DOCTOR)
+            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(DOCTOR.AUTH_TIME)))
+            .groupBy(DOCTOR.ID)
+            .having(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).gt(loginDays))
+            .fetchOneInto(Integer.class);
+        return (rank == null) ? 1:(rank+1);
+    }
 }

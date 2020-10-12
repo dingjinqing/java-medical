@@ -7,7 +7,6 @@ import com.vpu.mp.dao.shop.doctor.DoctorLoginLogDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceDivideVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListParam;
-import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceOneParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,28 +63,27 @@ public class DoctorLoginLogService extends ShopBaseService {
      * @param param
      * @return
      */
-    public DoctorAttendanceListVo getDoctorAttendancePage(DoctorAttendanceListParam param) {
+    public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(DoctorAttendanceListParam param) {
         Integer dayOfMonth = THIS_MONTH.equals(param.getType()) ? DateUtils.getLocalDate().getDayOfMonth():30;
         PageResult<DoctorAttendanceOneParam> dataList = doctorLoginLogDao.getDoctorAttendancePage(param);
         BigDecimal loginRate = new BigDecimal(1);
-        BigDecimal lastRate = param.getLastRate();
-        Integer lastRank  = param.getLastRank();
+        if(dataList.getDataList().size()==0){
+            return dataList;
+        }
+        Integer lastDays = dataList.getDataList().get(0).getLoginDays();
+        Integer lastRank  = doctorLoginLogDao.getDoctorAttendanceRank(lastDays,param.getType());
         Integer index = 1;
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
             loginRate = new BigDecimal(Double.valueOf(data.getLoginDays())/Double.valueOf(dayOfMonth)).setScale(2, BigDecimal.ROUND_HALF_UP);
             data.setLoginRate(loginRate);
-            if(!lastRate.equals(loginRate)) {
+            if(!lastDays.equals(data.getLoginDays())) {
                 lastRank = (dataList.getPage().getCurrentPage() - 1)*5 + index;
             }
             data.setLoginRank(lastRank);
-            lastRate = loginRate;
+            lastDays = data.getLoginDays();
             index++;
         }
-        DoctorAttendanceListVo doctorList = new DoctorAttendanceListVo();
-        doctorList.setDoctorList(dataList);
-        doctorList.setLastRank(lastRank);
-        doctorList.setLastRate(lastRate);
-        return doctorList;
+        return dataList;
     }
 
 }

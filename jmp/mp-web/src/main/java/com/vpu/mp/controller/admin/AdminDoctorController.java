@@ -229,7 +229,7 @@ public class AdminDoctorController extends AdminBaseController {
      */
     @PostMapping("/api/admin/doctors/attendance/summary/list")
     public JsonResult doctorAttendanceSummaryList(@RequestBody DoctorAttendanceListParam param) {
-       DoctorAttendanceListVo doctorAttendanceSummaryList = shop().doctorLoginLogService.getDoctorAttendancePage(param);
+        PageResult<DoctorAttendanceOneParam> doctorAttendanceSummaryList = shop().doctorLoginLogService.getDoctorAttendancePage(param);
         return this.success(doctorAttendanceSummaryList);
     }
 
