@@ -182,7 +182,7 @@ export default {
       console.log(obj)
       membershipListRequest(obj).then(res => {
         if (res.error === 0) {
-          this.trList = res.content.dataList.reverse()
+          this.trList = res.content.dataList;
           console.log('会员列表' + this.trList)
           this.pageParams = res.content.page
         }
