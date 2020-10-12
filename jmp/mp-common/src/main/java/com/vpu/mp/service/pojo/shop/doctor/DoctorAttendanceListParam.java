@@ -14,6 +14,6 @@ import java.math.BigDecimal;
 public class DoctorAttendanceListParam extends BasePageParam {
     private Byte type;
     private Integer doctorId;
-    private Integer lastRank=1;
-    private BigDecimal lastRate= new BigDecimal(1);
+    private Integer lastRank=0;
+    private BigDecimal lastRate= new BigDecimal(2);
 }
