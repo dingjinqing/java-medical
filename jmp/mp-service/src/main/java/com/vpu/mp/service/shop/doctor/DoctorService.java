@@ -725,18 +725,8 @@ public class DoctorService extends BaseShopConfigService {
         param.setUserId(1);
         DoctorOneParam daoOneInfo = doctorDao.getOneInfo(doctorId);
         param.setStartTime(DateUtil.beginOfMonth(date).toTimestamp());
-        //从注册那天算起
-        if (daoOneInfo.getAuthTime()!=null&&daoOneInfo.getAuthTime().after(param.getStartTime())){
-            param.setStartTime(daoOneInfo.getAuthTime());
-        }
         //结束时间不能大于今天
         param.setEndTime(date.toTimestamp());
-        int attendanceDay = doctorLoginLogDao.getDoctorAttendanceDayNum(doctorId,param.getStartTime(),param.getEndTime());
-        /** 应出勤天数*/
-        Long  dueAttendanceDay = DateUtil.betweenDay(param.getStartTime(), param.getEndTime(),true)+1;
-        String doctorAttendanceRate = BigDecimal.valueOf(attendanceDay).divide(BigDecimal.valueOf(dueAttendanceDay), 3, BigDecimal.ROUND_HALF_UP)
-                .multiply(BigDecimal.valueOf(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString();
-        logger().info("医师userId:{},出勤率{}", userId, doctorAttendanceRate);
         Integer prescriptionNum = prescriptionService.countDateByDoctor(doctorCode, param.getStartTime(), param.getEndTime());
         logger().info("医师code:{},处方数量{}", doctorCode, prescriptionNum);
         Integer receivingNumber = inquiryOrderService.countByDateDoctor(doctorId, param.getStartTime(), param.getEndTime());
@@ -744,6 +734,16 @@ public class DoctorService extends BaseShopConfigService {
         BigDecimal inquiryOrderRebate = inquiryOrderRebateService.getRealRebateByDoctorDate(doctorId, param.getStartTime(), param.getEndTime());
         BigDecimal prescriptionRebate = prescriptionRebateService.getRealRebateByDoctorDate(doctorId, param.getStartTime(), param.getEndTime());
         logger().info("医师id:{},服务费{}", doctorId, receivingNumber);
+        //从注册那天算起
+        if (daoOneInfo.getAuthTime()!=null&&daoOneInfo.getAuthTime().after(param.getStartTime())){
+            param.setStartTime(daoOneInfo.getAuthTime());
+        }
+        int attendanceDay = doctorLoginLogDao.getDoctorAttendanceDayNum(doctorId,param.getStartTime(),param.getEndTime());
+        /** 应出勤天数*/
+        Long  dueAttendanceDay = DateUtil.betweenDay(param.getStartTime(), param.getEndTime(),true)+1;
+        String doctorAttendanceRate = BigDecimal.valueOf(attendanceDay).divide(BigDecimal.valueOf(dueAttendanceDay), 3, BigDecimal.ROUND_HALF_UP)
+                .multiply(BigDecimal.valueOf(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString();
+        logger().info("医师userId:{},出勤率{}", userId, doctorAttendanceRate);
         DoctorAttendanceVo vo = new DoctorAttendanceVo();
         vo.setDoctorAttendanceRate(doctorAttendanceRate);
         vo.setPrescriptionNum(prescriptionNum);
