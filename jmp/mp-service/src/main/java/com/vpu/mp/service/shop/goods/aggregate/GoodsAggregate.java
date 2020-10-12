@@ -217,8 +217,9 @@ public class GoodsAggregate {
      */
     public GoodsEntity getByExternalInfo(String medicalKey){
         GoodsMedicalInfoDo byHisInfo = goodsMedicalInfoDao.getByHisInfo(medicalKey);
-        if (byHisInfo==null)
+        if (byHisInfo==null){
             return null;
+        }
 
         GoodsEntity goodsEntity =new GoodsEntity();
         goodsEntity.setGoodsId(byHisInfo.getGoodsId());
