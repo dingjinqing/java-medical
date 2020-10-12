@@ -143,7 +143,7 @@ public class DoctorWithdrawService extends ShopBaseService {
                 throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_LESS_MINIMUM);
             }
 
-            BigDecimal withdrawSum=doctorWithDrawDao.getWithdrawCashSum(param.getDoctorId(),null, DateUtils.getTimestampForTodayStartTime(),DateUtils.getTimestampForTodayEndTime());
+            BigDecimal withdrawSum=doctorWithDrawDao.getWithdrawCashSum(param.getDoctorId(),DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS, DateUtils.getTimestampForTodayStartTime(),DateUtils.getTimestampForTodayEndTime());
             if(withdrawSum!=null&&BigDecimalUtil.compareTo(param.getWithdrawCash().add(withdrawSum),rebateConfig.getWithdrawCashMax())>0){
                 //大于每日提现额度限制
                 throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EXCEED_DAY_MAX_LIMIT_MONEY);
@@ -159,6 +159,8 @@ public class DoctorWithdrawService extends ShopBaseService {
      */
     public void audit(DoctorWithdrawUpdateParam param)throws MpException {
         DoctorWithdrawVo doctorWithdrawVo= doctorWithDrawDao.getWithdrawByOrderSn(param.getOrderSn());
+        RebateConfig rebateConfig=rebateConfigService.getRebateConfig();
+        Byte preStatus=doctorWithdrawVo.getStatus();
         if(doctorWithdrawVo==null){
             throw new MpException(JsonResultCode.CODE_FAIL);
         }
@@ -168,7 +170,12 @@ public class DoctorWithdrawService extends ShopBaseService {
         DoctorOneParam doctor=doctorService.getOneInfo(doctorWithdrawVo.getDoctorId());
         DoctorTotalRebateVo doctorTotalRebateVo= doctorTotalRebateDao.getRebateByDoctorId(doctorWithdrawVo.getDoctorId());
         if(DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS.equals(param.getCheckStatus())){
-            if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL.equals(doctorWithdrawVo.getStatus())){
+            if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(preStatus)||DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL.equals(preStatus)){
+                BigDecimal withdrawSum=doctorWithDrawDao.getWithdrawCashSum(doctorWithdrawVo.getDoctorId(),DoctorWithdrawConstant.WITHDRAW_CHECK_PAY_SUCCESS, DateUtils.getTimestampForTodayStartTime(),DateUtils.getTimestampForTodayEndTime());
+                if(withdrawSum!=null&&BigDecimalUtil.compareTo(doctorWithdrawVo.getWithdrawCash().add(withdrawSum),rebateConfig.getWithdrawCashMax())>0){
+                    //大于每日提现额度限制
+                    throw new MpException(JsonResultCode.DOCTOR_WITHDRAW_EXCEED_DAY_MAX_LIMIT_MONEY);
+                }
                 //出账,暂时注释掉
                 pay2Person(param.getOrderSn(),param.getClientIp(),doctorWithdrawVo.getRealName(),doctor.getUserId(),doctorWithdrawVo.getType(),doctorWithdrawVo.getWithdrawCash(),doctorWithdrawVo);
                 transaction(()->{
@@ -180,7 +187,7 @@ public class DoctorWithdrawService extends ShopBaseService {
 
         }else if(DoctorWithdrawConstant.WITHDRAW_CHECK_REFUSE.equals(param.getCheckStatus())){
             //审核驳回
-            if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(doctorWithdrawVo.getStatus())||DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL.equals(doctorWithdrawVo.getStatus())){
+            if(DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_CHECK.equals(preStatus)||DoctorWithdrawConstant.WITHDRAW_CHECK_WAIT_PAY.equals(preStatus)||DoctorWithdrawConstant.WITHDRAW_CHECK_PY_FAIL.equals(preStatus)){
                 transaction(()->{
                     //修改可提现金额，冻结金额
                     doctorTotalRebateDao.updateTotalMoneyBlockedMoney(doctorWithdrawVo.getDoctorId(),doctorTotalRebateVo.getTotalMoney().add(doctorWithdrawVo.getWithdrawCash()),doctorTotalRebateVo.getBlockedMoney().subtract(doctorWithdrawVo.getWithdrawCash()));

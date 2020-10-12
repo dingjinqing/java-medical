@@ -467,6 +467,10 @@ public class OrderConstant {
 	 * 门店列表已完成
 	 */
 	public static final byte STORE_ACCOUNT_FINISHED = 9;
+	/**
+	 * 等待售后
+	 */
+	public static final byte STORE_WAIT_REFUND = 10;
 
 	/**
 	 * 是否货到付款订单

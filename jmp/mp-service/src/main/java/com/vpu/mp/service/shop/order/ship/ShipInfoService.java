@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
 
 /**
@@ -160,10 +161,15 @@ public class ShipInfoService extends ShopBaseService {
      * @param endTime
      * @return
      */
-    public Integer getCountFinishedNumByAccountIdUserId(Integer accountId,Integer userId, Timestamp startTime,Timestamp endTime){
-        SelectConditionStep<? extends Record> select=db().select(DSL.countDistinct(PART_ORDER_GOODS_SHIP.ORDER_SN))
-				.from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.CONFIRM_ACCOUNT_ID.eq(accountId))
+    public Integer getCountFinishedNumByAccountIdUserId(Integer accountId,Integer userId, Integer storeId,Timestamp startTime,Timestamp endTime){
+        SelectConditionStep<? extends Record> select=db().select(DSL.isnull(DSL.countDistinct(PART_ORDER_GOODS_SHIP.ORDER_SN),0))
+				.from(PART_ORDER_GOODS_SHIP)
+                .leftJoin(ORDER_INFO).on(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+                .where(PART_ORDER_GOODS_SHIP.CONFIRM_ACCOUNT_ID.eq(accountId))
             .and(PART_ORDER_GOODS_SHIP.CONFIRM_USER_ID.eq(userId));
+        if(storeId!=null){
+            select.and(ORDER_INFO.STORE_ID.eq(storeId));
+        }
         if(startTime!=null){
             select.and(PART_ORDER_GOODS_SHIP.CONFIRM_TIME.ge(startTime));
         }
@@ -182,7 +188,7 @@ public class ShipInfoService extends ShopBaseService {
      * @return
      */
     public Integer getCountDeliveryNumByAccountIdUserId(Integer accountId,Integer userId, Timestamp startTime,Timestamp endTime){
-        SelectConditionStep<? extends Record> select=db().select(DSL.countDistinct(PART_ORDER_GOODS_SHIP.ORDER_SN)).from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID.eq(accountId))
+        SelectConditionStep<? extends Record> select=db().select(DSL.isnull(DSL.countDistinct(PART_ORDER_GOODS_SHIP.ORDER_SN),0)).from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID.eq(accountId))
             .and(PART_ORDER_GOODS_SHIP.SHIPPING_USER_ID.eq(userId));
         if(startTime!=null){
             select.and(PART_ORDER_GOODS_SHIP.SHIPPING_TIME.ge(startTime));

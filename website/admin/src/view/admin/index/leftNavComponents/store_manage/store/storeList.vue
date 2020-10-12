@@ -229,10 +229,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            :label="门店配送"
-            prop="storeExpress"
-          >
+          <el-table-column label="同城配送" prop="storeExpress">
             <template slot-scope="{ row, $index }">
               <div>
                 <el-checkbox

@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.doctor;
 
 import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 
 /**
  * @author chenjie

@@ -61,6 +61,8 @@ global.wxPage({
           showQrCode:true,
           QrCodeImage:res.content
         })
+      } else {
+        util.showModal('提示','获取二维码失败')
       }
     },{})
   },

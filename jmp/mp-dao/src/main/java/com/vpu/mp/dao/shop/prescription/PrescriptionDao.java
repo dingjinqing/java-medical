@@ -470,8 +470,9 @@ public class PrescriptionDao extends ShopBaseDao {
                 where.and(PRESCRIPTION.AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_AUDIT));
                 break;
             case 2:
-                //开方
-                where.and(PRESCRIPTION.AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE));
+                //已开具
+                where.and(PRESCRIPTION.AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_CREATE)
+                        .or(PRESCRIPTION.AUDIT_TYPE.eq(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION)));
                 break;
             case 3:
                 //开方

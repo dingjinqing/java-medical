@@ -624,7 +624,7 @@ public class StoreWxService extends ShopBaseService {
             //待处理数
             Integer waitReceiveOrderNum= orderInfoDao.countNumByStoreIdOrderStatus(statisticVo.getStoreId(), orderStatusList);
             //已完成数量
-            Integer finishedOrderNum= shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,null);
+            Integer finishedOrderNum= shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),statisticVo.getStoreId(),null,null);
             //配送中数量
             Integer deliveryOrderNum= shipInfoService.getCountDeliveryNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,null);
             List<Byte> returnStatusList=new ArrayList<>();
@@ -645,7 +645,7 @@ public class StoreWxService extends ShopBaseService {
         Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeIdList, orderStatusList,startTime,endTime);
         monthVo.setWaitHandleNum(waitHandleNum);
         //已完成的数量
-        Integer finishedNum=shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),startTime,endTime);
+        Integer finishedNum=shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,startTime,endTime);
         //配送中数量
         Integer deliveryNum= shipInfoService.getCountDeliveryNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),startTime,endTime);
         monthVo.setDeliveryNum(deliveryNum);

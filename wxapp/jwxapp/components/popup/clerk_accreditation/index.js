@@ -111,7 +111,7 @@ global.wxComponent({
       util.api('/api/wxapp/store/storeClerk/auth',result=>{
         console.log(result)
         if(result.error === 0){
-          
+          util.jumpLink('/pages3/clerkIndex/clerkIndex')
         } else {
           util.showModal('提示',result.message)
         }

@@ -36,7 +36,7 @@ global.wxPage({
   takeAllMoney(){
     console.log(this.data.totalMoney)
     this.setData({
-      withdrawCash:parseFloat(this.data.totalMoney) 
+      withdrawCash:parseFloat(this.data.totalMoney).toFixed(2)
     })
   },
   changeInput(e){
