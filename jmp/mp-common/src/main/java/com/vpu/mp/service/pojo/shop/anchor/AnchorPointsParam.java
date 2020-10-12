@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.anchor;
 
 import lombok.Data;
 
+import java.lang.annotation.Native;
 import java.util.List;
 
 /**
@@ -11,6 +12,8 @@ import java.util.List;
 @Data
 public class AnchorPointsParam {
 
+    @Native
+    private Integer shopId;
     /**
      * 埋点事件
      */

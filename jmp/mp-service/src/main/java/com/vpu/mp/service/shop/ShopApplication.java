@@ -1,18 +1,45 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.shop.anchor.AnchorPointsService;
 import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.collection.CollectService;
-import com.vpu.mp.service.shop.config.*;
+import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.ShopBasicConfigService;
+import com.vpu.mp.service.shop.config.ThirdAuthConfigService;
+import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.coupon.CouponService;
-import com.vpu.mp.service.shop.decoration.*;
+import com.vpu.mp.service.shop.decoration.AdminDecorationService;
+import com.vpu.mp.service.shop.decoration.AppletsJumpService;
+import com.vpu.mp.service.shop.decoration.ChooseLinkService;
+import com.vpu.mp.service.shop.decoration.MpDecorationService;
+import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.department.DepartmentService;
-import com.vpu.mp.service.shop.distribution.*;
+import com.vpu.mp.service.shop.distribution.BrokerageStatisticalService;
+import com.vpu.mp.service.shop.distribution.DistributorCheckService;
+import com.vpu.mp.service.shop.distribution.DistributorGroupService;
+import com.vpu.mp.service.shop.distribution.DistributorLevelService;
+import com.vpu.mp.service.shop.distribution.DistributorListService;
+import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
+import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
+import com.vpu.mp.service.shop.distribution.MpDistributionService;
+import com.vpu.mp.service.shop.distribution.MpDistributorLevelService;
+import com.vpu.mp.service.shop.distribution.PromotionLanguageService;
+import com.vpu.mp.service.shop.distribution.RebateGoodsService;
+import com.vpu.mp.service.shop.distribution.RebateStrategyService;
+import com.vpu.mp.service.shop.distribution.WithdrawService;
 import com.vpu.mp.service.shop.doctor.DoctorLoginLogService;
 import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.doctor.DoctorStatisticService;
 import com.vpu.mp.service.shop.express.ExpressService;
-import com.vpu.mp.service.shop.goods.*;
+import com.vpu.mp.service.shop.goods.ApiGoodsService;
+import com.vpu.mp.service.shop.goods.FootPrintService;
+import com.vpu.mp.service.shop.goods.GoodsAnalysisService;
+import com.vpu.mp.service.shop.goods.GoodsRecommendService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsWrapService;
+import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
@@ -64,7 +91,12 @@ import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.marketcalendar.MarketCalendarService;
 import com.vpu.mp.service.shop.medicine.MedicalHistoryService;
-import com.vpu.mp.service.shop.member.*;
+import com.vpu.mp.service.shop.member.AddressService;
+import com.vpu.mp.service.shop.member.CardVerifyService;
+import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.ScoreCfgService;
+import com.vpu.mp.service.shop.member.TagService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.message.UserMessageService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
@@ -77,7 +109,12 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
-import com.vpu.mp.service.shop.overview.*;
+import com.vpu.mp.service.shop.overview.AssetManagementService;
+import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
+import com.vpu.mp.service.shop.overview.MallOverviewService;
+import com.vpu.mp.service.shop.overview.OverviewService;
+import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
+import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
 import com.vpu.mp.service.shop.patient.PatientService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
@@ -717,4 +754,10 @@ public class ShopApplication {
      */
     @Autowired
     public DoctorLoginLogService doctorLoginLogService;
+	/**
+	 * 埋点
+	 */
+	@Autowired
+	public AnchorPointsService anchorPointsService;
+
 }
