@@ -93,10 +93,10 @@
             label="累计消费金额"
           ></el-table-column>
         </el-table>
-        <pagination
+        <!-- <pagination
           :page-params.sync="pageParams"
           @pagination="initDataList"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -123,10 +123,10 @@ export default {
       loading: false,
       langDefaultFlag: false,
       timeValue: [],
-      pageParams: {
-        currentPage: 1,
-        pageRows: 5
-      },
+      // pageParams: {
+      //   currentPage: 1,
+      //   pageRows: 5
+      // },
       tableData: [],
       queryParams: {
         startTime: '',
@@ -141,8 +141,8 @@ export default {
     initDataList () {
       // this.loading = true
       this.queryParams.doctorId = this.id
-      this.queryParams.currentPage = this.pageParams.currentPage
-      this.queryParams.pageRows = this.pageParams.pageRows
+      // this.queryParams.currentPage = this.pageParams.currentPage
+      // this.queryParams.pageRows = this.pageParams.pageRows
       if (this.queryParams.startTime === '' || this.queryParams.endTime === '') {
         this.$message.success({
           message: '请选择时间范围',
@@ -159,7 +159,7 @@ export default {
         }
         console.log(res)
         this.originalData = res.content.dataList
-        this.pageParams = res.content.page
+        // this.pageParams = res.content.page
         let originalData = JSON.parse(JSON.stringify(this.originalData))
         this.handleData(originalData)
         // this.loading = false
