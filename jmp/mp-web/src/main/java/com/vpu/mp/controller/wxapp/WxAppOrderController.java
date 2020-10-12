@@ -396,7 +396,7 @@ public class WxAppOrderController extends WxAppBaseController{
             return success(storeService.getStoreListOpen(orderAddressParam.getStoreGoodsBaseCheckInfoList()));
         }
         orderAddressParam.setDeliveryType(DELIVER_TYPE_SELF);
-        Map<String, StoreDo> storeListOpen = null;
+        Map<String, StoreDo> storeListOpen;
         try {
             storeListOpen = storeService.getStoreListOpen(orderAddressParam);
         } catch (MpException e) {
