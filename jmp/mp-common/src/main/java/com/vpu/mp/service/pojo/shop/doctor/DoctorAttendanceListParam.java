@@ -4,6 +4,8 @@ import com.vpu.mp.common.pojo.shop.base.BasePageParam;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 
+import java.math.BigDecimal;
+
 /**
  * @author chenjie
  * @date 2020年09月21日
@@ -12,4 +14,6 @@ import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 public class DoctorAttendanceListParam extends BasePageParam {
     private Byte type;
     private Integer doctorId;
+    private Integer lastRank=1;
+    private BigDecimal lastRate= new BigDecimal(1.00);
 }

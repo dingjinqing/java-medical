@@ -20,4 +20,5 @@ public class DoctorAttendanceOneParam{
     private Timestamp lastTime;
     private Integer loginDays;
     private BigDecimal loginRate;
+    private Integer loginRank=1;
 }
