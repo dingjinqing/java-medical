@@ -458,7 +458,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 bo.setSource(MedicalGoodsConstant.SOURCE_FROM_HIS);
                 bo.setHisStatus(bo.getState() == null ? null : bo.getState().byteValue());
                 if (existMedicalKeys.containsKey(bo.getGoodsKeyComposedByNameQualityEnterprise())) {
-                    bo.setGoodsId(existMedicalKeys.get(bo.getGoodsCode()));
+                    bo.setGoodsId(existMedicalKeys.get(bo.getGoodsKeyComposedByNameQualityEnterprise()));
                     readyForUpdate.add(bo);
                 } else {
                     // 对于数据库不存在，而数据自身状态是删除状态则不入库
@@ -514,13 +514,16 @@ public class MedicalGoodsService extends ShopBaseService {
             x.setGoodsCommonName(x.getGoodsCommonName().replaceAll("\\*", "").trim());
 
             if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(x.getIsMedical())) {
-                x.setGoodsQualityRatio(x.getGoodsQualityRatio().trim());
-                x.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise().trim());
+                x.setGoodsQualityRatio(x.getGoodsQualityRatio().trim().replaceAll("\\*",""));
+                x.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise().trim().replaceAll("\\*",""));
                 String goodsKey = x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise();
                 x.setGoodsKeyComposedByNameQualityEnterprise(goodsKey);
+            }else {
+                // 普通商品通过名称标识唯一
+                x.setGoodsKeyComposedByNameQualityEnterprise(x.getGoodsCommonName());
             }
             if (x.getGoodsApprovalNumber() != null) {
-                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim());
+                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字",""));
             }
             return true;
         }).collect(Collectors.toList());
@@ -732,9 +735,12 @@ public class MedicalGoodsService extends ShopBaseService {
                 x.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise().trim());
                 String key = x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise();
                 x.setGoodsKeyComposedByNameQualityEnterprise(key);
+            }else {
+                x.setGoodsKeyComposedByNameQualityEnterprise(x.getGoodsCommonName());
             }
             if (x.getGoodsApprovalNumber() != null) {
-                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim());
+                // 完全是为了顾及医院数据存在质量问题
+                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字",""));
             }
             x.setStoreCode(x.getGoodsCode());
             x.setGoodsCode(MedicalGoodsConstant.STORE_GOODS_CODE_PREFIX + x.getGoodsCode());
@@ -773,6 +779,7 @@ public class MedicalGoodsService extends ShopBaseService {
         Map<String, Integer> goodsSnMapToGoodsId = goodsAggregate.mapGoodsSnToGoodsId(goodsCodes);
         return readyForInsert.stream().filter(bo -> {
             if (goodsSnMapToGoodsId.get(bo.getGoodsCode()) != null) {
+                bo.setGoodsId(goodsSnMapToGoodsId.get(bo.getGoodsCode()));
                 readyForUpdate.add(bo);
                 return false;
             } else {
