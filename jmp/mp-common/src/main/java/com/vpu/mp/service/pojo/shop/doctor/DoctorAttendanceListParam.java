@@ -15,5 +15,5 @@ public class DoctorAttendanceListParam extends BasePageParam {
     private Byte type;
     private Integer doctorId;
     private Integer lastRank=1;
-    private BigDecimal lastRate= new BigDecimal(1.00);
+    private BigDecimal lastRate= new BigDecimal(1);
 }

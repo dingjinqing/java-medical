@@ -66,7 +66,7 @@ public class DoctorLoginLogService extends ShopBaseService {
     public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(DoctorAttendanceListParam param) {
         Integer dayOfMonth = THIS_MONTH.equals(param.getType()) ? DateUtils.getLocalDate().getDayOfMonth():30;
         PageResult<DoctorAttendanceOneParam> dataList = doctorLoginLogDao.getDoctorAttendancePage(param);
-        BigDecimal loginRate = new BigDecimal(1.00);
+        BigDecimal loginRate = new BigDecimal(1);
         BigDecimal lastRate = param.getLastRate();
         Integer lastRank  = param.getLastRank();
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
