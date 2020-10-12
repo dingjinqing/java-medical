@@ -820,10 +820,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     private void addGoodsMedicalParam(OrderBeforeParam param) {
         param.getGoods().forEach(goods -> {
-            GoodsMedicalInfoDo byGoodsId = goodsMedicalInfoDao.getByGoodsId(goods.getGoodsId());
-            goods.setGoodsQualityRatio(byGoodsId.getGoodsQualityRatio());
-            goods.setGoodsProductionEnterprise(byGoodsId.getGoodsProductionEnterprise());
-            goods.setGoodsApprovalNumber(byGoodsId.getGoodsApprovalNumber());
+            if (goods.getMedicalInfo() != null) {
+                GoodsMedicalInfoDo byGoodsId = goodsMedicalInfoDao.getByGoodsId(goods.getGoodsId());
+                goods.setGoodsQualityRatio(byGoodsId.getGoodsQualityRatio());
+                goods.setGoodsProductionEnterprise(byGoodsId.getGoodsProductionEnterprise());
+                goods.setGoodsApprovalNumber(byGoodsId.getGoodsApprovalNumber());
+            }
         });
     }
 
