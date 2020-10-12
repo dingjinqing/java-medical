@@ -414,7 +414,8 @@ var helper = {
       platform: 'wxapp',
       userId: cache.getCache('user_id'),
       storeId: 0,
-      list: list
+      list: list,
+      shopId:this.getShopId()
     }, '', true);
   }
 }

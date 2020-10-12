@@ -954,6 +954,7 @@
               <th>医师姓名</th>
               <th>返利处方号</th>
               <th width="270px">商品名称</th>
+              <th>商品金额</th>
               <th>分成比例</th>
               <th>佣金比例</th>
               <th>商品参与返利金额</th>
@@ -999,6 +1000,7 @@
                     </div>
                   </div>
                 </td>
+                <td>{{ goodsItem.medicinePrice }}</td>
                 <td>
                   {{ (goodsItem.goodsSharingProportion * 100).toFixed(2) }}%
                 </td>
@@ -1098,11 +1100,14 @@ export default {
         '2': ['createTime', 'closedTime'],
         '3-0': ['createTime', 'payTime', 'shippingTime', 'affirmTime', 'finishedTime'],
         '3-1': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
+        '3-3': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
         '4': ['createTime', 'payTime', 'shippingTime', 'affirmTime', 'finishedTime'],
         '5-0': ['createTime', 'payTime', 'shippingTime', 'affirmTime', 'finishedTime'],
         '5-1': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
+        '5-3': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
         '6-0': ['createTime', 'payTime', 'shippingTime', 'affirmTime', 'finishedTime'],
         '6-1': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
+        '6-3': ['createTime', 'payTime', 'confirmTime', 'finishedTime'],
         '7': null,
         '8': ['createTime', 'payTime', 'returnFinishTime'],
         '9': null,

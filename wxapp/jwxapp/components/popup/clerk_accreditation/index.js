@@ -63,7 +63,9 @@ global.wxComponent({
       util.jumpLink('/pages3/clerkSign/clerkSign')
     },
     changeAccountName({detail:{value}}){
-      this.data.accountName = value
+      this.setData({
+        accountName:value
+      })
     },
     changePassword({detail:{value}}){
       this.data.password = value
@@ -109,7 +111,7 @@ global.wxComponent({
       util.api('/api/wxapp/store/storeClerk/auth',result=>{
         console.log(result)
         if(result.error === 0){
-          
+          util.jumpLink('/pages3/clerkIndex/clerkIndex')
         } else {
           util.showModal('提示',result.message)
         }
