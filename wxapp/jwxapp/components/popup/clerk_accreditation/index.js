@@ -63,7 +63,9 @@ global.wxComponent({
       util.jumpLink('/pages3/clerkSign/clerkSign')
     },
     changeAccountName({detail:{value}}){
-      this.data.accountName = value
+      this.setData({
+        accountName:value
+      })
     },
     changePassword({detail:{value}}){
       this.data.password = value

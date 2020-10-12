@@ -241,9 +241,11 @@ public class PatientDao extends ShopBaseDao{
         PageResult<PatientMedicineVo> pageResult = this.getPageResult(select, patientMedicineParam.getCurrentPage(),
             patientMedicineParam.getPageRows(), PatientMedicineVo.class);
         pageResult.getDataList().forEach(patientMedicineVo -> {
-            if (patientMedicineVo.getMedicalAuditType() == 1 && patientMedicineVo.getMedicalAuditStatus() == 0) {
-                patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_NOT_PASSED);
-                patientMedicineVo.setIsCanSkipPrescription((byte) 0);
+
+            if (patientMedicineVo.getMedicalAuditStatus() == 0 && patientMedicineVo.getMedicalAuditType() != 0) {
+                    patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_NOT_PASSED);
+                    patientMedicineVo.setIsCanSkipPrescription((byte) 0);
+
             }
             if (patientMedicineVo.getMedicalAuditType() == 1 && PRESCRIPTION_AUDIT_FAILED_CODE.equals(patientMedicineVo.getMedicalAuditStatus())) {
                 patientMedicineVo.setPrescriptionCode(PRESCRIPTION_AUDIT_FAILED);
@@ -264,13 +266,13 @@ public class PatientDao extends ShopBaseDao{
      */
     private void patientMedicineBuildOptions(SelectOnConditionStep<? extends Record> select, PatientMedicineParam patientMedicineParam) {
         if (patientMedicineParam.getGoodsCommonName() != null && patientMedicineParam.getGoodsCommonName().trim().length() > 0) {
-            select.where(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.like(likeValue(patientMedicineParam.getGoodsCommonName().trim())));
+            select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(patientMedicineParam.getGoodsCommonName().trim())));
         }
         if (patientMedicineParam.getGoodsApprovalNumber() != null && patientMedicineParam.getGoodsApprovalNumber().trim().length() > 0) {
-            select.where(GOODS_MEDICAL_INFO.GOODS_APPROVAL_NUMBER.like(likeValue(patientMedicineParam.getGoodsApprovalNumber())));
+            select.where(ORDER_GOODS.GOODS_APPROVAL_NUMBER.like(likeValue(patientMedicineParam.getGoodsApprovalNumber())));
         }
         if (patientMedicineParam.getGoodsProductionEnterprise() != null && patientMedicineParam.getGoodsProductionEnterprise().trim().length() > 0) {
-            select.where(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(patientMedicineParam.getGoodsProductionEnterprise())));
+            select.where(ORDER_GOODS.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(patientMedicineParam.getGoodsProductionEnterprise())));
         }
         if (patientMedicineParam.getStartTime() != null || patientMedicineParam.getEndTime() != null) {
             select.where(ORDER_GOODS.CREATE_TIME.ge(patientMedicineParam.getStartTime()))

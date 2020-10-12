@@ -595,6 +595,10 @@ global.wxPage({
             'params.deliverType': deliverType,
             'params.storeId': res.content[keysList[0]].storeId
           })
+        } else {
+          util.showModal('提示',res.message,()=>{
+            wx.navigateBack()
+          },false,'','确定')
         }
       }, {
         lat: this.data.params.lat,
