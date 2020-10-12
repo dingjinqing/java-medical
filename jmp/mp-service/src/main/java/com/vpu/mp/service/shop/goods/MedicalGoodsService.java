@@ -56,6 +56,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -374,7 +375,7 @@ public class MedicalGoodsService extends ShopBaseService {
             Timestamp startTime = DateUtils.convertToTimestamp(MedicalGoodsConstant.PULL_START_TIME);
             lastRequestTime = startTime.getTime() / 1000;
         }
-        param.setStartTime(lastRequestTime);
+        param.setStartTime(null);
         Timestamp now = DateUtils.getLocalDateTime();
         ApiExternalRequestResult apiExternalRequestResult = saas().apiExternalRequestService.externalRequestGate(appId, shopId, serviceName, Util.toJson(param));
         // 数据拉取错误
@@ -419,7 +420,8 @@ public class MedicalGoodsService extends ShopBaseService {
             }
             // 药品数据入库操作
             try {
-                batchSaveGoodsMedicalExternalInfo(goodsMedicalExternalRequestBo.getDataList());
+//                batchSaveGoodsMedicalExternalInfo(goodsMedicalExternalRequestBo.getDataList());
+                saveGoodsMedicalExternalInfo(goodsMedicalExternalRequestBo.getDataList());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -427,16 +429,125 @@ public class MedicalGoodsService extends ShopBaseService {
             pageSize = goodsMedicalExternalRequestBo.getPageSize();
             totalCount = goodsMedicalExternalRequestBo.getTotalCount();
         }
-        //控制药品的可上架状态
-//        goodsAggregate.batchUpStoreAndMedicalGoods();
         logger().debug("拉取药品信息结束：共处理" + pullCount + "条");
         return JsonResult.success();
     }
+
+
+    private void saveGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
+        // 剔除不合法说句，并处理
+        goodsMedicalExternalRequestItemBos = filterHisIllegalData(goodsMedicalExternalRequestItemBos);
+        List<Integer> esUpdateGoodsIds = new ArrayList<>(goodsMedicalExternalRequestItemBos.size());
+
+        for (GoodsMedicalExternalRequestItemBo bo : goodsMedicalExternalRequestItemBos) {
+            bo.setSource(MedicalGoodsConstant.SOURCE_FROM_HIS);
+            bo.setHisStatus(bo.getState() == null ? null : bo.getState().byteValue());
+
+            GoodsEntity goodsEntity = goodsAggregate.getByExternalInfo(bo.getGoodsKeyComposedByNameQualityEnterprise());
+            if (goodsEntity == null) {
+                // 对于数据库不存在，而数据自身状态是删除状态则不入库
+                if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
+                    continue;
+                }
+                boolean b = insertHisInfo(bo);
+                if (b) {
+                    esUpdateGoodsIds.add(bo.getGoodsId());
+                }
+            } else {
+                bo.setGoodsId(goodsEntity.getGoodsId());
+                updateHisInfo(bo);
+                esUpdateGoodsIds.add(goodsEntity.getGoodsId());
+            }
+        }
+    }
+
+    private boolean insertHisInfo(GoodsMedicalExternalRequestItemBo bo) {
+        boolean goodsSnExist = goodsAggregate.isGoodsSnExist(bo.getGoodsCode(), null);
+        if (goodsSnExist) {
+            return false;
+        }
+        goodsAggregate.insertExternalInfo(bo);
+        GoodsSpecProductEntity sku = new GoodsSpecProductEntity();
+        sku.setGoodsId(bo.getGoodsId());
+        sku.setPrdPrice(bo.getGoodsPrice());
+        sku.setPrdCostPrice(bo.getGoodsPrice());
+        sku.setPrdMarketPrice(bo.getGoodsPrice());
+        sku.setPrdNumber(bo.getGoodsNumber());
+        medicalGoodsSpecProductService.batchSkuInsert(Collections.singletonList(sku));
+        return true;
+    }
+
+    private void updateHisInfo(GoodsMedicalExternalRequestItemBo bo) {
+        goodsAggregate.updateExternalInfo(bo);
+
+        List<GoodsSpecProductEntity> goodsSpecProductEntities = medicalGoodsSpecProductService.listSkusByGoodsId(bo.getGoodsId());
+        for (GoodsSpecProductEntity goodsSpecProductEntity : goodsSpecProductEntities) {
+            goodsSpecProductEntity.setPrdPrice(bo.getGoodsPrice());
+            goodsSpecProductEntity.setPrdCostPrice(bo.getGoodsPrice());
+            goodsSpecProductEntity.setPrdMarketPrice(bo.getGoodsPrice());
+            goodsSpecProductEntity.setPrdNumber(bo.getGoodsNumber());
+            if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
+                goodsSpecProductEntity.setDelFlag(DelFlag.DISABLE_VALUE);
+            }
+        }
+        medicalGoodsSpecProductService.batchSkuUpdate(goodsSpecProductEntities);
+    }
+
+    /**
+     * 获取his信息不完整数据
+     * @param goodsMedicalExternalRequestItemBos
+     * @return
+     */
+    private List<GoodsMedicalExternalRequestItemBo> filterHisIllegalData(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
+        return goodsMedicalExternalRequestItemBos.stream().filter(x -> {
+            if (StringUtils.isBlank(x.getGoodsCode())) {
+                logger().info("同步药品信息错误：" + getShopId() + ":缺少药品编码-" + x.toString());
+                return false;
+            }
+            if (StringUtils.isBlank(x.getGoodsCommonName())) {
+                logger().info("同步药品信息错误：" + getShopId() + ":缺少药品名称-" + x.toString());
+                return false;
+            }
+            if (x.getGoodsPrice() == null || x.getGoodsPrice().equals(BigDecimal.ZERO)) {
+                logger().info("同步药品信息错误：" + getShopId() + ":缺少药品价格-" + x.getGoodsPrice());
+                return false;
+            }
+            if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(x.getIsMedical())) {
+                if (StringUtils.isBlank(x.getGoodsQualityRatio())) {
+                    logger().info("同步药品信息错误：" + getShopId() + ":缺少药品规格系数-" + x.toString());
+                    return false;
+                }
+                if (StringUtils.isBlank(x.getGoodsProductionEnterprise())) {
+                    logger().info("同步药品信息错误：" + getShopId() + ":缺少药品生产企业-" + x.toString());
+                    return false;
+                }
+            }
+
+            x.setGoodsCode(x.getGoodsCode().trim());
+            x.setGoodsCommonName(x.getGoodsCommonName().replaceAll("\\*", "").trim());
+
+            if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(x.getIsMedical())) {
+                x.setGoodsQualityRatio(x.getGoodsQualityRatio().trim().replaceAll("\\*", ""));
+                x.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise().trim().replaceAll("\\*", ""));
+                String goodsKey = x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise();
+                x.setGoodsKeyComposedByNameQualityEnterprise(goodsKey);
+            } else {
+                // 普通商品通过名称标识唯一
+                x.setGoodsKeyComposedByNameQualityEnterprise(x.getGoodsCommonName());
+            }
+            if (x.getGoodsApprovalNumber() != null) {
+                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字", ""));
+            }
+            return true;
+        }).collect(Collectors.toList());
+    }
+
 
     /**
      * 插入医院his药品信息
      * @param goodsMedicalExternalRequestItemBos
      */
+    @Deprecated
     private void batchSaveGoodsMedicalExternalInfo(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
         transaction(() -> {
             List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemReadyToStore = filterHisIllegalData(goodsMedicalExternalRequestItemBos);
@@ -480,54 +591,6 @@ public class MedicalGoodsService extends ShopBaseService {
         });
     }
 
-    /**
-     * 获取his信息不完整数据
-     * @param goodsMedicalExternalRequestItemBos
-     * @return
-     */
-    private List<GoodsMedicalExternalRequestItemBo> filterHisIllegalData(List<GoodsMedicalExternalRequestItemBo> goodsMedicalExternalRequestItemBos) {
-        return goodsMedicalExternalRequestItemBos.stream().filter(x -> {
-            if (StringUtils.isBlank(x.getGoodsCode())) {
-                logger().info("同步药品信息错误：" + getShopId() + ":缺少药品编码-" + x.toString());
-                return false;
-            }
-            if (StringUtils.isBlank(x.getGoodsCommonName())) {
-                logger().info("同步药品信息错误：" + getShopId() + ":缺少药品名称-" + x.toString());
-                return false;
-            }
-            if (x.getGoodsPrice() == null || x.getGoodsPrice().equals(BigDecimal.ZERO)) {
-                logger().info("同步药品信息错误：" + getShopId() + ":缺少药品价格-" + x.getGoodsPrice());
-                return false;
-            }
-            if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(x.getIsMedical())) {
-                if (StringUtils.isBlank(x.getGoodsQualityRatio())) {
-                    logger().info("同步药品信息错误：" + getShopId() + ":缺少药品规格系数-" + x.toString());
-                    return false;
-                }
-                if (StringUtils.isBlank(x.getGoodsProductionEnterprise())) {
-                    logger().info("同步药品信息错误：" + getShopId() + ":缺少药品生产企业-" + x.toString());
-                    return false;
-                }
-            }
-
-            x.setGoodsCode(x.getGoodsCode().trim());
-            x.setGoodsCommonName(x.getGoodsCommonName().replaceAll("\\*", "").trim());
-
-            if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(x.getIsMedical())) {
-                x.setGoodsQualityRatio(x.getGoodsQualityRatio().trim().replaceAll("\\*",""));
-                x.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise().trim().replaceAll("\\*",""));
-                String goodsKey = x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise();
-                x.setGoodsKeyComposedByNameQualityEnterprise(goodsKey);
-            }else {
-                // 普通商品通过名称标识唯一
-                x.setGoodsKeyComposedByNameQualityEnterprise(x.getGoodsCommonName());
-            }
-            if (x.getGoodsApprovalNumber() != null) {
-                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字",""));
-            }
-            return true;
-        }).collect(Collectors.toList());
-    }
 
     /**
      * 测试指定门店和分页信息使用
@@ -735,12 +798,12 @@ public class MedicalGoodsService extends ShopBaseService {
                 x.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise().trim());
                 String key = x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise();
                 x.setGoodsKeyComposedByNameQualityEnterprise(key);
-            }else {
+            } else {
                 x.setGoodsKeyComposedByNameQualityEnterprise(x.getGoodsCommonName());
             }
             if (x.getGoodsApprovalNumber() != null) {
                 // 完全是为了顾及医院数据存在质量问题
-                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字",""));
+                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字", ""));
             }
             x.setStoreCode(x.getGoodsCode());
             x.setGoodsCode(MedicalGoodsConstant.STORE_GOODS_CODE_PREFIX + x.getGoodsCode());

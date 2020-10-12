@@ -86,6 +86,7 @@ public class GoodsConverter {
     public static GoodsMedicalInfoDo convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(GoodsMedicalExternalRequestItemBo bo) {
         GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
         FieldsUtil.assign(bo, goodsMedicalInfoDo);
+        goodsMedicalInfoDo.setId(bo.getMedicalId());
         if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
             goodsMedicalInfoDo.setIsDelete(DelFlag.DISABLE_VALUE);
         }

@@ -29,6 +29,7 @@ public class GoodsMedicalBaseInfo {
     private String goodsMedicalInstruction;
 
     /**我方程序计算生产的字段*/
+    private Integer medicalId;
     /**名称+规格系数+药企组成的唯一值*/
     private String goodsKeyComposedByNameQualityEnterprise;
     /**药房商品唯一值*/

@@ -287,6 +287,8 @@ public class GoodsDao extends ShopBaseDao {
         return db().fetchCount(GOODS);
     }
 
+
+
     /**
      * 查询所有已有goodsSn
      * @param goodsSn
