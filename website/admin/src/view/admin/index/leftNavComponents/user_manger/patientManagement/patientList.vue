@@ -80,9 +80,9 @@
               <span
                 style="color: #5a8bff; cursor: pointer"
                 @click="hanldeToDetail(item.userIdNew)"
-                v-for="item in scope.row.userParamList"
+                v-for="(item,index) in scope.row.userParamList"
                 :key='item.userIdNew'
-              >{{ item.wxNickName }}</span>
+              >{{index == scope.row.userParamList.length-1 && item.wxNickName || (item.wxNickName + ',')}}</span>
             </template>
           </el-table-column>
           <el-table-column
