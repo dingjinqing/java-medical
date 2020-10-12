@@ -57,33 +57,51 @@
         <el-table-column
           align="center"
           label="医生人数"
-          prop="doctorNumber"
-        />
+        >
+          <template v-slot="scope">
+            <span>{{scope.row.doctorNumber  == null ? '0' :scope.row.doctorNumber }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="处方数"
-          prop="prescriptionNum"
-        />
+        >
+          <template v-slot="scope">
+            <span>{{scope.row.prescriptionNum  == null ? 0 :scope.row.prescriptionNum }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="处方金额"
-          prop="prescriptionMoney"
-        />
+        >
+          <template v-slot="scope">
+            <span>{{scope.row.prescriptionMoney  == null ? '0' :scope.row.prescriptionMoney }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="咨询单数"
-          prop="inquiryNumber"
-        />
+        >
+          <template v-slot="scope">
+            <span>{{scope.row.inquiryNumber == null ? '0' :scope.row.inquiryNumber }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="接诊人数"
-          prop="consultationNumber"
-        />
+        >
+          <template v-slot="scope">
+            <span>{{scope.row.consultationNumber == null ? '0' :scope.row.consultationNumber }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="咨询金额"
-          prop="inquiryMoney"
-        />
+        >
+          <template v-slot="scope">
+            <span>{{scope.row.inquiryMoney == null ? '0' :scope.row.inquiryMoney }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="操作"
