@@ -254,7 +254,6 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
         userPatientParam.setUserId(param.getWxUserInfo().getUserId());
         userPatientParam.setPatientId(param.getPatientId());
         Set<Integer> productIdSet=new HashSet<>();
-        LinkedHashMap<String, List<Integer>> productIdMap =new LinkedHashMap<>();
         LinkedHashMap<String, PrescriptionVo> prescriptionVoMap =new LinkedHashMap<>();
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GoodsRecord goodsInfo = goods.getGoodsInfo();

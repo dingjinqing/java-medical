@@ -236,7 +236,7 @@ public class OrderInfoDao extends ShopBaseDao {
      * @return
      */
     public Integer countNumByStoreIdOrderStatus(Integer storeId, List<Byte> orderStatusList){
-        SelectConditionStep<? extends Record> select = db().selectCount().from(ORDER_INFO).where(ORDER_INFO.STORE_ID.eq(storeId))
+        SelectConditionStep<? extends Record> select = db().select(DSL.isnull(DSL.countDistinct(ORDER_INFO.ORDER_ID),0)).from(ORDER_INFO).where(ORDER_INFO.STORE_ID.eq(storeId))
             .and(ORDER_INFO.ORDER_STATUS.in(orderStatusList))
             .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
         return select.fetchAnyInto(Integer.class);
@@ -248,7 +248,7 @@ public class OrderInfoDao extends ShopBaseDao {
      * @return
      */
     public Integer countNumByStoreIdOrderStatusAndTime(List<Integer> storeId, List<Byte> orderStatusList, Timestamp startTime, Timestamp endTime){
-        SelectConditionStep<? extends Record> select = db().selectCount().from(ORDER_INFO).where(ORDER_INFO.STORE_ID.in(storeId))
+        SelectConditionStep<? extends Record> select = db().select(DSL.isnull(DSL.countDistinct(ORDER_INFO.ORDER_ID),0)).from(ORDER_INFO).where(ORDER_INFO.STORE_ID.in(storeId))
             .and(ORDER_INFO.ORDER_STATUS.in(orderStatusList))
             .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
         if(startTime!=null){
