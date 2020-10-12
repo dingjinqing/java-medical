@@ -180,11 +180,26 @@ public class MpOrderInfoService extends OrderInfoService{
                 select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED));
                 break;
             case OrderConstant.STORE_ACCOUNT_WAIT_DELIVERY:
+                //店员-待接单(代发货,已发货)
                 select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED)));
+                // 退款状态(默认,审核未通过,退货完成,拒绝退款,撤销)
+                select.where(TABLE.REFUND_STATUS.notIn(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
+                        OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE,OrderConstant.REFUND_STATUS_CLOSE));
                 break;
             case OrderConstant.STORE_ACCOUNT_FINISHED:
+                //已完成订单
+                //配送人不为空
                 select.where(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).isNotNull());
-                select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
+                //订单状态  (已收货 已完成)
+                select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED));
+                //退款状态 (默认,撤销,未通过,已完成,拒绝)
+                select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_CLOSE,
+                                OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE));
+                break;
+            case OrderConstant.STORE_WAIT_REFUND:
+                //订单待处理(审核中,审核通过,买家提交物流)
+                select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING,OrderConstant.REFUND_STATUS_AUDIT_PASS,
+                        OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING));
                 break;
             default:
                 break;
