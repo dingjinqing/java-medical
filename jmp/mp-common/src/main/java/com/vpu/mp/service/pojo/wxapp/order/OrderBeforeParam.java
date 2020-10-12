@@ -232,9 +232,13 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
          */
         private String prescriptionOldCode;
         /**
-         * 处方明细号
+         * 老处方明细号
          */
         private String prescriptionDetailOldCode;
+        /**
+         *处方明细号
+         */
+        private String prescriptionDetailCode;
         /**
          * 处方号
          */

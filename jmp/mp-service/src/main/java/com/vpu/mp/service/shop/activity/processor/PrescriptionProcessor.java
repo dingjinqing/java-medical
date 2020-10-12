@@ -144,7 +144,7 @@ public class PrescriptionProcessor implements Processor, CreateOrderProcessor {
                 PrescriptionItemVo item= prescriptionItemDao.getByPrescriptionCodeGoodsIdPrdId(prescriptionVo.getPrescriptionCode(),goods.getGoodsId(),goods.getProductId());
                 goods.setPrescriptionCode(prescriptionVo.getPrescriptionCode());
                 goods.setPrescriptionInfo(prescriptionVo);
-                goods.setPrescriptionDetailOldCode(item.getPrescriptionDetailCode());
+                goods.setPrescriptionDetailCode(item.getPrescriptionDetailCode());
             }
             //处方下单默认处方药
             param.setCheckPrescriptionStatus(OrderConstant.CHECK_ORDER_PRESCRIPTION_PASS);
