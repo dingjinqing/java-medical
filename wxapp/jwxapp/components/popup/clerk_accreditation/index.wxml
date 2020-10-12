@@ -7,20 +7,20 @@
     <view class="default-width">
       <view class="form-item">
         <view class="form-title">门店账户<text class="required">*</text></view>
-        <input placeholder="请输入门店账户" bindinput="changeAccountName" value="{{accountName}}"></input>
+        <input placeholder="请输入门店账户" bindinput="changeAccountName" bindblur="changeAccountName" bindconfirm="changeAccountName" value="{{accountName}}"></input>
       </view>
       <view class="form-item">
         <view class="form-title">账户密码<text class="required">*</text></view>
-        <input placeholder="请输入账户密码" bindinput="changePassword" value="{{password}}"></input>
+        <input placeholder="请输入账户密码" bindinput="changePassword" bindblur="changePassword" bindconfirm="changePassword" value="{{password}}"></input>
       </view>
       <view class="form-item">
         <view class="form-title">手机号码</view>
-        <input placeholder="请输入手机号" bindinput="changeMobile" value="{{mobile}}"></input>
+        <input placeholder="请输入手机号" bindinput="changeMobile" bindblur="changeMobile" bindconfirm="changeMobile" value="{{mobile}}"></input>
         <view class="mobile {{countDown ? 'gray' : ''}}" bindtap="getVerificationCode">{{!countDown ? '获取验证码' : countDown+'秒后再次获取'}}</view>
       </view>
       <view class="form-item">
         <view class="form-title">验证码</view>
-        <input placeholder="请输入验证码" bindinput="changeMobileCheckCode" value="{{mobileCheckCode}}"></input>
+        <input placeholder="请输入验证码" bindinput="changeMobileCheckCode" bindblur="changeMobileCheckCode" bindconfirm="changeMobileCheckCode" value="{{mobileCheckCode}}"></input>
       </view>
       <view class="form-item">
         <view class="form-title">是否药师</view>

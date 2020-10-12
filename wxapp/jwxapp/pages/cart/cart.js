@@ -862,5 +862,8 @@ global.wxPage({
     this.setData({
       showCouponPackageDialog:true
     })
+  },
+  onShow: function () {
+    this.requestCartList()
   }
 })

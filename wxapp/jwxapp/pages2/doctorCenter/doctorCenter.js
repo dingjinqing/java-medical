@@ -41,7 +41,13 @@ global.wxPage({
   },
   setDoctorInfo(){
     util.api('/api/wxapp/doctor/update/Information',res=>{
-      console.log(res)
+      if(res.error === 0){
+        util.showModal('提示','保存成功',()=>{
+          wx.navigateBack()
+        },false,'','返回')
+      } else {
+        util.showModal('提示',res.message)
+      }
     },{
       ...this.data.doctorInfo
     })
