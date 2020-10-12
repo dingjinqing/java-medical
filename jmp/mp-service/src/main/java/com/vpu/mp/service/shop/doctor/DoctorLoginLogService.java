@@ -7,6 +7,7 @@ import com.vpu.mp.dao.shop.doctor.DoctorLoginLogDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceDivideVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListParam;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceOneParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,7 @@ public class DoctorLoginLogService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(DoctorAttendanceListParam param) {
+    public DoctorAttendanceListVo getDoctorAttendancePage(DoctorAttendanceListParam param) {
         Integer dayOfMonth = THIS_MONTH.equals(param.getType()) ? DateUtils.getLocalDate().getDayOfMonth():30;
         PageResult<DoctorAttendanceOneParam> dataList = doctorLoginLogDao.getDoctorAttendancePage(param);
         BigDecimal loginRate = new BigDecimal(1);
@@ -78,7 +79,11 @@ public class DoctorLoginLogService extends ShopBaseService {
             data.setLoginRank(lastRank);
             lastRate = loginRate;
         }
-        return dataList;
+        DoctorAttendanceListVo doctorList = new DoctorAttendanceListVo();
+        doctorList.setDoctorList(dataList);
+        doctorList.setLastRank(lastRank);
+        doctorList.setLastRate(lastRate);
+        return doctorList;
     }
 
 }
