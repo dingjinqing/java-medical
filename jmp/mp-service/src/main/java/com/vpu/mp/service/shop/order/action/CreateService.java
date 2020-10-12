@@ -6,15 +6,22 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
-import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.common.pojo.shop.table.*;
+import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.OrderGoodsPlatformRebateDo;
+import com.vpu.mp.common.pojo.shop.table.OrderInfoDo;
+import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.dao.shop.goods.GoodsMedicalInfoDao;
 import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.rebate.OrderGoodsPlatformRebateDao;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.address.UserAddressService;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -837,7 +844,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         List<OrderGoodsBo> boList = new ArrayList<>(param.getGoods().size());
         for (Goods temp : param.getGoods()) {
             //非加价购改价(加价购唯一入口在购物车)
-            if(!BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(temp.getCartType())) {
+            if(!BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(temp.getCartType())&&param.getOrderCartProductBo()!=null) {
                 OrderCartProductBo.OrderCartProduct orderCartProduct = param.getOrderCartProductBo().get(temp.getProductId());
                 if (orderCartProduct!=null){
                     UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, param.getOrderCartProductBo().get(temp.getProductId()),param.getWxUserInfo().getUserId());

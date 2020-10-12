@@ -26,7 +26,7 @@ public class AdminAnchorPointsController  extends AdminBaseController {
      */
     @PostMapping("/api/admin/anchor/points")
     public JsonResult anchorPoints(@RequestBody @Validated AnchorPointsParam param){
-        anchorPointsService.add(param);
+        saas.getShopApp(param.getShopId()).anchorPointsService.add(param);
         return success();
     }
 
