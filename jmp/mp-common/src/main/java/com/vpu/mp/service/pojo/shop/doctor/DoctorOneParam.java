@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.doctor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorDo;
 import com.vpu.mp.service.pojo.shop.department.DepartmentOneParam;
@@ -17,6 +18,7 @@ public class DoctorOneParam extends DoctorDo {
     /**
      * 科室
      */
+    @JsonIgnore
     private List<DepartmentOneParam> departmentList;
     /**
      * 职称
@@ -34,6 +36,7 @@ public class DoctorOneParam extends DoctorDo {
     /**
      * 医师评价
      */
+    @JsonIgnore
     private PageResult<DoctorCommentListVo> commentList;
     private String hospitalName;
     private String departmentName;
