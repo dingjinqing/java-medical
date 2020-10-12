@@ -214,15 +214,15 @@ export default {
         console.log(error)
       })
     },
-    // handleSeeMessage (code) {
-    //   console.log(this.$router)
-    //   let newpage = this.$router.resolve({
-    //     name: 'prescription_message'
-    //   })
-    //   newpage.href = newpage.href + '?prescriptionCode=' + code
-    //   console.log(newpage.href)
-    //   window.open(newpage.href, '_blank')
-    // },
+    handleSeeMessage (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'prescription_message'
+      })
+      newpage.href = newpage.href + '?prescriptionCode=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
     handleData (data) {
       this.tableData = data
       this.langDefaultFlag = true
