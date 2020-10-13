@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.maptemplate;
 
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.Builder;
 import lombok.Data;
 

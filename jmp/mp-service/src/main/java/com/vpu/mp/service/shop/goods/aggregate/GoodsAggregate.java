@@ -77,6 +77,30 @@ public class GoodsAggregate {
         }
     }
 
+    public void insertExternalInfo(GoodsMedicalExternalRequestItemBo bo){
+        GoodsDo goodsDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsDo(bo);
+        goodsDao.insert(goodsDo);
+        if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(bo.getIsMedical())) {
+            GoodsMedicalInfoDo goodsMedicalInfoDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(bo);
+            goodsMedicalInfoDao.insert(goodsMedicalInfoDo);
+        }
+        bo.setGoodsId(goodsDo.getGoodsId());
+    }
+
+    public void updateExternalInfo(GoodsMedicalExternalRequestItemBo bo){
+        GoodsDo goodsDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsDo(bo);
+        if (DelFlag.DISABLE_VALUE.equals(goodsDo.getDelFlag())){
+            goodsDo.setGoodsSn(DelFlag.DEL_ITEM_PREFIX+goodsDo.getGoodsId()+DelFlag.DEL_ITEM_SPLITER+goodsDo.getGoodsSn());
+        }
+        goodsDao.update(goodsDo);
+
+        if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(bo.getIsMedical())){
+            GoodsMedicalInfoDo goodsMedicalInfoDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(bo);
+            goodsMedicalInfoDo.setIsDelete(DelFlag.DISABLE_VALUE);
+            goodsMedicalInfoDao.update(goodsMedicalInfoDo);
+        }
+    }
+
     /**
      * 新增外部药品信息
      * @param goodsMedicalExternalRequestItemBos
@@ -185,6 +209,30 @@ public class GoodsAggregate {
     public Map<String, Integer> mapMedicalKeyToGoodsId(List<String> goodsKeys) {
         return goodsMedicalInfoDao.mapGoodsHisKeyToGoodsId(goodsKeys);
     }
+
+    /**
+     * 抓取药品时判断是更新还是新增
+     * @param medicalKey 名称+规格系数+药企
+     * @return
+     */
+    public GoodsEntity getByExternalInfo(String medicalKey){
+        GoodsMedicalInfoDo byHisInfo = goodsMedicalInfoDao.getByHisInfo(medicalKey);
+        if (byHisInfo==null){
+            return null;
+        }
+
+        GoodsEntity goodsEntity =new GoodsEntity();
+        goodsEntity.setGoodsId(byHisInfo.getGoodsId());
+        GoodsMedicalInfoEntity goodsMedicalInfoEntity =new GoodsMedicalInfoEntity();
+        goodsMedicalInfoEntity.setId(byHisInfo.getId());
+        goodsMedicalInfoEntity.setGoodsId(byHisInfo.getGoodsId());
+        goodsMedicalInfoEntity.setGoodsCommonName(byHisInfo.getGoodsCommonName());
+        goodsMedicalInfoEntity.setGoodsQualityRatio(byHisInfo.getGoodsQualityRatio());
+        goodsMedicalInfoEntity.setGoodsProductionEnterprise(byHisInfo.getGoodsProductionEnterprise());
+        goodsEntity.setGoodsMedicalInfo(goodsMedicalInfoEntity);
+        return goodsEntity;
+    }
+
     /**
      * 根据商品id查询
      * @param goodsId

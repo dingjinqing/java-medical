@@ -3,6 +3,7 @@ package com.vpu.mp.dao.shop.goods;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsMedicalInfoRecord;
 import org.jooq.Condition;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_MEDICAL_INFO;
 
 /**
@@ -99,19 +101,39 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
             .fetchInto(GoodsMedicalInfoDo.class);
     }
 
+    public GoodsMedicalInfoDo getByHisInfo(String medicalKey){
+        Condition baseCondition = GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
+        Condition condition = GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.concat(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.concat(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)).eq(medicalKey);
+        baseCondition =baseCondition.and(condition);
+
+        GoodsMedicalInfoDo goodsMedicalInfoDo = db().select(GOODS_MEDICAL_INFO.ID,GOODS_MEDICAL_INFO.GOODS_ID, GOODS_MEDICAL_INFO.GOODS_APPROVAL_NUMBER, GOODS_MEDICAL_INFO.GOODS_COMMON_NAME, GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO, GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)
+            .from(GOODS_MEDICAL_INFO).where(baseCondition).fetchAnyInto(GoodsMedicalInfoDo.class);
+
+        return goodsMedicalInfoDo;
+    }
+
     /**
      * 根据药品通用名称，规格系数，生产企业,查询his中的药品id对应关系
      * @param goodsKeys
      * @return
      */
     public Map<String, Integer> mapGoodsHisKeyToGoodsId(List<String> goodsKeys) {
-        Condition condition = GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
-        condition = condition.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.concat(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.concat(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)).in(goodsKeys));
+        Condition medicalCondition = GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
+        medicalCondition = medicalCondition.and(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.concat(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.concat(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)).in(goodsKeys));
 
         List<GoodsMedicalInfoDo> goodsMedicalInfoDos = db().select(GOODS_MEDICAL_INFO.GOODS_ID, GOODS_MEDICAL_INFO.GOODS_COMMON_NAME, GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO, GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)
-            .from(GOODS_MEDICAL_INFO).where(condition).fetchInto(GoodsMedicalInfoDo.class);
+            .from(GOODS_MEDICAL_INFO).where(medicalCondition).fetchInto(GoodsMedicalInfoDo.class);
 
-        return goodsMedicalInfoDos.stream().collect(Collectors.toMap(x -> x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise(), GoodsMedicalInfoDo::getGoodsId, (x1, x2) -> x1));
+        Map<String, Integer> medicalInfos = goodsMedicalInfoDos.stream().collect(Collectors.toMap(x -> x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise(), GoodsMedicalInfoDo::getGoodsId, (x1, x2) -> x1));
+
+        Condition normalGoodsCondition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE);
+        normalGoodsCondition=normalGoodsCondition.and(GOODS.GOODS_NAME.in(goodsKeys));
+        List<GoodsDo> goodsDos = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME).from(GOODS).where(normalGoodsCondition).fetchInto(GoodsDo.class);
+        Map<String, Integer> normalGoodsInfos = goodsDos.stream().collect(Collectors.toMap(GoodsDo::getGoodsName, GoodsDo::getGoodsId, (x1, x2) -> x1));
+
+        medicalInfos.putAll(normalGoodsInfos);
+
+        return medicalInfos;
     }
 
     public void deleteByGoodsId(Integer goodsId) {

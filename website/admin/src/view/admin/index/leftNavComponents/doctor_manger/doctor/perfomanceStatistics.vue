@@ -158,8 +158,7 @@ export default {
           return
         }
         console.log(res)
-        this.originalData = res.content.dataList
-        // this.pageParams = res.content.page
+        this.originalData = res.content
         let originalData = JSON.parse(JSON.stringify(this.originalData))
         this.handleData(originalData)
         // this.loading = false
@@ -168,7 +167,8 @@ export default {
       })
     },
     handleData (data) {
-      this.tableData = data
+      this.tableData = [data]
+      console.log(this.tableData)
       this.langDefaultFlag = true
     },
     getNowTime () {
