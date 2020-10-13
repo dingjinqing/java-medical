@@ -7,6 +7,7 @@
           @click="tabItemClicked('goodsForSale')"
         >{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>
         <div class="tabItem tabItemActive">{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
+        <div class="tabItem" @click="tabItemClicked('goodsForAudit')">商品审核</div>
       </div>
       <allGoodsHeader
         ref="allGoodsHeaderCmp"

@@ -574,6 +574,20 @@ const routes = [
                   import(
                     '@/view/admin/index/leftNavComponents/goods_manage/allGoods/inStock/allGoodsInStock'
                   )
+              },
+              // 商品管理/审核
+              {
+                path: '/admin/home/main/goodsManage/goodsForAudit',
+                name: 'goodsForAudit',
+                meta: {
+                  crumbTitle: 'router.goodsForAudit',
+                  meta: 'goods_manage',
+                  category: 'sale_on'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/audit/goodsForAudit'
+                  )
               }
             ]
           },

@@ -54,6 +54,8 @@ export const cn = {
   goodsForSaleOut: ['商品管理', '已售罄商品'],
   // 商品管理 仓库中商品
   goodsForInStock: ['商品管理', '仓库中商品'],
+  // 商品管理 商品审核
+  goodsForAudit: ['商品管理', '商品审核'],
   // 商品管理 添加商品
   addGoods: ['商品管理', '添加商品'],
   // 商品管理 修改商品

@@ -31,10 +31,7 @@ import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequest
 import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalStoreRequestBo;
 import com.vpu.mp.service.pojo.shop.medical.goods.convertor.GoodsConverter;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalRequestParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalStoreRequestParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.*;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPrdVo;
@@ -671,7 +668,14 @@ public class MedicalGoodsService extends ShopBaseService {
         }).collect(Collectors.toList());
     }
 
-
+    /**
+     * 获取his或药店中间表分页信息
+     * @param param
+     * @return
+     */
+    public PageResult<GoodsExternalDo> getExternalPageList(GoodsExternalPageParam param){
+        return goodsExternalDao.getExternalPageList(param);
+    }
 
 
     /**
