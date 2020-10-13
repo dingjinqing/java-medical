@@ -216,7 +216,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaService getMaServiceByShopId(Integer shopId) {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
-		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!"); 
+		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!");
 		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
 	}
 
@@ -228,7 +228,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaService getMaServiceByAppId(String appId) {
 		MpAuthShopRecord mp = getAuthShopByAppId(appId);
-		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!"); 
+		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!");
 		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
 	}
 
@@ -850,7 +850,7 @@ public class MpAuthShopService extends MainBaseService {
 				//状态成功没有返回reason
 				operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESSON2.code, new String[] {String.valueOf(result.getStatus())});
 			}else {
-				operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESS.code, new String[] {String.valueOf(result.getStatus()),result.getReason()});				
+				operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESS.code, new String[] {String.valueOf(result.getStatus()),result.getReason()});
 			}
 			return result;
 		}
@@ -914,7 +914,7 @@ public class MpAuthShopService extends MainBaseService {
 			}
 		}
 	}
-	
+
 	public int updateBindOpenAppId(String appId, String bindAppId) {
 		return db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.BIND_OPEN_APP_ID, bindAppId)
 				.where(MP_AUTH_SHOP.APP_ID.eq(appId)).execute();
@@ -972,7 +972,7 @@ public class MpAuthShopService extends MainBaseService {
 		return db().fetch(MP_AUTH_SHOP,
 				MP_AUTH_SHOP.PRINCIPAL_NAME.eq(principalName).and(MP_AUTH_SHOP.IS_AUTH_OK.eq((byte) 1)));
 	}
-	
+
 	/**
 	 * 小程序
 	 * @param principalName
@@ -1037,9 +1037,9 @@ public class MpAuthShopService extends MainBaseService {
      * @return
      */
 	public Byte getMpPackageVersion(String appId) {
-		Byte plugin = getPlugin(appId);
-		logger().info("小程序：{}的版本为：{}", appId, plugin);
-		return plugin;
+//		Byte plugin = getPlugin(appId);
+		logger().info("小程序：{}的版本为：{}", appId, "默认正常版本");
+		return 1;
 	}
 
 	/**
@@ -1079,7 +1079,7 @@ public class MpAuthShopService extends MainBaseService {
 					boolean checkHasLive = checkHasLive(getAuthShopByAppId(appId));
 					if(checkHasLive) {
 						logger().info("小程序：{}，有直播权限",appId);
-						hasLive=true;						
+						hasLive=true;
 					}
     			}
     		}
@@ -1647,11 +1647,11 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return false;
 	}
-	
+
 	/**店铺发布列表
-	 * 
+	 *
 	 * @param param
-	 * @return 
+	 * @return
 	 * @return
 	 */
 	public PageResult<ShopMpListVo> getShopMpList(ShopMpListParam param) {
@@ -1697,7 +1697,7 @@ public class MpAuthShopService extends MainBaseService {
 		return pageResult;
 	}
 
-	
+
 	private void buildOptionsMp(ShopMpListParam param,SelectJoinStep<?> selectFrom) {
 		if(StringUtils.isNotEmpty(param.getKeywords())) {
 			selectFrom.where(MP_AUTH_SHOP.SHOP_ID.like(likeValue(param.getKeywords())).or(MP_AUTH_SHOP.NICK_NAME.like(likeValue(param.getKeywords())).or(SHOP.SHOP_NAME.like(likeValue(param.getKeywords())))));
@@ -1712,8 +1712,8 @@ public class MpAuthShopService extends MainBaseService {
 			selectFrom.where(SHOP.IS_ENABLED.eq(param.getIsEnabled()));
 		}
 	}
-	
-	
+
+
 	/**
 	 * 根据shopId获取小程序对应的公众号
 	 * @param shopId
@@ -1730,8 +1730,8 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return into;
 	}
-	
-	
+
+
 	/**
 	 * 获取小程序AppId
 	 *
@@ -1743,7 +1743,7 @@ public class MpAuthShopService extends MainBaseService {
 		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK),"mp is null ");
 		return mp.getAppId();
 	}
-	
+
 	public List<String> getAllTester(String appId) throws WxErrorException{
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaTesterListResult testerList = maService.getTesterList();
@@ -1757,7 +1757,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return list;
 	}
-	
+
 	private void setTestRecord(MpAuthShopRecord record,String appId) {
 		logger().info("appid：{}更新体验者",appId);
 		List<String> allTester=null;
@@ -1770,7 +1770,7 @@ public class MpAuthShopService extends MainBaseService {
 			record.setTester(Util.toJson(allTester));
 		}
 	}
-	
+
 	/**
 	 * 检查是否有直播权限集
 	 * @param record
@@ -1790,7 +1790,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 直播的校验
 	 * @param shopId
