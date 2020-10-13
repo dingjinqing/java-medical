@@ -402,6 +402,10 @@ public class PatientDao extends ShopBaseDao{
             .leftJoin(USER)
             .on(USER_PATIENT_COUPLE.USER_ID.eq(USER.USER_ID))
             .where(PRESCRIPTION.DOCTOR_CODE.eq(doctorQueryPatientParam.getDoctorCode()));
+        if (doctorQueryPatientParam.getStartTime() != null || doctorQueryPatientParam.getEndTime() != null) {
+            where.and(PRESCRIPTION.CREATE_TIME.ge(doctorQueryPatientParam.getStartTime()))
+                .and(PRESCRIPTION.CREATE_TIME.le(doctorQueryPatientParam.getEndTime()));
+        }
         if (doctorQueryPatientParam.getPatientName() != null && doctorQueryPatientParam.getPatientName().trim().length() > 0) {
             where.and(PRESCRIPTION.PATIENT_NAME.like(likeValue(doctorQueryPatientParam.getPatientName())));
         }
@@ -427,6 +431,10 @@ public class PatientDao extends ShopBaseDao{
             .leftJoin(USER)
             .on(USER_PATIENT_COUPLE.USER_ID.eq(USER.USER_ID))
             .where(INQUIRY_ORDER.DOCTOR_ID.eq(doctorQueryPatientParam.getDoctorId()));
+        if (doctorQueryPatientParam.getStartTime() != null || doctorQueryPatientParam.getEndTime() != null) {
+            where.and(INQUIRY_ORDER.CREATE_TIME.ge(doctorQueryPatientParam.getStartTime()))
+                .and(INQUIRY_ORDER.CREATE_TIME.le(doctorQueryPatientParam.getEndTime()));
+        }
         if (doctorQueryPatientParam.getPatientName() != null && doctorQueryPatientParam.getPatientName().trim().length() > 0) {
             where.and(INQUIRY_ORDER.PATIENT_NAME.like(likeValue(doctorQueryPatientParam.getPatientName())));
         }
