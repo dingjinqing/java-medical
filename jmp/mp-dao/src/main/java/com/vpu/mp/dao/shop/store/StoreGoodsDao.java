@@ -1,6 +1,7 @@
 package com.vpu.mp.dao.shop.store;
 
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
@@ -73,21 +74,18 @@ public class StoreGoodsDao extends ShopBaseDao {
         db().batchInsert(records).execute();
     }
 
+    public StoreGoods getStoreGoodsByMedicalKey(String medicalKey,Integer storeId){
+        StoreGoods storeGoods = db().select(STORE_GOODS.ID).from(STORE_GOODS)
+            .where(STORE_GOODS.GOODS_COMMON_NAME.concat(STORE_GOODS.GOODS_QUALITY_RATIO.concat(STORE_GOODS.GOODS_APPROVAL_NUMBER)).eq(medicalKey).and(STORE_GOODS.STORE_ID.eq(storeId)))
+            .fetchAnyInto(StoreGoods.class);
+
+        return storeGoods;
+    }
+
     private List<StoreGoodsRecord> convertStoreGoodsToRecord(List<StoreGoods> storeGoodsList){
         return storeGoodsList.stream().map(x -> {
             StoreGoodsRecord storeGoodsRecord = new StoreGoodsRecord();
-            storeGoodsRecord.setStoreId(x.getStoreId());
-            storeGoodsRecord.setGoodsId(x.getGoodsId());
-            storeGoodsRecord.setGoodsStoreSn(x.getGoodsStoreSn());
-            storeGoodsRecord.setGoodsCommonName(x.getGoodsCommonName());
-            storeGoodsRecord.setGoodsQualityRatio(x.getGoodsQualityRatio());
-            storeGoodsRecord.setGoodsApprovalNumber(x.getGoodsApprovalNumber());
-            storeGoodsRecord.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise());
-            storeGoodsRecord.setPrdSn(x.getPrdSn());
-            storeGoodsRecord.setPrdId(x.getPrdId());
-            storeGoodsRecord.setIsOnSale(x.getIsOnSale());
-            storeGoodsRecord.setProductPrice(x.getProductPrice());
-            storeGoodsRecord.setProductNumber(x.getProductNumber());
+            FieldsUtil.assign(x,storeGoodsRecord);
             return storeGoodsRecord;
         }).collect(Collectors.toList());
     }

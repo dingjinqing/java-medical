@@ -77,4 +77,7 @@ public class MedicalGoodsConstant {
     public static final Byte ONLY_IN_STORE=2;
     /**双方都有药品*/
     public static final Byte IN_BOTH=3;
+
+    /**从external_form_his 获取分页信息*/
+    public static final Byte PAGE_LIST_FROM_HIS = 1;
 }

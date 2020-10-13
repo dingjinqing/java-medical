@@ -5,15 +5,17 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.StoreGoods;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record18;
 import org.jooq.Row18;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import javax.annotation.Generated;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 
 /**
