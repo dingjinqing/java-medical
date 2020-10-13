@@ -81,5 +81,9 @@ public class PrescriptionInfoVo {
      * 医院公章
      */
     private String cachet;
+    /**
+     * 医嘱
+     */
+    private String doctorAdvice;
 
 }
