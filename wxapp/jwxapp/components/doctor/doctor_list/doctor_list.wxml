@@ -20,7 +20,8 @@
 						<view>擅长：{{item.treatDisease}}</view>
 					</view>
 					<view class="d_r_bot">
-						<view>￥{{item.consultationPrice}}<text>/次</text></view>
+						<view wx:if='{{item.consultationPrice > 0}}'>￥{{item.consultationPrice}}<text>/次</text></view>
+					  <view wx:else>免费</view>
 					</view>
 				</view>
 				<view class="consule {{item.isOnDuty == 0 ? 'no_consule' : ''}}">
