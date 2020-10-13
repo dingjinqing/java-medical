@@ -78,6 +78,7 @@ import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.*;
+import static com.vpu.mp.service.shop.store.store.StoreService.formatDouble;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -318,11 +319,11 @@ public class StoreWxService extends ShopBaseService {
                 log.debug("用户已开启授权地理位置信息");
                 if (Objects.isNull(location)) {
                     log.error("入参用户地理位置信息缺失！");
-                    s.setDistance(DOUBLE_ZERO);
+                    s.setDistance("0.00");
                 } else {
                     double distance = Util.getDistance(location.getLatitude(), location.getLongitude(), Double.parseDouble(s.getLatitude()), Double.parseDouble(s.getLongitude()));
                     log.debug("门店 {} 距离用户位置 {} km", s.getStoreName(), distance);
-                    s.setDistance(distance);
+                    s.setDistance(formatDouble(distance));
                 }
             } else {
                 // 未开启地理位置授权，门店距离为null
@@ -460,7 +461,7 @@ public class StoreWxService extends ShopBaseService {
                     location.getLongitude(),
                     Double.parseDouble(storeInfoVo.getLatitude()),
                     Double.parseDouble(storeInfoVo.getLongitude()));
-                storeInfoVo.setDistance(distance);
+                storeInfoVo.setDistance(formatDouble(distance));
             }
         } else {
             storeInfoVo.setDistance(null);

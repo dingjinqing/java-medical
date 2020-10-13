@@ -44,7 +44,7 @@ public class StoreInfoVo {
     /**
      * The Distance.门店距离 单位KM
      */
-    public Double distance;
+    public String distance;
 
     /**
      * The Store buy.门店买单开关配置

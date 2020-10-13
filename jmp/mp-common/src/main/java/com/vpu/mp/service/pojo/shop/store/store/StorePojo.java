@@ -69,7 +69,7 @@ public class StorePojo implements Comparable<StorePojo> {
     /**
      * The Distance.门店距离 单位KM
      */
-    public Double distance;
+    public String distance;
     /** 自提取货时间类型 1门店营业时间 2自定义时间 */
     private Byte pickTimeAction;
     /**
@@ -82,7 +82,7 @@ public class StorePojo implements Comparable<StorePojo> {
     private StorePickDetailPojo pickDetail;
     @Override
     public int compareTo(StorePojo storePojo) {
-        if (this.distance >= storePojo.distance) {
+        if (Double.parseDouble(this.distance) >= Double.parseDouble(storePojo.distance)) {
             return 1;
         } else {
             return -1;
