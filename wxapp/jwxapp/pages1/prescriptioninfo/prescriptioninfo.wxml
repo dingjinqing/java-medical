@@ -54,9 +54,9 @@
       </view>
       <view class="doctor-info">
         <view class="doctor-name">
-          <view>处方医师： {{prescriptionInfo.doctorName}}</view>
-          <!-- <view>审核医师： {{prescriptionInfo.pharmacistName}}</view>
-          <view>发药医师： {{prescriptionInfo.pharmacistName}}</view> -->
+          <view>处方医师：<image src="{{imageUrl}}/{{prescriptionInfo.doctorSignature}}"></image></view>
+          <!-- <view>审核医师： {{prescriptionInfo.pharmacistName}}</view> -->
+          <view>发药医师： <image src="{{imageUrl}}/{{prescriptionInfo.pharmacistSignature}}"></image></view>
         </view>
         <text class="item-date">日期：{{prescriptionInfo.prescriptionCreateTime}}</text>
       </view>

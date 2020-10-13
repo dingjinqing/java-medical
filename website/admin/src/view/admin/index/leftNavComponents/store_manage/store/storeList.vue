@@ -140,9 +140,9 @@
             </p>
           </el-popover>
           <div>
-            <el-button type="primary" size="small" @click="addStoreHandle">{{
-              $t('storeList.addStore')
-            }}</el-button>
+            <el-button type="primary" size="small" @click="addStoreHandle"
+              >新增门店</el-button
+            >
           </div>
         </div>
       </div>
@@ -453,7 +453,8 @@ export default {
         return area.districtId === parseInt(item.districtCode)
       })
       areaDistrict = areaDistrict[0]
-      address += ' ' + areaDistrict.districtName + ' ' + item.address
+      console.log(areaDistrict)
+      address += ' ' + (areaDistrict ? areaDistrict.districtName : '') + ' ' + item.address
 
       return address
     },

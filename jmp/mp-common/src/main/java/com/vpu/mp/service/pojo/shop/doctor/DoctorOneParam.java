@@ -49,4 +49,9 @@ public class DoctorOneParam extends DoctorDo {
     private Byte answerType;
     private Integer answerMunite;
     private Integer answerHourInt;
+
+    /**
+     * 字符串显示响应时间
+     */
+    private String avgAnswerTimeNotSecond;
 }

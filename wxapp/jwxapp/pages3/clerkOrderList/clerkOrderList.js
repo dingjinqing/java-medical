@@ -59,18 +59,18 @@ global.wxPage({
     })
     this.requestOrderList()
   },
-  viewMap({currentTarget:{dataset:{lat,lng,completeAddress}}}){
-    let key = 'C3JBZ-4UXEJ-PCLFP-KNWNV-UDVUT-IJFES';  //使用在腾讯位置服务申请的key
-    let referer = '旺店精选';   //调用插件的app的名称
-    let endPoint = JSON.stringify({  //终点
-        'name': completeAddress,
-        'latitude': lat,
-        'longitude': lng
-    });
-    wx.navigateTo({
-        url: 'plugin://routePlan/index?key=' + key + '&referer=' + referer + '&endPoint=' + endPoint
-    });
-  },
+  // viewMap({currentTarget:{dataset:{lat,lng,completeAddress}}}){
+  //   let key = 'C3JBZ-4UXEJ-PCLFP-KNWNV-UDVUT-IJFES';  //使用在腾讯位置服务申请的key
+  //   let referer = '旺店精选';   //调用插件的app的名称
+  //   let endPoint = JSON.stringify({  //终点
+  //       'name': completeAddress,
+  //       'latitude': lat,
+  //       'longitude': lng
+  //   });
+  //   wx.navigateTo({
+  //       url: 'plugin://routePlan/index?key=' + key + '&referer=' + referer + '&endPoint=' + endPoint
+  //   });
+  // },
   deliver({currentTarget:{dataset:{orderId,orderSn,parentIndex}}}){
     let orderList = this.data.dataList[parentIndex]
     let target = orderList.findIndex(item=>item.orderId === orderId)
@@ -135,6 +135,19 @@ global.wxPage({
         orderId
       })
     },true,'取消','确认退款')
+  },
+  call({currentTarget:{dataset:{phone:phoneNumber}}}){
+    wx.makePhoneCall({
+      phoneNumber
+    })
+  },
+  viewMap ({currentTarget:{dataset:{lat,lng,completeAddress}}}) {
+    wx.openLocation({
+      latitude: Number(lat),
+      longitude: Number(lng),
+      scale: 28,
+      name: completeAddress
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

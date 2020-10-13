@@ -97,8 +97,6 @@
   margin-top: 30rpx;
 }
 .doctor-name > view image{
-  width: 120rpx;
-  height: 60rpx;
   border: 2rpx solid #eee;
 }
 .prescription-item > .doctor-info > .item-date {
@@ -161,4 +159,8 @@
   position: absolute;
   right: 24rpx;
   top: 24rpx;
+}
+.doctor-name image{
+  width: 250rpx;
+  height: 100rpx;
 }

@@ -18,7 +18,7 @@
         <view class="list-title">医师职称</view>
         <view class="list-item-content">
           <view class="text">
-            {{doctorInfo.titleName}}
+            {{doctorInfo.titleName || '无'}}
           </view>
         </view>
       </view>

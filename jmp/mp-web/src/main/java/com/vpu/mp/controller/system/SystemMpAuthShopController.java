@@ -1,18 +1,5 @@
 package com.vpu.mp.controller.system;
 
-import java.io.IOException;
-
-import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
@@ -33,23 +20,33 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.io.IOException;
 
 /**
- * 
+ *
  * @author lixinguo
  *
  */
 @RestController
 public class SystemMpAuthShopController extends SystemBaseController {
 
-	
+
 	private static Logger log = LoggerFactory.getLogger(FieldsUtil.class);
 	/**
 	 * 小程序模板版本分页
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -61,7 +58,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 同步小程序模板库
-	 * 
+	 *
 	 * @return
 	 * @throws WxErrorException
 	 */
@@ -72,7 +69,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 设置版本
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping("/api/system/mp/version/set/{templateId}")
@@ -83,7 +80,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 批量提交审核
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping("/api/system/mp/version/batch{templateId}")
@@ -94,7 +91,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 小程序模板发布
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 * @throws WxErrorException
@@ -183,13 +180,13 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 得到小程序信息
-	 * 
+	 *
 	 * @param appId 小程序id
 	 * @return
 	 */
 	@GetMapping("/api/system/mp/get/{appId}")
 	public JsonResult getMp(@PathVariable String appId) {
-		MpAuthShopRecord record = saas.shop.mp.getAuthShopByAppIdAddURL(appId);
+		MpAuthShopRecord record = saas.shop.mp.getAuthShopByAppIdAddUrl(appId);
 		if (record == null) {
 			return fail(JsonResultCode.CODE_PARAM_ERROR);
 		}
@@ -198,7 +195,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 获取小程序版本下拉列表
-	 * 
+	 *
 	 * @return 下拉列表值
 	 */
 	@GetMapping("/api/system/mp/version/user/version/list")
@@ -208,7 +205,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 小程序版本操作日志分页列表
-	 * 
+	 *
 	 * @param param 过滤信息
 	 * @return 分页结果值
 	 */
@@ -221,7 +218,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 更改当前包版本
-	 * 
+	 *
 	 * @param pVersionVo
 	 * @return
 	 */
@@ -238,7 +235,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 小程序授权列表分页查询
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -251,7 +248,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 小程序版本统计
-	 * 
+	 *
 	 * @param mVersionParam
 	 * @return
 	 */
@@ -264,7 +261,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
 	/**
 	 * 当前模板id
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping("/api/system/mp/info/useTemplateId/{appId}")
@@ -274,7 +271,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		mpCurrentTempIdVo.setCurrentUseTemplateId(currentUseTemplateId);
 		return success(mpCurrentTempIdVo);
 	}
-	
+
 	/**
 	 * 批量提交小程序审核 batch_apply
 	 * @param templateId
@@ -289,9 +286,9 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		if(rBoolean.equals(JsonResultCode.CODE_SUCCESS)) {
 			return success();
 		}
-		return fail(rBoolean);		
+		return fail(rBoolean);
 	}
-	
+
 	/**
 	 * 查询小程序审核
 	 * @param param
@@ -300,9 +297,9 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	@PostMapping("/api/system/back/process/list")
 	public JsonResult getBackProcessList(@RequestBody MpUploadListParam param) {
 		return success(saas.shop.backProcessService.getPageList(param));
-		
+
 	}
-	
+
 	/**
 	 * 终止小程序审核
 	 * @return
@@ -315,9 +312,9 @@ public class SystemMpAuthShopController extends SystemBaseController {
 			return fail(JsonResultCode.WX_JOB_PROBLEM);
 		}
 		return success();
-		
+
 	}
-	
+
 	/**
 	 * 店铺发布列表
 	 * @param param
@@ -326,6 +323,6 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	@PostMapping(value = "/api/system/shop/mp/list")
 	public JsonResult getShopMpList(@RequestBody ShopMpListParam param) {
 		return success(saas.shop.mp.getShopMpList(param));
-		
+
 	}
 	}

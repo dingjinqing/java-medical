@@ -1,12 +1,12 @@
 package com.vpu.mp.service.pojo.shop.auth;
 
-import java.sql.Timestamp;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 /**
- * 
+ *
  * @author zhaojianqiang
  *
  */
@@ -17,6 +17,7 @@ public class ShopSelectInnerResp {
 	private Integer shopId;
 	private Integer sysId;
 	private String shopName;
+	private String shopMpName;
 	private String shopAvatar;
 	private Timestamp created;
 	private Byte state;

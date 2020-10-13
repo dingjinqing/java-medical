@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
@@ -68,6 +69,8 @@ public class OrderPayService extends ShopBaseService{
 
     @Autowired
     private ThirdPartyMsgServices thirdPartyMsgServices;
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
 
     /**
      * 订单系统内金额支付方法
@@ -98,6 +101,8 @@ public class OrderPayService extends ShopBaseService{
         logger().info("继续支付接口start");
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
             thirdPartyMsgServices.thirdPartService(orderInfo);
+            //新订单提醒
+            sendMessage.sendNewOrderMessage(orderInfo);
             return null;
         }else if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay()) {
             //TODO好友代付

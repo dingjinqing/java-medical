@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.config.message.MessageConfigVo;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.distribution.UpdateUserLevel;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderNewParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.OrderSaleAfterParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -84,16 +85,16 @@ public class OrderOperateSendMessage extends ShopBaseService {
         String[][] maData3 = new String[][] { { goodsName }, { order.getShippingNo() }};
         // 订阅消息
         String[][] maData4 = new String[][] {
-            {order.getOrderSn()},
-            {"已发货"},
-            {DateUtils.getLocalDateFormat()},
+            {order.getConsignee()},
+            {order.getMobile()},
+            {order.getCompleteAddress()},
         };
         //公众号数据
         String[][] mpData = null;
         if(isSendMp(MessageTemplateConfigConstant.ORDER_SEND)) {
             mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, {StringUtils.EMPTY}};
         }
-        MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData2).data786(maData3).data47(maData4).build();
+        MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData2).data786(maData3).data411(maData4).build();
         RabbitMessageParam param = RabbitMessageParam.builder()
             .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_DELIVER).data(buildData).build())
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_DELIVER).data(mpData).build())
@@ -128,13 +129,15 @@ public class OrderOperateSendMessage extends ShopBaseService {
             //小程序数据
             String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "退款完成" } };
 			String[][] maData321 = new String[][] { { goodsName }, { money }, { applyTime }, { "退款完成" } };
+            OrderInfoVo order = orderInfo.getByOrderId(returnOrder.getOrderId(), OrderInfoVo.class);
+            String[][] maData47 = new String[][] { { "您已退款成功" }, { DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime()) }, { money }};
             //公众号数据
             String[][] mpData = null;
             if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
                 mpData = new String[][] { { "退款成功" }, { OrderConstant.getReturnReasonDesc(returnOrder.getReasonType() == null ? null : returnOrder.getReasonType().intValue()) }, { money }, { StringUtils.EMPTY }};
             }
             //参数
-            MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData321).build();
+            MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData321).data47(maData47).build();
             param = RabbitMessageParam.builder()
                 .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(buildData).build())
                 .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND).data(mpData).build())
@@ -191,6 +194,8 @@ public class OrderOperateSendMessage extends ShopBaseService {
             .userIdList(Collections.singletonList(order.getUserId()))
             .type(RabbitParamConstant.Type.ORDER_SUCCESS_PAY).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        //新订单提醒
+        sendNewOrderMessage(order);
         logger().info("订单支付成功模板消息end");
     }
 
@@ -358,6 +363,34 @@ public class OrderOperateSendMessage extends ShopBaseService {
             mapTemplateSendService.sendWaitSaleAfterMessage(param);
         }
 
+    }
+
+    /**
+     * 新订单提醒
+     * @param order
+     */
+    public void sendNewOrderMessage(OrderInfoRecord order){
+        List<StoreAccountVo> storeAccountList = saas.shop.storeAccount.getStoreAccountByBindThird(order.getShopId(),order.getStoreId());
+        //关注公众号门店账户用户
+        List<Integer> userIdList = new ArrayList<Integer>();
+        for (StoreAccountVo storeAccount : storeAccountList) {
+            logger().info("门店账户发送,accountId:{}",storeAccount.getAccountId());
+            MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(order.getShopId());
+            String officialAppId=wxapp.getLinkOfficialAppId();
+            com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord userAccount = saas.getShopApp(order.getShopId()).officialAccountUser.getUser(officialAppId, storeAccount.getOfficialOpenId());
+            if (userAccount == null) {
+                continue;
+            }
+            userIdList.add(storeAccount.getUserId());
+        }
+        if(isSendMp(MessageTemplateConfigConstant.WAIT_HANDLE_ORDER)){
+            UserRecord userRecord = saas.getShopApp(order.getShopId()).user.getUserByUserId(order.getUserId());
+            String userName = userRecord.getUsername();
+            OrderNewParam param=OrderNewParam.builder().orderSn(order.getOrderSn()).userName(userName).mobile(order.getMobile())
+                .deliverTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime()))
+                .deliverType(OrderConstant.DELIVER_LIST[order.getDeliverType()]).userIds(userIdList).build();
+            mapTemplateSendService.sendNewOrderMessage(param);
+        }
     }
 
     private String getGoodsName(List<OrderGoodsRecord> orderGoods) {

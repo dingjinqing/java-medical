@@ -69,7 +69,21 @@ public class PrescriptionInfoVo {
      * 处方明细
      */
     private List<PrescriptionItemInfoVo> itemList;
-
-
+    /**
+     * 医师签名
+     */
+    private String doctorSignature;
+    /**
+     * 发药药师签名
+     */
+    private String pharmacistSignature;
+    /**
+     * 医院公章
+     */
+    private String cachet;
+    /**
+     * 医嘱
+     */
+    private String doctorAdvice;
 
 }

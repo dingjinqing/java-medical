@@ -127,7 +127,7 @@
                         label='用户id'>
                     <template slot-scope="scope">
                         <div class="operation">
-                            <a @click="handleSeePatient(scope.row.id)">{{scope.row.patientId}}</a>
+                            <a @click="handleSeePatient(scope.row.userId)">{{scope.row.userId}}</a>
                         </div>
                     </template>
                 </el-table-column>
@@ -293,9 +293,9 @@ export default {
     handleSeePatient (code) {
       console.log(this.$router)
       let newpage = this.$router.resolve({
-        name: 'patient_message'
+        name: 'membershipInformation'
       })
-      newpage.href = newpage.href + '?id=' + code
+      newpage.href = newpage.href + '?userId=' + code
       console.log(newpage.href)
       window.open(newpage.href, '_blank')
     }

@@ -3,15 +3,16 @@
     <div class="since-info">
       <div class="since-info-top">
         <span>{{ $t('order.orderSn') }}：{{ searchParam.orderSn }}</span>
-        <span
-          >{{ $t('order.orderStatusText') }}：{{
+        <span>{{ $t('order.orderStatusText') }}：{{
             showOrderStatusMap.get(order.orderStatus)
-          }}</span
-        >
+          }}</span>
       </div>
       <div class="order-status-bar">
         <template v-for="(item, index) in timeFlowDiagramMapping[statusKey]">
-          <div :key="index" :class="{ active: order[item] }">
+          <div
+            :key="index"
+            :class="{ active: order[item] }"
+          >
             <span>{{ $t('order.timeFlowDiagram')[item] }}</span>
             <span v-if="order[item]">{{ order[item] }}</span>
           </div>
@@ -28,13 +29,11 @@
             </div>
             <div class="item">
               {{ $t('order.orderAmount') }}：
-              <template
-                v-if="
+              <template v-if="
                   goodsTypeArray.indexOf(
                     $t('order.goodsTypeList')[5][0].toString()
                   ) > -1
-                "
-              >
+                ">
                 {{ order.moneyPaid.toFixed(2)
                 }}{{ currencyPool[order.currency][lang][0] }} +
                 {{ order.scoreDiscount * order.scoreProportion
@@ -60,13 +59,15 @@
               {{ $t('order.userNameText') }}：<span
                 class="pointer"
                 @click="viewUserCenter(order.userId)"
-                >{{ order.username }}</span
-              >
+              >{{ order.username }}</span>
             </div>
             <div class="item">
               {{ $t('order.userMobileText') }}：{{ order.userMobile || '无' }}
             </div>
-            <div class="item" v-if="order.deliverType == 1">
+            <div
+              class="item"
+              v-if="order.deliverType == 1"
+            >
               {{ $t('order.storeName') }}：{{ order.storeName }}
             </div>
             <template v-if="order.verifierId > 0">
@@ -78,9 +79,7 @@
               </div>
             </template>
             <template v-if="order.deliverType == 0 && order.orderStatus > 2">
-              <template
-                v-if="order.partShipFlag != 1 && order.orderStatus != 3"
-              >
+              <template v-if="order.partShipFlag != 1 && order.orderStatus != 3">
                 <template v-if="order.shippingTime != null">
                   <div class="item">
                     {{ $t('order.shippingTimeText') }}：{{ order.shippingTime }}
@@ -112,7 +111,10 @@
         </div>
       </div>
       <div class="order-remark">
-        <i class="icon el-icon-edit-outline" @click="addNodes"></i>
+        <i
+          class="icon el-icon-edit-outline"
+          @click="addNodes"
+        ></i>
         <span>{{ $t('order.sellerMessage') }}：{{ order.sellerRemark }}</span>
       </div>
     </div>
@@ -151,17 +153,29 @@
                 <td>{{ shipGoods.goodsAttr }}</td>
                 <td>{{ shipGoods.sendNumber }}</td>
                 <template v-if="order.deliverType == 0">
-                  <td v-if="index === 0" :rowspan="item.goods.length">
+                  <td
+                    v-if="index === 0"
+                    :rowspan="item.goods.length"
+                  >
                     <!-- {{ $t('expressList.company')[item.shippingId] }} -->
                     {{ item.shippingAccountName }}
                   </td>
-                  <td v-if="index === 0" :rowspan="item.goods.length">
+                  <td
+                    v-if="index === 0"
+                    :rowspan="item.goods.length"
+                  >
                     {{ item.shippingMobile }}
                   </td>
-                  <td v-if="index === 0" :rowspan="item.goods.length">
+                  <td
+                    v-if="index === 0"
+                    :rowspan="item.goods.length"
+                  >
                     {{ item.shippingTime }}
                   </td>
-                  <td v-if="index === 0" :rowspan="item.goods.length">
+                  <td
+                    v-if="index === 0"
+                    :rowspan="item.goods.length"
+                  >
                     {{ order.confirmTime }}
                   </td>
                 </template>
@@ -187,7 +201,10 @@
         </table>
       </div>
     </div>
-    <div v-if="showReturnInfo" class="order-list-table">
+    <div
+      v-if="showReturnInfo"
+      class="order-list-table"
+    >
       <div class="title">{{ $t('order.returnInfoText') }}</div>
       <div class="table_box">
         <table width="100%">
@@ -245,12 +262,11 @@
                         type="primary"
                         :underline="false"
                         @click="goRefundInfo(item.returnOrderSn)"
-                        >{{
+                      >{{
                           [1, 2, 4].indexOf(item.refundStatus) == -1
                             ? $t('order.returnInfo')
                             : $t('order.approval')
-                        }}</el-link
-                      >
+                        }}</el-link>
                     </td>
                     <td
                       v-if="index === 0"
@@ -294,8 +310,7 @@
                       type="primary"
                       :underline="false"
                       @click="goRefundInfo(item.returnOrderSn)"
-                      >{{ $t('order.returnInfo') }}</el-link
-                    >
+                    >{{ $t('order.returnInfo') }}</el-link>
                   </td>
                   <td>
                     <template>
@@ -350,9 +365,7 @@
             </div>
             <div class="doctor-info">
               <span class="doctor-name">医师：{{ item.doctorName }}</span>
-              <span class="item-date"
-                >日期：{{ item.prescriptionCreateTime.substring(0, 10) }}</span
-              >
+              <span class="item-date">日期：{{ item.prescriptionCreateTime.substring(0, 10) }}</span>
             </div>
           </div>
         </template>
@@ -398,9 +411,7 @@
             </div>
             <div class="doctor-info">
               <span class="doctor-name">医师：{{ item.doctorName }}</span>
-              <span class="item-date"
-                >日期：{{ item.prescriptionCreateTime.substring(0, 10) }}</span
-              >
+              <span class="item-date">日期：{{ item.prescriptionCreateTime.substring(0, 10) }}</span>
             </div>
           </div>
         </template>
@@ -446,8 +457,7 @@
                           order.orderSn
                         }}
                       </span>
-                      <span class="paymentType"
-                        >{{ $t('order.paymentType') }}：
+                      <span class="paymentType">{{ $t('order.paymentType') }}：
                         <el-tooltip
                           v-for="(payCode, index) in oneOrder.payCodeList"
                           :key="index"
@@ -462,14 +472,11 @@
                           />
                         </el-tooltip>
                       </span>
-                      <span
-                        >{{ $t('order.deliverTypeText') }}：{{
+                      <span>{{ $t('order.deliverTypeText') }}：{{
                           deliverTypeMap.get(oneOrder.deliverType)
-                        }}</span
-                      >
+                        }}</span>
                       <span v-if="oneOrder.partShipFlag == 1">
-                        {{ $t('order.partShipText') }}</span
-                      >
+                        {{ $t('order.partShipText') }}</span>
                     </div>
                     <div class="right">
                       <span
@@ -481,8 +488,7 @@
                           )
                         "
                         v-if="order.showManualReturn"
-                        >{{ $t('order.manualReturnText') }}</span
-                      >
+                      >{{ $t('order.manualReturnText') }}</span>
                       <span @click="goComment(oneOrder.orderSn)">{{
                         $t('order.comment')
                       }}</span>
@@ -497,7 +503,10 @@
               >
                 <td>
                   <div class="goods_info">
-                    <img :src="$imageHost + '/' + goodsInfo.goodsImg" alt="" />
+                    <img
+                      :src="$imageHost + '/' + goodsInfo.goodsImg"
+                      alt=""
+                    />
                     <div class="right_info">
                       <div class="goods_name">
                         <span>{{ goodsInfo.goodsName }}</span>
@@ -509,23 +518,26 @@
                 <td>{{ goodsInfo.goodsSn }}</td>
                 <td>{{ goodsInfo.goodsPrice.toFixed(2) }}</td>
                 <td>{{ goodsInfo.goodsNumber }}</td>
-                <td v-if="index == 0" :rowspan="oneOrder.goods.length">
+                <td
+                  v-if="index == 0"
+                  :rowspan="oneOrder.goods.length"
+                >
                   <p>{{ oneOrder.consignee }}</p>
                   <p>{{ oneOrder.mobile }}</p>
-                  <p
-                    v-if="
+                  <p v-if="
                       oneOrder.mainOrderSn != '' &&
                       oneOrder.mainOrderSn != oneOrder.orderSn
-                    "
-                  >
+                    ">
                     <span
                       class="shipping_address"
                       @click="showAddressInfo(oneOrder.completeAddress)"
-                      >{{ $t('order.shippingAddress') }}</span
-                    >
+                    >{{ $t('order.shippingAddress') }}</span>
                   </p>
                 </td>
-                <td v-if="index == 0" :rowspan="oneOrder.goods.length">
+                <td
+                  v-if="index == 0"
+                  :rowspan="oneOrder.goods.length"
+                >
                   {{ oneOrder.createTime }}
                 </td>
                 <td
@@ -533,27 +545,21 @@
                   :rowspan="oneOrder.goods.length"
                   class="operate"
                 >
-                  <template
-                    v-if="
+                  <template v-if="
                       goodsTypeArray.indexOf('17') != -1 &&
                       oneOrder.orderSn == oneOrder.mainOrderSn &&
                       [8, 10, 13].indexOf(oneOrder.orderStatus)
-                    "
-                  >
+                    ">
                     {{ $t('order.waitReceive') }}
                   </template>
                   <template v-else>
-                    <template
-                      v-if="
+                    <template v-if="
                         oneOrder.orderStatus != 3 && oneOrder.orderStatus != 5
-                      "
-                    >
-                      <template
-                        v-if="
+                      ">
+                      <template v-if="
                           oneOrder.orderStatus == 0 &&
                           goodsTypeArray.indexOf('10') != -1
-                        "
-                      >
+                        ">
                         <template v-if="order.bkOrderPaid == 0">
                           {{ $t('order.waitDeposit') }}
                         </template>
@@ -566,18 +572,14 @@
                       </template>
                     </template>
                     <template v-else>
-                      <template
-                        v-if="
+                      <template v-if="
                           oneOrder.deliverType == 1 && oneOrder.orderStatus == 3
-                        "
-                      >
+                        ">
                         {{ $t('order.waitverify') }}
                       </template>
-                      <template
-                        v-if="
+                      <template v-if="
                           oneOrder.deliverType != 1 && oneOrder.orderStatus == 3
-                        "
-                      >
+                        ">
                         {{ $t('order.waitShip') }}
                         <template v-if="oneOrder.orderRemindTime">
                           <el-tooltip
@@ -592,44 +594,35 @@
                           </el-tooltip>
                         </template>
                       </template>
-                      <template
-                        v-else-if="
+                      <template v-else-if="
                           oneOrder.deliverType == 1 && oneOrder.orderStatus == 5
-                        "
-                      >
+                        ">
                         {{ $t('order.takeByself') }}
                       </template>
-                      <template
-                        v-else-if="
+                      <template v-else-if="
                           oneOrder.deliverType != 1 && oneOrder.orderStatus == 5
-                        "
-                      >
+                        ">
                         {{ $t('order.received') }}
                       </template>
                     </template>
-                    <template
-                      v-if="
+                    <template v-if="
                         oneOrder.orderStatus == 3 && oneOrder.partShipFlag == 1
-                      "
-                    >
+                      ">
                       <br />
                       ({{ $t('order.partShip') }})
                     </template>
-                    <template
-                      v-if="
+                    <template v-if="
                         oneOrder.orderStatus == 3 &&
                         oneOrder.deliverType != 1 &&
                         oneOrder.canDeliver == true
-                      "
-                    >
+                      ">
                       <!-- 非自提且待发货自提 -->
                       <br />
                       <el-button
                         type="primary"
                         size="small"
                         @click="deliver(oneOrder)"
-                        >{{ $t('order.delivery') }}</el-button
-                      >
+                      >{{ $t('order.delivery') }}</el-button>
                       <template v-if="oneOrder.canVerify == true">
                         <!-- 核销 -->
                         <br />
@@ -637,28 +630,23 @@
                           type="primary"
                           size="small"
                           @click="verify(oneOrder)"
-                          >{{ $t('order.verify') }}</el-button
-                        >
+                        >{{ $t('order.verify') }}</el-button>
                       </template>
                     </template>
                   </template>
                   <template v-if="oneOrder.refundStatus > 0">
                     <br />
-                    <template
-                      v-if="[1, 2, 4].indexOf(oneOrder.refundStatus) != -1"
-                    >
+                    <template v-if="[1, 2, 4].indexOf(oneOrder.refundStatus) != -1">
                       <el-button
                         type="text"
                         @click="goReturnView(oneOrder.orderSn)"
-                        >{{ $t('order.applyRetrunView') }}</el-button
-                      >
+                      >{{ $t('order.applyRetrunView') }}</el-button>
                     </template>
                     <template v-else>
                       <el-button
                         type="text"
                         @click="goReturnView(oneOrder.orderSn)"
-                        >{{ $t('order.retrunView') }}</el-button
-                      >
+                      >{{ $t('order.retrunView') }}</el-button>
                     </template>
                   </template>
                   <template v-if="oneOrder.canClose == true">
@@ -668,8 +656,7 @@
                       type="primary"
                       size="small"
                       @click="close(oneOrder)"
-                      >{{ $t('order.close') }}</el-button
-                    >
+                    >{{ $t('order.close') }}</el-button>
                   </template>
                   <template v-if="oneOrder.canFinish == true">
                     <!-- 完成 -->
@@ -678,22 +665,22 @@
                       type="primary"
                       size="small"
                       @click="finish(oneOrder)"
-                      >{{ $t('order.finish') }}</el-button
-                    >
+                    >{{ $t('order.finish') }}</el-button>
                   </template>
                 </td>
-                <td v-if="index == 0" :rowspan="oneOrder.goods.length">
+                <td
+                  v-if="index == 0"
+                  :rowspan="oneOrder.goods.length"
+                >
                   <span>
                     {{ currencyPool[order.currency][lang][1]
                     }}{{ oneOrder.moneyPaid.toFixed(2) }}
                   </span>
-                  <template
-                    v-if="
+                  <template v-if="
                       goodsTypeArray.indexOf(
                         $t('order.goodsTypeList')[5][0].toString()
                       ) > -1
-                    "
-                  >
+                    ">
                     <span>
                       + {{ order.scoreDiscount * order.scoreProportion
                       }}{{ $t('order.score') }}
@@ -713,7 +700,10 @@
               </tr>
             </template>
             <tr>
-              <td :colspan="order.fanliType > 0 ? 9 : 8" class="total_box">
+              <td
+                :colspan="order.fanliType > 0 ? 9 : 8"
+                class="total_box"
+              >
                 <p>
                   {{ $t('order.goodsAmount') }}：
                   <!-- 订单金额、优惠金额、支付明细 -->
@@ -871,7 +861,10 @@
         </table>
       </div>
     </div>
-    <div class="order-list-table" v-if="rebateList">
+    <div
+      class="order-list-table"
+      v-if="rebateList"
+    >
       <div class="title">返利详情</div>
       <div class="table_box">
         <table width="100%">
@@ -907,13 +900,22 @@
               :key="rebateIndex"
               class="order-tb-body"
             >
-              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">
+              <td
+                v-if="rebateItem.rowSpan"
+                :rowspan="rebateItem.rowSpan"
+              >
                 {{ rebateItem.mobile }}
               </td>
-              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">
+              <td
+                v-if="rebateItem.rowSpan"
+                :rowspan="rebateItem.rowSpan"
+              >
                 {{ rebateItem.username }}
               </td>
-              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">
+              <td
+                v-if="rebateItem.rowSpan"
+                :rowspan="rebateItem.rowSpan"
+              >
                 {{ rebateItem.realName }}
               </td>
               <td>
@@ -931,10 +933,16 @@
               <td>{{ rebateItem.rebateLevel | getRebateLevel }}</td>
               <td>{{ (rebateItem.rebatePercent * 100).toFixed(2) }}%</td>
               <td>{{ rebateItem.realRebateMoney.toFixed(2) }}</td>
-              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">
+              <td
+                v-if="rebateIndex === 0"
+                :rowspan="rebateList.length"
+              >
                 {{ order.settlementFlag | getSettlementName }}
               </td>
-              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">
+              <td
+                v-if="rebateIndex === 0"
+                :rowspan="rebateList.length"
+              >
                 {{ order.orderStatus === 6 ? rebateItem.updateTime : '' }}
               </td>
             </tr>
@@ -982,14 +990,16 @@
                     "
                     style="color: #5a8bff; cursor: pointer"
                   >
-                    {{ prescriptionItem.doctorName }}</span
-                  >
+                    {{ prescriptionItem.doctorName }}</span>
                 </td>
                 <td
                   v-if="prescriptionItem.itemList"
                   :rowspan="prescriptionItem.itemList"
                 >
-                  {{ prescriptionItem.prescriptionCode }}
+                  <span @click="handlePrescriptionInfo(prescriptionItem.prescriptionCode)">
+                    {{ prescriptionItem.prescriptionCode }}
+                  </span>
+
                 </td>
                 <td>
                   <div class="goods_info">
@@ -1046,10 +1056,20 @@
       :orderSn="notesOrderSn"
       @handlerResetData="search"
     />
-    <el-dialog title="收货地址" :visible.sync="showAddress" width="30%">
+    <el-dialog
+      title="收货地址"
+      :visible.sync="showAddress"
+      width="30%"
+    >
       <div>{{ $t('order.shippingAddress') }}：{{ itemAddressInfo }}</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="showAddress = false">确 定</el-button>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="showAddress = false"
+        >确 定</el-button>
       </span>
     </el-dialog>
     <deliveryDialog

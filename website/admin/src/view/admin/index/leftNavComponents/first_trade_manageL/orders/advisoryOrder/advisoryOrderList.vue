@@ -95,6 +95,18 @@
           prop="orderStatusName"
           label="订单状态"
         ></el-table-column>
+        <el-table-column
+          prop='orderSn'
+          label='咨询单号'
+        ></el-table-column>
+        <el-table-column
+          prop='totalRebateMoney'
+          label='返利金额'
+        ></el-table-column>
+        <el-table-column
+          prop='settlementName'
+          label='返利状态'
+        ></el-table-column>
         <el-table-column prop="createTime" label="提交时间"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -138,6 +150,7 @@ export default {
   },
   mounted () {
     this.queryParams.doctorName = this.$route.query.name ? this.$route.query.name : ''
+    this.queryParams.doctorId = this.$route.query.doctorId ? this.$route.query.doctorId : null
     this.initDoctorPart()
     this.initDataList()
   },
@@ -149,6 +162,7 @@ export default {
         patientName: '',
         departmentId: '',
         orderStatus: '',
+        doctorId: null,
         startTime: null,
         endTime: null
       },
@@ -218,6 +232,8 @@ export default {
         let oriData = JSON.parse(JSON.stringify(res.content.dataList))
         for (let i in oriData) {
           oriData[i].orderStatusName = this.getStatusName(oriData[i].orderStatus)
+          oriData[i].settlementName = this.getSettlementStatus(oriData[i].settlementFlag)
+          oriData[i].totalRebateMoney = oriData[i].totalRebateMoney.toFixed(2)
         }
         this.tableData = oriData
         this.pageParams = res.content.page
@@ -243,6 +259,17 @@ export default {
           return '待退款'
         case 7:
           return '部分退款'
+      }
+    },
+    // 返利状态
+    getSettlementStatus (data) {
+      switch (data) {
+        case 0:
+          return '待返利'
+        case 1:
+          return '已返利'
+        case 2:
+          return '未返利'
       }
     },
     returnOrder ({ refundMoney, orderAmount, orderSn }) {

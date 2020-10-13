@@ -23,6 +23,6 @@ public class AppMessageHandler implements WxAppMessageEventHandler {
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage message, String appId) {
         log.debug("WxAppMessageEventHandler handle {}",message.toString());
-        return mpAuthShopService.AppEventHandler(message, appId);
+        return mpAuthShopService.appEventHandler(message, appId);
     }
 }

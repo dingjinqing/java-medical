@@ -150,7 +150,7 @@
               href="javaScript:void(0);"
               class="same_btn"
               style="margin: 0px; display: block"
-              @click="toAdvistory(scope.row.name)"
+              @click="toAdvistory(scope.row.id)"
               v-if="scope.row.consultationNumber > 0"
               >{{ scope.row.consultationNumber }}</a
             >
@@ -365,11 +365,11 @@ export default {
         console.log(res)
       })
     },
-    toAdvistory (name) {
+    toAdvistory (id) {
       const { href } = this.$router.resolve({
         path: '/admin/home/main/orders/advisoryOrder/list',
         query: {
-          name: name
+          doctorId: id
         }
       })
       window.open(href, '_blank')

@@ -582,6 +582,7 @@ export default {
     }
     .operation a {
       color: #5a8bff;
+      cursor: pointer;
     }
     .table_box {
       padding: 10px;
