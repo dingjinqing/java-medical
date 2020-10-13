@@ -402,15 +402,18 @@ export default {
           this.page_tpl_type = res.content.page_tpl_type
 
           this.isEditSave = true
+          console.log(JSON.parse(res.content.page_content))
           let content = {
-            cat_id: 0,
-            page_cfg: {},
-            page_content: {},
-            page_id: 1,
-            page_name: '首页',
-            page_publish_content: {},
-            page_tpl_type: 3,
-            page_type: 1,
+            page_cfg: {
+              cat_id: 0,
+              page_cfg: {},
+              page_content: {},
+              page_id: 1,
+              page_name: '首页',
+              page_publish_content: {},
+              page_tpl_type: 3,
+              page_type: 1
+            },
             ...JSON.parse(res.content.page_content)
           }
           this.editPageData = content
