@@ -98,7 +98,7 @@ public class AdminAuth {
 		AdminTokenAuthInfo info = new AdminTokenAuthInfo();
 		info.setSysId(account.getSysId());
 		info.setUserName(account.getUserName());
-		info.setUserName(account.getMobile());
+		info.setMobile(account.getMobile());
 		info.setSubAccountId(subAccount != null ? subAccount.getAccountId() : 0);
 		info.setSubUserName(subAccount != null ? subAccount.getAccountName() : "");
 		info.setSubLogin(subAccount != null);
