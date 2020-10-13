@@ -94,7 +94,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         if(isSendMp(MessageTemplateConfigConstant.ORDER_SEND)) {
             mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, {StringUtils.EMPTY}};
         }
-        MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData2).data786(maData3).data47(maData4).build();
+        MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData2).data786(maData3).data411(maData4).build();
         RabbitMessageParam param = RabbitMessageParam.builder()
             .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_DELIVER).data(buildData).build())
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_DELIVER).data(mpData).build())

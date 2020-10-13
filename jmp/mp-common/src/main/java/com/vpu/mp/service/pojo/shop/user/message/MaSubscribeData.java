@@ -22,4 +22,5 @@ public class MaSubscribeData {
 	private String[][] data321;
 	private String[][] data786;
 	private String[][] data47;
+	private String[][] data411;
 }
