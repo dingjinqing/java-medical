@@ -18,6 +18,7 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.saas.marketcalendar.SysCalendarActVo;
 import com.vpu.mp.service.pojo.saas.shop.*;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumberConfig;
@@ -367,17 +368,15 @@ public class ShopService extends MainBaseService {
 	 * @param subAccountId
 	 * @return
 	 */
-	public Result<Record11<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String, String>> getRoleShopList(
+	public List<ShopRecord> getRoleShopList(
 			Integer sysId, Integer subAccountId) {
-		SelectWhereStep<Record11<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String, String>> select = db()
-				.selectDistinct(SHOP.SHOP_ID, SHOP.SYS_ID, SHOP.SHOP_NAME, SHOP.SHOP_AVATAR, SHOP.CREATED, SHOP.STATE,
-						SHOP.BUSINESS_STATE, SHOP.IS_ENABLED, SHOP.SHOP_TYPE,SHOP.CURRENCY,SHOP.SHOP_LANGUAGE)
+		SelectWhereStep<? extends Record> select = db().selectDistinct(SHOP.asterisk())
 				.from(SHOP).leftJoin(SHOP_CHILD_ROLE).on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID));
 		select.where(SHOP.SYS_ID.eq(sysId));
 		if (subAccountId > 0) {
 			select.where(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(subAccountId));
 		}
-		return select.orderBy(SHOP.CREATED.asc()).fetch();
+		return select.orderBy(SHOP.CREATED.asc()).fetchInto(ShopRecord.class);
 	}
 
     /**
@@ -410,12 +409,13 @@ public class ShopService extends MainBaseService {
             }
         });
 	}
-	public List<ShopSelectInnerResp> getShopList(AdminTokenAuthInfo info,
-			List<Record11<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String, String>> shopList) {
+	public List<ShopSelectInnerResp> getShopList(AdminTokenAuthInfo info, List<ShopRecord> shopList) {
 		List<ShopSelectInnerResp> dataList = new ArrayList<>(shopList.size());
-		for (Record11<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String, String> record : shopList) {
-			ShopSelectInnerResp shopInner = new ShopSelectInnerResp();
+		for (ShopRecord record : shopList) {
 			Timestamp expireTime = renew.getShopRenewExpireTime(Util.getInteger(record.get(SHOP.SHOP_ID)));
+			MpAuthShopRecord authShop = saas.shop.mp.getAuthShopByShopId(record.getShopId());
+
+			ShopSelectInnerResp shopInner = new ShopSelectInnerResp();
 			String expireStatus = "1";
 			if (expireTime != null) {
 				Calendar cal = Calendar.getInstance();
@@ -430,6 +430,7 @@ public class ShopService extends MainBaseService {
 			shopInner.setShopId(record.get(SHOP.SHOP_ID));
 			shopInner.setSysId(record.get(SHOP.SYS_ID));
 			shopInner.setShopName(record.get(SHOP.SHOP_NAME));
+			shopInner.setShopMpName(authShop.getNickName());
 			shopInner.setShopAvatar(StringUtils.isEmpty(record.get(SHOP.SHOP_AVATAR))?null:image.imageUrl(record.get(SHOP.SHOP_AVATAR)));
 			shopInner.setCreated(record.get(SHOP.CREATED));
 			shopInner.setState(record.get(SHOP.STATE));
