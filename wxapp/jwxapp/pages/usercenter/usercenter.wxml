@@ -38,7 +38,7 @@
     <view style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{user_center[0].bg_type == 0 || user_center[0].bg_type == undefined ||  !user_center[0].bg_type}}' class="top_bg"></view>
   </view>
   <!-- 领取会员卡 -->
-  <view class='fenlei card_rece clearfix' wx:if="{{is_grade==0 && user_center[0] && user_center[0].get_grade!==0}}">
+  <!-- <view class='fenlei card_rece clearfix' wx:if="{{is_grade==0 && user_center[0] && user_center[0].get_grade!==0}}">
     <image src="{{imageUrl}}image/wxapp/grade_icon.png" mode="widthFix" />
     {{i18n.$t(localePack,"page1.usercenter.membershipCard")}}
     <form report-submit='true' bindsubmit='GetCrade'>
@@ -46,7 +46,7 @@
         {{i18n.$t(localePack,"page1.usercenter.collectImmediately")}}
       </button>
     </form>
-  </view>
+  </view> -->
   <block wx:for='{{user_center}}' wx:key='key'>
     <!-- 我的资产 -->
     <view class='my_account each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "account_money" && item.is_show == 1 && audit_state != 1}}'>
