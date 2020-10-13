@@ -71,15 +71,15 @@ public class RabbitParamConstant {
         /**
          * 新咨询订单提醒
          */
-        public static final Integer NEW_CONSULTATION_ORDER = 3015;
+        public static final Integer NEW_CONSULTATION_ORDER = 3016;
         /**
          * 待处理订单通知
          */
-        public static final Integer WAIT_HANDLE_ORDER = 3016;
+        public static final Integer WAIT_HANDLE_ORDER = 3017;
         /**
          * 待售后订单通知
          */
-        public static final Integer SALE_AFTER_ORDER = 3017;
+        public static final Integer SALE_AFTER_ORDER = 3018;
 
 
         /**

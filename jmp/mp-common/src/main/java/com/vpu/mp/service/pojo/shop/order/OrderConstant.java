@@ -136,6 +136,10 @@ public class OrderConstant {
     public final static byte CITY_EXPRESS_SERVICE =2;
     /**门店配送**/
     public final static byte STORE_EXPRESS =3;
+    /**
+     * 配送方式名称
+     */
+    public final static String[] DELIVER_LIST={"快递","自提","同城配送","门店配送"};
 
 	/**
 	 *	 是否部分发货

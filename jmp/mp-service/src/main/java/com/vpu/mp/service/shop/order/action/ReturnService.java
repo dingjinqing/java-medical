@@ -192,10 +192,14 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //操作记录
         record.insertRecord(Arrays.asList(new Integer[]{RecordContentTemplate.ORDER_RETURN.code}), new String[]{param.getOrderSn()});
         ReturnOrderRecord rOrder = (ReturnOrderRecord) result.getResult();
+
         //判断
         if (!orderRefundRecord.isExistFail(rOrder.getRetId())) {
             //消息推送
             sendMessage.send(rOrder, returnOrderGoods.getReturnGoods(rOrder.getOrderSn(), rOrder.getRetId()));
+            if(param.getIsMp().equals(OrderConstant.IS_MP_Y)){
+                sendMessage.sendWaitSaleAfterMessage(order,rOrder);
+            }
             result.setResult(rOrder.getReturnOrderSn());
             return result;
         } else {
