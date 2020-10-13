@@ -157,7 +157,7 @@ public class DoctorService extends BaseShopConfigService {
 
     public Integer insertDoctor(DoctorOneParam param) {
         doctorDao.insertDoctor(param);
-        setDoctorDepartmentCouples(param.getId(), param.getDepartmentIdsStr());
+        setDoctorDepartmentCouples(param.getId(), param.getDepartmentIds());
         return param.getId();
     }
 
@@ -167,7 +167,7 @@ public class DoctorService extends BaseShopConfigService {
             dealDoctorWx(param.getId(), param.getStatus());
         }
         doctorDao.updateDoctor(param);
-        setDoctorDepartmentCouples(param.getId(), param.getDepartmentIdsStr());
+        setDoctorDepartmentCouples(param.getId(), param.getDepartmentIds());
         return param.getId();
     }
 
@@ -207,12 +207,10 @@ public class DoctorService extends BaseShopConfigService {
         return "一小时以上";
     }
 
-    public void setDoctorDepartmentCouples(Integer doctorId, String departmentIdsStr) {
+    public void setDoctorDepartmentCouples(Integer doctorId, List<Integer> departmentIds) {
         doctorDepartmentCoupleDao.deleteDepartmentByDoctor(doctorId);
-        if (!StringUtils.isBlank(departmentIdsStr)) {
-            List<String> result = Arrays.asList(departmentIdsStr.split(","));
-            for (String departmentIdStr : result) {
-                Integer departmentId = Integer.parseInt(departmentIdStr);
+        if (!departmentIds.isEmpty()) {
+            for (Integer departmentId : departmentIds) {
                 DoctorDepartmentOneParam doctorDepartment = new DoctorDepartmentOneParam();
                 doctorDepartment.setDoctorId(doctorId);
                 doctorDepartment.setDepartmentId(departmentId);

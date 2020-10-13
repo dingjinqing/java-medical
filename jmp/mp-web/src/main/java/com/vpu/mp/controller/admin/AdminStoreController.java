@@ -37,10 +37,7 @@ import com.vpu.mp.service.pojo.shop.store.validated.StoreUpdateValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierSimpleParam;
-import com.vpu.mp.service.shop.ShopApplication;
-import com.vpu.mp.service.shop.store.group.StoreGroupService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
-import com.vpu.mp.service.shop.store.store.StoreService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +50,6 @@ import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
-import static com.vpu.mp.common.foundation.data.BaseConstant.NO;
 import static com.vpu.mp.common.foundation.data.BaseConstant.YES;
 import static com.vpu.mp.service.pojo.shop.store.store.StorePojo.IS_EXIST_HOSPITAL;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.*;
