@@ -697,7 +697,7 @@ public class StoreService extends ShopBaseService {
     }
 
     /**
-     * 查询当前在营业的门店列表(不传地址,仅供门店配送方式使用)
+     * 查询当前在营业的门店列表(不传地址)
      * @return Map<Double, StoreDo>
      */
     public Map<String, StoreDo> getStoreListOpen(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {

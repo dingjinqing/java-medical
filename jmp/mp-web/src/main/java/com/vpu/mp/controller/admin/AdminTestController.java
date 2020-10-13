@@ -90,7 +90,7 @@ public class AdminTestController extends AdminBaseController {
 
     @RequestMapping(value = "/api/admin/test/getCategory")
     public JsonResult getCategory() throws Exception {
-        String appId = "wxbb38922409fdaa24";
+        String appId = "wxfbe41e702f99277d";
         WxOpenMaSubScribeGetCategoryResult result = open.getMaExtService().getTemplateCategory(appId);
         return success(result);
     }
