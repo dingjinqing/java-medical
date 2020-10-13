@@ -39,7 +39,7 @@ global.wxPage({
     var nowImgUrl = e.target.dataset.src;
     var arr = [];
     for (var i in info.storeImgs) {
-      arr.push(info.storeImgs[i]); //属性
+      arr.push(this.data.imageUrl + info.storeImgs[i]); //属性
     }
     wx.previewImage({
       current: nowImgUrl, // 当前显示图片的http链接
@@ -99,26 +99,34 @@ global.wxPage({
   },
   storeRequest: function (that) {
     let api = this.data.storeType ? '/api/wxapp/store/hospital/info' : '/api/wxapp/store/info'
-    util.api(api, function (res) {
-      if (res.error === 0) {
-        if (res.content.delFlag == 1) {
-          util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.notExist'), function () {
-            util.reLaunch({
-              url: '/pages/index/index'
-            })
+    util.getUserLocation(function (location) {
+      util.api(api, function (res) {
+        if (res.error === 0) {
+          if (res.content.delFlag == 1) {
+            util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.notExist'), function () {
+              util.reLaunch({
+                url: '/pages/index/index'
+              })
+            });
+            return;
+          }
+          info = res.content;
+          that.setData({
+            info: that.formatData(info)
           });
-          return;
         }
-        info = res.content;
-        that.setData({
-          info: that.formatData(info)
-        });
-      }
-    }, {
-      storeId: Number(id),
-      userId: 0,
-      scene:scene
-    });
+      }, {
+        storeId: Number(id),
+        userId: 0,
+        scene:scene,
+        locationAuth: !location?0:1,
+        location: !location?{
+          latitude: '',
+          longitude: ''
+        }:location
+      });
+    })
+   
   },
   /**
    * 格式化
@@ -139,9 +147,9 @@ global.wxPage({
         lat = Number(info.latitude);
         lon = Number(info.longitude);
         if (lat > 0 && lon > 0) {
-          var dis = util.getDistance(lat, lon, latitude, longitude);
+          // var dis = util.getDistance(lat, lon, latitude, longitude);
           that.setData({
-            dis: dis
+            dis: info.distance
           });
         }
       },
@@ -180,7 +188,7 @@ global.wxPage({
                           for (var i = 0; i < res.content.length; i++) {
                             lat = res.content[i].latitude;
                             lon = res.content[i].longitude;
-                            dis = app.getDistance(lat, lon, latitude, longitude);
+                            dis = info.distance;
                             if (dis - min < 0 && res.content[i].business_state == 1) {
                               min = dis;
                               store = res.content[i].store_id;

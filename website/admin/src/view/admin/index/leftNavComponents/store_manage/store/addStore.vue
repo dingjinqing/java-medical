@@ -191,7 +191,7 @@
               />
             </div>
             <p style="width: 100%; color: #999; margin-bottom: 15px">
-              {{ $t('addStore.storePhotoTip') }}
+              最多可上传5张图，每张大小不可超过5M，格式要求为jpg，png
             </p>
           </div>
         </el-form-item>

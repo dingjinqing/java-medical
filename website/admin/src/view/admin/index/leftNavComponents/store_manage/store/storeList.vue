@@ -140,9 +140,9 @@
             </p>
           </el-popover>
           <div>
-            <el-button type="primary" size="small" @click="addStoreHandle">{{
-              $t('storeList.addStore')
-            }}</el-button>
+            <el-button type="primary" size="small" @click="addStoreHandle"
+              >新增门店</el-button
+            >
           </div>
         </div>
       </div>

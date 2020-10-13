@@ -3,7 +3,8 @@
 	var getStatus = function(status){
 		var statusName = {
 		  '1':'已审核',
-			'2':'已开具'
+			'2':'已开具',
+			'3':'问诊开方'
 		}
 		return statusName[''+status]
 	}

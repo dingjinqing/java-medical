@@ -22,7 +22,7 @@
             订单编号：{{item.orderSn}}
           </view>
           <view class="consignee-info">
-            <view class="consignee-name" bindtap="call"><text>收货人手机号：{{item.mobile}}</text>
+            <view class="consignee-name" bindtap="call" data-phone="{{item.mobile}}"><text>收货人手机号：{{item.mobile}}</text>
               <image src="{{imageUrl}}image/wxapp/clerk_phone.png"></image>
             </view>
             <view class="consignee-address" data-lat="{{item.lat}}" data-lng="{{item.lng}}" data-complete-address="{{item.completeAddress}}" bindtap="viewMap"><text>收货地址：{{item.completeAddress}}</text>
