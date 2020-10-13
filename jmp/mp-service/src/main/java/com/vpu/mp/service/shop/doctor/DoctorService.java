@@ -128,6 +128,12 @@ public class DoctorService extends BaseShopConfigService {
 
     public static final int ZERO = 0;
 
+    private static final Integer TEN_MINUTES = 600;
+
+    private static final Integer HALF_HOUR = 1800;
+
+    private static final Integer ONE_HOUR = 3600;
+
     public PageResult<DoctorOneParam> getDoctorList(DoctorListParam param) {
         if (param.getDepartmentName() != null) {
             List<Integer> departmentIds = departmentDao.getDepartmentIdsByName(param.getDepartmentName());
@@ -176,9 +182,28 @@ public class DoctorService extends BaseShopConfigService {
             throw MpException.initErrorResult(JsonResultCode.DOCTOR_ID_IS_NULL, "医师id为null");
         }
         DoctorOneParam doctorInfo = doctorDao.getOneInfo(doctorId);
+        doctorInfo.setAvgAnswerTimeNotSecond(integerTimeToStringTime(doctorInfo.getAvgAnswerTime()));
         List<Integer> departmentIds = doctorDepartmentCoupleDao.getDepartmentIdsByDoctorId(doctorId);
         doctorInfo.setDepartmentIds(departmentIds);
         return doctorInfo;
+    }
+
+    /**
+     * 将接诊时间(秒)转换为字符串类型展示
+     * @param avgAnswerTime 评价响应时间(秒)
+     * @return String
+     */
+    private String integerTimeToStringTime(Integer avgAnswerTime) {
+        if (avgAnswerTime <= TEN_MINUTES) {
+            return "十分钟内";
+        }
+        if (avgAnswerTime <= HALF_HOUR) {
+            return "半小时内";
+        }
+        if (avgAnswerTime <= ONE_HOUR) {
+            return "一小时内";
+        }
+        return "一小时以上";
     }
 
     public void setDoctorDepartmentCouples(Integer doctorId, String departmentIdsStr) {
