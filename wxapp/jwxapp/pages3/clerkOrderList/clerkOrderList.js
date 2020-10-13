@@ -136,6 +136,11 @@ global.wxPage({
       })
     },true,'取消','确认退款')
   },
+  call({currentTarget:{dataset:{phone:phoneNumber}}}){
+    wx.makePhoneCall({
+      phoneNumber
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

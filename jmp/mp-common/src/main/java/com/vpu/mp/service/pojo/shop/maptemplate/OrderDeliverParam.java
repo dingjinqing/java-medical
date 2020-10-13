@@ -12,10 +12,9 @@ import java.util.List;
 @Data
 @Builder
 public class OrderDeliverParam {
-    public static final String ORDERDETAIL = "已发货";
     private String orderSn;
-    @Builder.Default
-    private String orderDetail=ORDERDETAIL;
-    private String deliverDate;
+    private String consignee;
+    private String mobile;
+    private String address;
     private List<Integer> userIds;
 }
