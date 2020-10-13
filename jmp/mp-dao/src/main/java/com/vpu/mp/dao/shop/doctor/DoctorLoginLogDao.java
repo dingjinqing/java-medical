@@ -129,12 +129,12 @@ public class DoctorLoginLogDao extends ShopBaseDao {
      */
     public Integer getDoctorAttendanceRank(Integer loginDays, Byte type) {
         Timestamp startTime = getStartTime(type);
-        Integer rank = db().selectCount()
+        List<Integer> doctorList = db().select(DOCTOR.ID)
             .from(DOCTOR)
             .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(DOCTOR.AUTH_TIME)))
             .groupBy(DOCTOR.ID)
             .having(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).gt(loginDays))
-            .fetchOneInto(Integer.class);
-        return (rank == null) ? 1:(rank+1);
+            .fetchInto(Integer.class);
+        return (doctorList == null) ? 1:(doctorList.size()+1);
     }
 }
