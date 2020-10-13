@@ -53,14 +53,23 @@
             'text-align': 'center',
           }"
         >
-          <el-table-column
-            prop="patientName"
-            label="患者姓名"
-          ></el-table-column>
-          <el-table-column
-            prop='orderSn'
-            label='咨询单号'
-          ></el-table-column>
+          <el-table-column label="患者姓名">
+            <template slot-scope="scope">
+              <span
+                class="linkStyle"
+                @click="handleSeePatient(scope.row.patientId)"
+              >{{scope.row.patientName}}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label='咨询单号'>
+            <template slot-scope="scope">
+              <span
+                class="linkStyle"
+                @click="orderHandler(scope.row.orderSn)"
+              >{{scope.row.orderSn}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="inqTime"
             label="问诊日期"
@@ -160,6 +169,25 @@ export default {
     handleData (data) {
       this.tableData = data
       this.langDefaultFlag = true
+    },
+    // 跳转订单详情
+    orderHandler (orderSn) {
+      this.$router.push({
+        name: 'orderInfo',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    // 跳转患者详情
+    handleSeePatient (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'patient_message'
+      })
+      newpage.href = newpage.href + '?id=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
     }
   },
   // watch: {
@@ -245,6 +273,9 @@ export default {
     }
     .el-button + .el-button {
       margin-left: 10px !important;
+    }
+    .linkStyle {
+      color: #5a8bff;
     }
   }
 }

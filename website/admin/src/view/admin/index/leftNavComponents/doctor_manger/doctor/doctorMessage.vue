@@ -26,7 +26,7 @@
             <div class="item">评价星级：{{data.avgCommentStar}}</div>
             <div class="item">关注数：{{data.attentionNumber}}</div>
             <div class="item">接诊量：{{data.consultationNumber}}</div>
-            <div class="item">平均响应时间：{{data.avgAnswerTime}}</div>
+            <div class="item">平均响应时间：{{data.avgAnswerTimeNotSecond}}</div>
             <div class="item">医师签名：{{data.allergyHistory}}</div>
           </div>
         </div>
