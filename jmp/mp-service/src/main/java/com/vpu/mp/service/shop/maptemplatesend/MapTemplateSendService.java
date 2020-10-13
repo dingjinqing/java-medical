@@ -193,7 +193,7 @@ public class MapTemplateSendService extends ShopBaseService {
                 MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_DELIVER).data(data).build())
 //            .mpTemplateData(
 //                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
-            .page("pages/account/account").shopId(getShopId())
+            .page("pages/orderinfo/orderinfo?orderSn=" + param.getOrderSn()).shopId(getShopId())
             .userIdList(param.getUserIds())
             .type(MessageTemplateConfigConstant.ORDER_SEND).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
