@@ -3,29 +3,30 @@ package com.vpu.mp.service.shop.order.action.base;
 import com.vpu.mp.common.foundation.util.BigDecimalUtil;
 import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageConfigVo;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.distribution.UpdateUserLevel;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderSaleAfterParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.config.message.MessageConfigService;
 import com.vpu.mp.service.shop.express.ExpressService;
+import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
@@ -63,6 +64,8 @@ public class OrderOperateSendMessage extends ShopBaseService {
 
     @Autowired
     private PreSaleProcessorDao preSaleProcessorDao;
+    @Autowired
+    private MapTemplateSendService mapTemplateSendService;
     /**
      * 发货模板消息
      * @param order
@@ -325,6 +328,36 @@ public class OrderOperateSendMessage extends ShopBaseService {
                 .build();
             saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         }
+    }
+
+    /**
+     * 发送待售后订单通知
+     * @param order
+     * @param returnOrder
+     */
+    public void sendWaitSaleAfterMessage(OrderInfoVo order, ReturnOrderRecord returnOrder){
+        Integer shopId=getShopId();
+        List<StoreAccountVo> storeAccountList = saas.shop.storeAccount.getStoreAccountByBindThird(shopId,order.getStoreId());
+        //关注公众号门店账户用户
+        List<Integer> userIdList = new ArrayList<Integer>();
+        for (StoreAccountVo storeAccount : storeAccountList) {
+            logger().info("门店账户发送,accountId:{}",storeAccount.getAccountId());
+            MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(shopId);
+            String officialAppId=wxapp.getLinkOfficialAppId();
+            com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord userAccount = saas.getShopApp(shopId).officialAccountUser.getUser(officialAppId, storeAccount.getOfficialOpenId());
+            if (userAccount == null) {
+                continue;
+            }
+
+            userIdList.add(storeAccount.getUserId());
+        }
+        if(isSendMp(MessageTemplateConfigConstant.SALE_AFTER_ORDER)){
+            OrderSaleAfterParam param=OrderSaleAfterParam.builder().orderSn(order.getOrderSn()).createTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime()))
+                .orderSource("").refundMoney(returnOrder.getMoney().toString()).refundReason(returnOrder.getReasonDesc())
+                .userIds(userIdList).build();
+            mapTemplateSendService.sendWaitSaleAfterMessage(param);
+        }
+
     }
 
     private String getGoodsName(List<OrderGoodsRecord> orderGoods) {

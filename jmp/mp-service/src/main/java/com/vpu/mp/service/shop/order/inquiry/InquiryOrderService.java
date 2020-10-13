@@ -33,6 +33,7 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfig;
 import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
+import com.vpu.mp.service.pojo.shop.maptemplate.ConsultationOrderPayParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.ConsultationSuccessParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -267,7 +268,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param paymentRecord
      * @throws MpException
      */
-    public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord)  {
+    public void inquiryOrderFinish(InquiryOrderDo order, PaymentRecordRecord paymentRecord) throws MpException {
         logger().info("问诊订单-支付完成(回调)-开始");
         order.setOrderStatus(InquiryOrderConstant.ORDER_TO_RECEIVE);
         order.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
@@ -281,12 +282,27 @@ public class InquiryOrderService extends ShopBaseService {
             ImSessionNewParam imSessionNewParam=new ImSessionNewParam();
             FieldsUtil.assign(order,imSessionNewParam);
             imSessionService.insertNewSession(imSessionNewParam);
+            sendConsultationNewOrderMessage(order);
         });
 
         logger().info("问诊订单-支付完成(回调)-结束");
 
     }
 
+    /**
+     * 发送新咨询提醒
+     * @param order
+     * @throws MpException
+     */
+    public void sendConsultationNewOrderMessage(InquiryOrderDo order) throws MpException {
+        List<Integer> list=new ArrayList<>();
+        DoctorOneParam doctor = doctorService.getOneInfo(order.getDoctorId());
+        list.add(doctor.getUserId());
+        ConsultationOrderPayParam param=ConsultationOrderPayParam.builder().patientData(order.getPatientName()).diseaseDetail(order.getDescriptionDisease())
+            .doctorName(order.getDoctorName()).orderSn(order.getOrderSn()).createTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getCreateTime()))
+            .userIds(list).build();
+        mapTemplateSendService.sendConsultationOrderMessage(param);
+    }
     /**
      * 返利入库
      * @param order

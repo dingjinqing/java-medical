@@ -94,8 +94,8 @@
 	<view class="bot_footer">
 	  <block wx:if='{{con.isOnDuty == 1}}'>
 			<view class="to_chat" data-doctor_id='{{con.id}}'  data-price='{{con.consultationPrice}}' catchtap="toChat">
- {{con.hasUndoneOrder == false ? '在线咨询￥' + con.consultationPrice + '/次' : '继续问诊'}} 
-			  
+       <text wx:if='{{con.consultationPrice > 0}}'>{{con.hasUndoneOrder == false ? '在线咨询￥' + con.consultationPrice + '/次' : '继续问诊'}} </text>
+			 <text wx:else> {{con.hasUndoneOrder == false ? '免费在线咨询': '继续问诊'}}</text>
 			</view>
 		<view class="tell_patient" catchtap="patient_announce">患者须知 ></view>
 		</block>
