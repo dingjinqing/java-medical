@@ -376,14 +376,14 @@ export default {
           name: 'shop_setting',
           flag: false
         },
-        {
-          imgUrl: this.$imageHost + '/image/admin/icon_left/pin_group_fail.png',
-          imgUrl_h: this.$imageHost + '/image/admin/icon_left/pin_group_fail_h.png',
-          path: '/admin/home/main/orders/pinGroup/fail',
-          span: '',
-          name: 'pin_group_fail',
-          flag: false
-        },
+        // {
+        //   imgUrl: this.$imageHost + '/image/admin/icon_left/pin_group_fail.png',
+        //   imgUrl_h: this.$imageHost + '/image/admin/icon_left/pin_group_fail_h.png',
+        //   path: '/admin/home/main/orders/pinGroup/fail',
+        //   span: '',
+        //   name: 'pin_group_fail',
+        //   flag: false
+        // },
         {
           imgUrl: this.$imageHost + '/image/admin/icon_left/checkout.png',
           imgUrl_h: this.$imageHost + '/image/admin/icon_left/checkout_h.png',
