@@ -275,7 +275,7 @@ export default {
       margin-left: 10px !important;
     }
     .linkStyle {
-      color: #5a8bff;
+      // color: #5a8bff;
     }
   }
 }
