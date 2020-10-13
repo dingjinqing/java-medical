@@ -161,6 +161,14 @@ public class InquiryOrderService extends ShopBaseService {
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(orderSn);
         InquiryOrderDetailVo inquiryOrderDetailVo=new InquiryOrderDetailVo();
         FieldsUtil.assign(inquiryOrderDo,inquiryOrderDetailVo);
+        UserDo userDo=userDao.getUserById(inquiryOrderDo.getUserId());
+        inquiryOrderDetailVo.setUserMobile(userDo.getMobile());
+        inquiryOrderDetailVo.setUserName(userDo.getUsername());
+        //退款记录
+        inquiryOrderDetailVo.setRefundList(inquiryOrderRefundListDao.getListByOrderSn(inquiryOrderDo.getOrderSn()));
+        //咨询返利详情
+        InquiryOrderRebateVo rebateVo=inquiryOrderRebateDao.getRebateByOrderSn(inquiryOrderDo.getOrderSn());
+        inquiryOrderDetailVo.setRebate(rebateVo);
         inquiryOrderDetailVo.setPatientAge(DateUtils.getAgeByBirthDay(inquiryOrderDetailVo.getPatientBirthday()));
         return inquiryOrderDetailVo;
     }
