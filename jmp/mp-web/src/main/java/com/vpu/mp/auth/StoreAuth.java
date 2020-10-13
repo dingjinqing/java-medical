@@ -114,7 +114,7 @@ public class StoreAuth {
             info.setToken(user.getToken());
         }
         //小程序信息
-        MpAuthShopRecord record=saas.shop.mp.getAuthShopByShopIdAddURL(storeAuthInfoVoNew.getStoreAccountInfo().getShopId());
+        MpAuthShopRecord record=saas.shop.mp.getAuthShopByShopIdAddUrl(storeAuthInfoVoNew.getStoreAccountInfo().getShopId());
         info.setQrcodeUrl(record.getQrcodeUrl());
         info.setNickName(record.getNickName());
         this.saveTokenInfo(info);

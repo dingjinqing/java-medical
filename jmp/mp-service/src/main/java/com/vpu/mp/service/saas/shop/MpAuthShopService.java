@@ -216,7 +216,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaService getMaServiceByShopId(Integer shopId) {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
-		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!"); 
+		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!");
 		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
 	}
 
@@ -228,7 +228,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaService getMaServiceByAppId(String appId) {
 		MpAuthShopRecord mp = getAuthShopByAppId(appId);
-		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!"); 
+		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK), "Miniprogram is not authed!");
 		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
 	}
 
@@ -263,7 +263,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param appId
 	 * @return
 	 */
-	public MpAuthShopRecord getAuthShopByAppIdAddURL(String appId) {
+	public MpAuthShopRecord getAuthShopByAppIdAddUrl(String appId) {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.APP_ID.eq(appId));
 		if(fetchAny!=null) {
 			fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl()));
@@ -289,7 +289,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param shopId
 	 * @return
 	 */
-	public MpAuthShopRecord getAuthShopByShopIdAddURL(Integer shopId) {
+	public MpAuthShopRecord getAuthShopByShopIdAddUrl(Integer shopId) {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.SHOP_ID.eq((shopId)));
 		if(fetchAny!=null) {
 			fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl()));
@@ -846,11 +846,11 @@ public class MpAuthShopService extends MainBaseService {
 					mp.update();
 				}
 			}
-			if(result.getStatus().equals(2)) {
+			if(result.getStatus().equals(WX_AUTH_STATUS_AUDITING)) {
 				//状态成功没有返回reason
 				operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESSON2.code, new String[] {String.valueOf(result.getStatus())});
 			}else {
-				operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESS.code, new String[] {String.valueOf(result.getStatus()),result.getReason()});				
+				operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESS.code, new String[] {String.valueOf(result.getStatus()),result.getReason()});
 			}
 			return result;
 		}
@@ -914,12 +914,16 @@ public class MpAuthShopService extends MainBaseService {
 			}
 		}
 	}
-	
+
 	public int updateBindOpenAppId(String appId, String bindAppId) {
 		return db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.BIND_OPEN_APP_ID, bindAppId)
 				.where(MP_AUTH_SHOP.APP_ID.eq(appId)).execute();
 	}
 
+	/**
+	 * 小程序未绑定微信开放平台帐号
+	 */
+	private static final int   WECHAT_OPEN_PLATFORM_ACCOUNT_NOT_BOUND =89002;
 	/**
 	 * 用接口绑定小程序或者公众号appId到开放平台账号
 	 *
@@ -945,7 +949,7 @@ public class MpAuthShopService extends MainBaseService {
 			}
 			return openAppId;
 		} catch (WxErrorException e) {
-			if (e.getError().getErrorCode() == 89002) {
+			if (e.getError().getErrorCode() == WECHAT_OPEN_PLATFORM_ACCOUNT_NOT_BOUND) {
 
 				// 该公众号/小程序未绑定微信开放平台帐号
 				// 如果openAppId为空，则创建开放平台账号，否则绑定当前平台账号
@@ -972,7 +976,7 @@ public class MpAuthShopService extends MainBaseService {
 		return db().fetch(MP_AUTH_SHOP,
 				MP_AUTH_SHOP.PRINCIPAL_NAME.eq(principalName).and(MP_AUTH_SHOP.IS_AUTH_OK.eq((byte) 1)));
 	}
-	
+
 	/**
 	 * 小程序
 	 * @param principalName
@@ -1037,9 +1041,9 @@ public class MpAuthShopService extends MainBaseService {
      * @return
      */
 	public Byte getMpPackageVersion(String appId) {
-		Byte plugin = getPlugin(appId);
-		logger().info("小程序：{}的版本为：{}", appId, plugin);
-		return plugin;
+//		Byte plugin = getPlugin(appId);
+		logger().info("小程序：{}的版本为：{}", appId, "默认正常版本");
+		return 1;
 	}
 
 	/**
@@ -1079,7 +1083,7 @@ public class MpAuthShopService extends MainBaseService {
 					boolean checkHasLive = checkHasLive(getAuthShopByAppId(appId));
 					if(checkHasLive) {
 						logger().info("小程序：{}，有直播权限",appId);
-						hasLive=true;						
+						hasLive=true;
 					}
     			}
     		}
@@ -1232,118 +1236,55 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public void erroInsert(MpDeployQueryParam param,WxOpenResult result){
 		MpAuthShopRecord mp = this.getAuthShopByAppId(param.getAppId());
-		Byte operateType=null;
-		Integer templateIds=2000;
-		String[] datas=null;
-		switch (param.getAct()) {
-		case MpDeployQueryParam.ACT_ADD_TESTER: {
-			//绑定体验者
-			operateType=MpOperateLogService.OP_TYPE_ADD_TESTER;
-			templateIds=WxContentTemplate.WX_BIND_TESTER_FAIL.code;
-			datas=new String[] {param.getWechatId(),result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-
-		case MpDeployQueryParam.ACT_DEL_TESTER: {
-			// 删除体验者
-			operateType=MpOperateLogService.OP_TYPE_DEL_TESTER;
-			templateIds=WxContentTemplate.WX_DEL_TESTER_FAIL.code;
-			datas=new String[] {param.getWechatId(),result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-
-		case MpDeployQueryParam.ACT_GET_CATEGORY: {
-			//获取可选类目
-			operateType=MpOperateLogService.OP_TYPE_GET_CATEGORY;
-			templateIds=WxContentTemplate.WX_GET_CATEGORY_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_GET_PAGE_CFG: {
-			//获取页面配置
-			operateType=MpOperateLogService.OP_TYPE_GET_PAGE_CFG;
-			templateIds=WxContentTemplate.WX_GET_PAGE_CFG_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_GET_TESTER_QR: {
-			//获取体验者二维码
-			operateType=MpOperateLogService.OP_TYPE_GET_TESTER_QR;
-			templateIds=WxContentTemplate.WX_GET_NO_RECORD_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_MODIFY_DOMAIN: {
-			// 设置服务器域名
-			operateType=MpOperateLogService.OP_TYPE_MODIFY_DOMAIN;
-			templateIds=WxContentTemplate.WX_MODIFY_DOMAIN_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_PUBLISH_CODE: {
-			//发布代码
-			operateType=MpOperateLogService.OP_TYPE_PUBLISH_CODE;
-			templateIds=WxContentTemplate.WX_PUBLISH_CODE_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_SUBMIT_AUDIT: {
-			//提交审核
-			operateType=MpOperateLogService.OP_TYPE_SUBMIT_AUDIT;
-			templateIds=WxContentTemplate.WX_SUBMIT_AUDIT_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_UPDATE_MP: {
-			//更新小程序信息
-			operateType=MpOperateLogService.OP_TYPE_UPDATE_MP;
-			templateIds=WxContentTemplate.WX_UPDATE_MP_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_REFRESH_AUDIT_STATE: {
-			// 刷新审核状态
-			operateType=MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE;
-			templateIds=WxContentTemplate.WX_REFRESH_AUDIT_STATE_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_UPLOAD_AUDIT: {
-			//上传代码并提交审核   一键提交审核
-			operateType=MpOperateLogService.OP_TYPE_UPLOAD_AUDIT;
-			templateIds=WxContentTemplate.WX_UPLOAD_AUDIT_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.ACT_UPLOAD_CODE: {
-			//上传代码
-			operateType=MpOperateLogService.OP_TYPE_UPLOAD_CODE;
-			templateIds=WxContentTemplate.WX_UPLOAD_CODE_FAIL.code;
-			datas=new String[] {String.valueOf(param.getIsSubMerchant()),result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		case MpDeployQueryParam.SETTING_SUB_MERCHANT: {
-			//设置支付方式
-			operateType=MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT;
-			templateIds=WxContentTemplate.WX_SETTING_SUB_MERCHANT_FAIL.code;
-			datas=new String[] {result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		default: {
-			operateType=MpOperateLogService.OP_STATE_FAILED;
-			templateIds=WxContentTemplate.WX_ERROE.code;
-			datas=new String[] {param.getAct(),result.getErrcode(),result.getErrmsg()};
-			break;
-		}
-		}
-        String errorCode500 = "500";
-        if(result.getErrcode().equals(errorCode500)) {
+		String errorCode500 = "500";
+		if(result.getErrcode().equals(errorCode500)) {
 			//error错误
-			operateType=MpOperateLogService.OP_STATE_FAILED;
-			templateIds=WxContentTemplate.WX_ERROE.code;
-			datas=new String[] {param.getAct(),result.getErrcode(),result.getErrmsg()};
+			operateLogGlobal(mp, MpOperateLogService.OP_STATE_FAILED, result, WxContentTemplate.WX_ERROE.code, new String[] {param.getAct(),result.getErrcode(),result.getErrmsg()});
 		}
-		operateLogGlobal(mp, operateType, result, templateIds, datas);
+		switch (param.getAct()) {
+		case MpDeployQueryParam.ACT_ADD_TESTER://绑定体验者
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_ADD_TESTER, result, WxContentTemplate.WX_BIND_TESTER_FAIL.code, new String[] {param.getWechatId(),result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_DEL_TESTER:// 删除体验者
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_DEL_TESTER, result, WxContentTemplate.WX_DEL_TESTER_FAIL.code, new String[] {param.getWechatId(),result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_GET_CATEGORY://获取可选类目
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_CATEGORY, result, WxContentTemplate.WX_GET_CATEGORY_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_GET_PAGE_CFG://获取页面配置
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_PAGE_CFG, result, WxContentTemplate.WX_GET_PAGE_CFG_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_GET_TESTER_QR://获取体验者二维码
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, result, WxContentTemplate.WX_GET_NO_RECORD_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_MODIFY_DOMAIN:// 设置服务器域名
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result, WxContentTemplate.WX_MODIFY_DOMAIN_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_PUBLISH_CODE://发布代码
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_PUBLISH_CODE, result, WxContentTemplate.WX_PUBLISH_CODE_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_SUBMIT_AUDIT://提交审核
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SUBMIT_AUDIT, result, WxContentTemplate.WX_SUBMIT_AUDIT_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_UPDATE_MP://更新小程序信息
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_UPDATE_MP, result, WxContentTemplate.WX_UPDATE_MP_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_REFRESH_AUDIT_STATE:// 刷新审核状态
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_UPLOAD_AUDIT://上传代码并提交审核   一键提交审核
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_UPLOAD_AUDIT, result, WxContentTemplate.WX_UPLOAD_AUDIT_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.ACT_UPLOAD_CODE://上传代码
+
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result, WxContentTemplate.WX_UPLOAD_CODE_FAIL.code, new String[] {String.valueOf(param.getIsSubMerchant()),result.getErrcode(),result.getErrmsg()});
+			break;
+		case MpDeployQueryParam.SETTING_SUB_MERCHANT://设置支付方式
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, result, WxContentTemplate.WX_SETTING_SUB_MERCHANT_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
+			break;
+		default:
+			operateLogGlobal(mp, MpOperateLogService.OP_STATE_FAILED, result, WxContentTemplate.WX_ERROE.code, new String[] {param.getAct(),result.getErrcode(),result.getErrmsg()});
+		}
 	}
 
 
@@ -1361,14 +1302,14 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param appId
 	 * @return
 	 */
-	public WxMpXmlOutMessage AppEventHandler(WxMpXmlMessage inMessage,String appId) {
+	public WxMpXmlOutMessage appEventHandler(WxMpXmlMessage inMessage,String appId) {
 		/*
 		 * WebAppAudit::class, OfficialAccountMessage::class, MessageTrans::class,
 		 */
 		// 小程序有审核结果通知
-		WebAppAudit(inMessage, appId);
-		WxMpXmlOutTextMessage wxMessage = OfficialAccountMessage(inMessage, appId);
-		WxMpXmlOutMessage messageTrans = MessageTrans(inMessage);
+		webAppAudit(inMessage, appId);
+		WxMpXmlOutTextMessage wxMessage = officialAccountMessage(inMessage, appId);
+		WxMpXmlOutMessage messageTrans = messageTrans(inMessage);
 		if(wxMessage==null) {
 			logger().info("准备返回客服消息");
 			return messageTrans;
@@ -1382,7 +1323,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param inMessage
 	 * @param appId
 	 */
-	public void WebAppAudit(WxMpXmlMessage inMessage,String appId) {
+	public void webAppAudit(WxMpXmlMessage inMessage,String appId) {
 		processAuditEvent(inMessage, appId);
 	}
 
@@ -1428,7 +1369,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	}
 
-	public WxMpXmlOutTextMessage OfficialAccountMessage(WxMpXmlMessage inMessage,String appId) {
+	public WxMpXmlOutTextMessage officialAccountMessage(WxMpXmlMessage inMessage,String appId) {
 		WxMpXmlOutTextMessage wxMessage = processMessage(inMessage, appId);
 		return wxMessage;
 	}
@@ -1616,7 +1557,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param inMessage
 	 * @return
 	 */
-	public WxMpXmlOutMessage MessageTrans(WxMpXmlMessage inMessage) {
+	public WxMpXmlOutMessage messageTrans(WxMpXmlMessage inMessage) {
 		WxMpXmlOutTextMessage build = WxMpXmlOutMessage.TEXT().build();
 		build.setToUserName(inMessage.getFromUser());
 		build.setFromUserName(inMessage.getToUser());
@@ -1647,11 +1588,11 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return false;
 	}
-	
+
 	/**店铺发布列表
-	 * 
+	 *
 	 * @param param
-	 * @return 
+	 * @return
 	 * @return
 	 */
 	public PageResult<ShopMpListVo> getShopMpList(ShopMpListParam param) {
@@ -1697,7 +1638,7 @@ public class MpAuthShopService extends MainBaseService {
 		return pageResult;
 	}
 
-	
+
 	private void buildOptionsMp(ShopMpListParam param,SelectJoinStep<?> selectFrom) {
 		if(StringUtils.isNotEmpty(param.getKeywords())) {
 			selectFrom.where(MP_AUTH_SHOP.SHOP_ID.like(likeValue(param.getKeywords())).or(MP_AUTH_SHOP.NICK_NAME.like(likeValue(param.getKeywords())).or(SHOP.SHOP_NAME.like(likeValue(param.getKeywords())))));
@@ -1712,8 +1653,8 @@ public class MpAuthShopService extends MainBaseService {
 			selectFrom.where(SHOP.IS_ENABLED.eq(param.getIsEnabled()));
 		}
 	}
-	
-	
+
+
 	/**
 	 * 根据shopId获取小程序对应的公众号
 	 * @param shopId
@@ -1730,8 +1671,8 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return into;
 	}
-	
-	
+
+
 	/**
 	 * 获取小程序AppId
 	 *
@@ -1743,7 +1684,7 @@ public class MpAuthShopService extends MainBaseService {
 		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK),"mp is null ");
 		return mp.getAppId();
 	}
-	
+
 	public List<String> getAllTester(String appId) throws WxErrorException{
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaTesterListResult testerList = maService.getTesterList();
@@ -1757,7 +1698,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return list;
 	}
-	
+
 	private void setTestRecord(MpAuthShopRecord record,String appId) {
 		logger().info("appid：{}更新体验者",appId);
 		List<String> allTester=null;
@@ -1770,7 +1711,7 @@ public class MpAuthShopService extends MainBaseService {
 			record.setTester(Util.toJson(allTester));
 		}
 	}
-	
+
 	/**
 	 * 检查是否有直播权限集
 	 * @param record
@@ -1790,7 +1731,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 直播的校验
 	 * @param shopId
