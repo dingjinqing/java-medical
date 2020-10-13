@@ -12,9 +12,11 @@ import java.util.List;
 @Data
 @Builder
 public class OrderRefundSuccessParam {
+    public static final String REMIND = "您已退款成功";
     private String orderSn;
-    private String refundTime;
+    private String payTime;
     private String refundMoney;
-    private String refundReason;
+    @Builder.Default
+    private String remind=REMIND;
     private List<Integer> userIds;
 }

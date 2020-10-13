@@ -82,8 +82,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
     public StoreAccountDao storeAccountDao;
     @Autowired
     private PrescriptionDao prescriptionDao;
-    @Autowired
-    private MapTemplateSendService mapTemplateSendService;
+
 
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -184,15 +183,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		return null;
 	}
 
-    /**
-     * 发货发送提醒
-     * @param order
-     */
-	public void sendOrderDeliverMessage(OrderInfoRecord order){
-        OrderDeliverParam deliverParam= OrderDeliverParam.builder().orderSn(order.getOrderSn()).deliverDate(DateUtils.getLocalDateFormat())
-            .userIds(Collections.singletonList(order.getUserId())).build();
-        mapTemplateSendService.sendOrderDeliverMessage(deliverParam);
-    }
+
 	/**
 	 * 处理账户的id
 	 * @param param

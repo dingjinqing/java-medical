@@ -140,11 +140,11 @@ public class MapTemplateSendService extends ShopBaseService {
     public void sendConsultationSuccessMessage(ConsultationSuccessParam param){
         // 订阅消息
         String[][] maData = new String[][] {
+            {param.getServiceName()},
             {param.getPatientName()},
-            {param.getDiseaseDetail()},
             {param.getDoctorName()},
-            {param.getRemark()},
-            {"科室"},
+            {param.getReceiveTime()},
+            {param.getRemark()}
         };
 
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
@@ -152,10 +152,8 @@ public class MapTemplateSendService extends ShopBaseService {
         // 公众号消息
         String[][] mpData = new String[][] {
             {param.getPatientName()},
-            {param.getDiseaseDetail()},
             {param.getDoctorName()},
             {param.getRemark()},
-            {param.getDepartmentName()},
         };
         RabbitMessageParam param2 = RabbitMessageParam.builder()
             .maTemplateData(
@@ -175,18 +173,16 @@ public class MapTemplateSendService extends ShopBaseService {
     public void sendOrderDeliverMessage(OrderDeliverParam param){
         // 订阅消息
         String[][] maData = new String[][] {
-            {param.getOrderSn()},
-            {param.getOrderDetail()},
-            {param.getDeliverDate()},
+            {param.getConsignee()},
+            {param.getMobile()},
+            {param.getAddress()},
         };
 
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
 
         // 公众号消息
         String[][] mpData = new String[][] {
-            {param.getOrderSn()},
-            {param.getOrderDetail()},
-            {param.getDeliverDate()},
+            {param.getOrderSn()}
         };
         RabbitMessageParam param2 = RabbitMessageParam.builder()
             .maTemplateData(
@@ -206,20 +202,18 @@ public class MapTemplateSendService extends ShopBaseService {
     public void sendOrderRefundSuccessMessage(OrderRefundSuccessParam param){
         // 订阅消息
         String[][] maData = new String[][] {
-            {param.getOrderSn()},
-            {param.getRefundTime()},
-            {param.getRefundMoney()},
-            {param.getRefundReason()},
+            {param.getRemind()},
+            {param.getPayTime()},
+            {param.getRefundMoney()}
         };
 
         MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
 
         // 公众号消息
         String[][] mpData = new String[][] {
-            {param.getOrderSn()},
-            {param.getRefundTime()},
+            {param.getRemind()},
+            {param.getPayTime()},
             {param.getRefundMoney()},
-            {param.getRefundReason()},
         };
         RabbitMessageParam param2 = RabbitMessageParam.builder()
             .maTemplateData(

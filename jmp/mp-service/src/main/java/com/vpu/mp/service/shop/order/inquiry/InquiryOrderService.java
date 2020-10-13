@@ -35,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.config.rebate.RebateConfigConstant;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorOneParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.ConsultationOrderPayParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.ConsultationSuccessParam;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderRefundSuccessParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
@@ -74,6 +75,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -205,7 +208,7 @@ public class InquiryOrderService extends ShopBaseService {
         List<Integer> list=new ArrayList<>();
         list.add(inquiryOrderDo.getUserId());
         ConsultationSuccessParam consultationSuccessParam=ConsultationSuccessParam.builder().patientName(inquiryOrderDo.getPatientName())
-            .departmentName(inquiryOrderDo.getDepartmentName()).diseaseDetail(inquiryOrderDo.getDescriptionDisease())
+            .receiveTime(DateUtils.getLocalDateFormat())
             .doctorName(inquiryOrderDo.getDoctorName()).userIds(list).build();
         mapTemplateSendService.sendConsultationSuccessMessage(consultationSuccessParam);
     }
@@ -501,9 +504,21 @@ public class InquiryOrderService extends ShopBaseService {
         imSessionService.batchCancelSession(orderSnList);
         //交易记录
         tradesRecord.addRecord(refundMoney,order.getOrderSn(),order.getUserId(), TradesRecordService.TRADE_CONTENT_MONEY, RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
+        //退费消息
+        sendOrderRefundSuccessMessage(order,refundMoney);
         logger().info("问诊订单退款-结束end,orderSn:{}"+order.getOrderSn());
     }
 
+    /**
+     * 发送退款成功消息
+     * @param order
+     * @param refundMoney
+     */
+    public void sendOrderRefundSuccessMessage(InquiryOrderDo order,BigDecimal refundMoney){
+        OrderRefundSuccessParam param=OrderRefundSuccessParam.builder().refundMoney(refundMoney.toString())
+            .payTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime())).userIds(Collections.singletonList(order.getUserId())).build();
+        mapTemplateSendService.sendOrderRefundSuccessMessage(param);
+    }
     /**
      * 问诊订单统计报表查询
      * @param param
