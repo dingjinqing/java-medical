@@ -138,6 +138,7 @@ export default {
   },
   mounted () {
     this.queryParams.doctorName = this.$route.query.name ? this.$route.query.name : ''
+    this.queryParams.doctorId = this.$route.query.doctorId ? this.$route.query.doctorId : null
     this.initDoctorPart()
     this.initDataList()
   },
@@ -149,6 +150,7 @@ export default {
         patientName: '',
         departmentId: '',
         orderStatus: '',
+        doctorId: null,
         startTime: null,
         endTime: null
       },
