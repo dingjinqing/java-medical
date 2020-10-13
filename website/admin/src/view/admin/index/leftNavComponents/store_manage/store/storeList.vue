@@ -453,7 +453,8 @@ export default {
         return area.districtId === parseInt(item.districtCode)
       })
       areaDistrict = areaDistrict[0]
-      address += ' ' + areaDistrict.districtName + ' ' + item.address
+      console.log(areaDistrict)
+      address += ' ' + (areaDistrict ? areaDistrict.districtName : '') + ' ' + item.address
 
       return address
     },

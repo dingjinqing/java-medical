@@ -9,8 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vpu.mp.db.main.tables.records.*;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderNewParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountEditParam;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
+import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +57,8 @@ public class ThirdPartyMsgServices extends MainBaseService {
 
 	@Autowired
 	private MpOfficialAccountUserService mpOfficialAccountUserService;
+	@Autowired
+    private MapTemplateSendService mapTemplateSendService;
 
 	/**
 	 * 发送订单消息
@@ -89,10 +94,44 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		}
 
         for (StoreAccountVo storeAccount : storeAccountList) {
-            logger().info("子账户发送");
+            logger().info("门店账户发送,accountId:{}",storeAccount.getAccountId());
             sendSingleMessage(order, storeAccount.getOfficialOpenId(),THREE,storeAccount.getAccountId());
+            sendNewOrderMessage(order, THREE,storeAccount);
         }
 	}
+
+    /**
+     * 新订单提醒
+     * @param order
+     * @param storeAccount
+     * @return
+     */
+	private boolean sendNewOrderMessage(OrderInfoRecord order,Byte accountAction,StoreAccountVo storeAccount){
+        MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(order.getShopId());
+        String officialAppId=wxapp.getLinkOfficialAppId();
+        com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord userAccount = saas.getShopApp(order.getShopId()).officialAccountUser.getUser(officialAppId, storeAccount.getOfficialOpenId());
+        if (userAccount == null) {
+            return false;
+        }
+        //关注公众号门店账户用户
+        List<Integer> userIdList = new ArrayList<Integer>();
+        userIdList.add(storeAccount.getUserId());
+        UserRecord userRecord = saas.getShopApp(order.getShopId()).user.getUserByUserId(order.getUserId());
+        String userName = userRecord.getUsername();
+        OrderNewParam param=OrderNewParam.builder().orderSn(order.getOrderSn()).userName(userName).mobile(order.getMobile())
+            .deliverTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime()))
+            .deliverType(OrderConstant.DELIVER_LIST[order.getDeliverType()]).userIds(userIdList).build();
+        mapTemplateSendService.sendNewOrderMessage(param);
+        ThirdPartyServicesRecord newRecord = db().newRecord(THIRD_PARTY_SERVICES);
+        newRecord.setShopId(order.getShopId());
+        newRecord.setAccountAction(accountAction);
+        newRecord.setAccountId(storeAccount.getAccountId());
+        newRecord.setServiceDetail(order.getOrderSn());
+        newRecord.setAddTime(DateUtils.getSqlTimestamp());
+        int insert = newRecord.insert();
+        logger().info("插入结果 "+insert);
+        return true;
+    }
 
 	private boolean sendSingleMessage(OrderInfoRecord order, String officialOpenId,Byte accountAction,Integer accountId) {
         MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(order.getShopId());

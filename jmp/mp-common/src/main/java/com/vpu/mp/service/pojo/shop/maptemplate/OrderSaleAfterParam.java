@@ -18,6 +18,7 @@ public class OrderSaleAfterParam {
     private String orderSource;
     private String refundMoney;
     private String refundReason;
+    @Builder.Default
     private String remark=REMARK;
     private List<Integer> userIds;
 
