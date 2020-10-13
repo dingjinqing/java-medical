@@ -146,11 +146,14 @@ public class StoreGoodsDao extends ShopBaseDao {
      */
     public List<String> checkStoreGoodsIsOnSale(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
         List<Integer> prdId = storeGoodsBaseCheckInfoList.stream().map(StoreGoodsBaseCheckInfo::getProductId).collect(Collectors.toList());
-        return db().select(STORE.STORE_CODE)
+        SelectOnConditionStep<Record1<String>> on = db().select(STORE.STORE_CODE)
             .from(STORE)
             .leftJoin(STORE_GOODS)
-            .on(STORE.STORE_ID.eq(STORE_GOODS.STORE_ID))
-            .where(STORE_GOODS.PRD_ID.in(prdId))
+            .on(STORE.STORE_ID.eq(STORE_GOODS.STORE_ID));
+        prdId.forEach(a -> {
+            on.where(STORE_GOODS.PRD_ID.eq(a));
+        });
+        return on
             .and(STORE_GOODS.PRODUCT_NUMBER.gt(0))
             .and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE))
             .fetchInto(String.class);
