@@ -182,6 +182,9 @@ public class PrescriptionService extends ShopBaseService {
         }
         List<PrescriptionItemInfoVo> prescriptionItemSimpleVos = prescriptionItemDao.listByPrescriptionNo(prescriptionNo);
         byPrescription.setItemList(prescriptionItemSimpleVos);
+        //医院公章
+        ShopBaseConfig shopBase = saas.shop.getShopBaseInfoById(getShopId());
+        byPrescription.setCachet(shopBase.getCachet());
         return byPrescription;
     }
 
