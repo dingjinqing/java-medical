@@ -356,6 +356,7 @@ export default {
             return false
           }
           // 科室需要字符串
+          params.departmentIds = params.departmentIdsStr
           params.departmentIdsStr = params.departmentIdsStr.join(',')
           if (this.urlType === 1) {
             params.url = ''
