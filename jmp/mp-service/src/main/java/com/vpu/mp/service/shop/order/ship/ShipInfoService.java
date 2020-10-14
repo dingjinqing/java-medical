@@ -155,6 +155,8 @@ public class ShipInfoService extends ShopBaseService {
 
     /**
      * 查询完成数
+	 * 订单状态  (已收货 已完成)
+	 * 退款状态 (默认,撤销,未通过,已完成,拒绝)
      * @param accountId
      * @param userId
      * @param startTime
@@ -166,7 +168,11 @@ public class ShipInfoService extends ShopBaseService {
 				.from(PART_ORDER_GOODS_SHIP)
                 .leftJoin(ORDER_INFO).on(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
                 .where(PART_ORDER_GOODS_SHIP.CONFIRM_ACCOUNT_ID.eq(accountId))
-            .and(PART_ORDER_GOODS_SHIP.CONFIRM_USER_ID.eq(userId));
+		//订单状态  (已收货 已完成)
+		.and(ORDER_INFO.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED))
+		//退款状态 (默认,撤销,未通过,已完成,拒绝)
+		.and(ORDER_INFO.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_CLOSE,
+				OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE));
         if(storeId!=null){
             select.and(ORDER_INFO.STORE_ID.eq(storeId));
         }
@@ -188,8 +194,10 @@ public class ShipInfoService extends ShopBaseService {
      * @return
      */
     public Integer getCountDeliveryNumByAccountIdUserId(Integer accountId,Integer userId, Timestamp startTime,Timestamp endTime){
-        SelectConditionStep<? extends Record> select=db().select(DSL.isnull(DSL.countDistinct(PART_ORDER_GOODS_SHIP.ORDER_SN),0)).from(PART_ORDER_GOODS_SHIP).where(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID.eq(accountId))
-            .and(PART_ORDER_GOODS_SHIP.SHIPPING_USER_ID.eq(userId));
+        SelectConditionStep<? extends Record> select=db().select(DSL.isnull(DSL.countDistinct(PART_ORDER_GOODS_SHIP.ORDER_SN),0))
+				.from(PART_ORDER_GOODS_SHIP)
+				.where(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID.eq(accountId))
+				.and(PART_ORDER_GOODS_SHIP.SHIPPING_USER_ID.eq(userId));
         if(startTime!=null){
             select.and(PART_ORDER_GOODS_SHIP.SHIPPING_TIME.ge(startTime));
         }
