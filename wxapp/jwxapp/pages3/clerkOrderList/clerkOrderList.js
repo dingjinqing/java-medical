@@ -1,6 +1,4 @@
 const util = require("../../utils/util");
-
-let plugin = requirePlugin('routePlan');
 global.wxPage({
 
   /**
