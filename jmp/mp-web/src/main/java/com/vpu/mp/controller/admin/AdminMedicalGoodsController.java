@@ -154,7 +154,7 @@ public class AdminMedicalGoodsController extends AdminBaseController {
     }
 
     @PostMapping("/api/admin/medical/external/fail/match/goods")
-    public JsonResult failMatchGoods(FailMatchedParam param){
+    public JsonResult failMatchGoods(@RequestBody FailMatchedParam param){
         shop().medicalGoodsService.failMatchGoods(param);
         return success();
     }

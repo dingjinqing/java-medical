@@ -147,6 +147,7 @@ public class GoodsConverter {
     public static GoodsEntity convertExternalMatchedGoodsParamToGoodsEntity(ExternalMatchedGoodsParam param){
         GoodsEntity goodsEntity =new GoodsEntity();
         FieldsUtil.assign(param,goodsEntity);
+        goodsEntity.setGoodsName(param.getGoodsCommonName());
         goodsEntity.setShopPrice(param.getHisPrice());
         goodsEntity.setCostPrice(param.getHisPrice());
         goodsEntity.setMarketPrice(param.getStorePrice());

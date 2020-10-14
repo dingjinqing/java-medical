@@ -225,12 +225,13 @@ public class StoreGoodsService extends ShopBaseService{
         }
     }
 
-    public void updateMatchedExternalStoreGoodsInfos(String medicalKey,BigDecimal price,Integer goodsId){
+    public void updateMatchedExternalStoreGoodsInfos(String storeCode,BigDecimal price,Integer goodsId,Integer prdId){
         db().update(STORE_GOODS)
             .set(STORE_GOODS.GOODS_ID,goodsId)
+            .set(STORE_GOODS.PRD_ID,prdId)
             .set(STORE_GOODS.IS_ON_SALE, MedicalGoodsConstant.ON_SALE)
             .set(STORE_GOODS.PRODUCT_PRICE,price)
-            .where(STORE_GOODS.GOODS_COMMON_NAME.concat(STORE_GOODS.GOODS_QUALITY_RATIO.concat(STORE_GOODS.GOODS_PRODUCTION_ENTERPRISE)).eq(medicalKey))
+            .where(STORE_GOODS.GOODS_STORE_SN.eq(storeCode))
             .execute();
     }
 

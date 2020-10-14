@@ -700,7 +700,8 @@ public class MedicalGoodsService extends ShopBaseService {
                 goodsAggregate.update(goodsEntity);
                 medicalGoodsSpecProductService.updateExternalSku(goodsEntity.getGoodsId(),goodsEntity.getShopPrice(),goodsEntity.getMarketPrice(),goodsEntity.getCostPrice());
             }
-            storeGoodsService.updateMatchedExternalStoreGoodsInfos(externalMatchedGoodsParam.getMedicalKey(),externalMatchedGoodsParam.getHisPrice(),goodsEntity.getGoodsId());
+            Integer prdId = goodsEntity.getGoodsSpecProducts().get(0).getPrdId();
+            storeGoodsService.updateMatchedExternalStoreGoodsInfos(externalMatchedGoodsParam.getStoreGoodsCode(),externalMatchedGoodsParam.getHisPrice(),goodsEntity.getGoodsId(),prdId);
             goodsExternalDao.updateExternalInfoToMatched(externalMatchedGoodsParam.getFromHisId(),externalMatchedGoodsParam.getFromStoreId());
         });
     }

@@ -18,6 +18,7 @@ import java.util.Map;
 public class GoodsEntity {
     private Integer goodsId;
     private String goodsSn;
+    private String goodsBarCode;
     private String goodsName;
     private Integer goodsNumber;
     private Integer brandId;
