@@ -63,11 +63,10 @@ public class GoodsLabelDao extends ShopBaseDao {
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAddAndUpdateParam}
      */
     public void insertOnly(GoodsLabelAddAndUpdateParam param) {
-
+        transaction(() -> {
             GoodsLabelRecord record = db().newRecord(GOODS_LABEL, param);
             record.insert();
-            param.setId(record.getId());
-
+        });
     }
 
     public List<GoodsLabelBase> listChronicLabels(){

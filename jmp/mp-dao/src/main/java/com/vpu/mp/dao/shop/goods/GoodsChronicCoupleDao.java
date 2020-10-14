@@ -32,6 +32,7 @@ public class GoodsChronicCoupleDao extends ShopBaseDao {
             .from(GOODS_CHRONIC_COUPLE)
             .leftJoin(GOODS_MEDICAL_INFO).on(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(GOODS_CHRONIC_COUPLE.GOODS_COMMON_NAME))
             .where(GOODS_CHRONIC_COUPLE.LABEL_NAME.eq(chronicName))
+            .and(GOODS_MEDICAL_INFO.GOODS_ID.gt(0))
             .fetchInto(Integer.class);
     }
 
