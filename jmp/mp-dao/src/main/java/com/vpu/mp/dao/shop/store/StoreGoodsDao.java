@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.store.goods.*;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -144,16 +145,15 @@ public class StoreGoodsDao extends ShopBaseDao {
      */
     public List<String> checkStoreGoodsIsOnSale(List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList) {
         List<Integer> prdId = storeGoodsBaseCheckInfoList.stream().map(StoreGoodsBaseCheckInfo::getProductId).collect(Collectors.toList());
-        SelectOnConditionStep<Record1<String>> on = db().select(STORE.STORE_CODE)
+        return db().select(STORE.STORE_CODE)
             .from(STORE)
             .leftJoin(STORE_GOODS)
-            .on(STORE.STORE_ID.eq(STORE_GOODS.STORE_ID));
-        prdId.forEach(a -> {
-            on.where(STORE_GOODS.PRD_ID.eq(a));
-        });
-        return on
+            .on(STORE.STORE_ID.eq(STORE_GOODS.STORE_ID))
+            .where(STORE_GOODS.PRD_ID.in(prdId))
             .and(STORE_GOODS.PRODUCT_NUMBER.gt(0))
             .and(STORE_GOODS.IS_ON_SALE.eq(IS_ON_SALE))
+            .groupBy(STORE.STORE_CODE)
+            .having(DSL.count(STORE.STORE_CODE).eq(storeGoodsBaseCheckInfoList.size()))
             .fetchInto(String.class);
     }
 }
