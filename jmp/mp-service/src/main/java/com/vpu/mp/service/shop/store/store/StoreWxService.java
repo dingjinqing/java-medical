@@ -2,19 +2,21 @@ package com.vpu.mp.service.shop.store.store;
 
 import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
-import com.vpu.mp.common.foundation.util.*;
+import com.vpu.mp.common.foundation.util.BigDecimalUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
+import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.config.SmsApiConfig;
 import com.vpu.mp.dao.main.StoreAccountDao;
-import com.vpu.mp.dao.shop.order.ReturnOrderDao;
-import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.dao.shop.address.UserAddressDao;
-import com.vpu.mp.dao.shop.doctor.DoctorDao;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
+import com.vpu.mp.dao.shop.order.ReturnOrderDao;
 import com.vpu.mp.dao.shop.pharmacist.PharmacistDao;
 import com.vpu.mp.dao.shop.store.StoreDao;
+import com.vpu.mp.dao.shop.user.UserDao;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -37,15 +39,32 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryV
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
-import com.vpu.mp.service.pojo.wxapp.store.*;
-import com.vpu.mp.service.pojo.wxapp.store.showmain.*;
+import com.vpu.mp.service.pojo.wxapp.store.Location;
+import com.vpu.mp.service.pojo.wxapp.store.StoreInfoParam;
+import com.vpu.mp.service.pojo.wxapp.store.StoreInfoVo;
+import com.vpu.mp.service.pojo.wxapp.store.StoreListParam;
+import com.vpu.mp.service.pojo.wxapp.store.StoreOrderTran;
+import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
+import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreClerkAuthParam;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMainShowVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreMonthStatisticVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderConstant;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListParam;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListVo;
+import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreStatisticVo;
 import com.vpu.mp.service.saas.region.ProvinceService;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
-import com.vpu.mp.service.shop.member.*;
+import com.vpu.mp.service.shop.member.AccountService;
+import com.vpu.mp.service.shop.member.BaseScoreCfgService;
+import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.ScoreCfgService;
+import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
@@ -60,28 +79,42 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.util.Strings;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
+import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_HOSPITAL;
 import static com.vpu.mp.dao.shop.store.StoreDao.STORE_TYPE_NORMAL_STORE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.*;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.PAY_SUCCESS;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.PAY_SUCCESS_NAME;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.STORE_BUY;
 import static com.vpu.mp.service.shop.store.store.StoreService.formatDouble;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.math.NumberUtils.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.SHORT_ONE;
 
 /**
  * The type Store wx service.
@@ -616,20 +649,18 @@ public class StoreWxService extends ShopBaseService {
         StoreMainShowVo storeMainShowVo=new StoreMainShowVo();
         //可用门店
         List<StoreStatisticVo> storeList=storeDao.getListByStoreIds(storeAccountVo.getStoreLists());
-        List<Byte> orderStatusList=new ArrayList<>();
-        //待处理的状态
-        orderStatusList.add(OrderConstant.ORDER_WAIT_DELIVERY);
-        orderStatusList.add(OrderConstant.ORDER_SHIPPED);
+
         //门店数据
         for(StoreStatisticVo statisticVo:storeList){
             //待处理数
-            Integer waitReceiveOrderNum= orderInfoDao.countNumByStoreIdOrderStatus(statisticVo.getStoreId(), orderStatusList);
+            Integer waitReceiveOrderNum= orderInfoDao.countNumByStoreIdOrderStatus(statisticVo.getStoreId(),storeAccountVo.getAccountId());
             //已完成数量
             Integer finishedOrderNum= shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),statisticVo.getStoreId(),null,null);
             //配送中数量
             Integer deliveryOrderNum= shipInfoService.getCountDeliveryNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,null);
             List<Byte> returnStatusList=new ArrayList<>();
             returnStatusList.add(OrderConstant.REFUND_STATUS_AUDITING);
+            returnStatusList.add(OrderConstant.REFUND_STATUS_AUDIT_PASS);
             returnStatusList.add(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
             //待售后数量
             Integer saleAfterOrderNum=returnOrderDao.getCountByReturnStatus(returnStatusList,statisticVo.getStoreId());
@@ -643,7 +674,7 @@ public class StoreWxService extends ShopBaseService {
         Timestamp startTime=DateUtil.beginOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
         Timestamp endTime=DateUtil.endOfMonth(DateUtils.getLocalDateTime()).toTimestamp();
         List<Integer> storeIdList=storeList.stream().map(StoreStatisticVo::getStoreId).collect(Collectors.toList());
-        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeIdList, orderStatusList,startTime,endTime);
+        Integer waitHandleNum= orderInfoDao.countNumByStoreIdOrderStatusAndTime(storeIdList, storeAccountVo.getAccountId(),startTime,endTime);
         monthVo.setWaitHandleNum(waitHandleNum);
         //已完成的数量
         Integer finishedNum=shipInfoService.getCountFinishedNumByAccountIdUserId(storeAccountVo.getAccountId(),storeAccountVo.getUserId(),null,startTime,endTime);

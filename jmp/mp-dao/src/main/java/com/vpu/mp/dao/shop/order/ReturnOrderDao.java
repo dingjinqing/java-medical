@@ -77,14 +77,19 @@ public class ReturnOrderDao extends ShopBaseDao {
 
     /**
      * 获取门店售后订单数量
+     * 订单待处理(审核中,审核通过,买家提交物流)
      * @param returnStatusList
      * @param storeId
      * @return
      */
     public Integer getCountByReturnStatus(List<Byte> returnStatusList,Integer storeId){
+
+
+
         return db().select(DSL.isnull(DSL.countDistinct(RETURN_ORDER.ORDER_SN),0)).from(RETURN_ORDER).
             leftJoin(ORDER_INFO).on(RETURN_ORDER.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
-            .where(RETURN_ORDER.REFUND_STATUS.in(returnStatusList)).and(ORDER_INFO.STORE_ID.eq(storeId))
+            .where(RETURN_ORDER.REFUND_STATUS.in(returnStatusList))
+                .and(ORDER_INFO.STORE_ID.eq(storeId))
         .fetchAnyInto(Integer.class);
     }
 }
