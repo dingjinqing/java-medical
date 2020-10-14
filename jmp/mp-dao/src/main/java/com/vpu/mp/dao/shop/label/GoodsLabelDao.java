@@ -75,4 +75,11 @@ public class GoodsLabelDao extends ShopBaseDao {
             .where(GOODS_LABEL.IS_CHRONIC.eq(IS_CHRONIC))
             .fetchInto(GoodsLabelBase.class);
     }
+
+    public GoodsLabelBase getLabelInfo(Integer labelId){
+        return db().select(GOODS_LABEL.NAME,GOODS_LABEL.ID)
+            .from(GOODS_LABEL)
+            .where(GOODS_LABEL.ID.eq(labelId))
+            .fetchAnyInto(GoodsLabelBase.class);
+    }
 }

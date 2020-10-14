@@ -204,6 +204,7 @@ public class GoodsConstant {
     public static final Byte RECOMMEND_SORT_TYPE = 5;
     public static final Byte NORMAL_SORT_TYPE = 6;
     public static final Byte GOODS_TYPE = 7;
+    public static final Byte NORMAL_CHRONIC_TYPE = 8;
 
     public static boolean isGoodsTypeIn13510(Byte goodsType) {
         return BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)

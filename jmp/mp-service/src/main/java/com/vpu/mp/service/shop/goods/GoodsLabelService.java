@@ -9,12 +9,14 @@ import com.vpu.mp.dao.shop.label.GoodsLabelDao;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.label.*;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectSeekStep2;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -383,5 +385,13 @@ public class GoodsLabelService extends ShopBaseService {
             goodsLabelAddAndUpdateParam.setGoodsIds(goodsIds);
             insertGoodsLabelCouple(goodsLabelAddAndUpdateParam);
         }
+    }
+
+    public List<GoodsLabelBase> listChronicLabels(){
+        return goodsLabelDao.listChronicLabels();
+    }
+
+    public GoodsLabelBase getLabelInfo(Integer labelId){
+        return goodsLabelDao.getLabelInfo(labelId);
     }
 }
