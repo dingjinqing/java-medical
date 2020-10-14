@@ -160,7 +160,7 @@ public class MapTemplateSendService extends ShopBaseService {
                 MaTemplateData.builder().config(SubcribeTemplateCategory.CONSULTATION_SUCCESS).data(data).build())
 //            .mpTemplateData(
 //                MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
-            .page("pages/account/account").shopId(getShopId())
+            .page("pages2/doctorConsultation/doctorConsultation?tab=1").shopId(getShopId())
             .userIdList(param.getUserIds())
             .type(MessageTemplateConfigConstant.CONSULTATION_SUCCESS).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());

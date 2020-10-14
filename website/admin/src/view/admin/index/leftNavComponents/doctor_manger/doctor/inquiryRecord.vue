@@ -29,11 +29,9 @@
             </el-date-picker>
           </div>
           <div class="btn_wrap">
-            <el-button
-              type="primary"
-              size="small"
-              @click="initDataList"
-            >查询</el-button>
+            <el-button type="primary" size="small" @click="initDataList"
+              >查询</el-button
+            >
           </div>
         </div>
       </div>
@@ -58,31 +56,26 @@
               <span
                 class="linkStyle"
                 @click="handleSeePatient(scope.row.patientId)"
-              >{{scope.row.patientName}}
+                >{{ scope.row.patientName }}
               </span>
             </template>
           </el-table-column>
-          <el-table-column label='咨询单号'>
+          <el-table-column label="咨询单号">
             <template slot-scope="scope">
               <span
                 class="linkStyle"
                 @click="orderHandler(scope.row.orderSn)"
-              >{{scope.row.orderSn}}</span>
+                >{{ scope.row.orderSn }}</span
+              >
             </template>
           </el-table-column>
-          <el-table-column
-            prop="inqTime"
-            label="问诊日期"
-          ></el-table-column>
+          <el-table-column prop="inqTime" label="问诊日期"></el-table-column>
           <el-table-column
             prop="inquiryCost"
             label="咨询费用"
           ></el-table-column>
         </el-table>
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
+        <pagination :page-params.sync="pageParams" @pagination="initDataList" />
       </div>
     </div>
   </div>
@@ -172,12 +165,13 @@ export default {
     },
     // 跳转订单详情
     orderHandler (orderSn) {
-      this.$router.push({
-        name: 'orderInfo',
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/orders/advisoryOrder/info',
         query: {
           orderSn: orderSn
         }
       })
+      window.open(href, '_blank')
     },
     // 跳转患者详情
     handleSeePatient (code) {
