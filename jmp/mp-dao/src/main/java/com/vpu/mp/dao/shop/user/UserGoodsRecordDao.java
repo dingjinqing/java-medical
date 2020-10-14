@@ -35,7 +35,8 @@ public class UserGoodsRecordDao extends ShopBaseDao {
      */
     public PageResult<MemberGoodsBrowseReportVo> userGoodsBrowseReport(MemberGoodsBrowseReportParam param){
         SelectConditionStep<? extends Record> where = db()
-                .select(USER_GOODS_RECORD.ID,USER_GOODS_RECORD.UPDATE_TIME.as(MemberGoodsBrowseReportVo.TIME),
+                .select(USER_GOODS_RECORD.ID,
+                        DSL.max(USER_GOODS_RECORD.UPDATE_TIME).as(MemberGoodsBrowseReportVo.TIME),
                         DSL.max(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME).as(MemberGoodsBrowseReportVo.GOODSNAME),
                         DSL.max(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO).as(MemberGoodsBrowseReportVo.SPECIFICATIONS),
                         DSL.max(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE).as(MemberGoodsBrowseReportVo.MANUFACTURER),
@@ -59,7 +60,7 @@ public class UserGoodsRecordDao extends ShopBaseDao {
                         .and(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
                         .and(ORDER_INFO.USER_ID.eq(USER_GOODS_RECORD.USER_ID)))
                 .where(USER_GOODS_RECORD.USER_ID.eq(param.getUserId()));
-        where.groupBy(USER_GOODS_RECORD.ID, USER_GOODS_RECORD.UPDATE_TIME);
+        where.groupBy(USER_GOODS_RECORD.GOODS_ID);
         paramBbuildSelect(param, where);
         where.orderBy(USER_GOODS_RECORD.UPDATE_TIME.desc());
         return getPageResult(where,param,MemberGoodsBrowseReportVo.class);

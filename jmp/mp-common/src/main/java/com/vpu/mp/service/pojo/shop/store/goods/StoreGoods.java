@@ -10,6 +10,7 @@ import java.math.BigDecimal;
  */
 @Data
 public class StoreGoods {
+    private Integer id;
     private Integer storeId;
     private Integer goodsId;
     private String goodsCommonName;
@@ -34,4 +35,5 @@ public class StoreGoods {
     private String goodsImg;
     private String goodsName;
     private Byte isDelete;
+    private String medicalKey;
 }

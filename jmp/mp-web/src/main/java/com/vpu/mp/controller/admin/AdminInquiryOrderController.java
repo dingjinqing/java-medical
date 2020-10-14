@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderStatisticsParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderDetailVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.vo.InquiryOrderStatisticsVo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,10 +30,10 @@ public class AdminInquiryOrderController extends AdminBaseController{
      */
     @PostMapping("/api/admin/inquiry/order/detail")
     public JsonResult orderDetail(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
-        if(inquiryOrderOnParam.getOrderId()==null){
-            return fail(JsonResultCode.INQUIRY_ORDER_ID_IS_NULL);
+        if(StringUtils.isBlank(inquiryOrderOnParam.getOrderSn())){
+            return fail(JsonResultCode.INQUIRY_ORDER_SN_IS_NULL);
         }
-        InquiryOrderDetailVo inquiryOrderDetailVo= shop().inquiryOrderService.getDetailByOrderId(inquiryOrderOnParam.getOrderId());
+        InquiryOrderDetailVo inquiryOrderDetailVo= shop().inquiryOrderService.getDetailByOrderSn(inquiryOrderOnParam.getOrderSn());
         return success(inquiryOrderDetailVo);
     }
     /**

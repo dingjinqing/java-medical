@@ -6,7 +6,9 @@
         <div
           class="tabItem"
           @click="tabItemClicked('goodsForInStock')"
-        >{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
+        >{{$t('allGoods.allGoodsRouterHeader.inStock')}}
+        </div>
+        <div class="tabItem" @click="tabItemClicked('goodsForAudit')">商品审核</div>
       </div>
       <!-- 查询 -->
       <allGoodsHeader
@@ -19,22 +21,26 @@
           type="primary"
           size="small"
           @click="searchGoodsData"
-        >{{$t('allGoods.allGoodsRouterHeader.searchBtn')}}</el-button>
+        >{{$t('allGoods.allGoodsRouterHeader.searchBtn')}}
+        </el-button>
         <el-button
           type="primary"
           size="small"
           @click="resetFormData"
-        >{{$t('allGoods.allGoodsRouterHeader.resetBtn')}}</el-button>
+        >{{$t('allGoods.allGoodsRouterHeader.resetBtn')}}
+        </el-button>
         <el-button
           type="primary"
           size="small"
           @click="exportGoodsData"
-        >{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}</el-button>
+        >{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}
+        </el-button>
         <el-button
           type="primary"
           size="small"
           @click="addGoodsData"
-        >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
+        >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}
+        </el-button>
         <el-button
           type="primary"
           size="small"
@@ -42,26 +48,29 @@
           拉取His商品数据
         </el-button>
         <el-button
-                type="primary"
-                size="small"
-                @click="pullStoreGoods">
+          type="primary"
+          size="small"
+          @click="pullStoreGoods">
           拉取药房商品数据
         </el-button>
         <el-button
-                type="primary"
-                size="small"
-                @click="batchUpOrDownGoods(1)"
-        >批量下架his独有数据</el-button>
+          type="primary"
+          size="small"
+          @click="batchUpOrDownGoods(1)"
+        >批量下架his独有数据
+        </el-button>
         <el-button
-                type="primary"
-                size="small"
-                @click="batchUpOrDownGoods(2)"
-        >批量下架store独有数据</el-button>
+          type="primary"
+          size="small"
+          @click="batchUpOrDownGoods(2)"
+        >批量下架store独有数据
+        </el-button>
         <el-button
-                type="primary"
-                size="small"
-                @click="batchUpOrDownGoods(3)"
-        >批量下架已匹配数据</el-button>
+          type="primary"
+          size="small"
+          @click="batchUpOrDownGoods(3)"
+        >批量下架已匹配数据
+        </el-button>
       </div>
     </div>
 
@@ -81,9 +90,13 @@ import allGoodsHeader from '../allGoodsHeader'
 import saleOnAndInStockContent from '../saleOnAndInStockContent'
 
 /* 导入js api */
-import { pullMedicalGoodsApi, pullStoreMedicalGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
-// api导入
+import {
+  pullMedicalGoodsApi,
+  pullStoreMedicalGoodsApi
+} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+  // api导入
 import { batchOperateGoods } from '@/api/admin/goodsManage/allGoods/allGoods'
+
 export default {
   name: 'allGoodsSaleOn',
   components: {
@@ -181,9 +194,9 @@ export default {
 
       batchOperateGoods(param).then(res => {
         if (res.error !== 0) {
-          this.$message.warning({message: '操作失败'})
+          this.$message.warning({ message: '操作失败' })
         } else {
-          this.$message.success({message: '操作成功'})
+          this.$message.success({ message: '操作成功' })
           this.searchGoodsData()
         }
       })
@@ -202,30 +215,34 @@ export default {
 </script>
 
 <style scoped>
-.searchContent {
-  width: 100%;
-  padding: 10px;
-  background: #fff;
-  margin-bottom: 10px;
-}
-.headerTab {
-  border-bottom: 1px solid #eeeeee;
-  color: #666;
-  display: flex;
-}
-.tabItem {
-  font-size: 14px;
-  min-width: 50px;
-  line-height: 40px;
-  /* margin: 0px 5px; */
-  margin-right: 20px;
-  cursor: pointer;
-}
-.tabItemActive {
-  border-bottom: 1.5px solid #5a8bff;
-}
-.btnWrap {
-  padding-left: 50px;
-  margin-bottom: 15px;
-}
+  .searchContent {
+    width: 100%;
+    padding: 10px;
+    background: #fff;
+    margin-bottom: 10px;
+  }
+
+  .headerTab {
+    border-bottom: 1px solid #eeeeee;
+    color: #666;
+    display: flex;
+  }
+
+  .tabItem {
+    font-size: 14px;
+    min-width: 50px;
+    line-height: 40px;
+    /* margin: 0px 5px; */
+    margin-right: 20px;
+    cursor: pointer;
+  }
+
+  .tabItemActive {
+    border-bottom: 1.5px solid #5a8bff;
+  }
+
+  .btnWrap {
+    padding-left: 50px;
+    margin-bottom: 15px;
+  }
 </style>
