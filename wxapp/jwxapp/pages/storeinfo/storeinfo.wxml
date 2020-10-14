@@ -18,7 +18,7 @@
       <view class="store-name">
         <view class="store-name-top">
           <view>{{info.storeName}}</view>
-          <text class="iconfont icondianhua" style="color:{{comColor}};font-size=40rpx;float:right;" bindtap="phoneCall"></text>
+          <text wx:if="{{storeType !== '1'}}" class="iconfont icondianhua" style="color:{{comColor}};font-size=40rpx;float:right;" bindtap="phoneCall"></text>
         </view>
         <view class="nowappoint" wx:if="{{storeType !== '1'}}" bindtap="changeStore">
           {{i18n.$t(localePack,"pages.store.switchStore")}}

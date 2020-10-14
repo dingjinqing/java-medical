@@ -30,6 +30,7 @@ global.wxPage({
     id = options.id;
     scene = options.scene;
     let {storeType = null} = options
+    if(storeType === '1') this.setData({page_name:'医院简介'})
     this.setData({
       storeType : storeType
     })
