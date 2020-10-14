@@ -179,6 +179,7 @@ public class WxAppDoctorController extends WxAppBaseController {
             return fail(JsonResultCode.DOCTOR_ID_IS_NULL);
         }
         try {
+            doctorOneParam.setConsultationPrice(doctorOneParam.getConsultationTotalMoney());
             doctorService.updateDoctor(doctorOneParam);
             return success();
         } catch (MpException e) {

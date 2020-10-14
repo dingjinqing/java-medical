@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.store.showmain.StoreOrderListVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import static com.vpu.mp.db.shop.Tables.PART_ORDER_GOODS_SHIP;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
@@ -230,27 +232,53 @@ public class OrderInfoDao extends ShopBaseDao {
     }
 
     /**
-     * 获取订单数量
+     * 获取代配送的订单
+     * 订单状态(代发货,已发货(发货人确定))
+     * 退款状态(默认,审核未通过,退货完成,拒绝退款,撤销)
      * @param storeId
-     * @param orderStatusList
+     * @param accountId
      * @return
      */
-    public Integer countNumByStoreIdOrderStatus(Integer storeId, List<Byte> orderStatusList){
-        SelectConditionStep<? extends Record> select = db().select(DSL.isnull(DSL.countDistinct(ORDER_INFO.ORDER_ID),0)).from(ORDER_INFO).where(ORDER_INFO.STORE_ID.eq(storeId))
-            .and(ORDER_INFO.ORDER_STATUS.in(orderStatusList))
-            .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
+    public Integer countNumByStoreIdOrderStatus(Integer storeId, Integer accountId){
+        SelectHavingStep<? extends Record> shipTable = db().select(PART_ORDER_GOODS_SHIP.ORDER_SN, PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID)
+                .from(PART_ORDER_GOODS_SHIP)
+                .groupBy(PART_ORDER_GOODS_SHIP.ORDER_SN, PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID);
+        SelectConditionStep<? extends Record> select = db().select(DSL.isnull(DSL.countDistinct(ORDER_INFO.ORDER_ID),0))
+                .from(ORDER_INFO)
+                .leftJoin(shipTable).on(shipTable.field(PART_ORDER_GOODS_SHIP.ORDER_SN).eq(ORDER_INFO.ORDER_SN))
+                .where(ORDER_INFO.STORE_ID.eq(storeId))
+                .and(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(accountId).or(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).isNull()))
+                //店员-待接单(代发货,已发货)
+        .and(ORDER_INFO.ORDER_STATUS.in(OrderConstant.ORDER_WAIT_DELIVERY,OrderConstant.ORDER_SHIPPED))
+        // 退款状态(默认,审核未通过,退货完成,拒绝退款,撤销)
+        .and(ORDER_INFO.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
+                        OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE,OrderConstant.REFUND_STATUS_CLOSE))
+        .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
         return select.fetchAnyInto(Integer.class);
     }
     /**
      * 时间查询获取订单数量
+     * 订单状态(代发货,已发货(发货人确定))
+     * 退款状态(默认,审核未通过,退货完成,拒绝退款,撤销)
      * @param storeId
-     * @param orderStatusList
      * @return
      */
-    public Integer countNumByStoreIdOrderStatusAndTime(List<Integer> storeId, List<Byte> orderStatusList, Timestamp startTime, Timestamp endTime){
-        SelectConditionStep<? extends Record> select = db().select(DSL.isnull(DSL.countDistinct(ORDER_INFO.ORDER_ID),0)).from(ORDER_INFO).where(ORDER_INFO.STORE_ID.in(storeId))
-            .and(ORDER_INFO.ORDER_STATUS.in(orderStatusList))
-            .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
+    public Integer countNumByStoreIdOrderStatusAndTime(List<Integer> storeId,Integer accountId, Timestamp startTime, Timestamp endTime){
+        SelectHavingStep<? extends Record> shipTable = db().select(PART_ORDER_GOODS_SHIP.ORDER_SN, PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID)
+                .from(PART_ORDER_GOODS_SHIP)
+                .groupBy(PART_ORDER_GOODS_SHIP.ORDER_SN, PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID);
+        SelectConditionStep<? extends Record> select = db().select(DSL.isnull(DSL.countDistinct(ORDER_INFO.ORDER_ID),0))
+                .from(ORDER_INFO)
+                .leftJoin(shipTable).on(shipTable.field(PART_ORDER_GOODS_SHIP.ORDER_SN).eq(ORDER_INFO.ORDER_SN))
+                .where(ORDER_INFO.STORE_ID.in(storeId))
+                //店员-待接单(代发货,已发货)
+                .and(ORDER_INFO.ORDER_STATUS.in(OrderConstant.ORDER_WAIT_DELIVERY,OrderConstant.ORDER_SHIPPED))
+                // 退款状态(默认,审核未通过,退货完成,拒绝退款,撤销)
+                .and(ORDER_INFO.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
+                        OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE,OrderConstant.REFUND_STATUS_CLOSE))
+                .and(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(accountId)
+                        .or(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).isNull()))
+                .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
         if(startTime!=null){
             select.and(ORDER_INFO.CREATE_TIME.ge(startTime));
         }

@@ -37,7 +37,7 @@
     <view wx:if="{{goodsItem.assemble}}" class="bargain">{{i18n.$t(localePack,'components.decorate.establishaProvince')}}{{goodsItem.groupDiscountPrice===null?"0.00":goodsItem.groupDiscountPrice}}{{i18n.$t(localePack,'components.decorate.element')}}</view>
   </view>
   <view class="goods_bottom">
-    <view class="goods_name {{goodsItem.activityLabelData.length > 0 ? 'one_line' : 'two_lines'}}">{{goodsItem.isMedical === 1 ? goodsItem.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{goodsItem.goodsName}}</view>
+    <view class="goods_name {{goodsItem.activityLabelData.length > 0 ? 'one_line' : 'two_lines'}}">{{goodsItem.isMedical === 1 ? goodsItem.isRx === 1 ? '【处方药】':'' :''}}{{goodsItem.goodsName}}</view>
     <view class="goods_coupon" wx:if="{{goodsItem.activityLabelData.length > 0}}">
       <block wx:for="{{goodsItem.activityLabelData}}" wx:for-item="labelItem" wx:key="index">
         <view class="coupon_item" wx:if="{{index < 2}}" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{labelItem.text}}</view>

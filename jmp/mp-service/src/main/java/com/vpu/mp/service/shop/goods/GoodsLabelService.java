@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsChronicCoupleDo;
 import com.vpu.mp.dao.shop.goods.GoodsChronicCoupleDao;
@@ -9,12 +10,14 @@ import com.vpu.mp.dao.shop.label.GoodsLabelDao;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.label.*;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectSeekStep2;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -175,7 +178,8 @@ public class GoodsLabelService extends ShopBaseService {
      */
     public void update(GoodsLabelAddAndUpdateParam param) {
         transaction(() -> {
-            GoodsLabelRecord record = db().newRecord(GOODS_LABEL,param);
+            GoodsLabelRecord record = db().newRecord(GOODS_LABEL);
+            FieldsUtil.assign(param,record);
             record.update();
             goodsLabelCoupleService.deleteByGoodsLabelId(param.getId());
             // 不是 '不添加商品选项'
@@ -383,5 +387,13 @@ public class GoodsLabelService extends ShopBaseService {
             goodsLabelAddAndUpdateParam.setGoodsIds(goodsIds);
             insertGoodsLabelCouple(goodsLabelAddAndUpdateParam);
         }
+    }
+
+    public List<GoodsLabelBase> listChronicLabels(){
+        return goodsLabelDao.listChronicLabels();
+    }
+
+    public GoodsLabelBase getLabelInfo(Integer labelId){
+        return goodsLabelDao.getLabelInfo(labelId);
     }
 }

@@ -85,5 +85,9 @@ public class PrescriptionInfoVo {
      * 医嘱
      */
     private String doctorAdvice;
+    /**
+     * 处方顶部显示医院名称
+     */
+    private String hospitalName;
 
 }

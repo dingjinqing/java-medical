@@ -7,7 +7,7 @@
           <div class="filters_item">
             <span>患者姓名：</span>
             <el-input
-              v-model="queryParams.patientName"
+              v-model="queryParams.name"
               size="small"
               style="width: 150px"
               placeholder="请输入患者姓名"
@@ -116,7 +116,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="treatmentTime"
+            prop="diagnoseTime"
             label="就诊时间"
           ></el-table-column>
           <el-table-column label="操作">

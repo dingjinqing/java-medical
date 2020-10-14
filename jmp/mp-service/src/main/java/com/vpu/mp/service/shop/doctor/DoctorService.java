@@ -128,7 +128,7 @@ public class DoctorService extends BaseShopConfigService {
 
     public static final int ZERO = 0;
 
-    private static final Integer TEN_MINUTES = 600;
+    private static final Integer ONE_MINUTES = 60;
 
     private static final Integer HALF_HOUR = 1800;
 
@@ -195,16 +195,12 @@ public class DoctorService extends BaseShopConfigService {
      * @return String
      */
     private String integerTimeToStringTime(Integer avgAnswerTime) {
-        if (avgAnswerTime <= TEN_MINUTES) {
-            return "十分钟内";
+        if (avgAnswerTime < ONE_MINUTES) {
+            return "小于一分钟";
         }
-        if (avgAnswerTime <= HALF_HOUR) {
-            return "半小时内";
-        }
-        if (avgAnswerTime <= ONE_HOUR) {
-            return "一小时内";
-        }
-        return "一小时以上";
+        int hour = avgAnswerTime / ONE_HOUR;
+        int minute = avgAnswerTime % ONE_HOUR / ONE_MINUTES;
+        return hour + "小时" + (minute == 0 ? "" : minute + "分钟");
     }
 
     public void setDoctorDepartmentCouples(Integer doctorId, List<Integer> departmentIds) {

@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandConfig;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelBase;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
@@ -18,8 +19,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.SortGroupByParentParam;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
-import com.vpu.mp.service.shop.goods.GoodsBrandService;
-import com.vpu.mp.service.shop.goods.GoodsSortService;
+import com.vpu.mp.service.shop.goods.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +45,12 @@ public class GoodsBrandSortMpService extends ShopBaseService{
     GoodsBrandService goodsBrandService;
     @Autowired
     ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    GoodsLabelService goodsLabelService;
+    @Autowired
+    GoodsLabelCoupleService goodsLabelCoupleService;
+    @Autowired
+    GoodsService goodsService;
 
     /**
      * 商品分类页面初始接口
@@ -108,6 +114,20 @@ public class GoodsBrandSortMpService extends ShopBaseService{
             menuVos.add(item);
         }
 
+        List<GoodsLabelBase> chronicLabels = goodsLabelService.listChronicLabels();
+        for (GoodsLabelBase chronic : chronicLabels) {
+            GoodsSortMenuVo item =new GoodsSortMenuVo();
+            item.setMenuType(GoodsConstant.NORMAL_CHRONIC_TYPE);
+            item.setMenuName(chronic.getName());
+            item.setMenuId(chronic.getId());
+            if (isFirst) {
+                item.setMenuContent(getNormalChronicContent(chronic,userId));
+                isFirst=false;
+            }
+            menuVos.add(item);
+        }
+
+
         return menuVos;
     }
 
@@ -129,6 +149,9 @@ public class GoodsBrandSortMpService extends ShopBaseService{
         }
         if (GoodsConstant.NORMAL_SORT_TYPE.equals(menuType)) {
             return getNormalSortContent(param.getMenuId(),userId);
+        }
+        if (GoodsConstant.NORMAL_CHRONIC_TYPE.equals(menuType)) {
+            return getNormalChronicContent(param.getMenuId(),userId);
         }
         return new GoodsSortMenuContentVo();
     }
@@ -232,27 +255,61 @@ public class GoodsBrandSortMpService extends ShopBaseService{
             return content;
         } else {
             // 尝试查询该分类下是否有商品信息
-            GoodsMenuContentVo content = new GoodsMenuContentVo();
             List<Integer> goodsIds = goodsMpService.getGoodsIdsBySortIdDao(sort.getSortId());
-
-            SortItemEnum sortItemEnum = null;
-            //开启了店铺默认排序规则
-            if(shopCommonConfigService.getOrderSort().equals((byte) 1)){
-                sortItemEnum = goodsMpService.getShopGoodsSortEnum();
-            }
-
-            List<? extends GoodsListMpVo> goodsListNormal = goodsMpService.getGoodsListNormal(goodsIds, userId, sortItemEnum, SortDirectionEnum.DESC);
-            //是否显示划线价开关
-            Byte delMarket = configService.shopCommonConfigService.getDelMarket();
-            //是否显示购买按钮
-            ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
-
-            content.setMenuContentType(GoodsConstant.GOODS_TYPE);
-            content.setGoodsListMpVos(goodsListNormal);
-            content.setDelMarket(delMarket);
-            content.setShowCart(showCart);
-            return content;
+            return getGoodsList(goodsIds, userId);
         }
+    }
+
+    /**
+     * 获取商品列表信息
+     * @param goodsIds
+     * @param userId
+     * @return
+     */
+    public GoodsMenuContentVo getGoodsList(List<Integer> goodsIds, Integer userId){
+        GoodsMenuContentVo content = new GoodsMenuContentVo();
+        SortItemEnum sortItemEnum = null;
+        //开启了店铺默认排序规则
+        if(shopCommonConfigService.getOrderSort().equals((byte) 1)){
+            sortItemEnum = goodsMpService.getShopGoodsSortEnum();
+        }
+
+        List<? extends GoodsListMpVo> goodsListNormal = goodsMpService.getGoodsListNormal(goodsIds, userId, sortItemEnum, SortDirectionEnum.DESC);
+        //是否显示划线价开关
+        Byte delMarket = configService.shopCommonConfigService.getDelMarket();
+        //是否显示购买按钮
+        ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
+
+        content.setMenuContentType(GoodsConstant.GOODS_TYPE);
+        content.setGoodsListMpVos(goodsListNormal);
+        content.setDelMarket(delMarket);
+        content.setShowCart(showCart);
+        return content;
+    }
+
+    /**
+     * 获取慢性病标签下的集合内容,其返回值是商品信息
+     * @param chronicId
+     * @return
+     */
+    private MenuContentBaseVo getNormalChronicContent(Integer chronicId,Integer userId) {
+        GoodsLabelBase chronic = goodsLabelService.getLabelInfo(chronicId);
+        if (chronic == null) {
+            return null;
+        }
+        return getNormalChronicContent(chronic,userId);
+    }
+
+    /**
+     * 获取慢性病标签下的集合内容,其返回值是商品信息
+     * @param chronic
+     * @return
+     */
+    private MenuContentBaseVo getNormalChronicContent(GoodsLabelBase chronic, Integer userId) {
+
+        // 尝试查询该慢性病标签下是否有商品信息
+        List<Integer> goodsIds = goodsService.getGoodsIdsByLabelId(chronic.getId());
+        return getGoodsList(goodsIds,userId);
     }
 
     /**

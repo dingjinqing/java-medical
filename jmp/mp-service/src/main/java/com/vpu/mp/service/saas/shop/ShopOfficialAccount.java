@@ -258,8 +258,8 @@ public class ShopOfficialAccount extends MainBaseService {
         if (!principalName.equals(principalPersonal)) {
 			List<MaMpBindParam> apps = getSamePrincipalOfficeList(principalName);
 			List<MaMpBindParam> samePrincipalMaList = saas.shop.mp.getSamePrincipalMaList(principalName);
-			apps.addAll(samePrincipalMaList);
-			bindSamePrincipalApps(apps);
+            samePrincipalMaList.addAll(apps);
+			bindSamePrincipalApps(samePrincipalMaList);
 		}
 	}
 
@@ -272,10 +272,8 @@ public class ShopOfficialAccount extends MainBaseService {
 		}
 		logger().info("绑定的bindOpenAppId为" + openAppId);
 		for (MaMpBindParam app : apps) {
-			if(StringUtils.isEmpty(openAppId)) {
-				continue;
-			}
-			openAppId = saas.shop.mp.bindOpenAppId(false, app.getAppId(), openAppId);
+            if(StringUtils.isNotEmpty(openAppId)&&openAppId.equals(app.getBindOpenAppId())) { continue; }
+            openAppId = saas.shop.mp.bindOpenAppId(false, app.getAppId(), openAppId);
 			if (!openAppId.equals(app.getBindOpenAppId())) {
 				// 更新数据库
                 String typeMp = "1";
