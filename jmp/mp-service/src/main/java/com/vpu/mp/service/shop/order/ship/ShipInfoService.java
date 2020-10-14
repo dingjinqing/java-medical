@@ -167,7 +167,7 @@ public class ShipInfoService extends ShopBaseService {
         SelectConditionStep<? extends Record> select=db().select(DSL.isnull(DSL.countDistinct(PART_ORDER_GOODS_SHIP.ORDER_SN),0))
 				.from(PART_ORDER_GOODS_SHIP)
                 .leftJoin(ORDER_INFO).on(PART_ORDER_GOODS_SHIP.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
-                .where(PART_ORDER_GOODS_SHIP.CONFIRM_ACCOUNT_ID.eq(accountId))
+                .where(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID.eq(accountId))
 		//订单状态  (已收货 已完成)
 		.and(ORDER_INFO.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED))
 		//退款状态 (默认,撤销,未通过,已完成,拒绝)

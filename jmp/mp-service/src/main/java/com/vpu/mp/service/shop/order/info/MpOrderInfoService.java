@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.order.info;
 
 import com.google.common.collect.ImmutableMap;
-import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -184,7 +183,7 @@ public class MpOrderInfoService extends OrderInfoService{
                 select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED)));
                 //店员-已发货只有自己能看到
                 select.where(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(param.getWxUserInfo().getStoreAccountId())
-                        .or(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(BaseConstant.NO.intValue())));
+                        .or(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).isNull()));
                 // 退款状态(默认,审核未通过,退货完成,拒绝退款,撤销)
                 select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
                         OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE,OrderConstant.REFUND_STATUS_CLOSE));
