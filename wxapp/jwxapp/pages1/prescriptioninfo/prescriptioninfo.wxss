@@ -96,9 +96,6 @@
   align-items: center;
   margin-top: 30rpx;
 }
-.doctor-name > view image{
-  border: 2rpx solid #eee;
-}
 .prescription-item > .doctor-info > .item-date {
   font-size: 26rpx;
   color: #999;
@@ -161,6 +158,13 @@
   top: 24rpx;
 }
 .doctor-name image{
-  width: 250rpx;
-  height: 100rpx;
+  width: 180rpx;
+  height: 60rpx;
+}
+.hos_cachet{
+  position: absolute;
+  right: 30rpx;
+  bottom: 70rpx;
+  width: 210rpx;
+  height: 200rpx;
 }
