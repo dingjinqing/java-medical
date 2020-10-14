@@ -46,7 +46,7 @@
       >
         <img :src="miniPorgramQrcode" class="qrcode-image" />
         <div class="mini-program-info" slot="reference">
-          <span>适用小程序：{{ this.miniPorgramName }}</span>
+          <span>{{ this.miniPorgramName }}</span>
           <img :src="imageUrlData[1].image_4" class="head_down" />
         </div>
       </el-popover>

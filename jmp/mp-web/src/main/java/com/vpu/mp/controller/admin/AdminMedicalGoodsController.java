@@ -4,7 +4,9 @@ import cn.hutool.core.util.StrUtil;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsExternalDo;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.GoodsExternalPageParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalStoreRequestParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
@@ -138,6 +140,12 @@ public class AdminMedicalGoodsController extends AdminBaseController {
         PageResult<GoodsPageListVo> goodsPageList = shop().medicalGoodsService.getGoodsPageList(pageListParam);
 
         return success(goodsPageList);
+    }
+
+    @PostMapping("/api/admin/medical/external/page/list")
+    public JsonResult getExternalPageList(@RequestBody GoodsExternalPageParam param) {
+        PageResult<GoodsExternalDo> externalPageList = shop().medicalGoodsService.getExternalPageList(param);
+        return success(externalPageList);
     }
 
 

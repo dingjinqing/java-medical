@@ -317,8 +317,8 @@ public class Keys {
     public static final Identity<StoreGoodsRecord, Integer> IDENTITY_STORE_GOODS = Identities0.IDENTITY_STORE_GOODS;
     public static final Identity<GoodsChronicCoupleRecord, Integer> IDENTITY_GOODS_CHRONIC_COUPLE = Identities0.IDENTITY_GOODS_CHRONIC_COUPLE;
     public static final Identity<OrderGoodsPlatformRebateRecord, Integer> IDENTITY_ORDER_GOODS_PLATFORM_REBATE = Identities0.IDENTITY_ORDER_GOODS_PLATFORM_REBATE;
-
-
+    public static final Identity<GoodsFromHisRecord, Integer> IDENTITY_GOODS_FROM_HIS = Identities0.IDENTITY_GOODS_FROM_HIS;
+    public static final Identity<GoodsFromStoreRecord, Integer> IDENTITY_GOODS_FROM_STORE = Identities0.IDENTITY_GOODS_FROM_STORE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -626,8 +626,8 @@ public class Keys {
     public static final UniqueKey<UserCollectionActionRecord> KEY_B2C_USER_COLLECTION_ACTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_COLLECTION_ACTION_PRIMARY;
     public static final UniqueKey<GoodsChronicCoupleRecord> KEY_B2C_GOODS_CHRONIC_COUPLE_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_CHRONIC_COUPLE_PRIMARY;
     public static final UniqueKey<OrderGoodsPlatformRebateRecord> KEY_B2C_ORDER_GOODS_PLATFORM_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_PLATFORM_REBATE_PRIMARY;
-
-
+    public static final UniqueKey<GoodsFromHisRecord> KEY_B2C_GOODS_FROM_HIS_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_FROM_HIS_PRIMARY;
+    public static final UniqueKey<GoodsFromStoreRecord> KEY_B2C_GOODS_FROM_STORE_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_FROM_STORE_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -913,7 +913,8 @@ public class Keys {
         public static Identity<StoreGoodsRecord, Integer> IDENTITY_STORE_GOODS = Internal.createIdentity(StoreGoods.STORE_GOODS, StoreGoods.STORE_GOODS.ID);
         public static Identity<GoodsChronicCoupleRecord, Integer> IDENTITY_GOODS_CHRONIC_COUPLE = Internal.createIdentity(GoodsChronicCouple.GOODS_CHRONIC_COUPLE, GoodsChronicCouple.GOODS_CHRONIC_COUPLE.ID);
         public static Identity<OrderGoodsPlatformRebateRecord, Integer> IDENTITY_ORDER_GOODS_PLATFORM_REBATE = Internal.createIdentity(OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE, OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE.ID);
-
+        public static Identity<GoodsFromHisRecord, Integer> IDENTITY_GOODS_FROM_HIS = Internal.createIdentity(GoodsFromHis.GOODS_FROM_HIS, GoodsFromHis.GOODS_FROM_HIS.ID);
+        public static Identity<GoodsFromStoreRecord, Integer> IDENTITY_GOODS_FROM_STORE = Internal.createIdentity(GoodsFromStore.GOODS_FROM_STORE, GoodsFromStore.GOODS_FROM_STORE.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1223,6 +1224,7 @@ public class Keys {
         public static final UniqueKey<UserCollectionActionRecord> KEY_B2C_USER_COLLECTION_ACTION_PRIMARY = Internal.createUniqueKey(UserCollectionAction.USER_COLLECTION_ACTION, "KEY_b2c_user_collection_action_PRIMARY", UserCollectionAction.USER_COLLECTION_ACTION.ID);
         public static final UniqueKey<GoodsChronicCoupleRecord> KEY_B2C_GOODS_CHRONIC_COUPLE_PRIMARY = Internal.createUniqueKey(GoodsChronicCouple.GOODS_CHRONIC_COUPLE, "KEY_b2c_goods_chronic_couple_PRIMARY", GoodsChronicCouple.GOODS_CHRONIC_COUPLE.ID);
         public static final UniqueKey<OrderGoodsPlatformRebateRecord> KEY_B2C_ORDER_GOODS_PLATFORM_REBATE_PRIMARY = Internal.createUniqueKey(OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE, "KEY_b2c_order_goods_platform_rebate_PRIMARY", OrderGoodsPlatformRebate.ORDER_GOODS_PLATFORM_REBATE.ID);
-
+        public static final UniqueKey<GoodsFromHisRecord> KEY_B2C_GOODS_FROM_HIS_PRIMARY = Internal.createUniqueKey(GoodsFromHis.GOODS_FROM_HIS, "KEY_b2c_goods_from_his_PRIMARY", GoodsFromHis.GOODS_FROM_HIS.ID);
+        public static final UniqueKey<GoodsFromStoreRecord> KEY_B2C_GOODS_FROM_STORE_PRIMARY = Internal.createUniqueKey(GoodsFromStore.GOODS_FROM_STORE, "KEY_b2c_goods_from_store_PRIMARY", GoodsFromStore.GOODS_FROM_STORE.ID);
     }
 }

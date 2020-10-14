@@ -147,7 +147,7 @@ public class MapTemplateSendService extends ShopBaseService {
             {param.getRemark()}
         };
 
-        MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
+        MaSubscribeData data = MaSubscribeData.builder().data411(maData).build();
 
         // 公众号消息
         String[][] mpData = new String[][] {
@@ -207,7 +207,7 @@ public class MapTemplateSendService extends ShopBaseService {
             {param.getRefundMoney()}
         };
 
-        MaSubscribeData data = MaSubscribeData.builder().data47(maData).build();
+        MaSubscribeData data = MaSubscribeData.builder().data411(maData).build();
 
         // 公众号消息
         String[][] mpData = new String[][] {

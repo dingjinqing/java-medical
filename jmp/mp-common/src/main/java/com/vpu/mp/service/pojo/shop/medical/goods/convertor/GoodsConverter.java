@@ -5,10 +5,12 @@ import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
+import com.vpu.mp.common.pojo.shop.table.goods.GoodsExternalDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
 import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequestItemBo;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
 
 import java.util.Collections;
 
@@ -67,6 +69,32 @@ public class GoodsConverter {
         return goodsDo;
     }
 
+    public static GoodsExternalDo convertGoodsMedicalExternalRequestItemBoToExteranlDo(GoodsMedicalExternalRequestItemBo bo){
+        GoodsExternalDo goodsExternalDo =new GoodsExternalDo();
+        goodsExternalDo.setGoodsPrice(bo.getGoodsPrice());
+        goodsExternalDo.setGoodsNumber(bo.getGoodsNumber());
+        goodsExternalDo.setGoodsCode(bo.getGoodsCode());
+        goodsExternalDo.setGoodsBarCode(bo.getGoodsBarCode());
+        goodsExternalDo.setGoodsCommonName(bo.getGoodsCommonName());
+        goodsExternalDo.setIsMedical(bo.getIsMedical());
+        goodsExternalDo.setGoodsAliasName(bo.getGoodsAliasName());
+        goodsExternalDo.setGoodsQualityRatio(bo.getGoodsQualityRatio());
+        goodsExternalDo.setIsRx(bo.getIsRx());
+        goodsExternalDo.setInsuranceCode(bo.getInsuranceCode());
+        goodsExternalDo.setInsuranceDatabaseName(bo.getInsuranceDatabaseName());
+        goodsExternalDo.setGoodsBasicUnit(bo.getGoodsBasicUnit());
+        goodsExternalDo.setGoodsPackageUnit(bo.getGoodsPackageUnit());
+        goodsExternalDo.setGoodsUnitConvertFactor(bo.getGoodsUnitConvertFactor());
+        goodsExternalDo.setGoodsEquivalentQuantity(bo.getGoodsEquivalentQuantity());
+        goodsExternalDo.setGoodsEquivalentUnit(bo.getGoodsEquivalentUnit());
+        goodsExternalDo.setGoodsApprovalNumber(bo.getGoodsApprovalNumber());
+        goodsExternalDo.setGoodsProductionEnterprise(bo.getGoodsProductionEnterprise());
+        if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
+            goodsExternalDo.setIsDelete(DelFlag.DISABLE_VALUE);
+        }
+        return goodsExternalDo;
+    }
+
     /**
      * 药店更新商品转换GoodsDo类
      * @param bo
@@ -81,6 +109,20 @@ public class GoodsConverter {
             goodsDo.setDelFlag(DelFlag.DISABLE_VALUE);
         }
         return goodsDo;
+    }
+
+    public static StoreGoods convertBoToStoreGoods(GoodsMedicalExternalRequestItemBo bo, Integer storeId) {
+        StoreGoods storeGoods = new StoreGoods();
+        storeGoods.setStoreId(storeId);
+        storeGoods.setGoodsCommonName(bo.getGoodsCommonName());
+        storeGoods.setGoodsQualityRatio(bo.getGoodsQualityRatio());
+        storeGoods.setGoodsApprovalNumber(bo.getGoodsApprovalNumber());
+        storeGoods.setGoodsProductionEnterprise(bo.getGoodsProductionEnterprise());
+        storeGoods.setGoodsStoreSn(bo.getGoodsCode());
+        storeGoods.setProductNumber(bo.getGoodsNumber());
+        storeGoods.setProductPrice(bo.getGoodsPrice());
+        storeGoods.setMedicalKey(bo.getGoodsKeyComposedByNameQualityEnterprise());
+        return storeGoods;
     }
 
     public static GoodsMedicalInfoDo convertGoodsMedicalExternalRequestItemBoToGoodsMedicalInfoDo(GoodsMedicalExternalRequestItemBo bo) {

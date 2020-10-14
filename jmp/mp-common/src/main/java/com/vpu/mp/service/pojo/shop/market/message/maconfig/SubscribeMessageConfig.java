@@ -86,9 +86,19 @@ public enum SubscribeMessageConfig {
         "订单号{{character_string1.DATA}}退款时间{{date2.DATA}}退款金额{{amount3.DATA}退款理由{{phrase4.DATA}}", new int[] { 1, 2, 3, 4 }),
 
     order_new_47(SubcribeTemplateCategory.ORDER_NEW, 47, 5208, "新订单提醒",
-        "订单编号{{character_string1.DATA}}客户昵称{{name2.DATA}}客户备注{{thing3.DATA}}", new int[] { 1, 2, 3 });
+        "订单编号{{character_string1.DATA}}客户昵称{{name2.DATA}}客户备注{{thing3.DATA}}", new int[] { 1, 2, 3 }),
     /** 私立医疗机构 47结束 */
+    /** 公立医疗机构 411开始*/
+    consultation_success_411(SubcribeTemplateCategory.CONSULTATION_SUCCESS, 411, 1181, "医生接诊提醒",
+        "服务项目{{thing1.DATA}}患者姓名{{name2.DATA}}接诊医生{{name3.DATA}}接诊时间{{time4.DATA}}备注说明{{thing5.DATA}}", new int[] { 1, 2, 3, 4, 5 }),
 
+    order_deliver_411(SubcribeTemplateCategory.ORDER_DELIVER, 411, 9521, "药品发货提醒",
+        "收货人{{thing1.DATA}}收货手机{{phone_number2.DATA}}收货地址{{thing3.DATA}}", new int[] { 1, 2, 3 }),
+
+    order_refund_success_411(SubcribeTemplateCategory.REFUND_RESULT, 411, 11851, "退费成功通知",
+        "温馨提示{{thing1.DATA}}缴费时间{{time4.DATA}}退费金额{{amount5.DATA}}", new int[] { 1, 4,5 });
+
+    /**公立医疗机构 411结束*/
 	/** 模板名称，小程序端发送名称找对应要用那个 */
 	private String templeName;
 	/** 账号的类目id */

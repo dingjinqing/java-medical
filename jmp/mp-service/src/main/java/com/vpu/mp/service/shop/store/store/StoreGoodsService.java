@@ -157,6 +157,17 @@ public class StoreGoodsService extends ShopBaseService{
 		return select;
 	}
 
+	public void saveExternalStoreInfo(StoreGoods storeGoods){
+        StoreGoods existStoreGoods = storeGoodsDao.getStoreGoodsByMedicalKey(storeGoods.getMedicalKey(), storeGoods.getStoreId());
+
+        if (existStoreGoods == null) {
+            storeGoodsDao.batchInsert(Collections.singletonList(storeGoods));
+        } else {
+            storeGoods.setId(existStoreGoods.getId());
+            storeGoodsDao.batchUpdate(Collections.singletonList(storeGoods));
+        }
+    }
+
     /**
      * 批量同步门店商品数据
      * @param storeGoodsList
