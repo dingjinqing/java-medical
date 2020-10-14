@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.store.goods.*;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
@@ -17,6 +18,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -221,6 +223,15 @@ public class StoreGoodsService extends ShopBaseService{
         } else {
             return saas.shop.image.imageUrl(relativePath);
         }
+    }
+
+    public void updateMatchedExternalStoreGoodsInfos(String medicalKey,BigDecimal price,Integer goodsId){
+        db().update(STORE_GOODS)
+            .set(STORE_GOODS.GOODS_ID,goodsId)
+            .set(STORE_GOODS.IS_ON_SALE, MedicalGoodsConstant.ON_SALE)
+            .set(STORE_GOODS.PRODUCT_PRICE,price)
+            .where(STORE_GOODS.GOODS_COMMON_NAME.concat(STORE_GOODS.GOODS_QUALITY_RATIO.concat(STORE_GOODS.GOODS_PRODUCTION_ENTERPRISE)).eq(medicalKey))
+            .execute();
     }
 
     /**

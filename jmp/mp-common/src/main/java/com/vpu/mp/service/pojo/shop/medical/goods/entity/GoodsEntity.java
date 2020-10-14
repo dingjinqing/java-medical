@@ -51,7 +51,9 @@ public class GoodsEntity {
     private String storeCode;
     private Byte hisStatus;
     private Byte storeStatus;
-
+    private Integer fromHisId;
+    /** 这个是药房中间表的id，不是门店id哦 */
+    private Integer fromStoreId;
     /**
      * 药品信息
      */

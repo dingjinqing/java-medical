@@ -14,10 +14,12 @@ import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * 写的层次太深
  * @author 李晓冰
  * @date 2020年07月02日
  */
@@ -202,5 +204,10 @@ public class GoodsSpecProductAggregate {
     public void deleteSpecByGoodsId(Integer goodsId) {
         specDao.deleteByGoodsId(goodsId);
         specValDao.deleteByGoodsId(goodsId);
+    }
+
+
+    public void updateExternalSku(Integer goodsId, BigDecimal shopPrice, BigDecimal marketPrice, BigDecimal costPrice){
+        goodsSpecProductDao.updateExternalSku(goodsId,shopPrice,marketPrice,costPrice);
     }
 }

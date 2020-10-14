@@ -5,12 +5,14 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Goods;
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -26,7 +28,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = -1408989049;
+    private static final long serialVersionUID = 1317752322;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods.goods_id</code>.
@@ -812,6 +814,34 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         return (Integer) get(55);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.from_his_id</code>.
+     */
+    public void setFromHisId(Integer value) {
+        set(56, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.from_his_id</code>.
+     */
+    public Integer getFromHisId() {
+        return (Integer) get(56);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.from_store_id</code>.
+     */
+    public void setFromStoreId(Integer value) {
+        set(57, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.from_store_id</code>.
+     */
+    public Integer getFromStoreId() {
+        return (Integer) get(57);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -838,7 +868,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     /**
      * Create a detached, initialised GoodsRecord
      */
-    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsBarCode, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig, Byte isDefaultProduct, Byte isMedical, Integer pv, Integer commentNum, Integer roomId, String storeCode, Byte hisStatus, Byte storeStatus, Integer lastUpdateTime) {
+    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsBarCode, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig, Byte isDefaultProduct, Byte isMedical, Integer pv, Integer commentNum, Integer roomId, String storeCode, Byte hisStatus, Byte storeStatus, Integer lastUpdateTime, Integer fromHisId, Integer fromStoreId) {
         super(Goods.GOODS);
 
         set(0, goodsId);
@@ -897,5 +927,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         set(53, hisStatus);
         set(54, storeStatus);
         set(55, lastUpdateTime);
+        set(56, fromHisId);
+        set(57, fromStoreId);
     }
 }

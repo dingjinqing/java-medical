@@ -6,10 +6,7 @@ import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsExternalDo;
 import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.GoodsExternalPageParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsBatchOperateParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsExternalStoreRequestParam;
-import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.*;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.medical.goods.vo.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.order.goods.store.*;
@@ -17,6 +14,8 @@ import com.vpu.mp.service.shop.order.goods.OrderStoreSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author 李晓冰
@@ -148,6 +147,17 @@ public class AdminMedicalGoodsController extends AdminBaseController {
         return success(externalPageList);
     }
 
+    @PostMapping("/api/admin/medical/external/save/matched/goods")
+    public JsonResult saveMatchedGoodsList(@RequestBody List<ExternalMatchedGoodsParam> param) {
+        shop().medicalGoodsService.batchSaveMatchedGoodsList(param);
+        return success();
+    }
+
+    @PostMapping("/api/admin/medical/external/fail/match/goods")
+    public JsonResult failMatchGoods(FailMatchedParam param){
+        shop().medicalGoodsService.failMatchGoods(param);
+        return success();
+    }
 
     @PostMapping("/api/admin/medical/goods/pull")
     public JsonResult fetchExternalMedicalInfo() {

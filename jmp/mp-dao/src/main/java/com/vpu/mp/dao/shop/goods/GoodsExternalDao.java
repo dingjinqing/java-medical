@@ -1,5 +1,6 @@
 package com.vpu.mp.dao.shop.goods;
 
+import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.DelFlag;
 import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
@@ -8,10 +9,14 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsFromHisRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsFromStoreRecord;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.FailMatchedParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.GoodsExternalPageParam;
 import org.jooq.Condition;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.GoodsFromHis.GOODS_FROM_HIS;
 import static com.vpu.mp.db.shop.tables.GoodsFromStore.GOODS_FROM_STORE;
@@ -37,14 +42,21 @@ public class GoodsExternalDao extends ShopBaseDao {
 
     public void insertExternalFromStore(GoodsExternalDo externalDo){
         GoodsFromStoreRecord goodsFromStoreRecord = db().newRecord(GOODS_FROM_STORE);
-        FieldsUtil.assignNotNull(externalDo,goodsFromStoreRecord);
+        FieldsUtil.assign(externalDo,goodsFromStoreRecord);
         goodsFromStoreRecord.insert();
     }
 
     public void updateExternalFromStore(GoodsExternalDo externalDo){
         GoodsFromStoreRecord goodsFromStoreRecord = db().newRecord(GOODS_FROM_STORE);
-        FieldsUtil.assignNotNull(externalDo,goodsFromStoreRecord);
+        FieldsUtil.assign(externalDo,goodsFromStoreRecord);
         goodsFromStoreRecord.update();
+    }
+
+    public void updateExternalInfoToMatched(Integer goodsFromHisId,Integer goodsFromStoreId){
+        db().update(GOODS_FROM_HIS).set(GOODS_FROM_HIS.IS_MATCH,MedicalGoodsConstant.ALREADY_MATCHED)
+            .where(GOODS_FROM_HIS.ID.eq(goodsFromHisId)).execute();
+        db().update(GOODS_FROM_STORE).set(GOODS_FROM_STORE.IS_MATCH,MedicalGoodsConstant.ALREADY_MATCHED)
+            .where(GOODS_FROM_STORE.ID.eq(goodsFromStoreId)).execute();
     }
 
     public GoodsExternalDo getExternalFromHis(String medicalKey) {
@@ -68,49 +80,59 @@ public class GoodsExternalDao extends ShopBaseDao {
         if (MedicalGoodsConstant.PAGE_LIST_FROM_HIS.equals(param.getPageListFrom())) {
             return getExternalPageListFromHis(param);
         } else {
-            return getExternalPageListFromHis(param);
+            return getExternalPageListFromStore(param);
         }
     }
 
     private PageResult<GoodsExternalDo> getExternalPageListFromHis(GoodsExternalPageParam param) {
-        Condition baseCondition = GOODS_FROM_HIS.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
-        if (param.getGoodsCommonName() != null) {
-            baseCondition = baseCondition.and(GOODS_FROM_HIS.GOODS_COMMON_NAME.like(likeValue(param.getGoodsCommonName())));
-        }
-        if (param.getGoodsAliasName() != null) {
-            baseCondition = baseCondition.and(GOODS_FROM_HIS.GOODS_ALIAS_NAME.like(likeValue(param.getGoodsAliasName())));
-        }
-        if (param.getGoodsQualityRatio() != null) {
-            baseCondition =baseCondition.and(GOODS_FROM_HIS.GOODS_QUALITY_RATIO.like(likeValue(param.getGoodsQualityRatio())));
-        }
-        if (param.getGoodsApprovalNumber() != null) {
-            baseCondition = baseCondition.and(GOODS_FROM_HIS.GOODS_APPROVAL_NUMBER.like(likeValue(param.getGoodsApprovalNumber())));
-        }
-        if (param.getGoodsProductionEnterprise() != null) {
-            baseCondition = baseCondition.and(GOODS_FROM_HIS.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(param.getGoodsProductionEnterprise())));
-        }
+        Condition baseCondition = GOODS_FROM_HIS.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_HIS.IS_MATCH.eq(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_HIS.STATE.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE));
 
-        SelectConditionStep<GoodsFromHisRecord> select = db().selectFrom(GOODS_FROM_HIS).where(baseCondition);
-        PageResult<GoodsExternalDo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsExternalDo.class);
+        GoodsExternalDo goodsExternalDo = db().selectFrom(GOODS_FROM_HIS).where(baseCondition).fetchAnyInto(GoodsExternalDo.class);
+        List<GoodsExternalDo> list =new ArrayList<>();
+        if (goodsExternalDo != null) {
+            list.add(goodsExternalDo);
+        }
+        PageResult<GoodsExternalDo> pageResult = new PageResult<>();
+        pageResult.setDataList(list);
         return pageResult;
     }
 
     private PageResult<GoodsExternalDo> getExternalPageListFromStore(GoodsExternalPageParam param) {
-        Condition baseCondition = GOODS_FROM_STORE.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
+        Condition baseCondition = GOODS_FROM_STORE.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_STORE.IS_MATCH.eq(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_STORE.STATE.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE));
+
         if (param.getGoodsCommonName() != null) {
-            baseCondition = baseCondition.and(GOODS_FROM_STORE.GOODS_COMMON_NAME.like(likeValue(param.getGoodsCommonName())));
+            String[] ss = param.getGoodsCommonName().split(" ");
+            Condition condition = GOODS_FROM_STORE.GOODS_COMMON_NAME.like(likeValue(ss[0]));
+            for (int i = 1; i < ss.length; i++) {
+                condition = condition.or(GOODS_FROM_STORE.GOODS_COMMON_NAME.like(likeValue(ss[i])));
+            }
+            baseCondition = baseCondition.and(condition);
         }
+
+        if (param.getGoodsQualityRatio() != null) {
+            String[] ss = param.getGoodsQualityRatio().split(" ");
+            Condition condition = GOODS_FROM_STORE.GOODS_QUALITY_RATIO.like(likeValue(ss[0]));
+            for (int i = 1; i < ss.length; i++) {
+                condition = condition.or(GOODS_FROM_STORE.GOODS_QUALITY_RATIO.like(likeValue(ss[i])));
+            }
+            baseCondition = baseCondition.and(condition);
+        }
+
+        if (param.getGoodsProductionEnterprise() != null) {
+            String[] ss = param.getGoodsProductionEnterprise().split(" ");
+            Condition condition = GOODS_FROM_STORE.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(ss[0]));
+            for (int i = 1; i < ss.length; i++) {
+                condition = condition.or(GOODS_FROM_STORE.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(ss[i])));
+            }
+            baseCondition = baseCondition.and(condition);
+        }
+
         if (param.getGoodsAliasName() != null) {
             baseCondition = baseCondition.and(GOODS_FROM_STORE.GOODS_ALIAS_NAME.like(likeValue(param.getGoodsAliasName())));
         }
-        if (param.getGoodsQualityRatio() != null) {
-            baseCondition =baseCondition.and(GOODS_FROM_STORE.GOODS_QUALITY_RATIO.like(likeValue(param.getGoodsQualityRatio())));
-        }
+
         if (param.getGoodsApprovalNumber() != null) {
             baseCondition = baseCondition.and(GOODS_FROM_STORE.GOODS_APPROVAL_NUMBER.like(likeValue(param.getGoodsApprovalNumber())));
-        }
-        if (param.getGoodsProductionEnterprise() != null) {
-            baseCondition = baseCondition.and(GOODS_FROM_STORE.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(param.getGoodsProductionEnterprise())));
         }
 
         SelectConditionStep<GoodsFromStoreRecord> select = db().selectFrom(GOODS_FROM_STORE).where(baseCondition);
@@ -118,4 +140,9 @@ public class GoodsExternalDao extends ShopBaseDao {
         return pageResult;
     }
 
+    public void failMatchGoods(FailMatchedParam param){
+        db().update(GOODS_FROM_HIS).set(GOODS_FROM_HIS.IS_MATCH,MedicalGoodsConstant.FAIL_MATCHED)
+            .where(GOODS_FROM_HIS.ID.eq(param.getHisId()))
+            .execute();
+    }
 }

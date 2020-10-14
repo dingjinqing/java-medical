@@ -10,6 +10,7 @@ import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +88,16 @@ public class GoodsSpecProductDao extends ShopBaseDao {
             .set(GOODS_SPEC_PRODUCT.PRD_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS_SPEC_PRODUCT.PRD_SN))
             .set(GOODS_SPEC_PRODUCT.PRD_CODES, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS_SPEC_PRODUCT.PRD_CODES))
             .set(GOODS_SPEC_PRODUCT.DEL_FLAG, DelFlag.DISABLE_VALUE)
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+            .execute();
+    }
+
+
+    public void updateExternalSku(Integer goodsId, BigDecimal shopPrice, BigDecimal marketPrice, BigDecimal costPrice){
+        db().update(GOODS_SPEC_PRODUCT)
+            .set(GOODS_SPEC_PRODUCT.PRD_PRICE,shopPrice)
+            .set(GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,marketPrice)
+            .set(GOODS_SPEC_PRODUCT.PRD_COST_PRICE,costPrice)
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
             .execute();
     }

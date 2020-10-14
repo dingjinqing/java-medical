@@ -233,6 +233,21 @@ public class GoodsAggregate {
         return goodsEntity;
     }
 
+    public void updateExternalInfo(GoodsEntity goodsEntity) {
+        GoodsDo goodsDo =new GoodsDo();
+        FieldsUtil.assignWithIgnoreField(goodsEntity, goodsDo, getGoodsAssignIgnoreFields());
+        goodsDao.update(goodsDo);
+
+        if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(goodsEntity.getIsMedical())) {
+            GoodsMedicalInfoDo goodsMedicalInfoDo = new GoodsMedicalInfoDo();
+            GoodsMedicalInfoEntity goodsMedicalInfoEntity = goodsEntity.getGoodsMedicalInfo();
+            FieldsUtil.assign(goodsMedicalInfoEntity, goodsMedicalInfoDo);
+            goodsMedicalInfoDao.update(goodsMedicalInfoDo);
+        } else {
+            goodsMedicalInfoDao.deleteByGoodsId(goodsEntity.getGoodsId());
+        }
+    }
+
     /**
      * 根据商品id查询
      * @param goodsId

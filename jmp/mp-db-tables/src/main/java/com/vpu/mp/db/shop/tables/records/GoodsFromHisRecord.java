@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 
 
 /**
- * 商品-药品信息表
+ * his商品-药品信息表
  */
 @Generated(
     value = {
@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsFromHisRecord extends UpdatableRecordImpl<GoodsFromHisRecord> {
 
-    private static final long serialVersionUID = -1997528260;
+    private static final long serialVersionUID = -281914703;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.id</code>. 商品额外信息id
@@ -99,255 +99,283 @@ public class GoodsFromHisRecord extends UpdatableRecordImpl<GoodsFromHisRecord> 
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_goods_from_his.is_medical</code>.
+     */
+    public void setIsMedical(Byte value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods_from_his.is_medical</code>.
+     */
+    public Byte getIsMedical() {
+        return (Byte) get(5);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_alias_name</code>. 别名
      */
     public void setGoodsAliasName(String value) {
-        set(5, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_alias_name</code>. 别名
      */
     public String getGoodsAliasName() {
-        return (String) get(5);
+        return (String) get(6);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_quality_ratio</code>. 规格系数，通用名和规格系数确定一个药品
      */
     public void setGoodsQualityRatio(String value) {
-        set(6, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_quality_ratio</code>. 规格系数，通用名和规格系数确定一个药品
      */
     public String getGoodsQualityRatio() {
-        return (String) get(6);
+        return (String) get(7);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.is_rx</code>. 是否处方药 0否 1是 默认0
      */
     public void setIsRx(Byte value) {
-        set(7, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.is_rx</code>. 是否处方药 0否 1是 默认0
      */
     public Byte getIsRx() {
-        return (Byte) get(7);
+        return (Byte) get(8);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.medical_type</code>. null 未知  1西药 2中成药 3中草药
      */
     public void setMedicalType(Byte value) {
-        set(8, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.medical_type</code>. null 未知  1西药 2中成药 3中草药
      */
     public Byte getMedicalType() {
-        return (Byte) get(8);
+        return (Byte) get(9);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.insurance_flag</code>. 医保类型 1:甲 2:乙 3:丙 4:科研
      */
     public void setInsuranceFlag(Byte value) {
-        set(9, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.insurance_flag</code>. 医保类型 1:甲 2:乙 3:丙 4:科研
      */
     public Byte getInsuranceFlag() {
-        return (Byte) get(9);
+        return (Byte) get(10);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.insurance_code</code>. 医保编码
      */
     public void setInsuranceCode(String value) {
-        set(10, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.insurance_code</code>. 医保编码
      */
     public String getInsuranceCode() {
-        return (String) get(10);
+        return (String) get(11);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.insurance_database_name</code>. 医保库内名称
      */
     public void setInsuranceDatabaseName(String value) {
-        set(11, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.insurance_database_name</code>. 医保库内名称
      */
     public String getInsuranceDatabaseName() {
-        return (String) get(11);
+        return (String) get(12);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_basic_unit</code>. 商品基本单位
      */
     public void setGoodsBasicUnit(String value) {
-        set(12, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_basic_unit</code>. 商品基本单位
      */
     public String getGoodsBasicUnit() {
-        return (String) get(12);
+        return (String) get(13);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_package_unit</code>. 商品包装单位
      */
     public void setGoodsPackageUnit(String value) {
-        set(13, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_package_unit</code>. 商品包装单位
      */
     public String getGoodsPackageUnit() {
-        return (String) get(13);
+        return (String) get(14);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_unit_convert_factor</code>. 整包转换系数
      */
     public void setGoodsUnitConvertFactor(Double value) {
-        set(14, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_unit_convert_factor</code>. 整包转换系数
      */
     public Double getGoodsUnitConvertFactor() {
-        return (Double) get(14);
+        return (Double) get(15);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_equivalent_quantity</code>. 等效量
      */
     public void setGoodsEquivalentQuantity(Double value) {
-        set(15, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_equivalent_quantity</code>. 等效量
      */
     public Double getGoodsEquivalentQuantity() {
-        return (Double) get(15);
+        return (Double) get(16);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_equivalent_unit</code>. 等效单位
      */
     public void setGoodsEquivalentUnit(String value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_equivalent_unit</code>. 等效单位
      */
     public String getGoodsEquivalentUnit() {
-        return (String) get(16);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_approval_number</code>. 批准文号
      */
     public void setGoodsApprovalNumber(String value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_approval_number</code>. 批准文号
      */
     public String getGoodsApprovalNumber() {
-        return (String) get(17);
+        return (String) get(18);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.goods_production_enterprise</code>. 生产企业
      */
     public void setGoodsProductionEnterprise(String value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.goods_production_enterprise</code>. 生产企业
      */
     public String getGoodsProductionEnterprise() {
-        return (String) get(18);
+        return (String) get(19);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.is_delete</code>.
      */
     public void setIsDelete(Byte value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.is_delete</code>.
      */
     public Byte getIsDelete() {
-        return (Byte) get(19);
+        return (Byte) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.state</code>.
      */
     public void setState(Integer value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.state</code>.
      */
     public Integer getState() {
-        return (Integer) get(20);
+        return (Integer) get(21);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods_from_his.is_match</code>.
+     */
+    public void setIsMatch(Byte value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods_from_his.is_match</code>.
+     */
+    public Byte getIsMatch() {
+        return (Byte) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(21, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(21);
+        return (Timestamp) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_from_his.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(22, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods_from_his.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(22);
+        return (Timestamp) get(24);
     }
 
     // -------------------------------------------------------------------------
@@ -376,7 +404,7 @@ public class GoodsFromHisRecord extends UpdatableRecordImpl<GoodsFromHisRecord> 
     /**
      * Create a detached, initialised GoodsFromHisRecord
      */
-    public GoodsFromHisRecord(Integer id, BigDecimal goodsPrice, Integer goodsNumber, String goodsCode, String goodsCommonName, String goodsAliasName, String goodsQualityRatio, Byte isRx, Byte medicalType, Byte insuranceFlag, String insuranceCode, String insuranceDatabaseName, String goodsBasicUnit, String goodsPackageUnit, Double goodsUnitConvertFactor, Double goodsEquivalentQuantity, String goodsEquivalentUnit, String goodsApprovalNumber, String goodsProductionEnterprise, Byte isDelete, Integer state, Timestamp createTime, Timestamp updateTime) {
+    public GoodsFromHisRecord(Integer id, BigDecimal goodsPrice, Integer goodsNumber, String goodsCode, String goodsCommonName, Byte isMedical, String goodsAliasName, String goodsQualityRatio, Byte isRx, Byte medicalType, Byte insuranceFlag, String insuranceCode, String insuranceDatabaseName, String goodsBasicUnit, String goodsPackageUnit, Double goodsUnitConvertFactor, Double goodsEquivalentQuantity, String goodsEquivalentUnit, String goodsApprovalNumber, String goodsProductionEnterprise, Byte isDelete, Integer state, Byte isMatch, Timestamp createTime, Timestamp updateTime) {
         super(GoodsFromHis.GOODS_FROM_HIS);
 
         set(0, id);
@@ -384,23 +412,25 @@ public class GoodsFromHisRecord extends UpdatableRecordImpl<GoodsFromHisRecord> 
         set(2, goodsNumber);
         set(3, goodsCode);
         set(4, goodsCommonName);
-        set(5, goodsAliasName);
-        set(6, goodsQualityRatio);
-        set(7, isRx);
-        set(8, medicalType);
-        set(9, insuranceFlag);
-        set(10, insuranceCode);
-        set(11, insuranceDatabaseName);
-        set(12, goodsBasicUnit);
-        set(13, goodsPackageUnit);
-        set(14, goodsUnitConvertFactor);
-        set(15, goodsEquivalentQuantity);
-        set(16, goodsEquivalentUnit);
-        set(17, goodsApprovalNumber);
-        set(18, goodsProductionEnterprise);
-        set(19, isDelete);
-        set(20, state);
-        set(21, createTime);
-        set(22, updateTime);
+        set(5, isMedical);
+        set(6, goodsAliasName);
+        set(7, goodsQualityRatio);
+        set(8, isRx);
+        set(9, medicalType);
+        set(10, insuranceFlag);
+        set(11, insuranceCode);
+        set(12, insuranceDatabaseName);
+        set(13, goodsBasicUnit);
+        set(14, goodsPackageUnit);
+        set(15, goodsUnitConvertFactor);
+        set(16, goodsEquivalentQuantity);
+        set(17, goodsEquivalentUnit);
+        set(18, goodsApprovalNumber);
+        set(19, goodsProductionEnterprise);
+        set(20, isDelete);
+        set(21, state);
+        set(22, isMatch);
+        set(23, createTime);
+        set(24, updateTime);
     }
 }

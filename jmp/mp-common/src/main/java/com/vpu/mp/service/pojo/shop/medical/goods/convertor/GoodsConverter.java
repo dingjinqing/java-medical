@@ -8,11 +8,18 @@ import com.vpu.mp.common.pojo.shop.table.goods.GoodsDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsExternalDo;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsPageListCondition;
 import com.vpu.mp.common.pojo.shop.table.goods.GoodsSortItem;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.bo.GoodsMedicalExternalRequestItemBo;
+import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.entity.GoodsMedicalInfoEntity;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.ExternalMatchedGoodsParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.MedicalGoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.medical.sku.entity.GoodsSpecProductEntity;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoods;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author 李晓冰
@@ -69,7 +76,7 @@ public class GoodsConverter {
         return goodsDo;
     }
 
-    public static GoodsExternalDo convertGoodsMedicalExternalRequestItemBoToExteranlDo(GoodsMedicalExternalRequestItemBo bo){
+    public static GoodsExternalDo convertGoodsMedicalExternalRequestItemBoToExternalDo(GoodsMedicalExternalRequestItemBo bo){
         GoodsExternalDo goodsExternalDo =new GoodsExternalDo();
         goodsExternalDo.setGoodsPrice(bo.getGoodsPrice());
         goodsExternalDo.setGoodsNumber(bo.getGoodsNumber());
@@ -89,6 +96,7 @@ public class GoodsConverter {
         goodsExternalDo.setGoodsEquivalentUnit(bo.getGoodsEquivalentUnit());
         goodsExternalDo.setGoodsApprovalNumber(bo.getGoodsApprovalNumber());
         goodsExternalDo.setGoodsProductionEnterprise(bo.getGoodsProductionEnterprise());
+        goodsExternalDo.setState(bo.getState());
         if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
             goodsExternalDo.setIsDelete(DelFlag.DISABLE_VALUE);
         }
@@ -134,5 +142,33 @@ public class GoodsConverter {
         }
 
         return goodsMedicalInfoDo;
+    }
+
+    public static GoodsEntity convertExternalMatchedGoodsParamToGoodsEntity(ExternalMatchedGoodsParam param){
+        GoodsEntity goodsEntity =new GoodsEntity();
+        FieldsUtil.assign(param,goodsEntity);
+        goodsEntity.setShopPrice(param.getHisPrice());
+        goodsEntity.setCostPrice(param.getHisPrice());
+        goodsEntity.setMarketPrice(param.getStorePrice());
+        goodsEntity.setIsOnSale(MedicalGoodsConstant.ON_SALE);
+        goodsEntity.setGoodsNumber(MedicalGoodsConstant.MEDICAL_GOODS_DEFAULT_NUM);
+        goodsEntity.setIsDefaultProduct(MedicalGoodsConstant.DEFAULT_SKU);
+        goodsEntity.setStoreCode(param.getStoreGoodsCode());
+
+        if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(param.getIsMedical())) {
+            GoodsMedicalInfoEntity medicalInfoEntity =new GoodsMedicalInfoEntity();
+            FieldsUtil.assign(param,medicalInfoEntity);
+            goodsEntity.setGoodsMedicalInfo(medicalInfoEntity);
+        }
+        List<GoodsSpecProductEntity> skus =new ArrayList<>();
+        GoodsSpecProductEntity specProductEntity = new GoodsSpecProductEntity();
+        specProductEntity.setPrdNumber(MedicalGoodsConstant.MEDICAL_GOODS_DEFAULT_NUM);
+        specProductEntity.setPrdPrice(param.getHisPrice());
+        specProductEntity.setPrdCostPrice(param.getHisPrice());
+        specProductEntity.setPrdMarketPrice(param.getStorePrice());
+        skus.add(specProductEntity);
+        goodsEntity.setGoodsSpecProducts(skus);
+
+        return goodsEntity;
     }
 }

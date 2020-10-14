@@ -12,6 +12,7 @@ import com.vpu.mp.service.shop.goods.aggregate.GoodsSpecProductAggregate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -153,6 +154,10 @@ public class MedicalGoodsSpecProductService {
             specVos.add(specVo);
         }
         return specVos;
+    }
+
+    public void updateExternalSku(Integer goodsId, BigDecimal shopPrice,BigDecimal marketPrice,BigDecimal costPrice){
+        goodsSpecProductAggregate.updateExternalSku(goodsId,shopPrice,marketPrice,costPrice);
     }
 
 }

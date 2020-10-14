@@ -78,6 +78,14 @@ public class MedicalGoodsConstant {
     /**双方都有药品*/
     public static final Byte IN_BOTH=3;
 
+    /**未配对*/
+    public static final Byte NOT_MATCHED = 0;
+    /**成功配对*/
+    public static final Byte ALREADY_MATCHED = 1;
+    /**配对失败*/
+    public static final Byte FAIL_MATCHED = 2;
+
+
     /**从external_form_his 获取分页信息*/
     public static final Byte PAGE_LIST_FROM_HIS = 1;
 }

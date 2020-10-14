@@ -11,68 +11,111 @@
       </div>
       <div class="hisAndStoreWrap">
         <!--his信息-->
-        <div class="externalWrap hisWrap">
+        <div class="externalWrap hisWrap" style="height: auto;">
           <p class="externalTitleWrap">医院</p>
           <div class="externalSearchWrap">
-            <input placeholder="名称+规格系数+药企"/>
-            <button>GO</button>
+            <button @click="loadHisOrStoreDataList(hisSearchData)">刷新</button>
           </div>
           <div class="externalTableWrap">
-            <el-table height="280" border :data="externalHisGoodsList" highlight-current-row
-                      @current-change="hisCurRowChange"
-                      style="width: 100%;" class="tableClass">
-              <el-table-column type="index" width="20px"/>
-              <el-table-column label="价格" prop="goodsPrice"/>
-              <el-table-column label="名称" prop="goodsCommonName"/>
-              <el-table-column label="规格系数" prop="goodsQualityRatio"/>
-              <el-table-column label="药企" prop="goodsProductionEnterprise"/>
+            <el-table border :data="externalHisGoodsList" class="tableClass">
+              <el-table-column width="40px"/>
+              <el-table-column label="Id" prop="id" width="60px"/>
+              <el-table-column label="价格" prop="goodsPrice" width="100"/>
+              <el-table-column label="名称" prop="goodsCommonName" width="200"/>
+              <el-table-column label="规格系数" prop="goodsQualityRatio" width="200"/>
+              <el-table-column label="药企" prop="goodsProductionEnterprise" width="300"/>
+              <el-table-column label="批准文号" prop="goodsApprovalNumber" width="150"/>
+              <el-table-column label="药品/RX" width="120">
+                <template slot-scope="{row}">
+                  {{row.isMedical ===1 ? '是':'否'}}/{{row.isRx ===1 ? '是':'否'}}
+                </template>
+              </el-table-column>
+              <el-table-column label="编号" prop="goodsCode"/>
             </el-table>
           </div>
-          <el-pagination layout="total, prev, pager, next" :total="storePageInfo.totalRows"
-                         :current-page.sync="hisPageInfo.currentPage"
-                         @current-change="hisOrStorePageChange(1)"/>
         </div>
 
         <!--药房信息-->
         <div class="externalWrap storeWrap">
           <p class="externalTitleWrap">药房</p>
           <div class="externalSearchWrap">
-            <input placeholder="名称+规格系数+药企"/>
-            <button>GO</button>
+            <input placeholder="名称" v-model="storeSearchData.goodsCommonName"/>
+            <input placeholder="规格系数" v-model="storeSearchData.goodsQualityRatio"/>
+            <input placeholder="药企" v-model="storeSearchData.goodsProductionEnterprise"/>
+            <input placeholder="批准文号" v-model="storeSearchData.goodsApprovalNumber"/>
+            <button @click="loadHisOrStoreDataList(storeSearchData)">搜索</button>
+            <button @click="resetSearchData">重置</button>
           </div>
           <div class="externalTableWrap">
-            <el-table height="280" border :data="externalStoreGoodsList" highlight-current-row
-                      @current-change="storeCurRowChange"
-                      style="width: 100%;" class="tableClass">
-              <el-table-column type="index" width="20px"/>
-              <el-table-column label="价格" prop="goodsPrice"/>
-              <el-table-column label="名称" prop="goodsCommonName"/>
-              <el-table-column label="规格系数" prop="goodsQualityRatio"/>
-              <el-table-column label="药企" prop="goodsProductionEnterprise"/>
+            <el-table height="280" border :data="externalStoreGoodsList" style="width: 100%;" class="tableClass">
+              <el-table-column width="40px">
+                <template slot-scope="{row}">
+                  <el-checkbox v-model="row.checked" @change="storeCheckedChange(row)"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column label="Id" prop="id" width="60px"/>
+              <el-table-column label="价格" prop="goodsPrice" width="100"/>
+              <el-table-column label="名称" prop="goodsCommonName" width="200"/>
+              <el-table-column label="规格系数" prop="goodsQualityRatio" width="200"/>
+              <el-table-column label="药企" prop="goodsProductionEnterprise" width="300"/>
+              <el-table-column label="批准文号" prop="goodsApprovalNumber" width="150"/>
+              <el-table-column label="药品/RX" width="120">
+                <template slot-scope="{row}">
+                  {{row.isMedical ===1 ? '是':'否'}}/{{row.isRx ===1 ? '是':'否'}}
+                </template>
+              </el-table-column>
+              <el-table-column label="编号" prop="goodsCode"/>
             </el-table>
           </div>
-          <el-pagination layout="total, prev, pager, next" :total="storePageInfo.totalRows"
-                         :current-page.sync="storePageInfo.currentPage"
-                         @current-change="hisOrStorePageChange(2)"/>
+          <el-pagination layout="total, prev, pager, next" :total="storeSearchData.totalRows"
+                         :current-page.sync="storeSearchData.currentPage"
+                         @current-change="storePageChange(2)"/>
         </div>
+      </div>
+      <div class="operateBtnWrap" style="height: 40px;text-align: center;">
+        <button style="width: 100px;height: 30px;margin-right: 20px;cursor: pointer;" @click="failHisDataToMatch">放 弃</button>
+        <button style="width: 100px;height: 30px;margin-right: 20px;cursor: pointer;" @click="hisAndStoreGoodsMatch">配 对</button>
+        <button style="width: 100px;height: 30px;cursor:pointer;" @click="saveMatchedGoodsInfos">入库保存</button>
+      </div>
+      <div class="readyToSaveGoodsWrap">
+          <el-table :data="readyToSaveGoodsList" border height="600" class="tableClass">
+            <el-table-column type="index" width="40"/>
+            <el-table-column label="价格" prop="hisPrice"/>
+            <el-table-column label="名称" prop="goodsCommonName"/>
+            <el-table-column label="规格系数" prop="goodsQualityRatio"/>
+            <el-table-column label="药企" prop="goodsProductionEnterprise"/>
+            <el-table-column label="批准文号" prop="goodsApprovalNumber"/>
+            <el-table-column label="药品/RX">
+              <template slot-scope="{row}">
+                {{row.isMedical ===1 ? '是':'否'}}/{{row.isRx ===1 ? '是':'否'}}
+              </template>
+            </el-table-column>
+            <el-table-column label="状态">
+              <template slot-scope="{row}">
+                {{row.state ===1 ? '启用':'禁用'}}
+              </template>
+            </el-table-column>
+            <el-table-column label="his编号" prop="hisGoodsCode"/>
+            <el-table-column label="store编号" prop="storeGoodsCode"/>
+            <el-table-column label="操作">
+              <template slot-scope="{row}">
+                <button @click="refreshData">取 消</button>
+              </template>
+            </el-table-column>
+          </el-table>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getExternalPageList } from '@/api/admin/goodsManage/allGoods/goodsAudit.js'
+import { getExternalPageList, insertMatchedGoodsList, failMatch } from '@/api/admin/goodsManage/allGoods/goodsAudit.js'
 
 export default {
   name: 'GoodsAudit',
   data () {
     return {
       hisSearchData: {
-        goodsCommonName: null,
-        goodsAliasName: null,
-        goodsQualityRatio: null,
-        goodsApprovalNumber: null,
-        goodsProductionEnterprise: null,
         pageListFrom: 1
       },
       storeSearchData: {
@@ -81,94 +124,48 @@ export default {
         goodsQualityRatio: null,
         goodsApprovalNumber: null,
         goodsProductionEnterprise: null,
-        pageListFrom: 2
+        pageListFrom: 2,
+        currentPage: 1,
+        totalRows: 0
       },
       externalHisGoodsList: [],
-      externalStoreGoodsList: [{
-        id: 1,
-        isMedical: 1,
-        isRx: 0,
-        state: 1,
-        goodsPrice: 44.4,
-        goodsNumber: 10,
-        goodsCommonName: 'AAA',
-        goodsQualityRatio: 'BBBBBBBBBBBBB',
-        goodsProductionEnterprise: 'XXXXXXXXXXXXXXXXXXXXX',
-        goodsApprovalNumber: 'xxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 2,
-        isMedical: 1,
-        isRx: 0,
-        state: 1,
-        goodsPrice: 44.4,
-        goodsNumber: 10,
-        goodsCommonName: 'AAA',
-        goodsQualityRatio: 'BBBBBBBBBBBBB',
-        goodsProductionEnterprise: 'XXXXXXXXXXXXXXXXXXXXX',
-        goodsApprovalNumber: 'xxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 3,
-        isMedical: 1,
-        isRx: 0,
-        state: 1,
-        goodsPrice: 44.4,
-        goodsNumber: 10,
-        goodsCommonName: 'AAA',
-        goodsQualityRatio: 'BBBBBBBBBBBBB',
-        goodsProductionEnterprise: 'XXXXXXXXXXXXXXXXXXXXX',
-        goodsApprovalNumber: 'xxxxxxxxxxxxxxxxxxx'
-      },
-      {
-        id: 4,
-        isMedical: 1,
-        isRx: 0,
-        state: 1,
-        goodsPrice: 44.4,
-        goodsNumber: 10,
-        goodsCommonName: 'AAA',
-        goodsQualityRatio: 'BBBBBBBBBBBBB',
-        goodsProductionEnterprise: 'XXXXXXXXXXXXXXXXXXXXX',
-        goodsApprovalNumber: 'xxxxxxxxxxxxxxxxxxx'
-      }],
-      hisTableCurRow: null,
+      externalStoreGoodsList: [],
       storeTableCurRow: null,
-      hisPageInfo: {
-        currentPage: 1,
-        totalRows: 100
-      },
-      storePageInfo: {
-        currentPage: 1,
-        totalRows: 100
-      }
-
+      /* 已经匹配的数据 */
+      readyToSaveGoodsList: []
     }
   },
   methods: {
     tabItemClicked (routerName) {
       this.$router.push({ name: routerName })
     },
-    hisCurRowChange (curRow) {
-      this.hisTableCurRow = curRow
-    },
-    storeCurRowChange (curRow) {
-      this.storeTableCurRow = curRow
-    },
-    hisOrStorePageChange (pageListFrom) {
-      let param = {}
-      if (pageListFrom === 1) {
-        param = {
-          ...this.hisSearchData,
-          currentPage: this.hisPageInfo.currentPage
-        }
-      } else {
-        param = {
-          ...this.storeSearchData,
-          currentPage: this.storePageInfo.currentPage
+    storeCheckedChange (row) {
+      if (!row.checked) {
+        this.storeTableCurRow = null
+        return
+      }
+      for (let i = 0; i < this.externalStoreGoodsList.length; i++) {
+        if (this.externalStoreGoodsList[i] !== row) {
+          this.externalStoreGoodsList[i].checked = false
         }
       }
+      this.storeTableCurRow = row
+    },
+    storePageChange () {
+      let param = {
+        ...this.storeSearchData
+      }
       this.loadHisOrStoreDataList(param)
+    },
+    resetSearchData () {
+      this.storeSearchData = {
+        goodsCommonName: null,
+        goodsAliasName: null,
+        goodsQualityRatio: null,
+        goodsApprovalNumber: null,
+        goodsProductionEnterprise: null,
+        pageListFrom: 2
+      }
     },
     loadHisOrStoreDataList (param) {
       getExternalPageList(param).then(res => {
@@ -179,18 +176,87 @@ export default {
 
         let {content: {page, dataList}} = res
         if (param.pageListFrom === 1) {
-          this.hisPageInfo.totalRows = page.totalRows
           this.externalHisGoodsList = dataList
         } else {
-          this.storePageInfo.totalRows = page.totalRows
+          this.storeTableCurRow = null
+          this.storeSearchData.totalRows = page.totalRows
+          dataList.forEach(row => {
+            row.checked = false
+          })
           this.externalStoreGoodsList = dataList
         }
+      })
+    },
+    /* 配对，入库相关操作 */
+    hisAndStoreGoodsMatch: function () {
+      if (this.externalHisGoodsList == null || this.externalHisGoodsList.length === 0) {
+        this.$message.warning({message: '无医院商品!'})
+        return
+      }
+      if (this.storeTableCurRow === null) {
+        this.$message.warning({message: '请选择一条药房药品!'})
+        return
+      }
+      if (this.readyToSaveGoodsList.length !== 0) {
+        this.$message.warning({message: '本医院药品已配对，未保存入库!'})
+        return
+      }
+      let goodsInfo = this.mergeHisAndStoreInfoToGoodsInfo(this.externalHisGoodsList[0], this.storeTableCurRow)
+      this.readyToSaveGoodsList.push(goodsInfo)
+    },
+    mergeHisAndStoreInfoToGoodsInfo (hisGoodsInfo, storeGoodsInfo) {
+      let ret = {
+        fromHisId: hisGoodsInfo.id,
+        // 这个是药房中间表的id，不是门店id哦
+        fromStoreId: storeGoodsInfo.id,
+        hisGoodsCode: hisGoodsInfo.goodsCode,
+        storeGoodsCode: storeGoodsInfo.goodsCode,
+        ...hisGoodsInfo
+      }
+      ret.hisPrice = hisGoodsInfo.goodsPrice
+      ret.storePrice = storeGoodsInfo.goodsPrice
+      ret['goodsBarCode'] = storeGoodsInfo.goodsBarCode
+      return ret
+    },
+    /* 刷新数据 */
+    refreshData () {
+      this.readyToSaveGoodsList = []
+      this.storeTableCurRow = null
+      this.loadHisOrStoreDataList(this.hisSearchData)
+      this.loadHisOrStoreDataList(this.storeSearchData)
+    },
+    /* 保存已配对的数据 */
+    saveMatchedGoodsInfos () {
+      if (this.readyToSaveGoodsList.length === 0) {
+        return
+      }
+      insertMatchedGoodsList(this.readyToSaveGoodsList).then(res => {
+        if (res.error !== 0) {
+          this.$message.warning({message: '保存失败!'})
+          return
+        }
+        this.readyToSaveGoodsList = []
+      })
+    },
+    /* 放弃配对 */
+    failHisDataToMatch () {
+      if (this.externalHisGoodsList == null || this.externalHisGoodsList.length === 0) {
+        this.$message.warning({message: '无医院商品!'})
+        return
+      }
+      let hisId = this.externalHisGoodsList[0].id
+
+      failMatch({hisId}).then(res => {
+        if (res.error !== 0) {
+          this.$message.warning({message: '操作失败!'})
+          return
+        }
+        this.refreshData()
       })
     }
   },
   mounted () {
-    this.loadHisOrStoreDataList({pageListFrom: 1})
-    this.loadHisOrStoreDataList({pageListFrom: 2})
+    this.refreshData()
   }
 }
 </script>
@@ -233,11 +299,12 @@ export default {
 
   .hisAndStoreWrap {
     display: flex;
+    flex-direction: column;
     justify-content: center;
   }
 
   .externalWrap {
-    width: 49%;
+    width: calc(100% - 20px);
     height: 400px;
     border: 1px solid #ccc;
     margin: 10px;
@@ -266,7 +333,8 @@ export default {
     border: 1px solid #616161;
     outline: none;
     height: 30px;
-    width: 240px;
+    width: 120px;
+    margin-right: 10px;
     border-radius: 5px;
   }
 </style>

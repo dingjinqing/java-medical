@@ -436,7 +436,7 @@ public class MedicalGoodsService extends ShopBaseService {
 
         for (GoodsMedicalExternalRequestItemBo bo : goodsMedicalExternalRequestItemBos) {
             GoodsExternalDo existDo = goodsExternalDao.getExternalFromHis(bo.getGoodsKeyComposedByNameQualityEnterprise());
-            GoodsExternalDo goodsExternalDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToExteranlDo(bo);
+            GoodsExternalDo goodsExternalDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToExternalDo(bo);
             if (existDo == null) {
                 // 对于数据库不存在，而数据自身状态是删除状态则不入库
                 if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
@@ -486,7 +486,7 @@ public class MedicalGoodsService extends ShopBaseService {
             if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(x.getIsMedical())) {
                 x.setGoodsQualityRatio(x.getGoodsQualityRatio().trim().replaceAll("\\*", ""));
                 x.setGoodsProductionEnterprise(x.getGoodsProductionEnterprise().trim().replaceAll("\\*", ""));
-                x.setGoodsAliasName(x.getGoodsAliasName().trim().replaceAll("\\*",""));
+                x.setGoodsAliasName(x.getGoodsAliasName().trim().replaceAll("\\*", ""));
                 String goodsKey = x.getGoodsCommonName() + x.getGoodsQualityRatio() + x.getGoodsProductionEnterprise();
                 x.setGoodsKeyComposedByNameQualityEnterprise(goodsKey);
             } else {
@@ -607,7 +607,7 @@ public class MedicalGoodsService extends ShopBaseService {
 
         for (GoodsMedicalExternalRequestItemBo bo : goodsMedicalExternalRequestItemBos) {
             GoodsExternalDo existDo = goodsExternalDao.getExternalFromStore(bo.getGoodsKeyComposedByNameQualityEnterprise());
-            GoodsExternalDo goodsExternalDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToExteranlDo(bo);
+            GoodsExternalDo goodsExternalDo = GoodsConverter.convertGoodsMedicalExternalRequestItemBoToExternalDo(bo);
             if (existDo == null) {
                 // 对于数据库不存在，而数据自身状态是删除状态则不入库
                 if (BaseConstant.EXTERNAL_ITEM_STATE_DELETE.equals(bo.getState())) {
@@ -662,8 +662,6 @@ public class MedicalGoodsService extends ShopBaseService {
                 // 完全是为了顾及医院数据存在质量问题
                 x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字", ""));
             }
-            x.setStoreCode(x.getGoodsCode());
-            x.setGoodsCode(MedicalGoodsConstant.STORE_GOODS_CODE_PREFIX + x.getGoodsCode());
             return true;
         }).collect(Collectors.toList());
     }
@@ -673,10 +671,43 @@ public class MedicalGoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<GoodsExternalDo> getExternalPageList(GoodsExternalPageParam param){
+    public PageResult<GoodsExternalDo> getExternalPageList(GoodsExternalPageParam param) {
         return goodsExternalDao.getExternalPageList(param);
     }
 
+    public void batchSaveMatchedGoodsList(List<ExternalMatchedGoodsParam> externalMatchedGoodsParams){
+        for (ExternalMatchedGoodsParam externalMatchedGoodsParam : externalMatchedGoodsParams) {
+            saveMatchedGoodsList(externalMatchedGoodsParam);
+        }
+    }
+    public void saveMatchedGoodsList(ExternalMatchedGoodsParam externalMatchedGoodsParam) {
+        transaction(()->{
+            if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(externalMatchedGoodsParam.getIsMedical())) {
+                externalMatchedGoodsParam.setMedicalKey(externalMatchedGoodsParam.getGoodsCommonName() + externalMatchedGoodsParam.getGoodsQualityRatio() + externalMatchedGoodsParam.getGoodsProductionEnterprise());
+            } else {
+                externalMatchedGoodsParam.setMedicalKey(externalMatchedGoodsParam.getGoodsCommonName());
+            }
+
+            GoodsEntity existGoodsEntity = goodsAggregate.getByExternalInfo(externalMatchedGoodsParam.getMedicalKey());
+            GoodsEntity goodsEntity = GoodsConverter.convertExternalMatchedGoodsParamToGoodsEntity(externalMatchedGoodsParam);
+            if (existGoodsEntity == null) {
+                insert(getShopId(),goodsEntity);
+            } else {
+                goodsEntity.setGoodsId(existGoodsEntity.getGoodsId());
+                if (goodsEntity.getGoodsMedicalInfo() != null) {
+                    goodsEntity.getGoodsMedicalInfo().setId(existGoodsEntity.getGoodsMedicalInfo()!=null?existGoodsEntity.getGoodsMedicalInfo().getId():null);
+                }
+                goodsAggregate.update(goodsEntity);
+                medicalGoodsSpecProductService.updateExternalSku(goodsEntity.getGoodsId(),goodsEntity.getShopPrice(),goodsEntity.getMarketPrice(),goodsEntity.getCostPrice());
+            }
+            storeGoodsService.updateMatchedExternalStoreGoodsInfos(externalMatchedGoodsParam.getMedicalKey(),externalMatchedGoodsParam.getHisPrice(),goodsEntity.getGoodsId());
+            goodsExternalDao.updateExternalInfoToMatched(externalMatchedGoodsParam.getFromHisId(),externalMatchedGoodsParam.getFromStoreId());
+        });
+    }
+
+    public void failMatchGoods(FailMatchedParam param) {
+        goodsExternalDao.failMatchGoods(param);
+    }
 
     /**
      * 根据goodsId,goodsCommonName,goodsQualityRatio,productionEnterprise匹配药品信息

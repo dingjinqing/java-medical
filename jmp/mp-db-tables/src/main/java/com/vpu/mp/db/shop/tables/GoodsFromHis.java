@@ -8,19 +8,30 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsFromHisRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
+
 
 /**
- * 商品-药品信息表
+ * his商品-药品信息表
  */
 @Generated(
     value = {
@@ -32,7 +43,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsFromHis extends TableImpl<GoodsFromHisRecord> {
 
-    private static final long serialVersionUID = 225108673;
+    private static final long serialVersionUID = 470189602;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_from_his</code>
@@ -71,6 +82,11 @@ public class GoodsFromHis extends TableImpl<GoodsFromHisRecord> {
      * The column <code>mini_shop_471752.b2c_goods_from_his.goods_common_name</code>. 通用名
      */
     public final TableField<GoodsFromHisRecord, String> GOODS_COMMON_NAME = createField("goods_common_name", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "通用名");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_from_his.is_medical</code>.
+     */
+    public final TableField<GoodsFromHisRecord, Byte> IS_MEDICAL = createField("is_medical", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_from_his.goods_alias_name</code>. 别名
@@ -153,6 +169,11 @@ public class GoodsFromHis extends TableImpl<GoodsFromHisRecord> {
     public final TableField<GoodsFromHisRecord, Integer> STATE = createField("state", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>mini_shop_471752.b2c_goods_from_his.is_match</code>.
+     */
+    public final TableField<GoodsFromHisRecord, Byte> IS_MATCH = createField("is_match", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
      * The column <code>mini_shop_471752.b2c_goods_from_his.create_time</code>.
      */
     public final TableField<GoodsFromHisRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
@@ -188,7 +209,7 @@ public class GoodsFromHis extends TableImpl<GoodsFromHisRecord> {
     }
 
     private GoodsFromHis(Name alias, Table<GoodsFromHisRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("商品-药品信息表"));
+        super(alias, null, aliased, parameters, DSL.comment("his商品-药品信息表"));
     }
 
     public <O extends Record> GoodsFromHis(Table<O> child, ForeignKey<O, GoodsFromHisRecord> key) {

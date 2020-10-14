@@ -104,6 +104,7 @@ public class GoodsMedicalInfoDao extends ShopBaseDao{
     public GoodsMedicalInfoDo getByHisInfo(String medicalKey){
         Condition baseCondition = GOODS_MEDICAL_INFO.IS_DELETE.eq(DelFlag.NORMAL_VALUE);
         Condition condition = GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.concat(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO.concat(GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)).eq(medicalKey);
+        condition = condition.or(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME.eq(medicalKey));
         baseCondition =baseCondition.and(condition);
 
         GoodsMedicalInfoDo goodsMedicalInfoDo = db().select(GOODS_MEDICAL_INFO.ID,GOODS_MEDICAL_INFO.GOODS_ID, GOODS_MEDICAL_INFO.GOODS_APPROVAL_NUMBER, GOODS_MEDICAL_INFO.GOODS_COMMON_NAME, GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO, GOODS_MEDICAL_INFO.GOODS_PRODUCTION_ENTERPRISE)
