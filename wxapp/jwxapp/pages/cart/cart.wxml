@@ -299,10 +299,10 @@
         </view>
       </view>
     </view>
-    <navigator class='to_goods_list' target="miniProgram" app-id='wx56c8f077de74b07c' open-type="navigate" path="/open/function-introduction/function-introduction" version="release" extra-data='' hover-class='none'>
+    <!-- <navigator class='to_goods_list' target="miniProgram" app-id='wx56c8f077de74b07c' open-type="navigate" path="/open/function-introduction/function-introduction" version="release" extra-data='' hover-class='none'>
       <image src='{{imageUrl}}/image/wxapp/stodownload1.jpg' mode='widthFix'></image>
       <view>已同步至好物圈</view>
-    </navigator>
+    </navigator> -->
   </block>
   <!-- 底部 -->
   <block wx:if='{{fullList || purchaseList || cartGoodsList}}'>
