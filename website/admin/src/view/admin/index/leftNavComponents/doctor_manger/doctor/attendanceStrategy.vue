@@ -45,12 +45,13 @@
               <el-table-column label="院内排名" prop="rank" align="center">
                 <template slot-scope="scope">
                   <div>
-                    {{
+                    <!-- {{
                       (docterAttendancePageParams.currentPage - 1) *
                         docterAttendancePageParams.pageRows +
                       scope.$index +
                       1
-                    }}
+                    }} -->
+                    {{ scope.row.loginRank }}
                   </div>
                 </template>
               </el-table-column>
