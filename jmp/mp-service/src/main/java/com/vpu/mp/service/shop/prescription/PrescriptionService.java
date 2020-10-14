@@ -109,7 +109,12 @@ public class PrescriptionService extends ShopBaseService {
      * @return
      */
     public PageResult<PrescriptionListVo> listPageResult(PrescriptionListParam param){
-        return prescriptionDao.listPageResult(param);
+        PageResult<PrescriptionListVo> prescriptionListVoPageResult = prescriptionDao.listPageResult(param);
+        prescriptionListVoPageResult.getDataList().forEach(prescriptionListVo -> {
+            List<String> prescriptionGoodsNameByPrescriptionCode = prescriptionItemDao.getPrescriptionGoodsNameByPrescriptionCode(prescriptionListVo.getPrescriptionCode());
+            prescriptionListVo.setGoodsNames(prescriptionGoodsNameByPrescriptionCode);
+        });
+        return prescriptionListVoPageResult;
     }
 
     /**

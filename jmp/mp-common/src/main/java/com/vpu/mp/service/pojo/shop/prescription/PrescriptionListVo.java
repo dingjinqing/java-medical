@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -74,7 +75,7 @@ public class PrescriptionListVo {
     /**
      * 总价
      */
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = new BigDecimal(0);
     /**
      * 处方来源 0系统内部创建 1医院拉取
      */
@@ -119,4 +120,6 @@ public class PrescriptionListVo {
      * 开方时间
      */
     private Timestamp createTime;
+
+    private List<String> goodsNames;
 }

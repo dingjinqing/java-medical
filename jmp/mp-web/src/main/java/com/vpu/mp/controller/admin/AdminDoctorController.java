@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.department.DepartmentListVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.DoctorAuditedPrescriptionParam;
+import com.vpu.mp.service.pojo.shop.prescription.PrescriptionListParam;
 import com.vpu.mp.service.shop.doctor.DoctorStatisticService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -270,7 +271,13 @@ public class AdminDoctorController extends AdminBaseController {
      */
     @PostMapping("/api/admin/doctor/query/prescription")
     public JsonResult doctorQueryPrescription(@Validated @RequestBody DoctorQueryPrescriptionParam doctorQueryPrescriptionParam) {
-        return success(shop().doctorService.getDoctorQueryPrescription(doctorQueryPrescriptionParam));
+        PrescriptionListParam prescriptionListParam = new PrescriptionListParam();
+        prescriptionListParam.setDoctorCode(doctorQueryPrescriptionParam.getDoctorCode());
+        prescriptionListParam.setDepartmentName(doctorQueryPrescriptionParam.getDepartmentName());
+        prescriptionListParam.setAuditType(doctorQueryPrescriptionParam.getAuditType());
+        prescriptionListParam.setDiagnoseStartTime(doctorQueryPrescriptionParam.getStartTime());
+        prescriptionListParam.setDiagnoseEndTime(doctorQueryPrescriptionParam.getEndTime());
+        return success(shop().prescriptionService.listPageResult(prescriptionListParam));
     }
 
     /**
