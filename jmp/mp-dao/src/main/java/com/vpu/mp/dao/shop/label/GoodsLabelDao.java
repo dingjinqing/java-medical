@@ -66,7 +66,6 @@ public class GoodsLabelDao extends ShopBaseDao {
         transaction(() -> {
             GoodsLabelRecord record = db().newRecord(GOODS_LABEL, param);
             record.insert();
-            param.setId(record.getId());
         });
     }
 

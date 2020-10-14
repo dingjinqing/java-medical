@@ -95,17 +95,14 @@
           prop="orderStatusName"
           label="订单状态"
         ></el-table-column>
+        <el-table-column prop="orderSn" label="咨询单号"></el-table-column>
         <el-table-column
-          prop='orderSn'
-          label='咨询单号'
+          prop="totalRebateMoney"
+          label="返利金额"
         ></el-table-column>
         <el-table-column
-          prop='totalRebateMoney'
-          label='返利金额'
-        ></el-table-column>
-        <el-table-column
-          prop='settlementName'
-          label='返利状态'
+          prop="settlementName"
+          label="返利状态"
         ></el-table-column>
         <el-table-column prop="createTime" label="提交时间"></el-table-column>
         <el-table-column label="操作">
@@ -121,7 +118,7 @@
                 @click="returnOrder(scope.row)"
                 >退款</a
               >
-              <a href="javaScript:void(0);" @click="toDetail(scope.row.orderId)"
+              <a href="javaScript:void(0);" @click="toDetail(scope.row.orderSn)"
                 >详情</a
               >
             </div>
@@ -208,11 +205,11 @@ export default {
     }
   },
   methods: {
-    toDetail (id) {
+    toDetail (orderSn) {
       const { href } = this.$router.resolve({
         path: '/admin/home/main/orders/advisoryOrder/info',
         query: {
-          orderId: id
+          orderSn: orderSn
         }
       })
       window.open(href, '_blank')

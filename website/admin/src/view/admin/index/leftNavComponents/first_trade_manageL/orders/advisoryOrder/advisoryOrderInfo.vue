@@ -105,7 +105,7 @@
     <ManualRefund
       :dataInfo="refundInfo"
       :show.sync="showRefund"
-      @complete="initOrderInfo(id)"
+      @complete="initOrderInfo(orderSn)"
     />
   </div>
 </template>
@@ -118,16 +118,16 @@ export default {
     ManualRefund
   },
   mounted () {
-    if (this.$route.query.orderId) {
-      this.id = this.$route.query.orderId
-      this.initOrderInfo(this.id)
+    if (this.$route.query.orderSn) {
+      this.orderSn = this.$route.query.orderSn
+      this.initOrderInfo(this.orderSn)
     }
   },
   watch: {
-    '$route.query.orderId': function (newVal) {
+    '$route.query.orderSn': function (newVal) {
       if (newVal) {
-        this.id = this.$route.query.orderId
-        this.initOrderInfo(this.id)
+        this.orderSn = this.$route.query.orderSn
+        this.initOrderInfo(this.orderSn)
       }
     }
   },
@@ -139,8 +139,8 @@ export default {
     }
   },
   methods: {
-    initOrderInfo (id) {
-      advisoryOrderInfo({ orderId: id }).then(res => {
+    initOrderInfo (orderSn) {
+      advisoryOrderInfo({ orderSn: orderSn }).then(res => {
         if (res.error === 0) {
           res.content.orderStatusName = this.getStatusName(res.content.orderStatus)
           res.content.patientSexName = this.getPatientSex(res.content.patientSex)
