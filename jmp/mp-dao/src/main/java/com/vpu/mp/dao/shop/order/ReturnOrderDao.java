@@ -83,9 +83,6 @@ public class ReturnOrderDao extends ShopBaseDao {
      * @return
      */
     public Integer getCountByReturnStatus(List<Byte> returnStatusList,Integer storeId){
-
-
-
         return db().select(DSL.isnull(DSL.countDistinct(RETURN_ORDER.ORDER_SN),0)).from(RETURN_ORDER).
             leftJoin(ORDER_INFO).on(RETURN_ORDER.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
             .where(RETURN_ORDER.REFUND_STATUS.in(returnStatusList))

@@ -144,7 +144,6 @@ public class MpOrderInfoService extends OrderInfoService{
             }else{
                 select.where(TABLE.STORE_ID.in(param.getStoreIds()));
             }
-            select.where(TABLE.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
         }else {
             //用户
             select.where(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()));
@@ -180,6 +179,7 @@ public class MpOrderInfoService extends OrderInfoService{
                 select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_CANCELLED,OrderConstant.ORDER_CLOSED));
                 break;
             case OrderConstant.STORE_ACCOUNT_WAIT_DELIVERY:
+                select.where(TABLE.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
                 //店员-待接单(代发货,已发货)
                 select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY).or(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED)));
                 //店员-已发货只有自己能看到
@@ -191,6 +191,7 @@ public class MpOrderInfoService extends OrderInfoService{
                 break;
             case OrderConstant.STORE_ACCOUNT_FINISHED:
                 //已完成订单
+                select.where(TABLE.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
                 //配送人不为空
                 select.where(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(param.getWxUserInfo().getStoreAccountId()));
                 //订单状态  (已收货 已完成)
