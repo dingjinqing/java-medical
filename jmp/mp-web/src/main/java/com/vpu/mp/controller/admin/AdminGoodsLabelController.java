@@ -111,4 +111,10 @@ public class AdminGoodsLabelController extends AdminBaseController {
         shop().goods.goodsLabelCouple.updateByGoodsId(param.getGoodsId(), param.getLabelIds());
         return success();
     }
+
+    @GetMapping("/api/admin/label/chronic/test")
+    public JsonResult insertChronicLabelTest() {
+        shop().goods.goodsLabel.insertChronicLabelData();
+        return success();
+    }
 }
