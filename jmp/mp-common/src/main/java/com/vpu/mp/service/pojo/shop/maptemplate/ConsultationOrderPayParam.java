@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class ConsultationOrderPayParam {
     public static final String REMARK = "请您及时接诊";
-    public static final String ORDER_TYPE = "图文问诊";
+    public static final String ORDER_TYPE = "在线问诊";
     private String doctorName;
     private String patientData;
     @Builder.Default

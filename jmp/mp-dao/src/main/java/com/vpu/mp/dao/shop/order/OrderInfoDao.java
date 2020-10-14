@@ -253,8 +253,6 @@ public class OrderInfoDao extends ShopBaseDao {
         // 退款状态(默认,审核未通过,退货完成,拒绝退款,撤销)
         .and(ORDER_INFO.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
                         OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE,OrderConstant.REFUND_STATUS_CLOSE))
-        .and(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(accountId)
-                .or(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(BaseConstant.NO.intValue())))
         .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
         return select.fetchAnyInto(Integer.class);
     }

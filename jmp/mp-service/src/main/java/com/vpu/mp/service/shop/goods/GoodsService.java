@@ -580,7 +580,7 @@ public class GoodsService extends ShopBaseService {
         if (goodsPageListParam.getLabelId() != null) {
             // 根据标签id值过滤出该标签对应的商品id或者平台、商家分类id
             Map<Byte, List<Integer>> byteListMap = goodsLabelCouple.selectGatIdsByLabelIds(Arrays.asList(goodsPageListParam.getLabelId()));
-            Condition labelCondition = DSL.noCondition();
+            Condition labelCondition = DSL.falseCondition();
             // 处理标签直接打在商品上的情况
             List<Integer> integers = byteListMap.get(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
             if (integers != null && integers.size() > 0) {
@@ -2865,5 +2865,13 @@ public class GoodsService extends ShopBaseService {
      */
     public String getGoodsNameByPrdId(Integer prdId) {
         return goodsDao.getGoodsNameByPrdId(prdId);
+    }
+
+    public List<Integer> getGoodsIdsByLabelId(Integer labelId){
+        Condition condition = DSL.noCondition();
+        GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
+        goodsPageListParam.setLabelId(labelId);
+        condition = this.buildLabelOptions(condition, goodsPageListParam);
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetchInto(Integer.class);
     }
 }
