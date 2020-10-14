@@ -258,8 +258,8 @@ public class ShopOfficialAccount extends MainBaseService {
         if (!principalName.equals(principalPersonal)) {
 			List<MaMpBindParam> apps = getSamePrincipalOfficeList(principalName);
 			List<MaMpBindParam> samePrincipalMaList = saas.shop.mp.getSamePrincipalMaList(principalName);
-			apps.addAll(samePrincipalMaList);
-			bindSamePrincipalApps(apps);
+            samePrincipalMaList.addAll(apps);
+			bindSamePrincipalApps(samePrincipalMaList);
 		}
 	}
 
