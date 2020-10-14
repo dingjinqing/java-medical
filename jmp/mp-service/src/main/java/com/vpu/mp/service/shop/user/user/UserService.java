@@ -79,6 +79,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.vpu.mp.db.shop.Tables.DOCTOR;
@@ -1252,6 +1253,8 @@ public class UserService extends ShopBaseService {
             userAssociatedDoctorVo.setInquiryNum(doctorInquiry.getTotalCount());
             userAssociatedDoctorVo.setTotalCost(prescriptionDoctorVo.getTotalPrice().add(doctorInquiry.getTotalPrice()));
         });
+        List<UserAssociatedDoctorVo> collect = userAssociatedDoctor.getDataList().stream().distinct().collect(Collectors.toList());
+        userAssociatedDoctor.setDataList(collect);
         return userAssociatedDoctor;
     }
 }
