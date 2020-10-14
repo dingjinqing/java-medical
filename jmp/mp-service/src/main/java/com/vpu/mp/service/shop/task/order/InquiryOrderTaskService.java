@@ -80,31 +80,33 @@ public class InquiryOrderTaskService extends ShopBaseService {
     public void autoCloseToWaitingInquiryOrder()  {
         List<InquiryOrderDo> orderList = inquiryOrderService.getCanceledToWaitingCloseOrder();
         orderList.forEach(order -> {
-            if(order.getOrderAmount().compareTo(BigDecimal.ZERO)<=0){
-                order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
-                inquiryOrderDao.update(order);
-                List<String> orderSns=new ArrayList<>();
-                orderSns.add(order.getOrderSn());
-                imSessionService.batchCancelSession(orderSns);
-                logger().info("问诊订单自动任务,待接诊0元订单取消,orderSn:{}", order.getOrderSn());
-            }else {
-                try {
-                    refundExecute(order);
-                    logger().info("问诊订单自动任务,待接诊订单退款成功,orderSn:{}", order.getOrderSn());
-                } catch (MpException e) {
-                    e.printStackTrace();
-                    logger().error("问诊订单自动任务,待接诊订单退款失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage());
+            transaction(()->{
+                if(order.getOrderAmount().compareTo(BigDecimal.ZERO)<=0){
+                    order.setOrderStatus(InquiryOrderConstant.ORDER_REFUND);
+                    inquiryOrderDao.update(order);
+                    List<String> orderSns=new ArrayList<>();
+                    orderSns.add(order.getOrderSn());
+                    imSessionService.batchCancelSession(orderSns);
+                    logger().info("问诊订单自动任务,待接诊0元订单取消,orderSn:{}", order.getOrderSn());
+                }else {
+                    try {
+                        refundExecute(order);
+                        logger().info("问诊订单自动任务,待接诊订单退款成功,orderSn:{}", order.getOrderSn());
+                    } catch (MpException e) {
+                        logger().error("问诊订单自动任务,待接诊订单退款失败,orderSn:{},错误信息{}{}", order.getOrderSn(), e.getErrorCode(), e.getMessage());
+                        throw e;
+                    }
                 }
-            }
-            //问诊退款，更改返利状态
-            if(InquiryOrderConstant.SETTLEMENT_WAIT.equals(order.getSettlementFlag())){
-                inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OVERTIME);
-            }
-            //超时自动退款消息提醒
-            List<Integer> useIdrList=new ArrayList<>();
-            useIdrList.add(order.getUserId());
-            ConsultationOrderExpireParam param=ConsultationOrderExpireParam.builder().userIds(useIdrList).build();
-            mapTemplateSendService.sendConsultationExprieMessage(param);
+                //问诊退款，更改返利状态
+                if(InquiryOrderConstant.SETTLEMENT_WAIT.equals(order.getSettlementFlag())){
+                    inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OVERTIME);
+                }
+                //超时自动退款消息提醒
+                List<Integer> useIdrList=new ArrayList<>();
+                useIdrList.add(order.getUserId());
+                ConsultationOrderExpireParam param=ConsultationOrderExpireParam.builder().userIds(useIdrList).build();
+                mapTemplateSendService.sendConsultationExprieMessage(param);
+            });
 
         });
     }
@@ -117,7 +119,7 @@ public class InquiryOrderTaskService extends ShopBaseService {
      */
     public void refundExecute(InquiryOrderDo order) throws MpException {
         order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);
-        inquiryOrderService.refundInquiryOrder(order,order.getRefundMoney(),InquiryOrderConstant.REFUND_REASON_OVERTIME);
+        inquiryOrderService.refundInquiryOrder(order,order.getOrderAmount(),InquiryOrderConstant.REFUND_REASON_OVERTIME);
     }
 
     /**
@@ -127,27 +129,30 @@ public class InquiryOrderTaskService extends ShopBaseService {
         logger().info("接诊中问诊订单超时自动结束定时任务start,shop:{}", getShopId());
         List<InquiryOrderDo> list=inquiryOrderDao.getFinishedCloseOrder();
         list.forEach(order -> {
-            order.setOrderStatus(InquiryOrderConstant.ORDER_FINISHED);
-            order.setFinishedTime(DateUtils.getLocalDateTime());
-            order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FINISH);
-            inquiryOrderDao.update(order);
-            List<String> orderSnList=new ArrayList<>();
-            orderSnList.add(order.getOrderSn());
-            imSessionService.batchCloseSession(orderSnList);
-            //完成问诊，更改返利状态
-            inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATED,null);
-            //统计医师返利金额
-            ImSessionDo im=imSessionService.getSessionInfoByOrderSn(order.getOrderSn());
-            if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){
-                doctorTotalRebateDao.updateDoctorTotalRebate(order.getDoctorId(),order.getTotalRebateMoney());
-            }
-            //统计平台返利
-            PlatformTotalRebateDo platformTotalRebateDo=new PlatformTotalRebateDo();
-            platformTotalRebateDo.setShopId(order.getShopId());
-            platformTotalRebateDo.setTotalMoney(order.getTotalRebateMoney());
-            platformTotalRebateDo.setFinalMoney(order.getTotalRebateMoney());
-            platformTotalRebateDao.savePlatFormTotalRebate(platformTotalRebateDo);
-            logger().info("接诊中问诊订单超时自动结束,成功,orderSn:{}", order.getOrderSn());
+            transaction(()->{
+                order.setOrderStatus(InquiryOrderConstant.ORDER_FINISHED);
+                order.setFinishedTime(DateUtils.getLocalDateTime());
+                order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_FINISH);
+                inquiryOrderDao.update(order);
+                List<String> orderSnList=new ArrayList<>();
+                orderSnList.add(order.getOrderSn());
+                imSessionService.batchCloseSession(orderSnList);
+                //完成问诊，更改返利状态
+                inquiryOrderRebateDao.updateStatus(order.getOrderSn(), InquiryOrderRebateConstant.REBATED,null);
+                //统计医师返利金额
+                ImSessionDo im=imSessionService.getSessionInfoByOrderSn(order.getOrderSn());
+                if(im.getContinueSessionCount().equals(ImSessionConstant.CONTINUE_SESSION_TIME)){
+                    doctorTotalRebateDao.updateDoctorTotalRebate(order.getDoctorId(),order.getTotalRebateMoney());
+                }
+                //统计平台返利
+                PlatformTotalRebateDo platformTotalRebateDo=new PlatformTotalRebateDo();
+                platformTotalRebateDo.setShopId(order.getShopId());
+                platformTotalRebateDo.setTotalMoney(order.getTotalRebateMoney());
+                platformTotalRebateDo.setFinalMoney(order.getTotalRebateMoney());
+                platformTotalRebateDao.savePlatFormTotalRebate(platformTotalRebateDo);
+                logger().info("接诊中问诊订单超时自动结束,成功,orderSn:{}", order.getOrderSn());
+            });
+
         });
         logger().info("接诊中问诊订单超时自动结束定时任务end");
     }

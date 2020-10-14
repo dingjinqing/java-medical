@@ -279,7 +279,7 @@ public class OrderInfoDao extends ShopBaseDao {
                 .and(ORDER_INFO.REFUND_STATUS.notIn(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
                         OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE,OrderConstant.REFUND_STATUS_CLOSE))
                 .and(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(accountId)
-                        .or(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(BaseConstant.NO.intValue())))
+                        .or(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).isNull()))
                 .and(ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.STORE_EXPRESS));
         if(startTime!=null){
             select.and(ORDER_INFO.CREATE_TIME.ge(startTime));

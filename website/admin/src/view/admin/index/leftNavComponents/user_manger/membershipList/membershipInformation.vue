@@ -1089,7 +1089,7 @@ export default {
       doctorparams: {
         doctorName: '',
         departmentName: '',
-        isFavorite: false
+        isFavorite: -1
       },
       medicalParams: {
         goodsName: '',
@@ -1099,8 +1099,9 @@ export default {
         isPrescription: null
       },
       favorites: [
-        { value: true, label: '是' },
-        { value: false, label: '否' }
+        { value: -1, label: '全部' },
+        { value: 0, label: '否' },
+        { value: 1, label: '是' }
       ],
       commenIs: [
         { value: 0, label: '否' },
