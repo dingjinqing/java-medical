@@ -328,7 +328,11 @@
       </div>
       <div
         class="transactionOrder"
-        v-if="transactionTabIndex !== 0 && transactionTabIndex !== 2"
+        v-if="
+          transactionTabIndex !== 0 &&
+          transactionTabIndex !== 2 &&
+          transactionTabIndex !== 3
+        "
       >
         <el-button type="primary" plain size="small" @click="jumpToHandler"
           >查看订单</el-button
