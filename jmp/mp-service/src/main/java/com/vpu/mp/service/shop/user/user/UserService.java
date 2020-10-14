@@ -635,7 +635,7 @@ public class UserService extends ShopBaseService {
 
 	/**
 	 * 我的服务
-	 * @param userId
+	 * @param user
 	 * @param data
 	 * @return
 	 */
@@ -1061,8 +1061,8 @@ public class UserService extends ShopBaseService {
 
 	/**
 	 * 店铺库的userdetail同步到主库
-	 * @param shopRecords
-	 * @param type
+	 * @param shopRecord
+	 * @param int[]
      * @return
 	 */
 	public int[] syncMainUserDetail(UserDetailRecord shopRecord) {
@@ -1254,6 +1254,11 @@ public class UserService extends ShopBaseService {
             userAssociatedDoctorVo.setTotalCost(prescriptionDoctorVo.getTotalPrice().add(doctorInquiry.getTotalPrice()));
         });
         List<UserAssociatedDoctorVo> collect = userAssociatedDoctor.getDataList().stream().distinct().collect(Collectors.toList());
+        collect.forEach(userAssociatedDoctorVo -> {
+            if (userAssociatedDoctorVo.getIsFav() == null) {
+                userAssociatedDoctorVo.setIsFav(true);
+            }
+        });
         userAssociatedDoctor.setDataList(collect);
         return userAssociatedDoctor;
     }
