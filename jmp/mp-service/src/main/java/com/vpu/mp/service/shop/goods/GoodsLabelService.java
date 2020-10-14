@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 
 import com.vpu.mp.common.foundation.data.DelFlag;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsChronicCoupleDo;
 import com.vpu.mp.dao.shop.goods.GoodsChronicCoupleDao;
@@ -177,7 +178,8 @@ public class GoodsLabelService extends ShopBaseService {
      */
     public void update(GoodsLabelAddAndUpdateParam param) {
         transaction(() -> {
-            GoodsLabelRecord record = db().newRecord(GOODS_LABEL,param);
+            GoodsLabelRecord record = db().newRecord(GOODS_LABEL);
+            FieldsUtil.assign(param,record);
             record.update();
             goodsLabelCoupleService.deleteByGoodsLabelId(param.getId());
             // 不是 '不添加商品选项'
