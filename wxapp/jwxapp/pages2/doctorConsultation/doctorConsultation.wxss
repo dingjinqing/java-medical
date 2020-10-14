@@ -85,7 +85,7 @@
 }
 
 .dep_item {
-  width: 160rpx;
+  min-width: 160rpx;
   height: 60rpx;
   line-height: 60rpx;
   background: rgba(255, 255, 255, 1);
