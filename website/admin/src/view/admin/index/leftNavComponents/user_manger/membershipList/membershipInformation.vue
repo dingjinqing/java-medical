@@ -458,22 +458,6 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <span class="fil_span">是否收藏：</span>
-            <el-select
-              v-model="medicalParams.isCollect"
-              size="small"
-              class="default_input"
-              style="width: 150px"
-            >
-              <el-option
-                v-for="item in commenIs"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </div>
-          <div class="filters_item">
             <span class="fil_span">是否加购：</span>
             <el-select
               v-model="medicalParams.isAddCart"
