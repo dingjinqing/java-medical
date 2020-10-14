@@ -19,7 +19,7 @@ public class UserAssociatedDoctorParam {
 
     private String departmentName;
 
-    private Boolean isFavorite;
+    private Byte isFavorite;
 
     /**
      * 分页查询参数
